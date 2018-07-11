@@ -1,0 +1,43 @@
+package gate.tags;
+
+import gate.util.Icons;
+
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.SimpleTagSupport;
+
+public class IconsTag extends SimpleTagSupport
+{
+
+	private String name;
+
+	@Override
+	public void doTag() throws JspException, IOException
+	{
+		super.doTag();
+		try
+		{
+			for (Icons.Icon icon : Icons.getInstance().get())
+			{
+				getJspContext().setAttribute(getName(), icon, PageContext.REQUEST_SCOPE);
+				getJspBody().invoke(null);
+				getJspContext().removeAttribute(getName(), PageContext.REQUEST_SCOPE);
+			}
+		} catch (IOException | JspException e)
+		{
+			throw new JspException(e);
+		}
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+}

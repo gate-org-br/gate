@@ -1,0 +1,51 @@
+package gate.policonverter;
+
+import gate.error.ConversionException;
+import gate.converter.Converter;
+import java.util.Arrays;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import javax.servlet.http.Part;
+
+public class SetPoliconverter extends Policonverter
+{
+
+	@Override
+	public Object getObject(Class<?> type, String[] value)
+			throws ConversionException
+	{
+		Set<Object> objects = new HashSet<>();
+		for (String string : value)
+			objects.add(Converter.getConverter(type).ofString(type, string));
+		return objects;
+	}
+
+	@Override
+	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	{
+		Collection<Object> objects = new HashSet<>();
+		for (Part part : value)
+			objects.add(Converter.getConverter(type).ofPart(type, part));
+		return objects;
+	}
+
+	@Override
+	public String[] getString(Class<?> type, Object value)
+			throws ConversionException
+	{
+		Set<String> strings = new HashSet<>();
+		for (Object object : (Set<?>) value)
+			strings.add(Converter.getConverter(type).toString(type, object));
+		return strings.toArray(new String[strings.size()]);
+	}
+
+	@Override
+	public Object toCollection(Class<?> type, Object[] objects)
+	{
+		Collection<Object> result = new HashSet<>();
+		result.addAll(Arrays.asList(objects));
+		return result;
+	}
+}

@@ -1,0 +1,430 @@
+@font-face
+{
+	font-family: 'gate';
+	src: local(gate), url('imge/font/gate.eot?-uajdou&version=1_3_1');
+	src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=1_3_1') format('embedded-opentype'),
+		url('imge/font/gate.woff?-uajdou&version=1_3_1') format('woff'),
+		url('imge/font/gate.ttf?-uajdou&version=1_3_1') format('truetype'),
+		url('imge/font/gate.svg?-uajdou#icomoon&version=1_3_1') format('svg');
+	font-weight: normal; font-style: normal;
+}
+
+i { font-family: 'gate'; speak: none; font-style: normal; font-weight: normal;
+    font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale}
+
+* { box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box;
+    font-family: Arial, Tahoma, Geneva, sans-serif; font-size: 12px; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none}
+
+body { margin: 0px; padding: 8px; text-align: center }
+
+a { font-weight: normal; text-decoration: none; font-size: 12px }
+a:link    { color: #000044}
+a:visited { color: #000044}
+a:hover   { color: #CA171B}
+a:active  { color: #AA0000}
+a:focus img { box-shadow: 0px 0px 1px 1px #990000;}
+
+
+tr.RChart, td.RChart,
+tr.DChart, td.DChart,
+tr.PChart, td.PChart,
+tr.AChart, td.AChart,
+tr.LChart, td.LChart,
+tr.BChart, td.BChart,
+tr.CChart, td.CChart { cursor: pointer }
+
+td.RChart:hover,
+td.DChart:hover,
+td.PChart:hover,
+td.AChart:hover,
+td.LChart:hover,
+td.BChart:hover,
+td.CChart:hover { color: #000066; font-weight: bold; }
+
+table { width: 100%; border: none 0px transparent; background-color: #DDDDDF }
+
+td { height: 28px; vertical-align: middle; text-align: left; word-break: normal; }
+table > tbody > tr:nth-child(even) > td { background-image: none; background-color: #FFFFFF}
+table > tbody > tr:nth-child(odd) > td { background-image: none; background-color: #FDFAE9}
+table > thead > tr > td, table > tfoot > tr > td { background-image: -ms-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+                                                   background-image: -moz-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+                                                   background-image: -o-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+                                                   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FDFAE9), color-stop(1, #B3B0A4));
+                                                   background-image: -webkit-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+                                                   background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%)}
+
+button { background: none; border: 0; margin: 0; padding: 0; cursor: pointer; color: #000066;
+         font-weight: normal; text-decoration: none; font-size: 12px}
+
+th { height: 28px; vertical-align: middle; text-align: left; background-color: #969384; color: #000000}
+td.TOOLTIP { padding: 12px; background-image: none; background-color: #F0F0F4; color: blue; border: 1px dashed gray}
+td.SEPARATOR { padding: 0px; margin: 0px; background-image: none; background-color: #CBCAC9; color: blue; border: 1px dotted gray; height: 0px}
+
+caption { height: 32px; vertical-align: middle; text-align: center; font-weight: bold; line-height: 28px; border-radius: 5px 5px 0px 0px;
+          -webkit-border-radius: 5px 5px 0px 0px; -moz-border-radius: 5px 5px 0px 0px; margin-bottom: 2px; background-color: #666354; color: #EEEEEE }
+
+div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: none; border-radius: 5px;
+           -webkit-border-radius: 5px; -moz-border-radius: 5px; text-align: justify; padding: 12px}
+
+*.COOLBAR
+{
+	width: 100%; height: 40px; background-image: url("imge/back/GLASS.png"); border-radius: 5px; padding: 2px 0px 2px 0px;
+	background-image: -ms-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
+	background-image: -moz-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
+	background-image: -o-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F2EFDF), color-stop(1, #ABA89D));
+	background-image: -webkit-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
+	background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
+}
+
+*.COOLBAR a , *.COOLBAR button
+{
+	margin: 2px;
+	display: block; min-width: 90px; height: 32px; line-height: 28px;
+	border: 1px solid #CCCCCC;
+	font-weight: bold;
+	font-size: 10px;
+	color: #432F21;
+	border-radius: 5px; padding: 0px 4px; text-align: center;
+	background-image: -ms-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
+	background-image: -moz-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
+	background-image: -o-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #D6D3C4), color-stop(1, #8A887E));
+	background-image: -webkit-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
+	background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
+}
+
+*.COOLBAR a:hover
+{
+	text-decoration: underline;
+	background-image: -ms-linear-gradient(top, #E3E0D0 0%, #858279 100%);
+	background-image: -moz-linear-gradient(top, #E3E0D0 0%, #858279 100%);
+	background-image: -o-linear-gradient(top, #E3E0D0 0%, #858279 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E3E0D0), color-stop(1, #858279));
+	background-image: -webkit-linear-gradient(top, #E3E0D0 0%, #858279 100%);
+	background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
+}
+
+
+*.COOLBAR > a:focus { outline: 2px solid #FFFACD }
+
+*.COOLBAR > a, div.MINIBAR > a, *.COOLBAR > button, div.MINIBAR > button { float: right }
+*.COOLBAR > a, *.COOLBAR > button, *.COOLBAR > a, *.COOLBAR > button { text-align: left }
+*.COOLBAR > a:hover > i, *.COOLBAR > a:hover > span, *.COOLBAR > button:hover > i, *.COOLBAR > button:hover > span { color: inherit }
+*.COOLBAR > a > i, *.COOLBAR > a > span, *.COOLBAR > button > i, *.COOLBAR > button > span {float: right; line-height: 28px; font-size: 12px; margin-left: 4px }
+*.COOLBAR > button { cursor: pointer }
+
+*.COOLBAR > label { float: left; padding: 7px; font-size: 16px}
+*.COOLBAR > hr { width: 12px;
+                 margin: 2px;
+                 height: 32px;
+                 float: right;
+                 display: inline-block;
+                 border: 0px none transparent;
+                 background-color: transparent }
+
+
+div.MINIBAR { overflow: auto}
+div.MINIBAR > a > i { font-size: 16px}
+div.MINIBAR > a:focus { outline: none}
+div.MINIBAR > a { font-size: 16px; width: 24px; height: 24px; padding: 4px}
+
+div.FORMAT { width: 100%; padding: 8px; margin-bottom: 4px; background-color: #F0F0F4; border-radius: 5px; text-align: center}
+div.EDITOR { width: 100%; height: 250px; padding: 8px; background-color: #FFFFFF; border-radius: 5px; overflow: auto}
+
+a.ORDER_NONE { color: #000000; width: 100%; height: 100%}
+a.ORDER_ASCE { color: #000099; font-weight: bold;  width: 100%; height: 100%}
+a.ORDER_DESC { color: #990000; font-weight: bold;  width: 100%; height: 100%}
+
+span.PAGINATOR a { color: black; font-weight: bold }
+
+a.ORDENATOR { color: #000000; font-weight: bold}
+
+p  { text-align: justify}
+h5 { font-size: 14px; text-align: center}
+h4 { font-size: 16px; text-align: center}
+h3 { font-size: 18px; text-align: center}
+h2 { font-size: 20px; text-align: center}
+h1 { font-size: 22px; text-align: center}
+
+img { border-style: none; position: relative; vertical-align: middle; margin-left: 2px; margin-right: 2px}
+
+ul.MENU li a:hover i { color: #CA171B}
+ul.MENU li:hover > ul, ul.NAVI li:hover > ul { display: block}
+ul.MENU li a i, ul.NAVI li a i, ul.MENU li a span, ul.NAVI li a span { float: right; color: #432F21 }
+ul.MENU, ul.NAVI, ul.MENU ul, ul.NAVI ul { margin: 0; padding: 0 }
+ul.MENU li, UL.NAVI li { float: left; width: 100%; position: relative; list-style: none outside none; height: 36px; line-height: 13px }
+ul.MENU li, ul.NAVI li, ul.MENU li a, ul.NAVI a { font-weight: normal; font-size: 12px; color: #432F21 }
+ul.MENU li ul, ul.NAVI li ul { top: 0; left: 98%; width: 100%; z-index: 99; display: none; position: absolute; border: 1px solid #CDCAB9 }
+ul.MENU a, ul.NAVI a { width: 100%; height: 100%; display: block; font-size: 10px; text-align: left; background-color: #FDFAE9; color: #432F21 }
+ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; line-height: 24px; text-align: center; background-color: #DBD8C7; color: #432F21 }
+ul.MENU li.SEPARATOR, ul.NAVI li.SEPARATOR { height: 4px; background-color: #CDCAB9 }
+ul.MENU li.SEPARATOR, ul.NAVI > li.SEPARATOR { width: 4px; height: 36px; background-color: transparent; border: none }
+
+ul.MENU a:hover, ul.NAVI a:hover
+{
+	color: #CA171B;
+	background: rgb(240,240,240);
+	background-image: -ms-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+	background-image: -moz-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+	background-image: -o-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FDFAE9), color-stop(1, #B3B0A4));
+	background-image: -webkit-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
+	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
+}
+
+li { text-align: left }
+
+ul.NAVI a { padding: 10px }
+ul.NAVI > li { display: inline-block; width: 200px; border: 1px solid #CDCAB9; float: left}
+div.NAVI { width: 100%; height: 40px; margin-bottom: 10px; border-radius: 5px; margin-top: 10px}
+ul.NAVI > li > ul { left: -1px; top: 100%; width: 100%; margin-top: -4px; border: 1px solid #CDCAB9}
+
+ul.MENU a.HELP, ul.NAVI a.HELP  { text-align: center; font-weight: bold }
+
+td > label, th > label { width: 100%; display: inline-block}
+td > label > i, td > label > span, th > label > i, th > label > span { position: absolute; right: 2px; color: gray; font-size: 10px}
+
+table.TREEVIEW > tbody > tr { display: none}
+table.TREEVIEW > tbody > tr > td:first-child { text-align: center; font-size: 12px; font-weight: bold}
+
+tr[data-action],
+tr[data-value],
+tr[data-ret],
+tr[data-action] > td,
+tr[data-value] > td,
+tr[data-ret] > td { cursor: pointer }
+
+tr[data-action]:focus,
+tr[data-value]:hover,
+tr[data-ret]:hover,
+tr[data-action]:focus > td,
+tr[data-value]:hover > td,
+tr[data-ret]:hover > td,
+div.DESKTOP > fieldset:focus { background-image: none; background-color: #F0E68C; color: #000000 }
+
+ul.DESKTOP ul { display: none }
+ul.DESKTOP { display: inline-flex; flex-wrap: wrap; width: 100%; list-style-type: none; margin: auto; padding: 0px; justify-content: flex-start; float: left}
+ul.DESKTOP > li { visibility: hidden; cursor: pointer; width: 24%; margin: 8px 0.5% 8px 0.5%; border-radius: 5px; border: 2px solid #FFFFFF;
+                  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
+                  background-image: -ms-linear-gradient(top, #FDFAE9, #B3B0A4);
+                  background-image: -moz-linear-gradient(top, #FDFAE9, #B3B0A4);
+                  background-image: -o-linear-gradient(top, #FDFAE9, #B3B0A4);
+                  background-image: -webkit-linear-gradient(top, #FDFAE9, #B3B0A4)}
+ul.DESKTOP > li:hover { border-color: #FFFACD;
+                        background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
+                        background-image: -ms-linear-gradient(top, #EDE9D9, #BDBAAD);
+                        background-image: -moz-linear-gradient(top, #EDE9D9, #BDBAAD);
+                        background-image: -o-linear-gradient(top, #EDE9D9, #BDBAAD);
+                        background-image: -webkit-linear-gradient(top, #EDE9D9, #BDBAAD)}
+ul.DESKTOP > li > * { float: left; height: 48px; cursor: pointer}
+ul.DESKTOP > li > label { padding-left: 8px; line-height: 48px}
+ul.DESKTOP > li > img { width: 48px; margin: 0px; background-color: white}
+ul.DESKTOP > li > i, ul.DESKTOP > li > span { width: 48px; font-size: 40px; padding: 4px; text-align: center}
+
+ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
+ul.LIST > li { float: left; width: 10%; height: 32px; text-align: left; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px; border-radius: 5px}
+ul.LIST > li > i { float: right;  font-size: 24px}
+
+table, fieldset, div.TEXT, div.TOOLTIP, *.TOOLBAR, *.COOLBAR, div.PageControl, div.LinkControl { margin-top: 16px; margin-bottom: 4px}
+table:first-child, fieldset:first-child, div.TEXT:first-child, div.TOOLTIP:first-child, *.TOOLBAR:first-child, *.COOLBAR:first-child, div.PageControl:first-child, div.LinkControl:first-child { margin-top: 0px }
+
+div.PageControl > div { display: none }
+div.PageControl > ul > li > div { display: none }
+div.PageControl > div > iframe, div.LinkControl > div > iframe { border: none; width: 100% }
+div.PageControl > ul, div.LinkControl > ul { list-style: none; padding: 0px; margin: 0px}
+div.PageControl > ul > li > a:hover, div.PageControl > ul > li > button:hover, div.LinkControl > ul > li > a:hover, div.LinkControl > ul > li > button:hover { color: #CA171B }
+div.PageControl > ul > li > a:focus, div.PageControl > ul > li > button:focus, div.LinkControl > ul > li > a:focus, div.LinkControl > ul > li > button:focus { border: none; outline: none }
+div.PageControl > ul > li > a, div.PageControl > ul > li > button, div.LinkControl > ul > li > a, div.LinkControl > ul > li > button { border: none; text-decoration: none; display: block; padding: 05px; color: #000099; width: 100%; text-align: center; border-radius: 8px 8px 0px 0px; font-size: 12px; background: #FDFAE9; color: #432F21; cursor: pointer; text-align: left }
+div.PageControl > ul > li[data-selected=true], div.LinkControl > ul > li[data-selected=true] { background-color: #CDCAB9; border-color: #ADAA99 }
+div.PageControl > div, div.LinkControl > div { clear: both; padding: 10px; border-radius: 0px 0px 0px 0px; background-color: #CDCAB9; border: 1px solid #ADAA99}
+div.PageControl > ul > li, div.LinkControl > ul > li { float: left; margin: 0px; border-radius: 8px 8px 0px 0px; width: 20%; border: 1px solid #DDDAC9; border-bottom-width: 0;  }
+div.PageControl > ul > li[data-selected=true] > a, div.PageControl > ul > li[data-selected=true] > button, div.LinkControl > ul > li[data-selected=true] > a, div.LinkControl > ul > li[data-selected=true] > button { position: relative; top: 1px; color: black; font-weight: bold; background-color: #CDCAB9; color: #432F21}
+div.PageControl > ul > li > a > i, div.PageControl > ul > li > a > span, div.PageControl > ul > li > button > i, div.PageControl > ul > li > button > span, div.LinkControl > ul > li > a > i, div.LinkControl > ul > li > a > span, div.LinkControl > ul > li > button > i, div.LinkControl > ul > li > button > span { float: right; color: #432F21}
+div.PageControl > ul > li > a:hover > i, div.PageControl > ul > li > a:hover > span, div.PageControl > ul > li > button:hover > i, div.PageControl > ul > li > button:hover > span, div.LinkControl > ul > li > a:hover > i, div.LinkControl > ul > li > a:hover > span, div.LinkControl > ul > li > button:hover > i, div.LinkControl > ul > li > button:hover > span { color: #432F21 }
+
+input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF}
+input[type='text'], input[type='password'], input[type='file'], select { height: 24px; line-height: 22px}
+input[type='text']:focus, input[type='password']:focus, input[type='file']:focus, textarea:focus, select:focus { background-color: #FFFACD}
+
+input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
+
+textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
+
+fieldset, fieldset > legend, fieldset > label > span { border-radius:5px; -webkit-border-radius: 5px; -moz-border-radius: 5px}
+fieldset { margin: auto; margin-top: 20px; padding: 12px; border: 1px solid #A6A394; background-color: #B6B3A4}
+fieldset > fieldset { padding: 4px; display: inline; float: left; text-align: left; margin-top: 10px}
+
+fieldset > div { width: calc(100% - 10px); margin: 5px; background-color: #EEEEEE; border-radius: 5px; padding: 4px; border: 1px solid #CCCCCC }
+
+fieldset > fieldset > legend { background-image: none; background-color: transparent; font-weight: normal}
+fieldset > legend { font-weight: bold; background-color: #DFDED4; text-align: left; color: #432F21; padding: 2px}
+fieldset > legend > i { float: left; margin-right: 4px}
+
+fieldset > label { padding: 4px; display: inline; float: left; text-align: left}
+fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #DFDED4; margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; text-overflow: ellipsis}
+fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: black}
+fieldset > label > span > textarea { line-height: 16px}
+fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}
+fieldset > label > span > *:last-child, fieldset > label > span > *:last-child > * { -moz-border-top-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px}
+fieldset > label> span > a { border: 0px none transparent; line-height: 24px; width: 100%}
+fieldset > label > span > a:hover { color: #CA171B}
+fieldset label > span > a:focus { background-color: #FFFACD}
+fieldset > label > span > i, fieldset > label > span > span { position: absolute; right: 0px; color: #666666; width: 20px; display: block; text-align: center; font-size: 12px; line-height: 24px; border: 0px none transparent}
+fieldset > label > span > a > i, fieldset > label > span > a > span { display: block; width: 100%; height: 100%; text-align: center; font-size: 16px; padding: 3px; border: 1px solid #CCCCCC}
+
+
+dl { display: inline-flex; flex-wrap: wrap; background-color: white; padding: 4px}
+dt { margin: 0; width: 50%; text-align: left; padding: 4px }
+dd { margin: 0; width: 50%; text-align: right; font-weight: bold; padding: 4px }
+
+input.Date,
+input.Time,
+input.DateTime,
+input.DateInterval,
+input.TimeInterval,
+input.DateTimeInterval { width: calc("100% - 32px") }
+
+a.Date,
+a.Time,
+a.DateTime,
+a.DateInterval,
+a.TimeInterval,
+a.DateTimeInterval { width: 32px; }
+
+col.P980, td.P980, th.P980 { display: none }
+@media (min-width: 980px)
+{
+	col.P980 { display: table-column }
+	td.P980, th.P980 { display: table-cell }
+}
+
+col.P1280, td.P1280, th.P1280 { display: none }
+@media (min-width: 1280px)
+{
+	col.P1280 { display: table-column }
+	td.P1280, th.P1280 { display: table-cell }
+}
+
+col.P1366, td.P1366, th.P1366 { display: none }
+@media (min-width: 1366px)
+{
+	col.P1366 { display: table-column }
+	td.P1366, th.P1366 { display: table-cell }
+}
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////
+Dialogs
+//////////////////////////////////////////////////////////////////////////////////////////////////*/
+div.Modal { position: fixed; top: 0; right: 0; left: 0; bottom: 0; z-index: 1 }
+
+div.Modal > table { position: fixed; left: calc(50% - 300px); top: calc(50% - 150px);
+                    width: 600px; height: 300px; box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75) }
+
+div.Dialog
+{
+	top: 40px;
+	left: 40PX;
+	position: fixed;
+	display: flex;
+	border-radius: 5px;
+	flex-direction: column;
+	width: calc(100% - 80px);
+	border: 4px solid #767d90;
+	height: calc(100% - 80px);
+	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+}
+
+div.Dialog > div:first-child { color: #CCCCCC; outline: none;
+			       height: 40px;
+			       background: #767D90; padding: 8px;
+			       background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, #767D90), color-stop(1, #AAB3BD));
+			       background-image: -o-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -moz-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -webkit-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -ms-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: linear-gradient(to bottom, #767D90 100%, #AAB3BD 100%);
+}
+div.Dialog > div:first-child * { color: #CCCCCC; display: inline-block; height: 100%; font-size: 26px; line-height: 20px }
+div.Dialog > div:first-child a { width: 48px; font-family: gate; cursor: pointer; text-align: center  }
+div.Dialog > div:first-child:focus * { color: #FFFFFF }
+
+div.Dialog > div:last-child { height: calc(100% - 40px); background-color: #CDCAB9; }
+
+div.Dialog > div:last-child > iframe, div.Dialog > div:last-child >  div,
+div.Dialog > div:last-child > dialog { padding: 0px; margin: 0px; border: none; overflow: auto; width: 100%; height: 100% }
+
+
+div.Panel { padding: 10px; border-radius: 5px; 
+	    background-color: #CDCAB9; border: 1px solid #ADAA99 }
+
+label[data-icon], span[data-icon]
+{
+	margin: 4px;
+	height: 32px;
+	cursor: inherit;
+	font-size: 16px;
+	text-align: left;
+	border-radius: 5px;
+	line-height: 32px;
+	display: inline-block;
+	width: calc(100% - 8px);
+	background-color: #8899AA;
+}
+
+label[data-icon]::before, span[data-icon]::before
+{
+	float: left;
+	width: 32px;
+	height: 100%;
+	font-size: 16px;
+	margin-right: 8px;
+	font-family: gate;
+	text-align: center;
+	display: inline-block;
+	content: attr(data-icon);
+	border-right: 1px solid #DDDDDD;
+}
+
+i[data-text], a[data-text]
+{
+	display: flex;
+	font-family: gate;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+i[data-text]::after, a[data-text]::after
+{
+	display: block;
+	font-size: 40%;
+	font-family: gate;
+	text-align: center;
+	content: attr(data-text);
+}
+
+li[data-icon]::before
+{
+	float: left;
+	display: flex;
+	margin-right: 8px;
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+	content: attr(data-icon);
+}
+
+li[data-text]::after
+{
+	float: right;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	content: attr(data-text);
+}
+
+tr[data-canceled='true'] > td { color: #CCCCCC }

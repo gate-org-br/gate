@@ -1,0 +1,334 @@
+package gate.sql;
+
+import gate.converter.Converter;
+import gate.error.AppError;
+import gate.error.ConversionException;
+import gate.sql.fetcher.Fetcher;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * Enables iteration over the results of a query.
+ */
+public class Cursor implements AutoCloseable, Fetchable
+{
+
+	private int column = 1;
+	private Command command;
+	private final ResultSet rs;
+
+	Cursor(Command command, ResultSet rs)
+	{
+		this.rs = rs;
+	}
+
+	@Override
+	public <T> T fetch(Fetcher<T> handler)
+	{
+		try
+		{
+			return handler.fetch(this);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Gets the current column index to be read on the next read operation.
+	 *
+	 * @return the current column index to be read on the next read operation
+	 */
+	public int getCurrentColumnIndex()
+	{
+		return column;
+	}
+
+	/**
+	 * Sets the column index to be read on the next read operation.
+	 *
+	 * @param index the column index to be read on the next read operation
+	 */
+	public void setCurrentColumnIndex(int index)
+	{
+		this.column = index;
+	}
+
+	/**
+	 * Gets the {@link java.sql.ResultSet} associated with this Cursor.
+	 *
+	 * @return the {@link java.sql.ResultSet} associated with this Cursor
+	 */
+	public ResultSet getResultSet()
+	{
+		return rs;
+	}
+
+	/**
+	 * Gets the {@link gate.sql.Command} that generated this Cursor.
+	 *
+	 * @return the {@link gate.sql.Command} that generated this Cursor
+	 */
+	public Command getCommand()
+	{
+		return command;
+	}
+
+	/**
+	 * Checks if there is a next record of the query result to be read.
+	 *
+	 * @return true if there is a next record to be read and false otherwise
+	 */
+	public boolean isAfterLast()
+	{
+		try
+		{
+			return rs.isAfterLast();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Move to the next record of the query result.
+	 *
+	 * @return true if there is a next record to be moved to, false otherwise
+	 */
+	public boolean next()
+	{
+		try
+		{
+			column = 1;
+			return rs.next();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Gets the index of the current record being fetched by this cursor.
+	 *
+	 * @return the index of the current record being fetched by this cursor
+	 */
+	public int getCurrentRowIndex() throws AppError
+	{
+		try
+		{
+			return rs.getRow();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Checks if the Cursor is closed.
+	 *
+	 * @return true if the Cursor is closed and false otherwise
+	 */
+	public boolean isClosed()
+	{
+		try
+		{
+			return rs.isClosed();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+
+	}
+
+	@Override
+	public void close()
+	{
+		try
+		{
+			if (!rs.isClosed())
+				rs.close();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Reads the current column value and moves the column index to the next column.
+	 *
+	 * @return the value of the current column
+	 */
+	public Object getCurrentColumnValue()
+	{
+		return Cursor.this.getValue(column++);
+	}
+
+	/**
+	 * Reads the current column value as an object of the specified type and moves the column index to the next column.
+	 *
+	 * @param <T> type of the object to be read
+	 * @param type type of the object to be read
+	 *
+	 * @return the value of the current column as an object of the specified type
+	 */
+	public <T> T getCurrentValue(Class<T> type)
+	{
+		try
+		{
+			Converter converter = Converter.getConverter(type);
+			T value = (T) converter.readFromResultSet(getResultSet(), column, type);
+			column += Math.max(1, converter.getSufixes().size());
+			return value;
+		} catch (ConversionException | SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public Object getValue(int columnIndex)
+	{
+		try
+		{
+			Class<?> type = SQLTypeConverter.getJavaType(rs.getMetaData().getColumnType(columnIndex));
+			return Converter.getConverter(type).readFromResultSet(rs, columnIndex, type);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as an object of the specified type.
+	 *
+	 * @param <T> type of the object to be read
+	 * @param type type of the object to be read
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public <T> T getValue(Class<T> type, int columnIndex)
+	{
+		try
+		{
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex, type);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as an object of the specified type.
+	 *
+	 * @param <T> type of the object to be read
+	 * @param type type of the object to be read
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public <T> T getValue(Class<T> type, String columnName)
+	{
+		try
+		{
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, type);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Gets the number of columns of the cursor.
+	 *
+	 * @return the number of columns associated with this cursor
+	 */
+	public int getColumnCount()
+	{
+		try
+		{
+			return rs.getMetaData().getColumnCount();
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+
+	}
+
+	/**
+	 * Gets the names of columns of the cursor.
+	 *
+	 * @return a java array with the names of the columns associated with this cursor
+	 */
+	public String[] getColumnNames()
+	{
+		try
+		{
+			ResultSetMetaData rsmd = getResultSet().getMetaData();
+			String[] names = new String[rsmd.getColumnCount()];
+			for (int i = 0; i < names.length; i++)
+				names[i] = rsmd.getColumnLabel(i + 1);
+			return names;
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Gets the default java types of the columns of the cursor.
+	 *
+	 * @return a java array with the default java types of the columns of the cursor
+	 */
+	public Class<?>[] getColumnTypes()
+	{
+		try
+		{
+			ResultSetMetaData rsmd = getResultSet().getMetaData();
+			Class<?>[] types = new Class<?>[rsmd.getColumnCount()];
+			for (int i = 0; i < types.length; i++)
+				types[i] = SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1));
+			return types;
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	public List<String> getPropertyNames(Class<?> type)
+	{
+		return Stream.of(getColumnNames())
+				.map(e -> e.contains(":") ? e.split(":")[0] : e)
+				.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
+				.distinct().collect(Collectors.toList());
+	}
+
+	public Map<String, Class<?>> getMetaData()
+	{
+		try
+		{
+			Map<String, Class<?>> result = new LinkedHashMap<>();
+			ResultSetMetaData rsmd = getResultSet().getMetaData();
+			int count = rsmd.getColumnCount();
+			for (int i = 0; i < count; i++)
+				result.put(rsmd.getColumnName(i + 1),
+						SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1)));
+			return result;
+		} catch (SQLException e)
+		{
+			throw new AppError(e);
+		}
+	}
+}
