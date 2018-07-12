@@ -2,6 +2,16 @@ function Button(button)
 {
 	button.addEventListener("click", function (e)
 	{
+		if (this.getAttribute("data-cancel"))
+		{
+			alert(this.getAttribute("data-cancel"));
+			e.preventDefault();
+			e.stopImmediatePropagation();
+		}
+	});
+
+	button.addEventListener("click", function (e)
+	{
 		if (this.getAttribute("data-confirm")
 			&& !confirm(this.getAttribute("data-confirm")))
 		{
