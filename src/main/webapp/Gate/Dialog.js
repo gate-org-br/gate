@@ -4,6 +4,7 @@ function Dialog()
 
 	var dialog = modal.appendChild(window.top.document.createElement('div'));
 	dialog.className = "Dialog";
+	dialog.closeable = true;
 
 	var head = dialog.appendChild(window.top.document.createElement('div'));
 	head.setAttribute("tabindex", "1");
@@ -81,7 +82,8 @@ function Dialog()
 				switch (e.keyCode)
 				{
 					case ESC:
-						modal.hide();
+						if (dialog.closeable)
+							modal.hide();
 						break;
 					case ENTER:
 						iframe.focus();
@@ -209,6 +211,7 @@ function Dialog()
 
 	modal.setCloseable = function (closeable)
 	{
+		dialog.closeable = closeable;
 		close.style.display = closeable ? "" : "none";
 		return this;
 	};
