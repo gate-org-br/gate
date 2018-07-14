@@ -24,6 +24,10 @@
 		</license>
 	</licenses>
 
+	<scm>
+		<url>https://gitlab.com/davinunesdasilva/gate.git</url>
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>mysql</groupId>
