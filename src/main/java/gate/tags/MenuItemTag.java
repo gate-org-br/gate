@@ -1,19 +1,24 @@
 package gate.tags;
 
-import gate.entity.User;
-import gate.util.Icons;
-
-import java.io.IOException;
-import javax.inject.Inject;
-
-import javax.servlet.jsp.JspException;
+import gate.Gate;
 import gate.annotation.Current;
+import gate.annotation.Name;
+import gate.base.Screen;
+import gate.entity.User;
 import gate.io.URL;
+import gate.util.Icons;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import javax.inject.Inject;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 public class MenuItemTag extends DynamicAttributeTag
 {
 
-	private Object icon;
+	@Inject
+	@Current
+	private User user;
 
 	private String module;
 
@@ -23,18 +28,14 @@ public class MenuItemTag extends DynamicAttributeTag
 
 	private String arguments;
 
-	@Inject
-	@Current
-	private User user;
+	private String otherwise;
 
-	public void setIcon(Object icon)
-	{
-		this.icon = icon;
-	}
+	private String method;
+	private String target;
 
-	public String getArguments()
+	public void setOtherwise(String otherwise)
 	{
-		return arguments;
+		this.otherwise = otherwise;
 	}
 
 	public void setArguments(String arguments)
@@ -42,19 +43,9 @@ public class MenuItemTag extends DynamicAttributeTag
 		this.arguments = arguments;
 	}
 
-	public String getAction()
-	{
-		return action;
-	}
-
 	public void setAction(String action)
 	{
 		this.action = action;
-	}
-
-	public String getModule()
-	{
-		return module;
 	}
 
 	public void setModule(String module)
@@ -62,37 +53,96 @@ public class MenuItemTag extends DynamicAttributeTag
 		this.module = module;
 	}
 
-	public String getScreen()
-	{
-		return screen;
-	}
-
 	public void setScreen(String screen)
 	{
 		this.screen = screen;
 	}
 
+	public void setMethod(String method)
+	{
+		this.method = method;
+	}
+
+	public void setTarget(String target)
+	{
+		this.target = target;
+	}
+
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		if (user != null && user.checkAccess(module, screen, action))
+		try
 		{
-			getJspContext().getOut().print(String.format("<li>"));
-			getJspContext().getOut().print(String.format("<a href='%s' %s>", URL.toString(module, screen, action,
-					arguments), getAttributes().toString()));
-			getJspBody().invoke(null);
-			Icons.Icon icon = Icons.getInstance().get(this.icon, null);
-			if (icon == null)
-				getJspContext().getOut().print(String.format("<span %s>%s</span>", getAttributes().toString(), "??"));
-			else if (icon.getCode().length() == 1)
-				getJspContext().getOut().print(String.format("<span %s>%s</span>", getAttributes().toString(), icon
-						.getCode()));
-			else
-				getJspContext().getOut().print(String.format("<i %s>&#x%s;</i>", getAttributes().toString(), icon
-						.getCode()));
+			PageContext pageContext = (PageContext) getJspContext();
 
-			getJspContext().getOut().print("</a>");
-			getJspContext().getOut().print("</li>");
+			if ("#".equals(module))
+				module = pageContext.getRequest().getParameter("MODULE");
+			if ("#".equals(screen))
+				screen = pageContext.getRequest().getParameter("SCREEN");
+			if ("#".equals(action))
+				action = pageContext.getRequest().getParameter("ACTION");
+
+			Class<Screen> clazz = Screen.getScreen(module, screen)
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
+			Method method = Screen.getAction(clazz, action)
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
+
+			if (Gate.checkAccess(user,
+					module, screen, action, clazz, method))
+			{
+				pageContext.getOut().print("<li>");
+				if ("POST".equalsIgnoreCase(this.method))
+				{
+					if (target != null)
+						getAttributes().put("formtarget", target);
+					getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<button " + getAttributes() + ">");
+					if (getJspBody() != null)
+						getJspBody().invoke(null);
+					else
+						pageContext.getOut().print(createBody(clazz, method));
+					pageContext.getOut().print("</button>");
+				} else
+				{
+					if (target != null)
+						getAttributes().put("target", target);
+					getAttributes().put("href", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<a " + getAttributes() + ">");
+					if (getJspBody() != null)
+						getJspBody().invoke(null);
+					else
+						pageContext.getOut().print(createBody(clazz, method));
+					pageContext.getOut().print("</a>");
+				}
+				pageContext.getOut().print("</li>");
+			} else if (otherwise
+					!= null)
+				pageContext.getOut().print(otherwise);
+		} catch (SecurityException ex)
+		{
+			throw new JspException(ex);
 		}
 	}
+
+	private String createBody(Class<?> clazz,
+			Method method)
+	{
+		Icons.Icon icon = Icons
+				.getInstance().get(method, null);
+		if (icon == Icons.UNKNOWN)
+			icon = Icons.getInstance().get(clazz, null);
+
+		String name = "unnamed";
+		if (method.isAnnotationPresent(Name.class))
+			name = method.getAnnotation(Name.class).value();
+		else if (clazz.isAnnotationPresent(Name.class))
+			name = clazz.getAnnotation(Name.class).value();
+
+		return String.format("%s<i>&#X%s;</i>", name, icon.getCode());
+	}
+
 }
