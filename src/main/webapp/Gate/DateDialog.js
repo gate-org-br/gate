@@ -3,7 +3,7 @@ function DateDialog(callback, month)
 	var dialog = new Modal(this);
 	dialog.addEventListener("click", function ()
 	{
-		this.close();
+		this.hide();
 	});
 
 	month = month ? month : new Date();
@@ -16,8 +16,8 @@ function DateDialog(callback, month)
 	caption.appendChild(document.createTextNode(monthFormat.format(month)));
 
 	var td = table.appendChild(document.createElement("tfoot"))
-			.appendChild(document.createElement("tr"))
-			.appendChild(document.createElement("td"));
+		.appendChild(document.createElement("tr"))
+		.appendChild(document.createElement("td"));
 	td.setAttribute("colspan", 7);
 
 	var prev = td.appendChild(document.createElement("span"));
@@ -96,8 +96,8 @@ function DateDialog(callback, month)
 
 				var date = new Date();
 				if (td.value.getDate() === date.getDate()
-						&& td.value.getMonth() === date.getMonth()
-						&& td.value.getYear() === date.getYear())
+					&& td.value.getMonth() === date.getMonth()
+					&& td.value.getYear() === date.getYear())
 					td.style.backgroundColor = "#F0E68C";
 
 				td.onmouseover = function ()
@@ -126,7 +126,7 @@ function DateDialog(callback, month)
 	dialog.onclick = function (e)
 	{
 		if (e.target === this
-				|| e.srcElement === this)
+			|| e.srcElement === this)
 			this.hide();
 	};
 }

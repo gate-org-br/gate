@@ -3,12 +3,12 @@ function TimeDialog(callback)
 	var dialog = new Modal();
 	dialog.addEventListener("click", function ()
 	{
-		this.close();
+		this.hide();
 	});
 
 	var hour = dialog.appendChild(document.createElement("table"));
 	hour.appendChild(document.createElement("caption"))
-			.appendChild(document.createTextNode("Selecione a Hora"));
+		.appendChild(document.createTextNode("Selecione a Hora"));
 	var columns = ["9%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "9%"];
 	for (var i = 0; i < columns.length; i++)
 	{
@@ -44,7 +44,7 @@ function TimeDialog(callback)
 				hour.minutes.innerHTML = "";
 				var minutes = hour.minutes.appendChild(document.createElement("table"));
 				minutes.appendChild(document.createElement("caption"))
-						.appendChild(document.createTextNode("Selecione os Minutos"));
+					.appendChild(document.createTextNode("Selecione os Minutos"));
 				var tbody = minutes.appendChild(document.createElement("tbody"));
 				for (var i = 0; i < 60; i += 12)
 				{
@@ -78,7 +78,7 @@ function TimeDialog(callback)
 	}
 
 	hour.minutes = tbody.appendChild(document.createElement("tr"))
-			.appendChild(document.createElement("td"));
+		.appendChild(document.createElement("td"));
 	hour.minutes.style.padding = '06px';
 	hour.minutes.style.height = '200px';
 	hour.minutes.style.textAlign = 'center';
@@ -90,7 +90,7 @@ function TimeDialog(callback)
 	dialog.onclick = function (e)
 	{
 		if (e.target === this
-				|| e.srcElement === this)
+			|| e.srcElement === this)
 			this.hide();
 	};
 }
