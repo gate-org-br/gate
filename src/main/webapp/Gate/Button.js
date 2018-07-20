@@ -44,25 +44,42 @@ function Button(button)
 
 	button.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("formtarget") === '_dialog')
+		if (this.getAttribute("formtarget"))
 		{
-			if (e.ctrlKey)
+			switch (this.getAttribute("formtarget").toLowerCase())
 			{
-				e.setAttribute("formtarget", "_blank");
-				this.click();
-				e.setAttribute("formtarget", "_dialog");
-				e.preventDefault();
-				e.stopPropagation();
-				e.stopImmediatePropagation();
-			} else if (this.form.getAttribute("target") !== "_dialog")
-				new Dialog()
-					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
-					.setNavigator(this.getAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null)
-					.setCloseable(!this.hasAttribute("data-closeable")
-						|| JSON.parse(this.getAttribute("data-closeable")))
-					.show();
+				case "_dialog":
+					if (e.ctrlKey)
+					{
+						e.setAttribute("formtarget", "_blank");
+						this.click();
+						e.setAttribute("formtarget", "_dialog");
+						e.preventDefault();
+						e.stopPropagation();
+						e.stopImmediatePropagation();
+					} else if (this.form.getAttribute("target") !== "_dialog")
+						new Dialog()
+							.setTitle(this.getAttribute("title"))
+							.setOnHide(this.getAttribute("data-onHide"))
+							.setNavigator(this.getAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null)
+							.setCloseable(!this.hasAttribute("data-closeable")
+								|| JSON.parse(this.getAttribute("data-closeable")))
+							.show();
+					break;
+				case "_alert":
+
+					new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form), function (response)
+						{
+							alert(response);
+						});
+
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					break;
+			}
 		}
 	});
 

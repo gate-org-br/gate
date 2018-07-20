@@ -43,28 +43,43 @@ function Link(a)
 
 	a.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("target")
-			&& this.getAttribute("target").toLowerCase() === '_dialog')
+		if (this.getAttribute("target"))
 		{
-			if (e.ctrlKey)
+			switch (this.getAttribute("target").toLowerCase())
 			{
-				e.setAttribute("target", "_blank");
-				this.click();
-				e.setAttribute("target", "_dialog");
-			} else
-				new Dialog()
-					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
-					.setNavigator(this.getAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null)
-					.setTarget(this.getAttribute("href"))
-					.setCloseable(!this.hasAttribute("data-closeable")
-						|| JSON.parse(this.getAttribute("data-closeable")))
-					.show();
+				case "_dialog":
+					if (e.ctrlKey)
+					{
+						e.setAttribute("target", "_blank");
+						this.click();
+						e.setAttribute("target", "_dialog");
+					} else
+						new Dialog()
+							.setTitle(this.getAttribute("title"))
+							.setOnHide(this.getAttribute("data-onHide"))
+							.setNavigator(this.getAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null)
+							.setTarget(this.getAttribute("href"))
+							.setCloseable(!this.hasAttribute("data-closeable")
+								|| JSON.parse(this.getAttribute("data-closeable")))
+							.show();
 
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					break;
+				case "_alert":
+
+					new URL(this.getAttribute("href")).get(function (response)
+					{
+						alert(response);
+					});
+
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					break;
+			}
 		}
 	});
 
