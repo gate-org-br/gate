@@ -1,9 +1,8 @@
 package gate.type;
 
 import gate.annotation.Converter;
-import gate.converter.custom.PhoneConverter;
 import gate.annotation.Icon;
-
+import gate.converter.custom.PhoneConverter;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
