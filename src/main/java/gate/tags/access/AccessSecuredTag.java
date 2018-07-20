@@ -4,16 +4,16 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-public class AllowedTag extends SimpleTagSupport
+public class AccessSecuredTag extends SimpleTagSupport
 {
 
 	@Override
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		if (!(getParent() instanceof AccessTag))
-			throw new JspException("The Allowed tag must be inside an Access tag");
-		((AccessTag) getParent()).setAllowedTag(this);
+		if (!(getParent() instanceof CheckAccessTag))
+			throw new JspException("The accessSecured tag must be inside a checkAccess tag");
+		((CheckAccessTag) getParent()).setAccessSecuredTag(this);
 	}
 
 	public void invoke() throws JspException, IOException

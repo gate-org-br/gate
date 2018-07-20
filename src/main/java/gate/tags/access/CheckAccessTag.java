@@ -8,7 +8,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-public class AccessTag
+public class CheckAccessTag
 		extends SimpleTagSupport
 {
 
@@ -24,8 +24,8 @@ public class AccessTag
 
 	private boolean strict;
 
-	private AllowedTag allowedTag;
-	private ForbiddenTag forbiddenTag;
+	private AccessSecuredTag accessSecuredTag;
+	private AccessBlockedTag accessBlockedTag;
 
 	@Override
 	public void doTag() throws JspException, IOException
@@ -43,10 +43,10 @@ public class AccessTag
 		if (user != null
 				&& user.checkAccess(strict, module, screen, action))
 		{
-			if (allowedTag != null)
-				allowedTag.invoke();
-		} else if (forbiddenTag != null)
-			forbiddenTag.invoke();
+			if (accessSecuredTag != null)
+				accessSecuredTag.invoke();
+		} else if (accessBlockedTag != null)
+			accessBlockedTag.invoke();
 
 	}
 
@@ -70,13 +70,13 @@ public class AccessTag
 		this.strict = strict;
 	}
 
-	void setAllowedTag(AllowedTag allowedTag)
+	void setAccessSecuredTag(AccessSecuredTag allowedTag)
 	{
-		this.allowedTag = allowedTag;
+		this.accessSecuredTag = allowedTag;
 	}
 
-	void setForbiddenTag(ForbiddenTag forbiddenTag)
+	void setAccessBlockedTag(AccessBlockedTag forbiddenTag)
 	{
-		this.forbiddenTag = forbiddenTag;
+		this.accessBlockedTag = forbiddenTag;
 	}
 }

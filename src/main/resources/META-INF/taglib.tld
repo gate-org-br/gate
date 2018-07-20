@@ -46,10 +46,10 @@
 	</tag>
 
 	<tag>
-		<name>access</name>
-		<display-name>Secure</display-name>
+		<name>checkAccess</name>
+		<display-name>Check Access</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.access.AccessTag</tag-class>
+		<tag-class>gate.tags.access.CheckAccessTag</tag-class>
 		<attribute>
 			<name>module</name>
 			<required>false</required>
@@ -78,17 +78,17 @@
 	</tag>
 
 	<tag>
-		<name>allowed</name>
-		<display-name>Secure</display-name>
+		<name>accessSecured</name>
+		<display-name>Access Secured</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.access.AllowedTag</tag-class>
+		<tag-class>gate.tags.access.AccessSecuredTag</tag-class>
 	</tag>
 
 	<tag>
-		<name>forbidden</name>
-		<display-name>Forbidden</display-name>
+		<name>accessBlocked</name>
+		<display-name>Access Blocked</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.access.ForbiddenTag</tag-class>
+		<tag-class>gate.tags.access.AccessBlockedTag</tag-class>
 	</tag>
 
 	<tag>

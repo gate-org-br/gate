@@ -4,7 +4,7 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-public class ForbiddenTag extends SimpleTagSupport
+public class AccessBlockedTag extends SimpleTagSupport
 {
 
 	@Override
@@ -12,10 +12,10 @@ public class ForbiddenTag extends SimpleTagSupport
 	{
 		super.doTag();
 
-		if (!(getParent() instanceof AccessTag))
-			throw new JspException("The forbidden tag must be inside an Access tag");
+		if (!(getParent() instanceof CheckAccessTag))
+			throw new JspException("The accessBlocked tag must be inside a checkAccess tag");
 
-		((AccessTag) getParent()).setForbiddenTag(this);
+		((CheckAccessTag) getParent()).setAccessBlockedTag(this);
 	}
 
 	public void invoke() throws JspException, IOException
