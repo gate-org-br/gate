@@ -10,7 +10,8 @@ function URL(value)
 			this.value += "&";
 		this.value += name + "=" + value;
 		return this;
-	};
+	}
+	;
 
 	this.setModule = function (module)
 	{
@@ -32,14 +33,14 @@ function URL(value)
 
 	this.get = function (callback)
 	{
-		if (window.XMLHttpRequest)
-			this.request = new XMLHttpRequest();
-		else
-			this.request = new ActiveXObject("Microsoft.XMLHTTP");
+		var request =
+			window.XMLHttpRequest ?
+			new XMLHttpRequest() :
+			new ActiveXObject("Microsoft.XMLHTTP");
 
 		if (callback)
 		{
-			this.request.onreadystatechange = function ()
+			request.onreadystatechange = function ()
 			{
 				switch (this.readyState)
 				{
@@ -52,14 +53,14 @@ function URL(value)
 				}
 			};
 
-			this.request.open('GET', this.value, true);
-			this.request.send(null);
+			request.open('GET', this.value, true);
+			request.send(null);
 		} else
 		{
-			this.request.open('GET', this.value, false);
-			this.request.send(null);
-			if (this.request.status === 200)
-				return this.request.responseText;
+			request.open('GET', this.value, false);
+			request.send(null);
+			if (request.status === 200)
+				return request.responseText;
 			else
 				alert("Erro ao obter dados do servidor");
 		}
@@ -69,14 +70,13 @@ function URL(value)
 
 	this.post = function (data, callback)
 	{
-		if (window.XMLHttpRequest)
-			this.request = new XMLHttpRequest();
-		else
-			this.request = new ActiveXObject("Microsoft.XMLHTTP");
-
+		var request =
+			window.XMLHttpRequest ?
+			new XMLHttpRequest() :
+			new ActiveXObject("Microsoft.XMLHTTP");
 		if (callback)
 		{
-			this.request.onreadystatechange = function ()
+			request.onreadystatechange = function ()
 			{
 				switch (this.readyState)
 				{
@@ -89,18 +89,14 @@ function URL(value)
 				}
 			};
 
-			this.open("POST", this.value, true);
-			this.setRequestHeader("Connection", "close");
-			this.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			this.send(data);
+			request.open("POST", this.value, true);
+			request.send(data);
 		} else
 		{
-			this.request.open("POST", this.value, true);
-			this.request.setRequestHeader("Connection", "close");
-			this.request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			this.request.send(data);
-			if (this.request.status === 200)
-				return this.request.responseText;
+			request.open("POST", this.value, false);
+			request.send(data);
+			if (request.status === 200)
+				return request.responseText;
 			else
 				alert("Erro ao obter dados do servidor");
 		}
@@ -114,7 +110,7 @@ function URL(value)
 		for (var i = 0; i < selects.length; i++)
 		{
 			selects[i].value = undefined;
-			selects[i].innerHTML = "<option value=''></option>";
+			selects[i].innerHTML = "<option this.value=''></option>";
 		}
 
 		this.get(function (options)
@@ -127,7 +123,7 @@ function URL(value)
 					{
 						var option = selects[i].appendChild(document.createElement("option"));
 						option.innerHTML = options[j].label;
-						option.setAttribute('value', options[j].value);
+						option.setAttribute('this.value', options[j].value);
 					}
 			}
 		});
@@ -138,7 +134,7 @@ function URL(value)
 	this.check = function ()
 	{
 		return !this.value.match(/([?][{][^}]*[}])/g)
-				&& !this.value.match(/([@][{][^}]*[}])/g);
+			&& !this.value.match(/([@][{][^}]*[}])/g);
 	};
 
 	this.resolve = function ()
@@ -149,7 +145,7 @@ function URL(value)
 			for (var i = 0; i < parameters.length; i++)
 			{
 				var parameter = decodeURIComponent
-						(prompt(parameters[i].substring(2, parameters[i].length - 1)));
+					(prompt(parameters[i].substring(2, parameters[i].length - 1)));
 				if (!parameter)
 					return false;
 				result = result.replace(parameters[i], encodeURIComponent(parameter));
