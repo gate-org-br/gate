@@ -215,6 +215,44 @@
 	</tag>
 
 	<tag>
+		<name>menu</name>
+		<display-name>Menu</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.MenuTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>menuitem</name>
 		<display-name>Menu Item</display-name>
 		<body-content>scriptless</body-content>

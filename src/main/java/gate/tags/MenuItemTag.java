@@ -7,6 +7,7 @@ import gate.base.Screen;
 import gate.entity.User;
 import gate.io.URL;
 import gate.util.Icons;
+import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import javax.inject.Inject;
@@ -67,51 +68,65 @@ public class MenuItemTag extends DynamicAttributeTag
 		try
 		{
 			PageContext pageContext = (PageContext) getJspContext();
-
-			if ("#".equals(module))
-				module = pageContext.getRequest().getParameter("MODULE");
-			if ("#".equals(screen))
-				screen = pageContext.getRequest().getParameter("SCREEN");
-			if ("#".equals(action))
-				action = pageContext.getRequest().getParameter("ACTION");
-
-			Class<Screen> clazz = Screen.getScreen(module, screen)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
-			Method method = Screen.getAction(clazz, action)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
-
-			if (Gate.checkAccess(user,
-					module, screen, action, clazz, method))
+			if (Toolkit.isEmpty(module)
+					&& Toolkit.isEmpty(screen)
+					&& Toolkit.isEmpty(action))
 			{
 				pageContext.getOut().print("<li>");
-				if ("POST".equalsIgnoreCase(this.method))
-				{
-					if (target != null)
-						getAttributes().put("formtarget", target);
-					getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<button " + getAttributes() + ">");
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody(clazz, method));
-					pageContext.getOut().print("</button>");
-				} else
-				{
-					if (target != null)
-						getAttributes().put("target", target);
-					getAttributes().put("href", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<a " + getAttributes() + ">");
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody(clazz, method));
-					pageContext.getOut().print("</a>");
-				}
+				if (target != null)
+					getAttributes().put("target", target);
+				getAttributes().put("href", "Gate");
+				pageContext.getOut().print("<a " + getAttributes() + ">");
+				pageContext.getOut().print("Sair do sistema<i>&#X2007;</i>");
+				pageContext.getOut().print("</a>");
 				pageContext.getOut().print("</li>");
+			} else
+			{
+				if ("#".equals(module))
+					module = pageContext.getRequest().getParameter("MODULE");
+				if ("#".equals(screen))
+					screen = pageContext.getRequest().getParameter("SCREEN");
+				if ("#".equals(action))
+					action = pageContext.getRequest().getParameter("ACTION");
+
+				Class<Screen> clazz = Screen.getScreen(module, screen)
+						.orElseThrow(() -> new JspException(String.format(
+						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+						module, screen, action)));
+				Method method = Screen.getAction(clazz, action)
+						.orElseThrow(() -> new JspException(String.format(
+						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+						module, screen, action)));
+
+				if (Gate.checkAccess(user,
+						module, screen, action, clazz, method))
+				{
+					pageContext.getOut().print("<li>");
+					if ("POST".equalsIgnoreCase(this.method))
+					{
+						if (target != null)
+							getAttributes().put("formtarget", target);
+						getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<button " + getAttributes() + ">");
+						if (getJspBody() != null)
+							getJspBody().invoke(null);
+						else
+							pageContext.getOut().print(createBody(clazz, method));
+						pageContext.getOut().print("</button>");
+					} else
+					{
+						if (target != null)
+							getAttributes().put("target", target);
+						getAttributes().put("href", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<a " + getAttributes() + ">");
+						if (getJspBody() != null)
+							getJspBody().invoke(null);
+						else
+							pageContext.getOut().print(createBody(clazz, method));
+						pageContext.getOut().print("</a>");
+					}
+					pageContext.getOut().print("</li>");
+				}
 			}
 		} catch (SecurityException ex)
 		{
