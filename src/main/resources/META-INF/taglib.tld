@@ -291,6 +291,14 @@
 	</tag>
 
 	<tag>
+		<name>separator</name>
+		<body-content>empty</body-content>
+		<display-name>Separator</display-name>
+		<tag-class>gate.tags.SeparatorTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
+	<tag>
 		<name>deskitem</name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.DeskItemTag</tag-class>

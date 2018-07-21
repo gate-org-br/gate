@@ -159,8 +159,8 @@ ul.MENU li, ul.NAVI li, ul.MENU li a, ul.NAVI a { font-weight: normal; font-size
 ul.MENU li ul, ul.NAVI li ul { top: 0; left: 98%; width: 100%; z-index: 99; display: none; position: absolute; border: 1px solid #CDCAB9 }
 ul.MENU a, ul.NAVI a { width: 100%; height: 100%; display: block; font-size: 10px; text-align: left; background-color: #FDFAE9; color: #432F21 }
 ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; line-height: 24px; text-align: center; background-color: #DBD8C7; color: #432F21 }
-ul.MENU li.SEPARATOR, ul.NAVI li.SEPARATOR { height: 4px; background-color: #CDCAB9 }
-ul.MENU li.SEPARATOR, ul.NAVI > li.SEPARATOR { width: 4px; height: 36px; background-color: transparent; border: none }
+ul.MENU li.Separator, ul.NAVI li.Separator { height: 4px; background-color: #CDCAB9 }
+ul.MENU li.Separator, ul.NAVI > li.Separator { width: 4px; height: 36px; background-color: transparent; border: none }
 
 ul.MENU > li.MenuLink, ul.NAVI > li.MenuLink { float: right; width: 48px }
 ul.MENU > li.MenuLink > a, ul.NAVI > li.MenuLink > a { display: flex; align-items: center; justify-content: center }
