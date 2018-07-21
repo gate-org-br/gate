@@ -234,6 +234,8 @@ ul.LIST > li > i { float: right;  font-size: 24px}
 table, fieldset, div.TEXT, div.TOOLTIP, *.TOOLBAR, *.COOLBAR, div.PageControl, div.LinkControl { margin-top: 16px; margin-bottom: 4px}
 table:first-child, fieldset:first-child, div.TEXT:first-child, div.TOOLTIP:first-child, *.TOOLBAR:first-child, *.COOLBAR:first-child, div.PageControl:first-child, div.LinkControl:first-child { margin-top: 0px }
 
+
+div.PageControl { background-color: transparent; border: none }
 div.PageControl > div { display: none }
 div.PageControl > ul > li > div { display: none }
 div.PageControl > div > iframe, div.LinkControl > div > iframe { border: none; width: 100% }
