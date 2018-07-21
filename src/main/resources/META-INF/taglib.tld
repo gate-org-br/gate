@@ -213,9 +213,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
 	<tag>
 		<name>menuitem</name>
-		<display-name>MenuItem</display-name>
+		<display-name>Menu Item</display-name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.MenuItemTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
@@ -249,8 +250,41 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+	</tag>
+
+	<tag>
+		<name>menulink</name>
+		<display-name>Menu Link</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.MenuLinkTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
 		<attribute>
-			<name>otherwise</name>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>target</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

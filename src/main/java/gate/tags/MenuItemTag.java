@@ -28,15 +28,8 @@ public class MenuItemTag extends DynamicAttributeTag
 
 	private String arguments;
 
-	private String otherwise;
-
 	private String method;
 	private String target;
-
-	public void setOtherwise(String otherwise)
-	{
-		this.otherwise = otherwise;
-	}
 
 	public void setArguments(String arguments)
 	{
@@ -119,17 +112,14 @@ public class MenuItemTag extends DynamicAttributeTag
 					pageContext.getOut().print("</a>");
 				}
 				pageContext.getOut().print("</li>");
-			} else if (otherwise
-					!= null)
-				pageContext.getOut().print(otherwise);
+			}
 		} catch (SecurityException ex)
 		{
 			throw new JspException(ex);
 		}
 	}
 
-	private String createBody(Class<?> clazz,
-			Method method)
+	private String createBody(Class<?> clazz, Method method)
 	{
 		Icons.Icon icon = Icons
 				.getInstance().get(method, null);
@@ -144,5 +134,4 @@ public class MenuItemTag extends DynamicAttributeTag
 
 		return String.format("%s<i>&#X%s;</i>", name, icon.getCode());
 	}
-
 }

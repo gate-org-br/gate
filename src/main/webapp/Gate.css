@@ -162,6 +162,10 @@ ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; 
 ul.MENU li.SEPARATOR, ul.NAVI li.SEPARATOR { height: 4px; background-color: #CDCAB9 }
 ul.MENU li.SEPARATOR, ul.NAVI > li.SEPARATOR { width: 4px; height: 36px; background-color: transparent; border: none }
 
+ul.MENU > li.MenuLink, ul.NAVI > li.MenuLink { float: right; width: 48px }
+ul.MENU > li.MenuLink > a, ul.NAVI > li.MenuLink > a { display: flex; align-items: center; justify-content: center }
+ul.MENU > li.MenuLink > a > i, ul.NAVI > li.MenuLink > a > i { font-size: 16px }
+
 ul.MENU a:hover, ul.NAVI a:hover
 {
 	color: #CA171B;
@@ -358,7 +362,7 @@ div.Dialog > div:last-child > iframe, div.Dialog > div:last-child >  div,
 div.Dialog > div:last-child > dialog { padding: 0px; margin: 0px; border: none; overflow: auto; width: 100%; height: 100% }
 
 
-div.Panel { padding: 10px; border-radius: 5px; 
+div.Panel { padding: 10px; border-radius: 5px;
 	    background-color: #CDCAB9; border: 1px solid #ADAA99 }
 
 label[data-icon], span[data-icon]
