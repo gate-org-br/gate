@@ -32,11 +32,16 @@ function Button(button)
 			(this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)
 				|| this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)))
 		{
-			var formaction = this.getAttribute("formaction");
-			this.setAttribute("formaction", resolve(this.getAttribute("formaction")));
-			if (this.getAttribute("formaction").indexOf("!{null}") === -1)
+			var resolved = resolve(this.getAttribute("formaction"));
+
+			if (resolved !== null)
+			{
+				var formaction = this.getAttribute("formaction");
+				this.setAttribute("formaction", resolved);
 				this.click();
-			this.setAttribute("formaction", resolve(formaction));
+				this.setAttribute("formaction", formaction);
+			}
+
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		}
