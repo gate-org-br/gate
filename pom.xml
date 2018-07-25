@@ -10,6 +10,15 @@
 	<packaging>war</packaging>
 
 	<name>gate</name>
+	<description>A multipurpose java library</description>
+
+	<developers>
+		<developer>
+			<id>davinunesdasilva</id>
+			<name>Davi Nunes da Silva</name>
+			<email>davinunesdasilva@gmail.com</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -27,6 +36,10 @@
 	<scm>
 		<url>https://github.com/gate-org-br/gate</url>
 	</scm>
+
+	<url>
+		https://github.com/gate-org-br/gate
+	</url>
 
 	<dependencies>
 		<dependency>
