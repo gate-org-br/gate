@@ -31,11 +31,15 @@ function Link(a)
 		if (this.href.match(/([?][{][^}]*[}])/g)
 			|| this.href.match(/([@][{][^}]*[}])/g))
 		{
-			var href = this.href;
-			this.href = resolve(this.href);
-			if (this.href.indexOf("!{null}") === -1)
+			var resolved = resolve(this.href);
+			if (resolved !== null)
+			{
+				var href = this.href;
+				this.href = resolved;
 				this.click();
-			this.href = href;
+				this.href = href;
+			}
+
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		}

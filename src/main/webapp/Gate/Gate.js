@@ -9,13 +9,13 @@ if (!document.querySelectorAll)
 function select(id)
 {
 	return document
-			.getElementById(id);
+		.getElementById(id);
 }
 
 function search(css)
 {
 	return Array.from(document
-			.querySelectorAll(css));
+		.querySelectorAll(css));
 }
 
 function $(e)
@@ -28,19 +28,21 @@ function resolve(string)
 	var result = string;
 	var parameters = string.match(/([?][{][^}]*[}])/g);
 	if (parameters)
-		parameters.forEach(function (e)
+		for (var i = 0; i < parameters.length; i++)
 		{
-			var parameter = prompt(e.substring(2, e.length - 1));
-			result = result.replace(e, parameter && parameter.length !== 0 ?
-					encodeURIComponent(parameter) : "!{null}");
-		});
+			var parameter = prompt(parameters[i]
+				.substring(2, parameters[i].length - 1));
+			if (parameter === null)
+				return null;
+			result = result.replace(e, encodeURIComponent(parameter));
+		}
 
 	var parameters = string.match(/([@][{][^}]*[}])/g);
 	if (parameters)
 		parameters.forEach(function (e)
 		{
 			var parameter = select(e.substring(2, e.length - 1));
-			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "!{null}");
+			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
 		});
 
 	return result;
@@ -75,11 +77,11 @@ function Gate(e)
 		this.siblings = function (selector)
 		{
 			return selector ? Array.from(e.parentNode.childNodes)
-					.filter(function (node)
-					{
-						return node.matches
-								&& node.matches(selector);
-					}) : Array.from(e.parentNode.childNodes);
+				.filter(function (node)
+				{
+					return node.matches
+						&& node.matches(selector);
+				}) : Array.from(e.parentNode.childNodes);
 		};
 		this.get = function (name)
 		{
@@ -110,8 +112,8 @@ function Gate(e)
 		{
 			var form = e.parentNode;
 			while (form
-					&& form.tagName.toLowerCase()
-					!== 'form')
+				&& form.tagName.toLowerCase()
+				!== 'form')
 				form = form.parentNode;
 			return form;
 		};
@@ -203,13 +205,13 @@ function Gate(e)
 					return e.filter(function (node)
 					{
 						return node && node.matches
-								&& node.matches(selector);
+							&& node.matches(selector);
 					});
 				case "boolean":
 					return e.filter(function (node)
 					{
 						return selector ===
-								(node !== null && node !== undefined);
+							(node !== null && node !== undefined);
 					});
 				case "function":
 					return e.filter(selector);
@@ -232,7 +234,7 @@ window.addEventListener("load", function ()
 	$("form").addEventListener("keydown", function (e)
 	{
 		if (document.activeElement.tagName.toLowerCase() === 'input'
-				|| document.activeElement.tagName.toLowerCase() === 'select')
+			|| document.activeElement.tagName.toLowerCase() === 'select')
 		{
 			e = e ? e : window.event;
 			if (e.keyCode === ENTER)
@@ -269,4 +271,3 @@ window.addEventListener("load", function ()
 	});
 });
 
-	
