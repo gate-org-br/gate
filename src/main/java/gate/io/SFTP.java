@@ -7,6 +7,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import gate.type.DataFile;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collections;
@@ -23,7 +24,7 @@ public class SFTP implements AutoCloseable
 	private final ChannelSftp channel;
 
 	private SFTP(Session session, ChannelSftp channel)
-		throws IOException
+			throws IOException
 	{
 		this.session = session;
 		this.channel = channel;
@@ -72,12 +73,12 @@ public class SFTP implements AutoCloseable
 		try
 		{
 			List<?> list = Collections
-				.list(channel.ls(directory).elements());
+					.list(channel.ls(directory).elements());
 			return list
-				.stream()
-				.map(e -> ((ChannelSftp.LsEntry) e))
-				.map(e -> e.getFilename())
-				.collect(Collectors.toList());
+					.stream()
+					.map(e -> ((ChannelSftp.LsEntry) e))
+					.map(e -> e.getFilename())
+					.collect(Collectors.toList());
 		} catch (SftpException ex)
 		{
 			throw new IOException("Error trying to list directory: " + directory, ex);
@@ -116,6 +117,48 @@ public class SFTP implements AutoCloseable
 		} catch (SftpException ex)
 		{
 			throw new IOException("Error trying to list directory: " + directory, ex);
+		}
+	}
+
+	public void put(String filename, String text) throws IOException
+	{
+		put(filename, text.getBytes());
+	}
+
+	public void put(String filename,
+			byte[] bytes) throws IOException
+	{
+		try
+		{
+			try (ByteArrayInputStream byteArrayInputStream
+					= new ByteArrayInputStream(bytes))
+			{
+				channel.put(byteArrayInputStream, filename);
+			}
+		} catch (SftpException ex)
+		{
+			throw new IOException("Error when trying to create file: " + filename, ex);
+		}
+	}
+
+	public void append(String filename, String text) throws IOException
+	{
+		append(filename, text.getBytes());
+	}
+
+	public void append(String filename,
+			byte[] bytes) throws IOException
+	{
+		try
+		{
+			try (ByteArrayInputStream byteArrayInputStream
+					= new ByteArrayInputStream(bytes))
+			{
+				channel.put(byteArrayInputStream, filename, ChannelSftp.APPEND);
+			}
+		} catch (SftpException ex)
+		{
+			throw new IOException("Error when trying to append data to file: " + filename, ex);
 		}
 	}
 
