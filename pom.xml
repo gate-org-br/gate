@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>4.4.0</version>
+	<version>4.5.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
@@ -20,10 +20,14 @@
 		</developer>
 	</developers>
 
-	<properties>
-		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+
+	<url>
+		https://github.com/gate-org-br/gate
+	</url>
+
+	<scm>
+		<url>https://github.com/gate-org-br/gate</url>
+	</scm>
 
 	<licenses>
 		<license>
@@ -33,13 +37,10 @@
 		</license>
 	</licenses>
 
-	<scm>
-		<url>https://github.com/gate-org-br/gate</url>
-	</scm>
-
-	<url>
-		https://github.com/gate-org-br/gate
-	</url>
+	<properties>
+		<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<dependencies>
 		<dependency>

@@ -196,6 +196,7 @@ table.TREEVIEW > tbody > tr > td:first-child { text-align: center; font-size: 12
 tr[data-action],
 tr[data-value],
 tr[data-ret],
+td[data-ret],
 tr[data-action] > td,
 tr[data-value] > td,
 tr[data-ret] > td { cursor: pointer }
@@ -203,9 +204,11 @@ tr[data-ret] > td { cursor: pointer }
 tr[data-action]:focus,
 tr[data-value]:hover,
 tr[data-ret]:hover,
+td[data-ret]:hover,
 tr[data-action]:focus > td,
 tr[data-value]:hover > td,
-tr[data-ret]:hover > td,
+tr[data-ret]:hover > td
+td[data-ret]:hover,
 div.DESKTOP > fieldset:focus { background-image: none; background-color: #F0E68C; color: #000000 }
 
 ul.DESKTOP ul { display: none }
