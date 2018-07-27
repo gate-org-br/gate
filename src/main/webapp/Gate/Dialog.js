@@ -312,7 +312,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('a[data-ret], tr[data-ret], li[data-ret]').forEach(function (e)
+	search('a[data-ret], tr[data-ret], li[data-ret], td[data-ret]').forEach(function (e)
 	{
 		e.onmouseover = function ()
 		{
