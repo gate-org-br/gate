@@ -1,7 +1,9 @@
 package gate.converter;
 
-import org.junit.Test;
+import gate.io.StringReader;
+import java.io.IOException;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class StringMatrixConverterTest
 {
@@ -22,24 +24,19 @@ public class StringMatrixConverterTest
 		}
 	};
 
-	private static final String STRING
-			= new StringBuilder()
-					.append(("\"label 1\",\"value 1\"\n"))
-					.append(("\"label 2\",\"value 2\"\n"))
-					.append(("\"label 3\",\"value 3\"\n"))
-					.toString();
-
 	@Test
-	public void testToString()
+	public void testToString() throws IOException
 	{
 		String result = Converter.toString(OBJECT);
-		assertEquals(STRING, result);
+		String string = StringReader.read(getClass().getResource("StringMatrixConverterTest.csv"));
+		assertEquals(string, result);
 	}
 
 	@Test
 	public void testOfString() throws Exception
 	{
-		String[][] result = Converter.fromString(String[][].class, STRING);
+		String string = StringReader.read(getClass().getResource("StringMatrixConverterTest.csv"));
+		String[][] result = Converter.fromString(String[][].class, string);
 		assertArrayEquals(OBJECT, result);
 	}
 }
