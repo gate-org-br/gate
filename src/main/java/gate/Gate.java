@@ -150,7 +150,10 @@ public class Gate extends HttpServlet
 					});
 
 					String JSP = method.getAnnotation(Background.class).value();
-					getServletContext().getRequestDispatcher(JSP).forward(request, response);
+					if (JSP != null)
+						getServletContext().getRequestDispatcher(JSP).forward(request, response);
+					else
+						Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
 				} else
 				{
 					Object result = screen.execute(method);
