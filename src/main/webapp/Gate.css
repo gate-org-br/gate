@@ -125,6 +125,9 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
                  background-color: transparent }
 
 
+*.COOLBAR > progress { width: calc(100% - 8px); height: calc(100% - 8px); margin: 4px }
+
+
 div.MINIBAR { overflow: auto}
 div.MINIBAR > a > i { font-size: 16px}
 div.MINIBAR > a:focus { outline: none}
