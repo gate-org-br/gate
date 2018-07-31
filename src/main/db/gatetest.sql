@@ -28,9 +28,8 @@ CREATE TABLE `Contact` (
   `type` tinyint(2) NOT NULL,
   `value` varchar(64) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `Contato$fk$Person` (`Person$id`),
-  CONSTRAINT `Contato$fk$Person` FOREIGN KEY (`Person$id`) REFERENCES `Person` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1;
+  KEY `Contato$fk$Person` (`Person$id`)
+) ENGINE=Memory AUTO_INCREMENT=49 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
