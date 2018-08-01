@@ -7,17 +7,11 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the target {@link gate.base.Screen} action method to be executed by the Gate framework as a background process
- * handled by a JSP page
+ * and to return the process id
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Background
+public @interface BackgroundProcess
 {
 
-	/**
-	 * Define the JSP page that will handle the background process user interaction
-	 *
-	 * @return the JSP page that will handle the background process user interaction
-	 */
-	String value() default "/WEB-INF/views/Progress.jsp";
 }
