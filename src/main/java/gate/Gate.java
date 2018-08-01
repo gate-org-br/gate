@@ -1,6 +1,7 @@
 package gate;
 
 import gate.annotation.Background;
+import gate.annotation.BackgroundProcess;
 import gate.annotation.Current;
 import gate.annotation.Public;
 import gate.annotation.Strict;
@@ -114,8 +115,13 @@ public class Gate extends HttpServlet
 				request.setAttribute("screen", screen);
 				screen.prepare(request, response);
 
-				if (method.isAnnotationPresent(Background.class))
+				if (method.isAnnotationPresent(Background.class)
+						|| method.isAnnotationPresent(BackgroundProcess.class))
 				{
+					if (method.isAnnotationPresent(Background.class)
+							&& method.isAnnotationPresent(BackgroundProcess.class))
+						throw new java.lang.IllegalArgumentException("Attempt to define a screen method annotaned with both Background and BackgroundProcess");
+
 					Progress progress = Progress.create(org, app, user);
 					request.setAttribute("process", progress.getProcess());
 
@@ -149,9 +155,10 @@ public class Gate extends HttpServlet
 						}
 					});
 
-					String JSP = method.getAnnotation(Background.class).value();
-					if (JSP != null)
-						getServletContext().getRequestDispatcher(JSP).forward(request, response);
+					if (method.isAnnotationPresent(Background.class))
+						getServletContext()
+								.getRequestDispatcher(method.getAnnotation(Background.class).value())
+								.forward(request, response);
 					else
 						Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
 				} else
