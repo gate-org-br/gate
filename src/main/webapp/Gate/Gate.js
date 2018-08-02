@@ -45,7 +45,6 @@ function resolve(string)
 			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
 		});
 
-	alert(result);
 	return result;
 }
 
