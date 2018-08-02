@@ -34,7 +34,7 @@ function resolve(string)
 				.substring(2, parameters[i].length - 1));
 			if (parameter === null)
 				return null;
-			result = result.replace(e, encodeURIComponent(parameter));
+			result = result.replace(parameters[i], encodeURIComponent(parameter));
 		}
 
 	var parameters = string.match(/([@][{][^}]*[}])/g);
@@ -45,6 +45,7 @@ function resolve(string)
 			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
 		});
 
+	alert(result);
 	return result;
 }
 
