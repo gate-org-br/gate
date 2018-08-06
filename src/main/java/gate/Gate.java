@@ -100,6 +100,10 @@ public class Gate extends HttpServlet
 			} else
 			{
 				String username = request.getParameter("$userid");
+				int indexOf = username.indexOf("@");
+				if (indexOf != -1)
+					username = username.substring(0, indexOf);
+
 				String password = request.getParameter("$passwd");
 
 				if (!Toolkit.isEmpty(username)

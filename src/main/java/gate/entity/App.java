@@ -3,7 +3,6 @@ package gate.entity;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
-
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class App implements Serializable
 		Reflections reflections = new Reflections(ClasspathHelper.forWebInfClasses(context));
 
 		List<Class<? extends gate.base.Screen>> screens
-			= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
+				= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
 		Collections.sort(screens, (a, b) -> a.getPackage().getName().compareTo(b.getPackage().getName()));
 
 		App app = new App();
@@ -89,7 +88,7 @@ public class App implements Serializable
 						for (Method method : type.getMethods())
 						{
 							if (method.getName().length() > 4
-								&& method.getName().startsWith("call"))
+									&& method.getName().startsWith("call"))
 							{
 								Module.Screen.Action action = screen.addAction();
 								action.id = method.getName().substring(4);

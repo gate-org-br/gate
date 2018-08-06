@@ -30,6 +30,14 @@ import java.util.stream.Stream;
 public class Role implements Serializable
 {
 
+	public static void main(String[] args)
+	{
+		String username = "davinunesdasilva@gmail.com";
+		int indexOf = username.indexOf("@");
+		if (indexOf != -1)
+			username = username.substring(0, indexOf);
+		System.out.println(username);
+	}
 	private static final long serialVersionUID = 1L;
 
 	@Required
