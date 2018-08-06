@@ -61,6 +61,18 @@ public class Period extends TimeAmount
 		return of((h * H) + (m * M) + (s * S));
 	}
 
+	public static Period of(DateTime dateTime1,
+			DateTime dateTime2)
+	{
+		return Period.of(Math.abs(dateTime2.getValue()
+				- dateTime1.getValue()) / 1000);
+	}
+
+	public Duration toDuration()
+	{
+		return Duration.of(this);
+	}
+
 	public static Period of(String string)
 	{
 		long value = 0;
