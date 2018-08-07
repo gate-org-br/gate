@@ -55,7 +55,7 @@
 	</fieldset>
 
 	<div class='COOLBAR'>
-		<a class='Hide' style='float: left'>
+		<a href="#" class='Hide' style='float: left'>
 			Fechar<g:icon type="cancel"/>
 		</a>
 
