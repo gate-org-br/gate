@@ -1,14 +1,13 @@
 package gateconsole.screen;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import gate.error.AppException;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.constraint.Required;
+import gate.error.AppException;
 import gateconsole.contol.SearchControl;
+import java.util.ArrayList;
+import java.util.List;
 
 @Icon("2008")
 @Name("Home")
@@ -20,6 +19,8 @@ public class HomeScreen extends gate.base.Screen
 	private String form;
 	private List<Object> page;
 
+	@Icon("search")
+	@Name("Pesquisar")
 	public Object call()
 	{
 		if (isPOST())
