@@ -103,7 +103,7 @@
 			<g:when condition="${screen.GET}">
 				<div class='TEXT'>
 					<h1>
-						Entre com os crit&iacute;rios de busca e clique em Pesquisar
+						Entre com os crit&eacute;rios de busca e clique em Pesquisar
 					</h1>
 				</div>
 			</g:when>
