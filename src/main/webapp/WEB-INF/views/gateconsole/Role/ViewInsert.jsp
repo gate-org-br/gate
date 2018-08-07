@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/FULL.jsp">
+<g:template filename="/WEB-INF/views/DIAG.jsp">
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
@@ -17,10 +17,10 @@
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
 					<g:text id='form.role.name' property='form.role.name' readonly='readonly' required=''
-							style='width: calc(100% - 32px)'/>
+						style='width: calc(100% - 32px)'/>
 					<g:link module="#" screen="#" action="Search"
-							data-get='form.role.id, form.role.name'
-							tabindex='1' style='width: 32px' title='Selecionar Perfil'>
+						data-get='form.role.id, form.role.name'
+						tabindex='1' style='width: 32px' title='Selecionar Perfil'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
@@ -42,7 +42,7 @@
 				<span>
 					<g:text property='form.roleID' tabindex='1'/>
 				</span>
-			</label>			
+			</label>
 			<label style='width: 25%'>
 				E-Mail:
 				<span>
@@ -53,7 +53,7 @@
 				Respons&aacute;vel:
 				<span>
 					<g:select property='form.manager.id' identifiedBy="id"
-							  tabindex='1' options="${screen.users}" required=''/>
+						  tabindex='1' options="${screen.users}" required=''/>
 				</span>
 			</label>
 			<label style='width: 100%'>
@@ -70,7 +70,7 @@
 			</g:link>
 			<g:link module="#" screen="#" lass='L' style='color: #660000' tabindex='2'>
 				Desistir<g:icon type='cancel'/>
-			</g:link>				
+			</g:link>
 		</div>
 	</form>
 </g:template>
