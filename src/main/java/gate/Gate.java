@@ -100,15 +100,16 @@ public class Gate extends HttpServlet
 			} else
 			{
 				String username = request.getParameter("$userid");
-				int indexOf = username.indexOf("@");
-				if (indexOf != -1)
-					username = username.substring(0, indexOf);
-
 				String password = request.getParameter("$passwd");
 
 				if (!Toolkit.isEmpty(username)
 						&& !Toolkit.isEmpty(password))
+				{
+					int indexOf = username.indexOf("@");
+					if (indexOf != -1)
+						username = username.substring(0, indexOf);
 					session.setUser(user = control.select(org, username, password));
+				}
 
 				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
 				Method method = Screen.getAction(clazz, ACTION).orElseThrow(InvalidRequestException::new);
