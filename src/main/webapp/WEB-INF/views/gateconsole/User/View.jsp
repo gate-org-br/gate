@@ -8,15 +8,15 @@
 				<g:icon type="search"/>Pesquisar Usu&aacute;rios
 			</legend>
 			<label style='width: 25%'>
-				Login:
-				<span>
-					<g:text property='form.userID' tabindex='1' required=''/>
-				</span>
-			</label>
-			<label style='width: 25%'>
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1' required=''/>
+				</span>
+			</label>
+			<label style='width: 25%'>
+				Login:
+				<span>
+					<g:text property='form.userID' tabindex='1' required=''/>
 				</span>
 			</label>
 			<label style='width: 50%'>
@@ -47,7 +47,8 @@
 			<label style='width: 12.5%'>
 				Data de Nascimento:
 				<span>
-					<g:text class='date'  property='form.birthdate' tabindex='1' required=''/>
+					<g:text class='Date'
+						property='form.birthdate' tabindex='1' required=''/>
 				</span>
 			</label>
 			<label style='width: 12.5%'>
