@@ -1,9 +1,9 @@
 package gate.authenticator;
 
-import gate.error.InvalidUsernameException;
+import gate.error.AuthenticatorException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidServiceException;
-import gate.error.AuthenticatorException;
+import gate.error.InvalidUsernameException;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
@@ -36,7 +36,10 @@ public class LDAPAuthenticator implements Authenticator
 					SearchControls controls = new SearchControls();
 					controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 					NamingEnumeration<SearchResult> enumeration
-							= serverContext.search("", "(cn=" + username + ")", controls);
+							= serverContext.search("", "(|(cn={0})(mail={1}))", new Object[]
+							{
+								username, username
+					}, controls);
 
 					if (!enumeration.hasMore())
 						throw new InvalidUsernameException();

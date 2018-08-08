@@ -45,7 +45,8 @@ class GateDao extends gate.base.Dao
 				.expression("Auth.action").as("auth.action")
 				.from("Uzer")
 				.leftJoin("Auth").on(Condition.of("Uzer.id").isEq("Auth.Uzer$id"))
-				.where(Condition.of("Uzer.userID").eq(username))).fetch((Cursor cursor) ->
+				.where(Condition.of("Uzer.userID")
+						.eq(username).or("email").eq(username))).fetch((Cursor cursor) ->
 		{
 			if (!cursor.next())
 				return Optional.empty();
