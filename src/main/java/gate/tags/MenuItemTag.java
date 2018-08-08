@@ -2,6 +2,7 @@ package gate.tags;
 
 import gate.Gate;
 import gate.annotation.Current;
+import gate.annotation.Description;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.User;
@@ -97,6 +98,10 @@ public class MenuItemTag extends DynamicAttributeTag
 						.orElseThrow(() -> new JspException(String.format(
 						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
 						module, screen, action)));
+
+				if (!getAttributes().containsKey("title")
+						&& method.isAnnotationPresent(Description.class))
+					getAttributes().put("title", method.getAnnotation(Description.class).value());
 
 				if (Gate.checkAccess(user,
 						module, screen, action, clazz, method))
