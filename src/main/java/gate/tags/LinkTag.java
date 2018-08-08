@@ -1,19 +1,18 @@
 package gate.tags;
 
 import gate.Gate;
-import gate.entity.User;
-
-import java.io.IOException;
-import javax.inject.Inject;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import gate.annotation.Current;
+import gate.annotation.Description;
 import gate.annotation.Name;
 import gate.base.Screen;
-import gate.util.Icons;
+import gate.entity.User;
 import gate.io.URL;
+import gate.util.Icons;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import javax.inject.Inject;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 
 public class LinkTag extends DynamicAttributeTag
 {
@@ -85,16 +84,20 @@ public class LinkTag extends DynamicAttributeTag
 				action = pageContext.getRequest().getParameter("ACTION");
 
 			Class<Screen> clazz = Screen.getScreen(module, screen)
-				.orElseThrow(() -> new JspException(String.format(
-				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-				module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
 			Method method = Screen.getAction(clazz, action)
-				.orElseThrow(() -> new JspException(String.format(
-				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-				module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
+
+			if (!getAttributes().containsKey("title")
+					&& method.isAnnotationPresent(Description.class))
+				getAttributes().put("title", method.getAnnotation(Description.class).value());
 
 			if (Gate.checkAccess(user,
-				module, screen, action, clazz, method))
+					module, screen, action, clazz, method))
 			{
 				if ("POST".equalsIgnoreCase(this.method))
 				{
@@ -121,7 +124,7 @@ public class LinkTag extends DynamicAttributeTag
 				}
 
 			} else if (otherwise
-				!= null)
+					!= null)
 				pageContext.getOut().print(otherwise);
 		} catch (SecurityException ex)
 		{
@@ -130,10 +133,10 @@ public class LinkTag extends DynamicAttributeTag
 	}
 
 	private String createBody(Class<?> clazz,
-				  Method method)
+			Method method)
 	{
 		Icons.Icon icon = Icons
-			.getInstance().get(method, null);
+				.getInstance().get(method, null);
 		if (icon == Icons.UNKNOWN)
 			icon = Icons.getInstance().get(clazz, null);
 
