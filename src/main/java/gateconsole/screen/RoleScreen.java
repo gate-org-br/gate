@@ -101,7 +101,7 @@ public class RoleScreen extends Screen
 		{
 			try
 			{
-				setForm(control.update(getForm()));
+				control.update(getForm());
 				return callSelect();
 			} catch (AppException e)
 			{

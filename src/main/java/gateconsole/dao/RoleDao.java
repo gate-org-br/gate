@@ -8,6 +8,7 @@ import gate.sql.Link;
 import gate.sql.insert.Insert;
 import gate.type.ID;
 import java.util.Collection;
+import java.util.List;
 
 public class RoleDao extends Dao
 {
@@ -22,13 +23,19 @@ public class RoleDao extends Dao
 		super(c);
 	}
 
-	public Collection<Role> search()
+	public List<Role> search()
 	{
-		return getLink()
+		List<Role> roles = getLink()
 				.search(Role.class)
 				.properties("id", "active", "master", "role.id", "roleID", "+name", "email", "description", "manager.id",
 						"manager.name")
 				.parameters();
+
+		for (Role p : roles)
+			for (Role c : roles)
+				if (p.equals(c.getRole()))
+					p.getRoles().add(c.setRole(p));
+		return roles;
 	}
 
 	public Role select(ID id) throws NotFoundException
@@ -55,11 +62,11 @@ public class RoleDao extends Dao
 				.forEach(value::setId);
 	}
 
-	public Role update(Role value) throws AppException
+	public boolean update(Role value) throws AppException
 	{
 		return getLink()
 				.update(Role.class)
-				.properties("=id", "active", "master", "role.id", "roleID", "name", "email", "description", "manager.id").execute(value) > 0 ? value : null;
+				.properties("=id", "active", "master", "role.id", "roleID", "name", "email", "description", "manager.id").execute(value) > 0;
 	}
 
 	public boolean delete(Role... values) throws AppException
