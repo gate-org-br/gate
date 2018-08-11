@@ -16,7 +16,7 @@ i { font-family: 'gate'; speak: none; font-style: normal; font-weight: normal;
 * { box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box;
     font-family: Arial, Tahoma, Geneva, sans-serif; font-size: 12px; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none}
 
-body { margin: 0px; padding: 8px; text-align: center }
+body { margin: 0px; padding: 8px; text-align: center; }
 
 a { font-weight: normal; text-decoration: none; font-size: 12px }
 a:link    { color: #000044}
@@ -266,13 +266,15 @@ textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
 
 fieldset, fieldset > legend, fieldset > label > span { border-radius:5px; -webkit-border-radius: 5px; -moz-border-radius: 5px}
 fieldset { margin: auto; margin-top: 20px; padding: 12px; border: 1px solid #A6A394; background-color: #B6B3A4}
-fieldset > fieldset { padding: 4px; display: inline; float: left; text-align: left; margin-top: 10px; background-color: #C7C4B5; border: none}
+
+fieldset fieldset { padding: 4px; display: inline; float: left; text-align: left; margin-top: 10px }
 
 fieldset > div { width: calc(100% - 10px); margin: 5px; background-color: #EEEEEE; border-radius: 5px; padding: 4px; border: 1px solid #CCCCCC }
 
-fieldset > fieldset > legend { background-image: none; background-color: transparent; background-color: #949182; width: 100%; padding: 6px}
 fieldset > legend { font-weight: bold; background-color: #DFDED4; text-align: left; color: #432F21; padding: 2px}
 fieldset > legend > i { float: left; margin-right: 4px}
+
+fieldset fieldset > legend { background-color: #BDBCB2 }
 
 fieldset > label { padding: 4px; display: inline; float: left; text-align: left}
 fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #DFDED4;
