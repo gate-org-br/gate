@@ -11,9 +11,7 @@
 		<label style='width: 50%'>
 			Perfil Pai:
 			<span>
-				<g:link module="#" screen="#" action="Select" arguments="form.id=${screen.form.role.id}">
-					<g:label property='form.role.name'/>
-				</g:link>
+				<g:label property='form.role.name'/>
 			</span>
 		</label>
 		<label style='width: 6.25%'>
