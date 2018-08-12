@@ -1,10 +1,6 @@
 function TimeDialog(callback)
 {
 	var dialog = new Modal();
-	dialog.addEventListener("click", function ()
-	{
-		this.hide();
-	});
 
 	var hour = dialog.appendChild(document.createElement("table"));
 	hour.appendChild(document.createElement("caption"))
