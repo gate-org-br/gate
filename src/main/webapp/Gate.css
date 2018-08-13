@@ -277,9 +277,9 @@ fieldset > legend > i { float: left; margin-right: 4px}
 fieldset fieldset > legend { background-color: #BDBCB2 }
 
 fieldset > label { padding: 4px; display: inline; float: left; text-align: left}
-fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #DFDED4;
-			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; text-overflow: ellipsis}
-fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: black}
+fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #E6E2D3;
+			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; text-overflow: ellipsis; color: black;}
+fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: #080c1b}
 fieldset > label > span > textarea { line-height: 16px}
 fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}
 fieldset > label > span > *:last-child, fieldset > label > span > *:last-child > * { -moz-border-top-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px}
@@ -443,3 +443,8 @@ li[data-text]::after
 }
 
 tr[data-canceled='true'] > td { color: #CCCCCC }
+
+th[data-sortable] > a::before { font-size: 16px }
+th[data-sortable="N"] > a::before { content: " ";  }
+th[data-sortable="U"] > a::before { content: "\2191" }
+th[data-sortable="D"] > a::before { content: "\2193" }

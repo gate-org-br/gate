@@ -77,6 +77,59 @@
 				</g:iterator>
 			</script>
 		</g:if>
+
+
+
+		<table>
+			<thead>
+				<tr>
+					<th data-sortable>
+						<a href="#">
+							Campo 1
+						</a>
+					</th>
+					<th data-sortable>
+						<a href="#">
+							Campo 2
+						</a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-value="7">
+						Valor 1.3
+					</td>
+					<td>
+						Valor 2.1
+					</td>
+				</tr>
+				<tr>
+					<td data-value="9">
+						Valor 1.2
+					</td>
+					<td>
+						Valor 2.3
+					</td>
+				</tr>
+				<tr>
+					<td data-value="1">
+						Valor 1.4
+					</td>
+					<td>
+						Valor 2.2
+					</td>
+				</tr>
+				<tr>
+					<td data-value="3">
+						Valor 1.1
+					</td>
+					<td>
+						Valor 2.3
+					</td>
+				</tr>
+			</tbody>
+		</table>
 	</body>
 </g:template>
 
