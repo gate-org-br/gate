@@ -45,10 +45,18 @@ function URL(value)
 				switch (this.readyState)
 				{
 					case 4:
-						if (this.status === 200)
-							callback(this.responseText);
-						else
-							alert("Erro ao obter dados do servidor");
+						switch (this.status)
+						{
+							case 200:
+								callback(this.responseText);
+								break;
+							case 420:
+								alert(this.responseText);
+								break;
+							default:
+								alert("Erro ao obter dados do servidor");
+								break;
+						}
 						break;
 				}
 			};
@@ -81,10 +89,18 @@ function URL(value)
 				switch (this.readyState)
 				{
 					case 4:
-						if (this.status === 200)
-							callback(this.responseText);
-						else
-							alert("Erro ao obter dados do servidor");
+						switch (this.status)
+						{
+							case 200:
+								callback(this.responseText);
+								break;
+							case 420:
+								alert(this.statusText);
+								break;
+							default:
+								alert("Erro ao obter dados do servidor");
+								break;
+						}
 						break;
 				}
 			};
