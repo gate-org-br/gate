@@ -1,10 +1,6 @@
 function DateDialog(callback, month)
 {
 	var dialog = new Modal(this);
-	dialog.addEventListener("click", function ()
-	{
-		this.hide();
-	});
 
 	month = month ? month : new Date();
 	var monthFormat = new DateFormat("MM/yyyy");
