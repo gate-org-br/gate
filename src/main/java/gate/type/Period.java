@@ -20,7 +20,7 @@ public class Period extends TimeAmount
 
 	private static final long serialVersionUID = 1L;
 	private static final Pattern DEL = Pattern.compile(":");
-	private static final Pattern VAL = Pattern.compile("^[0-9][0-9]+:[0-9][0-9]:[0-9][0-9]$");
+	private static final Pattern VAL = Pattern.compile("^[0-9][0-9]*:[0-9][0-9]:[0-9][0-9]$");
 
 	private Period(long value)
 	{
