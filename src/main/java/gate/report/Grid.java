@@ -1,9 +1,8 @@
 package gate.report;
 
-import java.util.List;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -54,7 +53,7 @@ public final class Grid<T> extends ReportElement
 	 *
 	 * @return this, for chained invocations
 	 */
-	public Grid setCaption(String caption)
+	public Grid<T> setCaption(String caption)
 	{
 		this.caption = caption;
 		return this;
@@ -69,7 +68,7 @@ public final class Grid<T> extends ReportElement
 	 * @return this, for chained invocations
 	 * @see java.util.Formatter
 	 */
-	public Grid setCaption(String caption, Object... args)
+	public Grid<T> setCaption(String caption, Object... args)
 	{
 		this.caption = String.format(caption, args);
 		return this;
