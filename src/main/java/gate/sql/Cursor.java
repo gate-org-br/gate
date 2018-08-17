@@ -211,6 +211,132 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
+	 * Reads the specified column value as a java byte.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public byte getByteValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getByte(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java short.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public short getShortValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getShort(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java integer.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public int getIntValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getInt(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java long.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public long getLongValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getLong(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java float.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public float getFloatValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getFloat(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java double.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public double getDoubleValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getDouble(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java boolean.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public boolean getBooleanValue(int columnIndex)
+	{
+		try
+		{
+			return rs.getBoolean(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
 	 * @param <T> type of the object to be read
@@ -247,6 +373,132 @@ public class Cursor implements AutoCloseable, Fetchable
 		} catch (ConversionException | SQLException e)
 		{
 			throw new AppError(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java byte.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public byte getByteValue(String columnName)
+	{
+		try
+		{
+			return rs.getByte(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java short.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public short getShortValue(String columnName)
+	{
+		try
+		{
+			return rs.getShort(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java integer.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public int getIntValue(String columnName)
+	{
+		try
+		{
+			return rs.getInt(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java long.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public long getLongValue(String columnName)
+	{
+		try
+		{
+			return rs.getLong(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java float.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public float getFloatValue(String columnName)
+	{
+		try
+		{
+			return rs.getFloat(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java double.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public double getDoubleValue(String columnName)
+	{
+		try
+		{
+			return rs.getDouble(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java boolean.
+	 *
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public boolean getBooleanValue(String columnName)
+	{
+		try
+		{
+			return rs.getBoolean(columnName);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
 		}
 	}
 
