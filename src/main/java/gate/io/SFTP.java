@@ -10,6 +10,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -107,17 +108,32 @@ public class SFTP implements AutoCloseable
 		}
 	}
 
-	public Optional<String> findFirst(String directory, Predicate<String> predicate) throws IOException
+	public List<String> ls(String directory, int limit, Predicate<String> predicate) throws IOException
 	{
 		try
 		{
-			Selector selector = new Selector(predicate);
-			channel.ls(directory, selector);
-			return selector.getResult();
+			Filter filter = new Filter(predicate, limit);
+			channel.ls(directory, filter);
+			return filter.getResult();
 		} catch (SftpException ex)
 		{
 			throw new IOException("Error trying to list directory: " + directory, ex);
 		}
+	}
+
+	public List<String> ls(String directory, int limit) throws IOException
+	{
+		return ls(directory, limit, e -> true);
+	}
+
+	public List<String> ls(String directory, Predicate<String> predicate) throws IOException
+	{
+		return ls(directory, -1, predicate);
+	}
+
+	public Optional<String> findFirst(String directory, Predicate<String> predicate) throws IOException
+	{
+		return ls(directory, 1, predicate).stream().findFirst();
 	}
 
 	public void put(String filename, String text) throws IOException
@@ -186,33 +202,37 @@ public class SFTP implements AutoCloseable
 		session.disconnect();
 	}
 
-	private class Selector implements ChannelSftp.LsEntrySelector
+	private class Filter implements ChannelSftp.LsEntrySelector
 	{
 
-		private String result;
+		private int limit;
 		private final Predicate<String> predicate;
+		private final List<String> result = new ArrayList<>();
 
-		public Selector(Predicate<String> predicate)
+		public Filter(Predicate<String> predicate, int limit)
 		{
 			this.predicate = predicate;
+			this.limit = limit;
 		}
 
 		@Override
 		public int select(ChannelSftp.LsEntry le)
 		{
-
-			if (predicate.test(le.getFilename()))
+			if (limit != 0 && predicate.test(le.getFilename()))
 			{
-				result = le.getFilename();
-				return ChannelSftp.LsEntrySelector.BREAK;
-			} else
-				return ChannelSftp.LsEntrySelector.CONTINUE;
+				limit--;
+				result.add(le.getFilename());
 
+			}
+			return limit == 0
+					? ChannelSftp.LsEntrySelector.BREAK
+					: ChannelSftp.LsEntrySelector.CONTINUE;
 		}
 
-		private Optional<String> getResult()
+		private List<String> getResult()
 		{
-			return Optional.ofNullable(result);
+			return result;
 		}
 	}
+
 }
