@@ -180,4 +180,9 @@ function URL(value)
 		this.value = result;
 		return true;
 	};
+
+	this.toString = function ()
+	{
+		return this.value;
+	};
 }
