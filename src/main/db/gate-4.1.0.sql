@@ -1,11 +1,5 @@
 ALTER TABLE `gate`.`Uzer`
-ADD COLUMN `CPF` CHAR(11) NULL,
+ADD COLUMN `CPF` CHAR(14) NULL,
 ADD COLUMN `sex` tinyint(1) NULL,
 ADD COLUMN `birthdate` DATE NULL,
-ADD COLUMN `registration` DATE NULL;
-
-update Uzer set registration = curdate();
-
-ALTER TABLE `gate`.`Uzer`
-CHANGE COLUMN `registration` `registration` DATE NOT NULL ;
-
+ADD COLUMN `registration` DATE not null default '1500-04-22 00:00:00';
