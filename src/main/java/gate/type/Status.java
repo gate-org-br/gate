@@ -1,5 +1,7 @@
 package gate.type;
 
+import gate.converter.Converter;
+import gate.lang.json.JsonObject;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,19 +22,44 @@ public class Status<T extends Serializable> implements Serializable
 		this.value = value;
 	}
 
-	public static <T extends Serializable> Status<T> error(String message)
-	{
-		return new Status(Type.ERROR, message, null);
-	}
-
 	public static <T extends Serializable> Status<T> success(String message, T value)
 	{
-		return new Status(Type.SUCCESS, message, value);
+		return new Status<>(Type.SUCCESS, message, value);
+	}
+
+	public static <T extends Serializable> Status<T> warning(String message, T value)
+	{
+		return new Status<>(Type.WARNING, message, value);
+	}
+
+	public static <T extends Serializable> Status<T> error(String message, T value)
+	{
+		return new Status<>(Type.ERROR, message, value);
+	}
+
+	public static <T extends Serializable> Status<T> error(String message)
+	{
+		return new Status<>(Type.ERROR, message, null);
+	}
+
+	public static <T extends Serializable> Status<T> warning(String message)
+	{
+		return new Status<>(Type.WARNING, message, null);
 	}
 
 	public static <T extends Serializable> Status<T> success(String message)
 	{
-		return new Status(Type.SUCCESS, message, null);
+		return new Status<>(Type.SUCCESS, message, null);
+	}
+
+	@Override
+	public String toString()
+	{
+		return new JsonObject()
+				.setString("type", type.name())
+				.setString("message", message)
+				.setString("value", Converter.toString(value))
+				.toString();
 	}
 
 	public T getValue()
@@ -52,6 +79,6 @@ public class Status<T extends Serializable> implements Serializable
 
 	public enum Type
 	{
-		SUCCESS, ERROR
+		SUCCESS, WARNING, ERROR
 	}
 }

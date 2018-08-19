@@ -309,6 +309,7 @@
 								<include>**/Progress.js</include>
 								<include>**/Focus.js</include>
 								<include>**/Sortable.js</include>
+								<include>**/Message.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
