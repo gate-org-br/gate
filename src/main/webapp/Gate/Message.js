@@ -49,7 +49,7 @@ function Message(type, message, timeout)
 			icon.style.color = "#666600";
 			body.style.color = "#666600";
 			break;
-		case "FAILURE":
+		case "ERROR":
 			icon.innerHTML = "&#X1001";
 			icon.style.color = "#660000";
 			body.style.color = "#660000";
@@ -81,9 +81,9 @@ Message.warning = function (message, timeout)
 	Message("WARNING", message, timeout);
 };
 
-Message.failure = function (message, timeout)
+Message.error = function (message, timeout)
 {
-	Message("FAILURE", message, timeout);
+	Message("ERROR", message, timeout);
 };
 
 Message.show = function (status, timeout)
