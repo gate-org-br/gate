@@ -384,22 +384,22 @@ label[data-icon], span[data-icon]
 	font-size: 16px;
 	text-align: left;
 	border-radius: 5px;
-	line-height: 32px;
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
 	width: calc(100% - 8px);
 	background-color: #8899AA;
 }
 
 label[data-icon]::before, span[data-icon]::before
 {
-	float: left;
 	width: 32px;
 	height: 100%;
 	font-size: 16px;
 	margin-right: 8px;
 	font-family: gate;
-	text-align: center;
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	content: attr(data-icon);
 	border-right: 1px solid #DDDDDD;
 }
