@@ -1,18 +1,17 @@
 package gate;
 
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
-import gate.error.InvalidServiceException;
-import gate.error.AuthenticatorException;
+import gate.annotation.Current;
 import gate.entity.Org;
 import gate.entity.User;
+import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
+import gate.error.InvalidPasswordException;
+import gate.error.InvalidServiceException;
+import gate.error.InvalidUsernameException;
 import gate.security.Credentials;
-
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +23,7 @@ public class Auth extends HttpServlet
 {
 
 	@Inject
+	@Current
 	private Org org;
 
 	private static final long serialVersionUID = 1L;
