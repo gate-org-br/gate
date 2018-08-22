@@ -62,7 +62,7 @@ function Message(type, message, timeout)
 	};
 
 	if (timeout)
-		setTimeout(function ()
+		window.top.setTimeout(function ()
 		{
 			modal.hide();
 		}, timeout);
