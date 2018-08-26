@@ -2,7 +2,6 @@ package gate.tags;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -19,7 +18,7 @@ public class ExceptionTag extends SimpleTagSupport
 		if (pc.getRequest().getAttribute("exception") != null)
 		{
 			Throwable exception = (Throwable) pc.getRequest().getAttribute("exception");
-			getJspContext().getOut().print("<div class='text'><pre>");
+			getJspContext().getOut().print("<div class='TEXT' style='height: 50%; overflow: auto'><pre>");
 			exception.printStackTrace(new PrintWriter(getJspContext().getOut()));
 			getJspContext().getOut().print("</pre></div>");
 		}
