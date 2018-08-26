@@ -4,13 +4,20 @@
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body style='background-color: #CCCCD0;
 	      background-image: url("../gate/imge/back/BACK.png");
-	      background-attachment: fixed'>
-		<div style='width: 970px; margin: auto; padding-top: 12px'>
-			<form name='FORMULARIO' id='FORMULARIO' method='POST' target='_top'
-			      action="Gate?${g:qs(pageContext.request, 'MODULE=gateconsole.screen')}">
-				<div style='width: 600px; height: 344px; position: absolute; top: 50%; margin-top: -172px; left: 50%; margin-left: -300px;
-				     padding: 10px; -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
-				     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); background-color: #CDCAB9;  border: 2px groove #CCCCCC'>
+	      background-attachment: fixed; padding: 0'>
+		<div style='display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; padding: 10px'>
+			<div style='width: 600px;
+			     height: 344px;
+			     padding: 10px;
+			     background-color: #CDCAB9;
+			     border: 2px groove #CCCCCC;
+			     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+			     -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+			     -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);'>
+
+				<form name='FORMULARIO' id='FORMULARIO' method='POST' target='_top'
+				      action="Gate?${g:qs(pageContext.request, 'MODULE=gateconsole.screen')}">
+
 					<div class='TEXT' style='width: 100%; height: 64px; padding: 10px'>
 						<img src='${org.icon}' style='float: left; height: 48px'/>
 						<span style='float: left; height: 48px; margin-left: 10px'>
@@ -62,8 +69,8 @@
 							Concluir<g:icon type="commit"/>
 						</button>
 					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 
 			<g:admin>
 				<g:exception/>
