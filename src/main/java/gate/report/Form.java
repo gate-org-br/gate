@@ -1,10 +1,10 @@
 package gate.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.itextpdf.text.Font;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public final class Form extends ReportElement
 {
@@ -51,6 +51,28 @@ public final class Form extends ReportElement
 		Field field = new Field(label, value);
 		elements.add(field);
 		return field;
+	}
+
+	public Form add(gate.type.Form form)
+	{
+		Objects.requireNonNull(form);
+
+		if (!form.getFields().isEmpty())
+		{
+
+			form.getFields().forEach(e -> add(e.getName(), e.getValue())
+					.colspan(e.getSize().ordinal() + 1));
+
+			int count = form.getFields().stream()
+					.mapToInt(e -> e.getSize().ordinal() + 1)
+					.sum() % columns;
+			if (count > 0)
+			{
+				Field field = (Field) elements.get(elements.size() - 1);
+				field.colspan(field.getColspan() + count);
+			}
+		}
+		return this;
 	}
 
 	public Float getPercentage()
