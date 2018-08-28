@@ -248,13 +248,18 @@ div.PageControl > div > iframe, div.LinkControl > div > iframe { border: none; w
 div.PageControl > ul, div.LinkControl > ul { list-style: none; padding: 0px; margin: 0px}
 div.PageControl > ul > li > a:hover, div.PageControl > ul > li > button:hover, div.LinkControl > ul > li > a:hover, div.LinkControl > ul > li > button:hover { color: #CA171B }
 div.PageControl > ul > li > a:focus, div.PageControl > ul > li > button:focus, div.LinkControl > ul > li > a:focus, div.LinkControl > ul > li > button:focus { border: none; outline: none }
-div.PageControl > ul > li > a, div.PageControl > ul > li > button, div.LinkControl > ul > li > a, div.LinkControl > ul > li > button { border: none; text-decoration: none; display: block; padding: 05px; color: #000099; width: 100%; text-align: center; border-radius: 8px 8px 0px 0px; font-size: 12px; background: #FDFAE9; color: #432F21; cursor: pointer; text-align: left }
+div.PageControl > ul > li > a, div.PageControl > ul > li > button, div.LinkControl > ul > li > a, div.LinkControl > ul > li > button { border: none; text-decoration: none; display: block; padding: 05px; color: #000099; width: 100%; text-align: center; border-radius: 8px 8px 0px 0px; font-size: 12px; background: #FDFAE9; color: #432F21; cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; display: flex; justify-content: space-between }
 div.PageControl > ul > li[data-selected=true], div.LinkControl > ul > li[data-selected=true] { background-color: #CDCAB9; border-color: #ADAA99 }
 div.PageControl > div, div.LinkControl > div { clear: both; padding: 10px; border-radius: 0px 0px 0px 0px; background-color: #CDCAB9; border: 1px solid #ADAA99}
 div.PageControl > ul > li, div.LinkControl > ul > li { float: left; margin: 0px; border-radius: 8px 8px 0px 0px; width: 20%; border: 1px solid #DDDAC9; border-bottom-width: 0;  }
 div.PageControl > ul > li[data-selected=true] > a, div.PageControl > ul > li[data-selected=true] > button, div.LinkControl > ul > li[data-selected=true] > a, div.LinkControl > ul > li[data-selected=true] > button { position: relative; top: 1px; color: black; font-weight: bold; background-color: #CDCAB9; color: #432F21}
 div.PageControl > ul > li > a > i, div.PageControl > ul > li > a > span, div.PageControl > ul > li > button > i, div.PageControl > ul > li > button > span, div.LinkControl > ul > li > a > i, div.LinkControl > ul > li > a > span, div.LinkControl > ul > li > button > i, div.LinkControl > ul > li > button > span { float: right; color: #432F21}
 div.PageControl > ul > li > a:hover > i, div.PageControl > ul > li > a:hover > span, div.PageControl > ul > li > button:hover > i, div.PageControl > ul > li > button:hover > span, div.LinkControl > ul > li > a:hover > i, div.LinkControl > ul > li > a:hover > span, div.LinkControl > ul > li > button:hover > i, div.LinkControl > ul > li > button:hover > span { color: #432F21 }
+
+div.LinkControl > ul > li > a[data-icon], div.LinkControl > ul > li > button[data-icon]
+{ text-align: left }
+div.LinkControl > ul > li > a[data-icon]:after, div.LinkControl > ul > li > button[data-icon]:after
+{ font-family: gate; content: attr(data-icon); width: 16px; height: 100%; text-align: center }
 
 input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF}
 input[type='text'], input[type='password'], input[type='file'], select { height: 24px; line-height: 22px}
@@ -276,9 +281,9 @@ fieldset > legend > i { float: left; margin-right: 4px}
 
 fieldset fieldset > legend { background-color: #BDBCB2 }
 
-fieldset > label { padding: 4px; display: inline; float: left; text-align: left}
+fieldset > label { padding: 4px; display: inline; float: left; text-align: left; display: flex; flex-direction: column}
 fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #E6E2D3;
-			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; text-overflow: ellipsis; color: black;}
+			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: black;}
 fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: #080c1b}
 fieldset > label > span > textarea { line-height: 16px}
 fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}

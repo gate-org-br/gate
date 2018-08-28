@@ -1,10 +1,7 @@
 package gate.util;
 
-import gate.annotation.Color;
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
-import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -157,20 +154,5 @@ public class Toolkit
 		if (request.getParameter("$keep") == null)
 			return qs;
 		return request.getQueryString();
-	}
-
-	public static String color(Object obj)
-	{
-		try
-		{
-			if (obj == null)
-				return "#000000";
-			AnnotatedElement type = obj instanceof Enum<?> ? obj.getClass().getField(((Enum<?>) obj).name()) : obj
-					.getClass();
-			return type.isAnnotationPresent(Color.class) ? type.getAnnotation(Color.class).value() : "#000000";
-		} catch (NoSuchFieldException | SecurityException ex)
-		{
-			throw new AppError(ex);
-		}
 	}
 }

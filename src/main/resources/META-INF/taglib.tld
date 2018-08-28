@@ -44,7 +44,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>checkAccess</name>
 		<display-name>Check Access</display-name>
@@ -76,21 +75,18 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>accessSecured</name>
 		<display-name>Access Secured</display-name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.access.AccessSecuredTag</tag-class>
 	</tag>
-
 	<tag>
 		<name>accessBlocked</name>
 		<display-name>Access Blocked</display-name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.access.AccessBlockedTag</tag-class>
 	</tag>
-
 	<tag>
 		<name>strict</name>
 		<display-name>Secure</display-name>
@@ -213,7 +209,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>menu</name>
 		<display-name>Menu</display-name>
@@ -251,7 +246,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>menuitem</name>
 		<display-name>Menu Item</display-name>
@@ -289,7 +283,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>menulink</name>
 		<display-name>Menu Link</display-name>
@@ -327,7 +320,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>separator</name>
 		<body-content>empty</body-content>
@@ -335,7 +327,6 @@
 		<tag-class>gate.tags.SeparatorTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
-
 	<tag>
 		<name>deskitem</name>
 		<body-content>scriptless</body-content>
@@ -1110,13 +1101,6 @@
 		</attribute>
 	</tag>
 	<function>
-		<name>color</name>
-		<function-class>gate.util.Toolkit</function-class>
-		<function-signature>
-			java.lang.String color(java.lang.Object)
-		</function-signature>
-	</function>
-	<function>
 		<name>qs</name>
 		<function-class>gate.util.Toolkit</function-class>
 		<function-signature>
@@ -1142,6 +1126,35 @@
 		<function-class>gate.util.Toolkit</function-class>
 		<function-signature>
 			java.lang.String write(java.lang.Object)
+		</function-signature>
+	</function>
+	<function>
+		<name>icon</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String icon(java.lang.Object)
+		</function-signature>
+	</function>
+	<function>
+		<name>name</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String name(java.lang.Object)
+		</function-signature>
+	</function>
+	<function>
+		<name>color</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String color(java.lang.Object)
+		</function-signature>
+	</function>
+
+	<function>
+		<name>description</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String description(java.lang.Object)
 		</function-signature>
 	</function>
 </taglib>
