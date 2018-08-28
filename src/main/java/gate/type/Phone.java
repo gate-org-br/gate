@@ -15,7 +15,7 @@ public class Phone implements Serializable, Comparable<Phone>
 	private static final long serialVersionUID = 1L;
 
 	private final String value;
-	private static final Pattern PATTERN = Pattern.compile("^0?([1-9][1-9])??([1-9][1-9])?(9?[0-9]{8})$");
+	private static final Pattern PATTERN = Pattern.compile("^0*([1-9][1-9])??([1-9][1-9])?(9?[0-9]{8})$");
 
 	public Phone(String value)
 	{
