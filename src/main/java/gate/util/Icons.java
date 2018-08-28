@@ -355,5 +355,27 @@ public class Icons
 		{
 			return name;
 		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			return obj instanceof Icon
+					&& Objects.equals(code, ((Icon) obj).code)
+					&& Objects.equals(name, ((Icon) obj).name);
+
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hashCode(code)
+					+ Objects.hashCode(name);
+		}
+
+		@Override
+		public String toString()
+		{
+			return "&#X" + getCode() + ";";
+		}
 	}
 }
