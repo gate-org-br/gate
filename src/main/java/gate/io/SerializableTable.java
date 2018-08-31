@@ -38,7 +38,7 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 			if (file.getParentFile() != null)
 				file.getParentFile().mkdirs();
 			try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-				DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(fileOutputStream))
+					DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(fileOutputStream))
 			{
 				if (type.isAnnotationPresent(SecurityKey.class))
 				{
@@ -49,7 +49,7 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 					cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 
 					try (CipherOutputStream cipherOutputStream = new CipherOutputStream(deflaterOutputStream, cipher);
-						ObjectOutputStream objectOutputStream = new ObjectOutputStream(cipherOutputStream))
+							ObjectOutputStream objectOutputStream = new ObjectOutputStream(cipherOutputStream))
 					{
 						objectOutputStream.writeObject(values);
 						objectOutputStream.flush();
@@ -73,10 +73,10 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 	static <T extends Serializable> Table<T> create(Class<T> type, File file)
 	{
 		if (!file.exists())
-			return new SerializableTable(type, file, new HashSet<>());
+			return new SerializableTable<>(type, file, new HashSet<>());
 
 		try (FileInputStream fileInputStream = new FileInputStream(file);
-			InflaterInputStream inflaterInputStream = new InflaterInputStream(fileInputStream))
+				InflaterInputStream inflaterInputStream = new InflaterInputStream(fileInputStream))
 		{
 			if (type.isAnnotationPresent(SecurityKey.class))
 			{
@@ -87,17 +87,17 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 				cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
 				try (CipherInputStream cipherInputStream = new CipherInputStream(inflaterInputStream, cipher);
-					ObjectInputStream objectInputStream = new ObjectInputStream(cipherInputStream))
+						ObjectInputStream objectInputStream = new ObjectInputStream(cipherInputStream))
 				{
 					Set<T> values = (Set<T>) objectInputStream.readObject();
-					return new SerializableTable(type, file, values);
+					return new SerializableTable<>(type, file, values);
 				}
 			} else
 			{
 				try (ObjectInputStream objectInputStream = new ObjectInputStream(inflaterInputStream))
 				{
 					Set<T> values = (Set<T>) objectInputStream.readObject();
-					return new SerializableTable(type, file, values);
+					return new SerializableTable<>(type, file, values);
 				}
 			}
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | ClassNotFoundException | IOException ex)

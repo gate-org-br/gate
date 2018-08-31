@@ -12,7 +12,7 @@ public class ConcurrentDatabase<T extends Serializable> implements Database<T>
 
 	private final Database<T> database;
 
-	ConcurrentDatabase(Database database)
+	ConcurrentDatabase(Database<T> database)
 	{
 		this.database = database;
 	}
@@ -36,7 +36,8 @@ public class ConcurrentDatabase<T extends Serializable> implements Database<T>
 	}
 
 	@Override
-	public synchronized void delete(T... values)
+	@SafeVarargs
+	public synchronized final void delete(T... values)
 	{
 		database.delete(values);
 	}
@@ -54,7 +55,8 @@ public class ConcurrentDatabase<T extends Serializable> implements Database<T>
 	}
 
 	@Override
-	public synchronized void delete(String tableName, T... values)
+	@SafeVarargs
+	public synchronized final void delete(String tableName, T... values)
 	{
 		database.delete(tableName, values);
 	}
@@ -78,7 +80,8 @@ public class ConcurrentDatabase<T extends Serializable> implements Database<T>
 	}
 
 	@Override
-	public synchronized void insert(String tableName, T... values)
+	@SafeVarargs
+	public synchronized final void insert(String tableName, T... values)
 	{
 		database.insert(tableName, values);
 	}
