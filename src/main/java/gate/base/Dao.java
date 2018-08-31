@@ -64,16 +64,25 @@ public abstract class Dao extends Base implements AutoCloseable
 			link.close();
 	}
 
+	/**
+	 * Starts a new transaction.
+	 */
 	public void beginTran()
 	{
 		link.beginTran();
 	}
 
+	/**
+	 * Commits the current transaction.
+	 */
 	public void commit()
 	{
 		link.commit();
 	}
 
+	/**
+	 * Rollback the current transaction.
+	 */
 	public void rollback()
 	{
 		link.rollback();
