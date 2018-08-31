@@ -72,7 +72,7 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 
 	static <T extends Serializable> Table<T> create(Class<T> type, File file)
 	{
-		if (!file.exists())
+		if (!file.exists() || file.length() == 0)
 			return new SerializableTable<>(type, file, new HashSet<>());
 
 		try (FileInputStream fileInputStream = new FileInputStream(file);
