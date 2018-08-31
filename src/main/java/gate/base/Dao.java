@@ -1,6 +1,7 @@
 package gate.base;
 
 import gate.sql.Link;
+import java.util.Objects;
 
 /**
  * Base class from where data access objects can be extended.
@@ -8,14 +9,17 @@ import gate.sql.Link;
 public abstract class Dao extends Base implements AutoCloseable
 {
 
-	protected final Link link;
+	private final Link link;
+	private final boolean created;
 
 	/**
 	 * Creates a data access object associated with the current data source.
 	 */
 	public Dao()
 	{
-		this.link = new Link();
+		created = true;
+		link = new Link();
+
 	}
 
 	/**
@@ -25,7 +29,8 @@ public abstract class Dao extends Base implements AutoCloseable
 	 */
 	public Dao(Link link)
 	{
-		this.link = link;
+		created = false;
+		this.link = Objects.requireNonNull(link);
 	}
 
 	/**
@@ -35,7 +40,8 @@ public abstract class Dao extends Base implements AutoCloseable
 	 */
 	public Dao(String datasource)
 	{
-		this.link = new Link(datasource);
+		created = true;
+		this.link = new Link(Objects.requireNonNull(datasource));
 	}
 
 	/**
@@ -49,12 +55,12 @@ public abstract class Dao extends Base implements AutoCloseable
 	}
 
 	/**
-	 * Rollback any pending transaction and closes the link associated with this data access object.
+	 * Rollback any pending transaction and closes any link created by this data access object.
 	 */
 	@Override
 	public void close()
 	{
-		if (link != null)
+		if (created && !link.isClosed())
 			link.close();
 	}
 
