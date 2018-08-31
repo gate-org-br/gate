@@ -55,7 +55,7 @@ public abstract class Dao extends Base implements AutoCloseable
 	}
 
 	/**
-	 * Rollback any pending transaction and closes any link created by this data access object.
+	 * Closes any link created by this data access object.
 	 */
 	@Override
 	public void close()
