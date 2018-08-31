@@ -74,7 +74,7 @@ class JsonTable<T> extends AbstractTable<T>
 
 	static <T> JsonTable<T> create(Class<T> type, File file)
 	{
-		if (!file.exists())
+		if (!file.exists() || file.length() == 0)
 			return new JsonTable<>(type, file, new HashSet<>());
 
 		try (FileInputStream fileInputStream = new FileInputStream(file);
