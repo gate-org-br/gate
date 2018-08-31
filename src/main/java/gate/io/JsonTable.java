@@ -39,7 +39,7 @@ class JsonTable<T> extends AbstractTable<T>
 			if (file.getParentFile() != null)
 				file.getParentFile().mkdirs();
 			try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-				DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(fileOutputStream))
+					DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(fileOutputStream))
 			{
 				String json = Converter.toJson(values);
 				if (type.isAnnotationPresent(SecurityKey.class))
@@ -51,7 +51,7 @@ class JsonTable<T> extends AbstractTable<T>
 					cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 
 					try (CipherOutputStream cipherOutputStream = new CipherOutputStream(deflaterOutputStream, cipher);
-						BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(cipherOutputStream)))
+							BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(cipherOutputStream)))
 					{
 						writer.write(json);
 						writer.flush();
@@ -75,10 +75,10 @@ class JsonTable<T> extends AbstractTable<T>
 	static <T> JsonTable<T> create(Class<T> type, File file)
 	{
 		if (!file.exists())
-			return new JsonTable(type, file, new HashSet<>());
+			return new JsonTable<>(type, file, new HashSet<>());
 
 		try (FileInputStream fileInputStream = new FileInputStream(file);
-			InflaterInputStream inflaterInputStream = new InflaterInputStream(fileInputStream))
+				InflaterInputStream inflaterInputStream = new InflaterInputStream(fileInputStream))
 		{
 			if (type.isAnnotationPresent(SecurityKey.class))
 			{
@@ -92,13 +92,13 @@ class JsonTable<T> extends AbstractTable<T>
 				{
 					String json = IO.readString(cipherInputStream);
 					Set<T> values = Converter.fromJson(Set.class, type, json);
-					return new JsonTable(type, file, values != null ? values : new HashSet<>());
+					return new JsonTable<>(type, file, values != null ? values : new HashSet<>());
 				}
 			} else
 			{
 				String json = IO.readString(inflaterInputStream);
 				Set<T> values = Converter.fromJson(Set.class, type, json);
-				return new JsonTable(type, file, values != null ? values : new HashSet<>());
+				return new JsonTable<>(type, file, values != null ? values : new HashSet<>());
 			}
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IOException ex)
 		{

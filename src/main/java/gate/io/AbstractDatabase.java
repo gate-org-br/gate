@@ -19,7 +19,7 @@ abstract class AbstractDatabase<T> implements Database<T>
 	protected final Class<T> type;
 	protected final Map<String, Table<T>> tables;
 	protected final List<Observer<T>> observers
-		= new CopyOnWriteArrayList<>();
+			= new CopyOnWriteArrayList<>();
 
 	AbstractDatabase(Class<T> type, File folder, Map<String, Table<T>> tables)
 	{
@@ -38,167 +38,167 @@ abstract class AbstractDatabase<T> implements Database<T>
 	public int size()
 	{
 		return tables.values().stream()
-			.mapToInt(e -> e.size()).sum();
+				.mapToInt(e -> e.size()).sum();
 	}
 
 	@Override
 	public boolean isEmpty(String tableName)
 	{
 		return tables.containsKey(tableName)
-			? tables.get(tableName).isEmpty() : true;
+				? tables.get(tableName).isEmpty() : true;
 	}
 
 	@Override
 	public int size(String tableName)
 	{
 		return tables.containsKey(tableName)
-			? tables.get(tableName).size() : 0;
+				? tables.get(tableName).size() : 0;
 	}
 
 	@Override
 	public Optional<T> select()
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.findAny();
+				.flatMap(e -> e.search().stream())
+				.findAny();
 	}
 
 	@Override
 	public Optional<T> select(Predicate<T> predicate)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.filter(predicate)
-			.findAny();
+				.flatMap(e -> e.search().stream())
+				.filter(predicate)
+				.findAny();
 	}
 
 	@Override
 	public Optional<T> select(Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.sorted(comparator)
-			.findFirst();
+				.flatMap(e -> e.search().stream())
+				.sorted(comparator)
+				.findFirst();
 	}
 
 	@Override
 	public Optional<T> select(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.filter(predicate)
-			.sorted(comparator)
-			.findFirst();
+				.flatMap(e -> e.search().stream())
+				.filter(predicate)
+				.sorted(comparator)
+				.findFirst();
 	}
 
 	@Override
 	public List<T> search()
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.collect(Collectors.toList());
+				.flatMap(e -> e.search().stream())
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Predicate<T> predicate)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.filter(predicate)
-			.collect(Collectors.toList());
+				.flatMap(e -> e.search().stream())
+				.filter(predicate)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.sorted(comparator)
-			.collect(Collectors.toList());
+				.flatMap(e -> e.search().stream())
+				.sorted(comparator)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.search().stream())
-			.filter(predicate)
-			.sorted(comparator)
-			.collect(Collectors.toList());
+				.flatMap(e -> e.search().stream())
+				.filter(predicate)
+				.sorted(comparator)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Optional<T> select(String tableName)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().flatMap(e -> e.select());
+				.findAny().flatMap(e -> e.select());
 	}
 
 	@Override
 	public Optional<T> select(String tableName, Predicate<T> predicate)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().flatMap(e -> e.select(predicate));
+				.findAny().flatMap(e -> e.select(predicate));
 	}
 
 	@Override
 	public Optional<T> select(String tableName, Comparator<T> comparator)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().flatMap(e -> e.select(comparator));
+				.findAny().flatMap(e -> e.select(comparator));
 	}
 
 	@Override
 	public Optional<T> select(String tableName, Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().flatMap(e -> e.select(predicate, comparator));
+				.findAny().flatMap(e -> e.select(predicate, comparator));
 	}
 
 	@Override
 	public List<T> search(String tableName)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().map(e -> e.search()).orElse(Collections.emptyList());
+				.findAny().map(e -> e.search()).orElse(Collections.emptyList());
 	}
 
 	@Override
 	public List<T> search(String tableName, Predicate<T> predicate)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().map(e -> e.search(predicate)).orElse(Collections.emptyList());
+				.findAny().map(e -> e.search(predicate)).orElse(Collections.emptyList());
 	}
 
 	@Override
 	public List<T> search(String tableName, Comparator<T> comparator)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().map(e -> e.search(comparator)).orElse(Collections.emptyList());
+				.findAny().map(e -> e.search(comparator)).orElse(Collections.emptyList());
 	}
 
 	@Override
 	public List<T> search(String tableName, Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().map(e -> e.search(predicate, comparator)).orElse(Collections.emptyList());
+				.findAny().map(e -> e.search(predicate, comparator)).orElse(Collections.emptyList());
 	}
 
 	@Override
 	public long count(String tableName, Predicate<T> predicate)
 	{
 		return tables
-			.values()
-			.stream()
-			.filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().map(e -> e.count(predicate))
-			.orElse(Long.valueOf(0));
+				.values()
+				.stream()
+				.filter(e -> e.getFile().getName().equals(tableName))
+				.findAny().map(e -> e.count(predicate))
+				.orElse(Long.valueOf(0));
 	}
 
 	@Override
 	public void delete(String tableName,
-			   Predicate<T> predicate)
+			Predicate<T> predicate)
 	{
-		Table table = tables.get(tableName);
+		Table<T> table = tables.get(tableName);
 		table.delete(predicate);
 		if (table.isEmpty())
 			table.drop();
@@ -209,7 +209,7 @@ abstract class AbstractDatabase<T> implements Database<T>
 	public void delete(Predicate<T> predicate)
 	{
 		tables.values().stream()
-			.forEach(e -> e.delete(predicate));
+				.forEach(e -> e.delete(predicate));
 		tables.values().removeIf(e -> e.isEmpty());
 		observers.forEach(Observer::onUpdate);
 	}
@@ -218,13 +218,14 @@ abstract class AbstractDatabase<T> implements Database<T>
 	public void delete(Collection<T> values)
 	{
 		tables.values().stream()
-			.forEach(e -> e.delete(values));
+				.forEach(e -> e.delete(values));
 		tables.values().removeIf(e -> e.isEmpty());
 		observers.forEach(Observer::onUpdate);
 	}
 
 	@Override
-	public void delete(T... values)
+	@SafeVarargs
+	public final void delete(T... values)
 	{
 		delete(Arrays.asList(values));
 	}
@@ -233,16 +234,15 @@ abstract class AbstractDatabase<T> implements Database<T>
 	public void delete(List<T> values)
 	{
 		tables.values().stream()
-			.forEach(e -> e.delete(values));
+				.forEach(e -> e.delete(values));
 		tables.values().removeIf(e -> e.isEmpty());
 		observers.forEach(Observer::onUpdate);
 	}
 
 	@Override
-	public void delete(String tableName,
-			   Collection<T> values)
+	public void delete(String tableName, Collection<T> values)
 	{
-		Table table = tables.get(tableName);
+		Table<T> table = tables.get(tableName);
 		table.delete(values);
 		if (table.isEmpty())
 			table.drop();
@@ -250,33 +250,34 @@ abstract class AbstractDatabase<T> implements Database<T>
 	}
 
 	@Override
-	public void delete(String tableName,
-			   T... values)
+	@SafeVarargs
+	public final void delete(String tableName, T... values)
 	{
-		Table table = tables.get(tableName);
+		Table<T> table = tables.get(tableName);
 		table.delete(values);
 		if (table.isEmpty())
 			table.drop();
 		observers.forEach(Observer::onUpdate);
 	}
 
-	public abstract Table create(String fileName);
+	public abstract Table<T> create(String fileName);
 
 	@Override
 	public void insert(String table, Collection<T> values)
 	{
 		tables.computeIfAbsent(table,
-			e -> create(e))
-			.insert(values);
+				e -> create(e))
+				.insert(values);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	@Override
-	public void insert(String table, T... values)
+	@SafeVarargs
+	public final void insert(String table, T... values)
 	{
 		tables.computeIfAbsent(table,
-			e -> create(e))
-			.insert(values);
+				e -> create(e))
+				.insert(values);
 		observers.forEach(Observer::onUpdate);
 	}
 
