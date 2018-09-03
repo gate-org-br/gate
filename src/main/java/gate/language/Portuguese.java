@@ -12,11 +12,20 @@ import java.util.stream.Stream;
 class Portuguese implements Language
 {
 
-	private static final Pattern PATTERN = Pattern.compile(" +");
+	private static final Pattern SPACE_PATTERN = Pattern.compile(" +");
 	private static final List<String> IGNORE = Arrays.asList("e", "de", "do", "da", "dos", "das");
 
 	@Override
-	public String capitalizeWord(String string)
+	public String capitalize(String stringToBeCapitalized)
+	{
+		return stringToBeCapitalized != null
+				? Stream.of(SPACE_PATTERN.split(stringToBeCapitalized))
+						.map(this::capitalizeWord)
+						.collect(Collectors.joining(" "))
+				: null;
+	}
+
+	private String capitalizeWord(String string)
 	{
 		string = string.toLowerCase();
 		if (IGNORE.contains(string))
@@ -26,11 +35,4 @@ class Portuguese implements Language
 		return builder.toString();
 	}
 
-	@Override
-	public String capitalizeName(String string)
-	{
-		return Stream.of(PATTERN.split(string))
-				.map(this::capitalizeWord)
-				.collect(Collectors.joining(" "));
-	}
 }
