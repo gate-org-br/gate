@@ -1,11 +1,11 @@
 package gate.messaging;
 
-import gate.type.mime.Mime;
 import gate.type.DataFile;
+import gate.type.DateTime;
+import gate.type.mime.Mime;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
 import gate.type.mime.MimeText;
-import gate.type.DateTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -216,7 +216,7 @@ public class Messenger
 
 	}
 
-	private void send(String sender, String receiver, MimeMail mail)
+	private void send(String sender, String receiver, MimeMail<?> mail)
 			throws NamingException, MessagingException
 	{
 		javax.mail.Session mailSession = (javax.mail.Session) new InitialContext().lookup("java:/comp/env/MailSession");
@@ -224,6 +224,12 @@ public class Messenger
 		mimeMessage.setFrom(sender);
 		mimeMessage.setSubject(mail.getSubject());
 		mimeMessage.setSentDate(new DateTime().toDate());
+
+		if (mail.getPriority() == MimeMail.Priority.LOW)
+			mimeMessage.setHeader("X-Priority", "5");
+		else if (mail.getPriority() == MimeMail.Priority.HIGH)
+			mimeMessage.setHeader("X-Priority", "1");
+
 		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
 
 		if (mail.getContent() instanceof MimeText)
