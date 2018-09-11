@@ -309,6 +309,7 @@
 								<include>**/Focus.js</include>
 								<include>**/Sortable.js</include>
 								<include>**/Message.js</include>
+								<include>**/Return.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
