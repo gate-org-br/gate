@@ -276,7 +276,6 @@
 								<include>**/Duration.js</include>
 								<include>**/Fetch.js</include>
 								<include>**/Keys.js</include>
-								<include>**/File.js</include>
 								<include>**/URL.js</include>
 								<include>**/Calendar.js</include>
 								<include>**/Link.js</include>
