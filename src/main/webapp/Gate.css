@@ -262,8 +262,10 @@ div.LinkControl > ul > li > a[data-icon]:after, div.LinkControl > ul > li > butt
 { font-family: gate; content: attr(data-icon); width: 16px; height: 100%; text-align: center }
 
 input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF}
-input[type='text'], input[type='password'], input[type='file'], select { height: 24px; line-height: 22px}
+input[type='text'], input[type='password'], select { height: 24px; line-height: 22px}
 input[type='text']:focus, input[type='password']:focus, input[type='file']:focus, textarea:focus, select:focus { background-color: #FFFACD}
+
+input[type='file'] { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF; height: 100%; cursor: pointer }
 
 input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
 
