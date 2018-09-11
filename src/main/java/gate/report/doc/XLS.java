@@ -2,7 +2,6 @@ package gate.report.doc;
 
 import gate.annotation.Icon;
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.report.Column;
 import gate.report.Field;
@@ -15,6 +14,7 @@ import gate.util.Toolkit;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -81,9 +81,9 @@ public class XLS extends Doc
 					printForm(workbook, (Form) e);
 			workbook.write(os);
 			workbook.dispose();
-		} catch (IOException | RuntimeException e)
+		} catch (IOException e)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -91,7 +91,10 @@ public class XLS extends Doc
 	{
 		short index = -1;
 
-		SXSSFSheet sheet = form.getCaption() != null ? workbook.createSheet(form.getCaption()) : workbook.createSheet();
+		SXSSFSheet sheet
+				= form.getCaption() != null
+				? workbook.createSheet(form.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
+				: workbook.createSheet();
 		for (Field e : form.getElements().stream().filter(e -> e instanceof Field).map(e -> (Field) e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
@@ -174,7 +177,8 @@ public class XLS extends Doc
 
 	private void printGrid(SXSSFWorkbook workbook, Grid<Object> grid) throws ConversionException
 	{
-		SXSSFSheet sheet = grid.getCaption() != null ? workbook.createSheet(grid.getCaption())
+		SXSSFSheet sheet = grid.getCaption() != null
+				? workbook.createSheet(grid.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
 				: workbook.createSheet();
 
 		sheet.trackAllColumnsForAutoSizing();
@@ -183,7 +187,7 @@ public class XLS extends Doc
 		{
 			short j = -1;
 			SXSSFRow row = sheet.createRow(++i);
-			for (Column col : grid.getColumns())
+			for (Column<?> col : grid.getColumns())
 			{
 				SXSSFCell cell = row.createCell(++j);
 				cell.setCellStyle(workbook.createCellStyle());
@@ -220,7 +224,7 @@ public class XLS extends Doc
 		{
 			short j = -1;
 			SXSSFRow row = sheet.createRow(++i);
-			for (Column col : grid.getColumns())
+			for (Column<?> col : grid.getColumns())
 			{
 				SXSSFCell cell = row.createCell(++j);
 				cell.setCellStyle(workbook.createCellStyle());
