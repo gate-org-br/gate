@@ -3,6 +3,7 @@ package gate.entity;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.util.Icons;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class App implements Serializable
 						if (type.isAnnotationPresent(Description.class))
 							screen.description = type.getAnnotation(Description.class).value();
 						if (type.isAnnotationPresent(Icon.class))
-							screen.icon = type.getAnnotation(Icon.class).value();
+							screen.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value(), null).getCode();
 
 						for (Method method : type.getMethods())
 						{
@@ -97,7 +98,7 @@ public class App implements Serializable
 								if (method.isAnnotationPresent(Description.class))
 									action.description = method.getAnnotation(Description.class).value();
 								if (method.isAnnotationPresent(Icon.class))
-									action.icon = method.getAnnotation(Icon.class).value();
+									action.icon = Icons.getInstance().get(method.getAnnotation(Icon.class).value(), null).getCode();
 							}
 						}
 					} else
@@ -107,7 +108,7 @@ public class App implements Serializable
 						if (type.isAnnotationPresent(Description.class))
 							module.description = type.getAnnotation(Description.class).value();
 						if (type.isAnnotationPresent(Icon.class))
-							module.icon = type.getAnnotation(Icon.class).value();
+							module.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value(), null).getCode();
 					}
 				}
 
