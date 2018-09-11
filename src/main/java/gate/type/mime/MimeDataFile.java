@@ -102,7 +102,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return new MimeDataFile(dataURL.getType(),
 					dataURL.getSubtype(),
-					DatatypeConverter.parseBase64Binary(string),
+					DatatypeConverter.parseBase64Binary(dataURL.getData()),
 					dataURL.getParameters().get("filename"));
 		} catch (ParseException ex)
 		{
