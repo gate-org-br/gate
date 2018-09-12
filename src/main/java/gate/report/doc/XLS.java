@@ -309,10 +309,6 @@ public class XLS extends Doc
 				{
 					cell.setCellType(CellType.NUMERIC);
 					cell.setCellValue(((BigDecimal) value).doubleValue());
-				} else if (value instanceof Boolean)
-				{
-					cell.setCellType(CellType.BOOLEAN);
-					cell.setCellValue(((Boolean) value));
 				} else
 				{
 					StringBuilder text = new StringBuilder(Converter.toText(value));
@@ -329,7 +325,7 @@ public class XLS extends Doc
 		}
 	}
 
-	private final Map<Style, XSSFCellStyle> styles = new HashMap();
+	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
 
 	private XSSFColor getXLSColor(Style style)
 	{
