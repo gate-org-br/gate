@@ -2,13 +2,10 @@ package gate;
 
 import gate.entity.User;
 import gate.error.AppException;
-
 import gate.type.DateTime;
 import gate.util.Toolkit;
-
 import java.io.IOException;
 import javax.inject.Inject;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -20,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/Password")
 public class Password extends HttpServlet
 {
+
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private GateControl control;
