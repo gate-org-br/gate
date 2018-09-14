@@ -231,23 +231,6 @@ function Gate(e)
 
 window.addEventListener("load", function ()
 {
-	$("form").addEventListener("keydown", function (e)
-	{
-		if (document.activeElement.tagName.toLowerCase() === 'input'
-			|| document.activeElement.tagName.toLowerCase() === 'select')
-		{
-			e = e ? e : window.event;
-			if (e.keyCode === ENTER)
-			{
-				e.preventDefault();
-				var button = document.createElement("button");
-				button.style.display = 'none';
-				this.appendChild(button);
-				button.click();
-				this.removeChild(button);
-			}
-		}
-	});
 	$('select').set("onclick", function (e)
 	{
 		e = e ? e : window.event;

@@ -42,6 +42,7 @@ td.LChart:hover,
 td.BChart:hover,
 td.CChart:hover { color: #000066; font-weight: bold; }
 
+
 table { width: 100%; border: none 0px transparent; background-color: #DDDDDF }
 
 td { height: 28px; vertical-align: middle; text-align: left; word-break: normal; }
