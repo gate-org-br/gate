@@ -6,6 +6,7 @@ import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.io.URL;
+import gate.type.Attributes;
 import gate.util.Icons;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -100,21 +101,23 @@ public class MenuTag extends DynamicAttributeTag
 
 				String body = String.format("%s<i>&#X%s;</i>", name, icon.getCode());
 
-				pageContext.getOut().print("<li>");
+				pageContext.getOut().print("<li " + getAttributes() + ">");
 				if ("POST".equalsIgnoreCase(this.method))
 				{
+					Attributes attributes = new Attributes();
 					if (target != null)
-						getAttributes().put("formtarget", target);
-					getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<button " + getAttributes() + ">");
+						attributes.put("formtarget", target);
+					attributes.put("formaction", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<button " + attributes + ">");
 					pageContext.getOut().print(body);
 					pageContext.getOut().print("</button>");
 				} else
 				{
+					Attributes attributes = new Attributes();
 					if (target != null)
-						getAttributes().put("target", target);
-					getAttributes().put("href", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<a " + getAttributes() + ">");
+						attributes.put("target", target);
+					attributes.put("href", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<a " + attributes + ">");
 					pageContext.getOut().print(body);
 					pageContext.getOut().print("</a>");
 				}

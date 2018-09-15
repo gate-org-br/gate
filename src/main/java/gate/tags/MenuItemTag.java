@@ -7,6 +7,7 @@ import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.io.URL;
+import gate.type.Attributes;
 import gate.util.Icons;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -73,11 +74,13 @@ public class MenuItemTag extends DynamicAttributeTag
 					&& Toolkit.isEmpty(screen)
 					&& Toolkit.isEmpty(action))
 			{
-				pageContext.getOut().print("<li>");
+				pageContext.getOut().print("<li " + getAttributes() + ">");
+
+				Attributes atrributes = new Attributes();
 				if (target != null)
-					getAttributes().put("target", target);
-				getAttributes().put("href", "Gate");
-				pageContext.getOut().print("<a " + getAttributes() + ">");
+					atrributes.put("target", target);
+				atrributes.put("href", "Gate");
+				pageContext.getOut().print("<a " + atrributes + ">");
 				pageContext.getOut().print("Sair do sistema<i>&#X2007;</i>");
 				pageContext.getOut().print("</a>");
 				pageContext.getOut().print("</li>");
@@ -106,13 +109,14 @@ public class MenuItemTag extends DynamicAttributeTag
 				if (Gate.checkAccess(user,
 						module, screen, action, clazz, method))
 				{
-					pageContext.getOut().print("<li>");
+					pageContext.getOut().print("<li " + getAttributes() + ">");
 					if ("POST".equalsIgnoreCase(this.method))
 					{
+						Attributes atrributes = new Attributes();
 						if (target != null)
-							getAttributes().put("formtarget", target);
-						getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<button " + getAttributes() + ">");
+							atrributes.put("formtarget", target);
+						atrributes.put("formaction", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<button " + atrributes + ">");
 						if (getJspBody() != null)
 							getJspBody().invoke(null);
 						else
@@ -120,10 +124,11 @@ public class MenuItemTag extends DynamicAttributeTag
 						pageContext.getOut().print("</button>");
 					} else
 					{
+						Attributes atrributes = new Attributes();
 						if (target != null)
-							getAttributes().put("target", target);
-						getAttributes().put("href", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<a " + getAttributes() + ">");
+							atrributes.put("target", target);
+						atrributes.put("href", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<a " + atrributes + ">");
 						if (getJspBody() != null)
 							getJspBody().invoke(null);
 						else
