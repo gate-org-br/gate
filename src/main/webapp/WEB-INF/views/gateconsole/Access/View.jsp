@@ -2,49 +2,49 @@
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<g:choose>
-		<g:when condition="${not empty screen.page}">
+		<g:when condition="${not empty subscriptions}">
 			<table>
 				<col style='width: 12.5%'/>
 				<col style='width: 37.5%'/>
 				<col style='width: 12.5%'/>
 				<col style='width: 12.5%'/>
-				<col style='width: 25%'/>				
+				<col style='width: 25%'/>
 
 				<caption>
-					REQUISI&Ccedil;&Otilde;ES ENCONTRADAS: ${screen.page.size()}
+					PEDIDOS DE ACESSO: ${subscriptions.size()}
 				</caption>
 
 				<thead>
 					<tr>
 						<th style='text-align: center'>
 							Login
-						</th>						
+						</th>
 						<th style='text-align: left'>
 							Nome
 						</th>
 						<th style='text-align: center'>
 							Telefone
-						</th>						
+						</th>
 						<th style='text-align: center'>
 							Celular
-						</th>						
+						</th>
 						<th style='text-align: left'>
 							E-Mail
-						</th>						
+						</th>
 					</tr>
 				</thead>
 
 				<tfoot></tfoot>
 
 				<tbody>
-					<g:iterator source="${screen.page}" index="indx" target="item">
-						<tr data-target="_dialog" data-action='Gate?MODULE=gateconsole.screen&SCREEN=SUBSCRIPTION&ACTION=Select&form.id=${item.id}'
-							title='Requisi&ccedil;&atilde;o de Cadastro'>
+					<g:iterator source="${subscriptions}" index="indx" target="item">
+						<tr data-target="_dialog" data-action='Gate?MODULE=gateconsole.screen&SCREEN=Access&ACTION=Select&form.id=${item.id}'
+						    title='Requisi&ccedil;&atilde;o de Cadastro'>
 							<td style='text-align: center'>${item.userID}</td>
 							<td style='text-align: left'>${item.name}</td>
 							<td style='text-align: center'>${item.phone}</td>
 							<td style='text-align: center'>${item.cellPhone}</td>
-							<td style='text-align: left'>${item.email}</td>							
+							<td style='text-align: left'>${item.email}</td>
 						</tr>
 					</g:iterator>
 				</tbody>

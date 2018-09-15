@@ -154,15 +154,27 @@ h1 { font-size: 22px; text-align: center}
 
 img { border-style: none; position: relative; vertical-align: middle; margin-left: 2px; margin-right: 2px}
 
-ul.MENU li a:hover i { color: #CA171B}
+ul.MENU li, UL.NAVI li { float: left;
+			 width: 100%;
+			 height: 36px;
+			 display: flex;
+			 color: #432F21;
+			 position: relative;
+			 font-weight: normal;
+			 align-items: center;
+			 list-style: none outside none;
+			 justify-content: space-between;}
+
+ul.MENU li * , UL.NAVI li * { color: inherit; font-weight: inherit }
+
+ul.MENU li a:hover i, ul.NAVI li a:hover i { color: #CA171B }
 ul.MENU li:hover > ul, ul.NAVI li:hover > ul { display: block}
-ul.MENU li a i, ul.NAVI li a i, ul.MENU li a span, ul.NAVI li a span { float: right; color: #432F21 }
+ul.MENU li a i, ul.NAVI li a i, ul.MENU li a span, ul.NAVI li a span { float: right }
 ul.MENU, ul.NAVI, ul.MENU ul, ul.NAVI ul { margin: 0; padding: 0 }
-ul.MENU li, UL.NAVI li { float: left; width: 100%; position: relative; list-style: none outside none; height: 36px; line-height: 13px }
-ul.MENU li, ul.NAVI li, ul.MENU li a, ul.NAVI a { font-weight: normal; font-size: 12px; color: #432F21 }
+ul.MENU li, ul.NAVI li, ul.MENU li a, ul.NAVI a { font-weight: normal; font-size: 12px }
 ul.MENU li ul, ul.NAVI li ul { top: 0; left: 98%; width: 100%; z-index: 99; display: none; position: absolute; border: 1px solid #CDCAB9 }
-ul.MENU a, ul.NAVI a { width: 100%; height: 100%; display: block; font-size: 10px; text-align: left; background-color: #FDFAE9; color: #432F21 }
-ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; line-height: 24px; text-align: center; background-color: #DBD8C7; color: #432F21 }
+ul.MENU a, ul.NAVI a { width: 100%; height: 100%; display: block; font-size: 10px; text-align: left; background-color: #FDFAE9 }
+ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; line-height: 24px; text-align: center; background-color: #DBD8C7 }
 ul.MENU li.Separator, ul.NAVI li.Separator { height: 4px; background-color: #CDCAB9 }
 ul.MENU li.Separator, ul.NAVI > li.Separator { width: 4px; height: 36px; background-color: transparent; border: none }
 
@@ -235,8 +247,11 @@ ul.DESKTOP > li > img { width: 48px; margin: 0px; background-color: white}
 ul.DESKTOP > li > i, ul.DESKTOP > li > span { width: 48px; font-size: 40px; padding: 4px; text-align: center}
 
 ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
-ul.LIST > li { float: left; width: 10%; height: 32px; text-align: left; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px; border-radius: 5px}
-ul.LIST > li > i { float: right;  font-size: 24px}
+ul.LIST > li { float: left; width: 10%; height: 32px; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px;
+	       border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: space-between}
+ul.LIST > li > i { font-size: 24px}
+ul.LIST > li:focus { background-color: #FFFACD; font-weight: bold; color: #006600 }
+
 
 table, fieldset, div.TEXT, div.TOOLTIP, *.TOOLBAR, *.COOLBAR, div.PageControl, div.LinkControl { margin-top: 16px; margin-bottom: 4px}
 table:first-child, fieldset:first-child, div.TEXT:first-child, div.TOOLTIP:first-child, *.TOOLBAR:first-child, *.COOLBAR:first-child, div.PageControl:first-child, div.LinkControl:first-child { margin-top: 0px }

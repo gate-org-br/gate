@@ -4,7 +4,7 @@
 	<ul class='LIST'>
 		<g:icons name="icon">
 			<g:if condition="${icon.name ne '??????'}">
-				<li>
+				<li tabindex='1'>
 					${icon.name}<i>&#x${icon.code};</i>
 				</li>
 			</g:if>
@@ -12,9 +12,22 @@
 	</ul>
 	<ul class='LIST' style='margin-top: 40px'>
 		<g:icons name="icon">
-			<li>
+			<li tabindex='1'>
 				${icon.code}<i>&#x${icon.code};</i>
 			</li>
 		</g:icons>
-	</ul>	
+	</ul>
+	<script>
+		window.addEventListener("load", function ()
+		{
+			Array.from(document.querySelectorAll("ul.LIST > li")).forEach(function (icon)
+			{
+
+				icon.addEventListener("mouseover", function ()
+				{
+					this.focus();
+				});
+			});
+		});
+	</script>
 </g:template>

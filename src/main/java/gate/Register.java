@@ -1,15 +1,13 @@
 package gate;
 
-import gateconsole.contol.UserControl;
 import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.type.Phone;
 import gate.util.ScreenServletRequest;
-
+import gateconsole.contol.UserControl;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +21,7 @@ public class Register extends HttpServlet
 {
 
 	static final String JSP = "/WEB-INF/views/Register.jsp";
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response)
