@@ -3,33 +3,29 @@ package gateconsole.screen;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
-import gate.entity.User;
-
 import gate.entity.Role;
+import gate.entity.User;
 import gate.error.AppException;
-import gate.type.mime.MimeMail;
 import gate.messaging.Messenger;
+import gate.type.mime.MimeMail;
 import gateconsole.contol.RoleControl;
 import gateconsole.contol.UserControl;
 import java.util.Collection;
-
-import java.util.List;
 import javax.inject.Inject;
 
-@Icon("2002")
-@Name("Requisições de Cadastro")
-public class SubscriptionScreen extends Screen
+@Icon("1007")
+@Name("Pedidos de acesso")
+public class AccessScreen extends Screen
 {
 
 	private User form;
-	private List<User> page;
+
 	@Inject
-	Messenger messenger;
+	private Messenger messenger;
 
 	public String call()
 	{
-		setPage(new UserControl().getSubscriptions());
-		return "/WEB-INF/views/gateconsole/Subscription/View.jsp";
+		return "/WEB-INF/views/gateconsole/Access/View.jsp";
 	}
 
 	public String callSelect()
@@ -37,7 +33,7 @@ public class SubscriptionScreen extends Screen
 		try
 		{
 			setForm(new UserControl().select(getForm().getId()));
-			return "/WEB-INF/views/gateconsole/Subscription/ViewSelect.jsp";
+			return "/WEB-INF/views/gateconsole/Access/ViewSelect.jsp";
 		} catch (AppException e)
 		{
 			setMessages(e.getMessages());
@@ -52,8 +48,8 @@ public class SubscriptionScreen extends Screen
 			new UserControl().accept(getForm(), getForm().getRole());
 			if (getForm().getEmail() != null)
 				messenger.post(getUser().getEmail(), getForm().getEmail(), MimeMail.of("Cadastro acatado",
-					"Seu pedido de cadastro foi acatado."));
-			return "/WEB-INF/views/gateconsole/Subscription/ViewResult.jsp";
+						"Seu pedido de cadastro foi acatado."));
+			return "/WEB-INF/views/gateconsole/Access/ViewResult.jsp";
 		} catch (AppException e)
 		{
 			setMessages(e.getMessages());
@@ -68,9 +64,9 @@ public class SubscriptionScreen extends Screen
 			setForm(new UserControl().select(getForm().getId()));
 			if (getForm().getEmail() != null)
 				messenger.post(getUser().getEmail(), getForm().getEmail(), MimeMail.of("Cadastro recusado",
-					"Seu pedido de cadastro foi recusado."));
+						"Seu pedido de cadastro foi recusado."));
 			new UserControl().delete(getForm());
-			return "/WEB-INF/views/gateconsole/Subscription/ViewResult.jsp";
+			return "/WEB-INF/views/gateconsole/Access/ViewResult.jsp";
 		} catch (AppException e)
 		{
 			setMessages(e.getMessages());
@@ -88,16 +84,6 @@ public class SubscriptionScreen extends Screen
 	public void setForm(User form)
 	{
 		this.form = form;
-	}
-
-	public List<User> getPage()
-	{
-		return page;
-	}
-
-	public void setPage(List<User> page)
-	{
-		this.page = page;
 	}
 
 	public Collection<Role> getRoles()

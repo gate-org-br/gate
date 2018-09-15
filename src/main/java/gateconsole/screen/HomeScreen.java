@@ -11,7 +11,7 @@ import java.util.List;
 
 @Icon("2008")
 @Name("Home")
-public class HomeScreen extends gate.base.Screen
+public class HomeScreen extends Screen
 {
 
 	@Required
@@ -19,6 +19,7 @@ public class HomeScreen extends gate.base.Screen
 	private String form;
 	private List<Object> page;
 
+	@Override
 	@Icon("search")
 	@Name("Pesquisar")
 	public Object call()

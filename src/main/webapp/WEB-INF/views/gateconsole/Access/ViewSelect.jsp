@@ -2,10 +2,10 @@
 
 <g:template filename="/WEB-INF/views/DIAG.jsp">
 	<form method='POST' action='#'>
-		<g:hidden property="form.id"/>
 		<fieldset>
 			<legend>
 				Usu&aacute;rio
+				<g:hidden property="form.id"/>
 			</legend>
 			<label style='width: 12.5%'>
 				Ativo:
@@ -24,7 +24,7 @@
 				<span>
 					<g:label property='form.name'/>
 				</span>
-			</label>		
+			</label>
 			<label style='width: 12.5%'>
 				Telefone:
 				<span>
@@ -56,8 +56,8 @@
 			<label style='width: 100%'>
 				Perfil:
 				<span>
-					<g:selectt property='form.role.id' 
-							   options="${screen.roles}" children="roles" identifiedBy="id">
+					<g:selectt property='form.role.id'
+						   options="${screen.roles}" children="roles" identifiedBy="id">
 						${option.name}
 					</g:selectt>
 				</span>
@@ -66,7 +66,7 @@
 		</fieldset>
 
 		<div class='COOLBAR'>
-			<g:link method="post" module="#" screen="Update" action="#" style='color: #006600' data-confirm='Tem certeza de que deseja acatar o cadastro?'>
+			<g:link method="post" module="#" screen="#" action="Update" style='color: #006600' data-confirm='Tem certeza de que deseja acatar o cadastro?'>
 				Aceitar<g:icon type="2037"/>
 			</g:link>
 			<g:link module="#" screen="#" action="Delete" arguments="form.id=${screen.form.id}" style='float: left; color: #660000' data-confirm='Tem certeza de que deseja recusar o cadastro?'>
