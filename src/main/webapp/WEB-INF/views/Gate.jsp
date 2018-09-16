@@ -18,13 +18,10 @@
 				<form name='FORMULARIO' id='FORMULARIO' method='POST' target='_top'
 				      action="Gate?${g:qs(pageContext.request, 'MODULE=gateconsole.screen')}">
 
-					<div class='TEXT' style='width: 100%; height: 64px; padding: 10px'>
-						<img src='${org.icon}' style='float: left; height: 48px'/>
-						<span style='float: left; height: 48px; margin-left: 10px'>
-							<strong style='font-size: 14px'>${app.id}</strong>
-							<br/><br/><span style='font-size: 14px'>${app.name}</span>
-						</span>
-						<div style="color: #999999; float: right; height: 100%">
+					<div style='width: 100%; height: 64px; display: flex; align-items: stretch;
+					     background-color: #FFFFFF; border-radius: 5px; padding: 8px;'>
+						<img src='imge/gate.svg' style='height: 48px'/>
+						<div style="color: #999999; width: 100%; display: flex; align-items: flex-start; justify-content: flex-end">
 							Vers&atilde;o ${version}
 						</div>
 					</div>

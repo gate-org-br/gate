@@ -62,8 +62,8 @@ th { height: 28px; vertical-align: middle; text-align: left; background-color: #
 td.TOOLTIP { padding: 12px; background-image: none; background-color: #F0F0F4; color: blue; border: 1px dashed gray}
 td.SEPARATOR { padding: 0px; margin: 0px; background-image: none; background-color: #CBCAC9; color: blue; border: 1px dotted gray; height: 0px}
 
-caption { height: 32px; vertical-align: middle; text-align: center; font-weight: bold; line-height: 28px; border-radius: 5px 5px 0px 0px;
-          -webkit-border-radius: 5px 5px 0px 0px; -moz-border-radius: 5px 5px 0px 0px; margin-bottom: 2px; background-color: #666354; color: #EEEEEE }
+caption { height: 32px; vertical-align: middle; text-align: center; font-weight: bold; line-height: 32px; border-radius: 5px 5px 0px 0px;
+          -webkit-border-radius: 5px 5px 0px 0px; -moz-border-radius: 5px 5px 0px 0px; margin-bottom: 2px; background-color: #6B6755; color: #EEEEEE }
 
 div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: none; border-radius: 5px;
            -webkit-border-radius: 5px; -moz-border-radius: 5px; text-align: justify; padding: 12px}
@@ -265,10 +265,10 @@ div.PageControl > ul, div.LinkControl > ul { list-style: none; padding: 0px; mar
 div.PageControl > ul > li > a:hover, div.PageControl > ul > li > button:hover, div.LinkControl > ul > li > a:hover, div.LinkControl > ul > li > button:hover { color: #CA171B }
 div.PageControl > ul > li > a:focus, div.PageControl > ul > li > button:focus, div.LinkControl > ul > li > a:focus, div.LinkControl > ul > li > button:focus { border: none; outline: none }
 div.PageControl > ul > li > a, div.PageControl > ul > li > button, div.LinkControl > ul > li > a, div.LinkControl > ul > li > button { border: none; text-decoration: none; display: block; padding: 05px; color: #000099; width: 100%; text-align: center; border-radius: 8px 8px 0px 0px; font-size: 12px; background: #FDFAE9; color: #432F21; cursor: pointer; text-align: left; white-space: nowrap; overflow: hidden; display: flex; justify-content: space-between }
-div.PageControl > ul > li[data-selected=true], div.LinkControl > ul > li[data-selected=true] { background-color: #CDCAB9; border-color: #ADAA99 }
-div.PageControl > div, div.LinkControl > div { clear: both; padding: 10px; border-radius: 0px 0px 0px 0px; background-color: #CDCAB9; border: 1px solid #ADAA99}
+div.PageControl > ul > li[data-selected=true], div.LinkControl > ul > li[data-selected=true] { background-color: #BCB9A8; border-color: #ADAA99 }
+div.PageControl > div, div.LinkControl > div { clear: both; padding: 10px; border-radius: 0px 0px 0px 0px; background-color: #BCB9A8; border: 1px solid #ADAA99}
 div.PageControl > ul > li, div.LinkControl > ul > li { float: left; margin: 0px; border-radius: 8px 8px 0px 0px; width: 20%; border: 1px solid #DDDAC9; border-bottom-width: 0;  }
-div.PageControl > ul > li[data-selected=true] > a, div.PageControl > ul > li[data-selected=true] > button, div.LinkControl > ul > li[data-selected=true] > a, div.LinkControl > ul > li[data-selected=true] > button { position: relative; top: 1px; color: black; font-weight: bold; background-color: #CDCAB9; color: #432F21}
+div.PageControl > ul > li[data-selected=true] > a, div.PageControl > ul > li[data-selected=true] > button, div.LinkControl > ul > li[data-selected=true] > a, div.LinkControl > ul > li[data-selected=true] > button { position: relative; top: 1px; color: black; font-weight: bold; background-color: #BCB9A8; color: #432F21}
 div.PageControl > ul > li > a > i, div.PageControl > ul > li > a > span, div.PageControl > ul > li > button > i, div.PageControl > ul > li > button > span, div.LinkControl > ul > li > a > i, div.LinkControl > ul > li > a > span, div.LinkControl > ul > li > button > i, div.LinkControl > ul > li > button > span { float: right; color: #432F21}
 div.PageControl > ul > li > a:hover > i, div.PageControl > ul > li > a:hover > span, div.PageControl > ul > li > button:hover > i, div.PageControl > ul > li > button:hover > span, div.LinkControl > ul > li > a:hover > i, div.LinkControl > ul > li > a:hover > span, div.LinkControl > ul > li > button:hover > i, div.LinkControl > ul > li > button:hover > span { color: #432F21 }
 
@@ -279,7 +279,7 @@ div.LinkControl > ul > li > a[data-icon]:after, div.LinkControl > ul > li > butt
 
 input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF}
 input[type='text'], input[type='password'], select { height: 24px; line-height: 22px}
-input[type='text']:focus, input[type='password']:focus, input[type='file']:focus, textarea:focus, select:focus { background-color: #FFFACD}
+input[type='text']:focus, input[type='password']:focus, input[type='file']:focus, textarea:focus, select:focus { background-color: #FFFACD }
 
 input[type='file'] { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF; height: 100%; cursor: pointer }
 
@@ -287,7 +287,7 @@ input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
 
 textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
 
-fieldset, fieldset > legend, fieldset > label > span { border-radius:5px; -webkit-border-radius: 5px; -moz-border-radius: 5px}
+fieldset, fieldset > legend, fieldset > label > span { border-radius:5px; -webkit-border-radius: 5px; -moz-border-radius: 5px }
 fieldset { margin: auto; margin-top: 20px; padding: 12px; border: 1px solid #A6A394; background-color: #B6B3A4}
 
 fieldset fieldset { padding: 4px; display: inline; float: left; text-align: left; margin-top: 10px }
@@ -300,8 +300,8 @@ fieldset > legend > i { float: left; margin-right: 4px}
 fieldset fieldset > legend { background-color: #BDBCB2 }
 
 fieldset > label { padding: 4px; display: inline; float: left; text-align: left; display: flex; flex-direction: column}
-fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #E6E2D3;
-			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: black;}
+fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #E6E6E3;
+			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #000000;}
 fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: #080c1b}
 fieldset > label > span > textarea { line-height: 16px}
 fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}
@@ -397,7 +397,7 @@ div.Dialog > div:last-child > dialog { padding: 0px; margin: 0px; border: none; 
 
 
 div.Panel { padding: 10px; border-radius: 5px;
-	    background-color: #CDCAB9; border: 1px solid #ADAA99 }
+	    background-color: #BCB9A8; border: 1px solid #ADAA99 }
 
 label[data-icon], span[data-icon]
 {
