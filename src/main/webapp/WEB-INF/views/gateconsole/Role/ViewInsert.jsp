@@ -68,9 +68,9 @@
 			<g:link method="post" module="#" screen="#" action="#" style='color: #006600' tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
-			<g:link module="#" screen="#" lass='L' style='color: #660000' tabindex='2'>
+			<a href='#' class="Hide" style='color: #660000; float: left' tabindex='2'>
 				Desistir<g:icon type='cancel'/>
-			</g:link>
+			</a>
 		</div>
 	</form>
 </g:template>
