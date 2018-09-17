@@ -97,7 +97,7 @@
 			</label>
 			<label style='width: 100%'>
 				Detalhes:
-				<span style='height: 60px'>
+				<span style='height: 80px'>
 					<g:label property='form.details'/>
 				</span>
 			</label>
@@ -106,7 +106,7 @@
 			<legend>
 				Foto<g:icon type="gate.entity.User"/>
 			</legend>
-			<div style="height: calc(100% - 10px); display: flex;
+			<div style="height: calc(100% - 26px); display: flex;
 			     align-items: center;
 			     justify-content: center">
 				<g:with name="photo" value="${screen.photo}">
