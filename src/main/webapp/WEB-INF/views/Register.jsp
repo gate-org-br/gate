@@ -10,12 +10,12 @@
 				<div style='width: 600px; height: 524px; position: absolute; top: 50%; margin-top: -262px; left: 50%; margin-left: -300px;
 				     padding: 10px; -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
 				     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75); border: 2px groove #CCCCCC; background-color: #CDCAB9'>
-					<div class='TEXT' style='width: 100%; height: 60px; padding: 10px; margin: 10px 0 0 0'>
-						<img src='${org.icon}' style='float: left; height: 40px'/>
-						<span style='float: left; height: 40px; margin-left: 10px; line-height: 14px'>
-							<strong style='font-size: 16px'>${app.id}</strong>
-							<br/><br/><span style='font-size: 12px'>${app.name}</span>
-						</span>
+					<div style='width: 100%; height: 64px; display: flex; align-items: stretch;
+					     background-color: #FFFFFF; border-radius: 5px; padding: 8px;'>
+						<img src='imge/gate.svg' style='height: 48px'/>
+						<div style="color: #999999; width: 100%; display: flex; align-items: flex-start; justify-content: flex-end">
+							Vers&atilde;o ${version}
+						</div>
 					</div>
 					<div class='LinkControl'>
 						<ul>
