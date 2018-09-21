@@ -179,8 +179,8 @@ ul.MENU li.Separator, ul.NAVI li.Separator { height: 4px; background-color: #CDC
 ul.MENU li.Separator, ul.NAVI > li.Separator { width: 4px; height: 36px; background-color: transparent; border: none }
 
 ul.MENU > li.MenuLink, ul.NAVI > li.MenuLink { float: right; width: 48px }
-ul.MENU > li.MenuLink > a, ul.NAVI > li.MenuLink > a { display: flex; align-items: center; justify-content: center }
-ul.MENU > li.MenuLink > a > i, ul.NAVI > li.MenuLink > a > i { font-size: 16px }
+ul.MENU > li.MenuLink > a, ul.NAVI > li.MenuLink > a { display: flex; align-items: center; justify-content: center; color: inherit }
+ul.MENU > li.MenuLink > a > i, ul.NAVI > li.MenuLink > a > i { font-size: 16px; color: inherit }
 
 ul.MENU a:hover, ul.NAVI a:hover
 {
