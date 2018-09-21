@@ -37,6 +37,11 @@ function Message(type, message, timeout)
 	body.style.justifyContent = "center";
 	body.style.backgroundColor = "#FFFFFF";
 
+	modal.onclick = dialog.onclick = icon.onclick = body.onclick = function ()
+	{
+		modal.hide();
+	};
+
 	switch (type)
 	{
 		case "SUCCESS":
@@ -55,11 +60,6 @@ function Message(type, message, timeout)
 			body.style.color = "#660000";
 			break;
 	}
-
-	modal.onclick = function ()
-	{
-		modal.hide();
-	};
 
 	if (timeout)
 		window.top.setTimeout(function ()

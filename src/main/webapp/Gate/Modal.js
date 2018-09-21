@@ -3,23 +3,23 @@ function Modal()
 	var body = window.top.document.body;
 	var overflow = body.style.overflow;
 
-	var dialog = window.top.document.createElement('div');
-	dialog.className = "Modal";
+	var modal = window.top.document.createElement('div');
+	modal.className = "Modal";
 
-	dialog.show = function ()
+	modal.show = function ()
 	{
 		body.style.overflow = "hidden";
 		body.appendChild(this);
 		return this;
 	};
 
-	dialog.setOnHide = function (onHide)
+	modal.setOnHide = function (onHide)
 	{
 		this.onHide = onHide;
 		return this;
 	};
 
-	dialog.hide = function ()
+	modal.hide = function ()
 	{
 		if (this.parentNode)
 		{
@@ -31,5 +31,5 @@ function Modal()
 		return this;
 	};
 
-	return dialog;
+	return modal;
 }
