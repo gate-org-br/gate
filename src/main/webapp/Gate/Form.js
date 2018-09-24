@@ -35,8 +35,6 @@ window.addEventListener("load", function ()
 			event = event ? event : window.event;
 			if (event.keyCode === 13)
 			{
-				event.preventDefault();
-				event.stopImmediatePropagation();
 				var input = document.activeElement;
 				switch (input.tagName.toLowerCase())
 				{
@@ -50,6 +48,7 @@ window.addEventListener("load", function ()
 								case "email":
 								case "month":
 								case "number":
+								case "file":
 								case "range":
 								case "search":
 								case "tel":
@@ -66,14 +65,30 @@ window.addEventListener("load", function ()
 									input.click();
 									break;
 							}
+						event.preventDefault();
+						event.stopImmediatePropagation();
 						break;
 					case "select":
 						input = next(input);
 						if (input)
 							input.focus();
+						event.preventDefault();
+						event.stopImmediatePropagation();
 						break;
 					case "button":
 						input.click();
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						break;
+					case "textarea":
+						if (event.ctrlKey)
+						{
+							input = next(input);
+							if (input)
+								input.focus();
+							event.preventDefault();
+							event.stopImmediatePropagation();
+						}
 						break;
 				}
 			}
