@@ -5,10 +5,10 @@
 	<body style='background-image: url("../gate/imge/back/BACK.png");
 	      background-attachment: fixed'>
 		<div style='width: 100%; margin: auto; display: flex; flex-direction: column'>
-			<div style='width: 100%; flex-basis: 100px; display: flex; background-color: #FFFFFF; padding:
-			     8px; border-radius: 5px; align-items: stretch; justify-content: space-between'>
-				<img src='imge/gate.svg'/>
-				<div style='display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end'>
+			<div style='width: 100%; flex-basis: 50px; display: flex; background-color: #FFFFFF; padding:
+			     8px; border-radius: 5px 5px 0 0; align-items: center; justify-content: space-between'>
+				<img src='imge/gate.svg' style="height: 40px"/>
+				<div style='display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; height: 40px'>
 					<div style='display: flex; justify-content: flex-start'>
 						Vers&atilde;o ${version}
 					</div>
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div class='NAVI'>
+			<div style="width: 100%; display: flex; align-items: center; justify-content: center; flex-basis: 50px; background-color: #A5A293; padding: 4px">
 				<ul class='NAVI'>
 					<g:menuitem module="gateconsole.screen" screen="Home" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="Role" style="width: 10%"/>
@@ -34,7 +34,7 @@
 				</ul>
 			</div>
 
-			<div class='Panel' style='max-height: calc(100vh - 176px); overflow: auto'>
+			<div class='Panel' style='max-height: calc(100vh - 122px); overflow: auto; border-radius: 0 0 5px 5px; border: none'>
 				<g:insert/>
 			</div>
 
