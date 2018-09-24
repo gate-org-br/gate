@@ -126,7 +126,7 @@ function URL(value)
 		for (var i = 0; i < selects.length; i++)
 		{
 			selects[i].value = undefined;
-			selects[i].innerHTML = "<option this.value=''></option>";
+			selects[i].innerHTML = "<option value=''></option>";
 		}
 
 		this.get(function (options)
@@ -139,7 +139,7 @@ function URL(value)
 					{
 						var option = selects[i].appendChild(document.createElement("option"));
 						option.innerHTML = options[j].label;
-						option.setAttribute('this.value', options[j].value);
+						option.setAttribute('value', options[j].value);
 					}
 			}
 		});
