@@ -70,12 +70,7 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
 
 *.COOLBAR
 {
-	width: 100%; height: 40px; background-image: url("imge/back/GLASS.png"); border-radius: 5px; padding: 2px 0px 2px 0px;
-	background-image: -ms-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
-	background-image: -moz-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
-	background-image: -o-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #F2EFDF), color-stop(1, #ABA89D));
-	background-image: -webkit-linear-gradient(top, #F2EFDF 0%, #ABA89D 100%);
+	width: 100%; height: 40px; border-radius: 5px; padding: 2px 0px 2px 0px;
 	background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
 }
 
@@ -88,27 +83,17 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
 	font-size: 10px;
 	color: #432F21;
 	border-radius: 5px; padding: 0px 4px; text-align: center;
-	background-image: -ms-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
-	background-image: -moz-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
-	background-image: -o-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #D6D3C4), color-stop(1, #8A887E));
-	background-image: -webkit-linear-gradient(top, #D6D3C4 0%, #8A887E 100%);
 	background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
 }
 
-*.COOLBAR a:hover
+*.COOLBAR a:hover, *.COOLBAR button:hover
 {
 	text-decoration: underline;
-	background-image: -ms-linear-gradient(top, #E3E0D0 0%, #858279 100%);
-	background-image: -moz-linear-gradient(top, #E3E0D0 0%, #858279 100%);
-	background-image: -o-linear-gradient(top, #E3E0D0 0%, #858279 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #E3E0D0), color-stop(1, #858279));
-	background-image: -webkit-linear-gradient(top, #E3E0D0 0%, #858279 100%);
 	background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
 }
 
-
-*.COOLBAR > a:focus { outline: 2px solid #FFFACD }
+*.COOLBAR > a:focus, *.COOLBAR > button:focus
+{ background-image: linear-gradient(to bottom,  #ABB6D1 0%, #767D90 100%); outline: none;  }
 
 *.COOLBAR > a, div.MINIBAR > a, *.COOLBAR > button, div.MINIBAR > button { float: right }
 *.COOLBAR > a, *.COOLBAR > button, *.COOLBAR > a, *.COOLBAR > button { text-align: left }
