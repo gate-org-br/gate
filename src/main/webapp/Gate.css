@@ -93,7 +93,7 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
 }
 
 *.COOLBAR > a:focus, *.COOLBAR > button:focus
-{ background-image: linear-gradient(to bottom,  #ABB6D1 0%, #767D90 100%); outline: none;  }
+{ background-image: linear-gradient(to bottom,  #DDDDDD 0%, #999999 100%); outline: none; border-color: #EEEEEE;  }
 
 *.COOLBAR > a, div.MINIBAR > a, *.COOLBAR > button, div.MINIBAR > button { float: right }
 *.COOLBAR > a, *.COOLBAR > button, *.COOLBAR > a, *.COOLBAR > button { text-align: left }
@@ -181,6 +181,7 @@ ul.MENU a:hover, ul.NAVI a:hover
 
 li { text-align: left }
 
+ul.NAVI { width: 100% }
 ul.NAVI a { padding: 10px }
 ul.NAVI > li { display: inline-block; width: 200px; border: 1px solid #CDCAB9; float: left}
 div.NAVI { width: 100%; height: 40px; margin-bottom: 10px; border-radius: 5px; margin-top: 10px}
