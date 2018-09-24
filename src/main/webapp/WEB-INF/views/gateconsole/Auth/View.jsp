@@ -32,8 +32,8 @@
 				Module:
 				<span>
 					<g:text id='module' property="form.module" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action' 
-							title='Pesquisar acessos'>
+					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
+						title='Pesquisar acessos'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
@@ -42,8 +42,8 @@
 				Screen:
 				<span>
 					<g:text id='screen' property="form.screen" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action' 
-							title='Pesquisar acessos'>
+					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
+						title='Pesquisar acessos'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
@@ -52,15 +52,15 @@
 				Action:
 				<span>
 					<g:text id='action' property="form.action" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action' 
-							title='Pesquisar acessos'>
+					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
+						title='Pesquisar acessos'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
 			</label>
 		</fieldset>
 		<div class='COOLBAR'>
-			<g:link method="post" module="#" screen="#" action="Insert">
+			<g:link method="post" module="#" screen="#" action="Insert" tabindex="2">
 				Inserir<g:icon type="insert"/>
 			</g:link>
 		</div>
@@ -139,5 +139,5 @@
 				</tbody>
 			</table>
 		</g:otherwise>
-	</g:choose>				
+	</g:choose>
 </g:template>
