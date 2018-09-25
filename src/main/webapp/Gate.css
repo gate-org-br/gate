@@ -93,7 +93,7 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
 }
 
 *.COOLBAR > a:focus, *.COOLBAR > button:focus
-{ background-image: linear-gradient(to bottom,  #DDDDDD 0%, #999999 100%); outline: none; border-color: #EEEEEE;  }
+{ outline: none; border: 2px solid #FFFACD; }
 
 *.COOLBAR > a, div.MINIBAR > a, *.COOLBAR > button, div.MINIBAR > button { float: right }
 *.COOLBAR > a, *.COOLBAR > button, *.COOLBAR > a, *.COOLBAR > button { text-align: left }
