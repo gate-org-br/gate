@@ -7,7 +7,7 @@
 		<div style='width: 100%; margin: auto; display: flex; flex-direction: column'>
 			<div style='width: 100%; flex-basis: 50px; display: flex; background-color: #FFFFFF; padding:
 			     8px; border-radius: 5px 5px 0 0; align-items: center; justify-content: space-between'>
-				<img src='imge/gate.svg' style="height: 40px"/>
+				<img src='imge/logo.svg' style="height: 40px"/>
 				<div style='display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; height: 40px'>
 					<div style='display: flex; justify-content: flex-start'>
 						Vers&atilde;o ${version}

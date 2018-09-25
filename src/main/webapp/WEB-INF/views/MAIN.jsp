@@ -5,7 +5,7 @@
     <head>
         <meta charset="UTF-8">
         <title>${app.id} - ${app.name}</title>
-        <link rel="shortcut icon" type="image/png" href="./Favicon.png"/>
+        <link rel="shortcut icon" type="image/png" href="../gate/imge/icon.svg"/>
         <link rel='stylesheet' type='text/css' href='../gate/Gate.css?version=${version}'/>
         <script type='text/javascript' src='../gate/charts/echarts.js?version=${version}' charset=\"utf-8\"></script>
         <script type='text/javascript' src='../gate/ckeditor/ckeditor.js?version=${version}' charset=\"utf-8\"></script>
