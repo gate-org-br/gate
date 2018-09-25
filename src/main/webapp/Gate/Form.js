@@ -4,23 +4,17 @@ window.addEventListener("load", function ()
 	{
 		form.addEventListener("submit", function (e)
 		{
-			if (this.getAttribute("data-cancel"))
+			if (this.hasAttribute("data-cancel"))
 			{
-				alert(this.getAttribute("data-cancel"));
+				Message.error(this.getAttribute("data-cancel"), 2000);
 				e.preventDefault();
 				e.stopImmediatePropagation();
-				return false;
-			}
 
-			if (this.getAttribute("data-confirm")
-				&& !prompt(this.getAttribute("data-confirm")))
+			} else if (this.hasAttribute("data-confirm") && !confirm(this.getAttribute("data-confirm")))
 			{
 				e.preventDefault();
 				e.stopImmediatePropagation();
-				return false;
-			}
-
-			if (this.target === "_dialog")
+			} else if (this.target === "_dialog")
 			{
 				new Dialog()
 					.setTitle(this.getAttribute("title"))
@@ -35,74 +29,66 @@ window.addEventListener("load", function ()
 		{
 			event = event ? event : window.event;
 
-			if (event.keyCode === 13)
+			switch (event.keyCode)
 			{
-				if (this.hasAttribute("action") && event.ctrlKey)
-				{
-					var button = document.createElement("button");
-					button.style.display = "none";
-					this.appendChild(button);
-					button.click();
-					this.removeChild(button);
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				} else
-				{
-					var input = document.activeElement;
-					if (input.hasAttribute("tabindex")
-						&& input.tagName.toLowerCase() !== "textarea")
+				case ENTER:
+					var element = document.activeElement;
+					switch (element.tagName.toLowerCase())
 					{
-						input = next(input, event.shiftKey);
-						if (input)
-							input.focus();
-						event.preventDefault();
-						event.stopImmediatePropagation();
+						case "a":
+						case "button":
+							element.click();
+							event.preventDefault();
+							event.stopImmediatePropagation();
+							break;
+						case "select":
+						case "textarea":
+							if (!event.ctrlKey)
+								break;
+						case "input":
+							var commit = this.querySelector(".Commit");
+							if (commit)
+							{
+								commit.focus();
+								commit.click();
+								event.preventDefault();
+								event.stopImmediatePropagation();
+							} else if (this.hasAttribute("action"))
+							{
+								let button = document.createElement("button");
+								button.style.display = "none";
+								this.appendChild(button);
+								button.click();
+								this.removeChild(button);
+								event.preventDefault();
+								event.stopImmediatePropagation();
+							}
+							break;
 					}
-				}
-			}
+					break;
+				case ESC:
+					var element = document.activeElement;
+					switch (element.tagName.toLowerCase())
+					{
+						case "select":
+							if (!event.ctrlKey)
+								break;
+						case "input":
+						case "a":
+						case "button":
+						case "textarea":
+							var cancel = this.querySelector(".Cancel");
+							if (cancel)
+							{
+								cancel.focus();
+								cancel.click();
+								event.preventDefault();
+								event.stopImmediatePropagation();
+							}
+							break;
+					}
+					break;
 
-			function next(input, shift)
-			{
-				var form = input.parentNode;
-				while (form.tagName.toLowerCase() !== "form")
-					form = form.parentNode;
-
-				var inputs = Array.from(form.getElementsByTagName("*")).filter(function (e)
-				{
-					return e.tagName
-						&& e.offsetParent
-						&& e.hasAttribute("tabindex")
-						&& (e.tagName.toLowerCase() === "input"
-							|| e.tagName.toLowerCase() === "select"
-							|| e.tagName.toLowerCase() === "textarea"
-							|| e.tagName.toLowerCase() === "a"
-							|| e.tagName.toLowerCase() === "button");
-				}).map(function (e, index)
-				{
-					return {obj: e, idx: index};
-				});
-
-				inputs.sort(function (e1, e2)
-				{
-					var tabindex1 = e1.obj.getAttribute("tabindex");
-					var tabindex2 = e2.obj.getAttribute("tabindex");
-					if (tabindex1 === tabindex2)
-						return e1.idx - e2.idx;
-					return Number(tabindex1) - Number(tabindex2);
-				});
-
-				if (shift)
-					inputs = inputs.reverse();
-
-				inputs = inputs.map(function (e)
-				{
-					return e.obj;
-				});
-				for (var i = 0; i < inputs.length; i++)
-					if (inputs[i] === input && inputs.length > i + 1)
-						return inputs[i + 1];
-
-				return inputs.length > 0 ? inputs[0] : null;
 			}
 		});
 	});
