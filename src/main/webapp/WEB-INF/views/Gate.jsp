@@ -62,7 +62,7 @@
 					<div class='COOLBAR'>
 						<button target='_top'
 							formaction="Gate?${g:qs(pageContext.request, 'MODULE=gateconsole.screen')}"
-							tabindex='2' style='color: #006600'>
+							tabindex='2' class="Commit">
 							Concluir<g:icon type="commit"/>
 						</button>
 					</div>
