@@ -45,6 +45,16 @@ function Link(a)
 		}
 	});
 
+	a.addEventListener("keydown", function (event)
+	{
+		if (event.keyCode === 32)
+		{
+			this.click();
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+	});
+
 	a.addEventListener("click", function (e)
 	{
 		if (this.getAttribute("target"))
@@ -173,7 +183,7 @@ function Link(a)
 
 window.addEventListener("load", function ()
 {
-	search('a').forEach(function (a)
+	Array.from(document.querySelectorAll("a")).forEach(function (a)
 	{
 		new Link(a);
 	});
