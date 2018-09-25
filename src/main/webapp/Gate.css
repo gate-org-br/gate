@@ -113,6 +113,8 @@ div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: 
 
 *.COOLBAR > progress { width: calc(100% - 8px); height: calc(100% - 8px); margin: 4px }
 
+*.COOLBAR a.Commit, *.COOLBAR button.Commit { color: #006600 }
+*.COOLBAR a.Cancel, *.COOLBAR button.Cancel { color: #660000; float: left }
 
 div.MINIBAR { overflow: auto}
 div.MINIBAR > a > i { font-size: 16px}

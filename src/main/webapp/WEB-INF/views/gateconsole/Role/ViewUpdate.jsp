@@ -18,10 +18,10 @@
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
 					<g:text id='form.role.name' property='form.role.name' readonly='readonly' required=''
-							style='width: calc(100% - 32px)'/>
+						style='width: calc(100% - 32px)'/>
 					<g:link module="#" screen="#" action="Search"
-							data-get='form.role.id, form.role.name'
-							tabindex='1' style='width: 32px' title='Selecionar Perfil'>
+						data-get='form.role.id, form.role.name'
+						tabindex='1' style='width: 32px' title='Selecionar Perfil'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
@@ -54,7 +54,7 @@
 				Respons&aacute;vel:
 				<span>
 					<g:select property='form.manager.id' identifiedBy="id"
-							  tabindex='1' options="${screen.users}" required=''/>
+						  tabindex='1' options="${screen.users}" required=''/>
 				</span>
 			</label>
 			<label style='width: 100%'>
@@ -66,10 +66,10 @@
 		</fieldset>		
 
 		<div class='COOLBAR'>
-			<g:link method="post" module="#" screen="#" action="#" style='color: #006600' tabindex='2'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
-			<g:link module="#" screen="#" action="Select" arguments="form.id=${screen.form.id}" style='float: left; color: #660000' tabindex='2'>
+			<g:link class="Cancel" module="#" screen="#" action="Select" arguments="form.id=${screen.form.id}" tabindex='2'>
 				Desistir<g:icon type='cancel'/>
 			</g:link>
 		</div>
