@@ -2,9 +2,9 @@ function Link(a)
 {
 	a.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("data-cancel"))
+		if (this.hasAttribute("data-cancel"))
 		{
-			alert(this.getAttribute("data-cancel"));
+			Message.error(this.getAttribute("data-cancel"));
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		}
@@ -12,7 +12,7 @@ function Link(a)
 
 	a.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("data-confirm")
+		if (this.hasAttribute("data-confirm")
 			&& !confirm(this.getAttribute("data-confirm")))
 		{
 			e.preventDefault();
@@ -20,9 +20,9 @@ function Link(a)
 		}
 	});
 
-	a.addEventListener("click", function (e)
+	a.addEventListener("click", function ()
 	{
-		if (this.getAttribute("data-alert"))
+		if (this.hasAttribute("data-alert"))
 			alert(this.getAttribute("data-alert"));
 	});
 
@@ -42,16 +42,6 @@ function Link(a)
 
 			e.preventDefault();
 			e.stopImmediatePropagation();
-		}
-	});
-
-	a.addEventListener("keydown", function (event)
-	{
-		if (event.keyCode === 32)
-		{
-			this.click();
-			event.preventDefault();
-			event.stopImmediatePropagation();
 		}
 	});
 
@@ -101,6 +91,16 @@ function Link(a)
 	{
 		if (this.getAttribute("data-block"))
 			Block.show(this.getAttribute("data-block"));
+	});
+
+	a.addEventListener("keydown", function (event)
+	{
+		if (event.keyCode === 32)
+		{
+			this.click();
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
 	});
 
 	this.setAlert = function (value)
