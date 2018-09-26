@@ -2,9 +2,9 @@ function Button(button)
 {
 	button.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("data-cancel"))
+		if (this.hasAttribute("data-cancel"))
 		{
-			alert(this.getAttribute("data-cancel"));
+			Message.error(this.getAttribute("data-cancel"));
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		}
@@ -12,7 +12,7 @@ function Button(button)
 
 	button.addEventListener("click", function (e)
 	{
-		if (this.getAttribute("data-confirm")
+		if (this.hasAttribute("data-confirm")
 			&& !confirm(this.getAttribute("data-confirm")))
 		{
 			e.preventDefault();
@@ -20,9 +20,9 @@ function Button(button)
 		}
 	});
 
-	button.addEventListener("click", function (e)
+	button.addEventListener("click", function ()
 	{
-		if (this.getAttribute("data-alert"))
+		if (this.hasAttribute("data-alert"))
 			alert(this.getAttribute("data-alert"));
 	});
 
@@ -181,8 +181,8 @@ function Button(button)
 
 window.addEventListener("load", function ()
 {
-	search('button').forEach(function (e)
+	Array.from(document.querySelectorAll("button")).forEach(function (button)
 	{
-		new Button(e);
+		new Button(button);
 	});
 });
