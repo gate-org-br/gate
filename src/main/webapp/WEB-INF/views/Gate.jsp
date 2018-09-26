@@ -20,7 +20,7 @@
 
 					<div style='width: 100%; height: 64px; display: flex; align-items: stretch;
 					     background-color: #FFFFFF; border-radius: 5px; padding: 8px;'>
-						<img src='imge/gate.svg' style='height: 48px'/>
+						<img src='imge/logo.svg' style='height: 48px'/>
 						<div style="color: #999999; width: 100%; display: flex; align-items: flex-start; justify-content: flex-end">
 							Vers&atilde;o ${version}
 						</div>
