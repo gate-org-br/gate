@@ -1,22 +1,25 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
-	<ul class='LIST'>
+
+	<div style="display: flex; flex-wrap: wrap; justify-content: flex-start">
 		<g:icons name="icon">
 			<g:if condition="${icon.name ne '??????'}">
-				<li tabindex='1'>
-					${icon.name}<i>&#x${icon.code};</i>
-				</li>
+				<label data-icon="&#x${icon.code}" style="width: 9%; margin: 0.5%; height: 46px;
+				       background-color: #FFFFFF; font-size: 20px; color: #006600">${icon.code}<br/>${icon.name}</label>
+				</g:if>
+			</g:icons>
+	</div>
+
+	<div style="display: flex; flex-wrap: wrap; justify-content: flex-start">
+		<g:icons name="icon">
+			<g:if condition="${icon.name eq '??????'}">
+				<label data-icon="&#x${icon.code}" style="width: 9%; margin: 0.5%;
+				       background-color: #FFFFFF; font-size: 20px; color: #000066">${icon.code}</label>
 			</g:if>
 		</g:icons>
-	</ul>
-	<ul class='LIST' style='margin-top: 40px'>
-		<g:icons name="icon">
-			<li tabindex='1'>
-				${icon.code}<i>&#x${icon.code};</i>
-			</li>
-		</g:icons>
-	</ul>
+	</div>
+
 	<script>
 		window.addEventListener("load", function ()
 		{
