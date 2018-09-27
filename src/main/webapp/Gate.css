@@ -296,9 +296,8 @@ fieldset > label > span > *:first-child, fieldset > label > span > *:first-child
 fieldset > label > span > *:last-child, fieldset > label > span > *:last-child > * { -moz-border-top-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px}
 fieldset > label> span > a { width: 100%; display: flex;
 			     align-items: center; justify-content: center; border: none;
-			     background-color: #CCCCDD;
-			     font-family: gate; border: 1px solid #CCCCCC}
-fieldset > label > span > a:hover { color: #CA171B}
+			     background-color: #CCCCDD}
+fieldset > label > span > a:hover { color: #CA171B;  background-color: #EEEEEE}
 fieldset label > span > a:focus { background-color: #FFFACD }
 fieldset > label > span > i, fieldset > label > span > span { position: absolute; right: 0px; color: #666666; width: 20px; display: block; text-align: center; font-size: 12px; line-height: 24px; border: 0px none transparent}
 fieldset > label > span > a > i, fieldset > label > span > a > span { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
