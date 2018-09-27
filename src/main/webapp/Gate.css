@@ -294,11 +294,15 @@ fieldset > label > span > * { display: inline-block; float: left; border: 1px so
 fieldset > label > span > textarea { line-height: 16px}
 fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}
 fieldset > label > span > *:last-child, fieldset > label > span > *:last-child > * { -moz-border-top-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px}
-fieldset > label> span > a { border: 0px none transparent; line-height: 24px; width: 100%}
+fieldset > label> span > a { width: 100%; display: flex;
+			     align-items: center; justify-content: center; border: none;
+			     background-color: #CCCCDD;
+			     font-family: gate; border: 1px solid #CCCCCC}
 fieldset > label > span > a:hover { color: #CA171B}
-fieldset label > span > a:focus { background-color: #FFFACD}
+fieldset label > span > a:focus { background-color: #FFFACD }
 fieldset > label > span > i, fieldset > label > span > span { position: absolute; right: 0px; color: #666666; width: 20px; display: block; text-align: center; font-size: 12px; line-height: 24px; border: 0px none transparent}
-fieldset > label > span > a > i, fieldset > label > span > a > span { display: block; width: 100%; height: 100%; text-align: center; font-size: 16px; padding: 3px; border: 1px solid #CCCCCC}
+fieldset > label > span > a > i, fieldset > label > span > a > span { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+								      width: 100%; height: 100%; font-size: 16px; border: 1px solid #CCCCCC}
 
 
 dl { display: inline-flex; flex-wrap: wrap; background-color: white; padding: 4px}
@@ -393,6 +397,7 @@ label[data-icon], span[data-icon]
 	height: 32px;
 	cursor: inherit;
 	font-size: 16px;
+	overflow: hidden;
 	text-align: left;
 	border-radius: 5px;
 	display: inline-flex;
@@ -401,15 +406,23 @@ label[data-icon], span[data-icon]
 	background-color: #8899AA;
 }
 
+fieldset > label > span > label[data-icon]
+{
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
 label[data-icon]::before, span[data-icon]::before
 {
 	width: 32px;
 	height: 100%;
-	font-size: 16px;
+	color: inherit;
 	margin-right: 8px;
 	font-family: gate;
-	display: inline-flex;
+	font-size: inherit;
 	align-items: center;
+	display: inline-flex;
 	justify-content: center;
 	content: attr(data-icon);
 	border-right: 1px solid #DDDDDD;
