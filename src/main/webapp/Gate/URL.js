@@ -147,6 +147,12 @@ function URL(value)
 	};
 
 
+	this.go = function ()
+	{
+		window.location.href = this.toString();
+		return this;
+	}
+
 	this.check = function ()
 	{
 		return !this.value.match(/([?][{][^}]*[}])/g)
