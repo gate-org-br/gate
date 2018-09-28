@@ -72,6 +72,27 @@ function Link(a)
 					e.stopPropagation();
 					e.stopImmediatePropagation();
 					break;
+				case "_popup":
+					if (e.ctrlKey)
+					{
+						e.setAttribute("target", "_blank");
+						this.click();
+						e.setAttribute("target", "_popup");
+					} else
+						new Popup()
+							.setTitle(this.getAttribute("title"))
+							.setOnHide(this.getAttribute("data-onHide"))
+							.setNavigator(this.getAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null)
+							.setTarget(this.getAttribute("href"))
+							.setCloseable(!this.hasAttribute("data-closeable")
+								|| JSON.parse(this.getAttribute("data-closeable")))
+							.show();
+
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					break;
 				case "_alert":
 
 					new URL(this.getAttribute("href")).get(function (response)

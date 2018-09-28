@@ -72,6 +72,25 @@ function Button(button)
 								|| JSON.parse(this.getAttribute("data-closeable")))
 							.show();
 					break;
+				case "_popup":
+					if (e.ctrlKey)
+					{
+						e.setAttribute("formtarget", "_blank");
+						this.click();
+						e.setAttribute("formtarget", "_popup");
+						e.preventDefault();
+						e.stopPropagation();
+						e.stopImmediatePropagation();
+					} else if (this.form.getAttribute("target") !== "_popup")
+						new Popup()
+							.setTitle(this.getAttribute("title"))
+							.setOnHide(this.getAttribute("data-onHide"))
+							.setNavigator(this.getAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null)
+							.setCloseable(!this.hasAttribute("data-closeable")
+								|| JSON.parse(this.getAttribute("data-closeable")))
+							.show();
+					break;
 				case "_alert":
 
 					new URL(this.getAttribute("formaction"))
