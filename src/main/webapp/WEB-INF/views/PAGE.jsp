@@ -3,7 +3,7 @@
 <!DOCTYPE HTML>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-	<body style="padding: 0px; background-color: #BCB9A8">
+	<body class="Page">
 		<g:insert/>
 	</body>
 	<g:alert/>
