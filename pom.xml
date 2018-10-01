@@ -298,7 +298,6 @@
 								<include>**/LinkControl.js</include>
 								<include>**/Dialog.js</include>
 								<include>**/Popup.js</include>
-								<include>**/HTMLDialog.js</include>
 								<include>**/TreeView.js</include>
 								<include>**/DateFormat.js</include>
 								<include>**/Desktop.js</include>
