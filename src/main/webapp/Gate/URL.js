@@ -167,7 +167,7 @@ function URL(value)
 			for (var i = 0; i < parameters.length; i++)
 			{
 				var parameter = decodeURIComponent
-					(prompt(parameters[i].substring(2, parameters[i].length - 1)));
+					(prompt(decodeURIComponent(parameters[i].substring(2, parameters[i].length - 1))));
 				if (!parameter)
 					return false;
 				result = result.replace(parameters[i], encodeURIComponent(parameter));
