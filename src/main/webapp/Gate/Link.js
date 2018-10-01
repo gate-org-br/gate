@@ -4,18 +4,20 @@ function Link(a)
 	{
 		if (this.hasAttribute("data-cancel"))
 		{
-			Message.error(this.getAttribute("data-cancel"));
 			e.preventDefault();
+			e.stopPropagation();
 			e.stopImmediatePropagation();
+
+			Message.error(this.getAttribute("data-cancel"));
 		}
 	});
 
 	a.addEventListener("click", function (e)
 	{
-		if (this.hasAttribute("data-confirm")
-			&& !confirm(this.getAttribute("data-confirm")))
+		if (this.hasAttribute("data-confirm") && !confirm(this.getAttribute("data-confirm")))
 		{
 			e.preventDefault();
+			e.stopPropagation();
 			e.stopImmediatePropagation();
 		}
 	});
@@ -28,9 +30,12 @@ function Link(a)
 
 	a.addEventListener("click", function (e)
 	{
-		if (this.href.match(/([?][{][^}]*[}])/g)
-			|| this.href.match(/([@][{][^}]*[}])/g))
+		if (this.href.match(/([?][{][^}]*[}])/g) || this.href.match(/([@][{][^}]*[}])/g))
 		{
+			e.preventDefault();
+			e.stopPropagation();
+			e.stopImmediatePropagation();
+
 			var resolved = resolve(this.href);
 			if (resolved !== null)
 			{
@@ -39,9 +44,6 @@ function Link(a)
 				this.click();
 				this.href = href;
 			}
-
-			e.preventDefault();
-			e.stopImmediatePropagation();
 		}
 	});
 
@@ -52,6 +54,10 @@ function Link(a)
 			switch (this.getAttribute("target").toLowerCase())
 			{
 				case "_dialog":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+
 					if (e.ctrlKey)
 					{
 						e.setAttribute("target", "_blank");
@@ -68,41 +74,39 @@ function Link(a)
 								|| JSON.parse(this.getAttribute("data-closeable")))
 							.show();
 
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
 					break;
-				case "_popup":
-					if (e.ctrlKey)
-					{
-						e.setAttribute("target", "_blank");
-						this.click();
-						e.setAttribute("target", "_popup");
-					} else
-						new Popup()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setTarget(this.getAttribute("href"))
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
-							.show();
-
+				case "_message":
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
+					Message.show(JSON.parse(new URL(this.href).get()), 2000);
+					break;
+				case "_this":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					var status = JSON.parse(new URL(this.href).get());
+					if (status.type === "SUCCESS")
+						this.innerHTML = status.value;
+					else
+						Message.show(status, 2000);
 					break;
 				case "_alert":
-
-					new URL(this.getAttribute("href")).get(function (response)
-					{
-						alert(response);
-					});
-
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
+					alert(JSON.parse(new URL(this.href).get()));
+					break;
+				case "_hide":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					if (window.frameElement
+						&& window.frameElement.dialog
+						&& window.frameElement.dialog.hide)
+						window.frameElement.dialog.hide();
+					else
+						window.close();
 					break;
 			}
 		}
