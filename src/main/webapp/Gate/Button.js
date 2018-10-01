@@ -56,12 +56,12 @@ function Button(button)
 				case "_dialog":
 					if (e.ctrlKey)
 					{
-						e.setAttribute("formtarget", "_blank");
-						this.click();
-						e.setAttribute("formtarget", "_dialog");
 						e.preventDefault();
 						e.stopPropagation();
 						e.stopImmediatePropagation();
+						e.setAttribute("formtarget", "_blank");
+						this.click();
+						e.setAttribute("formtarget", "_dialog");
 					} else if (this.form.getAttribute("target") !== "_dialog")
 						new Dialog()
 							.setTitle(this.getAttribute("title"))
@@ -72,36 +72,40 @@ function Button(button)
 								|| JSON.parse(this.getAttribute("data-closeable")))
 							.show();
 					break;
-				case "_popup":
-					if (e.ctrlKey)
-					{
-						e.setAttribute("formtarget", "_blank");
-						this.click();
-						e.setAttribute("formtarget", "_popup");
-						e.preventDefault();
-						e.stopPropagation();
-						e.stopImmediatePropagation();
-					} else if (this.form.getAttribute("target") !== "_popup")
-						new Popup()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
-							.show();
-					break;
-				case "_alert":
-
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (response)
-						{
-							alert(response);
-						});
-
+				case "_message":
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
+					var message = JSON.parse(new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form)));
+					Message.show(message, 2000);
+					break;
+				case "_this":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					var status = JSON.parse(new URL(this.getAttribute("formaction").post(new FormData(this.form))));
+					if (status.type === "SUCCESS")
+						this.innerHTML = status.value;
+					else
+						Message.show(status, 2000);
+					break;
+				case "_alert":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					alert(new URL(this.getAttribute("formaction")).post(new FormData(this.form)));
+					break;
+				case "_hide":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					if (window.frameElement
+						&& window.frameElement.dialog
+						&& window.frameElement.dialog.hide)
+						window.frameElement.dialog.hide();
+					else
+						window.close();
 					break;
 			}
 		}
