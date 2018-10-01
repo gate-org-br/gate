@@ -228,6 +228,13 @@ function Dialog()
 		return this;
 	};
 
+	modal.setSize = function (width, height)
+	{
+		dialog.style.width = width;
+		dialog.style.height = height;
+		return this;
+	};
+
 	modal.setNavigator = function (navigator)
 	{
 		this.navigator = navigator;
