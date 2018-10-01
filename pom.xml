@@ -272,6 +272,7 @@
 							<inputDir>${basedir}/src/main/webapp/Gate</inputDir>
 							<output>${basedir}/target/${project.artifactId}-${project.version}/Gate.js</output>
 							<includes>
+								<include>**/dialog-polyfill.js</include>
 								<include>**/Gate.js</include>
 								<include>**/Duration.js</include>
 								<include>**/Fetch.js</include>
