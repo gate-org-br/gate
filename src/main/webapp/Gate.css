@@ -70,59 +70,6 @@ caption { height: 32px; vertical-align: middle; text-align: center; font-weight:
 div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: none; border-radius: 5px;
            -webkit-border-radius: 5px; -moz-border-radius: 5px; text-align: justify; padding: 12px}
 
-*.COOLBAR
-{
-	width: 100%; height: 40px; border-radius: 5px; padding: 2px 0px 2px 0px;
-	background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
-}
-
-*.COOLBAR a , *.COOLBAR button
-{
-	margin: 2px;
-	display: block; min-width: 90px; height: 32px; line-height: 28px;
-	border: 1px solid #CCCCCC;
-	font-weight: bold;
-	font-size: 10px;
-	color: #432F21;
-	border-radius: 5px; padding: 0px 4px; text-align: center;
-	background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
-}
-
-*.COOLBAR a:hover, *.COOLBAR button:hover
-{
-	text-decoration: underline;
-	background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
-}
-
-*.COOLBAR > a:focus, *.COOLBAR > button:focus
-{ outline: none; border: 2px solid #FFFACD; }
-
-*.COOLBAR > a, div.MINIBAR > a, *.COOLBAR > button, div.MINIBAR > button { float: right }
-*.COOLBAR > a, *.COOLBAR > button, *.COOLBAR > a, *.COOLBAR > button { text-align: left }
-*.COOLBAR > a:hover > i, *.COOLBAR > a:hover > span, *.COOLBAR > button:hover > i, *.COOLBAR > button:hover > span { color: inherit }
-*.COOLBAR > a > i, *.COOLBAR > a > span, *.COOLBAR > button > i, *.COOLBAR > button > span {float: right; line-height: 28px; font-size: 12px; margin-left: 4px }
-*.COOLBAR > button { cursor: pointer }
-
-*.COOLBAR > label { float: left; padding: 7px; font-size: 16px}
-*.COOLBAR > hr { width: 12px;
-                 margin: 2px;
-                 height: 32px;
-                 float: right;
-                 display: inline-block;
-                 border: 0px none transparent;
-                 background-color: transparent }
-
-
-*.COOLBAR > progress { width: calc(100% - 8px); height: calc(100% - 8px); margin: 4px }
-
-*.COOLBAR a.Commit, *.COOLBAR button.Commit { color: #006600 }
-*.COOLBAR a.Cancel, *.COOLBAR button.Cancel { color: #660000; float: left }
-
-div.MINIBAR { overflow: auto}
-div.MINIBAR > a > i { font-size: 16px}
-div.MINIBAR > a:focus { outline: none}
-div.MINIBAR > a { font-size: 16px; width: 24px; height: 24px; padding: 4px}
-
 div.FORMAT { width: 100%; padding: 8px; margin-bottom: 4px; background-color: #F0F0F4; border-radius: 5px; text-align: center}
 div.EDITOR { width: 100%; height: 250px; padding: 8px; background-color: #FFFFFF; border-radius: 5px; overflow: auto}
 
@@ -256,32 +203,6 @@ input[type='file'] { width: 100%; border: 1px solid #CCCCCC; background-color: #
 input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
 
 textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
-
-fieldset, fieldset > legend, fieldset > label > span { border-radius:5px; -webkit-border-radius: 5px; -moz-border-radius: 5px }
-fieldset { margin: auto; margin-top: 20px; padding: 12px; border: 1px solid #A6A394; background-color: #B6B3A4}
-
-fieldset fieldset { padding: 4px; display: inline; float: left; text-align: left; margin-top: 10px }
-
-fieldset > div { width: calc(100% - 10px); margin: 5px; background-color: #EEEEEE; border-radius: 5px; padding: 4px; border: 1px solid #CCCCCC }
-
-fieldset > legend { font-weight: bold; background-color: #DFDED4; text-align: left; color: #432F21; padding: 2px}
-fieldset > legend > i { float: left; margin-right: 4px}
-
-fieldset fieldset > legend { background-color: #BDBCB2 }
-
-fieldset > label { padding: 4px; display: inline; float: left; text-align: left; display: flex; flex-direction: column}
-fieldset > label > span { position: relative; display: block; width: 100%; height: 24px; line-height: 24px; background-color: #E6E6E3;
-			  margin: 0px; padding: 0px; border: 0px none transparent; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #000000;}
-fieldset > label > span > * { display: inline-block; float: left; border: 1px solid #CCCCCC; padding: 0px; margin: 0px; height: 100%; line-height: 22px; color: #080c1b}
-fieldset > label > span > textarea { line-height: 16px}
-fieldset > label > span > *:first-child, fieldset > label > span > *:first-child > * { -moz-border-top-left-radius: 5px; -moz-border-bottom-left-radius: 5px; -webkit-border-top-left-radius: 5px; -webkit-border-bottom-left-radius: 5px; border-top-left-radius: 5px; border-bottom-left-radius: 5px}
-fieldset > label > span > *:last-child, fieldset > label > span > *:last-child > * { -moz-border-top-right-radius: 5px; -moz-border-bottom-right-radius: 5px; -webkit-border-top-right-radius: 5px; -webkit-border-bottom-right-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px}
-fieldset > label> span > a { width: 100%; display: flex; align-items: center; justify-content: flex-start; border: none;}
-fieldset > label > span > a:hover { color: #CA171B;  background-color: #EEEEEE }
-fieldset label > span > a:focus { background-color: #FFFACD }
-fieldset > label > span > i, fieldset > label > span > span { position: absolute; right: 0px; color: #666666; width: 20px; display: block; text-align: center; font-size: 12px; line-height: 24px; border: 0px none transparent}
-fieldset > label > span > a > i, fieldset > label > span > a > span { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-								      width: 100%; height: 100%; font-size: 16px; border: 1px solid #CCCCCC}
 
 
 dl { display: inline-flex; flex-wrap: wrap; background-color: white; padding: 4px}
@@ -529,69 +450,312 @@ div.Modal > table { width: 600px;
 		    left: calc(50% - 300px);
 		    box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75) }
 
-div.Dialog, Div.Popup
+div.Dialog
 {
 	display: flex;
 	position: fixed;
 	border-radius: 5px;
 	flex-direction: column;
+	width: calc(100% - 80px);
+	height: calc(100% - 80px);
 	border: 4px solid #767d90;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	-webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 }
 
-div.Dialog
-{
-	width: calc(100% - 80px);
-	height: calc(100% - 80px);
+div.Dialog > div:first-child { height: 40px;
+			       padding: 8px;
+			       outline: none;
+			       color: #CCCCCC;
+			       background: #767D90;
+			       background-image: linear-gradient(to bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -o-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -ms-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -moz-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -webkit-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
+			       background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, #767D90), color-stop(1, #AAB3BD));
 }
+div.Dialog > div:first-child * { height: 100%;
+				 color: #CCCCCC;
+				 font-size: 26px;
+				 line-height: 20px;
+				 display: inline-block; }
 
-div.Popup
-{
-	width: 50%;
-	height: 50%;
-}
+div.Dialog > div:first-child a { width: 48px;
+				 cursor: pointer;
+				 font-family: gate;
+				 text-align: center  }
 
-div.Dialog > div:first-child,
-div.Popup > div:first-child { color: #CCCCCC; outline: none;
-			      height: 40px;
-			      background: #767D90; padding: 8px;
-			      background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, #767D90), color-stop(1, #AAB3BD));
-			      background-image: -o-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			      background-image: -moz-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			      background-image: -webkit-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			      background-image: -ms-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			      background-image: linear-gradient(to bottom, #767D90 100%, #AAB3BD 100%);
-}
-div.Dialog > div:first-child *,
-div.Popup > div:first-child * { height: 100%;
-				color: #CCCCCC;
-				font-size: 26px;
-				line-height: 20px;
-				display: inline-block; }
+div.Dialog > div:first-child:focus * { color: #FFFFFF }
 
-div.Dialog > div:first-child a,
-div.Popup > div:first-child a { width: 48px;
-				cursor: pointer;
-				font-family: gate;
-				text-align: center  }
-
-div.Dialog > div:first-child:focus *,
-div.Popup > div:first-child:focus * { color: #FFFFFF }
-
-div.Dialog > div:last-child,
-div.Popup > div:last-child { height: calc(100% - 40px);
-			     background-color: #CDCAB9; }
+div.Dialog > div:last-child { height: calc(100% - 40px);
+			      background-color: #CDCAB9; }
 
 div.Dialog > div:last-child > iframe,
-div.Popup > div:last-child > iframe,
 div.Dialog > div:last-child >  div,
-div.Popup > div:last-child >  div,
-div.Dialog > div:last-child > dialog,
-div.Popup > div:last-child > dialog { margin: 0px;
-				      width: 100%;
-				      height: 100%;
-				      padding: 0px;
-				      border: none;
-				      overflow: auto; }
+div.Dialog > div:last-child > dialog { margin: 0px;
+				       width: 100%;
+				       height: 100%;
+				       padding: 0px;
+				       border: none;
+				       overflow: auto; }
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Fieldset
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+fieldset,
+fieldset > legend,
+fieldset > label > span { border-radius:5px;
+			  -moz-border-radius: 5px;
+			  -webkit-border-radius: 5px; }
+
+fieldset { margin: auto;
+	   padding: 12px;
+	   margin-top: 20px;
+	   background-color: #B6B3A4;
+	   border: 1px solid #A6A394; }
+
+fieldset fieldset { float: left;
+		    padding: 4px;
+		    display: inline;
+		    text-align: left;
+		    margin-top: 10px; }
+
+fieldset > div { margin: 5px;
+		 padding: 4px;
+		 border-radius: 5px;
+		 width: calc(100% - 10px);
+		 border: 1px solid #CCCCCC;
+		 background-color: #EEEEEE; }
+
+fieldset > legend { padding: 2px;
+		    color: #432F21;
+		    text-align: left;
+		    font-weight: bold;
+		    background-color: #DFDED4; }
+
+fieldset > legend > i { float: left;
+			margin-right: 4px}
+
+fieldset fieldset > legend { background-color: #BDBCB2 }
+
+fieldset > label { float: left;
+		   padding: 4px;
+		   display: flex;
+		   text-align: left;
+		   flex-direction: column}
+
+fieldset > label > span { margin: 0px;
+			  width: 100%;
+			  padding: 0px;
+			  height: 24px;
+			  display: flex;
+			  color: #000000;
+			  overflow: hidden;
+			  line-height: 24px;
+			  position: relative;
+			  white-space: nowrap;
+			  align-items: stretch;
+			  text-overflow: ellipsis;
+			  background-color: #E6E6E3;
+			  justify-content: flex-start;
+			  border: 0px none transparent; }
+
+fieldset > label > span > * { margin: 0px;
+			      padding: 0px;
+			      color: #080c1b;
+			      line-height: 22px;
+			      display: inline-block;
+			      border: 1px solid #CCCCCC; }
+
+fieldset > label > span > textarea { line-height: 16px }
+
+fieldset > label > span > *:first-child,
+fieldset > label > span > *:first-child > * { border-top-left-radius: 5px;
+					      border-bottom-left-radius: 5px;
+					      -moz-border-top-left-radius: 5px;
+					      -moz-border-bottom-left-radius: 5px;
+					      -webkit-border-top-left-radius: 5px;
+					      -webkit-border-bottom-left-radius: 5px; }
+
+fieldset > label > span > *:last-child,
+fieldset > label > span > *:last-child > * { border-top-right-radius: 5px;
+					     border-bottom-right-radius: 5px;
+					     -moz-border-top-right-radius: 5px;
+					     -moz-border-bottom-right-radius: 5px;
+					     -webkit-border-top-right-radius: 5px;
+					     -webkit-border-bottom-right-radius: 5px; }
+
+fieldset > label> span > a { border: none;
+			     display: flex;
+			     align-items: center;
+			     justify-content: flex-start; }
+
+fieldset > label > span > a:hover { color: #CA171B;
+				    background-color: #EEEEEE; }
+
+fieldset label > span > a:focus { background-color: #FFFACD; }
+
+fieldset > label > span > i,
+fieldset > label > span > span { right: 0px;
+				 width: 20px;
+				 color: #666666;
+				 display: block;
+				 font-size: 12px;
+				 line-height: 24px;
+				 text-align: center;
+				 position: absolute;
+				 border: 0px none transparent; }
+
+fieldset > label > span > a > i,
+fieldset > label > span > a > span { width: 100%;
+				     height: 100%;
+				     display: flex;
+				     font-size: 16px;
+				     align-items: center;
+				     justify-content: center;
+				     border: 1px solid #CCCCCC; }
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+COOLBAR
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+*.COOLBAR { width: 100%;
+	    height: 40px;
+	    border-radius: 5px;
+	    padding: 2px 0px 2px 0px;
+	    background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%); }
+
+*.COOLBAR a ,
+*.COOLBAR button { margin: 2px;
+		   height: 32px;
+		   display: block;
+		   color: #432F21;
+		   min-width: 90px;
+		   font-size: 10px;
+		   padding: 0px 4px;
+		   line-height: 28px;
+		   font-weight: bold;
+		   text-align: center;
+		   border-radius: 5px;
+		   border: 1px solid #CCCCCC;
+		   background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%); }
+
+*.COOLBAR a:hover,
+*.COOLBAR button:hover { text-decoration: underline;
+			 background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%); }
+
+*.COOLBAR > a:focus,
+*.COOLBAR > button:focus { outline: none;
+			   border: 2px solid #FFFACD; }
+
+*.COOLBAR > a,
+*.COOLBAR > button { float: right }
+
+*.TOOLBAR > a,
+*.COOLBAR > a,
+*.TOOLBAR > button,
+*.COOLBAR > button { text-align: left }
+
+*.COOLBAR > a:hover > i,
+*.COOLBAR > a:hover > span,
+*.COOLBAR > button:hover > i,
+*.COOLBAR > button:hover > span { color: inherit }
+
+*.COOLBAR > a > i,
+*.COOLBAR > a > span,
+*.COOLBAR > button > i,
+*.COOLBAR > button > span { float: right;
+			    font-size: 12px;
+			    margin-left: 4px;
+			    line-height: 28px; }
+
+*.COOLBAR > button { cursor: pointer }
+
+*.COOLBAR > label { float: left;
+		    padding: 7px;
+		    font-size: 16px; }
+
+*.COOLBAR > hr { width: 12px;
+                 margin: 2px;
+                 height: 32px;
+                 float: right;
+                 display: inline-block;
+                 border: 0px none transparent;
+                 background-color: transparent }
+
+
+*.COOLBAR > progress { margin: 4px;
+		       width: calc(100% - 8px);
+		       height: calc(100% - 8px); }
+
+*.COOLBAR a.Commit,
+*.COOLBAR button.Commit { color: #006600 }
+
+*.COOLBAR a.Cancel,
+*.COOLBAR button.Cancel { float: left;
+			  color: #660000; }
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+MINIBAR
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+div.MINIBAR { overflow: auto; }
+
+div.MINIBAR > a,
+div.MINIBAR > button { float: right; }
+
+div.MINIBAR > a > i { font-size: 16px; }
+
+div.MINIBAR > a:focus { outline: none; }
+
+div.MINIBAR > a { width: 24px;
+		  height: 24px;
+		  padding: 4px;
+		  font-size: 16px; }
+
+
+/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Dialog polyfill
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+dialog {position: absolute;
+	left: 0; right: 0;
+	width: -moz-fit-content;
+	width: -webkit-fit-content;
+	width: fit-content;
+	height: -moz-fit-content;
+	height: -webkit-fit-content;
+	height: fit-content;
+	margin: auto;
+	border: solid;
+	padding: 1em;
+	background: white;
+	color: black;
+	display: block;
+}
+
+dialog:not([open]) { display: none; }
+
+dialog + .backdrop { top: 0;
+		     left: 0;
+		     right: 0;
+		     bottom: 0;
+		     position: fixed;
+		     background: rgba(0,0,0,0.1); }
+
+._dialog_overlay { top: 0;
+		   left: 0;
+		   right: 0;
+		   bottom: 0;
+		   position: fixed; }
+
+dialog.fixed { top: 50%;
+	       position: fixed;
+	       transform: translate(0, -50%); }
+
+dialog { padding: 0;
+	 border: 4px solid #767d90;
+	 background-color: #CBC7B7; }
