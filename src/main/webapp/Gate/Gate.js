@@ -30,8 +30,8 @@ function resolve(string)
 	if (parameters)
 		for (var i = 0; i < parameters.length; i++)
 		{
-			var parameter = prompt(parameters[i]
-				.substring(2, parameters[i].length - 1));
+			var parameter = prompt(decodeURIComponent(parameters[i]
+				.substring(2, parameters[i].length - 1)));
 			if (parameter === null)
 				return null;
 			result = result.replace(parameters[i], encodeURIComponent(parameter));
