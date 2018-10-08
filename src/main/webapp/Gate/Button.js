@@ -80,6 +80,15 @@ function Button(button)
 						.post(new FormData(this.form)));
 					Message.show(message, 2000);
 					break;
+				case "_void":
+					e.preventDefault();
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					var status = JSON.parse(new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form)));
+					if (status.type !== "SUCCESS")
+						Message.show(status, 2000);
+					break;
 				case "_this":
 					e.preventDefault();
 					e.stopPropagation();
