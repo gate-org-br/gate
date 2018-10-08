@@ -693,7 +693,7 @@ public class Link implements AutoCloseable
 			}
 
 			@Override
-			public Properties<T> properties(String... GQN)
+			public UpdateOperation.Properties<T> properties(String... GQN)
 			{
 				return e -> Update
 						.of(type, GQN)

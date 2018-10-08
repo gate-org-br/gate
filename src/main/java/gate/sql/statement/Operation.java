@@ -116,8 +116,7 @@ public interface Operation<T> extends SQL
 			 *
 			 * @return the number of records affected by the operation
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during execution
 			 */
 			int execute() throws ConstraintViolationException;
 
@@ -192,8 +191,7 @@ public interface Operation<T> extends SQL
 			 *
 			 * @return the number of records affected by the operation
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during execution
 			 */
 			int execute() throws ConstraintViolationException;
 
