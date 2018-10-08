@@ -23,8 +23,8 @@ public interface UpdateOperation<T>
 	 * @return the number of records affected by the update operation
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 	 */
 	int execute(Collection<T> values) throws ConstraintViolationException,
 			FKViolationException,
@@ -38,8 +38,8 @@ public interface UpdateOperation<T>
 	 * @return the number of records affected by the update operation
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 	 */
 	default int execute(T value) throws ConstraintViolationException,
 			FKViolationException,
@@ -56,8 +56,8 @@ public interface UpdateOperation<T>
 	 * @return the number of records affected by the update operation
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 	 */
 	default int execute(T... values) throws ConstraintViolationException,
 			FKViolationException,
@@ -91,8 +91,8 @@ public interface UpdateOperation<T>
 		 * @return the number of records affected by the update operation
 		 *
 		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 		 */
 		int execute(Collection<T> values) throws ConstraintViolationException,
 				FKViolationException,
@@ -106,8 +106,8 @@ public interface UpdateOperation<T>
 		 * @return the number of records affected by the update operation
 		 *
 		 * @throws gate.error.ConstraintViolationException if a database constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 		 */
 		default int execute(T value) throws ConstraintViolationException,
 				FKViolationException,
@@ -124,8 +124,8 @@ public interface UpdateOperation<T>
 		 * @return the number of records affected by the update operation
 		 *
 		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
 		 */
 		default int execute(T... values) throws ConstraintViolationException,
 				FKViolationException,
