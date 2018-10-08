@@ -27,10 +27,10 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	}
 
 	@Override
-	public List<List<String>> read(InputStream is)
+	public List<List<String>> read(InputStream is) throws IOException
 	{
-		return new CSVParser(new BufferedReader(new InputStreamReader(is)))
-			.stream().collect(Collectors.toList());
+		return new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset())))
+				.stream().collect(Collectors.toList());
 	}
 
 	public static CSVReader getInstance()
