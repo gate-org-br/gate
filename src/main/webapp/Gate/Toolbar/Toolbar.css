@@ -1,0 +1,20 @@
+div.Toolbar { display: flex;
+	      height: 48px;
+	      border-radius: 5px;
+	      align-items: stretch;
+	      justify-content: center;
+	      align-content: stretch;
+	      background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
+	      width: 48px; height: 48px }
+
+div.Toolbar > a { display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  border: 1px solid transparent;
+		  height: 100%; width: 100% }
+
+div.Toolbar > a > i { font-size: 16px }
+div.Toolbar > a:hover > i { font-size: 24px }
+
+div.Toolbar > a:first-child { border-radius: 5px 0 0 5px }
+div.Toolbar > a:last-child { border-radius: 0 5px 5px 0 }
