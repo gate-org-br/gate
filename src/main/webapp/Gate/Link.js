@@ -81,7 +81,7 @@ function Link(a)
 					e.stopImmediatePropagation();
 					Message.show(JSON.parse(new URL(this.href).get()), 2000);
 					break;
-				case "_void":
+				case "_none":
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
