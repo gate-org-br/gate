@@ -80,7 +80,7 @@ function Button(button)
 						.post(new FormData(this.form)));
 					Message.show(message, 2000);
 					break;
-				case "_void":
+				case "_none":
 					e.preventDefault();
 					e.stopPropagation();
 					e.stopImmediatePropagation();
