@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>4.22.1</version>
+	<version>4.23.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
@@ -273,7 +273,7 @@
 							<output>${basedir}/target/${project.artifactId}-${project.version}/Gate.js</output>
 							<includes>
 								<include>**/dialog-polyfill.js</include>
-								<include>**/Gate.js</include>
+								<include>**/Gate/Gate.js</include>
 								<include>**/Duration.js</include>
 								<include>**/Fetch.js</include>
 								<include>**/Keys.js</include>
@@ -311,6 +311,17 @@
 								<include>**/Sortable.js</include>
 								<include>**/Message.js</include>
 								<include>**/Return.js</include>
+								<include>**/DeskMenu/DeskMenu.js</include>
+							</includes>
+						</aggregation>
+						<aggregation>
+							<insertNewLine>true</insertNewLine>
+							<inputDir>${basedir}/src/main/webapp/Gate</inputDir>
+							<output>${basedir}/target/${project.artifactId}-${project.version}/Gate.css</output>
+							<includes>
+								<include>**/Gate/Gate.css</include>
+								<include>**/Toolbar/Toolbar.css</include>
+								<include>**/DeskMenu/DeskMenu.css</include>
 							</includes>
 						</aggregation>
 					</aggregations>
