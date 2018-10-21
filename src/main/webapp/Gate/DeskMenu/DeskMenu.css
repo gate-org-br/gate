@@ -1,3 +1,5 @@
+ul.DeskMenu, ul.DeskMenu ul { margin: 0; padding: 0 }
+
 ul.DeskMenu { display: flex;
 	      flex-wrap: wrap;
 	      align-items: flex-start;
@@ -12,19 +14,22 @@ ul.DeskMenu > li { width: 9%;
 
 ul.DeskMenu > li:hover { border: 1px solid #F0E68C; }
 
-ul.DeskMenu > li > a { padding: 8px;
-		       height: 100%;
-		       display: flex;
-		       text-align: center;
-		       align-items: center;
-		       flex-direction: column;
-		       justify-content: space-around;  }
+ul.DeskMenu > li > a,
+ul.DeskMenu > li > button { padding: 8px;
+			    height: 100%;
+			    display: flex;
+			    text-align: center;
+			    align-items: center;
+			    flex-direction: column;
+			    justify-content: space-around;  }
 
-ul.DeskMenu > li > a::before { padding: 8px;
-			       font-size: 32px;
-			       font-family: gate; }
+ul.DeskMenu > li > a::before,
+ul.DeskMenu > li > button::before { padding: 8px;
+				    font-size: 32px;
+				    font-family: gate; }
 
-ul.DeskMenu > li > a[data-icon]::before { content: attr(data-icon); }
+ul.DeskMenu > li > a[data-icon]::before,
+ul.DeskMenu > li > button[data-icon]::before { content: attr(data-icon); }
 
 ul.DeskMenu > li > * { width: 100% }
 ul.DeskMenu > li > *:first-child { border-radius: 5px 0 0 5px }
