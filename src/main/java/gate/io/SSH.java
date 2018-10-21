@@ -1,18 +1,17 @@
 package gate.io;
 
-import gate.type.DataFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
 import ch.ethz.ssh2.ChannelCondition;
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
+import ch.ethz.ssh2.SCPOutputStream;
 import ch.ethz.ssh2.Session;
 import ch.ethz.ssh2.StreamGobbler;
+import gate.type.DataFile;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
@@ -101,13 +100,26 @@ public class SSH implements AutoCloseable
 		return call(String.format(command, parameters));
 	}
 
-	public DataFile download(String filename) throws IOException
+	public byte[] get(String filename) throws IOException
 	{
 		try (InputStream is = new SCPClient(connection).get(filename))
 		{
-			return new DataFile(new ByteArrayReader().read(is),
-					new File(filename).getName());
+			return new ByteArrayReader().read(is);
 		}
+	}
+
+	public void put(String filename, byte[] data) throws IOException
+	{
+		try (SCPOutputStream os = new SCPClient(connection)
+				.put(filename, data.length, "", "0600"))
+		{
+			os.write(data);
+		}
+	}
+
+	public DataFile download(String filename) throws IOException
+	{
+		return new DataFile(get(filename), new File(filename).getName());
 	}
 
 	@Override
