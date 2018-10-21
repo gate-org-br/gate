@@ -109,7 +109,7 @@ public class DataFile implements Serializable
 	public List<String> getInflatedLines(String charset)
 	{
 		try (GateInputStream<ByteArrayInputStream> g
-			= new GateInputStream<>(new ByteArrayInputStream(getData())))
+				= new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			return g.getInflatedLines(charset);
 		} catch (IOException e)
@@ -146,7 +146,7 @@ public class DataFile implements Serializable
 			{
 				ZipEntry entry;
 				try (GateInputStream<ZipInputStream> stream
-					= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
+						= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
 				{
 					while ((entry = stream.getInputStream().getNextEntry()) != null)
 						if (!entry.isDirectory())
@@ -168,10 +168,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(File file)
-		throws FileNotFoundException, IOException
+			throws FileNotFoundException, IOException
 	{
 		try (BufferedInputStream stream
-			= new BufferedInputStream(new FileInputStream(file)))
+				= new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -184,10 +184,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(URL url)
-		throws FileNotFoundException, IOException
+			throws FileNotFoundException, IOException
 	{
 		try (BufferedInputStream stream
-			= new BufferedInputStream(url.openStream()))
+				= new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -205,7 +205,7 @@ public class DataFile implements Serializable
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
 		return new DataURL("application", "octet-stream", true, map,
-			DatatypeConverter.printBase64Binary(getData())).toString();
+				DatatypeConverter.printBase64Binary(getData())).toString();
 	}
 
 	public static DataFile parse(String string) throws ConversionException
@@ -222,11 +222,11 @@ public class DataFile implements Serializable
 		}
 	}
 
-	public <T> T load(Reader<T> loader) throws IOException
+	public <T> T read(Reader<T> reader) throws IOException
 	{
 		try (ByteArrayInputStream stream = new ByteArrayInputStream(getData()))
 		{
-			return loader.read(stream);
+			return reader.read(stream);
 		}
 	}
 
