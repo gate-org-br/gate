@@ -108,10 +108,9 @@ public class SSH implements AutoCloseable
 		}
 	}
 
-	public void put(String filename, byte[] data) throws IOException
+	public void put(String directory, String filename, byte[] data) throws IOException
 	{
-		try (SCPOutputStream os = new SCPClient(connection)
-				.put(filename, data.length, "", "0600"))
+		try (SCPOutputStream os = new SCPClient(connection).put(filename, data.length, directory, "0600"))
 		{
 			os.write(data);
 		}
