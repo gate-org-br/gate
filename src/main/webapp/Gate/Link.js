@@ -1,40 +1,40 @@
-function Link(a)
+function Link(link)
 {
-	a.addEventListener("click", function (e)
+	link.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-cancel"))
 		{
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 
-			Message.error(this.getAttribute("data-cancel"));
+			Message.error(this.getAttribute("data-cancel"), 2000);
 		}
 	});
 
-	a.addEventListener("click", function (e)
+	link.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-confirm") && !confirm(this.getAttribute("data-confirm")))
 		{
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 		}
 	});
 
-	a.addEventListener("click", function ()
+	link.addEventListener("click", function ()
 	{
 		if (this.hasAttribute("data-alert"))
 			alert(this.getAttribute("data-alert"));
 	});
 
-	a.addEventListener("click", function (e)
+	link.addEventListener("click", function (event)
 	{
 		if (this.href.match(/([?][{][^}]*[}])/g) || this.href.match(/([@][{][^}]*[}])/g))
 		{
-			e.preventDefault();
-			e.stopPropagation();
-			e.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 
 			var resolved = resolve(this.href);
 			if (resolved !== null)
@@ -47,22 +47,22 @@ function Link(a)
 		}
 	});
 
-	a.addEventListener("click", function (e)
+	link.addEventListener("click", function (event)
 	{
 		if (this.getAttribute("target"))
 		{
 			switch (this.getAttribute("target").toLowerCase())
 			{
 				case "_dialog":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
 
-					if (e.ctrlKey)
+					if (event.ctrlKey)
 					{
-						e.setAttribute("target", "_blank");
+						this.setAttribute("target", "_blank");
 						this.click();
-						e.setAttribute("target", "_dialog");
+						this.setAttribute("target", "_dialog");
 					} else
 						new Dialog()
 							.setTitle(this.getAttribute("title"))
@@ -76,39 +76,82 @@ function Link(a)
 
 					break;
 				case "_message":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					Message.show(JSON.parse(new URL(this.href).get()), 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					link.setAttribute("data-cancel", "Processando");
+					new URL(this.href).get(function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							Message.show(status, 2000);
+						} finally
+						{
+							link.removeAttribute("data-cancel");
+						}
+					});
+
 					break;
 				case "_none":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					var status = JSON.parse(new URL(this.href).get());
-					if (status.type !== "SUCCESS")
-						Message.show(status, 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					link.setAttribute("data-cancel", "Processando");
+					new URL(this.href).get(function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type !== "SUCCESS")
+								Message.show(status, 2000);
+						} finally
+						{
+							link.removeAttribute("data-cancel");
+						}
+					});
+
 					break;
 				case "_this":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					var status = JSON.parse(new URL(this.href).get());
-					if (status.type === "SUCCESS")
-						this.innerHTML = status.value;
-					else
-						Message.show(status, 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					link.setAttribute("data-cancel", "Processando");
+					new URL(this.href).get(function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type === "SUCCESS")
+								this.innerHTML = status.value;
+							else
+								Message.show(status, 2000);
+						} finally
+						{
+							link.removeAttribute("data-cancel");
+						}
+					});
 					break;
 				case "_alert":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					alert(JSON.parse(new URL(this.href).get()));
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					link.setAttribute("data-cancel", "Processando");
+					new URL(this.href).get(function (status)
+					{
+						alert(status);
+						link.removeAttribute("data-cancel");
+					});
+
 					break;
 				case "_hide":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
 					if (window.frameElement
 						&& window.frameElement.dialog
 						&& window.frameElement.dialog.hide)
@@ -120,13 +163,13 @@ function Link(a)
 		}
 	});
 
-	a.addEventListener("click", function (e)
+	link.addEventListener("click", function ()
 	{
 		if (this.getAttribute("data-block"))
 			Block.show(this.getAttribute("data-block"));
 	});
 
-	a.addEventListener("keydown", function (event)
+	link.addEventListener("keydown", function (event)
 	{
 		if (event.keyCode === 32)
 		{
@@ -139,78 +182,78 @@ function Link(a)
 	this.setAlert = function (value)
 	{
 		if (value)
-			a.setAttribute("data-alert", value);
-		else if (a.getAttribute("data-alert"))
-			a.removeAttribute("data-alert");
+			link.setAttribute("data-alert", value);
+		else if (link.getAttribute("data-alert"))
+			link.removeAttribute("data-alert");
 		return this;
 	};
 
 	this.setConfirm = function (value)
 	{
 		if (value)
-			a.setAttribute("data-confirm", value);
-		else if (a.getAttribute("data-confirm"))
-			a.removeAttribute("data-confirm");
+			link.setAttribute("data-confirm", value);
+		else if (link.getAttribute("data-confirm"))
+			link.removeAttribute("data-confirm");
 		return this;
 	};
 
 	this.setBlock = function (value)
 	{
 		if (value)
-			a.setAttribute("data-block", value);
-		else if (a.getAttribute("data-block"))
-			a.removeAttribute("data-block");
+			link.setAttribute("data-block", value);
+		else if (link.getAttribute("data-block"))
+			link.removeAttribute("data-block");
 		return this;
 	};
 
 	this.setAction = function (value)
 	{
 		if (value)
-			a.setAttribute("href", value);
-		else if (a.getAttribute("href"))
-			a.removeAttribute("href");
+			link.setAttribute("href", value);
+		else if (link.getAttribute("href"))
+			link.removeAttribute("href");
 		return this;
 	};
 
 	this.setTarget = function (value)
 	{
 		if (value)
-			a.setAttribute("target", value);
-		else if (a.getAttribute("target"))
-			a.removeAttribute("target");
+			link.setAttribute("target", value);
+		else if (link.getAttribute("target"))
+			link.removeAttribute("target");
 		return this;
 	};
 
 	this.setTitle = function (value)
 	{
 		if (value)
-			a.setAttribute("title", value);
-		else if (a.getAttribute("title"))
-			a.removeAttribute("title");
+			link.setAttribute("title", value);
+		else if (link.getAttribute("title"))
+			link.removeAttribute("title");
 		return this;
 	};
 
 	this.setNavigator = function (value)
 	{
 		if (value)
-			a.setAttribute("data-navigator", value);
-		else if (a.getAttribute("data-navigator"))
-			a.removeAttribute("data-navigator");
+			link.setAttribute("data-navigator", value);
+		else if (link.getAttribute("data-navigator"))
+			link.removeAttribute("data-navigator");
 		return this;
 	};
 
 	this.setOnHide = function (value)
 	{
 		if (value)
-			a.setAttribute("data-onHide", value);
-		else if (a.getAttribute("data-onHide"))
-			a.removeAttribute("data-onHide");
+			link.setAttribute("data-onHide", value);
+		else if (link.getAttribute("data-onHide"))
+			link.removeAttribute("data-onHide");
 		return this;
 	};
 
 	this.get = function ()
 	{
-		return a;
+		return link;
 	};
 }
 
