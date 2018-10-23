@@ -1,22 +1,22 @@
 function Button(button)
 {
-	button.addEventListener("click", function (e)
+	button.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-cancel"))
 		{
-			Message.error(this.getAttribute("data-cancel"));
-			e.preventDefault();
-			e.stopImmediatePropagation();
+			Message.error(this.getAttribute("data-cancel"), 2000);
+			event.preventDefault();
+			event.stopImmediatePropagation();
 		}
 	});
 
-	button.addEventListener("click", function (e)
+	button.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-confirm")
 			&& !confirm(this.getAttribute("data-confirm")))
 		{
-			e.preventDefault();
-			e.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopImmediatePropagation();
 		}
 	});
 
@@ -26,7 +26,7 @@ function Button(button)
 			alert(this.getAttribute("data-alert"));
 	});
 
-	button.addEventListener("click", function (e)
+	button.addEventListener("click", function (event)
 	{
 		if (this.getAttribute("formaction") &&
 			(this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)
@@ -42,26 +42,26 @@ function Button(button)
 				this.setAttribute("formaction", formaction);
 			}
 
-			e.preventDefault();
-			e.stopImmediatePropagation();
+			event.preventDefault();
+			event.stopImmediatePropagation();
 		}
 	});
 
-	button.addEventListener("click", function (e)
+	button.addEventListener("click", function (event)
 	{
 		if (this.getAttribute("formtarget"))
 		{
 			switch (this.getAttribute("formtarget").toLowerCase())
 			{
 				case "_dialog":
-					if (e.ctrlKey)
+					if (event.ctrlKey)
 					{
-						e.preventDefault();
-						e.stopPropagation();
-						e.stopImmediatePropagation();
-						e.setAttribute("formtarget", "_blank");
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						this.setAttribute("formtarget", "_blank");
 						this.click();
-						e.setAttribute("formtarget", "_dialog");
+						this.setAttribute("formtarget", "_dialog");
 					} else if (this.form.getAttribute("target") !== "_dialog")
 						new Dialog()
 							.setTitle(this.getAttribute("title"))
@@ -73,42 +73,83 @@ function Button(button)
 							.show();
 					break;
 				case "_message":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					var message = JSON.parse(new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form)));
-					Message.show(message, 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					this.disabled = true;
+					new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form), function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								Message.show(status, 2000);
+							} finally
+							{
+								button.disabled = false;
+							}
+						});
 					break;
 				case "_none":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					var status = JSON.parse(new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form)));
-					if (status.type !== "SUCCESS")
-						Message.show(status, 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					this.disabled = true;
+					new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form), function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								if (status.type !== "SUCCESS")
+									Message.show(status, 2000);
+							} finally
+							{
+								button.disabled = false;
+							}
+						});
 					break;
 				case "_this":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					var status = JSON.parse(new URL(this.getAttribute("formaction").post(new FormData(this.form))));
-					if (status.type === "SUCCESS")
-						this.innerHTML = status.value;
-					else
-						Message.show(status, 2000);
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					this.disabled = true;
+					new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form), function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								if (status.type === "SUCCESS")
+									button.innerHTML = status.value;
+								else
+									Message.show(status, 2000);
+							} finally
+							{
+								button.disabled = false;
+							}
+						});
 					break;
 				case "_alert":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
-					alert(new URL(this.getAttribute("formaction")).post(new FormData(this.form)));
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					this.disabled = true;
+					new URL(this.getAttribute("formaction"))
+						.post(new FormData(this.form), function (status)
+						{
+							alert(status);
+							button.disabled = false;
+						});
 					break;
 				case "_hide":
-					e.preventDefault();
-					e.stopPropagation();
-					e.stopImmediatePropagation();
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
 					if (window.frameElement
 						&& window.frameElement.dialog
 						&& window.frameElement.dialog.hide)
