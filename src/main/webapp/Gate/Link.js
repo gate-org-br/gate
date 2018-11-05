@@ -28,6 +28,17 @@ function Link(link)
 			alert(this.getAttribute("data-alert"));
 	});
 
+
+	link.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
+	});
+
 	link.addEventListener("click", function (event)
 	{
 		if (this.href.match(/([?][{][^}]*[}])/g) || this.href.match(/([@][{][^}]*[}])/g))

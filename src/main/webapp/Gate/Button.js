@@ -26,6 +26,17 @@ function Button(button)
 			alert(this.getAttribute("data-alert"));
 	});
 
+
+	button.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
+	});
+
 	button.addEventListener("click", function (event)
 	{
 		if (this.getAttribute("formaction") &&
