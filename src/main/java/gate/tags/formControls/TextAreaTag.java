@@ -1,8 +1,6 @@
 package gate.tags.formControls;
 
-import gate.tags.formControls.PropertyTag;
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class TextAreaTag extends PropertyTag

@@ -1,9 +1,7 @@
 package gate.tags;
 
 import gate.converter.Converter;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -18,11 +16,8 @@ public class PrintTag extends SimpleTagSupport
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		String string = format != null
-				? Converter.toText(value, format)
-				: Converter.toText(value);
-		if (string.isEmpty()
-				&& empty != null)
+		String string = format != null ? Converter.toText(value, format) : Converter.toText(value);
+		if (string.isEmpty() && empty != null)
 			string = empty;
 		getJspContext().getOut().print(string.replaceAll("\\n", "<br/>"));
 	}
@@ -41,5 +36,4 @@ public class PrintTag extends SimpleTagSupport
 	{
 		this.empty = emptyText;
 	}
-
 }

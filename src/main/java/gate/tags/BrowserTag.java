@@ -1,9 +1,7 @@
 package gate.tags;
 
 import gate.base.Screen;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -12,6 +10,7 @@ public class BrowserTag extends SimpleTagSupport
 
 	private String name;
 
+	@Override
 	public void doTag() throws JspException, IOException
 	{
 		Screen screen = (Screen) getJspContext().findAttribute("screen");

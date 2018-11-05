@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>4.26.0</version>
+	<version>4.27.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
@@ -301,6 +301,7 @@
 								<include>**/Message.js</include>
 								<include>**/Return.js</include>
 								<include>**/DeskMenu/DeskMenu.js</include>
+								<include>**/DeskPane/DeskPane.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
@@ -311,6 +312,7 @@
 								<include>**/Gate/Gate.css</include>
 								<include>**/Toolbar/Toolbar.css</include>
 								<include>**/DeskMenu/DeskMenu.css</include>
+								<include>**/DeskPane/DeskPane.css</include>
 							</includes>
 						</aggregation>
 					</aggregations>
