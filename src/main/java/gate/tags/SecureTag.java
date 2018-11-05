@@ -1,15 +1,13 @@
 package gate.tags;
 
+import gate.annotation.Current;
 import gate.entity.User;
-
 import java.io.IOException;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
-import gate.annotation.Current;
-import java.util.regex.Pattern;
 
 public class SecureTag extends SimpleTagSupport
 {
@@ -67,10 +65,10 @@ public class SecureTag extends SimpleTagSupport
 			action = ((PageContext) getJspContext()).getRequest().getParameter("ACTION");
 
 		if (user != null)
-			for (String module : this.module != null ? SPLIT.split(this.module) : DEFAULT)
-				for (String screen : this.screen != null ? SPLIT.split(this.screen) : DEFAULT)
-					for (String action : this.action != null ? SPLIT.split(this.action) : DEFAULT)
-						if (user.checkAccess(strict, module, screen, action))
+			for (String m : this.module != null ? SPLIT.split(this.module) : DEFAULT)
+				for (String s : this.screen != null ? SPLIT.split(this.screen) : DEFAULT)
+					for (String a : this.action != null ? SPLIT.split(this.action) : DEFAULT)
+						if (user.checkAccess(strict, m, s, a))
 						{
 							getJspBody().invoke(null);
 							return;

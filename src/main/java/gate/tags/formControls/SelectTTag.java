@@ -1,6 +1,5 @@
 package gate.tags.formControls;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
 import gate.converter.Converter;
@@ -46,20 +45,14 @@ public class SelectTTag extends PropertyTag
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		try
-		{
-			super.doTag();
-			List<Object> o = new ArrayList<>(Toolkit.list(this.options));
-			getJspContext().getOut().println(String.format("<select %s>", getAttributes().toString()));
-			getJspContext().getOut().println(String.format("<option value=''>%s</option>",
+		super.doTag();
+		List<Object> o = new ArrayList<>(Toolkit.list(this.options));
+		getJspContext().getOut().println(String.format("<select %s>", getAttributes().toString()));
+		getJspContext().getOut().println(String.format("<option value=''>%s</option>",
 				this.empty == null ? "" : empty));
-			for (Object child : o)
-				write(child, 0);
-			getJspContext().getOut().println("</select>");
-		} catch (IOException | JspException e)
-		{
-			throw new AppError(e);
-		}
+		for (Object child : o)
+			write(child, 0);
+		getJspContext().getOut().println("</select>");
 	}
 
 	public void write(Object obj, int depth) throws JspException, IOException, ConversionException
@@ -74,7 +67,7 @@ public class SelectTTag extends PropertyTag
 		if (getJspBody() != null)
 		{
 			getJspContext().getOut().print(String.format("<option %s style='text-indent: %dpx'>", attributes.toString(),
-				depth * 20));
+					depth * 20));
 			getJspContext().setAttribute("option", obj);
 			getJspContext().getOut().print(Stream.generate(() -> "&nbsp;&rarr;&nbsp;").limit(depth).collect(Collectors.joining()));
 			getJspBody().invoke(getJspContext().getOut());
@@ -82,8 +75,8 @@ public class SelectTTag extends PropertyTag
 			getJspContext().getOut().println("</option>");
 		} else
 			getJspContext().getOut().println(String.format("<option %s>%s%s</option>", attributes.toString(),
-				Stream.generate(() -> "--------").limit(depth).collect(Collectors.joining()), Converter
-				.toText(obj)));
+					Stream.generate(() -> "--------").limit(depth).collect(Collectors.joining()), Converter
+					.toText(obj)));
 
 		for (Object child : gate.util.Toolkit.collection(Property.getProperty(obj.getClass(), children).getValue(obj)))
 			write(child, depth + 1);

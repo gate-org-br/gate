@@ -84,20 +84,14 @@ public class LinkTag extends DynamicAttributeTag
 				action = pageContext.getRequest().getParameter("ACTION");
 
 			Class<Screen> clazz = Screen.getScreen(module, screen)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
 			Method method = Screen.getAction(clazz, action)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
 
-			if (!getAttributes().containsKey("title")
-					&& method.isAnnotationPresent(Description.class))
+			if (!getAttributes().containsKey("title") && method.isAnnotationPresent(Description.class))
 				getAttributes().put("title", method.getAnnotation(Description.class).value());
 
-			if (Gate.checkAccess(user,
-					module, screen, action, clazz, method))
+			if (Gate.checkAccess(user, module, screen, action, clazz, method))
 			{
 				if ("POST".equalsIgnoreCase(this.method))
 				{
@@ -123,8 +117,7 @@ public class LinkTag extends DynamicAttributeTag
 					pageContext.getOut().print("</a>");
 				}
 
-			} else if (otherwise
-					!= null)
+			} else if (otherwise != null)
 				pageContext.getOut().print(otherwise);
 		} catch (SecurityException ex)
 		{
@@ -132,11 +125,9 @@ public class LinkTag extends DynamicAttributeTag
 		}
 	}
 
-	private String createBody(Class<?> clazz,
-			Method method)
+	private String createBody(Class<?> clazz, Method method)
 	{
-		Icons.Icon icon = Icons
-				.getInstance().get(method, null);
+		Icons.Icon icon = Icons.getInstance().get(method, null);
 		if (icon == Icons.UNKNOWN)
 			icon = Icons.getInstance().get(clazz, null);
 

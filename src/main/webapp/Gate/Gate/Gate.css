@@ -179,9 +179,9 @@ ul.DESKTOP > li:hover { border-color: #FFFACD;
                         background-image: -o-linear-gradient(top, #EDE9D9, #BDBAAD);
                         background-image: -webkit-linear-gradient(top, #EDE9D9, #BDBAAD)}
 ul.DESKTOP > li > * { float: left; height: 48px; cursor: pointer}
-ul.DESKTOP > li > label { padding-left: 8px; line-height: 48px}
+ul.DESKTOP > li > label { padding-left: 8px; line-height: 48px; color: inherit; font-weight: inherit}
 ul.DESKTOP > li > img { width: 48px; margin: 0px; background-color: white}
-ul.DESKTOP > li > i, ul.DESKTOP > li > span { width: 48px; font-size: 40px; padding: 4px; text-align: center}
+ul.DESKTOP > li > i, ul.DESKTOP > li > span { width: 48px; font-size: 40px; padding: 4px; text-align: center; color: inherit}
 
 ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
 ul.LIST > li { float: left; width: 10%; height: 32px; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px;

@@ -1,11 +1,10 @@
 package gate.tags.formControls;
 
+import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
 import gate.util.PropertyComparator;
-import gate.converter.Converter;
 import gate.util.Toolkit;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +13,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.jsp.JspException;
 
 abstract class SelectorTag extends PropertyTag
@@ -75,7 +73,8 @@ abstract class SelectorTag extends PropertyTag
 		for (Object obj : options)
 		{
 			Option option = new Option();
-			Object value = identifiedBy != null ? Property.getValue(obj, identifiedBy) : obj;
+			Object value = identifiedBy != null
+					? Property.getValue(obj, identifiedBy) : obj;
 			option.value = Converter.toString(value);
 			option.selected = selectedValues.contains(value);
 			option.label = Converter.toText(labeledBy != null ? Property.getValue(obj, labeledBy) : obj);

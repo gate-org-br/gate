@@ -5,6 +5,7 @@
 	<body style='background-color: #CCCCD0;
 	      background-image: url("../gate/imge/back/BACK.png");
 	      background-attachment: fixed; padding: 0'>
+
 		<div style='display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; padding: 10px'>
 			<div style='width: 600px;
 			     height: 344px;

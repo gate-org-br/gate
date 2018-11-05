@@ -1,7 +1,6 @@
 package gate.tags.formControls;
 
 import gate.tags.formControls.PropertyTag;
-import gate.error.AppError;
 import gate.converter.Converter;
 import gate.util.Toolkit;
 
@@ -25,23 +24,18 @@ public class RadioTag extends PropertyTag
 		this.checked = checked;
 	}
 
+	@Override
 	public void doTag() throws JspException, IOException
 	{
-		try
-		{
-			super.doTag();
-			getAttributes().put("value", value);
-			getAttributes().put("type", "radio");
-			if (Boolean.TRUE.equals(checked)
-					|| (checked == null
-					&& Toolkit.collection(getValue()).contains(Converter
-							.getConverter(getType())
-							.ofString(getType(), value))))
-				getAttributes().put("checked", "checked");
-			getJspContext().getOut().print(String.format("<input %s/>", getAttributes().toString()));
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		super.doTag();
+		getAttributes().put("value", value);
+		getAttributes().put("type", "radio");
+		if (Boolean.TRUE.equals(checked)
+				|| (checked == null
+				&& Toolkit.collection(getValue()).contains(Converter
+						.getConverter(getType())
+						.ofString(getType(), value))))
+			getAttributes().put("checked", "checked");
+		getJspContext().getOut().print(String.format("<input %s/>", getAttributes().toString()));
 	}
 }
