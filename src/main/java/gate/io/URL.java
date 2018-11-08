@@ -26,6 +26,7 @@ public class URL
 
 	private final String value;
 	private String credentials;
+	private int timeout = 10000;
 	private final StringJoiner parameters = new StringJoiner("&");
 
 	public URL(String url)
@@ -69,6 +70,13 @@ public class URL
 
 	}
 
+	public URL setTimeout(int timeout)
+	{
+		this.timeout = timeout;
+		return this;
+
+	}
+
 	public URL setCredentials(String credentials)
 	{
 		this.credentials = credentials;
@@ -101,7 +109,8 @@ public class URL
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
-		connection.setConnectTimeout(1000);
+		connection.setConnectTimeout(timeout);
+		connection.setReadTimeout(timeout);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("GET");
 
@@ -128,7 +137,8 @@ public class URL
 
 		java.net.URL url = new java.net.URL(toString());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setConnectTimeout(1000);
+		connection.setConnectTimeout(timeout);
+		connection.setReadTimeout(timeout);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
