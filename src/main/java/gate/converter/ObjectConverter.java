@@ -1,5 +1,7 @@
 package gate.converter;
 
+import gate.annotation.SecurityKey;
+import gate.constraint.Constraint;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
@@ -8,7 +10,6 @@ import gate.lang.json.JsonWriter;
 import gate.security.Encryptor;
 import gate.security.SecurityException;
 import gate.util.Generics;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,10 +29,7 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-
 import javax.xml.bind.DatatypeConverter;
-import gate.annotation.SecurityKey;
-import gate.constraint.Constraint;
 
 public class ObjectConverter implements Converter
 {
@@ -67,10 +65,10 @@ public class ObjectConverter implements Converter
 			byte[] bytes = DatatypeConverter.parseBase64Binary(string);
 			if (type.isAnnotationPresent(SecurityKey.class))
 				bytes = new Encryptor("AES", type.getAnnotation(SecurityKey.class).value())
-					.decrypt(bytes);
+						.decrypt(bytes);
 
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-				ObjectInputStream ois = new ObjectInputStream(new InflaterInputStream(bais)))
+					ObjectInputStream ois = new ObjectInputStream(new InflaterInputStream(bais)))
 			{
 				return ois.readObject();
 			}
@@ -95,7 +93,7 @@ public class ObjectConverter implements Converter
 			byte[] bytes = baos.toByteArray();
 			if (type.isAnnotationPresent(SecurityKey.class))
 				bytes = new Encryptor("AES", type.getAnnotation(SecurityKey.class).value())
-					.encrypt(bytes);
+						.encrypt(bytes);
 			return DatatypeConverter.printBase64Binary(bytes);
 		} catch (IOException | SecurityException e)
 		{
@@ -117,8 +115,8 @@ public class ObjectConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException,
-		       ConversionException
+			throws SQLException, ConversionException,
+			ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(type, value);
@@ -133,7 +131,7 @@ public class ObjectConverter implements Converter
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException,
-												   ConversionException
+			ConversionException
 	{
 		if (value != null)
 			ps.setString(fields++, toString(value.getClass(), value));
@@ -151,12 +149,12 @@ public class ObjectConverter implements Converter
 				throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 			boolean empty = true;
-			Class clazz = (Class) type;
-			Constructor constructor
-				= Stream.of(clazz.getDeclaredConstructors())
-					.filter(e -> e.getParameterCount() == 0)
-					.findAny().orElseThrow(() -> new ConversionException(
-					"No default constructor found on " + clazz.getName()));
+			Class<?> clazz = (Class) type;
+			Constructor<?> constructor
+					= Stream.of(clazz.getDeclaredConstructors())
+							.filter(e -> e.getParameterCount() == 0)
+							.findAny().orElseThrow(() -> new ConversionException(
+							"No default constructor found on " + clazz.getName()));
 			constructor.setAccessible(true);
 			Object object = constructor.newInstance();
 
@@ -170,7 +168,7 @@ public class ObjectConverter implements Converter
 						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
 
 					Field field = Generics.findField(clazz, scanner.getCurrent().toString())
-						.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
+							.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
 
 					scanner.scan();
 					if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
@@ -180,7 +178,7 @@ public class ObjectConverter implements Converter
 					Type genericType = field.getGenericType();
 					Converter converter = Converter.getConverter(field.getType());
 					Object value = converter.ofJson(scanner, genericType, Generics.getElementType(
-						genericType));
+							genericType));
 					field.set(object, value);
 				} else if (!empty)
 					throw new ConversionException("the specified JsonElement is not a JsonObject");
@@ -208,7 +206,7 @@ public class ObjectConverter implements Converter
 			for (Field field : Generics.getFields(Generics.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);
