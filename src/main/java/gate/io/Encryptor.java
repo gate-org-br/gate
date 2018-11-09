@@ -1,5 +1,8 @@
-package gate.security;
+package gate.io;
 
+import gate.error.ConversionException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -16,7 +19,7 @@ public class Encryptor
 	private final Cipher cipher;
 	private final SecretKeySpec key;
 
-	public Encryptor(String algorithm, byte[] key) throws SecurityException
+	public Encryptor(String algorithm, byte[] key)
 	{
 		try
 		{
@@ -24,17 +27,17 @@ public class Encryptor
 			this.key = new SecretKeySpec(key, algorithm);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex)
 		{
-			throw new SecurityException(ex.getMessage(), ex);
+			throw new UncheckedIOException(ex.getMessage(), new IOException(ex));
 		}
 
 	}
 
-	public Encryptor(String algorithm, String key) throws SecurityException
+	public Encryptor(String algorithm, String key)
 	{
 		this(algorithm, DatatypeConverter.parseBase64Binary(key));
 	}
 
-	public byte[] encrypt(byte[] data) throws SecurityException
+	public byte[] encrypt(byte[] data) throws ConversionException
 	{
 		try
 		{
@@ -44,11 +47,11 @@ public class Encryptor
 				| BadPaddingException
 				| InvalidKeyException ex)
 		{
-			throw new SecurityException(ex.getMessage(), ex);
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 
-	public byte[] decrypt(byte[] data) throws SecurityException
+	public byte[] decrypt(byte[] data) throws ConversionException
 	{
 
 		try
@@ -59,16 +62,16 @@ public class Encryptor
 				| BadPaddingException
 				| InvalidKeyException ex)
 		{
-			throw new SecurityException(ex.getMessage(), ex);
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 
-	public String decrypt(String string) throws SecurityException
+	public String decrypt(String string) throws ConversionException
 	{
 		return new String(decrypt(Base64.getDecoder().decode(string)));
 	}
 
-	public String encrypt(String string) throws SecurityException
+	public String encrypt(String string) throws ConversionException
 	{
 		return Base64.getEncoder().encodeToString(encrypt(string.getBytes()));
 	}

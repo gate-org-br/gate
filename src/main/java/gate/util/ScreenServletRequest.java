@@ -5,7 +5,7 @@ import gate.error.ConversionException;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.policonverter.Policonverter;
-import gate.security.Credentials;
+import gate.io.Credentials;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
