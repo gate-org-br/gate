@@ -1,5 +1,6 @@
 package gate.security;
 
+import gate.io.Credentials;
 import gate.entity.Auth;
 import gate.entity.User;
 import gate.type.ID;

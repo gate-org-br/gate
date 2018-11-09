@@ -1,20 +1,14 @@
 package gate.converter;
 
-import gate.annotation.SecurityKey;
 import gate.constraint.Constraint;
-import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.io.Encoder;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
-import gate.security.Encryptor;
-import gate.security.SecurityException;
 import gate.util.Generics;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -27,9 +21,6 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
-import javax.xml.bind.DatatypeConverter;
 
 public class ObjectConverter implements Converter
 {
@@ -60,44 +51,24 @@ public class ObjectConverter implements Converter
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
-		try
-		{
-			byte[] bytes = DatatypeConverter.parseBase64Binary(string);
-			if (type.isAnnotationPresent(SecurityKey.class))
-				bytes = new Encryptor("AES", type.getAnnotation(SecurityKey.class).value())
-						.decrypt(bytes);
 
-			try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-					ObjectInputStream ois = new ObjectInputStream(new InflaterInputStream(bais)))
-			{
-				return ois.readObject();
-			}
-		} catch (IOException | ClassNotFoundException | SecurityException ex)
-		{
-			throw new ConversionException(ex, string + " is not a valid object");
-		}
+		return Encoder.getInstance(type).decode(type, string);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public String toString(Class<?> type, Object object)
 	{
 		try
 		{
 			if (object == null)
 				return "";
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try (ObjectOutputStream ous = new ObjectOutputStream(new DeflaterOutputStream(baos)))
-			{
-				ous.writeObject(object);
-			}
-			byte[] bytes = baos.toByteArray();
-			if (type.isAnnotationPresent(SecurityKey.class))
-				bytes = new Encryptor("AES", type.getAnnotation(SecurityKey.class).value())
-						.encrypt(bytes);
-			return DatatypeConverter.printBase64Binary(bytes);
-		} catch (IOException | SecurityException e)
+
+			return Encoder.getInstance(type).encode((Class<Object>) type, object);
+
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -231,4 +202,5 @@ public class ObjectConverter implements Converter
 			throw new ConversionException(ex.getMessage());
 		}
 	}
+
 }

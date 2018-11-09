@@ -1,4 +1,4 @@
-package gate.security;
+package gate.io;
 
 import gate.entity.Auth;
 import gate.entity.User;

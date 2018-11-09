@@ -1,14 +1,14 @@
 package gate.converter;
 
+import gate.annotation.SecurityKey;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.type.ID;
 import java.security.NoSuchAlgorithmException;
-import org.junit.Assert;
-import org.junit.Test;
-import gate.annotation.SecurityKey;
 import java.util.Locale;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class ObjectConverterTest
 {
@@ -55,6 +55,8 @@ public class ObjectConverterTest
 	@SecurityKey("/zgq2IL4H6tN4kRrzybBQA==")
 	public static class ClassifiedUser extends User
 	{
+
+		private static final long serialVersionUID = 1L;
 
 	}
 }

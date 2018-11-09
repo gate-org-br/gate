@@ -8,7 +8,7 @@ import gate.error.DefaultPasswordException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
-import gate.security.Credentials;
+import gate.io.Credentials;
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;

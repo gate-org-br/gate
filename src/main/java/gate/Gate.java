@@ -18,7 +18,7 @@ import gate.error.InvalidRequestException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.handler.Handler;
-import gate.security.Credentials;
+import gate.io.Credentials;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;

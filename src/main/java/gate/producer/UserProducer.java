@@ -3,7 +3,7 @@ package gate.producer;
 import gate.Session;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.security.Credentials;
+import gate.io.Credentials;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
