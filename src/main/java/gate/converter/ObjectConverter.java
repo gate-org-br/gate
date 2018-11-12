@@ -7,8 +7,6 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.util.Generics;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -44,32 +42,17 @@ public class ObjectConverter implements Converter
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string == null)
-			return null;
-		string = string.trim();
-		if (string.isEmpty())
-			return null;
-
-		return Encoder.getInstance(type).decode(type, string);
+		return Encoder.of((Class<Object>) type).decode(string);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public String toString(Class<?> type, Object object)
 	{
-		try
-		{
-			if (object == null)
-				return "";
-
-			return Encoder.getInstance(type).encode((Class<Object>) type, object);
-
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return Encoder.of((Class<Object>) type).encode(object);
 	}
 
 	@Override

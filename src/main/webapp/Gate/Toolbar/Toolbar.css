@@ -1,17 +1,16 @@
-div.Toolbar { display: flex;
-	      height: 48px;
+div.Toolbar { height: 48px;
+	      display: flex;
 	      border-radius: 5px;
 	      align-items: stretch;
 	      justify-content: center;
 	      align-content: stretch;
-	      background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
-	      width: 48px; height: 48px }
+	      background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%); }
 
-div.Toolbar > a { display: flex;
+div.Toolbar > a { width: 48px;
+		  display: flex;
 		  align-items: center;
 		  justify-content: center;
-		  border: 1px solid transparent;
-		  height: 100%; width: 100% }
+		  border: 1px solid transparent;  }
 
 div.Toolbar > a > i { font-size: 16px }
 div.Toolbar > a:hover > i { font-size: 24px }

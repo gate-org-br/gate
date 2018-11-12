@@ -2,75 +2,133 @@ package gate.io;
 
 import gate.annotation.SecurityKey;
 import gate.error.ConversionException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UncheckedIOException;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.InflaterInputStream;
 import javax.xml.bind.DatatypeConverter;
 
-public abstract class Encoder
+public abstract class Encoder<T>
 {
 
-	public abstract <T> String encode(Class<T> type, T object) throws ConversionException;
+	protected final Class<T> type;
 
-	public abstract <T> T decode(Class<T> type, String string) throws ConversionException;
-
-	public static Encoder getInstance()
+	private Encoder(Class<T> type)
 	{
-		return new NormalEncoder();
+		this.type = type;
 	}
 
-	public static Encoder getInstance(Class<?> type)
+	public abstract String encode(T object);
+
+	public abstract T decode(String string) throws ConversionException;
+
+	public static <T> Encoder<T> of(Class<T> type)
 	{
 		return type.isAnnotationPresent(SecurityKey.class)
-				? new CipherEncoder(new Encryptor("AES", type.getAnnotation(SecurityKey.class).value()))
-				: new NormalEncoder();
+				? Encoder.of(type, type.getAnnotation(SecurityKey.class).value())
+				: new NormalEncoder<>(type);
 	}
 
-	public static Encoder getInstance(String key)
+	public static <T> Encoder<T> of(Class<T> type, String key)
 	{
-		return new CipherEncoder(new Encryptor("AES", key));
+		return new CipherEncoder<>(type, Encryptor.of("AES", key));
 	}
 
-	public static Encoder getInstance(byte[] key)
+	public static <T> Encoder<T> of(Class<T> type, byte[] key)
 	{
-		return new CipherEncoder(new Encryptor("AES", key));
+		return new CipherEncoder<>(type, Encryptor.of("AES", key));
 	}
 
-	private static class NormalEncoder extends Encoder
+	private static class NormalEncoder<T> extends Encoder<T>
 	{
 
-		@Override
-		public <T> String encode(Class<T> type, T object) throws ConversionException
+		private NormalEncoder(Class<T> type)
 		{
-			return DatatypeConverter.printBase64Binary(Compressor.compress(Serializer.serialize(object)));
+			super(type);
 		}
 
+		@Override
+		public String encode(T object)
+		{
+			if (object == null)
+				return "";
+
+			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(byteArrayOutputStream);
+					ObjectOutputStream objectOutputStream = new ObjectOutputStream(deflaterOutputStream))
+
+			{
+				objectOutputStream.writeObject(object);
+				objectOutputStream.flush();
+				deflaterOutputStream.finish();
+				return DatatypeConverter.printBase64Binary(byteArrayOutputStream.toByteArray());
+			} catch (IOException ex)
+			{
+				throw new UncheckedIOException(ex.getMessage(), ex);
+			}
+		}
+
+		@Override
 		@SuppressWarnings("unchecked")
-		@Override
-		public <T> T decode(Class<T> type, String string) throws ConversionException
+		public T decode(String string) throws ConversionException
 		{
-			return (T) Serializer.deserialize(Compressor.decompress(DatatypeConverter.parseBase64Binary(string)));
+			if (string == null)
+				return null;
+			string = string.trim();
+			if (string.isEmpty())
+				return null;
+
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string));
+					InflaterInputStream inflaterInputStream = new InflaterInputStream(byteArrayInputStream);
+					ObjectInputStream objectInputStream = new ObjectInputStream(inflaterInputStream))
+
+			{
+				return (T) objectInputStream.readObject();
+			} catch (IOException ex)
+			{
+				throw new UncheckedIOException(ex.getMessage(), ex);
+			} catch (ClassNotFoundException ex)
+			{
+				throw new UncheckedIOException(ex.getMessage(), new IOException(ex));
+			}
 		}
 	}
 
-	private static class CipherEncoder extends Encoder
+	private static class CipherEncoder<T> extends Encoder<T>
 	{
 
 		private final Encryptor encryptor;
 
-		public CipherEncoder(Encryptor encryptor)
+		public CipherEncoder(Class<T> type, Encryptor encryptor)
 		{
+			super(type);
 			this.encryptor = encryptor;
 		}
 
 		@Override
-		public <T> String encode(Class<T> type, T object) throws ConversionException
+		public String encode(T object)
 		{
-			return DatatypeConverter.printBase64Binary(Compressor.compress(encryptor.encrypt(Serializer.serialize(object))));
+			if (object == null)
+				return "";
+
+			return DatatypeConverter.printBase64Binary(Compactor.compact(encryptor.encrypt(Serializer.of(type).serialize(object))));
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
-		public <T> T decode(Class<T> type, String string) throws ConversionException
+		@SuppressWarnings("unchecked")
+		public T decode(String string) throws ConversionException
 		{
-			return (T) Serializer.deserialize(encryptor.decrypt(Compressor.decompress(DatatypeConverter.parseBase64Binary(string))));
+			if (string == null)
+				return null;
+			string = string.trim();
+			if (string.isEmpty())
+				return null;
+
+			return Serializer.of(type).deserialize(encryptor.decrypt(Compactor.extract(DatatypeConverter.parseBase64Binary(string))));
 		}
 	}
 

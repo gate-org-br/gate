@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>4.28.0</version>
+	<version>4.29.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
@@ -313,6 +313,7 @@
 								<include>**/Toolbar/Toolbar.css</include>
 								<include>**/DeskMenu/DeskMenu.css</include>
 								<include>**/DeskPane/DeskPane.css</include>
+								<include>**/HMenu/HMenu.css</include>
 							</includes>
 						</aggregation>
 					</aggregations>
