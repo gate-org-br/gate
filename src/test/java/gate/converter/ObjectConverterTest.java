@@ -20,7 +20,7 @@ public class ObjectConverterTest
 	}
 
 	@Test
-	public void test01() throws ConversionException, NoSuchAlgorithmException
+	public void testObject() throws ConversionException, NoSuchAlgorithmException
 	{
 		User user = new User();
 		user.setId(new ID(1));
@@ -36,7 +36,7 @@ public class ObjectConverterTest
 	}
 
 	@Test
-	public void test02() throws ConversionException
+	public void testSecureObject() throws ConversionException
 	{
 		ClassifiedUser user = new ClassifiedUser();
 		user.setId(new ID(1));
@@ -50,6 +50,14 @@ public class ObjectConverterTest
 		Assert.assertEquals(new ID(1), user.getId());
 		Assert.assertEquals("User 1", user.getName());
 
+	}
+
+	@Test
+	public void testNull() throws ConversionException
+	{
+		Converter converter = Converter.getConverter(Object.class);
+		Assert.assertEquals("", converter.toString(Object.class, null));
+		Assert.assertTrue(converter.ofString(Object.class, "") == null);
 	}
 
 	@SecurityKey("/zgq2IL4H6tN4kRrzybBQA==")

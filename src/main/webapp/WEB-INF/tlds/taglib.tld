@@ -294,10 +294,10 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>menulink</name>
-		<display-name>Menu Link</display-name>
+		<name>shortcut</name>
+		<display-name>Shortcut</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.MenuLinkTag</tag-class>
+		<tag-class>gate.tags.ShortcutTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<attribute>
 			<name>module</name>
@@ -329,13 +329,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>
-	<tag>
-		<name>separator</name>
-		<body-content>empty</body-content>
-		<display-name>Separator</display-name>
-		<tag-class>gate.tags.SeparatorTag</tag-class>
-		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 	<tag>
 		<name>deskitem</name>
@@ -1164,7 +1157,6 @@
 			java.lang.String color(java.lang.Object)
 		</function-signature>
 	</function>
-
 	<function>
 		<name>description</name>
 		<function-class>gate.tags.TagLib</function-class>

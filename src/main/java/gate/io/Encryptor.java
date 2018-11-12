@@ -19,7 +19,17 @@ public class Encryptor
 	private final Cipher cipher;
 	private final SecretKeySpec key;
 
-	public Encryptor(String algorithm, byte[] key)
+	public static Encryptor of(String algorithm, byte[] key)
+	{
+		return new Encryptor(algorithm, key);
+	}
+
+	public static Encryptor of(String algorithm, String key)
+	{
+		return new Encryptor(algorithm, DatatypeConverter.parseBase64Binary(key));
+	}
+
+	private Encryptor(String algorithm, byte[] key)
 	{
 		try
 		{
@@ -32,12 +42,7 @@ public class Encryptor
 
 	}
 
-	public Encryptor(String algorithm, String key)
-	{
-		this(algorithm, DatatypeConverter.parseBase64Binary(key));
-	}
-
-	public byte[] encrypt(byte[] data) throws ConversionException
+	public byte[] encrypt(byte[] data)
 	{
 		try
 		{
@@ -47,8 +52,13 @@ public class Encryptor
 				| BadPaddingException
 				| InvalidKeyException ex)
 		{
-			throw new ConversionException(ex.getMessage(), ex);
+			throw new UncheckedIOException(ex.getMessage(), new IOException(ex));
 		}
+	}
+
+	public String encrypt(String string)
+	{
+		return Base64.getEncoder().encodeToString(encrypt(string.getBytes()));
 	}
 
 	public byte[] decrypt(byte[] data) throws ConversionException
@@ -70,10 +80,4 @@ public class Encryptor
 	{
 		return new String(decrypt(Base64.getDecoder().decode(string)));
 	}
-
-	public String encrypt(String string) throws ConversionException
-	{
-		return Base64.getEncoder().encodeToString(encrypt(string.getBytes()));
-	}
-
 }

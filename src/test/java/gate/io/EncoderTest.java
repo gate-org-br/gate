@@ -12,8 +12,8 @@ public class EncoderTest
 	{
 
 		String string = "1234567890";
-		Encoder encoder = Encoder.getInstance();
-		Assert.assertEquals(string, encoder.decode(String.class, encoder.encode(String.class, string)));
+		Encoder<String> encoder = Encoder.of(String.class);
+		Assert.assertEquals(string, encoder.decode(encoder.encode(string)));
 	}
 
 	@Test
@@ -21,7 +21,7 @@ public class EncoderTest
 	{
 
 		String string = "1234567890";
-		Encoder encoder = Encoder.getInstance("/zgq2IL4H6tN4kRrzybBQA==");
-		Assert.assertEquals(string, encoder.decode(String.class, encoder.encode(String.class, string)));
+		Encoder<String> encoder = Encoder.of(String.class, "/zgq2IL4H6tN4kRrzybBQA==");
+		Assert.assertEquals(string, encoder.decode(encoder.encode(string)));
 	}
 }

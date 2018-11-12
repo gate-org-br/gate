@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-public class MenuLinkTag extends DynamicAttributeTag
+public class ShortcutTag extends DynamicAttributeTag
 {
 
 	@Inject
@@ -74,13 +74,11 @@ public class MenuLinkTag extends DynamicAttributeTag
 					&& Toolkit.isEmpty(screen)
 					&& Toolkit.isEmpty(action))
 			{
-				Attributes attributes = new Attributes();
-				attributes.put("href", "Gate");
-				if (!attributes.containsKey("title"))
+				getAttributes().put("href", "Gate");
+				if (!getAttributes().containsKey("title"))
 					getAttributes().put("title", "Sair do sistema");
 
-				pageContext.getOut().print("<li class='MenuLink' " + getAttributes() + ">");
-				pageContext.getOut().print("<a " + attributes + ">");
+				pageContext.getOut().print("<a " + getAttributes() + ">");
 
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
@@ -88,7 +86,6 @@ public class MenuLinkTag extends DynamicAttributeTag
 					pageContext.getOut().print("<i>&#X2007;</i>");
 
 				pageContext.getOut().print("</a>");
-				pageContext.getOut().print("</li>");
 			} else
 			{
 				if ("#".equals(module))
@@ -117,14 +114,11 @@ public class MenuLinkTag extends DynamicAttributeTag
 					if (!getAttributes().containsKey("title"))
 						getAttributes().put("title", title);
 
-					pageContext.getOut().print("<li class='MenuLink' " + getAttributes() + ">");
 					if ("POST".equalsIgnoreCase(this.method))
 					{
-						Attributes attribute = new Attributes();
-						if (target != null)
-							attribute.put("formtarget", target);
-						attribute.put("formaction", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<button " + attribute + ">");
+						getAttributes().put("formtarget", target);
+						getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<button " + getAttributes() + ">");
 						if (getJspBody() != null)
 							getJspBody().invoke(null);
 						else
@@ -143,7 +137,6 @@ public class MenuLinkTag extends DynamicAttributeTag
 							pageContext.getOut().print(createBody(clazz, method));
 						pageContext.getOut().print("</a>");
 					}
-					pageContext.getOut().print("</li>");
 				}
 			}
 		} catch (SecurityException ex)
