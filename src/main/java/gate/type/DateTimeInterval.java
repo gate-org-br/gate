@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DateTimeIntervalConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
 
@@ -73,6 +72,11 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 	public DateTime getDateTime2()
 	{
 		return dateTime2;
+	}
+
+	public DateInterval getDateInterval()
+	{
+		return new DateInterval(dateTime1.getDate(), dateTime2.getDate());
 	}
 
 	@Override
