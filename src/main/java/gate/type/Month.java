@@ -118,7 +118,13 @@ public final class Month implements Comparable<Month>, Serializable
 
 	public DateInterval getDateInterval()
 	{
-		return new Date(getValue()).getDayOfMonth().getInterval();
+		return new Date(getValue()).getDayOfMonth().getDateInterval();
+	}
+
+	public DateTimeInterval getDateTimeInterval()
+	{
+		return new Date(getValue()).getDayOfMonth()
+				.getDateInterval().toDateTimeInterval();
 	}
 
 	public Month()

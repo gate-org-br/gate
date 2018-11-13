@@ -62,7 +62,7 @@ public final class Date implements Comparable<Date>, Serializable
 			return new Date(calendar.getTimeInMillis());
 		}
 
-		public DateInterval getInterval()
+		public DateInterval getDateInterval()
 		{
 			return new DateInterval(getMin(), getMax());
 		}

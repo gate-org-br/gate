@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DateIntervalConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -53,6 +52,11 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 		date1 = new Date(c.getTimeInMillis());
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
 		date2 = new Date(c.getTimeInMillis());
+	}
+
+	public DateTimeInterval toDateTimeInterval()
+	{
+		return new DateTimeInterval(date1.with(Time.MIN), date2.with(Time.MAX));
 	}
 
 	public DateInterval(String format, String date1, String date2) throws ParseException
