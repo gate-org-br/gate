@@ -9,13 +9,13 @@ import gate.annotation.Schema;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
+import gate.type.Hierarchy;
 import gate.type.ID;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,17 +27,9 @@ import java.util.stream.Stream;
 @Entity
 @Icon("2005")
 @Schema("gate")
-public class Role implements Serializable
+public class Role implements Serializable, Hierarchy<Role>
 {
 
-	public static void main(String[] args)
-	{
-		String username = "davinunesdasilva@gmail.com";
-		int indexOf = username.indexOf("@");
-		if (indexOf != -1)
-			username = username.substring(0, indexOf);
-		System.out.println(username);
-	}
 	private static final long serialVersionUID = 1L;
 
 	@Required
@@ -95,9 +87,34 @@ public class Role implements Serializable
 
 	private List<Role> roles;
 
+	@Override
 	public ID getId()
 	{
 		return id;
+	}
+
+	@Override
+	public List<Role> getChildren()
+	{
+		return getRoles();
+	}
+
+	@Override
+	public Role getParent()
+	{
+		return getRole();
+	}
+
+	@Override
+	public Role setChildren(List<Role> children)
+	{
+		return setRoles(children);
+	}
+
+	@Override
+	public Role setParent(Role parent)
+	{
+		return setRole(parent);
 	}
 
 	public Role setId(ID id)
@@ -211,16 +228,6 @@ public class Role implements Serializable
 		return this;
 	}
 
-	public List<Role> getParents()
-	{
-		List<Role> parents = new ArrayList<>();
-		for (Role parent = this;
-				parent.getId() != null;
-				parent = parent.getRole())
-			parents.add(parent);
-		return parents;
-	}
-
 	public String getRoleID()
 	{
 		return roleID;
@@ -286,105 +293,6 @@ public class Role implements Serializable
 	{
 		this.master = master;
 		return this;
-	}
-
-	public Stream<Role> stream()
-	{
-		return Stream.concat(Stream.of(this),
-				getRoles().stream().flatMap(Role::stream));
-	}
-
-	public List<Role> toList()
-	{
-		return stream().collect(Collectors.toList());
-	}
-
-	public <T> List<T> toList(Function<Role, T> extractor)
-	{
-		return stream()
-				.map(extractor)
-				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Returns the root of this role hierarchy.
-	 *
-	 * @return the root of this role hierarchy
-	 */
-	public Role getRoot()
-	{
-		return role == null || role.id == null ? this : role.getRoot();
-	}
-
-	/**
-	 * Checks if this Role is a parent of the specified Role.
-	 *
-	 * @param role the Role to be checked
-	 *
-	 * @return true if this Role is a parent of the specified Role, false otherwise
-	 *
-	 * @throws NullPointerException if the specified role is null or has a null id
-	 */
-	public boolean isParentOf(Role role)
-	{
-		Objects.requireNonNull(role);
-		Objects.requireNonNull(role.getId());
-		return getRoles().stream().anyMatch(e -> e.equals(role) || e.isParentOf(role));
-	}
-
-	/**
-	 * Checks if this Role is equals to or is a parent of the specified Role.
-	 *
-	 * @param role the Role to be checked
-	 *
-	 * @return true if this Role is equals to or is a parent of the specified Role, false otherwise
-	 *
-	 * @throws NullPointerException if the specified role is null or has a null id
-	 */
-	public boolean contains(Role role)
-	{
-		Objects.requireNonNull(role);
-		Objects.requireNonNull(role.getId());
-		return equals(role) || isParentOf(role);
-	}
-
-	/**
-	 * Checks if this Role is a child of the specified Role.
-	 *
-	 * @param role the Role to be checked
-	 *
-	 * @return true if this Role is a child of the specified Role, false otherwise
-	 *
-	 * @throws NullPointerException if the specified role is null or has a null id
-	 */
-	public boolean isChildOf(Role role)
-	{
-		Objects.requireNonNull(role);
-		Objects.requireNonNull(role.getId());
-		return getRole().getId() != null && (getRole().equals(role) || getRole().isChildOf(role));
-	}
-
-	public Role select(ID id)
-	{
-		return getId().equals(id)
-				? this : getRoles().stream().map(e -> e.select(id))
-						.filter(e -> e != null).findFirst().orElse(null);
-	}
-
-	/**
-	 * Checks if this Role is equals to or is a child of the specified Role.
-	 *
-	 * @param role the Role to be checked
-	 *
-	 * @return true if this Role is equals to or is a child of the specified Role, false otherwise
-	 *
-	 * @throws NullPointerException if the specified role is null or has a null id
-	 */
-	public boolean isContainedBy(Role role)
-	{
-		Objects.requireNonNull(role);
-		Objects.requireNonNull(role.getId());
-		return equals(role) || isChildOf(role);
 	}
 
 	private List<Auth> getPrivateAuths()

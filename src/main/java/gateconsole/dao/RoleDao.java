@@ -6,6 +6,7 @@ import gate.error.AppException;
 import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.insert.Insert;
+import gate.type.Hierarchy;
 import gate.type.ID;
 import java.util.Collection;
 import java.util.List;
@@ -23,18 +24,14 @@ public class RoleDao extends Dao
 		super(c);
 	}
 
-	public List<Role> search()
+	public List<Role> search() throws AppException
 	{
 		List<Role> roles = getLink()
 				.search(Role.class)
 				.properties("id", "active", "master", "role.id", "roleID", "+name", "email", "description", "manager.id",
 						"manager.name")
 				.parameters();
-
-		for (Role p : roles)
-			for (Role c : roles)
-				if (p.equals(c.getRole()))
-					p.getRoles().add(c.setRole(p));
+		Hierarchy.setup(roles);
 		return roles;
 	}
 
