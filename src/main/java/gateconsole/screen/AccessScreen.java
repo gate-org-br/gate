@@ -86,7 +86,7 @@ public class AccessScreen extends Screen
 		this.form = form;
 	}
 
-	public Collection<Role> getRoles()
+	public Collection<Role> getRoles() throws AppException
 	{
 		return new RoleControl().search();
 	}

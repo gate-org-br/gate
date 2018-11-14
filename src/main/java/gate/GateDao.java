@@ -3,15 +3,20 @@ package gate;
 import gate.entity.Auth;
 import gate.entity.Role;
 import gate.entity.User;
+import gate.error.AppError;
 import gate.error.ConstraintViolationException;
+import gate.error.DuplicateException;
+import gate.error.InvalidCircularRelationException;
 import gate.error.InvalidUsernameException;
+import gate.error.NotFoundException;
 import gate.sql.Cursor;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
+import gate.type.Hierarchy;
 import gate.type.ID;
 import gate.type.Phone;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 class GateDao extends gate.base.Dao
@@ -83,43 +88,46 @@ class GateDao extends gate.base.Dao
 				.constant()
 				.fetch((gate.sql.Cursor cursor) ->
 				{
-					Collection<Role> roles = new ArrayList<>();
-					if (cursor.next())
-						do
-						{
-							Role role = new Role()
-									.setId(cursor.getValue(ID.class, "id"))
-									.setName(cursor.getValue(String.class, "name"))
-									.setEmail(cursor.getValue(String.class, "email"))
-									.setRoleID(cursor.getValue(String.class, "roleID"))
-									.setMaster(cursor.getValue(Boolean.class, "master"))
-									.setActive(cursor.getValue(Boolean.class, "active"))
-									.setRole(new Role()
-											.setId(cursor.getValue(ID.class, "role.id"))
-											.setDescription(cursor.getValue(String.class, "description"))
-											.setManager(new User()
-													.setId(cursor.getValue(ID.class, "manager.id"))
-													.setName(cursor.getValue(String.class, "manager.name"))));
+					try
+					{
+						List<Role> roles = new ArrayList<>();
+						if (cursor.next())
 							do
 							{
-								Auth auth = new Auth()
-										.setRole(role)
-										.setId(cursor.getValue(ID.class, "auth.id"))
-										.setMode(cursor.getValue(Auth.Mode.class, "auth.mode"))
-										.setType(cursor.getValue(Auth.Type.class, "auth.type"))
-										.setModule(cursor.getValue(String.class, "auth.module"))
-										.setScreen(cursor.getValue(String.class, "auth.screen"))
-										.setAction(cursor.getValue(String.class, "auth.action"));
-								if (auth.getId() != null)
-									role.getAuths().add(auth);
-							} while (cursor.next() && cursor.getValue(ID.class, "id").equals(role.getId()));
-							roles.add(role);
-						} while (!cursor.isAfterLast());
-					for (Role p : roles)
-						for (Role c : roles)
-							if (p.equals(c.getRole()))
-								p.getRoles().add(c.setRole(p));
-					return roles.stream().filter((e) -> e.getId().equals(id)).findAny().orElse(null);
+								Role role = new Role()
+										.setId(cursor.getValue(ID.class, "id"))
+										.setName(cursor.getValue(String.class, "name"))
+										.setEmail(cursor.getValue(String.class, "email"))
+										.setRoleID(cursor.getValue(String.class, "roleID"))
+										.setMaster(cursor.getValue(Boolean.class, "master"))
+										.setActive(cursor.getValue(Boolean.class, "active"))
+										.setRole(new Role()
+												.setId(cursor.getValue(ID.class, "role.id"))
+												.setDescription(cursor.getValue(String.class, "description"))
+												.setManager(new User()
+														.setId(cursor.getValue(ID.class, "manager.id"))
+														.setName(cursor.getValue(String.class, "manager.name"))));
+								do
+								{
+									Auth auth = new Auth()
+											.setRole(role)
+											.setId(cursor.getValue(ID.class, "auth.id"))
+											.setMode(cursor.getValue(Auth.Mode.class, "auth.mode"))
+											.setType(cursor.getValue(Auth.Type.class, "auth.type"))
+											.setModule(cursor.getValue(String.class, "auth.module"))
+											.setScreen(cursor.getValue(String.class, "auth.screen"))
+											.setAction(cursor.getValue(String.class, "auth.action"));
+									if (auth.getId() != null)
+										role.getAuths().add(auth);
+								} while (cursor.next() && cursor.getValue(ID.class, "id").equals(role.getId()));
+								roles.add(role);
+							} while (!cursor.isAfterLast());
+						Hierarchy.setup(roles);
+						return roles.stream().filter((e) -> e.getId().equals(id)).findAny().orElse(null);
+					} catch (DuplicateException | InvalidCircularRelationException | NotFoundException | NullPointerException ex)
+					{
+						throw new AppError(ex);
+					}
 				});
 	}
 

@@ -26,9 +26,13 @@ public class RoleScreen extends Screen
 
 	public String call()
 	{
-		if (getMessages().size() > 0)
-			return "/WEB-INF/views/gateconsole/Role/View.jsp";
-		page = control.search();
+		try
+		{
+			page = control.search();
+		} catch (AppException ex)
+		{
+			setMessages(ex.getMessages());
+		}
 		return "/WEB-INF/views/gateconsole/Role/View.jsp";
 	}
 
@@ -42,9 +46,13 @@ public class RoleScreen extends Screen
 	@Name("Pesquisar")
 	public String callSearch()
 	{
-		if (getMessages().size() > 0)
-			return "/WEB-INF/views/gateconsole/Role/ViewSearch.jsp";
-		page = control.search();
+		try
+		{
+			page = control.search();
+		} catch (AppException ex)
+		{
+			setMessages(ex.getMessages());
+		}
 		return "/WEB-INF/views/gateconsole/Role/ViewSearch.jsp";
 	}
 

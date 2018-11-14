@@ -17,7 +17,7 @@ import java.util.Collection;
 public class RoleControl extends Control
 {
 
-	public Collection<Role> search()
+	public Collection<Role> search() throws AppException
 	{
 		try (Link link = new Link("Gate");
 				RoleDao roleDao = new RoleDao(link);
@@ -27,9 +27,9 @@ public class RoleControl extends Control
 			Collection<Role> roles = roleDao.search();
 			Collection<User> users = userDao.search();
 			Collection<Auth> auths = authDao.search();
-			roles.forEach(role -> auths.stream().filter(e -> role.getId().equals(e.getRole().getId())).forEach(e -> role.getAuths().add(e)));
-			roles.forEach(role -> users.stream().filter(e -> role.getId().equals(e.getRole().getId())).forEach(e -> role.getUsers().add(e)));
-			users.forEach(user -> auths.stream().filter(e -> user.getId().equals(e.getUser().getId())).forEach(e -> user.getAuths().add(e)));
+			roles.forEach(role -> auths.stream().filter(e -> role.equals(e.getRole())).forEach(role.getAuths()::add));
+			roles.forEach(role -> users.stream().filter(e -> role.equals(e.getRole())).forEach(role.getUsers()::add));
+			users.forEach(user -> auths.stream().filter(e -> user.equals(e.getUser())).forEach(user.getAuths()::add));
 			roles.removeIf(e -> e.getRole().getId() != null);
 			return roles;
 		}
@@ -60,12 +60,10 @@ public class RoleControl extends Control
 		{
 			dao.beginTran();
 
-			if (role.equals(role.getRole())
-					|| dao.search().stream().anyMatch(e -> e.isParentOf(role) && e.isChildOf(role)))
-				throw new AppException("Tentativa de criar associação cíclica entre perfis");
-
 			if (!dao.update(role))
 				throw new AppException("Tentativa de alterar um perfil inexistente.");
+
+			dao.search();
 
 			dao.commit();
 		}
