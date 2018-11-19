@@ -4,12 +4,11 @@ import gate.entity.Role;
 import gate.report.doc.XLS;
 import gate.type.ID;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ReportTest
@@ -20,7 +19,6 @@ public class ReportTest
 	}
 
 	@Test
-	@Ignore
 	public void testSomeMethod() throws FileNotFoundException, IOException
 	{
 		List<Role> roles = new ArrayList<>();
@@ -59,7 +57,7 @@ public class ReportTest
 		grid.setChildren(Role::getRoles);
 
 		XLS doc = new XLS(report);
-		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("Result.xls")))
+		try (BufferedOutputStream stream = new BufferedOutputStream(new ByteArrayOutputStream()))
 		{
 			doc.print(stream);
 		}

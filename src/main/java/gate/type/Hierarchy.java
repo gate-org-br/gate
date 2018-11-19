@@ -171,12 +171,14 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @param <T> the hierarchical type setup the list entities
 	 * @param list the list to be made hierarchical
 	 *
+	 * @return a new list with the root elements of the specified one
+	 *
 	 * @throws java.lang.NullPointerException if the specified list is null or has any element with a null id
 	 * @throws gate.error.DuplicateException if the specified list contains duplicates
 	 * @throws gate.error.InvalidCircularRelationException if the specified list contains circular relationships
 	 * @throws gate.error.NotFoundException if any object in the specified list references a non existent object
 	 */
-	public static <T extends Hierarchy<T>> void setup(List<T> list)
+	public static <T extends Hierarchy<T>> List<T> setup(List<T> list)
 			throws DuplicateException,
 			InvalidCircularRelationException,
 			NotFoundException,
@@ -190,7 +192,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 			Objects.requireNonNull(object.getId());
 
 			for (T parent = object.getParent();
-					parent.getId() != null;
+					parent != null && parent.getId() != null;
 					parent = parent.getParent())
 			{
 				if (parent.equals(object))
@@ -203,9 +205,12 @@ public interface Hierarchy<T extends Hierarchy<T>>
 		}
 
 		list.stream().forEach(p -> p.setChildren(list.stream()
-				.filter(c -> c.getParent().equals(p))
+				.filter(c -> Objects.equals(c.getParent(), p))
 				.peek(c -> c.setParent(p))
 				.collect(Collectors.toList())));
+
+		return list.stream().filter(e -> e.getParent() == null || e.getParent().getId() == null)
+				.collect(Collectors.toList());
 	}
 
 }
