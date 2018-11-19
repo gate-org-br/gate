@@ -21,35 +21,27 @@ public class Encryptor
 	private final Cipher cipher;
 	private final SecretKeySpec key;
 
-	private static final Map<String, Cipher> CIPHERS
+	private static final Map<String, Map<String, Encryptor>> ENCRYPTORS
 			= new ConcurrentHashMap<>();
-
-	public static Encryptor of(String algorithm, byte[] key)
-	{
-		return new Encryptor(algorithm, key);
-	}
 
 	public static Encryptor of(String algorithm, String key)
 	{
-		return new Encryptor(algorithm,
-				DatatypeConverter.parseBase64Binary(key));
+		return ENCRYPTORS.computeIfAbsent(algorithm, e -> new ConcurrentHashMap<>())
+				.computeIfAbsent(key, e -> new Encryptor(algorithm, e));
 	}
 
-	private Encryptor(String algorithm, byte[] key)
+	private Encryptor(String algorithm, String key)
 	{
-		cipher = CIPHERS.computeIfAbsent(algorithm, e ->
+		try
 		{
-			try
-			{
-				return Cipher.getInstance(algorithm);
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException ex)
-			{
-				throw new UncheckedIOException(ex.getMessage(),
-						new IOException(ex));
-			}
-		});
+			cipher = Cipher.getInstance(algorithm);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex)
+		{
+			throw new UncheckedIOException(ex.getMessage(),
+					new IOException(ex));
+		}
 
-		this.key = new SecretKeySpec(key, algorithm);
+		this.key = new SecretKeySpec(DatatypeConverter.parseBase64Binary(key), algorithm);
 	}
 
 	public synchronized byte[] decrypt(byte[] data) throws ConversionException
