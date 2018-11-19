@@ -38,11 +38,6 @@ public abstract class Encoder<T>
 		return new CipherEncoder<>(type, Encryptor.of("AES", key));
 	}
 
-	public static <T> Encoder<T> of(Class<T> type, byte[] key)
-	{
-		return new CipherEncoder<>(type, Encryptor.of("AES", key));
-	}
-
 	private static class NormalEncoder<T> extends Encoder<T>
 	{
 
