@@ -91,6 +91,22 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 		}
 	}
 
+	public static List<List<String>> load(String string) throws IOException
+	{
+		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		{
+			return CSVReader.getInstance().read(is);
+		}
+	}
+
+	public static List<List<String>> load(String charset, String string) throws IOException
+	{
+		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		{
+			return CSVReader.getInstance(charset).read(is);
+		}
+	}
+
 	private static class Instance
 	{
 

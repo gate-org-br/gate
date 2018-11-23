@@ -39,4 +39,14 @@ public interface Readable
 	{
 		return read(StringReader.getInstance(charset));
 	}
+
+	public default List<List<String>> readCSV(String charset) throws IOException
+	{
+		return read(CSVReader.getInstance(charset));
+	}
+
+	public default List<List<String>> readCSV() throws IOException
+	{
+		return read(CSVReader.getInstance());
+	}
 }
