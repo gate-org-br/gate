@@ -14,11 +14,19 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 @Handler(RedirectHandler.class)
 public class URL
@@ -27,7 +35,32 @@ public class URL
 	private final String value;
 	private String credentials;
 	private int timeout = 10000;
+	private boolean trust = false;
 	private final StringJoiner parameters = new StringJoiner("&");
+
+	private static final TrustManager[] TRUST_MANAGERS = new TrustManager[]
+	{
+		new X509TrustManager()
+		{
+			@Override
+			public X509Certificate[] getAcceptedIssuers()
+			{
+				return null;
+			}
+
+			@Override
+			public void checkClientTrusted(X509Certificate[] certs, String t)
+			{
+			}
+
+			@Override
+			public void checkServerTrusted(X509Certificate[] certs, String t)
+			{
+			}
+		}
+	};
+
+	private static final HostnameVerifier HOSTNAME_VERIFIER = (String host, SSLSession sess) -> host.equals("localhost");
 
 	public URL(String url)
 	{
@@ -77,6 +110,12 @@ public class URL
 
 	}
 
+	public URL trust(boolean trust)
+	{
+		this.trust = trust;
+		return this;
+	}
+
 	public URL setCredentials(String credentials)
 	{
 		this.credentials = credentials;
@@ -88,17 +127,11 @@ public class URL
 		StringBuilder string = new StringBuilder();
 		for (Parameter parameter : parameters)
 		{
-			try
-			{
-				if (string.length() != 0)
-					string.append("&");
-				string.append(URLEncoder.encode(parameter.getName(), "UTF-8"));
-				string.append("=");
-				string.append(URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8"));
-			} catch (UnsupportedEncodingException ex)
-			{
-				Logger.getLogger(URL.class.getName()).log(Level.SEVERE, null, ex);
-			}
+			if (string.length() != 0)
+				string.append("&");
+			string.append(URLEncoder.encode(parameter.getName(), "UTF-8"));
+			string.append("=");
+			string.append(URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8"));
 		}
 		return string.toString().getBytes("UTF-8");
 	}
@@ -107,6 +140,9 @@ public class URL
 	{
 		java.net.URL url = new java.net.URL(toString());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		if (connection instanceof HttpsURLConnection && trust)
+			skipCertificatedValidation((HttpsURLConnection) connection);
+
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
 		connection.setConnectTimeout(timeout);
@@ -136,7 +172,12 @@ public class URL
 		byte[] bytes = getBytes(parameters);
 
 		java.net.URL url = new java.net.URL(toString());
+
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+		if (connection instanceof HttpsURLConnection && trust)
+			skipCertificatedValidation((HttpsURLConnection) connection);
+
 		connection.setConnectTimeout(timeout);
 		connection.setReadTimeout(timeout);
 		connection.setDoOutput(true);
@@ -145,6 +186,9 @@ public class URL
 		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
+
+		connection.connect();
+
 		try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
 		{
 			wr.write(bytes);
@@ -165,6 +209,20 @@ public class URL
 		}
 
 		return new Result(connection);
+	}
+
+	private void skipCertificatedValidation(HttpsURLConnection connection) throws IOException
+	{
+		try
+		{
+			SSLContext ctx = SSLContext.getInstance("TLS");
+			ctx.init(null, TRUST_MANAGERS, new SecureRandom());
+			connection.setHostnameVerifier(HOSTNAME_VERIFIER);
+			connection.setSSLSocketFactory(ctx.getSocketFactory());
+		} catch (NoSuchAlgorithmException | KeyManagementException ex)
+		{
+			throw new IOException(ex);
+		}
 	}
 
 	public Result post(Parameter... parameters) throws IOException
