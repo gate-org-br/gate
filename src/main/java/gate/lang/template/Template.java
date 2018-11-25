@@ -12,6 +12,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -87,6 +88,36 @@ public class Template implements Evaluable
 	public static String evaluate(Object context, byte[] data) throws TemplateException
 	{
 		try (Reader reader = new InputStreamReader(new ByteArrayInputStream(data)))
+		{
+			try (StringWriter writer = new StringWriter())
+			{
+				Template.evaluate(context, reader, writer);
+				return writer.toString();
+			}
+		} catch (IOException e)
+		{
+			throw new TemplateException("Error trying to evaluate template.", e.getMessage());
+		}
+	}
+
+	public static String evaluate(Object context, URL resource) throws TemplateException
+	{
+		try (Reader reader = new InputStreamReader(resource.openStream()))
+		{
+			try (StringWriter writer = new StringWriter())
+			{
+				Template.evaluate(context, reader, writer);
+				return writer.toString();
+			}
+		} catch (IOException e)
+		{
+			throw new TemplateException("Error trying to evaluate template.", e.getMessage());
+		}
+	}
+
+	public static String evaluate(Object context, URL resource, String charset) throws TemplateException
+	{
+		try (Reader reader = new InputStreamReader(resource.openStream(), charset))
 		{
 			try (StringWriter writer = new StringWriter())
 			{
