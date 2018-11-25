@@ -151,7 +151,7 @@ function URL(value)
 	{
 		window.location.href = this.toString();
 		return this;
-	}
+	};
 
 	this.check = function ()
 	{
