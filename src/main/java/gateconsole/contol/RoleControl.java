@@ -13,6 +13,7 @@ import gateconsole.dao.AuthDao;
 import gateconsole.dao.RoleDao;
 import gateconsole.dao.UserDao;
 import java.util.Collection;
+import java.util.List;
 
 public class RoleControl extends Control
 {
@@ -54,7 +55,8 @@ public class RoleControl extends Control
 
 	public void update(Role role) throws AppException
 	{
-		Constraints.validate(role, "role.id", "master", "active", "name", "email", "description", "roleID");
+		Constraints.validate(role, "role.id", "master", "active",
+				"name", "email", "description", "roleID");
 
 		try (RoleDao dao = new RoleDao())
 		{
@@ -63,7 +65,12 @@ public class RoleControl extends Control
 			if (!dao.update(role))
 				throw new AppException("Tentativa de alterar um perfil inexistente.");
 
-			dao.search();
+			List<Role> roles = dao.search();
+			if (roles.stream().anyMatch(e
+					-> Boolean.TRUE.equals(e.getMaster())
+					&& e.getParent().getId() != null
+					&& !Boolean.TRUE.equals(e.getParent().getMaster())))
+				throw new AppException("Tentativa de inserir um perfil master dentro de um perfil não master.");
 
 			dao.commit();
 		}

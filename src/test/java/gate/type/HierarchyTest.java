@@ -10,61 +10,84 @@ import org.junit.Test;
 public class HierarchyTest
 {
 
-	public HierarchyTest()
-	{
-	}
+	private static final Mock MOCK1 = new Mock(new ID(1));
+
+	private static final Mock MOCK11 = new Mock(new ID(11)).setParent(MOCK1);
+	private static final Mock MOCK111 = new Mock(new ID(111)).setParent(MOCK11);
+	private static final Mock MOCK112 = new Mock(new ID(112)).setParent(MOCK11);
+	private static final Mock MOCK113 = new Mock(new ID(113)).setParent(MOCK11);
+
+	private static final Mock MOCK12 = new Mock(new ID(12)).setParent(MOCK1);
+	private static final Mock MOCK121 = new Mock(new ID(122)).setParent(MOCK12);
+	private static final Mock MOCK122 = new Mock(new ID(122)).setParent(MOCK12);
+	private static final Mock MOCK123 = new Mock(new ID(123)).setParent(MOCK12);
+
+	private static final Mock MOCK13 = new Mock(new ID(13)).setParent(MOCK1);
+	private static final Mock MOCK131 = new Mock(new ID(131)).setParent(MOCK13);
+	private static final Mock MOCK132 = new Mock(new ID(132)).setParent(MOCK13);
+	private static final Mock MOCK133 = new Mock(new ID(133)).setParent(MOCK13);
+
+	private static final Mock MOCK2 = new Mock(new ID(2));
+
+	private static final Mock MOCK21 = new Mock(new ID(21)).setParent(MOCK2);
+	private static final Mock MOCK211 = new Mock(new ID(211)).setParent(MOCK21);
+	private static final Mock MOCK212 = new Mock(new ID(212)).setParent(MOCK21);
+	private static final Mock MOCK213 = new Mock(new ID(213)).setParent(MOCK21);
+
+	private static final Mock MOCK22 = new Mock(new ID(22)).setParent(MOCK2);
+	private static final Mock MOCK221 = new Mock(new ID(221)).setParent(MOCK22);
+	private static final Mock MOCK222 = new Mock(new ID(222)).setParent(MOCK22);
+	private static final Mock MOCK223 = new Mock(new ID(223)).setParent(MOCK22);
+
+	private static final Mock MOCK23 = new Mock(new ID(23)).setParent(MOCK2);
+	private static final Mock MOCK231 = new Mock(new ID(231)).setParent(MOCK23);
+	private static final Mock MOCK232 = new Mock(new ID(232)).setParent(MOCK23);
+	private static final Mock MOCK233 = new Mock(new ID(233)).setParent(MOCK23);
+
+	private final List<Mock> MOCKS = Arrays.asList(
+			MOCK1,
+			MOCK11, MOCK111, MOCK112, MOCK113,
+			MOCK12, MOCK121, MOCK122, MOCK123,
+			MOCK13, MOCK131, MOCK132, MOCK133,
+			MOCK2,
+			MOCK21, MOCK211, MOCK212, MOCK213,
+			MOCK22, MOCK221, MOCK222, MOCK223,
+			MOCK23, MOCK231, MOCK232, MOCK233);
 
 	@Test
 	public void testValid() throws AppException
 	{
-		Mock mock1 = new Mock(new ID(1));
-
-		Mock mock11 = new Mock(new ID(11)).setParent(mock1);
-		Mock mock111 = new Mock(new ID(111)).setParent(mock11);
-		Mock mock112 = new Mock(new ID(112)).setParent(mock11);
-		Mock mock113 = new Mock(new ID(113)).setParent(mock11);
-
-		Mock mock12 = new Mock(new ID(12)).setParent(mock1);
-		Mock mock13 = new Mock(new ID(13)).setParent(mock1);
-
-		Mock mock2 = new Mock(new ID(2));
-		Mock mock21 = new Mock(new ID(21)).setParent(mock2);
-		Mock mock22 = new Mock(new ID(22)).setParent(mock2);
-		Mock mock23 = new Mock(new ID(23)).setParent(mock2);
-
-		Hierarchy.setup(Arrays.asList(mock1, mock11, mock111, mock112, mock113, mock12, mock13, mock2, mock21, mock22, mock23));
-		mock1.getChildren().equals(Arrays.asList(mock11, mock12, mock13));
-		mock2.getChildren().equals(Arrays.asList(mock21, mock22, mock23));
-		mock1.select(new ID(111)).equals(mock111);
+		Hierarchy.setup(MOCKS);
+		MOCK1.getChildren().equals(Arrays.asList(MOCK11, MOCK12, MOCK13));
+		MOCK2.getChildren().equals(Arrays.asList(MOCK21, MOCK22, MOCK23));
+		MOCK1.select(new ID(111)).equals(MOCK111);
 	}
 
 	@Test
-	public void testInvalid()
+	public void testToList() throws AppException
 	{
-		try
-		{
-			Mock mock1 = new Mock(new ID(1));
-			Mock mock11 = new Mock(new ID(11)).setParent(mock1);
-			Mock mock12 = new Mock(new ID(12)).setParent(mock1);
-			Mock mock13 = new Mock(new ID(13)).setParent(mock1);
-
-			mock1.setParent(mock11);
-
-			Mock mock2 = new Mock(new ID(2));
-			Mock mock21 = new Mock(new ID(21)).setParent(mock2);
-			Mock mock22 = new Mock(new ID(22)).setParent(mock2);
-			Mock mock23 = new Mock(new ID(23)).setParent(mock2);
-
-			mock2.setParent(mock21);
-
-			Hierarchy.setup(Arrays.asList(mock1, mock11, mock12, mock13, mock2, mock21, mock22, mock23));
-			Assert.fail();
-		} catch (AppException ex)
-		{
-		}
+		Hierarchy.setup(MOCKS);
+		Assert.assertEquals(Arrays.asList(MOCK1,
+				MOCK11, MOCK111, MOCK112, MOCK113, MOCK12, MOCK121, MOCK122, MOCK123,
+				MOCK13, MOCK131, MOCK132, MOCK133), MOCK1.toList());;
 	}
 
-	private class Mock implements Hierarchy<Mock>
+	@Test
+	public void testToParentList() throws AppException
+	{
+		Hierarchy.setup(MOCKS);
+		Assert.assertEquals(Arrays.asList(MOCK121, MOCK12, MOCK1), MOCK121.toParentList());
+	}
+
+	@Test
+	public void testSelect() throws AppException
+	{
+		Hierarchy.setup(MOCKS);
+		MOCK123.getRoot().select(MOCK111.getId())
+				.equals(MOCK111);
+	}
+
+	private static class Mock implements Hierarchy<Mock>
 	{
 
 		private final ID id;
@@ -117,6 +140,5 @@ public class HierarchyTest
 		{
 			return id.toString();
 		}
-
 	}
 }
