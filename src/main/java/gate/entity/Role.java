@@ -220,12 +220,14 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	public Role getMasterRole()
 	{
-		for (Role master = getRole();
-				master.getId() != null;
-				master = master.getRole())
-			if (Boolean.TRUE.equals(master.getMaster()))
-				return master;
-		return this;
+		return parents().filter(e -> Boolean.TRUE.equals(e.master))
+				.findFirst()
+				.orElse(this);
+	}
+
+	public boolean isDisabled()
+	{
+		return parents().anyMatch(e -> Boolean.FALSE.equals(active));
 	}
 
 	public String getRoleID()
@@ -271,12 +273,6 @@ public class Role implements Serializable, Hierarchy<Role>
 	{
 		this.active = active;
 		return this;
-	}
-
-	public boolean isDisabled()
-	{
-		return Boolean.FALSE.equals(active)
-				|| (getRole().getId() != null && getRole().isDisabled());
 	}
 
 	public Boolean getMaster()

@@ -3,7 +3,6 @@ package gate.type;
 import gate.error.DuplicateException;
 import gate.error.InvalidCircularRelationException;
 import gate.error.NotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -24,11 +23,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	public T setChildren(List<T> children);
 
 	/**
-	 * Checks if this entity is a parent setup the specified entity.
+	 * Checks if this entity is a parent of the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a parent setup the specified entity, false otherwise
+	 * @return true if this entity is a of setup the specified entity, false otherwise
 	 *
 	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
@@ -40,9 +39,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Returns the root setup this entity hierarchy.
+	 * Returns the root of this entity hierarchy.
 	 *
-	 * @return the root setup this entity hierarchy
+	 * @return the root of this entity hierarchy
 	 */
 	@SuppressWarnings("unchecked")
 	public default T getRoot()
@@ -52,11 +51,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Checks if this entity is equals to or is a parent setup the specified entity.
+	 * Checks if this entity is equals to or is a parent of the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a parent setup the specified entity, false otherwise
+	 * @return true if this entity is equals to or is a parent of the specified entity, false otherwise
 	 *
 	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
@@ -68,15 +67,14 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Checks if this entity is a child setup the specified entity.
+	 * Checks if this entity is a child of the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a child setup the specified entity, false otherwise
+	 * @return true if this entity is a child of the specified entity, false otherwise
 	 *
 	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
-	@SuppressWarnings("unchecked")
 	public default boolean isChildOf(T entity)
 	{
 		Objects.requireNonNull(entity);
@@ -84,31 +82,12 @@ public interface Hierarchy<T extends Hierarchy<T>>
 		return getParent().getId() != null && (getParent().equals(entity) || getParent().isChildOf(entity));
 	}
 
-	@SuppressWarnings("unchecked")
-	public default List<T> getParents()
-	{
-		List<T> parents = new ArrayList<>();
-		for (T parent = (T) this;
-				parent.getId() != null;
-				parent = parent.getParent())
-			parents.add(parent);
-		return parents;
-	}
-
-	@SuppressWarnings("unchecked")
-	public default T select(ID id)
-	{
-		return getId().equals(id)
-				? (T) this : getChildren().stream().map(e -> e.select(id))
-						.filter(e -> e != null).findFirst().orElse(null);
-	}
-
 	/**
-	 * Check if this entity is equals to or is a child setup the specified entity.
+	 * Check if this entity is equals to or is a child of the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a child setup the specified entity, false otherwise
+	 * @return true if this entity is equals to or is a child of the specified entity, false otherwise
 	 *
 	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
@@ -120,9 +99,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Create a stream setup this element and it's children recursively
+	 * Create a stream of this element and it's children recursively
 	 *
-	 * @return a stream setup this element and it's children recursively
+	 * @return a stream of this element and it's children recursively
 	 */
 	@SuppressWarnings("unchecked")
 	public default Stream<T> stream()
@@ -142,7 +121,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Creates a list with data extracted setup this element and it's children recursively
+	 * Creates a list with data extracted of this element and it's children recursively
 	 *
 	 * @param <E> the element data to be extracted
 	 * @param extractor the function to be used to extract data
@@ -153,6 +132,58 @@ public interface Hierarchy<T extends Hierarchy<T>>
 		return stream()
 				.map(extractor)
 				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Searches for the specified id recursively on the hierarchy
+	 *
+	 * @param id the of the entity to be searched for
+	 *
+	 * @return the entity whose id is equals to the specified id or null if no such entity if found
+	 */
+	@SuppressWarnings("unchecked")
+	public default T select(ID id)
+	{
+		return getId().equals(id)
+				? (T) this : getChildren().stream().map(e -> e.select(id))
+						.filter(e -> e != null).findFirst().orElse(null);
+	}
+
+	/**
+	 * Creates a list with data extracted of this element and it's parents recursively
+	 *
+	 * @param <E> the element data to be extracted
+	 * @param extractor the function to be used to extract data
+	 * @return a list with the data extracted setup this element and it's parents recursively
+	 */
+	public default <E> List<E> toParentList(Function<T, E> extractor)
+	{
+		return parents()
+				.map(extractor)
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Creates a list with this element and it's parent recursively
+	 *
+	 * @return a list with this element and it's parent recursively
+	 */
+	public default List<T> toParentList()
+	{
+		return parents().collect(Collectors.toList());
+	}
+
+	/**
+	 * Create a stream of this element and it's parents recursively
+	 *
+	 * @return a stream of this element and it's parents recursively
+	 */
+	@SuppressWarnings("unchecked")
+	public default Stream<T> parents()
+	{
+		return getParent().getId() == null
+				? Stream.of((T) this)
+				: Stream.concat(Stream.of((T) this), getParent().parents());
 	}
 
 	@Override
