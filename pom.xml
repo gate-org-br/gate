@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>4.34.0</version>
+	<version>4.35.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
