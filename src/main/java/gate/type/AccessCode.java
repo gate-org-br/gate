@@ -9,12 +9,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.Enumeration;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.DatatypeConverter;
 
 public class AccessCode
 {
@@ -34,7 +34,7 @@ public class AccessCode
 			PublicKey publicKey = (PublicKey) stream.readObject();
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
-			String string = new String(cipher.doFinal(DatatypeConverter.parseBase64Binary(value)), "UTF-8");
+			String string = new String(cipher.doFinal(Base64.getDecoder().decode(value)), "UTF-8");
 			macAddress = string.substring(0, 13);
 			period = new DateInterval(new Date(string.substring(0, 21)), new Date(string.substring(0, 21)));
 

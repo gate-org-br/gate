@@ -3,9 +3,9 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DataConverter;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.regex.Pattern;
@@ -35,12 +35,12 @@ public class Data extends Number implements Serializable, Comparable<Data>
 
 	public Data(BigDecimal bytes)
 	{
-		this.bytes = bytes.setScale(0, BigDecimal.ROUND_DOWN);
+		this.bytes = bytes.setScale(0, RoundingMode.DOWN);
 	}
 
 	public Data(BigDecimal value, Unit unit)
 	{
-		this.bytes = value.multiply(unit.getValue()).setScale(0, BigDecimal.ROUND_DOWN);
+		this.bytes = value.multiply(unit.getValue()).setScale(0, RoundingMode.DOWN);
 	}
 
 	public Data(long value, Unit unit)
@@ -64,7 +64,7 @@ public class Data extends Number implements Serializable, Comparable<Data>
 			df.setMaximumFractionDigits(2);
 			df.setMinimumFractionDigits(0);
 			this.bytes = ((BigDecimal) df.parse(value.substring(0, value.length() - 1))).multiply(unit.getValue()).
-				setScale(0, BigDecimal.ROUND_DOWN);
+					setScale(0, RoundingMode.DOWN);
 		} catch (ParseException e)
 		{
 			throw new IllegalArgumentException("value");
@@ -136,13 +136,13 @@ public class Data extends Number implements Serializable, Comparable<Data>
 	{
 
 		B(BigDecimal.ONE), K(BigDecimal.ONE.multiply(FACTOR)), M(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR)), G(
-			BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), T(BigDecimal.ONE.multiply(FACTOR).
-			multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), P(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).
-			multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), E(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).
-			multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), Z(BigDecimal.ONE.multiply(FACTOR).
-			multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), Y(
-			BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).
-				multiply(FACTOR).multiply(FACTOR).multiply(FACTOR));
+				BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), T(BigDecimal.ONE.multiply(FACTOR).
+				multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), P(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).
+				multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), E(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).
+				multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), Z(BigDecimal.ONE.multiply(FACTOR).
+				multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), Y(
+				BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).multiply(FACTOR).
+						multiply(FACTOR).multiply(FACTOR).multiply(FACTOR));
 
 		private final BigDecimal value;
 
@@ -191,6 +191,6 @@ public class Data extends Number implements Serializable, Comparable<Data>
 	public static Data sum(Stream<Data> values)
 	{
 		return new Data(values.filter(e -> e != null).map(Data::getBytes)
-			.reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
 	}
 }

@@ -1,7 +1,7 @@
 package gate.tags;
 
 import java.io.IOException;
-
+import java.lang.reflect.InvocationTargetException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -24,12 +24,13 @@ public class UseTag extends SimpleTagSupport
 						value, PageContext.REQUEST_SCOPE);
 			else if (type != null)
 				getJspContext().setAttribute(name,
-						Class.forName(type).newInstance(), PageContext.REQUEST_SCOPE);
+						Class.forName(type).getDeclaredConstructor().newInstance(), PageContext.REQUEST_SCOPE);
 
 			getJspContext().setAttribute(name, value, PageContext.REQUEST_SCOPE);
-		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException e)
+		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException
+				| NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new JspException(e);
+			throw new JspException(ex);
 		}
 	}
 

@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.converter.custom.PercentageConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Currency;
@@ -16,11 +17,11 @@ public class Percentage extends Number implements Serializable, Comparable<Perce
 	private final BigDecimal value;
 	private static final long serialVersionUID = 1L;
 
-	public static Percentage ZERO = new Percentage(BigDecimal.ZERO);
+	public static final Percentage ZERO = new Percentage(BigDecimal.ZERO);
 
 	public Percentage(BigDecimal value)
 	{
-		this.value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.value = value.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
 	public Percentage(String value) throws ParseException
@@ -84,7 +85,7 @@ public class Percentage extends Number implements Serializable, Comparable<Perce
 	{
 		if (value.compareTo(BigDecimal.ZERO) == 0)
 			return value;
-		return value.divide(new BigDecimal(100), 10, BigDecimal.ROUND_HALF_EVEN);
+		return value.divide(new BigDecimal(100), 10, RoundingMode.HALF_EVEN);
 	}
 
 	@Override

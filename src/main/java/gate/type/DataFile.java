@@ -23,6 +23,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +31,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(DataFileHandler.class)
 @Converter(DataFileConverter.class)
@@ -205,7 +205,7 @@ public class DataFile implements Serializable
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
 		return new DataURL("application", "octet-stream", true, map,
-				DatatypeConverter.printBase64Binary(getData())).toString();
+				Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
 	public static DataFile parse(String string) throws ConversionException
@@ -215,7 +215,7 @@ public class DataFile implements Serializable
 			DataURL dataURL = DataURL.parse(string);
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
-			return new DataFile(DatatypeConverter.parseBase64Binary(string), dataURL.getParameters().get("filename"));
+			return new DataFile(Base64.getDecoder().decode(string), dataURL.getParameters().get("filename"));
 		} catch (ParseException ex)
 		{
 			throw new ConversionException("invalid data url: " + string, ex);

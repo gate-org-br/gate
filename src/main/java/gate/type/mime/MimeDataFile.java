@@ -14,10 +14,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(MimeDataFileHandler.class)
 @Converter(MimeDataFileConverter.class)
@@ -89,7 +89,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
 		return new DataURL(getType(), getSubType(), true, map,
-				DatatypeConverter.printBase64Binary(getData())).toString();
+				Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
 	public static MimeDataFile parse(String string)
@@ -102,7 +102,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return new MimeDataFile(dataURL.getType(),
 					dataURL.getSubtype(),
-					DatatypeConverter.parseBase64Binary(dataURL.getData()),
+					Base64.getDecoder().decode(dataURL.getData()),
 					dataURL.getParameters().get("filename"));
 		} catch (ParseException ex)
 		{

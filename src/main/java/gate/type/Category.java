@@ -1,6 +1,7 @@
 package gate.type;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Category implements Comparable<Category>
@@ -36,7 +37,7 @@ public class Category implements Comparable<Category>
 	{
 		if (BigDecimal.ZERO.compareTo(total) == 0)
 			return BigDecimal.ZERO;
-		return new BigDecimal(this.getValue().doubleValue()).divide(total, 4, BigDecimal.ROUND_DOWN).multiply(ONE_HUNDRED);
+		return new BigDecimal(this.getValue().doubleValue()).divide(total, 4, RoundingMode.DOWN).multiply(ONE_HUNDRED);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 public class Encryptor
 {
@@ -41,7 +40,7 @@ public class Encryptor
 					new IOException(ex));
 		}
 
-		this.key = new SecretKeySpec(DatatypeConverter.parseBase64Binary(key), algorithm);
+		this.key = new SecretKeySpec(Base64.getDecoder().decode(key), algorithm);
 	}
 
 	public synchronized byte[] decrypt(byte[] data) throws ConversionException

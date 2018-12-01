@@ -16,10 +16,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.Part;
-import javax.xml.bind.DatatypeConverter;
 
 public class DataFileConverter implements Converter
 {
@@ -53,7 +53,7 @@ public class DataFileConverter implements Converter
 		{
 			if (string != null && string.trim().length() > 0)
 			{
-				byte[] bytes = DatatypeConverter.parseBase64Binary(string);
+				byte[] bytes = Base64.getDecoder().decode(string);
 				try (ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes)))
 				{
 					return ois.readObject();
@@ -102,7 +102,7 @@ public class DataFileConverter implements Converter
 				{
 					ous.writeObject(object);
 				}
-				return DatatypeConverter.printBase64Binary(baos.toByteArray());
+				return Base64.getEncoder().encodeToString(baos.toByteArray());
 			}
 
 		} catch (IOException e)

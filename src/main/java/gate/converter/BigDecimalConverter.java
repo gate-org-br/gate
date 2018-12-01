@@ -69,7 +69,7 @@ public class BigDecimalConverter implements Converter
 				return null;
 
 			BigDecimal bd = (BigDecimal) Format.VALUE.parse(string);
-			bd = bd.setScale(2, BigDecimal.ROUND_UNNECESSARY);
+			bd = bd.setScale(2, RoundingMode.UNNECESSARY);
 			return bd;
 		} catch (ParseException ex)
 		{

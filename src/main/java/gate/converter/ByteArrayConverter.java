@@ -9,10 +9,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.Part;
-import javax.xml.bind.DatatypeConverter;
 
 public class ByteArrayConverter implements Converter
 {
@@ -37,14 +37,14 @@ public class ByteArrayConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		return rs.getBytes(index);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-					Class<?> type) throws SQLException, ConversionException
+			Class<?> type) throws SQLException, ConversionException
 	{
 		return rs.getBytes(fields);
 	}
@@ -64,7 +64,7 @@ public class ByteArrayConverter implements Converter
 	{
 		if (object == null)
 			return "";
-		return DatatypeConverter.printBase64Binary((byte[]) object);
+		return Base64.getEncoder().encodeToString((byte[]) object);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ByteArrayConverter implements Converter
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
-		return DatatypeConverter.parseBase64Binary(string);
+		return Base64.getDecoder().decode(string);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class ByteArrayConverter implements Converter
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
 		try (BufferedInputStream stream = new BufferedInputStream(part.getInputStream());
-			ByteArrayOutputStream bytes = new ByteArrayOutputStream())
+				ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 		{
 			for (int i = stream.read(); i != -1; i = stream.read())
 				bytes.write(i);

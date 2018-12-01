@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.DeflaterOutputStream;
@@ -20,7 +21,6 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 
 class SerializableTable<T extends Serializable> extends AbstractTable<T>
 {
@@ -44,7 +44,7 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 				{
 					Cipher cipher = Cipher.getInstance(ALGORITHM);
 					String value = type.getAnnotation(SecurityKey.class).value();
-					byte[] key = DatatypeConverter.parseBase64Binary(value);
+					byte[] key = Base64.getDecoder().decode(value);
 					SecretKeySpec secretKeySpec = new SecretKeySpec(key, ALGORITHM);
 					cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 
@@ -82,7 +82,7 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 			{
 				Cipher cipher = Cipher.getInstance(ALGORITHM);
 				String value = type.getAnnotation(SecurityKey.class).value();
-				byte[] key = DatatypeConverter.parseBase64Binary(value);
+				byte[] key = Base64.getDecoder().decode(value);
 				SecretKeySpec secretKeySpec = new SecretKeySpec(key, ALGORITHM);
 				cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
 
