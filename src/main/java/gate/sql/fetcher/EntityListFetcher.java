@@ -1,8 +1,9 @@
 package gate.sql.fetcher;
 
-import gate.sql.Cursor;
 import gate.error.AppError;
 import gate.lang.property.Property;
+import gate.sql.Cursor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	 *
 	 * @param cursor the Cursor to be fetched
 	 *
-	 * @return a List with each row or the specified Cursor as a java object of the specified type with it's
-	 *         properties set to their respective column values
+	 * @return a List with each row or the specified Cursor as a java object of the specified type with it's properties
+	 * set to their respective column values
 	 */
 	@Override
 	public List<T> fetch(Cursor cursor)
@@ -49,16 +50,16 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 
 			while (cursor.next())
 			{
-				T result = type.newInstance();
+				T result = type.getDeclaredConstructor().newInstance();
 				properties.forEach(e -> e.setValue(result, cursor.getValue(e.getRawType(), e.toString())));
 				results.add(result);
 			}
 			return results;
 
-		} catch (IllegalAccessException | InstantiationException e)
+		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
+				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(e);
+			throw new AppError(ex);
 		}
-
 	}
 }

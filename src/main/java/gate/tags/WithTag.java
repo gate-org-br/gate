@@ -1,7 +1,7 @@
 package gate.tags;
 
 import java.io.IOException;
-
+import java.lang.reflect.InvocationTargetException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -20,14 +20,16 @@ public class WithTag extends SimpleTagSupport
 		try
 		{
 			if (this.type != null)
-				this.value = Class.forName(type).newInstance();
+				this.value = Class.forName(type).getDeclaredConstructor().newInstance();
 
 			getJspContext().setAttribute(name, value, PageContext.REQUEST_SCOPE);
 			getJspBody().invoke(null);
 			getJspContext().removeAttribute(name, PageContext.REQUEST_SCOPE);
-		} catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException | JspException e)
+		} catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException
+				| JspException | NoSuchMethodException | SecurityException | IllegalArgumentException
+				| InvocationTargetException ex)
 		{
-			throw new JspException(e);
+			throw new JspException(ex);
 		}
 	}
 

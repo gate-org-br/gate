@@ -12,10 +12,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(MimeTextHandler.class)
 @Converter(MimeTextConverter.class)
@@ -96,7 +96,7 @@ public class MimeText implements Mime
 			map.put("charset", charset);
 
 			return new DataURL(getType(), getSubType(), false, map,
-				URLEncoder.encode(getText(), charset)).toString();
+					URLEncoder.encode(getText(), charset)).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
 			throw new AppError(ex);
@@ -104,19 +104,19 @@ public class MimeText implements Mime
 	}
 
 	public static MimeText parse(String string)
-		throws ConversionException
+			throws ConversionException
 	{
 		try
 		{
 			DataURL dataURL = DataURL.parse(string);
 
 			String charset = dataURL.getParameters().containsKey("charset")
-				? dataURL.getParameters().get("charset")
-				: "utf-8";
+					? dataURL.getParameters().get("charset")
+					: "utf-8";
 
 			String text = dataURL.isBase64()
-				? new String(DatatypeConverter.parseBase64Binary(dataURL.getData()), charset)
-				: URLDecoder.decode(string, charset);
+					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
+					: URLDecoder.decode(string, charset);
 
 			return new MimeText(dataURL.getType(), dataURL.getSubtype(), charset, text);
 		} catch (ParseException | UnsupportedEncodingException ex)

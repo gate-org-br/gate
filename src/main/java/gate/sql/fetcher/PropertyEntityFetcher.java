@@ -1,8 +1,9 @@
 package gate.sql.fetcher;
 
-import gate.sql.Cursor;
 import gate.error.AppError;
 import gate.lang.property.Property;
+import gate.sql.Cursor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class PropertyEntityFetcher<T> implements Fetcher<T>
@@ -30,15 +31,15 @@ public class PropertyEntityFetcher<T> implements Fetcher<T>
 		{
 			if (cursor.next())
 			{
-				T result = type.newInstance();
+				T result = type.getDeclaredConstructor().newInstance();
 				properties.forEach(e -> e.setValue(result, cursor.getValue(e.getRawType(), e.toString())));
 				return result;
 			}
 			return null;
-		} catch (IllegalAccessException | InstantiationException e)
+		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
+				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(e);
+			throw new AppError(ex);
 		}
-
 	}
 }

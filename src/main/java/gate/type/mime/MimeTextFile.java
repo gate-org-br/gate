@@ -16,10 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.ParseException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(MimeTextFileHandler.class)
 @Converter(MimeTextFileConverter.class)
@@ -117,7 +117,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 					: "utf-8";
 
 			String text = dataURL.isBase64()
-					? new String(DatatypeConverter.parseBase64Binary(dataURL.getData()), charset)
+					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
 					: URLDecoder.decode(string, charset);
 
 			return new MimeTextFile(dataURL.getType(), dataURL.getSubtype(), charset, text,

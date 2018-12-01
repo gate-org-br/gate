@@ -34,7 +34,7 @@ public class IO
 	public static byte[] getBytes(java.net.URL url) throws IOException
 	{
 		try (BufferedInputStream i = new BufferedInputStream(url.openStream());
-			 ByteArrayOutputStream o = new ByteArrayOutputStream())
+				ByteArrayOutputStream o = new ByteArrayOutputStream())
 		{
 
 			for (int c = i.read();

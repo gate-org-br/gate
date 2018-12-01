@@ -12,8 +12,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Base64;
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(PNGHandler.class)
 @Converter(PNGConverter.class)
@@ -32,7 +32,7 @@ public class PNG implements Serializable
 
 	public PNG(String string)
 	{
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(
 				string.split(",")[1])))
 		{
 			BufferedImage image = ImageIO.read(bais);
@@ -94,7 +94,7 @@ public class PNG implements Serializable
 	@Override
 	public String toString()
 	{
-		return String.format("data:image/png;base64,%s", DatatypeConverter.printBase64Binary(bytes));
+		return String.format("data:image/png;base64,%s", Base64.getEncoder().encodeToString(bytes));
 	}
 
 	public PNG scale(int w, int h)

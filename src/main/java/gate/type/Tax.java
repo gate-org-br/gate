@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.converter.custom.TaxConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Currency;
@@ -19,7 +20,7 @@ public class Tax implements Serializable
 
 	public Tax(BigDecimal value)
 	{
-		this.value = value.setScale(6, BigDecimal.ROUND_UNNECESSARY);
+		this.value = value.setScale(6, RoundingMode.UNNECESSARY);
 	}
 
 	public Tax(String value) throws ParseException

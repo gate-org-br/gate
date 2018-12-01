@@ -29,12 +29,12 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 
 	public Money(long value)
 	{
-		this.value = new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.value = new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN);
 	}
 
 	public Money(BigDecimal value)
 	{
-		this.value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+		this.value = value.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
 	public Money(String value) throws ParseException
@@ -91,7 +91,7 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 
 	public Money div(BigDecimal value)
 	{
-		return new Money(this.value.divide(value, 2, BigDecimal.ROUND_HALF_EVEN));
+		return new Money(this.value.divide(value, 2, RoundingMode.HALF_EVEN));
 	}
 
 	public Money abs()
@@ -115,9 +115,9 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 			return div(new BigDecimal(n));
 
 		BigDecimal c = i.add(BigDecimal.ONE).pow(n);
-		c = BigDecimal.ONE.divide(c, 10, BigDecimal.ROUND_UP);
+		c = BigDecimal.ONE.divide(c, 10, RoundingMode.UP);
 		c = BigDecimal.ONE.subtract(c);
-		c = i.divide(c, 10, BigDecimal.ROUND_UP);
+		c = i.divide(c, 10, RoundingMode.UP);
 		return new Money(value.multiply(c, new MathContext(10, RoundingMode.HALF_EVEN)));
 	}
 

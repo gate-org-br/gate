@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
+import java.util.Base64;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-import javax.xml.bind.DatatypeConverter;
 
 public abstract class Encoder<T>
 {
@@ -60,7 +60,7 @@ public abstract class Encoder<T>
 				objectOutputStream.writeObject(object);
 				objectOutputStream.flush();
 				deflaterOutputStream.finish();
-				return DatatypeConverter.printBase64Binary(byteArrayOutputStream.toByteArray());
+				return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 			} catch (IOException ex)
 			{
 				throw new UncheckedIOException(ex.getMessage(), ex);
@@ -77,7 +77,7 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(DatatypeConverter.parseBase64Binary(string));
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
 					InflaterInputStream inflaterInputStream = new InflaterInputStream(byteArrayInputStream);
 					ObjectInputStream objectInputStream = new ObjectInputStream(inflaterInputStream))
 
@@ -110,7 +110,7 @@ public abstract class Encoder<T>
 			if (object == null)
 				return "";
 
-			return DatatypeConverter.printBase64Binary(Compactor.compact(encryptor.encrypt(Serializer.of(type).serialize(object))));
+			return Base64.getEncoder().encodeToString(Compactor.compact(encryptor.encrypt(Serializer.of(type).serialize(object))));
 		}
 
 		@Override
@@ -123,7 +123,7 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			return Serializer.of(type).deserialize(encryptor.decrypt(Compactor.extract(DatatypeConverter.parseBase64Binary(string))));
+			return Serializer.of(type).deserialize(encryptor.decrypt(Compactor.extract(Base64.getDecoder().decode(string))));
 		}
 	}
 

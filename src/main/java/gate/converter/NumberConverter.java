@@ -6,8 +6,8 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import java.lang.reflect.Type;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -57,12 +57,12 @@ public class NumberConverter implements Converter
 				return null;
 
 			BigDecimal bd = new BigDecimal(getFormat().parse(string).toString());
-			bd = bd.setScale(2, BigDecimal.ROUND_UNNECESSARY);
+			bd = bd.setScale(2, RoundingMode.UNNECESSARY);
 			return bd;
 		} catch (ParseException e)
 		{
 			throw new ConversionException(String.format("%s não representa um número com duas casas decimais válido.",
-				string));
+					string));
 		}
 
 	}
@@ -136,8 +136,8 @@ public class NumberConverter implements Converter
 	/**
 	 * Serializes the specified {@link java.lang.Number} on JSON notation.
 	 * <p>
-	 * A non null java Number will be formatted as their respective JSON number. A null reference will be formatted
-	 * as a JSON Null.
+	 * A non null java Number will be formatted as their respective JSON number. A null reference will be formatted as a
+	 * JSON Null.
 	 *
 	 * @throws gate.error.ConversionException if the specified object is not a number
 	 */

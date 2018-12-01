@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.sql.Cursor;
 import gate.error.AppError;
 import gate.lang.property.Property;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 
 /**
@@ -33,7 +34,7 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 	 * @param cursor the Cursor from with the object will be fetched
 	 *
 	 * @return an Optional with the first row or the specified Cursor as a java object of the specified type with it's
-	 *         properties set to their respective column values or an empty Optional if the Cursor is empty
+	 * properties set to their respective column values or an empty Optional if the Cursor is empty
 	 */
 	@Override
 	public Optional<T> fetch(Cursor cursor)
@@ -43,14 +44,15 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 			if (!cursor.next())
 				return Optional.empty();
 
-			T result = type.newInstance();
+			T result = type.getDeclaredConstructor().newInstance();
 			cursor.getPropertyNames(type)
 					.stream().map(e -> Property.getProperty(type, e))
 					.forEach(e -> e.setValue(result, cursor.getCurrentValue(e.getRawType())));
 			return Optional.of(result);
-		} catch (IllegalAccessException | InstantiationException e)
+		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
+				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(e);
+			throw new AppError(ex);
 		}
 	}
 }
