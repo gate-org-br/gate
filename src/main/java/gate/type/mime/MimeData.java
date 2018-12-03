@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
-import javax.xml.bind.DatatypeConverter;
 
 @Handler(MimeDataHandler.class)
 @Converter(MimeDataConverter.class)

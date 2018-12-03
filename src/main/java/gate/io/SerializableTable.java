@@ -1,26 +1,15 @@
 package gate.io;
 
 import gate.annotation.SecurityKey;
-import gate.error.AppError;
+import static gate.io.AbstractTable.ALGORITHM;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 
 class SerializableTable<T extends Serializable> extends AbstractTable<T>
 {
@@ -33,41 +22,27 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 	@Override
 	protected void persist()
 	{
-		if (!values.isEmpty())
+		try
 		{
-			if (file.getParentFile() != null)
-				file.getParentFile().mkdirs();
-			try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-					DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(fileOutputStream))
+			if (!values.isEmpty())
 			{
-				if (type.isAnnotationPresent(SecurityKey.class))
-				{
-					Cipher cipher = Cipher.getInstance(ALGORITHM);
-					String value = type.getAnnotation(SecurityKey.class).value();
-					byte[] key = Base64.getDecoder().decode(value);
-					SecretKeySpec secretKeySpec = new SecretKeySpec(key, ALGORITHM);
-					cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+				if (file.getParentFile() != null)
+					file.getParentFile().mkdirs();
 
-					try (CipherOutputStream cipherOutputStream = new CipherOutputStream(deflaterOutputStream, cipher);
-							ObjectOutputStream objectOutputStream = new ObjectOutputStream(cipherOutputStream))
-					{
-						objectOutputStream.writeObject(values);
-						objectOutputStream.flush();
-					}
-				} else
-				{
-					try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(deflaterOutputStream))
-					{
-						objectOutputStream.writeObject(values);
-						objectOutputStream.flush();
-					}
-				}
-			} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IOException ex)
-			{
-				throw new AppError(ex);
-			}
-		} else
-			file.delete();
+				byte[] bytes = Serializer.of(Object.class).serialize(values);
+
+				if (type.isAnnotationPresent(SecurityKey.class))
+					bytes = Encryptor.of(ALGORITHM, type.getAnnotation(SecurityKey.class).value()).encrypt(bytes);
+
+				bytes = Compactor.compact(bytes);
+
+				Files.write(file.toPath(), bytes, StandardOpenOption.CREATE);
+			} else
+				file.delete();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	static <T extends Serializable> Table<T> create(Class<T> type, File file)
@@ -75,34 +50,29 @@ class SerializableTable<T extends Serializable> extends AbstractTable<T>
 		if (!file.exists() || file.length() == 0)
 			return new SerializableTable<>(type, file, new HashSet<>());
 
-		try (FileInputStream fileInputStream = new FileInputStream(file);
-				InflaterInputStream inflaterInputStream = new InflaterInputStream(fileInputStream))
+		try
 		{
-			if (type.isAnnotationPresent(SecurityKey.class))
-			{
-				Cipher cipher = Cipher.getInstance(ALGORITHM);
-				String value = type.getAnnotation(SecurityKey.class).value();
-				byte[] key = Base64.getDecoder().decode(value);
-				SecretKeySpec secretKeySpec = new SecretKeySpec(key, ALGORITHM);
-				cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+			byte[] bytes = Files.readAllBytes(file.toPath());
 
-				try (CipherInputStream cipherInputStream = new CipherInputStream(inflaterInputStream, cipher);
-						ObjectInputStream objectInputStream = new ObjectInputStream(cipherInputStream))
-				{
-					Set<T> values = (Set<T>) objectInputStream.readObject();
-					return new SerializableTable<>(type, file, values);
-				}
-			} else
-			{
-				try (ObjectInputStream objectInputStream = new ObjectInputStream(inflaterInputStream))
-				{
-					Set<T> values = (Set<T>) objectInputStream.readObject();
-					return new SerializableTable<>(type, file, values);
-				}
-			}
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | ClassNotFoundException | IOException ex)
+			bytes = Compactor.extract(bytes);
+
+			if (type.isAnnotationPresent(SecurityKey.class))
+				bytes = Encryptor.of(ALGORITHM, type.getAnnotation(SecurityKey.class).value()).decrypt(bytes);
+
+			@SuppressWarnings("unchecked")
+			Set<T> values = Serializer.of(Set.class).deserialize(bytes);
+
+			return new SerializableTable<>(type, file, values != null ? values : new HashSet<>());
+		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
+
+	@Override
+	public Table<T> concurrent()
+	{
+		return new ConcurrentTable<>(this);
+	}
+
 }

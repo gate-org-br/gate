@@ -7,10 +7,10 @@
 	      background-attachment: fixed; padding: 0'>
 
 		<div style='display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; padding: 10px'>
-			<div style='width: 600px;
+			<div class="Panel"
+			     style='width: 600px;
 			     height: 344px;
 			     padding: 10px;
-			     background-color: #CDCAB9;
 			     border: 2px groove #CCCCCC;
 			     box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
 			     -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);

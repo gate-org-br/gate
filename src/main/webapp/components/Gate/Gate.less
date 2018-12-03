@@ -1,3 +1,43 @@
+@main: #CDCAB9;
+@comp: #b9bccd;
+
+@main_tinted05: tint(@main, 05%);
+@main_tinted10: tint(@main, 10%);
+@main_tinted15: tint(@main, 15%);
+@main_tinted20: tint(@main, 20%);
+@main_tinted25: tint(@main, 25%);
+@main_tinted30: tint(@main, 30%);
+@main_tinted35: tint(@main, 35%);
+@main_tinted40: tint(@main, 40%);
+@main_tinted45: tint(@main, 45%);
+@main_tinted50: tint(@main, 50%);
+
+@main_shaded05: shade(@main, 05%);
+@main_shaded10: shade(@main, 10%);
+@main_shaded15: shade(@main, 15%);
+@main_shaded20: shade(@main, 20%);
+@main_shaded25: shade(@main, 25%);
+@main_shaded30: shade(@main, 30%);
+@main_shaded35: shade(@main, 35%);
+@main_shaded40: shade(@main, 40%);
+@main_shaded45: shade(@main, 45%);
+@main_shaded50: shade(@main, 50%);
+
+@comp_shaded05: shade(@comp, 5%);
+@comp_shaded10: shade(@comp, 10%);
+@comp_shaded15: shade(@comp, 15%);
+@comp_shaded20: shade(@comp, 20%);
+@comp_shaded25: shade(@comp, 25%);
+@comp_shaded30: shade(@comp, 30%);
+@comp_shaded35: shade(@comp, 35%);
+@comp_shaded40: shade(@comp, 40%);
+@comp_shaded45: shade(@comp, 45%);
+@comp_shaded50: shade(@comp, 50%);
+
+@main_gradient: linear-gradient(to bottom, @main_tinted45 0%, @main_shaded20 100%);
+@comp_gradient: linear-gradient(to bottom, @comp_shaded35 0%, @comp_shaded40 100%);
+
+
 @font-face
 {
 	font-family: 'gate';
@@ -9,6 +49,38 @@
 	font-weight: normal; font-style: normal;
 }
 
+div.main { width: 100%;
+	   margin: auto;
+	   display: flex;
+	   flex-direction: column;
+
+
+	   > div:nth-child(1) { width: 100%;
+				padding: 8px;
+				display: flex;
+				flex-basis: 50px;
+				align-items: center;
+				background-color: #FFFFFF;
+				border-radius: 5px 5px 0 0;
+				justify-content: space-between; }
+
+	   > div:nth-child(2) { width: 100%;
+				padding: 4px;
+				display: flex;
+				flex-basis: 50px;
+				align-items: center;
+				justify-content: center;
+				background-color: @main_shaded10; }
+
+	   > div:nth-child(3) { border: none;
+				padding: 10px;
+				overflow: auto;
+				background-color: @main;
+				border-radius: 0 0 5px 5px;
+				max-height: calc(100vh - 122px); }
+}
+
+
 i { font-family: 'gate'; speak: none; font-style: normal; font-weight: normal;
     font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale}
@@ -17,7 +89,7 @@ i { font-family: 'gate'; speak: none; font-style: normal; font-weight: normal;
     font-family: Arial, Tahoma, Geneva, sans-serif; font-size: 12px; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none}
 
 body { margin: 0px; padding: 8px; text-align: center; }
-body.Page { padding: 0px; background-color: #CBC7B7 }
+body.Page { padding: 0px; background-color: @main_shaded05 }
 
 
 a { font-weight: normal; text-decoration: none; font-size: 12px }
@@ -50,22 +122,24 @@ table { width: 100%; border: none 0px transparent; background-color: #DDDDDF }
 td { height: 28px; vertical-align: middle; text-align: left; word-break: normal; }
 table > tbody > tr:nth-child(even) > td { background-image: none; background-color: #FFFFFF}
 table > tbody > tr:nth-child(odd) > td { background-image: none; background-color: #FDFAE9}
-table > thead > tr > td, table > tfoot > tr > td { background-image: -ms-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-                                                   background-image: -moz-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-                                                   background-image: -o-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-                                                   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FDFAE9), color-stop(1, #B3B0A4));
-                                                   background-image: -webkit-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-                                                   background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%)}
+table > thead > tr > td, table > tfoot > tr > td { background-image: @main_gradient }
 
 button { background: none; border: 0; margin: 0; padding: 0; cursor: pointer; color: #000066;
          font-weight: normal; text-decoration: none; font-size: 12px}
 
-th { height: 28px; vertical-align: middle; text-align: left; background-color: #969384; color: #000000}
+th { height: 28px; vertical-align: middle; text-align: left; background-color: @main_shaded20; color: #000000}
 td.TOOLTIP { padding: 12px; background-image: none; background-color: #F0F0F4; color: blue; border: 1px dashed gray}
 td.SEPARATOR { padding: 0px; margin: 0px; background-image: none; background-color: #CBCAC9; color: blue; border: 1px dotted gray; height: 0px}
 
-caption { height: 32px; vertical-align: middle; text-align: center; font-weight: bold; line-height: 32px; border-radius: 5px 5px 0px 0px;
-          -webkit-border-radius: 5px 5px 0px 0px; -moz-border-radius: 5px 5px 0px 0px; margin-bottom: 2px; background-color: #6B6755; color: #EEEEEE }
+caption { height: 32px;
+	  vertical-align: middle;
+	  text-align: center;
+	  font-weight: bold;
+	  line-height: 32px;
+	  border-radius: 5px 5px 0px 0px;
+          margin-bottom: 2px;
+	  background-color: @main_shaded35;
+	  color: #FFFFFF }
 
 div.TEXT { margin: 0; width: 100%; background-color: #FFFFFF; background-image: none; border-radius: 5px;
            -webkit-border-radius: 5px; -moz-border-radius: 5px; text-align: justify; padding: 12px}
@@ -100,45 +174,6 @@ ul.MENU li, UL.NAVI li { float: left;
 			 align-items: center;
 			 list-style: none outside none;
 			 justify-content: space-between;}
-
-ul.MENU li * , UL.NAVI li * { color: inherit; font-weight: inherit }
-
-ul.MENU li a:hover i, ul.NAVI li a:hover i { color: #CA171B }
-ul.MENU li:hover > ul, ul.NAVI li:hover > ul { display: block}
-ul.MENU li a i, ul.NAVI li a i, ul.MENU li a span, ul.NAVI li a span { float: right }
-ul.MENU, ul.NAVI, ul.MENU ul, ul.NAVI ul { margin: 0; padding: 0 }
-ul.MENU li, ul.NAVI li, ul.MENU li a, ul.NAVI a { font-weight: normal; font-size: 12px }
-ul.MENU li ul, ul.NAVI li ul { top: 0; left: 98%; width: 100%; z-index: 99; display: none; position: absolute; border: 1px solid #CDCAB9 }
-ul.MENU a, ul.NAVI a { width: 100%; height: 100%; display: block; font-size: 10px; text-align: left; background-color: #FDFAE9 }
-ul.MENU li label, ul.NAVI li label { display: block; width: 100%; height: 24px; line-height: 24px; text-align: center; background-color: #DBD8C7 }
-ul.MENU li.Separator, ul.NAVI li.Separator { height: 4px; background-color: #CDCAB9 }
-ul.MENU li.Separator, ul.NAVI > li.Separator { width: 4px; height: 36px; background-color: transparent; border: none }
-
-ul.MENU > li.MenuLink, ul.NAVI > li.MenuLink { float: right; width: 48px }
-ul.MENU > li.MenuLink > a, ul.NAVI > li.MenuLink > a { display: flex; align-items: center; justify-content: center; color: inherit }
-ul.MENU > li.MenuLink > a > i, ul.NAVI > li.MenuLink > a > i { font-size: 16px; color: inherit }
-
-ul.MENU a:hover, ul.NAVI a:hover
-{
-	color: #CA171B;
-	background: rgb(240,240,240);
-	background-image: -ms-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-	background-image: -moz-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-	background-image: -o-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FDFAE9), color-stop(1, #B3B0A4));
-	background-image: -webkit-linear-gradient(top, #FDFAE9 0%, #B3B0A4 100%);
-	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
-}
-
-li { text-align: left }
-
-ul.NAVI { width: 100% }
-ul.NAVI a { padding: 10px }
-ul.NAVI > li { display: inline-block; width: 200px; border: 1px solid #CDCAB9; float: left}
-div.NAVI { width: 100%; height: 40px; margin-bottom: 10px; border-radius: 5px; margin-top: 10px}
-ul.NAVI > li > ul { left: -1px; top: 100%; width: 100%; margin-top: -4px; border: 1px solid #CDCAB9}
-
-ul.MENU a.HELP, ul.NAVI a.HELP  { text-align: center; font-weight: bold }
 
 td > label, th > label { width: 100%; display: inline-block}
 td > label > i, td > label > span, th > label > i, th > label > span { position: absolute; right: 2px; color: gray; font-size: 10px}
@@ -245,7 +280,7 @@ col.P1366, td.P1366, th.P1366 { display: none }
 }
 
 div.Panel { padding: 10px; border-radius: 5px;
-	    background-color: #BCB9A8; border: 1px solid #ADAA99 }
+	    background-color: @main; border: 1px solid #ADAA99 }
 
 label[data-icon], span[data-icon]
 {
@@ -352,8 +387,8 @@ div.LinkControl > ul { margin: 0px;
 div.PageControl > div,
 div.LinkControl > div { clear: both;
 			padding: 10px;
-			background-color: #CBC7B7;
-			border: 1px solid #CBC7B7;
+			border-color: @main_shaded05;
+			background-color: @main_shaded05;
 			border-radius: 0px 0px 0px 0px; }
 
 div.PageControl > ul > li,
@@ -365,8 +400,8 @@ div.LinkControl > ul > li { width: 20%;
 			    border-radius: 8px 8px 0px 0px; }
 
 div.PageControl > ul > li[data-selected=true],
-div.LinkControl > ul > li[data-selected=true] { background-color: #CBC7B7;
-						border-color: #CBC7B7 }
+div.LinkControl > ul > li[data-selected=true] { border-color: @main_shaded05;
+						background-color: @main_shaded05; }
 div.PageControl > ul > li > a,
 div.PageControl > ul > li > button,
 div.LinkControl > ul > li > a,
@@ -400,7 +435,7 @@ div.PageControl > ul > li[data-selected=true] > button,
 div.LinkControl > ul > li[data-selected=true] > button { color: black;
 							 color: #432F21;
 							 font-weight: bold;
-							 background-color: #CBC7B7; }
+							 background-color: @main_shaded05; }
 div.PageControl > ul > li > a > i,
 div.LinkControl > ul > li > a > i,
 div.PageControl > ul > li > a > span,
@@ -458,7 +493,7 @@ div.Dialog
 	flex-direction: column;
 	width: calc(100% - 80px);
 	height: calc(100% - 80px);
-	border: 4px solid #767d90;
+	border: 4px solid @comp_shaded35;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	-moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	-webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
@@ -468,14 +503,8 @@ div.Dialog > div:first-child { height: 40px;
 			       padding: 8px;
 			       outline: none;
 			       color: #CCCCCC;
-			       background: #767D90;
-			       background-image: linear-gradient(to bottom, #767D90 100%, #AAB3BD 100%);
-			       background-image: -o-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			       background-image: -ms-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			       background-image: -moz-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			       background-image: -webkit-linear-gradient(bottom, #767D90 100%, #AAB3BD 100%);
-			       background-image: -webkit-gradient(linear, left top, left bottom, color-stop(1, #767D90), color-stop(1, #AAB3BD));
-}
+			       background-color: @comp_shaded35 }
+
 div.Dialog > div:first-child * { height: 100%;
 				 color: #CCCCCC;
 				 font-size: 26px;
@@ -511,17 +540,18 @@ fieldset > label > span { border-radius:5px;
 			  -moz-border-radius: 5px;
 			  -webkit-border-radius: 5px; }
 
-fieldset { margin: auto;
+fieldset { border: none;
+	   margin: auto;
 	   padding: 12px;
 	   margin-top: 20px;
-	   background-color: #B6B3A4;
-	   border: 1px solid #A6A394; }
+	   background-color: @main_shaded10;}
 
 fieldset fieldset { float: left;
 		    padding: 4px;
 		    display: inline;
 		    text-align: left;
-		    margin-top: 10px; }
+		    margin-top: 10px;
+		    background-color: @main_shaded05;}
 
 fieldset > div { margin: 5px;
 		 padding: 4px;
@@ -626,13 +656,13 @@ COOLBAR
 	    height: 40px;
 	    border-radius: 5px;
 	    padding: 2px 0px 2px 0px;
-	    background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%); }
+	    background-image: @main_gradient }
 
 *.COOLBAR a ,
 *.COOLBAR button { margin: 2px;
 		   height: 32px;
 		   display: block;
-		   color: #432F21;
+		   color: #000000;
 		   min-width: 90px;
 		   font-size: 10px;
 		   padding: 0px 4px;
@@ -758,4 +788,11 @@ dialog.fixed { top: 50%;
 
 dialog { padding: 0;
 	 border: 4px solid #767d90;
-	 background-color: #CBC7B7; }
+	 background-color: @main; }
+
+@import "../HMenu/HMenu.less";
+@import "../DeskMenu/DeskMenu.less";
+@import "../DeskPane/DeskPane.less";
+@import "../Toolbar/Toolbar.less";
+
+

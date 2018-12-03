@@ -7,11 +7,13 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class JsonTableTest
+public class SerializableTableTest
 {
 
 	private Table<User> table;
@@ -47,7 +49,7 @@ public class JsonTableTest
 	@Before
 	public void setUp()
 	{
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		table.insert(
 				USER0,
 				USER1,
@@ -60,7 +62,7 @@ public class JsonTableTest
 				USER8,
 				USER9);
 
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		classifiedTable.insert(
 				CLASSIFIED_USER0,
 				CLASSIFIED_USER1,
@@ -87,7 +89,7 @@ public class JsonTableTest
 	{
 
 		classifiedTable.insert(CLASSIFIED_USER10, CLASSIFIED_USER11);
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertEquals(classifiedTable.size(), 12);
 	}
 
@@ -95,7 +97,7 @@ public class JsonTableTest
 	public void testInsert_GenericTypeClassified()
 	{
 		classifiedTable.insert(Arrays.asList(CLASSIFIED_USER10, CLASSIFIED_USER11));
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertEquals(classifiedTable.size(), 12);
 	}
 
@@ -103,7 +105,7 @@ public class JsonTableTest
 	public void testDelete_PredicateClassified()
 	{
 		classifiedTable.delete(e -> e.getId().getValue() % 2 == 0);
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertEquals(classifiedTable.size(), 5);
 	}
 
@@ -111,7 +113,7 @@ public class JsonTableTest
 	public void testDelete_CollectionClassified()
 	{
 		classifiedTable.delete(Arrays.asList(CLASSIFIED_USER1, CLASSIFIED_USER2));
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertEquals(classifiedTable.size(), 8);
 	}
 
@@ -119,7 +121,7 @@ public class JsonTableTest
 	public void testDelete_GenericTypeClassified()
 	{
 		classifiedTable.delete(CLASSIFIED_USER1, CLASSIFIED_USER2);
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertEquals(classifiedTable.size(), 8);
 	}
 
@@ -127,11 +129,11 @@ public class JsonTableTest
 	public void testIsEmptyClassified()
 	{
 		classifiedTable.delete(CLASSIFIED_USER1);
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertFalse(classifiedTable.isEmpty());
 
 		classifiedTable.drop();
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertTrue(classifiedTable.isEmpty());
 	}
 
@@ -139,11 +141,11 @@ public class JsonTableTest
 	public void testSizeClassified()
 	{
 		classifiedTable.delete(CLASSIFIED_USER1);
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertTrue(classifiedTable.size() == 9);
 
 		classifiedTable.drop();
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertTrue(classifiedTable.size() == 0);
 	}
 
@@ -153,7 +155,7 @@ public class JsonTableTest
 		assertTrue(classifiedTable.select().isPresent());
 
 		classifiedTable.drop();
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertFalse(classifiedTable.select().isPresent());
 	}
 
@@ -225,14 +227,14 @@ public class JsonTableTest
 	public void testDropClassified()
 	{
 		classifiedTable.drop();
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertTrue(classifiedTable.isEmpty());
 	}
 
 	@Test
 	public void testNewInstanceClassified()
 	{
-		classifiedTable = Table.json(ClassifiedUser.class, CLASSIFIED_USERS);
+		classifiedTable = Table.serializable(ClassifiedUser.class, CLASSIFIED_USERS);
 		assertTrue(classifiedTable.size() == 10);
 	}
 
@@ -241,7 +243,7 @@ public class JsonTableTest
 	{
 
 		table.insert(USER10, USER11);
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertEquals(table.size(), 12);
 	}
 
@@ -249,7 +251,7 @@ public class JsonTableTest
 	public void testInsert_GenericType()
 	{
 		table.insert(Arrays.asList(USER10, USER11));
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertEquals(table.size(), 12);
 	}
 
@@ -257,7 +259,7 @@ public class JsonTableTest
 	public void testDelete_Predicate()
 	{
 		table.delete(e -> e.getId().getValue() % 2 == 0);
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertEquals(table.size(), 5);
 	}
 
@@ -265,7 +267,7 @@ public class JsonTableTest
 	public void testDelete_Collection()
 	{
 		table.delete(Arrays.asList(USER1, USER2));
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertEquals(table.size(), 8);
 	}
 
@@ -273,7 +275,7 @@ public class JsonTableTest
 	public void testDelete_GenericType()
 	{
 		table.delete(USER1, USER2);
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertEquals(table.size(), 8);
 	}
 
@@ -281,11 +283,11 @@ public class JsonTableTest
 	public void testIsEmpty()
 	{
 		table.delete(USER1);
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertFalse(table.isEmpty());
 
 		table.drop();
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertTrue(table.isEmpty());
 	}
 
@@ -293,11 +295,11 @@ public class JsonTableTest
 	public void testSize()
 	{
 		table.delete(USER1);
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertTrue(table.size() == 9);
 
 		table.drop();
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertTrue(table.size() == 0);
 	}
 
@@ -307,7 +309,7 @@ public class JsonTableTest
 		assertTrue(table.select().isPresent());
 
 		table.drop();
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertFalse(table.select().isPresent());
 	}
 
@@ -379,14 +381,14 @@ public class JsonTableTest
 	public void testDrop()
 	{
 		table.drop();
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertTrue(table.isEmpty());
 	}
 
 	@Test
 	public void testNewInstance()
 	{
-		table = Table.json(User.class, USERS);
+		table = Table.serializable(User.class, USERS);
 		assertTrue(table.size() == 10);
 	}
 

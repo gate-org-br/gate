@@ -71,7 +71,7 @@ public class Converters
 			{
 				if (e.isAnnotationPresent(gate.annotation.Converter.class))
 					return e.getAnnotation(gate.annotation.Converter.class)
-						.value().newInstance();
+							.value().newInstance();
 
 				Class<?> supertype = e.getSuperclass();
 				if (supertype == null)

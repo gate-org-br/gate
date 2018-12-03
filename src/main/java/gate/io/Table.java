@@ -47,24 +47,15 @@ public interface Table<T> extends Observable<T>
 
 	int size();
 
-	public static <T extends Serializable> Table<T> serializable(Class<T> type, File file)
-	{
-		return SerializableTable.create(type, file);
-	}
+	public Table<T> concurrent();
 
 	public static <T> Table<T> json(Class<T> type, File file)
 	{
 		return JsonTable.create(type, file);
 	}
 
-	public static <T extends Serializable> Table<T> serializableConcurrent(Class<T> type, File file)
+	public static <T extends Serializable> Table<T> serializable(Class<T> type, File file)
 	{
-		return new ConcurrentTable(SerializableTable.create(type, file));
+		return SerializableTable.create(type, file);
 	}
-
-	public static <T extends Serializable> Table<T> jsonConcurrent(Class<T> type, File file)
-	{
-		return new ConcurrentTable(JsonTable.create(type, file));
-	}
-
 }

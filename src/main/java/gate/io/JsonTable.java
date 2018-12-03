@@ -64,4 +64,10 @@ class JsonTable<T> extends AbstractTable<T>
 			throw new UncheckedIOException(ex);
 		}
 	}
+
+	@Override
+	public Table<T> concurrent()
+	{
+		return new ConcurrentTable<>(this);
+	}
 }

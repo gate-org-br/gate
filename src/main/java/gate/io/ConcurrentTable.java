@@ -1,7 +1,6 @@
 package gate.io;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -9,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class ConcurrentTable<T extends Serializable> implements Table<T>
+public class ConcurrentTable<T> implements Table<T>
 {
 
-	private final Table table;
+	private final Table<T> table;
 
-	ConcurrentTable(Table table)
+	ConcurrentTable(Table<T> table)
 	{
 		this.table = table;
 	}
@@ -32,7 +31,8 @@ public class ConcurrentTable<T extends Serializable> implements Table<T>
 	}
 
 	@Override
-	public synchronized void delete(T... values)
+	@SafeVarargs
+	public final synchronized void delete(T... values)
 	{
 		table.delete(Arrays.asList(values));
 	}
@@ -56,7 +56,8 @@ public class ConcurrentTable<T extends Serializable> implements Table<T>
 	}
 
 	@Override
-	public synchronized void insert(T... values)
+	@SafeVarargs
+	public final synchronized void insert(T... values)
 	{
 		table.insert(Arrays.asList(values));
 	}
@@ -137,5 +138,11 @@ public class ConcurrentTable<T extends Serializable> implements Table<T>
 	public void remObserver(Observer<T> observer)
 	{
 		table.remObserver(observer);
+	}
+
+	@Override
+	public Table<T> concurrent()
+	{
+		return this;
 	}
 }
