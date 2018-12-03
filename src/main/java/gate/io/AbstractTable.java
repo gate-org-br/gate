@@ -43,7 +43,8 @@ public abstract class AbstractTable<T> implements Table<T>
 	}
 
 	@Override
-	public void insert(T... values)
+	@SafeVarargs
+	public final void insert(T... values)
 	{
 		insert(Arrays.asList(values));
 	}
@@ -65,7 +66,8 @@ public abstract class AbstractTable<T> implements Table<T>
 	}
 
 	@Override
-	public void delete(T... values)
+	@SafeVarargs
+	public final void delete(T... values)
 	{
 		this.values.removeAll(Arrays.asList(values));
 		persist();
@@ -88,15 +90,15 @@ public abstract class AbstractTable<T> implements Table<T>
 	public Optional<T> select()
 	{
 		return values.stream()
-			.findAny();
+				.findAny();
 	}
 
 	@Override
 	public Optional<T> select(Comparator<T> comparator)
 	{
 		return values.stream()
-			.sorted(comparator)
-			.findFirst();
+				.sorted(comparator)
+				.findFirst();
 	}
 
 	@Override
@@ -115,49 +117,49 @@ public abstract class AbstractTable<T> implements Table<T>
 	public Optional<T> select(Predicate<T> predicate)
 	{
 		return values.stream()
-			.filter(predicate)
-			.findAny();
+				.filter(predicate)
+				.findAny();
 	}
 
 	@Override
 	public Optional<T> select(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return values.stream()
-			.filter(predicate)
-			.sorted(comparator)
-			.findFirst();
+				.filter(predicate)
+				.sorted(comparator)
+				.findFirst();
 	}
 
 	@Override
 	public List<T> search()
 	{
 		return values.stream()
-			.collect(Collectors.toList());
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Comparator<T> comparator)
 	{
 		return values.stream()
-			.sorted(comparator)
-			.collect(Collectors.toList());
+				.sorted(comparator)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Predicate<T> predicate)
 	{
 		return values.stream()
-			.filter(predicate)
-			.collect(Collectors.toList());
+				.filter(predicate)
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<T> search(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return values.stream()
-			.filter(predicate)
-			.sorted(comparator)
-			.collect(Collectors.toList());
+				.filter(predicate)
+				.sorted(comparator)
+				.collect(Collectors.toList());
 	}
 
 	@Override

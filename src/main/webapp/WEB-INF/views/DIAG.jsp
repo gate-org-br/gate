@@ -3,10 +3,10 @@
 <!DOCTYPE HTML>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-    <body style='background-color: #CCCCD0; 
-		  background-image: url("../gate/imge/back/BACK.png"); 
-		  background-attachment: fixed'>
-		<g:insert/>	
-		<g:alert/>
+	<body style='background-attachment: fixed; background-image: url("../gate/imge/back/BACK.png");'>
+		<div class="Panel">
+			<g:insert/>
+			<g:alert/>
+		</div>
 	</body>
 </g:template>
