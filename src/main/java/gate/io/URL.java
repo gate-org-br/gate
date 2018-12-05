@@ -32,10 +32,12 @@ import javax.net.ssl.X509TrustManager;
 public class URL
 {
 
+	private static final int INFINITE = 0;
+
 	private final String value;
 	private String credentials;
-	private int timeout = 10000;
 	private boolean trust = false;
+	private int timeout = INFINITE;
 	private final StringJoiner parameters = new StringJoiner("&");
 
 	private static final TrustManager[] TRUST_MANAGERS = new TrustManager[]
@@ -105,9 +107,10 @@ public class URL
 
 	public URL setTimeout(int timeout)
 	{
+		if (timeout < 0)
+			throw new IllegalArgumentException("Timeout can't be negative");
 		this.timeout = timeout;
 		return this;
-
 	}
 
 	public URL trust(boolean trust)
@@ -145,8 +148,10 @@ public class URL
 
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
+
 		connection.setConnectTimeout(timeout);
 		connection.setReadTimeout(timeout);
+
 		connection.setDoOutput(true);
 		connection.setRequestMethod("GET");
 
@@ -157,8 +162,8 @@ public class URL
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
-						line != null;
-						line = in.readLine())
+					line != null;
+					line = in.readLine())
 					response.append(line);
 				throw new IOException(response.toString());
 			}
@@ -180,6 +185,7 @@ public class URL
 
 		connection.setConnectTimeout(timeout);
 		connection.setReadTimeout(timeout);
+
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
@@ -201,8 +207,8 @@ public class URL
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
-						line != null;
-						line = in.readLine())
+					line != null;
+					line = in.readLine())
 					response.append(line);
 				throw new IOException(response.toString());
 			}
@@ -234,7 +240,7 @@ public class URL
 	public String toString()
 	{
 		if (value.charAt(value.length() - 1) == '?'
-				|| value.charAt(value.length() - 1) == '&')
+			|| value.charAt(value.length() - 1) == '&')
 			return value + parameters.toString();
 		else if (value.indexOf('?') != -1)
 			return value + "&" + parameters.toString();
@@ -243,9 +249,9 @@ public class URL
 	}
 
 	public static String toString(String module,
-			String screen,
-			String action,
-			String arguments)
+		String screen,
+		String action,
+		String arguments)
 	{
 		StringJoiner string = new StringJoiner("&");
 		if (module != null)
