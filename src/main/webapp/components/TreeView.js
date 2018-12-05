@@ -1,142 +1,135 @@
-function TreeView(table)
+function registerTreeView(table)
 {
-	var trs = $($(table).children("tbody")).children("tr");
-	var sel = $($($(table).children("thead")).children("tr")).children("th")[0];
-
-	trs.forEach(function (tr)
+	function depth(tr)
 	{
-		tr.selector = $(tr).children("td")[0];
-		if (parseInt(tr.getAttribute('data-depth')) === 0)
-			tr.style.display = 'table-row';
+		return parseInt(tr.getAttribute("data-depth"));
+	}
 
-		if ($(tr).getNext() && parseInt(tr.getAttribute('data-depth')) < parseInt($(tr).getNext().getAttribute('data-depth')))
+	function expands(tr)
+	{
+		if (tr.children[0].innerHTML === '+')
+			tr.children[0].innerHTML = '-';
+		for (var next = tr.nextElementSibling;
+			next && depth(next) > depth(tr);
+			next = next.nextElementSibling)
+			if (depth(tr) === depth(next) - 1)
+				next.style.display = 'table-row';
+	}
+
+	function colapse(tr)
+	{
+		if (tr.children[0].innerHTML === '-')
+			tr.children[0].innerHTML = '+';
+
+		for (var next = tr.nextElementSibling;
+			next && depth(next) > depth(tr);
+			next = next.nextElementSibling)
 		{
-			tr.parent = function ()
+			next.style.display = 'none';
+			if (next.children[0].innerHTML === '-')
+				next.children[0].innerHTML = '+';
+		}
+	}
+
+	function parent(tr)
+	{
+		for (var p = tr; p; p = p.previousSibling)
+			if (depth(p) < depth(tr))
+				return p;
+	}
+
+	function colorize(table)
+	{
+		Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
+		{
+			Array.from(tbody.children).filter(e => e.style.display === 'table-row').forEach(function (tr, index)
 			{
-				var parent = this;
-				while (parent && parent.getAttribute("data-depth")
-						>= this.getAttribute("data-depth"))
-					parent = $(parent).getPrev();
-				return parent;
-			};
-			tr.expands = function ()
+				tr.className = index % 2 ? 'odd' : 'even';
+			});
+		});
+	}
+
+	Array.from(table.children)
+		.filter(e => e.tagName.toLowerCase() === "tbody")
+		.forEach(function (tbody)
+		{
+			Array.from(tbody.children).forEach(function (tr)
 			{
-				this.selector.innerHTML = '-';
-				for (var next = $(this).getNext();
-						next && parseInt(next.getAttribute('data-depth')) > parseInt(this.getAttribute('data-depth'));
-						next = $(next).getNext())
+				if (depth(tr) === 0)
+					tr.style.display = 'table-row';
+				if (tr.nextElementSibling && depth(tr) < depth(tr.nextElementSibling))
 				{
-					if (parseInt(this.getAttribute('data-depth')) === parseInt(next.getAttribute('data-depth')) - 1)
+					tr.children[0].innerHTML = '+';
+					tr.children[0].style.cursor = 'pointer';
+					tr.children[0].onclick = function (e)
 					{
-						next.style.display = 'table-row';
-					}
-				}
-			};
-			tr.colapse = function ()
-			{
-				this.selector.innerHTML = '+';
-				for (var next = $(this).getNext();
-						next && parseInt(next.getAttribute('data-depth')) > parseInt(this.getAttribute('data-depth'));
-						next = $(next).getNext())
+						e = e ? e : window.event;
+						if (e.stopPropagation)
+							e.stopPropagation();
+						else
+							e.cancelBubble = true;
+
+						if (this.innerHTML === '+')
+							expands(this.parentNode);
+						else if (this.innerHTML === '-')
+							colapse(this.parentNode);
+
+						colorize(table);
+					};
+				} else
+					tr.children[0].innerHTML = ' ';
+
+				if (tr.getAttribute("data-expanded"))
 				{
-					next.style.display = 'none';
-					if (next.selector.innerHTML === '-')
-						next.selector.innerHTML = '+';
+					for (var p = tr; p; p = parent(p))
+						expands(p);
+					setTimeout(() => tr.scrollIntoView(), 0);
 				}
-			};
-			tr.selector.innerHTML = '+';
-			tr.selector.style.cursor = 'pointer';
-			tr.selector.onclick = function (e)
-			{
-				switch (this.innerHTML)
-				{
-					case '+':
-						this.parentNode.expands();
-						break;
-					case '-':
-						this.parentNode.colapse();
-						break;
-				}
+			});
+		});
 
-				this.parentNode.parentNode.parentNode.colorize();
-				e = e ? e : window.event;
-				if (e.stopPropagation)
-					e.stopPropagation();
-				else
-					e.cancelBubble = true;
-			};
-		} else
-			tr.selector.innerHTML = ' ';
+	var selector = Array.from(table.children)
+		.filter(e => e.tagName.toLowerCase() === "thead")
+		.map(e => e.children[0])
+		.map(e => e.children[0])[0];
+	selector.innerHTML = "+";
+	selector.style.cursor = "pointer";
 
-		if (tr.getAttribute("data-expanded"))
-		{
-			var parent = tr;
-			do
-			{
-				if (parent.expands)
-					parent.expands();
-				if (parent.parent)
-					parent = parent.parent();
-			} while (parent && parent.parent);
-
-			setTimeout(function ()
-			{
-				tr.scrollIntoView();
-			}, 0);
-		}
-	});
-
-	sel.innerHTML = "+";
-	table.style.cursor = "pointer";
-	sel.onclick = function (e)
+	selector.onclick = function (e)
 	{
-		switch (this.innerHTML)
-		{
-			case '+':
-				this.innerHTML = '-';
-				trs.forEach(function (e)
-				{
-					if (e.expands)
-						e.expands();
-				});
-				break;
-			case '-':
-				this.innerHTML = '+';
-				trs.forEach(function (e)
-				{
-					if (e.colapse)
-						e.colapse();
-				});
-				break;
-		}
-		this.parentNode.parentNode.parentNode.colorize();
 		e = e ? e : window.event;
 		if (e.stopPropagation)
 			e.stopPropagation();
 		else
 			e.cancelBubble = true;
-	};
 
-	table.colorize = function ()
-	{
-		var rows = trs.filter(function (e)
+		switch (this.innerHTML)
 		{
-			return e.style.display === 'table-row';
-		});
-		for (var i = 0; i < rows.length; i++)
-			if (rows[i].style.display === 'table-row')
-				for (var j = 0; j < rows[i].children.length; j++)
-					rows[i].children[j].style.backgroundColor = i % 2 === 0 ? "#FFFFFF" : "#FDFAE9";
+			case '+':
+				this.innerHTML = '-';
+				Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
+				{
+					Array.from(tbody.children).forEach(e => expands(e));
+				});
+
+				break;
+			case '-':
+				this.innerHTML = '+';
+				Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
+				{
+					Array.from(tbody.children).forEach(e => colapse(e));
+				});
+
+				break;
+		}
+		colorize(table);
 	};
 
-	table.colorize();
+	colorize(table);
 }
 
 window.addEventListener("load", function ()
 {
-	search('table.TREEVIEW').forEach(function (e)
-	{
-		new TreeView(e);
-	});
+	Array.from(document.querySelectorAll('table.TREEVIEW, table.treeview, table.TreeView, table.Treeview, table.treeView'))
+		.forEach(e => registerTreeView(e));
 });
-

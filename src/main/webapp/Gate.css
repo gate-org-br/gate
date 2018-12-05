@@ -138,6 +138,14 @@ table > thead > tr > td,
 table > tfoot > tr > td {
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
+table > tbody > tr.even > td {
+  background-image: none;
+  background-color: #FFFFFF;
+}
+table > tbody > tr.odd > td {
+  background-image: none;
+  background-color: #FDFAE9;
+}
 button {
   background: none;
   border: 0;
