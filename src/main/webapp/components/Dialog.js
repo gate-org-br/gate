@@ -1,118 +1,85 @@
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV */
+
 function Dialog()
 {
 	var modal = new Modal();
-
 	var dialog = modal.appendChild(window.top.document.createElement('div'));
 	dialog.className = "Dialog";
 	dialog.closeable = true;
-
 	var head = dialog.appendChild(window.top.document.createElement('div'));
 	head.setAttribute("tabindex", "1");
 	head.focus();
-
 	var caption = head.appendChild(window.top.document.createElement('label'));
 	caption.style['float'] = "left";
-
 	var close = head.appendChild(window.top.document.createElement("a"));
 	close.title = 'Fechar janela';
 	close.style['float'] = "right";
 	close.innerHTML = "&#x1011;";
-
-	close.onclick = function ()
-	{
-		modal.hide();
-	};
-
+	close.onclick = () => modal.hide();
 	var last = head.appendChild(window.top.document.createElement("a"));
 	last.title = 'Ir para o último registro';
 	last.style['float'] = "right";
 	last.innerHTML = "&#x2216;";
 	last.style.display = "none";
-
 	var next = head.appendChild(window.top.document.createElement("a"));
 	next.title = 'Ir para o próximo registro';
 	next.style['float'] = "right";
 	next.innerHTML = "&#x2211;";
 	next.style.display = "none";
-
 	var navigator = head.appendChild(window.top.document.createElement('label'));
 	navigator.title = 'Ir para o registro atual';
 	navigator.style['float'] = "right";
 	navigator.style.cursor = "pointer";
 	navigator.style.display = "none";
-
 	var prev = head.appendChild(window.top.document.createElement("a"));
 	prev.title = 'Ir para o registro anterior';
 	prev.style['float'] = "right";
 	prev.innerHTML = "&#x2212;";
 	prev.style.display = "none";
-
 	var frst = head.appendChild(window.top.document.createElement("a"));
 	frst.title = 'Ir para o primeiro registro';
 	frst.style['float'] = "right";
 	frst.innerHTML = "&#x2213;";
 	frst.style.display = "none";
-
 	var body = dialog.appendChild(window.top.document.createElement('div'));
-
 	var iframe = body.appendChild(window.top.document.createElement('iframe'));
 	iframe.dialog = modal;
 	iframe.setAttribute('name', '_dialog');
-
-	head.onmouseenter = function ()
-	{
-		this.focus();
-	};
-
-	iframe.onmouseenter = function ()
-	{
-		this.focus();
-	};
-
+	head.onmouseenter = () => head.focus();
+	iframe.onmouseenter = () => iframe.focus();
 	iframe.onload = function ()
 	{
 		iframe.name = "_frame";
 		iframe.setAttribute("name", "_frame");
-
 		head.onkeydown = undefined;
-		head.addEventListener("keydown",
-			function (e)
+		head.addEventListener("keydown", function (e)
+		{
+			e = e ? e : window.event;
+			switch (e.keyCode)
 			{
-				e = e ? e : window.event;
-				switch (e.keyCode)
-				{
-					case ESC:
-						if (dialog.closeable)
-							modal.hide();
-						break;
-					case ENTER:
-						iframe.focus();
-						break;
-				}
+				case ESC:
+					if (dialog.closeable)
+						modal.hide();
+					break;
+				case ENTER:
+					iframe.focus();
+					break;
+			}
 
+			e.preventDefault();
+			e.stopPropagation();
+		});
+		iframe.contentWindow.addEventListener("keydown", function (e)
+		{
+			e = e ? e : window.event;
+			if (e.keyCode === ESC)
+			{
+				head.focus();
 				e.preventDefault();
 				e.stopPropagation();
-			});
-
-		iframe.contentWindow
-			.addEventListener("keydown", function (e)
-			{
-				e = e ? e : window.event;
-				switch (e.keyCode)
-				{
-					case ESC:
-						head.focus();
-						e.preventDefault();
-						e.stopPropagation();
-						break;
-				}
-			});
-
-		iframe.addEventListener("focus", function ()
-		{
-			autofocus(this.contentWindow.document);
+			}
 		});
-
+		iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 		if (modal.navigator)
 		{
 			for (i = 0; i < modal.navigator.length; i++)
@@ -129,7 +96,6 @@ function Dialog()
 							iframe.src = modal.navigator[0];
 							return false;
 						};
-
 						prev.onclick = function ()
 						{
 							iframe.src = modal.navigator[index - 1];
@@ -145,10 +111,7 @@ function Dialog()
 
 					navigator.innerHTML = "Registro " + (i + 1) + " de " + modal.navigator.length;
 					navigator.style.display = "block";
-					navigator.onclick = function ()
-					{
-						iframe.src = modal.navigator[index];
-					}
+					navigator.onclick = () => iframe.src = modal.navigator[index];
 
 					if (index < modal.navigator.length - 1)
 					{
@@ -157,13 +120,11 @@ function Dialog()
 							iframe.src = modal.navigator[index + 1];
 							return false;
 						};
-
 						last.onclick = function ()
 						{
 							iframe.src = modal.navigator[modal.navigator.length - 1];
 							return false;
 						};
-
 						next.style.display = "block";
 						last.style.display = "block";
 					} else
@@ -202,56 +163,47 @@ function Dialog()
 						e.stopPropagation();
 					}
 					;
-
 					break;
 				}
 			}
 		}
 	};
-
 	modal.setCloseable = function (closeable)
 	{
 		dialog.closeable = closeable;
 		close.style.display = closeable ? "" : "none";
 		return this;
 	};
-
 	modal.setTitle = function (title)
 	{
 		caption.innerHTML = title;
 		return this;
 	};
-
 	modal.setTarget = function (target)
 	{
 		iframe.setAttribute('src', target);
 		return this;
 	};
-
 	modal.setSize = function (width, height)
 	{
 		dialog.style.width = width;
 		dialog.style.height = height;
 		return this;
 	};
-
 	modal.setNavigator = function (navigator)
 	{
 		this.navigator = navigator;
 		return this;
 	};
-
 	modal.getWindow = function ()
 	{
 		return iframe.contentWindow;
 	};
-
 	modal.get = function ()
 	{
 		this.arguments = arguments;
 		this.show();
 	};
-
 	modal.ret = function ()
 	{
 		for (var i = 0; i < Math.min(arguments.length, this.arguments.length); i++)
@@ -274,77 +226,78 @@ function Dialog()
 		}
 		this.hide();
 	};
-
 	return modal;
 }
 
+
 window.addEventListener("load", function ()
 {
-	search('a[data-get]').forEach(function (a)
+	Array.from(document.querySelectorAll('a[data-get]')).forEach(function (element)
 	{
-		a.get = a.getAttribute('data-get').split(",")
-			.map(function (e)
-			{
-				return e.trim();
-			})
-			.map(function (e)
-			{
-				return e !== 'null' ? select(e) : null;
-			});
-
-		a.onclick = function ()
+		element.addEventListener("click", function (event)
 		{
-			if (this.get.some(function (e)
+			var parameters =
+				CSV.parse(this.getAttribute('data-get'))
+				.map(e => e.trim())
+				.map(e => e !== null ? document.getElementById(e) : null);
+			if (parameters.some(e => e && e.value))
 			{
-				return e && e.value;
-			}))
-			{
-				this.get
-					.filter(function (e)
-					{
-						return e && e.value;
-					})
-					.forEach(function (e)
-					{
-						e.value = "";
-					});
-				return false;
+				parameters
+					.filter(e => e)
+					.filter(e => e.value)
+					.forEach(e => e.value = "");
+			} else {
+				var dialog = new Dialog();
+				dialog.setTitle(this.getAttribute("title"))
+					.setTarget(this.href)
+					.get.apply(dialog, parameters);
 			}
 
-			var dialog = new Dialog();
-			dialog.setTitle(this.getAttribute("title"))
-				.setTarget(this.href)
-				.get.apply(dialog, this.get);
-			return false;
-		};
+			event.preventDefault();
+			event.stopPropagation();
+		});
 	});
-
-	search('a[data-ret], tr[data-ret], li[data-ret], td[data-ret]').forEach(function (e)
+	Array.from(document.querySelectorAll('input[data-getter]')).forEach(function (element)
 	{
-		e.onmouseover = function ()
+		element.addEventListener("change", function ()
 		{
-			this.focus();
-		};
+			var getter = document.getElementById(this.getAttribute("data-getter"));
+			var url = resolve(getter.href);
+			var parameters =
+				CSV.parse(getter.getAttribute('data-get'))
+				.map(e => e.trim())
+				.map(e => e !== null ? document.getElementById(e) : null);
+			if (this.value)
+			{
+				parameters
+					.filter(e => e)
+					.filter(e => e.value)
+					.forEach(e => e.value = "");
+				var dialog = new Dialog();
+				dialog.setTitle(getter.getAttribute("title"))
+					.setTarget(url)
+					.get.apply(dialog, parameters);
+			} else
+				parameters
+					.filter(e => e)
+					.filter(e => e.value)
+					.forEach(e => e.value = "");
+			event.preventDefault();
+			event.stopPropagation();
+		});
+	});
+	Array.from(document.querySelectorAll('*[data-ret]')).forEach(function (element)
+	{
+		element.onmouseover = () => element.focus();
+		element.onmouseout = () => element.blur();
 
-		e.onmouseout = function ()
+		element.onclick = function ()
 		{
-			this.blur();
-		};
-
-		e.onclick = function ()
-		{
-			var ret = this.getAttribute("data-ret")
-				.split(this.getAttribute("data-sep") ?
-					this.getAttribute("data-sep") : ",")
-				.map(function (e)
-				{
-					return e.trim();
-				});
+			var ret = CSV.parse(this.getAttribute("data-ret")).map(e => e.trim());
 			window.frameElement.dialog.ret.apply(window.frameElement.dialog, ret);
 			return false;
 		};
-
-		e.onkeydown = function (e)
+		element.onkeydown = function (e)
 		{
 			e = e ? e : window.event;
 			if (e.keyCode === 13)
@@ -353,9 +306,9 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('a.Hide').forEach(function (a)
+	Array.from(document.querySelectorAll('a.Hide')).forEach(function (element)
 	{
-		a.onclick = function ()
+		element.onclick = function ()
 		{
 			if (window.frameElement
 				&& window.frameElement.dialog
@@ -366,4 +319,3 @@ window.addEventListener("load", function ()
 		};
 	});
 });
-

@@ -20,19 +20,18 @@
 					<tr>
 						<th>
 							Nome
-						</th>					
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<g:iterator source="${screen.page}" target="target">
-						<tr	data-target='_parent'
-							data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
+						<tr data-target='_parent'data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 							<td>
 								${target.name}
-							</td>						
+							</td>
 						</tr>
 					</g:iterator>
-				</tbody>	
+				</tbody>
 			</table>
 		</g:otherwise>
 	</g:choose>

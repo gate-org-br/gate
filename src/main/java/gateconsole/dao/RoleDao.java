@@ -27,10 +27,10 @@ public class RoleDao extends Dao
 	public List<Role> search() throws AppException
 	{
 		List<Role> roles = getLink()
-				.search(Role.class)
-				.properties("id", "active", "master", "role.id", "roleID", "+name", "email", "description", "manager.id",
-						"manager.name")
-				.parameters();
+			.search(Role.class)
+			.properties("id", "active", "master", "role.id", "roleID", "+name", "email", "description", "manager.id",
+				"manager.name")
+			.parameters();
 		Hierarchy.setup(roles);
 		return roles;
 	}
@@ -38,32 +38,32 @@ public class RoleDao extends Dao
 	public Role select(ID id) throws NotFoundException
 	{
 		return getLink()
-				.select(Role.class)
-				.properties("=id", "active", "master", "role.id", "roleID", "role.name",
-						"email", "name", "description", "manager.id", "manager.name")
-				.parameters(id).orElseThrow(NotFoundException::new);
+			.select(Role.class)
+			.properties("=id", "active", "master", "role.id", "roleID", "role.name",
+				"email", "name", "description", "manager.id", "manager.name")
+			.parameters(id).orElseThrow(NotFoundException::new);
 	}
 
 	public void insert(Role value) throws AppException
 	{
 		getLink().prepare(Insert
-				.into("gate.Role")
-				.set("active", value.getActive())
-				.set("master", value.getMaster())
-				.set("Role$id", value.getRole().getId())
-				.set("roleID", value.getRoleID())
-				.set("name", value.getName())
-				.set("email", value.getEmail())
-				.set("description", value.getDescription())
-				.set("Manager$id", value.getManager().getId())).fetchGeneratedKeys(ID.class)
-				.forEach(value::setId);
+			.into("gate.Role")
+			.set("active", value.getActive())
+			.set("master", value.getMaster())
+			.set("Role$id", value.getRole().getId())
+			.set("roleID", value.getRoleID())
+			.set("name", value.getName())
+			.set("email", value.getEmail())
+			.set("description", value.getDescription())
+			.set("Manager$id", value.getManager().getId())).fetchGeneratedKeys(ID.class)
+			.forEach(value::setId);
 	}
 
 	public boolean update(Role value) throws AppException
 	{
 		return getLink()
-				.update(Role.class)
-				.properties("=id", "active", "master", "role.id", "roleID", "name", "email", "description", "manager.id").execute(value) > 0;
+			.update(Role.class)
+			.properties("=id", "active", "master", "role.id", "roleID", "name", "email", "description", "manager.id").execute(value) > 0;
 	}
 
 	public boolean delete(Role... values) throws AppException
@@ -74,10 +74,10 @@ public class RoleDao extends Dao
 	public Collection<Role> getChildRoles(Role role)
 	{
 		return getLink()
-				.search(Role.class)
-				.properties("=role.id", "id", "active", "master",
-						"role.id", "roleID", "role.name", "email", "name",
-						"description", "manager.id", "manager.name")
-				.parameters(role.getId());
+			.search(Role.class)
+			.properties("=role.id", "id", "active", "master",
+				"roleID", "role.name", "email", "name",
+				"description", "manager.id", "manager.name")
+			.parameters(role.getId());
 	}
 }
