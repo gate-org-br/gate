@@ -2,10 +2,7 @@ function DeskMenu(deskMenu)
 {
 	var desktopIcons = Array.from(deskMenu.getElementsByTagName("li"));
 
-	desktopIcons.forEach(function (e)
-	{
-		new DeskMenuIcon(e);
-	});
+	desktopIcons.forEach(e => new DeskMenuIcon(e));
 
 	function DeskMenuIcon(deskMenuIcon)
 	{
@@ -52,8 +49,6 @@ function DeskMenu(deskMenu)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("ul.DeskMenu")).forEach(function (e)
-	{
-		new DeskMenu(e);
-	});
+	Array.from(document.querySelectorAll("ul.DeskMenu"))
+		.forEach(element => new DeskMenu(element));
 });

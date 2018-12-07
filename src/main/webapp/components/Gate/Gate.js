@@ -1,6 +1,8 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
+if (!Array.prototype.flatMap)
+	Array.prototype.flatMap = lambda => Array.prototype.concat.apply([], this.map(lambda));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Gate

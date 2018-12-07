@@ -421,9 +421,7 @@ fieldset,
 div.TEXT,
 div.TOOLTIP,
 *.TOOLBAR,
-*.COOLBAR,
-div.PageControl,
-div.LinkControl {
+*.COOLBAR {
   margin-top: 16px;
   margin-bottom: 4px;
 }
@@ -432,9 +430,7 @@ fieldset:first-child,
 div.TEXT:first-child,
 div.TOOLTIP:first-child,
 *.TOOLBAR:first-child,
-*.COOLBAR:first-child,
-div.PageControl:first-child,
-div.LinkControl:first-child {
+*.COOLBAR:first-child {
   margin-top: 0px;
 }
 input[type='text'],
@@ -641,125 +637,6 @@ th[data-sortable="D"] > a::before {
   content: "\2193";
 }
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-PageControl and LinkControl
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-div.PageControl {
-  border: none;
-  margin: 10px 0 10px 0;
-  background-color: transparent;
-}
-div.PageControl > div {
-  display: none;
-}
-div.PageControl > ul > li > div {
-  display: none;
-}
-div.PageControl > div > iframe,
-div.LinkControl > div > iframe {
-  width: 100%;
-  border: none;
-}
-div.PageControl > ul,
-div.LinkControl > ul {
-  margin: 0px;
-  padding: 0px;
-  list-style: none;
-}
-div.PageControl > div,
-div.LinkControl > div {
-  clear: both;
-  padding: 10px;
-  border-color: #c3c0b0;
-  background-color: #c3c0b0;
-  border-radius: 0px 0px 0px 0px;
-}
-div.PageControl > ul > li,
-div.LinkControl > ul > li {
-  width: 20%;
-  margin: 0px;
-  float: left;
-  border-bottom: none;
-  border: 1px solid #DDDAC9;
-  border-radius: 8px 8px 0px 0px;
-}
-div.PageControl > ul > li[data-selected=true],
-div.LinkControl > ul > li[data-selected=true] {
-  border-color: #c3c0b0;
-  background-color: #c3c0b0;
-}
-div.PageControl > ul > li > a,
-div.PageControl > ul > li > button,
-div.LinkControl > ul > li > a,
-div.LinkControl > ul > li > button {
-  width: 100%;
-  border: none;
-  padding: 5px;
-  color: #432F21;
-  font-size: 12px;
-  cursor: pointer;
-  text-decoration: none;
-  background-color: #FDFAE9;
-  border-radius: 8px 8px 0px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-div.PageControl > ul > li > a:hover,
-div.LinkControl > ul > li > a:hover,
-div.PageControl > ul > li > button:hover,
-div.LinkControl > ul > li > button:hover {
-  color: #CA171B;
-}
-div.PageControl > ul > li > a:focus,
-div.LinkControl > ul > li > a:focus,
-div.PageControl > ul > li > button:focus,
-div.LinkControl > ul > li > button:focus {
-  border: none;
-  outline: none;
-}
-div.PageControl > ul > li[data-selected=true] > a,
-div.LinkControl > ul > li[data-selected=true] > a,
-div.PageControl > ul > li[data-selected=true] > button,
-div.LinkControl > ul > li[data-selected=true] > button {
-  color: black;
-  color: #432F21;
-  font-weight: bold;
-  background-color: #c3c0b0;
-}
-div.PageControl > ul > li > a > i,
-div.LinkControl > ul > li > a > i,
-div.PageControl > ul > li > a > span,
-div.LinkControl > ul > li > a > span,
-div.PageControl > ul > li > button > i,
-div.LinkControl > ul > li > button > i,
-div.PageControl > ul > li > button > span,
-div.LinkControl > ul > li > button > span {
-  color: #432F21;
-  order: 1;
-}
-div.PageControl > ul > li > a:hover > i,
-div.LinkControl > ul > li > a:hover > i,
-div.PageControl > ul > li > a:hover > span,
-div.LinkControl > ul > li > a:hover > span,
-div.PageControl > ul > li > button:hover > i,
-div.LinkControl > ul > li > button:hover > i,
-div.PageControl > ul > li > button:hover > span,
-div.LinkControl > ul > li > button:hover > span {
-  color: #432F21;
-}
-div.LinkControl > ul > li > a[data-icon],
-div.LinkControl > ul > li > button[data-icon] {
-  text-align: left;
-}
-div.LinkControl > ul > li > a[data-icon]:after,
-div.LinkControl > ul > li > button[data-icon]:after {
-  width: 16px;
-  height: 100%;
-  font-family: gate;
-  text-align: center;
-  content: attr(data-icon);
-}
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Dialogs
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 div.Modal {
@@ -833,6 +710,9 @@ div.Dialog > div:last-child > dialog {
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 Fieldset
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+datalist {
+  display: none;
+}
 fieldset,
 fieldset > legend,
 fieldset > label > span {
@@ -909,26 +789,23 @@ fieldset > label > span > * {
   display: inline-block;
   border: 1px solid #CCCCCC;
 }
+fieldset > label > span > input,
+fieldset > label > span > select {
+  flex-grow: 1;
+}
 fieldset > label > span > textarea {
   line-height: 16px;
+  flex-grow: 1;
 }
 fieldset > label > span > *:first-child,
 fieldset > label > span > *:first-child > * {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  -moz-border-top-left-radius: 5px;
-  -moz-border-bottom-left-radius: 5px;
-  -webkit-border-top-left-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
 }
 fieldset > label > span > *:last-child,
 fieldset > label > span > *:last-child > * {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  -moz-border-top-right-radius: 5px;
-  -moz-border-bottom-right-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
 }
 fieldset > label > span > a {
   border: none;
@@ -1127,6 +1004,159 @@ dialog {
   border: 4px solid #767d90;
   background-color: #CDCAB9;
 }
+div.Toolbar {
+  height: 48px;
+  display: flex;
+  border-radius: 5px;
+  align-items: stretch;
+  justify-content: center;
+  align-content: stretch;
+  background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
+}
+div.Toolbar > a {
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+div.Toolbar > a > i {
+  font-size: 16px;
+}
+div.Toolbar > a:hover > i {
+  font-size: 24px;
+}
+div.Toolbar > a:first-child {
+  border-radius: 5px 0 0 5px;
+}
+div.Toolbar > a:last-child {
+  border-radius: 0 5px 5px 0;
+}
+div.PageControl,
+div.LinkControl {
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
+div.PageControl:first-child,
+div.LinkControl:first-child {
+  margin-top: 0px;
+}
+div.PageControl {
+  border: none;
+  margin: 10px 0 10px 0;
+  background-color: transparent;
+}
+div.PageControl > div {
+  display: none;
+}
+div.PageControl > ul > li > div {
+  display: none;
+}
+div.PageControl > div > iframe,
+div.LinkControl > div > iframe {
+  width: 100%;
+  border: none;
+}
+div.PageControl > ul,
+div.LinkControl > ul {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+div.PageControl > div,
+div.LinkControl > div {
+  clear: both;
+  padding: 10px;
+  border-color: #c3c0b0;
+  background-color: #c3c0b0;
+  border-radius: 0px 0px 0px 0px;
+}
+div.PageControl > ul > li,
+div.LinkControl > ul > li {
+  width: 20%;
+  margin: 0px;
+  float: left;
+  border-bottom: none;
+  border: 1px solid #DDDAC9;
+  border-radius: 8px 8px 0px 0px;
+}
+div.PageControl > ul > li[data-selected=true],
+div.LinkControl > ul > li[data-selected=true] {
+  border-color: #c3c0b0;
+  background-color: #c3c0b0;
+}
+div.PageControl > ul > li > a,
+div.PageControl > ul > li > button,
+div.LinkControl > ul > li > a,
+div.LinkControl > ul > li > button {
+  width: 100%;
+  border: none;
+  padding: 5px;
+  color: #432F21;
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #FDFAE9;
+  border-radius: 8px 8px 0px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+div.PageControl > ul > li > a:hover,
+div.LinkControl > ul > li > a:hover,
+div.PageControl > ul > li > button:hover,
+div.LinkControl > ul > li > button:hover {
+  color: #CA171B;
+}
+div.PageControl > ul > li > a:focus,
+div.LinkControl > ul > li > a:focus,
+div.PageControl > ul > li > button:focus,
+div.LinkControl > ul > li > button:focus {
+  border: none;
+  outline: none;
+}
+div.PageControl > ul > li[data-selected=true] > a,
+div.LinkControl > ul > li[data-selected=true] > a,
+div.PageControl > ul > li[data-selected=true] > button,
+div.LinkControl > ul > li[data-selected=true] > button {
+  color: black;
+  color: #432F21;
+  font-weight: bold;
+  background-color: #c3c0b0;
+}
+div.PageControl > ul > li > a > i,
+div.LinkControl > ul > li > a > i,
+div.PageControl > ul > li > a > span,
+div.LinkControl > ul > li > a > span,
+div.PageControl > ul > li > button > i,
+div.LinkControl > ul > li > button > i,
+div.PageControl > ul > li > button > span,
+div.LinkControl > ul > li > button > span {
+  color: #432F21;
+  order: 1;
+}
+div.PageControl > ul > li > a:hover > i,
+div.LinkControl > ul > li > a:hover > i,
+div.PageControl > ul > li > a:hover > span,
+div.LinkControl > ul > li > a:hover > span,
+div.PageControl > ul > li > button:hover > i,
+div.LinkControl > ul > li > button:hover > i,
+div.PageControl > ul > li > button:hover > span,
+div.LinkControl > ul > li > button:hover > span {
+  color: #432F21;
+}
+div.LinkControl > ul > li > a[data-icon],
+div.LinkControl > ul > li > button[data-icon] {
+  text-align: left;
+}
+div.LinkControl > ul > li > a[data-icon]:after,
+div.LinkControl > ul > li > button[data-icon]:after {
+  width: 16px;
+  height: 100%;
+  font-family: gate;
+  text-align: center;
+  content: attr(data-icon);
+}
 ul.HMenu {
   margin: 0;
   padding: 0;
@@ -1219,16 +1249,17 @@ ul.HMenu > li > nav > a > i {
 ul.HMenu > li > nav > a:hover > i {
   font-size: 18px;
 }
-ul.DeskMenu,
-ul.DeskMenu ul {
+ul.DeskMenu {
   margin: 0;
   padding: 0;
-}
-ul.DeskMenu {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
+}
+ul.DeskMenu ul {
+  margin: 0;
+  padding: 0;
 }
 ul.DeskMenu > li {
   width: 9%;
@@ -1351,32 +1382,7 @@ ul.DeskPane > li.Reset > a {
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
 }
-div.Toolbar {
-  height: 48px;
-  display: flex;
-  border-radius: 5px;
-  align-items: stretch;
-  justify-content: center;
-  align-content: stretch;
-  background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
-}
-div.Toolbar > a {
-  width: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid transparent;
-}
-div.Toolbar > a > i {
-  font-size: 16px;
-}
-div.Toolbar > a:hover > i {
-  font-size: 24px;
-}
-div.Toolbar > a:first-child {
-  border-radius: 5px 0 0 5px;
-}
-div.Toolbar > a:last-child {
-  border-radius: 0 5px 5px 0;
+select.Editable {
+  display: none;
 }
 /*# sourceMappingURL=Gate.css.map */

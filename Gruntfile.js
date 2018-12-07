@@ -12,6 +12,7 @@ module.exports = function (grunt) {
 					{
 						src: ["src/main/webapp/components/dialog-polyfill.js",
 							"src/main/webapp/components/Gate/Gate.js",
+							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Duration.js",
 							"src/main/webapp/components/Fetch.js",
 							"src/main/webapp/components/Keys.js",
@@ -32,7 +33,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/DateTimeIntervalDialog.js",
 							"src/main/webapp/components/Chart.js",
 							"src/main/webapp/components/ChartDialog.js",
-							"src/main/webapp/components/PageControl.js",
+							"src/main/webapp/components/div/PageControl/PageControl.js",
 							"src/main/webapp/components/LinkControl.js",
 							"src/main/webapp/components/Dialog.js",
 							"src/main/webapp/components/Popup.js",
@@ -49,8 +50,9 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
-							"src/main/webapp/components/DeskMenu/DeskMenu.js",
-							"src/main/webapp/components/DeskPane/DeskPane.js"],
+							"src/main/webapp/components/ul/DeskMenu/DeskMenu.js",
+							"src/main/webapp/components/ul/DeskPane/DeskPane.js",
+							"src/main/webapp/components/select/Editable/Editable.js"],
 						dest: 'src/main/webapp/Gate.js'
 					}
 			}

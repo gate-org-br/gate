@@ -1,6 +1,6 @@
-function DeskPane(deskMenu)
+function DeskPane(deskPane)
 {
-	var desktopIcons = Array.from(deskMenu.getElementsByTagName("li"));
+	var desktopIcons = Array.from(deskPane.getElementsByTagName("li"));
 
 	desktopIcons.forEach(function (e)
 	{
@@ -15,13 +15,13 @@ function DeskPane(deskMenu)
 		{
 			deskMenuIcon.onclick = function ()
 			{
-				var reset = deskMenu.appendChild
-					(new Reset($(deskMenu).children("li"),
+				var reset = deskPane.appendChild
+					(new Reset($(deskPane).children("li"),
 						this.offsetWidth, this.offsetHeight));
-				deskMenu.innerHTML = "";
+				deskPane.innerHTML = "";
 				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				deskMenu.appendChild(reset);
+					deskPane.appendChild(icons[i]);
+				deskPane.appendChild(reset);
 				return false;
 			};
 		}
@@ -43,9 +43,9 @@ function DeskPane(deskMenu)
 
 			li.onclick = function ()
 			{
-				deskMenu.innerHTML = "";
+				deskPane.innerHTML = "";
 				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
+					deskPane.appendChild(icons[i]);
 				return false;
 			};
 			return li;
@@ -55,8 +55,6 @@ function DeskPane(deskMenu)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("ul.DeskPane")).forEach(function (e)
-	{
-		new DeskPane(e);
-	});
+	Array.from(document.querySelectorAll("ul.DeskPane"))
+		.forEach(element => new DeskPane(element));
 });

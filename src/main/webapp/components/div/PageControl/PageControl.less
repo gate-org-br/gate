@@ -1,0 +1,102 @@
+div.PageControl,
+div.LinkControl { margin-top: 16px;
+		  margin-bottom: 4px; }
+
+div.PageControl:first-child,
+div.LinkControl:first-child { margin-top: 0px }
+
+div.PageControl { border: none;
+		  margin: 10px 0 10px 0;
+		  background-color: transparent; }
+
+div.PageControl > div { display: none }
+
+div.PageControl > ul > li > div { display: none }
+
+div.PageControl > div > iframe, div.LinkControl > div > iframe { width: 100%;
+								 border: none; }
+div.PageControl > ul,
+div.LinkControl > ul { margin: 0px;
+		       padding: 0px;
+		       list-style: none; }
+
+div.PageControl > div,
+div.LinkControl > div { clear: both;
+			padding: 10px;
+			border-color: @main_shaded05;
+			background-color: @main_shaded05;
+			border-radius: 0px 0px 0px 0px; }
+
+div.PageControl > ul > li,
+div.LinkControl > ul > li { width: 20%;
+			    margin: 0px;
+			    float: left;
+			    border-bottom: none;
+			    border: 1px solid #DDDAC9;
+			    border-radius: 8px 8px 0px 0px; }
+
+div.PageControl > ul > li[data-selected=true],
+div.LinkControl > ul > li[data-selected=true] { border-color: @main_shaded05;
+						background-color: @main_shaded05; }
+div.PageControl > ul > li > a,
+div.PageControl > ul > li > button,
+div.LinkControl > ul > li > a,
+div.LinkControl > ul > li > button { width: 100%;
+				     border: none;
+				     padding: 5px;
+				     color: #432F21;
+				     font-size: 12px;
+				     cursor: pointer;
+				     text-decoration: none;
+				     background-color: #FDFAE9;
+				     border-radius: 8px 8px 0px 0px;
+				     display: flex;
+				     align-items: center;
+				     justify-content: space-between;}
+
+div.PageControl > ul > li > a:hover,
+div.LinkControl > ul > li > a:hover,
+div.PageControl > ul > li > button:hover,
+div.LinkControl > ul > li > button:hover { color: #CA171B }
+
+div.PageControl > ul > li > a:focus,
+div.LinkControl > ul > li > a:focus,
+div.PageControl > ul > li > button:focus,
+div.LinkControl > ul > li > button:focus { border: none;
+					   outline: none }
+
+div.PageControl > ul > li[data-selected=true] > a,
+div.LinkControl > ul > li[data-selected=true] > a,
+div.PageControl > ul > li[data-selected=true] > button,
+div.LinkControl > ul > li[data-selected=true] > button { color: black;
+							 color: #432F21;
+							 font-weight: bold;
+							 background-color: @main_shaded05; }
+div.PageControl > ul > li > a > i,
+div.LinkControl > ul > li > a > i,
+div.PageControl > ul > li > a > span,
+div.LinkControl > ul > li > a > span,
+div.PageControl > ul > li > button > i,
+div.LinkControl > ul > li > button > i,
+div.PageControl > ul > li > button > span,
+div.LinkControl > ul > li > button > span {color: #432F21;
+					   order: 1}
+
+div.PageControl > ul > li > a:hover > i,
+div.LinkControl > ul > li > a:hover > i,
+div.PageControl > ul > li > a:hover > span,
+div.LinkControl > ul > li > a:hover > span,
+div.PageControl > ul > li > button:hover > i,
+div.LinkControl > ul > li > button:hover > i,
+div.PageControl > ul > li > button:hover > span,
+div.LinkControl > ul > li > button:hover > span { color: #432F21 }
+
+div.LinkControl > ul > li > a[data-icon],
+div.LinkControl > ul > li > button[data-icon] { text-align: left }
+
+div.LinkControl > ul > li > a[data-icon]:after,
+div.LinkControl > ul > li > button[data-icon]:after { width: 16px;
+						      height: 100%;
+						      font-family: gate;
+						      text-align: center;
+						      content: attr(data-icon); }

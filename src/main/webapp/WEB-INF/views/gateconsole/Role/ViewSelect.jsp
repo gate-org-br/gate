@@ -66,23 +66,24 @@
 		</g:link>
 	</div>
 
-	<div class='PageControl' data-type='Frame'>
+	<div class='PageControl'>
 		<ul>
-			<li style='width: 200px' data-selected='${param.tab eq "Auth"}'>
-				<g:link id='0' module="#" screen="Auth" arguments="form.role.id=${screen.form.id}" style='text-align: left'>
-					Acessos<g:icon type="gate.entity.Auth"/>
-				</g:link>
-			</li>
-			<li style='width: 200px' data-selected='${param.tab eq "Role"}'>
-				<g:link id='1' module="#"  screen="Role" action="Import" arguments="form.role.id=${screen.form.id}" style='text-align: left'>
-					Sub Perfis<g:icon type="gate.entity.Role"/>
-				</g:link>
-			</li>
-			<li style='width: 200px' data-selected='${param.tab eq "User"}'>
-				<g:link id='2' module="#" screen="User" action="Import" arguments="form.role.id=${screen.form.id}&form.active=true" style='text-align: left'>
-					Usu&aacute;rios<g:icon type="gate.entity.User"/>
-				</g:link>
-			</li>
+			<g:menuitem module="#" screen="Auth" arguments="form.role.id=${screen.form.id}"
+				    style='width: 200px' data-selected='${param.tab eq "Auth"}'>
+				Acessos<g:icon type="gate.entity.Auth"/>
+			</g:menuitem>
+
+			<g:menuitem module="#" screen="Role" action="Import"
+				    arguments="form.role.id=${screen.form.id}"
+				    style='width: 200px' data-selected='${param.tab eq "Role"}'>
+				Sub Perfis<g:icon type="gate.entity.Role"/>
+			</g:menuitem>
+
+			<g:menuitem module="#" screen="User" action="Import"
+				    arguments="form.role.id=${screen.form.id}&form.active=true"
+				    style='width: 200px' data-selected='${param.tab eq "User"}'>
+				Usu&aacute;rios<g:icon type="gate.entity.User"/>
+			</g:menuitem>
 		</ul>
 	</div>
 </g:template>

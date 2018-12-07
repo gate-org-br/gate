@@ -38,7 +38,7 @@ public class RoleScreen extends Screen
 
 	public String callImport()
 	{
-		setPage(control.getChildRoles(getForm()));
+		setPage(control.getChildRoles(getForm().getRole()));
 		return "/WEB-INF/views/gateconsole/Role/ViewImport.jsp";
 	}
 
