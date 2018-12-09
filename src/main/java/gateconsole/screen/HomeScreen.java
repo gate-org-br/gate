@@ -61,17 +61,4 @@ public class HomeScreen extends Screen
 	{
 		this.page = page;
 	}
-
-	@Handler(OptionHandler.class)
-	public Object callOptions()
-	{
-		return new UserControl()
-			.search();
-	}
-
-	public List<User> getOptions()
-	{
-		return new UserControl()
-			.search();
-	}
 }

@@ -1710,13 +1710,9 @@ window.addEventListener("load", function ()
 	{
 		element.addEventListener("input", function ()
 		{
-			var datalist = document.getElementById(this.getAttribute("list"));
-
-
-			if (this.value.length > 0)
+			if (typeof this.value === "string")
 			{
 				var datalist = document.getElementById(this.getAttribute("list"));
-
 				if (datalist.hasAttribute("data-populate-url"))
 				{
 					var len = 3;
@@ -1724,21 +1720,27 @@ window.addEventListener("load", function ()
 						len = parseInt(datalist.getAttribute("data-populate-len"));
 
 					if (this.value.length < len)
+					{
+						datalist.removeAttribute("data-populate-filter");
 						new Populator([]).populate(datalist);
-					else
-					if (this.value.length === len)
+					} else if (!datalist.hasAttribute("data-populate-filter")
+						|| !this.value.toLowerCase().includes(
+						datalist.getAttribute("data-populate-filter")
+						.toLowerCase()))
 					{
 						this.blur();
 						this.disabled = true;
-						new URL(resolve(datalist.getAttribute("data-populate-url"))).get(options =>
-						{
-							new Populator(JSON.parse(options)).populate(datalist);
-							this.disabled = false;
-							this.focus();
-						});
+						new URL(resolve(datalist.getAttribute("data-populate-url")))
+							.get(options =>
+							{
+								new Populator(JSON.parse(options)).populate(datalist);
+								this.disabled = false;
+								this.focus();
+								this.click();
+								datalist.setAttribute("data-populate-filter", this.value);
+							});
 					}
 				}
-
 			}
 		});
 	});
