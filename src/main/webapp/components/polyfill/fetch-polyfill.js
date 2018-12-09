@@ -156,12 +156,12 @@
 
 	Headers.prototype.keys = function ()
 	{
-		var items = []
+		var items = [];
 		this.forEach(function (value, name)
 		{
-			items.push(name)
-		})
-		return iteratorFor(items)
+			items.push(name);
+		});
+		return iteratorFor(items);
 	}
 
 	Headers.prototype.values = function ()

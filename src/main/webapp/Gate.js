@@ -780,426 +780,6 @@
 		});
 	});
 })();
-if (!document.querySelectorAll)
-	window.location = '../gate/NAVI.jsp';
-
-if (!Array.prototype.flatMap)
-	Array.prototype.flatMap = lambda => Array.prototype.concat.apply([], this.map(lambda));
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Gate
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function select(id)
-{
-	return document
-		.getElementById(id);
-}
-
-function search(css)
-{
-	return Array.from(document
-		.querySelectorAll(css));
-}
-
-function $(e)
-{
-	return new Gate(e);
-}
-
-function resolve(string)
-{
-	var result = string;
-	var parameters = string.match(/([?][{][^}]*[}])/g);
-	if (parameters)
-		for (var i = 0; i < parameters.length; i++)
-		{
-			var parameter = prompt(decodeURIComponent(parameters[i]
-				.substring(2, parameters[i].length - 1)));
-			if (parameter === null)
-				return null;
-			result = result.replace(parameters[i], encodeURIComponent(parameter));
-		}
-
-	var parameters = string.match(/([@][{][^}]*[}])/g);
-	if (parameters)
-		parameters.forEach(function (e)
-		{
-			var parameter = select(e.substring(2, e.length - 1));
-			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
-		});
-
-	return result;
-}
-
-function Gate(e)
-{
-	if (typeof e === 'string')
-		e = document.querySelectorAll(e);
-	if (e instanceof NodeList)
-		e = Array.from(e);
-	if (e.tagName)
-	{
-		this.children = function ()
-		{
-			var result = [e];
-			for (var i = 0; i < arguments.length; i++)
-				result = children(result, arguments[i]);
-			return result;
-
-			function children(array, tagName)
-			{
-				var result = [];
-				for (var i = 0; i < array.length; i++)
-					for (var j = 0; j < array[i].childNodes.length; j++)
-						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
-							result.push(array[i].childNodes[j]);
-				return result;
-			}
-		};
-
-		this.siblings = function (selector)
-		{
-			return selector ? Array.from(e.parentNode.childNodes)
-				.filter(function (node)
-				{
-					return node.matches
-						&& node.matches(selector);
-				}) : Array.from(e.parentNode.childNodes);
-		};
-		this.get = function (name)
-		{
-			return e[name];
-		};
-		this.set = function (name, value)
-		{
-			e[name] = value;
-		};
-		this.def = function (name, value)
-		{
-			if (!e[name])
-				e[name] = value;
-		};
-		this.addEventListener = function (name, value)
-		{
-			e.addEventListener(name, value);
-		};
-		this.getAttribute = function (name)
-		{
-			return e.getAttribute(name);
-		};
-		this.setAttribute = function (name, value)
-		{
-			e.setAttribute(name, value);
-		};
-		this.getForm = function ()
-		{
-			var form = e.parentNode;
-			while (form
-				&& form.tagName.toLowerCase()
-				!== 'form')
-				form = form.parentNode;
-			return form;
-		};
-		this.getNext = function ()
-		{
-			var next = e.nextSibling;
-			while (next && next.nodeType !== 1)
-				next = next.nextSibling;
-			return next;
-		};
-		this.getPrev = function ()
-		{
-			var prev = e.previousSibling;
-			while (prev && prev.nodeType !== 1)
-				prev = prev.previousSibling;
-			return prev;
-		};
-		this.search = function (css)
-		{
-			return Array.from(e.querySelectorAll(css));
-		};
-	} else if (e instanceof Array)
-	{
-		this.get = function (name)
-		{
-			return e.map(function (node)
-			{
-				return node[name];
-			});
-		};
-		this.set = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node[name] = value;
-			});
-		};
-		this.def = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				if (node[name])
-					node[name] = value;
-			});
-		};
-		this.addEventListener = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node.addEventListener(name, value);
-			});
-		};
-		this.getAttribute = function (name)
-		{
-			return e.map(function (node)
-			{
-				return node.getAttribute(name);
-			});
-		};
-		this.setAttribute = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node.setAttribute(name, value);
-			});
-		};
-		this.children = function ()
-		{
-			var result = e;
-			for (var i = 0; i < arguments.length; i++)
-				result = children(result, arguments[i]);
-			return result;
-
-			function children(array, tagName)
-			{
-				var result = [];
-				for (var i = 0; i < array.length; i++)
-					for (var j = 0; j < array[i].childNodes.length; j++)
-						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
-							result.push(array[i].childNodes[j]);
-				return result;
-			}
-		};
-		this.filter = function (selector)
-		{
-			switch (typeof selector)
-			{
-				case "string":
-					return e.filter(function (node)
-					{
-						return node && node.matches
-							&& node.matches(selector);
-					});
-				case "boolean":
-					return e.filter(function (node)
-					{
-						return selector ===
-							(node !== null && node !== undefined);
-					});
-				case "function":
-					return e.filter(selector);
-			}
-		};
-
-		this.toArray = function ()
-		{
-			return e;
-		};
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Loading
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-window.addEventListener("load", function ()
-{
-	$('select').set("onclick", function (e)
-	{
-		e = e ? e : window.event;
-		if (e.stopPropagation)
-			e.stopPropagation();
-		else
-			e.cancelBubble = true;
-	});
-	$('input.SELECTOR').set("onchange", function ()
-	{
-		$('input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]').set("checked", this.checked);
-	});
-
-	search("td > label > span, td > label > i").forEach(function (e)
-	{
-		e.parentNode.style.position = 'relative';
-	});
-	search("fieldset > label > span > span + input, fieldset > label > span > span + input").forEach(function (e)
-	{
-		e.style.paddingRight = "20px";
-	});
-});
-
-
-var CSV =
-	{
-		parse: function (text)
-		{
-			var a = [];
-			text.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,
-				function (g0, g1, g2, g3)
-				{
-					if (g1 !== undefined)
-						a.push(g1.replace(/\\'/g, "'"));
-					else if (g2 !== undefined)
-						a.push(g2.replace(/\\"/g, '"'));
-					else if (g3 !== undefined)
-						a.push(g3);
-					return '';
-				});
-			if (/,\s*$/.test(text))
-				a.push('');
-			return a;
-		}
-	};
-function Populator(options)
-{
-	this.populate = function (element)
-	{
-		while (element.firstChild)
-			element.removeChild(element.firstChild);
-
-		switch (element.tagName.toLowerCase())
-		{
-			case "select":
-				element.value = undefined;
-
-				element.appendChild(document.createElement("option"))
-					.setAttribute("value", "");
-
-				for (var i = 0; i < options.length; i++)
-				{
-					var option = element.appendChild(document.createElement("option"));
-					option.innerHTML = options[i].label;
-					option.setAttribute('value', options[i].value);
-				}
-
-				break;
-
-			case "datalist":
-				for (var i = 0; i < options.length; i++)
-				{
-					var option = element.appendChild(document.createElement("option"));
-					option.innerHTML = options[i].label;
-					option.setAttribute('data-value', options[i].value);
-				}
-
-				break;
-
-		}
-		return this;
-	};
-}
-
-
-
-function Duration(value)
-{
-	this.value = value;
-
-	this.getHours = function ()
-	{
-		return Math.floor(value / 3600);
-	};
-
-	this.getMinutes = function ()
-	{
-		return Math.floor((value - (this.getHours() * 3600)) / 60);
-	};
-
-	this.getSeconds = function ()
-	{
-		return value - (this.getHours() * 3600) - (this.getMinutes() * 60);
-	};
-
-	this.toString = function ()
-	{
-		return "00".concat(String(this.getHours())).slice(-2)
-				+ ':' + "00".concat(String(this.getMinutes())).slice(-2)
-				+ ':' + "00".concat(String(this.getSeconds())).slice(-2);
-	};
-}
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("input[list]")).forEach(function (element)
-	{
-		element.addEventListener("input", function ()
-		{
-			var datalist = document.getElementById(this.getAttribute("list"));
-
-
-			if (this.value.length > 0)
-			{
-				var datalist = document.getElementById(this.getAttribute("list"));
-
-				if (datalist.hasAttribute("data-populate-url"))
-				{
-					var len = 3;
-					if (datalist.hasAttribute("data-populate-len"))
-						len = parseInt(datalist.getAttribute("data-populate-len"));
-
-					if (this.value.length < len)
-						new Populator([]).populate(datalist);
-					else
-					if (this.value.length === len)
-					{
-						this.blur();
-						this.disabled = true;
-						new URL(datalist.getAttribute("data-populate-url")).get(options =>
-						{
-							new Populator(JSON.parse(options)).populate(datalist);
-							this.disabled = false;
-							this.focus();
-						});
-					}
-				}
-
-			}
-		});
-	});
-
-	Array.from(document.querySelectorAll("input[list][data-populate-field]")).forEach(function (element)
-	{
-		element.addEventListener("change", function ()
-		{
-			var field = document
-				.getElementById(this.getAttribute("data-populate-field"));
-			field.value = null;
-
-			var datalist = document.getElementById(this.getAttribute("list"));
-			Array.from(datalist.children).filter(option => option.innerHTML === this.value
-					|| option.innerHTML.toLowerCase() === this.value.toLowerCase())
-				.forEach(option =>
-				{
-					this.value = option.innerHTML;
-					field.value = option.getAttribute("data-value");
-				});
-		});
-	});
-
-
-	Array.from(document.querySelectorAll("input[list][data-populate-field], input[list][data-require-list]")).forEach(function (element)
-	{
-		element.addEventListener("input", function ()
-		{
-			var datalist = document.getElementById(this.getAttribute("list"));
-			if (this.value.length > 0)
-				if (Array.from(datalist.children).some(e => element.value === e.innerHTML
-						|| e.innerHTML.toLowerCase() === element.value.toLowerCase()))
-					element.setCustomValidity("");
-				else
-					element.setCustomValidity("Entre com um dos valores da lista");
-		});
-	});
-});
 (function (self)
 {
 	'use strict';
@@ -1358,12 +938,12 @@ window.addEventListener("load", function ()
 
 	Headers.prototype.keys = function ()
 	{
-		var items = []
+		var items = [];
 		this.forEach(function (value, name)
 		{
-			items.push(name)
-		})
-		return iteratorFor(items)
+			items.push(name);
+		});
+		return iteratorFor(items);
 	}
 
 	Headers.prototype.values = function ()
@@ -1777,6 +1357,426 @@ window.addEventListener("load", function ()
 	}
 	self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
+if (!document.querySelectorAll)
+	window.location = '../gate/NAVI.jsp';
+
+if (!Array.prototype.flatMap)
+	Array.prototype.flatMap = lambda => Array.prototype.concat.apply([], this.map(lambda));
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Gate
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+function select(id)
+{
+	return document
+		.getElementById(id);
+}
+
+function search(css)
+{
+	return Array.from(document
+		.querySelectorAll(css));
+}
+
+function $(e)
+{
+	return new Gate(e);
+}
+
+function resolve(string)
+{
+	var result = string;
+	var parameters = string.match(/([?][{][^}]*[}])/g);
+	if (parameters)
+		for (var i = 0; i < parameters.length; i++)
+		{
+			var parameter = prompt(decodeURIComponent(parameters[i]
+				.substring(2, parameters[i].length - 1)));
+			if (parameter === null)
+				return null;
+			result = result.replace(parameters[i], encodeURIComponent(parameter));
+		}
+
+	var parameters = string.match(/([@][{][^}]*[}])/g);
+	if (parameters)
+		parameters.forEach(function (e)
+		{
+			var parameter = select(e.substring(2, e.length - 1));
+			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
+		});
+
+	return result;
+}
+
+function Gate(e)
+{
+	if (typeof e === 'string')
+		e = document.querySelectorAll(e);
+	if (e instanceof NodeList)
+		e = Array.from(e);
+	if (e.tagName)
+	{
+		this.children = function ()
+		{
+			var result = [e];
+			for (var i = 0; i < arguments.length; i++)
+				result = children(result, arguments[i]);
+			return result;
+
+			function children(array, tagName)
+			{
+				var result = [];
+				for (var i = 0; i < array.length; i++)
+					for (var j = 0; j < array[i].childNodes.length; j++)
+						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
+							result.push(array[i].childNodes[j]);
+				return result;
+			}
+		};
+
+		this.siblings = function (selector)
+		{
+			return selector ? Array.from(e.parentNode.childNodes)
+				.filter(function (node)
+				{
+					return node.matches
+						&& node.matches(selector);
+				}) : Array.from(e.parentNode.childNodes);
+		};
+		this.get = function (name)
+		{
+			return e[name];
+		};
+		this.set = function (name, value)
+		{
+			e[name] = value;
+		};
+		this.def = function (name, value)
+		{
+			if (!e[name])
+				e[name] = value;
+		};
+		this.addEventListener = function (name, value)
+		{
+			e.addEventListener(name, value);
+		};
+		this.getAttribute = function (name)
+		{
+			return e.getAttribute(name);
+		};
+		this.setAttribute = function (name, value)
+		{
+			e.setAttribute(name, value);
+		};
+		this.getForm = function ()
+		{
+			var form = e.parentNode;
+			while (form
+				&& form.tagName.toLowerCase()
+				!== 'form')
+				form = form.parentNode;
+			return form;
+		};
+		this.getNext = function ()
+		{
+			var next = e.nextSibling;
+			while (next && next.nodeType !== 1)
+				next = next.nextSibling;
+			return next;
+		};
+		this.getPrev = function ()
+		{
+			var prev = e.previousSibling;
+			while (prev && prev.nodeType !== 1)
+				prev = prev.previousSibling;
+			return prev;
+		};
+		this.search = function (css)
+		{
+			return Array.from(e.querySelectorAll(css));
+		};
+	} else if (e instanceof Array)
+	{
+		this.get = function (name)
+		{
+			return e.map(function (node)
+			{
+				return node[name];
+			});
+		};
+		this.set = function (name, value)
+		{
+			e.forEach(function (node)
+			{
+				node[name] = value;
+			});
+		};
+		this.def = function (name, value)
+		{
+			e.forEach(function (node)
+			{
+				if (node[name])
+					node[name] = value;
+			});
+		};
+		this.addEventListener = function (name, value)
+		{
+			e.forEach(function (node)
+			{
+				node.addEventListener(name, value);
+			});
+		};
+		this.getAttribute = function (name)
+		{
+			return e.map(function (node)
+			{
+				return node.getAttribute(name);
+			});
+		};
+		this.setAttribute = function (name, value)
+		{
+			e.forEach(function (node)
+			{
+				node.setAttribute(name, value);
+			});
+		};
+		this.children = function ()
+		{
+			var result = e;
+			for (var i = 0; i < arguments.length; i++)
+				result = children(result, arguments[i]);
+			return result;
+
+			function children(array, tagName)
+			{
+				var result = [];
+				for (var i = 0; i < array.length; i++)
+					for (var j = 0; j < array[i].childNodes.length; j++)
+						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
+							result.push(array[i].childNodes[j]);
+				return result;
+			}
+		};
+		this.filter = function (selector)
+		{
+			switch (typeof selector)
+			{
+				case "string":
+					return e.filter(function (node)
+					{
+						return node && node.matches
+							&& node.matches(selector);
+					});
+				case "boolean":
+					return e.filter(function (node)
+					{
+						return selector ===
+							(node !== null && node !== undefined);
+					});
+				case "function":
+					return e.filter(selector);
+			}
+		};
+
+		this.toArray = function ()
+		{
+			return e;
+		};
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Loading
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener("load", function ()
+{
+	$('select').set("onclick", function (e)
+	{
+		e = e ? e : window.event;
+		if (e.stopPropagation)
+			e.stopPropagation();
+		else
+			e.cancelBubble = true;
+	});
+	$('input.SELECTOR').set("onchange", function ()
+	{
+		$('input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]').set("checked", this.checked);
+	});
+
+	search("td > label > span, td > label > i").forEach(function (e)
+	{
+		e.parentNode.style.position = 'relative';
+	});
+	search("fieldset > label > span > span + input, fieldset > label > span > span + input").forEach(function (e)
+	{
+		e.style.paddingRight = "20px";
+	});
+});
+
+
+var CSV =
+	{
+		parse: function (text)
+		{
+			var a = [];
+			text.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,
+				function (g0, g1, g2, g3)
+				{
+					if (g1 !== undefined)
+						a.push(g1.replace(/\\'/g, "'"));
+					else if (g2 !== undefined)
+						a.push(g2.replace(/\\"/g, '"'));
+					else if (g3 !== undefined)
+						a.push(g3);
+					return '';
+				});
+			if (/,\s*$/.test(text))
+				a.push('');
+			return a;
+		}
+	};
+function Populator(options)
+{
+	this.populate = function (element)
+	{
+		while (element.firstChild)
+			element.removeChild(element.firstChild);
+
+		switch (element.tagName.toLowerCase())
+		{
+			case "select":
+				element.value = undefined;
+
+				element.appendChild(document.createElement("option"))
+					.setAttribute("value", "");
+
+				for (var i = 0; i < options.length; i++)
+				{
+					var option = element.appendChild(document.createElement("option"));
+					option.innerHTML = options[i].label;
+					option.setAttribute('value', options[i].value);
+				}
+
+				break;
+
+			case "datalist":
+				for (var i = 0; i < options.length; i++)
+				{
+					var option = element.appendChild(document.createElement("option"));
+					option.innerHTML = options[i].label;
+					option.setAttribute('data-value', options[i].value);
+				}
+
+				break;
+
+		}
+		return this;
+	};
+}
+
+
+
+function Duration(value)
+{
+	this.value = value;
+
+	this.getHours = function ()
+	{
+		return Math.floor(value / 3600);
+	};
+
+	this.getMinutes = function ()
+	{
+		return Math.floor((value - (this.getHours() * 3600)) / 60);
+	};
+
+	this.getSeconds = function ()
+	{
+		return value - (this.getHours() * 3600) - (this.getMinutes() * 60);
+	};
+
+	this.toString = function ()
+	{
+		return "00".concat(String(this.getHours())).slice(-2)
+				+ ':' + "00".concat(String(this.getMinutes())).slice(-2)
+				+ ':' + "00".concat(String(this.getSeconds())).slice(-2);
+	};
+}
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("input[list]")).forEach(function (element)
+	{
+		element.addEventListener("input", function ()
+		{
+			var datalist = document.getElementById(this.getAttribute("list"));
+
+
+			if (this.value.length > 0)
+			{
+				var datalist = document.getElementById(this.getAttribute("list"));
+
+				if (datalist.hasAttribute("data-populate-url"))
+				{
+					var len = 3;
+					if (datalist.hasAttribute("data-populate-len"))
+						len = parseInt(datalist.getAttribute("data-populate-len"));
+
+					if (this.value.length < len)
+						new Populator([]).populate(datalist);
+					else
+					if (this.value.length === len)
+					{
+						this.blur();
+						this.disabled = true;
+						new URL(resolve(datalist.getAttribute("data-populate-url"))).get(options =>
+						{
+							new Populator(JSON.parse(options)).populate(datalist);
+							this.disabled = false;
+							this.focus();
+						});
+					}
+				}
+
+			}
+		});
+	});
+
+	Array.from(document.querySelectorAll("input[list][data-populate-field]")).forEach(function (element)
+	{
+		element.addEventListener("change", function ()
+		{
+			var field = document
+				.getElementById(this.getAttribute("data-populate-field"));
+			field.value = null;
+
+			var datalist = document.getElementById(this.getAttribute("list"));
+			Array.from(datalist.children).filter(option => option.innerHTML === this.value
+					|| option.innerHTML.toLowerCase() === this.value.toLowerCase())
+				.forEach(option =>
+				{
+					this.value = option.innerHTML;
+					field.value = option.getAttribute("data-value");
+				});
+		});
+	});
+
+
+	Array.from(document.querySelectorAll("input[list][data-populate-field], input[list][data-require-list]")).forEach(function (element)
+	{
+		element.addEventListener("input", function ()
+		{
+			var datalist = document.getElementById(this.getAttribute("list"));
+			if (this.value.length > 0)
+				if (Array.from(datalist.children).some(e => element.value === e.innerHTML
+						|| e.innerHTML.toLowerCase() === element.value.toLowerCase()))
+					element.setCustomValidity("");
+				else
+					element.setCustomValidity("Entre com um dos valores da lista");
+		});
+	});
+});
 const ESC = 27;
 const ENTER = 13;
 const RIGHT = 39;
