@@ -122,25 +122,14 @@ function URL(value)
 
 	this.populate = function (css)
 	{
-		var selects = Array.from(document.querySelectorAll(css));
-		for (var i = 0; i < selects.length; i++)
-		{
-			selects[i].value = undefined;
-			selects[i].innerHTML = "<option value=''></option>";
-		}
-
 		this.get(function (options)
 		{
 			if (options)
 			{
 				options = JSON.parse(options);
-				for (var i = 0; i < selects.length; i++)
-					for (var j = 0; j < options.length; j++)
-					{
-						var option = selects[i].appendChild(document.createElement("option"));
-						option.innerHTML = options[j].label;
-						option.setAttribute('value', options[j].value);
-					}
+				var populator = new Populator(options);
+				Array.from(document.querySelectorAll(css))
+					.forEach(element => populator.populate(element));
 			}
 		});
 		return this;
