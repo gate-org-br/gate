@@ -1108,6 +1108,29 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>datalist</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.formControls.DatalistTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>label</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
 	<function>
 		<name>qs</name>
 		<function-class>gate.util.Toolkit</function-class>

@@ -1060,6 +1060,47 @@ var CSV =
 			return a;
 		}
 	};
+function Populator(options)
+{
+	this.populate = function (element)
+	{
+		while (element.firstChild)
+			element.removeChild(element.firstChild);
+
+		switch (element.tagName.toLowerCase())
+		{
+			case "select":
+				element.value = undefined;
+
+				element.appendChild(document.createElement("option"))
+					.setAttribute("value", "");
+
+				for (var i = 0; i < options.length; i++)
+				{
+					var option = element.appendChild(document.createElement("option"));
+					option.innerHTML = options[i].label;
+					option.setAttribute('value', options[i].value);
+				}
+
+				break;
+
+			case "datalist":
+				for (var i = 0; i < options.length; i++)
+				{
+					var option = element.appendChild(document.createElement("option"));
+					option.innerHTML = options[i].label;
+					option.setAttribute('data-value', options[i].value);
+				}
+
+				break;
+
+		}
+		return this;
+	};
+}
+
+
+
 function Duration(value)
 {
 	this.value = value;
@@ -1086,6 +1127,79 @@ function Duration(value)
 				+ ':' + "00".concat(String(this.getSeconds())).slice(-2);
 	};
 }
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("input[list]")).forEach(function (element)
+	{
+		element.addEventListener("input", function ()
+		{
+			var datalist = document.getElementById(this.getAttribute("list"));
+
+
+			if (this.value.length > 0)
+			{
+				var datalist = document.getElementById(this.getAttribute("list"));
+
+				if (datalist.hasAttribute("data-populate-url"))
+				{
+					var len = 3;
+					if (datalist.hasAttribute("data-populate-len"))
+						len = parseInt(datalist.getAttribute("data-populate-len"));
+
+					if (this.value.length < len)
+						new Populator([]).populate(datalist);
+					else
+					if (this.value.length === len)
+					{
+						this.blur();
+						this.disabled = true;
+						new URL(datalist.getAttribute("data-populate-url")).get(options =>
+						{
+							new Populator(JSON.parse(options)).populate(datalist);
+							this.disabled = false;
+							this.focus();
+						});
+					}
+				}
+
+			}
+		});
+	});
+
+	Array.from(document.querySelectorAll("input[list][data-populate-field]")).forEach(function (element)
+	{
+		element.addEventListener("change", function ()
+		{
+			var field = document
+				.getElementById(this.getAttribute("data-populate-field"));
+			field.value = null;
+
+			var datalist = document.getElementById(this.getAttribute("list"));
+			Array.from(datalist.children).filter(option => option.innerHTML === this.value
+					|| option.innerHTML.toLowerCase() === this.value.toLowerCase())
+				.forEach(option =>
+				{
+					this.value = option.innerHTML;
+					field.value = option.getAttribute("data-value");
+				});
+		});
+	});
+
+
+	Array.from(document.querySelectorAll("input[list][data-populate-field], input[list][data-require-list]")).forEach(function (element)
+	{
+		element.addEventListener("input", function ()
+		{
+			var datalist = document.getElementById(this.getAttribute("list"));
+			if (this.value.length > 0)
+				if (Array.from(datalist.children).some(e => element.value === e.innerHTML
+						|| e.innerHTML.toLowerCase() === element.value.toLowerCase()))
+					element.setCustomValidity("");
+				else
+					element.setCustomValidity("Entre com um dos valores da lista");
+		});
+	});
+});
 (function (self)
 {
 	'use strict';
@@ -1798,25 +1912,14 @@ function URL(value)
 
 	this.populate = function (css)
 	{
-		var selects = Array.from(document.querySelectorAll(css));
-		for (var i = 0; i < selects.length; i++)
-		{
-			selects[i].value = undefined;
-			selects[i].innerHTML = "<option value=''></option>";
-		}
-
 		this.get(function (options)
 		{
 			if (options)
 			{
 				options = JSON.parse(options);
-				for (var i = 0; i < selects.length; i++)
-					for (var j = 0; j < options.length; j++)
-					{
-						var option = selects[i].appendChild(document.createElement("option"));
-						option.innerHTML = options[j].label;
-						option.setAttribute('value', options[j].value);
-					}
+				var populator = new Populator(options);
+				Array.from(document.querySelectorAll(css))
+					.forEach(element => populator.populate(element));
 			}
 		});
 		return this;
@@ -5266,40 +5369,4 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("ul.DeskPane"))
 		.forEach(element => new DeskPane(element));
-});
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("select.Editable")).forEach(function (select)
-	{
-		var datalist = select.parentNode.appendChild(document.createElement("datalist"));
-		datalist.setAttribute("id", datalist + select.getAttribute("name"));
-		Array.from(select.children)
-			.forEach(option => datalist.appendChild(document.createElement("option")).innerHTML = option.innerHTML);
-
-		var input = select.parentNode.appendChild(document.createElement("input"));
-		input.setAttribute("list", datalist.getAttribute("id"));
-		input.value = select.options[select.selectedIndex].innerHTML;
-
-		if (select.hasAttribute("required"))
-			input.setAttribute("required", "required");
-		if (select.hasAttribute("tabindex"))
-			input.setAttribute("tabindex", select.getAttribute("tabindex"));
-
-		input.addEventListener("change", function ()
-		{
-			for (var i = 0; i < select.children.length; i++)
-			{
-				if (select.children[i].innerHTML === this.value)
-				{
-					select.selectedIndex = i;
-					return;
-				}
-			}
-
-			alert("Tentativa de selecionar item inexistente");
-			input.value = select.options[select.selectedIndex].innerHTML;
-		});
-
-		select.form.appendChild(select);
-	});
 });

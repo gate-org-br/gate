@@ -13,7 +13,9 @@ module.exports = function (grunt) {
 						src: ["src/main/webapp/components/dialog-polyfill.js",
 							"src/main/webapp/components/Gate/Gate.js",
 							"src/main/webapp/components/CSV.js",
+							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
+							"src/main/webapp/components/Datalist.js",
 							"src/main/webapp/components/Fetch.js",
 							"src/main/webapp/components/Keys.js",
 							"src/main/webapp/components/URL.js",
@@ -51,8 +53,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
 							"src/main/webapp/components/ul/DeskMenu/DeskMenu.js",
-							"src/main/webapp/components/ul/DeskPane/DeskPane.js",
-							"src/main/webapp/components/select/Editable/Editable.js"],
+							"src/main/webapp/components/ul/DeskPane/DeskPane.js"],
 						dest: 'src/main/webapp/Gate.js'
 					}
 			}
