@@ -10,13 +10,13 @@ module.exports = function (grunt) {
 			{
 				dist:
 					{
-						src: ["src/main/webapp/components/dialog-polyfill.js",
+						src: ["src/main/webapp/components/polyfill/dialog-polyfill.js",
+							"src/main/webapp/components/polyfill/fetch-polyfill.js",
 							"src/main/webapp/components/Gate/Gate.js",
 							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
 							"src/main/webapp/components/Datalist.js",
-							"src/main/webapp/components/Fetch.js",
 							"src/main/webapp/components/Keys.js",
 							"src/main/webapp/components/URL.js",
 							"src/main/webapp/components/Calendar.js",

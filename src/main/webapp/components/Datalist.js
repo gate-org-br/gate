@@ -24,12 +24,13 @@ window.addEventListener("load", function ()
 					{
 						this.blur();
 						this.disabled = true;
-						new URL(datalist.getAttribute("data-populate-url")).get(options =>
-						{
-							new Populator(JSON.parse(options)).populate(datalist);
-							this.disabled = false;
-							this.focus();
-						});
+						new URL(resolve(datalist.getAttribute("data-populate-url")))
+							.get(options =>
+							{
+								new Populator(JSON.parse(options)).populate(datalist);
+								this.disabled = false;
+								this.focus();
+							});
 					}
 				}
 
