@@ -105,6 +105,19 @@ public class URL
 
 	}
 
+	public URL setMessages(List<String> messages)
+	{
+		setParameter("messages", messages);
+		return this;
+
+	}
+
+	public URL setMessages(String... messages)
+	{
+		setParameter("messages", Arrays.asList(messages));
+		return this;
+	}
+
 	public URL setTimeout(int timeout)
 	{
 		if (timeout < 0)
