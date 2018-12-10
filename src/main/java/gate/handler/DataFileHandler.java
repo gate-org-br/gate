@@ -2,7 +2,9 @@ package gate.handler;
 
 import gate.error.AppError;
 import gate.type.DataFile;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,7 +13,7 @@ public class DataFileHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-			   HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value) throws AppError
 	{
 		DataFile dataFile = (DataFile) value;
 
@@ -23,9 +25,9 @@ public class DataFileHandler implements Handler
 		{
 			os.write(dataFile.getData());
 			os.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

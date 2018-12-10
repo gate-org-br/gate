@@ -2,7 +2,9 @@ package gate.handler;
 
 import gate.error.AppError;
 import gate.report.doc.Doc;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 
 import java.util.Locale;
 
@@ -23,9 +25,9 @@ public class DocHandler implements Handler
 		{
 			((Doc) value).print(os);
 			os.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

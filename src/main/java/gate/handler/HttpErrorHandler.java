@@ -3,6 +3,7 @@ package gate.handler;
 import gate.error.AppError;
 import gate.type.HttpError;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,9 +18,9 @@ public class HttpErrorHandler implements Handler
 		{
 			HttpError error = (HttpError) value;
 			response.sendError(error.getCode(), error.getMessage());
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

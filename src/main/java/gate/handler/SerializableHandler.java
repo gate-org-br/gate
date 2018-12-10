@@ -1,9 +1,10 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.converter.Converter;
+import java.io.IOException;
 
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ public class SerializableHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-					   HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value)
 	{
 		String string = Converter.toString(value);
 		byte[] bytes = string.getBytes(Charset.forName("UTF-8"));
@@ -27,9 +28,9 @@ public class SerializableHandler implements Handler
 		{
 			os.write(bytes);
 			os.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

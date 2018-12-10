@@ -1,6 +1,8 @@
 package gate.handler;
 
 import gate.error.AppError;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import java.io.Writer;
 
@@ -12,7 +14,7 @@ public class TextHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-					   HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value) throws AppError
 	{
 		String string = value.toString();
 		response.setContentType("text/plain");
@@ -21,9 +23,9 @@ public class TextHandler implements Handler
 		{
 			writer.write(string);
 			writer.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

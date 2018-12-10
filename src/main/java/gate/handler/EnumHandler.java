@@ -1,6 +1,8 @@
 package gate.handler;
 
 import gate.error.AppError;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import java.io.Writer;
 
@@ -12,7 +14,7 @@ public class EnumHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-			   HttpServletResponse response, Object object) throws AppError
+		HttpServletResponse response, Object object) throws AppError
 	{
 		Enum<?> value = (Enum<?>) object;
 		String string = value != null ? String.valueOf(value.ordinal()) : "";
@@ -22,9 +24,9 @@ public class EnumHandler implements Handler
 		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

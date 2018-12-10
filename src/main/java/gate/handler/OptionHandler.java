@@ -5,8 +5,10 @@ import gate.converter.Converter;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
+import java.io.IOException;
 
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -19,7 +21,7 @@ public class OptionHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-					   HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value) throws AppError
 	{
 		Objects.requireNonNull(value);
 
@@ -34,9 +36,9 @@ public class OptionHandler implements Handler
 		{
 			os.write(bytes);
 			os.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
