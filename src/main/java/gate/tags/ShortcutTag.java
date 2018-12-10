@@ -6,7 +6,6 @@ import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.io.URL;
-import gate.type.Attributes;
 import gate.util.Icons;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -71,8 +70,8 @@ public class ShortcutTag extends DynamicAttributeTag
 			PageContext pageContext = (PageContext) getJspContext();
 
 			if (Toolkit.isEmpty(module)
-					&& Toolkit.isEmpty(screen)
-					&& Toolkit.isEmpty(action))
+				&& Toolkit.isEmpty(screen)
+				&& Toolkit.isEmpty(action))
 			{
 				getAttributes().put("href", "Gate");
 				if (!getAttributes().containsKey("title"))
@@ -96,19 +95,19 @@ public class ShortcutTag extends DynamicAttributeTag
 					action = pageContext.getRequest().getParameter("ACTION");
 
 				Class<Screen> clazz = Screen.getScreen(module, screen)
-						.orElseThrow(() -> new JspException(String.format(
-						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-						module, screen, action)));
-				Method method = Screen.getAction(clazz, action)
-						.orElseThrow(() -> new JspException(String.format(
-						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-						module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
+				Method _method = Screen.getAction(clazz, action)
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
 
-				if (Gate.checkAccess(user, module, screen, action, clazz, method))
+				if (Gate.checkAccess(user, module, screen, action, clazz, _method))
 				{
 					String title = "unnamed";
-					if (method.isAnnotationPresent(Name.class))
-						title = method.getAnnotation(Name.class).value();
+					if (_method.isAnnotationPresent(Name.class))
+						title = _method.getAnnotation(Name.class).value();
 					else if (clazz.isAnnotationPresent(Name.class))
 						title = clazz.getAnnotation(Name.class).value();
 					if (!getAttributes().containsKey("title"))
@@ -122,19 +121,18 @@ public class ShortcutTag extends DynamicAttributeTag
 						if (getJspBody() != null)
 							getJspBody().invoke(null);
 						else
-							pageContext.getOut().print(createBody(clazz, method));
+							pageContext.getOut().print(createBody(clazz, _method));
 						pageContext.getOut().print("</button>");
 					} else
 					{
-						Attributes attribute = new Attributes();
 						if (target != null)
-							attribute.put("target", target);
-						attribute.put("href", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<a " + attribute + ">");
+							getAttributes().put("target", target);
+						getAttributes().put("href", URL.toString(module, screen, action, arguments));
+						pageContext.getOut().print("<a " + getAttributes() + ">");
 						if (getJspBody() != null)
 							getJspBody().invoke(null);
 						else
-							pageContext.getOut().print(createBody(clazz, method));
+							pageContext.getOut().print(createBody(clazz, _method));
 						pageContext.getOut().print("</a>");
 					}
 				}
