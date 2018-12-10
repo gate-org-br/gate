@@ -1,6 +1,8 @@
 package gate.handler;
 
 import gate.error.AppError;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import java.io.Writer;
 
@@ -20,9 +22,9 @@ public class PNGHandler implements Handler
 		{
 			writer.write(string);
 			writer.flush();
-		} catch (Exception e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

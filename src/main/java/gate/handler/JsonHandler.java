@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import java.io.IOException;
 
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ public class JsonHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-			   HttpServletResponse response, Object value)
+		HttpServletResponse response, Object value)
 	{
 		try
 		{
@@ -33,7 +34,7 @@ public class JsonHandler implements Handler
 			}
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

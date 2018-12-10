@@ -18,8 +18,8 @@ public class ReportHandler implements Handler
 		response.setLocale(Locale.getDefault());
 		response.setContentType("application/pdf");
 		response.setHeader("Content-Disposition",
-				String.format("attachment; filename=\"%s.pdf\"",
-						((Report) value).getName()));
+			String.format("attachment; filename=\"%s.pdf\"",
+				((Report) value).getName()));
 
 		try (OutputStream os = response.getOutputStream())
 		{

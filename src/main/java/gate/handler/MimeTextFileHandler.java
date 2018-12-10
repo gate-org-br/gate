@@ -1,10 +1,10 @@
 package gate.handler;
 
 import gate.error.AppError;
-import gate.handler.Handler;
 import gate.type.mime.MimeTextFile;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,7 +14,7 @@ public class MimeTextFileHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-			   HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value) throws AppError
 	{
 		try
 		{
@@ -40,7 +40,7 @@ public class MimeTextFileHandler implements Handler
 			}
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

@@ -11,14 +11,14 @@ public class RedirectHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-			HttpServletResponse response, Object value) throws AppError
+		HttpServletResponse response, Object value) throws AppError
 	{
 		try
 		{
 			response.sendRedirect(response.encodeRedirectURL(value.toString()));
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new UncheckedIOException(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }
