@@ -1360,9 +1360,6 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
-if (!Array.prototype.flatMap)
-	Array.prototype.flatMap = lambda => Array.prototype.concat.apply([], this.map(lambda));
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Gate
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -4019,10 +4016,11 @@ function PageControl(pageControl)
 	if (!pageControl.getAttribute("data-type"))
 		pageControl.setAttribute("data-type", "Frame");
 
-	var pages =
-		Array.from(pageControl.children)
+	var pages = [];
+	Array.from(pageControl.children)
 		.filter(e => e.tagName.toLowerCase() === "ul")
-		.flatMap(e => Array.from(e.children));
+		.forEach(ul => Array.from(ul.children).forEach(li => pages.push(li)));
+
 
 	if (pages.length > 0
 		&& pages.every(e => !e.getAttribute("data-selected") || e.getAttribute("data-selected").toLowerCase() !== "true"))
