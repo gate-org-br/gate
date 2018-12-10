@@ -3,13 +3,15 @@ function PageControl(pageControl)
 	if (!pageControl.getAttribute("data-type"))
 		pageControl.setAttribute("data-type", "Frame");
 
-	var pages =
-		Array.from(pageControl.children)
+	var pages = [];
+	Array.from(pageControl.children)
 		.filter(e => e.tagName.toLowerCase() === "ul")
-		.flatMap(e => Array.from(e.children));
+		.forEach(ul => Array.from(ul.children).forEach(li => pages.push(li)));
+
 
 	if (pages.length > 0
-		&& pages.every(e => !e.getAttribute("data-selected") || e.getAttribute("data-selected").toLowerCase() !== "true"))
+		&& pages.every(e => !e.getAttribute("data-selected")
+				|| e.getAttribute("data-selected").toLowerCase() !== "true"))
 		pages[0].setAttribute("data-selected", "true");
 
 	for (var i = 0; i < pages.length
