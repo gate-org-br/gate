@@ -1,0 +1,38 @@
+table.DateDialog
+{
+	table-layout: fixed;
+
+	colgroup
+	{
+		> col:nth-child(1) {width: 14%; }
+		> col:nth-child(2) {width: 13%; }
+		> col:nth-child(3) {width: 13%; }
+		> col:nth-child(4) {width: 13%; }
+		> col:nth-child(5) {width: 13%; }
+		> col:nth-child(6) {width: 13%; }
+		> col:nth-child(7) {width: 14%; }
+	}
+
+	> thead > tr > th { text-align: center; }
+
+	> tbody > tr
+	{
+		> td { cursor: pointer;
+		       text-align: center; }
+		> td.disabled { color: #CCCCCC }
+		> td.selected { background-color: #F0E68C }
+		> td:hover { font-weight: bold;
+			     background-color: #CCCCCC }
+	}
+
+	> tfoot > tr > td
+	{
+		> span { cursor: pointer; }
+		> span:hover { font-weight: bold; }
+		> span:first-child { float: left; }
+		> span:last-child { float: right; }
+	}
+}
+
+a.Date { width: 32px; }
+input.Date { width: calc(100% - 32px); }

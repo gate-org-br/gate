@@ -365,8 +365,7 @@ table,
 fieldset,
 div.TEXT,
 div.TOOLTIP,
-*.TOOLBAR,
-*.COOLBAR {
+*.TOOLBAR {
   margin-top: 16px;
   margin-bottom: 4px;
 }
@@ -374,8 +373,7 @@ table:first-child,
 fieldset:first-child,
 div.TEXT:first-child,
 div.TOOLTIP:first-child,
-*.TOOLBAR:first-child,
-*.COOLBAR:first-child {
+*.TOOLBAR:first-child {
   margin-top: 0px;
 }
 input[type='text'],
@@ -437,7 +435,6 @@ dd {
   font-weight: bold;
   padding: 4px;
 }
-input.Date,
 input.Time,
 input.DateTime,
 input.DateInterval,
@@ -445,7 +442,6 @@ input.TimeInterval,
 input.DateTimeInterval {
   width: calc("100% - 32px");
 }
-a.Date,
 a.Time,
 a.DateTime,
 a.DateInterval,
@@ -788,98 +784,6 @@ fieldset > label > span > a > span {
   border: 1px solid #CCCCCC;
 }
 /*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-COOLBAR
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-*.COOLBAR {
-  width: 100%;
-  height: 40px;
-  border-radius: 5px;
-  padding: 2px 0px 2px 0px;
-  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
-}
-*.COOLBAR a,
-*.COOLBAR button {
-  margin: 2px;
-  height: 32px;
-  display: block;
-  color: #000000;
-  min-width: 90px;
-  font-size: 10px;
-  padding: 0px 4px;
-  line-height: 28px;
-  font-weight: bold;
-  text-align: center;
-  border-radius: 5px;
-  border: 1px solid #CCCCCC;
-  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
-}
-*.COOLBAR a:hover,
-*.COOLBAR button:hover {
-  text-decoration: underline;
-  background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
-}
-*.COOLBAR > a:focus,
-*.COOLBAR > button:focus {
-  outline: none;
-  border: 2px solid #FFFACD;
-}
-*.COOLBAR > a,
-*.COOLBAR > button {
-  float: right;
-}
-*.TOOLBAR > a,
-*.COOLBAR > a,
-*.TOOLBAR > button,
-*.COOLBAR > button {
-  text-align: left;
-}
-*.COOLBAR > a:hover > i,
-*.COOLBAR > a:hover > span,
-*.COOLBAR > button:hover > i,
-*.COOLBAR > button:hover > span {
-  color: inherit;
-}
-*.COOLBAR > a > i,
-*.COOLBAR > a > span,
-*.COOLBAR > button > i,
-*.COOLBAR > button > span {
-  float: right;
-  font-size: 12px;
-  margin-left: 4px;
-  line-height: 28px;
-}
-*.COOLBAR > button {
-  cursor: pointer;
-}
-*.COOLBAR > label {
-  float: left;
-  padding: 7px;
-  font-size: 16px;
-}
-*.COOLBAR > hr {
-  width: 12px;
-  margin: 2px;
-  height: 32px;
-  float: right;
-  display: inline-block;
-  border: 0px none transparent;
-  background-color: transparent;
-}
-*.COOLBAR > progress {
-  margin: 4px;
-  width: calc(100% - 8px);
-  height: calc(100% - 8px);
-}
-*.COOLBAR a.Commit,
-*.COOLBAR button.Commit {
-  color: #006600;
-}
-*.COOLBAR a.Cancel,
-*.COOLBAR button.Cancel {
-  float: left;
-  color: #660000;
-}
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 MINIBAR
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 div.MINIBAR {
@@ -945,6 +849,109 @@ dialog {
   padding: 0;
   border: 4px solid #767d90;
   background-color: #CDCAB9;
+}
+*.COOLBAR:first-child,
+*.Coolbar:first-child {
+  margin-top: 0px;
+}
+*.COOLBAR,
+*.Coolbar {
+  width: 100%;
+  height: 40px;
+  padding: 2px;
+  margin-top: 16px;
+  margin-bottom: 4px;
+  border-radius: 5px;
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+}
+*.COOLBAR > *,
+*.Coolbar > * {
+  margin: 2px;
+  height: calc(100% - 4px);
+}
+*.COOLBAR > a,
+*.Coolbar > a,
+*.COOLBAR > button,
+*.Coolbar > button {
+  margin: 2px;
+  padding: 4px;
+  float: right;
+  display: flex;
+  color: #000000;
+  cursor: pointer;
+  min-width: 90px;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  align-items: center;
+  border: 1px solid #CCCCCC;
+  justify-content: space-between;
+  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
+}
+*.COOLBAR > a:hover,
+*.Coolbar > a:hover,
+*.COOLBAR > button:hover,
+*.Coolbar > button:hover {
+  text-decoration: underline;
+  background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
+}
+*.COOLBAR > a:focus,
+*.Coolbar > a:focus,
+*.COOLBAR > button:focus,
+*.Coolbar > button:focus {
+  outline: none;
+  border: 2px solid #FFFACD;
+}
+*.COOLBAR > a > i,
+*.Coolbar > a > i,
+*.COOLBAR > a > span,
+*.Coolbar > a > span,
+*.COOLBAR > button > i,
+*.Coolbar > button > i,
+*.COOLBAR > button > span,
+*.Coolbar > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 8px;
+  align-items: center;
+  justify-content: center;
+}
+*.COOLBAR > a.Commit,
+*.Coolbar > a.Commit,
+*.COOLBAR > button.Commit,
+*.Coolbar > button.Commit {
+  color: #006600;
+}
+*.COOLBAR > a.Cancel,
+*.Coolbar > a.Cancel,
+*.COOLBAR > button.Cancel,
+*.Coolbar > button.Cancel {
+  float: left;
+  color: #660000;
+}
+*.COOLBAR > progress,
+*.Coolbar > progress {
+  width: calc(100% - 4px);
+}
+*.COOLBAR > label,
+*.Coolbar > label {
+  float: left;
+  padding: 4px;
+  font-size: 16px;
+  align-items: center;
+  display: inline-flex;
+  justify-content: flex-start;
+}
+*.COOLBAR > hr,
+*.Coolbar > hr {
+  width: 12px;
+  float: right;
+  display: inline-block;
+  border: 0px none transparent;
+  background-color: transparent;
 }
 div.Toolbar {
   height: 48px;
@@ -1324,4 +1331,62 @@ ul.DeskPane > li.Reset > a {
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
 }
-/*# sourceMappingURL=Gate.css.map */
+table.DateDialog {
+  table-layout: fixed;
+}
+table.DateDialog colgroup > col:nth-child(1) {
+  width: 14%;
+}
+table.DateDialog colgroup > col:nth-child(2) {
+  width: 13%;
+}
+table.DateDialog colgroup > col:nth-child(3) {
+  width: 13%;
+}
+table.DateDialog colgroup > col:nth-child(4) {
+  width: 13%;
+}
+table.DateDialog colgroup > col:nth-child(5) {
+  width: 13%;
+}
+table.DateDialog colgroup > col:nth-child(6) {
+  width: 13%;
+}
+table.DateDialog colgroup > col:nth-child(7) {
+  width: 14%;
+}
+table.DateDialog > thead > tr > th {
+  text-align: center;
+}
+table.DateDialog > tbody > tr > td {
+  cursor: pointer;
+  text-align: center;
+}
+table.DateDialog > tbody > tr > td.disabled {
+  color: #CCCCCC;
+}
+table.DateDialog > tbody > tr > td.selected {
+  background-color: #F0E68C;
+}
+table.DateDialog > tbody > tr > td:hover {
+  font-weight: bold;
+  background-color: #CCCCCC;
+}
+table.DateDialog > tfoot > tr > td > span {
+  cursor: pointer;
+}
+table.DateDialog > tfoot > tr > td > span:hover {
+  font-weight: bold;
+}
+table.DateDialog > tfoot > tr > td > span:first-child {
+  float: left;
+}
+table.DateDialog > tfoot > tr > td > span:last-child {
+  float: right;
+}
+a.Date {
+  width: 32px;
+}
+input.Date {
+  width: calc(100% - 32px);
+}

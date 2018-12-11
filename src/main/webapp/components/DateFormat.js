@@ -45,7 +45,7 @@ function DateFormat(format)
 		return result;
 	};
 
-	this.parse = function(string)
+	this.parse = function (string)
 	{
 		var d = 0;
 		var M = 0;
@@ -95,3 +95,38 @@ function DateFormat(format)
 		return new Date(y, M - 1, d, H, m, s);
 	};
 }
+
+Object.defineProperty(DateFormat, "YEAR", {
+	writable: false,
+	enumerable: false,
+	configurable: true,
+	value: new DateFormat("yyyy")
+});
+
+Object.defineProperty(DateFormat, "DATE", {
+	writable: false,
+	enumerable: false,
+	configurable: true,
+	value: new DateFormat("dd/MM/yyyy")
+});
+
+Object.defineProperty(DateFormat, "MONTH", {
+	writable: false,
+	enumerable: false,
+	configurable: true,
+	value: new DateFormat("MM/yyyy")
+});
+
+Object.defineProperty(DateFormat, "DATETIME", {
+	writable: false,
+	enumerable: false,
+	configurable: true,
+	value: new DateFormat("dd/MM/yyyy HH:mm")
+});
+
+Object.defineProperty(DateFormat, "INSTANT", {
+	writable: false,
+	enumerable: false,
+	configurable: true,
+	value: new DateFormat("dd/MM/yyyy HH:mm:ss")
+});

@@ -1,45 +1,87 @@
-function Calendar(month)
+function Calendar()
 {
-    var result = new Array();
-    var ini = getFDOW(getFDOM(month));
-    var end = getLDOW(getLDOM(month));
-    for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
-        result.push(new Date(date));
-    while (result.length < 42)
-    {
-        result.push(new Date(date));
-        date.setDate(date.getDate() + 1);
-    }
-    return result;
-
-    function getFDOM(date)
-    {
-        var fdom = new Date(date);
-        fdom.setDate(1);
-        return fdom;
-    }
-
-    function getLDOM(date)
-    {
-        var ldom = new Date(date);
-        ldom.setMonth(ldom.getMonth() + 1);
-        ldom.setDate(0);
-        return ldom;
-    }
-
-    function getFDOW(date)
-    {
-        var fdow = new Date(date);
-        while (fdow.getDay() !== 0)
-            fdow.setDate(fdow.getDate() - 1);
-        return fdow;
-    }
-
-    function getLDOW(date)
-    {
-        var ldow = new Date(date);
-        while (ldow.getDay() !== 6)
-            ldow.setDate(ldow.getDate() + 1);
-        return ldow;
-    }
 }
+
+Object.defineProperty(Calendar, "getDatesFromMonth", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (month)
+	{
+		var result = new Array();
+		var ini = Calendar.getFirstDayOfWeek(Calendar.getFirstDayOfMonth(month));
+		var end = Calendar.getLastDayOfWeek(Calendar.getLastDayOfMonth(month));
+		for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
+			result.push(new Date(date));
+		while (result.length < 42)
+		{
+			result.push(new Date(date));
+			date.setDate(date.getDate() + 1);
+		}
+		return result;
+	}
+});
+
+Object.defineProperty(Calendar, "getFirstDayOfMonth", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (date)
+	{
+		date = new Date(date);
+		date.setDate(1);
+		return date;
+	}
+});
+
+Object.defineProperty(Calendar, "getLastDayOfMonth", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (date)
+	{
+		date = new Date(date);
+		date.setMonth(date.getMonth() + 1);
+		date.setDate(0);
+		return date;
+	}
+});
+
+Object.defineProperty(Calendar, "getFirstDayOfWeek", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (date)
+	{
+		date = new Date(date);
+		while (date.getDay() !== 0)
+			date.setDate(date.getDate() - 1);
+		return date;
+	}
+});
+
+Object.defineProperty(Calendar, "getLastDayOfWeek", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (date)
+	{
+		date = new Date(date);
+		while (date.getDay() !== 6)
+			date.setDate(date.getDate() + 1);
+		return date;
+	}
+});
+
+Object.defineProperty(Calendar, "isToday", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: function (date)
+	{
+		let now = new Date();
+		return date.getDate() === now.getDate()
+			&& date.getMonth() === now.getMonth()
+			&& date.getYear() === now.getYear();
+	}
+});

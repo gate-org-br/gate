@@ -48,12 +48,12 @@ function ChangeHandler(e)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target]')).forEach(function (e)
+	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target]')).forEach(function (element)
 	{
-		new ChangeHandler(e);
+		new ChangeHandler(element);
 	});
-	Array.from(document.querySelectorAll('select[data-method], select[data-action], select[data-target]')).forEach(function (e)
+	Array.from(document.querySelectorAll('select[data-method], select[data-action], select[data-target]')).forEach(function (element)
 	{
-		new ChangeHandler(e);
+		new ChangeHandler(element);
 	});
 });
