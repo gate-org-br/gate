@@ -2,7 +2,7 @@ window.addEventListener("load", function ()
 {
 	window.setInterval(function ()
 	{
-		search("*[data-switch]").forEach(function (node)
+		Array.from(document.querySelectorAll("*[data-switch]")).forEach(function (node)
 		{
 			var innerHTML = node.innerHTML;
 			var dataSwitch = node.getAttribute('data-switch');

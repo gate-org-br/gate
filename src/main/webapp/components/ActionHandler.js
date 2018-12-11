@@ -1,46 +1,43 @@
-function ActionHandler(e)
+function ActionHandler(element)
 {
-	e.setAttribute("tabindex", 1);
-	e.onmouseover = function ()
-	{
-		this.focus();
-	};
+	element.setAttribute("tabindex", 1);
+	element.onmouseover = () => element.focus();
 
-	e.onkeydown = function (e)
+	element.onkeydown = function (event)
 	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			case ENTER:
-				this.onclick(e);
+				this.onclick(event);
 				return false;
 
 			case HOME:
-				var siblings = $(this).siblings("tr");
+				var siblings = Array.from(this.parentNode.childNodes)
+					.filter(node => node.tagName.toLowerCase() === "tr");
 				if (siblings.length !== 0
 					&& siblings[0].getAttribute("tabindex"))
 					siblings[0].focus();
 				return false;
 
 			case END:
-				var siblings = $(this).siblings("tr");
+				var siblings = Array.from(this.parentNode.childNodes)
+					.filter(node => node.tagName.toLowerCase() === "tr");
 				if (siblings.length !== 0
 					&& siblings[siblings.length - 1].getAttribute("tabindex"))
 					siblings[siblings.length - 1].focus();
 				return false;
 
 			case UP:
-				var prev = $(this).getPrev();
-				if (prev &&
-					prev.getAttribute("tabindex"))
-					prev.focus();
+				if (this.previousElementSibling &&
+					this.previousElementSibling.getAttribute("tabindex"))
+					this.previousElementSibling.focus();
 				return false;
 
 			case DOWN:
-				var next = $(this).getNext();
-				if (next &&
-					next.getAttribute("tabindex"))
-					next.focus();
+				if (this.nextElementSibling &&
+					this.nextElementSibling.getAttribute("tabindex"))
+					this.nextElementSibling.focus();
 				return false;
 
 			default:
@@ -48,12 +45,12 @@ function ActionHandler(e)
 		}
 	};
 
-	if (!e.onclick)
-		e.onclick = function (e)
+	if (!element.onclick)
+		element.onclick = function (event)
 		{
 			this.blur();
-			e = e || window.event;
-			for (var parent = e.target || e.srcElement;
+			event = event || window.event;
+			for (var parent = event.target || event.srcElement;
 				parent !== this;
 				parent = parent.parentNode)
 				if (parent.onclick
@@ -67,7 +64,7 @@ function ActionHandler(e)
 				case "get":
 					var a = new Link(document.createElement("a"))
 						.setAction(this.getAttribute("data-action"))
-						.setTarget(e.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
 						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
@@ -80,10 +77,14 @@ function ActionHandler(e)
 					document.body.removeChild(a);
 					break;
 				case "post":
-					var form = $(this).getForm();
+					var form = this.parentNode;
+					while (form
+						&& form.tagName.toLowerCase()
+						!== 'form')
+						form = form.parentNode;
 					var button = new Button(document.createElement("button"))
 						.setAction(this.getAttribute("data-action"))
-						.setTarget(e.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
 						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
@@ -103,7 +104,7 @@ function ActionHandler(e)
 
 window.addEventListener("load", function ()
 {
-	search('*[data-action]').forEach(function (e)
+	Array.from(document.querySelectorAll('*[data-action]')).forEach(function (e)
 	{
 		new ActionHandler(e);
 	});

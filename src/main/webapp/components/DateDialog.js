@@ -130,7 +130,7 @@ function DateDialog(callback, month)
 
 window.addEventListener("load", function ()
 {
-	search("input.Date").forEach(function (input)
+	Array.from(document.querySelectorAll("input.Date")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));

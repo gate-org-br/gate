@@ -10,7 +10,7 @@ public class Icons
 {
 
 	public static final Icon UNKNOWN
-			= new Icon("?", "??????");
+		= new Icon("?", "??????");
 
 	private final List<Icon> icons;
 
@@ -45,19 +45,19 @@ public class Icons
 		icons.add(new Icon("2000", "closed"));
 		icons.add(new Icon("2001", "opened"));
 		icons.add(new Icon("2002", "passwd"));
-		icons.add(new Icon("2003", "??????"));
+		icons.add(new Icon("2003", "date"));
 		icons.add(new Icon("2004", "person"));
 		icons.add(new Icon("2005", "people"));
 		icons.add(new Icon("2006", "??????"));
 		icons.add(new Icon("2007", "??????"));
-		icons.add(new Icon("2008", "??????"));
+		icons.add(new Icon("2008", "home"));
 		icons.add(new Icon("2009", "??????"));
 		icons.add(new Icon("200A", "??????"));
 		icons.add(new Icon("2010", "search"));
 		icons.add(new Icon("2011", "??????"));
 		icons.add(new Icon("2012", "??????"));
-		icons.add(new Icon("2013", "??????"));
-		icons.add(new Icon("2014", "??????"));
+		icons.add(new Icon("2013", "tag"));
+		icons.add(new Icon("2014", "tags"));
 		icons.add(new Icon("2015", "??????"));
 		icons.add(new Icon("2016", "??????"));
 		icons.add(new Icon("2017", "??????"));
@@ -108,8 +108,8 @@ public class Icons
 		icons.add(new Icon("2074", "??????"));
 		icons.add(new Icon("2075", "??????"));
 		icons.add(new Icon("2076", "??????"));
-		icons.add(new Icon("2077", "??????"));
-		icons.add(new Icon("2078", "??????"));
+		icons.add(new Icon("2077", "enter"));
+		icons.add(new Icon("2078", "leave"));
 		icons.add(new Icon("2079", "attach"));
 		icons.add(new Icon("2080", "??????"));
 		icons.add(new Icon("2081", "??????"));
@@ -198,7 +198,7 @@ public class Icons
 		icons.add(new Icon("2164", "??????"));
 		icons.add(new Icon("2165", "??????"));
 		icons.add(new Icon("2166", "??????"));
-		icons.add(new Icon("2167", "??????"));
+		icons.add(new Icon("2167", "time"));
 		icons.add(new Icon("2168", "??????"));
 		icons.add(new Icon("2169", "??????"));
 		icons.add(new Icon("2170", "??????"));
@@ -293,6 +293,13 @@ public class Icons
 		icons.add(new Icon("2262", "??????"));
 		icons.add(new Icon("2263", "??????"));
 		icons.add(new Icon("2264", "??????"));
+		icons.add(new Icon("2265", "??????"));
+		icons.add(new Icon("2266", "??????"));
+		icons.add(new Icon("2267", "??????"));
+		icons.add(new Icon("2268", "??????"));
+		icons.add(new Icon("2269", "??????"));
+		icons.add(new Icon("2270", "??????"));
+		icons.add(new Icon("2271", "??????"));
 	}
 
 	public Icon[] get()
@@ -326,7 +333,7 @@ public class Icons
 				e = (AnnotatedElement) type;
 
 			if (field == null
-					&& type instanceof Enum<?>)
+				&& type instanceof Enum<?>)
 				field = ((Enum<?>) type).name();
 			if (field != null)
 				e = ((Class<?>) e).getField(field);
@@ -335,8 +342,8 @@ public class Icons
 
 			return UNKNOWN;
 		} catch (ClassNotFoundException
-				| NoSuchFieldException
-				| SecurityException ex)
+			| NoSuchFieldException
+			| SecurityException ex)
 		{
 			throw new AppError(ex);
 		}
@@ -368,8 +375,8 @@ public class Icons
 		public boolean equals(Object obj)
 		{
 			return obj instanceof Icon
-					&& Objects.equals(code, ((Icon) obj).code)
-					&& Objects.equals(name, ((Icon) obj).name);
+				&& Objects.equals(code, ((Icon) obj).code)
+				&& Objects.equals(name, ((Icon) obj).name);
 
 		}
 
@@ -377,7 +384,7 @@ public class Icons
 		public int hashCode()
 		{
 			return Objects.hashCode(code)
-					+ Objects.hashCode(name);
+				+ Objects.hashCode(name);
 		}
 
 		@Override

@@ -10,6 +10,9 @@ Without this configuration present, some functionality in the IDE may be limited
         <word>Fetchable</word>
         <word>sql</word>
     </spellchecker-wordlist>
+    <grunt-tasks xmlns="http://www.netbeans.org/ns/build-tool-tasks/1">
+        <workdir path="" showSimpleTasks="true"/>
+    </grunt-tasks>
     <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
         <!--
 Properties that influence various parts of the IDE, especially code formatting and the like. 
@@ -23,12 +26,9 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
         <org-netbeans-modules-css-prep.sass_2e_mappings>/Gate:/</org-netbeans-modules-css-prep.sass_2e_mappings>
         <org-netbeans-modules-css-prep.sass_2e_configured>true</org-netbeans-modules-css-prep.sass_2e_configured>
-        <org-netbeans-modules-css-prep.less_2e_mappings>/components/Gate:/</org-netbeans-modules-css-prep.less_2e_mappings>
+        <org-netbeans-modules-css-prep.less_2e_mappings>/components/Gate.less:/</org-netbeans-modules-css-prep.less_2e_mappings>
         <org-netbeans-modules-css-prep.less_2e_enabled>true</org-netbeans-modules-css-prep.less_2e_enabled>
         <org-netbeans-modules-css-prep.less_2e_configured>true</org-netbeans-modules-css-prep.less_2e_configured>
         <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
     </properties>
-    <grunt-tasks xmlns="http://www.netbeans.org/ns/build-tool-tasks/1">
-        <workdir path="" showSimpleTasks="true"/>
-    </grunt-tasks>
 </project-shared-configuration>

@@ -1,19 +1,24 @@
 function LinkControl(linkControl)
 {
-	var links = $(linkControl).children("ul", "li", "a");
-
-	if (links.length > 0 && links.every(function (e)
+	var links = [];
+	Array.from(linkControl.children).forEach(function (ul)
 	{
-		return !e.parentNode.getAttribute("data-selected")
-				|| e.parentNode.getAttribute("data-selected")
-				.toLowerCase() !== "true";
-	}))
-		links[0].parentNode.setAttribute("data-selected", "true");
+		if (ul.tagName.toLowerCase() === "ul")
+			Array.from(ul.children).forEach(function (li)
+			{
+				if (li.tagName.toLowerCase() === "li")
+					links.push(li);
+			});
+	});
+
+	if (links.length > 0 && links.every(e => !e.getAttribute("data-selected")
+			|| e.getAttribute("data-selected").toLowerCase() !== "true"))
+		links[0].setAttribute("data-selected", "true");
 }
 
 window.addEventListener("load", function ()
 {
-	search('div.LinkControl').forEach(function (e)
+	Array.from(document.querySelectorAll('div.LinkControl')).forEach(function (e)
 	{
 		new LinkControl(e);
 	});
