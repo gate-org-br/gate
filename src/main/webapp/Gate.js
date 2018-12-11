@@ -1,3 +1,16 @@
+if (!Array.prototype.flatMap)
+	Object.defineProperties(Array.prototype,
+		{
+			'flatMap':
+				{
+					value: function (lambda)
+					{
+						return Array.prototype.concat.apply([], this.map(lambda));
+					},
+					writeable: false,
+					enumerable: false
+				}
+		});
 (function () {
 
 	// nb. This is for IE10 and lower _only_.
@@ -1360,27 +1373,6 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Gate
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function select(id)
-{
-	return document
-		.getElementById(id);
-}
-
-function search(css)
-{
-	return Array.from(document
-		.querySelectorAll(css));
-}
-
-function $(e)
-{
-	return new Gate(e);
-}
-
 function resolve(string)
 {
 	var result = string;
@@ -1399,220 +1391,46 @@ function resolve(string)
 	if (parameters)
 		parameters.forEach(function (e)
 		{
-			var parameter = select(e.substring(2, e.length - 1));
+			var parameter = document.getElementById(e.substring(2, e.length - 1));
 			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
 		});
 
 	return result;
 }
 
-function Gate(e)
-{
-	if (typeof e === 'string')
-		e = document.querySelectorAll(e);
-	if (e instanceof NodeList)
-		e = Array.from(e);
-	if (e.tagName)
-	{
-		this.children = function ()
-		{
-			var result = [e];
-			for (var i = 0; i < arguments.length; i++)
-				result = children(result, arguments[i]);
-			return result;
-
-			function children(array, tagName)
-			{
-				var result = [];
-				for (var i = 0; i < array.length; i++)
-					for (var j = 0; j < array[i].childNodes.length; j++)
-						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
-							result.push(array[i].childNodes[j]);
-				return result;
-			}
-		};
-
-		this.siblings = function (selector)
-		{
-			return selector ? Array.from(e.parentNode.childNodes)
-				.filter(function (node)
-				{
-					return node.matches
-						&& node.matches(selector);
-				}) : Array.from(e.parentNode.childNodes);
-		};
-		this.get = function (name)
-		{
-			return e[name];
-		};
-		this.set = function (name, value)
-		{
-			e[name] = value;
-		};
-		this.def = function (name, value)
-		{
-			if (!e[name])
-				e[name] = value;
-		};
-		this.addEventListener = function (name, value)
-		{
-			e.addEventListener(name, value);
-		};
-		this.getAttribute = function (name)
-		{
-			return e.getAttribute(name);
-		};
-		this.setAttribute = function (name, value)
-		{
-			e.setAttribute(name, value);
-		};
-		this.getForm = function ()
-		{
-			var form = e.parentNode;
-			while (form
-				&& form.tagName.toLowerCase()
-				!== 'form')
-				form = form.parentNode;
-			return form;
-		};
-		this.getNext = function ()
-		{
-			var next = e.nextSibling;
-			while (next && next.nodeType !== 1)
-				next = next.nextSibling;
-			return next;
-		};
-		this.getPrev = function ()
-		{
-			var prev = e.previousSibling;
-			while (prev && prev.nodeType !== 1)
-				prev = prev.previousSibling;
-			return prev;
-		};
-		this.search = function (css)
-		{
-			return Array.from(e.querySelectorAll(css));
-		};
-	} else if (e instanceof Array)
-	{
-		this.get = function (name)
-		{
-			return e.map(function (node)
-			{
-				return node[name];
-			});
-		};
-		this.set = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node[name] = value;
-			});
-		};
-		this.def = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				if (node[name])
-					node[name] = value;
-			});
-		};
-		this.addEventListener = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node.addEventListener(name, value);
-			});
-		};
-		this.getAttribute = function (name)
-		{
-			return e.map(function (node)
-			{
-				return node.getAttribute(name);
-			});
-		};
-		this.setAttribute = function (name, value)
-		{
-			e.forEach(function (node)
-			{
-				node.setAttribute(name, value);
-			});
-		};
-		this.children = function ()
-		{
-			var result = e;
-			for (var i = 0; i < arguments.length; i++)
-				result = children(result, arguments[i]);
-			return result;
-
-			function children(array, tagName)
-			{
-				var result = [];
-				for (var i = 0; i < array.length; i++)
-					for (var j = 0; j < array[i].childNodes.length; j++)
-						if (array[i].childNodes[j].tagName && array[i].childNodes[j].tagName.toLowerCase() === tagName.toLowerCase())
-							result.push(array[i].childNodes[j]);
-				return result;
-			}
-		};
-		this.filter = function (selector)
-		{
-			switch (typeof selector)
-			{
-				case "string":
-					return e.filter(function (node)
-					{
-						return node && node.matches
-							&& node.matches(selector);
-					});
-				case "boolean":
-					return e.filter(function (node)
-					{
-						return selector ===
-							(node !== null && node !== undefined);
-					});
-				case "function":
-					return e.filter(selector);
-			}
-		};
-
-		this.toArray = function ()
-		{
-			return e;
-		};
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Loading
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
 window.addEventListener("load", function ()
 {
-	$('select').set("onclick", function (e)
+	Array.from(document.getElementsByTagName("select")).forEach(function (element)
 	{
-		e = e ? e : window.event;
-		if (e.stopPropagation)
-			e.stopPropagation();
-		else
-			e.cancelBubble = true;
-	});
-	$('input.SELECTOR').set("onchange", function ()
-	{
-		$('input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]').set("checked", this.checked);
+		element.onclick = function (e)
+		{
+			e = e ? e : window.event;
+			if (e.stopPropagation)
+				e.stopPropagation();
+			else
+				e.cancelBubble = true;
+		};
 	});
 
-	search("td > label > span, td > label > i").forEach(function (e)
+	Array.from(document.querySelectorAll("input.SELECTOR")).forEach(function (element)
+	{
+		element.onchange = function ()
+		{
+			var selector = 'input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]';
+			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
+		};
+	});
+
+	Array.from(document.querySelectorAll("td > label > span, td > label > i")).forEach(function (e)
 	{
 		e.parentNode.style.position = 'relative';
 	});
-	search("fieldset > label > span > span + input, fieldset > label > span > span + input").forEach(function (e)
+
+	Array.from(document.querySelectorAll("fieldset > label > span > span + input, fieldset > label > span > span + input")).forEach(function (e)
 	{
 		e.style.paddingRight = "20px";
 	});
 });
-
-
 var CSV =
 	{
 		parse: function (text)
@@ -1799,8 +1617,7 @@ function URL(value)
 			this.value += "&";
 		this.value += name + "=" + value;
 		return this;
-	}
-	;
+	};
 
 	this.setModule = function (module)
 	{
@@ -1909,6 +1726,17 @@ function URL(value)
 		return this;
 	};
 
+	this.go = function ()
+	{
+		window.location.href = this.toString();
+		return this;
+	};
+
+	this.toString = function ()
+	{
+		return this.value;
+	};
+
 	this.populate = function (css)
 	{
 		this.get(function (options)
@@ -1921,13 +1749,6 @@ function URL(value)
 					.forEach(element => populator.populate(element));
 			}
 		});
-		return this;
-	};
-
-
-	this.go = function ()
-	{
-		window.location.href = this.toString();
 		return this;
 	};
 
@@ -1955,7 +1776,7 @@ function URL(value)
 		if (parameters)
 			for (var i = 0; i < parameters.length; i++)
 			{
-				var parameter = select(parameters[i].substring(2, parameters[i].length - 1));
+				var parameter = document.getElementById(parameters[i].substring(2, parameters[i].length - 1));
 				if (!parameter || !parameter.value)
 					return false;
 				result = result.replace(parameters[i], encodeURIComponent(parameter.value));
@@ -1963,11 +1784,6 @@ function URL(value)
 
 		this.value = result;
 		return true;
-	};
-
-	this.toString = function ()
-	{
-		return this.value;
 	};
 }
 function Calendar(month)
@@ -2566,49 +2382,46 @@ window.addEventListener("load", function ()
 	});
 });
 
-function ActionHandler(e)
+function ActionHandler(element)
 {
-	e.setAttribute("tabindex", 1);
-	e.onmouseover = function ()
-	{
-		this.focus();
-	};
+	element.setAttribute("tabindex", 1);
+	element.onmouseover = () => element.focus();
 
-	e.onkeydown = function (e)
+	element.onkeydown = function (event)
 	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			case ENTER:
-				this.onclick(e);
+				this.onclick(event);
 				return false;
 
 			case HOME:
-				var siblings = $(this).siblings("tr");
+				var siblings = Array.from(this.parentNode.childNodes)
+					.filter(node => node.tagName.toLowerCase() === "tr");
 				if (siblings.length !== 0
 					&& siblings[0].getAttribute("tabindex"))
 					siblings[0].focus();
 				return false;
 
 			case END:
-				var siblings = $(this).siblings("tr");
+				var siblings = Array.from(this.parentNode.childNodes)
+					.filter(node => node.tagName.toLowerCase() === "tr");
 				if (siblings.length !== 0
 					&& siblings[siblings.length - 1].getAttribute("tabindex"))
 					siblings[siblings.length - 1].focus();
 				return false;
 
 			case UP:
-				var prev = $(this).getPrev();
-				if (prev &&
-					prev.getAttribute("tabindex"))
-					prev.focus();
+				if (this.previousElementSibling &&
+					this.previousElementSibling.getAttribute("tabindex"))
+					this.previousElementSibling.focus();
 				return false;
 
 			case DOWN:
-				var next = $(this).getNext();
-				if (next &&
-					next.getAttribute("tabindex"))
-					next.focus();
+				if (this.nextElementSibling &&
+					this.nextElementSibling.getAttribute("tabindex"))
+					this.nextElementSibling.focus();
 				return false;
 
 			default:
@@ -2616,12 +2429,12 @@ function ActionHandler(e)
 		}
 	};
 
-	if (!e.onclick)
-		e.onclick = function (e)
+	if (!element.onclick)
+		element.onclick = function (event)
 		{
 			this.blur();
-			e = e || window.event;
-			for (var parent = e.target || e.srcElement;
+			event = event || window.event;
+			for (var parent = event.target || event.srcElement;
 				parent !== this;
 				parent = parent.parentNode)
 				if (parent.onclick
@@ -2635,7 +2448,7 @@ function ActionHandler(e)
 				case "get":
 					var a = new Link(document.createElement("a"))
 						.setAction(this.getAttribute("data-action"))
-						.setTarget(e.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
 						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
@@ -2648,10 +2461,14 @@ function ActionHandler(e)
 					document.body.removeChild(a);
 					break;
 				case "post":
-					var form = $(this).getForm();
+					var form = this.parentNode;
+					while (form
+						&& form.tagName.toLowerCase()
+						!== 'form')
+						form = form.parentNode;
 					var button = new Button(document.createElement("button"))
 						.setAction(this.getAttribute("data-action"))
-						.setTarget(e.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
 						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
@@ -2671,7 +2488,7 @@ function ActionHandler(e)
 
 window.addEventListener("load", function ()
 {
-	search('*[data-action]').forEach(function (e)
+	Array.from(document.querySelectorAll('*[data-action]')).forEach(function (e)
 	{
 		new ActionHandler(e);
 	});
@@ -2681,36 +2498,41 @@ function ChangeHandler(e)
 	e.onchange = function ()
 	{
 		switch (this.getAttribute("data-method") ?
-				this.getAttribute("data-method")
-				.toLowerCase() : "get")
+			this.getAttribute("data-method")
+			.toLowerCase() : "get")
 		{
 			case "get":
 				var a = new Link(document.createElement("a"))
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
-						.get();
+					.setAction(this.getAttribute("data-action"))
+					.setTarget(this.getAttribute("data-target"))
+					.setTitle(this.getAttribute("title"))
+					.setOnHide(this.getAttribute("data-onHide"))
+					.setBlock(this.getAttribute("data-block"))
+					.setAlert(this.getAttribute("data-alert"))
+					.setConfirm(this.getAttribute("data-confirm"))
+					.setNavigator(this.getAttribute("data-navigator"))
+					.get();
 				document.body.appendChild(a);
 				a.click();
 				document.body.removeChild(a);
 				break;
 			case "post":
-				var form = $(this).getForm();
+				var form = this.parentNode;
+				while (form
+					&& form.tagName.toLowerCase()
+					!== 'form')
+					form = form.parentNode;
+
 				var button = new Button(document.createElement("button"))
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
-						.get();
+					.setAction(this.getAttribute("data-action"))
+					.setTarget(this.getAttribute("data-target"))
+					.setTitle(this.getAttribute("title"))
+					.setOnHide(this.getAttribute("data-onHide"))
+					.setBlock(this.getAttribute("data-block"))
+					.setAlert(this.getAttribute("data-alert"))
+					.setConfirm(this.getAttribute("data-confirm"))
+					.setNavigator(this.getAttribute("data-navigator"))
+					.get();
 				form.appendChild(button);
 				button.click();
 				form.removeChild(button);
@@ -2721,16 +2543,16 @@ function ChangeHandler(e)
 
 window.addEventListener("load", function ()
 {
-	search('input[data-method], input[data-action], input[data-target]').forEach(function (e)
+	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target]')).forEach(function (e)
 	{
-		new ChangeHandler(e)
+		new ChangeHandler(e);
 	});
-	search('select[data-method], select[data-action], select[data-target]').forEach(function (e)
+	Array.from(document.querySelectorAll('select[data-method], select[data-action], select[data-target]')).forEach(function (e)
 	{
-		new ChangeHandler(e)
+		new ChangeHandler(e);
 	});
 });
-  
+
 function Mask(e)
 {
 	e.placeholder = new String();
@@ -3120,7 +2942,7 @@ Block.hide = function ()
 window.addEventListener("load", function ()
 {
 	Block.hide();
-	search("form[data-block]").forEach(function (e)
+	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (e)
 	{
 		e.addEventListener("submit", function ()
 		{
@@ -3260,7 +3082,7 @@ function DateDialog(callback, month)
 
 window.addEventListener("load", function ()
 {
-	search("input.Date").forEach(function (input)
+	Array.from(document.querySelectorAll("input.Date")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3376,7 +3198,7 @@ function TimeDialog(callback)
 
 window.addEventListener("load", function ()
 {
-	search("input.Time").forEach(function (input)
+	Array.from(document.querySelectorAll("input.Time")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3399,7 +3221,7 @@ window.addEventListener("load", function ()
 });
 window.addEventListener("load", function ()
 {
-	search("input.DateTime").forEach(function (input)
+	Array.from(document.querySelectorAll("input.DateTime")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3426,7 +3248,7 @@ window.addEventListener("load", function ()
 
 window.addEventListener("load", function ()
 {
-	search("input.DateInterval").forEach(function (input)
+	Array.from(document.querySelectorAll("input.DateInterval")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3455,7 +3277,7 @@ window.addEventListener("load", function ()
 
 window.addEventListener("load", function ()
 {
-	search("input.TimeInterval").forEach(function (input)
+	Array.from(document.querySelectorAll("input.TimeInterval")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3482,7 +3304,7 @@ window.addEventListener("load", function ()
 
 window.addEventListener("load", function ()
 {
-	search("input.DateTimeInterval").forEach(function (input)
+	Array.from(document.querySelectorAll("input.DateTimeInterval")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
@@ -3919,7 +3741,7 @@ ChartDialog.show = function (chart, series, action, title)
 
 window.addEventListener("load", function ()
 {
-	search('tr.RChart, td.RChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.RChart, td.RChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3930,7 +3752,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.DChart, td.DChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.DChart, td.DChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3941,7 +3763,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.PChart, td.PChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.PChart, td.PChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3952,7 +3774,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.AChart, td.AChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.AChart, td.AChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3964,7 +3786,7 @@ window.addEventListener("load", function ()
 	});
 
 
-	search('tr.LChart, td.LChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.LChart, td.LChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3975,7 +3797,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.BChart, td.BChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.BChart, td.BChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3986,7 +3808,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.CChart, td.CChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.CChart, td.CChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -3997,7 +3819,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('a[data-chart]').forEach(function (e)
+	Array.from(document.querySelectorAll('a[data-chart]')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -4016,14 +3838,13 @@ function PageControl(pageControl)
 	if (!pageControl.getAttribute("data-type"))
 		pageControl.setAttribute("data-type", "Frame");
 
-	var pages = [];
-	Array.from(pageControl.children)
+	var pages = Array.from(pageControl.children)
 		.filter(e => e.tagName.toLowerCase() === "ul")
-		.forEach(ul => Array.from(ul.children).forEach(li => pages.push(li)));
-
+		.flatMap(e => Array.from(e.children));
 
 	if (pages.length > 0
-		&& pages.every(e => !e.getAttribute("data-selected") || e.getAttribute("data-selected").toLowerCase() !== "true"))
+		&& pages.every(e => !e.getAttribute("data-selected")
+				|| e.getAttribute("data-selected").toLowerCase() !== "true"))
 		pages[0].setAttribute("data-selected", "true");
 
 	for (var i = 0; i < pages.length
@@ -4140,20 +3961,25 @@ window.addEventListener("load", function ()
 });
 function LinkControl(linkControl)
 {
-	var links = $(linkControl).children("ul", "li", "a");
-
-	if (links.length > 0 && links.every(function (e)
+	var links = [];
+	Array.from(linkControl.children).forEach(function (ul)
 	{
-		return !e.parentNode.getAttribute("data-selected")
-				|| e.parentNode.getAttribute("data-selected")
-				.toLowerCase() !== "true";
-	}))
-		links[0].parentNode.setAttribute("data-selected", "true");
+		if (ul.tagName.toLowerCase() === "ul")
+			Array.from(ul.children).forEach(function (li)
+			{
+				if (li.tagName.toLowerCase() === "li")
+					links.push(li);
+			});
+	});
+
+	if (links.length > 0 && links.every(e => !e.getAttribute("data-selected")
+			|| e.getAttribute("data-selected").toLowerCase() !== "true"))
+		links[0].setAttribute("data-selected", "true");
 }
 
 window.addEventListener("load", function ()
 {
-	search('div.LinkControl').forEach(function (e)
+	Array.from(document.querySelectorAll('div.LinkControl')).forEach(function (e)
 	{
 		new LinkControl(e);
 	});
@@ -4711,76 +4537,11 @@ function DateFormat(format)
 		return new Date(y, M - 1, d, H, m, s);
 	};
 }
-function Desktop(desktop)
-{
-	var desktopIcons = Array.from(desktop.getElementsByTagName("li"));
-
-	desktopIcons.forEach(function (e)
-	{
-		new DesktopIcon(e);
-	});
-
-	desktopIcons.forEach(function (e)
-	{
-		e.style.visibility = "visible";
-	});
-
-	function DesktopIcon(desktopIcon)
-	{
-		var icons = $(desktopIcon).children("ul", "li");
-
-		if (icons.length > 0)
-		{
-			desktopIcon.onclick = function ()
-			{
-				var reset = desktop.appendChild
-						(new Reset($(desktop).children("li")));
-				desktop.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					desktop.appendChild(icons[i]);
-				desktop.appendChild(reset);
-				return false;
-			};
-		}
-
-		function Reset(icons)
-		{
-			var li = document.createElement("li");
-			li.style.visibility = "visible";
-
-			var i = li.appendChild(document.createElement("i"));
-			i.innerHTML = "&#x2023";
-			i.style.color = "#432F21";
-
-			var label = li.appendChild(document.createElement("label"));
-			label.innerHTML = "Retornar";
-			label.style.color = "#432F21";
-
-			li.onclick = function ()
-			{
-				desktop.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					desktop.appendChild(icons[i]);
-				return false;
-			};
-			return li;
-		}
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	search("ul.DESKTOP").forEach(function (e)
-	{
-		new Desktop(e);
-	});
-});
-
 window.addEventListener("load", function ()
 {
 	window.setInterval(function ()
 	{
-		search("*[data-switch]").forEach(function (node)
+		Array.from(document.querySelectorAll("*[data-switch]")).forEach(function (node)
 		{
 			var innerHTML = node.innerHTML;
 			var dataSwitch = node.getAttribute('data-switch');
@@ -5264,14 +5025,24 @@ function DeskMenu(deskMenu)
 
 	function DeskMenuIcon(deskMenuIcon)
 	{
-		var icons = $(deskMenuIcon).children("ul", "li");
+		var icons = [];
+		Array.from(deskMenuIcon.children).forEach(function (ul)
+		{
+			if (ul.tagName.toLowerCase() === "ul")
+				Array.from(ul.children).forEach(function (li)
+				{
+					if (li.tagName.toLowerCase() === "li")
+						icons.push(li);
+				});
+		});
+
 
 		if (icons.length > 0)
 		{
 			deskMenuIcon.onclick = function ()
 			{
 				var reset = deskMenu.appendChild
-					(new Reset($(deskMenu).children("li"),
+					(new Reset(Array.from(deskMenu.children).filter(e => e.tagName.toLowerCase() === "li"),
 						this.offsetWidth, this.offsetHeight));
 				deskMenu.innerHTML = "";
 				for (var i = 0; i < icons.length; i++)
@@ -5314,21 +5085,27 @@ function DeskPane(deskPane)
 {
 	var desktopIcons = Array.from(deskPane.getElementsByTagName("li"));
 
-	desktopIcons.forEach(function (e)
-	{
-		new DeskPaneIcon(e);
-	});
+	desktopIcons.forEach(e => new DeskPaneIcon(e));
 
 	function DeskPaneIcon(deskMenuIcon)
 	{
-		var icons = $(deskMenuIcon).children("ul", "li");
+		var icons = [];
+		Array.from(deskMenuIcon.children).forEach(function (ul)
+		{
+			if (ul.tagName.toLowerCase() === "ul")
+				Array.from(ul.children).forEach(function (li)
+				{
+					if (li.tagName.toLowerCase() === "li")
+						icons.push(li);
+				});
+		});
 
 		if (icons.length > 0)
 		{
 			deskMenuIcon.onclick = function ()
 			{
 				var reset = deskPane.appendChild
-					(new Reset($(deskPane).children("li"),
+					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
 						this.offsetWidth, this.offsetHeight));
 				deskPane.innerHTML = "";
 				for (var i = 0; i < icons.length; i++)

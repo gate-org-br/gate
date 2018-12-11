@@ -145,7 +145,7 @@ ChartDialog.show = function (chart, series, action, title)
 
 window.addEventListener("load", function ()
 {
-	search('tr.RChart, td.RChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.RChart, td.RChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -156,7 +156,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.DChart, td.DChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.DChart, td.DChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -167,7 +167,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.PChart, td.PChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.PChart, td.PChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -178,7 +178,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.AChart, td.AChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.AChart, td.AChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -190,7 +190,7 @@ window.addEventListener("load", function ()
 	});
 
 
-	search('tr.LChart, td.LChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.LChart, td.LChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -201,7 +201,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.BChart, td.BChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.BChart, td.BChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -212,7 +212,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('tr.CChart, td.CChart').forEach(function (e)
+	Array.from(document.querySelectorAll('tr.CChart, td.CChart')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{
@@ -223,7 +223,7 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	search('a[data-chart]').forEach(function (e)
+	Array.from(document.querySelectorAll('a[data-chart]')).forEach(function (e)
 	{
 		e.onclick = function ()
 		{

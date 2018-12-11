@@ -1,6 +1,6 @@
 window.addEventListener("load", function ()
 {
-	search("input.TimeInterval").forEach(function (input)
+	Array.from(document.querySelectorAll("input.TimeInterval")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));

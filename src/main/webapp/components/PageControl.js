@@ -3,11 +3,9 @@ function PageControl(pageControl)
 	if (!pageControl.getAttribute("data-type"))
 		pageControl.setAttribute("data-type", "Frame");
 
-	var pages = [];
-	Array.from(pageControl.children)
+	var pages = Array.from(pageControl.children)
 		.filter(e => e.tagName.toLowerCase() === "ul")
-		.forEach(ul => Array.from(ul.children).forEach(li => pages.push(li)));
-
+		.flatMap(e => Array.from(e.children));
 
 	if (pages.length > 0
 		&& pages.every(e => !e.getAttribute("data-selected")

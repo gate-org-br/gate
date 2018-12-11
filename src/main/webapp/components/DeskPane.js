@@ -1,22 +1,20 @@
 function DeskPane(deskPane)
 {
-	var desktopIcons = Array.from(deskPane.getElementsByTagName("li"));
-
-	desktopIcons.forEach(function (e)
-	{
-		new DeskPaneIcon(e);
-	});
+	Array.from(deskPane.getElementsByTagName("li"))
+		.forEach(e => new DeskPaneIcon(e));
 
 	function DeskPaneIcon(deskMenuIcon)
 	{
-		var icons = $(deskMenuIcon).children("ul", "li");
+		var icons = Array.from(deskMenuIcon.children)
+			.filter(e => e.tagName.toLowerCase() === "ul")
+			.flatMap(e => Array.from(e.children));
 
 		if (icons.length > 0)
 		{
 			deskMenuIcon.onclick = function ()
 			{
 				var reset = deskPane.appendChild
-					(new Reset($(deskPane).children("li"),
+					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
 						this.offsetWidth, this.offsetHeight));
 				deskPane.innerHTML = "";
 				for (var i = 0; i < icons.length; i++)

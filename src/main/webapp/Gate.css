@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'gate';
-  src: local(gate), url('imge/font/gate.eot?-uajdou&version=1_3_1');
-  src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=1_3_1') format('embedded-opentype'), url('imge/font/gate.woff?-uajdou&version=1_3_1') format('woff'), url('imge/font/gate.ttf?-uajdou&version=1_3_1') format('truetype'), url('imge/font/gate.svg?-uajdou#icomoon&version=1_3_1') format('svg');
+  src: local(gate), url('imge/font/gate.eot?-uajdou&version=4_40_0');
+  src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=4_40_0') format('embedded-opentype'), url('imge/font/gate.woff?-uajdou&version=4_40_0') format('woff'), url('imge/font/gate.ttf?-uajdou&version=4_40_0') format('truetype'), url('imge/font/gate.svg?-uajdou#icomoon&version=4_40_0') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -317,75 +317,20 @@ tr[data-value] > td,
 tr[data-ret] > td {
   cursor: pointer;
 }
-tr[data-action]:focus,
-tr[data-value]:hover,
-tr[data-ret]:hover,
-td[data-ret]:hover,
+tr[data-action],
+tr[dava-value],
+tr[dava-ret] {
+  cursor: pointer;
+}
 tr[data-action]:focus > td,
-tr[data-value]:hover > td,
-tr[data-ret]:hover > td td[data-ret]:hover,
-div.DESKTOP > fieldset:focus {
+tr[data-value]:focus > td,
+tr[data-ret]:focus > td,
+table > tbody > tr[data-action]:focus > td,
+table > tbody > tr[data-ret]:focus > td {
   background-image: none;
   background-color: #F0E68C;
   color: #000000;
-}
-ul.DESKTOP ul {
-  display: none;
-}
-ul.DESKTOP {
-  display: inline-flex;
-  flex-wrap: wrap;
-  width: 100%;
-  list-style-type: none;
-  margin: auto;
-  padding: 0px;
-  justify-content: flex-start;
-  float: left;
-}
-ul.DESKTOP > li {
-  visibility: hidden;
   cursor: pointer;
-  width: 24%;
-  margin: 8px 0.5% 8px 0.5%;
-  border-radius: 5px;
-  border: 2px solid #FFFFFF;
-  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
-  background-image: -ms-linear-gradient(top, #FDFAE9, #B3B0A4);
-  background-image: -moz-linear-gradient(top, #FDFAE9, #B3B0A4);
-  background-image: -o-linear-gradient(top, #FDFAE9, #B3B0A4);
-  background-image: -webkit-linear-gradient(top, #FDFAE9, #B3B0A4);
-}
-ul.DESKTOP > li:hover {
-  border-color: #FFFACD;
-  background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
-  background-image: -ms-linear-gradient(top, #EDE9D9, #BDBAAD);
-  background-image: -moz-linear-gradient(top, #EDE9D9, #BDBAAD);
-  background-image: -o-linear-gradient(top, #EDE9D9, #BDBAAD);
-  background-image: -webkit-linear-gradient(top, #EDE9D9, #BDBAAD);
-}
-ul.DESKTOP > li > * {
-  float: left;
-  height: 48px;
-  cursor: pointer;
-}
-ul.DESKTOP > li > label {
-  padding-left: 8px;
-  line-height: 48px;
-  color: inherit;
-  font-weight: inherit;
-}
-ul.DESKTOP > li > img {
-  width: 48px;
-  margin: 0px;
-  background-color: white;
-}
-ul.DESKTOP > li > i,
-ul.DESKTOP > li > span {
-  width: 48px;
-  font-size: 40px;
-  padding: 4px;
-  text-align: center;
-  color: inherit;
 }
 ul.LIST {
   width: 100%;
@@ -956,9 +901,6 @@ div.MINIBAR > a {
   padding: 4px;
   font-size: 16px;
 }
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Dialog polyfill
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 dialog {
   position: absolute;
   left: 0;
@@ -1381,8 +1323,5 @@ ul.DeskPane > li.Reset > a {
   font-size: 20px;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
-}
-select.Editable {
-  display: none;
 }
 /*# sourceMappingURL=Gate.css.map */

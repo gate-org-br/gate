@@ -93,7 +93,7 @@ function TimeDialog(callback)
 
 window.addEventListener("load", function ()
 {
-	search("input.Time").forEach(function (input)
+	Array.from(document.querySelectorAll("input.Time")).forEach(function (input)
 	{
 		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));

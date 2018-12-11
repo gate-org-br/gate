@@ -41,11 +41,11 @@
 @font-face
 {
 	font-family: 'gate';
-	src: local(gate), url('imge/font/gate.eot?-uajdou&version=1_3_1');
-	src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=1_3_1') format('embedded-opentype'),
-		url('imge/font/gate.woff?-uajdou&version=1_3_1') format('woff'),
-		url('imge/font/gate.ttf?-uajdou&version=1_3_1') format('truetype'),
-		url('imge/font/gate.svg?-uajdou#icomoon&version=1_3_1') format('svg');
+	src: local(gate), url('imge/font/gate.eot?-uajdou&version=4_40_0');
+	src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=4_40_0') format('embedded-opentype'),
+		url('imge/font/gate.woff?-uajdou&version=4_40_0') format('woff'),
+		url('imge/font/gate.ttf?-uajdou&version=4_40_0') format('truetype'),
+		url('imge/font/gate.svg?-uajdou#icomoon&version=4_40_0') format('svg');
 	font-weight: normal; font-style: normal;
 }
 
@@ -192,34 +192,12 @@ tr[data-action] > td,
 tr[data-value] > td,
 tr[data-ret] > td { cursor: pointer }
 
-tr[data-action]:focus,
-tr[data-value]:hover,
-tr[data-ret]:hover,
-td[data-ret]:hover,
+tr[data-action], tr[dava-value], tr[dava-ret] { cursor: pointer}
 tr[data-action]:focus > td,
-tr[data-value]:hover > td,
-tr[data-ret]:hover > td
-td[data-ret]:hover,
-div.DESKTOP > fieldset:focus { background-image: none; background-color: #F0E68C; color: #000000 }
-
-ul.DESKTOP ul { display: none }
-ul.DESKTOP { display: inline-flex; flex-wrap: wrap; width: 100%; list-style-type: none; margin: auto; padding: 0px; justify-content: flex-start; float: left}
-ul.DESKTOP > li { visibility: hidden; cursor: pointer; width: 24%; margin: 8px 0.5% 8px 0.5%; border-radius: 5px; border: 2px solid #FFFFFF;
-                  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
-                  background-image: -ms-linear-gradient(top, #FDFAE9, #B3B0A4);
-                  background-image: -moz-linear-gradient(top, #FDFAE9, #B3B0A4);
-                  background-image: -o-linear-gradient(top, #FDFAE9, #B3B0A4);
-                  background-image: -webkit-linear-gradient(top, #FDFAE9, #B3B0A4)}
-ul.DESKTOP > li:hover { border-color: #FFFACD;
-                        background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
-                        background-image: -ms-linear-gradient(top, #EDE9D9, #BDBAAD);
-                        background-image: -moz-linear-gradient(top, #EDE9D9, #BDBAAD);
-                        background-image: -o-linear-gradient(top, #EDE9D9, #BDBAAD);
-                        background-image: -webkit-linear-gradient(top, #EDE9D9, #BDBAAD)}
-ul.DESKTOP > li > * { float: left; height: 48px; cursor: pointer}
-ul.DESKTOP > li > label { padding-left: 8px; line-height: 48px; color: inherit; font-weight: inherit}
-ul.DESKTOP > li > img { width: 48px; margin: 0px; background-color: white}
-ul.DESKTOP > li > i, ul.DESKTOP > li > span { width: 48px; font-size: 40px; padding: 4px; text-align: center; color: inherit}
+tr[data-value]:focus > td,
+tr[data-ret]:focus > td,
+table > tbody > tr[data-action]:focus > td,
+table > tbody > tr[data-ret]:focus > td{ background-image: none; background-color: #F0E68C; color: #000000;  cursor: pointer}
 
 ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
 ul.LIST > li { float: left; width: 10%; height: 32px; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px;
@@ -227,10 +205,8 @@ ul.LIST > li { float: left; width: 10%; height: 32px; background-color: #FFFFFF;
 ul.LIST > li > i { font-size: 24px}
 ul.LIST > li:focus { background-color: #FFFACD; font-weight: bold; color: #006600 }
 
-
 table, fieldset, div.TEXT, div.TOOLTIP, *.TOOLBAR, *.COOLBAR { margin-top: 16px; margin-bottom: 4px}
 table:first-child, fieldset:first-child, div.TEXT:first-child, div.TOOLTIP:first-child, *.TOOLBAR:first-child, *.COOLBAR:first-child { margin-top: 0px }
-
 
 input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: #FFFFFF}
 input[type='text'], input[type='password'], select { height: 24px; line-height: 22px}
@@ -241,7 +217,6 @@ input[type='file'] { width: 100%; border: 1px solid #CCCCCC; background-color: #
 input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
 
 textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
-
 
 dl { display: inline-flex; flex-wrap: wrap; background-color: white; padding: 4px}
 dt { margin: 0; width: 50%; text-align: left; padding: 4px }
@@ -645,53 +620,11 @@ div.MINIBAR > a { width: 24px;
 		  font-size: 16px; }
 
 
-/*////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-Dialog polyfill
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+@import "../polyfill/dialog-polyfill.less";
 
-dialog {position: absolute;
-	left: 0; right: 0;
-	width: -moz-fit-content;
-	width: -webkit-fit-content;
-	width: fit-content;
-	height: -moz-fit-content;
-	height: -webkit-fit-content;
-	height: fit-content;
-	margin: auto;
-	border: solid;
-	padding: 1em;
-	background: white;
-	color: black;
-	display: block;
-}
+@import "Toolbar.less";
+@import "PageControl.less";
 
-dialog:not([open]) { display: none; }
-
-dialog + .backdrop { top: 0;
-		     left: 0;
-		     right: 0;
-		     bottom: 0;
-		     position: fixed;
-		     background: rgba(0,0,0,0.1); }
-
-._dialog_overlay { top: 0;
-		   left: 0;
-		   right: 0;
-		   bottom: 0;
-		   position: fixed; }
-
-dialog.fixed { top: 50%;
-	       position: fixed;
-	       transform: translate(0, -50%); }
-
-dialog { padding: 0;
-	 border: 4px solid #767d90;
-	 background-color: @main; }
-
-@import "../div/Toolbar/Toolbar.less";
-@import "../div/PageControl/PageControl.less";
-
-@import "../ul/HMenu/HMenu.less";
-@import "../ul/DeskMenu/DeskMenu.less";
-@import "../ul/DeskPane/DeskPane.less";
-@import "../select/Editable/Editable.less";
+@import "HMenu.less";
+@import "DeskMenu.less";
+@import "DeskPane.less";

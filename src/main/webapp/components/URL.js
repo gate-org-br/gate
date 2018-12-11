@@ -10,8 +10,7 @@ function URL(value)
 			this.value += "&";
 		this.value += name + "=" + value;
 		return this;
-	}
-	;
+	};
 
 	this.setModule = function (module)
 	{
@@ -120,6 +119,17 @@ function URL(value)
 		return this;
 	};
 
+	this.go = function ()
+	{
+		window.location.href = this.toString();
+		return this;
+	};
+
+	this.toString = function ()
+	{
+		return this.value;
+	};
+
 	this.populate = function (css)
 	{
 		this.get(function (options)
@@ -132,13 +142,6 @@ function URL(value)
 					.forEach(element => populator.populate(element));
 			}
 		});
-		return this;
-	};
-
-
-	this.go = function ()
-	{
-		window.location.href = this.toString();
 		return this;
 	};
 
@@ -166,7 +169,7 @@ function URL(value)
 		if (parameters)
 			for (var i = 0; i < parameters.length; i++)
 			{
-				var parameter = select(parameters[i].substring(2, parameters[i].length - 1));
+				var parameter = document.getElementById(parameters[i].substring(2, parameters[i].length - 1));
 				if (!parameter || !parameter.value)
 					return false;
 				result = result.replace(parameters[i], encodeURIComponent(parameter.value));
@@ -174,10 +177,5 @@ function URL(value)
 
 		this.value = result;
 		return true;
-	};
-
-	this.toString = function ()
-	{
-		return this.value;
 	};
 }

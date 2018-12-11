@@ -10,9 +10,10 @@ module.exports = function (grunt) {
 			{
 				dist:
 					{
-						src: ["src/main/webapp/components/polyfill/dialog-polyfill.js",
-							"src/main/webapp/components/polyfill/fetch-polyfill.js",
-							"src/main/webapp/components/Gate/Gate.js",
+						src: ["src/main/webapp/polyfill/array-polyfill.js",
+							"src/main/webapp/polyfill/dialog-polyfill.js",
+							"src/main/webapp/polyfill/fetch-polyfill.js",
+							"src/main/webapp/components/Gate.js",
 							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
@@ -35,13 +36,12 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/DateTimeIntervalDialog.js",
 							"src/main/webapp/components/Chart.js",
 							"src/main/webapp/components/ChartDialog.js",
-							"src/main/webapp/components/div/PageControl/PageControl.js",
+							"src/main/webapp/components/PageControl.js",
 							"src/main/webapp/components/LinkControl.js",
 							"src/main/webapp/components/Dialog.js",
 							"src/main/webapp/components/Popup.js",
 							"src/main/webapp/components/TreeView.js",
 							"src/main/webapp/components/DateFormat.js",
-							"src/main/webapp/components/Desktop.js",
 							"src/main/webapp/components/Switch.js",
 							"src/main/webapp/components/Clock.js",
 							"src/main/webapp/components/RichTextarea.js",
@@ -52,8 +52,8 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
-							"src/main/webapp/components/ul/DeskMenu/DeskMenu.js",
-							"src/main/webapp/components/ul/DeskPane/DeskPane.js"],
+							"src/main/webapp/components/DeskMenu.js",
+							"src/main/webapp/components/DeskPane.js"],
 						dest: 'src/main/webapp/Gate.js'
 					}
 			}

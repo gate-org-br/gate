@@ -82,7 +82,7 @@ Block.hide = function ()
 window.addEventListener("load", function ()
 {
 	Block.hide();
-	search("form[data-block]").forEach(function (e)
+	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (e)
 	{
 		e.addEventListener("submit", function ()
 		{
