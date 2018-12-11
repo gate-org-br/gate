@@ -4,6 +4,7 @@ if (!document.querySelectorAll)
 function resolve(string)
 {
 	var result = string;
+
 	var parameters = string.match(/([?][{][^}]*[}])/g);
 	if (parameters)
 		for (var i = 0; i < parameters.length; i++)
@@ -30,13 +31,13 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("select")).forEach(function (element)
 	{
-		element.onclick = function (e)
+		element.onclick = function (event)
 		{
-			e = e ? e : window.event;
-			if (e.stopPropagation)
-				e.stopPropagation();
+			event = event ? event : window.event;
+			if (event.stopPropagation)
+				event.stopPropagation();
 			else
-				e.cancelBubble = true;
+				event.cancelBubble = true;
 		};
 	});
 
@@ -47,15 +48,5 @@ window.addEventListener("load", function ()
 			var selector = 'input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]';
 			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
 		};
-	});
-
-	Array.from(document.querySelectorAll("td > label > span, td > label > i")).forEach(function (e)
-	{
-		e.parentNode.style.position = 'relative';
-	});
-
-	Array.from(document.querySelectorAll("fieldset > label > span > span + input, fieldset > label > span > span + input")).forEach(function (e)
-	{
-		e.style.paddingRight = "20px";
 	});
 });

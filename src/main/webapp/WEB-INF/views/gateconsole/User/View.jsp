@@ -80,7 +80,7 @@
 			</label>
 		</fieldset>
 
-		<div class='COOLBAR'>
+		<div class='Coolbar'>
 			<g:link method="post" module='#' screen='#' tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
@@ -97,7 +97,6 @@
 			<g:link method="post" module='#' screen='#' action="Report" arguments="type=2" tabindex='2'>
 				CSV<g:icon type="gate.report.doc.CSV"/>
 			</g:link>
-
 		</div>
 
 		<g:choose>
