@@ -1,6 +1,8 @@
 @main: #CDCAB9;
 @comp: #b9bccd;
 
+@hovered: #F0E68C;
+
 @main_tinted05: tint(@main, 05%);
 @main_tinted10: tint(@main, 10%);
 @main_tinted15: tint(@main, 15%);
@@ -199,7 +201,7 @@ tr[data-action]:focus > td,
 tr[data-value]:focus > td,
 tr[data-ret]:focus > td,
 table > tbody > tr[data-action]:focus > td,
-table > tbody > tr[data-ret]:focus > td{ background-image: none; background-color: #F0E68C; color: #000000;  cursor: pointer}
+table > tbody > tr[data-ret]:focus > td{ background-image: none; background-color: @hovered; color: #000000;  cursor: pointer}
 
 ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
 ul.LIST > li { float: left; width: 10%; height: 32px; background-color: #FFFFFF; padding: 3px; margin: 0.5%; font-size: 24px;
