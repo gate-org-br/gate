@@ -1,0 +1,33 @@
+div.Slider
+{
+	display:flex;
+	outline: none;
+	overflow:auto;
+	font-size: 20px;
+	align-items: stretch;
+	flex-direction: column;
+	align-content: stretch;
+	justify-content: center;
+	border: 2px solid #CCCCCC;
+
+	background-image: linear-gradient(to bottom, #AAAAAA 0%, #FFFFFF 50%, #AAAAAA 100%);
+
+	> * { flex-grow: 1;
+	      display: flex;
+	      color: #666666;
+	      flex-shrink: 0;
+	      font-size: inherit;
+	      align-items:  center;
+	      justify-content: center;
+	      background-color: transparent;}
+
+	> label:nth-of-type(3) { color: black;
+				 font-weight: bold; }
+}
+
+div.Slider:hover
+{
+	border-color: #F0E68C;
+
+	> a {color: black;}
+}

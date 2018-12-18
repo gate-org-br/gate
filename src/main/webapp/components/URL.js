@@ -60,11 +60,11 @@ function URL(value)
 				}
 			};
 
-			request.open('GET', this.value, true);
+			request.open('GET', resolve(this.value), true);
 			request.send(null);
 		} else
 		{
-			request.open('GET', this.value, false);
+			request.open('GET', resolve(this.value), false);
 			request.send(null);
 			if (request.status === 200)
 				return request.responseText;
@@ -104,11 +104,11 @@ function URL(value)
 				}
 			};
 
-			request.open("POST", this.value, true);
+			request.open("POST", resolve(this.value), true);
 			request.send(data);
 		} else
 		{
-			request.open("POST", this.value, false);
+			request.open("POST", resolve(this.value), false);
 			request.send(data);
 			if (request.status === 200)
 				return request.responseText;
@@ -121,7 +121,7 @@ function URL(value)
 
 	this.go = function ()
 	{
-		window.location.href = this.toString();
+		window.location.href = resolve(this.value);
 		return this;
 	};
 
@@ -143,39 +143,5 @@ function URL(value)
 			}
 		});
 		return this;
-	};
-
-	this.check = function ()
-	{
-		return !this.value.match(/([?][{][^}]*[}])/g)
-			&& !this.value.match(/([@][{][^}]*[}])/g);
-	};
-
-	this.resolve = function ()
-	{
-		var result = this.value;
-		var parameters = this.value.match(/([?][{][^}]*[}])/g);
-		if (parameters)
-			for (var i = 0; i < parameters.length; i++)
-			{
-				var parameter = decodeURIComponent
-					(prompt(decodeURIComponent(parameters[i].substring(2, parameters[i].length - 1))));
-				if (!parameter)
-					return false;
-				result = result.replace(parameters[i], encodeURIComponent(parameter));
-			}
-
-		var parameters = this.value.match(/([@][{][^}]*[}])/g);
-		if (parameters)
-			for (var i = 0; i < parameters.length; i++)
-			{
-				var parameter = document.getElementById(parameters[i].substring(2, parameters[i].length - 1));
-				if (!parameter || !parameter.value)
-					return false;
-				result = result.replace(parameters[i], encodeURIComponent(parameter.value));
-			}
-
-		this.value = result;
-		return true;
 	};
 }

@@ -10,6 +10,9 @@ function Modal()
 	{
 		body.style.overflow = "hidden";
 		body.appendChild(this);
+
+		modal.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+
 		return this;
 	};
 
@@ -27,6 +30,8 @@ function Modal()
 			if (this.onHide)
 				eval(this.onHide);
 			this.parentNode.removeChild(this);
+
+			modal.dispatchEvent(new CustomEvent('hide', {detail: {modal: this}}));
 		}
 		return this;
 	};
