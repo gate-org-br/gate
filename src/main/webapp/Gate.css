@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'gate';
-  src: local(gate), url('imge/font/gate.eot?-uajdou&version=4_40_0');
-  src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=4_40_0') format('embedded-opentype'), url('imge/font/gate.woff?-uajdou&version=4_40_0') format('woff'), url('imge/font/gate.ttf?-uajdou&version=4_40_0') format('truetype'), url('imge/font/gate.svg?-uajdou#icomoon&version=4_40_0') format('svg');
+  src: local(gate), url('imge/font/gate.eot?-uajdou&version=5_0_0');
+  src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=5_0_0') format('embedded-opentype'), url('imge/font/gate.woff?-uajdou&version=5_0_0') format('woff'), url('imge/font/gate.ttf?-uajdou&version=5_0_0') format('truetype'), url('imge/font/gate.svg?-uajdou#icomoon&version=5_0_0') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -850,6 +850,395 @@ dialog {
   border: 4px solid #767d90;
   background-color: #CDCAB9;
 }
+div.Slider {
+  display: flex;
+  outline: none;
+  overflow: auto;
+  font-size: 20px;
+  align-items: stretch;
+  flex-direction: column;
+  align-content: stretch;
+  justify-content: center;
+  border: 2px solid #CCCCCC;
+  background-image: linear-gradient(to bottom, #AAAAAA 0%, #FFFFFF 50%, #AAAAAA 100%);
+}
+div.Slider > * {
+  flex-grow: 1;
+  display: flex;
+  color: #666666;
+  flex-shrink: 0;
+  font-size: inherit;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+}
+div.Slider > label:nth-of-type(3) {
+  color: black;
+  font-weight: bold;
+}
+div.Slider:hover {
+  border-color: #F0E68C;
+}
+div.Slider:hover > a {
+  color: black;
+}
+div.Calendar {
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  justify-content: center;
+  border: 2px solid #CCCCCC;
+  background-color: #CCCCCC;
+}
+div.Calendar > div {
+  flex-grow: 1;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: stretch;
+  justify-content: space-around;
+}
+div.Calendar > div > label {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 14%;
+  font-size: 16px;
+  align-items: center;
+  justify-content: center;
+  background-color: #999999;
+}
+div.Calendar > div > a {
+  flex-grow: 1;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 16px;
+  flex-basis: 14%;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+div.Calendar > div > a.current {
+  font-weight: bold;
+  text-decoration: underline;
+}
+div.Calendar > div > a.disabled {
+  color: #AAAAAA;
+}
+div.Calendar > div > a.selected {
+  background-color: #DDDDDD;
+}
+div.Calendar > div > a:hover {
+  background-color: #F0E68C;
+}
+div.Calendar > div > div:last-child {
+  display: flex;
+  font-size: 16px;
+  flex-basis: 100%;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-weight: bolder;
+  align-items: center;
+  align-content: space-around;
+  justify-content: space-around;
+  background-image: linear-gradient(to bottom, #AAAAAA 0%, #DDDDDD 100%);
+}
+div.Calendar > div > div:last-child > a {
+  display: flex;
+  flex-basis: 32px;
+  font-size: inherit;
+  align-items: center;
+  font-weight: bolder;
+  justify-content: center;
+}
+div.Calendar > div > div:last-child > label {
+  flex-basis: 500px;
+  flex-grow: 1;
+  font-size: inherit;
+  font-weight: bolder;
+}
+div.Calendar:hover {
+  border-color: #F0E68C;
+}
+div.DateSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.DateSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.TimeSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.TimeSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.MonthSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.MonthSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.DateTimeSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.DateTimeSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.DateIntervalSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.DateIntervalSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.TimeIntervalSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.TimeIntervalSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.MonthIntervalSelector {
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.MonthIntervalSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.DateTimeIntervalSelector {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  border: 1px solid #CCCCCC;
+}
+div.DateTimeIntervalSelector > div {
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: 50%;
+}
+div.Picker {
+  display: flex;
+  border-radius: 5px;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #CDCAB9;
+  background-image: url(data:image/png;base64,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);
+  border: 4px solid #787a85;
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+div.Picker > div:nth-child(1) {
+  display: flex;
+  color: #FFFFFF;
+  font-size: 16px;
+  flex-basis: 40px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  background-color: #787a85;
+}
+div.Picker > div:nth-child(2) {
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  background-color: #CDCAB9;
+  background-image: url(data:image/png;base64,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);
+}
+div.Picker > div:nth-child(3) {
+  display: flex;
+  color: #FFFFFF;
+  font-size: 16px;
+  flex-basis: 40px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  background-color: #CDCAB9;
+}
+div.Picker > div:nth-child(3) > a {
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-basis: 50%;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #CCCCCC;
+  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
+}
+div.Picker > div:nth-child(3) > a:first-child {
+  color: #660000;
+}
+div.Picker > div:nth-child(3) > a:last-child {
+  color: #006600;
+}
+div.Picker > div:nth-child(3) > a:hover {
+  font-weight: bold;
+  border-color: #F0E68C;
+  background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
+}
+div.DatePicker {
+  width: 600px;
+  height: 400px;
+}
+div.DatePicker > div:nth-child(3) {
+  display: none;
+}
+input.Date {
+  width: calc(100% - 32px);
+}
+input.Date + a {
+  width: 32px;
+}
+div.TimePicker {
+  width: 600px;
+  height: 400px;
+}
+div.TimePicker > div > div:first-child {
+  flex-grow: 1;
+}
+input.Time {
+  width: calc(100% - 32px);
+}
+input.Time + a {
+  width: 32px;
+}
+div.MonthPicker {
+  width: 600px;
+  height: 400px;
+}
+div.MonthPicker > div > div:first-child {
+  flex-grow: 1;
+}
+input.Month {
+  width: calc(100% - 32px);
+}
+input.Month + a {
+  width: 32px;
+}
+div.DateTimePicker {
+  width: 600px;
+  height: 400px;
+}
+div.DateTimePicker > div > div:first-child {
+  flex-grow: 1;
+}
+input.DateTime {
+  width: calc(100% - 32px);
+}
+input.DateTime + a {
+  width: 32px;
+}
+div.DateIntervalPicker {
+  width: 600px;
+  height: 400px;
+}
+div.DateIntervalPicker > div > div:first-child {
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+input.DateInterval {
+  width: calc(100% - 32px);
+}
+input.DateInterval + a {
+  width: 32px;
+}
+div.TimeIntervalPicker {
+  width: 600px;
+  height: 400px;
+}
+div.TimeIntervalPicker > div > div:first-child {
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+div.TimeIntervalPicker > div > div:first-child > div {
+  flex-grow: 1;
+}
+input.TimeInterval {
+  width: calc(100% - 32px);
+}
+input.TimeInterval + a {
+  width: 32px;
+}
+div.MonthIntervalPicker {
+  width: 600px;
+  height: 400px;
+}
+div.MonthIntervalPicker > div > div:first-child {
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+div.MonthIntervalPicker > div > div:first-child > div {
+  flex-grow: 1;
+}
+input.MonthInterval {
+  width: calc(100% - 32px);
+}
+input.MonthInterval + a {
+  width: 32px;
+}
+div.DateTimeIntervalPicker {
+  width: 600px;
+  height: 600px;
+}
+div.DateTimeIntervalPicker > div > div:first-child {
+  flex-grow: 1;
+}
+input.DateTimeInterval {
+  width: calc(100% - 32px);
+}
+input.DateTimeInterval + a {
+  width: 32px;
+}
 *.COOLBAR:first-child,
 *.Coolbar:first-child {
   margin-top: 0px;
@@ -1330,63 +1719,4 @@ ul.DeskPane > li.Reset > a {
   font-size: 20px;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
-}
-table.DateDialog {
-  table-layout: fixed;
-}
-table.DateDialog colgroup > col:nth-child(1) {
-  width: 14%;
-}
-table.DateDialog colgroup > col:nth-child(2) {
-  width: 13%;
-}
-table.DateDialog colgroup > col:nth-child(3) {
-  width: 13%;
-}
-table.DateDialog colgroup > col:nth-child(4) {
-  width: 13%;
-}
-table.DateDialog colgroup > col:nth-child(5) {
-  width: 13%;
-}
-table.DateDialog colgroup > col:nth-child(6) {
-  width: 13%;
-}
-table.DateDialog colgroup > col:nth-child(7) {
-  width: 14%;
-}
-table.DateDialog > thead > tr > th {
-  text-align: center;
-}
-table.DateDialog > tbody > tr > td {
-  cursor: pointer;
-  text-align: center;
-}
-table.DateDialog > tbody > tr > td.disabled {
-  color: #CCCCCC;
-}
-table.DateDialog > tbody > tr > td.selected {
-  background-color: #F0E68C;
-}
-table.DateDialog > tbody > tr > td:hover {
-  font-weight: bold;
-  background-color: #CCCCCC;
-}
-table.DateDialog > tfoot > tr > td > span {
-  cursor: pointer;
-}
-table.DateDialog > tfoot > tr > td > span:hover {
-  font-weight: bold;
-}
-table.DateDialog > tfoot > tr > td > span:first-child {
-  float: left;
-}
-table.DateDialog > tfoot > tr > td > span:last-child {
-  float: right;
-}
-a.Date {
-  width: 32px;
-}
-input.Date {
-  width: calc(100% - 32px);
 }

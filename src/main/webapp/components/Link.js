@@ -1,3 +1,5 @@
+/* global Message, Block */
+
 function Link(link)
 {
 	link.addEventListener("click", function (event)
@@ -14,7 +16,18 @@ function Link(link)
 
 	link.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-confirm") && !confirm(this.getAttribute("data-confirm")))
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
+	});
+
+	link.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-confirm")
+			&& !confirm(this.getAttribute("data-confirm")))
 		{
 			event.preventDefault();
 			event.stopPropagation();
@@ -28,20 +41,11 @@ function Link(link)
 			alert(this.getAttribute("data-alert"));
 	});
 
-
 	link.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	link.addEventListener("click", function (event)
-	{
-		if (this.href.match(/([?][{][^}]*[}])/g) || this.href.match(/([@][{][^}]*[}])/g))
+		if (this.href.match(/([@][{][^}]*[}])/g)
+			|| this.href.match(/([!][{][^}]*[}])/g)
+			|| this.href.match(/([?][{][^}]*[}])/g))
 		{
 			event.preventDefault();
 			event.stopPropagation();
@@ -270,8 +274,6 @@ function Link(link)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("a")).forEach(function (a)
-	{
-		new Link(a);
-	});
+	Array.from(document.querySelectorAll("a"))
+		.forEach(a => new Link(a));
 });

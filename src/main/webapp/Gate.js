@@ -1377,6 +1377,23 @@ function resolve(string)
 {
 	var result = string;
 
+	var parameters = string.match(/([@][{][^}]*[}])/g);
+	if (parameters)
+		parameters.forEach(function (e)
+		{
+			var parameter = document.getElementById(e.substring(2, e.length - 1));
+			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
+		});
+
+	var parameters = string.match(/([!][{][^}]*[}])/g);
+	if (parameters)
+		for (var i = 0; i < parameters.length; i++)
+		{
+			var parameter = confirm(decodeURIComponent(parameters[i]
+				.substring(2, parameters[i].length - 1)));
+			result = result.replace(parameters[i], parameter ? "true" : "false");
+		}
+
 	var parameters = string.match(/([?][{][^}]*[}])/g);
 	if (parameters)
 		for (var i = 0; i < parameters.length; i++)
@@ -1387,14 +1404,6 @@ function resolve(string)
 				return null;
 			result = result.replace(parameters[i], encodeURIComponent(parameter));
 		}
-
-	var parameters = string.match(/([@][{][^}]*[}])/g);
-	if (parameters)
-		parameters.forEach(function (e)
-		{
-			var parameter = document.getElementById(e.substring(2, e.length - 1));
-			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
-		});
 
 	return result;
 }
@@ -1658,11 +1667,11 @@ function URL(value)
 				}
 			};
 
-			request.open('GET', this.value, true);
+			request.open('GET', resolve(this.value), true);
 			request.send(null);
 		} else
 		{
-			request.open('GET', this.value, false);
+			request.open('GET', resolve(this.value), false);
 			request.send(null);
 			if (request.status === 200)
 				return request.responseText;
@@ -1702,11 +1711,11 @@ function URL(value)
 				}
 			};
 
-			request.open("POST", this.value, true);
+			request.open("POST", resolve(this.value), true);
 			request.send(data);
 		} else
 		{
-			request.open("POST", this.value, false);
+			request.open("POST", resolve(this.value), false);
 			request.send(data);
 			if (request.status === 200)
 				return request.responseText;
@@ -1719,7 +1728,7 @@ function URL(value)
 
 	this.go = function ()
 	{
-		window.location.href = this.toString();
+		window.location.href = resolve(this.value);
 		return this;
 	};
 
@@ -1742,128 +1751,9 @@ function URL(value)
 		});
 		return this;
 	};
-
-	this.check = function ()
-	{
-		return !this.value.match(/([?][{][^}]*[}])/g)
-			&& !this.value.match(/([@][{][^}]*[}])/g);
-	};
-
-	this.resolve = function ()
-	{
-		var result = this.value;
-		var parameters = this.value.match(/([?][{][^}]*[}])/g);
-		if (parameters)
-			for (var i = 0; i < parameters.length; i++)
-			{
-				var parameter = decodeURIComponent
-					(prompt(decodeURIComponent(parameters[i].substring(2, parameters[i].length - 1))));
-				if (!parameter)
-					return false;
-				result = result.replace(parameters[i], encodeURIComponent(parameter));
-			}
-
-		var parameters = this.value.match(/([@][{][^}]*[}])/g);
-		if (parameters)
-			for (var i = 0; i < parameters.length; i++)
-			{
-				var parameter = document.getElementById(parameters[i].substring(2, parameters[i].length - 1));
-				if (!parameter || !parameter.value)
-					return false;
-				result = result.replace(parameters[i], encodeURIComponent(parameter.value));
-			}
-
-		this.value = result;
-		return true;
-	};
 }
-function Calendar()
-{
-}
+/* global Message, Block */
 
-Object.defineProperty(Calendar, "getDatesFromMonth", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (month)
-	{
-		var result = new Array();
-		var ini = Calendar.getFirstDayOfWeek(Calendar.getFirstDayOfMonth(month));
-		var end = Calendar.getLastDayOfWeek(Calendar.getLastDayOfMonth(month));
-		for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
-			result.push(new Date(date));
-		while (result.length < 42)
-		{
-			result.push(new Date(date));
-			date.setDate(date.getDate() + 1);
-		}
-		return result;
-	}
-});
-
-Object.defineProperty(Calendar, "getFirstDayOfMonth", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (date)
-	{
-		date = new Date(date);
-		date.setDate(1);
-		return date;
-	}
-});
-
-Object.defineProperty(Calendar, "getLastDayOfMonth", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (date)
-	{
-		date = new Date(date);
-		date.setMonth(date.getMonth() + 1);
-		date.setDate(0);
-		return date;
-	}
-});
-
-Object.defineProperty(Calendar, "getFirstDayOfWeek", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (date)
-	{
-		date = new Date(date);
-		while (date.getDay() !== 0)
-			date.setDate(date.getDate() - 1);
-		return date;
-	}
-});
-
-Object.defineProperty(Calendar, "getLastDayOfWeek", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (date)
-	{
-		date = new Date(date);
-		while (date.getDay() !== 6)
-			date.setDate(date.getDate() + 1);
-		return date;
-	}
-});
-
-Object.defineProperty(Calendar, "isToday", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: function (date)
-	{
-		let now = new Date();
-		return date.getDate() === now.getDate()
-			&& date.getMonth() === now.getMonth()
-			&& date.getYear() === now.getYear();
-	}
-});
 function Link(link)
 {
 	link.addEventListener("click", function (event)
@@ -1880,7 +1770,18 @@ function Link(link)
 
 	link.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-confirm") && !confirm(this.getAttribute("data-confirm")))
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}
+	});
+
+	link.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-confirm")
+			&& !confirm(this.getAttribute("data-confirm")))
 		{
 			event.preventDefault();
 			event.stopPropagation();
@@ -1894,20 +1795,11 @@ function Link(link)
 			alert(this.getAttribute("data-alert"));
 	});
 
-
 	link.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	link.addEventListener("click", function (event)
-	{
-		if (this.href.match(/([?][{][^}]*[}])/g) || this.href.match(/([@][{][^}]*[}])/g))
+		if (this.href.match(/([@][{][^}]*[}])/g)
+			|| this.href.match(/([!][{][^}]*[}])/g)
+			|| this.href.match(/([?][{][^}]*[}])/g))
 		{
 			event.preventDefault();
 			event.stopPropagation();
@@ -2136,11 +2028,11 @@ function Link(link)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("a")).forEach(function (a)
-	{
-		new Link(a);
-	});
+	Array.from(document.querySelectorAll("a"))
+		.forEach(a => new Link(a));
 });
+
+/* global Message, Block */
 
 function Button(button)
 {
@@ -2150,6 +2042,16 @@ function Button(button)
 		{
 			Message.error(this.getAttribute("data-cancel"), 2000);
 			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+	});
+
+	button.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
 			event.stopImmediatePropagation();
 		}
 	});
@@ -2173,19 +2075,10 @@ function Button(button)
 
 	button.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
 		if (this.getAttribute("formaction") &&
-			(this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)))
+			(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+				|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+				|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
 		{
 			var resolved = resolve(this.getAttribute("formaction"));
 
@@ -2409,10 +2302,8 @@ function Button(button)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("button")).forEach(function (button)
-	{
-		new Button(button);
-	});
+	Array.from(document.querySelectorAll("button"))
+		.forEach(button => new Button(button));
 });
 
 function ActionHandler(element)
@@ -2868,6 +2759,9 @@ function Modal()
 	{
 		body.style.overflow = "hidden";
 		body.appendChild(this);
+
+		modal.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+
 		return this;
 	};
 
@@ -2885,6 +2779,8 @@ function Modal()
 			if (this.onHide)
 				eval(this.onHide);
 			this.parentNode.removeChild(this);
+
+			modal.dispatchEvent(new CustomEvent('hide', {detail: {modal: this}}));
 		}
 		return this;
 	};
@@ -2983,98 +2879,601 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-
-/* global DateFormat, Calendar */
-
-function DateDialog(callback, month)
+function Slider(element, value, next, prev, format)
 {
-	month = month ? month : new Date();
+	element.classList.add("Slider");
+	element.setAttribute('tabindex', 0);
+	element.addEventListener("mouseover", () => element.focus());
+	element.addEventListener("mouseoust", () => element.blur());
 
-	var dialog = new Modal(this);
-	dialog.addEventListener("click", function (event)
+	if (!format)
+		format = e => e;
+
+	element.addEventListener((/Firefox/i.test(navigator.userAgent))
+		? "DOMMouseScroll" : "mousewheel",
+		function (event)
+		{
+			event.preventDefault();
+
+			if (event.detail)
+				if (event.detail > 0)
+					gonext.click();
+				else
+					goprev.click();
+			else if (event.wheelDelta)
+				if (event.wheelDelta > 0)
+					gonext.click();
+				else
+					goprev.click();
+		});
+
+
+	element.addEventListener("keydown", function (event)
 	{
-		if (event.target === dialog || event.srcElement === dialog)
-			dialog.hide();
+		switch (event.keyCode)
+		{
+			case 38:
+				goprev.click();
+				break;
+			case 40:
+				gonext.click();
+				break;
+		}
+		event.preventDefault();
 	});
 
-	var calendar = dialog.appendChild(document.createElement("table"));
-	calendar.className = "DateDialog";
+	var goprev = element.appendChild(document.createElement("a"));
+	goprev.href = "#";
+	goprev.appendChild(document.createElement("i")).innerHTML = "&#X2278;";
+	goprev.addEventListener("click", () => update(prev(value)));
 
-	var caption = calendar.createCaption();
-	caption.appendChild(document.createTextNode(DateFormat.MONTH.format(month)));
+	var prev2 = element.appendChild(document.createElement("label"));
+	var prev1 = element.appendChild(document.createElement("label"));
+	var main = element.appendChild(document.createElement("label"));
+	var next1 = element.appendChild(document.createElement("label"));
+	var next2 = element.appendChild(document.createElement("label"));
 
-	var columns = calendar.appendChild(document.createElement("colgroup"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
-	columns.appendChild(document.createElement("col"));
+	var gonext = element.appendChild(document.createElement("a"));
+	gonext.href = "#";
+	gonext.appendChild(document.createElement("i")).innerHTML = "&#X2276;";
+	gonext.addEventListener("click", () => update(next(value)));
 
-	var daysOfWeek = calendar.appendChild(document.createElement("thead"))
-		.appendChild(document.createElement("tr"));
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Dom";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Seg";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Ter";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Qua";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Qui";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Sex";
-	daysOfWeek.appendChild(document.createElement("th")).innerHTML = "Sab";
+	this.value = () => value;
 
-	var footer = calendar.appendChild(document.createElement("tfoot"))
-		.appendChild(document.createElement("tr"))
-		.appendChild(document.createElement("td"));
-	footer.setAttribute("colspan", 7);
-
-	var prev = footer.appendChild(document.createElement("span"));
-	prev.addEventListener("click", () => setMonth(prev.date));
-
-	var next = footer.appendChild(document.createElement("span"));
-	next.addEventListener("click", () => setMonth(next.date));
-
-	var body = calendar.appendChild(document.createElement("tbody"));
-
-	function setMonth(month)
+	var update = function (val)
 	{
-		body.innerHTML = "";
-		var calendar = Calendar.getDatesFromMonth(month);
-		caption.innerHTML = DateFormat.MONTH.format(month);
-
-		prev.date = new Date(month);
-		prev.date.setMonth(prev.date.getMonth() - 1);
-		prev.innerHTML = "&nbsp;<&nbsp;" + DateFormat.MONTH.format(prev.date);
-
-		next.date = new Date(month);
-		next.date.setMonth(next.date.getMonth() + 1);
-		next.innerHTML = DateFormat.MONTH.format(next.date) + "&nbsp;>&nbsp;";
-
-		for (var i = 0; i < calendar.length; i += 7)
+		if (val !== null)
 		{
-			var week = body.appendChild(document.createElement("tr"));
-			for (var j = 0; j < 7; j++)
-				week.appendChild(createDay(calendar[i + j]));
+			if (!element.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {slider: this, value: val}})))
+				return false;
+
+			value = val;
+			main.innerHTML = format(value);
+			prev1.innerHTML = '-';
+			prev2.innerHTML = '-';
+			next1.innerHTML = '-';
+			next2.innerHTML = '-';
+
+			var data = prev(value);
+			if (data !== null)
+			{
+				prev1.innerHTML = format(data);
+				var data = prev(data);
+				if (data !== null)
+					prev2.innerHTML = format(data);
+			}
+
+			var data = next(value);
+			if (data !== null)
+			{
+				next1.innerHTML = format(data);
+				var data = next(data);
+				if (data !== null)
+					next2.innerHTML = format(data);
+			}
+
+			element.dispatchEvent(new CustomEvent('update', {detail: {slider: this}}));
+		}
+	};
+
+	this.element = () => element;
+	update(value);
+}
+/* global DateFormat */
+
+var calendars = {};
+function Calendar(element, init)
+{
+	var selection = [];
+
+	var max = undefined;
+	if (init && init.max)
+		max = init.max;
+
+	var month = new Date();
+	if (init && init.month)
+		month = init.month;
+	month.setHours(0, 0, 0, 0);
+
+	element.className = "Calendar";
+	this.element = () => element;
+
+	var update = () =>
+	{
+		while (element.firstChild)
+			element.removeChild(element.firstChild);
+
+		var body = element.appendChild(document.createElement("div"));
+		["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
+			.forEach(e => body.appendChild(document.createElement("label"))
+					.appendChild(document.createTextNode(e)));
+
+		var dates = [];
+		var ini = new Date(month);
+		ini.setDate(1);
+		while (ini.getDay() !== 0)
+			ini.setDate(ini.getDate() - 1);
+		var end = new Date(month);
+		end.setMonth(end.getMonth() + 1);
+		end.setDate(0);
+		while (end.getDay() !== 6)
+			end.setDate(end.getDate() + 1);
+		for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
+			dates.push(new Date(date));
+		while (dates.length < 42)
+		{
+			dates.push(new Date(date));
+			date.setDate(date.getDate() + 1);
 		}
 
-		function createDay(value)
+		var now = new Date();
+		now.setHours(0, 0, 0, 0);
+		dates.forEach(date =>
 		{
-			let element = document.createElement("td");
-			element.title = DateFormat.DATE.format(value);
-			element.appendChild(document.createTextNode(value.getDate()));
-			if (value.getMonth() !== month.getMonth())
-				element.className = "disabled";
+			var link = body.appendChild(createLink(date.getDate(), () => this.action(date)));
+			if (date.getTime() === now.getTime())
+				link.classList.add("current");
+			if (date.getMonth() !== month.getMonth())
+				link.classList.add("disabled");
+			if (selection.some(e => e.getTime() === date.getTime()))
+				link.classList.add("selected");
+		});
 
-			if (Calendar.isToday(value))
-				element.className = "selected";
+		var head = body.appendChild(document.createElement("div"));
+		head.appendChild(createLink("<<", prevYear));
+		head.appendChild(createLink("<", prevMonth));
+		head.appendChild(document.createElement("label")).appendChild(document.createTextNode(DateFormat.MONTH.format(month)));
+		head.appendChild(createLink(">", nextMonth));
+		head.appendChild(createLink(">>", nextYear));
 
-			element.addEventListener("click", () => callback(value));
-			element.addEventListener("click", () => dialog.hide());
-			return element;
+		function createLink(text, callback)
+		{
+			var link = document.createElement("a");
+			link.setAttribute("href", "#");
+			link.appendChild(document.createTextNode(text));
+			link.addEventListener("click", callback);
+			return link;
 		}
-	}
+	};
 
-	setMonth(month);
-	dialog.show();
+	var prevYear = function ()
+	{
+		month.setFullYear(month.getFullYear() - 1);
+		update();
+	};
+
+	var prevMonth = function ()
+	{
+		month.setMonth(month.getMonth() - 1);
+		update();
+	};
+
+	var nextMonth = function ()
+	{
+		month.setMonth(month.getMonth() + 1);
+		update();
+	};
+
+
+	var nextYear = function ()
+	{
+		month.setFullYear(month.getFullYear() + 1);
+		update();
+	};
+
+
+	element.addEventListener((/Firefox/i.test(navigator.userAgent))
+		? "DOMMouseScroll" : "mousewheel",
+		function (event)
+		{
+			event.preventDefault();
+
+			if (event.ctrlKey)
+			{
+				if (event.detail)
+					if (event.detail > 0)
+						nextYear();
+					else
+						prevYear();
+				else if (event.wheelDelta)
+					if (event.wheelDelta > 0)
+						nextYear();
+					else
+						prevYear();
+			} else {
+				if (event.detail)
+					if (event.detail > 0)
+						nextMonth();
+					else
+						prevMonth();
+				else if (event.wheelDelta)
+					if (event.wheelDelta > 0)
+						nextMonth();
+					else
+						prevMonth();
+			}
+		});
+
+
+	this.clear = () =>
+	{
+		if (!element.dispatchEvent(new CustomEvent('clear', {cancelable: true, detail: {calendar: this}})))
+			return false;
+
+		selection = [];
+
+		update();
+
+		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+		return true;
+	};
+
+
+	this.select = (date) =>
+	{
+		date = new Date(date);
+		date.setHours(0, 0, 0, 0);
+
+		if (selection.some(e => e.getTime() === date.getTime()))
+			return false;
+
+		if (!element.dispatchEvent(new CustomEvent('select', {cancelable: true, detail: {calendar: this, date: date}})))
+			return false;
+
+		if (max !== undefined
+			&& max <= selection.length)
+			selection.shift();
+
+		selection.push(date);
+
+		update();
+
+		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+		return true;
+	};
+
+	this.remove = (date) =>
+	{
+		date = new Date(date);
+		date.setHours(0, 0, 0, 0);
+
+		if (!selection.some(e => e.getTime() === date.getTime()))
+			return false;
+
+		if (!element.dispatchEvent(new CustomEvent('remove', {cancelable: true, detail: {calendar: this, date: date}})))
+			return false;
+
+		selection = selection.filter(e => e.getTime() !== date.getTime());
+		update();
+
+		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+		return true;
+	};
+
+	this.action = (date) =>
+	{
+		date = new Date(date);
+		date.setHours(0, 0, 0, 0);
+
+		if (!element.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {calendar: this, date: date}})))
+			return false;
+
+		return selection.some(e => e.getTime() === date.getTime()) ?
+			this.remove(date) : this.select(date);
+	};
+
+	this.length = () => selection.length;
+	this.selection = () => Array.from(selection);
+	this.element = () => element;
+	update();
+}
+
+Object.defineProperty(Calendar, "of", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: (id, init) => calendars[id] = new Calendar(document.getElementById(id), init)
+});
+Object.defineProperty(Calendar, "get", {
+	writable: false,
+	enumerable: false,
+	configurable: false,
+	value: id => calendars[id]
+});
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.Calendar"))
+		.forEach(element => Calendar.of(element.id, new Date()));
+});
+/* global DateFormat */
+
+function DateSelector(element)
+{
+	element.classList.add("DateSelector");
+
+	var date = new Date();
+	var calendar = new Calendar(element.appendChild(document.createElement("div")), {month: new Date(), max: 1});
+	calendar.select(date);
+
+	calendar.element().addEventListener("remove", event => event.preventDefault());
+	calendar.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () => new Date(calendar.selection()[0]);
+
+	this.element = () => element;
+
+	this.toString = () => DateFormat.DATE.format(this.selection());
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.DateSelector"))
+		.forEach(element => new DateSelector(element));
+});
+function TimeSelector(element)
+{
+	var date = new Date();
+	element.classList.add("TimeSelector");
+	var h = new Slider(element.appendChild(document.createElement("div")), date.getHours(), e => e > 0 ? e - 1 : 23, e => e < 23 ? e + 1 : 0, e => "00".concat(String(e)).slice(-2));
+	var m = new Slider(element.appendChild(document.createElement("div")), date.getMinutes(), e => e > 0 ? e - 1 : 59, e => e < 59 ? e + 1 : 0, e => "00".concat(String(e)).slice(-2));
+
+	h.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	m.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		return {h: h.value(), m: m.value()};
+	};
+
+	this.element = () => element;
+
+	this.toString = () => "00".concat(String(h.value())).slice(-2) + ":" + "00".concat(String(m.value())).slice(-2);
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.TimeSelector"))
+		.forEach(e => new TimeSelector(e));
+});
+function MonthSelector(element)
+{
+	var date = new Date();
+	element.classList.add("MonthSelector");
+	var months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+	var m = new Slider(element.appendChild(document.createElement("div")), date.getMonth(), e => e > 0 ? e - 1 : 11, e => e < 11 ? e + 1 : 0, e => months[e]);
+	var y = new Slider(element.appendChild(document.createElement("div")), date.getFullYear(), e => e - 1, e => e + 1, e => "0000".concat(String(e)).slice(-4));
+
+	m.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	y.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		return {m: m.value() + 1, y: y.value()};
+	};
+
+	this.element = () => element;
+
+	this.toString = () => "00".concat(String(m.value() + 1)).slice(-2) + "/" + "0000".concat(String(y.value())).slice(-4);
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.MonthSelector"))
+		.forEach(e => new MonthSelector(e));
+});
+/* global DateFormat */
+
+function DateTimeSelector(element)
+{
+	element.classList.add("DateTimeSelector");
+
+	var dateSelector = new DateSelector(element.appendChild(document.createElement("div")));
+	var timeSelector = new TimeSelector(element.appendChild(document.createElement("div")));
+
+	dateSelector.element().addEventListener("remove", event => event.preventDefault());
+	dateSelector.element().addEventListener("select", event => event.detail.calendar.clear());
+	dateSelector.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	timeSelector.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		var date = dateSelector.selection();
+		if (!date)
+			return undefined;
+
+		var time = timeSelector.selection();
+		date.setHours(time.h, time.m, 0, 0);
+		return date;
+	};
+
+	this.element = () => element;
+
+	this.toString = () => DateFormat.DATETIME.format(this.selection());
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.DateTimeSelector"))
+		.forEach(element => new DateTimeSelector(element));
+});
+/* global DateFormat */
+
+function DateIntervalSelector(element)
+{
+	element.classList.add("DateIntervalSelector");
+
+	var date1 = new DateSelector(element.appendChild(document.createElement("div")));
+	var date2 = new DateSelector(element.appendChild(document.createElement("div")));
+
+	date1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	date2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.element = () => element;
+
+	this.selection = () =>
+	{
+		return {date1: date1.selection(), date2: date2.selection()};
+	};
+
+	this.toString = () => DateFormat.DATE.format(date1.selection()) + " - "
+			+ DateFormat.DATE.format(date2.selection());
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.DateIntervalSelector"))
+		.forEach(element => new DateIntervalSelector(element));
+});
+function TimeIntervalSelector(element)
+{
+	element.classList.add("TimeIntervalSelector");
+
+	var time1 = new TimeSelector(element.appendChild(document.createElement("div")));
+	var time2 = new TimeSelector(element.appendChild(document.createElement("div")));
+
+	time1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	time2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		return {time1: time1.selection(), time2: time2.selection()};
+	};
+
+	this.element = () => element;
+
+	this.toString = () => time1.toString() + " - " + time2.toString();
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.TimeIntervalSelector"))
+		.forEach(e => new TimeIntervalSelector(e));
+});
+function MonthIntervalSelector(element)
+{
+	element.classList.add("MonthIntervalSelector");
+
+	var time1 = new MonthSelector(element.appendChild(document.createElement("div")));
+	var time2 = new MonthSelector(element.appendChild(document.createElement("div")));
+
+	time1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	time2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		return {time1: time1.selection(), time2: time2.selection()};
+	};
+
+	this.element = () => element;
+
+	this.toString = () => time1.toString() + " - " + time2.toString();
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.MonthIntervalSelector"))
+		.forEach(e => new MonthIntervalSelector(e));
+});
+function DateTimeIntervalSelector(element)
+{
+	element.classList.add("DateTimeIntervalSelector");
+
+	var dateTime1 = new DateTimeSelector(element.appendChild(document.createElement("div")));
+	var dateTime2 = new DateTimeSelector(element.appendChild(document.createElement("div")));
+
+	dateTime1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+	dateTime2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
+
+	this.selection = () =>
+	{
+		return {dateTime1: dateTime1.selection(), dateTime2: dateTime2.selection()};
+	};
+
+	this.element = () => element;
+
+	this.toString = () => dateTime1.toString() + " - " + dateTime2.toString();
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("div.DateTimeIntervalSelector"))
+		.forEach(e => new TimeIntervalSelector(e));
+});
+function Picker()
+{
+	var modal = new Modal();
+	modal.addEventListener("click", function (event)
+	{
+		if (event.target === modal || event.srcElement === modal)
+			modal.hide();
+	});
+
+	var main = modal.appendChild(document.createElement("div"));
+	main.className = "Picker";
+
+	var head = main.appendChild(document.createElement("div"));
+
+	var body = main.appendChild(document.createElement("div"));
+
+	var foot = main.appendChild(document.createElement("div"));
+
+	var cancel = foot.appendChild(document.createElement("a"));
+	cancel.addEventListener("click", () => modal.hide());
+	cancel.appendChild(document.createTextNode("Cancelar"));
+	cancel.href = "#";
+
+	var commit = foot.appendChild(document.createElement("a"));
+	commit.appendChild(document.createTextNode("Concluir"));
+	commit.href = "#";
+
+	this.modal = () => modal;
+	this.main = () => main;
+	this.head = () => head;
+	this.body = () => body;
+	this.foot = () => foot;
+	this.commit = () => commit;
+	this.cancel = () => cancel;
+}
+/* global DateFormat */
+
+function DatePicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("DatePicker");
+	picker.head().appendChild(document.createTextNode("Selecione uma data"));
+
+	var selector = new Calendar(picker.body().appendChild(document.createElement("div"), {max: 1}));
+
+	selector.element().addEventListener("update", () =>
+	{
+		if (selector.selection().length === 1)
+			callback(DateFormat.DATE.format(selector.selection()[0]));
+		picker.modal().hide();
+	});
+
+	picker.commit().addEventListener("click", () => alert("selecione uma data"));
+
+	picker.modal().show();
 }
 
 window.addEventListener("load", function ()
@@ -3083,250 +3482,334 @@ window.addEventListener("load", function ()
 	{
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+
 		link.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+
 			if (input.value)
 				input.value = '';
 			else
-				new DateDialog(date => input.value = DateFormat.DATE.format(date));
-			event.preventDefault();
+				new DatePicker(time =>
+				{
+					input.value = time;
+					link.focus();
+				});
+
+			link.blur();
 		});
 	});
 });
-function TimeDialog(callback)
+function TimePicker(callback)
 {
-	var dialog = new Modal();
+	var picker = new Picker();
+	picker.main().classList.add("TimePicker");
 
-	var hour = dialog.appendChild(document.createElement("table"));
-	hour.appendChild(document.createElement("caption"))
-		.appendChild(document.createTextNode("Selecione a Hora"));
-	var columns = ["9%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "8%", "9%"];
-	for (var i = 0; i < columns.length; i++)
-	{
-		var col = hour.appendChild(document.createElement("col"));
-		col.style.width = columns[i];
-	}
+	var selector = new TimeSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
 
-	var tbody = hour.appendChild(document.createElement("tbody"));
-	for (var i = 0; i < 24; i += 12)
-	{
-		var tr = tbody.appendChild(document.createElement("tr"));
-		for (var j = 0; j < 12; j++)
-		{
-			var td = tr.appendChild(document.createElement("td"));
-			td.dialog = this;
-			td.style.cursor = "pointer";
-			td.style.textAlign = "center";
-			td.title = "00".concat(new String(i + j)).slice(-2);
-			td.appendChild(document.createTextNode(td.title));
-			td.onmouseover = function ()
-			{
-				this.style.fontWeight = "bold";
-				this.prev = this.style.backgroundColor;
-				this.style.backgroundColor = "#CCCCCC";
-			};
-			td.onmouseout = function ()
-			{
-				this.style.fontWeight = "normal";
-				this.style.backgroundColor = this.prev;
-			};
-			td.onclick = function ()
-			{
-				hour.minutes.innerHTML = "";
-				var minutes = hour.minutes.appendChild(document.createElement("table"));
-				minutes.appendChild(document.createElement("caption"))
-					.appendChild(document.createTextNode("Selecione os Minutos"));
-				var tbody = minutes.appendChild(document.createElement("tbody"));
-				for (var i = 0; i < 60; i += 12)
-				{
-					var tr = tbody.appendChild(document.createElement("tr"));
-					for (var j = 0; j < 12; j++)
-					{
-						var td = tr.appendChild(document.createElement("td"));
-						td.dialog = this.dialog;
-						td.style.cursor = "pointer";
-						td.style.textAlign = "center";
-						td.title = this.title + ":" + "00".concat(new String(i + j)).slice(-2);
-						td.appendChild(document.createTextNode(td.title));
-						td.onmouseover = function ()
-						{
-							this.prev = this.style.backgroundColor;
-							this.style.backgroundColor = "#CCCCCC";
-						};
-						td.onmouseout = function ()
-						{
-							this.style.backgroundColor = this.prev;
-						};
-						td.onclick = function ()
-						{
-							dialog.hide();
-							callback(this.title);
-						};
-					}
-				}
-			};
-		}
-	}
+	picker.head().appendChild(document.createTextNode(selector.toString()));
 
-	hour.minutes = tbody.appendChild(document.createElement("tr"))
-		.appendChild(document.createElement("td"));
-	hour.minutes.style.padding = '06px';
-	hour.minutes.style.height = '200px';
-	hour.minutes.style.textAlign = 'center';
-	hour.minutes.setAttribute("colspan", 12);
-	hour.minutes.innerHTML = "Selecione a Hora";
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
 
-	dialog.show();
+	picker.modal().addEventListener("show", () => picker.commit().focus());
 
-	dialog.onclick = function (e)
-	{
-		if (e.target === this
-			|| e.srcElement === this)
-			this.hide();
-	};
+	picker.modal().show();
 }
 
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input.Time")).forEach(function (input)
 	{
-		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
-		link.onclick = function ()
+
+		link.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+
 			if (input.value)
 				input.value = '';
 			else
-				new TimeDialog(function (e)
+				new TimePicker(time =>
 				{
-					input.value = e;
+					input.value = time;
+					link.focus();
 				});
-			return false;
-		};
+
+			link.blur();
+		});
 	});
 });
+function MonthPicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("MonthPicker");
+
+	var selector = new MonthSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("input.Month")).forEach(function (input)
+	{
+		var link = input.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+
+		link.addEventListener("click", function (event)
+		{
+			event.preventDefault();
+
+			if (input.value)
+				input.value = '';
+			else
+				new MonthPicker(time =>
+				{
+					input.value = time;
+					link.focus();
+				});
+
+			link.blur();
+		});
+	});
+});
+function DateTimePicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("DateTimePicker");
+
+	var selector = new DateTimeSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input.DateTime")).forEach(function (input)
 	{
-		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-		link.onclick = function ()
+
+		link.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+
 			if (input.value)
 				input.value = '';
 			else
-				new DateDialog(function (date)
+				new DateTimePicker(dateTime =>
 				{
-					new TimeDialog(function (time)
-					{
-						input.value = new DateFormat("dd/MM/yyyy").format(date) + " " + time;
-					});
+					input.value = dateTime;
+					link.focus();
 				});
-			return false;
-		};
+
+			link.blur();
+		});
 	});
 });
+/* global DateFormat */
+
+function DateIntervalPicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("DateIntervalPicker");
+
+	var selector = new DateIntervalSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () =>
+	{
+		if (selector.selection())
+		{
+			callback(selector.toString());
+			picker.modal().hide();
+		}
+	});
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
 
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input.DateInterval")).forEach(function (input)
 	{
-		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-		link.onclick = function ()
+
+		link.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+
 			if (input.value)
 				input.value = '';
 			else
-				new DateDialog(function (date1)
+				new DateIntervalPicker(selection =>
 				{
-					new DateDialog(function (date2)
-					{
-						var format = new DateFormat("dd/MM/yyyy");
-						input.value = format.format(date1) + " - " + format.format(date2);
-					}, date1);
+					input.value = selection;
+					link.focus();
 				});
 
-			return false;
-		};
+			link.blur();
+		});
 	});
 });
+function TimeIntervalPicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("TimeIntervalPicker");
+
+	var selector = new TimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
 
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input.TimeInterval")).forEach(function (input)
 	{
-		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
-		link.onclick = function ()
+
+		link.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+
 			if (input.value)
 				input.value = '';
 			else
-				new TimeDialog(function (time1)
+				new TimeIntervalPicker(time =>
 				{
-					new TimeDialog(function (time2)
-					{
-						input.value = time1 + " - " + time2;
-					});
+					input.value = time;
+					link.focus();
 				});
-			return false;
-		};
+
+			link.blur();
+		});
 	});
 });
+function MonthIntervalPicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("MonthIntervalPicker");
+
+	var selector = new MonthIntervalSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("input.MonthInterval")).forEach(function (input)
+	{
+		var link = input.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
+
+		link.addEventListener("click", function (event)
+		{
+			event.preventDefault();
+
+			if (input.value)
+				input.value = '';
+			else
+				new MonthIntervalPicker(time =>
+				{
+					input.value = time;
+					link.focus();
+				});
+
+			link.blur();
+		});
+	});
+});
+function DateTimeIntervalPicker(callback)
+{
+	var picker = new Picker();
+	picker.main().classList.add("DateTimeIntervalPicker");
+
+	var selector = new DateTimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
+	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+
+	picker.head().appendChild(document.createTextNode(selector.toString()));
+
+	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+
+	picker.modal().addEventListener("show", () => picker.commit().focus());
+
+	picker.modal().show();
+}
 
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input.DateTimeInterval")).forEach(function (input)
 	{
-		input.style.width = "calc(100% - 32px)";
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.className = input.className;
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-		link.onclick = function ()
+
+		link.addEventListener("click", function (event)
 		{
-			if (!input.value)
+			event.preventDefault();
+
+			if (input.value)
 				input.value = '';
 			else
-				new DateDialog(function (date1)
+				new DateTimeIntervalPicker(dateTime =>
 				{
-					new TimeDialog(function (time1)
-					{
-						new DateDialog(function (date2)
-						{
-							new TimeDialog(function (time2)
-							{
-								var format = new DateFormat("dd/MM/yyyy");
-								input.value = format.format(date1) + " " + time1 + " - " + format.format(date2) + " " + time2;
-							});
-						}, date1);
-					});
+					input.value = dateTime;
+					link.focus();
 				});
 
-			return false;
-		};
+			link.blur();
+		});
 	});
 });
 function Chart(data, title)
@@ -4604,23 +5087,25 @@ window.addEventListener("load", function ()
 });
 
 
+/* global CKEDITOR */
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("textarea.Rich")).forEach(function (e)
 	{
 		CKEDITOR.config.toolbar =
-				[
-					{name: 'Font', items: ['Font', 'FontSize']},
-					{name: 'Format', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript']},
-					{name: 'Color', items: ['TextColor', 'BGColor']},
-					{name: 'Align', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', '-', 'JustifyBlock']},
-					{name: 'Identation', items: ['Outdent', 'Indent']},
-					{name: 'Clear', items: ['RemoveFormat']},
-					{name: 'List', items: ['NumberedList', 'BulletedList']},
-					{name: 'Links', items: ['Link', 'Unlink']},
-					{name: 'Insert', items: ['HorizontalRule', 'Table', 'Smiley']},
-					{name: 'Tools', items: ['Maximize']}
-				];
+			[
+				{name: 'Font', items: ['Font', 'FontSize']},
+				{name: 'Format', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript']},
+				{name: 'Color', items: ['TextColor', 'BGColor']},
+				{name: 'Align', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', '-', 'JustifyBlock']},
+				{name: 'Identation', items: ['Outdent', 'Indent']},
+				{name: 'Clear', items: ['RemoveFormat']},
+				{name: 'List', items: ['NumberedList', 'BulletedList']},
+				{name: 'Links', items: ['Link', 'Unlink']},
+				{name: 'Insert', items: ['HorizontalRule', 'Table', 'Smiley']},
+				{name: 'Tools', items: ['Maximize']}
+			];
 
 		var tabindex = e.getAttribute("tabindex");
 		if (tabindex)

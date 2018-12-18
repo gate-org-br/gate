@@ -1,3 +1,5 @@
+/* global Message, Block */
+
 function Button(button)
 {
 	button.addEventListener("click", function (event)
@@ -6,6 +8,16 @@ function Button(button)
 		{
 			Message.error(this.getAttribute("data-cancel"), 2000);
 			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+	});
+
+	button.addEventListener("click", function (event)
+	{
+		if (this.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
 			event.stopImmediatePropagation();
 		}
 	});
@@ -29,19 +41,10 @@ function Button(button)
 
 	button.addEventListener("click", function (event)
 	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
 		if (this.getAttribute("formaction") &&
-			(this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)))
+			(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+				|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+				|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
 		{
 			var resolved = resolve(this.getAttribute("formaction"));
 
@@ -265,8 +268,6 @@ function Button(button)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("button")).forEach(function (button)
-	{
-		new Button(button);
-	});
+	Array.from(document.querySelectorAll("button"))
+		.forEach(button => new Button(button));
 });
