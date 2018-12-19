@@ -1,10 +1,11 @@
 package gate.util;
 
-import gate.error.AppError;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Icons
 {
@@ -300,6 +301,15 @@ public class Icons
 		icons.add(new Icon("2269", "??????"));
 		icons.add(new Icon("2270", "??????"));
 		icons.add(new Icon("2271", "??????"));
+		icons.add(new Icon("2272", "??????"));
+		icons.add(new Icon("2273", "??????"));
+		icons.add(new Icon("2274", "??????"));
+		icons.add(new Icon("2275", "??????"));
+		icons.add(new Icon("2276", "??????"));
+		icons.add(new Icon("2277", "??????"));
+		icons.add(new Icon("2278", "??????"));
+		icons.add(new Icon("2279", "??????"));
+		icons.add(new Icon("2280", "gate"));
 	}
 
 	public Icon[] get()
@@ -345,7 +355,9 @@ public class Icons
 			| NoSuchFieldException
 			| SecurityException ex)
 		{
-			throw new AppError(ex);
+			Logger.getGlobal()
+				.log(Level.SEVERE, "Error loading icon", ex);
+			return UNKNOWN;
 		}
 	}
 

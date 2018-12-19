@@ -4825,10 +4825,10 @@ function registerTreeView(table)
 	{
 		Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
 		{
-			Array.from(tbody.children).filter(e => e.style.display === 'table-row').forEach(function (tr, index)
-			{
-				tr.className = index % 2 ? 'odd' : 'even';
-			});
+			Array
+				.from(tbody.children)
+				.filter(e => e.style.display === 'table-row')
+				.forEach((tr, index) => tr.className = index % 2 ? 'odd' : 'even');
 		});
 	}
 
@@ -4913,7 +4913,7 @@ function registerTreeView(table)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('table.TREEVIEW, table.treeview, table.TreeView, table.Treeview, table.treeView'))
+	Array.from(document.querySelectorAll('table.TreeView, table.TREEVIEW'))
 		.forEach(e => registerTreeView(e));
 });
 function DateFormat(format)
@@ -5452,7 +5452,7 @@ function Message(type, message, timeout)
 	body.style.fontSize = "20px";
 	body.style.alignItems = "center";
 	body.style.justifyContent = "center";
-	body.style.backgroundColor = "#FFFFFF";
+	body.style.backgroundColor = "white";
 
 	modal.onclick = dialog.onclick = icon.onclick = body.onclick = function ()
 	{
@@ -5463,8 +5463,8 @@ function Message(type, message, timeout)
 	{
 		case "SUCCESS":
 			icon.innerHTML = "&#X1000";
-			icon.style.color = "#006600";
-			body.style.color = "#006600";
+			icon.style.color = "@commit";
+			body.style.color = "@commit";
 			break;
 		case "WARNING":
 			icon.innerHTML = "&#X1007";
@@ -5473,8 +5473,8 @@ function Message(type, message, timeout)
 			break;
 		case "ERROR":
 			icon.innerHTML = "&#X1001";
-			icon.style.color = "#660000";
-			body.style.color = "#660000";
+			icon.style.color = "@cancel";
+			body.style.color = "@cancel";
 			break;
 	}
 
@@ -5617,7 +5617,7 @@ function DeskPane(deskPane)
 			li.className = "Reset";
 			li.style.width = width + "px";
 			li.style.height = height + "px";
-			li.style.color = "#006600";
+			li.style.color = "@commit";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");

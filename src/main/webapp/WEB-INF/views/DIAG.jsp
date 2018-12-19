@@ -3,10 +3,12 @@
 <!DOCTYPE HTML>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-	<body style='background-attachment: fixed; background-image: url("../gate/imge/back/BACK.png");'>
-		<div class="Panel">
-			<g:insert/>
-			<g:alert/>
+	<body>
+		<div style="padding: 8px">
+			<div class="Panel">
+				<g:insert/>
+				<g:alert/>
+			</div>
 		</div>
 	</body>
 </g:template>

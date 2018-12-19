@@ -23,7 +23,7 @@ div.Calendar
 			  font-size: 16px;
 			  align-items: center;
 			  justify-content: center;
-			  background-color: #999999; }
+			  background-color: @base; }
 
 		> a { flex-grow: 1;
 		      display: flex;
@@ -51,19 +51,22 @@ div.Calendar
 		align-items:  center;
 		align-content: space-around;
 		justify-content: space-around;
-		background-image: linear-gradient(to bottom, #AAAAAA 0%, #DDDDDD 100%);
+		background-image: @main_gradient;
 
-		> a { display: flex;
-		      flex-basis: 32px;
+		> a { margin: 8px;
+		      display: flex;
+		      flex-basis: 48px;
 		      font-size: inherit;
 		      align-items: center;
 		      font-weight: bolder;
 		      justify-content: center}
 
-		> label { flex-basis: 500px;
-			  flex-grow: 1;
+		> label { flex-grow: 1;
+			  display: flex;
 			  font-size: inherit;
-			  font-weight: bolder; }
+			  font-weight: bolder;
+			  align-items: center;
+			  justify-content: center; }
 	}
 
 }

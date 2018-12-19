@@ -42,10 +42,10 @@ function registerTreeView(table)
 	{
 		Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
 		{
-			Array.from(tbody.children).filter(e => e.style.display === 'table-row').forEach(function (tr, index)
-			{
-				tr.className = index % 2 ? 'odd' : 'even';
-			});
+			Array
+				.from(tbody.children)
+				.filter(e => e.style.display === 'table-row')
+				.forEach((tr, index) => tr.className = index % 2 ? 'odd' : 'even');
 		});
 	}
 
@@ -130,6 +130,6 @@ function registerTreeView(table)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('table.TREEVIEW, table.treeview, table.TreeView, table.Treeview, table.treeView'))
+	Array.from(document.querySelectorAll('table.TreeView, table.TREEVIEW'))
 		.forEach(e => registerTreeView(e));
 });
