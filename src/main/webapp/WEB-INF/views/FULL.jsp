@@ -2,19 +2,13 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-	<body style='background-image: url("../gate/imge/back/BACK.png");
-	      background-attachment: fixed'>
-		<div class="main">
+	<body>
+		<div class="Main">
 			<div>
-				<img src='imge/logo.svg' style="height: 40px"/>
-				<div style='display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; height: 40px'>
-					<div style='display: flex; justify-content: flex-start'>
-						Vers&atilde;o ${version}
-					</div>
-					<div style='display: flex; justify-content: flex-end'>
-						${screen.user.name}
-					</div>
-				</div>
+				<g:icon type="gate"/>
+				<label>Gate</label>
+				<label>Vers&atilde;o ${version}</label>
+				<label>${screen.user.name}</label>
 			</div>
 
 			<div>
@@ -37,9 +31,8 @@
 
 			<div>
 				<g:insert/>
+				<g:alert/>
 			</div>
-
-			<g:alert/>
 		</div>
 	</body>
 </g:template>

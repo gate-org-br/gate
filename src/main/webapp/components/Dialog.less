@@ -1,0 +1,51 @@
+div.Dialog
+{
+	display: flex;
+	position: fixed;
+	border-radius: 5px;
+	flex-direction: column;
+	width: calc(100% - 80px);
+	height: calc(100% - 80px);
+	border: 4px solid @base_shaded35;
+	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+
+	> div:first-child
+		{
+		height: 40px;
+		padding: 8px;
+		outline: none;
+		color: #CCCCCC;
+		background-color: @base_shaded35;
+
+		* { height: 100%;
+		    color: #CCCCCC;
+		    font-size: 26px;
+		    line-height: 20px;
+		    display: inline-block; }
+
+		a { width: 48px;
+		    cursor: pointer;
+		    font-family: gate;
+		    text-align: center  }
+
+		&:focus * { color: white }
+	}
+
+
+	> div:last-child { height: calc(100% - 40px);
+			   background-color: #CDCAB9;
+
+			   > iframe,
+			   >  div,
+			   > dialog { margin: 0px;
+				      width: 100%;
+				      height: 100%;
+				      padding: 0px;
+				      border: none;
+				      overflow: auto; }
+	}
+}
+
+

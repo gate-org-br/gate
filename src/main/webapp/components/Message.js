@@ -35,7 +35,7 @@ function Message(type, message, timeout)
 	body.style.fontSize = "20px";
 	body.style.alignItems = "center";
 	body.style.justifyContent = "center";
-	body.style.backgroundColor = "#FFFFFF";
+	body.style.backgroundColor = "white";
 
 	modal.onclick = dialog.onclick = icon.onclick = body.onclick = function ()
 	{
@@ -46,8 +46,8 @@ function Message(type, message, timeout)
 	{
 		case "SUCCESS":
 			icon.innerHTML = "&#X1000";
-			icon.style.color = "#006600";
-			body.style.color = "#006600";
+			icon.style.color = "@commit";
+			body.style.color = "@commit";
 			break;
 		case "WARNING":
 			icon.innerHTML = "&#X1007";
@@ -56,8 +56,8 @@ function Message(type, message, timeout)
 			break;
 		case "ERROR":
 			icon.innerHTML = "&#X1001";
-			icon.style.color = "#660000";
-			body.style.color = "#660000";
+			icon.style.color = "@cancel";
+			body.style.color = "@cancel";
 			break;
 	}
 

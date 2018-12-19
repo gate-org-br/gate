@@ -3,8 +3,10 @@
 <!DOCTYPE HTML>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-	<body class="Page">
-		<g:insert/>
+	<body>
+		<div class="Page">
+			<g:insert/>
+		</div>
 	</body>
 	<g:alert/>
 </g:template>
