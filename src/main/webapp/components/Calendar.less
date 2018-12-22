@@ -36,39 +36,37 @@ div.Calendar
 
 		> a.current { font-weight: bold; text-decoration: underline }
 		> a.disabled {color: #AAAAAA;}
-		> a.selected {background-color: #DDDDDD;}
+		> a.selected {background-color: @acent;}
 
 		> a:hover { background-color: @hovered }
+
+		div:last-child {
+			display: flex;
+			font-size: 16px;
+			flex-basis: 100%;
+			padding-left: 4px;
+			padding-right: 4px;
+			font-weight: bolder;
+			align-items:  center;
+			align-content: space-around;
+			justify-content: space-around;
+			background-image: @base_gradient;
+
+			> a { display: flex;
+			      flex-basis: 48px;
+			      font-size: inherit;
+			      align-items: center;
+			      font-weight: bolder;
+			      justify-content: center}
+
+			> label { flex-grow: 1;
+				  display: flex;
+				  font-size: inherit;
+				  font-weight: bolder;
+				  align-items: center;
+				  justify-content: center; }
+		}
 	}
-
-	> div > div:last-child {
-		display: flex;
-		font-size: 16px;
-		flex-basis: 100%;
-		padding-left: 4px;
-		padding-right: 4px;
-		font-weight: bolder;
-		align-items:  center;
-		align-content: space-around;
-		justify-content: space-around;
-		background-image: @main_gradient;
-
-		> a { margin: 8px;
-		      display: flex;
-		      flex-basis: 48px;
-		      font-size: inherit;
-		      align-items: center;
-		      font-weight: bolder;
-		      justify-content: center}
-
-		> label { flex-grow: 1;
-			  display: flex;
-			  font-size: inherit;
-			  font-weight: bolder;
-			  align-items: center;
-			  justify-content: center; }
-	}
-
 }
 
 div.Calendar:hover { border-color: @hovered; }

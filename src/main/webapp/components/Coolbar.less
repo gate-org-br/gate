@@ -1,11 +1,9 @@
-*.COOLBAR:first-child,
-*.Coolbar:first-child { margin-top: 0px }
+*.COOLBAR:first-child, *.Coolbar:first-child { margin-top: 0px }
 
-*.COOLBAR, *.Coolbar { width: 100%;
+*.COOLBAR, *.Coolbar { .margin();
+		       width: 100%;
 		       height: 40px;
 		       padding: 2px;
-		       margin-top: 16px;
-		       margin-bottom: 4px;
 		       border-radius: 5px;
 		       background-image: @main_gradient;
 
@@ -13,11 +11,11 @@
 			     height: calc(100% - 4px); }
 
 		       > a ,
-		       > button { margin: 2px;
+		       > button { color: black;
+				  margin: 2px;
 				  padding: 4px;
 				  float: right;
 				  display: flex;
-				  color: black;
 				  cursor: pointer;
 				  min-width: 90px;
 				  font-size: 10px;
@@ -26,11 +24,10 @@
 				  align-items: center;
 				  border: 1px solid #CCCCCC;
 				  justify-content: space-between;
-				  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%); }
+				  background-image: @neutral_gradient; }
 
 		       > a:hover,
-			       > button:hover { text-decoration: underline;
-					background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%); }
+			       > button:hover { background-image: @acent_gradient }
 
 		       > a:focus,
 			       > button:focus { outline: none;
@@ -49,11 +46,11 @@
 					 justify-content: center; }
 
 		       > a.Commit,
-		       > button.Commit { color: @commit }
+		       > button.Commit { color: @G }
 
 		       > a.Cancel,
 		       > button.Cancel { float: left;
-					 color: @cancel; }
+					 color: @R; }
 
 		       > progress { width: calc(100% - 4px); }
 

@@ -2,10 +2,7 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
-	<body style='background-color: #CCCCD0;
-	      background-image: url("../gate/imge/back/BACK.png");
-	      background-attachment: fixed; padding: 0'>
-
+	<body>
 		<div style='display: flex; align-items: center; justify-content: center; flex-direction: column; height: 100vh; padding: 10px'>
 			<div class="Panel"
 			     style='width: 600px;

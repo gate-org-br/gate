@@ -1,53 +1,59 @@
-ul.DeskPane { margin: 0;
-	      padding: 0;
-	      width: 100%;
-	      display: flex;
-	      flex-wrap: wrap;
-	      align-items: flex-start;
-	      justify-content: flex-start }
+ul.DeskPane
+{ 
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: flex-start;
 
-ul.DeskPane ul { display: none;
-		 margin: 0; padding: 0}
+	a { color: black; }
 
-ul.DeskPane > li { width: 24%;
-		   margin: 0.5%;
-		   display: flex;
-		   cursor: pointer;
-		   border-radius: 5px;
-		   align-items: stretch;
-		   list-style-type: none;
-		   align-content: stretch;
-		   justify-content: center;
-		   border: 2px solid white;
-		   background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);}
+	ul { display: none;
+	     margin: 0; padding: 0}
 
-ul.DeskPane > li:hover {   border-color: #FFFACD;
-			   background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD); }
+	> li { width: 24%;
+	       margin: 0.5%;
+	       display: flex;
+	       cursor: pointer;
+	       border-radius: 5px;
+	       align-items: stretch;
+	       list-style-type: none;
+	       align-content: stretch;
+	       justify-content: center;
+	       border: 2px solid white;
+	       background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);}
 
-ul.DeskPane > li > a,
-ul.DeskPane > li > button { padding: 8px;
-			    height: 100%;
-			    flex-grow: 1;
-			    display: flex;
-			    color: inherit;
-			    cursor: inherit;
-			    text-align: center;
-			    align-items: center;
-			    font-weight: inherit;
-			    align-content: stretch;
-			    justify-content: flex-start;}
+	> li:hover {   border-color: #FFFACD;
+		       background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD); }
 
-ul.DeskPane > li > a[data-disabled],
-ul.DeskPane > li > button [data-disabled]{ color: @cancel;
-					   cursor: not-allowed; }
+	> li > a,
+	> li > button { padding: 8px;
+			height: 100%;
+			flex-grow: 1;
+			display: flex;
+			color: inherit;
+			cursor: inherit;
+			text-align: center;
+			align-items: center;
+			font-weight: inherit;
+			align-content: stretch;
+			justify-content: flex-start;}
 
-ul.DeskPane > li > a > i { width: 48px; height: 48px; font-size: 40px; display: flex;
-			   margin-right: 8px; order: -1;
-			   color: inherit; cursor: inherit;
-			   align-items: center; justify-content: center }
+	> li > a[data-disabled],
+	> li > button [data-disabled]{ color: @R;
+				       cursor: not-allowed; }
 
-ul.DeskPane > li > a > img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+	> li > a > i { width: 48px; height: 48px; font-size: 40px; display: flex;
+		       margin-right: 8px; order: -1;
+		       color: inherit; cursor: inherit;
+		       align-items: center; justify-content: center }
 
-ul.DeskPane > li.Reset > a { font-size: 20px;
-			     border-radius: 5px;
-			     background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%) }
+	> li > a > img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+
+	> li.Reset > a { font-size: 20px;
+			 border-radius: 5px;
+			 background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%) }
+}
+

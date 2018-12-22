@@ -30,7 +30,7 @@ function DeskPane(deskPane)
 			li.className = "Reset";
 			li.style.width = width + "px";
 			li.style.height = height + "px";
-			li.style.color = "@commit";
+			li.style.color = "@G";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");

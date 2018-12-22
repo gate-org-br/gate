@@ -7,7 +7,7 @@ div.Picker
 	justify-content: center;
 	background-color: @main;
 	background-image: @noise;
-	border: 4px solid @base_shaded35;
+	border: 4px solid @base_shaded;
 	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
 
 	> div:nth-child(1) {  display: flex;
@@ -17,7 +17,7 @@ div.Picker
 			      font-weight: bold;
 			      align-items: center;
 			      justify-content: center;
-			      background-color: @base_shaded35 }
+			      background-color: @base_shaded }
 
 	> div:nth-child(2) { flex-grow: 1;
 			     display: flex;
@@ -45,8 +45,8 @@ div.Picker
 				 border: 2px solid #CCCCCC;
 				 background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%); }
 
-	> div:nth-child(3) > a:first-child { color: @cancel }
-	> div:nth-child(3) > a:last-child { color: @commit }
+	> div:nth-child(3) > a:first-child { color: @R }
+	> div:nth-child(3) > a:last-child { color: @G }
 
 	> div:nth-child(3) > a:hover { font-weight: bold;
 				       border-color: @hovered;

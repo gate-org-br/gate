@@ -6,7 +6,7 @@
 		<div class="Main">
 			<div>
 				<g:icon type="gate"/>
-				<label>Gate</label>
+				<label>${app.id} - ${app.name}</label>
 				<label>Vers&atilde;o ${version}</label>
 				<label>${screen.user.name}</label>
 			</div>
