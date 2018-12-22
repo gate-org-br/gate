@@ -1,0 +1,104 @@
+fieldset,
+fieldset > legend,
+fieldset > label > span { border-radius:5px; }
+
+fieldset { .margin();
+	   border: none;
+	   padding: 12px;
+	   background-color: @main_shaded2;}
+
+fieldset fieldset { float: left;
+		    padding: 4px;
+		    display: inline;
+		    text-align: left;
+		    margin-top: 10px;
+		    background-color: @main_shaded1;}
+
+fieldset > div { margin: 5px;
+		 padding: 4px;
+		 border-radius: 5px;
+		 width: calc(100% - 10px);
+		 border: 1px solid #CCCCCC;
+		 background-color: #EEEEEE; }
+
+fieldset > legend { padding: 2px;
+		    color: #432F21;
+		    text-align: left;
+		    font-weight: bold;
+		    background-color: #DFDED4; }
+
+fieldset > legend > i { float: left;
+			margin-right: 4px}
+
+fieldset fieldset > legend { background-color: #BDBCB2 }
+
+fieldset > label { float: left;
+		   padding: 4px;
+		   display: flex;
+		   text-align: left;
+		   flex-direction: column}
+
+fieldset > label > span { margin: 0px;
+			  width: 100%;
+			  padding: 0px;
+			  height: 24px;
+			  display: flex;
+			  color: black;
+			  overflow: hidden;
+			  line-height: 24px;
+			  position: relative;
+			  white-space: nowrap;
+			  align-items: stretch;
+			  text-overflow: ellipsis;
+			  background-color: #E6E6E3;
+			  justify-content: flex-start;
+			  border: 0px none transparent; }
+
+fieldset > label > span > * { margin: 0px;
+			      padding: 0px;
+			      color: #080c1b;
+			      line-height: 22px;
+			      display: inline-block;
+			      border: 1px solid #CCCCCC; }
+
+fieldset > label > span > input,
+fieldset > label > span > select { flex-grow: 1 }
+fieldset > label > span > textarea { line-height: 16px; flex-grow: 1 }
+
+
+fieldset > label > span > *:first-child,
+fieldset > label > span > *:first-child > * { border-top-left-radius: 5px;
+					      border-bottom-left-radius: 5px; }
+fieldset > label > span > *:last-child,
+fieldset > label > span > *:last-child > * { border-top-right-radius: 5px;
+					     border-bottom-right-radius: 5px; }
+
+fieldset > label> span > a { border: none;
+			     display: flex;
+			     align-items: center;
+			     justify-content: flex-start; }
+
+fieldset > label > span > a:hover { color: #CA171B;
+				    background-color: #EEEEEE; }
+
+fieldset label > span > a:focus { background-color: #FFFACD; }
+
+fieldset > label > span > i,
+fieldset > label > span > span { right: 0px;
+				 width: 20px;
+				 color: #666666;
+				 display: block;
+				 font-size: 12px;
+				 line-height: 24px;
+				 text-align: center;
+				 position: absolute;
+				 border: 0px none transparent; }
+
+fieldset > label > span > a > i,
+fieldset > label > span > a > span { width: 100%;
+				     height: 100%;
+				     display: flex;
+				     font-size: 16px;
+				     align-items: center;
+				     justify-content: center;
+				     border: 1px solid #CCCCCC; }

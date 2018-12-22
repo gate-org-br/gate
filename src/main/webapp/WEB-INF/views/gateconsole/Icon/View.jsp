@@ -3,11 +3,24 @@
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<ul class="DeskMenu">
 		<g:icons name="icon">
-			<li style="width: 4%; min-width: 64px; margin: 0.5%">
-				<a href="#" data-icon="&#x${icon.code}">
-					${icon.code}
-				</a>
-			</li>
+			<g:if condition="${icon.name ne '??????'}">
+				<li style="width: 4%; min-width: 64px; margin: 0.5%">
+					<a href="#" data-icon="&#x${icon.code}">
+						${icon.name}
+					</a>
+				</li>
+			</g:if>
+		</g:icons>
+	</ul>
+	<ul class="DeskMenu">
+		<g:icons name="icon">
+			<g:if condition="${icon.name eq '??????'}">
+				<li style="width: 4%; min-width: 64px; margin: 0.5%">
+					<a href="#" data-icon="&#x${icon.code}">
+						${icon.code}
+					</a>
+				</li>
+			</g:if>
 		</g:icons>
 	</ul>
 

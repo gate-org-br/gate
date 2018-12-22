@@ -46,8 +46,8 @@ function Message(type, message, timeout)
 	{
 		case "SUCCESS":
 			icon.innerHTML = "&#X1000";
-			icon.style.color = "@commit";
-			body.style.color = "@commit";
+			icon.style.color = "@G";
+			body.style.color = "@G";
 			break;
 		case "WARNING":
 			icon.innerHTML = "&#X1007";
@@ -56,8 +56,8 @@ function Message(type, message, timeout)
 			break;
 		case "ERROR":
 			icon.innerHTML = "&#X1001";
-			icon.style.color = "@cancel";
-			body.style.color = "@cancel";
+			icon.style.color = "@R";
+			body.style.color = "@R";
 			break;
 	}
 

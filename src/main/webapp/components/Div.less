@@ -1,0 +1,97 @@
+div.main,
+div.Main { width: 100%;
+	   padding: 8px;
+	   display: grid;
+	   grid-template-rows: 56px 50px 1fr;
+
+	   > div:nth-child(1) { width: 100%;
+				padding: 8px;
+				display: grid;
+				grid-gap: 8px;
+				border-radius: 5px 5px 0 0;
+				grid-template-rows: 1fr 1fr;
+				background-color: @base_tinted;
+				grid-template-columns: 40px 1fr 200px;
+
+				> *:nth-child(1) { width: 40px;
+						   height: 40px;
+						   display: flex;
+						   font-size: 40px;
+						   align-items: center;
+						   grid-row: 1 / span 2;
+						   justify-content: center; }
+
+				> *:nth-child(2) { display: flex;
+						   font-size: 20px;
+						   align-items: center;
+						   grid-row: 1 / span 2;
+						   justify-content: flex-start; }
+
+				> *:nth-child(3) { display: flex;
+						   grid-row: 1 / span 1;
+						   align-items: flex-start;
+						   justify-content: flex-end; }
+
+				> *:nth-child(4) { display: flex;
+						   grid-row: 2 / span 1;
+						   align-items: flex-end;
+						   justify-content: flex-end;  }
+	   }
+
+	   > div:nth-child(2) { width: 100%;
+				padding: 4px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background-color: @main_shaded2; }
+
+	   > div:nth-child(3) { border: none;
+				padding: 10px;
+				overflow: auto;
+				background-color: @main;
+				border-radius: 0 0 5px 5px;
+				max-height: calc(100vh - 122px); }
+}
+
+div[title] { display: flex;
+	     border-radius: 5px;
+	     align-items: stretch;
+	     flex-direction: column;
+	     justify-content: flex-start; }
+div[title]::before { width: 100%;
+		     height: 32px;
+		     color: white;
+		     display: flex;
+		     font-weight: bold;
+		     align-items: center;
+		     content: attr(title);
+		     justify-content: center;
+		     border-radius: 5px 5px 0 0;
+		     background-color: @base_shaded}
+div[title] > div:nth-child(1) { border-radius: 0 0 5px 5px; }
+
+
+div.Panel { .margin();
+	    padding: 10px;
+	    border-radius: 5px;
+	    background-color: @main;
+	    border: 1px solid #ADAA99;
+}
+
+div.Page { padding: 0px;
+	   background-color: @main_shaded1 }
+
+div.TEXT
+{
+	.margin();
+	width: 100%;
+	padding: 12px;
+	border-radius: 5px;
+	text-align: justify;
+	background-image: none;
+	background-color: white;
+}
+
+
+div.FORMAT { width: 100%; padding: 8px; margin-bottom: 4px; background-color: #F0F0F4; border-radius: 5px; text-align: center}
+div.EDITOR { width: 100%; height: 250px; padding: 8px; background-color: white; border-radius: 5px; overflow: auto}
