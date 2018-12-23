@@ -19,7 +19,6 @@ import gate.type.mime.MimeData;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -226,7 +225,7 @@ public class User implements Serializable
 	{
 
 		return obj instanceof User
-				&& Objects.equals(this.getId(), ((User) obj).getId());
+			&& Objects.equals(this.getId(), ((User) obj).getId());
 	}
 
 	@Override
@@ -338,16 +337,20 @@ public class User implements Serializable
 		this.sex = sex;
 	}
 
-	public List<Auth> getAllAuths()
+	public Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream(),
-				getRole().getAllAuths().stream())
-				.collect(Collectors.toList()) : Collections.emptyList();
+			getRole().computedAuthStream()) : Stream.empty();
+	}
+
+	public List<Auth> getComputedAuths()
+	{
+		return computedAuthStream().collect(Collectors.toList());
 	}
 
 	public boolean isSuperUser()
 	{
-		return getAllAuths().stream().anyMatch(e -> e.isSuperAuth());
+		return getComputedAuths().stream().anyMatch(e -> e.isSuperAuth());
 	}
 
 	public boolean checkAccess(String module, String screen, String action)
@@ -355,14 +358,10 @@ public class User implements Serializable
 		return checkAccess(false, module, screen, action);
 	}
 
-	public boolean checkAccess(boolean strict,
-			String module,
-			String screen,
-			String action)
+	public boolean checkAccess(boolean strict, String module, String screen, String action)
 	{
-		List<Auth> auths = getAllAuths();
-		return auths.stream().noneMatch(e -> e.blocks(module, screen, action))
-				&& auths.stream().anyMatch(e -> e.allows(strict, module, screen, action));
+		return computedAuthStream().noneMatch(e -> e.blocks(module, screen, action))
+			&& computedAuthStream().anyMatch(e -> e.allows(strict, module, screen, action));
 	}
 
 }

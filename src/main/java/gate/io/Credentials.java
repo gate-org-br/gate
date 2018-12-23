@@ -62,7 +62,7 @@ public class Credentials {
                 .claim("name", user.getName())
                 .claim("role.id", user.getRole().getId().toString())
                 .claim("role.name", user.getRole().getName())
-                .claim("auths", user.getAllAuths().stream().map(e -> new StringJoiner(":")
+                .claim("auths", user.getComputedAuths().stream().map(e -> new StringJoiner(":")
                 .add(e.getMode().name())
                 .add(e.getType().name())
                 .add(e.getModule() != null ? e.getModule() : "*")
