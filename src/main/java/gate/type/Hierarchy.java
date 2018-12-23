@@ -158,7 +158,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 */
 	public default <E> List<E> toParentList(Function<T, E> extractor)
 	{
-		return parents()
+		return parentStream()
 				.map(extractor)
 				.collect(Collectors.toList());
 	}
@@ -170,7 +170,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 */
 	public default List<T> toParentList()
 	{
-		return parents().collect(Collectors.toList());
+		return parentStream().collect(Collectors.toList());
 	}
 
 	/**
@@ -179,11 +179,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return a stream of this element and it's parents recursively
 	 */
 	@SuppressWarnings("unchecked")
-	public default Stream<T> parents()
+	public default Stream<T> parentStream()
 	{
 		return getParent().getId() == null
 				? Stream.of((T) this)
-				: Stream.concat(Stream.of((T) this), getParent().parents());
+				: Stream.concat(Stream.of((T) this), getParent().parentStream());
 	}
 
 	@Override

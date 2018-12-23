@@ -2,6 +2,7 @@ package gateconsole.dao;
 
 import gate.base.Dao;
 import gate.entity.Func;
+import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.NotFoundException;
@@ -74,11 +75,30 @@ public class FuncDao extends Dao
 			.execute();
 	}
 
+	public void add(Role role, Func func) throws AppException
+	{
+		Insert.into("RoleFunc")
+			.set("Role$id", role.getId())
+			.set("Func$id", func.getId())
+			.build().connect(getLink())
+			.execute();
+	}
+
 	public void rem(User user, Func func) throws AppException
 	{
 		Delete.from("UserFunc")
 			.where(Condition.of("Uzer$id")
 				.eq(ID.class, user.getId())
+				.and("Func$id").eq(ID.class, func.getId()))
+			.build().connect(getLink())
+			.execute();
+	}
+
+	public void rem(Role role, Func func) throws AppException
+	{
+		Delete.from("RoleFunc")
+			.where(Condition.of("Role$id")
+				.eq(ID.class, role.getId())
 				.and("Func$id").eq(ID.class, func.getId()))
 			.build().connect(getLink())
 			.execute();
