@@ -1,104 +1,134 @@
-fieldset,
-fieldset > legend,
-fieldset > label > span { border-radius:5px; }
+fieldset
+{
+	.margin();
+	border: none;
+	padding: 12px;
+	border-radius:5px;
+	background-color: @main_shaded2;
 
-fieldset { .margin();
-	   border: none;
-	   padding: 12px;
-	   background-color: @main_shaded2;}
+	> legend
+	{
+		padding: 2px;
+		color: black;
+		text-align: left;
+		font-weight: bold;
+		border-radius:5px;
+		background-color: #DFDED4;
 
-fieldset fieldset { float: left;
-		    padding: 4px;
-		    display: inline;
-		    text-align: left;
-		    margin-top: 10px;
-		    background-color: @main_shaded1;}
+		> i { float: left;
+		      margin-right: 4px}
+	}
 
-fieldset > div { margin: 5px;
-		 padding: 4px;
-		 border-radius: 5px;
-		 width: calc(100% - 10px);
-		 border: 1px solid #CCCCCC;
-		 background-color: #EEEEEE; }
+	fieldset
+	{
+		float: left;
+		padding: 4px;
+		display: inline;
+		text-align: left;
+		margin-top: 10px;
+		background-color: @main_shaded1;
 
-fieldset > legend { padding: 2px;
-		    color: #432F21;
-		    text-align: left;
-		    font-weight: bold;
-		    background-color: #DFDED4; }
+		> legend { background-color: #BDBCB2 }
+	}
 
-fieldset > legend > i { float: left;
-			margin-right: 4px}
+	> div { margin: 5px;
+		padding: 4px;
+		border-radius: 5px;
+		width: calc(100% - 10px);
+		border: 1px solid #CCCCCC;
+		background-color: #EEEEEE; }
 
-fieldset fieldset > legend { background-color: #BDBCB2 }
+	> label
+	{
+		float: left;
+		padding: 4px;
+		display: flex;
+		text-align: left;
+		flex-direction: column;
 
-fieldset > label { float: left;
-		   padding: 4px;
-		   display: flex;
-		   text-align: left;
-		   flex-direction: column}
+		> span
+		{
+			margin: 0px;
+			width: 100%;
+			border: none;
+			padding: 0px;
+			height: 32px;
+			color: black;
+			display: flex;
+			overflow: hidden;
+			border-radius:5px;
+			position: relative;
+			white-space: nowrap;
+			align-items: center;
+			text-overflow: ellipsis;
+			justify-content: flex-start;
+			background-color: @main_tinted;
 
-fieldset > label > span { margin: 0px;
-			  width: 100%;
-			  padding: 0px;
-			  height: 24px;
-			  display: flex;
-			  color: black;
-			  overflow: hidden;
-			  line-height: 24px;
-			  position: relative;
-			  white-space: nowrap;
-			  align-items: stretch;
-			  text-overflow: ellipsis;
-			  background-color: #E6E6E3;
-			  justify-content: flex-start;
-			  border: 0px none transparent; }
-
-fieldset > label > span > * { margin: 0px;
+			> * { margin: 0px;
 			      padding: 0px;
-			      color: #080c1b;
-			      line-height: 22px;
+			      color: black;
+			      flex-grow: 1;
+			      height: 100%;
 			      display: inline-block;
 			      border: 1px solid #CCCCCC; }
 
-fieldset > label > span > input,
-fieldset > label > span > select { flex-grow: 1 }
-fieldset > label > span > textarea { line-height: 16px; flex-grow: 1 }
+			> *:first-child
+				{
+				border-radius:  5px 0 0 5px;
+				> * {border-radius:  5px 0 0 5px;}
+			}
+			> *:last-child
+				{
+				border-radius: 0 5px 5px 0;
+				> * { border-radius: 0 5px 5px 0; }
+			}
 
+			> input,
+			> select,
+			> label { flex-grow: 1;
+				  padding: 4px;
+				  display: flex;
+				  align-items: center;
+				  justify-content: flex-start}
 
-fieldset > label > span > *:first-child,
-fieldset > label > span > *:first-child > * { border-top-left-radius: 5px;
-					      border-bottom-left-radius: 5px; }
-fieldset > label > span > *:last-child,
-fieldset > label > span > *:last-child > * { border-top-right-radius: 5px;
-					     border-bottom-right-radius: 5px; }
+			textarea { padding: 4px;
+				   flex-grow: 1;
+				   line-height: 16px; }
 
-fieldset > label> span > a { border: none;
-			     display: flex;
-			     align-items: center;
-			     justify-content: flex-start; }
+			> a,
+			> button
+			{
+				width: 32px;
+				height: 100%;
+				flex-grow: 0;
+				display: flex;
+				align-items: center;
+				justify-content: center;
 
-fieldset > label > span > a:hover { color: #CA171B;
-				    background-color: #EEEEEE; }
+				> i,
+				> span { width: 100%;
+					 height: 100%;
+					 display: flex;
+					 align-items: center;
+					 justify-content: center; }
 
-fieldset label > span > a:focus { background-color: #FFFACD; }
+				&:hover { background-color: @acent; }
+				&:focus { background-color: @hovered; }
+			}
 
-fieldset > label > span > i,
-fieldset > label > span > span { right: 0px;
-				 width: 20px;
-				 color: #666666;
-				 display: block;
-				 font-size: 12px;
-				 line-height: 24px;
-				 text-align: center;
+			> i,
+			> span { right: 0px;
+				 width: 32px;
+				 height: 100%;
+				 display: flex;
+				 color: #999999;
 				 position: absolute;
-				 border: 0px none transparent; }
+				 align-items: center;
+				 justify-content: center;
+				 background-color: transparent;
+				 border: 1px solid transparent;
+			}
+		}
+	}
+}
 
-fieldset > label > span > a > i,
-fieldset > label > span > a > span { width: 100%;
-				     height: 100%;
-				     display: flex;
-				     font-size: 16px;
-				     align-items: center;
-				     justify-content: center;
-				     border: 1px solid #CCCCCC; }

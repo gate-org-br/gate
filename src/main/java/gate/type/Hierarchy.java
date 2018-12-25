@@ -27,9 +27,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a of setup the specified entity, false otherwise
+	 * @return true if this entity is a of setup the specified entity, false
+	 * otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a null id
+	 * @throws NullPointerException if the specified entity is null or has a
+	 * null id
 	 */
 	@SuppressWarnings("unchecked")
 	public default boolean isParentOf(T entity)
@@ -47,17 +49,20 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	public default T getRoot()
 	{
 		return getParent() == null
-				|| getParent().getId() == null ? (T) this : getParent().getRoot();
+			|| getParent().getId() == null ? (T) this : getParent().getRoot();
 	}
 
 	/**
-	 * Checks if this entity is equals to or is a parent of the specified entity.
+	 * Checks if this entity is equals to or is a parent of the specified
+	 * entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a parent of the specified entity, false otherwise
+	 * @return true if this entity is equals to or is a parent of the
+	 * specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a null id
+	 * @throws NullPointerException if the specified entity is null or has a
+	 * null id
 	 */
 	public default boolean contains(T entity)
 	{
@@ -71,9 +76,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a child of the specified entity, false otherwise
+	 * @return true if this entity is a child of the specified entity, false
+	 * otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a null id
+	 * @throws NullPointerException if the specified entity is null or has a
+	 * null id
 	 */
 	public default boolean isChildOf(T entity)
 	{
@@ -83,13 +90,16 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Check if this entity is equals to or is a child of the specified entity.
+	 * Check if this entity is equals to or is a child of the specified
+	 * entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a child of the specified entity, false otherwise
+	 * @return true if this entity is equals to or is a child of the
+	 * specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a null id
+	 * @throws NullPointerException if the specified entity is null or has a
+	 * null id
 	 */
 	public default boolean isContainedBy(T entity)
 	{
@@ -107,7 +117,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	public default Stream<T> stream()
 	{
 		return Stream.concat((Stream<T>) Stream.of(this),
-				getChildren().stream().flatMap(e -> e.stream()));
+			getChildren().stream().flatMap(e -> e.stream()));
 	}
 
 	/**
@@ -121,17 +131,19 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Creates a list with data extracted of this element and it's children recursively
+	 * Creates a list with data extracted of this element and it's children
+	 * recursively
 	 *
 	 * @param <E> the element data to be extracted
 	 * @param extractor the function to be used to extract data
-	 * @return a list with the data extracted setup this element and it's children recursively
+	 * @return a list with the data extracted setup this element and it's
+	 * children recursively
 	 */
 	public default <E> List<E> toList(Function<T, E> extractor)
 	{
 		return stream()
-				.map(extractor)
-				.collect(Collectors.toList());
+			.map(extractor)
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -139,28 +151,31 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @param id the of the entity to be searched for
 	 *
-	 * @return the entity whose id is equals to the specified id or null if no such entity if found
+	 * @return the entity whose id is equals to the specified id or null if
+	 * no such entity if found
 	 */
 	@SuppressWarnings("unchecked")
 	public default T select(ID id)
 	{
 		return getId().equals(id)
-				? (T) this : getChildren().stream().map(e -> e.select(id))
-						.filter(e -> e != null).findFirst().orElse(null);
+			? (T) this : getChildren().stream().map(e -> e.select(id))
+				.filter(e -> e != null).findFirst().orElse(null);
 	}
 
 	/**
-	 * Creates a list with data extracted of this element and it's parents recursively
+	 * Creates a list with data extracted of this element and it's parents
+	 * recursively
 	 *
 	 * @param <E> the element data to be extracted
 	 * @param extractor the function to be used to extract data
-	 * @return a list with the data extracted setup this element and it's parents recursively
+	 * @return a list with the data extracted setup this element and it's
+	 * parents recursively
 	 */
 	public default <E> List<E> toParentList(Function<T, E> extractor)
 	{
 		return parentStream()
-				.map(extractor)
-				.collect(Collectors.toList());
+			.map(extractor)
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -182,8 +197,8 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	public default Stream<T> parentStream()
 	{
 		return getParent().getId() == null
-				? Stream.of((T) this)
-				: Stream.concat(Stream.of((T) this), getParent().parentStream());
+			? Stream.of((T) this)
+			: Stream.concat(Stream.of((T) this), getParent().parentStream());
 	}
 
 	@Override
@@ -197,23 +212,27 @@ public interface Hierarchy<T extends Hierarchy<T>>
 
 	/**
 	 *
-	 * Create the parent and child relationships setup all elements in the specified list.
+	 * Create the parent and child relationships setup all elements in the
+	 * specified list.
 	 *
 	 * @param <T> the hierarchical type setup the list entities
 	 * @param list the list to be made hierarchical
 	 *
 	 * @return a new list with the root elements of the specified one
 	 *
-	 * @throws java.lang.NullPointerException if the specified list is null or has any element with a null id
-	 * @throws gate.error.DuplicateException if the specified list contains duplicates
-	 * @throws gate.error.InvalidCircularRelationException if the specified list contains circular relationships
-	 * @throws gate.error.NotFoundException if any object in the specified list references a non existent object
+	 * @throws java.lang.NullPointerException if the specified list is null
+	 * or has any element with a null id
+	 * @throws gate.error.DuplicateException if the specified list contains
+	 * duplicates
+	 * @throws gate.error.InvalidCircularRelationException if the specified
+	 * list contains circular relationships
+	 * @throws gate.error.NotFoundException if any object in the specified
+	 * list references a non existent object
 	 */
 	public static <T extends Hierarchy<T>> List<T> setup(List<T> list)
-			throws DuplicateException,
-			InvalidCircularRelationException,
-			NotFoundException,
-			NullPointerException
+		throws DuplicateException,
+		InvalidCircularRelationException,
+		NotFoundException
 	{
 		Objects.requireNonNull(list);
 		DuplicateException.check(list);
@@ -223,25 +242,25 @@ public interface Hierarchy<T extends Hierarchy<T>>
 			Objects.requireNonNull(object.getId());
 
 			for (T parent = object.getParent();
-					parent != null && parent.getId() != null;
-					parent = parent.getParent())
+				parent != null && parent.getId() != null;
+				parent = parent.getParent())
 			{
 				if (parent.equals(object))
 					throw new InvalidCircularRelationException();
 
 				final T _parent = parent;
 				parent = list.stream().filter(e -> e.equals(_parent))
-						.findAny().orElseThrow(NotFoundException::new);
+					.findAny().orElseThrow(NotFoundException::new);
 			}
 		}
 
 		list.stream().forEach(p -> p.setChildren(list.stream()
-				.filter(c -> Objects.equals(c.getParent(), p))
-				.peek(c -> c.setParent(p))
-				.collect(Collectors.toList())));
+			.filter(c -> Objects.equals(c.getParent(), p))
+			.peek(c -> c.setParent(p))
+			.collect(Collectors.toList())));
 
 		return list.stream().filter(e -> e.getParent() == null || e.getParent().getId() == null)
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 }

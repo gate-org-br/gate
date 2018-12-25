@@ -2,6 +2,7 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input[list]")).forEach(function (element)
 	{
+		element.setAttribute("autocomplete", "off");
 		element.addEventListener("input", function ()
 		{
 			if (typeof this.value === "string")
@@ -54,6 +55,8 @@ window.addEventListener("load", function ()
 				{
 					this.value = option.innerHTML;
 					field.value = option.getAttribute("data-value");
+					field.dispatchEvent(new CustomEvent('field-populated',
+						{detail: {source: this}}));
 				});
 		});
 	});

@@ -1,4 +1,5 @@
 .margin {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
 }
@@ -143,27 +144,17 @@ input[type='file'],
 textarea,
 select {
   width: 100%;
-  border: 1px solid #CCCCCC;
   background-color: white;
+  border: 1px solid #CCCCCC;
 }
-input[type='text'],
-input[type='password'],
-select {
-  height: 24px;
-  line-height: 24px;
-}
-input[type='text']:focus,
-input[type='password']:focus,
-input[type='file']:focus,
-textarea:focus,
-select:focus {
+input[type='text']:hover,
+input[type='password']:hover,
+input[type='file']:hover,
+textarea:hover,
+select:hover {
   background-color: #FFFACD;
 }
 input[type='file'] {
-  width: 100%;
-  border: 1px solid #CCCCCC;
-  background-color: white;
-  height: 100%;
   cursor: pointer;
 }
 input:invalid,
@@ -334,20 +325,29 @@ dialog {
   border: 4px solid #767d90;
   background-color: #CDCAB9;
 }
-fieldset,
-fieldset > legend,
-fieldset > label > span {
-  border-radius: 5px;
-}
 fieldset {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   border: none;
   padding: 12px;
+  border-radius: 5px;
   background-color: #b9b6a7;
 }
 fieldset:first-child {
   margin-top: 0px;
+}
+fieldset > legend {
+  padding: 2px;
+  color: black;
+  text-align: left;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: #DFDED4;
+}
+fieldset > legend > i {
+  float: left;
+  margin-right: 4px;
 }
 fieldset fieldset {
   float: left;
@@ -357,6 +357,9 @@ fieldset fieldset {
   margin-top: 10px;
   background-color: #c3c0b0;
 }
+fieldset fieldset > legend {
+  background-color: #BDBCB2;
+}
 fieldset > div {
   margin: 5px;
   padding: 4px;
@@ -364,20 +367,6 @@ fieldset > div {
   width: calc(100% - 10px);
   border: 1px solid #CCCCCC;
   background-color: #EEEEEE;
-}
-fieldset > legend {
-  padding: 2px;
-  color: #432F21;
-  text-align: left;
-  font-weight: bold;
-  background-color: #DFDED4;
-}
-fieldset > legend > i {
-  float: left;
-  margin-right: 4px;
-}
-fieldset fieldset > legend {
-  background-color: #BDBCB2;
 }
 fieldset > label {
   float: left;
@@ -389,80 +378,94 @@ fieldset > label {
 fieldset > label > span {
   margin: 0px;
   width: 100%;
+  border: none;
   padding: 0px;
-  height: 24px;
-  display: flex;
+  height: 32px;
   color: black;
+  display: flex;
   overflow: hidden;
-  line-height: 24px;
+  border-radius: 5px;
   position: relative;
   white-space: nowrap;
-  align-items: stretch;
+  align-items: center;
   text-overflow: ellipsis;
-  background-color: #E6E6E3;
   justify-content: flex-start;
-  border: 0px none transparent;
+  background-color: #e6e5dc;
 }
 fieldset > label > span > * {
   margin: 0px;
   padding: 0px;
-  color: #080c1b;
-  line-height: 22px;
+  color: black;
+  flex-grow: 1;
+  height: 100%;
   display: inline-block;
   border: 1px solid #CCCCCC;
 }
-fieldset > label > span > input,
-fieldset > label > span > select {
-  flex-grow: 1;
+fieldset > label > span > *:first-child {
+  border-radius: 5px 0 0 5px;
 }
-fieldset > label > span > textarea {
-  line-height: 16px;
-  flex-grow: 1;
-}
-fieldset > label > span > *:first-child,
 fieldset > label > span > *:first-child > * {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-radius: 5px 0 0 5px;
 }
-fieldset > label > span > *:last-child,
+fieldset > label > span > *:last-child {
+  border-radius: 0 5px 5px 0;
+}
 fieldset > label > span > *:last-child > * {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-radius: 0 5px 5px 0;
 }
-fieldset > label > span > a {
-  border: none;
+fieldset > label > span > input,
+fieldset > label > span > select,
+fieldset > label > span > label {
+  flex-grow: 1;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
-fieldset > label > span > a:hover {
-  color: #CA171B;
-  background-color: #EEEEEE;
+fieldset > label > span textarea {
+  padding: 4px;
+  flex-grow: 1;
+  line-height: 16px;
 }
-fieldset label > span > a:focus {
+fieldset > label > span > a,
+fieldset > label > span > button {
+  width: 32px;
+  height: 100%;
+  flex-grow: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+fieldset > label > span > a > i,
+fieldset > label > span > button > i,
+fieldset > label > span > a > span,
+fieldset > label > span > button > span {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+fieldset > label > span > a:hover,
+fieldset > label > span > button:hover {
+  background-color: #c0b9cd;
+}
+fieldset > label > span > a:focus,
+fieldset > label > span > button:focus {
   background-color: #FFFACD;
 }
 fieldset > label > span > i,
 fieldset > label > span > span {
   right: 0px;
-  width: 20px;
-  color: #666666;
-  display: block;
-  font-size: 12px;
-  line-height: 24px;
-  text-align: center;
-  position: absolute;
-  border: 0px none transparent;
-}
-fieldset > label > span > a > i,
-fieldset > label > span > a > span {
-  width: 100%;
+  width: 32px;
   height: 100%;
   display: flex;
-  font-size: 16px;
+  color: #999999;
+  position: absolute;
   align-items: center;
   justify-content: center;
-  border: 1px solid #CCCCCC;
+  background-color: transparent;
+  border: 1px solid transparent;
 }
 div.main,
 div.Main {
@@ -555,6 +558,7 @@ div[title] > div:nth-child(1) {
   border-radius: 0 0 5px 5px;
 }
 div.Panel {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 10px;
@@ -570,6 +574,7 @@ div.Page {
   background-color: #c3c0b0;
 }
 div.TEXT {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
@@ -599,6 +604,7 @@ div.EDITOR {
   overflow: auto;
 }
 table {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
@@ -1151,6 +1157,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 }
 *.COOLBAR,
 *.Coolbar {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
@@ -1253,6 +1260,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 }
 div.Toolbar,
 div.TOOLBAR {
+  margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   height: 48px;
@@ -1696,4 +1704,43 @@ th[data-sortable="U"] > a::before {
 }
 th[data-sortable="D"] > a::before {
   content: "\2193";
+}
+span[navigator] {
+  display: flex;
+  padding-left: 4px;
+  padding-right: 4px;
+  align-items: center;
+  justify-content: flex-start;
+}
+span[navigator][iconless] > a > i,
+span[navigator][iconless] > label > i {
+  display: none;
+}
+span[navigator] > a,
+span[navigator] > label {
+  display: flex;
+  font-size: inherit;
+  align-items: center;
+  justify-content: space-between;
+}
+span[navigator] > a > i,
+span[navigator] > label > i {
+  order: -1;
+  display: flex;
+  margin-right: 4px;
+  font-size: inherit;
+  align-items: center;
+  justify-content: center;
+}
+span[navigator] > a:not(:last-child):after,
+span[navigator] > label:not(:last-child):after {
+  display: flex;
+  color: #999999;
+  content: "\2275";
+  align-items: center;
+  font-family: "gate";
+  pointer-events: none;
+  margin-left: 4px;
+  margin-right: 4px;
+  justify-content: center;
 }
