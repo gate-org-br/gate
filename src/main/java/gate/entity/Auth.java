@@ -31,6 +31,8 @@ public class Auth implements Serializable
 	@Column("Uzer")
 	private User user;
 
+	private Func func;
+
 	@Required
 	@Description("Defina o tipo do acesso. Acessos públicos são herdados e acessos privados não.")
 	private Type type;
@@ -113,6 +115,19 @@ public class Auth implements Serializable
 		return this;
 	}
 
+	public Func getFunc()
+	{
+		if (func == null)
+			func = new Func();
+		return func;
+	}
+
+	public Auth setFunc(Func func)
+	{
+		this.func = func;
+		return this;
+	}
+
 	public String getScreen()
 	{
 		return screen;
@@ -150,7 +165,7 @@ public class Auth implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Auth && Objects
-				.equals(id, ((Auth) obj).id);
+			.equals(id, ((Auth) obj).id);
 	}
 
 	@Override
@@ -163,40 +178,18 @@ public class Auth implements Serializable
 	public String toString()
 	{
 		return new StringJoiner(", ")
-				.add("MODULE: " + (module != null ? module : "*"))
-				.add("SCREEN: " + (screen != null ? screen : "*"))
-				.add("ACTION: " + (action != null ? action : "*"))
-				.toString();
+			.add("MODULE: " + (module != null ? module : "*"))
+			.add("SCREEN: " + (screen != null ? screen : "*"))
+			.add("ACTION: " + (action != null ? action : "*"))
+			.toString();
 	}
 
 	public boolean isSuperAuth()
 	{
 		return Mode.ALLOW == mode
-				&& module == null
-				&& screen == null
-				&& action == null;
-	}
-
-	public enum Type
-	{
-
-		@Icon("2006")
-		PUBLIC("Público"),
-		@Icon("2000")
-		PRIVATE("Privado");
-
-		private final String string;
-
-		Type(String string)
-		{
-			this.string = string;
-		}
-
-		@Override
-		public String toString()
-		{
-			return string;
-		}
+			&& module == null
+			&& screen == null
+			&& action == null;
 	}
 
 	public enum Mode
@@ -221,24 +214,46 @@ public class Auth implements Serializable
 		}
 	}
 
+	public enum Type
+	{
+
+		@Icon("2006")
+		PUBLIC("Público"),
+		@Icon("2000")
+		PRIVATE("Privado");
+
+		private final String string;
+
+		Type(String string)
+		{
+			this.string = string;
+		}
+
+		@Override
+		public String toString()
+		{
+			return string;
+		}
+	}
+
 	public boolean blocks(String module, String screen, String action)
 	{
 		return this.mode == Mode.BLOCK
-				&& (this.module == null || this.module.equals(module))
-				&& (this.screen == null || this.screen.equals(screen))
-				&& (this.action == null || this.action.equals(action));
+			&& (this.module == null || this.module.equals(module))
+			&& (this.screen == null || this.screen.equals(screen))
+			&& (this.action == null || this.action.equals(action));
 	}
 
 	public boolean allows(boolean strict, String module, String screen, String action)
 	{
 		return this.mode == Mode.ALLOW
-				&& strict
-						? isSuperAuth()
-						|| (Objects.equals(this.module, module)
-						&& Objects.equals(this.screen, screen)
-						&& Objects.equals(this.action, action))
-						: (module == null || this.module == null || this.module.equals(module))
-						&& (screen == null || this.screen == null || this.screen.equals(screen))
-						&& (action == null || this.action == null || this.action.equals(action));
+			&& strict
+				? isSuperAuth()
+				|| (Objects.equals(this.module, module)
+				&& Objects.equals(this.screen, screen)
+				&& Objects.equals(this.action, action))
+				: (module == null || this.module == null || this.module.equals(module))
+				&& (screen == null || this.screen == null || this.screen.equals(screen))
+				&& (action == null || this.action == null || this.action.equals(action));
 	}
 }

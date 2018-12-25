@@ -21,16 +21,24 @@ public class FuncDao extends Dao
 		super("Gate");
 	}
 
-	public FuncDao(Link c)
+	public FuncDao(Link link)
 	{
-		super(c);
+		super(link);
 	}
 
-	public List<Func> search(Func func) throws AppException
+	public List<Func> search()
+	{
+		return getLink()
+			.from("select id, name from Func order by name")
+			.constant()
+			.fetchEntityList(Func.class);
+	}
+
+	public List<Func> search(Func func)
 	{
 		return getLink()
 			.search(Func.class)
-			.properties("=id", "%name")
+			.properties("=id", "%+name")
 			.matching(func);
 	}
 
@@ -66,41 +74,65 @@ public class FuncDao extends Dao
 			throw new NotFoundException();
 	}
 
-	public void add(User user, Func func) throws AppException
+	public static class UserDao extends Dao
 	{
-		Insert.into("UserFunc")
-			.set("User$id", user.getId())
-			.set("Func$id", func.getId())
-			.build().connect(getLink())
-			.execute();
+
+		public List<Func> search(User user)
+		{
+			return getLink()
+				.from(getClass().getResource("FuncDao/UserDao/search(User).sql"))
+				.parameters(user.getId())
+				.fetchEntityList(Func.class);
+		}
+
+		public void insert(Func func, User user) throws AppException
+		{
+			Insert.into("UzerFunc")
+				.set("Func$id", func.getId())
+				.set("Uzer$id", user.getId())
+				.build().connect(getLink())
+				.execute();
+		}
+
+		public void delete(Func func, User user) throws AppException
+		{
+			Delete.from("UzerFunc")
+				.where(Condition.of("Uzer$id")
+					.eq(ID.class, user.getId())
+					.and("Func$id").eq(ID.class, func.getId()))
+				.build().connect(getLink())
+				.execute();
+		}
 	}
 
-	public void add(Role role, Func func) throws AppException
+	public static class RoleDao extends Dao
 	{
-		Insert.into("RoleFunc")
-			.set("Role$id", role.getId())
-			.set("Func$id", func.getId())
-			.build().connect(getLink())
-			.execute();
-	}
 
-	public void rem(User user, Func func) throws AppException
-	{
-		Delete.from("UserFunc")
-			.where(Condition.of("Uzer$id")
-				.eq(ID.class, user.getId())
-				.and("Func$id").eq(ID.class, func.getId()))
-			.build().connect(getLink())
-			.execute();
-	}
+		public List<Func> search(Role role)
+		{
+			return getLink()
+				.from(getClass().getResource("FuncDao/RoleDao/search(Role).sql"))
+				.parameters(role.getId())
+				.fetchEntityList(Func.class);
+		}
 
-	public void rem(Role role, Func func) throws AppException
-	{
-		Delete.from("RoleFunc")
-			.where(Condition.of("Role$id")
-				.eq(ID.class, role.getId())
-				.and("Func$id").eq(ID.class, func.getId()))
-			.build().connect(getLink())
-			.execute();
+		public void insert(Func func, Role role) throws AppException
+		{
+			Insert.into("RoleFunc")
+				.set("Func$id", func.getId())
+				.set("Role$id", role.getId())
+				.build().connect(getLink())
+				.execute();
+		}
+
+		public void delete(Func func, Role role) throws AppException
+		{
+			Delete.from("RoleFunc")
+				.where(Condition.of("Role$id")
+					.eq(ID.class, role.getId())
+					.and("Func$id").eq(ID.class, func.getId()))
+				.build().connect(getLink())
+				.execute();
+		}
 	}
 }

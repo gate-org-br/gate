@@ -5,12 +5,17 @@ import gate.entity.Org;
 import gate.entity.User;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
+import gate.error.DuplicateException;
+import gate.error.InvalidCircularRelationException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
+import gate.error.NotFoundException;
 import gate.io.Credentials;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,8 +38,8 @@ public class Auth extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest request,
-			HttpServletResponse response)
-			throws ServletException, IOException
+		HttpServletResponse response)
+		throws ServletException, IOException
 	{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
@@ -46,15 +51,18 @@ public class Auth extends HttpServlet
 				User user = control.select(org, username, password);
 				String credentials = Credentials.create(user);
 				writer.write(String.format("{status: 'success', value: '%s'}",
-						credentials));
+					credentials));
 			} catch (InvalidServiceException
-					| InvalidUsernameException
-					| AuthenticatorException
-					| InvalidPasswordException
-					| DefaultPasswordException ex)
+				| InvalidUsernameException
+				| AuthenticatorException
+				| InvalidPasswordException
+				| DefaultPasswordException
+				| DuplicateException
+				| InvalidCircularRelationException
+				| NotFoundException ex)
 			{
 				writer.write(String.format("{status: 'error', value: '%s'}",
-						ex.getMessage()));
+					ex.getMessage()));
 			}
 		}
 	}

@@ -2,7 +2,9 @@ package gateconsole.contol;
 
 import gate.Progress;
 import gate.base.Control;
+import gate.base.Dao;
 import gate.constraint.Constraints;
+import gate.entity.Func;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
@@ -32,7 +34,7 @@ public class UserControl extends Control
 		try (UserDao dao = new UserDao())
 		{
 			return dao.search().stream().peek(e -> e.setRole(getUser().getRole().getRoot().select(e.getRole().getId())))
-					.collect(Collectors.toList());
+				.collect(Collectors.toList());
 		}
 	}
 
@@ -41,10 +43,10 @@ public class UserControl extends Control
 		try (UserDao dao = new UserDao())
 		{
 			return dao.search(filter).stream()
-					.peek(e -> e.setRole(getUser().getRole().getRoot()
-					.select(e.getRole()
-							.getId())))
-					.collect(Collectors.toList());
+				.peek(e -> e.setRole(getUser().getRole().getRoot()
+				.select(e.getRole()
+					.getId())))
+				.collect(Collectors.toList());
 		}
 	}
 
@@ -112,8 +114,8 @@ public class UserControl extends Control
 	public void update(User model) throws AppException
 	{
 		Constraints.validate(model, "active", "role.id",
-				"userID", "name", "email", "details", "phone",
-				"cellPhone", "photo", "CPF");
+			"userID", "name", "email", "details", "phone",
+			"cellPhone", "photo", "CPF");
 
 		if (model.getPhoto() != null && model.getPhoto().getSize() > 65535)
 			throw new AppException("Fotos devem possuir no máximo %d bytes", MAX_PHOTO_SIZE);
@@ -146,6 +148,35 @@ public class UserControl extends Control
 		{
 			if (!dao.setPasswd(user))
 				throw new AppException("Tentativa de resetar a senha de um USUÁRIO inexistente.");
+		}
+	}
+
+	public static class FuncControl extends Control
+	{
+
+		public List<User> search(Func func)
+		{
+			try (UserDao.FuncDao dao = new UserDao.FuncDao())
+			{
+				return dao.search(func);
+			}
+		}
+
+		public void insert(User user, Func func) throws AppException
+		{
+			try (UserDao.FuncDao dao = new UserDao.FuncDao())
+			{
+				dao.insert(user, func);
+			}
+
+		}
+
+		public void delete(User user, Func func) throws AppException
+		{
+			try (UserDao.FuncDao dao = new UserDao.FuncDao())
+			{
+				dao.delete(user, func);
+			}
 		}
 	}
 }
