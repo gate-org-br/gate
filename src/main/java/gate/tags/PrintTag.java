@@ -19,7 +19,9 @@ public class PrintTag extends SimpleTagSupport
 		String string = format != null ? Converter.toText(value, format) : Converter.toText(value);
 		if (string.isEmpty() && empty != null)
 			string = empty;
-		getJspContext().getOut().print(string.replaceAll("\\n", "<br/>"));
+		string = string.replaceAll("\\n", "<br/>");
+
+		getJspContext().getOut().print(string);
 	}
 
 	public void setFormat(String format)
