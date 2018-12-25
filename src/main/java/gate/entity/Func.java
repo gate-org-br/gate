@@ -2,16 +2,20 @@ package gate.entity;
 
 import gate.annotation.Description;
 import gate.annotation.Entity;
+import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.ID;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Func
+@Name("Func")
+@Icon("2099")
+public class Func implements Serializable
 {
 
 	@Required

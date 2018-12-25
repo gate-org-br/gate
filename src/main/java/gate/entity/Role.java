@@ -13,7 +13,6 @@ import gate.type.Hierarchy;
 import gate.type.ID;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -86,6 +85,8 @@ public class Role implements Serializable, Hierarchy<Role>
 	private List<User> users;
 
 	private List<Role> roles;
+
+	private List<Func> funcs;
 
 	@Override
 	public ID getId()
@@ -180,6 +181,18 @@ public class Role implements Serializable, Hierarchy<Role>
 	{
 		this.users = users;
 		return this;
+	}
+
+	public List<Func> getFuncs()
+	{
+		if (funcs == null)
+			funcs = new ArrayList<>();
+		return funcs;
+	}
+
+	public void setFuncs(List<Func> funcs)
+	{
+		this.funcs = funcs;
 	}
 
 	public List<Role> getRoles()
@@ -311,27 +324,22 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	private Stream<Auth> privateAuthStream()
 	{
-		return id != null ? getAuths().stream()
-			.filter(e -> Auth.Type.PRIVATE.equals(e.getType()))
+		return id != null ? Stream.concat(getAuths().stream()
+			.filter(e -> Auth.Type.PRIVATE.equals(e.getType())),
+			getFuncs().stream().flatMap(e -> e.getAuths().stream())
+				.filter(e -> Auth.Type.PRIVATE.equals(e.getType())))
 			: Stream.empty();
-	}
-
-	public List<Auth> getPrivateAuths()
-	{
-		return privateAuthStream().collect(Collectors.toList());
 	}
 
 	private Stream<Auth> publicAuthStream()
 	{
+
 		return id != null
 			? Stream.concat(getAuths().stream()
 				.filter(e -> Auth.Type.PUBLIC.equals(e.getType())),
-				getRole().publicAuthStream()) : Stream.empty();
-	}
-
-	public List<Auth> getPublicAuths()
-	{
-		return publicAuthStream().collect(Collectors.toList());
+				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
+					.filter(e -> Auth.Type.PUBLIC.equals(e.getType())),
+					getRole().publicAuthStream())) : Stream.empty();
 	}
 
 	public Stream<Auth> computedAuthStream()

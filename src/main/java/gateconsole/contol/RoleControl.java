@@ -3,34 +3,48 @@ package gateconsole.contol;
 import gate.base.Control;
 import gate.constraint.Constraints;
 import gate.entity.Auth;
+import gate.entity.Bond;
+import gate.entity.Func;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
+import gate.type.Hierarchy;
 import gate.type.ID;
 import gateconsole.dao.AuthDao;
+import gateconsole.dao.BondDao;
 import gateconsole.dao.RoleDao;
 import gateconsole.dao.UserDao;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoleControl extends Control
 {
 
-	public Collection<Role> search() throws AppException
+	public List<Role> search() throws AppException
 	{
 		try (Link link = new Link("Gate");
-				RoleDao roleDao = new RoleDao(link);
-				UserDao userDao = new UserDao(link);
-				AuthDao authDao = new AuthDao(link))
+			RoleDao roleDao = new RoleDao(link);
+			UserDao userDao = new UserDao(link);
+			BondDao bondDao = new BondDao(link);
+			AuthDao authDao = new AuthDao(link))
 		{
-			Collection<Role> roles = roleDao.search();
-			Collection<User> users = userDao.search();
-			Collection<Auth> auths = authDao.search();
-			roles.forEach(role -> auths.stream().filter(e -> role.equals(e.getRole())).forEach(role.getAuths()::add));
-			roles.forEach(role -> users.stream().filter(e -> role.equals(e.getRole())).forEach(role.getUsers()::add));
-			users.forEach(user -> auths.stream().filter(e -> user.equals(e.getUser())).forEach(user.getAuths()::add));
+			List<Role> roles = roleDao.search();
+			List<User> users = userDao.search();
+			List<Auth> auths = authDao.search();
+			List<Bond> bonds = bondDao.search();
+
+			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
+			users.forEach(user -> user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList())));
+			bonds.stream().map(e -> e.getFunc()).forEach(func -> func.setAuths(auths.stream().filter(auth -> func.equals(auth.getFunc())).collect(Collectors.toList())));
+
+			roles.forEach(role -> role.setFuncs(bonds.stream().filter(bond -> role.equals(bond.getRole())).map(bond -> bond.getFunc()).collect(Collectors.toList())));
+			users.forEach(user -> user.setFuncs(bonds.stream().filter(bond -> user.equals(bond.getUser())).map(bond -> bond.getFunc()).collect(Collectors.toList())));
+
+			roles.forEach(role -> role.setUsers(users.stream().filter(user -> role.equals(user.getRole())).collect(Collectors.toList())));
+
 			roles.removeIf(e -> e.getRole().getId() != null);
 			return roles;
 		}
@@ -56,7 +70,7 @@ public class RoleControl extends Control
 	public void update(Role role) throws AppException
 	{
 		Constraints.validate(role, "role.id", "master", "active",
-				"name", "email", "description", "roleID");
+			"name", "email", "description", "roleID");
 
 		try (RoleDao dao = new RoleDao())
 		{
@@ -67,9 +81,9 @@ public class RoleControl extends Control
 
 			List<Role> roles = dao.search();
 			if (roles.stream().anyMatch(e
-					-> Boolean.TRUE.equals(e.getMaster())
-					&& e.getParent().getId() != null
-					&& !Boolean.TRUE.equals(e.getParent().getMaster())))
+				-> Boolean.TRUE.equals(e.getMaster())
+				&& e.getParent().getId() != null
+				&& !Boolean.TRUE.equals(e.getParent().getMaster())))
 				throw new AppException("Tentativa de inserir um perfil master dentro de um perfil não master.");
 
 			dao.commit();
@@ -94,6 +108,35 @@ public class RoleControl extends Control
 		try (RoleDao dao = new RoleDao())
 		{
 			return dao.getChildRoles(role);
+		}
+	}
+
+	public static class FuncControl extends Control
+	{
+
+		public List<Role> search(Func func)
+		{
+			try (RoleDao.FuncDao dao = new RoleDao.FuncDao())
+			{
+				return dao.search(func);
+			}
+		}
+
+		public void insert(Role role, Func func) throws AppException
+		{
+			try (RoleDao.FuncDao dao = new RoleDao.FuncDao())
+			{
+				dao.insert(role, func);
+			}
+
+		}
+
+		public void delete(Role role, Func func) throws AppException
+		{
+			try (RoleDao.FuncDao dao = new RoleDao.FuncDao())
+			{
+				dao.delete(role, func);
+			}
 		}
 	}
 }

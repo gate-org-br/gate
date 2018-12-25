@@ -8,6 +8,7 @@
 			</legend>
 			<g:hidden property="form.user.id" required=''/>
 			<g:hidden property="form.role.id" required=''/>
+			<g:hidden property="form.func.id" required=''/>
 			<label style='width: 12.5%'>
 				Modo:
 				<span>
@@ -21,6 +22,9 @@
 						<g:when condition="${not empty screen.form.role.id}">
 							<g:select property="form.type" tabindex='1'/>
 						</g:when>
+						<g:when condition="${not empty screen.form.func.id}">
+							<g:select property="form.type" tabindex='1'/>
+						</g:when>
 						<g:otherwise>
 							<g:hidden property="form.type" value='1'/>
 							<g:icon type="gate.entity.Auth$Type" field="PRIVATE"/>Privado
@@ -31,31 +35,22 @@
 			<label style='width: 25%'>
 				Module:
 				<span>
-					<g:text id='module' property="form.module" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
-						title='Pesquisar acessos'>
-						<g:icon type="search"/>
-					</g:link>
+					<g:text id='module' property="form.module" tabindex='1'/>
+					<g:shortcut module="#" screen="#" action="Search" data-get='module, screen, action' title='Pesquisar acessos'/>
 				</span>
 			</label>
 			<label style='width: 25%'>
 				Screen:
 				<span>
-					<g:text id='screen' property="form.screen" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
-						title='Pesquisar acessos'>
-						<g:icon type="search"/>
-					</g:link>
+					<g:text id='screen' property="form.screen" tabindex='1'/>
+					<g:shortcut module="#" screen="#" action="Search" data-get='module, screen, action' title='Pesquisar acessos'/>
 				</span>
 			</label>
 			<label style='width: 25%'>
 				Action:
 				<span>
-					<g:text id='action' property="form.action" tabindex='1' style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="#" action="Search" style='width: 32px' data-get='module, screen, action'
-						title='Pesquisar acessos'>
-						<g:icon type="search"/>
-					</g:link>
+					<g:text id='action' property="form.action" tabindex='1'/>
+					<g:shortcut module="#" screen="#" action="Search" data-get='module, screen, action' title='Pesquisar acessos'/>
 				</span>
 			</label>
 		</fieldset>
@@ -141,3 +136,4 @@
 		</g:otherwise>
 	</g:choose>
 </g:template>
+

@@ -117,6 +117,8 @@ public class User implements Serializable
 	@Description("Data de cadastro do usuário.")
 	private DateTime registration;
 
+	private List<Func> funcs;
+
 	public Collection<Auth> getAuths()
 	{
 		if (auths == null)
@@ -218,6 +220,18 @@ public class User implements Serializable
 	{
 		this.email = email;
 		return this;
+	}
+
+	public List<Func> getFuncs()
+	{
+		if (funcs == null)
+			funcs = new ArrayList<>();
+		return funcs;
+	}
+
+	public void setFuncs(List<Func> funcs)
+	{
+		this.funcs = funcs;
 	}
 
 	@Override
@@ -340,7 +354,8 @@ public class User implements Serializable
 	public Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream(),
-			getRole().computedAuthStream()) : Stream.empty();
+			Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream()),
+				getRole().computedAuthStream())) : Stream.empty();
 	}
 
 	public List<Auth> getComputedAuths()
@@ -363,5 +378,4 @@ public class User implements Serializable
 		return computedAuthStream().noneMatch(e -> e.blocks(module, screen, action))
 			&& computedAuthStream().anyMatch(e -> e.allows(strict, module, screen, action));
 	}
-
 }

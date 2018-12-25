@@ -1,10 +1,13 @@
 package gateconsole.dao;
 
 import gate.base.Dao;
+import gate.entity.Func;
 import gate.entity.Role;
 import gate.error.AppException;
 import gate.error.NotFoundException;
 import gate.sql.Link;
+import gate.sql.condition.Condition;
+import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
 import gate.type.Hierarchy;
 import gate.type.ID;
@@ -79,5 +82,36 @@ public class RoleDao extends Dao
 				"roleID", "role.name", "email", "name",
 				"description", "manager.id", "manager.name")
 			.parameters(role.getId());
+	}
+
+	public static class FuncDao extends Dao
+	{
+
+		public List<Role> search(Func func)
+		{
+			return getLink()
+				.from(getClass().getResource("RoleDao/FuncDao/search(Func).sql"))
+				.parameters(func.getId())
+				.fetchEntityList(Role.class);
+		}
+
+		public void insert(Role user, Func func) throws AppException
+		{
+			Insert.into("RoleFunc")
+				.set("Role$id", user.getId())
+				.set("Func$id", func.getId())
+				.build().connect(getLink())
+				.execute();
+		}
+
+		public void delete(Role user, Func func) throws AppException
+		{
+			Delete.from("RoleFunc")
+				.where(Condition.of("Role$id")
+					.eq(ID.class, user.getId())
+					.and("Func$id").eq(ID.class, func.getId()))
+				.build().connect(getLink())
+				.execute();
+		}
 	}
 }

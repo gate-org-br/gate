@@ -30,10 +30,8 @@
 			<label style='width: 12.5%'>
 				Senha:
 				<span>
-					<g:icon type="passwd"/>
-					<g:link module="#" screen="#" action="Passwd" arguments="form.id=${screen.form.id}">
-						Clique para resetar
-					</g:link>
+					<label>Clique para resetar</label>
+					<g:shortcut module="#" screen="#" action="Passwd" arguments="form.id=${screen.form.id}"/>
 				</span>
 			</label>
 			<label style='width: 25%'>
@@ -45,13 +43,12 @@
 			<label style='width: 25%'>
 				Perfil:
 				<span>
-					<g:icon type="gate.entity.Role"/>
-					<g:if condition="${not empty screen.form.role.id}" otherwise="N/A">
-						<g:link module="#" screen="Role" action="Select"
-							arguments="form.id=${screen.form.role.id}"
-							otherwise="${screen.form.role.name}">
-							<g:print value="${screen.form.role.name}" empty="N/A"/>
-						</g:link>
+					<label>
+						<g:print value="${screen.form.role.name}" empty="N/A"/>
+					</label>
+					<g:if condition="${not empty screen.form.role.id}">
+						<g:shortcut module="#" screen="Role" action="Select"
+							    arguments="form.id=${screen.form.role.id}"/>
 					</g:if>
 				</span>
 			</label>
@@ -128,24 +125,18 @@
 	</div>
 
 	<div class='COOLBAR'>
-		<a href='#' class='Hide' style='float: left'>
+		<a href='#' class='Hide Cancel'>
 			Fechar<g:icon type="cancel"/>
 		</a>
-		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}">
-			Alterar<g:icon type="update"/>
-		</g:link>
-		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}" style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?">
-			Remover<g:icon type="delete"/>
-		</g:link>
+		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
+		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
+			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>
 	</div>
 
-	<div class='PageControl' data-type='Frame'>
+	<div class='PageControl'>
 		<ul>
-			<li style='width: 200px'>
-				<a href='Gate?MODULE=${MODULE}&SCREEN=Auth&form.user.id=${screen.form.id}'>
-					Acessos<g:icon type="gate.entity.Auth"/>
-				</a>
-			</li>
+			<g:menuitem module="#" screen="Auth" arguments="form.user.id=${screen.form.id}" style='width: 200px'/>
+			<g:menuitem module="#" screen="UserScreen$Func" arguments="user.id=${screen.form.id}" style='width: 200px'/>
 		</ul>
 	</div>
 </g:template>

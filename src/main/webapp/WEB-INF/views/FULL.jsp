@@ -16,6 +16,7 @@
 					<g:menuitem module="gateconsole.screen" screen="Home" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="Role" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="User" style="width: 10%"/>
+					<g:menuitem module="gateconsole.screen" screen="Func" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="Org" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="App" style="width: 10%"/>
 					<g:menuitem module="gateconsole.screen" screen="Mail" style="width: 10%"/>

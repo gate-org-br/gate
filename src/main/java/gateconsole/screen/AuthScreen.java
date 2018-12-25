@@ -1,6 +1,7 @@
 package gateconsole.screen;
 
 import gate.annotation.Current;
+import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
@@ -26,14 +27,20 @@ public class AuthScreen extends Screen
 	@Current
 	private Collection<App> apps;
 
+	@Inject
+	private AuthControl control;
+
+	@Name("Acessos")
+	@Icon("gate.entity.Auth")
 	public String call() throws AppException
 	{
-		setPage(new AuthControl().search(getForm()));
+		setPage(control.search(getForm()));
 		return "/WEB-INF/views/gateconsole/Auth/View.jsp";
 	}
 
-	@Icon("1002")
-	@Name("Pesquisar acessos")
+	@Icon("search")
+	@Name("Pesquisar")
+	@Description("Pesquisar acessos")
 	public String callSearch() throws AppException
 	{
 		return "/WEB-INF/views/gateconsole/Auth/ViewSearch.jsp";
@@ -45,7 +52,7 @@ public class AuthScreen extends Screen
 	{
 		try
 		{
-			new AuthControl().insert(getForm());
+			control.insert(getForm());
 		} catch (AppException e)
 		{
 			setMessages(e.getMessages());
@@ -59,7 +66,7 @@ public class AuthScreen extends Screen
 	{
 		try
 		{
-			new AuthControl().delete(getForm());
+			control.delete(getForm());
 		} catch (AppException e)
 		{
 			setMessages(e.getMessages());

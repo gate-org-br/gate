@@ -4,10 +4,11 @@ import gate.base.Dao;
 import gate.sql.Link;
 import gate.entity.Auth;
 import gate.error.AppException;
+import gate.error.NotFoundException;
+import gate.type.ID;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public class AuthDao extends Dao
 {
@@ -25,47 +26,51 @@ public class AuthDao extends Dao
 	public List<Auth> search()
 	{
 		return getLink()
-				.search(Auth.class)
-				.properties("id", "role.id", "user.id", "+mode", "+type", "+module", "+screen", "+action")
-				.parameters();
+			.search(Auth.class)
+			.properties("id", "role.id", "user.id", "func.id",
+				"+mode", "+type", "+module", "+screen", "+action")
+			.parameters();
 	}
 
 	public Collection<Auth> search(Auth filter)
 	{
 		return getLink()
-				.search(Auth.class)
-				.properties("=role.id", "=user.id", "id", "+mode", "+type", "+module", "+screen", "+action")
-				.matching(filter);
+			.search(Auth.class)
+			.properties("=role.id", "=user.id", "=func.id", "id", "+mode", "+type", "+module", "+screen", "+action")
+			.matching(filter);
 	}
 
-	public Optional<Auth> select(Auth filter)
+	public Auth select(ID id) throws NotFoundException
 	{
 		return getLink()
-				.select(Auth.class)
-				.properties("=id", "role.id", "user.id", "mode", "type", "module", "screen", "action")
-				.matching(filter);
+			.select(Auth.class)
+			.properties("=id", "role.id", "user.id", "func.id", "mode", "type", "module", "screen", "action")
+			.parameters(id)
+			.orElseThrow(NotFoundException::new);
 	}
 
 	public void insert(Auth value) throws AppException
 	{
 		getLink()
-				.insert(Auth.class)
-				.properties("role.id", "user.id", "mode", "type", "module", "screen", "action")
-				.execute(value);
+			.insert(Auth.class)
+			.properties("role.id", "user.id", "func.id", "mode", "type", "module", "screen", "action")
+			.execute(value);
 	}
 
-	public boolean update(Auth value) throws AppException
+	public void update(Auth value) throws AppException
 	{
-		return getLink()
-				.update(Auth.class)
-				.properties("=id", "mode", "type", "module", "screen", "action")
-				.execute(value) > 0;
+		if (getLink()
+			.update(Auth.class)
+			.properties("=id", "mode", "type", "module", "screen", "action")
+			.execute(value) == 0)
+			throw new NotFoundException();
 	}
 
-	public boolean delete(Auth... values) throws AppException
+	public void delete(Auth... values) throws AppException
 	{
-		return getLink()
-				.delete(Auth.class)
-				.execute(values) > 0;
+		if (getLink()
+			.delete(Auth.class)
+			.execute(values) == 0)
+			throw new NotFoundException();
 	}
 }

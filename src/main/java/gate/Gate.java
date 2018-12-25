@@ -13,10 +13,13 @@ import gate.error.AccessDeniedException;
 import gate.error.AppError;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
+import gate.error.DuplicateException;
+import gate.error.InvalidCircularRelationException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidRequestException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
+import gate.error.NotFoundException;
 import gate.handler.Handler;
 import gate.io.Credentials;
 import gate.util.ScreenServletRequest;
@@ -89,8 +92,8 @@ public class Gate extends HttpServlet
 			User user = Credentials.of(request).orElseGet(() -> session.getUser());
 
 			if (Toolkit.isEmpty(MODULE)
-					&& Toolkit.isEmpty(SCREEN)
-					&& Toolkit.isEmpty(ACTION))
+				&& Toolkit.isEmpty(SCREEN)
+				&& Toolkit.isEmpty(ACTION))
 
 			{
 				if (request.getSession(false) != null)
@@ -103,7 +106,7 @@ public class Gate extends HttpServlet
 				String password = request.getParameter("$passwd");
 
 				if (!Toolkit.isEmpty(username)
-						&& !Toolkit.isEmpty(password))
+					&& !Toolkit.isEmpty(password))
 					session.setUser(user = control.select(org, username, password));
 
 				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
@@ -116,10 +119,10 @@ public class Gate extends HttpServlet
 				screen.prepare(request, response);
 
 				if (method.isAnnotationPresent(Background.class)
-						|| method.isAnnotationPresent(BackgroundProcess.class))
+					|| method.isAnnotationPresent(BackgroundProcess.class))
 				{
 					if (method.isAnnotationPresent(Background.class)
-							&& method.isAnnotationPresent(BackgroundProcess.class))
+						&& method.isAnnotationPresent(BackgroundProcess.class))
 						throw new java.lang.IllegalArgumentException("Attempt to define a screen method annotaned with both Background and BackgroundProcess");
 
 					Progress progress = Progress.create(org, app, user);
@@ -157,8 +160,8 @@ public class Gate extends HttpServlet
 
 					if (method.isAnnotationPresent(Background.class))
 						getServletContext()
-								.getRequestDispatcher(method.getAnnotation(Background.class).value())
-								.forward(request, response);
+							.getRequestDispatcher(method.getAnnotation(Background.class).value())
+							.forward(request, response);
 					else
 						Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
 				} else
@@ -167,17 +170,17 @@ public class Gate extends HttpServlet
 					if (result != null)
 						if (method.isAnnotationPresent(gate.annotation.Handler.class))
 							Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
-									.handle(request, response, result);
+								.handle(request, response, result);
 						else
 							Handler.getHandler(result.getClass()).handle(request, response, result);
 				}
 			}
 
 		} catch (InvalidUsernameException
-				| InvalidPasswordException
-				| InvalidRequestException
-				| AccessDeniedException
-				| InvalidServiceException ex)
+			| InvalidPasswordException
+			| InvalidRequestException
+			| AccessDeniedException
+			| InvalidServiceException ex)
 		{
 			httpServletRequest.setAttribute("messages", Arrays.asList(ex.getMessage()));
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
@@ -190,6 +193,12 @@ public class Gate extends HttpServlet
 			httpServletRequest.setAttribute("messages", Arrays.asList(ex.getMessage()));
 			httpServletRequest.setAttribute("exception", ex.getCause());
 			Logger.getGlobal().log(Level.SEVERE, ex.getCause().getMessage(), ex.getCause());
+			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
+		{
+			httpServletRequest.setAttribute("messages", Arrays.asList("Banco de dados inconsistente"));
+			httpServletRequest.setAttribute("exception", ex);
+			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (InvocationTargetException ex)
 		{
@@ -207,17 +216,17 @@ public class Gate extends HttpServlet
 	}
 
 	public static boolean checkAccess(User user,
-			String module,
-			String screen,
-			String action,
-			Class<?> clazz,
-			Method method)
+		String module,
+		String screen,
+		String action,
+		Class<?> clazz,
+		Method method)
 	{
 		return clazz.isAnnotationPresent(Public.class)
-				|| method.isAnnotationPresent(Public.class)
-				|| (user != null
-				&& user.checkAccess(method.isAnnotationPresent(Strict.class)
-						|| clazz.isAnnotationPresent(Strict.class), module, screen, action));
+			|| method.isAnnotationPresent(Public.class)
+			|| (user != null
+			&& user.checkAccess(method.isAnnotationPresent(Strict.class)
+				|| clazz.isAnnotationPresent(Strict.class), module, screen, action));
 	}
 
 }

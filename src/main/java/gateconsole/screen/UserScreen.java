@@ -6,6 +6,7 @@ import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.constraint.Required;
+import gate.entity.Func;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.ConversionException;
@@ -18,6 +19,8 @@ import gate.report.doc.Doc;
 import gate.type.DateTime;
 import gate.type.mime.MimeData;
 import gate.util.Backup;
+import gate.util.Page;
+import gateconsole.contol.FuncControl;
 import gateconsole.contol.UserControl;
 import java.io.IOException;
 import java.util.List;
@@ -38,7 +41,7 @@ public class UserScreen extends Screen
 
 	private Iterable<User> page;
 	private final Backup BACKUP = new Backup("Usuários", User.class,
-			"name", "userID", "email", "phone", "cellPhone", "details");
+		"name", "userID", "email", "phone", "cellPhone", "details");
 
 	@Inject
 	private UserControl control;
@@ -50,6 +53,8 @@ public class UserScreen extends Screen
 		return "/WEB-INF/views/gateconsole/User/View.jsp";
 	}
 
+	@Name("Usuários")
+	@Icon("gate.entity.User")
 	public Object callImport() throws ServletException, IOException
 	{
 		page = control.search(getForm());
@@ -82,7 +87,7 @@ public class UserScreen extends Screen
 	public String callInsert()
 	{
 		if (isPOST()
-				&& getMessages().isEmpty())
+			&& getMessages().isEmpty())
 		{
 			try
 			{
@@ -237,5 +242,85 @@ public class UserScreen extends Screen
 	public MimeData getPhoto()
 	{
 		return control.getPhoto(getForm().getId());
+	}
+
+	public static class FuncScreen extends Screen
+	{
+
+		private Func func;
+		private User user;
+		private Page<Func> page;
+
+		@Inject
+		private FuncControl funcControl;
+
+		@Inject
+		private FuncControl.UserControl control;
+
+		@Name("Funções")
+		@Icon("gate.entity.Func")
+		public String call()
+		{
+
+			page = paginate(ordenate(control.search(user)));
+			return "/WEB-INF/views/gateconsole/User/Func/View.jsp";
+		}
+
+		@Icon("insert")
+		@Name("Adcionar")
+		public String callInsert()
+		{
+
+			try
+			{
+				control.insert(func, user);
+				func = null;
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+			return call();
+		}
+
+		@Icon("delete")
+		@Name("Remover")
+		public String callDelete()
+		{
+
+			try
+			{
+				control.delete(func, user);
+				func = null;
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+			return call();
+		}
+
+		@Override
+		public User getUser()
+		{
+			if (user == null)
+				user = new User();
+			return user;
+		}
+
+		public Func getFunc()
+		{
+			if (func == null)
+				func = new Func();
+			return func;
+		}
+
+		public Page<Func> getPage()
+		{
+			return page;
+		}
+
+		public List<Func> getFuncs()
+		{
+			return funcControl.search();
+		}
 	}
 }

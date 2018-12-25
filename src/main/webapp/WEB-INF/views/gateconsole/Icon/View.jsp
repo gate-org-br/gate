@@ -6,7 +6,8 @@
 			<g:if condition="${icon.name ne '??????'}">
 				<li style="width: 4%; min-width: 64px; margin: 0.5%">
 					<a href="#" data-icon="&#x${icon.code}">
-						${icon.name}
+						${icon.code}
+						<br/>${icon.name}
 					</a>
 				</li>
 			</g:if>

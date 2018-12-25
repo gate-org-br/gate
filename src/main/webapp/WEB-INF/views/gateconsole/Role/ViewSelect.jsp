@@ -69,21 +69,19 @@
 	<div class='PageControl'>
 		<ul>
 			<g:menuitem module="#" screen="Auth" arguments="form.role.id=${screen.form.id}"
-				    style='width: 200px' data-selected='${param.tab eq "Auth"}'>
-				Acessos<g:icon type="gate.entity.Auth"/>
-			</g:menuitem>
+				    style='width: 200px' data-selected='${param.tab eq "Auth"}'/>
 
-			<g:menuitem module="#" screen="Role" action="Import"
-				    arguments="form.role.id=${screen.form.id}"
-				    style='width: 200px' data-selected='${param.tab eq "Role"}'>
-				Sub Perfis<g:icon type="gate.entity.Role"/>
-			</g:menuitem>
+			<g:menuitem module="#" screen="RoleScreen$Func"
+				    arguments="role.id=${screen.form.id}"
+				    style='width: 200px' data-selected='${param.tab eq "Func"}'/>
 
 			<g:menuitem module="#" screen="User" action="Import"
 				    arguments="form.role.id=${screen.form.id}&form.active=true"
-				    style='width: 200px' data-selected='${param.tab eq "User"}'>
-				Usu&aacute;rios<g:icon type="gate.entity.User"/>
-			</g:menuitem>
+				    style='width: 200px' data-selected='${param.tab eq "User"}'/>
+
+			<g:menuitem module="#" screen="Role" action="Import"
+				    arguments="form.role.id=${screen.form.id}"
+				    style='width: 200px' data-selected='${param.tab eq "Role"}'/>
 		</ul>
 	</div>
 </g:template>

@@ -8,7 +8,9 @@ import java.util.Collection;
 
 import gate.constraint.Constraints;
 import gate.error.NotFoundException;
+import gate.type.ID;
 import gateconsole.dao.AuthDao;
+import java.util.stream.Stream;
 
 public class AuthControl extends Control
 {
@@ -21,24 +23,25 @@ public class AuthControl extends Control
 		}
 	}
 
-	public Auth select(Auth auth) throws AppException
+	public Auth select(ID id) throws NotFoundException
 	{
 		try (AuthDao dao = new AuthDao())
 		{
-			return dao.select(auth).orElseThrow(NotFoundException::new);
+			return dao.select(id);
 		}
 	}
 
 	public void insert(Auth model) throws AppException
 	{
 		Constraints.validate(model, "mode", "type", "module", "screen", "action");
-		if (model.getRole().getId() == null && model.getUser().getId() == null)
-			throw new AppException(
-					"Selecione um usuário ou grupo para o acesso.");
+		if (Stream.of(model.getRole().getId(),
+			model.getUser().getId(),
+			model.getFunc().getId())
+			.filter(e -> e != null).count() != 1)
+			throw new AppException("Selecione um usuário, perfil ou função para o acesso.");
 		if (model.getUser().getId() != null
-				&& model.getType().equals(Auth.Type.PUBLIC))
-			throw new AppException(
-					"Acessos de usuário não podem ser públicos.");
+			&& model.getType().equals(Auth.Type.PUBLIC))
+			throw new AppException("Acessos de usuário não podem ser públicos.");
 
 		try (AuthDao dao = new AuthDao())
 		{
@@ -48,20 +51,20 @@ public class AuthControl extends Control
 
 	public void update(Auth model) throws AppException
 	{
-
 		try (AuthDao dao = new AuthDao())
 		{
 			Constraints.validate(model, "mode", "type", "module", "screen", "action");
-			if (model.getRole().getId() == null
-					&& model.getUser().getId() == null)
-				throw new AppException(
-						"Selecione um usuário ou grupo para o acesso.");
+
+			if (Stream.of(model.getRole().getId(),
+				model.getUser().getId(),
+				model.getFunc().getId())
+				.filter(e -> e != null).count() != 1)
+				throw new AppException("Selecione um usuário, perfil ou função para o acesso.");
+
 			if (model.getUser().getId() != null
-					&& model.getType().equals(Auth.Type.PUBLIC))
-				throw new AppException(
-						"Acessos de usuário não podem ser públicos.");
-			if (!dao.update(model))
-				throw new AppException("Tentativa de alterar um ACESSO inexistente.");
+				&& model.getType().equals(Auth.Type.PUBLIC))
+				throw new AppException("Acessos de usuário não podem ser públicos.");
+			dao.update(model);
 		}
 	}
 
@@ -70,8 +73,7 @@ public class AuthControl extends Control
 
 		try (AuthDao dao = new AuthDao())
 		{
-			if (!dao.delete(model))
-				throw new AppException("Tentativa de remover um ACESSO inexistente.");
+			dao.delete(model);
 		}
 	}
 }

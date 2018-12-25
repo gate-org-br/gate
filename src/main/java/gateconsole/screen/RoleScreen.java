@@ -3,9 +3,12 @@ package gateconsole.screen;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
+import gate.entity.Func;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
+import gate.util.Page;
+import gateconsole.contol.FuncControl;
 import gateconsole.contol.RoleControl;
 import gateconsole.contol.UserControl;
 import java.util.Collection;
@@ -36,6 +39,8 @@ public class RoleScreen extends Screen
 		return "/WEB-INF/views/gateconsole/Role/View.jsp";
 	}
 
+	@Name("Sub Perfis")
+	@Icon("gate.entity.Role")
 	public String callImport()
 	{
 		setPage(control.getChildRoles(getForm().getRole()));
@@ -161,5 +166,84 @@ public class RoleScreen extends Screen
 	public List<User> getUsers()
 	{
 		return new UserControl().search(new User().setRole(getForm()));
+	}
+
+	public static class FuncScreen extends Screen
+	{
+
+		private Func func;
+		private Role role;
+		private Page<Func> page;
+
+		@Inject
+		private FuncControl funcControl;
+
+		@Inject
+		private FuncControl.RoleControl control;
+
+		@Name("Funções")
+		@Icon("gate.entity.Func")
+		public String call()
+		{
+
+			page = paginate(ordenate(control.search(role)));
+			return "/WEB-INF/views/gateconsole/Role/Func/View.jsp";
+		}
+
+		@Icon("insert")
+		@Name("Adcionar")
+		public String callInsert()
+		{
+
+			try
+			{
+				control.insert(func, role);
+				func = null;
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+			return call();
+		}
+
+		@Icon("delete")
+		@Name("Remover")
+		public String callDelete()
+		{
+
+			try
+			{
+				control.delete(func, role);
+				func = null;
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+			return call();
+		}
+
+		public Role getRole()
+		{
+			if (role == null)
+				role = new Role();
+			return role;
+		}
+
+		public Func getFunc()
+		{
+			if (func == null)
+				func = new Func();
+			return func;
+		}
+
+		public Page<Func> getPage()
+		{
+			return page;
+		}
+
+		public List<Func> getFuncs()
+		{
+			return funcControl.search();
+		}
 	}
 }

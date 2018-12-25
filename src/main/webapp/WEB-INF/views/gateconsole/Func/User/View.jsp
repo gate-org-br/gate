@@ -1,0 +1,87 @@
+<%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
+
+
+<g:template filename="/WEB-INF/views/PAGE.jsp">
+	<g:datalist id="user-list"
+		    options="${screen.users}"
+		    label="${e -> e.name}"
+		    value="${e -> e.id}"/>
+
+	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
+
+		<fieldset>
+			<label style='width: 100%'>
+				<span>
+					<g:hidden property="func.id"/>
+					<g:hidden id="user.id" property='user.id'/>
+					<g:text id='user.name'
+						property='user.name'
+						list="user-list"
+						data-populate-field="user.id"
+						tabindex='1' placeholder="Incluir"/>
+					<g:shortcut method="post" module="#" screen="#" action="Insert" tabindex="1"/>
+				</span>
+			</label>
+		</fieldset>
+
+		<g:choose>
+			<g:when condition="${empty screen.page}">
+				<div class='TEXT'>
+					<h1>
+						Nenhum usuário possui esta função
+					</h1>
+				</div>
+			</g:when>
+			<g:otherwise>
+				<table style='table-layout: fixed'>
+					<colgroup>
+						<col/>
+						<col style="width: 48px"/>
+					</colgroup>
+
+					<caption>
+						USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
+					</caption>
+					<thead>
+						<tr>
+							<th>
+								Nome
+							</th>
+							<th style="text-align: center">
+								<g:icon type="delete"/>
+							</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<td colspan='2' style='text-align: right'>
+								<g:paginator/>
+							</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<g:iterator source="${screen.page}" target="target">
+							<tr>
+								<td>
+									<g:print value="${target.name}"/>
+								</td>
+								<td style="text-align: center">
+									<g:shortcut module="#" screen="#" action="Delete" style="color: #660000"
+										    arguments="func.id=${screen.func.id}&user.id=${target.id}"/>
+								</td>
+							</tr>
+						</g:iterator>
+					</tbody>
+				</table>
+			</g:otherwise>
+		</g:choose>
+	</form>
+
+	<script>
+		document.getElementById("user.id")
+			.addEventListener("field-populated", function ()
+			{
+				this.form.submit();
+			});
+	</script>
+</g:template>
