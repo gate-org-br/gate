@@ -1523,6 +1523,7 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("input[list]")).forEach(function (element)
 	{
+		element.setAttribute("autocomplete", "off");
 		element.addEventListener("input", function ()
 		{
 			if (typeof this.value === "string")
@@ -1575,6 +1576,8 @@ window.addEventListener("load", function ()
 				{
 					this.value = option.innerHTML;
 					field.value = option.getAttribute("data-value");
+					field.dispatchEvent(new CustomEvent('field-populated',
+						{detail: {source: this}}));
 				});
 		});
 	});
@@ -5463,8 +5466,8 @@ function Message(type, message, timeout)
 	{
 		case "SUCCESS":
 			icon.innerHTML = "&#X1000";
-			icon.style.color = "@commit";
-			body.style.color = "@commit";
+			icon.style.color = "@G";
+			body.style.color = "@G";
 			break;
 		case "WARNING":
 			icon.innerHTML = "&#X1007";
@@ -5473,8 +5476,8 @@ function Message(type, message, timeout)
 			break;
 		case "ERROR":
 			icon.innerHTML = "&#X1001";
-			icon.style.color = "@cancel";
-			body.style.color = "@cancel";
+			icon.style.color = "@R";
+			body.style.color = "@R";
 			break;
 	}
 
@@ -5617,7 +5620,7 @@ function DeskPane(deskPane)
 			li.className = "Reset";
 			li.style.width = width + "px";
 			li.style.height = height + "px";
-			li.style.color = "@commit";
+			li.style.color = "@G";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");

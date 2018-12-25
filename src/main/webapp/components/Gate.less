@@ -28,6 +28,7 @@
 
 .margin
 {
+	margin: 0;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	&:first-child { margin-top: 0px};
@@ -107,11 +108,17 @@ ul.LIST > li { float: left; width: 10%; height: 32px; background-color: white; p
 ul.LIST > li > i { font-size: 24px}
 ul.LIST > li:focus { background-color: #FFFACD; font-weight: bold; color: @G }
 
-input[type='text'], input[type='password'], input[type='file'], textarea, select { width: 100%; border: 1px solid #CCCCCC; background-color: white}
-input[type='text'], input[type='password'], select { height: 24px; line-height: 24px }
-input[type='text']:focus, input[type='password']:focus, input[type='file']:focus, textarea:focus, select:focus { background-color: #FFFACD }
+input[type='text'],
+input[type='password'],
+input[type='file'],
+textarea,
+select { width: 100%;
+	 background-color: white;
+	 border: 1px solid #CCCCCC;
+	 &:hover { background-color: @hovered }
+}
 
-input[type='file'] { width: 100%; border: 1px solid #CCCCCC; background-color: white; height: 100%; cursor: pointer }
+input[type='file'] { cursor: pointer }
 
 input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
 
@@ -265,3 +272,5 @@ div.MINIBAR > a { width: 24px;
 @import "ChartDialog.less";
 
 @import "Sortable.less";
+
+@import "Navigator.less";
