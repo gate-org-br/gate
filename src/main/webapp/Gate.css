@@ -1230,6 +1230,12 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > button.Commit {
   color: #006600;
 }
+*.COOLBAR > a.Action,
+*.Coolbar > a.Action,
+*.COOLBAR > button.Action,
+*.Coolbar > button.Action {
+  color: #000066;
+}
 *.COOLBAR > a.Cancel,
 *.Coolbar > a.Cancel,
 *.COOLBAR > button.Cancel,
