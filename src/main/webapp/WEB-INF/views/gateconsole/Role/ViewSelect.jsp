@@ -47,7 +47,7 @@
 		<label style='width: 100%'>
 			Descri&ccedil;&atilde;o:
 			<span style='height: 60px'>
-				<g:label property='form.description' style='height: 80px'/>
+				<g:print value='${screen.form.description}'/>
 			</span>
 		</label>
 	</fieldset>

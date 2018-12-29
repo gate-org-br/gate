@@ -100,8 +100,7 @@
 			<g:if condition="${screen.page.size() == 1}">
 				<script>
 					<g:with name="target" value="${screen.page[0]}">
-					new Dialog()
-						.setTarget("Gate?MODULE=${MODULE}&SCREEN=${target.class.simpleName}&ACTION=Select&form.id=${target.id}")
+					new Dialog({target: "Gate?MODULE=${MODULE}&SCREEN=${target.class.simpleName}&ACTION=Select&form.id=${target.id}"})
 						.show();
 					</g:with>
 				</script>

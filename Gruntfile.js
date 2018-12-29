@@ -24,6 +24,9 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Button.js",
 							"src/main/webapp/components/ActionHandler.js",
 							"src/main/webapp/components/ChangeHandler.js",
+
+							"src/main/webapp/components/NavBar.js",
+
 							"src/main/webapp/components/Mask.js",
 							"src/main/webapp/components/Modal.js",
 							"src/main/webapp/components/Block.js",

@@ -1,6 +1,6 @@
-/* global Message, Block */
+/* global Message, Block, ENTER, ESC */
 
-function Button(button)
+function Button(button, creator)
 {
 	button.addEventListener("click", function (event)
 	{
@@ -77,14 +77,15 @@ function Button(button)
 						this.click();
 						this.setAttribute("formtarget", "_dialog");
 					} else if (this.form.getAttribute("target") !== "_dialog")
-						new Dialog()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
+					{
+						new Dialog({creator: creator || this,
+							title: this.getAttribute("title"),
+							blocked: Boolean(this.getAttribute("data-blocked")),
+							navigator: this.hasAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null})
 							.show();
+					}
+
 					break;
 				case "_message":
 					event.preventDefault();
@@ -175,19 +176,6 @@ function Button(button)
 		}
 	});
 
-	button.addEventListener("click", function ()
-	{
-		if (this.getAttribute("data-block"))
-		{
-			this.form.addEventListener("submit", function (e)
-			{
-				if (!this.getAttribute("data-block"))
-					Block.show(button.getAttribute("data-block"));
-				e.target.removeEventListener(e.type, arguments.callee);
-			});
-		}
-	});
-
 	this.setAlert = function (value)
 	{
 		if (value)
@@ -251,15 +239,6 @@ function Button(button)
 		return this;
 	};
 
-	this.setOnHide = function (value)
-	{
-		if (value)
-			button.setAttribute("data-onHide", value);
-		else if (button.getAttribute("data-onHide"))
-			button.removeAttribute("data-onHide");
-		return this;
-	};
-
 	this.get = function ()
 	{
 		return button;
@@ -270,4 +249,18 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("button"))
 		.forEach(button => new Button(button));
+
+	document.documentElement.addEventListener("keydown", function (event)
+	{
+		switch (event.keyCode)
+		{
+			case ENTER:
+				Array.from(document.querySelectorAll("button.Action")).forEach(e => e.click());
+				break;
+			case ESC:
+				Array.from(document.querySelectorAll("button.Cancel")).forEach(e => e.click());
+				break;
+
+		}
+	});
 });

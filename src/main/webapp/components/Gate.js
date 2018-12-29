@@ -1,3 +1,5 @@
+/* global ENTER, ESC */
+
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 

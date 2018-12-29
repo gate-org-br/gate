@@ -1,18 +1,22 @@
-function MonthIntervalPicker(callback)
+class MonthIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("MonthIntervalPicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new MonthIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("MonthIntervalPicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new MonthIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

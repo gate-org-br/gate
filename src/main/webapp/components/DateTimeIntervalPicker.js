@@ -1,18 +1,21 @@
-function DateTimeIntervalPicker(callback)
+class DateTimeIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DateTimeIntervalPicker");
+	constructor(callback)
+	{
+		super();
+		this.main().classList.add("DateTimeIntervalPicker");
 
-	var selector = new DateTimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		var selector = new DateTimeIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

@@ -1370,6 +1370,8 @@ if (!Array.prototype.flatMap)
 	}
 	self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
+/* global ENTER, ESC */
+
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
@@ -1755,9 +1757,9 @@ function URL(value)
 		return this;
 	};
 }
-/* global Message, Block */
+/* global Message, Block, ENTER, ESC */
 
-function Link(link)
+function Link(link, creator)
 {
 	link.addEventListener("click", function (event)
 	{
@@ -1835,17 +1837,15 @@ function Link(link)
 						this.setAttribute("target", "_blank");
 						this.click();
 						this.setAttribute("target", "_dialog");
-					} else
-						new Dialog()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setTarget(this.getAttribute("href"))
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
+					} else {
+						new Dialog({creator: creator || this,
+							title: this.getAttribute("title"),
+							target: this.getAttribute("href"),
+							blocked: Boolean(this.getAttribute("data-blocked")),
+							navigator: this.hasAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null})
 							.show();
-
+					}
 					break;
 				case "_message":
 					event.preventDefault();
@@ -1935,12 +1935,6 @@ function Link(link)
 		}
 	});
 
-	link.addEventListener("click", function ()
-	{
-		if (this.getAttribute("data-block"))
-			Block.show(this.getAttribute("data-block"));
-	});
-
 	link.addEventListener("keydown", function (event)
 	{
 		if (event.keyCode === 32)
@@ -2014,15 +2008,6 @@ function Link(link)
 		return this;
 	};
 
-	this.setOnHide = function (value)
-	{
-		if (value)
-			link.setAttribute("data-onHide", value);
-		else if (link.getAttribute("data-onHide"))
-			link.removeAttribute("data-onHide");
-		return this;
-	};
-
 	this.get = function ()
 	{
 		return link;
@@ -2033,11 +2018,25 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("a"))
 		.forEach(a => new Link(a));
+
+	document.documentElement.addEventListener("keydown", function (event)
+	{
+		switch (event.keyCode)
+		{
+			case ENTER:
+				Array.from(document.querySelectorAll("a.Action")).forEach(e => e.click());
+				break;
+			case ESC:
+				Array.from(document.querySelectorAll("a.Cancel")).forEach(e => e.click());
+				break;
+
+		}
+	});
 });
 
-/* global Message, Block */
+/* global Message, Block, ENTER, ESC */
 
-function Button(button)
+function Button(button, creator)
 {
 	button.addEventListener("click", function (event)
 	{
@@ -2114,14 +2113,15 @@ function Button(button)
 						this.click();
 						this.setAttribute("formtarget", "_dialog");
 					} else if (this.form.getAttribute("target") !== "_dialog")
-						new Dialog()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
+					{
+						new Dialog({creator: creator || this,
+							title: this.getAttribute("title"),
+							blocked: Boolean(this.getAttribute("data-blocked")),
+							navigator: this.hasAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null})
 							.show();
+					}
+
 					break;
 				case "_message":
 					event.preventDefault();
@@ -2212,19 +2212,6 @@ function Button(button)
 		}
 	});
 
-	button.addEventListener("click", function ()
-	{
-		if (this.getAttribute("data-block"))
-		{
-			this.form.addEventListener("submit", function (e)
-			{
-				if (!this.getAttribute("data-block"))
-					Block.show(button.getAttribute("data-block"));
-				e.target.removeEventListener(e.type, arguments.callee);
-			});
-		}
-	});
-
 	this.setAlert = function (value)
 	{
 		if (value)
@@ -2288,15 +2275,6 @@ function Button(button)
 		return this;
 	};
 
-	this.setOnHide = function (value)
-	{
-		if (value)
-			button.setAttribute("data-onHide", value);
-		else if (button.getAttribute("data-onHide"))
-			button.removeAttribute("data-onHide");
-		return this;
-	};
-
 	this.get = function ()
 	{
 		return button;
@@ -2307,7 +2285,23 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("button"))
 		.forEach(button => new Button(button));
+
+	document.documentElement.addEventListener("keydown", function (event)
+	{
+		switch (event.keyCode)
+		{
+			case ENTER:
+				Array.from(document.querySelectorAll("button.Action")).forEach(e => e.click());
+				break;
+			case ESC:
+				Array.from(document.querySelectorAll("button.Cancel")).forEach(e => e.click());
+				break;
+
+		}
+	});
 });
+
+/* global ENTER, HOME, END, DOWN, UP */
 
 function ActionHandler(element)
 {
@@ -2373,19 +2367,19 @@ function ActionHandler(element)
 				.toLowerCase() : "get")
 			{
 				case "get":
-					var a = new Link(document.createElement("a"))
+					var link = new Link(document.createElement("a"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
 						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
+					document.body.appendChild(link);
+
+					link.click();
+					document.body.removeChild(link);
 					break;
 				case "post":
 					var form = this.parentNode;
@@ -2393,16 +2387,17 @@ function ActionHandler(element)
 						&& form.tagName.toLowerCase()
 						!== 'form')
 						form = form.parentNode;
-					var button = new Button(document.createElement("button"))
+
+					var button = new Button(document.createElement("button"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
 						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
+
 					form.appendChild(button);
 					button.click();
 					form.removeChild(button);
@@ -2415,10 +2410,7 @@ function ActionHandler(element)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('*[data-action]')).forEach(function (e)
-	{
-		new ActionHandler(e);
-	});
+	Array.from(document.querySelectorAll('*[data-action]')).forEach(element => new ActionHandler(element));
 });
 function ChangeHandler(e)
 {
@@ -2433,7 +2425,6 @@ function ChangeHandler(e)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
@@ -2454,7 +2445,6 @@ function ChangeHandler(e)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
@@ -2480,6 +2470,51 @@ window.addEventListener("load", function ()
 	});
 });
 
+class NavBar
+{
+	constructor(links, element)
+	{
+		var index = 0;
+
+		if (!element)
+			element = document.createElement("div");
+		element.className = "NavBar";
+		this.element = () => element;
+
+		var frst = this.element.appendChild(document.createElement("a"));
+		var prev = this.element.appendChild(document.createElement("a"));
+		var text = this.element.appendChild(document.createElement("label"));
+		var next = this.element.appendChild(document.createElement("a"));
+		var last = this.element.appendChild(document.createElement("a"));
+
+		frst.setAttribute("href", "#");
+		prev.setAttribute("href", "#");
+		next.setAttribute("href", "#");
+		last.setAttribute("href", "#");
+
+		frst.innerHTML = "&#x2213;";
+		prev.innerHTML = "&#x2212;";
+		next.innerHTML = "&#x2211;";
+		last.innerHTML = "&#x2216;";
+
+		frst.addEventListener("click", () => this.go(links[0]));
+		prev.addEventListener("click", () => this.go(links[index - 1]));
+		next.addEventListener("click", () => this.go(links[index + 1]));
+		last.addEventListener("click", () => this.go(links[links.length - 1]));
+
+		this.go = function (url)
+		{
+			if (this.element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
+				index = Math.max(this._links.indexOf(url), 0);
+
+			frst.setAttribute("navbar-disabled", String(index === 0));
+			prev.setAttribute("navbar-disabled", String(index === 0));
+			next.setAttribute("navbar-disabled", String(index === links.length - 1));
+			last.setAttribute("navbar-disabled", String(index === links.length - 1));
+			text.innerHTML = "Registro " + (index + 1) + " de " + links.length;
+		};
+	}
+}
 function Mask(e)
 {
 	e.placeholder = new String();
@@ -2750,135 +2785,132 @@ window.addEventListener("load", function ()
 });
 
 
-function Modal()
+class Modal
 {
-	var body = window.top.document.body;
-	var overflow = body.style.overflow;
-
-	var modal = window.top.document.createElement('div');
-	modal.className = "Modal";
-
-	modal.show = function ()
+	constructor(options)
 	{
-		body.style.overflow = "hidden";
-		body.appendChild(this);
+		var element = window.top.document.createElement('div');
+		element.className = "Modal";
+		this.element = () => element;
 
-		modal.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+		var blocked = options ? options.blocked : null;
+		this.blocked = () => blocked;
 
-		return this;
-	};
+		var creator = options ? options.creator : null;
+		this.creator = () => creator ? creator : element;
 
-	modal.setOnHide = function (onHide)
+		if (!blocked)
+			element.addEventListener("click", event =>
+				(event.target === element || event.srcElement === element) && this.hide());
+	}
+
+	show()
 	{
-		this.onHide = onHide;
-		return this;
-	};
-
-	modal.hide = function ()
-	{
-		if (this.parentNode)
+		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			body.style.overflow = overflow;
-			if (this.onHide)
-				eval(this.onHide);
-			this.parentNode.removeChild(this);
-
-			modal.dispatchEvent(new CustomEvent('hide', {detail: {modal: this}}));
+			window.top.document.body.style.overflow = "hidden";
+			window.top.document.body.appendChild(this.element());
+			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
+
 		return this;
-	};
+	}
 
-	return modal;
+	hide()
+	{
+		if (this.element().parentNode
+			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		{
+			window.top.document.body.style.overflow = "";
+			this.element().parentNode.removeChild(this.element());
+		}
+
+		return this;
+	}
 }
-function Block(text)
+class Block extends Modal
 {
-	var modal = new Modal();
-	modal.style.display = "flex";
-	modal.style.alignItems = "center";
-	modal.style.justifyContent = "center";
+	constructor(text)
+	{
+		super({blocked: true});
 
-	var dialog = modal.appendChild(window.top.document.createElement('div'));
-	dialog.style.width = "50%";
-	dialog.style.display = "flex";
-	dialog.style.flexWrap = "wrap";
-	dialog.style.borderRadius = "5px";
-	dialog.style.alignItems = "center";
-	dialog.style.justifyContent = "center";
-	dialog.style.border = "4px solid #767d90";
+		var dialog = this.element()
+			.appendChild(window.top.document.createElement('div'));
+		dialog.className = "Block";
 
-	var head = dialog.appendChild(window.top.document.createElement('div'));
-	head.style.width = "100%";
-	head.style.height = "40px";
-	head.style.backgroundImage = "linear-gradient(to bottom, #767D90 100%, #AAB3BD 100%)";
-	head.setAttribute("tabindex", "1");
-	head.focus();
+		var head = dialog.appendChild(window.top.document.createElement('div'));
+		head.setAttribute("tabindex", "1");
+		head.focus();
 
-	var caption = head.appendChild(window.top.document.createElement('label'));
-	caption.style.color = "white";
-	caption.style.padding = "10px";
-	caption.style.fontSize = "18px";
-	caption.style['float'] = "left";
-	caption.innerHTML = "Aguarde";
+		head.appendChild(window.top.document.createElement('label'))
+			.innerHTML = "Aguarde";
 
-	var body = dialog.appendChild(window.top.document.createElement('div'));
-	body.style.width = "100%";
-	body.style.display = "flex";
-	body.style.height = "180px";
-	body.style.flexWrap = "wrap";
-	body.style.alignItems = "center";
-	body.style.justifyContent = "center";
-	body.style.background = "linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%)";
+		var body = dialog.appendChild(window.top.document.createElement('div'));
 
-	var label = body.appendChild(window.top.document.createElement('label'));
-	label.style.width = "calc(100% - 20px)";
-	label.style.height = "50px";
-	label.style.fontSize = "20px";
-	label.style.display = "flex";
-	label.style.alignItems = "center";
-	label.style.justifyContent = "center";
-	label.innerHTML = text;
+		body.appendChild(window.top.document.createElement('label'))
+			.innerHTML = text;
 
-	var progress = body.appendChild(window.top.document.createElement('progress'));
-	progress.style.width = "calc(100% - 20px)";
-	progress.style.height = "50px";
+		body.appendChild(window.top.document.createElement('progress'));
 
-	var foot = body.appendChild(window.top.document.createElement('label'));
-	foot.style.width = "calc(100% - 20px)";
-	foot.style.height = "40px";
-	foot.style.fontSize = "20px";
-	foot.style.display = "flex";
-	foot.style.alignItems = "center";
-	foot.style.justifyContent = "right";
-	foot.innerHTML = "00:00:00";
-	foot.setAttribute("data-clock", '0');
+		var foot = dialog.appendChild(window.top.document.createElement('div'));
 
-	modal.show();
-	return modal;
+		foot.innerHTML = "00:00:00";
+		foot.setAttribute("data-clock", '0');
+
+		this.show();
+	}
 }
 
 Block.show = function (text)
 {
-	if (!window.top._block)
-		window.top._block = new Block(text);
+	if (!Block.instance)
+		Block.instance = new Block(text);
 };
 
 Block.hide = function ()
 {
-	if (window.top._block)
+	if (Block.block)
 	{
-		window.top._block.hide();
-		window.top._block = null;
+		Block.instance.hide();
+		Block.instance = null;
 	}
 };
 
 window.addEventListener("load", function ()
 {
 	Block.hide();
-	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (e)
+
+	Array.from(document.querySelectorAll("form")).forEach(function (element)
 	{
-		e.addEventListener("submit", function ()
+		element.addEventListener("submit", function ()
 		{
-			Block.show(this.getAttribute("data-block"));
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("a")).forEach(function (element)
+	{
+		element.addEventListener("click", function ()
+		{
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("button")).forEach(function (button)
+	{
+		button.addEventListener("click", function ()
+		{
+			if (button.getAttribute("data-block"))
+				if (button.form)
+					button.form.addEventListener("submit", function (event)
+					{
+						Block.show(button.getAttribute("data-block"));
+						event.target.removeEventListener(event.type, arguments.callee);
+					});
+				else
+					Block.show(this.getAttribute("data-block"));
 		});
 	});
 });
@@ -3422,61 +3454,60 @@ window.addEventListener("load", function ()
 	Array.from(document.querySelectorAll("div.DateTimeIntervalSelector"))
 		.forEach(e => new TimeIntervalSelector(e));
 });
-function Picker()
+class Picker extends Modal
 {
-	var modal = new Modal();
-	modal.addEventListener("click", function (event)
+	constructor()
 	{
-		if (event.target === modal || event.srcElement === modal)
-			modal.hide();
-	});
+		super();
+		var main = this.element().appendChild(document.createElement("div"));
+		main.className = "Picker";
+		this.main = () => main;
 
-	var main = modal.appendChild(document.createElement("div"));
-	main.className = "Picker";
+		var head = main.appendChild(document.createElement("div"));
+		this.head = () => head;
 
-	var head = main.appendChild(document.createElement("div"));
+		var body = main.appendChild(document.createElement("div"));
+		this.body = () => body;
 
-	var body = main.appendChild(document.createElement("div"));
+		var foot = main.appendChild(document.createElement("div"));
+		this.foot = () => foot;
 
-	var foot = main.appendChild(document.createElement("div"));
+		var cancel = foot.appendChild(document.createElement("a"));
+		cancel.addEventListener("click", () => this.hide());
+		cancel.appendChild(document.createTextNode("Cancelar"));
+		cancel.href = "#";
+		this.cancel = () => cancel;
 
-	var cancel = foot.appendChild(document.createElement("a"));
-	cancel.addEventListener("click", () => modal.hide());
-	cancel.appendChild(document.createTextNode("Cancelar"));
-	cancel.href = "#";
-
-	var commit = foot.appendChild(document.createElement("a"));
-	commit.appendChild(document.createTextNode("Concluir"));
-	commit.href = "#";
-
-	this.modal = () => modal;
-	this.main = () => main;
-	this.head = () => head;
-	this.body = () => body;
-	this.foot = () => foot;
-	this.commit = () => commit;
-	this.cancel = () => cancel;
+		var commit = foot.appendChild(document.createElement("a"));
+		commit.appendChild(document.createTextNode("Concluir"));
+		commit.href = "#";
+		this.commit = () => commit;
+	}
 }
 /* global DateFormat */
 
-function DatePicker(callback)
+class DatePicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DatePicker");
-	picker.head().appendChild(document.createTextNode("Selecione uma data"));
-
-	var selector = new Calendar(picker.body().appendChild(document.createElement("div"), {max: 1}));
-
-	selector.element().addEventListener("update", () =>
+	constructor(callback)
 	{
-		if (selector.selection().length === 1)
-			callback(DateFormat.DATE.format(selector.selection()[0]));
-		picker.modal().hide();
-	});
+		super();
 
-	picker.commit().addEventListener("click", () => alert("selecione uma data"));
+		this.main().classList.add("DatePicker");
+		this.head().appendChild(document.createTextNode("Selecione uma data"));
 
-	picker.modal().show();
+		var selector = new Calendar(this.body().appendChild(document.createElement("div"), {max: 1}));
+
+		selector.element().addEventListener("update", () =>
+		{
+			if (selector.selection().length === 1)
+				callback(DateFormat.DATE.format(selector.selection()[0]));
+			this.hide();
+		});
+
+		this.commit().addEventListener("click", () => alert("selecione uma data"));
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3505,21 +3536,25 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function TimePicker(callback)
+class TimePicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("TimePicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new TimeSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("TimePicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new TimeSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3548,21 +3583,25 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function MonthPicker(callback)
+class MonthPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("MonthPicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new MonthSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("MonthPicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new MonthSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3591,21 +3630,25 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function DateTimePicker(callback)
+class DateTimePicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DateTimePicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new DateTimeSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("DateTimePicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new DateTimeSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3636,28 +3679,31 @@ window.addEventListener("load", function ()
 });
 /* global DateFormat */
 
-function DateIntervalPicker(callback)
+class DateIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DateIntervalPicker");
-
-	var selector = new DateIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
-
-	picker.head().appendChild(document.createTextNode(selector.toString()));
-
-	picker.commit().addEventListener("click", () =>
+	constructor(callback)
 	{
-		if (selector.selection())
+		super();
+		this.main().classList.add("DateIntervalPicker");
+
+		var selector = new DateIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
+
+		this.head().appendChild(document.createTextNode(selector.toString()));
+
+		this.commit().addEventListener("click", () =>
 		{
-			callback(selector.toString());
-			picker.modal().hide();
-		}
-	});
+			if (selector.selection())
+			{
+				callback(selector.toString());
+				this.hide();
+			}
+		});
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3686,21 +3732,24 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function TimeIntervalPicker(callback)
+class TimeIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("TimeIntervalPicker");
+	constructor(callback)
+	{
+		super();
+		this.main().classList.add("TimeIntervalPicker");
 
-	var selector = new TimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		var selector = new TimeIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3729,21 +3778,25 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function MonthIntervalPicker(callback)
+class MonthIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("MonthIntervalPicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new MonthIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("MonthIntervalPicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new MonthIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -3772,21 +3825,24 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function DateTimeIntervalPicker(callback)
+class DateTimeIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DateTimeIntervalPicker");
+	constructor(callback)
+	{
+		super();
+		this.main().classList.add("DateTimeIntervalPicker");
 
-	var selector = new DateTimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		var selector = new DateTimeIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()
@@ -4075,9 +4131,9 @@ function Chart(data, title)
 
 function ChartDialog(data, type, title)
 {
-	var modal = new Modal();
+	var modal = new Modal(true);
 
-	var dialog = modal.appendChild(window.top.document.createElement('div'));
+	var dialog = modal.element().appendChild(window.top.document.createElement('div'));
 	dialog.className = "Dialog";
 
 	var head = dialog.appendChild(document.createElement("div"));
@@ -4465,216 +4521,108 @@ window.addEventListener("load", function ()
 });
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV */
 
-function Dialog()
+class Dialog extends Modal
 {
-	var modal = new Modal();
-	var dialog = modal.appendChild(window.top.document.createElement('div'));
-	dialog.className = "Dialog";
-	dialog.closeable = true;
-	var head = dialog.appendChild(window.top.document.createElement('div'));
-	head.setAttribute("tabindex", "1");
-	head.focus();
-	var caption = head.appendChild(window.top.document.createElement('label'));
-	caption.style['float'] = "left";
-	var close = head.appendChild(window.top.document.createElement("a"));
-	close.title = 'Fechar janela';
-	close.style['float'] = "right";
-	close.innerHTML = "&#x1011;";
-	close.onclick = () => modal.hide();
-	var last = head.appendChild(window.top.document.createElement("a"));
-	last.title = 'Ir para o último registro';
-	last.style['float'] = "right";
-	last.innerHTML = "&#x2216;";
-	last.style.display = "none";
-	var next = head.appendChild(window.top.document.createElement("a"));
-	next.title = 'Ir para o próximo registro';
-	next.style['float'] = "right";
-	next.innerHTML = "&#x2211;";
-	next.style.display = "none";
-	var navigator = head.appendChild(window.top.document.createElement('label'));
-	navigator.title = 'Ir para o registro atual';
-	navigator.style['float'] = "right";
-	navigator.style.cursor = "pointer";
-	navigator.style.display = "none";
-	var prev = head.appendChild(window.top.document.createElement("a"));
-	prev.title = 'Ir para o registro anterior';
-	prev.style['float'] = "right";
-	prev.innerHTML = "&#x2212;";
-	prev.style.display = "none";
-	var frst = head.appendChild(window.top.document.createElement("a"));
-	frst.title = 'Ir para o primeiro registro';
-	frst.style['float'] = "right";
-	frst.innerHTML = "&#x2213;";
-	frst.style.display = "none";
-	var body = dialog.appendChild(window.top.document.createElement('div'));
-	var iframe = body.appendChild(window.top.document.createElement('iframe'));
-	iframe.dialog = modal;
-	iframe.setAttribute('name', '_dialog');
-	head.onmouseenter = () => head.focus();
-	iframe.onmouseenter = () => iframe.focus();
-	iframe.onload = function ()
+	constructor(options)
 	{
-		iframe.name = "_frame";
-		iframe.setAttribute("name", "_frame");
-		head.onkeydown = undefined;
-		head.addEventListener("keydown", function (e)
+		super(options);
+
+		var dialog = this.element().appendChild(window.top.document.createElement('div'));
+		dialog.className = "Dialog";
+		if (options && options.size && options.size.w)
+			dialog.style.width = options.size.w;
+		if (options && options.size && options.size.h)
+			dialog.style.height = options.size.h;
+
+		var head = dialog.appendChild(window.top.document.createElement('div'));
+		head.onmouseenter = () => head.focus();
+		head.setAttribute("tabindex", "1");
+		head.focus();
+
+		var caption = head.appendChild(window.top.document.createElement('label'));
+		if (options && options.title)
+			caption.innerHTML = options.title;
+
+		if (!this.blocked())
 		{
-			e = e ? e : window.event;
-			switch (e.keyCode)
-			{
-				case ESC:
-					if (dialog.closeable)
-						modal.hide();
-					break;
-				case ENTER:
-					iframe.focus();
-					break;
-			}
-
-			e.preventDefault();
-			e.stopPropagation();
-		});
-		iframe.contentWindow.addEventListener("keydown", function (e)
-		{
-			e = e ? e : window.event;
-			if (e.keyCode === ESC)
-			{
-				head.focus();
-				e.preventDefault();
-				e.stopPropagation();
-			}
-		});
-		iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-		if (modal.navigator)
-		{
-			for (i = 0; i < modal.navigator.length; i++)
-			{
-				if (this.contentWindow.location.href.endsWith(modal.navigator[i]))
-				{
-					var index = i;
-					if (index > 0)
-					{
-						frst.style.display = "block";
-						prev.style.display = "block";
-						frst.onclick = function ()
-						{
-							iframe.src = modal.navigator[0];
-							return false;
-						};
-						prev.onclick = function ()
-						{
-							iframe.src = modal.navigator[index - 1];
-							return false;
-						};
-					} else
-					{
-						frst.onclick = null;
-						prev.onclick = null;
-						frst.style.display = "none";
-						prev.style.display = "none";
-					}
-
-					navigator.innerHTML = "Registro " + (i + 1) + " de " + modal.navigator.length;
-					navigator.style.display = "block";
-					navigator.onclick = () => iframe.src = modal.navigator[index];
-
-					if (index < modal.navigator.length - 1)
-					{
-						next.onclick = function ()
-						{
-							iframe.src = modal.navigator[index + 1];
-							return false;
-						};
-						last.onclick = function ()
-						{
-							iframe.src = modal.navigator[modal.navigator.length - 1];
-							return false;
-						};
-						next.style.display = "block";
-						last.style.display = "block";
-					} else
-					{
-						next.onclick = null;
-						last.onclick = null;
-						next.style.display = "none";
-						last.style.display = "none";
-					}
-
-					head.onkeydown = function (e)
-					{
-						e = e ? e : window.event;
-						switch (e.keyCode)
-						{
-							case END:
-								if (index < modal.navigator.length - 1)
-									iframe.src = modal.navigator[modal.navigator.length - 1];
-								break;
-							case HOME:
-								if (index > 0)
-									iframe.src = modal.navigator[0];
-								break;
-							case UP:
-							case LEFT:
-								if (index > 0)
-									iframe.src = modal.navigator[index - 1];
-								break;
-							case DOWN:
-							case RIGHT:
-								if (index < modal.navigator.length - 1)
-									iframe.src = modal.navigator[index + 1];
-								break;
-						}
-						e.preventDefault();
-						e.stopPropagation();
-					}
-					;
-					break;
-				}
-			}
+			var close = head.appendChild
+				(window.top.document.createElement("a"));
+			close.title = 'Fechar janela';
+			close.innerHTML = "&#x1011;";
+			close.onclick = () => this.hide();
 		}
-	};
-	modal.setCloseable = function (closeable)
-	{
-		dialog.closeable = closeable;
-		close.style.display = closeable ? "" : "none";
-		return this;
-	};
-	modal.setTitle = function (title)
-	{
-		caption.innerHTML = title;
-		return this;
-	};
-	modal.setTarget = function (target)
-	{
-		iframe.setAttribute('src', target);
-		return this;
-	};
-	modal.setSize = function (width, height)
-	{
-		dialog.style.width = width;
-		dialog.style.height = height;
-		return this;
-	};
-	modal.setNavigator = function (navigator)
-	{
-		this.navigator = navigator;
-		return this;
-	};
-	modal.getWindow = function ()
-	{
-		return iframe.contentWindow;
-	};
-	modal.get = function ()
+
+		var body = dialog.appendChild(window.top.document.createElement('div'));
+
+		var iframe = body.appendChild(window.top.document.createElement('iframe'));
+		iframe.dialog = this;
+		iframe.setAttribute('name', '_dialog');
+		iframe.onmouseenter = () => iframe.focus();
+
+		iframe.addEventListener("load", () =>
+		{
+			iframe.name = "_frame";
+			iframe.setAttribute("name", "_frame");
+
+			head.onkeydown = undefined;
+			head.addEventListener("keydown", event =>
+			{
+				event = event ? event : window.event;
+				switch (event.keyCode)
+				{
+					case ESC:
+						if (!this.blocked())
+							this.hide();
+						break;
+					case ENTER:
+						iframe.focus();
+						break;
+				}
+
+				event.preventDefault();
+				event.stopPropagation();
+			});
+
+			iframe.addEventListener("keydown", event =>
+			{
+				event = event ? event : window.event;
+				if (event.keyCode === ESC)
+				{
+					head.focus();
+					event.preventDefault();
+					event.stopPropagation();
+				}
+			});
+
+			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+		});
+
+
+
+
+		if (options && options.navigator)
+		{
+			var navigator = new NavBar(options.navigator);
+			head.appendChild(navigator.element);
+			navigator.element().addEventListener("go",
+				event => iframe.setAttribute('src', event.detail.target));
+			if (options.target)
+				navigator.go(options.target);
+		} else if (options && options.target)
+			iframe.setAttribute('src', options.target);
+	}
+
+	get()
 	{
 		this.arguments = arguments;
 		this.show();
-	};
-	modal.ret = function ()
+	}
+
+	ret()
 	{
 		for (var i = 0; i < Math.min(arguments.length, this.arguments.length); i++)
 		{
 			if (this.arguments[i])
-			{
 				switch (this.arguments[i].tagName.toLowerCase())
 				{
 					case "input":
@@ -4687,13 +4635,11 @@ function Dialog()
 						this.arguments[i].value = arguments[i];
 						break;
 				}
-			}
 		}
 		this.hide();
-	};
-	return modal;
-}
+	}
 
+}
 
 window.addEventListener("load", function ()
 {
@@ -4712,10 +4658,9 @@ window.addEventListener("load", function ()
 					.filter(e => e.value)
 					.forEach(e => e.value = "");
 			} else {
-				var dialog = new Dialog();
-				dialog.setTitle(this.getAttribute("title"))
-					.setTarget(this.href)
-					.get.apply(dialog, parameters);
+				var dialog = new Dialog({target: this.href,
+					title: this.getAttribute("title")});
+				dialog.get.apply(dialog, parameters);
 			}
 
 			event.preventDefault();
@@ -4730,18 +4675,17 @@ window.addEventListener("load", function ()
 			var url = resolve(getter.href);
 			var parameters =
 				CSV.parse(getter.getAttribute('data-get'))
-				.map(e => e.trim())
-				.map(e => e !== null ? document.getElementById(e) : null);
+				.map(id => id.trim())
+				.map(id => id !== null ? document.getElementById(id) : null);
 			if (this.value)
 			{
 				parameters
 					.filter(e => e)
 					.filter(e => e.value)
 					.forEach(e => e.value = "");
-				var dialog = new Dialog();
-				dialog.setTitle(getter.getAttribute("title"))
-					.setTarget(url)
-					.get.apply(dialog, parameters);
+				var dialog = new Dialog({target: url,
+					title: getter.getAttribute("title")})
+				dialog.get.apply(dialog, parameters);
 			} else
 				parameters
 					.filter(e => e)
@@ -4751,6 +4695,7 @@ window.addEventListener("load", function ()
 			event.stopPropagation();
 		});
 	});
+
 	Array.from(document.querySelectorAll('*[data-ret]')).forEach(function (element)
 	{
 		element.onmouseover = () => element.focus();
@@ -4783,6 +4728,40 @@ window.addEventListener("load", function ()
 				window.close();
 		};
 	});
+});
+class Popup extends Modal
+{
+	constructor(element)
+	{
+		super(false);
+
+		var dialog = this.element().appendChild(window.top.document.createElement('div'));
+		dialog.className = "Popup";
+
+		var head = dialog.appendChild(window.top.document.createElement('div'));
+		head.setAttribute("tabindex", "1");
+		head.focus();
+
+		var caption = head.appendChild(window.top.document.createElement('label'));
+		if (element.hasAttribute("title"))
+			caption.innerHTML = element.getAttribute("title");
+
+		var close = head.appendChild(window.top.document.createElement("a"));
+		close.title = 'Fechar janela';
+		close.innerHTML = "&#x1011;";
+		close.onclick = () => this.hide();
+
+		var body = dialog.appendChild(window.top.document.createElement('div'));
+		body.appendChild(element);
+		element.style.display = "block";
+
+		this.show();
+	}
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("*[popup]")).forEach(element => new Popup(element));
 });
 function registerTreeView(table)
 {
@@ -5198,6 +5177,8 @@ window.addEventListener("load", function ()
 	});
 });
 
+/* global ENTER, ESC, Message */
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("form")).forEach(function (form)
@@ -5216,12 +5197,15 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				new Dialog()
-					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
-					.setNavigator(this.getAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null)
+				var dialog = new Dialog({creator: creator || this,
+					title: this.getAttribute("title"),
+					blocked: Boolean(this.getAttribute("data-blocked")),
+					navigator: this.hasAttribute("data-navigator") ?
+						eval(this.getAttribute("data-navigator")) : null})
 					.show();
+
+				dialog.element().addEventListener("show", event => this.dispatchEvent(event));
+				dialog.element().addEventListener("hide", event => this.dispatchEvent(event));
 			}
 		});
 
@@ -5229,66 +5213,42 @@ window.addEventListener("load", function ()
 		{
 			event = event ? event : window.event;
 
-			switch (event.keyCode)
+			if (!event.ctrlKey && event.keyCode === ENTER)
 			{
-				case ENTER:
-					var element = document.activeElement;
-					switch (element.tagName.toLowerCase())
-					{
-						case "a":
-						case "button":
-							element.click();
+				var element = document.activeElement;
+				switch (element.tagName.toLowerCase())
+				{
+					case "select":
+					case "textarea":
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						break;
+					case "a":
+					case "button":
+						element.click();
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						break;
+					case "input":
+						var commit = this.querySelector(".Commit");
+						if (commit)
+						{
+							commit.focus();
+							commit.click();
 							event.preventDefault();
 							event.stopImmediatePropagation();
-							break;
-						case "select":
-						case "textarea":
-							if (!event.ctrlKey)
-								break;
-						case "input":
-							var commit = this.querySelector(".Commit");
-							if (commit)
-							{
-								commit.focus();
-								commit.click();
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							} else if (this.hasAttribute("action"))
-							{
-								let button = document.createElement("button");
-								button.style.display = "none";
-								this.appendChild(button);
-								button.click();
-								this.removeChild(button);
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							}
-							break;
-					}
-					break;
-				case ESC:
-					var element = document.activeElement;
-					switch (element.tagName.toLowerCase())
-					{
-						case "select":
-							if (!event.ctrlKey)
-								break;
-						case "input":
-						case "a":
-						case "button":
-						case "textarea":
-							var cancel = this.querySelector(".Cancel");
-							if (cancel)
-							{
-								cancel.focus();
-								cancel.click();
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							}
-							break;
-					}
-					break;
-
+						} else if (this.hasAttribute("action"))
+						{
+							let button = document.createElement("button");
+							button.style.display = "none";
+							this.appendChild(button);
+							button.click();
+							this.removeChild(button);
+							event.preventDefault();
+							event.stopImmediatePropagation();
+						}
+						break;
+				}
 			}
 		});
 	});
@@ -5418,92 +5378,39 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-function Message(type, message, timeout)
+class Message extends Modal
 {
-	var modal = new Modal();
-	modal.style.display = "flex";
-	modal.style.alignItems = "center";
-	modal.style.justifyContent = "center";
-
-	var dialog = modal.appendChild(window.top.document.createElement('div'));
-	dialog.style.width = "800px";
-	dialog.style.height = "260px";
-	dialog.style.display = "flex";
-	dialog.style.borderRadius = "5px";
-	dialog.style.alignItems = "center";
-	dialog.style.justifyContent = "center";
-	dialog.style.border = "4px solid #767d90";
-	dialog.style.boxShadow = "3px 10px 5px 0px rgba(0,0,0,0.75)";
-
-	var icon = dialog.appendChild(window.top.document.createElement('div'));
-	icon.style.width = "240px";
-	icon.style.height = "100%";
-	icon.style.fontFamily = "gate";
-	icon.style.fontSize = "120px";
-	icon.style.display = "flex";
-	icon.style.alignItems = "center";
-	icon.style.justifyContent = "center";
-	icon.style.background = "linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%)";
-
-	var body = dialog.appendChild(window.top.document.createElement('div'));
-	body.innerHTML = message;
-	body.style.width = "100%";
-	body.style.height = "100%";
-	body.style.padding = "8px";
-	body.style.display = "flex";
-	body.style.flexWrap = "wrap";
-	body.style.fontSize = "20px";
-	body.style.alignItems = "center";
-	body.style.justifyContent = "center";
-	body.style.backgroundColor = "white";
-
-	modal.onclick = dialog.onclick = icon.onclick = body.onclick = function ()
+	constructor(options)
 	{
-		modal.hide();
-	};
+		super();
 
-	switch (type)
-	{
-		case "SUCCESS":
-			icon.innerHTML = "&#X1000";
-			icon.style.color = "@G";
-			body.style.color = "@G";
-			break;
-		case "WARNING":
-			icon.innerHTML = "&#X1007";
-			icon.style.color = "#666600";
-			body.style.color = "#666600";
-			break;
-		case "ERROR":
-			icon.innerHTML = "&#X1001";
-			icon.style.color = "@R";
-			body.style.color = "@R";
-			break;
+		var dialog = this.element().appendChild(window.top.document.createElement('div'));
+		dialog.className = "Message";
+
+		var body = dialog.appendChild(window.top.document.createElement('div'));
+		body.className = options.type;
+		body.innerHTML = options.message;
+
+		if (options.timeout)
+			window.top.setTimeout(() => this.hide(), options.timeout);
+
+		this.show();
 	}
-
-	if (timeout)
-		window.top.setTimeout(function ()
-		{
-			modal.hide();
-		}, timeout);
-
-
-	modal.show();
 }
 
 Message.success = function (message, timeout)
 {
-	Message("SUCCESS", message, timeout);
+	new Message({type: "SUCCESS", message: message, timeout: timeout});
 };
 
 Message.warning = function (message, timeout)
 {
-	Message("WARNING", message, timeout);
+	new Message({type: "WARNING", message: message, timeout: timeout});
 };
 
 Message.error = function (message, timeout)
 {
-	Message("ERROR", message, timeout);
+	new Message({type: "ERROR", message: message, timeout: timeout});
 };
 
 Message.show = function (status, timeout)
