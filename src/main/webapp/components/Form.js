@@ -1,3 +1,5 @@
+/* global ENTER, ESC, Message */
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("form")).forEach(function (form)
@@ -16,12 +18,15 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				new Dialog()
-					.setTitle(this.getAttribute("title"))
-					.setOnHide(this.getAttribute("data-onHide"))
-					.setNavigator(this.getAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null)
+				var dialog = new Dialog({creator: creator || this,
+					title: this.getAttribute("title"),
+					blocked: Boolean(this.getAttribute("data-blocked")),
+					navigator: this.hasAttribute("data-navigator") ?
+						eval(this.getAttribute("data-navigator")) : null})
 					.show();
+
+				dialog.element().addEventListener("show", event => this.dispatchEvent(event));
+				dialog.element().addEventListener("hide", event => this.dispatchEvent(event));
 			}
 		});
 
@@ -29,66 +34,42 @@ window.addEventListener("load", function ()
 		{
 			event = event ? event : window.event;
 
-			switch (event.keyCode)
+			if (!event.ctrlKey && event.keyCode === ENTER)
 			{
-				case ENTER:
-					var element = document.activeElement;
-					switch (element.tagName.toLowerCase())
-					{
-						case "a":
-						case "button":
-							element.click();
+				var element = document.activeElement;
+				switch (element.tagName.toLowerCase())
+				{
+					case "select":
+					case "textarea":
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						break;
+					case "a":
+					case "button":
+						element.click();
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						break;
+					case "input":
+						var commit = this.querySelector(".Commit");
+						if (commit)
+						{
+							commit.focus();
+							commit.click();
 							event.preventDefault();
 							event.stopImmediatePropagation();
-							break;
-						case "select":
-						case "textarea":
-							if (!event.ctrlKey)
-								break;
-						case "input":
-							var commit = this.querySelector(".Commit");
-							if (commit)
-							{
-								commit.focus();
-								commit.click();
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							} else if (this.hasAttribute("action"))
-							{
-								let button = document.createElement("button");
-								button.style.display = "none";
-								this.appendChild(button);
-								button.click();
-								this.removeChild(button);
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							}
-							break;
-					}
-					break;
-				case ESC:
-					var element = document.activeElement;
-					switch (element.tagName.toLowerCase())
-					{
-						case "select":
-							if (!event.ctrlKey)
-								break;
-						case "input":
-						case "a":
-						case "button":
-						case "textarea":
-							var cancel = this.querySelector(".Cancel");
-							if (cancel)
-							{
-								cancel.focus();
-								cancel.click();
-								event.preventDefault();
-								event.stopImmediatePropagation();
-							}
-							break;
-					}
-					break;
-
+						} else if (this.hasAttribute("action"))
+						{
+							let button = document.createElement("button");
+							button.style.display = "none";
+							this.appendChild(button);
+							button.click();
+							this.removeChild(button);
+							event.preventDefault();
+							event.stopImmediatePropagation();
+						}
+						break;
+				}
 			}
 		});
 	});

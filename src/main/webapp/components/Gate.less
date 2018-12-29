@@ -1,14 +1,13 @@
 @main: #CDCAB9;
+@base: #b9c6cd;
+@acent: #c0b9cd;
+
 @main_tinted: tint(@main, 50%);
 @main_shaded1: shade(@main, 05%);
 @main_shaded2: shade(@main, 10%);
 @main_shaded3: shade(@main, 20%);
-
-@base: #b9c6cd;
 @base_tinted: tint(@base, 85%);
 @base_shaded: shade(@base, 35%);
-
-@acent: #c0b9cd;
 @acent_tinted: tint(@acent, 35%);
 
 @G: #006600;
@@ -32,6 +31,7 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 	&:first-child { margin-top: 0px};
+	&:last-child { margin-bottom: 0px};
 }
 
 @font-face
@@ -74,6 +74,9 @@ body { margin: 0;
        padding: 0;
        background-image: @noise;
        background-color: @main_shaded3; }
+
+body.Panel { background-color: @main; background-image: none; }
+body.Page { background-color: @main_shaded1 ; background-image: none;}
 
 span.PAGINATOR a { color: black; font-weight: bold }
 
@@ -235,8 +238,12 @@ div.MINIBAR > a { width: 24px;
 @import "Link.less";
 @import "Button.less";
 
+@import "NavBar.less";
+
 @import "Modal.less";
+@import "Block.less";
 @import "Dialog.less";
+@import "Message.less";
 
 @import "Slider.less";
 @import "Calendar.less";
@@ -274,3 +281,7 @@ div.MINIBAR > a { width: 24px;
 @import "Sortable.less";
 
 @import "Navigator.less";
+
+@import "Popup.less";
+
+@import "Layout.less";

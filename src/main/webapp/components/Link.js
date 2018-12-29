@@ -1,6 +1,6 @@
-/* global Message, Block */
+/* global Message, Block, ENTER, ESC */
 
-function Link(link)
+function Link(link, creator)
 {
 	link.addEventListener("click", function (event)
 	{
@@ -78,17 +78,15 @@ function Link(link)
 						this.setAttribute("target", "_blank");
 						this.click();
 						this.setAttribute("target", "_dialog");
-					} else
-						new Dialog()
-							.setTitle(this.getAttribute("title"))
-							.setOnHide(this.getAttribute("data-onHide"))
-							.setNavigator(this.getAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null)
-							.setTarget(this.getAttribute("href"))
-							.setCloseable(!this.hasAttribute("data-closeable")
-								|| JSON.parse(this.getAttribute("data-closeable")))
+					} else {
+						new Dialog({creator: creator || this,
+							title: this.getAttribute("title"),
+							target: this.getAttribute("href"),
+							blocked: Boolean(this.getAttribute("data-blocked")),
+							navigator: this.hasAttribute("data-navigator") ?
+								eval(this.getAttribute("data-navigator")) : null})
 							.show();
-
+					}
 					break;
 				case "_message":
 					event.preventDefault();
@@ -178,12 +176,6 @@ function Link(link)
 		}
 	});
 
-	link.addEventListener("click", function ()
-	{
-		if (this.getAttribute("data-block"))
-			Block.show(this.getAttribute("data-block"));
-	});
-
 	link.addEventListener("keydown", function (event)
 	{
 		if (event.keyCode === 32)
@@ -257,15 +249,6 @@ function Link(link)
 		return this;
 	};
 
-	this.setOnHide = function (value)
-	{
-		if (value)
-			link.setAttribute("data-onHide", value);
-		else if (link.getAttribute("data-onHide"))
-			link.removeAttribute("data-onHide");
-		return this;
-	};
-
 	this.get = function ()
 	{
 		return link;
@@ -276,4 +259,18 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("a"))
 		.forEach(a => new Link(a));
+
+	document.documentElement.addEventListener("keydown", function (event)
+	{
+		switch (event.keyCode)
+		{
+			case ENTER:
+				Array.from(document.querySelectorAll("a.Action")).forEach(e => e.click());
+				break;
+			case ESC:
+				Array.from(document.querySelectorAll("a.Cancel")).forEach(e => e.click());
+				break;
+
+		}
+	});
 });

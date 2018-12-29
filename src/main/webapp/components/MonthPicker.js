@@ -1,18 +1,22 @@
-function MonthPicker(callback)
+class MonthPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("MonthPicker");
+	constructor(callback)
+	{
+		super();
 
-	var selector = new MonthSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		this.main().classList.add("MonthPicker");
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		var selector = new MonthSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().show();
+		this.element().addEventListener("show", () => this.commit().focus());
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

@@ -1,18 +1,21 @@
-function TimeIntervalPicker(callback)
+class TimeIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("TimeIntervalPicker");
+	constructor(callback)
+	{
+		super();
+		this.main().classList.add("TimeIntervalPicker");
 
-	var selector = new TimeIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
+		var selector = new TimeIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
 
-	picker.head().appendChild(document.createTextNode(selector.toString()));
+		this.head().appendChild(document.createTextNode(selector.toString()));
 
-	picker.commit().addEventListener("click", () => callback(selector.toString()) | picker.modal().hide());
+		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

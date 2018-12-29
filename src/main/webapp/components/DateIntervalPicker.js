@@ -1,27 +1,30 @@
 /* global DateFormat */
 
-function DateIntervalPicker(callback)
+class DateIntervalPicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DateIntervalPicker");
-
-	var selector = new DateIntervalSelector(picker.body().appendChild(document.createElement("div")));
-	selector.element().addEventListener("update", () => picker.head().innerHTML = selector.toString());
-
-	picker.head().appendChild(document.createTextNode(selector.toString()));
-
-	picker.commit().addEventListener("click", () =>
+	constructor(callback)
 	{
-		if (selector.selection())
+		super();
+		this.main().classList.add("DateIntervalPicker");
+
+		var selector = new DateIntervalSelector(this.body().appendChild(document.createElement("div")));
+		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
+
+		this.head().appendChild(document.createTextNode(selector.toString()));
+
+		this.commit().addEventListener("click", () =>
 		{
-			callback(selector.toString());
-			picker.modal().hide();
-		}
-	});
+			if (selector.selection())
+			{
+				callback(selector.toString());
+				this.hide();
+			}
+		});
 
-	picker.modal().addEventListener("show", () => picker.commit().focus());
+		this.element().addEventListener("show", () => this.commit().focus());
 
-	picker.modal().show();
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

@@ -1,23 +1,27 @@
 /* global DateFormat */
 
-function DatePicker(callback)
+class DatePicker extends Picker
 {
-	var picker = new Picker();
-	picker.main().classList.add("DatePicker");
-	picker.head().appendChild(document.createTextNode("Selecione uma data"));
-
-	var selector = new Calendar(picker.body().appendChild(document.createElement("div"), {max: 1}));
-
-	selector.element().addEventListener("update", () =>
+	constructor(callback)
 	{
-		if (selector.selection().length === 1)
-			callback(DateFormat.DATE.format(selector.selection()[0]));
-		picker.modal().hide();
-	});
+		super();
 
-	picker.commit().addEventListener("click", () => alert("selecione uma data"));
+		this.main().classList.add("DatePicker");
+		this.head().appendChild(document.createTextNode("Selecione uma data"));
 
-	picker.modal().show();
+		var selector = new Calendar(this.body().appendChild(document.createElement("div"), {max: 1}));
+
+		selector.element().addEventListener("update", () =>
+		{
+			if (selector.selection().length === 1)
+				callback(DateFormat.DATE.format(selector.selection()[0]));
+			this.hide();
+		});
+
+		this.commit().addEventListener("click", () => alert("selecione uma data"));
+
+		this.show();
+	}
 }
 
 window.addEventListener("load", function ()

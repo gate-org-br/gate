@@ -1,40 +1,43 @@
-function Modal()
+class Modal
 {
-	var body = window.top.document.body;
-	var overflow = body.style.overflow;
-
-	var modal = window.top.document.createElement('div');
-	modal.className = "Modal";
-
-	modal.show = function ()
+	constructor(options)
 	{
-		body.style.overflow = "hidden";
-		body.appendChild(this);
+		var element = window.top.document.createElement('div');
+		element.className = "Modal";
+		this.element = () => element;
 
-		modal.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+		var blocked = options ? options.blocked : null;
+		this.blocked = () => blocked;
 
-		return this;
-	};
+		var creator = options ? options.creator : null;
+		this.creator = () => creator ? creator : element;
 
-	modal.setOnHide = function (onHide)
+		if (!blocked)
+			element.addEventListener("click", event =>
+				(event.target === element || event.srcElement === element) && this.hide());
+	}
+
+	show()
 	{
-		this.onHide = onHide;
-		return this;
-	};
-
-	modal.hide = function ()
-	{
-		if (this.parentNode)
+		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			body.style.overflow = overflow;
-			if (this.onHide)
-				eval(this.onHide);
-			this.parentNode.removeChild(this);
-
-			modal.dispatchEvent(new CustomEvent('hide', {detail: {modal: this}}));
+			window.top.document.body.style.overflow = "hidden";
+			window.top.document.body.appendChild(this.element());
+			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
-		return this;
-	};
 
-	return modal;
+		return this;
+	}
+
+	hide()
+	{
+		if (this.element().parentNode
+			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		{
+			window.top.document.body.style.overflow = "";
+			this.element().parentNode.removeChild(this.element());
+		}
+
+		return this;
+	}
 }

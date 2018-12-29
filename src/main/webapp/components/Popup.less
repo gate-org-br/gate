@@ -1,4 +1,6 @@
-div.Dialog
+*[popup] {display: none}
+
+div.Popup
 {
 	display: flex;
 	position: fixed;
@@ -13,17 +15,15 @@ div.Dialog
 
 	> div:first-child
 		{
-		color: white;
 		height: 40px;
 		padding: 8px;
+		color: white;
 		outline: none;
 		display: flex;
-		font-size: 20px;
-		font-weight: bold;
-		align-items: stretch;
-		background-color: @base_shaded;
+		font-size: 18px;
+		align-items: center;
 		justify-content: space-between;
-
+		background-color: @base_shaded;
 
 		> label { flex-grow: 1;
 			  display: flex;
@@ -32,29 +32,26 @@ div.Dialog
 			  align-items: center;
 			  justify-content: flex-start; }
 
-		> a { order: 1;
-		      width: 48px;
+		> a { width: 48px;
 		      display: flex;
 		      color: inherit;
 		      cursor: pointer;
 		      font-family: gate;
 		      font-size: inherit;
 		      align-items: center;
-		      justify-content: center; 	}
+		      justify-content: center;}
 	}
 
-	> div:last-child { height: calc(100% - 40px);
+
+	> div:last-child { padding: 10px;
+			   height: calc(100% - 40px);
 			   background-color: #CDCAB9;
 
-			   > iframe,
-			   >  div,
-			   > dialog { margin: 0px;
-				      width: 100%;
-				      height: 100%;
-				      padding: 0px;
-				      border: none;
-				      overflow: auto; }
+			   > * { margin: 0px;
+				 width: 100%;
+				 height: 100%;
+				 padding: 0px;
+				 border: none;
+				 overflow: auto; }
 	}
 }
-
-

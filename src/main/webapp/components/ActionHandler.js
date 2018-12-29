@@ -1,3 +1,5 @@
+/* global ENTER, HOME, END, DOWN, UP */
+
 function ActionHandler(element)
 {
 	element.setAttribute("tabindex", 1);
@@ -62,19 +64,19 @@ function ActionHandler(element)
 				.toLowerCase() : "get")
 			{
 				case "get":
-					var a = new Link(document.createElement("a"))
+					var link = new Link(document.createElement("a"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
 						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
-					document.body.appendChild(a);
-					a.click();
-					document.body.removeChild(a);
+					document.body.appendChild(link);
+
+					link.click();
+					document.body.removeChild(link);
 					break;
 				case "post":
 					var form = this.parentNode;
@@ -82,16 +84,17 @@ function ActionHandler(element)
 						&& form.tagName.toLowerCase()
 						!== 'form')
 						form = form.parentNode;
-					var button = new Button(document.createElement("button"))
+
+					var button = new Button(document.createElement("button"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
 						.setTitle(this.getAttribute("title"))
-						.setOnHide(this.getAttribute("data-onHide"))
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
 						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
+
 					form.appendChild(button);
 					button.click();
 					form.removeChild(button);
@@ -104,8 +107,5 @@ function ActionHandler(element)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('*[data-action]')).forEach(function (e)
-	{
-		new ActionHandler(e);
-	});
+	Array.from(document.querySelectorAll('*[data-action]')).forEach(element => new ActionHandler(element));
 });

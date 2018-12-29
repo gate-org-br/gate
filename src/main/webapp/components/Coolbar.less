@@ -45,6 +45,9 @@
 					 align-items: center;
 					 justify-content: center; }
 
+		       > a.Delete,
+		       > button.Delete { color: @R }
+
 		       > a.Commit,
 		       > button.Commit { color: @G }
 
@@ -52,8 +55,12 @@
 		       > button.Action { color: @B; }
 
 		       > a.Cancel,
-		       > button.Cancel { float: left;
-					 color: @R; }
+		       > button.Cancel { color: @R;
+					 float: left; }
+
+		       > a.Return,
+		       > button.Return { color: @R; 
+					 float: left; }
 
 		       > progress { width: calc(100% - 4px); }
 

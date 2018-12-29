@@ -1,8 +1,8 @@
 function ChartDialog(data, type, title)
 {
-	var modal = new Modal();
+	var modal = new Modal(true);
 
-	var dialog = modal.appendChild(window.top.document.createElement('div'));
+	var dialog = modal.element().appendChild(window.top.document.createElement('div'));
 	dialog.className = "Dialog";
 
 	var head = dialog.appendChild(document.createElement("div"));
