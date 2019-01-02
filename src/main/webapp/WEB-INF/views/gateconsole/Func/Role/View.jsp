@@ -8,13 +8,14 @@
 			<label style='width: 100%'>
 				<span>
 					<g:hidden property="func.id"/>
-					<g:selectt id='role' empty="Incluir"
-						   options="${screen.roles}"
-						   identifiedBy="id"
-						   property='role.id'
-						   children="roles"
-						   tabindex='1'
-						   data-method="post"/>
+					<g:select id='role' empty="Incluir"
+						  options="${screen.roles}"
+						  values="${e -> e.id}"
+						  labels="${e -> e.name}"
+						  children="${e -> e.children}"
+						  property='role.id'
+						  tabindex='1'
+						  data-method="post"/>
 				</span>
 			</label>
 		</fieldset>

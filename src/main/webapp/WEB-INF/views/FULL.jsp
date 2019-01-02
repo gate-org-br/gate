@@ -5,7 +5,7 @@
 	<body>
 		<div class="Main">
 			<div>
-				<g:icon type="gate"/>
+				<img src='Logo.svg'/>
 				<label>${app.id} - ${app.name}</label>
 				<label>Vers&atilde;o ${version}</label>
 				<label>${screen.user.name}</label>

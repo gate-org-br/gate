@@ -21,14 +21,15 @@ public class UseTag extends SimpleTagSupport
 		{
 			if (value != null)
 				getJspContext().setAttribute(name,
-						value, PageContext.REQUEST_SCOPE);
+					value, PageContext.REQUEST_SCOPE);
 			else if (type != null)
 				getJspContext().setAttribute(name,
-						Class.forName(type).getDeclaredConstructor().newInstance(), PageContext.REQUEST_SCOPE);
+					Class.forName(type).getDeclaredConstructor()
+						.newInstance(), PageContext.REQUEST_SCOPE);
 
 			getJspContext().setAttribute(name, value, PageContext.REQUEST_SCOPE);
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException
-				| NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex)
+			| NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
 			throw new JspException(ex);
 		}

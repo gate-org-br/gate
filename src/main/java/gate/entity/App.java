@@ -54,7 +54,7 @@ public class App implements Serializable
 		Reflections reflections = new Reflections(ClasspathHelper.forWebInfClasses(context));
 
 		List<Class<? extends gate.base.Screen>> screens
-				= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
+			= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
 		Collections.sort(screens, (a, b) -> a.getPackage().getName().compareTo(b.getPackage().getName()));
 
 		App app = new App();
@@ -84,12 +84,12 @@ public class App implements Serializable
 						if (type.isAnnotationPresent(Description.class))
 							screen.description = type.getAnnotation(Description.class).value();
 						if (type.isAnnotationPresent(Icon.class))
-							screen.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value(), null).getCode();
+							screen.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value()).getCode();
 
 						for (Method method : type.getMethods())
 						{
 							if (method.getName().length() > 4
-									&& method.getName().startsWith("call"))
+								&& method.getName().startsWith("call"))
 							{
 								Module.Screen.Action action = screen.addAction();
 								action.id = method.getName().substring(4);
@@ -98,7 +98,7 @@ public class App implements Serializable
 								if (method.isAnnotationPresent(Description.class))
 									action.description = method.getAnnotation(Description.class).value();
 								if (method.isAnnotationPresent(Icon.class))
-									action.icon = Icons.getInstance().get(method.getAnnotation(Icon.class).value(), null).getCode();
+									action.icon = Icons.getInstance().get(method.getAnnotation(Icon.class).value()).getCode();
 							}
 						}
 					} else
@@ -108,7 +108,7 @@ public class App implements Serializable
 						if (type.isAnnotationPresent(Description.class))
 							module.description = type.getAnnotation(Description.class).value();
 						if (type.isAnnotationPresent(Icon.class))
-							module.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value(), null).getCode();
+							module.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value()).getCode();
 					}
 				}
 

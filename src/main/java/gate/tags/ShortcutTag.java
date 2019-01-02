@@ -145,9 +145,9 @@ public class ShortcutTag extends DynamicAttributeTag
 
 	private String createBody(Class<?> clazz, Method method)
 	{
-		Icons.Icon icon = Icons.getInstance().get(method, null);
+		Icons.Icon icon = Icons.getInstance().get(method);
 		if (icon == Icons.UNKNOWN)
-			icon = Icons.getInstance().get(clazz, null);
+			icon = Icons.getInstance().get(clazz);
 		return String.format("<i>&#X%s;</i>", icon.getCode());
 	}
 }

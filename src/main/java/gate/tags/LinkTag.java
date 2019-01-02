@@ -84,9 +84,9 @@ public class LinkTag extends DynamicAttributeTag
 				action = pageContext.getRequest().getParameter("ACTION");
 
 			Class<Screen> clazz = Screen.getScreen(module, screen)
-					.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
+				.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
 			Method method = Screen.getAction(clazz, action)
-					.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
+				.orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
 
 			if (!getAttributes().containsKey("title") && method.isAnnotationPresent(Description.class))
 				getAttributes().put("title", method.getAnnotation(Description.class).value());
@@ -127,9 +127,9 @@ public class LinkTag extends DynamicAttributeTag
 
 	private String createBody(Class<?> clazz, Method method)
 	{
-		Icons.Icon icon = Icons.getInstance().get(method, null);
+		Icons.Icon icon = Icons.getInstance().get(method);
 		if (icon == Icons.UNKNOWN)
-			icon = Icons.getInstance().get(clazz, null);
+			icon = Icons.getInstance().get(clazz);
 
 		String name = "unnamed";
 		if (method.isAnnotationPresent(Name.class))

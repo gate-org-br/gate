@@ -77,21 +77,20 @@ public class MenuTag extends DynamicAttributeTag
 				action = pageContext.getRequest().getParameter("ACTION");
 
 			Class<Screen> clazz = Screen.getScreen(module, screen)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
+				.orElseThrow(() -> new JspException(String.format(
+				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+				module, screen, action)));
 			Method method = Screen.getAction(clazz, action)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
+				.orElseThrow(() -> new JspException(String.format(
+				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+				module, screen, action)));
 
-			if (Gate.checkAccess(user,
-					module, screen, action, clazz, method))
+			if (Gate.checkAccess(user, module, screen, action, clazz, method))
 			{
 				Icons.Icon icon = Icons
-						.getInstance().get(method, null);
+					.getInstance().get(method);
 				if (icon == Icons.UNKNOWN)
-					icon = Icons.getInstance().get(clazz, null);
+					icon = Icons.getInstance().get(clazz);
 
 				String name = "unnamed";
 				if (method.isAnnotationPresent(Name.class))

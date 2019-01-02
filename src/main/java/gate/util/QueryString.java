@@ -1,17 +1,20 @@
 package gate.util;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-@SuppressWarnings("serial")
 public class QueryString extends LinkedHashMap<String, String>
 {
 
-	public QueryString(String qs)
+	private static final Pattern PARAMETERS = Pattern.compile("&");
+	private static final Pattern PARAMETER = Pattern.compile("=");
+
+	public QueryString(String value)
 	{
-		for (String parameter : qs.split("&"))
+		for (String parameter : PARAMETERS.split(value))
 		{
-			String[] split = parameter.split("=");
+			String[] split = PARAMETER.split(parameter);
 			if (split.length == 2)
 				put(split[0], split[1]);
 		}
@@ -20,9 +23,9 @@ public class QueryString extends LinkedHashMap<String, String>
 	@Override
 	public String toString()
 	{
-		StringBuilder string = new StringBuilder();
-		for (Map.Entry<String, String> entry : entrySet())
-			string.append(string.length() > 0 ? '&' : "").append(entry.getKey()).append('=').append(entry.getValue());
-		return string.toString();
+		return entrySet()
+			.stream().map(e -> e.getKey() + "=" + e.getValue())
+			.collect(Collectors.joining("&"));
 	}
+
 }

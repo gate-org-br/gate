@@ -8,24 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.LambdaExpression;
-import javax.el.StandardELContext;
 import javax.servlet.jsp.JspException;
 
-public abstract class CheckableTag extends PropertyTag
+public abstract class CheckableTag extends SelectorTag
 {
-
-	private Iterable<?> options;
-	private LambdaExpression children;
-
-	private LambdaExpression labels;
-	private LambdaExpression values;
-	private LambdaExpression groups;
-
-	private static final ELContext EL_CONTEXT
-		= new StandardELContext(ExpressionFactory.newInstance());
 
 	@Override
 	public void doTag() throws JspException, IOException
@@ -39,6 +25,12 @@ public abstract class CheckableTag extends PropertyTag
 				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 			else
 				throw new JspException("No option defined for property " + getProperty());
+
+		if (sortby != null)
+			Toolkit.collection(options)
+				.stream()
+				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
+				.collect(Collectors.toList());
 
 		if (groups != null)
 		{
@@ -102,31 +94,6 @@ public abstract class CheckableTag extends PropertyTag
 			getJspContext().getOut().print("</li>");
 		}
 		getJspContext().getOut().print("</ul>");
-	}
-
-	public void setOptions(Object options)
-	{
-		this.options = Toolkit.iterable(options);
-	}
-
-	public void setLabels(LambdaExpression labels)
-	{
-		this.labels = labels;
-	}
-
-	public void setValues(LambdaExpression values)
-	{
-		this.values = values;
-	}
-
-	public void setGroups(LambdaExpression groups)
-	{
-		this.groups = groups;
-	}
-
-	public void setChildren(LambdaExpression children)
-	{
-		this.children = children;
 	}
 
 	protected abstract String getComponentType();

@@ -56,10 +56,12 @@
 			<label style='width: 100%'>
 				Perfil:
 				<span>
-					<g:selectt property='form.role.id'
-						   options="${screen.roles}" children="roles" identifiedBy="id">
+					<g:select property='form.role.id'
+						  options="${screen.roles}"
+						  children="${e -> e.children}"
+						  values="${e -> e.id}">
 						${option.name}
-					</g:selectt>
+					</g:select>
 				</span>
 			</label>
 

@@ -5,13 +5,13 @@
 		<g:if condition="${not empty screen.page}">
 			<table>
 				<tbody>
-					<g:iterator source="${screen.page}" target="role" index="index" children="roles" depth="depth">
-						<tr data-ret='${role.id},${role.name}' tabindex="1">
+					<g:iterator source="${screen.page}" children="${e -> e.children}">
+						<tr data-ret='${target.id}, ${target.name}' tabindex="1">
 							<td style='padding-left: ${depth*40}px'>
-								${role.name}
-								<g:if condition="${not empty role.roleID}">
+								${target.name}
+								<g:if condition="${not empty target.roleID}">
 									<span style='color: gray'>
-										(<g:print value="${role.roleID}"/>)
+										(<g:print value="${target.roleID}"/>)
 									</span>
 								</g:if>
 							</td>

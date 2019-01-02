@@ -4,8 +4,8 @@
 <g:template filename="/WEB-INF/views/PAGE.jsp">
 	<g:datalist id="user-list"
 		    options="${screen.users}"
-		    label="${e -> e.name}"
-		    value="${e -> e.id}"/>
+		    labels="${e -> e.name}"
+		    values="${e -> e.id}"/>
 
 	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 

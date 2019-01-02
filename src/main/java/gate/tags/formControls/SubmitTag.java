@@ -1,15 +1,15 @@
 package gate.tags.formControls;
 
+import gate.converter.Converter;
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class SubmitTag extends PropertyTag
 {
 
-	private String value;
+	private Object value;
 
-	public void setValue(String value)
+	public void setValue(Object value)
 	{
 		this.value = value;
 	}
@@ -18,8 +18,8 @@ public class SubmitTag extends PropertyTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		getAttributes().put("value", value);
 		getAttributes().put("type", "SUBMIT");
-		getJspContext().getOut().print(String.format("<input%s/>%n", getAttributes().toString()));
+		getAttributes().put("value", Converter.toString(value));
+		getJspContext().getOut().print(String.format("<input %s/>", getAttributes().toString()));
 	}
 }

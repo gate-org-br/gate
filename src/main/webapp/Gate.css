@@ -465,9 +465,7 @@ fieldset > label > span > button {
   justify-content: center;
 }
 fieldset > label > span > a > i,
-fieldset > label > span > button > i,
-fieldset > label > span > a > span,
-fieldset > label > span > button > span {
+fieldset > label > span > button > i {
   width: 100%;
   height: 100%;
   display: flex;
@@ -482,8 +480,7 @@ fieldset > label > span > a:focus,
 fieldset > label > span > button:focus {
   background-color: #FFFACD;
 }
-fieldset > label > span > i,
-fieldset > label > span > span {
+fieldset > label > span > i {
   right: 0px;
   width: 32px;
   height: 100%;

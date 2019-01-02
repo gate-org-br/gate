@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
-public class AdminTag extends SimpleTagSupport
+public class SuperUserTag extends SimpleTagSupport
 {
 
 	@Inject

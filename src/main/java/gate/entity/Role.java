@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -298,7 +299,6 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	public boolean isMasterOf(Role role)
 	{
-
 		return slaveStream().anyMatch(e -> e.equals(role));
 	}
 
@@ -310,16 +310,36 @@ public class Role implements Serializable, Hierarchy<Role>
 	public Stream<Role> slaveStream()
 	{
 		return Boolean.TRUE.equals(getMaster())
-			? getChildren().stream()
+			? Stream.concat(Stream.of(this), getChildren().stream()
 				.filter(e -> !Boolean.TRUE.equals(e.getMaster()))
-				.flatMap(e -> e.stream())
+				.flatMap(e -> e.stream()))
 			: Stream.empty();
+	}
+
+	public List<Role> toSlaveList()
+	{
+		return slaveStream().collect(Collectors.toList());
+	}
+
+	public <T> List<T> toSlaveList(Function<Role, T> extractor)
+	{
+		return slaveStream().map(extractor).collect(Collectors.toList());
 	}
 
 	public Stream<Role> masterStream()
 	{
 		return stream()
 			.filter(e -> Boolean.TRUE.equals(e.getMaster()));
+	}
+
+	public List<Role> toMasterList()
+	{
+		return masterStream().collect(Collectors.toList());
+	}
+
+	public <T> List<T> toMasterList(Function<Role, T> extractor)
+	{
+		return masterStream().map(extractor).collect(Collectors.toList());
 	}
 
 	private Stream<Auth> privateAuthStream()

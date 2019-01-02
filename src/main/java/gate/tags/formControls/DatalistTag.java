@@ -14,22 +14,22 @@ public class DatalistTag extends DynamicAttributeTag
 {
 
 	private List<Object> options;
-	private LambdaExpression label;
-	private LambdaExpression value;
+	private LambdaExpression labels;
+	private LambdaExpression values;
 
 	public void setOptions(List<Object> options)
 	{
 		this.options = options;
 	}
 
-	public void setLabel(LambdaExpression label)
+	public void setLabels(LambdaExpression labels)
 	{
-		this.label = label;
+		this.labels = labels;
 	}
 
-	public void setValue(LambdaExpression value)
+	public void setValues(LambdaExpression values)
 	{
-		this.value = value;
+		this.values = values;
 	}
 
 	@Override
@@ -45,12 +45,12 @@ public class DatalistTag extends DynamicAttributeTag
 			for (Object option : options)
 			{
 				Object optionLabel = option;
-				if (label != null)
-					optionLabel = label.invoke(context, option);
+				if (labels != null)
+					optionLabel = labels.invoke(context, option);
 
 				Object optionValue = option;
-				if (value != null)
-					optionValue = value.invoke(context, option);
+				if (values != null)
+					optionValue = values.invoke(context, option);
 
 				if (getJspBody() != null)
 				{

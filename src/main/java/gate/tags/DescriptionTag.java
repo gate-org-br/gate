@@ -1,11 +1,11 @@
 package gate.tags;
 
-import gate.annotation.Name;
+import gate.annotation.Description;
 import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 
-public class NameTag extends DynamicAttributeTag
+public class DescriptionTag extends DynamicAttributeTag
 {
 
 	private Object type;
@@ -19,7 +19,7 @@ public class NameTag extends DynamicAttributeTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		getJspContext().getOut().print(Name.Extractor.extract(type));
+		getJspContext().getOut().print(Description.Extractor.extract(type));
 	}
 
 }

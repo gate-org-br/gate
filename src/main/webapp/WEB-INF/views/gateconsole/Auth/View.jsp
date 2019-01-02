@@ -27,7 +27,7 @@
 						</g:when>
 						<g:otherwise>
 							<g:hidden property="form.type" value='1'/>
-							<g:icon type="gate.entity.Auth$Type" field="PRIVATE"/>Privado
+							<g:icon type="gate.entity.Auth$Type:PRIVATE"/>Privado
 						</g:otherwise>
 					</g:choose>
 				</span>

@@ -1,12 +1,10 @@
 package gate.tags;
 
 import gate.util.QueryString;
-
 import java.io.IOException;
-
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 public class OrdenatorTag extends DynamicAttributeTag
 {
@@ -15,31 +13,39 @@ public class OrdenatorTag extends DynamicAttributeTag
 	private String property;
 	private QueryString arguments;
 
+	@Inject
+	private HttpServletRequest request;
+
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		HttpServletRequest request = (HttpServletRequest) ((PageContext) getJspContext()).getRequest();
+		if (method == null)
+			method = request
+				.getMethod().toUpperCase();
+
 		String orderBy = request.getParameter("orderBy");
-		QueryString qs = new QueryString(request.getQueryString());
+		QueryString queryString = new QueryString(request.getQueryString());
 		if (arguments != null)
-			qs.putAll(arguments);
-		qs.remove("orderBy");
+			queryString.putAll(arguments);
+		queryString.remove("orderBy");
+
+		String desc = "-" + property;
 
 		if ("POST".equalsIgnoreCase(method))
 		{
 			if (property.equals(orderBy))
 			{
-				qs.put("orderBy", "-".concat(property));
-				getAttributes().put("formaction", String.format("Gate?%s", qs.toString()));
+				queryString.put("orderBy", desc);
+				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<button %s>&uarr;", getAttributes().toString()));
-			} else if ("-".concat(property).equals(orderBy))
+			} else if (desc.equals(orderBy))
 			{
-				getAttributes().put("formaction", String.format("Gate?%s", qs.toString()));
+				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<button %s>&darr;", getAttributes().toString()));
 			} else
 			{
-				qs.put("orderBy", property);
-				getAttributes().put("formaction", String.format("Gate?%s", qs.toString()));
+				queryString.put("orderBy", property);
+				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<button %s>", getAttributes().toString()));
 			}
 			getJspBody().invoke(null);
@@ -48,17 +54,17 @@ public class OrdenatorTag extends DynamicAttributeTag
 		{
 			if (property.equals(orderBy))
 			{
-				qs.put("orderBy", "-".concat(property));
-				getAttributes().put("href", String.format("Gate?%s", qs.toString()));
+				queryString.put("orderBy", desc);
+				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<a %s>&uarr;", getAttributes().toString()));
-			} else if ("-".concat(property).equals(orderBy))
+			} else if (desc.equals(orderBy))
 			{
-				getAttributes().put("href", String.format("Gate?%s", qs.toString()));
+				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<a %s>&darr;", getAttributes().toString()));
 			} else
 			{
-				qs.put("orderBy", property);
-				getAttributes().put("href", String.format("Gate?%s", qs.toString()));
+				queryString.put("orderBy", property);
+				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
 				getJspContext().getOut().write(String.format("<a %s>", getAttributes().toString()));
 			}
 			getJspBody().invoke(null);

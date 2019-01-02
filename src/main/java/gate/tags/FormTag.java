@@ -1,13 +1,11 @@
 package gate.tags;
 
 import gate.base.Screen;
-import gate.lang.property.Property;
 import gate.converter.Converter;
+import gate.lang.property.Property;
 import gate.type.Field;
 import gate.type.Form;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class FormTag extends FieldGeneratorTag

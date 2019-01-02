@@ -1,15 +1,11 @@
 package gateconsole.screen;
 
 import gate.annotation.Description;
-import gate.annotation.Handler;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.constraint.Required;
-import gate.entity.User;
 import gate.error.AppException;
-import gate.handler.OptionHandler;
 import gateconsole.contol.SearchControl;
-import gateconsole.contol.UserControl;
 import java.util.ArrayList;
 import java.util.List;
 
