@@ -84,8 +84,8 @@ public class MenuItemTag extends DynamicAttributeTag
 		{
 			PageContext pageContext = (PageContext) getJspContext();
 			if (Toolkit.isEmpty(module)
-					&& Toolkit.isEmpty(screen)
-					&& Toolkit.isEmpty(action))
+				&& Toolkit.isEmpty(screen)
+				&& Toolkit.isEmpty(action))
 			{
 				pageContext.getOut().print("<li " + getAttributes() + ">");
 
@@ -110,20 +110,20 @@ public class MenuItemTag extends DynamicAttributeTag
 					action = pageContext.getRequest().getParameter("ACTION");
 
 				Class<Screen> clazz = Screen.getScreen(module, screen)
-						.orElseThrow(() -> new JspException(String.format(
-						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-						module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
 				Method method = Screen.getAction(clazz, action)
-						.orElseThrow(() -> new JspException(String.format(
-						"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-						module, screen, action)));
+					.orElseThrow(() -> new JspException(String.format(
+					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+					module, screen, action)));
 
 				if (!getAttributes().containsKey("title")
-						&& method.isAnnotationPresent(Description.class))
+					&& method.isAnnotationPresent(Description.class))
 					getAttributes().put("title", method.getAnnotation(Description.class).value());
 
 				if (Gate.checkAccess(user,
-						module, screen, action, clazz, method))
+					module, screen, action, clazz, method))
 				{
 					pageContext.getOut().print("<li " + getAttributes() + ">");
 					if ("POST".equalsIgnoreCase(this.method))
@@ -185,9 +185,9 @@ public class MenuItemTag extends DynamicAttributeTag
 	private String createBody(Class<?> clazz, Method method)
 	{
 		Icons.Icon icon = Icons
-				.getInstance().get(method, null);
+			.getInstance().get(method);
 		if (icon == Icons.UNKNOWN)
-			icon = Icons.getInstance().get(clazz, null);
+			icon = Icons.getInstance().get(clazz);
 
 		String name = "unnamed";
 		if (method.isAnnotationPresent(Name.class))

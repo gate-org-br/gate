@@ -1,127 +1,52 @@
 package gate.tags.formControls;
 
-import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.lang.property.Property;
-import gate.util.PropertyComparator;
 import gate.util.Toolkit;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.jsp.JspException;
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.el.LambdaExpression;
+import javax.el.StandardELContext;
 
 abstract class SelectorTag extends PropertyTag
 {
 
-	private Object options;
-	private String orderedBy;
-	private String labeledBy;
-	private String groupedBy;
-	private String identifiedBy;
-	private Map<String, List<Option>> groups;
+	protected Iterable<?> options;
+	protected LambdaExpression children;
 
-	public void setOrderedBy(String orderedBy)
-	{
-		this.orderedBy = orderedBy;
-	}
+	protected LambdaExpression values;
+	protected LambdaExpression labels;
+	protected LambdaExpression groups;
+	protected LambdaExpression sortby;
 
-	public void setIdentifiedBy(String identifiedBy)
-	{
-		this.identifiedBy = identifiedBy;
-	}
-
-	public void setLabeledBy(String labeledBy)
-	{
-		this.labeledBy = labeledBy;
-	}
-
-	public void setGroupedBy(String groupedBy)
-	{
-		this.groupedBy = groupedBy;
-	}
+	protected final ELContext EL_CONTEXT
+		= new StandardELContext(ExpressionFactory.newInstance());
 
 	public void setOptions(Object options)
 	{
-		this.options = options;
+		this.options = Toolkit.iterable(options);
 	}
 
-	@Override
-	public void doTag() throws JspException, IOException
+	public void setLabels(LambdaExpression labels)
 	{
-		super.doTag();
-
-		List<Object> options = new ArrayList<>(Toolkit.list(this.options));
-
-		if (options.isEmpty())
-		{
-			if (Enum.class.isAssignableFrom(getType()))
-				options.addAll(Arrays.asList(getType().getEnumConstants()));
-			else if (Boolean.class.isAssignableFrom(getType()))
-				options.addAll(Arrays.asList(Boolean.FALSE, Boolean.TRUE));
-		}
-
-		if (orderedBy != null)
-			Collections.sort(options, new PropertyComparator(orderedBy));
-
-		Collection<?> selectedValues = Toolkit.collection(getValue());
-		groups = new LinkedHashMap<>();
-		for (Object obj : options)
-		{
-			Option option = new Option();
-			Object value = identifiedBy != null
-					? Property.getValue(obj, identifiedBy) : obj;
-			option.value = Converter.toString(value);
-			option.selected = selectedValues.contains(value);
-			option.label = Converter.toText(labeledBy != null ? Property.getValue(obj, labeledBy) : obj);
-			option.group = groupedBy != null ? Converter.toText(Property.getValue(obj, groupedBy)) : null;
-			if (!groups.containsKey(option.group))
-				groups.put(option.group, new ArrayList<>());
-			groups.get(option.group).add(option);
-		}
+		this.labels = labels;
 	}
 
-	public Map<String, List<Option>> getGroups() throws ConversionException
+	public void setValues(LambdaExpression values)
 	{
-		return groups;
+		this.values = values;
 	}
 
-	protected static class Option implements Comparable<Option>
+	public void setGroups(LambdaExpression groups)
 	{
+		this.groups = groups;
+	}
 
-		private String label;
-		private String value;
-		private String group;
-		private boolean selected;
+	public void setSortby(LambdaExpression sortby)
+	{
+		this.sortby = sortby;
+	}
 
-		public String getLabel()
-		{
-			return label;
-		}
-
-		public String getValue()
-		{
-			return value;
-		}
-
-		public String getGroup()
-		{
-			return group;
-		}
-
-		public boolean getSelected()
-		{
-			return selected;
-		}
-
-		@Override
-		public int compareTo(Option option)
-		{
-			return getLabel().compareTo(option.getLabel());
-		}
+	public void setChildren(LambdaExpression children)
+	{
+		this.children = children;
 	}
 }

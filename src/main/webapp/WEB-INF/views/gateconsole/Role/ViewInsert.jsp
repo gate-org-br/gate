@@ -52,7 +52,7 @@
 			<label style='width: 50%'>
 				Respons&aacute;vel:
 				<span>
-					<g:select property='form.manager.id' identifiedBy="id"
+					<g:select property='form.manager.id' values="${e -> e.id}"
 						  tabindex='1' options="${screen.users}" required=''/>
 				</span>
 			</label>

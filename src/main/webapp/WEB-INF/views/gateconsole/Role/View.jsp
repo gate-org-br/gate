@@ -30,7 +30,7 @@
 			<tfoot></tfoot>
 
 			<tbody>
-				<g:iterator source="${screen.page}" target="role" children="roles" depth="depth" >
+				<g:iterator source="${screen.page}" target="role" children="${e -> e.children}">
 					<tr data-depth='${depth}' data-target='_dialog' title='Perfil'
 					    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${role.id}'>
 						<td></td>
@@ -51,18 +51,18 @@
 							</td>
 						</tr>
 						<g:iterator source="${role.funcs}" target="_func">
-							<tr data-depth='${depth+2}' data-target='_dialog'
+							<tr data-depth='${depth+1}' data-target='_dialog'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=Func&ACTION=Select&form.id=${_func.id}'>
 								<td></td>
-								<td style='padding-left: ${(depth+2)*40}px;'>
+								<td style='padding-left: ${(depth+1)*40}px;'>
 									<g:icon type="gate.entity.Func"/>
 									<g:print value="${_func}"/>
 								</td>
 							</tr>
 							<g:iterator source="${_func.auths}" target="auth">
-								<tr data-depth='${depth+3}'>
+								<tr data-depth='${depth+1}'>
 									<td></td>
-									<td style='padding-left: ${(depth+3)*40}px;
+									<td style='padding-left: ${(depth+1)*40}px;
 									    color: ${auth.mode eq "ALLOW" ? "green" : "red"};
 									    font-weight: ${auth.type eq "PUBLIC" ? "bold" : "normal"}'>
 										<g:icon type="${auth.mode}" title='${auth.mode.toString()}'/>&nbsp;<g:icon type="${auth.type}" title='${auth.type.toString()}'/>&nbsp;<g:print value="${auth}"/>
@@ -80,9 +80,9 @@
 							</td>
 						</tr>
 						<g:iterator source="${role.auths}" target="auth">
-							<tr data-depth='${depth+2}'>
+							<tr data-depth='${depth+1}'>
 								<td></td>
-								<td style='padding-left: ${(depth+2)*40}px;
+								<td style='padding-left: ${(depth+1)*40}px;
 								    color: ${auth.mode eq "ALLOW" ? "green" : "red"};
 								    font-weight: ${auth.type eq "PUBLIC" ? "bold" : "normal"}'>
 									<g:icon type="${auth.mode}" title='${auth.mode.toString()}'/>&nbsp;<g:icon type="${auth.type}" title='${auth.type.toString()}'/>&nbsp;<g:print value="${auth}"/>
@@ -99,29 +99,27 @@
 							</td>
 						</tr>
 						<g:iterator source="${role.users}" target="_user">
-							<tr data-depth='${depth+2}' data-target='_dialog'
+							<tr data-depth='${depth+1}' data-target='_dialog'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=User&ACTION=Select&form.id=${_user.id}'>
 								<td></td>
-								<td style='padding-left: ${(depth+2)*40}px;'>
+								<td style='padding-left: ${(depth+1)*40}px;'>
 									<g:icon type="gate.entity.User"/>
 									<g:print value="${_user}"/>
 								</td>
 							</tr>
-
-
 							<g:iterator source="${_user.funcs}" target="_func">
-								<tr data-depth='${depth+3}' data-target='_dialog'
+								<tr data-depth='${depth+1}' data-target='_dialog'
 								    data-action='Gate?MODULE=${MODULE}&SCREEN=Func&ACTION=Select&form.id=${_func.id}'>
 									<td></td>
-									<td style='padding-left: ${(depth+3)*40}px; color: black; font-weight: bold'>
+									<td style='padding-left: ${(depth+1)*40}px; color: black; font-weight: bold'>
 										<g:icon type="gate.entity.Func"/>
 										<g:print value="${_func}"/>
 									</td>
 								</tr>
 								<g:iterator source="${_func.auths}" target="auth">
-									<tr data-depth='${depth+4}'>
+									<tr data-depth='${depth+1}'>
 										<td></td>
-										<td style='padding-left: ${(depth+4)*40}px;
+										<td style='padding-left: ${(depth+1)*40}px;
 										    color: ${auth.mode eq "ALLOW" ? "green" : "red"};
 										    font-weight: ${auth.type eq "PUBLIC" ? "bold" : "normal"}'>
 											<g:icon type="${auth.mode}" title='${auth.mode.toString()}'/>&nbsp;<g:icon type="${auth.type}" title='${auth.type.toString()}'/>&nbsp;<g:print value="${auth}"/>
@@ -131,9 +129,9 @@
 							</g:iterator>
 
 							<g:iterator source="${_user.auths}" target="auth">
-								<tr data-depth='${depth+3}'>
+								<tr data-depth='${depth+1}'>
 									<td></td>
-									<td style='padding-left: ${(depth+3)*40}px;
+									<td style='padding-left: ${(depth+1)*40}px;
 									    color: ${auth.mode eq "ALLOW" ? "green" : "red"};
 									    font-weight: ${auth.type eq "PUBLIC" ? "bold" : "normal"}'>
 										<g:icon type="${auth.mode}" title='${auth.mode.toString()}'/>

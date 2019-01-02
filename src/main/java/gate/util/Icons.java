@@ -309,7 +309,10 @@ public class Icons
 		icons.add(new Icon("2277", "??????"));
 		icons.add(new Icon("2278", "??????"));
 		icons.add(new Icon("2279", "??????"));
-		icons.add(new Icon("2280", "gate"));
+		icons.add(new Icon("2280", "??????"));
+		icons.add(new Icon("2281", "??????"));
+		icons.add(new Icon("2282", "??????"));
+		icons.add(new Icon("2283", "??????"));
 	}
 
 	public Icon[] get()
@@ -317,48 +320,62 @@ public class Icons
 		return icons.toArray(new Icon[icons.size()]);
 	}
 
-	public Icon get(Object type, String field)
+	public Icon get(Object type)
 	{
-		if (type == null)
-			return UNKNOWN;
-
 		try
 		{
 			if (type instanceof String)
 			{
-				if (((CharSequence) type).length() == 1)
+				String string = (String) type;
+
+				if (string.length() == 1)
 					return new Icon((String) type, "??????");
+
 				for (Icon icon : icons)
-					if (icon.getName().equals(type))
+					if (icon.getName().equals(string))
 						return icon;
+
 				for (Icon icon : icons)
-					if (icon.getCode().equals(type))
+					if (icon.getCode().equals(string))
 						return icon;
+
+				if (string.contains(":"))
+				{
+					String[] strings = string.split(":");
+
+					if (strings[1].endsWith("()"))
+						return getIcon(Class.forName(strings[0]).getMethod(strings[1].substring(0, strings[1].length() - 2)));
+
+					return getIcon(Class.forName(strings[0]).getField(strings[1]));
+				}
+
+				return getIcon(Class.forName((String) type));
 			}
 
-			AnnotatedElement e = type.getClass();
-			if (type instanceof String)
-				e = Class.forName((String) type);
-			else if (type instanceof AnnotatedElement)
-				e = (AnnotatedElement) type;
+			if (type instanceof Enum<?>)
+				return getIcon(type.getClass().getField(((Enum<?>) type).name()));
 
-			if (field == null
-				&& type instanceof Enum<?>)
-				field = ((Enum<?>) type).name();
-			if (field != null)
-				e = ((Class<?>) e).getField(field);
-			if (e.isAnnotationPresent(gate.annotation.Icon.class))
-				return get(e.getAnnotation(gate.annotation.Icon.class).value(), field);
+			if (type instanceof AnnotatedElement)
+				return getIcon((AnnotatedElement) type);
 
-			return UNKNOWN;
+			if (type instanceof Object)
+				return getIcon(type.getClass());
 		} catch (ClassNotFoundException
 			| NoSuchFieldException
+			| NoSuchMethodException
 			| SecurityException ex)
 		{
-			Logger.getGlobal()
-				.log(Level.SEVERE, "Error loading icon", ex);
-			return UNKNOWN;
+			Logger.getGlobal().log(Level.SEVERE, "Error loading icon", ex);
 		}
+
+		return UNKNOWN;
+	}
+
+	private Icon getIcon(AnnotatedElement annotatedElement)
+	{
+		return annotatedElement.isAnnotationPresent(gate.annotation.Icon.class)
+			? get(annotatedElement.getAnnotation(gate.annotation.Icon.class).value())
+			: UNKNOWN;
 	}
 
 	public static class Icon

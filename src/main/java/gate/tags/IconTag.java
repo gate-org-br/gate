@@ -11,16 +11,10 @@ public class IconTag extends DynamicAttributeTag
 {
 
 	private Object type;
-	private String field;
 
 	public void setType(Object type)
 	{
 		this.type = type;
-	}
-
-	public void setField(String field)
-	{
-		this.field = field;
 	}
 
 	@Override
@@ -29,11 +23,10 @@ public class IconTag extends DynamicAttributeTag
 		try
 		{
 			super.doTag();
-			Icons.Icon icon = Icons.getInstance().get(type, field);
-			if (icon == null)
-				getJspContext().getOut().print(String.format("<span %s>%s</span>", getAttributes().toString(), "??"));
-			else if (icon.getCode().length() == 1)
-				getJspContext().getOut().print(String.format("<span %s>%s</span>", getAttributes().toString(), icon.getCode()));
+			Icons.Icon icon = Icons.getInstance().get(type);
+			if (icon.getCode().length() == 1)
+				getJspContext().getOut().print(String.format("<i style='font-family: arial'>%s</i>",
+					getAttributes().toString(), icon.getCode()));
 			else
 				getJspContext().getOut().print(String.format("<i %s>&#x%s;</i>", getAttributes().toString(), icon.getCode()));
 		} catch (JspException | IOException e)

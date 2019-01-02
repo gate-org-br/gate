@@ -25,13 +25,10 @@ public class CheckboxTag extends PropertyTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		getAttributes().put("value", value);
 		getAttributes().put("type", "checkbox");
-		if (Boolean.TRUE.equals(checked)
-				|| (checked == null
-				&& Toolkit.collection(getValue()).contains(
-						Converter.getConverter(getType())
-								.ofString(getType(), value))))
+		getAttributes().put("value", Converter.toString(value));
+
+		if (Boolean.TRUE.equals(checked) || (checked == null && Toolkit.collection(getValue()).contains(value)))
 			getAttributes().put("checked", "checked");
 		getJspContext().getOut().print(String.format("<input %s/>", getAttributes().toString()));
 	}

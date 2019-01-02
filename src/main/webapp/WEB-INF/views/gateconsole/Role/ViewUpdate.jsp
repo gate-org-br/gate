@@ -43,7 +43,7 @@
 				<span>
 					<g:text property='form.roleID' tabindex='1'/>
 				</span>
-			</label>			
+			</label>
 			<label style='width: 25%'>
 				E-Mail:
 				<span>
@@ -53,7 +53,7 @@
 			<label style='width: 50%'>
 				Respons&aacute;vel:
 				<span>
-					<g:select property='form.manager.id' identifiedBy="id"
+					<g:select property='form.manager.id' values="${e -> e.id}"
 						  tabindex='1' options="${screen.users}" required=''/>
 				</span>
 			</label>
@@ -63,7 +63,7 @@
 					<g:textarea property='form.description' tabindex='1'/>
 				</span>
 			</label>
-		</fieldset>		
+		</fieldset>
 
 		<div class='COOLBAR'>
 			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>

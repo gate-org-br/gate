@@ -1,9 +1,13 @@
 package gate.tags.formControls;
 
+import gate.converter.Converter;
 import gate.type.Attributes;
+import gate.util.Toolkit;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.jsp.JspException;
 
 public class SelectTag extends SelectorTag
@@ -11,48 +15,88 @@ public class SelectTag extends SelectorTag
 
 	private String empty;
 
-	public void setEmpty(String empty)
-	{
-		this.empty = empty;
-	}
-
 	@Override
 	public void doTag() throws JspException, IOException
 	{
 
 		super.doTag();
 
+		if (options == null)
+			if (Enum.class.isAssignableFrom(getType()))
+				options = Arrays.asList(getType().getEnumConstants());
+			else if (Boolean.class.isAssignableFrom(getType()))
+				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
+			else
+				throw new JspException("No option defined for property " + getProperty());
+
+		if (sortby != null)
+			Toolkit
+				.collection(options)
+				.stream()
+				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
+				.collect(Collectors.toList());
+
 		getJspContext().getOut().println(String.format("<select %s>", getAttributes().toString()));
 
+		if (empty == null)
+			empty = "";
 		if (!getName().endsWith("[]"))
-			getJspContext().getOut().println(String.format("<option value=''>%s</option>", this.empty == null ? "" : empty));
+			getJspContext().getOut().println("<option value=''>" + empty + "</option>");
 
-		for (Map.Entry<String, List<Option>> entry : getGroups().entrySet())
-		{
-			if (entry.getKey() != null)
-				getJspContext().getOut().print(String.format("<optgroup label='%s'>", entry.getKey()));
-
-			for (Option option : entry.getValue())
+		if (groups != null)
+			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
+				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
 			{
-				Attributes attributes = new Attributes();
-				if (option.getSelected())
-					attributes.put("selected", "selected");
-				attributes.put("value", option.getValue());
-				if (getJspBody() != null)
-				{
-					getJspContext().getOut().println(String.format("<option %s>", attributes.toString()));
-					getJspContext().setAttribute("option", option.getValue());
-					getJspBody().invoke(getJspContext().getOut());
-					getJspContext().removeAttribute("option");
-					getJspContext().getOut().println("</option>");
-				} else
-					getJspContext().getOut().println(String.format("<option %s>%s</option>", attributes.toString(), option.getLabel()));
+				getJspContext().getOut().print("<optgroup label='" + Converter.toText(group.getKey()) + "'");
+				print(0, group.getValue());
+				getJspContext().getOut().print("</optgroup>");
+			}
+		else
+			print(0, options);
+
+		getJspContext().getOut().println(String.format("</select>"));
+	}
+
+	private void print(int level, Iterable<?> options) throws IOException, JspException
+	{
+		for (Object option : options)
+		{
+			Object value = option;
+			if (values != null)
+				value = values.invoke(EL_CONTEXT, option);
+
+			Attributes attributes = new Attributes();
+			if (Toolkit.collection(getValue()).contains(value))
+				attributes.put("selected", "selected");
+			attributes.put("value", getConverter().toString(getType(), value));
+
+			getJspContext().getOut().print("<option " + attributes + ">");
+
+			for (int i = 0; i < level; i++)
+				getJspContext().getOut().print("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp");
+
+			if (getJspBody() != null)
+			{
+				getJspContext().setAttribute("option", option);
+				getJspBody().invoke(null);
+				getJspContext().removeAttribute("option");
+			} else
+			{
+				Object label = option;
+				if (labels != null)
+					label = labels.invoke(EL_CONTEXT, option);
+				getJspContext().getOut().print(getConverter().toText(getType(), label));
 			}
 
-			if (entry.getKey() != null)
-				getJspContext().getOut().print(String.format("</optgroup>", entry.getKey()));
-		}
-		getJspContext().getOut().println(String.format("</select>"));
+			getJspContext().getOut().print("</option>");
 
+			if (children != null)
+				print(level + 1, Toolkit.iterable(children.invoke(EL_CONTEXT, option)));
+		}
+	}
+
+	public void setEmpty(String empty)
+	{
+		this.empty = empty;
 	}
 }

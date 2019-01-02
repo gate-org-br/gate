@@ -3,7 +3,7 @@ package gate.tags;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-
+import java.util.Objects;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -11,29 +11,29 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 public class ValuesTag extends SimpleTagSupport
 {
 
-	private String index;
 	private String source;
-	private String target;
-	private Boolean reverse;
+	private String index = "index";
+	private boolean reverse = false;
+	private String target = "target";
 
-	public void setIndex(String index)
+	public void setSource(String source)
 	{
-		this.index = index;
+		this.source = Objects.requireNonNull(source);
 	}
 
 	public void setTarget(String target)
 	{
-		this.target = target;
+		this.target = Objects.requireNonNull(target);
 	}
 
-	public void setSource(String source)
+	public void setIndex(String index)
 	{
-		this.source = source;
+		this.index = Objects.requireNonNull(index);
 	}
 
-	public void setReverse(Boolean reverse)
+	public void setReverse(boolean reverse)
 	{
-		this.reverse = reverse;
+		this.reverse = Objects.requireNonNull(reverse);
 	}
 
 	@Override
@@ -44,24 +44,19 @@ public class ValuesTag extends SimpleTagSupport
 			super.doTag();
 			int i = 0;
 			Object[] items = Class.forName(source).getEnumConstants();
-			if (Boolean.TRUE.equals(reverse))
+			if (reverse)
 				Collections.reverse(Arrays.asList(items));
 			for (Object item : items)
 			{
-				if (index != null)
-					getJspContext().setAttribute(index, i++, PageContext.REQUEST_SCOPE);
-				if (target != null)
-					getJspContext().setAttribute(target, item, PageContext.REQUEST_SCOPE);
+				getJspContext().setAttribute(index, i++, PageContext.REQUEST_SCOPE);
+				getJspContext().setAttribute(target, item, PageContext.REQUEST_SCOPE);
 				getJspBody().invoke(null);
-				if (target != null)
-					getJspContext().setAttribute(target, null, PageContext.REQUEST_SCOPE);
-				if (index != null)
-					getJspContext().setAttribute(index, null, PageContext.REQUEST_SCOPE);
-
+				getJspContext().removeAttribute(target, PageContext.REQUEST_SCOPE);
+				getJspContext().removeAttribute(index, PageContext.REQUEST_SCOPE);
 			}
-		} catch (ClassNotFoundException e)
+		} catch (ClassNotFoundException ex)
 		{
-			throw new JspException(e);
+			throw new JspException(ex);
 		}
 	}
 }

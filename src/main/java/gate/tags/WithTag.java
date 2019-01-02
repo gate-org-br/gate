@@ -19,15 +19,20 @@ public class WithTag extends SimpleTagSupport
 		super.doTag();
 		try
 		{
-			if (this.type != null)
-				this.value = Class.forName(type).getDeclaredConstructor().newInstance();
+			if (value != null)
+				getJspContext().setAttribute(name,
+					value, PageContext.REQUEST_SCOPE);
+			else if (type != null)
+				getJspContext().setAttribute(name,
+					Class.forName(type).getDeclaredConstructor()
+						.newInstance(), PageContext.REQUEST_SCOPE);
 
 			getJspContext().setAttribute(name, value, PageContext.REQUEST_SCOPE);
 			getJspBody().invoke(null);
 			getJspContext().removeAttribute(name, PageContext.REQUEST_SCOPE);
 		} catch (IOException | ClassNotFoundException | IllegalAccessException | InstantiationException
-				| JspException | NoSuchMethodException | SecurityException | IllegalArgumentException
-				| InvocationTargetException ex)
+			| JspException | NoSuchMethodException | SecurityException | IllegalArgumentException
+			| InvocationTargetException ex)
 		{
 			throw new JspException(ex);
 		}
