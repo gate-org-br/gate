@@ -1080,6 +1080,86 @@
 	</tag>
 
 	<tag>
+		<name>number</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.NumberTag</tag-class>
+		<description>
+			Creates a html number input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated number input.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>range</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.RangeTag</tag-class>
+		<description>
+			Creates a html range input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated range input.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>email</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.EMailTag</tag-class>
+		<description>
+			Creates a html email input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated email input.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>url</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.URLTag</tag-class>
+		<description>
+			Creates a html url input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated url input.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>textarea</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
