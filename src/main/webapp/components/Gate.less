@@ -34,31 +34,11 @@
 	&:last-child { margin-bottom: 0px};
 }
 
-@font-face
-{
-	font-family: 'gate';
-	src: local(gate), url('imge/font/gate.eot?-uajdou&version=5_0_0');
-	src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=5_0_0') format('embedded-opentype'),
-		url('imge/font/gate.woff?-uajdou&version=5_0_0') format('woff'),
-		url('imge/font/gate.ttf?-uajdou&version=5_0_0') format('truetype'),
-		url('imge/font/gate.svg?-uajdou#icomoon&version=5_0_0') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
+
 
 *[disabled],
 *[data-disabled] { opacity: 0.5;
 		   pointer-events: none; }
-
-i { speak: none;
-    line-height: 1;
-    font-style: normal;
-    font-weight: normal;
-    font-family: 'gate';
-    font-variant: normal;
-    text-transform: none;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased; }
 
 * { font-size: 12px;
     box-shadow: none;
@@ -230,6 +210,8 @@ div.MINIBAR > a { width: 24px;
 
 
 @import "../polyfill/dialog-polyfill.less";
+
+@import "Icon.less";
 
 @import "Fieldset.less";
 @import "Div.less";

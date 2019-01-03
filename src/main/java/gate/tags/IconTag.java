@@ -2,9 +2,7 @@ package gate.tags;
 
 import gate.error.AppError;
 import gate.util.Icons;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class IconTag extends DynamicAttributeTag
@@ -25,7 +23,7 @@ public class IconTag extends DynamicAttributeTag
 			super.doTag();
 			Icons.Icon icon = Icons.getInstance().get(type);
 			if (icon.getCode().length() == 1)
-				getJspContext().getOut().print(String.format("<i style='font-family: arial'>%s</i>",
+				getJspContext().getOut().print(String.format("<i c %s>%s</i>",
 					getAttributes().toString(), icon.getCode()));
 			else
 				getJspContext().getOut().print(String.format("<i %s>&#x%s;</i>", getAttributes().toString(), icon.getCode()));
