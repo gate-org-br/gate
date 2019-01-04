@@ -79,6 +79,18 @@ public class TableUpdate implements Update
 		return new Compiled().set(type, column, value);
 	}
 
+	/**
+	 * Adds the next column to the builder if previous specified condition is true.
+	 *
+	 * @param assertion the condition to be checked
+	 *
+	 * @return the same builder with the applied condition
+	 */
+	public When when(boolean assertion)
+	{
+		return assertion ? new When() : new DisabledWhen();
+	}
+
 	@Override
 	public String toString()
 	{
@@ -135,7 +147,7 @@ public class TableUpdate implements Update
 		public Sentence.Compiled.Builder where(ConstantCondition condition)
 		{
 			return () -> Sentence.of(Generic.this + " where " + condition)
-					.parameters(Collections.singletonList(Collections.emptyList()));
+				.parameters(Collections.singletonList(Collections.emptyList()));
 		}
 
 		/**
@@ -165,6 +177,76 @@ public class TableUpdate implements Update
 		public String toString()
 		{
 			return TableUpdate.this + " set " + columns;
+		}
+
+		public class When
+		{
+
+			/**
+			 * Adds a new column to be updated.
+			 *
+			 * @param column the column to be updated
+			 *
+			 * @return the same update sentence builder with the added column
+			 */
+			public Generic set(String column)
+			{
+				return Generic.this.set(column);
+			}
+
+			/**
+			 * Adds a new column to be updated.
+			 *
+			 * @param <T> type of the column to be updated
+			 * @param type type of the column to be updated
+			 * @param column the column to be updated
+			 *
+			 * @return the same update sentence builder with the added column
+			 */
+			public <T> Generic set(Class<T> type, String column)
+			{
+				return Generic.this.set(type, column);
+			}
+
+			/**
+			 * Adds the next column to the builder if previous specified condition is true.
+			 *
+			 * @param assertion the condition to be checked
+			 *
+			 * @return the same builder with the applied condition
+			 */
+			public When when(boolean assertion)
+			{
+				return assertion ? this : new DisabledWhen();
+			}
+
+			@Override
+			public String toString()
+			{
+				return TableUpdate.this.toString();
+			}
+		}
+
+		public class DisabledWhen extends When
+		{
+
+			@Override
+			public Generic set(String column)
+			{
+				return Generic.this;
+			}
+
+			@Override
+			public <T> Generic set(Class<T> type, String column)
+			{
+				return Generic.this;
+			}
+
+			@Override
+			public When when(boolean assertion)
+			{
+				return this;
+			}
 		}
 	}
 
@@ -210,9 +292,9 @@ public class TableUpdate implements Update
 		{
 			values.add(value);
 			Converter.getConverter(type)
-					.getColumns(column)
-					.map(e -> e + " = ?")
-					.forEach(columns::add);
+				.getColumns(column)
+				.map(e -> e + " = ?")
+				.forEach(columns::add);
 			return this;
 		}
 
@@ -238,7 +320,7 @@ public class TableUpdate implements Update
 		public Sentence.Compiled.Builder where(CompiledCondition condition)
 		{
 			return () -> Sentence.of(Compiled.this + " where " + condition)
-					.parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
+				.parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
 		}
 
 		/**
@@ -340,6 +422,116 @@ public class TableUpdate implements Update
 			{
 				return this;
 			}
+		}
+	}
+
+	public class When
+	{
+
+		/**
+		 * Adds a new column to be updated.
+		 *
+		 * @param column the column to be updated
+		 *
+		 * @return the same update sentence builder with the added column
+		 */
+		public Generic set(String column)
+		{
+			return new Generic().set(column);
+		}
+
+		/**
+		 * Adds a new column to be updated.
+		 *
+		 * @param <T> type of the column to be updated
+		 * @param type type of the column to be updated
+		 * @param column the column to be updated
+		 *
+		 * @return the same update sentence builder with the added column
+		 */
+		public <T> Generic set(Class<T> type, String column)
+		{
+			return new Generic().set(type, column);
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 *
+		 * @param column the column to be added
+		 * @param value the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Compiled set(String column, Object value)
+		{
+			return new Compiled().set(column, value);
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 *
+		 * @param <T> type of the column added
+		 * @param column the column to be added
+		 * @param type type of the column to be added
+		 * @param value the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Compiled set(Class<T> type, String column, T value)
+		{
+			return new Compiled().set(type, column, value);
+		}
+
+		/**
+		 * Adds the next column to the builder if previous specified condition is true.
+		 *
+		 * @param assertion the condition to be checked
+		 *
+		 * @return the same builder with the applied condition
+		 */
+		public When when(boolean assertion)
+		{
+			return assertion ? this : new DisabledWhen();
+		}
+
+		@Override
+		public String toString()
+		{
+			return TableUpdate.this.toString();
+		}
+	}
+
+	public class DisabledWhen extends When
+	{
+
+		@Override
+		public Generic set(String column)
+		{
+			return new Generic();
+		}
+
+		@Override
+		public <T> Generic set(Class<T> type, String column)
+		{
+			return new Generic();
+		}
+
+		@Override
+		public Compiled set(String column, Object value)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public <T> Compiled set(Class<T> type, String column, T value)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public When when(boolean assertion)
+		{
+			return this;
 		}
 	}
 }
