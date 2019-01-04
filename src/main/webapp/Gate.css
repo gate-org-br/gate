@@ -604,8 +604,8 @@ table {
   width: 100%;
   border: none;
   table-layout: fixed;
-  border-collapse: collapse;
-  background-color: transparent;
+  background-color: #EEEEEE;
+  border-spacing: 1px;
 }
 table:first-child {
   margin-top: 0px;
@@ -629,11 +629,13 @@ caption {
 th {
   color: black;
   height: 28px;
+  padding: 4px;
   text-align: left;
   vertical-align: middle;
   background-color: #b9c6cd;
 }
 td {
+  padding: 4px;
   text-align: left;
   word-break: normal;
   vertical-align: middle;
