@@ -56,10 +56,10 @@ public class Status<T extends Serializable> implements Serializable
 	public String toString()
 	{
 		return new JsonObject()
-				.setString("type", type.name())
-				.setString("message", message)
-				.setString("value", Converter.toString(value))
-				.toString();
+			.setString("type", type.name())
+			.setString("message", message)
+			.setString("value", Converter.toString(value))
+			.toString();
 	}
 
 	public T getValue()
