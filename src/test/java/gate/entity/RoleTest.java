@@ -82,7 +82,7 @@ public class RoleTest
 	@Test
 	public void testSlaves()
 	{
-		Assert.assertEquals(Arrays.asList(detail12,
+		Assert.assertEquals(Arrays.asList(master1, detail12,
 			detail121),
 			master1.slaveStream().collect(Collectors.toList()));
 	}
