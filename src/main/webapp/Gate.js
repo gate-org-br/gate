@@ -1761,6 +1761,8 @@ function URL(value)
 
 function Link(link, creator)
 {
+	var navigator;
+
 	link.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-cancel"))
@@ -1842,8 +1844,7 @@ function Link(link, creator)
 							title: this.getAttribute("title"),
 							target: this.getAttribute("href"),
 							blocked: Boolean(this.getAttribute("data-blocked")),
-							navigator: this.hasAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null})
+							navigator: navigator})
 							.show();
 					}
 					break;
@@ -2001,10 +2002,7 @@ function Link(link, creator)
 
 	this.setNavigator = function (value)
 	{
-		if (value)
-			link.setAttribute("data-navigator", value);
-		else if (link.getAttribute("data-navigator"))
-			link.removeAttribute("data-navigator");
+		navigator = value;
 		return this;
 	};
 
@@ -2116,9 +2114,7 @@ function Button(button, creator)
 					{
 						new Dialog({creator: creator || this,
 							title: this.getAttribute("title"),
-							blocked: Boolean(this.getAttribute("data-blocked")),
-							navigator: this.hasAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null})
+							blocked: Boolean(this.getAttribute("data-blocked"))})
 							.show();
 					}
 
@@ -2266,15 +2262,6 @@ function Button(button, creator)
 		return this;
 	};
 
-	this.setNavigator = function (value)
-	{
-		if (value)
-			button.setAttribute("data-navigator", value);
-		else if (button.getAttribute("data-navigator"))
-			button.removeAttribute("data-navigator");
-		return this;
-	};
-
 	this.get = function ()
 	{
 		return button;
@@ -2367,6 +2354,12 @@ function ActionHandler(element)
 				.toLowerCase() : "get")
 			{
 				case "get":
+
+					if (!event.ctrlKey && this.getAttribute("data-target"))
+						var navigator = Array.from(this.parentNode.children)
+							.map(e => e.getAttribute("data-action"))
+							.filter(e => e);
+
 					var link = new Link(document.createElement("a"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
@@ -2374,7 +2367,7 @@ function ActionHandler(element)
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
+						.setNavigator(navigator)
 						.get();
 					document.body.appendChild(link);
 
@@ -2395,7 +2388,6 @@ function ActionHandler(element)
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
 
 					form.appendChild(button);
@@ -2428,7 +2420,6 @@ function ChangeHandler(e)
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.setNavigator(this.getAttribute("data-navigator"))
 					.get();
 				document.body.appendChild(a);
 				a.click();
@@ -2448,7 +2439,6 @@ function ChangeHandler(e)
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.setNavigator(this.getAttribute("data-navigator"))
 					.get();
 				form.appendChild(button);
 				button.click();
@@ -2481,11 +2471,11 @@ class NavBar
 		element.className = "NavBar";
 		this.element = () => element;
 
-		var frst = this.element.appendChild(document.createElement("a"));
-		var prev = this.element.appendChild(document.createElement("a"));
-		var text = this.element.appendChild(document.createElement("label"));
-		var next = this.element.appendChild(document.createElement("a"));
-		var last = this.element.appendChild(document.createElement("a"));
+		var frst = element.appendChild(document.createElement("a"));
+		var prev = element.appendChild(document.createElement("a"));
+		var text = element.appendChild(document.createElement("label"));
+		var next = element.appendChild(document.createElement("a"));
+		var last = element.appendChild(document.createElement("a"));
 
 		frst.setAttribute("href", "#");
 		prev.setAttribute("href", "#");
@@ -2504,8 +2494,8 @@ class NavBar
 
 		this.go = function (url)
 		{
-			if (this.element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
-				index = Math.max(this._links.indexOf(url), 0);
+			if (element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
+				index = Math.max(links.indexOf(url), 0);
 
 			frst.setAttribute("navbar-disabled", String(index === 0));
 			prev.setAttribute("navbar-disabled", String(index === 0));
@@ -2515,15 +2505,23 @@ class NavBar
 		};
 	}
 }
-function Mask(e)
+function Mask(element)
 {
-	e.placeholder = new String();
-	e.mask = e.getAttribute("data-mask");
-	for (var i = 0; i < e.mask.length; i++)
-		e.placeholder += e.mask.charAt(i).match('[#*_]') ? "_" : e.mask.charAt(i);
-	e.setAttribute('placeholder', e.placeholder);
+	var changed = false;
+	element.setAttribute("autocomplete", "off");
+	const MASKS = {'#': "[0-9]", '_': "[a-zA-Z]", '*': "[0-9a-zA-Z]"};
 
-	e.getCursor = function ()
+	var mask = element.getAttribute("data-mask");
+	var placeholder = element.getAttribute("placeholder");
+	if (!placeholder || placeholder.length !== mask.length)
+	{
+		placeholder = "";
+		for (var i = 0; i < mask.length; i++)
+			placeholder += MASKS[mask.charAt(i)] ? "_" : mask.charAt(i);
+		element.setAttribute("placeholder", placeholder);
+	}
+
+	element.getCursor = function ()
 	{
 		if (this.selectionStart >= 0)
 		{
@@ -2535,12 +2533,10 @@ function Mask(e)
 			selection.moveStart('character', -this.value.length);
 			return selection.text.length;
 		} else
-		{
 			document.write("Navegador muito antigo. Favor atualizar.");
-		}
 	};
 
-	e.setCursor = function (i)
+	element.setCursor = function (i)
 	{
 		if (this.selectionStart >= 0)
 		{
@@ -2552,50 +2548,14 @@ function Mask(e)
 			selection.move('character', i);
 			selection.select();
 		} else
-		{
 			document.write("Navegador muito antigo. Favor atualizar.");
-		}
 		return false;
 	};
 
-	e.setValue = function (value)
+	element.onkeydown = function (event)
 	{
-		this.value = value;
-		if (!this.value)
-			this.value = this.prevValue ? this.prevValue : this.placeholder;
-	};
-
-
-	e.check_mask = function ()
-	{
-		var ph = this.getAttribute('data-mask');
-		for (var i = 0; i < this.mask.length && i < this.value.length; i++)
-			if (ph.charAt(i) === '#')
-				if (this.value.charAt(i).match("[_0-9]"))
-					continue;
-				else
-					return false;
-			else if (ph.charAt(i) === '_')
-				if (this.value.charAt(i).match("[_a-zA-Z]"))
-					continue;
-				else
-					return false;
-			else if (ph.charAt(i) === '*')
-				if (this.value.charAt(i).match("[_a-zA-Z0-9]"))
-					continue;
-				else
-					return false;
-			else if (this.value.charAt(i) === ph.charAt(i))
-				continue;
-			else
-				return false;
-		return true;
-	};
-
-	e.onkeydown = function (e)
-	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			// ///////////////////////////////////////////////////////
 			// ESQUERDA
@@ -2603,7 +2563,7 @@ function Mask(e)
 			case 37:
 
 				for (var i = this.getCursor() - 1; i >= 0; i--)
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
 				// ///////////////////////////////////////////////////////
@@ -2611,8 +2571,8 @@ function Mask(e)
 				// ///////////////////////////////////////////////////////
 			case 39:
 
-				for (var i = this.getCursor() + 1; i <= this.mask.length; i++)
-					if (i === this.mask.length || this.mask.charAt(i).match("[#_*]"))
+				for (var i = this.getCursor() + 1; i <= mask.length; i++)
+					if (i === mask.length || MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
 				// ///////////////////////////////////////////////////////
@@ -2622,10 +2582,12 @@ function Mask(e)
 
 				for (var i = this.getCursor() - 1; i >= 0; i--)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 					{
-						this.value = this.value.substr(0, i) + "__" + this.value.substr(i + 1);
-						return this.setCursor(i + 1) || true;
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+						this.setCursor(i);
+						changed = true;
+						break;
 					}
 				}
 				return false;
@@ -2634,12 +2596,18 @@ function Mask(e)
 				// ///////////////////////////////////////////////////////
 			case 46:
 
-				for (var i = this.getCursor(); i < this.mask.length; i++)
+				for (var i = this.getCursor(); i < mask.length; i++)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 					{
-						this.value = this.value.substr(0, i) + "__" + this.value.substr(i + 1);
-						return this.setCursor(i + 1) || true;
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+
+						this.setCursor(i + 1);
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+						changed = true;
+						break;
 					}
 				}
 				return false;
@@ -2647,7 +2615,7 @@ function Mask(e)
 				// END
 				// ///////////////////////////////////////////////////////
 			case 35:
-				return this.setCursor(this.mask.length);
+				return this.setCursor(mask.length);
 				// ///////////////////////////////////////////////////////
 				// HOME
 				// ///////////////////////////////////////////////////////
@@ -2658,10 +2626,10 @@ function Mask(e)
 		return true;
 	};
 
-	e.onkeypress = function (e)
+	element.onkeypress = function (event)
 	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			case 8:
 			case 9:
@@ -2674,8 +2642,8 @@ function Mask(e)
 				return true;
 			default:
 
-				var c = String.fromCharCode(e.which ? e.which : e.keyCode);
-				if (e.ctrlKey)
+				var c = String.fromCharCode(event.which ? event.which : event.keyCode);
+				if (event.ctrlKey)
 				{
 					switch (c)
 					{
@@ -2688,36 +2656,19 @@ function Mask(e)
 					}
 				}
 
-				for (var i = this.getCursor(); i < this.mask.length; i++)
+				for (var i = this.getCursor(); i < mask.length; i++)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)] && c.match(MASKS[mask.charAt(i)]))
 					{
-						switch (this.mask.charAt(i))
-						{
-							case '#':
-								if (c.match("[0-9]"))
-								{
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-							case '_':
-								if (c.match("[a-zA-Z]")) {
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-							case '*':
-								if (c.match("[0-9a-zA-Z]"))
-								{
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-						}
+						this.value = this.value.substr(0, i) + c + this.value.substr(i + 1);
+						this.setCursor(i + 1);
+
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+
+						changed = true;
+						return false;
 					}
 				}
 
@@ -2725,66 +2676,65 @@ function Mask(e)
 		}
 	};
 
-	e.oninput = function ()
+	element.onpaste = function (event)
 	{
-		if (this.check_mask())
+		var data = event.clipboardData.getData("text");
+		if (data)
 		{
-			for (var i = this.getCursor(); i < this.mask.length; i++)
+			var index = 0;
+			var cursor = 0;
+
+			while (index < data.length && cursor < mask.length)
 			{
-				if (this.mask.charAt(i).match("[#_*]"))
+				while (cursor < mask.length && !MASKS[mask.charAt(cursor)])
+					cursor++;
+				while (cursor < mask.length && index < data.length && !data[index].match(MASKS[mask.charAt(cursor)]))
+					index++;
+
+				if (cursor < mask.length && index < data.length)
 				{
-					this.setCursor(i);
-					break;
+					this.value = this.value.substr(0, cursor) + data[index] + this.value.substr(cursor + 1);
+					changed = true;
+					cursor++;
+					index++;
 				}
 			}
-			return true;
 		}
-
-		this.setValue('');
-		this.setCursor(0);
 		return false;
 	};
-	e.onpaste = function ()
-	{
-		this.prevValue = this.value;
-		this.select();
-		return true;
-	};
-	e.onfocus = function ()
-	{
-		if (!this.value && this.placeholder)
-			this.value = this.placeholder;
 
-		var self = this;
-		setTimeout(function ()
+	element.onfocus = function ()
+	{
+		if (!this.value && placeholder)
+			this.value = placeholder;
+
+		setTimeout(() =>
 		{
-			self.setCursor(0);
-			for (var i = self.getCursor(); i < self.mask.length; i++)
-				if (self.mask.charAt(i).match("[#_*]"))
-					return self.setCursor(i);
+			this.setCursor(0);
+			while (this.getCursor() < mask.length
+				&& !MASKS[mask.charAt(this.getCursor())])
+				this.setCursor(this.getCursor() + 1);
 		}, 0);
 	};
-	e.onblur = function ()
+
+	element.onblur = function ()
 	{
-		if (this.value === this.placeholder)
+		if (this.value === placeholder)
 			this.value = '';
+
+		if (changed)
+			this.dispatchEvent(new Event('change'));
+		changed = false;
 	};
+
+	element.oncut = () => false;
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('input[data-mask]')).forEach(function (e)
-	{
-		new Mask(e);
-	});
-
-	document.oncontextmenu = function (e)
-	{
-		return e && e.target && !e.target.getAttribute('data-mask');
-	};
+	Array.from(document.querySelectorAll('input[data-mask]'))
+		.forEach(element => new Mask(element));
 });
-
-
 class Modal
 {
 	constructor(options)
@@ -4603,7 +4553,7 @@ class Dialog extends Modal
 		if (options && options.navigator)
 		{
 			var navigator = new NavBar(options.navigator);
-			head.appendChild(navigator.element);
+			head.appendChild(navigator.element());
 			navigator.element().addEventListener("go",
 				event => iframe.setAttribute('src', event.detail.target));
 			if (options.target)
@@ -5199,9 +5149,7 @@ window.addEventListener("load", function ()
 			{
 				var dialog = new Dialog({creator: creator || this,
 					title: this.getAttribute("title"),
-					blocked: Boolean(this.getAttribute("data-blocked")),
-					navigator: this.hasAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null})
+					blocked: Boolean(this.getAttribute("data-blocked"))})
 					.show();
 
 				dialog.element().addEventListener("show", event => this.dispatchEvent(event));
