@@ -72,7 +72,8 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
 							"src/main/webapp/components/DeskMenu.js",
-							"src/main/webapp/components/DeskPane.js"],
+							"src/main/webapp/components/DeskPane.js",
+							"src/main/webapp/components/Copy.js"],
 						dest: 'src/main/webapp/Gate.js'
 					}
 			}

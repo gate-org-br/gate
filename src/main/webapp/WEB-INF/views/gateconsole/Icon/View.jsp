@@ -5,7 +5,7 @@
 		<g:icons name="icon">
 			<g:if condition="${icon.name ne '??????'}">
 				<li style="width: 4%; min-width: 64px; margin: 0.5%">
-					<a href="#" data-icon="&#x${icon.code}">
+					<a href="#" data-copy-onclick="${icon.code}" data-icon="&#x${icon.code}" tabindex="1">
 						${icon.code}
 						<br/>${icon.name}
 					</a>
@@ -17,25 +17,11 @@
 		<g:icons name="icon">
 			<g:if condition="${icon.name eq '??????'}">
 				<li style="width: 4%; min-width: 64px; margin: 0.5%">
-					<a href="#" data-icon="&#x${icon.code}">
+					<a href="#" data-copy-onclick="${icon.code}" data-icon="&#x${icon.code}" tabindex="1">
 						${icon.code}
 					</a>
 				</li>
 			</g:if>
 		</g:icons>
 	</ul>
-
-	<script>
-		window.addEventListener("load", function ()
-		{
-			Array.from(document.querySelectorAll("ul.DeskMenu > li > a")).forEach(function (icon)
-			{
-
-				icon.addEventListener("mouseover", function ()
-				{
-					this.focus();
-				});
-			});
-		});
-	</script>
 </g:template>
