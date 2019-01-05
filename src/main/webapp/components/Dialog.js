@@ -82,7 +82,7 @@ class Dialog extends Modal
 		if (options && options.navigator)
 		{
 			var navigator = new NavBar(options.navigator);
-			head.appendChild(navigator.element);
+			head.appendChild(navigator.element());
 			navigator.element().addEventListener("go",
 				event => iframe.setAttribute('src', event.detail.target));
 			if (options.target)

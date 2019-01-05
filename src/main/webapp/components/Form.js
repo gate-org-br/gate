@@ -20,9 +20,7 @@ window.addEventListener("load", function ()
 			{
 				var dialog = new Dialog({creator: creator || this,
 					title: this.getAttribute("title"),
-					blocked: Boolean(this.getAttribute("data-blocked")),
-					navigator: this.hasAttribute("data-navigator") ?
-						eval(this.getAttribute("data-navigator")) : null})
+					blocked: Boolean(this.getAttribute("data-blocked"))})
 					.show();
 
 				dialog.element().addEventListener("show", event => this.dispatchEvent(event));

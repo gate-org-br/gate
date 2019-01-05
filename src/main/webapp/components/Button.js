@@ -80,9 +80,7 @@ function Button(button, creator)
 					{
 						new Dialog({creator: creator || this,
 							title: this.getAttribute("title"),
-							blocked: Boolean(this.getAttribute("data-blocked")),
-							navigator: this.hasAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null})
+							blocked: Boolean(this.getAttribute("data-blocked"))})
 							.show();
 					}
 
@@ -227,15 +225,6 @@ function Button(button, creator)
 			button.setAttribute("title", value);
 		else if (button.getAttribute("title"))
 			button.removeAttribute("title");
-		return this;
-	};
-
-	this.setNavigator = function (value)
-	{
-		if (value)
-			button.setAttribute("data-navigator", value);
-		else if (button.getAttribute("data-navigator"))
-			button.removeAttribute("data-navigator");
 		return this;
 	};
 

@@ -9,11 +9,11 @@ class NavBar
 		element.className = "NavBar";
 		this.element = () => element;
 
-		var frst = this.element.appendChild(document.createElement("a"));
-		var prev = this.element.appendChild(document.createElement("a"));
-		var text = this.element.appendChild(document.createElement("label"));
-		var next = this.element.appendChild(document.createElement("a"));
-		var last = this.element.appendChild(document.createElement("a"));
+		var frst = element.appendChild(document.createElement("a"));
+		var prev = element.appendChild(document.createElement("a"));
+		var text = element.appendChild(document.createElement("label"));
+		var next = element.appendChild(document.createElement("a"));
+		var last = element.appendChild(document.createElement("a"));
 
 		frst.setAttribute("href", "#");
 		prev.setAttribute("href", "#");
@@ -32,8 +32,8 @@ class NavBar
 
 		this.go = function (url)
 		{
-			if (this.element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
-				index = Math.max(this._links.indexOf(url), 0);
+			if (element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
+				index = Math.max(links.indexOf(url), 0);
 
 			frst.setAttribute("navbar-disabled", String(index === 0));
 			prev.setAttribute("navbar-disabled", String(index === 0));

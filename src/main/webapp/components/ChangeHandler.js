@@ -14,7 +14,6 @@ function ChangeHandler(e)
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.setNavigator(this.getAttribute("data-navigator"))
 					.get();
 				document.body.appendChild(a);
 				a.click();
@@ -34,7 +33,6 @@ function ChangeHandler(e)
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.setNavigator(this.getAttribute("data-navigator"))
 					.get();
 				form.appendChild(button);
 				button.click();

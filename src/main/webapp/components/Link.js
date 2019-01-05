@@ -2,6 +2,8 @@
 
 function Link(link, creator)
 {
+	var navigator;
+
 	link.addEventListener("click", function (event)
 	{
 		if (this.hasAttribute("data-cancel"))
@@ -83,8 +85,7 @@ function Link(link, creator)
 							title: this.getAttribute("title"),
 							target: this.getAttribute("href"),
 							blocked: Boolean(this.getAttribute("data-blocked")),
-							navigator: this.hasAttribute("data-navigator") ?
-								eval(this.getAttribute("data-navigator")) : null})
+							navigator: navigator})
 							.show();
 					}
 					break;
@@ -242,10 +243,7 @@ function Link(link, creator)
 
 	this.setNavigator = function (value)
 	{
-		if (value)
-			link.setAttribute("data-navigator", value);
-		else if (link.getAttribute("data-navigator"))
-			link.removeAttribute("data-navigator");
+		navigator = value;
 		return this;
 	};
 

@@ -64,6 +64,12 @@ function ActionHandler(element)
 				.toLowerCase() : "get")
 			{
 				case "get":
+
+					if (!event.ctrlKey && this.getAttribute("data-target"))
+						var navigator = Array.from(this.parentNode.children)
+							.map(e => e.getAttribute("data-action"))
+							.filter(e => e);
+
 					var link = new Link(document.createElement("a"), element)
 						.setAction(this.getAttribute("data-action"))
 						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
@@ -71,7 +77,7 @@ function ActionHandler(element)
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
+						.setNavigator(navigator)
 						.get();
 					document.body.appendChild(link);
 
@@ -92,7 +98,6 @@ function ActionHandler(element)
 						.setBlock(this.getAttribute("data-block"))
 						.setAlert(this.getAttribute("data-alert"))
 						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(this.getAttribute("data-navigator"))
 						.get();
 
 					form.appendChild(button);
