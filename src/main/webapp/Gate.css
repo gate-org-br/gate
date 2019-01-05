@@ -1,3 +1,15 @@
+.G {
+  color: #006600;
+}
+.R {
+  color: #660000;
+}
+.Y {
+  color: #aaaa00;
+}
+.B {
+  color: #000066;
+}
 .margin {
   margin: 0;
   margin-top: 10px;
@@ -2073,26 +2085,26 @@ div.Main {
 }
 div.Main > div:nth-child(1) {
   width: 100%;
-  padding: 8px;
+  padding: 4px;
   display: grid;
   grid-gap: 8px;
   border-radius: 5px 5px 0 0;
   grid-template-rows: 1fr 1fr;
   background-color: #f5f6f8;
-  grid-template-columns: 40px 1fr 200px;
+  grid-template-columns: 48px 1fr 200px;
 }
 div.Main > div:nth-child(1) > *:nth-child(1) {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   display: flex;
-  font-size: 40px;
+  font-size: 48px;
   align-items: center;
   grid-row: 1 / span 2;
   justify-content: center;
 }
 div.Main > div:nth-child(1) > *:nth-child(2) {
   display: flex;
-  font-size: 20px;
+  font-size: 22px;
   align-items: center;
   grid-row: 1 / span 2;
   justify-content: flex-start;
@@ -2125,4 +2137,7 @@ div.Main > div:nth-child(3) {
   background-color: #CDCAB9;
   border-radius: 0 0 5px 5px;
   max-height: calc(100vh - 122px);
+}
+input[data-mask] {
+  font-family: monospace;
 }

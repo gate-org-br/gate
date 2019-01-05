@@ -1,12 +1,20 @@
-function Mask(e)
+function Mask(element)
 {
-	e.placeholder = new String();
-	e.mask = e.getAttribute("data-mask");
-	for (var i = 0; i < e.mask.length; i++)
-		e.placeholder += e.mask.charAt(i).match('[#*_]') ? "_" : e.mask.charAt(i);
-	e.setAttribute('placeholder', e.placeholder);
+	var changed = false;
+	element.setAttribute("autocomplete", "off");
+	const MASKS = {'#': "[0-9]", '_': "[a-zA-Z]", '*': "[0-9a-zA-Z]"};
 
-	e.getCursor = function ()
+	var mask = element.getAttribute("data-mask");
+	var placeholder = element.getAttribute("placeholder");
+	if (!placeholder || placeholder.length !== mask.length)
+	{
+		placeholder = "";
+		for (var i = 0; i < mask.length; i++)
+			placeholder += MASKS[mask.charAt(i)] ? "_" : mask.charAt(i);
+		element.setAttribute("placeholder", placeholder);
+	}
+
+	element.getCursor = function ()
 	{
 		if (this.selectionStart >= 0)
 		{
@@ -18,12 +26,10 @@ function Mask(e)
 			selection.moveStart('character', -this.value.length);
 			return selection.text.length;
 		} else
-		{
 			document.write("Navegador muito antigo. Favor atualizar.");
-		}
 	};
 
-	e.setCursor = function (i)
+	element.setCursor = function (i)
 	{
 		if (this.selectionStart >= 0)
 		{
@@ -35,50 +41,14 @@ function Mask(e)
 			selection.move('character', i);
 			selection.select();
 		} else
-		{
 			document.write("Navegador muito antigo. Favor atualizar.");
-		}
 		return false;
 	};
 
-	e.setValue = function (value)
+	element.onkeydown = function (event)
 	{
-		this.value = value;
-		if (!this.value)
-			this.value = this.prevValue ? this.prevValue : this.placeholder;
-	};
-
-
-	e.check_mask = function ()
-	{
-		var ph = this.getAttribute('data-mask');
-		for (var i = 0; i < this.mask.length && i < this.value.length; i++)
-			if (ph.charAt(i) === '#')
-				if (this.value.charAt(i).match("[_0-9]"))
-					continue;
-				else
-					return false;
-			else if (ph.charAt(i) === '_')
-				if (this.value.charAt(i).match("[_a-zA-Z]"))
-					continue;
-				else
-					return false;
-			else if (ph.charAt(i) === '*')
-				if (this.value.charAt(i).match("[_a-zA-Z0-9]"))
-					continue;
-				else
-					return false;
-			else if (this.value.charAt(i) === ph.charAt(i))
-				continue;
-			else
-				return false;
-		return true;
-	};
-
-	e.onkeydown = function (e)
-	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			// ///////////////////////////////////////////////////////
 			// ESQUERDA
@@ -86,7 +56,7 @@ function Mask(e)
 			case 37:
 
 				for (var i = this.getCursor() - 1; i >= 0; i--)
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
 				// ///////////////////////////////////////////////////////
@@ -94,8 +64,8 @@ function Mask(e)
 				// ///////////////////////////////////////////////////////
 			case 39:
 
-				for (var i = this.getCursor() + 1; i <= this.mask.length; i++)
-					if (i === this.mask.length || this.mask.charAt(i).match("[#_*]"))
+				for (var i = this.getCursor() + 1; i <= mask.length; i++)
+					if (i === mask.length || MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
 				// ///////////////////////////////////////////////////////
@@ -105,10 +75,12 @@ function Mask(e)
 
 				for (var i = this.getCursor() - 1; i >= 0; i--)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 					{
-						this.value = this.value.substr(0, i) + "__" + this.value.substr(i + 1);
-						return this.setCursor(i + 1) || true;
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+						this.setCursor(i);
+						changed = true;
+						break;
 					}
 				}
 				return false;
@@ -117,12 +89,18 @@ function Mask(e)
 				// ///////////////////////////////////////////////////////
 			case 46:
 
-				for (var i = this.getCursor(); i < this.mask.length; i++)
+				for (var i = this.getCursor(); i < mask.length; i++)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)])
 					{
-						this.value = this.value.substr(0, i) + "__" + this.value.substr(i + 1);
-						return this.setCursor(i + 1) || true;
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+
+						this.setCursor(i + 1);
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+						changed = true;
+						break;
 					}
 				}
 				return false;
@@ -130,7 +108,7 @@ function Mask(e)
 				// END
 				// ///////////////////////////////////////////////////////
 			case 35:
-				return this.setCursor(this.mask.length);
+				return this.setCursor(mask.length);
 				// ///////////////////////////////////////////////////////
 				// HOME
 				// ///////////////////////////////////////////////////////
@@ -141,10 +119,10 @@ function Mask(e)
 		return true;
 	};
 
-	e.onkeypress = function (e)
+	element.onkeypress = function (event)
 	{
-		e = e ? e : window.event;
-		switch (e.keyCode)
+		event = event ? event : window.event;
+		switch (event.keyCode)
 		{
 			case 8:
 			case 9:
@@ -157,8 +135,8 @@ function Mask(e)
 				return true;
 			default:
 
-				var c = String.fromCharCode(e.which ? e.which : e.keyCode);
-				if (e.ctrlKey)
+				var c = String.fromCharCode(event.which ? event.which : event.keyCode);
+				if (event.ctrlKey)
 				{
 					switch (c)
 					{
@@ -171,36 +149,19 @@ function Mask(e)
 					}
 				}
 
-				for (var i = this.getCursor(); i < this.mask.length; i++)
+				for (var i = this.getCursor(); i < mask.length; i++)
 				{
-					if (this.mask.charAt(i).match("[#_*]"))
+					if (MASKS[mask.charAt(i)] && c.match(MASKS[mask.charAt(i)]))
 					{
-						switch (this.mask.charAt(i))
-						{
-							case '#':
-								if (c.match("[0-9]"))
-								{
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-							case '_':
-								if (c.match("[a-zA-Z]")) {
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-							case '*':
-								if (c.match("[0-9a-zA-Z]"))
-								{
-									this.value = this.value.substr(0, i) + this.value.substr(i + 1);
-									this.setCursor(i);
-									return true;
-								}
-								break;
-						}
+						this.value = this.value.substr(0, i) + c + this.value.substr(i + 1);
+						this.setCursor(i + 1);
+
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+
+						changed = true;
+						return false;
 					}
 				}
 
@@ -208,62 +169,62 @@ function Mask(e)
 		}
 	};
 
-	e.oninput = function ()
+	element.onpaste = function (event)
 	{
-		if (this.check_mask())
+		var data = event.clipboardData.getData("text");
+		if (data)
 		{
-			for (var i = this.getCursor(); i < this.mask.length; i++)
+			var index = 0;
+			var cursor = 0;
+
+			while (index < data.length && cursor < mask.length)
 			{
-				if (this.mask.charAt(i).match("[#_*]"))
+				while (cursor < mask.length && !MASKS[mask.charAt(cursor)])
+					cursor++;
+				while (cursor < mask.length && index < data.length && !data[index].match(MASKS[mask.charAt(cursor)]))
+					index++;
+
+				if (cursor < mask.length && index < data.length)
 				{
-					this.setCursor(i);
-					break;
+					this.value = this.value.substr(0, cursor) + data[index] + this.value.substr(cursor + 1);
+					changed = true;
+					cursor++;
+					index++;
 				}
 			}
-			return true;
 		}
-
-		this.setValue('');
-		this.setCursor(0);
 		return false;
 	};
-	e.onpaste = function ()
-	{
-		this.prevValue = this.value;
-		this.select();
-		return true;
-	};
-	e.onfocus = function ()
-	{
-		if (!this.value && this.placeholder)
-			this.value = this.placeholder;
 
-		var self = this;
-		setTimeout(function ()
+	element.onfocus = function ()
+	{
+		if (!this.value && placeholder)
+			this.value = placeholder;
+
+		setTimeout(() =>
 		{
-			self.setCursor(0);
-			for (var i = self.getCursor(); i < self.mask.length; i++)
-				if (self.mask.charAt(i).match("[#_*]"))
-					return self.setCursor(i);
+			this.setCursor(0);
+			while (this.getCursor() < mask.length
+				&& !MASKS[mask.charAt(this.getCursor())])
+				this.setCursor(this.getCursor() + 1);
 		}, 0);
 	};
-	e.onblur = function ()
+
+	element.onblur = function ()
 	{
-		if (this.value === this.placeholder)
+		if (this.value === placeholder)
 			this.value = '';
+
+		if (changed)
+			this.dispatchEvent(new Event('change'));
+		changed = false;
 	};
+
+	element.oncut = () => false;
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('input[data-mask]')).forEach(function (e)
-	{
-		new Mask(e);
-	});
-
-	document.oncontextmenu = function (e)
-	{
-		return e && e.target && !e.target.getAttribute('data-mask');
-	};
+	Array.from(document.querySelectorAll('input[data-mask]'))
+		.forEach(element => new Mask(element));
 });
-

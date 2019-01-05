@@ -14,8 +14,6 @@ import gate.error.NotFoundException;
 import gate.io.Credentials;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
