@@ -1,16 +1,16 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Form;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FormConverter implements Converter
 {
@@ -36,13 +36,15 @@ public class FormConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null ? object.toString() : "";
+		return object != null
+			? ((Form) object).getFields().stream().map(e -> Converter.toText(e))
+				.collect(Collectors.joining()) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, object) : "";
+		return toText(type, object);
 	}
 
 	@Override

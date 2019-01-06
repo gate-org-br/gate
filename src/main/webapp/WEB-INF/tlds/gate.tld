@@ -23,7 +23,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>insert</name>
 		<body-content>empty</body-content>
@@ -33,7 +32,6 @@
 			on a template JSP file.
 		</description>
 	</tag>
-
 	<tag>
 		<name>superuser</name>
 		<body-content>scriptless</body-content>
@@ -43,7 +41,6 @@
 			current user is a superuser.
 		</description>
 	</tag>
-
 	<tag>
 		<name>secure</name>
 		<display-name>Secure</display-name>
@@ -87,7 +84,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>denied</name>
 		<body-content>scriptless</body-content>
@@ -130,7 +126,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>link</name>
 		<display-name>Link</display-name>
@@ -204,7 +199,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>shortcut</name>
 		<display-name>Shortcut</display-name>
@@ -269,7 +263,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>menu</name>
 		<display-name>Menu</display-name>
@@ -334,7 +327,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>menuitem</name>
 		<display-name>Menu Item</display-name>
@@ -418,7 +410,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>if</name>
 		<body-content>scriptless</body-content>
@@ -445,7 +436,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>choose</name>
 		<body-content>scriptless</body-content>
@@ -457,7 +447,6 @@
 			condition.
 		</description>
 	</tag>
-
 	<tag>
 		<name>when</name>
 		<body-content>scriptless</body-content>
@@ -475,7 +464,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>otherwise</name>
 		<body-content>scriptless</body-content>
@@ -485,7 +473,6 @@
 			is no true when condition on the parent choose tag.
 		</description>
 	</tag>
-
 	<tag>
 		<name>iterator</name>
 		<body-content>scriptless</body-content>
@@ -539,7 +526,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>parent</name>
 		<body-content>scriptless</body-content>
@@ -565,7 +551,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>child</name>
 		<body-content>empty</body-content>
@@ -584,7 +569,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>values</name>
 		<body-content>scriptless</body-content>
@@ -629,7 +613,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>with</name>
 		<body-content>scriptless</body-content>
@@ -665,7 +648,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>use</name>
 		<body-content>empty</body-content>
@@ -701,7 +683,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>print</name>
 		<body-content>empty</body-content>
@@ -737,7 +718,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>print</name>
 		<function-class>gate.util.Toolkit</function-class>
@@ -749,7 +729,6 @@
 			text and print it as HTML.
 		</description>
 	</function>
-
 	<tag>
 		<name>write</name>
 		<body-content>empty</body-content>
@@ -768,7 +747,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>write</name>
 		<function-class>gate.util.Toolkit</function-class>
@@ -780,7 +758,6 @@
 			later and prints it.
 		</description>
 	</function>
-
 	<tag>
 		<name>icons</name>
 		<body-content>scriptless</body-content>
@@ -798,7 +775,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>icon</name>
 		<body-content>empty</body-content>
@@ -818,7 +794,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>icon</name>
 		<function-class>gate.tags.TagLib</function-class>
@@ -830,7 +805,6 @@
 			name, code, object, class or class name.
 		</description>
 	</function>
-
 	<tag>
 		<name>name</name>
 		<body-content>empty</body-content>
@@ -850,7 +824,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>name</name>
 		<function-class>gate.tags.TagLib</function-class>
@@ -862,7 +835,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>description</name>
 		<body-content>empty</body-content>
@@ -882,7 +854,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>description</name>
 		<function-class>gate.tags.TagLib</function-class>
@@ -894,7 +865,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>color</name>
 		<body-content>empty</body-content>
@@ -914,7 +884,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<function>
 		<name>color</name>
 		<function-class>gate.tags.TagLib</function-class>
@@ -926,7 +895,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>datalist</name>
 		<body-content>scriptless</body-content>
@@ -962,7 +930,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>label</name>
 		<body-content>empty</body-content>
@@ -1000,7 +967,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>text</name>
 		<body-content>empty</body-content>
@@ -1020,7 +986,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>password</name>
 		<body-content>empty</body-content>
@@ -1040,7 +1005,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>file</name>
 		<body-content>empty</body-content>
@@ -1060,7 +1024,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>number</name>
 		<body-content>empty</body-content>
@@ -1080,7 +1043,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>range</name>
 		<body-content>empty</body-content>
@@ -1100,7 +1062,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>email</name>
 		<body-content>empty</body-content>
@@ -1120,7 +1081,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>url</name>
 		<body-content>empty</body-content>
@@ -1140,7 +1100,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>textarea</name>
 		<body-content>empty</body-content>
@@ -1160,7 +1119,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>hidden</name>
 		<body-content>empty</body-content>
@@ -1180,7 +1138,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>select</name>
 		<body-content>scriptless</body-content>
@@ -1264,7 +1221,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>select1</name>
 		<body-content>scriptless</body-content>
@@ -1339,7 +1295,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>selectn</name>
 		<body-content>scriptless</body-content>
@@ -1414,7 +1369,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>checkbox</name>
 		<body-content>empty</body-content>
@@ -1453,7 +1407,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>radio</name>
 		<body-content>empty</body-content>
@@ -1492,7 +1445,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>image</name>
 		<body-content>empty</body-content>
@@ -1521,7 +1473,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>submit</name>
 		<body-content>empty</body-content>
@@ -1550,7 +1501,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>stacktrace</name>
 		<body-content>empty</body-content>
@@ -1570,7 +1520,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>paginator</name>
 		<body-content>empty</body-content>
@@ -1590,7 +1539,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>login</name>
 		<body-content>scriptless</body-content>
@@ -1623,137 +1571,95 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>ordenator</name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.OrdenatorTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
-
 		<description>
 			Creates a link to toggle the sort criteria
 			of the current screen.
 		</description>
-
 		<attribute>
 			<name>property</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				Property used as the sort criteria of
 				the dataset.
 			</description>
 		</attribute>
-
 		<attribute>
 			<name>method</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				Request method to be used on the generated
 				link. Defaults to the current request method.
 			</description>
 		</attribute>
-
 		<attribute>
 			<name>arguments</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				A list of optional arguments to be included
 				on the generated URL.
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>properties</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
 		<tag-class>gate.tags.PropertiesTag</tag-class>
-
 		<description>
 			Generates a table with information about
 			the specified list of properties.
 		</description>
-
 		<attribute>
 			<name>source</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				List of properties whose information
 				are to be described.
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>alert</name>
 		<body-content>empty</body-content>
 		<tag-class>gate.tags.AlertTag</tag-class>
-
 		<description>
 			Prints a list of messags as javascript alert boxes.
 		</description>
-
 		<attribute>
 			<name>messages</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				List of messages to be printed as javascript alert boxes.
 				Defaults to the current screen associated messages.
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>form</name>
 		<body-content>empty</body-content>
 		<tag-class>gate.tags.FormTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
-
 		<description>
 			Generate html form controls for the specified
 			gate.type.Form property.
 		</description>
-
 		<attribute>
 			<name>property</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-
 			<description>
 				The gate.type.Form property whose controls
 				must be generated.
-			</description>
-		</attribute>
-	</tag>
-	<tag>
-		<name>printForm</name>
-		<body-content>empty</body-content>
-		<tag-class>gate.tags.PrintFormTag</tag-class>
-		<dynamic-attributes>true</dynamic-attributes>
-
-		<description>
-			Prints the information stored on a specified
-			gate.type.Form.
-		</description>
-
-		<attribute>
-			<name>value</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-
-			<description>
-				The gate.type.Form whose information must
-				be displayed.
 			</description>
 		</attribute>
 	</tag>

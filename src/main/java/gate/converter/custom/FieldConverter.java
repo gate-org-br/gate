@@ -1,10 +1,10 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Field;
-
+import gate.util.Toolkit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,15 +36,27 @@ public class FieldConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null ? object.toString() : "";
+		if (object == null)
+			return "";
+
+		Field field = (Field) object;
+		if (!Toolkit.isEmpty(field.getName()))
+			if (Boolean.FALSE.equals(field.getMultiple()))
+				return String.format("<label style='width: %s%%'>%s: <span><label>%s</label></span></label>", field.getSize().getPercentage().toString(), field.getName(), Converter.toText(field.getValue()));
+			else
+				return String.format("<label style='width: %s%%'>%s: <span style='height: 60px;'><label>%s</label></span></label>", field.getSize().getPercentage().toString(), field.getName(), Converter.toText(field.getValue()));
+		else if (Boolean.FALSE.equals(field.getMultiple()))
+			return String.format("<label style='width: %s%%'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", field.getSize().getPercentage().toString());
+		else
+			return String.format("<label style='width: %s%%'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", field.getSize().getPercentage().toString());
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, object) : "";
+		return toText(type, object);
 	}
-
+	
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
