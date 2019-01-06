@@ -365,17 +365,12 @@ public class User implements Serializable
 
 	public boolean isSuperUser()
 	{
-		return getComputedAuths().stream().anyMatch(e -> e.isSuperAuth());
+		return computedAuthStream().anyMatch(e -> e.isSuperAuth());
 	}
 
 	public boolean checkAccess(String module, String screen, String action)
 	{
-		return checkAccess(false, module, screen, action);
-	}
-
-	public boolean checkAccess(boolean strict, String module, String screen, String action)
-	{
 		return computedAuthStream().noneMatch(e -> e.blocks(module, screen, action))
-			&& computedAuthStream().anyMatch(e -> e.allows(strict, module, screen, action));
+			&& computedAuthStream().anyMatch(e -> e.allows(module, screen, action));
 	}
 }

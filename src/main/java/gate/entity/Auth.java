@@ -9,7 +9,6 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.ID;
-
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -244,16 +243,11 @@ public class Auth implements Serializable
 			&& (this.action == null || this.action.equals(action));
 	}
 
-	public boolean allows(boolean strict, String module, String screen, String action)
+	public boolean allows(String module, String screen, String action)
 	{
 		return this.mode == Mode.ALLOW
-			&& strict
-				? isSuperAuth()
-				|| (Objects.equals(this.module, module)
-				&& Objects.equals(this.screen, screen)
-				&& Objects.equals(this.action, action))
-				: (module == null || this.module == null || this.module.equals(module))
-				&& (screen == null || this.screen == null || this.screen.equals(screen))
-				&& (action == null || this.action == null || this.action.equals(action));
+			&& (module == null || this.module == null || this.module.equals(module))
+			&& (screen == null || this.screen == null || this.screen.equals(screen))
+			&& (action == null || this.action == null || this.action.equals(action));
 	}
 }

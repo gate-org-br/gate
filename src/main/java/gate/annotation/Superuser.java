@@ -7,10 +7,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-		{
-			ElementType.TYPE, ElementType.METHOD
-		})
-public @interface Strict
+	{
+		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
+	})
+/**
+ * Indicates that only a super user can access the resource.
+ */
+public @interface Superuser
 {
 
 }
