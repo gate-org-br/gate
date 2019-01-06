@@ -86,15 +86,6 @@
 				current user has no access to the resource.
 			</description>
 		</attribute>
-		<attribute>
-			<name>strict</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Checks if the current user has an access
-				specific to the specified resource.
-			</description>
-		</attribute>
 	</tag>
 
 	<tag>
@@ -136,15 +127,6 @@
 			<description>
 				An alternative text to be printed if the
 				current user has access to the resource.
-			</description>
-		</attribute>
-		<attribute>
-			<name>strict</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Checks if the current user has no access
-				specific to the specified resource.
 			</description>
 		</attribute>
 	</tag>

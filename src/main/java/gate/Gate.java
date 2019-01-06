@@ -1,10 +1,12 @@
 package gate;
 
+import gate.annotation.Annotations;
 import gate.annotation.Background;
 import gate.annotation.BackgroundProcess;
 import gate.annotation.Current;
+import gate.annotation.Disabled;
 import gate.annotation.Public;
-import gate.annotation.Strict;
+import gate.annotation.Superuser;
 import gate.base.Screen;
 import gate.entity.App;
 import gate.entity.Org;
@@ -222,11 +224,16 @@ public class Gate extends HttpServlet
 		Class<?> clazz,
 		Method method)
 	{
-		return clazz.isAnnotationPresent(Public.class)
-			|| method.isAnnotationPresent(Public.class)
-			|| (user != null
-			&& user.checkAccess(method.isAnnotationPresent(Strict.class)
-				|| clazz.isAnnotationPresent(Strict.class), module, screen, action));
+		if (Annotations.exists(Disabled.class, clazz, method))
+			return false;
+
+		if (Annotations.exists(Superuser.class, clazz, method))
+			return user != null && user.isSuperUser();
+
+		if (Annotations.exists(Public.class, clazz, method))
+			return true;
+
+		return user != null && user.checkAccess(module, screen, action);
 	}
 
 }

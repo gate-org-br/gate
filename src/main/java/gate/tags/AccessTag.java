@@ -20,8 +20,6 @@ public abstract class AccessTag extends SimpleTagSupport
 
 	private String action;
 
-	private boolean strict;
-
 	protected String otherwise;
 
 	private static final String[] DEFAULT = new String[1];
@@ -47,11 +45,6 @@ public abstract class AccessTag extends SimpleTagSupport
 		this.screen = screen;
 	}
 
-	public void setStrict(boolean strict)
-	{
-		this.strict = strict;
-	}
-
 	protected boolean check()
 	{
 		if ("#".equals(module))
@@ -65,8 +58,9 @@ public abstract class AccessTag extends SimpleTagSupport
 			for (String m : this.module != null ? SPLIT.split(this.module) : DEFAULT)
 				for (String s : this.screen != null ? SPLIT.split(this.screen) : DEFAULT)
 					for (String a : this.action != null ? SPLIT.split(this.action) : DEFAULT)
-						if (user.checkAccess(strict, m, s, a))
+						if (user.checkAccess(m, s, a))
 							return true;
+
 		return false;
 	}
 }

@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
 	})
 /**
- * Indicates that a resource is public and there is not need of authentication to access it.
+ * Indicates the resource is disabled an no user has access to it.
  */
-public @interface Public
+public @interface Disabled
 {
 
 }
