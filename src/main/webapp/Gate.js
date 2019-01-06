@@ -5333,11 +5333,25 @@ class Message extends Modal
 		super();
 
 		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.className = "Message";
+		dialog.classList.add("Message");
+		dialog.classList.add(options.type);
 
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-		body.className = options.type;
-		body.innerHTML = options.message;
+		var icon = dialog.appendChild(window.top.document.createElement('label'));
+		switch (options.type)
+		{
+			case "SUCCESS":
+				icon.innerHTML = "&#X1000;";
+				break;
+			case "WARNING":
+				icon.innerHTML = "&#X1007;";
+				break;
+			case "ERROR":
+				icon.innerHTML = "&#X1001;";
+				break;
+		}
+
+		var message = dialog.appendChild(window.top.document.createElement('label'));
+		message.innerHTML = options.message;
 
 		if (options.timeout)
 			window.top.setTimeout(() => this.hide(), options.timeout);
@@ -5512,6 +5526,7 @@ function copy(data)
 	textarea.select();
 	document.execCommand('copy');
 	document.body.removeChild(textarea);
+	Message.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
 }
 
 window.addEventListener("load", function ()

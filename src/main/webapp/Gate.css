@@ -909,53 +909,41 @@ div.Dialog > div:last-child > dialog {
 }
 div.Message {
   width: 800px;
-  height: 260px;
+  height: 280px;
   display: flex;
   border-radius: 5px;
   align-items: stretch;
-  justify-content: center;
+  background-color: white;
   border: 4px solid #788185;
   box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
-div.Message > div {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 20px;
-  align-items: center;
-  background-color: white;
-  justify-content: flex-start;
+div.Message.SUCCESS {
+  color: #006600;
 }
-div.Message > div::before {
-  height: 100%;
-  width: 200px;
+div.Message.WARNING {
+  color: #aaaa00;
+}
+div.Message.ERROR {
+  color: #660000;
+}
+div.Message > label:first-child {
   display: flex;
   color: inherit;
   font-size: 120px;
   font-family: gate;
-  margin-right: 8px;
+  flex-basis: 240px;
   align-items: center;
   justify-content: center;
   background: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
-div.Message > div.SUCCESS {
-  color: #006600;
-}
-div.Message > div.SUCCESS::before {
-  content: "\1000";
-}
-div.Message > div.WARNING {
-  color: #aaaa00;
-}
-div.Message > div.WARNING::before {
-  content: "\1007";
-}
-div.Message > div.ERROR {
-  color: #660000;
-}
-div.Message > div.ERROR::before {
-  content: "\1001";
+div.Message > label:last-child {
+  flex-grow: 1;
+  padding: 8px;
+  display: flex;
+  color: inherit;
+  font-size: 20px;
+  align-items: center;
+  background-color: transparent;
 }
 div.Slider {
   display: flex;
