@@ -1,55 +1,32 @@
-div.Message
-{
-	width:800px;
-	height:260px;
-	display:flex;
-	border-radius:5px;
-	align-items:stretch;
-	justify-content:center;
-	border:4px solid @base_shaded;
-	box-shadow:3px 10px 5px 0px rgba(0,0,0,0.75);
+div.Message { width:800px;
+	      height:280px;
+	      display:flex;
+	      border-radius:5px;
+	      align-items:stretch;
+	      background-color: white;
+	      border:4px solid @base_shaded;
+	      box-shadow:3px 10px 5px 0px rgba(0,0,0,0.75);
 
-	> div
-	{
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		font-size: 20px;
-		align-items: center;
-		background-color: white;
-		justify-content: flex-start;
-	}
+	      &.SUCCESS { color: @G; }
+	      &.WARNING { color: @Y; }
+	      &.ERROR { color: @R; }
 
-	& > div::before
-	{
-		height: 100%;
-		width: 200px;
-		display: flex;
-		color: inherit;
-		font-size: 120px;
-		font-family: gate;
-		margin-right: 8px;
-		align-items: center;
-		justify-content: center;
-		background: @main_gradient;
-	}
+	      > label:first-child {  display: flex;
+				     color: inherit;
+				     font-size: 120px;
+				     font-family: gate;
+				     flex-basis: 240px;
+				     align-items: center;
+				     justify-content: center;
+				     background: @main_gradient; }
 
-	& > div.SUCCESS
-	{
-		color: @G;
-		&::before { content: "\1000"; }
-	}
+	      > label:last-child  { flex-grow: 1;
+				    padding: 8px;
+				    display: flex;
+				    color: inherit;
+				    font-size: 20px;
+				    align-items: center;
+				    background-color: transparent; }
+}
 
-	& > div.WARNING
-	{
-		color: @Y;
-		&::before { content: "\1007"; }
-	}
 
-	& > div.ERROR
-	{
-		color: @R;
-		&::before { content: "\1001"; }
-	}
-}		
