@@ -9,6 +9,7 @@ function copy(data)
 	textarea.select();
 	document.execCommand('copy');
 	document.body.removeChild(textarea);
+	Message.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
 }
 
 window.addEventListener("load", function ()
