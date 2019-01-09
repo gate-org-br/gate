@@ -1,9 +1,6 @@
 package gate.tags;
 
-import gate.annotation.RetainRequestParameters;
-import gate.base.Screen;
 import java.io.IOException;
-import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -22,27 +19,13 @@ public class LoginTag extends SimpleTagSupport
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		if (Screen.getScreen(module, screen).orElseThrow(() -> new IOException("Invalid request"))
-			.isAnnotationPresent(RetainRequestParameters.class)
-			|| Screen.getAction(module, action, action).orElseThrow(() -> new IOException("Invalid request"))
-				.isAnnotationPresent(RetainRequestParameters.class))
-		{
-			getJspContext().getOut().println("<form method ='POST' action='Gate'>");
-			for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet())
-				for (String value : entry.getValue())
-					getJspContext().getOut().println(String.format("<input type='hidden' name='%s' value='%s'/>",
-						entry.getKey(), value));
-		} else
-		{
-			getJspContext().getOut().println("<form method ='POST' target ='_top' action='Gate'>");
-			if (module != null && !module.isEmpty())
-				getJspContext().getOut().println(String.format("<input type='hidden' name='MODULE' value='%s'/>", module));
-			if (screen != null && !screen.isEmpty())
-				getJspContext().getOut().println(String.format("<input type='hidden' name='SCREEN' value='%s'/>", screen));
-			if (action != null && !action.isEmpty())
-				getJspContext().getOut().println(String.format("<input type='hidden' name='ACTION' value='%s'/>", action));
-
-		}
+		getJspContext().getOut().println("<form method ='POST' target ='_top' action='Gate'>");
+		if (module != null && !module.isEmpty())
+			getJspContext().getOut().println(String.format("<input type='hidden' name='MODULE' value='%s'/>", module));
+		if (screen != null && !screen.isEmpty())
+			getJspContext().getOut().println(String.format("<input type='hidden' name='SCREEN' value='%s'/>", screen));
+		if (action != null && !action.isEmpty())
+			getJspContext().getOut().println(String.format("<input type='hidden' name='ACTION' value='%s'/>", action));
 
 		getJspBody().invoke(null);
 		getJspContext().getOut().println("</form>");
