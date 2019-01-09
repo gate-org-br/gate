@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-
 <g:template filename="/WEB-INF/views/PAGE.jsp">
 	<g:datalist id="user-list"
 		    options="${screen.users}"

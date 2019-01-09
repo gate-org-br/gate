@@ -10,6 +10,11 @@
 .B {
   color: #000066;
 }
+form {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
 .margin {
   margin: 0;
   margin-top: 10px;
@@ -359,11 +364,6 @@ fieldset {
   padding: 12px;
   border-radius: 5px;
   background-color: #b9b6a7;
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
 }
 fieldset:first-child {
   margin-top: 0px;
@@ -387,6 +387,7 @@ fieldset > legend > i {
   margin-right: 4px;
 }
 fieldset fieldset {
+  float: left;
   width: 100%;
   padding: 4px;
   border: 4px solid #b9b6a7;
@@ -413,6 +414,7 @@ fieldset > div {
   background-color: #EEEEEE;
 }
 fieldset > label {
+  float: left;
   padding: 4px;
   display: flex;
   text-align: left;
@@ -625,10 +627,29 @@ table:first-child {
 table:last-child {
   margin-bottom: 0px;
 }
-tr {
+table tr {
   height: 32px;
 }
-caption {
+table th {
+  color: black;
+  height: 28px;
+  padding: 4px;
+  text-align: left;
+  vertical-align: middle;
+  background-color: #b9c6cd;
+}
+table td {
+  padding: 4px;
+  text-align: left;
+  word-break: normal;
+  vertical-align: middle;
+  background-color: transparent;
+}
+table td > input:first-child:last-child {
+  width: 100%;
+  height: 24px;
+}
+table > caption {
   height: 32px;
   color: white;
   line-height: 32px;
@@ -638,20 +659,8 @@ caption {
   border-radius: 5px 5px 0px 0px;
   background-color: #788185;
 }
-th {
-  color: black;
-  height: 28px;
-  padding: 4px;
-  text-align: left;
-  vertical-align: middle;
-  background-color: #b9c6cd;
-}
-td {
-  padding: 4px;
-  text-align: left;
-  word-break: normal;
-  vertical-align: middle;
-  background-color: transparent;
+table > thead > tr {
+  background-color: #e6e5dc;
 }
 table > tbody > tr:nth-child(even) {
   background-color: white;
@@ -665,8 +674,7 @@ table > tbody > tr.even {
 table > tbody > tr.odd {
   background-color: #f5f6f8;
 }
-table > thead > tr > td,
-table > tfoot > tr > td {
+table > tfoot > tr {
   background-image: linear-gradient(to bottom, #d5dde1 0%, #949ea4 100%);
 }
 td.TOOLTIP {
@@ -942,6 +950,7 @@ div.Message > label:last-child {
   display: flex;
   color: inherit;
   font-size: 20px;
+  text-indent: 40px;
   align-items: center;
   background-color: transparent;
 }

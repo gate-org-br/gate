@@ -6,7 +6,6 @@
 		    options="${screen.funcs}"
 		    labels="${e -> e.name}"
 		    values="${e -> e.id}"/>
-
 	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 
 		<fieldset>
