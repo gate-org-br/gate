@@ -48,34 +48,6 @@ ul.HMenu
 			width: 100%;
 			flex-basis: 40px; }
 
-	> li > nav
-	{
-		width: auto;
-		border: none;
-		display: flex;
-		margin: 0 2px 0 2px;
-		align-items: stretch;
-		align-content: stretch;
-		justify-content: center;
-		background-color: transparent;
-
-		> a
-		{
-			width: 40px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background-color: @main_tinted;
-
-			> i { font-size: 16px }
-			&:hover > i { font-size: 18px }
-			&:last-of-type { border-radius: 0 5px 5px 0 }
-			&:first-of-type { border-radius: 5px 0 0 5px }
-		}
-	}
-
-
-
 	li > a { border: 1px solid @main; }
 	> li:not(:first-of-type) > a { border-left: none; }
 	ul > li:not(:first-of-type) > a { border-top: none; }

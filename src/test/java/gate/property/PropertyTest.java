@@ -1,15 +1,15 @@
 package gate.property;
 
-import gate.lang.property.PropertyError;
-import gate.lang.property.Property;
 import gate.entity.Role;
 import gate.entity.User;
+import gate.lang.property.Property;
+import gate.lang.property.PropertyError;
 import gate.type.ID;
 import java.util.HashMap;
 import java.util.Map;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class PropertyTest
 {
@@ -168,13 +168,29 @@ public class PropertyTest
 	}
 
 	@Test
+	public void test10()
+	{
+		try
+		{
+			Mock mock = new Mock();
+			Property property = Property.getProperty(Mock.class, "age");
+			property.setValue(mock, 1);
+			assertEquals(property.getValue(mock), 1);
+		} catch (PropertyError e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
+	@Test
 	public void test11()
 	{
 		try
 		{
 			Property.getProperty(getClass(), "users.user3")
-					.setValue(this, new User().setId(new ID(3))
-							.setName("Usuário 3"));
+				.setValue(this, new User().setId(new ID(3))
+					.setName("Usuário 3"));
 
 			String expected = "Usuário 3";
 			Object result = getUsers().get("user3").getName();
@@ -205,7 +221,7 @@ public class PropertyTest
 		try
 		{
 			Property.getProperty(Role.class, "users[]").setValue(role, new User()
-					.setId(new ID(3)).setName("Usuário 3"));
+				.setId(new ID(3)).setName("Usuário 3"));
 			assertEquals(role.getUsers().size(), 3);
 		} catch (PropertyError e)
 		{
@@ -219,7 +235,7 @@ public class PropertyTest
 		try
 		{
 			assertEquals("users[1].name", Property.getProperty(Role.class, "users[1].name")
-					.toString());
+				.toString());
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());
@@ -238,6 +254,22 @@ public class PropertyTest
 		}
 	}
 
+	@Test
+	public void test17()
+	{
+		try
+		{
+			Mock mock = new Mock();
+			Property property = Property.getProperty(Mock.class, "active");
+			property.setValue(mock, true);
+			assertEquals(property.getValue(mock), true);
+		} catch (PropertyError e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
 	private static class Mock
 	{
 
@@ -245,8 +277,11 @@ public class PropertyTest
 		{
 
 		}
+
+		private int age;
 		private Mock mock;
 		private String name;
+		private boolean active;
 
 		public Mock getMock()
 		{
@@ -258,9 +293,29 @@ public class PropertyTest
 			this.name = name;
 		}
 
+		public int getAge()
+		{
+			return age;
+		}
+
+		public void setAge(int age)
+		{
+			this.age = age;
+		}
+
 		public String getName()
 		{
 			return name;
+		}
+
+		public boolean getActive()
+		{
+			return active;
+		}
+
+		public void setActive(boolean active)
+		{
+			this.active = active;
 		}
 
 		public void setMock(Mock mock)
