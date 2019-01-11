@@ -1,3 +1,10 @@
+iframe {
+  border: none;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  background-image: none;
+}
 .G {
   color: #006600;
 }
@@ -355,6 +362,42 @@ i {
 }
 i[c] {
   font-family: arial;
+}
+nav {
+  width: auto;
+  border: none;
+  display: flex;
+  margin: 0 2px 0 2px;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  background-color: transparent;
+}
+nav > a {
+  width: 40px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e6e5dc;
+}
+nav > a > i {
+  font-size: 16px;
+}
+nav > a:hover > i {
+  font-size: 18px;
+}
+nav > a:last-of-type {
+  border-radius: 0 5px 5px 0;
+}
+nav > a:first-of-type {
+  border-radius: 5px 0 0 5px;
+}
+nav > a:only-of-type {
+  border-radius: 5px 5px 5px 5px;
+}
+nav > a:hover {
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
 fieldset {
   margin: 0;
@@ -1711,35 +1754,6 @@ ul.HMenu li > ul > li {
   top: -1px;
   width: 100%;
   flex-basis: 40px;
-}
-ul.HMenu > li > nav {
-  width: auto;
-  border: none;
-  display: flex;
-  margin: 0 2px 0 2px;
-  align-items: stretch;
-  align-content: stretch;
-  justify-content: center;
-  background-color: transparent;
-}
-ul.HMenu > li > nav > a {
-  width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e6e5dc;
-}
-ul.HMenu > li > nav > a > i {
-  font-size: 16px;
-}
-ul.HMenu > li > nav > a:hover > i {
-  font-size: 18px;
-}
-ul.HMenu > li > nav > a:last-of-type {
-  border-radius: 0 5px 5px 0;
-}
-ul.HMenu > li > nav > a:first-of-type {
-  border-radius: 5px 0 0 5px;
 }
 ul.HMenu li > a {
   border: 1px solid #CDCAB9;

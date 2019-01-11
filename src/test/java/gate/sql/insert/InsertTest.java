@@ -42,18 +42,18 @@ public class InsertTest
 			String name = "Jonh";
 			Date birthdate = new Date(31, 12, 2005);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			link.prepare(
-					"insert into Person (id, name, birthdate, contract$date1, contract$date2) values (?, ?, ?, ?, ?)")
-					.parameters(id, name, birthdate, contract)
-					.execute();
+				"insert into Person (id, name, birthdate, contract$date1, contract$date2) values (?, ?, ?, ?, ?)")
+				.parameters(id, name, birthdate, contract)
+				.execute();
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -81,17 +81,17 @@ public class InsertTest
 			String name = "Mary";
 			Date birthdate = new Date(31, 12, 2005);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			link.prepare(getClass().getResource("InsertTest/Insert.sql"))
-					.parameters(id, name, birthdate, contract)
-					.execute();
+				.parameters(id, name, birthdate, contract)
+				.execute();
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -119,22 +119,22 @@ public class InsertTest
 			String name = "Paul";
 			Date birthdate = new Date(29, 8, 2008);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			link
-					.prepare(Insert
-							.into("Person")
-							.set(ID.class, "id", id)
-							.set(String.class, "name", name)
-							.set(Date.class, "birthdate", birthdate)
-							.set(DateInterval.class, "contract", contract))
-					.execute();
+				.prepare(Insert
+					.into("Person")
+					.set(ID.class, "id", id)
+					.set(String.class, "name", name)
+					.set(Date.class, "birthdate", birthdate)
+					.set(DateInterval.class, "contract", contract))
+				.execute();
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -162,23 +162,23 @@ public class InsertTest
 			String name = "Richard";
 			Date birthdate = new Date(19, 7, 2001);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			link
-					.prepare(Insert
-							.into("Person")
-							.set(ID.class, "id")
-							.set(String.class, "name")
-							.set(Date.class, "birthdate")
-							.set(DateInterval.class, "contract"))
-					.parameters(id, name, birthdate, contract)
-					.execute();
+				.prepare(Insert
+					.into("Person")
+					.set(ID.class, "id")
+					.set(String.class, "name")
+					.set(Date.class, "birthdate")
+					.set(DateInterval.class, "contract"))
+				.parameters(id, name, birthdate, contract)
+				.execute();
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -206,26 +206,26 @@ public class InsertTest
 			String name = "Richard";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			link
-					.prepare(Insert
-							.into(Person.class)
-							.set("id", "name", "birthdate", "contract"))
-					.value(person)
-					.execute();
+				.prepare(Insert
+					.into(Person.class)
+					.set("id", "name", "birthdate", "contract"))
+				.value(person)
+				.execute();
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -252,24 +252,24 @@ public class InsertTest
 			String name = "Bill Gates";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			link
-					.prepare(Insert
-							.into(Person.class))
-					.value(person)
-					.execute();
+				.prepare(Insert
+					.into(Person.class))
+				.value(person)
+				.execute();
 
 			Optional<Map<String, Object>> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
-							.parameters(name)
-							.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
+					.parameters(name)
+					.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
 			if (optional.isPresent())
 			{
 				Map<String, Object> result = optional.get();
@@ -294,24 +294,24 @@ public class InsertTest
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 9);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			link
-					.insert(Person.class)
-					.properties("id", "name", "birthdate", "contract")
-					.execute(person);
+				.insert(Person.class)
+				.properties("id", "name", "birthdate", "contract")
+				.execute(person);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -338,20 +338,20 @@ public class InsertTest
 			String name = "Jobs";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			link.insert(Person.class).execute(person);
 
 			Optional<Map<String, Object>> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
-							.parameters(name)
-							.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
+					.parameters(name)
+					.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
 			if (optional.isPresent())
 			{
 				Map<String, Object> result = optional.get();
@@ -375,31 +375,31 @@ public class InsertTest
 			List<Person> expected = new ArrayList<>();
 			for (int i = 1000; i < 1010; i++)
 				expected.add(new Person().setId(new ID(i))
-						.setName("Prepared Person " + i)
-						.setBirthdate(LocalDate.now()));
+					.setName("Prepared Person " + i)
+					.setBirthdate(LocalDate.now()));
 
 			Insert.into("Person")
-					.entities(expected)
-					.set("id", Person::getId)
-					.set("name", Person::getName)
-					.set("birthdate", Person::getBirthdate)
-					.build()
-					.connect(link)
-					.execute();
+				.entities(expected)
+				.set("id", Person::getId)
+				.set("name", Person::getName)
+				.set("birthdate", Person::getBirthdate)
+				.build()
+				.connect(link)
+				.execute();
 
 			List<Person> result = Select
-					.expression("id")
-					.expression("name")
-					.from("Person")
-					.where(Condition.of("name").lk("Prepared"))
-					.orderBy("id")
-					.build().connect(link).fetchEntityList(Person.class);
+				.expression("id")
+				.expression("name")
+				.from("Person")
+				.where(Condition.of("name").lk("Prepared"))
+				.orderBy("id")
+				.build().connect(link).fetchEntityList(Person.class);
 
 			assertEquals(expected.stream().map(e -> e.getName()).collect(Collectors.toList()),
-					result.stream().map(e -> e.getName()).collect(Collectors.toList()));
+				result.stream().map(e -> e.getName()).collect(Collectors.toList()));
 
 			assertEquals(expected.stream().map(e -> e.getId()).collect(Collectors.toList()),
-					result.stream().map(e -> e.getId()).collect(Collectors.toList()));
+				result.stream().map(e -> e.getId()).collect(Collectors.toList()));
 
 		}
 	}

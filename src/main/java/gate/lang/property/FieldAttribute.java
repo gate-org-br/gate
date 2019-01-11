@@ -1,6 +1,5 @@
 package gate.lang.property;
 
-import gate.error.AppError;
 import gate.annotation.Column;
 import gate.annotation.Description;
 import gate.annotation.ElementType;
@@ -9,6 +8,7 @@ import gate.annotation.Mask;
 import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.error.AppError;
 import gate.util.Generics;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
