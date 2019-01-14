@@ -43,7 +43,7 @@ public class GenericUtilsTest
 	public void testFindField() throws NotFoundException,
 			IllegalArgumentException, IllegalAccessException
 	{
-		Field field = Generics
+		Field field = Reflection
 				.findField(Doctor.class, "id")
 				.orElseThrow(NotFoundException::new);
 
@@ -55,7 +55,7 @@ public class GenericUtilsTest
 			IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException
 	{
-		Method method = Generics
+		Method method = Reflection
 				.findMethod(Doctor.class, "getId")
 				.orElseThrow(NotFoundException::new);
 
@@ -66,11 +66,11 @@ public class GenericUtilsTest
 	public void testFindGetter() throws NotFoundException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException
 	{
-		Field field = Generics
+		Field field = Reflection
 				.findField(Doctor.class, "id")
 				.orElseThrow(NotFoundException::new);
 
-		Method method = Generics.findGetter(field)
+		Method method = Reflection.findGetter(field)
 				.orElseThrow(NotFoundException::new);
 
 		Assert.assertEquals(new ID(1), method.invoke(doctor));
@@ -81,11 +81,11 @@ public class GenericUtilsTest
 			IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
 			InvocationTargetException
 	{
-		Field field = Generics
+		Field field = Reflection
 				.findField(Doctor.class, "id")
 				.orElseThrow(NotFoundException::new);
 
-		Method setter = Generics.findSetter(field)
+		Method setter = Reflection.findSetter(field)
 				.orElseThrow(NotFoundException::new);
 
 		setter.invoke(doctor, new ID(2));

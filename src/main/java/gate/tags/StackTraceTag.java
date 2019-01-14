@@ -1,6 +1,8 @@
 package gate.tags;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.jsp.JspException;
 
 public class StackTraceTag extends DynamicAttributeTag
@@ -17,34 +19,41 @@ public class StackTraceTag extends DynamicAttributeTag
 	public void doTag() throws JspException, IOException
 	{
 		getJspContext().getOut().print("<div " + getAttributes().toString() + ">");
-		getJspContext().getOut().print("    <div class='TEXT'>");
-		getJspContext().getOut().print("        <h1>");
-		getJspContext().getOut().print(exception.toString());
-		getJspContext().getOut().print("        </h1>");
-		getJspContext().getOut().print("    </div>");
-		getJspContext().getOut().print("    <table>");
-		getJspContext().getOut().print("        <caption>");
-		getJspContext().getOut().print("            STACKTRACE");
-		getJspContext().getOut().print("        </caption>");
-		getJspContext().getOut().print("        <tbody>");
-		print(0, exception);
-		getJspContext().getOut().print("        </tbody>");
-		getJspContext().getOut().print("    </table>");
+		getJspContext().getOut().print("<table><tbody>");
+		for (Throwable error = this.exception;
+			error != null;
+			error = error.getCause())
+		{
+			getJspContext().getOut().print("<tr><td style='font-weight: bold'>");
+			getJspContext().getOut().print(escapeHTML(error.toString()));
+			getJspContext().getOut().print("</td></tr>");
+			getJspContext().getOut().print("<tr><td>");
+			getJspContext().getOut().print(Stream.of(error.getStackTrace())
+				.map(e -> e.toString()).collect(Collectors.joining("<br/>")));
+			getJspContext().getOut().print("</td></tr>");
+		}
+		getJspContext().getOut().print("</tbody></table>");
 		getJspContext().getOut().print("</div>");
 	}
 
-	public void print(int depth, Throwable exception) throws IOException
+	public static String escapeHTML(String s)
 	{
-		for (StackTraceElement stackTraceElement : exception.getStackTrace())
+		StringBuilder out = new StringBuilder(Math.max(16, s.length()));
+		for (int i = 0; i < s.length(); i++)
 		{
-			getJspContext().getOut().print("        <tr>");
-			getJspContext().getOut().print(String.format("            <td style='padding-left: %dpx'>", depth * 40));
-			getJspContext().getOut().print(stackTraceElement.toString());
-			getJspContext().getOut().print("            </td>");
-			getJspContext().getOut().print("        </tr>");
+			char c = s.charAt(i);
+			if (c > 127
+				|| c == '"'
+				|| c == '\''
+				|| c == '<'
+				|| c == '>'
+				|| c == '&')
+				out.append("&#")
+					.append((int) c)
+					.append(';');
+			else
+				out.append(c);
 		}
-
-		if (exception.getCause() != null)
-			print(depth + 1, exception.getCause());
+		return out.toString();
 	}
 }

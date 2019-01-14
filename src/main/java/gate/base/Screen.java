@@ -4,7 +4,7 @@ import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
-import gate.util.Generics;
+import gate.util.Reflection;
 import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
@@ -227,7 +227,7 @@ public abstract class Screen extends Base
 
 	public static Optional<Method> getAction(Class<Screen> clazz, String action)
 	{
-		return Generics.findMethod(clazz, action != null ? "call" + action : "call");
+		return Reflection.findMethod(clazz, action != null ? "call" + action : "call");
 	}
 
 	public static Optional<Method> getAction(String module, String screen, String action)

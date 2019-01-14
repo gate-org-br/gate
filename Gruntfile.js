@@ -14,6 +14,10 @@ module.exports = function (grunt) {
 							"src/main/webapp/polyfill/dialog-polyfill.js",
 							"src/main/webapp/polyfill/fetch-polyfill.js",
 							"src/main/webapp/components/Gate.js",
+
+							"src/main/webapp/components/DeskMenu.js",
+							"src/main/webapp/components/DeskPane.js",
+
 							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
@@ -71,8 +75,6 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
-							"src/main/webapp/components/DeskMenu.js",
-							"src/main/webapp/components/DeskPane.js",
 							"src/main/webapp/components/Copy.js"],
 						dest: 'src/main/webapp/Gate.js'
 					}
