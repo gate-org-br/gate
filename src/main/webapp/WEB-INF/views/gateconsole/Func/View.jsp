@@ -61,7 +61,7 @@
 					</tfoot>
 					<tbody>
 						<g:iterator source="${screen.page}" target="target">
-							<tr data-target='_dialog' title='Usuário' data-onHide='document.getElementById("form").submit()'
+							<tr data-target='_dialog' title='Usuário'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 								<td>
 									<g:print value="${target.name}"/>
@@ -73,4 +73,14 @@
 			</g:otherwise>
 		</g:choose>
 	</form>
+
+	<script>
+		window.addEventListener("load", function ()
+		{
+			Array.from(document.querySelectorAll("tr[data-target=_dialog]")).forEach(function (element)
+			{
+				element.addEventListener("hide", () => document.getElementById("form").submit());
+			});
+		});
+	</script>
 </g:template>

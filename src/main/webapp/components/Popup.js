@@ -3,9 +3,10 @@ class Popup extends Modal
 	constructor(element)
 	{
 		super(false);
+		var parent = element.parentNode;
 
 		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.className = "Popup";
+		dialog.classList.add("Popup");
 
 		var head = dialog.appendChild(window.top.document.createElement('div'));
 		head.setAttribute("tabindex", "1");
@@ -22,7 +23,9 @@ class Popup extends Modal
 
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 		body.appendChild(element);
-		element.style.display = "block";
+
+		if (parent)
+			this.creator().addEventListener("hide", () => parent.appendChild(element));
 
 		this.show();
 	}

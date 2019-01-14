@@ -1433,6 +1433,127 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+function DeskMenu(deskMenu)
+{
+	Array.from(deskMenu.getElementsByTagName("li"))
+		.forEach(e => new DeskMenuIcon(e));
+
+	function DeskMenuIcon(deskMenuIcon)
+	{
+		var icons = Array.from(deskMenuIcon.children)
+			.filter(e => e.tagName.toLowerCase() === "ul")
+			.flatMap(e => Array.from(e.children));
+
+		if (icons.length > 0)
+		{
+			deskMenuIcon.onclick = function ()
+			{
+				var reset = deskMenu.appendChild
+					(new Reset(Array.from(deskMenu.children).filter(e => e.tagName.toLowerCase() === "li"),
+						this.offsetWidth, this.offsetHeight));
+				deskMenu.innerHTML = "";
+				for (var i = 0; i < icons.length; i++)
+					deskMenu.appendChild(icons[i]);
+				deskMenu.appendChild(reset);
+				return false;
+			};
+		}
+
+		function Reset(icons, width, height)
+		{
+			var li = document.createElement("li");
+			li.className = "Reset";
+			li.style.width = width + "px";
+			li.style.height = height + "px";
+
+			var a = li.appendChild(document.createElement("a"));
+			a.setAttribute("href", "#");
+			a.innerHTML = "Retornar";
+			a.setAttribute("data-icon", "\u2232");
+
+			li.onclick = function ()
+			{
+				deskMenu.innerHTML = "";
+				for (var i = 0; i < icons.length; i++)
+					deskMenu.appendChild(icons[i]);
+				return false;
+			};
+			return li;
+		}
+	}
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("ul.DeskMenu"))
+		.forEach(element => new DeskMenu(element));
+});
+function DeskPane(deskPane)
+{
+	Array.from(deskPane.children)
+		.filter(li => li.tagName.toLowerCase() === "li")
+		.forEach(function (li)
+		{
+			Array.from(li.children)
+				.filter(a => a.tagName.toLowerCase() === "a")
+				.forEach(a => new DeskPaneIcon(a));
+		});
+
+	function DeskPaneIcon(deskPaneIcon)
+	{
+		var icons = Array.from(deskPaneIcon.parentNode.children)
+			.filter(e => e.tagName.toLowerCase() === "ul")
+			.flatMap(e => Array.from(e.children));
+
+		if (icons.length > 0)
+		{
+			deskPaneIcon.addEventListener("click", function (event)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				var reset = deskPane.appendChild
+					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
+						this.offsetWidth, this.offsetHeight));
+				deskPane.innerHTML = "";
+				for (var i = 0; i < icons.length; i++)
+					deskPane.appendChild(icons[i]);
+				deskPane.appendChild(reset);
+			});
+		}
+
+		function Reset(icons, width, height)
+		{
+			var li = document.createElement("li");
+			li.className = "Reset";
+			li.style.width = width + "px";
+			li.style.height = height + "px";
+			li.style.color = "@G";
+
+			var a = li.appendChild(document.createElement("a"));
+			a.setAttribute("href", "#");
+			a.innerHTML = "Retornar";
+
+			var i = a.appendChild(document.createElement("i"));
+			i.innerHTML = "&#X2232";
+
+			li.onclick = function ()
+			{
+				deskPane.innerHTML = "";
+				for (var i = 0; i < icons.length; i++)
+					deskPane.appendChild(icons[i]);
+				return false;
+			};
+			return li;
+		}
+	}
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("ul.DeskPane"))
+		.forEach(element => new DeskPane(element));
+});
 var CSV =
 	{
 		parse: function (text)
@@ -1931,6 +2052,13 @@ function Link(link, creator)
 						window.frameElement.dialog.hide();
 					else
 						window.close();
+					break;
+
+				case "_popup":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+					new Popup(this.nextElementSibling);
 					break;
 			}
 		}
@@ -4684,9 +4812,10 @@ class Popup extends Modal
 	constructor(element)
 	{
 		super(false);
+		var parent = element.parentNode;
 
 		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.className = "Popup";
+		dialog.classList.add("Popup");
 
 		var head = dialog.appendChild(window.top.document.createElement('div'));
 		head.setAttribute("tabindex", "1");
@@ -4703,7 +4832,9 @@ class Popup extends Modal
 
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 		body.appendChild(element);
-		element.style.display = "block";
+
+		if (parent)
+			this.creator().addEventListener("hide", () => parent.appendChild(element));
 
 		this.show();
 	}
@@ -5401,119 +5532,6 @@ window.addEventListener("load", function ()
 			window.history.go(-1);
 		};
 	});
-});
-function DeskMenu(deskMenu)
-{
-	Array.from(deskMenu.getElementsByTagName("li"))
-		.forEach(e => new DeskMenuIcon(e));
-
-	function DeskMenuIcon(deskMenuIcon)
-	{
-		var icons = Array.from(deskMenuIcon.children)
-			.filter(e => e.tagName.toLowerCase() === "ul")
-			.flatMap(e => Array.from(e.children));
-
-		if (icons.length > 0)
-		{
-			deskMenuIcon.onclick = function ()
-			{
-				var reset = deskMenu.appendChild
-					(new Reset(Array.from(deskMenu.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				deskMenu.appendChild(reset);
-				return false;
-			};
-		}
-
-		function Reset(icons, width, height)
-		{
-			var li = document.createElement("li");
-			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
-
-			var a = li.appendChild(document.createElement("a"));
-			a.setAttribute("href", "#");
-			a.innerHTML = "Retornar";
-			a.setAttribute("data-icon", "\u2232");
-
-			li.onclick = function ()
-			{
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				return false;
-			};
-			return li;
-		}
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("ul.DeskMenu"))
-		.forEach(element => new DeskMenu(element));
-});
-function DeskPane(deskPane)
-{
-	Array.from(deskPane.getElementsByTagName("li"))
-		.forEach(e => new DeskPaneIcon(e));
-
-	function DeskPaneIcon(deskMenuIcon)
-	{
-		var icons = Array.from(deskMenuIcon.children)
-			.filter(e => e.tagName.toLowerCase() === "ul")
-			.flatMap(e => Array.from(e.children));
-
-		if (icons.length > 0)
-		{
-			deskMenuIcon.onclick = function ()
-			{
-				var reset = deskPane.appendChild
-					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				deskPane.appendChild(reset);
-				return false;
-			};
-		}
-
-		function Reset(icons, width, height)
-		{
-			var li = document.createElement("li");
-			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
-			li.style.color = "@G";
-
-			var a = li.appendChild(document.createElement("a"));
-			a.setAttribute("href", "#");
-			a.innerHTML = "Retornar";
-
-			var i = a.appendChild(document.createElement("i"));
-			i.innerHTML = "&#X2232";
-
-			li.onclick = function ()
-			{
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				return false;
-			};
-			return li;
-		}
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("ul.DeskPane"))
-		.forEach(element => new DeskPane(element));
 });
 function copy(data)
 {
