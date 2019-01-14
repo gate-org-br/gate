@@ -4,7 +4,6 @@ import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.ServletException;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -33,9 +32,9 @@ public class TemplateTag extends SimpleTagSupport
 			getJspBody().invoke(writer);
 			getJspContext().setAttribute("body", writer.toString(), PageContext.REQUEST_SCOPE);
 			((PageContext) getJspContext()).include(filename);
-		} catch (JspException | IOException | ServletException e)
+		} catch (ServletException ex)
 		{
-			throw new JspException(e);
+			throw new IOException(ex);
 		}
 		super.doTag();
 	}

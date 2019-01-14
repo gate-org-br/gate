@@ -31,7 +31,7 @@ public class UseTag extends SimpleTagSupport
 		} catch (ClassNotFoundException | IllegalAccessException | InstantiationException
 			| NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new JspException(ex);
+			throw new IOException(ex);
 		}
 	}
 

@@ -56,7 +56,7 @@ public class ValuesTag extends SimpleTagSupport
 			}
 		} catch (ClassNotFoundException ex)
 		{
-			throw new JspException(ex);
+			throw new IOException(ex);
 		}
 	}
 }

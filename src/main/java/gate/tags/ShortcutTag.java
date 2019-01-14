@@ -65,81 +65,75 @@ public class ShortcutTag extends DynamicAttributeTag
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		try
+		PageContext pageContext = (PageContext) getJspContext();
+
+		if (Toolkit.isEmpty(module)
+			&& Toolkit.isEmpty(screen)
+			&& Toolkit.isEmpty(action))
 		{
-			PageContext pageContext = (PageContext) getJspContext();
+			getAttributes().put("href", "Gate");
+			if (!getAttributes().containsKey("title"))
+				getAttributes().put("title", "Sair do sistema");
 
-			if (Toolkit.isEmpty(module)
-				&& Toolkit.isEmpty(screen)
-				&& Toolkit.isEmpty(action))
+			pageContext.getOut().print("<a " + getAttributes() + ">");
+
+			if (getJspBody() != null)
+				getJspBody().invoke(null);
+			else
+				pageContext.getOut().print("<i>&#X2007;</i>");
+
+			pageContext.getOut().print("</a>");
+		} else
+		{
+			if ("#".equals(module))
+				module = pageContext.getRequest().getParameter("MODULE");
+			if ("#".equals(screen))
+				screen = pageContext.getRequest().getParameter("SCREEN");
+			if ("#".equals(action))
+				action = pageContext.getRequest().getParameter("ACTION");
+
+			Class<Screen> clazz = Screen.getScreen(module, screen)
+				.orElseThrow(() -> new IOException(String.format(
+				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+				module, screen, action)));
+			Method _method = Screen.getAction(clazz, action)
+				.orElseThrow(() -> new IOException(String.format(
+				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+				module, screen, action)));
+
+			if (Gate.checkAccess(user, module, screen, action, clazz, _method))
 			{
-				getAttributes().put("href", "Gate");
+				String title = "unnamed";
+				if (_method.isAnnotationPresent(Name.class))
+					title = _method.getAnnotation(Name.class).value();
+				else if (clazz.isAnnotationPresent(Name.class))
+					title = clazz.getAnnotation(Name.class).value();
 				if (!getAttributes().containsKey("title"))
-					getAttributes().put("title", "Sair do sistema");
+					getAttributes().put("title", title);
 
-				pageContext.getOut().print("<a " + getAttributes() + ">");
-
-				if (getJspBody() != null)
-					getJspBody().invoke(null);
-				else
-					pageContext.getOut().print("<i>&#X2007;</i>");
-
-				pageContext.getOut().print("</a>");
-			} else
-			{
-				if ("#".equals(module))
-					module = pageContext.getRequest().getParameter("MODULE");
-				if ("#".equals(screen))
-					screen = pageContext.getRequest().getParameter("SCREEN");
-				if ("#".equals(action))
-					action = pageContext.getRequest().getParameter("ACTION");
-
-				Class<Screen> clazz = Screen.getScreen(module, screen)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
-				Method _method = Screen.getAction(clazz, action)
-					.orElseThrow(() -> new JspException(String.format(
-					"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-					module, screen, action)));
-
-				if (Gate.checkAccess(user, module, screen, action, clazz, _method))
+				if ("POST".equalsIgnoreCase(this.method))
 				{
-					String title = "unnamed";
-					if (_method.isAnnotationPresent(Name.class))
-						title = _method.getAnnotation(Name.class).value();
-					else if (clazz.isAnnotationPresent(Name.class))
-						title = clazz.getAnnotation(Name.class).value();
-					if (!getAttributes().containsKey("title"))
-						getAttributes().put("title", title);
-
-					if ("POST".equalsIgnoreCase(this.method))
-					{
-						getAttributes().put("formtarget", target);
-						getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<button " + getAttributes() + ">");
-						if (getJspBody() != null)
-							getJspBody().invoke(null);
-						else
-							pageContext.getOut().print(createBody(clazz, _method));
-						pageContext.getOut().print("</button>");
-					} else
-					{
-						if (target != null)
-							getAttributes().put("target", target);
-						getAttributes().put("href", URL.toString(module, screen, action, arguments));
-						pageContext.getOut().print("<a " + getAttributes() + ">");
-						if (getJspBody() != null)
-							getJspBody().invoke(null);
-						else
-							pageContext.getOut().print(createBody(clazz, _method));
-						pageContext.getOut().print("</a>");
-					}
+					getAttributes().put("formtarget", target);
+					getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<button " + getAttributes() + ">");
+					if (getJspBody() != null)
+						getJspBody().invoke(null);
+					else
+						pageContext.getOut().print(createBody(clazz, _method));
+					pageContext.getOut().print("</button>");
+				} else
+				{
+					if (target != null)
+						getAttributes().put("target", target);
+					getAttributes().put("href", URL.toString(module, screen, action, arguments));
+					pageContext.getOut().print("<a " + getAttributes() + ">");
+					if (getJspBody() != null)
+						getJspBody().invoke(null);
+					else
+						pageContext.getOut().print(createBody(clazz, _method));
+					pageContext.getOut().print("</a>");
 				}
 			}
-		} catch (SecurityException ex)
-		{
-			throw new JspException(ex);
 		}
 	}
 

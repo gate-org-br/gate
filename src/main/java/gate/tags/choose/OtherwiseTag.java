@@ -1,7 +1,6 @@
 package gate.tags.choose;
 
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -14,10 +13,10 @@ public class OtherwiseTag extends SimpleTagSupport
 		super.doTag();
 
 		if (!(getParent() instanceof ChooseTag))
-			throw new JspException("The Otherwise tag must be inside a Choose tag");
+			throw new IOException("The Otherwise tag must be inside a Choose tag");
 
 		if (((ChooseTag) getParent()).getOtherwiseTag() != null)
-			throw new JspException("Multiple Otherwise tags found on Choose tag");
+			throw new IOException("Multiple Otherwise tags found on Choose tag");
 
 		((ChooseTag) getParent()).setOtherwiseTag(this);
 	}
