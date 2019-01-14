@@ -3,7 +3,7 @@ package gate.converter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
-import gate.util.Generics;
+import gate.util.Reflection;
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,14 +18,14 @@ public class SetConverter extends CollectionConverter
 			throw new ConversionException(scanner.getCurrent() + " is not a set");
 
 		Set set = new HashSet<>();
-		Converter converter = Converter.getConverter(Generics.getRawType(elementType));
+		Converter converter = Converter.getConverter(Reflection.getRawType(elementType));
 
 		do
 		{
 			scanner.scan();
 			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
 				set.add(converter.ofJson(scanner, elementType,
-					Generics.getElementType(elementType)));
+					Reflection.getElementType(elementType)));
 			else if (!set.isEmpty())
 				throw new ConversionException(scanner.getCurrent() + " is not a set");
 		} while (JsonToken.Type.COMMA == scanner.getCurrent().getType());

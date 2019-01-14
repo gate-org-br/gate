@@ -6,7 +6,7 @@ import gate.io.Encoder;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
-import gate.util.Generics;
+import gate.util.Reflection;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -121,7 +121,7 @@ public class ObjectConverter implements Converter
 					if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
 						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
 
-					Field field = Generics.findField(clazz, scanner.getCurrent().toString())
+					Field field = Reflection.findField(clazz, scanner.getCurrent().toString())
 							.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
 
 					scanner.scan();
@@ -131,7 +131,7 @@ public class ObjectConverter implements Converter
 					scanner.scan();
 					Type genericType = field.getGenericType();
 					Converter converter = Converter.getConverter(field.getType());
-					Object value = converter.ofJson(scanner, genericType, Generics.getElementType(
+					Object value = converter.ofJson(scanner, genericType, Reflection.getElementType(
 							genericType));
 					field.set(object, value);
 				} else if (!empty)
@@ -157,7 +157,7 @@ public class ObjectConverter implements Converter
 			writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 			boolean first = true;
-			for (Field field : Generics.getFields(Generics.getRawType(type)))
+			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
 						&& !Modifier.isStatic(field.getModifiers()))
