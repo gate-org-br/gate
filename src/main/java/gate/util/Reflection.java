@@ -1,7 +1,6 @@
 package gate.util;
 
 import gate.annotation.ElementType;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -15,7 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Generics
+public class Reflection
 {
 
 	public static Class<?> getRawType(Type type)
@@ -26,8 +25,8 @@ public class Generics
 			return (Class<?>) ((ParameterizedType) type).getRawType();
 		else if (type instanceof GenericArrayType)
 			return Array.newInstance(
-					(Class<?>) ((ParameterizedType) ((GenericArrayType) type).getGenericComponentType()).getRawType(), 0)
-					.getClass();
+				(Class<?>) ((ParameterizedType) ((GenericArrayType) type).getGenericComponentType()).getRawType(), 0)
+				.getClass();
 		else
 			return null;
 	}
@@ -47,8 +46,8 @@ public class Generics
 	public static List<Field> getFields(Class<?> clazz)
 	{
 		List<Field> fields
-				= Stream.of(clazz.getDeclaredFields())
-						.collect(Collectors.toList());
+			= Stream.of(clazz.getDeclaredFields())
+				.collect(Collectors.toList());
 		if (clazz.getSuperclass() != null)
 			fields.addAll(getFields(clazz.getSuperclass()));
 		return fields;
@@ -60,14 +59,13 @@ public class Generics
 	 * @param type type where to find the specified field
 	 * @param name name of the field to be found
 	 *
-	 * @return an Optional describing the requested field of an empty Optional if
-	 *         the field does not exists
+	 * @return an Optional describing the requested field of an empty Optional if the field does not exists
 	 */
 	public static Optional<Field> findField(Class type, String name)
 	{
 		Optional<Field> field = Stream.of(type.getDeclaredFields())
-				.filter(e -> e.getName().equals(name))
-				.findAny();
+			.filter(e -> e.getName().equals(name))
+			.findAny();
 
 		Class supertype = type.getSuperclass();
 		if (!field.isPresent() && supertype != null)
@@ -81,19 +79,18 @@ public class Generics
 	/**
 	 * Finds the specified method on the specified type and it's super types.
 	 *
-	 * @param type           type where to find the specified method
-	 * @param name           name of the method to be found
+	 * @param type type where to find the specified method
+	 * @param name name of the method to be found
 	 * @param parameterTypes types of the parameters of the method to be found
 	 *
-	 * @return an Optional describing the requested method of an empty Optional if
-	 *         the method does not exists
+	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
 	 */
 	public static Optional<Method> findMethod(Class type, String name, Class... parameterTypes)
 	{
 		Optional<Method> method = Stream.of(type.getDeclaredMethods())
-				.filter(e -> e.getName().equals(name))
-				.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes))
-				.findAny();
+			.filter(e -> e.getName().equals(name))
+			.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes))
+			.findAny();
 
 		Class supertype = type.getSuperclass();
 		if (!method.isPresent() && supertype != null)
@@ -109,15 +106,21 @@ public class Generics
 	 *
 	 * @param field the field associated with the requested getter
 	 *
-	 * @return an Optional describing the getter method of the specified field or
-	 *         an empty Optional if the field does not have a getter method
+	 * @return an Optional describing the getter method of the specified field or an empty Optional if the field does not have a getter method
 	 */
 	public static Optional<Method> findGetter(Field field)
 	{
-		StringBuilder name = new StringBuilder(field.getName());
-		name.setCharAt(0, Character.toUpperCase(name.charAt(0)));
-		name.insert(0, "get");
-		return findMethod(field.getDeclaringClass(), name.toString());
+		String name = field.getName();
+		Optional<Method> method = findMethod(field.getDeclaringClass(),
+			"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+		if (!method.isPresent()
+			&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
+		{
+			name = field.getName();
+			method = findMethod(field.getDeclaringClass(),
+				"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+		}
+		return method;
 	}
 
 	/**
@@ -125,8 +128,7 @@ public class Generics
 	 *
 	 * @param field the field associated with the requested setter
 	 *
-	 * @return an Optional describing the setter method of the specified field or
-	 *         an empty Optional if the field does not have a setter method
+	 * @return an Optional describing the setter method of the specified field or an empty Optional if the field does not have a setter method
 	 */
 	public static Optional<Method> findSetter(Field field)
 	{
