@@ -8,29 +8,79 @@ import gate.annotation.Mask;
 import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.error.AppError;
-import gate.util.Generics;
-import java.lang.annotation.Annotation;
+import gate.util.Reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class FieldAttribute implements JavaIdentifierAttribute
 {
 
 	private final Field field;
+	private final Method getter;
+	private final Method setter;
+	private final Type elementType;
+	private final String columnName;
+	private final Converter converter;
+	private final List<Constraint.Implementation> constraints;
 
 	FieldAttribute(Field field)
 	{
-		this.field = field;
+		try
+		{
+			this.field = field;
+			getter = Reflection.findGetter(field).orElse(null);
+			setter = Reflection.findSetter(field).orElse(null);
+
+			constraints = Collections.unmodifiableList(Stream.of(field.getAnnotations())
+				.filter(annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
+				.map(constraint -> Constraint.Implementation.getImplementation(constraint))
+				.collect(Collectors.toList()));
+
+			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
+				? field.getAnnotation(gate.annotation.Converter.class).value().newInstance()
+				: Converter.getConverter(field.getType());
+
+			if (field.getType().isAnnotationPresent(ElementType.class))
+				elementType = field.getType()
+					.getAnnotation(ElementType.class).value();
+			else if (field.getType().isArray())
+				elementType = field.getType().getComponentType();
+			else if (List.class.isAssignableFrom(field.getType())
+				&& field.getGenericType() instanceof ParameterizedType)
+				elementType = ((ParameterizedType) field.getGenericType())
+					.getActualTypeArguments()[0];
+			else if (Map.class.isAssignableFrom(field.getType())
+				&& field.getGenericType() instanceof ParameterizedType)
+				elementType = ((ParameterizedType) field.getGenericType())
+					.getActualTypeArguments()[1];
+			else
+				elementType = Object.class;
+
+			if (field.isAnnotationPresent(Column.class))
+				columnName = field.getAnnotation(Column.class).value();
+			else if (field.getType().isAnnotationPresent(Entity.class))
+			{
+				char[] chars = field.getName().toCharArray();
+				chars[0] = Character.toUpperCase(chars[0]);
+				columnName = new String(chars);
+			} else
+				columnName = field.getName();
+
+		} catch (InstantiationException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
 	}
 
 	@Override
@@ -46,62 +96,21 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
+	public Collection<Constraint.Implementation> getConstraints()
+	{
+		return constraints;
+	}
+
+	@Override
+	public Converter getConverter()
+	{
+		return converter;
+	}
+
+	@Override
 	public Type getElementType()
 	{
-		if (field.getType().isAnnotationPresent(ElementType.class))
-			return field.getType().getAnnotation(ElementType.class).value();
-		else if (field.getType().isArray())
-			return field.getType().getComponentType();
-		else if (List.class.isAssignableFrom(field.getType())
-			&& field.getGenericType() instanceof ParameterizedType)
-			return ((ParameterizedType) field.getGenericType())
-				.getActualTypeArguments()[0];
-		else if (Map.class.isAssignableFrom(field.getType())
-			&& field.getGenericType() instanceof ParameterizedType)
-			return ((ParameterizedType) field.getGenericType())
-				.getActualTypeArguments()[1];
-		return Object.class;
-	}
-
-	@Override
-	public Object getValue(Object object)
-	{
-		try
-		{
-			Method getter = Generics.findGetter(field)
-				.orElseThrow(() -> new UnsupportedOperationException(String
-				.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName())));
-			return getter.invoke(object);
-		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException ex)
-		{
-			throw new AppError(ex);
-		}
-	}
-
-	@Override
-	public void setValue(Object object, Object value)
-	{
-		try
-		{
-			Method setter = Generics.findSetter(field)
-				.orElseThrow(() -> new UnsupportedOperationException(String
-				.format("The property %s of class %s does not support writing",
-					field.getName(), field.getDeclaringClass().getName())));
-			setter.invoke(object, value);
-		} catch (InvocationTargetException | IllegalAccessException | IllegalArgumentException ex)
-		{
-			throw new AppError(ex);
-		}
-	}
-
-	@Override
-	public Object forceValue(Object object)
-	{
-		Object value = getValue(object);
-		if (value == null)
-			setValue(object, value = createInstance(getRawType()));
-		return value;
+		return elementType;
 	}
 
 	@Override
@@ -127,28 +136,57 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Collection<Constraint.Implementation> getConstraints()
+	public String getColumnName()
 	{
-		List<Constraint.Implementation> constraints = new LinkedList<>();
-		for (Annotation annotation : field.getAnnotations())
-			if (annotation.annotationType().isAnnotationPresent(
-				Constraint.class))
-				constraints.add(Constraint.Implementation.getImplementation(annotation));
-		return constraints;
+		return columnName;
 	}
 
 	@Override
-	public String getColumnName()
+	public boolean isEntityId()
 	{
-		if (field.isAnnotationPresent(Column.class))
-			return field.getAnnotation(Column.class).value();
-		else if (field.getType().isAnnotationPresent(Entity.class))
+		return field.getDeclaringClass().isAnnotationPresent(Entity.class)
+			&& field.getName().equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
+	}
+
+	@Override
+	public Object getValue(Object object)
+	{
+		try
 		{
-			char[] chars = field.getName().toCharArray();
-			chars[0] = Character.toUpperCase(chars[0]);
-			return new String(chars);
-		} else
-			return field.getName();
+			if (getter == null)
+				throw new UnsupportedOperationException(String
+					.format("The property %s of class %s does not support reading",
+						field.getName(), field.getDeclaringClass().getName()));
+			return getter.invoke(object);
+		} catch (InvocationTargetException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	@Override
+	public void setValue(Object object, Object value)
+	{
+		try
+		{
+			if (setter == null)
+				throw new UnsupportedOperationException(String
+					.format("The property %s of class %s does not support writing",
+						field.getName(), field.getDeclaringClass().getName()));
+			setter.invoke(object, value);
+		} catch (InvocationTargetException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	@Override
+	public Object forceValue(Object object)
+	{
+		Object value = getValue(object);
+		if (value == null)
+			setValue(object, value = createInstance(getRawType()));
+		return value;
 	}
 
 	@Override
@@ -168,27 +206,6 @@ class FieldAttribute implements JavaIdentifierAttribute
 	public String toString()
 	{
 		return field.getName();
-	}
-
-	@Override
-	public Converter getConverter()
-	{
-		if (field.isAnnotationPresent(gate.annotation.Converter.class))
-			try
-			{
-				return field.getAnnotation(gate.annotation.Converter.class).value().newInstance();
-			} catch (InstantiationException | IllegalAccessException e)
-			{
-				throw new AppError(e);
-			}
-		return Converter.getConverter(getRawType());
-	}
-
-	@Override
-	public boolean isEntityId()
-	{
-		return field.getDeclaringClass().isAnnotationPresent(Entity.class)
-			&& field.getName().equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
 	}
 
 }
