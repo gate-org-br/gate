@@ -34,7 +34,7 @@ public class WithTag extends SimpleTagSupport
 			| JspException | NoSuchMethodException | SecurityException | IllegalArgumentException
 			| InvocationTargetException ex)
 		{
-			throw new JspException(ex);
+			throw new IOException(ex);
 		}
 	}
 

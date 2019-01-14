@@ -24,7 +24,7 @@ public abstract class CheckableTag extends SelectorTag
 			else if (Boolean.class.isAssignableFrom(getType()))
 				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 			else
-				throw new JspException("No option defined for property " + getProperty());
+				throw new IOException("No option defined for property " + getProperty());
 
 		if (sortby != null)
 			Toolkit.collection(options)

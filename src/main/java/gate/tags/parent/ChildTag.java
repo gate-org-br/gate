@@ -20,7 +20,7 @@ public class ChildTag extends SimpleTagSupport
 	{
 		ParentTag parent = getParent(this);
 		if (parent == null)
-			throw new JspException("a child tag must be inside a parent tag");
+			throw new IOException("a child tag must be inside a parent tag");
 		Object value = parent.getSource();
 		parent.setSource(this.source);
 		parent.doTag();
@@ -30,8 +30,8 @@ public class ChildTag extends SimpleTagSupport
 	private ParentTag getParent(SimpleTag simpleTag)
 	{
 		return simpleTag.getParent() instanceof ParentTag
-				? (ParentTag) simpleTag.getParent()
-				: simpleTag.getParent() instanceof SimpleTag
-				? getParent((SimpleTag) simpleTag.getParent()) : null;
+			? (ParentTag) simpleTag.getParent()
+			: simpleTag.getParent() instanceof SimpleTag
+			? getParent((SimpleTag) simpleTag.getParent()) : null;
 	}
 }

@@ -1,7 +1,6 @@
 package gate.tags.choose;
 
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -25,7 +24,7 @@ public class WhenTag extends SimpleTagSupport
 	{
 		super.doTag();
 		if (!(getParent() instanceof ChooseTag))
-			throw new JspException("The When tag must be inside a Choose tag");
+			throw new IOException("The When tag must be inside a Choose tag");
 		((ChooseTag) getParent()).getWhenTags().add(this);
 	}
 

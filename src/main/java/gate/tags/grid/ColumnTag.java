@@ -1,11 +1,9 @@
 package gate.tags.grid;
 
-import gate.lang.property.Property;
 import gate.converter.Converter;
+import gate.lang.property.Property;
 import gate.tags.DynamicAttributeTag;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class ColumnTag extends DynamicAttributeTag
@@ -26,7 +24,7 @@ public class ColumnTag extends DynamicAttributeTag
 			GridTag gridTag = (GridTag) getParent();
 			gridTag.getCols().add(this);
 		} else
-			throw new JspException("The Column tag must be inside a Grid tag");
+			throw new IOException("The Column tag must be inside a Grid tag");
 	}
 
 	public void print(Object obj) throws IOException, JspException
