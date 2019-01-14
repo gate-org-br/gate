@@ -173,6 +173,13 @@ function Link(link, creator)
 					else
 						window.close();
 					break;
+
+				case "_popup":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+					new Popup(this.nextElementSibling);
+					break;
 			}
 		}
 	});

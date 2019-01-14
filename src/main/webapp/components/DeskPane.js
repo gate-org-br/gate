@@ -1,18 +1,27 @@
 function DeskPane(deskPane)
 {
-	Array.from(deskPane.getElementsByTagName("li"))
-		.forEach(e => new DeskPaneIcon(e));
+	Array.from(deskPane.children)
+		.filter(li => li.tagName.toLowerCase() === "li")
+		.forEach(function (li)
+		{
+			Array.from(li.children)
+				.filter(a => a.tagName.toLowerCase() === "a")
+				.forEach(a => new DeskPaneIcon(a));
+		});
 
-	function DeskPaneIcon(deskMenuIcon)
+	function DeskPaneIcon(deskPaneIcon)
 	{
-		var icons = Array.from(deskMenuIcon.children)
+		var icons = Array.from(deskPaneIcon.parentNode.children)
 			.filter(e => e.tagName.toLowerCase() === "ul")
 			.flatMap(e => Array.from(e.children));
 
 		if (icons.length > 0)
 		{
-			deskMenuIcon.onclick = function ()
+			deskPaneIcon.addEventListener("click", function (event)
 			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
 				var reset = deskPane.appendChild
 					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
 						this.offsetWidth, this.offsetHeight));
@@ -20,8 +29,7 @@ function DeskPane(deskPane)
 				for (var i = 0; i < icons.length; i++)
 					deskPane.appendChild(icons[i]);
 				deskPane.appendChild(reset);
-				return false;
-			};
+			});
 		}
 
 		function Reset(icons, width, height)
