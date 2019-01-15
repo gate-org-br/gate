@@ -2058,7 +2058,9 @@ function Link(link, creator)
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
-					new Popup(this.nextElementSibling);
+					Array.from(this.children)
+						.filter(e => e.tagName.toLowerCase() === "div")
+						.forEach(e => new Popup(e));
 					break;
 			}
 		}
@@ -5299,8 +5301,6 @@ window.addEventListener("load", function ()
 				{
 					case "select":
 					case "textarea":
-						event.preventDefault();
-						event.stopImmediatePropagation();
 						break;
 					case "a":
 					case "button":

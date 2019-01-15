@@ -536,6 +536,7 @@ fieldset {
   border: none;
   padding: 12px;
   border-radius: 5px;
+  border: 1px solid #b9c6cd;
   background-color: #b9b6a7;
 }
 fieldset:first-child {
@@ -548,14 +549,15 @@ fieldset:only-child {
   margin-bottom: 0px;
 }
 fieldset > legend {
-  padding: 3px;
+  padding: 6px;
   color: black;
   display: flex;
   font-weight: bold;
   border-radius: 5px;
   align-items: center;
-  background-color: #CCCCCC;
+  background-color: #b9c6cd;
   justify-content: flex-start;
+  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.4);
 }
 fieldset > legend > i {
   order: -1;
@@ -566,6 +568,7 @@ fieldset fieldset {
   float: left;
   width: 100%;
   padding: 4px;
+  box-shadow: none;
   border: 4px solid #b9b6a7;
   background-color: #c3c0b0;
 }
@@ -582,12 +585,10 @@ fieldset fieldset fieldset fieldset fieldset {
   background-color: #b9b6a7;
 }
 fieldset > div {
-  margin: 5px;
-  padding: 4px;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
   border-radius: 5px;
-  width: calc(100% - 10px);
-  border: 1px solid #CCCCCC;
-  background-color: #EEEEEE;
 }
 fieldset > label {
   float: left;
@@ -685,7 +686,8 @@ fieldset > label > span > i {
   background-color: transparent;
   border: 1px solid transparent;
 }
-fieldset > ul {
+fieldset > ul,
+fieldset > div > ul {
   margin: 0;
   margin: 4px;
   padding: 8px;
@@ -694,20 +696,24 @@ fieldset > ul {
   list-style-type: none;
   background-color: white;
 }
-fieldset > ul ul {
+fieldset > ul ul,
+fieldset > div > ul ul {
   list-style-type: none;
 }
-fieldset > ul li > label {
+fieldset > ul li > label,
+fieldset > div > ul li > label {
   height: 36px;
   display: flex;
   font-size: 16px;
   align-items: center;
   justify-content: flex-start;
 }
-fieldset > ul li > label:hover {
+fieldset > ul li > label:hover,
+fieldset > div > ul li > label:hover {
   background-color: #FFFACD;
 }
-fieldset > ul li > label > input {
+fieldset > ul li > label > input,
+fieldset > div > ul li > label > input {
   order: -1;
   width: 18px;
   height: 18px;
@@ -2004,7 +2010,7 @@ span[navigator] > label:not(:last-child):after {
 *[popup] {
   display: none;
 }
-a[target=_popup] + div {
+a[target=_popup] > div {
   display: none;
 }
 div.Popup {
