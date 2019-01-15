@@ -27,7 +27,7 @@ public abstract class CheckableTag extends SelectorTag
 				throw new IOException("No option defined for property " + getProperty());
 
 		if (sortby != null)
-			Toolkit.collection(options)
+			options = Toolkit.collection(options)
 				.stream()
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
@@ -61,6 +61,7 @@ public abstract class CheckableTag extends SelectorTag
 				value = values.invoke(EL_CONTEXT, option);
 
 			Attributes attributes = new Attributes();
+			attributes.putAll(getAttributes());
 			attributes.put("type", getComponentType());
 			attributes.put("name", getName());
 
