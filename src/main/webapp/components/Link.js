@@ -178,7 +178,9 @@ function Link(link, creator)
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
-					new Popup(this.nextElementSibling);
+					Array.from(this.children)
+						.filter(e => e.tagName.toLowerCase() === "div")
+						.forEach(e => new Popup(e));
 					break;
 			}
 		}

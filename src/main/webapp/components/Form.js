@@ -39,8 +39,6 @@ window.addEventListener("load", function ()
 				{
 					case "select":
 					case "textarea":
-						event.preventDefault();
-						event.stopImmediatePropagation();
 						break;
 					case "a":
 					case "button":

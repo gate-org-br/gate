@@ -1663,4 +1663,58 @@
 			</description>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>list</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.ListTag</tag-class>
+		<description>
+			Creates a list with the specified options.
+		</description>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of options to be displayed.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				descendant list of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				label of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>groups</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to group
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>sortby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to sort
+				select options.
+			</description>
+		</attribute>
+	</tag>
 </taglib>
