@@ -1,146 +1,94 @@
-function ChartDialog(data, type, title)
+class ChartDialog extends Modal
 {
-	var modal = new Modal(true);
-
-	var dialog = modal.element().appendChild(window.top.document.createElement('div'));
-	dialog.className = "Dialog";
-
-	var head = dialog.appendChild(document.createElement("div"));
-	head.setAttribute("tabindex", "1");
-
-	var caption = head.appendChild(window.top.document.createElement('label'));
-	caption.innerHTML = title;
-	caption.style['float'] = "left";
-
-	var body = dialog.appendChild(document.createElement("div"));
-	body.style.backgroundColor = "white";
-
-	var canvas = body.appendChild(document.createElement("div"));
-	canvas.setAttribute("id", 'Chart');
-	canvas.setAttribute("tabindex", "1");
-
-	canvas.onmouseenter = function ()
+	constructor(options)
 	{
-		this.focus();
-	};
+		super(options);
 
-	head.onmouseenter = function ()
-	{
-		this.focus();
-	};
+		var dialog = this.element().appendChild(window.top.document.createElement('div'));
+		dialog.classList.add("ChartDialog");
 
-	var close = head.appendChild(document.createElement('a'));
-	close.style['float'] = "right";
-	close.dialog = this;
-	close.title = "Fechar";
-	close.innerHTML = "&#x1011;";
-	close.style.marginLeft = '16px';
-	close.style.fontFamily = "gate";
-	close.onclick = function ()
-	{
-		modal.hide();
-	};
+		var head = dialog.appendChild(document.createElement("div"));
+		head.setAttribute("tabindex", "1");
 
-	var chart = new Chart(data, title);
+		var body = dialog.appendChild(document.createElement("div"));
+		body.style.backgroundColor = "white";
 
-	var rchart = head.appendChild(document.createElement('a'));
-	rchart.style['float'] = "right";
-	rchart.dialog = this;
-	rchart.title = "Rose";
-	rchart.innerHTML = "&#x2247;";
-	rchart.style.fontFamily = "gate";
-	rchart.onclick = function ()
-	{
-		chart.draw('Chart', 'rchart');
-	};
+		var canvas = body.appendChild(document.createElement("div"));
+		canvas.setAttribute("id", 'Chart');
+		canvas.setAttribute("tabindex", "1");
 
-	var dchart = head.appendChild(document.createElement('a'));
-	dchart.style['float'] = "right";
-	dchart.dialog = this;
-	dchart.title = "Donut";
-	dchart.innerHTML = "&#x2245;";
-	dchart.style.fontFamily = "gate";
-	dchart.onclick = function ()
-	{
-		chart.draw('Chart', 'dchart');
-	};
+		canvas.onmouseenter = () => canvas.focus();
+		head.onmouseenter = () => head.focus();
 
-	var pchart = head.appendChild(document.createElement('a'));
-	pchart.style['float'] = "right";
-	pchart.dialog = this;
-	pchart.title = "Pizza";
-	pchart.innerHTML = "&#x2031;";
-	pchart.style.fontFamily = "gate";
-	pchart.onclick = function ()
-	{
-		chart.draw('Chart', 'pchart');
-	};
+		var chart = new Chart(options.data, options.title ? options.title : "");
 
-	var achart = head.appendChild(document.createElement('a'));
-	achart.style['float'] = "right";
-	achart.dialog = this;
-	achart.title = "Area";
-	achart.innerHTML = "&#x2244;";
-	achart.style.fontFamily = "gate";
-	achart.onclick = function ()
-	{
-		chart.draw('Chart', 'achart');
-	};
+		var cchart = head.appendChild(document.createElement('a'));
+		cchart.dialog = this;
+		cchart.title = "Coluna";
+		cchart.innerHTML = "&#x2033;";
+		cchart.onclick = () => chart.draw('Chart', 'cchart');
 
-	var lchart = head.appendChild(document.createElement('a'));
-	lchart.style['float'] = "right";
-	lchart.dialog = this;
-	lchart.title = "Linha";
-	lchart.innerHTML = "&#x2032;";
-	lchart.style.fontFamily = "gate";
-	lchart.onclick = function ()
-	{
-		chart.draw('Chart', 'lchart');
-	};
+		var bchart = head.appendChild(document.createElement('a'));
+		bchart.dialog = this;
+		bchart.title = "Barra";
+		bchart.innerHTML = "&#x2246;";
+		bchart.onclick = () => chart.draw('Chart', 'bchart');
 
-	var bchart = head.appendChild(document.createElement('a'));
-	bchart.style['float'] = "right";
-	bchart.dialog = this;
-	bchart.title = "Barra";
-	bchart.innerHTML = "&#x2246;";
-	bchart.style.fontFamily = "gate";
-	bchart.onclick = function ()
-	{
-		chart.draw('Chart', 'bchart');
-	};
+		var lchart = head.appendChild(document.createElement('a'));
+		lchart.dialog = this;
+		lchart.title = "Linha";
+		lchart.innerHTML = "&#x2032;";
+		lchart.onclick = () => chart.draw('Chart', 'lchart');
 
-	var cchart = head.appendChild(document.createElement('a'));
-	cchart.style['float'] = "right";
-	cchart.dialog = this;
-	cchart.title = "Coluna";
-	cchart.innerHTML = "&#x2033;";
-	cchart.style.fontFamily = "gate";
-	cchart.onclick = function ()
-	{
-		chart.draw('Chart', 'cchart');
-	};
+		var achart = head.appendChild(document.createElement('a'));
+		achart.dialog = this;
+		achart.title = "Area";
+		achart.innerHTML = "&#x2244;";
+		achart.onclick = () => chart.draw('Chart', 'achart');
 
-	modal.show();
+		var pchart = head.appendChild(document.createElement('a'));
+		pchart.dialog = this;
+		pchart.title = "Pizza";
+		pchart.innerHTML = "&#x2031;";
+		pchart.onclick = () => chart.draw('Chart', 'pchart');
 
-	if (!type)
-		type = 'cchart';
-	chart.draw('Chart', type);
+		var dchart = head.appendChild(document.createElement('a'));
+		dchart.dialog = this;
+		dchart.title = "Donut";
+		dchart.innerHTML = "&#x2245;";
+		dchart.onclick = () => chart.draw('Chart', 'dchart');
 
-	modal.onclick = function (e)
-	{
-		if (e.target === this
-			|| e.srcElement === this)
-			modal.hide();
-	};
+		var rchart = head.appendChild(document.createElement('a'));
+		rchart.dialog = this;
+		rchart.title = "Rose";
+		rchart.innerHTML = "&#x2247;";
+		rchart.onclick = () => chart.draw('Chart', 'rchart');
 
-	head.focus();
+		head.appendChild(window.top.document.createElement('span'));
+
+		var close = head.appendChild(document.createElement('a'));
+		close.dialog = this;
+		close.title = "Fechar";
+		close.innerHTML = "&#x1011;";
+		close.style.marginLeft = '16px';
+		close.onclick = () => this.hide();
+
+		this.show();
+
+		if (!options.type)
+			options.type = 'cchart';
+		chart.draw('Chart', options.type);
+
+
+		head.focus();
+	}
 }
 
 ChartDialog.show = function (chart, series, action, title)
 {
 	if (!series)
 		series = new URL(action).get();
-	new ChartDialog(JSON.parse(series), chart, title);
+	new ChartDialog({data: JSON.parse(series), type: chart, title: title});
 };
 
 window.addEventListener("load", function ()
