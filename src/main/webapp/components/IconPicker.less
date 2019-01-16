@@ -1,0 +1,39 @@
+div.IconPicker
+{
+	width: 1238px;
+	height: 680px;
+
+	> div:nth-child(2) > div {  width: 100%;
+				    margin: 8px;
+				    height: 630px;
+				    display: flex;
+				    overflow: auto;
+				    flex-wrap: wrap;
+				    background-color: @main;
+				    align-items: flex-start;
+				    justify-content: flex-start;
+
+				    a { width: 64px;
+					speak: none;
+					margin: 8px;
+					height: 64px;
+					display: flex;
+					font-size: 28px;
+					font-style: normal;
+					font-weight: normal;
+					align-items: center;
+					font-family: 'gate';
+					font-variant: normal;
+					text-transform: none;
+					justify-content: center;
+					background-color: white;
+
+					&:hover { background-color: @hovered }
+				    }
+	}
+
+	> div:nth-child(3) { display: none }
+}
+
+input.Icon { width: calc(100% - 32px); }
+input.Icon + a { width: 32px; }
