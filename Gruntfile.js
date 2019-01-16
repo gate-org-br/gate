@@ -56,6 +56,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/TimeIntervalPicker.js",
 							"src/main/webapp/components/MonthIntervalPicker.js",
 							"src/main/webapp/components/DateTimeIntervalPicker.js",
+							"src/main/webapp/components/IconPicker.js",
 
 							"src/main/webapp/components/Chart.js",
 							"src/main/webapp/components/ChartDialog.js",
@@ -67,7 +68,6 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/DateFormat.js",
 							"src/main/webapp/components/Switch.js",
 							"src/main/webapp/components/Clock.js",
-							"src/main/webapp/components/RichTextarea.js",
 							"src/main/webapp/components/FullScreen.js",
 							"src/main/webapp/components/Form.js",
 							"src/main/webapp/components/Progress.js",
@@ -76,7 +76,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
 							"src/main/webapp/components/Copy.js"],
-						dest: 'src/main/webapp/Gate.js'
+						dest: 'src/main/resources/gate/Gate.js'
 					}
 			}
 

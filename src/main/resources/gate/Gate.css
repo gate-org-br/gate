@@ -474,8 +474,8 @@ ul.DeskPane > li.Reset > a {
 }
 @font-face {
   font-family: 'gate';
-  src: local(gate), url('imge/font/gate.eot?-uajdou&version=5_0_0');
-  src: local(gate), url('imge/font/gate.eot?#iefix-uajdou&version=5_0_0') format('embedded-opentype'), url('imge/font/gate.woff?-uajdou&version=5_0_0') format('woff'), url('imge/font/gate.ttf?-uajdou&version=5_0_0') format('truetype'), url('imge/font/gate.svg?-uajdou#icomoon&version=5_0_0') format('svg');
+  src: local(gate), url('Gate.eot');
+  src: local(gate), url('Gate.eot') format('embedded-opentype'), url('Gate.woff') format('woff'), url('Gate.ttf') format('truetype'), url('Gate.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -1537,6 +1537,49 @@ input.DateTimeInterval {
 input.DateTimeInterval + a {
   width: 32px;
 }
+div.IconPicker {
+  width: 1238px;
+  height: 680px;
+}
+div.IconPicker > div:nth-child(2) > div {
+  width: 100%;
+  margin: 8px;
+  height: 630px;
+  display: flex;
+  overflow: auto;
+  flex-wrap: wrap;
+  background-color: #CDCAB9;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+div.IconPicker > div:nth-child(2) > div a {
+  width: 64px;
+  speak: none;
+  margin: 8px;
+  height: 64px;
+  display: flex;
+  font-size: 28px;
+  font-style: normal;
+  font-weight: normal;
+  align-items: center;
+  font-family: 'gate';
+  font-variant: normal;
+  text-transform: none;
+  justify-content: center;
+  background-color: white;
+}
+div.IconPicker > div:nth-child(2) > div a:hover {
+  background-color: #FFFACD;
+}
+div.IconPicker > div:nth-child(3) {
+  display: none;
+}
+input.Icon {
+  width: calc(100% - 32px);
+}
+input.Icon + a {
+  width: 32px;
+}
 table.TreeView > tbody > tr,
 table.TREEVIEW > tbody > tr {
   display: none;
@@ -1955,6 +1998,53 @@ td.BChart:hover,
 td.CChart:hover {
   color: #000066;
   font-weight: bold;
+}
+div.ChartDialog {
+  display: flex;
+  position: fixed;
+  border-radius: 5px;
+  flex-direction: column;
+  width: calc(100% - 80px);
+  height: calc(100% - 80px);
+  border: 4px solid #788185;
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+div.ChartDialog > div:first-child {
+  color: white;
+  height: 40px;
+  padding: 8px;
+  outline: none;
+  display: flex;
+  font-size: 20px;
+  font-weight: bold;
+  align-items: stretch;
+  justify-content: flex-start;
+  background-color: #788185;
+}
+div.ChartDialog > div:first-child > span {
+  flex-grow: 1;
+}
+div.ChartDialog > div:first-child > a {
+  display: flex;
+  color: inherit;
+  cursor: pointer;
+  flex-basis: 48px;
+  font-family: gate;
+  font-size: inherit;
+  align-items: center;
+  justify-content: center;
+}
+div.ChartDialog > div:last-child {
+  display: flex;
+  align-items: stretch;
+  background-color: white;
+  height: calc(100% - 40px);
+}
+div.ChartDialog > div:last-child > div {
+  margin: 0px;
+  border: none;
+  flex-grow: 1;
+  padding: 0px;
 }
 th[data-sortable] > a::before {
   font-size: 16px;
