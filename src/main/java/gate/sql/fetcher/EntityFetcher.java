@@ -1,6 +1,5 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
@@ -71,7 +70,7 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
 			| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 }

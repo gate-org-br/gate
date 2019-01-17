@@ -1,6 +1,5 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
@@ -8,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fetches a cursor as a list of java objects of the specified type with it's properties set to their respective column
- * values.
+ * Fetches a cursor as a list of java objects of the specified type with it's properties set to their respective column values.
  *
  * @param <T> type returned by the Fetcher
  *
@@ -31,13 +29,13 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	/**
-	 * Fetches each row from the specified Cursor as a list of java objects of the specified type with it's properties
-	 * set to their respective column values.
+	 * Fetches each row from the specified Cursor as a list of java objects of the specified type with it's properties set to their respective column
+	 * values.
 	 *
 	 * @param cursor the Cursor to be fetched
 	 *
-	 * @return a List with each row or the specified Cursor as a java object of the specified type with it's properties
-	 * set to their respective column values
+	 * @return a List with each row or the specified Cursor as a java object of the specified type with it's properties set to their respective column
+	 * values
 	 */
 	@Override
 	public List<T> fetch(Cursor cursor)
@@ -46,20 +44,41 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 		{
 			List<T> results = new ArrayList<>();
 			List<Property> properties
-					= Property.getProperties(type, cursor.getPropertyNames(type));
+				= Property.getProperties(type, cursor.getPropertyNames(type));
 
 			while (cursor.next())
 			{
 				T result = type.getDeclaredConstructor().newInstance();
-				properties.forEach(e -> e.setValue(result, cursor.getValue(e.getRawType(), e.toString())));
+				properties.forEach(e ->
+				{
+					Class<?> clazz = e.getRawType();
+					if (clazz == boolean.class)
+						e.setBoolean(result, cursor.getCurrentBooleanValue());
+					else if (clazz == char.class)
+						e.setChar(result, cursor.getCurrentCharValue());
+					else if (clazz == byte.class)
+						e.setByte(result, cursor.getCurrentByteValue());
+					else if (clazz == short.class)
+						e.setShort(result, cursor.getCurrentShortValue());
+					else if (clazz == int.class)
+						e.setInt(result, cursor.getCurrentIntValue());
+					else if (clazz == long.class)
+						e.setLong(result, cursor.getCurrentLongValue());
+					else if (clazz == float.class)
+						e.setFloat(result, cursor.getCurrentFloatValue());
+					else if (clazz == double.class)
+						e.setDouble(result, cursor.getCurrentDoubleValue());
+					else
+						e.setValue(result, cursor.getCurrentValue(clazz));
+				});
 				results.add(result);
 			}
 			return results;
 
 		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
+			| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 }
