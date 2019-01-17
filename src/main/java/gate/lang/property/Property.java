@@ -151,6 +151,254 @@ public class Property
 	}
 
 	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a boolean value
+	 */
+	public boolean getBoolean(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getBoolean(object);
+	}
+
+	/**
+	 * Updates the property value of the specified boolean value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a boolean value
+	 */
+	public void setBoolean(Object object, boolean value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setBoolean(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a char value
+	 */
+	public char getChar(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getChar(object);
+	}
+
+	/**
+	 * Updates the property value of the specified char value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a char value
+	 */
+	public void setChar(Object object, char value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setChar(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a byte value
+	 */
+	public byte getByte(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getByte(object);
+	}
+
+	/**
+	 * Updates the property value of the specified byte value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a byte value
+	 */
+	public void setByte(Object object, byte value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setByte(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a short value
+	 */
+	public short getShort(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getShort(object);
+	}
+
+	/**
+	 * Updates the property value of the specified short value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a short value
+	 */
+	public void setShort(Object object, short value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setShort(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with an int value
+	 */
+	public int getInt(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getInt(object);
+	}
+
+	/**
+	 * Updates the property value of the specified int value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with an int value
+	 */
+	public void setInt(Object object, int value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setInt(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a long value
+	 */
+	public long getLong(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getLong(object);
+	}
+
+	/**
+	 * Updates the property value of the specified long value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a long value
+	 */
+	public void setLong(Object object, long value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setLong(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a float value
+	 */
+	public float getFloat(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getFloat(object);
+	}
+
+	/**
+	 * Updates the property value of the specified float value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a float value
+	 */
+	public void setFloat(Object object, float value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setFloat(object, value);
+	}
+
+	/**
+	 * Reads the property value from the specified object.
+	 *
+	 * @param object object whose value is to be read
+	 *
+	 * @return the requested value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a double value
+	 */
+	public double getDouble(Object object)
+	{
+		for (int i = 0; i < attributes.size() && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return attributes.get(attributes.size() - 1).getDouble(object);
+	}
+
+	/**
+	 * Updates the property value of the specified double value.
+	 *
+	 * @param object object whose value is to be updated
+	 * @param value the new value
+	 *
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a double value
+	 */
+	public void setDouble(Object object, double value)
+	{
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		attributes.get(attributes.size() - 1).setDouble(object, value);
+	}
+
+	/**
 	 * Checks if the specified object has a value for this property.
 	 *
 	 * @param object object to be checked

@@ -1,13 +1,13 @@
 package gate.sql.delete;
 
 import gate.Contact;
-import gate.sql.select.Select;
-import gate.sql.condition.Condition;
 import gate.Mock;
 import gate.Person;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
+import gate.sql.condition.Condition;
+import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -72,7 +72,7 @@ public class DeleteTest
 			{
 				link
 					.prepare(Delete.from(Person.class))
-					.value(new Person().setId(new ID(1)))
+					.value(new Person().setId(1))
 					.execute();
 
 				Assert.assertTrue(Select.expression("count(*)").from("Person")

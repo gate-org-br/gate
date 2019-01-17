@@ -41,16 +41,16 @@ public class UpdateTest
 			String name = "Jonh";
 			Date birthdate = new Date(31, 12, 2005);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			assertTrue(link.prepare("update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?")
-					.parameters(name, birthdate, contract, id)
-					.execute() == 1);
+				.parameters(name, birthdate, contract, id)
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -80,15 +80,15 @@ public class UpdateTest
 			DateInterval contract = new DateInterval(new Date(1, 1, 2008), new Date(31, 12, 2010));
 
 			assertTrue(link
-					.prepare(getClass().getResource("UpdateTest/Update.sql"))
-					.parameters(name, birthdate, contract, id)
-					.execute() == 1);
+				.prepare(getClass().getResource("UpdateTest/Update.sql"))
+				.parameters(name, birthdate, contract, id)
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -116,22 +116,22 @@ public class UpdateTest
 			String name = "Richard";
 			Date birthdate = new Date(9, 8, 2000);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2012),
-					new Date(31, 12, 2014));
+				new Date(31, 12, 2014));
 
 			assertTrue(link
-					.prepare(Update
-							.table("Person")
-							.set(String.class, "name", name)
-							.set(Date.class, "birthdate", birthdate)
-							.set(DateInterval.class, "contract", contract)
-							.where(Condition.of("id").eq(id)))
-					.execute() == 1);
+				.prepare(Update
+					.table("Person")
+					.set(String.class, "name", name)
+					.set(Date.class, "birthdate", birthdate)
+					.set(DateInterval.class, "contract", contract)
+					.where(Condition.of("id").eq(id)))
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -159,23 +159,23 @@ public class UpdateTest
 			String name = "Thomas";
 			Date birthdate = new Date(7, 8, 2000);
 			DateInterval contract = new DateInterval(new Date(2, 1, 2012),
-					new Date(4, 12, 2014));
+				new Date(4, 12, 2014));
 
 			assertTrue(link
-					.prepare(Update
-							.table("Person")
-							.set(String.class, "name")
-							.set(Date.class, "birthdate")
-							.set(DateInterval.class, "contract")
-							.where(Condition.of("id").eq()))
-					.parameters(name, birthdate, contract, id)
-					.execute() == 1);
+				.prepare(Update
+					.table("Person")
+					.set(String.class, "name")
+					.set(Date.class, "birthdate")
+					.set(DateInterval.class, "contract")
+					.where(Condition.of("id").eq()))
+				.parameters(name, birthdate, contract, id)
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -199,30 +199,30 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(5);
+			int id = 5;
 			String name = "Maria";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			assertTrue(link
-					.prepare(Update
-							.type(Person.class)
-							.set("id", "name", "birthdate", "contract"))
-					.value(person)
-					.execute() == 1);
+				.prepare(Update
+					.type(Person.class)
+					.set("id", "name", "birthdate", "contract"))
+				.value(person)
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -246,29 +246,29 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(6);
+			int id = 6;
 			String name = "Newton";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			assertTrue(link
-					.prepare(Update
-							.type(Person.class))
-					.value(person)
-					.execute() == 1);
+				.prepare(Update
+					.type(Person.class))
+				.value(person)
+				.execute() == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -292,28 +292,28 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(7);
+			int id = 7;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			assertTrue(link
-					.update(Person.class)
-					.properties("=id", "name", "birthdate", "contract")
-					.execute(person) == 1);
+				.update(Person.class)
+				.properties("=id", "name", "birthdate", "contract")
+				.execute(person) == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -337,27 +337,27 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(8);
+			int id = 8;
 			String name = "Alfred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-					new Date(31, 12, 2010));
+				new Date(31, 12, 2010));
 
 			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+				.setId(id)
+				.setName(name)
+				.setBirthdate(birthdate)
+				.setContract(contract);
 
 			assertTrue(link
-					.update(Person.class)
-					.execute(person) == 1);
+				.update(Person.class)
+				.execute(person) == 1);
 
 			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+				= link
+					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.parameters(id)
+					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -382,23 +382,23 @@ public class UpdateTest
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
 			Contact expected
-					= new Contact()
-							.setId(new ID(1))
-							.setType(Contact.Type.PHONE)
-							.setValue("99999999")
-							.setPerson(new Person()
-									.setId(new ID(1)));
+				= new Contact()
+					.setId(new ID(1))
+					.setType(Contact.Type.PHONE)
+					.setValue("99999999")
+					.setPerson(new Person()
+						.setId(1));
 
 			assertTrue(link
-					.update(Contact.class)
-					.properties("=id", "type", "value", "person.id")
-					.execute(expected) == 1);
+				.update(Contact.class)
+				.properties("=id", "type", "value", "person.id")
+				.execute(expected) == 1);
 
 			Contact result = link
-					.select(Contact.class)
-					.properties("=id", "type", "value", "person.id")
-					.matching(expected)
-					.orElseThrow(NotFoundException::new);
+				.select(Contact.class)
+				.properties("=id", "type", "value", "person.id")
+				.matching(expected)
+				.orElseThrow(NotFoundException::new);
 
 			assertEquals(expected.getValue(), result.getValue());
 			assertEquals(expected.getType(), result.getType());

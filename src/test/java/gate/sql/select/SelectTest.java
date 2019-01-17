@@ -10,7 +10,6 @@ import gate.sql.condition.Condition;
 import gate.sql.statement.Query;
 import gate.type.Date;
 import gate.type.DateInterval;
-import gate.type.ID;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -19,10 +18,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.junit.AfterClass;
-import org.junit.Test;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -388,7 +387,7 @@ public class SelectTest
 				.from("select id, name, birthdate, contract$date1 as 'contract:date1', contract$date2 as 'contract:date2' from Person where id = ?")
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -408,7 +407,7 @@ public class SelectTest
 				.from(getClass().getResource("SelectTest/Select.sql"))
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -453,7 +452,7 @@ public class SelectTest
 					.from("Person")
 					.where(Condition.of("id").eq(1)))
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -480,7 +479,7 @@ public class SelectTest
 					.where(Condition.of("id").eq()))
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -502,7 +501,7 @@ public class SelectTest
 					.where(Condition.of(Property.getProperty(Person.class, "id").getFullColumnName()).eq()))
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -523,7 +522,7 @@ public class SelectTest
 				.parameters(1)
 				.fetchEntity(Person.class)
 				.orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -544,7 +543,7 @@ public class SelectTest
 				.properties("=id", "name", "birthdate", "contract")
 				.parameters(1)
 				.orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), person.getId());
+			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
@@ -561,14 +560,14 @@ public class SelectTest
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
 			Contact contact = new Contact();
-			contact.getPerson().setId(new ID(1));
+			contact.getPerson().setId(1);
 
 			contact = link
 				.select(Contact.class)
 				.properties("=person.id", "person.name", "person.birthdate", "person.contract")
 				.matching(contact)
 				.orElseThrow(NotFoundException::new);
-			Assert.assertEquals(new ID(1), contact.getPerson().getId());
+			Assert.assertEquals(1, contact.getPerson().getId());
 			Assert.assertEquals("Person 1", contact.getPerson().getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), contact.getPerson().getBirthdate());
 			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),

@@ -7,11 +7,11 @@ package gate.converter;
 
 import gate.Person;
 import gate.error.ConversionException;
+import gate.lang.json.JsonNumber;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.Date;
 import gate.type.DateInterval;
-import gate.type.ID;
 import java.time.LocalDate;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
@@ -34,7 +34,7 @@ public class ConverterTest
 		try
 		{
 			JsonObject object = new JsonObject();
-			object.put("id", new JsonString(new ID(1).toString()));
+			object.put("id", new JsonNumber(1));
 			object.put("name", new JsonString("Jonh"));
 			object.put("birthdate", new JsonString(Converter.toString(LocalDate.of(2000, 1, 1))));
 			object.put("contract", new JsonString(new DateInterval(new Date(1, 1, 2010), new Date(1, 1, 2020))
@@ -43,7 +43,7 @@ public class ConverterTest
 
 			Person person = Converter.fromJson(Person.class, json);
 
-			assertEquals(object.get("id").toString(), person.getId().toString());
+			assertEquals(object.get("id").toString(), String.valueOf(person.getId()));
 			assertEquals(object.get("name").toString(), person.getName());
 			assertEquals(object.get("birthdate").toString(), Converter.toString(person.getBirthdate()));
 			assertEquals(object.get("contract").toString(), person.getContract().toString());

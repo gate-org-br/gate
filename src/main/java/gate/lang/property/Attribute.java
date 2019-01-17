@@ -81,6 +81,86 @@ public interface Attribute
 
 	}
 
+	public default boolean getBoolean(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a boolean value from a non boolean attribute");
+	}
+
+	public default void setBoolean(Object object, boolean value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a boolean value to a non boolean attribute");
+	}
+
+	public default char getChar(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a char value from a non char attribute");
+	}
+
+	public default void setChar(Object object, char value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a char value to a non char attribute");
+	}
+
+	public default byte getByte(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a byte value from a non byte attribute");
+	}
+
+	public default void setByte(Object object, byte value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a byte value to a non byte attribute");
+	}
+
+	public default short getShort(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a short value from a non short attribute");
+	}
+
+	public default void setShort(Object object, short value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a short value to a non short attribute");
+	}
+
+	public default int getInt(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read an int value from a non int attribute");
+	}
+
+	public default void setInt(Object object, int value)
+	{
+		throw new UnsupportedOperationException("Attempt to write an int value to a non int attribute");
+	}
+
+	public default long getLong(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a long value from a non long attribute");
+	}
+
+	public default void setLong(Object object, long value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a long value to a non long attribute");
+	}
+
+	public default float getFloat(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a float value from a non float attribute");
+	}
+
+	public default void setFloat(Object object, float value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a float value to a non float attribute");
+	}
+
+	public default double getDouble(Object object)
+	{
+		throw new UnsupportedOperationException("Attempt to read a double value from a non double attribute");
+	}
+
+	public default void setDouble(Object object, double value)
+	{
+		throw new UnsupportedOperationException("Attempt to write a double value to a non double attribute");
+	}
+
 	default Optional<String> getName()
 	{
 		return Optional.empty();

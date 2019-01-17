@@ -2,7 +2,6 @@ package gate;
 
 import gate.annotation.Entity;
 import gate.type.DateInterval;
-import gate.type.ID;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,18 +10,18 @@ import java.util.List;
 public class Person
 {
 
-	private ID id;
+	private int id;
 	private String name;
 	private LocalDate birthdate;
 	private DateInterval contract;
 	private transient List<Contact> contacts;
 
-	public ID getId()
+	public int getId()
 	{
 		return id;
 	}
 
-	public Person setId(ID id)
+	public Person setId(int id)
 	{
 		this.id = id;
 		return this;

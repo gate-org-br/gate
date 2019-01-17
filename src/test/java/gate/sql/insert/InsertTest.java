@@ -202,7 +202,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(43);
+			int id = 43;
 			String name = "Richard";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
@@ -225,7 +225,7 @@ public class InsertTest
 				= link
 					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(Integer.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -290,7 +290,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(100);
+			int id = 100;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 9);
 			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
@@ -311,7 +311,7 @@ public class InsertTest
 				= link
 					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(Integer.class, String.class, LocalDate.class, DateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -374,7 +374,7 @@ public class InsertTest
 		{
 			List<Person> expected = new ArrayList<>();
 			for (int i = 1000; i < 1010; i++)
-				expected.add(new Person().setId(new ID(i))
+				expected.add(new Person().setId(i)
 					.setName("Prepared Person " + i)
 					.setBirthdate(LocalDate.now()));
 
