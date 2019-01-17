@@ -39,6 +39,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 		try
 		{
 			this.field = field;
+			field.setAccessible(true);
 			getter = Reflection.findGetter(field).orElse(null);
 			setter = Reflection.findSetter(field).orElse(null);
 
@@ -187,6 +188,242 @@ class FieldAttribute implements JavaIdentifierAttribute
 		if (value == null)
 			setValue(object, value = createInstance(getRawType()));
 		return value;
+	}
+
+	@Override
+	public boolean getBoolean(Object object)
+	{
+		try
+		{
+			return field.getType() == boolean.class
+				? field.getBoolean(object)
+				: JavaIdentifierAttribute.super.getBoolean(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+
+	}
+
+	@Override
+	public void setBoolean(Object object, boolean value)
+	{
+		try
+		{
+			if (field.getType() == boolean.class)
+				field.setBoolean(object, value);
+			else
+				JavaIdentifierAttribute.super.setBoolean(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public char getChar(Object object)
+	{
+		try
+		{
+			return field.getType() == char.class
+				? field.getChar(object)
+				: JavaIdentifierAttribute.super.getChar(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+
+	}
+
+	@Override
+	public void setChar(Object object, char value)
+	{
+		try
+		{
+			if (field.getType() == char.class)
+				field.setChar(object, value);
+			else
+				JavaIdentifierAttribute.super.setChar(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public byte getByte(Object object)
+	{
+		try
+		{
+			return field.getType() == byte.class
+				? field.getByte(object)
+				: JavaIdentifierAttribute.super.getByte(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+
+	}
+
+	@Override
+	public void setByte(Object object, byte value)
+	{
+		try
+		{
+			if (field.getType() == byte.class)
+				field.setByte(object, value);
+			else
+				JavaIdentifierAttribute.super.setByte(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public short getShort(Object object)
+	{
+		try
+		{
+			return field.getType() == short.class
+				? field.getShort(object)
+				: JavaIdentifierAttribute.super.getShort(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+
+	}
+
+	@Override
+	public void setShort(Object object, short value)
+	{
+		try
+		{
+			if (field.getType() == short.class)
+				field.setShort(object, value);
+			else
+				JavaIdentifierAttribute.super.setShort(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public int getInt(Object object)
+	{
+		try
+		{
+			return field.getType() == int.class
+				? field.getInt(object)
+				: JavaIdentifierAttribute.super.getInt(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setInt(Object object, int value)
+	{
+		try
+		{
+			if (field.getType() == int.class)
+				field.setInt(object, value);
+			else
+				JavaIdentifierAttribute.super.setInt(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public long getLong(Object object)
+	{
+		try
+		{
+			return field.getType() == long.class
+				? field.getLong(object)
+				: JavaIdentifierAttribute.super.getLong(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setLong(Object object, long value)
+	{
+		try
+		{
+			if (field.getType() == long.class)
+				field.setLong(object, value);
+			else
+				JavaIdentifierAttribute.super.setLong(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public float getFloat(Object object)
+	{
+		try
+		{
+			return field.getType() == float.class
+				? field.getFloat(object)
+				: JavaIdentifierAttribute.super.getFloat(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setFloat(Object object, float value)
+	{
+		try
+		{
+			if (field.getType() == float.class)
+				field.setFloat(object, value);
+			else
+				JavaIdentifierAttribute.super.setFloat(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public double getDouble(Object object)
+	{
+		try
+		{
+			return field.getType() == double.class
+				? field.getDouble(object)
+				: JavaIdentifierAttribute.super.getDouble(object);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setDouble(Object object, double value)
+	{
+		try
+		{
+			if (field.getType() == double.class)
+				field.setDouble(object, value);
+			else
+				JavaIdentifierAttribute.super.setDouble(object, value);
+		} catch (IllegalArgumentException | IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex.getMessage(), ex);
+		}
 	}
 
 	@Override

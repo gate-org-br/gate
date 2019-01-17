@@ -5,12 +5,12 @@
  */
 package gate.sql;
 
-import gate.error.ConstraintViolationException;
-import gate.sql.insert.InsertTest;
-import gate.sql.insert.Insert;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import gate.Contact;
 import gate.Person;
+import gate.error.ConstraintViolationException;
+import gate.sql.insert.Insert;
+import gate.sql.insert.InsertTest;
 import gate.type.Date;
 import gate.type.DateInterval;
 import gate.type.ID;
@@ -46,7 +46,7 @@ public class TestDataSource
 	}
 
 	private final MysqlDataSource DATA_SOURCE
-			= new MysqlDataSource();
+		= new MysqlDataSource();
 
 	private TestDataSource()
 	{
@@ -71,11 +71,11 @@ public class TestDataSource
 			for (int i = 1; i <= 31; i++)
 			{
 				Person person = new Person();
-				person.setId(new ID(i));
+				person.setId(i);
 				person.setName("Person " + i);
 				person.setBirthdate(LocalDate.of(2000, 12, i));
 				person.setContract(new DateInterval(new Date(i, 12, 2000),
-						new Date(i, 12, 2020)));
+					new Date(i, 12, 2020)));
 
 				Contact contact = new Contact();
 				contact.setId(new ID(i));
@@ -89,22 +89,22 @@ public class TestDataSource
 			}
 
 			link
-					.prepare(Insert.into(Person.class).set("id", "name", "birthdate", "contract"))
-					.values(persons)
-					.execute();
+				.prepare(Insert.into(Person.class).set("id", "name", "birthdate", "contract"))
+				.values(persons)
+				.execute();
 
 			link.prepare(Insert.into(Contact.class).set("id", "person.id", "type", "value"))
-					.values(persons.stream().flatMap(e -> e.getContacts().stream()).collect(Collectors.toList()))
-					.execute();
+				.values(persons.stream().flatMap(e -> e.getContacts().stream()).collect(Collectors.toList()))
+				.execute();
 
 		} catch (SQLException ex)
 		{
 			Logger.getLogger(InsertTest.class.getName())
-					.log(Level.SEVERE, null, ex);
+				.log(Level.SEVERE, null, ex);
 		} catch (ConstraintViolationException ex)
 		{
 			Logger.getLogger(TestDataSource.class.getName())
-					.log(Level.SEVERE, null, ex);
+				.log(Level.SEVERE, null, ex);
 		}
 	}
 

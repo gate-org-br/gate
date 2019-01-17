@@ -6,19 +6,17 @@
 package gate.util;
 
 import gate.Doctor;
-import gate.Person;
 import gate.error.NotFoundException;
 import gate.type.Date;
 import gate.type.DateInterval;
-import gate.type.ID;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.Month;
 import org.junit.Assert;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -33,7 +31,7 @@ public class GenericUtilsTest
 	public void startup()
 	{
 		doctor = new Doctor();
-		doctor.setId(new ID(1));
+		doctor.setId(1);
 		doctor.setName("Jonh");
 		doctor.setBirthdate(LocalDate.of(1950, Month.MARCH, 1));
 		doctor.setContract(new DateInterval(new Date(1, 2, 2000), new Date(1, 2, 2010)));
@@ -41,55 +39,55 @@ public class GenericUtilsTest
 
 	@Test
 	public void testFindField() throws NotFoundException,
-			IllegalArgumentException, IllegalAccessException
+		IllegalArgumentException, IllegalAccessException
 	{
 		Field field = Reflection
-				.findField(Doctor.class, "id")
-				.orElseThrow(NotFoundException::new);
+			.findField(Doctor.class, "id")
+			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(new ID(1), field.get(doctor));
+		Assert.assertEquals(1, field.getInt(doctor));
 	}
 
 	@Test
 	public void testFindMethod() throws NotFoundException,
-			IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException
+		IllegalAccessException, IllegalArgumentException,
+		InvocationTargetException
 	{
 		Method method = Reflection
-				.findMethod(Doctor.class, "getId")
-				.orElseThrow(NotFoundException::new);
+			.findMethod(Doctor.class, "getId")
+			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(new ID(1), method.invoke(doctor));
+		Assert.assertEquals(1, (int) method.invoke(doctor));
 	}
 
 	@Test
 	public void testFindGetter() throws NotFoundException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException
+		IllegalArgumentException, InvocationTargetException
 	{
 		Field field = Reflection
-				.findField(Doctor.class, "id")
-				.orElseThrow(NotFoundException::new);
+			.findField(Doctor.class, "id")
+			.orElseThrow(NotFoundException::new);
 
 		Method method = Reflection.findGetter(field)
-				.orElseThrow(NotFoundException::new);
+			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(new ID(1), method.invoke(doctor));
+		Assert.assertEquals(1, (int) method.invoke(doctor));
 	}
 
 	@Test
 	public void testFindSetter() throws NotFoundException, IllegalAccessException,
-			IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
-			InvocationTargetException
+		IllegalAccessException, IllegalArgumentException, IllegalArgumentException,
+		InvocationTargetException
 	{
 		Field field = Reflection
-				.findField(Doctor.class, "id")
-				.orElseThrow(NotFoundException::new);
+			.findField(Doctor.class, "id")
+			.orElseThrow(NotFoundException::new);
 
 		Method setter = Reflection.findSetter(field)
-				.orElseThrow(NotFoundException::new);
+			.orElseThrow(NotFoundException::new);
 
-		setter.invoke(doctor, new ID(2));
+		setter.invoke(doctor, 2);
 
-		Assert.assertEquals(new ID(2), field.get(doctor));
+		Assert.assertEquals(2, field.getInt(doctor));
 	}
 }

@@ -229,6 +229,22 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
+	 * Reads the current specified column value as a java byte.
+	 *
+	 * @return the value of the specified column
+	 */
+	public byte getCurrentByteValue()
+	{
+		try
+		{
+			return rs.getByte(column++);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
 	 * Reads the specified column value as a java short.
 	 *
 	 * @param columnIndex index of the column to be read
@@ -247,7 +263,23 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the specified column value as a java integer.
+	 * Reads the current specified column value as a java short.
+	 *
+	 * @return the value of the specified column
+	 */
+	public short getCurrentShortValue()
+	{
+		try
+		{
+			return rs.getShort(column++);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java int.
 	 *
 	 * @param columnIndex index of the column to be read
 	 *
@@ -258,6 +290,22 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return rs.getInt(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the current specified column value as a java int.
+	 *
+	 * @return the value of the specified column
+	 */
+	public int getCurrentIntValue()
+	{
+		try
+		{
+			return rs.getInt(column++);
 		} catch (SQLException ex)
 		{
 			throw new AppError(ex);
@@ -283,6 +331,22 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
+	 * Reads the current specified column value as a java long.
+	 *
+	 * @return the value of the specified column
+	 */
+	public long getCurrentLongValue()
+	{
+		try
+		{
+			return rs.getLong(column++);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
 	 * Reads the specified column value as a java float.
 	 *
 	 * @param columnIndex index of the column to be read
@@ -294,6 +358,22 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return rs.getFloat(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the current specified column value as a java float.
+	 *
+	 * @return the value of the specified column
+	 */
+	public float getCurrentFloatValue()
+	{
+		try
+		{
+			return rs.getFloat(column++);
 		} catch (SQLException ex)
 		{
 			throw new AppError(ex);
@@ -319,6 +399,22 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
+	 * Reads the current specified column value as a java double.
+	 *
+	 * @return the value of the specified column
+	 */
+	public double getCurrentDoubleValue()
+	{
+		try
+		{
+			return rs.getDouble(column++);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
 	 * Reads the specified column value as a java boolean.
 	 *
 	 * @param columnIndex index of the column to be read
@@ -330,6 +426,56 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return rs.getBoolean(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the current specified column value as a java boolean.
+	 *
+	 * @return the value of the specified column
+	 */
+	public boolean getCurrentBooleanValue()
+	{
+		try
+		{
+			return rs.getBoolean(column++);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as a java char.
+	 *
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public char getCharValue(int columnIndex)
+	{
+		try
+		{
+			return (char) rs.getInt(columnIndex);
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
+	 * Reads the current specified column value as a java char.
+	 *
+	 * @return the value of the specified column
+	 */
+	public char getCurrentCharValue()
+	{
+		try
+		{
+			return (char) rs.getInt(column++);
 		} catch (SQLException ex)
 		{
 			throw new AppError(ex);
@@ -562,9 +708,9 @@ public class Cursor implements AutoCloseable, Fetchable
 	public List<String> getPropertyNames(Class<?> type)
 	{
 		return Stream.of(getColumnNames())
-				.map(e -> e.contains(":") ? e.split(":")[0] : e)
-				.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
-				.distinct().collect(Collectors.toList());
+			.map(e -> e.contains(":") ? e.split(":")[0] : e)
+			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
+			.distinct().collect(Collectors.toList());
 	}
 
 	public Map<String, Class<?>> getMetaData()
@@ -576,7 +722,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			int count = rsmd.getColumnCount();
 			for (int i = 0; i < count; i++)
 				result.put(rsmd.getColumnName(i + 1),
-						SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1)));
+					SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1)));
 			return result;
 		} catch (SQLException e)
 		{
