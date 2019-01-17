@@ -5513,6 +5513,11 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("form")).forEach(function (form)
 	{
+		Array.from(form.elements).forEach(function (element)
+		{
+			element.addEventListener("mouseover", () => element.focus());
+		});
+
 		form.addEventListener("submit", function (e)
 		{
 			if (this.hasAttribute("data-cancel"))

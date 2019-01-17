@@ -124,12 +124,12 @@ textarea,
 select { width: 100%;
 	 background-color: white;
 	 border: 1px solid #CCCCCC;
-	 &:hover { background-color: @hovered }
+	 &:focus { background-color: @hovered }
 }
 
 input[type='file'] { cursor: pointer }
 
-input:invalid, select:invalid, textarea:invalid { border: 1px solid #FF8888 }
+input:invalid, select:invalid, textarea:invalid { border-color: #FF8888 }
 
 textarea { resize: none; padding: 4px; margin: 0px; height: 100%}
 

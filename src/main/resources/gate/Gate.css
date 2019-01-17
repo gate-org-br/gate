@@ -176,11 +176,11 @@ select {
   background-color: white;
   border: 1px solid #CCCCCC;
 }
-input[type='text']:hover,
-input[type='password']:hover,
-input[type='file']:hover,
-textarea:hover,
-select:hover {
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='file']:focus,
+textarea:focus,
+select:focus {
   background-color: #FFFACD;
 }
 input[type='file'] {
@@ -189,7 +189,7 @@ input[type='file'] {
 input:invalid,
 select:invalid,
 textarea:invalid {
-  border: 1px solid #FF8888;
+  border-color: #FF8888;
 }
 textarea {
   resize: none;
