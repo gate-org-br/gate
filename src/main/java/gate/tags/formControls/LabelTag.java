@@ -22,8 +22,8 @@ public class LabelTag extends PropertyTag
 			string = empty;
 		string = string.replaceAll("\\n", "<br/>");
 
-		getJspContext().getOut().println("<label>");
-		getJspContext().getOut().println(Converter.toText(string));
+		getJspContext().getOut().println("<label " + getAttributes() + ">");
+		getJspContext().getOut().println(string);
 		getJspContext().getOut().println("</label>");
 	}
 
