@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -161,12 +160,17 @@ public interface Attribute
 		throw new UnsupportedOperationException("Attempt to write a double value to a non double attribute");
 	}
 
-	default Optional<String> getName()
+	default String getName()
 	{
-		return Optional.empty();
+		return null;
 	}
 
 	default String getDescription()
+	{
+		return null;
+	}
+
+	default String getPlaceholder()
 	{
 		return null;
 	}

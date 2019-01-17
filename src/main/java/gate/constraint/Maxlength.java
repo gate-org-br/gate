@@ -33,12 +33,15 @@ public @interface Maxlength
 			Integer constraint = (Integer) getValue();
 			Class type = property.getRawType();
 			String value = Converter
-					.getConverter(type)
-					.toString(type, property.getValue(entity));
+				.getConverter(type)
+				.toString(type, property.getValue(entity));
 			if (value.length() > constraint)
-				throw new AppException("O campo %s deve possuir no máximo %d caracteres.",
-						property.getName().orElse(property.toString()),
-						getValue());
+			{
+				String name = property.getName();
+				if (name == null)
+					name = property.toString();
+				throw new AppException("O campo %s deve possuir no máximo %d caracteres.", name, getValue());
+			}
 		}
 
 		@Override

@@ -3,7 +3,6 @@ package gate.tags;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.lang.property.Property;
-
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.jsp.JspException;
@@ -44,9 +43,12 @@ public class PropertiesTag extends DynamicAttributeTag
 		int i = 0;
 		for (Property property : source)
 		{
+			String name = property.getName();
+			if (name == null)
+				name = property.toString();
 			getJspContext().getOut().print("<tr>");
 			getJspContext().getOut().print(String.format("<td style='text-align: center'>%02d</td>", ++i));
-			getJspContext().getOut().print(String.format("<td>%s</td>", property.getName().orElse(property.toString())));
+			getJspContext().getOut().print(String.format("<td>%s</td>", name));
 			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getConstraints().stream().anyMatch(
 				e -> e instanceof Required.Implementation) ? "Sim" : "Não"));
 			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getConstraints().stream().filter(e -> e instanceof Maxlength.Implementation).map(e -> e.getValue().toString()).findFirst().orElse("N/A")));

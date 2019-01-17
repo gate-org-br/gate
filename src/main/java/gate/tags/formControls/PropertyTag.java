@@ -1,13 +1,10 @@
 package gate.tags.formControls;
 
 import gate.base.Screen;
-import gate.lang.property.Property;
 import gate.converter.Converter;
+import gate.lang.property.Property;
 import gate.tags.DynamicAttributeTag;
-import gate.util.Toolkit;
-
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 abstract class PropertyTag extends DynamicAttributeTag
@@ -59,42 +56,43 @@ abstract class PropertyTag extends DynamicAttributeTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
+
 		Screen screen = (Screen) getJspContext().findAttribute("screen");
+
 		Property p = Property.getProperty(screen.getClass(), this.property);
 
 		this.name = p.toString();
 		this.type = p.getRawType();
 		this.value = p.getValue(screen);
+		this.converter = p.getConverter();
 		this.elementType = p.getElementRawType();
 
 		if (!getAttributes().containsKey("name"))
 			getAttributes().put("name", p.toString());
 
-		if (p.getMask() != null && !getAttributes().containsKey("data-mask"))
-			getAttributes().put("data-mask", p.getMask());
-		p.getConstraints()
-				.stream()
-				.filter(e -> !getAttributes().containsKey(e.getName()))
-				.forEachOrdered(e -> getAttributes().put(e.getName(), e.getValue().toString()));
+		p.getConstraints().stream()
+			.filter(e -> !getAttributes().containsKey(e.getName()))
+			.forEachOrdered(e -> getAttributes().put(e.getName(), e.getValue().toString()));
 
-		converter = p.getConverter();
-		if (converter.getMask() != null && !getAttributes().containsKey("data-mask"))
-			getAttributes().put("data-mask", converter.getMask());
-
-		converter.getConstraints()
-				.stream()
-				.filter(e -> !getAttributes().containsKey(e.getName()))
-				.forEachOrdered(e -> getAttributes().put(e.getName(), e.getValue().toString()));
+		if (!getAttributes().containsKey("data-mask"))
+		{
+			String mask = p.getMask();
+			if (mask != null && !mask.isEmpty())
+				getAttributes().put("data-mask", mask);
+		}
 
 		if (!getAttributes().containsKey("title"))
 		{
-			if (!Toolkit.isEmpty(p.getDescription())
-					&& !Toolkit.isEmpty(converter.getDescription()))
-				getAttributes().put("title", String.format(p.getDescription(), String.format(converter.getDescription())));
-			else if (!Toolkit.isEmpty(p.getDescription()))
-				getAttributes().put("title", String.format(p.getDescription()));
-			else if (!Toolkit.isEmpty(converter.getDescription()))
-				getAttributes().put("title", String.format(converter.getDescription()));
+			String description = p.getDescription();
+			if (description != null && !description.isEmpty())
+				getAttributes().put("title", description);
+		}
+
+		if (!getAttributes().containsKey("placeholder"))
+		{
+			String placeholder = p.getPlaceholder();
+			if (placeholder != null && !placeholder.isEmpty())
+				getAttributes().put("placeholder", placeholder);
 		}
 	}
 }

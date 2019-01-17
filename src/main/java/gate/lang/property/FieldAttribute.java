@@ -6,6 +6,7 @@ import gate.annotation.ElementType;
 import gate.annotation.Entity;
 import gate.annotation.Mask;
 import gate.annotation.Name;
+import gate.annotation.Placeholder;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.util.Reflection;
@@ -14,23 +15,29 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 class FieldAttribute implements JavaIdentifierAttribute
 {
 
+	private final Type type;
 	private final Field field;
+	private final String mask;
+	private final String name;
 	private final Method getter;
 	private final Method setter;
+	private final Class<?> rawType;
 	private final Type elementType;
 	private final String columnName;
+	private final String description;
+	private final String placeholder;
+	private final boolean isEntityId;
 	private final Converter converter;
 	private final List<Constraint.Implementation> constraints;
 
@@ -40,17 +47,15 @@ class FieldAttribute implements JavaIdentifierAttribute
 		{
 			this.field = field;
 			field.setAccessible(true);
+
 			getter = Reflection.findGetter(field).orElse(null);
 			setter = Reflection.findSetter(field).orElse(null);
 
-			constraints = Collections.unmodifiableList(Stream.of(field.getAnnotations())
-				.filter(annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
-				.map(constraint -> Constraint.Implementation.getImplementation(constraint))
-				.collect(Collectors.toList()));
+			this.rawType = field.getType();
+			this.type = field.getGenericType();
 
-			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
-				? field.getAnnotation(gate.annotation.Converter.class).value().newInstance()
-				: Converter.getConverter(field.getType());
+			isEntityId = field.getDeclaringClass().isAnnotationPresent(Entity.class)
+				&& field.getName().equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
 
 			if (field.getType().isAnnotationPresent(ElementType.class))
 				elementType = field.getType()
@@ -67,6 +72,35 @@ class FieldAttribute implements JavaIdentifierAttribute
 					.getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
+
+			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
+				? field.getAnnotation(gate.annotation.Converter.class).value().newInstance()
+				: Converter.getConverter(field.getType());
+
+			List<Constraint.Implementation> cons = new ArrayList<>();
+			Stream.of(field.getAnnotations())
+				.filter(annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
+				.map(constraint -> Constraint.Implementation.getImplementation(constraint))
+				.forEach(cons::add);
+			converter.getConstraints().stream().filter(e -> cons.stream()
+				.noneMatch(c -> c.getName().equals(e.getName()))).forEach(cons::add);
+			constraints = Collections.unmodifiableList(cons);
+
+			description = field.isAnnotationPresent(Description.class)
+				? field.getAnnotation(Description.class).value()
+				: converter.getDescription();
+
+			mask = field.isAnnotationPresent(Mask.class)
+				? field.getAnnotation(Mask.class).value()
+				: converter.getMask();
+
+			placeholder = field.isAnnotationPresent(Placeholder.class)
+				? field.getAnnotation(Placeholder.class).value()
+				: converter.getPlaceholder();
+
+			name = field.isAnnotationPresent(Name.class)
+				? field.getAnnotation(Name.class).value()
+				: null;
 
 			if (field.isAnnotationPresent(Column.class))
 				columnName = field.getAnnotation(Column.class).value();
@@ -87,13 +121,13 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public Type getType()
 	{
-		return field.getGenericType();
+		return type;
 	}
 
 	@Override
 	public Class<?> getRawType()
 	{
-		return field.getType();
+		return rawType;
 	}
 
 	@Override
@@ -115,25 +149,27 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Optional<String> getName()
+	public String getName()
 	{
-		return field.isAnnotationPresent(Name.class)
-			? Optional.of(field.getAnnotation(Name.class).value())
-			: Optional.empty();
+		return name;
 	}
 
 	@Override
 	public String getMask()
 	{
-		return field.isAnnotationPresent(Mask.class)
-			? field.getAnnotation(Mask.class).value() : null;
+		return mask;
 	}
 
 	@Override
 	public String getDescription()
 	{
-		return field.isAnnotationPresent(Description.class)
-			? field.getAnnotation(Description.class).value() : null;
+		return description;
+	}
+
+	@Override
+	public String getPlaceholder()
+	{
+		return placeholder;
 	}
 
 	@Override
@@ -145,8 +181,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public boolean isEntityId()
 	{
-		return field.getDeclaringClass().isAnnotationPresent(Entity.class)
-			&& field.getName().equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
+		return isEntityId;
 	}
 
 	@Override

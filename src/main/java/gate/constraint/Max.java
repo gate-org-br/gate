@@ -31,11 +31,13 @@ public @interface Max
 		public void validate(Object entity, Property property) throws AppException
 		{
 			Object object = property.getValue(entity);
-			if (object != null
-					&& Converter.toNumber(object).doubleValue() > getValue())
-				throw new AppException("O campo %s deve ser menor do que %s.",
-						property.getName().orElse(property.toString()),
-						Converter.toText(getValue()));
+			if (object != null && Converter.toNumber(object).doubleValue() > getValue())
+			{
+				String name = property.getName();
+				if (name == null)
+					name = property.toString();
+				throw new AppException("O campo %s deve ser menor do que %s.", name, Converter.toText(getValue()));
+			}
 		}
 
 		@Override

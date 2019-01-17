@@ -9,12 +9,22 @@ public class PropertyConverter extends ObjectConverter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null ? ((Property) object).getName().orElse(object.toString()) : "";
+		if (object == null)
+			return "";
+		String name = ((Property) object).getName();
+		if (name == null)
+			name = object.toString();
+		return name;
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, ((Property) object).getName().orElse(object.toString())) : "";
+		if (object == null)
+			return "";
+		String name = ((Property) object).getName();
+		if (name == null)
+			name = object.toString();
+		return String.format(format, name);
 	}
 }

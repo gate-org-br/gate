@@ -31,11 +31,13 @@ public @interface Pattern
 		public void validate(Object entity, Property property) throws AppException
 		{
 			Object object = property.getValue(entity);
-			if (object != null
-					&& !Converter.toString(object).matches(getValue()))
-				throw new AppException("O campo %s deve estar no formato %s.",
-						property.getName().orElse(property.toString()),
-						getValue());
+			if (object != null && !Converter.toString(object).matches(getValue()))
+			{
+				String name = property.getName();
+				if (name == null)
+					name = property.toString();
+				throw new AppException("O campo %s deve estar no formato %s.", name, getValue());
+			}
 
 		}
 
