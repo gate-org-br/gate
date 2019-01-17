@@ -29,10 +29,13 @@ public @interface Required
 		@Override
 		public void validate(Object entity, Property property) throws AppException
 		{
-			if (getValue().equals("required")
-					&& property.getValue(entity) == null)
-				throw new AppException("O campo %s é requerido.",
-						property.getName().orElse(property.toString()));
+			if (getValue().equals("required") && property.getValue(entity) == null)
+			{
+				String name = property.getName();
+				if (name == null)
+					name = property.toString();
+				throw new AppException("O campo %s é requerido.", name);
+			}
 		}
 
 		@Override

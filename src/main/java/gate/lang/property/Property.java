@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ public class Property
 	private final String string;
 	private final Class<?> type;
 	private volatile List<String> joins;
+	private final Attribute lastAttribute;
 	private volatile String fullColumnName;
 	private final List<Attribute> attributes;
 	private final static Map<Class<?>, Map<String, Property>> PROPERTIES = new ConcurrentHashMap<>();
@@ -32,6 +32,7 @@ public class Property
 		this.type = type;
 		this.string = string;
 		this.attributes = Collections.unmodifiableList(attributes);
+		this.lastAttribute = attributes.get(attributes.size() - 1);
 	}
 
 	/**
@@ -418,32 +419,37 @@ public class Property
 	 */
 	public Collection<Constraint.Implementation> getConstraints()
 	{
-		return getLastAttribute().getConstraints();
+		return lastAttribute.getConstraints();
 	}
 
-	public Optional<String> getName()
+	public String getName()
 	{
-		return getLastAttribute().getName();
+		return lastAttribute.getName();
 	}
 
 	public String getDescription()
 	{
-		return getLastAttribute().getDescription();
+		return lastAttribute.getDescription();
+	}
+
+	public String getPlaceholder()
+	{
+		return lastAttribute.getPlaceholder();
 	}
 
 	public String getMask()
 	{
-		return getLastAttribute().getMask();
+		return lastAttribute.getMask();
 	}
 
 	public Class<?> getRawType()
 	{
-		return getLastAttribute().getRawType();
+		return lastAttribute.getRawType();
 	}
 
 	public Type getType()
 	{
-		return getLastAttribute().getType();
+		return lastAttribute.getType();
 	}
 
 	public List<String> getJoins()
@@ -522,12 +528,12 @@ public class Property
 
 	public Type getElementType()
 	{
-		return getLastAttribute().getElementType();
+		return lastAttribute.getElementType();
 	}
 
 	public Class<?> getElementRawType()
 	{
-		return getLastAttribute().getElementRawType();
+		return lastAttribute.getElementRawType();
 	}
 
 	public List<Attribute> getAttributes()
@@ -550,12 +556,12 @@ public class Property
 
 	public Converter getConverter()
 	{
-		return getLastAttribute().getConverter();
+		return lastAttribute.getConverter();
 	}
 
 	public Attribute getLastAttribute()
 	{
-		return attributes.get(attributes.size() - 1);
+		return lastAttribute;
 	}
 
 	public Property getPreviousProperty()
