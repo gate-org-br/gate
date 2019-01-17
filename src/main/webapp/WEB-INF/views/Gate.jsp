@@ -23,6 +23,11 @@
 									Trocar Senha<g:icon type="passwd"/>
 								</a>
 							</li>
+							<li style='width: 25%'>
+								<a href='Register'>
+									Solicitar acesso<g:icon type="gate.entity.User"/>
+								</a>
+							</li>
 						</ul>
 						<div>
 							<fieldset>
