@@ -193,6 +193,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public boolean getBoolean(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == boolean.class
@@ -208,6 +212,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setBoolean(Object object, boolean value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == boolean.class)
@@ -223,6 +231,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public char getChar(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == char.class
@@ -238,6 +250,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setChar(Object object, char value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == char.class)
@@ -253,6 +269,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public byte getByte(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == byte.class
@@ -268,6 +288,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setByte(Object object, byte value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == byte.class)
@@ -283,6 +307,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public short getShort(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == short.class
@@ -298,6 +326,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setShort(Object object, short value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == short.class)
@@ -313,6 +345,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public int getInt(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == int.class
@@ -327,6 +363,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setInt(Object object, int value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == int.class)
@@ -342,6 +382,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public long getLong(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == long.class
@@ -356,6 +400,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setLong(Object object, long value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == long.class)
@@ -371,6 +419,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public float getFloat(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == float.class
@@ -385,6 +437,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setFloat(Object object, float value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == float.class)
@@ -400,6 +456,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public double getDouble(Object object)
 	{
+		if (getter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support reading",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			return field.getType() == double.class
@@ -414,6 +474,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public void setDouble(Object object, double value)
 	{
+		if (setter == null)
+			throw new UnsupportedOperationException(String
+				.format("The property %s of class %s does not support writing",
+					field.getName(), field.getDeclaringClass().getName()));
 		try
 		{
 			if (field.getType() == double.class)
