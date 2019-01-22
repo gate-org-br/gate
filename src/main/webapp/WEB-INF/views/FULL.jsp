@@ -12,20 +12,20 @@
 
 			<div>
 				<ul class='HMenu'>
-					<g:menuitem module="gateconsole.screen" screen="Home" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="Role" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="User" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="Func" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="Org" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="App" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="Mail" style="width: 10%"/>
-					<g:menuitem module="gateconsole.screen" screen="Icon" style="width: 10%"/>
+					<g:menuitem module="gateconsole.screen" screen="Home"/>
+					<g:menuitem module="gateconsole.screen" screen="Role"/>
+					<g:menuitem module="gateconsole.screen" screen="User"/>
+					<g:menuitem module="gateconsole.screen" screen="Func"/>
+					<g:menuitem module="gateconsole.screen" screen="Org"/>
+					<g:menuitem module="gateconsole.screen" screen="App"/>
+					<g:menuitem module="gateconsole.screen" screen="Mail"/>
+					<g:menuitem module="gateconsole.screen" screen="Icon"/>
 					<li></li>
 						<g:if condition="${not empty subscriptions}">
 							<g:menuitem module="gateconsole.screen" screen="Access"
 								    style='width: 10%; color: #990000'/>
 						</g:if>
-						<g:menuitem style="width: 10%"/>
+						<g:menuitem/>
 				</ul>
 			</div>
 

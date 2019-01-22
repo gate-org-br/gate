@@ -2,7 +2,6 @@ package gate.lang.property;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.sql.condition.Condition;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -12,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -20,16 +18,15 @@ public class Property
 {
 
 	private final String string;
-	private final Class<?> type;
-	private volatile List<String> joins;
+	private final Class<?> owner;
 	private final Attribute lastAttribute;
-	private volatile String fullColumnName;
 	private final List<Attribute> attributes;
-	private final static Map<Class<?>, Map<String, Property>> PROPERTIES = new ConcurrentHashMap<>();
+	private final static Map<Class<?>, Map<String, Property>> PROPERTIES
+		= new ConcurrentHashMap<>();
 
-	Property(Class<?> type, String string, List<Attribute> attributes)
+	Property(Class<?> owner, String string, List<Attribute> attributes)
 	{
-		this.type = type;
+		this.owner = owner;
 		this.string = string;
 		this.attributes = Collections.unmodifiableList(attributes);
 		this.lastAttribute = attributes.get(attributes.size() - 1);
@@ -452,78 +449,9 @@ public class Property
 		return lastAttribute.getType();
 	}
 
-	public List<String> getJoins()
+	public Class<?> getOwner()
 	{
-		List<String> joins = this.joins;
-		if (joins == null)
-			synchronized (this)
-			{
-				joins = this.joins;
-				if (joins == null)
-				{
-					List<String> _joins = new ArrayList<>();
-					StringJoiner name = new StringJoiner("$");
-					StringJoiner path = new StringJoiner("$");
-					for (Attribute attribute : attributes)
-					{
-						if (attribute instanceof SelfAttribute)
-						{
-							path.add(attribute.getTableName());
-						} else
-						{
-							name.add(attribute.getColumnName());
-							if (attribute.isEntity())
-							{
-								String id = Entity.getId(attribute.getRawType());
-								String FK = path + "." + attribute.getColumnName() + "$" + id;
-								path.merge(name);
-								name = new StringJoiner("$");
-								String PK = path + "." + id;
-								_joins.add(
-									"left join " + attribute.getFullTableName() + " as " + path + " on " + Condition
-									.of(FK).isEq(PK));
-							}
-						}
-					}
-					this.joins = joins = Collections.unmodifiableList(_joins);
-				}
-			}
-		return joins;
-	}
-
-	public String getFullColumnName()
-	{
-		String fullColumnName = this.fullColumnName;
-		if (fullColumnName == null)
-		{
-			synchronized (this)
-			{
-				fullColumnName = this.fullColumnName;
-				if (fullColumnName == null)
-				{
-					StringJoiner name = new StringJoiner("$");
-					StringJoiner path = new StringJoiner("$");
-					for (Attribute attribute : getAttributes())
-					{
-						if (attribute instanceof SelfAttribute)
-						{
-							path.add(attribute.getTableName());
-						} else
-						{
-							name.add(attribute.getColumnName());
-							if (attribute.isEntity())
-							{
-								path.merge(name);
-								name = new StringJoiner("$");
-							}
-						}
-					}
-					this.fullColumnName = fullColumnName = path + "." + name;
-				}
-			}
-		}
-
-		return fullColumnName;
+		return owner;
 	}
 
 	public Type getElementType()
@@ -577,7 +505,7 @@ public class Property
 				builder.append(attributes.get(i).toString());
 			}
 		}
-		return new Property(type, builder.toString(), attributes.subList(0, attributes.size() - 1));
+		return new Property(owner, builder.toString(), attributes.subList(0, attributes.size() - 1));
 	}
 
 	public String getColumnName()

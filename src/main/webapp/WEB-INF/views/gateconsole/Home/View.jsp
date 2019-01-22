@@ -5,7 +5,7 @@
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
-				Pesquisar
+				Pesquisar<g:icon type="search"/>
 			</legend>
 			<label style='width: 100%'>
 				Nome/Login/Sigla:

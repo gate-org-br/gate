@@ -1,5 +1,3 @@
-*.COOLBAR:first-child, *.Coolbar:first-child { margin-top: 0px }
-
 *.COOLBAR, *.Coolbar { .margin();
 		       width: 100%;
 		       height: 40px;
@@ -24,43 +22,35 @@
 				  align-items: center;
 				  border: 1px solid #CCCCCC;
 				  justify-content: space-between;
-				  background-image: @neutral_gradient; }
+				  background-image: @neutral_gradient;
 
-		       > a:hover,
-			       > button:hover { background-image: @acent_gradient }
 
-		       > a:focus,
-			       > button:focus { outline: none;
-					border: 2px solid #FFFACD; }
+				  &:hover { background-image: @acent_gradient }
+				  &:focus { outline: none; border: 2px solid @hovered; }
 
-		       > a > i,
-		       > a > span,
-		       > button > i,
-		       > button > span { order: 1;
-					 display: flex;
-					 color: inherit;
-					 cursor: inherit;
-					 font-size: 12px;
-					 margin-left: 8px;
-					 align-items: center;
-					 justify-content: center; }
 
-		       > a.Delete,
-		       > button.Delete { color: @R }
+				  &.Delete { color: @R }
 
-		       > a.Commit,
-		       > button.Commit { color: @G }
+				  &.Commit { color: @G }
 
-		       > a.Action,
-		       > button.Action { color: @B; }
+				  &.Action { color: @B; }
 
-		       > a.Cancel,
-		       > button.Cancel { color: @R;
-					 float: left; }
+				  &.Cancel { color: @R; float: left; }
 
-		       > a.Return,
-		       > button.Return { color: @R;
-					 float: left; }
+				  &.Return { color: @R; float: left; }
+
+				  > i,
+				  > span { order: 1;
+					   display: flex;
+					   color: inherit;
+					   cursor: inherit;
+					   font-size: 12px;
+					   margin-left: 8px;
+					   align-items: center;
+					   justify-content: center; }
+
+				  &:only-child { float: right }
+		       }
 
 		       > progress { width: calc(100% - 4px); }
 
