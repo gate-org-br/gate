@@ -1,7 +1,7 @@
 package gate.sql.select;
 
 import gate.io.StringReader;
-import gate.lang.property.Property;
+import gate.lang.property.Entity;
 import gate.sql.Clause;
 import gate.sql.Formatter;
 import gate.sql.GQN;
@@ -146,7 +146,7 @@ public class Select implements Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.of(conditions)
-						.flatMap(Condition::getParameters);
+					.flatMap(Condition::getParameters);
 			}
 		};
 	}
@@ -236,15 +236,15 @@ public class Select implements Clause
 		OrderBy.Ordering ordering = GQN.getOrderBy();
 
 		return ordering != null
-				? Select.from(type)
-						.properties(GQN.getProperties())
-						.where(GQN.getCondition(Property::getFullColumnName))
-						.orderBy(ordering)
-						.build()
-				: Select.from(type)
-						.properties(GQN.getProperties())
-						.where(GQN.getCondition(Property::getFullColumnName))
-						.build();
+			? Select.from(type)
+				.properties(GQN.getProperties())
+				.where(GQN.getCondition(e -> Entity.getFullColumnName(e)))
+				.orderBy(ordering)
+				.build()
+			: Select.from(type)
+				.properties(GQN.getProperties())
+				.where(GQN.getCondition(e -> Entity.getFullColumnName(e)))
+				.build();
 	}
 
 	/**
@@ -265,15 +265,15 @@ public class Select implements Clause
 		OrderBy.Ordering ordering = GQN.getOrderBy();
 
 		return ordering != null
-				? Select.from(type)
-						.properties(GQN.getProperties())
-						.where(GQN.getCondition(object))
-						.orderBy(ordering)
-						.build()
-				: Select.from(type)
-						.properties(GQN.getProperties())
-						.where(GQN.getCondition(object))
-						.build();
+			? Select.from(type)
+				.properties(GQN.getProperties())
+				.where(GQN.getCondition(object))
+				.orderBy(ordering)
+				.build()
+			: Select.from(type)
+				.properties(GQN.getProperties())
+				.where(GQN.getCondition(object))
+				.build();
 	}
 
 	public static <T> TypedSelect<T> from(Class<T> type)

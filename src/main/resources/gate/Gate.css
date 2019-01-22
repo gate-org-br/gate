@@ -189,7 +189,7 @@ input[type='file'] {
 input:invalid,
 select:invalid,
 textarea:invalid {
-  border-color: #FF8888;
+  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.6);
 }
 textarea {
   resize: none;
@@ -1590,10 +1590,6 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-weight: bold;
   text-align: center;
 }
-*.COOLBAR:first-child,
-*.Coolbar:first-child {
-  margin-top: 0px;
-}
 *.COOLBAR,
 *.Coolbar {
   margin: 0;
@@ -1654,23 +1650,6 @@ table.TREEVIEW > tbody > tr > td:first-child {
   outline: none;
   border: 2px solid #FFFACD;
 }
-*.COOLBAR > a > i,
-*.Coolbar > a > i,
-*.COOLBAR > a > span,
-*.Coolbar > a > span,
-*.COOLBAR > button > i,
-*.Coolbar > button > i,
-*.COOLBAR > button > span,
-*.Coolbar > button > span {
-  order: 1;
-  display: flex;
-  color: inherit;
-  cursor: inherit;
-  font-size: 12px;
-  margin-left: 8px;
-  align-items: center;
-  justify-content: center;
-}
 *.COOLBAR > a.Delete,
 *.Coolbar > a.Delete,
 *.COOLBAR > button.Delete,
@@ -1702,6 +1681,29 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > button.Return {
   color: #660000;
   float: left;
+}
+*.COOLBAR > a > i,
+*.Coolbar > a > i,
+*.COOLBAR > button > i,
+*.Coolbar > button > i,
+*.COOLBAR > a > span,
+*.Coolbar > a > span,
+*.COOLBAR > button > span,
+*.Coolbar > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 8px;
+  align-items: center;
+  justify-content: center;
+}
+*.COOLBAR > a:only-child,
+*.Coolbar > a:only-child,
+*.COOLBAR > button:only-child,
+*.Coolbar > button:only-child {
+  float: right;
 }
 *.COOLBAR > progress,
 *.Coolbar > progress {
@@ -1782,35 +1784,11 @@ div.PageControl:first-child,
 div.LinkControl:first-child {
   margin-top: 0px;
 }
-div.PageControl {
-  border: none;
-  margin: 10px 0 10px 0;
-  background-color: transparent;
-}
-div.PageControl > div {
-  display: none;
-}
-div.PageControl > ul > li > div {
-  display: none;
-}
-div.PageControl > div > iframe,
-div.LinkControl > div > iframe {
-  width: 100%;
-  border: none;
-}
 div.PageControl > ul,
 div.LinkControl > ul {
   margin: 0px;
   padding: 0px;
   list-style: none;
-}
-div.PageControl > div,
-div.LinkControl > div {
-  clear: both;
-  padding: 10px;
-  border-color: #c3c0b0;
-  background-color: #c3c0b0;
-  border-radius: 0px 0px 0px 0px;
 }
 div.PageControl > ul > li,
 div.LinkControl > ul > li {
@@ -1826,9 +1804,18 @@ div.LinkControl > ul > li[data-selected=true] {
   border-color: #c3c0b0;
   background-color: #c3c0b0;
 }
+div.PageControl > ul > li[data-selected=true] > a,
+div.LinkControl > ul > li[data-selected=true] > a,
+div.PageControl > ul > li[data-selected=true] > button,
+div.LinkControl > ul > li[data-selected=true] > button {
+  color: black;
+  color: #432F21;
+  font-weight: bold;
+  background-color: #c3c0b0;
+}
 div.PageControl > ul > li > a,
-div.PageControl > ul > li > button,
 div.LinkControl > ul > li > a,
+div.PageControl > ul > li > button,
 div.LinkControl > ul > li > button {
   width: 100%;
   border: none;
@@ -1843,11 +1830,32 @@ div.LinkControl > ul > li > button {
   align-items: center;
   justify-content: space-between;
 }
+div.PageControl > ul > li > a > i,
+div.LinkControl > ul > li > a > i,
+div.PageControl > ul > li > button > i,
+div.LinkControl > ul > li > button > i,
+div.PageControl > ul > li > a > span,
+div.LinkControl > ul > li > a > span,
+div.PageControl > ul > li > button > span,
+div.LinkControl > ul > li > button > span {
+  order: 1;
+  color: #432F21;
+}
 div.PageControl > ul > li > a:hover,
 div.LinkControl > ul > li > a:hover,
 div.PageControl > ul > li > button:hover,
 div.LinkControl > ul > li > button:hover {
   color: #CA171B;
+}
+div.PageControl > ul > li > a:hover > i,
+div.LinkControl > ul > li > a:hover > i,
+div.PageControl > ul > li > button:hover > i,
+div.LinkControl > ul > li > button:hover > i,
+div.PageControl > ul > li > a:hover > span,
+div.LinkControl > ul > li > a:hover > span,
+div.PageControl > ul > li > button:hover > span,
+div.LinkControl > ul > li > button:hover > span {
+  color: #432F21;
 }
 div.PageControl > ul > li > a:focus,
 div.LinkControl > ul > li > a:focus,
@@ -1856,35 +1864,29 @@ div.LinkControl > ul > li > button:focus {
   border: none;
   outline: none;
 }
-div.PageControl > ul > li[data-selected=true] > a,
-div.LinkControl > ul > li[data-selected=true] > a,
-div.PageControl > ul > li[data-selected=true] > button,
-div.LinkControl > ul > li[data-selected=true] > button {
-  color: black;
-  color: #432F21;
-  font-weight: bold;
+div.PageControl > div,
+div.LinkControl > div {
+  clear: both;
+  padding: 10px;
+  border-color: #c3c0b0;
   background-color: #c3c0b0;
+  border-radius: 0px 0px 0px 0px;
 }
-div.PageControl > ul > li > a > i,
-div.LinkControl > ul > li > a > i,
-div.PageControl > ul > li > a > span,
-div.LinkControl > ul > li > a > span,
-div.PageControl > ul > li > button > i,
-div.LinkControl > ul > li > button > i,
-div.PageControl > ul > li > button > span,
-div.LinkControl > ul > li > button > span {
-  color: #432F21;
-  order: 1;
+div.PageControl > div iframe,
+div.LinkControl > div iframe {
+  width: 100%;
+  border: none;
 }
-div.PageControl > ul > li > a:hover > i,
-div.LinkControl > ul > li > a:hover > i,
-div.PageControl > ul > li > a:hover > span,
-div.LinkControl > ul > li > a:hover > span,
-div.PageControl > ul > li > button:hover > i,
-div.LinkControl > ul > li > button:hover > i,
-div.PageControl > ul > li > button:hover > span,
-div.LinkControl > ul > li > button:hover > span {
-  color: #432F21;
+div.PageControl {
+  border: none;
+  margin: 10px 0 10px 0;
+  background-color: transparent;
+}
+div.PageControl > div {
+  display: none;
+}
+div.PageControl > ul > li > div {
+  display: none;
 }
 div.LinkControl > ul > li > a[data-icon],
 div.LinkControl > ul > li > button[data-icon] {
@@ -1937,6 +1939,7 @@ ul.HMenu li > a {
   align-items: center;
   justify-content: space-between;
   background-color: #e6e5dc;
+  border: 1px solid #b9c6cd;
 }
 ul.HMenu li > a > i {
   order: 1;
@@ -1954,9 +1957,6 @@ ul.HMenu li > ul > li {
   top: -1px;
   width: 100%;
   flex-basis: 40px;
-}
-ul.HMenu li > a {
-  border: 1px solid #CDCAB9;
 }
 ul.HMenu > li:not(:first-of-type) > a {
   border-left: none;

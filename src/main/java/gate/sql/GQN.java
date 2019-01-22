@@ -1,5 +1,6 @@
 package gate.sql;
 
+import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.PropertyCondition;
@@ -36,9 +37,9 @@ public class GQN<T>
 	public List<Property> getProperties()
 	{
 		return Stream.of(notation)
-				.map(e -> GQN.getProperty(e))
-				.map(e -> Property.getProperty(type, e))
-				.collect(Collectors.toList());
+			.map(e -> GQN.getProperty(e))
+			.map(e -> Property.getProperty(type, e))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -58,7 +59,7 @@ public class GQN<T>
 		for (String string : notation)
 		{
 			Property property = Property
-					.getProperty(type, GQN.getProperty(string));
+				.getProperty(type, GQN.getProperty(string));
 			switch (GQN.getCondition(string))
 			{
 				case "=":
@@ -119,10 +120,10 @@ public class GQN<T>
 			switch (predicate)
 			{
 				case "@":
-					condition = condition.and(property.getFullColumnName()).isNull();
+					condition = condition.and(Entity.getFullColumnName(property)).isNull();
 					break;
 				case "!@":
-					condition = condition.and().not(property.getFullColumnName()).isNull();
+					condition = condition.and().not(Entity.getFullColumnName(property)).isNull();
 					break;
 				default:
 					Object value = property.getValue(object);
@@ -130,28 +131,28 @@ public class GQN<T>
 						switch (predicate)
 						{
 							case "=":
-								condition = condition.and(property.getFullColumnName()).eq(value);
+								condition = condition.and(Entity.getFullColumnName(property)).eq(value);
 								break;
 							case "!=":
-								condition = condition.and(property.getFullColumnName()).ne(value);
+								condition = condition.and(Entity.getFullColumnName(property)).ne(value);
 								break;
 							case ">":
-								condition = condition.and(property.getFullColumnName()).gt(value);
+								condition = condition.and(Entity.getFullColumnName(property)).gt(value);
 								break;
 							case "!<":
-								condition = condition.and(property.getFullColumnName()).ge(value);
+								condition = condition.and(Entity.getFullColumnName(property)).ge(value);
 								break;
 							case "<":
-								condition = condition.and(property.getFullColumnName()).lt(value);
+								condition = condition.and(Entity.getFullColumnName(property)).lt(value);
 								break;
 							case "!>":
-								condition = condition.and(property.getFullColumnName()).le(value);
+								condition = condition.and(Entity.getFullColumnName(property)).le(value);
 								break;
 							case "%":
-								condition = condition.and(property.getFullColumnName()).lk(value);
+								condition = condition.and(Entity.getFullColumnName(property)).lk(value);
 								break;
 							case "!%":
-								condition = condition.and().not(property.getFullColumnName()).lk(value);
+								condition = condition.and().not(Entity.getFullColumnName(property)).lk(value);
 								break;
 						}
 			}
@@ -348,14 +349,14 @@ public class GQN<T>
 	{
 		int i = 0;
 		while (i < GQN.length()
-				&& (GQN.charAt(i) == '!'
-				|| GQN.charAt(i) == '='
-				|| GQN.charAt(i) == '>'
-				|| GQN.charAt(i) == '<'
-				|| GQN.charAt(i) == '%'
-				|| GQN.charAt(i) == '@'
-				|| GQN.charAt(i) == '+'
-				|| GQN.charAt(i) == '-'))
+			&& (GQN.charAt(i) == '!'
+			|| GQN.charAt(i) == '='
+			|| GQN.charAt(i) == '>'
+			|| GQN.charAt(i) == '<'
+			|| GQN.charAt(i) == '%'
+			|| GQN.charAt(i) == '@'
+			|| GQN.charAt(i) == '+'
+			|| GQN.charAt(i) == '-'))
 			i++;
 
 		if (i == GQN.length())
