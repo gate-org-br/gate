@@ -1,4 +1,5 @@
-th[data-sortable] > a::before { font-size: 16px }
-th[data-sortable="N"] > a::before { content: " ";  }
-th[data-sortable="U"] > a::before { content: "\2191" }
-th[data-sortable="D"] > a::before { content: "\2193" }
+th[data-sortable] { cursor: pointer; color: @B}
+th[data-sortable]::before { font-size: 16px; }
+th[data-sortable="N"]::before { content: " ";  }
+th[data-sortable="U"]::before { content: "\2191 " }
+th[data-sortable="D"]::before { content: "\2193 " }

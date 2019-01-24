@@ -27,31 +27,33 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	Array.from(document.querySelectorAll("th[data-sortable] > a")).forEach(function (link)
+	Array.from(document.querySelectorAll("th[data-sortable]")).forEach(function (link)
 	{
-		link.parentNode.setAttribute("data-sortable", "N");
+		link.setAttribute("data-sortable", "N");
 		link.addEventListener("click", function ()
 		{
-			switch (this.parentNode.getAttribute("data-sortable"))
+			switch (this.getAttribute("data-sortable"))
 			{
 				case "N":
-					Array.from(this.parentNode.parentNode.children)
+					Array.from(this.parentNode.children)
+						.filter(e => e.hasAttribute("data-sortable"))
 						.forEach(e => e.setAttribute("data-sortable", "N"));
-					this.parentNode.setAttribute("data-sortable", "U");
+					this.setAttribute("data-sortable", "U");
 					break;
 				case "U":
-					this.parentNode.setAttribute("data-sortable", "D");
+					this.setAttribute("data-sortable", "D");
 					break;
 				case "D":
-					this.parentNode.setAttribute("data-sortable", "U");
+					this.setAttribute("data-sortable", "U");
 					break;
 			}
 
-			Array.from(this.parentNode.parentNode.parentNode.parentNode.children)
+			Array.from(this.parentNode.parentNode.parentNode.children)
 				.filter(e => e.tagName.toUpperCase() === "TBODY")
 				.forEach(e => e.sort(Array.prototype.indexOf
-						.call(this.parentNode.parentNode.children, this.parentNode),
-						this.parentNode.getAttribute("data-sortable")));
+						.call(this.parentNode.children, this),
+						this.getAttribute("data-sortable")));
 		});
 	});
 });
+
