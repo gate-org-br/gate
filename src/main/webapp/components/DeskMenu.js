@@ -1,48 +1,50 @@
 function DeskMenu(deskMenu)
 {
-	Array.from(deskMenu.getElementsByTagName("li"))
-		.forEach(e => new DeskMenuIcon(e));
+	Array.from(deskMenu.getElementsByTagName("a"))
+		.forEach(element => new DeskMenuIcon(element));
 
 	function DeskMenuIcon(deskMenuIcon)
 	{
-		var icons = Array.from(deskMenuIcon.children)
+		var icons = Array.from(deskMenuIcon.parentNode.children)
 			.filter(e => e.tagName.toLowerCase() === "ul")
 			.flatMap(e => Array.from(e.children));
 
 		if (icons.length > 0)
 		{
-			deskMenuIcon.onclick = function ()
+			deskMenuIcon.addEventListener("click", function (event)
 			{
-				var reset = deskMenu.appendChild
-					(new Reset(Array.from(deskMenu.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				deskMenu.appendChild(reset);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				var children = Array.from(deskMenu.children);
+				children.forEach(e => deskMenu.removeChild(e));
+				icons.forEach(e => deskMenu.appendChild(e));
+				deskMenu.appendChild(new Reset(children));
+			});
 		}
 
-		function Reset(icons, width, height)
+		function Reset(icons)
 		{
 			var li = document.createElement("li");
 			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");
 			a.innerHTML = "Retornar";
-			a.setAttribute("data-icon", "\u2232");
 
-			li.onclick = function ()
+			a.appendChild(document.createElement("i"))
+				.innerHTML = "&#X2232";
+
+			a.addEventListener("click", function (event)
 			{
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				Array.from(deskMenu.children).forEach(e => deskMenu.removeChild(e));
+				icons.forEach(e => deskMenu.appendChild(e));
+			});
 			return li;
 		}
 	}

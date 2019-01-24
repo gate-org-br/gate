@@ -346,12 +346,15 @@ ul.DeskMenu a {
 ul.DeskMenu ul {
   margin: 0;
   padding: 0;
+  display: none;
 }
 ul.DeskMenu > li {
   width: 9%;
   margin: 0.5%;
+  display: flex;
   border-radius: 5px;
   list-style-type: none;
+  flex-direction: column;
   background-color: white;
   border: 1px solid #CCCCCC;
 }
@@ -363,20 +366,30 @@ ul.DeskMenu > li > button {
   padding: 8px;
   height: 100%;
   display: flex;
+  font-size: 20px;
   text-align: center;
   align-items: center;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 }
-ul.DeskMenu > li > a::before,
-ul.DeskMenu > li > button::before {
+ul.DeskMenu > li > a > i,
+ul.DeskMenu > li > button > i {
+  order: -1;
+  margin: 8px;
+  font-size: 28px;
+}
+ul.DeskMenu > li a[data-icon]::before,
+ul.DeskMenu > li button[data-icon]::before {
   padding: 8px;
   font-size: 32px;
   font-family: gate;
-}
-ul.DeskMenu > li > a[data-icon]::before,
-ul.DeskMenu > li > button[data-icon]::before {
   content: attr(data-icon);
+}
+ul.DeskMenu > li nav {
+  height: 32px;
+  margin: 4px;
+  flex-grow: 1;
+  width: calc(100% - 8px);
 }
 ul.DeskMenu > li > * {
   width: 100%;
@@ -387,11 +400,7 @@ ul.DeskMenu > li > *:first-child {
 ul.DeskMenu > li > *:last-child {
   border-radius: 0 0 5px 5px;
 }
-ul.DeskMenu ul {
-  display: none;
-}
 ul.DeskMenu > li.Reset > a {
-  font-size: 20px;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
 }
@@ -467,10 +476,11 @@ ul.DeskPane > li > a > img {
   order: -1;
   margin-right: 8px;
 }
+ul.DeskPane > li.Reset {
+  color: #006600;
+}
 ul.DeskPane > li.Reset > a {
   font-size: 20px;
-  border-radius: 5px;
-  background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
 }
 @font-face {
   font-family: 'gate';
