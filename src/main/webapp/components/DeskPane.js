@@ -1,13 +1,7 @@
 function DeskPane(deskPane)
 {
-	Array.from(deskPane.children)
-		.filter(li => li.tagName.toLowerCase() === "li")
-		.forEach(function (li)
-		{
-			Array.from(li.children)
-				.filter(a => a.tagName.toLowerCase() === "a")
-				.forEach(a => new DeskPaneIcon(a));
-		});
+	Array.from(deskPane.getElementsByTagName("a"))
+		.forEach(element => new DeskPaneIcon(element));
 
 	function DeskPaneIcon(deskPaneIcon)
 	{
@@ -22,38 +16,35 @@ function DeskPane(deskPane)
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				var reset = deskPane.appendChild
-					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				deskPane.appendChild(reset);
+
+				var children = Array.from(deskPane.children);
+				children.forEach(e => deskPane.removeChild(e));
+				icons.forEach(e => deskPane.appendChild(e));
+				deskPane.appendChild(new Reset(children));
 			});
 		}
 
-		function Reset(icons, width, height)
+		function Reset(icons)
 		{
 			var li = document.createElement("li");
 			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
-			li.style.color = "@G";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");
 			a.innerHTML = "Retornar";
 
-			var i = a.appendChild(document.createElement("i"));
-			i.innerHTML = "&#X2232";
+			a.appendChild(document.createElement("i"))
+				.innerHTML = "&#X2232";
 
-			li.onclick = function ()
+			a.addEventListener("click", function (event)
 			{
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				Array.from(deskPane.children).forEach(e => deskPane.removeChild(e));
+				icons.forEach(e => deskPane.appendChild(e));
+			});
 			return li;
 		}
 	}
@@ -64,3 +55,4 @@ window.addEventListener("load", function ()
 	Array.from(document.querySelectorAll("ul.DeskPane"))
 		.forEach(element => new DeskPane(element));
 });
+
