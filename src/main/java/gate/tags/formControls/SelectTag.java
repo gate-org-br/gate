@@ -30,7 +30,7 @@ public class SelectTag extends SelectorTag
 				throw new IOException("No option defined for property " + getProperty());
 
 		if (sortby != null)
-			Toolkit
+			options = Toolkit
 				.collection(options)
 				.stream()
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
@@ -47,7 +47,7 @@ public class SelectTag extends SelectorTag
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
 				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
 			{
-				getJspContext().getOut().print("<optgroup label='" + Converter.toText(group.getKey()) + "'");
+				getJspContext().getOut().print("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
 				print(0, group.getValue());
 				getJspContext().getOut().print("</optgroup>");
 			}
