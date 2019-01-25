@@ -1,12 +1,12 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
+import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
-import gate.lang.property.Property;
-import gate.converter.Converter;
 import gate.lang.property.Entity;
-
+import gate.lang.property.Property;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,15 +43,16 @@ public class EntityConverter implements Converter
 			if (string != null && string.trim().length() > 0)
 			{
 				Property property = Property.getProperty(type, Entity.getId(type));
-				Object entity = type.newInstance();
+				Object entity = type.getDeclaredConstructor().newInstance();
 				property.setValue(entity, Converter
-						.getConverter(property.getRawType())
-						.ofString(property.getRawType(), string));
+					.getConverter(property.getRawType())
+					.ofString(property.getRawType(), string));
 				return entity;
 			}
 
 			return null;
-		} catch (InstantiationException | IllegalAccessException | ConversionException | RuntimeException e)
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+			| InvocationTargetException | ConversionException | RuntimeException e)
 		{
 			throw new ConversionException(String.format("%s não é uma entidade válida.", string));
 		}
@@ -65,7 +66,7 @@ public class EntityConverter implements Converter
 			if (object == null)
 				return "";
 			return Converter.toString(Property.getProperty(type, Entity.getId(type))
-					.getValue(object));
+				.getValue(object));
 		} catch (RuntimeException e)
 		{
 			throw new AppError(e);
@@ -86,7 +87,7 @@ public class EntityConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException,
-			ConversionException
+		ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(Object.class, value);
@@ -101,7 +102,7 @@ public class EntityConverter implements Converter
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException,
-			ConversionException
+		ConversionException
 	{
 		if (value != null)
 			ps.setString(fields++, toString(Object.class, value));

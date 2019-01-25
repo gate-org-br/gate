@@ -1,6 +1,7 @@
 package gate.converter;
 
 import gate.error.AppError;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -71,13 +72,14 @@ public class Converters
 			{
 				if (e.isAnnotationPresent(gate.annotation.Converter.class))
 					return e.getAnnotation(gate.annotation.Converter.class)
-							.value().newInstance();
+						.value().getDeclaredConstructor().newInstance();
 
 				Class<?> supertype = e.getSuperclass();
 				if (supertype == null)
 					supertype = Object.class;
 				return get(supertype);
-			} catch (InstantiationException | IllegalAccessException ex)
+			} catch (InstantiationException | IllegalAccessException
+				| NoSuchMethodException | InvocationTargetException ex)
 			{
 				throw new AppError(ex);
 			}

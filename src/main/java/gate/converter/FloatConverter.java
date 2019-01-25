@@ -6,7 +6,6 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import java.lang.reflect.Type;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,7 +48,7 @@ public class FloatConverter implements Converter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? new Float(getFormat().parse(string).floatValue()) : null;
+			return string != null && string.trim().length() > 0 ? Float.valueOf(getFormat().parse(string).floatValue()) : null;
 		} catch (ParseException e)
 		{
 			throw new ConversionException(String.format("%s não é um decimal válido.", string));
