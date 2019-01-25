@@ -1,12 +1,8 @@
 package gate.sql.statement;
 
-import gate.error.AppError;
-import gate.error.ConversionException;
 import gate.sql.Command;
-import gate.sql.Cursor;
 import gate.sql.Link;
 import gate.sql.fetcher.Fetcher;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -111,13 +107,79 @@ class BasicQuery implements Query
 			{
 				try (Command command = createCommand())
 				{
-					try (Cursor cursor = command.getCursor())
-					{
-						return fetcher.fetch(cursor);
-					}
-				} catch (ConversionException | SQLException e)
+					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public char fetchChar()
+			{
+				try (Command command = createCommand())
 				{
-					throw new AppError(e);
+					return command.fetchChar();
+				}
+			}
+
+			@Override
+			public boolean fetchBoolean()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchBoolean();
+				}
+			}
+
+			@Override
+			public byte fetchByte()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchByte();
+				}
+			}
+
+			@Override
+			public short fetchShort()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchShort();
+				}
+			}
+
+			@Override
+			public int fetchInt()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchInt();
+				}
+			}
+
+			@Override
+			public long fetchLong()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchLong();
+				}
+			}
+
+			@Override
+			public float fetchFloat()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchFloat();
+				}
+			}
+
+			@Override
+			public double fetchDouble()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchDouble();
 				}
 			}
 
@@ -186,7 +248,7 @@ class BasicQuery implements Query
 			public Command createCommand()
 			{
 				return link.createCommand(toString())
-						.setParameters(parameters);
+					.setParameters(parameters);
 			}
 
 			@Override
@@ -194,13 +256,79 @@ class BasicQuery implements Query
 			{
 				try (Command command = createCommand())
 				{
-					try (Cursor cursor = command.getCursor())
-					{
-						return fetcher.fetch(cursor);
-					}
-				} catch (ConversionException | SQLException e)
+					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public char fetchChar()
+			{
+				try (Command command = createCommand())
 				{
-					throw new AppError(e);
+					return command.fetchChar();
+				}
+			}
+
+			@Override
+			public boolean fetchBoolean()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchBoolean();
+				}
+			}
+
+			@Override
+			public byte fetchByte()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchByte();
+				}
+			}
+
+			@Override
+			public short fetchShort()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchShort();
+				}
+			}
+
+			@Override
+			public int fetchInt()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchInt();
+				}
+			}
+
+			@Override
+			public long fetchLong()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchLong();
+				}
+			}
+
+			@Override
+			public float fetchFloat()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchFloat();
+				}
+			}
+
+			@Override
+			public double fetchDouble()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchDouble();
 				}
 			}
 
@@ -269,7 +397,7 @@ class BasicQuery implements Query
 			public Command createCommand()
 			{
 				return link.createCommand(sql)
-						.setParameters(parameters);
+					.setParameters(parameters);
 			}
 
 			@Override
@@ -277,13 +405,79 @@ class BasicQuery implements Query
 			{
 				try (Command command = createCommand())
 				{
-					try (Cursor cursor = command.getCursor())
-					{
-						return fetcher.fetch(cursor);
-					}
-				} catch (ConversionException | SQLException e)
+					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public char fetchChar()
+			{
+				try (Command command = createCommand())
 				{
-					throw new AppError(e);
+					return command.fetchChar();
+				}
+			}
+
+			@Override
+			public boolean fetchBoolean()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchBoolean();
+				}
+			}
+
+			@Override
+			public byte fetchByte()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchByte();
+				}
+			}
+
+			@Override
+			public short fetchShort()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchShort();
+				}
+			}
+
+			@Override
+			public int fetchInt()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchInt();
+				}
+			}
+
+			@Override
+			public long fetchLong()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchLong();
+				}
+			}
+
+			@Override
+			public float fetchFloat()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchFloat();
+				}
+			}
+
+			@Override
+			public double fetchDouble()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchDouble();
 				}
 			}
 
@@ -326,13 +520,79 @@ class BasicQuery implements Query
 			{
 				try (Command command = createCommand())
 				{
-					try (Cursor cursor = command.getCursor())
-					{
-						return fetcher.fetch(cursor);
-					}
-				} catch (ConversionException | SQLException e)
+					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public char fetchChar()
+			{
+				try (Command command = createCommand())
 				{
-					throw new AppError(e);
+					return command.fetchChar();
+				}
+			}
+
+			@Override
+			public boolean fetchBoolean()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchBoolean();
+				}
+			}
+
+			@Override
+			public byte fetchByte()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchByte();
+				}
+			}
+
+			@Override
+			public short fetchShort()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchShort();
+				}
+			}
+
+			@Override
+			public int fetchInt()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchInt();
+				}
+			}
+
+			@Override
+			public long fetchLong()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchLong();
+				}
+			}
+
+			@Override
+			public float fetchFloat()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchFloat();
+				}
+			}
+
+			@Override
+			public double fetchDouble()
+			{
+				try (Command command = createCommand())
+				{
+					return command.fetchDouble();
 				}
 			}
 

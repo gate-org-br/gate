@@ -1,7 +1,6 @@
 package gate.sql;
 
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.sql.fetcher.Fetcher;
 import java.sql.ResultSet;
@@ -29,15 +28,63 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	@Override
-	public <T> T fetch(Fetcher<T> handler)
+	public <T> T fetch(Fetcher<T> fetcher)
 	{
 		try
 		{
-			return handler.fetch(this);
+			return fetcher.fetch(this);
 		} catch (ConversionException | SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
+	}
+
+	@Override
+	public char fetchChar()
+	{
+		return next() ? getCurrentCharValue() : 0;
+	}
+
+	@Override
+	public boolean fetchBoolean()
+	{
+		return next() ? getCurrentBooleanValue() : false;
+	}
+
+	@Override
+	public byte fetchByte()
+	{
+		return next() ? getCurrentByteValue() : 0;
+	}
+
+	@Override
+	public short fetchShort()
+	{
+		return next() ? getCurrentShortValue() : 0;
+	}
+
+	@Override
+	public int fetchInt()
+	{
+		return next() ? getCurrentIntValue() : 0;
+	}
+
+	@Override
+	public long fetchLong()
+	{
+		return next() ? getCurrentLongValue() : 0;
+	}
+
+	@Override
+	public float fetchFloat()
+	{
+		return next() ? getCurrentFloatValue() : 0;
+	}
+
+	@Override
+	public double fetchDouble()
+	{
+		return next() ? getCurrentDoubleValue() : 0;
 	}
 
 	/**
@@ -90,9 +137,9 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return rs.isAfterLast();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -109,7 +156,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.next();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -118,14 +165,14 @@ public class Cursor implements AutoCloseable, Fetchable
 	 *
 	 * @return the index of the current record being fetched by this cursor
 	 */
-	public int getCurrentRowIndex() throws AppError
+	public int getCurrentRowIndex()
 	{
 		try
 		{
 			return rs.getRow();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -139,9 +186,9 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return rs.isClosed();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 
 	}
@@ -153,9 +200,9 @@ public class Cursor implements AutoCloseable, Fetchable
 		{
 			if (!rs.isClosed())
 				rs.close();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -185,9 +232,9 @@ public class Cursor implements AutoCloseable, Fetchable
 			T value = (T) converter.readFromResultSet(getResultSet(), column, type);
 			column += Math.max(1, converter.getSufixes().size());
 			return value;
-		} catch (ConversionException | SQLException e)
+		} catch (ConversionException | SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -204,9 +251,9 @@ public class Cursor implements AutoCloseable, Fetchable
 		{
 			Class<?> type = SQLTypeConverter.getJavaType(rs.getMetaData().getColumnType(columnIndex));
 			return Converter.getConverter(type).readFromResultSet(rs, columnIndex, type);
-		} catch (ConversionException | SQLException e)
+		} catch (ConversionException | SQLException ex)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -224,7 +271,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getByte(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -240,7 +287,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getByte(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -258,7 +305,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getShort(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -274,7 +321,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getShort(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -292,7 +339,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getInt(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -308,7 +355,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getInt(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -326,7 +373,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getLong(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -342,7 +389,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getLong(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -360,7 +407,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getFloat(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -376,7 +423,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getFloat(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -394,7 +441,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getDouble(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -410,7 +457,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getDouble(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -428,7 +475,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getBoolean(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -444,7 +491,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getBoolean(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -462,7 +509,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return (char) rs.getInt(columnIndex);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -478,7 +525,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return (char) rs.getInt(column++);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -498,7 +545,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex, type);
 		} catch (ConversionException | SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -518,7 +565,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, type);
 		} catch (ConversionException | SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -536,7 +583,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getByte(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -554,7 +601,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getShort(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -572,7 +619,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getInt(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -590,7 +637,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getLong(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -608,7 +655,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getFloat(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -626,7 +673,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getDouble(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -644,7 +691,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getBoolean(columnName);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -660,7 +707,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return rs.getMetaData().getColumnCount();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 
 	}
@@ -681,7 +728,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return names;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -701,7 +748,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return types;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -726,7 +773,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			return result;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 }
