@@ -2,6 +2,7 @@ package gate.handler;
 
 import gate.error.AppError;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,13 +53,13 @@ public class Handlers
 			{
 				if (e.isAnnotationPresent(gate.annotation.Handler.class))
 					return e.getAnnotation(gate.annotation.Handler.class)
-						.value().newInstance();
+						.value().getDeclaredConstructor().newInstance();
 
 				Class<?> supertype = e.getSuperclass();
 				if (supertype == null)
 					supertype = Object.class;
 				return get(supertype);
-			} catch (InstantiationException | IllegalAccessException ex)
+			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
 			{
 				throw new AppError(ex);
 			}
@@ -73,13 +74,14 @@ public class Handlers
 			{
 				if (e.isAnnotationPresent(gate.annotation.Handler.class))
 					return e.getAnnotation(gate.annotation.Handler.class)
-						.value().newInstance();
+						.value().getDeclaredConstructor().newInstance();
 
 				Class<?> supertype = e.getSuperclass();
 				if (supertype == null)
 					supertype = Object.class;
 				return get(supertype);
-			} catch (InstantiationException | IllegalAccessException ex)
+			} catch (InstantiationException | IllegalAccessException
+				| NoSuchMethodException | InvocationTargetException ex)
 			{
 				throw new AppError(ex);
 			}

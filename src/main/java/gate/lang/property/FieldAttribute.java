@@ -74,7 +74,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 				elementType = Object.class;
 
 			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
-				? field.getAnnotation(gate.annotation.Converter.class).value().newInstance()
+				? field.getAnnotation(gate.annotation.Converter.class).value().getDeclaredConstructor().newInstance()
 				: Converter.getConverter(field.getType());
 
 			List<Constraint.Implementation> cons = new ArrayList<>();
@@ -112,7 +112,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			} else
 				columnName = field.getName();
 
-		} catch (InstantiationException | IllegalAccessException ex)
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex);
 		}

@@ -2,7 +2,7 @@ package gate.policonverter;
 
 import gate.error.AppError;
 import gate.error.ConversionException;
-
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.Part;
@@ -37,7 +37,7 @@ public abstract class Policonverter
 						if (type.isAnnotationPresent(gate.annotation.Policonverter.class))
 						{
 							Class<? extends Policonverter> clazz = type.getAnnotation(gate.annotation.Policonverter.class).value();
-							POLICONVERTERS.put(type.getName(), clazz.newInstance());
+							POLICONVERTERS.put(type.getName(), clazz.getDeclaredConstructor().newInstance());
 						}
 
 					policonverter = POLICONVERTERS.get(type.getName());
@@ -47,9 +47,9 @@ public abstract class Policonverter
 				return policonverter;
 			} else
 				return ARRAY;
-		} catch (InstantiationException | IllegalAccessException e)
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
 		{
-			throw new AppError(e);
+			throw new AppError(ex);
 		}
 	}
 
