@@ -1,5 +1,6 @@
 package gate.sql;
 
+import gate.lang.property.Property;
 import gate.sql.fetcher.ArrayFetcher;
 import gate.sql.fetcher.ArrayListFetcher;
 import gate.sql.fetcher.DataGridFetcher;
@@ -18,7 +19,6 @@ import gate.sql.fetcher.TypedMapFetcher;
 import gate.sql.fetcher.TypedMapListFetcher;
 import gate.sql.fetcher.TypedObjectFetcher;
 import gate.sql.fetcher.TypedObjectListFetcher;
-import gate.lang.property.Property;
 import gate.type.DataGrid;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public interface Fetchable
 	/**
 	 * Fetches results using the specified Fetcher.
 	 *
-	 * @param <T>    type of results to be fetched
+	 * @param <T> type of results to be fetched
 	 * @param fecher Fetcher to be used to fetch results
 	 *
 	 * @return the results fetched as a java object of the specified type
@@ -43,8 +43,7 @@ public interface Fetchable
 	/**
 	 * Fetches the first column of the first row as a java object.
 	 *
-	 * @return an Optional describing the first column of the first row as a java object or an empty
-	 *         Optional if the result is empty
+	 * @return an Optional describing the first column of the first row as a java object or an empty Optional if the result is empty
 	 */
 	public default Optional<Object> fetchObject()
 	{
@@ -54,11 +53,10 @@ public interface Fetchable
 	/**
 	 * Fetches the first column of the first row as a java object of the specified type.
 	 *
-	 * @param <T>  type of the object fetched
+	 * @param <T> type of the object fetched
 	 * @param type type of the object to be fetched
 	 *
-	 * @return an Optional describing the first column of the first row as a java object of the specified type or an
-	 *         empty Optional if the result is empty
+	 * @return an Optional describing the first column of the first row as a java object of the specified type or an empty Optional if the result is empty
 	 */
 	public default <T> Optional<T> fetchObject(Class<T> type)
 	{
@@ -78,7 +76,7 @@ public interface Fetchable
 	/**
 	 * Fetches the first column of each row as as list of java objects of the specified type.
 	 *
-	 * @param <T>  type of the objects fetched
+	 * @param <T> type of the objects fetched
 	 * @param type type of the objects to be fetched
 	 *
 	 * @return the first column of each row as as list of java objects of the specified type
@@ -91,8 +89,7 @@ public interface Fetchable
 	/**
 	 * Fetches the first row as a java Array.
 	 *
-	 * @return an Optional describing the first row as a java array or an empty Optional if the
-	 *         result is empty
+	 * @return an Optional describing the first row as a java array or an empty Optional if the result is empty
 	 */
 	public default Optional<Object[]> fetchArray()
 	{
@@ -104,8 +101,7 @@ public interface Fetchable
 	 *
 	 * @param types types of objects to be fetched
 	 *
-	 * @return an Optional describing the first row as a java array of the specified types or an empty Optional if the
-	 *         result is empty
+	 * @return an Optional describing the first row as a java array of the specified types or an empty Optional if the result is empty
 	 */
 	public default Optional<Object[]> fetchArray(Class<?>... types)
 	{
@@ -137,8 +133,8 @@ public interface Fetchable
 	/**
 	 * Fetches the first row as a map whose keys are the column names and values are the column values.
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column
-	 *         values or an empty Optional if the result is empty
+	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values or an empty Optional if the
+	 * result is empty
 	 */
 	public default Optional<Map<String, Object>> fetchMap()
 	{
@@ -146,13 +142,12 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches the first row as a map whose keys are the column names and values are the column values as objects of the
-	 * specified types.
+	 * Fetches the first row as a map whose keys are the column names and values are the column values as objects of the specified types.
 	 *
 	 * @param types types of the objects to be fetched
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column
-	 *         values as objects of the specified type or an empty Optional if the result is empty
+	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values as objects of the specified
+	 * type or an empty Optional if the result is empty
 	 */
 	public default Optional<Map<String, Object>> fetchMap(Class<?>... types)
 	{
@@ -170,13 +165,11 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches each row as a list of maps whose keys are the column names and values are the column values as objects of
-	 * the specified types.
+	 * Fetches each row as a list of maps whose keys are the column names and values are the column values as objects of the specified types.
 	 *
 	 * @param types types of the objects to be fetched
 	 *
-	 * @return each row as a list of maps whose keys are the column names and values are the column values as objects of
-	 *         the specified types
+	 * @return each row as a list of maps whose keys are the column names and values are the column values as objects of the specified types
 	 */
 	public default List<Map<String, Object>> fetchMapList(Class<?>... types)
 	{
@@ -184,14 +177,13 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches first row as a java object of the specified type with it's properties set to their respective column
-	 * values.
+	 * Fetches first row as a java object of the specified type with it's properties set to their respective column values.
 	 *
-	 * @param <T>  type of the object fetched
+	 * @param <T> type of the object fetched
 	 * @param type type of the object to be fetched
 	 *
-	 * @return an Optional describing the first row of the result as a java object of the specified type with it's
-	 *         properties set to their respective column values or an empty Optional if result is empty
+	 * @return an Optional describing the first row of the result as a java object of the specified type with it's properties set to their respective column
+	 * values or an empty Optional if result is empty
 	 */
 	public default <T> Optional<T> fetchEntity(Class<T> type)
 	{
@@ -199,14 +191,12 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches each row as a list of java objects of the specified type with it's properties set to their respective
-	 * column values.
+	 * Fetches each row as a list of java objects of the specified type with it's properties set to their respective column values.
 	 *
-	 * @param <T>  type of the objects fetched
+	 * @param <T> type of the objects fetched
 	 * @param type type of the objects to be fetched
 	 *
-	 * @return each row as a list of java objects of the specified type with it's properties set to their respective
-	 *         column values
+	 * @return each row as a list of java objects of the specified type with it's properties set to their respective column values
 	 */
 	public default <T> List<T> fetchEntityList(Class<T> type)
 	{
@@ -214,15 +204,13 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches each row as a list of java object of the specified type with the specified properties set to their
-	 * respective column values.
+	 * Fetches each row as a list of java object of the specified type with the specified properties set to their respective column values.
 	 *
-	 * @param <T>        type of the object fetched
-	 * @param type       Type of the java object to be fetched
+	 * @param <T> type of the object fetched
+	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *
-	 * @return a list of java object of the specified type with the specified properties set to their respective column
-	 *         values
+	 * @return a list of java object of the specified type with the specified properties set to their respective column values
 	 */
 	public default <T> List<T> fetchEntityList(Class<T> type, List<Property> properties)
 	{
@@ -230,15 +218,13 @@ public interface Fetchable
 	}
 
 	/**
-	 * Fetches each row as a list of java object of the specified type with the specified properties set to their
-	 * respective column values.
+	 * Fetches each row as a list of java object of the specified type with the specified properties set to their respective column values.
 	 *
-	 * @param <T>        type of the object fetched
-	 * @param type       Type of the java object to be fetched
+	 * @param <T> type of the object fetched
+	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *
-	 * @return a list of java object of the specified type with the specified properties set to their respective column
-	 *         values
+	 * @return a list of java object of the specified type with the specified properties set to their respective column values
 	 */
 	public default <T> List<T> fetchEntityList(Class<T> type, String... properties)
 	{
@@ -266,4 +252,60 @@ public interface Fetchable
 	{
 		return fetch(new TypedDataGridFetcher(types));
 	}
+
+	/**
+	 * Fetches a boolean value from database.
+	 *
+	 * @return the result fetched as a java boolean
+	 */
+	public boolean fetchBoolean();
+
+	/**
+	 * Fetches a char value from database.
+	 *
+	 * @return the result fetched as a java char
+	 */
+	public char fetchChar();
+
+	/**
+	 * Fetches a byte value from database.
+	 *
+	 * @return the result fetched as a java byte
+	 */
+	public byte fetchByte();
+
+	/**
+	 * Fetches a short value from database.
+	 *
+	 * @return the result fetched as a java short
+	 */
+	public short fetchShort();
+
+	/**
+	 * Fetches an int value from database.
+	 *
+	 * @return the result fetched as a java int
+	 */
+	public int fetchInt();
+
+	/**
+	 * Fetches a long value from database.
+	 *
+	 * @return the result fetched as a java long
+	 */
+	public long fetchLong();
+
+	/**
+	 * Fetches a float value from database.
+	 *
+	 * @return the result fetched as a java float
+	 */
+	public float fetchFloat();
+
+	/**
+	 * Fetches a double value from database.
+	 *
+	 * @return the result fetched as a java double
+	 */
+	public double fetchDouble();
 }

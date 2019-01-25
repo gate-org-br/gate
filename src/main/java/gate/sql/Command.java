@@ -1,15 +1,13 @@
 package gate.sql;
 
+import gate.converter.Converter;
+import gate.error.ConstraintViolationException;
+import gate.error.ConversionException;
+import gate.error.DatabaseException;
 import gate.error.FKViolationException;
 import gate.error.UKViolationException;
-import gate.error.DatabaseException;
-import gate.error.ConstraintViolationException;
-import gate.error.AppError;
-import gate.error.ConversionException;
-import gate.converter.Converter;
 import gate.sql.fetcher.Fetcher;
 import java.sql.PreparedStatement;
-
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
@@ -47,7 +45,7 @@ public class Command implements AutoCloseable, Fetchable
 			return this;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -58,7 +56,7 @@ public class Command implements AutoCloseable, Fetchable
 			ps.setQueryTimeout(max);
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -69,7 +67,7 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.getMaxRows();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -80,7 +78,7 @@ public class Command implements AutoCloseable, Fetchable
 			return new Cursor(this, ps.executeQuery());
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -110,12 +108,12 @@ public class Command implements AutoCloseable, Fetchable
 		} catch (SQLException e)
 		{
 			DatabaseException.handle(link, e);
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
 	public <T> Optional<T> execute(Class<T> type)
-			throws ConstraintViolationException, FKViolationException, UKViolationException
+		throws ConstraintViolationException, FKViolationException, UKViolationException
 	{
 		execute();
 		return getGeneratedKey(type);
@@ -128,7 +126,7 @@ public class Command implements AutoCloseable, Fetchable
 			return new Cursor(this, ps.getGeneratedKeys());
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -137,8 +135,8 @@ public class Command implements AutoCloseable, Fetchable
 		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next()
-					? Optional.of(cursor.getCurrentValue(type))
-					: Optional.empty();
+				? Optional.of(cursor.getCurrentValue(type))
+				: Optional.empty();
 		}
 	}
 
@@ -149,7 +147,7 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.isClosed();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -161,7 +159,115 @@ public class Command implements AutoCloseable, Fetchable
 			ps.close();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	public int setChar(int index, char value)
+	{
+		try
+		{
+			ps.setInt(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setBoolean(int index, boolean value)
+	{
+		try
+		{
+			ps.setBoolean(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setByte(int index, byte value)
+	{
+		try
+		{
+			ps.setByte(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setShort(int index, short value)
+	{
+		try
+		{
+			ps.setShort(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setInt(int index, int value)
+	{
+		try
+		{
+			ps.setInt(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setLong(int index, long value)
+	{
+		try
+		{
+			ps.setLong(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setFloatParameter(int index, float value)
+	{
+		try
+		{
+			ps.setFloat(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setDoubleParameter(int index, double value)
+	{
+		try
+		{
+			ps.setDouble(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public int setNull(int index)
+	{
+		try
+		{
+			ps.setNull(index, Types.VARCHAR);
+			return index + 1;
+		} catch (SQLException e)
+		{
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -170,22 +276,10 @@ public class Command implements AutoCloseable, Fetchable
 		try
 		{
 			return Converter.getConverter(type)
-					.writeToPreparedStatement(getPreparedStatement(), index, object);
+				.writeToPreparedStatement(getPreparedStatement(), index, object);
 		} catch (SQLException | ConversionException e)
 		{
-			throw new AppError(e);
-		}
-	}
-
-	public int setNullParameter(int index)
-	{
-		try
-		{
-			ps.setNull(index, Types.VARCHAR);
-			return index + 1;
-		} catch (SQLException e)
-		{
-			throw new AppError(e);
+			throw new UnsupportedOperationException(e);
 		}
 	}
 
@@ -198,7 +292,7 @@ public class Command implements AutoCloseable, Fetchable
 	public int setParameter(int index, Object object)
 	{
 		if (object == null)
-			return setNullParameter(index);
+			return setNull(index);
 		return setParameter(object.getClass(), index, object);
 	}
 
@@ -222,9 +316,81 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public <T> T fetch(Fetcher<T> fecher)
 	{
-		try (Cursor rs = getCursor())
+		try (Cursor cursor = getCursor())
 		{
-			return rs.fetch(fecher);
+			return cursor.fetch(fecher);
+		}
+	}
+
+	@Override
+	public char fetchChar()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchChar();
+		}
+	}
+
+	@Override
+	public boolean fetchBoolean()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchBoolean();
+		}
+	}
+
+	@Override
+	public byte fetchByte()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchByte();
+		}
+	}
+
+	@Override
+	public short fetchShort()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchShort();
+		}
+	}
+
+	@Override
+	public int fetchInt()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchInt();
+		}
+	}
+
+	@Override
+	public long fetchLong()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchInt();
+		}
+	}
+
+	@Override
+	public float fetchFloat()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchFloat();
+		}
+	}
+
+	@Override
+	public double fetchDouble()
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return cursor.fetchDouble();
 		}
 	}
 }
