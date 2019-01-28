@@ -1435,49 +1435,51 @@ window.addEventListener("load", function ()
 });
 function DeskMenu(deskMenu)
 {
-	Array.from(deskMenu.getElementsByTagName("li"))
-		.forEach(e => new DeskMenuIcon(e));
+	Array.from(deskMenu.getElementsByTagName("a"))
+		.forEach(element => new DeskMenuIcon(element));
 
 	function DeskMenuIcon(deskMenuIcon)
 	{
-		var icons = Array.from(deskMenuIcon.children)
+		var icons = Array.from(deskMenuIcon.parentNode.children)
 			.filter(e => e.tagName.toLowerCase() === "ul")
 			.flatMap(e => Array.from(e.children));
 
 		if (icons.length > 0)
 		{
-			deskMenuIcon.onclick = function ()
+			deskMenuIcon.addEventListener("click", function (event)
 			{
-				var reset = deskMenu.appendChild
-					(new Reset(Array.from(deskMenu.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				deskMenu.appendChild(reset);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				var children = Array.from(deskMenu.children);
+				children.forEach(e => deskMenu.removeChild(e));
+				icons.forEach(e => deskMenu.appendChild(e));
+				deskMenu.appendChild(new Reset(children));
+			});
 		}
 
-		function Reset(icons, width, height)
+		function Reset(icons)
 		{
 			var li = document.createElement("li");
 			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");
 			a.innerHTML = "Retornar";
-			a.setAttribute("data-icon", "\u2232");
 
-			li.onclick = function ()
+			a.appendChild(document.createElement("i"))
+				.innerHTML = "&#X2232";
+
+			a.addEventListener("click", function (event)
 			{
-				deskMenu.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskMenu.appendChild(icons[i]);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				Array.from(deskMenu.children).forEach(e => deskMenu.removeChild(e));
+				icons.forEach(e => deskMenu.appendChild(e));
+			});
 			return li;
 		}
 	}
@@ -1490,14 +1492,8 @@ window.addEventListener("load", function ()
 });
 function DeskPane(deskPane)
 {
-	Array.from(deskPane.children)
-		.filter(li => li.tagName.toLowerCase() === "li")
-		.forEach(function (li)
-		{
-			Array.from(li.children)
-				.filter(a => a.tagName.toLowerCase() === "a")
-				.forEach(a => new DeskPaneIcon(a));
-		});
+	Array.from(deskPane.getElementsByTagName("a"))
+		.forEach(element => new DeskPaneIcon(element));
 
 	function DeskPaneIcon(deskPaneIcon)
 	{
@@ -1512,38 +1508,35 @@ function DeskPane(deskPane)
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				var reset = deskPane.appendChild
-					(new Reset(Array.from(deskPane.children).filter(e => e.tagName.toLowerCase() === "li"),
-						this.offsetWidth, this.offsetHeight));
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				deskPane.appendChild(reset);
+
+				var children = Array.from(deskPane.children);
+				children.forEach(e => deskPane.removeChild(e));
+				icons.forEach(e => deskPane.appendChild(e));
+				deskPane.appendChild(new Reset(children));
 			});
 		}
 
-		function Reset(icons, width, height)
+		function Reset(icons)
 		{
 			var li = document.createElement("li");
 			li.className = "Reset";
-			li.style.width = width + "px";
-			li.style.height = height + "px";
-			li.style.color = "@G";
 
 			var a = li.appendChild(document.createElement("a"));
 			a.setAttribute("href", "#");
 			a.innerHTML = "Retornar";
 
-			var i = a.appendChild(document.createElement("i"));
-			i.innerHTML = "&#X2232";
+			a.appendChild(document.createElement("i"))
+				.innerHTML = "&#X2232";
 
-			li.onclick = function ()
+			a.addEventListener("click", function (event)
 			{
-				deskPane.innerHTML = "";
-				for (var i = 0; i < icons.length; i++)
-					deskPane.appendChild(icons[i]);
-				return false;
-			};
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				Array.from(deskPane.children).forEach(e => deskPane.removeChild(e));
+				icons.forEach(e => deskPane.appendChild(e));
+			});
 			return li;
 		}
 	}
@@ -1554,6 +1547,8 @@ window.addEventListener("load", function ()
 	Array.from(document.querySelectorAll("ul.DeskPane"))
 		.forEach(element => new DeskPane(element));
 });
+
+
 var CSV =
 	{
 		parse: function (text)
@@ -5681,34 +5676,37 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	Array.from(document.querySelectorAll("th[data-sortable] > a")).forEach(function (link)
+	Array.from(document.querySelectorAll("th[data-sortable]")).forEach(function (link)
 	{
-		link.parentNode.setAttribute("data-sortable", "N");
+		link.setAttribute("data-sortable", "N");
 		link.addEventListener("click", function ()
 		{
-			switch (this.parentNode.getAttribute("data-sortable"))
+			switch (this.getAttribute("data-sortable"))
 			{
 				case "N":
-					Array.from(this.parentNode.parentNode.children)
+					Array.from(this.parentNode.children)
+						.filter(e => e.hasAttribute("data-sortable"))
 						.forEach(e => e.setAttribute("data-sortable", "N"));
-					this.parentNode.setAttribute("data-sortable", "U");
+					this.setAttribute("data-sortable", "U");
 					break;
 				case "U":
-					this.parentNode.setAttribute("data-sortable", "D");
+					this.setAttribute("data-sortable", "D");
 					break;
 				case "D":
-					this.parentNode.setAttribute("data-sortable", "U");
+					this.setAttribute("data-sortable", "U");
 					break;
 			}
 
-			Array.from(this.parentNode.parentNode.parentNode.parentNode.children)
+			Array.from(this.parentNode.parentNode.parentNode.children)
 				.filter(e => e.tagName.toUpperCase() === "TBODY")
 				.forEach(e => e.sort(Array.prototype.indexOf
-						.call(this.parentNode.parentNode.children, this.parentNode),
-						this.parentNode.getAttribute("data-sortable")));
+						.call(this.parentNode.children, this),
+						this.getAttribute("data-sortable")));
 		});
 	});
 });
+
+
 class Message extends Modal
 {
 	constructor(options)

@@ -558,6 +558,15 @@ fieldset:last-child {
 fieldset:only-child {
   margin-bottom: 0px;
 }
+fieldset > input,
+fieldset > select {
+  width: 100%;
+  height: 32px;
+  padding: 8px 4px 8px 4px;
+}
+fieldset > input[type="FILE"] {
+  padding: 0;
+}
 fieldset > legend {
   padding: 6px;
   color: black;
@@ -604,17 +613,27 @@ fieldset > label {
   float: left;
   padding: 4px;
   display: flex;
-  text-align: left;
+  align-items: stretch;
   flex-direction: column;
 }
-fieldset > label > span {
+fieldset > label > input,
+fieldset > label > select,
+fieldset > label > label {
+  flex-basis: 32px;
+  padding: 8px 4px 8px 4px;
+}
+fieldset > label > input[type="FILE"] {
+  padding: 0;
+}
+fieldset > label > span,
+fieldset > label > form {
   margin: 0px;
   width: 100%;
   border: none;
   padding: 0px;
-  height: 32px;
   color: black;
   display: flex;
+  flex-basis: 32px;
   overflow: hidden;
   border-radius: 5px;
   position: relative;
@@ -624,7 +643,8 @@ fieldset > label > span {
   justify-content: flex-start;
   background-color: #e6e5dc;
 }
-fieldset > label > span > * {
+fieldset > label > span > *,
+fieldset > label > form > * {
   margin: 0px;
   padding: 0px;
   color: black;
@@ -633,34 +653,45 @@ fieldset > label > span > * {
   display: inline-block;
   border: 1px solid #CCCCCC;
 }
-fieldset > label > span > *:first-child {
+fieldset > label > span > *:first-child,
+fieldset > label > form > *:first-child {
   border-radius: 5px 0 0 5px;
 }
-fieldset > label > span > *:first-child > * {
+fieldset > label > span > *:first-child > *,
+fieldset > label > form > *:first-child > * {
   border-radius: 5px 0 0 5px;
 }
-fieldset > label > span > *:last-child {
+fieldset > label > span > *:last-child,
+fieldset > label > form > *:last-child {
   border-radius: 0 5px 5px 0;
 }
-fieldset > label > span > *:last-child > * {
+fieldset > label > span > *:last-child > *,
+fieldset > label > form > *:last-child > * {
   border-radius: 0 5px 5px 0;
 }
 fieldset > label > span > input,
+fieldset > label > form > input,
 fieldset > label > span > select,
-fieldset > label > span > label {
+fieldset > label > form > select,
+fieldset > label > span > label,
+fieldset > label > form > label {
   flex-grow: 1;
   padding: 8px 4px 8px 4px;
 }
-fieldset > label > span input[type="FILE"] {
+fieldset > label > span input[type="FILE"],
+fieldset > label > form input[type="FILE"] {
   padding: 0;
 }
-fieldset > label > span textarea {
+fieldset > label > span textarea,
+fieldset > label > form textarea {
   flex-grow: 1;
   padding: 4px;
   line-height: 16px;
 }
 fieldset > label > span > a,
-fieldset > label > span > button {
+fieldset > label > form > a,
+fieldset > label > span > button,
+fieldset > label > form > button {
   width: 32px;
   height: 100%;
   flex-grow: 0;
@@ -669,7 +700,9 @@ fieldset > label > span > button {
   justify-content: center;
 }
 fieldset > label > span > a > i,
-fieldset > label > span > button > i {
+fieldset > label > form > a > i,
+fieldset > label > span > button > i,
+fieldset > label > form > button > i {
   width: 100%;
   height: 100%;
   display: flex;
@@ -677,14 +710,19 @@ fieldset > label > span > button > i {
   justify-content: center;
 }
 fieldset > label > span > a:hover,
-fieldset > label > span > button:hover {
+fieldset > label > form > a:hover,
+fieldset > label > span > button:hover,
+fieldset > label > form > button:hover {
   background-color: #c0b9cd;
 }
 fieldset > label > span > a:focus,
-fieldset > label > span > button:focus {
+fieldset > label > form > a:focus,
+fieldset > label > span > button:focus,
+fieldset > label > form > button:focus {
   background-color: #FFFACD;
 }
-fieldset > label > span > i {
+fieldset > label > span > i,
+fieldset > label > form > i {
   right: 0px;
   width: 32px;
   height: 100%;
