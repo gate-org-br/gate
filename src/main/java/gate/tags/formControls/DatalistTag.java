@@ -2,6 +2,7 @@ package gate.tags.formControls;
 
 import gate.converter.Converter;
 import gate.tags.DynamicAttributeTag;
+import gate.util.Toolkit;
 import java.io.IOException;
 import java.util.List;
 import javax.el.ELContext;
@@ -13,7 +14,7 @@ import javax.servlet.jsp.JspException;
 public class DatalistTag extends DynamicAttributeTag
 {
 
-	private List<Object> options;
+	private Object options;
 	private LambdaExpression labels;
 	private LambdaExpression values;
 
@@ -36,13 +37,17 @@ public class DatalistTag extends DynamicAttributeTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		ELContext context = new StandardELContext(ExpressionFactory.newInstance());
 
-		getJspContext().getOut().println(String.format("<datalist %s>",
-			getAttributes().toString()));
+		if (options instanceof String)
+		{
+			getAttributes().put("data-options", options);
+			getJspContext().getOut().println("<datalist " + getAttributes() + "></datalist>");
+		} else if (options != null)
+		{
+			ELContext context = new StandardELContext(ExpressionFactory.newInstance());
+			getJspContext().getOut().println("<datalist " + getAttributes() + ">");
 
-		if (options != null)
-			for (Object option : options)
+			for (Object option : Toolkit.iterable(options))
 			{
 				Object optionLabel = option;
 				if (labels != null)
@@ -69,7 +74,8 @@ public class DatalistTag extends DynamicAttributeTag
 
 			}
 
-		getJspContext().getOut().println("</datalist>");
-
+			getJspContext().getOut().println("</datalist>");
+		} else
+			getJspContext().getOut().println("<datalist " + getAttributes() + "></datalist>");
 	}
 }

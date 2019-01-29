@@ -985,6 +985,32 @@
 				with the generated text input.
 			</description>
 		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The options of the datalist to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option labels.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option values.
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>password</name>

@@ -2,6 +2,7 @@
 
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
+
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
