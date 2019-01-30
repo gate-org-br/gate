@@ -990,7 +990,7 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
-				The options of the datalist to be created.
+				The options of the text input to be created.
 			</description>
 		</attribute>
 		<attribute>
