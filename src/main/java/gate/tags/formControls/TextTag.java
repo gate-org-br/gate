@@ -18,7 +18,7 @@ public class TextTag extends PropertyTag
 	private LambdaExpression labels;
 	private LambdaExpression values;
 
-	private final AtomicInteger SEQUENCE = new AtomicInteger();
+	private static final AtomicInteger SEQUENCE = new AtomicInteger();
 
 	@Override
 	public void doTag() throws JspException, IOException
