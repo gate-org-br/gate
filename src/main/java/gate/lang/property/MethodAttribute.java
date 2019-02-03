@@ -23,7 +23,7 @@ class MethodAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
 		return method.getGenericReturnType();
 	}

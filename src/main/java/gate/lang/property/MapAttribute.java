@@ -10,28 +10,28 @@ import java.util.Objects;
 class MapAttribute implements Attribute
 {
 
-	private final Type type;
+	private final Type genericType;
 	private final Object key;
 	private final Class<?> rawType;
 	private final Type elementType;
 
-	MapAttribute(Type type, Object key)
+	MapAttribute(Type genericType, Object key)
 	{
 		this.key = key;
-		this.type = type;
+		this.genericType = genericType;
 
-		if (type instanceof Class<?>)
+		if (genericType instanceof Class<?>)
 		{
-			rawType = (Class<?>) type;
+			rawType = (Class<?>) genericType;
 			if (rawType.isAnnotationPresent(ElementType.class))
 				elementType = rawType.getAnnotation(ElementType.class).value();
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else
 				elementType = Object.class;
-		} else if (type instanceof ParameterizedType)
+		} else if (genericType instanceof ParameterizedType)
 		{
-			ParameterizedType parameterizedType = (ParameterizedType) type;
+			ParameterizedType parameterizedType = (ParameterizedType) genericType;
 			rawType = (Class<?>) parameterizedType.getRawType();
 
 			if (rawType.isAnnotationPresent(ElementType.class))
@@ -58,9 +58,9 @@ class MapAttribute implements Attribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
-		return type;
+		return genericType;
 	}
 
 	@Override
@@ -100,13 +100,13 @@ class MapAttribute implements Attribute
 	{
 		return obj instanceof MapAttribute
 			&& Objects.equals(key, ((MapAttribute) obj).key)
-			&& Objects.equals(type, ((MapAttribute) obj).type);
+			&& Objects.equals(genericType, ((MapAttribute) obj).genericType);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return type.hashCode();
+		return genericType.hashCode();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package gate.sql.insert;
 import gate.converter.Converter;
 import gate.sql.statement.Sentence;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,7 @@ public class TableInsert implements Insert
 
 	private final String table;
 	private final Set<String> insert
-			= new HashSet<>();
+		= new HashSet<>();
 
 	TableInsert(String table)
 	{
@@ -142,8 +143,8 @@ public class TableInsert implements Insert
 		public <T> Generic set(Class<T> type, String column)
 		{
 			Converter.getConverter(type)
-					.getColumns(column)
-					.forEach(this::set);
+				.getColumns(column)
+				.forEach(this::set);
 			return this;
 		}
 
@@ -204,10 +205,10 @@ public class TableInsert implements Insert
 		{
 			values.add(value);
 			Converter.getConverter(type)
-					.getColumns(column)
-					.peek(columns::add)
-					.map(e -> "?")
-					.forEach(parameters::add);
+				.getColumns(column)
+				.peek(columns::add)
+				.map(e -> "?")
+				.forEach(parameters::add);
 			return this;
 		}
 
@@ -316,7 +317,7 @@ public class TableInsert implements Insert
 	public class Prepared<E> implements Sentence.Prepared.Compiled.Builder
 	{
 
-		private final List<E> entities;
+		private final Collection<E> entities;
 		private final List<Function<E, ?>> extractors = new ArrayList<>();
 		private final StringJoiner columns = new StringJoiner(", ", "(", ")");
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
@@ -356,10 +357,10 @@ public class TableInsert implements Insert
 		{
 			extractors.add(extractor);
 			Converter.getConverter(type)
-					.getColumns(column)
-					.peek(columns::add)
-					.map(e -> "?")
-					.forEach(parameters::add);
+				.getColumns(column)
+				.peek(columns::add)
+				.map(e -> "?")
+				.forEach(parameters::add);
 			return this;
 		}
 

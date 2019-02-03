@@ -446,7 +446,7 @@ public class Property
 
 	public Type getType()
 	{
-		return lastAttribute.getType();
+		return lastAttribute.getGenericType();
 	}
 
 	public Class<?> getOwner()
