@@ -73,6 +73,7 @@ class ListAttribute implements Attribute
 	public Object getValue(Object object)
 	{
 		return object != null
+			&& ((List<?>) object).size() > index
 			? ((List<?>) object).get(index) : null;
 	}
 
