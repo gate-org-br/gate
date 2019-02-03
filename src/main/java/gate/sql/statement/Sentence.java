@@ -4,6 +4,7 @@ import gate.error.ConstraintViolationException;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -68,7 +69,7 @@ public interface Sentence extends SQL
 	 *
 	 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
 	 */
-	public <T> Prepared<T> entities(List<T> entities);
+	public <T> Prepared<T> entities(Collection<T> entities);
 
 	/**
 	 * Prepares the sentence to be compiled with a list of entities and functions.
@@ -125,22 +126,20 @@ public interface Sentence extends SQL
 			 *
 			 * @return the number of records affected by the sentence execution
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 			 */
 			public int execute() throws ConstraintViolationException;
 
 			/**
-			 * Executes the sentence on the database with the previously specified parameters and fetches generated keys
-			 * as objects of the specified type.
+			 * Executes the sentence on the database with the previously specified parameters and fetches generated keys as objects of the specified
+			 * type.
 			 *
 			 * @param <K> type of the keys to be fetched
 			 * @param type type of the keys to be fetched
 			 *
 			 * @return any generated keys as objects of the specified type
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 			 */
 			public <K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException;
 
@@ -149,8 +148,8 @@ public interface Sentence extends SQL
 			 * <p>
 			 * Very useful for tracking the progress of long batch operations
 			 *
-			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can
-			 * be defined at any time. If null, removes any previously defined consumer.
+			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any time. If
+			 * null, removes any previously defined consumer.
 			 *
 			 * @return the current sentence, for chained invocations
 			 */
@@ -234,22 +233,20 @@ public interface Sentence extends SQL
 				 *
 				 * @return the number of records affected by the sentence execution
 				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-				 * sentence execution
+				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 				 */
 				public int execute() throws ConstraintViolationException;
 
 				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as
-				 * objects of the specified type.
+				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
+				 * type.
 				 *
 				 * @param <T> type of the keys to be fetched
 				 * @param type type of the keys to be fetched
 				 *
 				 * @return any generated keys as objects of the specified type
 				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-				 * sentence execution
+				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 				 */
 				public <T> List<T> fetchGeneratedKeys(Class<T> type) throws ConstraintViolationException;
 
@@ -258,8 +255,8 @@ public interface Sentence extends SQL
 				 * <p>
 				 * Very useful for tracking the progress of long batch operations
 				 *
-				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer
-				 * can be defined at any time. If null, removes any previously defined consumer.
+				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any
+				 * time. If null, removes any previously defined consumer.
 				 *
 				 * @return the current sentence, for chained invocations
 				 */
@@ -348,22 +345,19 @@ public interface Sentence extends SQL
 		 *
 		 * @return the number of records affected by the sentence execution
 		 *
-		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-		 * execution
+		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 		 */
 		public int execute() throws ConstraintViolationException;
 
 		/**
-		 * Executes the sentence on the database with no parameters specified and fetches generated keys as objects of
-		 * the specified type.
+		 * Executes the sentence on the database with no parameters specified and fetches generated keys as objects of the specified type.
 		 *
 		 * @param <T> type of the keys to be fetched
 		 * @param type type of the keys to be fetched
 		 *
 		 * @return any generated keys as objects of the specified type
 		 *
-		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-		 * execution
+		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 		 */
 		public <T> List<T> fetchGeneratedKeys(Class<T> type) throws ConstraintViolationException;
 
@@ -383,22 +377,19 @@ public interface Sentence extends SQL
 			 *
 			 * @return the number of records affected by the sentence execution
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 			 */
 			public int execute() throws ConstraintViolationException;
 
 			/**
-			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects
-			 * of the specified type.
+			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
 			 *
 			 * @param <T> type of the keys to be fetched
 			 * @param type type of the keys to be fetched
 			 *
 			 * @return any generated keys as objects of the specified type
 			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence
-			 * execution
+			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 			 */
 			public <T> List<T> fetchGeneratedKeys(Class<T> type) throws ConstraintViolationException;
 
@@ -407,8 +398,8 @@ public interface Sentence extends SQL
 			 * <p>
 			 * Very useful for tracking the progress of long batch operations
 			 *
-			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can
-			 * be defined at any time. If null, removes any previously defined consumer.
+			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any time. If
+			 * null, removes any previously defined consumer.
 			 *
 			 * @return the current sentence, for chained invocations
 			 */
@@ -460,22 +451,20 @@ public interface Sentence extends SQL
 				 *
 				 * @return the number of records affected by the sentence execution
 				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-				 * sentence execution
+				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 				 */
 				public int execute() throws ConstraintViolationException;
 
 				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as
-				 * objects of the specified type.
+				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
+				 * type.
 				 *
 				 * @param <K> type of the keys to be fetched
 				 * @param type type of the keys to be fetched
 				 *
 				 * @return any generated keys as objects of the specified type
 				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during
-				 * sentence execution
+				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 				 */
 				public <K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException;
 
@@ -484,8 +473,8 @@ public interface Sentence extends SQL
 				 * <p>
 				 * Very useful for tracking the progress of long batch operations
 				 *
-				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer
-				 * can be defined at any time. If null, removes any previously defined consumer.
+				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any
+				 * time. If null, removes any previously defined consumer.
 				 *
 				 * @return the current sentence, for chained invocations
 				 */

@@ -64,7 +64,7 @@ class ListAttribute implements Attribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
 		return type;
 	}

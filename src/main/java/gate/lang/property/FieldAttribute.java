@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 class FieldAttribute implements JavaIdentifierAttribute
 {
 
-	private final Type type;
+	private final Type genericType;
 	private final Field field;
 	private final String mask;
 	private final String name;
@@ -48,34 +48,32 @@ class FieldAttribute implements JavaIdentifierAttribute
 			this.field = field;
 			field.setAccessible(true);
 
+			rawType = field.getType();
+			genericType = field.getGenericType();
 			getter = Reflection.findGetter(field).orElse(null);
 			setter = Reflection.findSetter(field).orElse(null);
-
-			this.rawType = field.getType();
-			this.type = field.getGenericType();
 
 			isEntityId = field.getDeclaringClass().isAnnotationPresent(Entity.class)
 				&& field.getName().equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
 
-			if (field.getType().isAnnotationPresent(ElementType.class))
-				elementType = field.getType()
-					.getAnnotation(ElementType.class).value();
-			else if (field.getType().isArray())
-				elementType = field.getType().getComponentType();
-			else if (List.class.isAssignableFrom(field.getType())
-				&& field.getGenericType() instanceof ParameterizedType)
-				elementType = ((ParameterizedType) field.getGenericType())
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else if (List.class.isAssignableFrom(rawType)
+				&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType)
 					.getActualTypeArguments()[0];
-			else if (Map.class.isAssignableFrom(field.getType())
-				&& field.getGenericType() instanceof ParameterizedType)
-				elementType = ((ParameterizedType) field.getGenericType())
+			else if (Map.class.isAssignableFrom(rawType)
+				&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType)
 					.getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
 
 			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
 				? field.getAnnotation(gate.annotation.Converter.class).value().getDeclaredConstructor().newInstance()
-				: Converter.getConverter(field.getType());
+				: Converter.getConverter(rawType);
 
 			List<Constraint.Implementation> cons = new ArrayList<>();
 			Stream.of(field.getAnnotations())
@@ -104,7 +102,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 
 			if (field.isAnnotationPresent(Column.class))
 				columnName = field.getAnnotation(Column.class).value();
-			else if (field.getType().isAnnotationPresent(Entity.class))
+			else if (rawType.isAnnotationPresent(Entity.class))
 			{
 				char[] chars = field.getName().toCharArray();
 				chars[0] = Character.toUpperCase(chars[0]);
@@ -119,9 +117,9 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
-		return type;
+		return genericType;
 	}
 
 	@Override

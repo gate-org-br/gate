@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public interface Attribute
 {
 
-	public Type getType();
+	public Type getGenericType();
 
 	public Type getElementType();
 

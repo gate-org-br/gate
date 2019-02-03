@@ -53,7 +53,7 @@ public class CollectionAttribute implements Attribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
 		return type;
 	}

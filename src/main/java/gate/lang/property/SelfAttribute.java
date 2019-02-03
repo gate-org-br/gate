@@ -14,7 +14,7 @@ public class SelfAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Type getType()
+	public Type getGenericType()
 	{
 		return type;
 	}

@@ -124,9 +124,9 @@ class PropertyParser
 		{
 			if (Map.class.isAssignableFrom(attribute.getRawType()))
 			{
-				if (attribute.getType() instanceof ParameterizedType)
+				if (attribute.getGenericType() instanceof ParameterizedType)
 				{
-					Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getType())
+					Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getGenericType())
 						.getActualTypeArguments()[0]);
 					try
 					{
@@ -247,9 +247,9 @@ class PropertyParser
 					|| name instanceof String)
 				{
 					if (name instanceof String
-						&& attribute.getType() instanceof ParameterizedType)
+						&& attribute.getGenericType() instanceof ParameterizedType)
 					{
-						Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getType())
+						Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getGenericType())
 							.getActualTypeArguments()[0]);
 						try
 						{
