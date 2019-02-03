@@ -12,45 +12,55 @@ class ListAttribute implements Attribute
 
 	private final int index;
 	private final Type type;
+	private final Class<?> rawType;
+	private final Type elementType;
 
 	ListAttribute(Type type, int index)
 	{
 		this.type = type;
 		this.index = index;
+
+		if (type instanceof Class<?>)
+		{
+			rawType = (Class<?>) type;
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else
+				elementType = Object.class;
+		} else if (type instanceof ParameterizedType)
+		{
+			ParameterizedType parameterizedType = (ParameterizedType) type;
+			rawType = (Class<?>) parameterizedType.getRawType();
+
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else if (List.class.isAssignableFrom(rawType))
+				elementType = parameterizedType.getActualTypeArguments()[0];
+			else if (Map.class.isAssignableFrom(rawType))
+				elementType = parameterizedType.getActualTypeArguments()[1];
+			else
+				elementType = Object.class;
+		} else
+		{
+			rawType = Object.class;
+			elementType = Object.class;
+		}
 	}
 
 	@Override
 	public Type getElementType()
 	{
-		if (type instanceof Class<?>)
-		{
-			Class<?> clazz = (Class<?>) type;
-			if (clazz.isAnnotationPresent(ElementType.class))
-				return clazz.getAnnotation(ElementType.class).value();
-			else if (clazz.isArray())
-				return clazz.getComponentType();
-		} else if (type instanceof ParameterizedType)
-		{
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			Class<?> clazz = (Class<?>) parameterizedType.getRawType();
-
-			if (clazz.isAnnotationPresent(ElementType.class))
-				return clazz.getAnnotation(ElementType.class).value();
-			else if (clazz.isArray())
-				return clazz.getComponentType();
-			else if (List.class.isAssignableFrom(clazz))
-				return parameterizedType.getActualTypeArguments()[0];
-			else if (Map.class.isAssignableFrom(clazz))
-				return parameterizedType.getActualTypeArguments()[1];
-		}
-		return Object.class;
+		return elementType;
 	}
 
 	@Override
 	public Class<?> getRawType()
 	{
-		return type instanceof ParameterizedType
-				? (Class<?>) ((ParameterizedType) type).getRawType() : (Class<?>) type;
+		return rawType;
 	}
 
 	@Override
@@ -63,7 +73,7 @@ class ListAttribute implements Attribute
 	public Object getValue(Object object)
 	{
 		return object != null
-				? ((List<?>) object).get(index) : null;
+			? ((List<?>) object).get(index) : null;
 	}
 
 	@Override
@@ -72,9 +82,9 @@ class ListAttribute implements Attribute
 		List list = (List) object;
 		if (list.size() <= index)
 		{
-			Class type = getRawType();
+			Class clazz = getRawType();
 			while (list.size() <= index)
-				list.add(createInstance(type));
+				list.add(createInstance(clazz));
 		}
 		return ((List<?>) object).get(index);
 	}
@@ -89,8 +99,8 @@ class ListAttribute implements Attribute
 	public boolean equals(Object obj)
 	{
 		return obj instanceof ListAttribute
-				&& index == ((ListAttribute) obj).index
-				&& Objects.equals(type, ((ListAttribute) obj).type);
+			&& index == ((ListAttribute) obj).index
+			&& Objects.equals(type, ((ListAttribute) obj).type);
 	}
 
 	@Override
@@ -102,8 +112,6 @@ class ListAttribute implements Attribute
 	@Override
 	public String toString()
 	{
-		return new StringBuilder("[")
-				.append(index).append("]")
-				.toString();
+		return "[" + index + "]";
 	}
 }
