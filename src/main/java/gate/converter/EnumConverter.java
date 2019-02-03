@@ -2,7 +2,6 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +33,18 @@ public class EnumConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		return string != null && string.trim().length() > 0 ? type.getEnumConstants()[Integer.parseInt(string)] : null;
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+		if (Character.isDigit(string.charAt(0)))
+			return type.getEnumConstants()[Integer.parseInt(string)];
+
+		for (Object obj : type.getEnumConstants())
+			if (((Enum) obj).name().equals(string))
+				return obj;
+		throw new ConversionException("Invalid enum constant");
 	}
 
 	@Override

@@ -1,8 +1,12 @@
 package gate.lang.property;
 
+import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.util.Reflection;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -108,7 +112,7 @@ class PropertyParser
 			try
 			{
 				Method method = attribute.getRawType().getMethod(name,
-						parameters.stream().map(e -> e.getClass()).toArray(Class[]::new));
+					parameters.stream().map(e -> e.getClass()).toArray(Class[]::new));
 				if (method.getReturnType() == null)
 					throw new PropertyError("Method %s has no return type.", method.toString());
 				return new MethodAttribute(method, parameters.toArray());
@@ -120,15 +124,30 @@ class PropertyParser
 		{
 			if (Map.class.isAssignableFrom(attribute.getRawType()))
 			{
+				if (attribute.getType() instanceof ParameterizedType)
+				{
+					Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getType())
+						.getActualTypeArguments()[0]);
+					try
+					{
+						return new MapAttribute(attribute.getElementType(),
+							Converter.getConverter(keyType).ofString(keyType, name));
+					} catch (ConversionException ex)
+					{
+						throw new PropertyError("Error on trying to parse property: %s",
+							ex.getMessage());
+					}
+				}
+
 				return new MapAttribute(attribute.getElementType(), name);
 			} else
 			{
 				for (Class<?> superclass = attribute.getRawType();
-						superclass != null; superclass = superclass.getSuperclass())
+					superclass != null; superclass = superclass.getSuperclass())
 				{
 					Field field = Arrays.asList(superclass.getDeclaredFields())
-							.stream().filter(e -> e.getName().equals(name))
-							.findAny().orElse(null);
+						.stream().filter(e -> e.getName().equals(name))
+						.findAny().orElse(null);
 					if (field != null)
 						return new FieldAttribute(field);
 				}
@@ -164,8 +183,8 @@ class PropertyParser
 	private Object parameter(PropertyScanner scanner)
 	{
 		if (token instanceof Boolean
-				|| token instanceof Number
-				|| token instanceof String)
+			|| token instanceof Number
+			|| token instanceof String)
 		{
 			Object result = token;
 			token = scanner.next();
@@ -202,28 +221,50 @@ class PropertyParser
 			if (clazz.isArray())
 			{
 				if (name instanceof Long
-						|| name instanceof Integer
-						|| name instanceof Byte
-						|| name instanceof Short)
+					|| name instanceof Integer
+					|| name instanceof Short
+					|| name instanceof Byte)
 					return new ArrayAttribute(clazz.getComponentType(), ((Number) name).intValue());
 				return null;
-
 			} else if (List.class.isAssignableFrom(clazz))
 			{
 				if (name instanceof Long
-						|| name instanceof Integer
-						|| name instanceof Byte
-						|| name instanceof Short)
+					|| name instanceof Integer
+					|| name instanceof Short
+					|| name instanceof Byte)
 					return new ListAttribute(attribute.getElementType(), ((Number) name).intValue());
 				return null;
 
 			} else if (Map.class.isAssignableFrom(clazz))
 			{
 				if (name instanceof Long
-						|| name instanceof Double
-						|| name instanceof Boolean
-						|| name instanceof String)
+					|| name instanceof Integer
+					|| name instanceof Short
+					|| name instanceof Byte
+					|| name instanceof Double
+					|| name instanceof Float
+					|| name instanceof Boolean
+					|| name instanceof String)
+				{
+					if (name instanceof String
+						&& attribute.getType() instanceof ParameterizedType)
+					{
+						Class keyType = Reflection.getRawType(((ParameterizedType) attribute.getType())
+							.getActualTypeArguments()[0]);
+						try
+						{
+							name = Converter.getConverter(keyType)
+								.ofString(keyType, (String) name);
+						} catch (ConversionException ex)
+						{
+							throw new PropertyError("Error on trying to parse property: %s",
+								ex.getMessage());
+						}
+					}
+
 					return new MapAttribute(attribute.getElementType(), name);
+				}
+
 				return null;
 			}
 

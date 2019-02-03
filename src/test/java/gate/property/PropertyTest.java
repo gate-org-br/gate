@@ -5,6 +5,8 @@ import gate.entity.User;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyError;
 import gate.type.ID;
+import gate.type.Sex;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import static org.junit.Assert.*;
@@ -270,6 +272,26 @@ public class PropertyTest
 
 	}
 
+	@Test
+	public void testEnumMap()
+	{
+		try
+		{
+			Mock mock = new Mock();
+			Property property = Property.getProperty(Mock.class, "results[MALE]");
+			property.setValue(mock, "MALE RESULT");
+			assertEquals(property.getValue(mock), "MALE RESULT");
+
+			property = Property.getProperty(Mock.class, "results.FEMALE");
+			property.setValue(mock, "FEMALE RESULT");
+			assertEquals(property.getValue(mock), "FEMALE RESULT");
+		} catch (PropertyError e)
+		{
+			fail(e.getMessage());
+		}
+
+	}
+
 	private static class Mock
 	{
 
@@ -282,6 +304,8 @@ public class PropertyTest
 		private Mock mock;
 		private String name;
 		private boolean active;
+
+		private EnumMap<Sex, String> results;
 
 		public Mock getMock()
 		{
@@ -323,5 +347,16 @@ public class PropertyTest
 			this.mock = mock;
 		}
 
+		public EnumMap<Sex, String> getResults()
+		{
+			if (results == null)
+				results = new EnumMap<>(Sex.class);
+			return results;
+		}
+
+		public void setResults(EnumMap<Sex, String> results)
+		{
+			this.results = results;
+		}
 	}
 }
