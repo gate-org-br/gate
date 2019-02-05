@@ -111,6 +111,12 @@ fieldset
 				> * { border-radius: 0 5px 5px 0; }
 			}
 
+			> *:only-child
+				{
+				border-radius: 5px;
+				> * { border-radius: 5px; }
+			}
+
 			> input,
 			> select,
 			> label { flex-grow: 1;
