@@ -176,6 +176,13 @@ select {
   background-color: white;
   border: 1px solid #CCCCCC;
 }
+input[type='text']:hover,
+input[type='password']:hover,
+input[type='file']:hover,
+textarea:hover,
+select:hover {
+  border-color: #FFFACD;
+}
 input[type='text']:focus,
 input[type='password']:focus,
 input[type='file']:focus,
@@ -665,6 +672,14 @@ fieldset > label > form > *:last-child {
 fieldset > label > span > *:last-child > *,
 fieldset > label > form > *:last-child > * {
   border-radius: 0 5px 5px 0;
+}
+fieldset > label > span > *:only-child,
+fieldset > label > form > *:only-child {
+  border-radius: 5px;
+}
+fieldset > label > span > *:only-child > *,
+fieldset > label > form > *:only-child > * {
+  border-radius: 5px;
 }
 fieldset > label > span > input,
 fieldset > label > form > input,

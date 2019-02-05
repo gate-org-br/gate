@@ -16,9 +16,6 @@ import java.util.logging.Logger;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
 
-/**
- * Marks the target {@link gate.base.Screen} action method to be executed by the Gate framework as a background process
- */
 public class Progress
 {
 
@@ -61,9 +58,9 @@ public class Progress
 		session.getAsyncRemote().sendText(toString());
 		if (url != null)
 			session.getAsyncRemote()
-					.sendText(new JsonObject()
-							.setString("event", "Redirect")
-							.setString("url", url).toString());
+				.sendText(new JsonObject()
+					.setString("event", "Redirect")
+					.setString("url", url).toString());
 		sessions.add(session);
 	}
 
@@ -89,12 +86,12 @@ public class Progress
 	public String toString()
 	{
 		return new JsonObject()
-				.setInt("todo", todo)
-				.setInt("done", done)
-				.setString("text", text)
-				.setInt("process", process)
-				.setString("event", "Progress")
-				.setString("status", status.name()).toString();
+			.setInt("todo", todo)
+			.setInt("done", done)
+			.setString("text", text)
+			.setInt("process", process)
+			.setString("event", "Progress")
+			.setString("status", status.name()).toString();
 	}
 
 	static void bind(Progress progress)
@@ -121,7 +118,7 @@ public class Progress
 		if (progress != null)
 		{
 			if (Status.COMMITED.equals(progress.status)
-					|| Status.CANCELED.equals(progress.status))
+				|| Status.CANCELED.equals(progress.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, UNKNOWN, 0, text);
 			progress.dispatch(progress.toString());
@@ -141,7 +138,7 @@ public class Progress
 		if (progress != null)
 		{
 			if (Status.COMMITED.equals(progress.status)
-					|| Status.CANCELED.equals(progress.status))
+				|| Status.CANCELED.equals(progress.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text);
 			progress.dispatch(progress.toString());
@@ -292,7 +289,7 @@ public class Progress
 				try
 				{
 					session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE,
-							"Tarefa inexistente"));
+						"Tarefa inexistente"));
 				} catch (IOException ex)
 				{
 					Logger.getLogger(Progress.class.getName()).log(Level.SEVERE, null, ex);
@@ -311,8 +308,8 @@ public class Progress
 		{
 			progress.url = url;
 			progress.dispatch(new JsonObject()
-					.setString("event", "Redirect")
-					.setString("url", url).toString());
+				.setString("event", "Redirect")
+				.setString("url", url).toString());
 
 		}
 	}
