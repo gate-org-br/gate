@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,6 +68,19 @@ public class TableUpdate implements Update
 	/**
 	 * Adds a new column to be updated with the specified value.
 	 *
+	 * @param column the column to be updated
+	 * @param supplier the supplier of the new value of the column
+	 *
+	 * @return the same update sentence builder with the added column
+	 */
+	public Compiled set(String column, Supplier<Object> supplier)
+	{
+		return new Compiled().set(column, supplier.get());
+	}
+
+	/**
+	 * Adds a new column to be updated with the specified value.
+	 *
 	 * @param <T> type of the column to be updated
 	 * @param column the column to be updated
 	 * @param type type of the column to be updated
@@ -77,6 +91,21 @@ public class TableUpdate implements Update
 	public <T> Compiled set(Class<T> type, String column, T value)
 	{
 		return new Compiled().set(type, column, value);
+	}
+
+	/**
+	 * Adds a new column to be updated with the specified value.
+	 *
+	 * @param <T> type of the column to be updated
+	 * @param column the column to be updated
+	 * @param type type of the column to be updated
+	 * @param supplier the supplier of the new value of the column
+	 *
+	 * @return the same update sentence builder with the added column
+	 */
+	public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+	{
+		return new Compiled().set(type, column, supplier.get());
 	}
 
 	/**
@@ -281,6 +310,19 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
+		 * @param column the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return set(column, supplier.get());
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder.
+		 *
 		 * @param <T> type of the column added
 		 * @param column the column to be added
 		 * @param type type of the column to be added
@@ -296,6 +338,21 @@ public class TableUpdate implements Update
 				.map(e -> e + " = ?")
 				.forEach(columns::add);
 			return this;
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder.
+		 *
+		 * @param <T> type of the column added
+		 * @param column the column to be added
+		 * @param type type of the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return set(type, column, supplier.get());
 		}
 
 		/**
@@ -371,6 +428,19 @@ public class TableUpdate implements Update
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
+			 * @param column the column to be added
+			 * @param supplier the supplier of the value associated
+			 *
+			 * @return the same builder with the added column
+			 */
+			public Compiled set(String column, Supplier<Object> supplier)
+			{
+				return Compiled.this.set(column, supplier);
+			}
+
+			/**
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 *
 			 * @param <T> type of the column added
 			 * @param column the column to be added
 			 * @param type type of the column to be added
@@ -381,6 +451,21 @@ public class TableUpdate implements Update
 			public <T> Compiled set(Class<T> type, String column, T value)
 			{
 				return Compiled.this.set(type, column, value);
+			}
+
+			/**
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 *
+			 * @param <T> type of the column added
+			 * @param column the column to be added
+			 * @param type type of the column to be added
+			 * @param supplier the supplier of the value associated
+			 *
+			 * @return the same builder with the added column
+			 */
+			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+			{
+				return Compiled.this.set(type, column, supplier);
 			}
 
 			/**
@@ -412,7 +497,19 @@ public class TableUpdate implements Update
 			}
 
 			@Override
+			public Compiled set(String column, Supplier<Object> supplier)
+			{
+				return Compiled.this;
+			}
+
+			@Override
 			public <T> Compiled set(Class<T> type, String column, T value)
+			{
+				return Compiled.this;
+			}
+
+			@Override
+			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
 			{
 				return Compiled.this;
 			}
@@ -470,6 +567,19 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 		 *
+		 * @param column the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return new Compiled().set(column, supplier);
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 *
 		 * @param <T> type of the column added
 		 * @param column the column to be added
 		 * @param type type of the column to be added
@@ -480,6 +590,21 @@ public class TableUpdate implements Update
 		public <T> Compiled set(Class<T> type, String column, T value)
 		{
 			return new Compiled().set(type, column, value);
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 *
+		 * @param <T> type of the column added
+		 * @param column the column to be added
+		 * @param type type of the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return new Compiled().set(type, column, supplier);
 		}
 
 		/**
@@ -523,7 +648,19 @@ public class TableUpdate implements Update
 		}
 
 		@Override
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return new Compiled();
+		}
+
+		@Override
 		public <T> Compiled set(Class<T> type, String column, T value)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
 		{
 			return new Compiled();
 		}
