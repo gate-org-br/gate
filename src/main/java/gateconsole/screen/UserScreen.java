@@ -35,6 +35,8 @@ public class UserScreen extends Screen
 	private User form;
 	private Doc.Type type;
 
+	private Boolean value;
+
 	@Required
 	@Description("Entre com o arquivo a ser importado")
 	private DataFile file;
@@ -323,4 +325,15 @@ public class UserScreen extends Screen
 			return funcControl.search();
 		}
 	}
+
+	public Boolean getValue()
+	{
+		return value;
+	}
+
+	public void setValue(Boolean value)
+	{
+		this.value = value;
+	}
+
 }

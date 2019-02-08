@@ -8,10 +8,10 @@ import javax.servlet.jsp.JspException;
 public class CheckboxTag extends PropertyTag
 {
 
-	private String value;
+	private Object value;
 	private Boolean checked;
 
-	public void setValue(String value)
+	public void setValue(Object value)
 	{
 		this.value = value;
 	}
