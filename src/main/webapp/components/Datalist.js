@@ -58,7 +58,7 @@ window.addEventListener("load", function ()
 			if (hidden)
 				hidden.value = "";
 
-			if (this.value.length > 0)
+			if (this.value && this.value.length > 0)
 			{
 				var òption = Array.from(datalist.children)
 					.find(option => option.innerHTML === this.value
@@ -76,7 +76,8 @@ window.addEventListener("load", function ()
 					}
 				} else
 					this.setCustomValidity("Entre com um dos valores da lista");
-			}
+			} else
+				this.setCustomValidity("");
 		}
 	});
 });
