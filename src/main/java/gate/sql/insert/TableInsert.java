@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Insert sentence builder for a table.
@@ -92,6 +93,19 @@ public class TableInsert implements Insert
 	/**
 	 * Adds a new column to be persisted with the specified value.
 	 *
+	 * @param column the column to be persisted
+	 * @param supplier the supplier of the value associated
+	 *
+	 * @return the same builder with the added column
+	 */
+	public Compiled set(String column, Supplier<Object> supplier)
+	{
+		return set(column, supplier.get());
+	}
+
+	/**
+	 * Adds a new column to be persisted with the specified value.
+	 *
 	 * @param <T> type of the value added
 	 * @param type type of the column to be added
 	 * @param column the column to be added
@@ -102,6 +116,33 @@ public class TableInsert implements Insert
 	public <T> Compiled set(Class<T> type, String column, T value)
 	{
 		return new Compiled().set(type, column, value);
+	}
+
+	/**
+	 * Adds a new column to be persisted with the specified value.
+	 *
+	 * @param <T> type of the value added
+	 * @param type type of the column to be added
+	 * @param column the column to be added
+	 * @param supplier the supplier of the value associated
+	 *
+	 * @return the same builder with the added column
+	 */
+	public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+	{
+		return set(type, column, supplier.get());
+	}
+
+	/**
+	 * Adds the next column to the builder if previous specified condition is true.
+	 *
+	 * @param assertion the condition to be checked
+	 *
+	 * @return the same builder with the applied condition
+	 */
+	public When when(boolean assertion)
+	{
+		return assertion ? new When() : new DisabledWhen();
 	}
 
 	/**
@@ -194,6 +235,19 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
+		 * @param column the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column and value
+		 */
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return set(column, supplier.get());
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder.
+		 *
 		 * @param <T> type of the value added
 		 * @param type type of the column to be added
 		 * @param column the column to be added
@@ -210,6 +264,21 @@ public class TableInsert implements Insert
 				.map(e -> "?")
 				.forEach(parameters::add);
 			return this;
+		}
+
+		/**
+		 * Adds a new column and it's associated value to the builder.
+		 *
+		 * @param <T> type of the value added
+		 * @param type type of the column to be added
+		 * @param column the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column and value
+		 */
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return set(type, column, supplier.get());
 		}
 
 		@Override
@@ -255,6 +324,19 @@ public class TableInsert implements Insert
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
+			 * @param column the column to be added
+			 * @param supplier the supplier of the value associated
+			 *
+			 * @return the same builder with the added column and value
+			 */
+			public Compiled set(String column, Supplier<Object> supplier)
+			{
+				return Compiled.this.set(column, supplier.get());
+			}
+
+			/**
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 *
 			 * @param <T> type of the column added
 			 * @param column the column to be added
 			 * @param type type of the column to be added
@@ -265,6 +347,21 @@ public class TableInsert implements Insert
 			public <T> Compiled set(Class<T> type, String column, T value)
 			{
 				return Compiled.this.set(type, column, value);
+			}
+
+			/**
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 *
+			 * @param <T> type of the value added
+			 * @param type type of the column to be added
+			 * @param column the column to be added
+			 * @param supplier the supplier of the value associated
+			 *
+			 * @return the same builder with the added column and value
+			 */
+			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+			{
+				return Compiled.this.set(type, column, supplier.get());
 			}
 
 			/**
@@ -296,7 +393,19 @@ public class TableInsert implements Insert
 			}
 
 			@Override
+			public Compiled set(String column, Supplier<Object> supplier)
+			{
+				return Compiled.this;
+			}
+
+			@Override
 			public <T> Compiled set(Class<T> type, String column, T value)
+			{
+				return Compiled.this;
+			}
+
+			@Override
+			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
 			{
 				return Compiled.this;
 			}
@@ -374,6 +483,156 @@ public class TableInsert implements Insert
 		public String toString()
 		{
 			return String.join(" ", insert) + " into " + table + " " + columns + " values " + parameters;
+		}
+	}
+
+	public class When
+	{
+
+		/**
+		 * Adds a new column to be persisted if the previous specified condition was true.
+		 *
+		 * @param column the column to be added
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Generic set(String column)
+		{
+			return new Generic().set(column);
+		}
+
+		/**
+		 * Adds a new column to be persisted if the previous specified condition was true.
+		 *
+		 * @param <T> type of the column persisted
+		 * @param type type of the column to be persisted
+		 * @param column the column to be persisted
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Generic set(Class<T> type, String column)
+		{
+			return new Generic().set(type, column);
+		}
+
+		/**
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 *
+		 * @param column the column to be persisted
+		 * @param value the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Compiled set(String column, Object value)
+		{
+			return new Compiled().set(column, value);
+		}
+
+		/**
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 *
+		 * @param column the column to be persisted
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return new Compiled().set(column, supplier);
+		}
+
+		/**
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 *
+		 * @param <T> type of the value added
+		 * @param type type of the column to be added
+		 * @param column the column to be added
+		 * @param value the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Compiled set(Class<T> type, String column, T value)
+		{
+			return new Compiled().set(type, column, value);
+		}
+
+		/**
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 *
+		 * @param <T> type of the value added
+		 * @param type type of the column to be added
+		 * @param column the column to be added
+		 * @param supplier the supplier of the value associated
+		 *
+		 * @return the same builder with the added column
+		 */
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return new Compiled().set(type, column, supplier);
+		}
+
+		/**
+		 * Adds the next column to the builder if previous specified condition is true.
+		 *
+		 * @param assertion the condition to be checked
+		 *
+		 * @return the same builder with the applied condition
+		 */
+		public When when(boolean assertion)
+		{
+			return assertion ? this : new DisabledWhen();
+		}
+
+		@Override
+		public String toString()
+		{
+			return TableInsert.this.toString();
+		}
+	}
+
+	public class DisabledWhen extends When
+	{
+
+		@Override
+		public Generic set(String column)
+		{
+			return new Generic();
+		}
+
+		@Override
+		public <T> Generic set(Class<T> type, String column)
+		{
+			return new Generic();
+		}
+
+		@Override
+		public Compiled set(String column, Object value)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public Compiled set(String column, Supplier<Object> supplier)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public <T> Compiled set(Class<T> type, String column, T value)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public When when(boolean assertion)
+		{
+			return this;
 		}
 	}
 }
