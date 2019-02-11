@@ -1697,7 +1697,7 @@ window.addEventListener("load", function ()
 			if (hidden)
 				hidden.value = "";
 
-			if (this.value.length > 0)
+			if (this.value && this.value.length > 0)
 			{
 				var òption = Array.from(datalist.children)
 					.find(option => option.innerHTML === this.value
@@ -1715,7 +1715,8 @@ window.addEventListener("load", function ()
 					}
 				} else
 					this.setCustomValidity("Entre com um dos valores da lista");
-			}
+			} else
+				this.setCustomValidity("");
 		}
 	});
 });
@@ -3885,7 +3886,7 @@ window.addEventListener("load", function ()
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{
