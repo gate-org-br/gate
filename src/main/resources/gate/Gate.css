@@ -701,6 +701,14 @@ fieldset > label > form textarea {
   padding: 4px;
   line-height: 16px;
 }
+fieldset > label > span > input[type="RADIO"],
+fieldset > label > form > input[type="RADIO"],
+fieldset > label > span > input [type="CHECKBOX"],
+fieldset > label > form > input [type="CHECKBOX"] {
+  width: 32px;
+  height: 32px;
+  flex-grow: 0;
+}
 fieldset > label > span > a,
 fieldset > label > form > a,
 fieldset > label > span > button,

@@ -26,7 +26,7 @@ window.addEventListener("load", function ()
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{
