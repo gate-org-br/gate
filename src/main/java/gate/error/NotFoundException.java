@@ -17,6 +17,16 @@ public class NotFoundException extends AppException
 	}
 
 	/**
+	 * Constructs an NotFoundException with the specified message.
+	 *
+	 * @param message the exception message
+	 */
+	public NotFoundException(String message)
+	{
+		super(message);
+	}
+
+	/**
 	 * Throws an NotFoundException with the specified message if the specified object is null.
 	 *
 	 * @param <T> the type of the object to be tested for null
