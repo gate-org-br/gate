@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
 public class Handlers
 {
@@ -51,18 +52,21 @@ public class Handlers
 		{
 			try
 			{
-				if (e.isAnnotationPresent(gate.annotation.Handler.class))
-					return e.getAnnotation(gate.annotation.Handler.class)
-						.value().getDeclaredConstructor().newInstance();
-
-				Class<?> supertype = e.getSuperclass();
-				if (supertype == null)
-					supertype = Object.class;
-				return get(supertype);
+				for (Class<?> clazz = e;
+					clazz != null;
+					clazz = clazz.getSuperclass())
+					if (INSTANCES.containsKey(clazz))
+						return INSTANCES.get(clazz);
+					else if (clazz.isAnnotationPresent(gate.annotation.Handler.class))
+						return clazz.getAnnotation(gate.annotation.Handler.class)
+							.value().getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
 			{
-				throw new AppError(ex);
+				Logger.getLogger(getClass().getName())
+					.severe(ex.getMessage());
 			}
+
+			return INSTANCES.get(Object.class);
 		});
 	}
 

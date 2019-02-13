@@ -1,6 +1,5 @@
 package gate.converter;
 
-import gate.error.AppError;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class Converters
@@ -70,19 +70,23 @@ public class Converters
 		{
 			try
 			{
-				if (e.isAnnotationPresent(gate.annotation.Converter.class))
-					return e.getAnnotation(gate.annotation.Converter.class)
-						.value().getDeclaredConstructor().newInstance();
+				for (Class<?> clazz = e;
+					clazz != null;
+					clazz = clazz.getSuperclass())
+					if (INSTANCES.containsKey(clazz))
+						return INSTANCES.get(clazz);
+					else if (clazz.isAnnotationPresent(gate.annotation.Converter.class))
+						return clazz.getAnnotation(gate.annotation.Converter.class)
+							.value().getDeclaredConstructor().newInstance();
 
-				Class<?> supertype = e.getSuperclass();
-				if (supertype == null)
-					supertype = Object.class;
-				return get(supertype);
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{
-				throw new AppError(ex);
+				Logger.getLogger(getClass().getName())
+					.severe(ex.getMessage());
 			}
+
+			return INSTANCES.get(Object.class);
 		});
 	}
 
