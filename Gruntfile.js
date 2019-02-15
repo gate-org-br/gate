@@ -70,7 +70,6 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Clock.js",
 							"src/main/webapp/components/FullScreen.js",
 							"src/main/webapp/components/Form.js",
-							"src/main/webapp/components/Progress.js",
 							"src/main/webapp/components/Focus.js",
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
