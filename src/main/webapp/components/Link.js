@@ -182,6 +182,20 @@ function Link(link, creator)
 						.filter(e => e.tagName.toLowerCase() === "div")
 						.forEach(e => new Popup(e));
 					break;
+
+				case "_progress":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					new URL(this.href).get(function (process)
+					{
+						process = JSON.parse(process);
+						new ProgressDialog(process,
+							{title: link.getAttribute("title")}).show();
+					});
+
+					break;
 			}
 		}
 	});

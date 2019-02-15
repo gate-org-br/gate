@@ -1549,6 +1549,577 @@ window.addEventListener("load", function ()
 });
 
 
+function Mask(element)
+{
+	var changed = false;
+	element.setAttribute("autocomplete", "off");
+	const MASKS = {'#': "[0-9]", '_': "[a-zA-Z]", '*': "[0-9a-zA-Z]"};
+
+	var mask = element.getAttribute("data-mask");
+	var placeholder = element.getAttribute("placeholder");
+	if (!placeholder || placeholder.length !== mask.length)
+	{
+		placeholder = "";
+		for (var i = 0; i < mask.length; i++)
+			placeholder += MASKS[mask.charAt(i)] ? "_" : mask.charAt(i);
+		element.setAttribute("placeholder", placeholder);
+	}
+
+	element.getCursor = function ()
+	{
+		if (this.selectionStart >= 0)
+		{
+			return this.selectionStart;
+		} else if (document.selection)
+		{
+			this.focus();
+			var selection = document.selection.createRange();
+			selection.moveStart('character', -this.value.length);
+			return selection.text.length;
+		} else
+			document.write("Navegador muito antigo. Favor atualizar.");
+	};
+
+	element.setCursor = function (i)
+	{
+		if (this.selectionStart >= 0)
+		{
+			this.focus();
+			this.setSelectionRange(i, i);
+		} else if (this.createTextRange)
+		{
+			var selection = this.createTextRange();
+			selection.move('character', i);
+			selection.select();
+		} else
+			document.write("Navegador muito antigo. Favor atualizar.");
+		return false;
+	};
+
+	element.onkeydown = function (event)
+	{
+		event = event ? event : window.event;
+		switch (event.keyCode)
+		{
+			// ///////////////////////////////////////////////////////
+			// ESQUERDA
+			// ///////////////////////////////////////////////////////
+			case 37:
+
+				for (var i = this.getCursor() - 1; i >= 0; i--)
+					if (MASKS[mask.charAt(i)])
+						return this.setCursor(i);
+				return false;
+				// ///////////////////////////////////////////////////////
+				// DIREITA
+				// ///////////////////////////////////////////////////////
+			case 39:
+
+				for (var i = this.getCursor() + 1; i <= mask.length; i++)
+					if (i === mask.length || MASKS[mask.charAt(i)])
+						return this.setCursor(i);
+				return false;
+				// ///////////////////////////////////////////////////////
+				// BACKSPACE
+				// ///////////////////////////////////////////////////////
+			case 8:
+
+				for (var i = this.getCursor() - 1; i >= 0; i--)
+				{
+					if (MASKS[mask.charAt(i)])
+					{
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+						this.setCursor(i);
+						changed = true;
+						break;
+					}
+				}
+				return false;
+				// ///////////////////////////////////////////////////////
+				// Delete
+				// ///////////////////////////////////////////////////////
+			case 46:
+
+				for (var i = this.getCursor(); i < mask.length; i++)
+				{
+					if (MASKS[mask.charAt(i)])
+					{
+						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
+
+						this.setCursor(i + 1);
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+						changed = true;
+						break;
+					}
+				}
+				return false;
+				// ///////////////////////////////////////////////////////
+				// END
+				// ///////////////////////////////////////////////////////
+			case 35:
+				return this.setCursor(mask.length);
+				// ///////////////////////////////////////////////////////
+				// HOME
+				// ///////////////////////////////////////////////////////
+			case 36:
+				return this.setCursor(0);
+		}
+
+		return true;
+	};
+
+	element.onkeypress = function (event)
+	{
+		event = event ? event : window.event;
+		switch (event.keyCode)
+		{
+			case 8:
+			case 9:
+			case 13:
+			case 35:
+			case 36:
+			case 37:
+			case 39:
+			case 46:
+				return true;
+			default:
+
+				var c = String.fromCharCode(event.which ? event.which : event.keyCode);
+				if (event.ctrlKey)
+				{
+					switch (c)
+					{
+						case 'c':
+						case 'v':
+							this.select();
+							return true;
+						default:
+							return false;
+					}
+				}
+
+				for (var i = this.getCursor(); i < mask.length; i++)
+				{
+					if (MASKS[mask.charAt(i)] && c.match(MASKS[mask.charAt(i)]))
+					{
+						this.value = this.value.substr(0, i) + c + this.value.substr(i + 1);
+						this.setCursor(i + 1);
+
+						while (this.getCursor() < mask.length
+							&& !MASKS[mask.charAt(this.getCursor())])
+							this.setCursor(this.getCursor() + 1);
+
+						changed = true;
+						return false;
+					}
+				}
+
+				return false;
+		}
+	};
+
+	element.onpaste = function (event)
+	{
+		var data = event.clipboardData.getData("text");
+		if (data)
+		{
+			var index = 0;
+			var cursor = 0;
+
+			while (index < data.length && cursor < mask.length)
+			{
+				while (cursor < mask.length && !MASKS[mask.charAt(cursor)])
+					cursor++;
+				while (cursor < mask.length && index < data.length && !data[index].match(MASKS[mask.charAt(cursor)]))
+					index++;
+
+				if (cursor < mask.length && index < data.length)
+				{
+					this.value = this.value.substr(0, cursor) + data[index] + this.value.substr(cursor + 1);
+					changed = true;
+					cursor++;
+					index++;
+				}
+			}
+		}
+		return false;
+	};
+
+	element.onfocus = function ()
+	{
+		if (!this.value && placeholder)
+			this.value = placeholder;
+
+		setTimeout(() =>
+		{
+			this.setCursor(0);
+			while (this.getCursor() < mask.length
+				&& !MASKS[mask.charAt(this.getCursor())])
+				this.setCursor(this.getCursor() + 1);
+		}, 0);
+	};
+
+	element.onblur = function ()
+	{
+		if (this.value === placeholder)
+			this.value = '';
+
+		if (changed)
+			this.dispatchEvent(new Event('change'));
+		changed = false;
+	};
+
+	element.oncut = () => false;
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll('input[data-mask]'))
+		.forEach(element => new Mask(element));
+});
+class Modal
+{
+	constructor(options)
+	{
+		var element = window.top.document.createElement('div');
+		element.className = "Modal";
+		this.element = () => element;
+
+		var blocked = options ? options.blocked : null;
+		this.blocked = () => blocked;
+
+		var creator = options ? options.creator : null;
+		this.creator = () => creator ? creator : element;
+
+		if (!blocked)
+			element.addEventListener("click", event =>
+				(event.target === element || event.srcElement === element) && this.hide());
+	}
+
+	show()
+	{
+		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+		{
+			window.top.document.body.style.overflow = "hidden";
+			window.top.document.body.appendChild(this.element());
+			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+		}
+
+		return this;
+	}
+
+	hide()
+	{
+		if (this.element().parentNode
+			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		{
+			window.top.document.body.style.overflow = "";
+			this.element().parentNode.removeChild(this.element());
+		}
+
+		return this;
+	}
+}
+class Block extends Modal
+{
+	constructor(text)
+	{
+		super({blocked: true});
+
+		var dialog = this.element()
+			.appendChild(window.top.document.createElement('div'));
+		dialog.className = "Block";
+
+		var head = dialog.appendChild(window.top.document.createElement('div'));
+		head.setAttribute("tabindex", "1");
+		head.focus();
+
+		head.appendChild(window.top.document.createElement('label'))
+			.innerHTML = "Aguarde";
+
+		var body = dialog.appendChild(window.top.document.createElement('div'));
+
+		body.appendChild(window.top.document.createElement('label'))
+			.innerHTML = text;
+
+		body.appendChild(window.top.document.createElement('progress'));
+
+		var foot = dialog.appendChild(window.top.document.createElement('div'));
+
+		foot.innerHTML = "00:00:00";
+		foot.setAttribute("data-clock", '0');
+
+		this.show();
+	}
+}
+
+Block.show = function (text)
+{
+	if (!Block.instance)
+		Block.instance = new Block(text);
+};
+
+Block.hide = function ()
+{
+	if (Block.block)
+	{
+		Block.instance.hide();
+		Block.instance = null;
+	}
+};
+
+window.addEventListener("load", function ()
+{
+	Block.hide();
+
+	Array.from(document.querySelectorAll("form")).forEach(function (element)
+	{
+		element.addEventListener("submit", function ()
+		{
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("a")).forEach(function (element)
+	{
+		element.addEventListener("click", function ()
+		{
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("button")).forEach(function (button)
+	{
+		button.addEventListener("click", function ()
+		{
+			if (button.getAttribute("data-block"))
+				if (button.form)
+					button.form.addEventListener("submit", function (event)
+					{
+						Block.show(button.getAttribute("data-block"));
+						event.target.removeEventListener(event.type, arguments.callee);
+					});
+				else
+					Block.show(this.getAttribute("data-block"));
+		});
+	});
+});
+class ProgressStatus extends HTMLElement
+{
+	constructor()
+	{
+		super();
+
+		var shadow = this.attachShadow({mode: 'open'});
+
+		var title = shadow.appendChild(document.createElement("label"));
+		title.innerHTML = "Conectando ao servidor";
+		title.style.padding = "2px";
+		title.style.display = "flex";
+		title.style.marginTop = "10xp";
+		title.style.justifyContent = "space-between";
+		title.style.height = "20px";
+		title.style.fontSize = "20px";
+
+		var progress = shadow.appendChild(document.createElement("progress"));
+		progress.style.height = "40px";
+		progress.style.marginTop = "10px";
+		progress.style.marginBottom = "10px";
+
+		var div = shadow.appendChild(document.createElement("div"));
+		div.style.display = "flex";
+		div.style.alignItems = "stretch";
+
+		var clock = div.appendChild(document.createElement("label"));
+		clock.innerHTML = "00:00:00";
+		clock.style.flexGrow = "1";
+		clock.style.fontSize = "12px";
+		clock.style.textAlign = "left";
+
+		var counter = div.appendChild(document.createElement("label"));
+		counter.innerHTML = "1/1000";
+		counter.style.flexGrow = "1";
+		counter.style.fontSize = "12px";
+		counter.style.textAlign = "right";
+
+		var div = shadow.appendChild(document.createElement("div"));
+		div.style.padding = "4px";
+		div.style.height = "100px";
+		div.style.display = "flex";
+		div.style.overflow = "auto";
+		div.style.marginTop = "10px";
+		div.style.borderRadius = "2px";
+		div.style.alignItems = "stretch";
+		div.style.backgroundColor = "white";
+
+		var logger = div.appendChild(document.createElement("ul"));
+		logger.style.margin = "0";
+		logger.style.padding = "0";
+		logger.style.flexGrow = "1";
+		logger.style.listStyleType = "none";
+	}
+
+	connectedCallback()
+	{
+		var colors = new Object();
+		colors["PENDING"] = '#000000';
+		colors["COMMITED"] = '#006600';
+		colors["CANCELED"] = '#660000';
+
+		var title = this.shadowRoot.children[0];
+		var progress = this.shadowRoot.children[1];
+		var clock = this.shadowRoot.children[2].children[0];
+		var counter = this.shadowRoot.children[2].children[1];
+		var logger = this.shadowRoot.children[3].children[0];
+
+		var time = 0;
+		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
+
+		var ws = new WebSocket("ws://" + window.location.host + "/" +
+			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
+		ws.onmessage = (event) =>
+		{
+			event = JSON.parse(event.data);
+
+			event.toString = function ()
+			{
+				if (this.done && this.done !== -1)
+					if (this.todo && this.todo !== -1)
+						return this.done + "/" + this.todo;
+					else
+						return this.done.toString();
+				else
+					return "...";
+			};
+
+			switch (event.event)
+			{
+				case "Progress":
+
+					if (event.text !== title.innerHTML)
+					{
+						title.innerHTML = event.text;
+
+						var log = logger.firstElementChild ?
+							logger.insertBefore(document.createElement("li"),
+								logger.firstElementChild)
+							: logger.appendChild(document.createElement("li"));
+						log.innerHTML = event.text;
+						log.style.height = "16px";
+						log.style.display = "flex";
+						log.style.alignItems = "center";
+					}
+
+					counter.innerHTML = event.toString();
+
+					title.style.color = colors[event.status];
+					clock.style.color = colors[event.status];
+					counter.style.color = colors[event.status];
+
+					switch (event.status)
+					{
+						case "COMMITED":
+							if (!progress.max)
+								progress.max = 100;
+							if (!progress.value)
+								progress.value = 100;
+
+							this.dispatchEvent(new CustomEvent('commited'));
+
+							this.onClockTick = null;
+							break;
+						case "CANCELED":
+							if (!progress.max)
+								progress.max = 100;
+							if (!progress.value)
+								progress.value = 0;
+
+							this.dispatchEvent(new CustomEvent('canceled'));
+
+							this.onClockTick = null;
+							break;
+					}
+
+					if (event.todo !== -1)
+					{
+						progress.max = event.todo;
+						if (event.done !== -1)
+							progress.value = event.done;
+					}
+
+					break;
+
+				case "Redirect":
+					this.dispatchEvent(new CustomEvent('redirected', {detail: event.url}));
+					break;
+			}
+		};
+	}
+}
+
+window.addEventListener("load", () =>
+	customElements.define('progress-status', ProgressStatus));
+
+
+
+class ProgressDialog extends Modal
+{
+	constructor(process, options)
+	{
+		super();
+
+		var status = "Pending";
+
+		var main = this.element().appendChild(document.createElement("div"));
+		main.className = "ProgressDialog";
+		this.main = () => main;
+
+		var head = main.appendChild(document.createElement("div"));
+		if (options && options.title)
+			head.innerHTML = options.title;
+
+		var body = main.appendChild(document.createElement("div"));
+
+		var progress = body.appendChild(document.createElement("progress-status"));
+		progress.setAttribute("process", process);
+
+		var foot = main.appendChild(document.createElement("div"));
+
+		var action = foot.appendChild(document.createElement("a"));
+		action.appendChild(document.createTextNode("Processando"));
+		action.href = "#";
+
+		this.creator().addEventListener("hide", function (event)
+		{
+			if (status === "Pending"
+				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
+				event.preventDefault();
+		});
+
+		action.onclick = () => this.hide();
+
+		progress.addEventListener("commited", () =>
+		{
+			status = "Canceled";
+			action.innerHTML = "OK";
+			action.style.color = "#006600";
+		});
+
+		progress.addEventListener("canceled", () =>
+		{
+			status = "Commited";
+			action.innerHTML = "OK";
+			action.style.color = "#660000";
+		});
+
+		progress.addEventListener("redirected",
+			event => window.location.href = event.detail);
+	}
+}
 var CSV =
 	{
 		parse: function (text)
@@ -2062,6 +2633,20 @@ function Link(link, creator)
 						.filter(e => e.tagName.toLowerCase() === "div")
 						.forEach(e => new Popup(e));
 					break;
+
+				case "_progress":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					new URL(this.href).get(function (process)
+					{
+						process = JSON.parse(process);
+						new ProgressDialog(process,
+							{title: link.getAttribute("title")}).show();
+					});
+
+					break;
 			}
 		}
 	});
@@ -2315,13 +2900,16 @@ function Button(button, creator)
 					event.stopPropagation();
 					event.stopImmediatePropagation();
 
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							alert(status);
-							button.disabled = false;
-						});
+					if (this.form.reportValidity())
+					{
+						this.disabled = true;
+						new URL(this.getAttribute("formaction"))
+							.post(new FormData(this.form), function (status)
+							{
+								alert(status);
+								button.disabled = false;
+							});
+					}
 					break;
 				case "_hide":
 					event.preventDefault();
@@ -2333,6 +2921,26 @@ function Button(button, creator)
 						window.frameElement.dialog.hide();
 					else
 						window.close();
+					break;
+
+				case "_progress":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (this.form.reportValidity())
+					{
+						this.disabled = true;
+						new URL(this.getAttribute("formaction"))
+							.post(new FormData(this.form), function (process)
+							{
+								process = JSON.parse(process);
+								new ProgressDialog(process,
+									{title: button.getAttribute("title")}).show();
+								button.disabled = false;
+							});
+					}
+
 					break;
 			}
 		}
@@ -2635,365 +3243,6 @@ class NavBar
 		};
 	}
 }
-function Mask(element)
-{
-	var changed = false;
-	element.setAttribute("autocomplete", "off");
-	const MASKS = {'#': "[0-9]", '_': "[a-zA-Z]", '*': "[0-9a-zA-Z]"};
-
-	var mask = element.getAttribute("data-mask");
-	var placeholder = element.getAttribute("placeholder");
-	if (!placeholder || placeholder.length !== mask.length)
-	{
-		placeholder = "";
-		for (var i = 0; i < mask.length; i++)
-			placeholder += MASKS[mask.charAt(i)] ? "_" : mask.charAt(i);
-		element.setAttribute("placeholder", placeholder);
-	}
-
-	element.getCursor = function ()
-	{
-		if (this.selectionStart >= 0)
-		{
-			return this.selectionStart;
-		} else if (document.selection)
-		{
-			this.focus();
-			var selection = document.selection.createRange();
-			selection.moveStart('character', -this.value.length);
-			return selection.text.length;
-		} else
-			document.write("Navegador muito antigo. Favor atualizar.");
-	};
-
-	element.setCursor = function (i)
-	{
-		if (this.selectionStart >= 0)
-		{
-			this.focus();
-			this.setSelectionRange(i, i);
-		} else if (this.createTextRange)
-		{
-			var selection = this.createTextRange();
-			selection.move('character', i);
-			selection.select();
-		} else
-			document.write("Navegador muito antigo. Favor atualizar.");
-		return false;
-	};
-
-	element.onkeydown = function (event)
-	{
-		event = event ? event : window.event;
-		switch (event.keyCode)
-		{
-			// ///////////////////////////////////////////////////////
-			// ESQUERDA
-			// ///////////////////////////////////////////////////////
-			case 37:
-
-				for (var i = this.getCursor() - 1; i >= 0; i--)
-					if (MASKS[mask.charAt(i)])
-						return this.setCursor(i);
-				return false;
-				// ///////////////////////////////////////////////////////
-				// DIREITA
-				// ///////////////////////////////////////////////////////
-			case 39:
-
-				for (var i = this.getCursor() + 1; i <= mask.length; i++)
-					if (i === mask.length || MASKS[mask.charAt(i)])
-						return this.setCursor(i);
-				return false;
-				// ///////////////////////////////////////////////////////
-				// BACKSPACE
-				// ///////////////////////////////////////////////////////
-			case 8:
-
-				for (var i = this.getCursor() - 1; i >= 0; i--)
-				{
-					if (MASKS[mask.charAt(i)])
-					{
-						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
-						this.setCursor(i);
-						changed = true;
-						break;
-					}
-				}
-				return false;
-				// ///////////////////////////////////////////////////////
-				// Delete
-				// ///////////////////////////////////////////////////////
-			case 46:
-
-				for (var i = this.getCursor(); i < mask.length; i++)
-				{
-					if (MASKS[mask.charAt(i)])
-					{
-						this.value = this.value.substr(0, i) + placeholder[i] + this.value.substr(i + 1);
-
-						this.setCursor(i + 1);
-						while (this.getCursor() < mask.length
-							&& !MASKS[mask.charAt(this.getCursor())])
-							this.setCursor(this.getCursor() + 1);
-						changed = true;
-						break;
-					}
-				}
-				return false;
-				// ///////////////////////////////////////////////////////
-				// END
-				// ///////////////////////////////////////////////////////
-			case 35:
-				return this.setCursor(mask.length);
-				// ///////////////////////////////////////////////////////
-				// HOME
-				// ///////////////////////////////////////////////////////
-			case 36:
-				return this.setCursor(0);
-		}
-
-		return true;
-	};
-
-	element.onkeypress = function (event)
-	{
-		event = event ? event : window.event;
-		switch (event.keyCode)
-		{
-			case 8:
-			case 9:
-			case 13:
-			case 35:
-			case 36:
-			case 37:
-			case 39:
-			case 46:
-				return true;
-			default:
-
-				var c = String.fromCharCode(event.which ? event.which : event.keyCode);
-				if (event.ctrlKey)
-				{
-					switch (c)
-					{
-						case 'c':
-						case 'v':
-							this.select();
-							return true;
-						default:
-							return false;
-					}
-				}
-
-				for (var i = this.getCursor(); i < mask.length; i++)
-				{
-					if (MASKS[mask.charAt(i)] && c.match(MASKS[mask.charAt(i)]))
-					{
-						this.value = this.value.substr(0, i) + c + this.value.substr(i + 1);
-						this.setCursor(i + 1);
-
-						while (this.getCursor() < mask.length
-							&& !MASKS[mask.charAt(this.getCursor())])
-							this.setCursor(this.getCursor() + 1);
-
-						changed = true;
-						return false;
-					}
-				}
-
-				return false;
-		}
-	};
-
-	element.onpaste = function (event)
-	{
-		var data = event.clipboardData.getData("text");
-		if (data)
-		{
-			var index = 0;
-			var cursor = 0;
-
-			while (index < data.length && cursor < mask.length)
-			{
-				while (cursor < mask.length && !MASKS[mask.charAt(cursor)])
-					cursor++;
-				while (cursor < mask.length && index < data.length && !data[index].match(MASKS[mask.charAt(cursor)]))
-					index++;
-
-				if (cursor < mask.length && index < data.length)
-				{
-					this.value = this.value.substr(0, cursor) + data[index] + this.value.substr(cursor + 1);
-					changed = true;
-					cursor++;
-					index++;
-				}
-			}
-		}
-		return false;
-	};
-
-	element.onfocus = function ()
-	{
-		if (!this.value && placeholder)
-			this.value = placeholder;
-
-		setTimeout(() =>
-		{
-			this.setCursor(0);
-			while (this.getCursor() < mask.length
-				&& !MASKS[mask.charAt(this.getCursor())])
-				this.setCursor(this.getCursor() + 1);
-		}, 0);
-	};
-
-	element.onblur = function ()
-	{
-		if (this.value === placeholder)
-			this.value = '';
-
-		if (changed)
-			this.dispatchEvent(new Event('change'));
-		changed = false;
-	};
-
-	element.oncut = () => false;
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('input[data-mask]'))
-		.forEach(element => new Mask(element));
-});
-class Modal
-{
-	constructor(options)
-	{
-		var element = window.top.document.createElement('div');
-		element.className = "Modal";
-		this.element = () => element;
-
-		var blocked = options ? options.blocked : null;
-		this.blocked = () => blocked;
-
-		var creator = options ? options.creator : null;
-		this.creator = () => creator ? creator : element;
-
-		if (!blocked)
-			element.addEventListener("click", event =>
-				(event.target === element || event.srcElement === element) && this.hide());
-	}
-
-	show()
-	{
-		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
-		{
-			window.top.document.body.style.overflow = "hidden";
-			window.top.document.body.appendChild(this.element());
-			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
-		}
-
-		return this;
-	}
-
-	hide()
-	{
-		if (this.element().parentNode
-			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
-		{
-			window.top.document.body.style.overflow = "";
-			this.element().parentNode.removeChild(this.element());
-		}
-
-		return this;
-	}
-}
-class Block extends Modal
-{
-	constructor(text)
-	{
-		super({blocked: true});
-
-		var dialog = this.element()
-			.appendChild(window.top.document.createElement('div'));
-		dialog.className = "Block";
-
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.setAttribute("tabindex", "1");
-		head.focus();
-
-		head.appendChild(window.top.document.createElement('label'))
-			.innerHTML = "Aguarde";
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-
-		body.appendChild(window.top.document.createElement('label'))
-			.innerHTML = text;
-
-		body.appendChild(window.top.document.createElement('progress'));
-
-		var foot = dialog.appendChild(window.top.document.createElement('div'));
-
-		foot.innerHTML = "00:00:00";
-		foot.setAttribute("data-clock", '0');
-
-		this.show();
-	}
-}
-
-Block.show = function (text)
-{
-	if (!Block.instance)
-		Block.instance = new Block(text);
-};
-
-Block.hide = function ()
-{
-	if (Block.block)
-	{
-		Block.instance.hide();
-		Block.instance = null;
-	}
-};
-
-window.addEventListener("load", function ()
-{
-	Block.hide();
-
-	Array.from(document.querySelectorAll("form")).forEach(function (element)
-	{
-		element.addEventListener("submit", function ()
-		{
-			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
-		});
-	});
-
-	Array.from(document.querySelectorAll("a")).forEach(function (element)
-	{
-		element.addEventListener("click", function ()
-		{
-			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
-		});
-	});
-
-	Array.from(document.querySelectorAll("button")).forEach(function (button)
-	{
-		button.addEventListener("click", function ()
-		{
-			if (button.getAttribute("data-block"))
-				if (button.form)
-					button.form.addEventListener("submit", function (event)
-					{
-						Block.show(button.getAttribute("data-block"));
-						event.target.removeEventListener(event.type, arguments.callee);
-					});
-				else
-					Block.show(this.getAttribute("data-block"));
-		});
-	});
-});
 function Slider(element, value, next, prev, format)
 {
 	element.classList.add("Slider");
@@ -5771,160 +6020,3 @@ window.addEventListener("load", function ()
 		element.addEventListener("click", () => copy(element.getAttribute("data-copy-onclick")));
 	});
 });
-class ProgressStatus extends HTMLElement
-{
-	constructor()
-	{
-		super();
-
-		var shadow = this.attachShadow({mode: 'open'});
-
-		var title = shadow.appendChild(document.createElement("label"));
-		title.innerHTML = "Conectando ao servidor";
-		title.style.padding = "2px";
-		title.style.display = "flex";
-		title.style.marginTop = "10xp";
-		title.style.justifyContent = "space-between";
-		title.style.height = "20px";
-		title.style.fontSize = "20px";
-
-		var progress = shadow.appendChild(document.createElement("progress"));
-		progress.style.height = "40px";
-		progress.style.marginTop = "10px";
-		progress.style.marginBottom = "10px";
-
-		var div = shadow.appendChild(document.createElement("div"));
-		div.style.display = "flex";
-		div.style.alignItems = "stretch";
-
-		var clock = div.appendChild(document.createElement("label"));
-		clock.innerHTML = "00:00:00";
-		clock.style.flexGrow = "1";
-		clock.style.fontSize = "12px";
-		clock.style.textAlign = "left";
-
-		var counter = div.appendChild(document.createElement("label"));
-		counter.innerHTML = "1/1000";
-		counter.style.flexGrow = "1";
-		counter.style.fontSize = "12px";
-		counter.style.textAlign = "right";
-
-		var div = shadow.appendChild(document.createElement("div"));
-		div.style.padding = "4px";
-		div.style.height = "100px";
-		div.style.display = "flex";
-		div.style.overflow = "auto";
-		div.style.marginTop = "10px";
-		div.style.borderRadius = "2px";
-		div.style.alignItems = "stretch";
-		div.style.backgroundColor = "white";
-
-		var logger = div.appendChild(document.createElement("ul"));
-		logger.style.margin = "0";
-		logger.style.padding = "0";
-		logger.style.flexGrow = "1";
-		logger.style.listStyleType = "none";
-	}
-
-	connectedCallback()
-	{
-		var colors = new Object();
-		colors["PENDING"] = '#000000';
-		colors["COMMITED"] = '#006600';
-		colors["CANCELED"] = '#660000';
-
-		var title = this.shadowRoot.children[0];
-		var progress = this.shadowRoot.children[1];
-		var clock = this.shadowRoot.children[2].children[0];
-		var counter = this.shadowRoot.children[2].children[1];
-		var logger = this.shadowRoot.children[3].children[0];
-
-		var time = 0;
-		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
-
-		var ws = new WebSocket("ws://" + window.location.host + "/" +
-			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
-		ws.onmessage = (event) =>
-		{
-			event = JSON.parse(event.data);
-
-			event.toString = function ()
-			{
-				if (this.done && this.done !== -1)
-					if (this.todo && this.todo !== -1)
-						return this.done + "/" + this.todo;
-					else
-						return this.done.toString();
-				else
-					return "...";
-			};
-
-			switch (event.event)
-			{
-				case "Progress":
-
-					if (event.text !== title.innerHTML)
-					{
-						title.innerHTML = event.text;
-
-						var log = logger.firstElementChild ?
-							logger.insertBefore(document.createElement("li"),
-								logger.firstElementChild)
-							: logger.appendChild(document.createElement("li"));
-						log.innerHTML = event.text;
-						log.style.height = "16px";
-						log.style.display = "flex";
-						log.style.alignItems = "center";
-					}
-
-					counter.innerHTML = event.toString();
-
-					title.style.color = colors[event.status];
-					clock.style.color = colors[event.status];
-					counter.style.color = colors[event.status];
-
-					switch (event.status)
-					{
-						case "COMMITED":
-							if (!progress.max)
-								this.this.max = 100;
-							if (!progress.value)
-								this.progress.value = 100;
-
-							this.dispatchEvent(new CustomEvent('commited'));
-
-							this.onClockTick = null;
-							break;
-						case "CANCELED":
-							if (!progress.max)
-								this.progress.max = 100;
-							if (!progress.value)
-								progress.value = 0;
-
-							this.dispatchEvent(new CustomEvent('canceled'));
-
-							this.onClockTick = null;
-							break;
-					}
-
-					if (event.todo !== -1)
-					{
-						progress.max = event.todo;
-						if (event.done !== -1)
-							progress.value = event.done;
-					}
-
-					break;
-
-				case "Redirect":
-					this.dispatchEvent(new CustomEvent('redirected', {detail: event.url}));
-					break;
-			}
-		};
-	}
-}
-
-window.addEventListener("load", () =>
-	customElements.define('progress-status', ProgressStatus));
-
-

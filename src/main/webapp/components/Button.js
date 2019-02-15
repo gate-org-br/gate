@@ -151,13 +151,16 @@ function Button(button, creator)
 					event.stopPropagation();
 					event.stopImmediatePropagation();
 
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							alert(status);
-							button.disabled = false;
-						});
+					if (this.form.reportValidity())
+					{
+						this.disabled = true;
+						new URL(this.getAttribute("formaction"))
+							.post(new FormData(this.form), function (status)
+							{
+								alert(status);
+								button.disabled = false;
+							});
+					}
 					break;
 				case "_hide":
 					event.preventDefault();
@@ -169,6 +172,26 @@ function Button(button, creator)
 						window.frameElement.dialog.hide();
 					else
 						window.close();
+					break;
+
+				case "_progress":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (this.form.reportValidity())
+					{
+						this.disabled = true;
+						new URL(this.getAttribute("formaction"))
+							.post(new FormData(this.form), function (process)
+							{
+								process = JSON.parse(process);
+								new ProgressDialog(process,
+									{title: button.getAttribute("title")}).show();
+								button.disabled = false;
+							});
+					}
+
 					break;
 			}
 		}

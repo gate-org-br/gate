@@ -114,9 +114,9 @@ class ProgressStatus extends HTMLElement
 					{
 						case "COMMITED":
 							if (!progress.max)
-								this.this.max = 100;
+								progress.max = 100;
 							if (!progress.value)
-								this.progress.value = 100;
+								progress.value = 100;
 
 							this.dispatchEvent(new CustomEvent('commited'));
 
@@ -124,7 +124,7 @@ class ProgressStatus extends HTMLElement
 							break;
 						case "CANCELED":
 							if (!progress.max)
-								this.progress.max = 100;
+								progress.max = 100;
 							if (!progress.value)
 								progress.value = 0;
 
