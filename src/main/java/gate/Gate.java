@@ -135,6 +135,7 @@ public class Gate extends HttpServlet
 						Progress.bind(progress);
 						try
 						{
+							Thread.sleep(1000);
 							Object url = screen.execute(method);
 							if (url != null)
 								Progress.redirect(url.toString());
@@ -142,7 +143,7 @@ public class Gate extends HttpServlet
 						{
 							if (Progress.Status.PENDING.equals(Progress.status()))
 								Progress.cancel(ex.getCause().getMessage());
-						} catch (RuntimeException | IllegalAccessException ex)
+						} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
 						{
 							if (Progress.Status.PENDING.equals(Progress.status()))
 								Progress.cancel(ex.getMessage());

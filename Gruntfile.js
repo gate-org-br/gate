@@ -75,7 +75,8 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
-							"src/main/webapp/components/Copy.js"],
+							"src/main/webapp/components/Copy.js",
+							"src/main/webapp/components/ProgressStatus.js"],
 						dest: 'src/main/resources/gate/Gate.js'
 					}
 			}
