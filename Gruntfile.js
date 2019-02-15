@@ -18,6 +18,13 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/DeskMenu.js",
 							"src/main/webapp/components/DeskPane.js",
 
+							"src/main/webapp/components/Mask.js",
+							"src/main/webapp/components/Modal.js",
+							"src/main/webapp/components/Block.js",
+
+							"src/main/webapp/components/ProgressStatus.js",
+							"src/main/webapp/components/ProgressDialog.js",
+
 							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
@@ -30,10 +37,6 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/ChangeHandler.js",
 
 							"src/main/webapp/components/NavBar.js",
-
-							"src/main/webapp/components/Mask.js",
-							"src/main/webapp/components/Modal.js",
-							"src/main/webapp/components/Block.js",
 
 							"src/main/webapp/components/Slider.js",
 							"src/main/webapp/components/Calendar.js",
@@ -74,8 +77,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/Sortable.js",
 							"src/main/webapp/components/Message.js",
 							"src/main/webapp/components/Return.js",
-							"src/main/webapp/components/Copy.js",
-							"src/main/webapp/components/ProgressStatus.js"],
+							"src/main/webapp/components/Copy.js"],
 						dest: 'src/main/resources/gate/Gate.js'
 					}
 			}
