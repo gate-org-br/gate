@@ -2364,3 +2364,13 @@ div.Minibar hr {
   border: none;
   flex-grow: 1;
 }
+progress-status {
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  border-radius: 5px;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: center;
+  background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
+}

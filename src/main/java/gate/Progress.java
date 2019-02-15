@@ -38,7 +38,7 @@ public class Progress
 
 	public enum Status
 	{
-		CREATED, PENDING, COMMITED, CANCELED, CLOSED
+		CREATED, PENDING, COMMITED, CANCELED
 	}
 
 	Progress(Org org, App app, User user)
