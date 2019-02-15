@@ -60,17 +60,17 @@ window.addEventListener("load", function ()
 
 			if (this.value && this.value.length > 0)
 			{
-				var òption = Array.from(datalist.children)
+				var option = Array.from(datalist.children)
 					.find(option => option.innerHTML === this.value
 							|| option.innerHTML.toLowerCase() === this.value.toLowerCase());
-				if (òption)
+				if (option)
 				{
 					this.setCustomValidity("");
-					this.value = òption.innerHTML;
+					this.value = option.innerHTML;
 
 					if (hidden)
 					{
-						hidden.value = òption.getAttribute("data-value");
+						hidden.value = option.getAttribute("data-value");
 						hidden.dispatchEvent(new CustomEvent('populated',
 							{detail: {source: this}}));
 					}
