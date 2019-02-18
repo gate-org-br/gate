@@ -1917,49 +1917,54 @@ class ProgressStatus extends HTMLElement
 		var shadow = this.attachShadow({mode: 'open'});
 
 		var title = shadow.appendChild(document.createElement("label"));
-		title.innerHTML = "Conectando ao servidor";
-		title.style.padding = "2px";
-		title.style.display = "flex";
-		title.style.marginTop = "10xp";
-		title.style.justifyContent = "space-between";
-		title.style.height = "20px";
+		title.id = "title";
 		title.style.fontSize = "20px";
+		title.style.flexBasis = "40px";
+		title.innerHTML = "Conectando ao servidor";
 
 		var progress = shadow.appendChild(document.createElement("progress"));
-		progress.style.height = "40px";
-		progress.style.marginTop = "10px";
-		progress.style.marginBottom = "10px";
+		progress.id = "progress";
+		progress.style.width = "100%";
+		progress.style.flexBasis = "40px";
 
 		var div = shadow.appendChild(document.createElement("div"));
+		div.style.flexBasis = "40px";
 		div.style.display = "flex";
-		div.style.alignItems = "stretch";
+		div.style.alignItems = "center";
 
 		var clock = div.appendChild(document.createElement("label"));
-		clock.innerHTML = "00:00:00";
+		clock.id = "clock";
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
-		clock.style.textAlign = "left";
+		clock.style.display = "flex";
+		clock.style.alignItems = "center";
+		clock.style.justifyContent = "flex-start";
+		clock.innerHTML = "00:00:00";
 
 		var counter = div.appendChild(document.createElement("label"));
-		counter.innerHTML = "1/1000";
+		counter.id = "counter";
 		counter.style.flexGrow = "1";
 		counter.style.fontSize = "12px";
-		counter.style.textAlign = "right";
+		counter.style.display = "flex";
+		counter.style.alignItems = "center";
+		counter.style.justifyContent = "flex-end";
+		counter.innerHTML = "...";
 
 		var div = shadow.appendChild(document.createElement("div"));
 		div.style.padding = "4px";
-		div.style.height = "100px";
 		div.style.display = "flex";
 		div.style.overflow = "auto";
-		div.style.marginTop = "10px";
-		div.style.borderRadius = "2px";
+		div.style.flexBasis = "120px";
+		div.style.borderRadius = "5px";
 		div.style.alignItems = "stretch";
+		div.style.justifyContent = "center";
 		div.style.backgroundColor = "white";
 
 		var logger = div.appendChild(document.createElement("ul"));
+		logger.id = "logger";
+		logger.style.flexGrow = "1";
 		logger.style.margin = "0";
 		logger.style.padding = "0";
-		logger.style.flexGrow = "1";
 		logger.style.listStyleType = "none";
 	}
 
@@ -1970,11 +1975,11 @@ class ProgressStatus extends HTMLElement
 		colors["COMMITED"] = '#006600';
 		colors["CANCELED"] = '#660000';
 
-		var title = this.shadowRoot.children[0];
-		var progress = this.shadowRoot.children[1];
-		var clock = this.shadowRoot.children[2].children[0];
-		var counter = this.shadowRoot.children[2].children[1];
-		var logger = this.shadowRoot.children[3].children[0];
+		var title = this.shadowRoot.getElementById("title");
+		var progress = this.shadowRoot.getElementById("progress");
+		var clock = this.shadowRoot.getElementById("clock");
+		var counter = this.shadowRoot.getElementById("counter");
+		var logger = this.shadowRoot.getElementById("logger");
 
 		var time = 0;
 		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
@@ -2116,8 +2121,15 @@ class ProgressDialog extends Modal
 			action.style.color = "#660000";
 		});
 
-		progress.addEventListener("redirected",
-			event => window.location.href = event.detail);
+		progress.addEventListener("redirected", url =>
+		{
+			this.creator().addEventListener("hide", event =>
+			{
+				this.hide();
+				event.preventDefault();
+				window.location.href = url.detail;
+			});
+		});
 	}
 }
 var CSV =

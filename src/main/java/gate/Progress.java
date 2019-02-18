@@ -179,6 +179,22 @@ public class Progress
 	}
 
 	/**
+	 * Increments the progress for each one percent.
+	 */
+	public static void updatePercentage()
+	{
+		Progress progress = CURRENT.get();
+		if (progress != null)
+		{
+			if (!Status.PENDING.equals(progress.status))
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(progress.status, progress.todo, progress.done + 1, progress.text);
+			if (progress.done % Math.max(Math.floorDiv(progress.todo, 100), 1) == 0)
+				progress.dispatch(progress.toString());
+		}
+	}
+
+	/**
 	 * Updates the progress of the current task.
 	 *
 	 * @param done new progress of the current task

@@ -42,7 +42,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import gate.annotation.Process;
+import gate.annotation.Asynchronous;
 
 @MultipartConfig
 @WebServlet("/Gate")
@@ -121,10 +121,10 @@ public class Gate extends HttpServlet
 				screen.prepare(request, response);
 
 				if (method.isAnnotationPresent(Background.class)
-					|| method.isAnnotationPresent(Process.class))
+					|| method.isAnnotationPresent(Asynchronous.class))
 				{
 					if (method.isAnnotationPresent(Background.class)
-						&& method.isAnnotationPresent(Process.class))
+						&& method.isAnnotationPresent(Asynchronous.class))
 						throw new java.lang.IllegalArgumentException("Attempt to define a screen method annotaned with both Background and BackgroundProcess");
 
 					Progress progress = Progress.create(org, app, user);
