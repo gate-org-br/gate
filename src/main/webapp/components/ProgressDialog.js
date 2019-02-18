@@ -48,7 +48,14 @@ class ProgressDialog extends Modal
 			action.style.color = "#660000";
 		});
 
-		progress.addEventListener("redirected",
-			event => window.location.href = event.detail);
+		progress.addEventListener("redirected", url =>
+		{
+			this.creator().addEventListener("hide", event =>
+			{
+				this.hide();
+				event.preventDefault();
+				window.location.href = url.detail;
+			});
+		});
 	}
 }

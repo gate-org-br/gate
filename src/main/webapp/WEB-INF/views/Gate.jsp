@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/MAIN.jsp">
+<g:template filename="/WEB-INF/views/MAIN.jsp">\
 	<body>
 		<g:login module="gateconsole.screen">
 			<div class="Login">
