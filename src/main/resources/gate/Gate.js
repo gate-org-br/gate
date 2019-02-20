@@ -3864,13 +3864,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new DatePicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -3911,13 +3917,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new TimePicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -3958,13 +3970,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new MonthPicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4005,13 +4023,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new DateTimePicker(dateTime =>
 				{
 					input.value = dateTime;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4060,13 +4084,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new DateIntervalPicker(selection =>
 				{
 					input.value = selection;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4106,13 +4136,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new TimeIntervalPicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4153,13 +4189,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new MonthIntervalPicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4199,13 +4241,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new DateTimeIntervalPicker(dateTime =>
 				{
 					input.value = dateTime;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
@@ -4541,13 +4589,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new IconPicker(code =>
 				{
 					input.value = code;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();

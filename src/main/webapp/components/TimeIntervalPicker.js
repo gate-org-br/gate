@@ -31,13 +31,19 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
+
+				input.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+			} else
 				new TimeIntervalPicker(time =>
 				{
 					input.value = time;
 					link.focus();
+
+					input.dispatchEvent(new CustomEvent('picked',
+						{detail: {source: this}}));
 				});
 
 			link.blur();
