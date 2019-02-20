@@ -6,11 +6,9 @@ import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.GenericCondition;
 import gate.sql.statement.Sentence;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,19 +24,6 @@ public class TableUpdate implements Update
 	TableUpdate(String name)
 	{
 		table = name;
-	}
-
-	/**
-	 * Binds the update statement to a list of entities.
-	 *
-	 * @param <T> type of entities to be associated with the update statement
-	 * @param entities the list of entities to be associated with the update statement
-	 *
-	 * @return the same builder with the associated entities
-	 */
-	public <T> Prepared<T> entities(List<T> entities)
-	{
-		return new Prepared<>(entities);
 	}
 
 	/**
@@ -478,142 +463,6 @@ public class TableUpdate implements Update
 			{
 				return this;
 			}
-		}
-	}
-
-	/**
-	 * SQL insert sentence builder for a table with values specified and ready for execution.
-	 *
-	 * @param <E> type of the entities to be inserted on database
-	 */
-	public class Prepared<E> implements Sentence.Prepared.Compiled.Builder
-	{
-
-		private final Collection<E> entities;
-		private final StringJoiner columns = new StringJoiner(", ");
-		private final List<Function<E, ?>> extractors = new ArrayList<>();
-
-		private Prepared(List<E> entities)
-		{
-			this.entities = entities;
-		}
-
-		/**
-		 * Adds a new column and it's associated value to the builder.
-		 *
-		 * @param column the column to be added
-		 * @param extractor the extractor function associated with the column
-		 *
-		 * @return the same builder with the added column and value
-		 */
-		public Prepared<E> set(String column, Function<E, ?> extractor)
-		{
-			columns.add(column);
-			extractors.add(extractor);
-			return this;
-		}
-
-		/**
-		 * Adds a new column and it's associated value to the builder.
-		 *
-		 * @param <K> type of the value added
-		 * @param column the column to be added
-		 * @param type type of the column to be added
-		 * @param extractor the extractor function associated with the column
-		 *
-		 * @return the same builder with the added column and value
-		 */
-		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
-		{
-			extractors.add(extractor);
-			Converter.getConverter(type)
-				.getColumns(column)
-				.peek(columns::add);
-			return this;
-		}
-
-		@Override
-		public Sentence.Prepared.Compiled build()
-		{
-			return Sentence.of(toString()).entities(entities).parameters(extractors);
-		}
-
-		public class When
-		{
-
-			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
-			 *
-			 * @param column the column to be added
-			 * @param extractor the extractor function associated with the column
-			 *
-			 * @return the same builder with the added column
-			 */
-			public Prepared<E> set(String column, Function<E, ?> extractor)
-			{
-				return Prepared.this.set(column, extractor);
-			}
-
-			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
-			 *
-			 * @param <T> type of the column added
-			 * @param column the column to be added
-			 * @param type type of the column to be added
-			 * @param extractor the extractor function associated with the column
-			 *
-			 * @return the same builder with the added column
-			 */
-			public <T> Prepared<E> set(Class<T> type, String column, Function<E, T> extractor)
-			{
-				return Prepared.this.set(type, column, extractor);
-			}
-
-			/**
-			 * Adds the next column to the builder if previous specified condition is true.
-			 *
-			 * @param assertion the condition to be checked
-			 *
-			 * @return the same builder with the applied condition
-			 */
-			public When when(boolean assertion)
-			{
-				return assertion ? this : new DisabledWhen();
-			}
-
-			@Override
-			public String toString()
-			{
-				return Prepared.this.toString();
-			}
-		}
-
-		public class DisabledWhen extends When
-		{
-
-			@Override
-			public Prepared<E> set(String column, Function<E, ?> extractor)
-			{
-				return Prepared.this;
-			}
-
-			@Override
-			public <T> Prepared<E> set(Class<T> type, String column, Function<E, T> extractor)
-			{
-				return Prepared.this;
-			}
-
-			@Override
-			public When when(boolean assertion)
-			{
-				return this;
-			}
-		}
-
-		@Override
-		public String toString()
-		{
-			return TableUpdate.this + " set " + columns;
 		}
 	}
 
