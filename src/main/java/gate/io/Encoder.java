@@ -2,6 +2,8 @@ package gate.io;
 
 import gate.annotation.SecurityKey;
 import gate.error.ConversionException;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,8 +11,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.util.Base64;
-import java.util.zip.DeflaterOutputStream;
-import java.util.zip.InflaterInputStream;
 
 public abstract class Encoder<T>
 {
@@ -29,8 +29,8 @@ public abstract class Encoder<T>
 	public static <T> Encoder<T> of(Class<T> type)
 	{
 		return type.isAnnotationPresent(SecurityKey.class)
-				? Encoder.of(type, type.getAnnotation(SecurityKey.class).value())
-				: new NormalEncoder<>(type);
+			? Encoder.of(type, type.getAnnotation(SecurityKey.class).value())
+			: new NormalEncoder<>(type);
 	}
 
 	public static <T> Encoder<T> of(Class<T> type, String key)
@@ -53,13 +53,12 @@ public abstract class Encoder<T>
 				return "";
 
 			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					DeflaterOutputStream deflaterOutputStream = new DeflaterOutputStream(byteArrayOutputStream);
-					ObjectOutputStream objectOutputStream = new ObjectOutputStream(deflaterOutputStream))
+				BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
 
 			{
 				objectOutputStream.writeObject(object);
 				objectOutputStream.flush();
-				deflaterOutputStream.finish();
 				return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 			} catch (IOException ex)
 			{
@@ -78,8 +77,8 @@ public abstract class Encoder<T>
 				return null;
 
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
-					InflaterInputStream inflaterInputStream = new InflaterInputStream(byteArrayInputStream);
-					ObjectInputStream objectInputStream = new ObjectInputStream(inflaterInputStream))
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
+				ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream))
 
 			{
 				return (T) objectInputStream.readObject();
@@ -110,7 +109,7 @@ public abstract class Encoder<T>
 			if (object == null)
 				return "";
 
-			return Base64.getEncoder().encodeToString(Compactor.compact(encryptor.encrypt(Serializer.of(type).serialize(object))));
+			return Base64.getEncoder().encodeToString(encryptor.encrypt(Serializer.of(type).serialize(object)));
 		}
 
 		@Override
@@ -123,7 +122,7 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			return Serializer.of(type).deserialize(encryptor.decrypt(Compactor.extract(Base64.getDecoder().decode(string))));
+			return Serializer.of(type).deserialize(encryptor.decrypt(Base64.getDecoder().decode(string)));
 		}
 	}
 
