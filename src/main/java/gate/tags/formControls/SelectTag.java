@@ -5,6 +5,7 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class SelectTag extends SelectorTag
 
 		if (groups != null)
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
-				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
+				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), LinkedHashMap::new, Collectors.toList())).entrySet())
 			{
 				getJspContext().getOut().print("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
 				print(0, group.getValue());
