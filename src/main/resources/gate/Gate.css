@@ -372,7 +372,7 @@ ul.DeskMenu > li > button {
   padding: 8px;
   height: 100%;
   display: flex;
-  font-size: 20px;
+  font-size: 12px;
   text-align: center;
   align-items: center;
   flex-direction: column;
@@ -387,7 +387,7 @@ ul.DeskMenu > li > button > i {
 ul.DeskMenu > li a[data-icon]::before,
 ul.DeskMenu > li button[data-icon]::before {
   padding: 8px;
-  font-size: 32px;
+  font-size: 28px;
   font-family: gate;
   content: attr(data-icon);
 }
