@@ -3,8 +3,10 @@ package gate.converter;
 import gate.io.StringReader;
 import java.io.IOException;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class StringMatrixConverterTest
 {
 
