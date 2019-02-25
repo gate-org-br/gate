@@ -39,7 +39,7 @@ Block.show = function (text)
 
 Block.hide = function ()
 {
-	if (Block.block)
+	if (Block.instance)
 	{
 		Block.instance.hide();
 		Block.instance = null;
