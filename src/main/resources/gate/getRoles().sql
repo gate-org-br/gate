@@ -13,3 +13,4 @@ from
     gate.Role
         left join
     gate.Uzer as Manager ON Role.Manager$id = Manager.id
+order by Role.name
