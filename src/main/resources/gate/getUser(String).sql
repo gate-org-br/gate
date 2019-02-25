@@ -16,4 +16,4 @@ SELECT
     registration
 FROM
     gate.Uzer
-where userID = ?
+where userID = ? or email = ?
