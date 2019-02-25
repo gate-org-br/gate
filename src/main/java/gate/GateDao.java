@@ -1,8 +1,7 @@
 package gate;
 
-import gate.entity.Bond;
 import gate.entity.Auth;
-import gate.entity.Func;
+import gate.entity.Bond;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.ConstraintViolationException;
@@ -20,7 +19,7 @@ class GateDao extends gate.base.Dao
 	public Optional<User> getUser(String username)
 	{
 		return getLink().from(getClass().getResource("getUser(String).sql"))
-			.parameters(username)
+			.parameters(username, username)
 			.fetchEntity(User.class);
 	}
 
