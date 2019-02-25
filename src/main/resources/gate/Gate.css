@@ -1087,7 +1087,6 @@ div.Block {
   width: 50%;
   display: flex;
   height: 200px;
-  flex-wrap: wrap;
   border-radius: 5px;
   align-items: stretch;
   flex-direction: column;
@@ -1096,7 +1095,7 @@ div.Block {
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
 div.Block > div:nth-child(1) {
-  height: 40px;
+  flex-basis: 40px;
   background-color: #788185;
 }
 div.Block > div:nth-child(1) > label {
@@ -1114,20 +1113,21 @@ div.Block > div:nth-child(2) {
   flex-direction: column;
 }
 div.Block > div:nth-child(2) > label {
+  flex-grow: 1;
   display: flex;
   font-size: 20px;
-  flex-basis: 50%;
   align-items: center;
   justify-content: center;
 }
 div.Block > div:nth-child(2) > progress {
-  flex-basis: 50%;
+  flex-grow: 1;
+  width: 100%;
 }
 div.Block > div:nth-child(3) {
-  height: 40px;
   padding: 8px;
   display: flex;
   font-size: 16px;
+  flex-basis: 40px;
   align-items: center;
   justify-content: flex-end;
 }
