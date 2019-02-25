@@ -1,97 +1,297 @@
 package gate.io;
 
 import java.io.File;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public interface Database<T> extends Observable<T>
+public class Database<T> implements Observable<T>
 {
 
-	void delete(String tableName, Predicate<T> predicate);
+	protected final File folder;
+	protected final Class<T> type;
+	protected final Map<String, PersistentSet<T>> tables;
+	protected final List<Observer<T>> observers
+		= new CopyOnWriteArrayList<>();
 
-	void delete(Predicate<T> predicate);
-
-	void delete(Collection<T> values);
-
-	void delete(List<T> values);
-
-	void delete(T... values);
-
-	void delete(String tableName, Collection<T> values);
-
-	void delete(String tableName, T... values);
-
-	void drop(String tableName);
-
-	void drop();
-
-	void insert(String tableName, Collection<T> values);
-
-	void insert(String tableName, T... values);
-
-	boolean isEmpty();
-
-	boolean isEmpty(String tableName);
-
-	List<T> search();
-
-	List<T> search(Predicate<T> predicate);
-
-	List<T> search(Comparator<T> comparator);
-
-	List<T> search(Predicate<T> predicate, Comparator<T> comparator);
-
-	List<T> search(String tableName);
-
-	List<T> search(String tableName, Predicate<T> predicate);
-
-	List<T> search(String tableName, Comparator<T> comparator);
-
-	List<T> search(String tableName, Predicate<T> predicate, Comparator<T> comparator);
-
-	Optional<T> select();
-
-	Optional<T> select(Predicate<T> predicate);
-
-	Optional<T> select(Comparator<T> comparator);
-
-	Optional<T> select(Predicate<T> predicate, Comparator<T> comparator);
-
-	Optional<T> select(String tableName);
-
-	Optional<T> select(String tableName, Predicate<T> predicate);
-
-	Optional<T> select(String tableName, Comparator<T> comparator);
-
-	Optional<T> select(String tableName, Predicate<T> predicate, Comparator<T> comparator);
-
-	int size();
-
-	int size(String tableName);
-
-	long count(String tableName, Predicate<T> predicate);
-
-	public static <T> Database<T> json(Class<T> type, File folder)
+	Database(Class<T> type, File folder, Map<String, PersistentSet<T>> tables)
 	{
-		return JsonDatabase.create(type, folder);
+		this.type = type;
+		this.folder = folder;
+		this.tables = tables;
 	}
 
-	public static <T> Database<T> jsonConcurrent(Class<T> type, File folder)
+	public boolean isEmpty()
 	{
-		return new ConcurrentDatabase(JsonDatabase.create(type, folder));
+		return tables.values()
+			.stream().allMatch(e -> e.isEmpty());
 	}
 
-	public static <T extends Serializable> Database<T> serializable(Class<T> type, File folder)
+	public int size()
 	{
-		return SerializableDatabase.create(type, folder);
+		return tables.values().stream()
+			.mapToInt(e -> e.size()).sum();
 	}
 
-	public static <T extends Serializable> Database<T> serializableConcurrent(Class<T> type, File folder)
+	public boolean isEmpty(String tableName)
 	{
-		return new ConcurrentDatabase(SerializableDatabase.create(type, folder));
+		return tables.containsKey(tableName)
+			? tables.get(tableName).isEmpty() : true;
+	}
+
+	public int size(String tableName)
+	{
+		return tables.containsKey(tableName)
+			? tables.get(tableName).size() : 0;
+	}
+
+	public Optional<T> select()
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.findAny();
+	}
+
+	public Optional<T> select(Predicate<T> predicate)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.filter(predicate)
+			.findAny();
+	}
+
+	public Optional<T> select(Comparator<T> comparator)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.sorted(comparator)
+			.findFirst();
+	}
+
+	public Optional<T> select(Predicate<T> predicate, Comparator<T> comparator)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.filter(predicate)
+			.sorted(comparator)
+			.findFirst();
+	}
+
+	public List<T> search()
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.collect(Collectors.toList());
+	}
+
+	public List<T> search(Predicate<T> predicate)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.filter(predicate)
+			.collect(Collectors.toList());
+	}
+
+	public List<T> search(Comparator<T> comparator)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.sorted(comparator)
+			.collect(Collectors.toList());
+	}
+
+	public List<T> search(Predicate<T> predicate, Comparator<T> comparator)
+	{
+		return tables.values().stream()
+			.flatMap(e -> e.stream())
+			.filter(predicate)
+			.sorted(comparator)
+			.collect(Collectors.toList());
+	}
+
+	public Optional<T> select(String tableName)
+	{
+		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
+			.findAny().flatMap(e -> e.stream().findAny());
+	}
+
+	public Optional<T> select(String tableName, Predicate<T> predicate)
+	{
+		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
+			.findAny().flatMap(e -> e.stream().filter(predicate).findAny());
+	}
+
+	public Optional<T> select(String tableName, Comparator<T> comparator)
+	{
+		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
+			.findAny().flatMap(e -> e.stream().sorted(comparator).findFirst());
+	}
+
+	public Optional<T> select(String tableName, Predicate<T> predicate, Comparator<T> comparator)
+	{
+		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
+			.findAny().flatMap(e -> e.stream().filter(predicate).sorted(comparator).findAny());
+	}
+
+	public List<T> search(String tableName)
+	{
+		return tables.containsKey(tableName)
+			? new ArrayList<>(tables.get(tableName)) : Collections.emptyList();
+	}
+
+	public List<T> search(String tableName, Predicate<T> predicate)
+	{
+		return tables.containsKey(tableName)
+			? tables.get(tableName).stream().filter(predicate).collect(Collectors.toList())
+			: Collections.emptyList();
+	}
+
+	public List<T> search(String tableName, Comparator<T> comparator)
+	{
+		return tables.containsKey(tableName)
+			? tables.get(tableName).stream().sorted(comparator).collect(Collectors.toList())
+			: Collections.emptyList();
+	}
+
+	public List<T> search(String tableName, Predicate<T> predicate, Comparator<T> comparator)
+	{
+		return tables.containsKey(tableName)
+			? tables.get(tableName).stream().filter(predicate)
+				.sorted(comparator).collect(Collectors.toList())
+			: Collections.emptyList();
+	}
+
+	public long count(String tableName, Predicate<T> predicate)
+	{
+		return tables
+			.values()
+			.stream()
+			.filter(e -> e.getFile().getName().equals(tableName))
+			.findAny().map(e -> e.stream().filter(predicate).count())
+			.orElse(Long.valueOf(0));
+	}
+
+	public void delete(String tableName, Predicate<T> predicate)
+	{
+		PersistentSet<T> table = tables.get(tableName);
+		table.removeIf(predicate);
+		table.commit();
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	public void delete(Predicate<T> predicate)
+	{
+		tables.values().stream().forEach(e -> e.removeIf(predicate));
+		tables.values().stream().forEach(e -> e.commit());
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	public void delete(Collection<T> values)
+	{
+		tables.values().stream().forEach(e -> e.removeAll(values));
+		tables.values().stream().forEach(e -> e.commit());
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	@SafeVarargs
+	public final void delete(T... values)
+	{
+		delete(Arrays.asList(values));
+	}
+
+	public void delete(List<T> values)
+	{
+		tables.values().stream().forEach(e -> e.removeAll(values));
+		tables.values().stream().forEach(e -> e.commit());
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	public void delete(String tableName, Collection<T> values)
+	{
+		PersistentSet<T> table = tables.get(tableName);
+		table.removeAll(values);
+		table.commit();
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	@SafeVarargs
+	public final void delete(String tableName, T... values)
+	{
+		PersistentSet<T> table = tables.get(tableName);
+		table.removeAll(Arrays.asList(values));
+		table.commit();
+		tables.values().removeIf(e -> e.isEmpty());
+		observers.forEach(Observer::onUpdate);
+	}
+
+	public void insert(String tableName, Collection<T> values)
+	{
+		PersistentSet<T> table = tables.computeIfAbsent(tableName, e -> PersistentSet.of(type, new File(folder, e)));
+		table.addAll(values);
+		table.commit();
+		observers.forEach(Observer::onUpdate);
+	}
+
+	@SafeVarargs
+	public final void insert(String table, T... values)
+	{
+		insert(table, Arrays.asList(values));
+	}
+
+	public void drop(String tableName)
+	{
+		if (tables.containsKey(tableName))
+		{
+			PersistentSet<T> table = tables.remove(tableName);
+			table.clear();
+			table.commit();
+			observers.forEach(Observer::onUpdate);
+		}
+	}
+
+	public void drop()
+	{
+		tables.values().forEach(table -> table.clear());
+		tables.values().forEach(table -> table.commit());
+		tables.clear();
+		folder.delete();
+		observers.forEach(Observer::onUpdate);
+	}
+
+	static <T> Database<T> of(Class<T> type, File folder)
+	{
+		Map<String, PersistentSet<T>> tables = new HashMap<>();
+		File[] files = folder.listFiles();
+		if (files != null)
+			Stream.of(files).forEach(e -> tables.put(e.getName(),
+				PersistentSet.of(type, e)));
+		return new Database<>(type, folder, tables);
+	}
+
+	@Override
+	public void addObserver(Observer<T> observer)
+	{
+		observers.add(observer);
+	}
+
+	@Override
+	public void remObserver(Observer<T> observer)
+	{
+		observers.remove(observer);
 	}
 }
