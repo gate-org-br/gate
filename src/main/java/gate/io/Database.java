@@ -273,7 +273,7 @@ public class Database<T> implements Observable<T>
 		observers.forEach(Observer::onUpdate);
 	}
 
-	static <T> Database<T> of(Class<T> type, File folder)
+	public static <T> Database<T> of(Class<T> type, File folder)
 	{
 		Map<String, PersistentSet<T>> tables = new HashMap<>();
 		File[] files = folder.listFiles();
