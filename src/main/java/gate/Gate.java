@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import gate.annotation.Asynchronous;
+import javax.enterprise.concurrent.ManagedThreadFactory;
 
 @MultipartConfig
 @WebServlet("/Gate")
@@ -66,7 +67,7 @@ public class Gate extends HttpServlet
 	private GateControl control;
 
 	@Resource
-	private ManagedExecutorService service;
+	private ManagedThreadFactory managedThreadFactory;
 
 	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
 
@@ -130,7 +131,7 @@ public class Gate extends HttpServlet
 					Progress progress = Progress.create(org, app, user);
 					request.setAttribute("process", progress.getProcess());
 
-					service.submit(() ->
+					managedThreadFactory.newThread(() ->
 					{
 						Progress.bind(progress);
 						try
@@ -159,7 +160,7 @@ public class Gate extends HttpServlet
 								Progress.dispose();
 							}
 						}
-					});
+					}).start();
 
 					if (method.isAnnotationPresent(Background.class))
 						getServletContext()
