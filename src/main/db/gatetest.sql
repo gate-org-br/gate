@@ -1,3 +1,10 @@
+create database gatetest;
+use gatetest;
+
+CREATE USER 'gatetest'@'localhost' IDENTIFIED BY 'gatetest';
+
+GRANT ALL PRIVILEGES ON gatetest.* TO 'gatetest'@'localhost';
+
 -- MySQL dump 10.14  Distrib 5.5.50-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: 127.0.0.1    Database: gatetest
