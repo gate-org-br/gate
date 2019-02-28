@@ -19,19 +19,19 @@
 	<g:choose>
 		<g:when condition="${not empty screen.messages}">
 			<div class='TEXT'>
-				<table>
+				<table class="c1 c2">
 					<col style="width: 25%">
 					<col style="width: 25%">
 					<col style="width: 50%">
 					<caption>
-						RECURSOS A CONFIGURAR NO CONTAINER                        
+						RECURSOS A CONFIGURAR NO CONTAINER
 					</caption>
 					<thead>
 						<tr>
-							<th style="text-align: center">
+							<th>
 								Tipo
 							</th>
-							<th style="text-align: center">
+							<th>
 								Nome
 							</th>
 							<th>
@@ -41,10 +41,10 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td style="text-align: center">
+							<td>
 								Queue
 							</td>
-							<td style="text-align: center">
+							<td>
 								MailBox
 							</td>
 							<td>
@@ -52,10 +52,10 @@
 							</td>
 						</tr>
 						<tr>
-							<td style="text-align: center">
+							<td>
 								Mail Session
 							</td>
-							<td style="text-align: center">
+							<td>
 								MailSession
 							</td>
 							<td>
@@ -72,7 +72,7 @@
 			</div>
 		</g:when>
 		<g:otherwise>
-			<table style='table-layout: fixed'>
+			<table class="c1 c2">
 				<col style='width: 80px'/>
 				<col style='width: 120px'/>
 				<col style="width: calc(50% - 100px)"/>
@@ -83,24 +83,24 @@
 						<th style='text-align: center'>
 							<g:icon type="gateconsole.screen.MailScreen"/>
 						</th>
-						<th style='text-align: center'>Postagem</th>
-						<th style='text-align: left'>Remetente</th>
-						<th style='text-align: left'>Destinat&aacute;rio</th>
+						<th>Postagem</th>
+						<th>Remetente</th>
+						<th>Destinat&aacute;rio</th>
 					</tr>
 				</thead>
 				<tbody>
 					<g:iterator source="${screen.page}" target="item" index="indx">
 						<tr title="${item.data.subject}">
-							<td style='text-align: center'>
+							<td>
 								${indx+1}
 							</td>
-							<td style='text-align: center'>
+							<td>
 								<g:print value="${item.date}"/>
 							</td>
-							<td style='text-align: center'>
+							<td>
 								<g:print value="${item.sender}"/>
 							</td>
-							<td style='text-align: center'>
+							<td>
 								<g:print value="${item.receiver}"/>
 							</td>
 						</tr>

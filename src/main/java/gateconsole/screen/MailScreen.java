@@ -5,11 +5,10 @@ import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.constraint.Required;
-import gate.messaging.MessageException;
 import gate.messaging.Message;
+import gate.messaging.MessageException;
 import gate.messaging.Messenger;
 import gate.type.mime.MimeMail;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -48,8 +47,9 @@ public class MailScreen extends Screen
 	{
 		try
 		{
-			messenger.post(destination,
+			messenger.post(destination, destination,
 				MimeMail.of("EMail de teste", "Favor desconsiderar"));
+			destination = null;
 		} catch (MessageException ex)
 		{
 			setMessages(ex.getMessages());
