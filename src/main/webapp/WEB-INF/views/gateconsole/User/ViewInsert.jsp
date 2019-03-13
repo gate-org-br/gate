@@ -7,7 +7,7 @@
 				Novo Usu&aacute;rio<g:icon type="update"/>
 			</legend>
 			<g:hidden property='form'/>
-			
+
 			<label style='width: 12.5%'>
 				Ativo:
 				<span>
@@ -92,7 +92,7 @@
 			</label>
 			<label style='width: 100%'>
 				Detalhes:
-				<span style='height: 60px'>
+				<span style='flex-basis: 80px'>
 					<g:textarea property='form.details' tabindex='1'/>
 				</span>
 			</label>

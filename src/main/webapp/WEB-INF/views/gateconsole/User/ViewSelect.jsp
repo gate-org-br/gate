@@ -94,7 +94,7 @@
 			</label>
 			<label style='width: 100%'>
 				Detalhes:
-				<span style='height: 80px'>
+				<span style='flex-basis: 80px'>
 					<g:label property='form.details'/>
 				</span>
 			</label>
