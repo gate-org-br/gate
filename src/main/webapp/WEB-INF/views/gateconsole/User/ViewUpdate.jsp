@@ -92,7 +92,7 @@
 			</label>
 			<label style='width: 100%'>
 				Detalhes:
-				<span style='height: 60px'>
+				<span style='flex-basis: 80px'>
 					<g:textarea property='form.details' tabindex='1'/>
 				</span>
 			</label>

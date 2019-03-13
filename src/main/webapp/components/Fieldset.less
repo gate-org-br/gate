@@ -127,13 +127,20 @@ fieldset
 
 
 			&[style] {
-				> textarea,
+				> textarea { flex-grow: 1;
+					     padding: 4px;
+					     text-indent: 0;
+					     line-height: 16px;
+					     overflow: auto;
+					     white-space: pre-line;}
+
+
 				> label { flex-grow: 1;
 					  padding: 4px;
 					  text-indent: 0;
 					  line-height: 16px;
 					  overflow: auto;
-					  white-space: pre-line;}
+					  white-space: normal;}
 			}
 
 			> input[type="file"],
