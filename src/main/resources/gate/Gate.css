@@ -701,7 +701,7 @@ fieldset > label > form[style] > label {
   text-indent: 0;
   line-height: 16px;
   overflow: auto;
-  white-space: normal;
+  white-space: pre-line;
 }
 fieldset > label > span > input[type="file"],
 fieldset > label > form > input[type="file"],
