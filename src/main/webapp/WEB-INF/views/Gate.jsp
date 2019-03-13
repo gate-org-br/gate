@@ -1,6 +1,22 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
+	<fieldset>
+		<label style="width: 100%">
+			<span  style="flex-basis: 200px">
+				<textarea></textarea>
+			</span>
+		</label>
+		<label style="width: 100%">
+			<span  style="flex-basis: 200px">
+				<label>Puta que pariu que merda eh esta
+					Puta que pariu que merda eh esta
+					Puta que pariu que merda eh esta
+					Puta que pariu que merda eh esta
+				</label>
+			</span>
+		</label>
+	</fieldset>
 	<body>
 		<g:login module="gateconsole.screen">
 			<div class="Login">
