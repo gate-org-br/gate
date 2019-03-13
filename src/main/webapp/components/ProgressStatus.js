@@ -3,27 +3,30 @@ class ProgressStatus extends HTMLElement
 	constructor()
 	{
 		super();
+	}
 
-		var shadow = this.attachShadow({mode: 'open'});
+	connectedCallback()
+	{
+		var colors = new Object();
+		colors["PENDING"] = '#000000';
+		colors["COMMITED"] = '#006600';
+		colors["CANCELED"] = '#660000';
 
-		var title = shadow.appendChild(document.createElement("label"));
-		title.id = "title";
+		var title = this.appendChild(document.createElement("label"));
 		title.style.fontSize = "20px";
 		title.style.flexBasis = "40px";
 		title.innerHTML = "Conectando ao servidor";
 
-		var progress = shadow.appendChild(document.createElement("progress"));
-		progress.id = "progress";
+		var progress = this.appendChild(document.createElement("progress"));
 		progress.style.width = "100%";
 		progress.style.flexBasis = "40px";
 
-		var div = shadow.appendChild(document.createElement("div"));
+		var div = this.appendChild(document.createElement("div"));
 		div.style.flexBasis = "40px";
 		div.style.display = "flex";
 		div.style.alignItems = "center";
 
 		var clock = div.appendChild(document.createElement("label"));
-		clock.id = "clock";
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
 		clock.style.display = "flex";
@@ -32,7 +35,6 @@ class ProgressStatus extends HTMLElement
 		clock.innerHTML = "00:00:00";
 
 		var counter = div.appendChild(document.createElement("label"));
-		counter.id = "counter";
 		counter.style.flexGrow = "1";
 		counter.style.fontSize = "12px";
 		counter.style.display = "flex";
@@ -40,7 +42,7 @@ class ProgressStatus extends HTMLElement
 		counter.style.justifyContent = "flex-end";
 		counter.innerHTML = "...";
 
-		var div = shadow.appendChild(document.createElement("div"));
+		var div = this.appendChild(document.createElement("div"));
 		div.style.padding = "4px";
 		div.style.display = "flex";
 		div.style.overflow = "auto";
@@ -51,25 +53,10 @@ class ProgressStatus extends HTMLElement
 		div.style.backgroundColor = "white";
 
 		var logger = div.appendChild(document.createElement("ul"));
-		logger.id = "logger";
 		logger.style.flexGrow = "1";
 		logger.style.margin = "0";
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
-	}
-
-	connectedCallback()
-	{
-		var colors = new Object();
-		colors["PENDING"] = '#000000';
-		colors["COMMITED"] = '#006600';
-		colors["CANCELED"] = '#660000';
-
-		var title = this.shadowRoot.getElementById("title");
-		var progress = this.shadowRoot.getElementById("progress");
-		var clock = this.shadowRoot.getElementById("clock");
-		var counter = this.shadowRoot.getElementById("counter");
-		var logger = this.shadowRoot.getElementById("logger");
 
 		var time = 0;
 		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
