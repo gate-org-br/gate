@@ -13,6 +13,8 @@ module.exports = function (grunt) {
 						src: ["src/main/webapp/polyfill/array-polyfill.js",
 							"src/main/webapp/polyfill/dialog-polyfill.js",
 							"src/main/webapp/polyfill/fetch-polyfill.js",
+							"src/main/webapp/polyfill/webcomponents-ce.js",
+
 							"src/main/webapp/components/Gate.js",
 
 							"src/main/webapp/components/DeskMenu.js",
