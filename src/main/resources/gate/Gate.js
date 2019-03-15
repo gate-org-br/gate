@@ -2322,8 +2322,14 @@ window.addEventListener("load", function ()
 				&& this.nextElementSibling.getAttribute("type").toLowerCase() === "hidden")
 				hidden = this.nextElementSibling;
 
-			if (hidden)
+			if (hidden && hidden.value)
+			{
 				hidden.value = "";
+				hidden.dispatchEvent(new CustomEvent('cleared',
+					{detail: {source: this}}));
+				hidden.dispatchEvent(new CustomEvent('changed',
+					{detail: {source: this}}));
+			}
 
 			if (this.value && this.value.length > 0)
 			{
@@ -2339,6 +2345,8 @@ window.addEventListener("load", function ()
 					{
 						hidden.value = option.getAttribute("data-value");
 						hidden.dispatchEvent(new CustomEvent('populated',
+							{detail: {source: this}}));
+						hidden.dispatchEvent(new CustomEvent('changed',
 							{detail: {source: this}}));
 					}
 				} else
