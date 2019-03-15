@@ -161,6 +161,23 @@ public class Progress
 	}
 
 	/**
+	 * Display a message without updating progress.
+	 *
+	 * @param message message to be displayed
+	 */
+	public static void message(String message)
+	{
+		Progress progress = CURRENT.get();
+		if (progress != null)
+		{
+			if (!Status.PENDING.equals(progress.status))
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(progress.status, progress.todo, progress.done, message);
+			progress.dispatch(progress.toString());
+		}
+	}
+
+	/**
 	 * Increments the progress of the current task.
 	 *
 	 * @param step number of records to be processed before each notification
@@ -283,15 +300,54 @@ public class Progress
 	}
 
 	/**
-	 * Obtains the status of the current task.
+	 * Obtains the the current task status.
 	 *
-	 * @return the status of the current task
+	 * @return the current task status
 	 */
 	public static Status status()
 	{
 		Progress progress = CURRENT.get();
 		if (progress != null)
 			return progress.status;
+		return null;
+	}
+
+	/**
+	 * Obtains the current task size.
+	 *
+	 * @return the current task size
+	 */
+	public static int todo()
+	{
+		Progress progress = CURRENT.get();
+		if (progress != null)
+			return progress.todo;
+		return -1;
+	}
+
+	/**
+	 * Obtains the current task progress.
+	 *
+	 * @return the current task progress
+	 */
+	public static int done()
+	{
+		Progress progress = CURRENT.get();
+		if (progress != null)
+			return progress.done;
+		return -1;
+	}
+
+	/**
+	 * Obtains the current task text.
+	 *
+	 * @return the current task text
+	 */
+	public static String text()
+	{
+		Progress progress = CURRENT.get();
+		if (progress != null)
+			return progress.text;
 		return null;
 	}
 
