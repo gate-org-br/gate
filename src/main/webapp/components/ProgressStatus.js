@@ -1,3 +1,5 @@
+/* global Message */
+
 class ProgressStatus extends HTMLElement
 {
 	constructor()
@@ -11,6 +13,7 @@ class ProgressStatus extends HTMLElement
 		colors["PENDING"] = '#000000';
 		colors["COMMITED"] = '#006600';
 		colors["CANCELED"] = '#660000';
+		colors["CLOSED"] = '#666666';
 
 		var title = this.appendChild(document.createElement("label"));
 		title.style.fontSize = "20px";
@@ -61,8 +64,34 @@ class ProgressStatus extends HTMLElement
 		var time = 0;
 		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
 
+		function log(message)
+		{
+			var log = logger.firstElementChild ?
+				logger.insertBefore(document.createElement("li"),
+					logger.firstElementChild)
+				: logger.appendChild(document.createElement("li"));
+			log.innerHTML = message;
+			log.style.height = "16px";
+			log.style.display = "flex";
+			log.style.alignItems = "center";
+		}
+
 		var ws = new WebSocket("ws://" + window.location.host + "/" +
 			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
+
+		ws.onerror = e => log(e.data);
+
+		ws.onclose = e =>
+		{
+			if (e.code !== 1000)
+			{
+				title.style.color = colors["CLOSED"];
+				clock.style.color = colors["CLOSED"];
+				counter.style.color = colors["CLOSED"];
+				log(e.reason ? e.reason : "Conexão perdida com o servidor");
+			}
+		};
+
 		ws.onmessage = (event) =>
 		{
 			event = JSON.parse(event.data);
@@ -84,16 +113,8 @@ class ProgressStatus extends HTMLElement
 
 					if (event.text !== title.innerHTML)
 					{
+						log(event.text);
 						title.innerHTML = event.text;
-
-						var log = logger.firstElementChild ?
-							logger.insertBefore(document.createElement("li"),
-								logger.firstElementChild)
-							: logger.appendChild(document.createElement("li"));
-						log.innerHTML = event.text;
-						log.style.height = "16px";
-						log.style.display = "flex";
-						log.style.alignItems = "center";
 					}
 
 					counter.innerHTML = event.toString();
