@@ -33,7 +33,6 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -144,10 +143,14 @@ public class Gate extends HttpServlet
 						{
 							if (Progress.Status.PENDING.equals(Progress.status()))
 								Progress.cancel(ex.getCause().getMessage());
+							else
+								Progress.message(ex.getCause().getMessage());
 						} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
 						{
 							if (Progress.Status.PENDING.equals(Progress.status()))
 								Progress.cancel(ex.getMessage());
+							else
+								Progress.message(ex.getMessage());
 							Logger.getLogger(Gate.class.getName()).log(Level.SEVERE, null, ex);
 						} finally
 						{
