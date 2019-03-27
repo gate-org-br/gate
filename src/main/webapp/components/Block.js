@@ -33,16 +33,16 @@ class Block extends Modal
 
 Block.show = function (text)
 {
-	if (!Block.instance)
-		Block.instance = new Block(text);
+	if (!window.top.GateBlockDialog)
+		window.top.GateBlockDialog = new Block(text);
 };
 
 Block.hide = function ()
 {
-	if (Block.instance)
+	if (window.top.GateBlockDialog)
 	{
-		Block.instance.hide();
-		Block.instance = null;
+		window.top.GateBlockDialog.hide();
+		window.top.GateBlockDialog = null;
 	}
 };
 
@@ -50,7 +50,7 @@ window.addEventListener("load", function ()
 {
 	Block.hide();
 
-	Array.from(document.querySelectorAll("form")).forEach(function (element)
+	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
 	{
 		element.addEventListener("submit", function ()
 		{
