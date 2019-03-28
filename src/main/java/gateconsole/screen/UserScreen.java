@@ -1,6 +1,6 @@
 package gateconsole.screen;
 
-import gate.annotation.Background;
+import gate.annotation.Asynchronous;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
@@ -10,6 +10,7 @@ import gate.entity.Func;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.ConversionException;
+import gate.io.URL;
 import gate.lang.property.Property;
 import gate.report.Form;
 import gate.report.Grid;
@@ -163,10 +164,11 @@ public class UserScreen extends Screen
 		return "/WEB-INF/views/gateconsole/User/ViewUpload.jsp";
 	}
 
-	@Background
-	public void callCommit() throws ConversionException, AppException
+	@Asynchronous
+	public URL callCommit() throws ConversionException, AppException
 	{
 		control.insert(getForm().getRole(), BACKUP.load(file));
+		return new URL("Gate").setModule(getModule()).setScreen(getScreen());
 	}
 
 	@Icon("report")

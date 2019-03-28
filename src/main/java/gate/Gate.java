@@ -1,7 +1,7 @@
 package gate;
 
 import gate.annotation.Annotations;
-import gate.annotation.Background;
+import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.annotation.Disabled;
 import gate.annotation.Public;
@@ -33,6 +33,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -41,8 +42,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import gate.annotation.Asynchronous;
-import javax.enterprise.concurrent.ManagedThreadFactory;
 
 @MultipartConfig
 @WebServlet("/Gate")
@@ -120,15 +119,11 @@ public class Gate extends HttpServlet
 				request.setAttribute("screen", screen);
 				screen.prepare(request, response);
 
-				if (method.isAnnotationPresent(Background.class)
-					|| method.isAnnotationPresent(Asynchronous.class))
+				if (method.isAnnotationPresent(Asynchronous.class))
 				{
-					if (method.isAnnotationPresent(Background.class)
-						&& method.isAnnotationPresent(Asynchronous.class))
-						throw new java.lang.IllegalArgumentException("Attempt to define a screen method annotaned with both Background and BackgroundProcess");
-
 					Progress progress = Progress.create(org, app, user);
 					request.setAttribute("process", progress.getProcess());
+					Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
 
 					managedThreadFactory.newThread(() ->
 					{
@@ -164,13 +159,6 @@ public class Gate extends HttpServlet
 							}
 						}
 					}).start();
-
-					if (method.isAnnotationPresent(Background.class))
-						getServletContext()
-							.getRequestDispatcher(method.getAnnotation(Background.class).value())
-							.forward(request, response);
-					else
-						Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
 				} else
 				{
 					Object result = screen.execute(method);

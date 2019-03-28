@@ -196,6 +196,21 @@ function Link(link, creator)
 					});
 
 					break;
+
+				case "_process":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					new URL(this.href).get(function (process)
+					{
+						process = JSON.parse(process);
+						Array.from(document.body.children)
+							.forEach(e => e.style.display = "none");
+						document.body.appendChild(new ProcessFrame(process));
+					});
+
+					break;
 			}
 		}
 	});

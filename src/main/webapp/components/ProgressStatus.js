@@ -2,9 +2,11 @@
 
 class ProgressStatus extends HTMLElement
 {
-	constructor()
+	constructor(process)
 	{
 		super();
+		if (process)
+			this.setAttribute("process", process);
 	}
 
 	connectedCallback()
