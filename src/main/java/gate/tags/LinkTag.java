@@ -1,6 +1,7 @@
 package gate.tags;
 
 import gate.Gate;
+import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.annotation.Description;
 import gate.annotation.Name;
@@ -83,13 +84,19 @@ public class LinkTag extends DynamicAttributeTag
 
 		Class<Screen> clazz = Screen.getScreen(module, screen)
 			.orElseThrow(() -> new IOException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
-		Method method = Screen.getAction(clazz, action)
+		Method _method = Screen.getAction(clazz, action)
 			.orElseThrow(() -> new IOException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
 
-		if (!getAttributes().containsKey("title") && method.isAnnotationPresent(Description.class))
-			getAttributes().put("title", method.getAnnotation(Description.class).value());
+		if (_method.isAnnotationPresent(Asynchronous.class))
+			if ("_dialog".equals(target))
+				target = "_progress-dialog";
+			else
+				target = "_progress-window";
 
-		if (Gate.checkAccess(user, module, screen, action, clazz, method))
+		if (!getAttributes().containsKey("title") && _method.isAnnotationPresent(Description.class))
+			getAttributes().put("title", _method.getAnnotation(Description.class).value());
+
+		if (Gate.checkAccess(user, module, screen, action, clazz, _method))
 		{
 			if ("POST".equalsIgnoreCase(this.method))
 			{
@@ -100,7 +107,7 @@ public class LinkTag extends DynamicAttributeTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					pageContext.getOut().print(createBody(clazz, method));
+					pageContext.getOut().print(createBody(clazz, _method));
 				pageContext.getOut().print("</button>");
 			} else
 			{
@@ -111,7 +118,7 @@ public class LinkTag extends DynamicAttributeTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					pageContext.getOut().print(createBody(clazz, method));
+					pageContext.getOut().print(createBody(clazz, _method));
 				pageContext.getOut().print("</a>");
 			}
 

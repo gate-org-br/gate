@@ -1,6 +1,7 @@
 package gate.tags;
 
 import gate.Gate;
+import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.annotation.Name;
 import gate.base.Screen;
@@ -100,6 +101,12 @@ public class ShortcutTag extends DynamicAttributeTag
 				.orElseThrow(() -> new IOException(String.format(
 				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
 				module, screen, action)));
+
+			if (_method.isAnnotationPresent(Asynchronous.class))
+				if ("_dialog".equals(target))
+					target = "_progress-dialog";
+				else
+					target = "_progress-window";
 
 			if (Gate.checkAccess(user, module, screen, action, clazz, _method))
 			{

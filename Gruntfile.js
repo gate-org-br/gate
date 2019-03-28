@@ -80,7 +80,7 @@ module.exports = function (grunt) {
 
 							"src/main/webapp/components/ProgressStatus.js",
 							"src/main/webapp/components/ProgressDialog.js",
-							"src/main/webapp/components/ProcessFrame.js",
+							"src/main/webapp/components/ProgressWindow.js",
 						],
 						dest: 'src/main/resources/gate/Gate.js'
 					}

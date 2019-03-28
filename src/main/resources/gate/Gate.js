@@ -2488,7 +2488,7 @@ function Link(link, creator)
 						.forEach(e => new Popup(e));
 					break;
 
-				case "_progress":
+				case "_progress-dialog":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -2502,7 +2502,7 @@ function Link(link, creator)
 
 					break;
 
-				case "_process":
+				case "_progress-window":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -2510,9 +2510,7 @@ function Link(link, creator)
 					new URL(this.href).get(function (process)
 					{
 						process = JSON.parse(process);
-						Array.from(document.body.children)
-							.forEach(e => e.style.display = "none");
-						document.body.appendChild(new ProcessFrame(process));
+						document.body.appendChild(new ProgressWindow(process));
 					});
 
 					break;
@@ -2792,7 +2790,7 @@ function Button(button, creator)
 						window.close();
 					break;
 
-				case "_progress":
+				case "_progress-dialog":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -2812,7 +2810,7 @@ function Button(button, creator)
 
 					break;
 
-				case "_process":
+				case "_progress-window":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -2823,9 +2821,7 @@ function Button(button, creator)
 							.post(new FormData(this.form), function (process)
 							{
 								process = JSON.parse(process);
-								Array.from(document.body.children)
-									.forEach(e => e.style.display = "none");
-								document.body.appendChild(new ProcessFrame(process));
+								document.body.appendChild(new ProgressWindow(process));
 							});
 					}
 
@@ -6196,11 +6192,13 @@ class ProgressDialog extends Modal
 		});
 	}
 }
-class ProcessFrame extends HTMLElement
+class ProgressWindow extends HTMLElement
 {
 	constructor(process)
 	{
 		super();
+		Array.from(document.body.children)
+			.forEach(e => e.style.display = "none");
 		if (process)
 			this.setAttribute("process", process);
 	}
@@ -6219,8 +6217,15 @@ class ProcessFrame extends HTMLElement
 		action.innerHTML = "Processando<i>&#X2017;</i>";
 		action.href = "#";
 
-		action.onclick = () => Message
-				.error("Aguarde o processamento", 1000);
+		action.onclick = () =>
+		{
+			if (prompt("Tem certeza de que deseja fechar o progresso?"))
+			{
+				Array.from(document.body.children)
+					.forEach(e => e.style.display = "");
+				document.body.removeChild(this);
+			}
+		};
 
 		progress.addEventListener("commited", () =>
 		{
@@ -6240,4 +6245,4 @@ class ProcessFrame extends HTMLElement
 }
 
 window.addEventListener("load", () =>
-	customElements.define('process-frame', ProcessFrame));
+	customElements.define('progress-window', ProgressWindow));

@@ -2450,13 +2450,13 @@ div.ProgressDialog > div:nth-child(3) > a:hover {
   border-color: #FFFACD;
   background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
 }
-process-frame {
+progress-window {
   display: flex;
   align-items: center;
   justify-content: center;
   height: calc(100vh - 40px);
 }
-process-frame > div {
+progress-window > div {
   display: flex;
   flex-basis: 50%;
   flex-direction: column;
