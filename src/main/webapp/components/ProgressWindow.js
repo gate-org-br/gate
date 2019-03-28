@@ -1,8 +1,10 @@
-class ProcessFrame extends HTMLElement
+class ProgressWindow extends HTMLElement
 {
 	constructor(process)
 	{
 		super();
+		Array.from(document.body.children)
+			.forEach(e => e.style.display = "none");
 		if (process)
 			this.setAttribute("process", process);
 	}
@@ -21,8 +23,15 @@ class ProcessFrame extends HTMLElement
 		action.innerHTML = "Processando<i>&#X2017;</i>";
 		action.href = "#";
 
-		action.onclick = () => Message
-				.error("Aguarde o processamento", 1000);
+		action.onclick = () =>
+		{
+			if (prompt("Tem certeza de que deseja fechar o progresso?"))
+			{
+				Array.from(document.body.children)
+					.forEach(e => e.style.display = "");
+				document.body.removeChild(this);
+			}
+		};
 
 		progress.addEventListener("commited", () =>
 		{
@@ -42,4 +51,4 @@ class ProcessFrame extends HTMLElement
 }
 
 window.addEventListener("load", () =>
-	customElements.define('process-frame', ProcessFrame));
+	customElements.define('progress-window', ProgressWindow));

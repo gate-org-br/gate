@@ -183,7 +183,7 @@ function Link(link, creator)
 						.forEach(e => new Popup(e));
 					break;
 
-				case "_progress":
+				case "_progress-dialog":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -197,7 +197,7 @@ function Link(link, creator)
 
 					break;
 
-				case "_process":
+				case "_progress-window":
 					event.preventDefault();
 					event.stopPropagation();
 					event.stopImmediatePropagation();
@@ -205,9 +205,7 @@ function Link(link, creator)
 					new URL(this.href).get(function (process)
 					{
 						process = JSON.parse(process);
-						Array.from(document.body.children)
-							.forEach(e => e.style.display = "none");
-						document.body.appendChild(new ProcessFrame(process));
+						document.body.appendChild(new ProgressWindow(process));
 					});
 
 					break;

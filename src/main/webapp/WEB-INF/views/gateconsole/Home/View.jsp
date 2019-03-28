@@ -22,7 +22,6 @@
 		</div>
 	</form>
 
-
 	<g:choose>
 		<g:when condition="${screen.GET}">
 			<div class="TEXT">
