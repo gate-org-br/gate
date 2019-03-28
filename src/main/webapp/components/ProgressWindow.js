@@ -25,7 +25,7 @@ class ProgressWindow extends HTMLElement
 
 		action.onclick = () =>
 		{
-			if (prompt("Tem certeza de que deseja fechar o progresso?"))
+			if (confirm("Tem certeza de que deseja fechar o progresso?"))
 			{
 				Array.from(document.body.children)
 					.forEach(e => e.style.display = "");
