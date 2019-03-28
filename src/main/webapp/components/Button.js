@@ -193,6 +193,25 @@ function Button(button, creator)
 					}
 
 					break;
+
+				case "_process":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (this.form.reportValidity())
+					{
+						new URL(this.getAttribute("formaction"))
+							.post(new FormData(this.form), function (process)
+							{
+								process = JSON.parse(process);
+								Array.from(document.body.children)
+									.forEach(e => e.style.display = "none");
+								document.body.appendChild(new ProcessFrame(process));
+							});
+					}
+
+					break;
 			}
 		}
 	});
