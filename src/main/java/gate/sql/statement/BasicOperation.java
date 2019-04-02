@@ -112,9 +112,9 @@ class BasicOperation<T> implements Operation<T>
 
 			@Override
 			public int execute()
-					throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+				throws ConstraintViolationException,
+				FKViolationException,
+				UKViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -123,7 +123,7 @@ class BasicOperation<T> implements Operation<T>
 					if (Entity.isEntity(type))
 					{
 						Property entityId
-								= Property.getProperty(type, Entity.getId(type));
+							= Property.getProperty(type, Entity.getId(type));
 
 						for (T value : values)
 						{
@@ -131,8 +131,8 @@ class BasicOperation<T> implements Operation<T>
 							result += command.execute();
 							if (entityId.getValue(value) == null)
 								command
-										.getGeneratedKey(entityId.getRawType())
-										.ifPresent(id -> entityId.setValue(value, id));
+									.getGeneratedKey(entityId.getRawType())
+									.ifPresent(id -> entityId.setValue(value, id));
 						}
 					} else
 					{
@@ -148,10 +148,9 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Compiled.Connected<T>
-					observe(Consumer<T> observer) throws ConstraintViolationException
+			public Operation.Compiled.Connected<T> observe(Consumer<T> observer) throws ConstraintViolationException
 			{
-				return new Observed(observer);
+				return observer != null ? new Observed(observer) : this;
 			}
 
 			@Override
@@ -180,9 +179,9 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public int execute()
-						throws ConstraintViolationException,
-						FKViolationException,
-						UKViolationException
+					throws ConstraintViolationException,
+					FKViolationException,
+					UKViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{
@@ -191,7 +190,7 @@ class BasicOperation<T> implements Operation<T>
 						if (Entity.isEntity(type))
 						{
 							Property entityId
-									= Property.getProperty(type, Entity.getId(type));
+								= Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{
@@ -199,8 +198,8 @@ class BasicOperation<T> implements Operation<T>
 								result += command.execute();
 								if (entityId.getValue(value) == null)
 									command
-											.getGeneratedKey(entityId.getRawType())
-											.ifPresent(id -> entityId.setValue(value, id));
+										.getGeneratedKey(entityId.getRawType())
+										.ifPresent(id -> entityId.setValue(value, id));
 								observer.accept(value);
 							}
 						} else
@@ -219,7 +218,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public Operation.Compiled.Connected<T> observe(Consumer<T> observer)
-						throws ConstraintViolationException
+					throws ConstraintViolationException
 				{
 					return Connected.this.observe(observer);
 				}
@@ -291,9 +290,9 @@ class BasicOperation<T> implements Operation<T>
 
 			@Override
 			public int execute()
-					throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+				throws ConstraintViolationException,
+				FKViolationException,
+				UKViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -323,10 +322,9 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Connected.Compiled<T>
-					observe(Consumer<T> observer) throws ConstraintViolationException
+			public Operation.Connected.Compiled<T> observe(Consumer<T> observer) throws ConstraintViolationException
 			{
-				return new Observed(observer);
+				return observer != null ? new Observed(observer) : this;
 			}
 
 			@Override
@@ -356,9 +354,9 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public int execute()
-						throws ConstraintViolationException,
-						FKViolationException,
-						UKViolationException
+					throws ConstraintViolationException,
+					FKViolationException,
+					UKViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{
@@ -367,7 +365,7 @@ class BasicOperation<T> implements Operation<T>
 						if (Entity.isEntity(type))
 						{
 							Property entityId
-									= Property.getProperty(type, Entity.getId(type));
+								= Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{
@@ -375,8 +373,8 @@ class BasicOperation<T> implements Operation<T>
 								result += command.execute();
 								if (entityId.getValue(value) == null)
 									command
-											.getGeneratedKey(entityId.getRawType())
-											.ifPresent(id -> entityId.setValue(value, id));
+										.getGeneratedKey(entityId.getRawType())
+										.ifPresent(id -> entityId.setValue(value, id));
 								observer.accept(value);
 							}
 						} else
@@ -395,7 +393,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public Operation.Connected.Compiled<T> observe(Consumer<T> observer)
-						throws ConstraintViolationException
+					throws ConstraintViolationException
 				{
 					return Compiled.this.observe(observer);
 				}
