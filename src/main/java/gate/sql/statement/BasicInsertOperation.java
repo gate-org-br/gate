@@ -23,7 +23,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 	@Override
 	public InsertOperation<T> observe(Consumer<T> observer)
 	{
-		return new Observed(observer);
+		return observer != null ? new Observed(observer) : this;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		@Override
 		public InsertOperation.Properties observe(Consumer<T> observer)
 		{
-			return new Observed(observer);
+			return observer != null ? new Observed(observer) : this;
 		}
 
 		@Override
@@ -116,9 +116,12 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 			@Override
 			public int execute(Collection<T> values) throws ConstraintViolationException, FKViolationException, UKViolationException
 			{
-				return Insert.into(type)
+				return Insert
+					.into(type)
 					.set(properties)
-					.build().values(values).connect(link)
+					.build()
+					.values(values)
+					.connect(link)
 					.observe(observer)
 					.execute();
 			}
