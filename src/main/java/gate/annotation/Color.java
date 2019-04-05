@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
 	{
-		ElementType.TYPE, ElementType.FIELD
+		ElementType.TYPE, ElementType.FIELD, ElementType.METHOD
 	})
 public @interface Color
 {

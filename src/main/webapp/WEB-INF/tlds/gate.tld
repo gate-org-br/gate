@@ -134,6 +134,7 @@
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a link to the specified resource
+			if the specified condition is true and
 			if the current user has access to it.
 		</description>
 		<attribute>
@@ -187,6 +188,14 @@
 				The target attribute of the html anchor or the
 				formtarget attribute of the html button to be
 				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
 			</description>
 		</attribute>
 		<attribute>
@@ -198,6 +207,15 @@
 				user has no access to the specified resource.
 			</description>
 		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the link or
+				button to be created.
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>shortcut</name>
@@ -207,6 +225,7 @@
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a small icon linked to the specified resource
+			if the specified condition is true and
 			if the current user has access to it.
 		</description>
 		<attribute>
@@ -262,6 +281,23 @@
 				generated.
 			</description>
 		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the link or
+				button to be created.
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>menu</name>
@@ -271,6 +307,7 @@
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a menu to the specified resource
+			if the specified condition is true and
 			if the current user has access to it.
 		</description>
 		<attribute>
@@ -326,6 +363,23 @@
 				generated.
 			</description>
 		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the menu link or
+				button to be created.
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>menuitem</name>
@@ -335,6 +389,7 @@
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a menu item to the specified resource
+			if the specified condition is true and
 			if the current user has access to it.
 		</description>
 		<attribute>
@@ -407,6 +462,14 @@
 			<description>
 				Tabindex attribute of the menu item link or
 				button to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
 			</description>
 		</attribute>
 	</tag>
