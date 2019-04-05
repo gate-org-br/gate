@@ -17,8 +17,7 @@
 		</fieldset>
 
 		<div class='COOLBAR'>
-			<g:link method="post" module='#'
-				screen="#" action="#" tabindex='2'/>
+			<g:link method="post" module='#' screen="#" action="#" tabindex='2'/>
 		</div>
 	</form>
 

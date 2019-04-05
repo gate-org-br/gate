@@ -1,76 +1,29 @@
 package gate.tags;
 
-import gate.Gate;
-import gate.annotation.Asynchronous;
-import gate.annotation.Current;
-import gate.annotation.Name;
-import gate.base.Screen;
-import gate.entity.User;
-import gate.io.URL;
-import gate.util.Icons;
+import gate.annotation.Color;
 import gate.util.Toolkit;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import javax.inject.Inject;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-public class ShortcutTag extends DynamicAttributeTag
+public class ShortcutTag extends AnchorTag
 {
-
-	@Inject
-	@Current
-	private User user;
-
-	private String module;
-
-	private String screen;
-
-	private String action;
-
-	private String arguments;
-
-	private String method;
-	private String target;
-
-	public void setArguments(String arguments)
-	{
-		this.arguments = arguments;
-	}
-
-	public void setAction(String action)
-	{
-		this.action = action;
-	}
-
-	public void setModule(String module)
-	{
-		this.module = module;
-	}
-
-	public void setScreen(String screen)
-	{
-		this.screen = screen;
-	}
-
-	public void setMethod(String method)
-	{
-		this.method = method;
-	}
-
-	public void setTarget(String target)
-	{
-		this.target = target;
-	}
 
 	@Override
 	public void doTag() throws JspException, IOException
 	{
+		super.doTag();
+		if (!getCondition())
+			return;
+
 		PageContext pageContext = (PageContext) getJspContext();
 
-		if (Toolkit.isEmpty(module)
-			&& Toolkit.isEmpty(screen)
-			&& Toolkit.isEmpty(action))
+		if (getTabindex() != null)
+			getAttributes().put("tabindex", getTabindex());
+
+		if (Toolkit.isEmpty(getModule())
+			&& Toolkit.isEmpty(getScreen())
+			&& Toolkit.isEmpty(getAction()))
 		{
 			getAttributes().put("href", "Gate");
 			if (!getAttributes().containsKey("title"))
@@ -84,71 +37,44 @@ public class ShortcutTag extends DynamicAttributeTag
 				pageContext.getOut().print("<i>&#X2007;</i>");
 
 			pageContext.getOut().print("</a>");
-		} else
+		} else if (checkAccess())
 		{
-			if ("#".equals(module))
-				module = pageContext.getRequest().getParameter("MODULE");
-			if ("#".equals(screen))
-				screen = pageContext.getRequest().getParameter("SCREEN");
-			if ("#".equals(action))
-				action = pageContext.getRequest().getParameter("ACTION");
+			if (!getAttributes().containsKey("title"))
+				getAttributes().put("title", getName());
 
-			Class<Screen> clazz = Screen.getScreen(module, screen)
-				.orElseThrow(() -> new IOException(String.format(
-				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-				module, screen, action)));
-			Method _method = Screen.getAction(clazz, action)
-				.orElseThrow(() -> new IOException(String.format(
-				"Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-				module, screen, action)));
+			if (!getAttributes().containsKey("style") && getJavaMethod().isAnnotationPresent(Color.class))
+				getAttributes().put("style", String.format("color: %s", getJavaMethod().getAnnotation(Color.class).value()));
 
-			if (_method.isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(target))
-					target = "_progress-dialog";
-				else
-					target = "_progress-window";
-
-			if (Gate.checkAccess(user, module, screen, action, clazz, _method))
+			if ("POST".equalsIgnoreCase(this.getMethod()))
 			{
-				String title = "unnamed";
-				if (_method.isAnnotationPresent(Name.class))
-					title = _method.getAnnotation(Name.class).value();
-				else if (clazz.isAnnotationPresent(Name.class))
-					title = clazz.getAnnotation(Name.class).value();
-				if (!getAttributes().containsKey("title"))
-					getAttributes().put("title", title);
+				getAttributes().put("formaction", getURL());
 
-				if ("POST".equalsIgnoreCase(this.method))
-				{
-					getAttributes().put("formtarget", target);
-					getAttributes().put("formaction", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<button " + getAttributes() + ">");
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody(clazz, _method));
-					pageContext.getOut().print("</button>");
-				} else
-				{
-					if (target != null)
-						getAttributes().put("target", target);
-					getAttributes().put("href", URL.toString(module, screen, action, arguments));
-					pageContext.getOut().print("<a " + getAttributes() + ">");
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody(clazz, _method));
-					pageContext.getOut().print("</a>");
-				}
+				if (getTarget() != null)
+					getAttributes().put("formtarget", getTarget());
+
+				pageContext.getOut().print("<button " + getAttributes() + ">");
+
+				if (getJspBody() != null)
+					getJspBody().invoke(null);
+				else
+					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().getCode()));
+
+				pageContext.getOut().print("</button>");
+			} else
+			{
+				getAttributes().put("href", getURL());
+				if (getTarget() != null)
+					getAttributes().put("target", getTarget());
+
+				pageContext.getOut().print("<a " + getAttributes() + ">");
+
+				if (getJspBody() != null)
+					getJspBody().invoke(null);
+				else
+					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().getCode()));
+
+				pageContext.getOut().print("</a>");
 			}
 		}
-	}
-
-	private String createBody(Class<?> clazz, Method method)
-	{
-		Icons.Icon icon = Icons.getInstance().get(method);
-		if (icon == Icons.UNKNOWN)
-			icon = Icons.getInstance().get(clazz);
-		return String.format("<i>&#X%s;</i>", icon.getCode());
 	}
 }
