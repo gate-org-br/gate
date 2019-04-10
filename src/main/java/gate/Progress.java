@@ -170,8 +170,6 @@ public class Progress
 		Progress progress = CURRENT.get();
 		if (progress != null)
 		{
-			if (!Status.PENDING.equals(progress.status))
-				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(progress.status, progress.todo, progress.done, message);
 			progress.dispatch(progress.toString());
 		}
