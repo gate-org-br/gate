@@ -6,7 +6,7 @@ public final class Style
 	private int fontSize = 12;
 	private double width = 100;
 	private Color color = Color.BLACK;
-	private TextAlign textAlign = TextAlign.CENTER;
+	private TextAlign textAlign = TextAlign.LEFT;
 	private FontWeight fontWeight = FontWeight.NORMAL;
 
 	Style()
@@ -211,10 +211,10 @@ public final class Style
 		{
 			Style style = (Style) obj;
 			return style.getFontSize() == fontSize
-					&& style.getTextAlign() == textAlign
-					&& style.getColor() == color
-					&& style.getWidth() == width
-					&& style.getFontWeight() == fontWeight;
+				&& style.getTextAlign() == textAlign
+				&& style.getColor() == color
+				&& style.getWidth() == width
+				&& style.getFontWeight() == fontWeight;
 		}
 		return false;
 	}
@@ -229,11 +229,11 @@ public final class Style
 	public String toString()
 	{
 		return String.format("width: %f; color: %s; font-weight: %s; font-size: %d; text-align: %s",
-				width,
-				color,
-				fontWeight,
-				fontSize,
-				textAlign);
+			width,
+			color,
+			fontWeight,
+			fontSize,
+			textAlign);
 	}
 
 	public static Style parse(String string)
