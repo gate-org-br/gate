@@ -92,9 +92,9 @@ public class XLS extends Doc
 		short index = -1;
 
 		SXSSFSheet sheet
-				= form.getCaption() != null
-				? workbook.createSheet(form.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
-				: workbook.createSheet();
+			= form.getCaption() != null
+			? workbook.createSheet(form.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
+			: workbook.createSheet();
 		for (Field e : form.getElements().stream().filter(e -> e instanceof Field).map(e -> (Field) e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
@@ -178,8 +178,8 @@ public class XLS extends Doc
 	private void printGrid(SXSSFWorkbook workbook, Grid<Object> grid) throws ConversionException
 	{
 		SXSSFSheet sheet = grid.getCaption() != null
-				? workbook.createSheet(grid.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
-				: workbook.createSheet();
+			? workbook.createSheet(grid.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
+			: workbook.createSheet();
 
 		sheet.trackAllColumnsForAutoSizing();
 		i = -1;
@@ -260,7 +260,7 @@ public class XLS extends Doc
 	}
 
 	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet,
-			Grid<Object> grid, Iterable<?> data, int level) throws ConversionException
+		Grid<Object> grid, Iterable<?> data, int level) throws ConversionException
 	{
 
 		for (Object object : data)
@@ -321,7 +321,7 @@ public class XLS extends Doc
 
 			if (grid.getChildren() != null)
 				printGridData(workbook, sheet, grid, Toolkit
-						.collection(grid.getChildren().apply(object)), level + 1);
+					.collection(grid.getChildren().apply(object)), level + 1);
 		}
 	}
 
@@ -338,7 +338,7 @@ public class XLS extends Doc
 			case RED:
 				return new XSSFColor(Color.red);
 			case GREEN:
-				return new XSSFColor(Color.green);
+				return new XSSFColor(Color.green.darker());
 			default:
 				return new XSSFColor(Color.black);
 		}
