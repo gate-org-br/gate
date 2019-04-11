@@ -210,6 +210,23 @@ function Button(button, creator)
 					}
 
 					break;
+
+				case "_report-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (this.form.reportValidity())
+					{
+						new ReportDialog({method: "POST",
+							blocked: true,
+							url: button.getAttribute("formaction") || button.form.action,
+							title: button.getAttribute("title"),
+							data: new FormData(button.form)}).show();
+						button.disabled = false;
+					}
+
+					break;
 			}
 		}
 	});

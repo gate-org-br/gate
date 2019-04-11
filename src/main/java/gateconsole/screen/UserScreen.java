@@ -172,8 +172,9 @@ public class UserScreen extends Screen
 	}
 
 	@Icon("report")
-	@Name("Relatório")
-	public Doc callReport()
+	@Name("Imprimir")
+	@Description("Imprimir")
+	public Object callReport()
 	{
 		Report report = new Report();
 
@@ -182,14 +183,14 @@ public class UserScreen extends Screen
 		report.addHeader("Relatórios de Usuários");
 		report.addHeader(getApp().getId() + " - " + getApp().getName());
 
-		Form form = report.addForm(4);
+		Form formulario = report.addForm(4);
 
-		form.setCaption("Filtro");
-		form.add("Ativo:", getForm().getActive());
-		form.add("Login:", getForm().getUserID());
-		form.add("E-Mail:", getForm().getEmail()).colspan(2);
-		form.add("Nome", getForm().getName()).colspan(2);
-		form.add("Perfil", getForm().getRole().getName()).colspan(2);
+		formulario.setCaption("Filtro");
+		formulario.add("Ativo:", getForm().getActive());
+		formulario.add("Login:", getForm().getUserID());
+		formulario.add("E-Mail:", getForm().getEmail()).colspan(2);
+		formulario.add("Nome", getForm().getName()).colspan(2);
+		formulario.add("Perfil", getForm().getRole().getName()).colspan(2);
 
 		report.addLineBreak();
 

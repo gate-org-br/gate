@@ -1,0 +1,53 @@
+div.ReportDialog
+{
+	display: flex;
+	height: 250px;
+	flex-basis: 600px;
+	border-radius: 5px;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: center;
+	background-color: @main;
+	background-image: @noise;
+	border: 4px solid @base_shaded;
+	box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+
+	> div:nth-child(1) {  display: flex;
+			      color: white;
+			      font-size: 16px;
+			      flex-basis: 40px;
+			      font-weight: bold;
+			      align-items: center;
+			      justify-content: center;
+			      background-color: @base_shaded }
+
+	> div:nth-child(2) { flex-grow: 1;
+			     display: flex;
+			     align-items: stretch;
+			     align-content: stretch;
+			     justify-content: center;
+			     background-color: @main;
+			     background-image: @noise;}
+
+	> div:nth-child(3)  {  display: flex;
+			       color: white;
+			       font-size: 16px;
+			       flex-basis: 40px;
+			       font-weight: bold;
+			       align-items: stretch;
+			       justify-content: center;
+			       background-color: @main}
+
+	> div:nth-child(3) > a { flex-grow: 1;
+				 color: black;
+				 display: flex;
+				 flex-basis: 50%;
+				 align-items: center;
+				 justify-content: center;
+				 border: 2px solid #CCCCCC;
+				 background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%); }
+
+	> div:nth-child(3) > a:hover { font-weight: bold;
+				       border-color: @hovered;
+				       background-image:  linear-gradient(to bottom, #E3E0D0 0%, #858279 100%); }
+}
