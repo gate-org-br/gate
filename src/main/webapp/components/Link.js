@@ -209,6 +209,18 @@ function Link(link, creator)
 					});
 
 					break;
+
+				case "_report-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					new ReportDialog({method: "GET",
+						blocked: true,
+						url: link.href,
+						title: link.getAttribute("title")}).show();
+
+					break;
 			}
 		}
 	});

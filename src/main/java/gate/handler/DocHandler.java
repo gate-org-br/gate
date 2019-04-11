@@ -5,9 +5,7 @@ import gate.report.doc.Doc;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-
 import java.util.Locale;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

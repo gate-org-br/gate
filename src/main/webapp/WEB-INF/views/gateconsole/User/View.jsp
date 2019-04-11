@@ -84,19 +84,9 @@
 			<g:link method="post" module='#' screen='#' tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
-			<hr/>
 			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3' title='Novo Usu&aacute;rio'/>
 			<g:link target='_dialog' module='#' screen='#' action='Upload' tabindex='3' title='Importar Usu&aacute;rios'/>
-			<hr/>
-			<g:link method="post" module='#' screen='#' action="Report" arguments="type=0" tabindex='2'>
-				PDF<g:icon type="gate.report.doc.PDF"/>
-			</g:link>
-			<g:link method="post" module='#' screen='#' action="Report" arguments="type=1" tabindex='2'>
-				XLS<g:icon type="gate.report.doc.XLS"/>
-			</g:link>
-			<g:link method="post" module='#' screen='#' action="Report" arguments="type=2" tabindex='2'>
-				CSV<g:icon type="gate.report.doc.CSV"/>
-			</g:link>
+			<g:link target="_report-dialog" method="post" module='#' screen='#' action="Report" tabindex='2'/>
 		</div>
 
 		<g:choose>

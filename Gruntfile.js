@@ -17,6 +17,8 @@ module.exports = function (grunt) {
 
 							"src/main/webapp/components/Gate.js",
 
+							"src/main/webapp/components/DataFormat.js",
+
 							"src/main/webapp/components/DeskMenu.js",
 							"src/main/webapp/components/DeskPane.js",
 
@@ -81,6 +83,11 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/ProgressStatus.js",
 							"src/main/webapp/components/ProgressDialog.js",
 							"src/main/webapp/components/ProgressWindow.js",
+
+							"src/main/webapp/components/DownloadStatus.js",
+
+							"src/main/webapp/components/ReportSelector.js",
+							"src/main/webapp/components/ReportDialog.js"
 						],
 						dest: 'src/main/resources/gate/Gate.js'
 					}

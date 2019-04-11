@@ -1,8 +1,11 @@
-function URL(value)
+class URL
 {
-	this.value = value;
+	constructor(value)
+	{
+		this.value = value;
+	}
 
-	this.setParameter = function (name, value)
+	setParameter(name, value)
 	{
 		if (this.value.indexOf("?") === -1)
 			this.value += "?";
@@ -10,27 +13,27 @@ function URL(value)
 			this.value += "&";
 		this.value += name + "=" + value;
 		return this;
-	};
+	}
 
-	this.setModule = function (module)
+	setModule(module)
 	{
 		this.setParameter("MODULE", module);
 		return this;
-	};
+	}
 
-	this.setScreen = function (screen)
+	setScreen(screen)
 	{
 		this.setParameter("SCREEN", screen);
 		return this;
-	};
+	}
 
-	this.setAction = function (action)
+	setAction(action)
 	{
 		this.setParameter("ACTION", action);
 		return this;
-	};
+	}
 
-	this.get = function (callback)
+	get(callback)
 	{
 		var request =
 			window.XMLHttpRequest ?
@@ -73,9 +76,9 @@ function URL(value)
 		}
 
 		return this;
-	};
+	}
 
-	this.post = function (data, callback)
+	post(data, callback)
 	{
 		var request =
 			window.XMLHttpRequest ?
@@ -117,20 +120,20 @@ function URL(value)
 		}
 
 		return this;
-	};
+	}
 
-	this.go = function ()
+	go()
 	{
 		window.location.href = resolve(this.value);
 		return this;
-	};
+	}
 
-	this.toString = function ()
+	toString()
 	{
 		return this.value;
-	};
+	}
 
-	this.populate = function (css)
+	populate(css)
 	{
 		this.get(function (options)
 		{
@@ -143,5 +146,5 @@ function URL(value)
 			}
 		});
 		return this;
-	};
+	}
 }

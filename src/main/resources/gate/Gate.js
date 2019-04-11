@@ -1491,6 +1491,23 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+class DataFormat
+{
+	static format(bytes, decimals = 2)
+	{
+		if (bytes === 0)
+			return '0 Bytes';
+
+		const k = 1024;
+		const dm = decimals < 0 ? 0 : decimals;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+
+	}
+}
 function DeskMenu(deskMenu)
 {
 	Array.from(deskMenu.getElementsByTagName("a"))
@@ -2156,11 +2173,14 @@ const HOME = 36;
 const PAGE_UP = 33;
 const PAGE_DOWN = 34;
 
-function URL(value)
+class URL
 {
-	this.value = value;
+	constructor(value)
+	{
+		this.value = value;
+	}
 
-	this.setParameter = function (name, value)
+	setParameter(name, value)
 	{
 		if (this.value.indexOf("?") === -1)
 			this.value += "?";
@@ -2168,27 +2188,27 @@ function URL(value)
 			this.value += "&";
 		this.value += name + "=" + value;
 		return this;
-	};
+	}
 
-	this.setModule = function (module)
+	setModule(module)
 	{
 		this.setParameter("MODULE", module);
 		return this;
-	};
+	}
 
-	this.setScreen = function (screen)
+	setScreen(screen)
 	{
 		this.setParameter("SCREEN", screen);
 		return this;
-	};
+	}
 
-	this.setAction = function (action)
+	setAction(action)
 	{
 		this.setParameter("ACTION", action);
 		return this;
-	};
+	}
 
-	this.get = function (callback)
+	get(callback)
 	{
 		var request =
 			window.XMLHttpRequest ?
@@ -2231,9 +2251,9 @@ function URL(value)
 		}
 
 		return this;
-	};
+	}
 
-	this.post = function (data, callback)
+	post(data, callback)
 	{
 		var request =
 			window.XMLHttpRequest ?
@@ -2275,20 +2295,20 @@ function URL(value)
 		}
 
 		return this;
-	};
+	}
 
-	this.go = function ()
+	go()
 	{
 		window.location.href = resolve(this.value);
 		return this;
-	};
+	}
 
-	this.toString = function ()
+	toString()
 	{
 		return this.value;
-	};
+	}
 
-	this.populate = function (css)
+	populate(css)
 	{
 		this.get(function (options)
 		{
@@ -2301,7 +2321,7 @@ function URL(value)
 			}
 		});
 		return this;
-	};
+	}
 }
 /* global Message, Block, ENTER, ESC */
 
@@ -2512,6 +2532,18 @@ function Link(link, creator)
 						process = JSON.parse(process);
 						document.body.appendChild(new ProgressWindow(process));
 					});
+
+					break;
+
+				case "_report-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					new ReportDialog({method: "GET",
+						blocked: true,
+						url: link.href,
+						title: link.getAttribute("title")}).show();
 
 					break;
 			}
@@ -2823,6 +2855,23 @@ function Button(button, creator)
 								process = JSON.parse(process);
 								document.body.appendChild(new ProgressWindow(process));
 							});
+					}
+
+					break;
+
+				case "_report-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (this.form.reportValidity())
+					{
+						new ReportDialog({method: "POST",
+							blocked: true,
+							url: button.getAttribute("formaction") || button.form.action,
+							title: button.getAttribute("title"),
+							data: new FormData(button.form)}).show();
+						button.disabled = false;
 					}
 
 					break;
@@ -6246,3 +6295,228 @@ class ProgressWindow extends HTMLElement
 
 window.addEventListener("load", () =>
 	customElements.define('progress-window', ProgressWindow));
+/* global Message, DataFormat */
+
+class DownloadStatus extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	connectedCallback()
+	{
+		var title = this.appendChild(document.createElement("label"));
+		title.style.fontSize = "20px";
+		title.style.flexBasis = "40px";
+
+		var progress = this.appendChild(document.createElement("progress"));
+		progress.style.width = "100%";
+		progress.style.flexBasis = "40px";
+
+		var div = this.appendChild(document.createElement("div"));
+		div.style.flexBasis = "40px";
+		div.style.display = "flex";
+		div.style.alignItems = "center";
+
+		var clock = div.appendChild(document.createElement("label"));
+		clock.style.flexGrow = "1";
+		clock.style.fontSize = "12px";
+		clock.style.display = "flex";
+		clock.style.alignItems = "center";
+		clock.style.justifyContent = "flex-start";
+		clock.innerHTML = "00:00:00";
+
+		var counter = div.appendChild(document.createElement("label"));
+		counter.style.flexGrow = "1";
+		counter.style.fontSize = "12px";
+		counter.style.display = "flex";
+		counter.style.alignItems = "center";
+		counter.style.justifyContent = "flex-end";
+		counter.innerHTML = "...";
+
+	}
+
+	abort()
+	{
+		if (this.request)
+			this.request.abort();
+	}
+
+	get(url)
+	{
+		download("GET", url, null);
+	}
+
+	post(url, data)
+	{
+		download("GET", url, data);
+	}
+
+	download(method, url, data)
+	{
+		var title = this.children[0];
+		var progress = this.children[1];
+		var clock = this.children[2].children[0];
+		var counter = this.children[2].children[1];
+		this.request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+		this.request.addEventListener("load", () =>
+		{
+			this.onClockTick = null;
+
+			if (this.request.status === 200)
+			{
+				if (!progress.max && !progress.value)
+					progress.max = progress.value = 100;
+				title.style.color = "#006600";
+				title.innerHTML = "Download efetuado com sucesso";
+
+				var disposition = this.request.getResponseHeader('content-disposition');
+				var matches = /"([^"]*)"/.exec(disposition);
+				var filename = (matches !== null && matches[1] ? matches[1] : 'file');
+				var blob = new Blob([this.request.response], {type: 'application/octet-stream'});
+				var link = document.createElement('a');
+				link.href = window.URL.createObjectURL(blob);
+				link.download = filename;
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				setTimeout(() => window.URL.revokeObjectURL(link.href), 60 * 1000);
+
+				this.dispatchEvent(new CustomEvent('done', {cancelable: false}));
+			} else
+			{
+				var reader = new FileReader();
+				reader.addEventListener("loadend", function ()
+				{
+					title.style.color = "#660000";
+					title.innerHTML = reader.result;
+					this.dispatchEvent(new CustomEvent('error', {cancelable: false, 'detail': reader.result}));
+				});
+				reader.readAsText(new Blob([this.request.response], {type: 'application/octet-stream'}));
+			}
+		});
+
+		this.request.addEventListener("loadend", () => this.request = null);
+
+		this.request.addEventListener("progress", event =>
+		{
+			title.innerHTML = "Efetuando download";
+			if (event.loaded)
+			{
+				progress.value = event.loaded;
+				counter.innerHTML = DataFormat.format(event.loaded);
+
+				if (event.total)
+				{
+					progress.max = event.total;
+					counter.innerHTML = counter.innerHTML + " de " + DataFormat.format(event.total);
+				}
+			}
+		});
+
+		this.request.addEventListener("error", () =>
+		{
+			this.onClockTick = null;
+			title.style.color = "#660000";
+			title.innerHTML = "Erro ao efetuar download";
+			this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
+		});
+
+		var time = 0;
+		this.onClockTick = () => clock.innerHTML
+				= new Duration(++time).toString();
+
+		title.innerHTML = "Conectando ao servidor";
+		this.request.responseType = 'blob';
+		this.request.open(method, resolve(url), true);
+		this.request.send(data);
+
+		return this;
+	}
+}
+
+window.addEventListener("load", () =>
+	customElements.define('download-status', DownloadStatus));
+
+
+
+class ReportSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	connectedCallback()
+	{
+		var selector = this;
+		var table = this.appendChild(document.createElement("table"));
+
+		table.appendChild(document.createElement("col")).style.width = "64px";
+		table.appendChild(document.createElement("col"));
+
+		var tbody = table.appendChild(document.createElement("tbody"));
+
+
+		tbody.appendChild(createRow("PDF", "&#x2218;"));
+		tbody.appendChild(createRow("XLS", "&#x2219;"));
+		tbody.appendChild(createRow("CSV", "&#x2220;"));
+
+
+		function createRow(type, icon)
+		{
+			var line = document.createElement("tr");
+
+			var td = line.appendChild(document.createElement("td"))
+			td.style.textAlign = "center";
+			td.appendChild(document.createElement("i")).innerHTML = icon;
+			line.appendChild(document.createElement("td")).innerHTML = type;
+			line.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected',
+					{cancelable: false, detail: type})));
+
+			return line;
+		}
+	}
+}
+
+
+window.addEventListener("load", () =>
+	customElements.define('report-selector', ReportSelector));
+class ReportDialog extends Modal
+{
+	constructor(options)
+	{
+		super(options);
+		var download = new DownloadStatus();
+		addEventListener("hide", () => download.abort());
+
+		var main = this.element().appendChild(document.createElement("div"));
+		main.className = "ReportDialog";
+
+		var head = main.appendChild(document.createElement("div"));
+		if (options && options.title)
+			head.innerHTML = options.title || "Imprimir";
+
+		var body = main.appendChild(document.createElement("div"));
+
+		var selector = body.appendChild(new ReportSelector());
+		selector.addEventListener("selected", event =>
+		{
+			body.removeChild(selector);
+			body.appendChild(download);
+			var url = new URL(options.url).setParameter("type", event.detail).toString();
+			download.download(options.method, url, options.data);
+			download.addEventListener("done", () => this.hide());
+		});
+
+		var foot = main.appendChild(document.createElement("div"));
+
+		var action = foot.appendChild(document.createElement("a"));
+		action.appendChild(document.createTextNode("Cancelar"));
+		action.addEventListener("click", () => this.hide());
+		action.style.color = "#660000";
+		action.href = "#";
+	}
+}
