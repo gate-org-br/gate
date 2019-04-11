@@ -12,6 +12,7 @@ import gate.entity.Org;
 import gate.entity.User;
 import gate.error.AccessDeniedException;
 import gate.error.AppError;
+import gate.error.AppException;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.DuplicateException;
@@ -195,18 +196,25 @@ public class Gate extends HttpServlet
 			httpServletRequest.setAttribute("exception", ex);
 			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
-		} catch (InvocationTargetException ex)
-		{
-			httpServletRequest.setAttribute("messages", Arrays.asList("Erro de sistema"));
-			httpServletRequest.setAttribute("exception", ex.getTargetException());
-			Logger.getGlobal().log(Level.SEVERE, ex.getTargetException().getMessage(), ex.getTargetException());
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (IOException | IllegalAccessException | ServletException | RuntimeException ex)
 		{
 			httpServletRequest.setAttribute("messages", Arrays.asList("Erro de sistema"));
 			httpServletRequest.setAttribute("exception", ex);
 			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+		} catch (InvocationTargetException ex)
+		{
+			if (ex.getCause() instanceof AppException)
+			{
+				Handler.getHandler(AppException.class).
+					handle(httpServletRequest, response, ex.getCause());
+			} else
+			{
+				httpServletRequest.setAttribute("messages", Arrays.asList("Erro de sistema"));
+				httpServletRequest.setAttribute("exception", ex.getTargetException());
+				Logger.getGlobal().log(Level.SEVERE, ex.getTargetException().getMessage(), ex.getTargetException());
+				httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+			}
 		}
 	}
 
