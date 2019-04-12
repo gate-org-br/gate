@@ -15,7 +15,7 @@ public final class Image extends ReportElement
 
 	Image(Report report, byte[] source)
 	{
-		super(report);
+		super(report, new Style());
 
 		Objects.requireNonNull(source);
 

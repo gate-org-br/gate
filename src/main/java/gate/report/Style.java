@@ -6,7 +6,7 @@ public final class Style
 	private int fontSize = 12;
 	private double width = 100;
 	private Color color = Color.BLACK;
-	private TextAlign textAlign = TextAlign.LEFT;
+	private TextAlign textAlign = TextAlign.CENTER;
 	private FontWeight fontWeight = FontWeight.NORMAL;
 
 	Style()

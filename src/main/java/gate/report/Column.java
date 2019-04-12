@@ -23,6 +23,7 @@ public final class Column<T> extends Element
 
 	Column(Grid grid)
 	{
+		super(new Style().left());
 		Objects.requireNonNull(grid);
 		Objects.requireNonNull(body);
 		this.grid = grid;

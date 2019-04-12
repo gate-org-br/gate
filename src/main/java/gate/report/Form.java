@@ -17,7 +17,7 @@ public final class Form extends ReportElement
 
 	Form(Report report, int columns)
 	{
-		super(report);
+		super(report, new Style());
 		if (columns <= 0)
 			throw new IllegalArgumentException("columns");
 		this.columns = columns;
@@ -25,7 +25,7 @@ public final class Form extends ReportElement
 
 	Form(Report report, gate.type.Form form)
 	{
-		super(report);
+		super(report, new Style());
 		this.columns = 8;
 		form.getFields().stream().forEach((e) ->
 		{
@@ -61,11 +61,11 @@ public final class Form extends ReportElement
 		{
 
 			form.getFields().forEach(e -> add(e.getName(), e.getValue())
-					.colspan(e.getSize().ordinal() + 1));
+				.colspan(e.getSize().ordinal() + 1));
 
 			int count = form.getFields().stream()
-					.mapToInt(e -> e.getSize().ordinal() + 1)
-					.sum() % columns;
+				.mapToInt(e -> e.getSize().ordinal() + 1)
+				.sum() % columns;
 			if (count > 0)
 			{
 				Field field = (Field) elements.get(elements.size() - 1);
