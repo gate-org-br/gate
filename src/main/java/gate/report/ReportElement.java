@@ -10,10 +10,10 @@ public abstract class ReportElement extends Element
 
 	private final Report report;
 
-	ReportElement(Report report)
+	ReportElement(Report report, Style style)
 	{
+		super(style);
 		Objects.requireNonNull(report);
-
 		this.report = report;
 	}
 

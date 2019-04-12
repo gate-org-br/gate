@@ -9,9 +9,8 @@ import java.util.function.Function;
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each
- * object of the associated data source will generate a single row on the Grid. The value to be displayed on each column
- * is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each object of the associated data source
+ * will generate a single row on the Grid. The value to be displayed on each column is obtained using a mapping function on it's row value.
  *
  * @param <T> type of the objects to be displayed by the grid
  *
@@ -27,7 +26,7 @@ public final class Grid<T> extends ReportElement
 
 	Grid(Report report, Iterable<T> datasource)
 	{
-		super(report);
+		super(report, new Style());
 		Objects.requireNonNull(datasource);
 		this.datasource = datasource;
 	}

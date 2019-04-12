@@ -5,6 +5,6 @@ public class PageBreak extends ReportElement
 
 	PageBreak(Report report)
 	{
-		super(report);
+		super(report, new Style());
 	}
 }

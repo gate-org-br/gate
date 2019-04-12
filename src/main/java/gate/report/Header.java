@@ -9,7 +9,7 @@ public final class Header extends ReportElement
 
 	Header(Report report, Object value)
 	{
-		super(report);
+		super(report, new Style());
 
 		Objects.requireNonNull(value);
 

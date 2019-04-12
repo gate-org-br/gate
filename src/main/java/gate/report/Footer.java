@@ -9,7 +9,7 @@ public final class Footer extends ReportElement
 
 	Footer(Report report, Object value)
 	{
-		super(report);
+		super(report, new Style());
 
 		Objects.requireNonNull(value);
 

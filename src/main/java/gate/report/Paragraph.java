@@ -9,7 +9,7 @@ public final class Paragraph extends ReportElement
 
 	Paragraph(Report report, Object value)
 	{
-		super(report);
+		super(report, new Style());
 
 		Objects.requireNonNull(value);
 
@@ -18,7 +18,7 @@ public final class Paragraph extends ReportElement
 
 	Paragraph(Report report, Object value, String style)
 	{
-		super(report);
+		super(report, new Style());
 
 		Objects.requireNonNull(value);
 

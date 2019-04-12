@@ -8,7 +8,12 @@ import java.util.Objects;
 public abstract class Element
 {
 
-	private Style style = new Style();
+	private Style style;
+
+	public Element(Style style)
+	{
+		this.style = style;
+	}
 
 	/**
 	 * Change the style of the element.
