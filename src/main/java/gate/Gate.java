@@ -118,6 +118,7 @@ public class Gate extends HttpServlet
 
 				Screen screen = Screen.create(clazz);
 				request.setAttribute("screen", screen);
+				request.setAttribute("action", method);
 				screen.prepare(request, response);
 
 				if (method.isAnnotationPresent(Asynchronous.class))
