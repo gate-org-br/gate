@@ -3,8 +3,8 @@ class ReportDialog extends Modal
 	constructor(options)
 	{
 		super(options);
-		var download = new DownloadStatus();
-		addEventListener("hide", () => download.abort());
+		var downloadStatus = new DownloadStatus();
+		addEventListener("hide", () => downloadStatus.abort());
 
 		var main = this.element().appendChild(document.createElement("div"));
 		main.className = "ReportDialog";
@@ -19,10 +19,10 @@ class ReportDialog extends Modal
 		selector.addEventListener("selected", event =>
 		{
 			body.removeChild(selector);
-			body.appendChild(download);
+			body.appendChild(downloadStatus);
 			var url = new URL(options.url).setParameter("type", event.detail).toString();
-			download.download(options.method, url, options.data);
-			download.addEventListener("done", () => this.hide());
+			downloadStatus.download(options.method, url, options.data);
+			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
 		var foot = main.appendChild(document.createElement("div"));
