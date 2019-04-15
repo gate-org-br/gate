@@ -39,7 +39,7 @@ class NavBar
 			prev.setAttribute("navbar-disabled", String(index === 0));
 			next.setAttribute("navbar-disabled", String(index === links.length - 1));
 			last.setAttribute("navbar-disabled", String(index === links.length - 1));
-			text.innerHTML = "Registro " + (index + 1) + " de " + links.length;
+			text.innerHTML = "" + (index + 1) + " de " + links.length;
 		};
 	}
 }

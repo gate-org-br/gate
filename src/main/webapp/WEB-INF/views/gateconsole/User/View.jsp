@@ -105,7 +105,7 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table style='table-layout: fixed'>
+				<table>
 					<caption>
 						USU&Aacute;RIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
 					</caption>

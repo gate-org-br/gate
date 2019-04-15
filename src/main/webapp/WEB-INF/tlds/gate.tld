@@ -1000,7 +1000,8 @@
 		<tag-class>gate.tags.formControls.LabelTag</tag-class>
 		<description>
 			Creates a HTML label with the provided property value
-			converted to human readable text.
+			converted to human readable text if the specified condition
+			is true.
 		</description>
 		<attribute>
 			<name>property</name>
@@ -1234,7 +1235,8 @@
 		<tag-class>gate.tags.formControls.SelectTag</tag-class>
 		<description>
 			Creates a html select tag bound
-			to the current screen specified property.
+			to the current screen specified property
+			if the specified condition is true.
 		</description>
 		<attribute>
 			<name>property</name>

@@ -7,8 +7,8 @@ import javax.servlet.jsp.JspException;
 public class LabelTag extends PropertyTag
 {
 
-	private String format;
 	private String empty;
+	private String format;
 
 	@Override
 	public void doTag() throws JspException, IOException
@@ -22,9 +22,7 @@ public class LabelTag extends PropertyTag
 			string = empty;
 		string = string.replaceAll("\\n", "<br/>");
 
-		getJspContext().getOut().println("<label " + getAttributes() + ">");
-		getJspContext().getOut().println(string);
-		getJspContext().getOut().println("</label>");
+		getJspContext().getOut().println("<label " + getAttributes() + ">" + string + "</label>");
 	}
 
 	public void setFormat(String format)
