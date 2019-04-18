@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.util.Nonbinding;
@@ -24,15 +25,13 @@ public @interface Name
 	public static class Extractor
 	{
 
-		public static final String UNKNOWN = "?";
-
-		public static String extract(AnnotatedElement element)
+		public static Optional<String> extract(AnnotatedElement element)
 		{
 			return element.isAnnotationPresent(Name.class)
-				? element.getAnnotation(Name.class).value() : "?";
+				? Optional.of(element.getAnnotation(Name.class).value()) : Optional.empty();
 		}
 
-		public static String extract(Object element)
+		public static Optional<String> extract(Object element)
 		{
 			try
 			{
@@ -66,7 +65,7 @@ public @interface Name
 				Logger.getGlobal().log(Level.SEVERE, "Error loading name", ex);
 			}
 
-			return UNKNOWN;
+			return Optional.empty();
 		}
 	}
 }
