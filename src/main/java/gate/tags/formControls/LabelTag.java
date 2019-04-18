@@ -1,5 +1,6 @@
 package gate.tags.formControls;
 
+import gate.annotation.Color;
 import gate.converter.Converter;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -14,6 +15,10 @@ public class LabelTag extends PropertyTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
+
+		if (!getAttributes().containsKey("style"))
+			Color.Extractor.extract(getValue())
+				.ifPresent(e -> getAttributes().put("style", "color: " + e));
 
 		String string = format != null
 			? Converter.toText(getValue(), format)
