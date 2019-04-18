@@ -1,5 +1,6 @@
 package gate.converter;
 
+import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import java.sql.PreparedStatement;
@@ -56,13 +57,16 @@ public class EnumConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null ? object.toString() : "";
+
+		return object != null
+			? Name.Extractor.extract(object)
+				.orElse(object.toString()) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, object) : "";
+		return object != null ? String.format(format, toText(type, object)) : "";
 	}
 
 	@Override
