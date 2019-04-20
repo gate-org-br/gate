@@ -19,6 +19,7 @@ import java.nio.charset.Charset;
 public class SSH implements AutoCloseable
 {
 
+	private String folder;
 	private final Connection connection;
 
 	private SSH(Connection connection)
@@ -65,16 +66,22 @@ public class SSH implements AutoCloseable
 		return execute(String.format(command, parameters));
 	}
 
+	public void cd(String folder)
+	{
+		this.folder = folder;
+	}
+
 	public boolean execute(String command) throws IOException
 	{
+
 		Session session = connection.openSession();
 		try
 		{
-			session.execCommand(command);
+			session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
 			int condition = session
-					.waitForCondition(ChannelCondition.STDOUT_DATA
-							| ChannelCondition.STDERR_DATA
-							| ChannelCondition.EXIT_STATUS, 0);
+				.waitForCondition(ChannelCondition.STDOUT_DATA
+					| ChannelCondition.STDERR_DATA
+					| ChannelCondition.EXIT_STATUS, 0);
 
 			if ((condition & ChannelCondition.STDOUT_DATA) != 0)
 				return true;
@@ -144,9 +151,9 @@ public class SSH implements AutoCloseable
 			Session session = connection.openSession();
 			try
 			{
-				session.execCommand(command);
+				session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
 				int condition = session.waitForCondition(ChannelCondition.STDOUT_DATA
-						| ChannelCondition.STDERR_DATA, 0);
+					| ChannelCondition.STDERR_DATA, 0);
 
 				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
 				{
@@ -163,9 +170,9 @@ public class SSH implements AutoCloseable
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{
 					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
-							.getStdout()),
-							Charset.forName("UTF-8")));
-							StringWriter writer = new StringWriter())
+						.getStdout()),
+						Charset.forName("UTF-8")));
+						StringWriter writer = new StringWriter())
 					{
 						for (int c = reader.read(); c != -1; c = reader.read())
 							writer.write((char) c);
@@ -190,9 +197,9 @@ public class SSH implements AutoCloseable
 			Session session = connection.openSession();
 			try
 			{
-				session.execCommand(command);
+				session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
 				int condition = session.waitForCondition(ChannelCondition.STDOUT_DATA
-						| ChannelCondition.STDERR_DATA, 0);
+					| ChannelCondition.STDERR_DATA, 0);
 
 				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
 				{
@@ -203,9 +210,9 @@ public class SSH implements AutoCloseable
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{
 					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
-							.getStdout()),
-							Charset.forName("UTF-8")));
-							StringWriter writer = new StringWriter())
+						.getStdout()),
+						Charset.forName("UTF-8")));
+						StringWriter writer = new StringWriter())
 					{
 						for (int c = reader.read(); c != -1; c = reader.read())
 							writer.write((char) c);
