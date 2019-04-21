@@ -66,7 +66,7 @@ public class SSH implements AutoCloseable
 		return execute(String.format(command, parameters));
 	}
 
-	public void cd(String folder)
+	public void setWorkDirectory(String folder)
 	{
 		this.folder = folder;
 	}
