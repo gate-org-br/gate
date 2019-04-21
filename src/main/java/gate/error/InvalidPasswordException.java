@@ -3,7 +3,7 @@ package gate.error;
 /**
  * Signals that the password informed by the current user is invalid.
  */
-public class InvalidPasswordException extends Exception
+public class InvalidPasswordException extends AuthenticationException
 {
 
 	private static final long serialVersionUID = 1L;

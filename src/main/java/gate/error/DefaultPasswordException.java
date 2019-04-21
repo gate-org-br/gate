@@ -1,6 +1,6 @@
 package gate.error;
 
-public class DefaultPasswordException extends Exception
+public class DefaultPasswordException extends AuthenticationException
 {
 
 	private static final long serialVersionUID = 1L;
