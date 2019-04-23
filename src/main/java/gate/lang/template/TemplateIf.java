@@ -31,10 +31,10 @@ class TemplateIf implements Evaluable
 					template.evaluate(context, parameters, writer);
 
 			} else
-				throw new TemplateException("Expected Boolean and found %s", check);
+				throw new TemplateException(String.format("Expected Boolean and found %s", check));
 		} catch (ExpressionException ex)
 		{
-			throw new TemplateException(ex.getMessage(), ex);
+			throw new TemplateException(ex.getMessage());
 		}
 	}
 
@@ -42,7 +42,7 @@ class TemplateIf implements Evaluable
 	public String toString()
 	{
 		return String.format("If: %s",
-				expression.toString());
+			expression.toString());
 	}
 
 }

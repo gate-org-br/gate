@@ -3,7 +3,7 @@ package gate.property;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.lang.property.Property;
-import gate.lang.property.PropertyError;
+import gate.error.PropertyError;
 import gate.type.ID;
 import gate.type.Sex;
 import java.util.EnumMap;

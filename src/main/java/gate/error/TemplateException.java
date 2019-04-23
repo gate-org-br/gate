@@ -9,9 +9,4 @@ public class TemplateException extends EvaluableException
 	{
 		super(message);
 	}
-
-	public TemplateException(String message, Object... args)
-	{
-		super(String.format(message, args));
-	}
 }

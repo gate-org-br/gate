@@ -14,4 +14,15 @@ public class EvaluableException extends Exception
 	{
 		super(String.format(message, args));
 	}
+
+	EvaluableException(Throwable cause, String message)
+	{
+		super(message, cause);
+	}
+
+	EvaluableException(Throwable cause, String message, Object... args)
+	{
+		super(String.format(message, args), cause);
+	}
+
 }

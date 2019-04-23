@@ -14,7 +14,7 @@ class TemplateScanner extends BufferedReader
 	}
 
 	private boolean isEOF()
-			throws IOException
+		throws IOException
 	{
 		mark(1);
 		if (read() == -1)
@@ -110,8 +110,8 @@ class TemplateScanner extends BufferedReader
 		try
 		{
 			if (isEOF()
-					|| check("</g-if>")
-					|| check("</g-for>"))
+				|| check("</g-if>")
+				|| check("</g-for>"))
 				return new TemplateToken(TemplateToken.Type.EOF, "");
 
 			if (consume("${"))
@@ -123,11 +123,11 @@ class TemplateScanner extends BufferedReader
 
 			StringBuilder string = new StringBuilder();
 			while (!isEOF()
-					&& !check("${")
-					&& !check("<g-if")
-					&& !check("<g-for")
-					&& !check("</g-if>")
-					&& !check("</g-for>"))
+				&& !check("${")
+				&& !check("<g-if")
+				&& !check("<g-for")
+				&& !check("</g-if>")
+				&& !check("</g-for>"))
 				string.append((char) read());
 			return new TemplateToken(TemplateToken.Type.TEXT, string.toString());
 		} catch (IOException e)
@@ -206,7 +206,7 @@ class TemplateScanner extends BufferedReader
 			if (string != null)
 				return new TemplateToken(TemplateToken.Type.NAME, string);
 
-			throw new TemplateException("Unexpected character found : %c", (char) read());
+			throw new TemplateException(String.format("Unexpected character found : %c", (char) read()));
 		} catch (IOException e)
 		{
 			throw new TemplateException("Error trying to parse template.");

@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.error.PropertyError;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.util.Reflection;

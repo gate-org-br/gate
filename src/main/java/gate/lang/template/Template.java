@@ -1,7 +1,9 @@
 package gate.lang.template;
 
 import gate.error.EvaluableException;
+import gate.error.NoSuchPropertyError;
 import gate.error.TemplateException;
+import gate.error.TemplatePropertyException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
@@ -38,7 +40,10 @@ public class Template implements Evaluable
 				evaluable.evaluate(context, parameters, writer);
 		} catch (EvaluableException ex)
 		{
-			throw new TemplateException(ex.getMessage(), ex);
+			throw new TemplateException(ex.getMessage());
+		} catch (NoSuchPropertyError ex)
+		{
+			throw new TemplatePropertyException(ex.getType(), ex.getProperty());
 		}
 	}
 
@@ -51,8 +56,8 @@ public class Template implements Evaluable
 	public static void evaluate(Object context, Reader template, Writer document) throws TemplateException
 	{
 		new TemplateParser().parse(template)
-				.evaluate(new ArrayList<>(Arrays.asList(context)),
-						new HashMap<>(), document);
+			.evaluate(new ArrayList<>(Arrays.asList(context)),
+				new HashMap<>(), document);
 	}
 
 	public static void evaluate(Object context, File template, File document) throws TemplateException
@@ -66,7 +71,7 @@ public class Template implements Evaluable
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException("Error trying to access template file %s.", e.getMessage());
+			throw new TemplateException(String.format("Error trying to access template file %s.", e.getMessage()));
 		}
 	}
 
@@ -81,7 +86,7 @@ public class Template implements Evaluable
 			}
 		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to evaluate template.", ex.getMessage());
+			throw new TemplateException(String.format("Error trying to evaluate template.", ex.getMessage()));
 		}
 	}
 
@@ -96,7 +101,7 @@ public class Template implements Evaluable
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException("Error trying to evaluate template.", e.getMessage());
+			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
 		}
 	}
 
@@ -111,7 +116,7 @@ public class Template implements Evaluable
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException("Error trying to evaluate template.", e.getMessage());
+			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
 		}
 	}
 
@@ -126,7 +131,7 @@ public class Template implements Evaluable
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException("Error trying to evaluate template.", e.getMessage());
+			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
 		}
 	}
 }
