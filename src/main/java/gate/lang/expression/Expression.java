@@ -30,8 +30,8 @@ public class Expression implements Evaluable
 
 	@Override
 	public void evaluate(List<Object> context,
-			Map<String, Object> parameters,
-			Writer writer) throws ExpressionException
+		Map<String, Object> parameters,
+		Writer writer) throws ExpressionException
 	{
 		try
 		{
@@ -45,7 +45,7 @@ public class Expression implements Evaluable
 	public Object evaluate(Object context) throws ExpressionException
 	{
 		return evaluate(new ArrayList<>(Arrays.asList(context)),
-				new HashMap<>());
+			new HashMap<>());
 	}
 
 	public Object evaluate(List<Object> context, Map<String, Object> parameters) throws ExpressionException
@@ -58,7 +58,7 @@ public class Expression implements Evaluable
 			Object result = expression(scanner);
 			if (current != ExpressionToken.EOF)
 				throw new ExpressionException("Expected \"%s\" and found \"%s\" on expression \"%s\".",
-						ExpressionToken.EOF, current, value);
+					ExpressionToken.EOF, current, value);
 			return result;
 		} catch (IOException e)
 		{
@@ -71,7 +71,7 @@ public class Expression implements Evaluable
 		Object result = sentence(scanner);
 
 		while (ExpressionToken.AND.equals(current)
-				|| ExpressionToken.OR.equals(current))
+			|| ExpressionToken.OR.equals(current))
 		{
 			ExpressionToken operator = (ExpressionToken) current;
 			current = scanner.next();
@@ -79,10 +79,10 @@ public class Expression implements Evaluable
 
 			if (!(result instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-						current, v);
+					current, v);
 			if (!(v instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-						current, v);
+					current, v);
 
 			switch (operator)
 			{
@@ -102,11 +102,11 @@ public class Expression implements Evaluable
 		Object result = comparable(scanner);
 
 		while (ExpressionToken.EQ.equals(current)
-				|| ExpressionToken.NE.equals(current)
-				|| ExpressionToken.GE.equals(current)
-				|| ExpressionToken.GT.equals(current)
-				|| ExpressionToken.LE.equals(current)
-				|| ExpressionToken.LT.equals(current))
+			|| ExpressionToken.NE.equals(current)
+			|| ExpressionToken.GE.equals(current)
+			|| ExpressionToken.GT.equals(current)
+			|| ExpressionToken.LE.equals(current)
+			|| ExpressionToken.LT.equals(current))
 		{
 
 			ExpressionToken operator = (ExpressionToken) current;
@@ -124,7 +124,7 @@ public class Expression implements Evaluable
 				default:
 					if (!(result instanceof Comparable))
 						throw new ExpressionException("Expected \"Comparable\" and found \"%s\" on expression \"%s\".",
-								current, v);
+							current, v);
 
 					switch (operator)
 					{
@@ -154,7 +154,7 @@ public class Expression implements Evaluable
 		Object result = term(scanner);
 
 		while (ExpressionToken.ADD.equals(current)
-				|| ExpressionToken.SUB.equals(current))
+			|| ExpressionToken.SUB.equals(current))
 		{
 			switch ((ExpressionToken) current)
 			{
@@ -177,7 +177,7 @@ public class Expression implements Evaluable
 		Object result = not(scanner);
 
 		while (ExpressionToken.MUL.equals(current)
-				|| ExpressionToken.DIV.equals(current))
+			|| ExpressionToken.DIV.equals(current))
 		{
 			switch ((ExpressionToken) current)
 			{
@@ -225,8 +225,8 @@ public class Expression implements Evaluable
 				return ((Map<?, ?>) v).isEmpty();
 			else
 				throw new ExpressionException(
-						"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", current,
-						v);
+					"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", current,
+					v);
 		} else if (ExpressionToken.SIZE.equals(current))
 		{
 			current = scanner.next();
@@ -241,8 +241,8 @@ public class Expression implements Evaluable
 				return ((Map<?, ?>) v).size();
 			else
 				throw new ExpressionException(
-						"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", current,
-						v);
+					"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", current,
+					v);
 		}
 
 		return signed(scanner);
@@ -271,7 +271,7 @@ public class Expression implements Evaluable
 			Object result = expression(scanner);
 			if (!ExpressionToken.CLOSE_PARENTHESES.equals(current))
 				throw new ExpressionException("Expected \"%s\" and found  \"%s\" on expression \"%s\".",
-						ExpressionToken.CLOSE_PARENTHESES, current, value);
+					ExpressionToken.CLOSE_PARENTHESES, current, value);
 			current = scanner.next();
 			return result;
 		} else if (ExpressionToken.VARIABLE.equals(current))
@@ -298,7 +298,7 @@ public class Expression implements Evaluable
 		current = scanner.next();
 
 		Object result = ExpressionToken.CONTEXT.equals(current)
-				? context(scanner) : property(scanner);
+			? context(scanner) : property(scanner);
 
 		context.add(0, object);
 
@@ -310,8 +310,8 @@ public class Expression implements Evaluable
 		String name = name(scanner);
 		Object object = context.get(0);
 		return Property
-				.getProperty(object.getClass(), name)
-				.getValue(object);
+			.getProperty(object.getClass(), name)
+			.getValue(object);
 	}
 
 	private Object variable(ExpressionScanner scanner) throws ExpressionException
@@ -322,7 +322,7 @@ public class Expression implements Evaluable
 			Object token = propertyScanner.next();
 			if (!(token instanceof String))
 				throw new ExpressionException("Expected \"Java Identifier\" and found \"%s\" on expression \"%s\".",
-						token, value);
+					token, value);
 
 			Object object = parameters.get((String) token);
 
@@ -341,10 +341,10 @@ public class Expression implements Evaluable
 	{
 		if (!(current instanceof StringBuilder))
 			throw new ExpressionException("Expected \"Java Identifier\" and found \"%s\" on expression \"%s\".", current,
-					value);
+				value);
 
 		StringBuilder string
-				= new StringBuilder(current.toString());
+			= new StringBuilder(current.toString());
 
 		current = scanner.next();
 
@@ -372,7 +372,7 @@ public class Expression implements Evaluable
 			string.append("'").append(current.toString()).append("'");
 		else
 			throw new ExpressionException("Expected \"Number or String\" and found \"%s\" on expression \"%s\".",
-					current, value);
+				current, value);
 
 		current = scanner.next();
 		if (!ExpressionToken.CLOSE_BRACKET.equals(current))

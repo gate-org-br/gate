@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.error.PropertyError;
 import gate.annotation.Schema;
 import gate.annotation.Table;
 import gate.sql.condition.Condition;

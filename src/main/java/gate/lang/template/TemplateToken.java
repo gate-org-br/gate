@@ -30,14 +30,14 @@ class TemplateToken implements Evaluable
 
 	@Override
 	public void evaluate(List<Object> context,
-			Map<String, Object> parameters, Writer writer) throws TemplateException
+		Map<String, Object> parameters, Writer writer) throws TemplateException
 	{
 		try
 		{
 			writer.write(value);
 		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to evaluate templete: %s.", ex.getMessage());
+			throw new TemplateException(String.format("Error trying to evaluate templete: %s.", ex.getMessage()));
 		}
 	}
 

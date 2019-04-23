@@ -1,4 +1,4 @@
-package gate.lang.property;
+package gate.error;
 
 /**
  * Signals a error related to a property.
@@ -8,12 +8,12 @@ package gate.lang.property;
 public class PropertyError extends RuntimeException
 {
 
-	PropertyError(String message)
+	public PropertyError(String message)
 	{
 		super(message);
 	}
 
-	PropertyError(String message, Object... args)
+	public PropertyError(String message, Object... args)
 	{
 		super(String.format(message, args));
 	}

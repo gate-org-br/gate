@@ -50,7 +50,7 @@ public class GQN<T>
 	 * @return The new condition created or null if no test prefix is found
 	 *
 	 * @throws IllegalArgumentException if the GQN notation specified is invalid
-	 * @throws gate.lang.property.NoSuchPropertyError if a tested property is invalid
+	 * @throws gate.error.NoSuchPropertyError if a tested property is invalid
 	 */
 	public PropertyCondition getCondition(Function<Property, String> getName)
 	{
@@ -108,7 +108,7 @@ public class GQN<T>
 	 * @return The new condition created or null if no test prefix is found
 	 *
 	 * @throws IllegalArgumentException if the GQN notation specified is invalid
-	 * @throws gate.lang.property.NoSuchPropertyError if a tested property is invalid
+	 * @throws gate.error.NoSuchPropertyError if a tested property is invalid
 	 */
 	public CompiledCondition getCondition(T object)
 	{

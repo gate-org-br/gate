@@ -26,12 +26,12 @@ class TemplateFor implements Evaluable
 
 	@Override
 	public void evaluate(List<Object> context,
-			Map<String, Object> parameters, Writer writer) throws TemplateException
+		Map<String, Object> parameters, Writer writer) throws TemplateException
 	{
 		try
 		{
 			Object values = expression
-					.evaluate(context, parameters);
+				.evaluate(context, parameters);
 
 			Iterable<?> iterable;
 			if (values instanceof Collection<?>)
@@ -54,7 +54,7 @@ class TemplateFor implements Evaluable
 			} else
 			{
 				if (parameters.containsKey(name))
-					throw new TemplateException("Parameter %s was already defined.", name);
+					throw new TemplateException(String.format("Parameter %s was already defined.", name));
 
 				for (Object value : iterable)
 				{
@@ -65,7 +65,7 @@ class TemplateFor implements Evaluable
 			}
 		} catch (ExpressionException ex)
 		{
-			throw new TemplateException(ex.getMessage(), ex);
+			throw new TemplateException(ex.getMessage());
 		}
 	}
 
@@ -73,7 +73,7 @@ class TemplateFor implements Evaluable
 	public String toString()
 	{
 		return String.format("For: %s",
-				expression.toString());
+			expression.toString());
 	}
 
 }

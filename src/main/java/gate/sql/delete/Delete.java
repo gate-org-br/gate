@@ -46,8 +46,8 @@ public interface Delete
 	 *
 	 * @return a new sentence based on the specified type and the specified GQN notation
 	 *
-	 * @throws gate.lang.property.PropertyError if specified type is not an entity
-	 * @throws gate.lang.property.NoSuchPropertyError if any of the specified properties is invalid
+	 * @throws gate.error.PropertyError if specified type is not an entity
+	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
 	 */
 	static <T> Operation<T> of(Class<T> type, String... notation)
 	{

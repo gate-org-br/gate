@@ -227,8 +227,8 @@ public class Select implements Clause
 	 *
 	 * @return a new query object based on the specified type and the specified GQN notation
 	 *
-	 * @throws gate.lang.property.PropertyError if specified type is not an entity
-	 * @throws gate.lang.property.NoSuchPropertyError if any of the specified properties is invalid
+	 * @throws gate.error.PropertyError if specified type is not an entity
+	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
 	 */
 	public static <T> Query of(Class<T> type, String... notation)
 	{
@@ -256,8 +256,8 @@ public class Select implements Clause
 	 * @param notation GQN notation to be used to generate the query
 	 *
 	 * @return the entity matching the specified filter and the specified GQN notation
-	 * @throws gate.lang.property.PropertyError if specified type is not an entity
-	 * @throws gate.lang.property.NoSuchPropertyError if any of the specified properties is invalid
+	 * @throws gate.error.PropertyError if specified type is not an entity
+	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
 	 */
 	public static <T> Query.Compiled of(Class<T> type, T object, String... notation)
 	{

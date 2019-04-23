@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.error.PropertyError;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import java.lang.reflect.Array;

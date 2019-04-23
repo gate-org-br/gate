@@ -1,7 +1,7 @@
 package gate.lang.template;
 
-import gate.error.TemplateException;
 import gate.error.AppException;
+import gate.error.TemplateException;
 import gate.io.ByteArrayReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,7 +20,7 @@ public class ODTTemplate
 		{
 			ByteArrayOutputStream result = new ByteArrayOutputStream();
 			try (ZipInputStream istream = new ZipInputStream(new ByteArrayInputStream(file));
-					ZipOutputStream ostream = new ZipOutputStream(result))
+				ZipOutputStream ostream = new ZipOutputStream(result))
 			{
 
 				ZipEntry entry;
