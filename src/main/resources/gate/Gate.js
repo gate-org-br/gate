@@ -6335,113 +6335,109 @@ class DownloadStatus extends HTMLElement
 		counter.style.justifyContent = "flex-end";
 		counter.innerHTML = "...";
 
-	}
-
-	abort()
-	{
-		if (this.request)
-			this.request.abort();
-	}
-
-	get(url)
-	{
-		download("GET", url, null);
-	}
-
-	post(url, data)
-	{
-		download("GET", url, data);
-	}
-
-	download(method, url, data)
-	{
-		var title = this.children[0];
-		var progress = this.children[1];
-		var clock = this.children[2].children[0];
-		var counter = this.children[2].children[1];
-		this.request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
-
-		this.request.addEventListener("load", () =>
+		this.abort = function ()
 		{
-			this.onClockTick = null;
+			if (this.request)
+				this.request.abort();
+		};
 
-			if (this.request.status === 200)
-			{
-				if (!progress.max && !progress.value)
-					progress.max = progress.value = 100;
-				title.style.color = "#006600";
-				title.innerHTML = "Download efetuado com sucesso";
-
-				var disposition = this.request.getResponseHeader('content-disposition');
-				var matches = /"([^"]*)"/.exec(disposition);
-				var filename = (matches !== null && matches[1] ? matches[1] : 'file');
-				var blob = new Blob([this.request.response], {type: 'application/octet-stream'});
-				var link = document.createElement('a');
-				link.href = window.URL.createObjectURL(blob);
-				link.download = filename;
-				document.body.appendChild(link);
-				link.click();
-				document.body.removeChild(link);
-				setTimeout(() => window.URL.revokeObjectURL(link.href), 60 * 1000);
-
-				this.dispatchEvent(new CustomEvent('done', {cancelable: false}));
-			} else
-			{
-				var reader = new FileReader();
-				reader.addEventListener("loadend", function ()
-				{
-					title.style.color = "#660000";
-					title.innerHTML = reader.result;
-					this.dispatchEvent(new CustomEvent('error', {cancelable: false, 'detail': reader.result}));
-				});
-				reader.readAsText(new Blob([this.request.response], {type: 'application/octet-stream'}));
-			}
-		});
-
-		this.request.addEventListener("loadend", () => this.request = null);
-
-		this.request.addEventListener("progress", event =>
+		this.get = function (url)
 		{
-			title.innerHTML = "Efetuando download";
-			if (event.loaded)
-			{
-				progress.value = event.loaded;
-				counter.innerHTML = DataFormat.format(event.loaded);
+			this.download("GET", url, null);
+		};
 
-				if (event.total)
+		this.post = function (url, data)
+		{
+			this.download("GET", url, data);
+		};
+
+		this.download = function (method, url, data)
+		{
+			var title = this.children[0];
+			var progress = this.children[1];
+			var clock = this.children[2].children[0];
+			var counter = this.children[2].children[1];
+			this.request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+
+			this.request.addEventListener("load", () =>
+			{
+				this.onClockTick = null;
+
+				if (this.request.status === 200)
 				{
-					progress.max = event.total;
-					counter.innerHTML = counter.innerHTML + " de " + DataFormat.format(event.total);
+					if (!progress.max && !progress.value)
+						progress.max = progress.value = 100;
+					title.style.color = "#006600";
+					title.innerHTML = "Download efetuado com sucesso";
+
+					var disposition = this.request.getResponseHeader('content-disposition');
+					var matches = /"([^"]*)"/.exec(disposition);
+					var filename = (matches !== null && matches[1] ? matches[1] : 'file');
+					var blob = new Blob([this.request.response], {type: 'application/octet-stream'});
+					var link = document.createElement('a');
+					link.href = window.URL.createObjectURL(blob);
+					link.download = filename;
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+					setTimeout(() => window.URL.revokeObjectURL(link.href), 60 * 1000);
+
+					this.dispatchEvent(new CustomEvent('done', {cancelable: false}));
+				} else
+				{
+					var reader = new FileReader();
+					reader.addEventListener("loadend", function ()
+					{
+						title.style.color = "#660000";
+						title.innerHTML = reader.result;
+						this.dispatchEvent(new CustomEvent('error', {cancelable: false, 'detail': reader.result}));
+					});
+					reader.readAsText(new Blob([this.request.response], {type: 'application/octet-stream'}));
 				}
-			}
-		});
+			});
 
-		this.request.addEventListener("error", () =>
-		{
-			this.onClockTick = null;
-			title.style.color = "#660000";
-			title.innerHTML = "Erro ao efetuar download";
-			this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
-		});
+			this.request.addEventListener("loadend", () => this.request = null);
 
-		var time = 0;
-		this.onClockTick = () => clock.innerHTML
-				= new Duration(++time).toString();
+			this.request.addEventListener("progress", event =>
+			{
+				title.innerHTML = "Efetuando download";
+				if (event.loaded)
+				{
+					progress.value = event.loaded;
+					counter.innerHTML = DataFormat.format(event.loaded);
 
-		title.innerHTML = "Conectando ao servidor";
-		this.request.responseType = 'blob';
-		this.request.open(method, resolve(url), true);
-		this.request.send(data);
+					if (event.total)
+					{
+						progress.max = event.total;
+						counter.innerHTML = counter.innerHTML + " de " + DataFormat.format(event.total);
+					}
+				}
+			});
 
-		return this;
+			this.request.addEventListener("error", () =>
+			{
+				this.onClockTick = null;
+				title.style.color = "#660000";
+				title.innerHTML = "Erro ao efetuar download";
+				this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
+			});
+
+			var time = 0;
+			this.onClockTick = () => clock.innerHTML
+					= new Duration(++time).toString();
+
+			title.innerHTML = "Conectando ao servidor";
+			this.request.responseType = 'blob';
+			this.request.open(method, resolve(url), true);
+			this.request.send(data);
+
+			return this;
+		};
 	}
 }
 
 window.addEventListener("load", () =>
 	customElements.define('download-status', DownloadStatus));
-
-
-
 class ReportSelector extends HTMLElement
 {
 	constructor()
