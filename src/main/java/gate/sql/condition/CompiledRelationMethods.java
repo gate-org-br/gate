@@ -32,7 +32,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						condition.getParameters());
+					condition.getParameters());
 			}
 		};
 	}
@@ -62,7 +62,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 		};
 	}
@@ -105,7 +105,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 		};
 	}
@@ -148,7 +148,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 		};
 	}
@@ -181,6 +181,12 @@ interface CompiledRelationMethods extends Clause
 
 		@Override
 		default CompiledCondition condition(CompiledCondition condition)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public default CompiledCondition not(CompiledCondition condition)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
