@@ -104,10 +104,12 @@ public final class Column<T> extends Element
 	public Style computeStyle(T object, Object value)
 	{
 		Style style = new Style(style());
+
 		gate.annotation.Color.Extractor
 			.extract(value)
-			.map(e -> gate.report.Color.of(e))
+			.map(e -> gate.type.Color.of(e))
 			.ifPresent(e -> style.color(e));
+
 		styler.apply(object, style);
 		return style;
 	}

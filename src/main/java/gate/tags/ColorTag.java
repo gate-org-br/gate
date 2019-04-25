@@ -2,7 +2,6 @@ package gate.tags;
 
 import gate.annotation.Color;
 import java.io.IOException;
-
 import javax.servlet.jsp.JspException;
 
 public class ColorTag extends DynamicAttributeTag
