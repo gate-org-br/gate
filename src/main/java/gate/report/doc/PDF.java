@@ -20,6 +20,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
+import gate.report.Color;
 import gate.report.Column;
 import gate.report.Field;
 import gate.report.Footer;
@@ -36,6 +37,7 @@ import gate.report.Style;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -46,6 +48,7 @@ import java.util.concurrent.ConcurrentMap;
 public class PDF extends Doc
 {
 
+	private static final Map<Color, BaseColor> COLORS = new ConcurrentHashMap<>();
 	private static final BaseColor GRAY = new BaseColor(0xEE, 0xEE, 0xEE);
 	private static final ConcurrentMap<Style, Font> FONTS = new ConcurrentHashMap<>();
 	private static final Font HEAD_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
@@ -264,9 +267,9 @@ public class PDF extends Doc
 			body.setBorderColor(BaseColor.GRAY);
 
 			form.getElements().stream()
-					.filter(e -> e instanceof Field)
-					.map(e -> (Field) e)
-					.forEachOrdered(e -> table.addCell(printField(e)));
+				.filter(e -> e instanceof Field)
+				.map(e -> (Field) e)
+				.forEachOrdered(e -> table.addCell(printField(e)));
 
 			element.addCell(body);
 
@@ -316,6 +319,7 @@ public class PDF extends Doc
 	{
 		try
 		{
+
 			String string = Converter.toText(value);
 
 			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(string, getFont(style)));
@@ -360,16 +364,17 @@ public class PDF extends Doc
 			for (int i = 0; i < grid.getColumns().size(); i++)
 			{
 				Column<Object> column = grid.getColumns().get(i);
-
-				column.getStyler().apply(object, column.style());
 				Object value = column.getBody().apply(object);
-				PdfPCell cell = createBodyCell(value, column.style(), index, i == 0 ? level : 0);
+
+				Style style = column.computeStyle(object, value);
+
+				PdfPCell cell = createBodyCell(value, style, index, i == 0 ? level : 0);
 				table.addCell(cell);
 			}
 
 			if (grid.getChildren() != null)
 				Toolkit.collection(grid.getChildren().apply(object))
-						.forEach(e -> addBodys(grid, table, e, level + 1));
+					.forEach(e -> addBodys(grid, table, e, level + 1));
 		}
 	}
 
@@ -475,19 +480,8 @@ public class PDF extends Doc
 
 	private BaseColor getColor(Style style)
 	{
-		switch (style.getColor())
-		{
-			case BLACK:
-				return BaseColor.BLACK;
-			case GREEN:
-				return BaseColor.GREEN.darker();
-			case RED:
-				return BaseColor.RED.darker();
-			case BLUE:
-				return BaseColor.BLUE.darker();
-			default:
-				return BaseColor.BLACK;
-		}
+		return COLORS.computeIfAbsent(style.getColor(),
+			c -> new BaseColor(c.getR(), c.getG(), c.getB()));
 	}
 
 	private int getFontWeight(Style style)
@@ -505,6 +499,8 @@ public class PDF extends Doc
 
 	private Font getFont(Style style)
 	{
-		return FONTS.computeIfAbsent(style, e -> new Font(Font.FontFamily.TIMES_ROMAN, e.getFontSize(), getFontWeight(e), getColor(e)));
+		return FONTS.computeIfAbsent(style, e
+			-> new Font(Font.FontFamily.TIMES_ROMAN, e.getFontSize(),
+				getFontWeight(e), getColor(e)));
 	}
 }
