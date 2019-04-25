@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -40,6 +41,8 @@ public class XLS extends Doc
 {
 
 	private int i;
+	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
+	private static final Map<gate.report.Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructs a new XLS Doc for the specified report.
@@ -270,11 +273,13 @@ public class XLS extends Doc
 			short j = -1;
 			for (Column<Object> col : grid.getColumns())
 			{
-				SXSSFCell cell = row.createCell(++j);
-				col.getStyler().apply(object, col.style());
-				cell.setCellStyle(getXLSStyle(workbook, col.style()));
-
 				Object value = col.getBody().apply(object);
+
+				Style style = col.computeStyle(object, value);
+
+				SXSSFCell cell = row.createCell(++j);
+				cell.setCellStyle(getXLSStyle(workbook, style));
+
 				if (value == null)
 					cell.setCellType(CellType.BLANK);
 				else if (value instanceof Byte)
@@ -325,23 +330,10 @@ public class XLS extends Doc
 		}
 	}
 
-	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
-
 	private XSSFColor getXLSColor(Style style)
 	{
-		switch (style.getColor())
-		{
-			case BLACK:
-				return new XSSFColor(Color.black);
-			case BLUE:
-				return new XSSFColor(Color.blue);
-			case RED:
-				return new XSSFColor(Color.red);
-			case GREEN:
-				return new XSSFColor(Color.green.darker());
-			default:
-				return new XSSFColor(Color.black);
-		}
+		return COLORS.computeIfAbsent(style.getColor(), e
+			-> new XSSFColor(new java.awt.Color(e.getR(), e.getG(), e.getB())));
 	}
 
 	private HorizontalAlignment getXLSAligment(Style style)
@@ -363,7 +355,7 @@ public class XLS extends Doc
 
 	private XSSFCellStyle getXLSStyle(SXSSFWorkbook workbook, Style style)
 	{
-		if (!styles.containsKey(style))
+		return styles.computeIfAbsent(style, e ->
 		{
 			XSSFCellStyle XSSFCellStyle = (XSSFCellStyle) workbook.createCellStyle();
 			XSSFCellStyle.setFont(workbook.createFont());
@@ -371,8 +363,7 @@ public class XLS extends Doc
 			XSSFCellStyle.getFont().setBold(style.getFontWeight() == Style.FontWeight.BOLD);
 			XSSFCellStyle.getFont().setFontHeight(style.getFontSize());
 			XSSFCellStyle.setAlignment(getXLSAligment(style));
-			styles.put(style, XSSFCellStyle);
-		}
-		return styles.get(style);
+			return XSSFCellStyle;
+		});
 	}
 }

@@ -9,8 +9,25 @@ public final class Style
 	private TextAlign textAlign = TextAlign.CENTER;
 	private FontWeight fontWeight = FontWeight.NORMAL;
 
-	Style()
+	public Style()
 	{
+		this(12, 100, Color.BLACK, TextAlign.CENTER, FontWeight.NORMAL);
+	}
+
+	public Style(Style style)
+	{
+		this(style.getFontSize(), style.getWidth(),
+			style.getColor(), style.getTextAlign(), style.getFontWeight());
+	}
+
+	public Style(int fontSize, double width,
+		Color color, TextAlign textAlign, FontWeight fontWeight)
+	{
+		this.fontSize = fontSize;
+		this.width = width;
+		this.color = color;
+		this.textAlign = textAlign;
+		this.fontWeight = fontWeight;
 	}
 
 	public Color getColor()
@@ -49,6 +66,18 @@ public final class Style
 		this.textAlign = TextAlign.CENTER;
 		return this;
 
+	}
+	
+	public Style color(Color color)
+	{
+		this.color = color;
+		return this;
+	}
+
+	public Style color(String color)
+	{
+		this.color = Color.of(color);
+		return this;
 	}
 
 	public Style right()
@@ -154,7 +183,7 @@ public final class Style
 								color = Color.GREEN;
 								break;
 							default:
-								throw new IllegalArgumentException(String.format("%s is not a supported color", value));
+								color = Color.of(value);
 						}
 						break;
 
@@ -222,7 +251,7 @@ public final class Style
 	@Override
 	public int hashCode()
 	{
-		return (int) (textAlign.ordinal() + color.ordinal() + fontWeight.ordinal() + fontSize + width);
+		return (int) (textAlign.ordinal() + color.hashCode() + fontWeight.ordinal() + fontSize + width);
 	}
 
 	@Override
@@ -279,22 +308,4 @@ public final class Style
 
 	}
 
-	public enum Color
-	{
-		RED("red"), GREEN("green"), BLUE("blue"), BLACK("black");
-
-		Color(String string)
-		{
-			this.string = string;
-		}
-
-		private final String string;
-
-		@Override
-		public String toString()
-		{
-			return string;
-		}
-
-	}
 }

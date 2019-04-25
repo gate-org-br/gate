@@ -94,6 +94,25 @@ public final class Column<T> extends Element
 	}
 
 	/**
+	 * Compute the column style para the specific object and value.
+	 *
+	 * @param object the object whose style must be computed
+	 * @param value the value whose style must be computed
+	 *
+	 * @return the computed style.
+	 */
+	public Style computeStyle(T object, Object value)
+	{
+		Style style = new Style(style());
+		gate.annotation.Color.Extractor
+			.extract(value)
+			.map(e -> gate.report.Color.of(e))
+			.ifPresent(e -> style.color(e));
+		styler.apply(object, style);
+		return style;
+	}
+
+	/**
 	 * Gets the Grid associated with the column.
 	 *
 	 * @return the Grid associated with the column
