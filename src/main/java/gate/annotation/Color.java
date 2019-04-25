@@ -1,5 +1,6 @@
 package gate.annotation;
 
+import gate.type.Colored;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -32,6 +33,9 @@ public @interface Color
 		{
 			try
 			{
+				if (element instanceof Colored)
+					return Optional.of(((Colored) element).getColor());
+
 				if (element instanceof String)
 				{
 					String string = (String) element;

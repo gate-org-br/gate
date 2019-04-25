@@ -20,7 +20,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
-import gate.report.Color;
+import gate.type.Color;
 import gate.report.Column;
 import gate.report.Field;
 import gate.report.Footer;

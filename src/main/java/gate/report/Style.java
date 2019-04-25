@@ -1,5 +1,7 @@
 package gate.report;
 
+import gate.type.Color;
+
 public final class Style
 {
 

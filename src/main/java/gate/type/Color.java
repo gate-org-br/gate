@@ -1,4 +1,4 @@
-package gate.report;
+package gate.type;
 
 public class Color
 {

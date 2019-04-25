@@ -42,7 +42,7 @@ public class XLS extends Doc
 
 	private int i;
 	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
-	private static final Map<gate.report.Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
+	private static final Map<gate.type.Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructs a new XLS Doc for the specified report.
