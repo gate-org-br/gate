@@ -15,6 +15,7 @@ class BasicQuery implements Query
 	BasicQuery(String sql)
 	{
 		this.sql = sql;
+
 	}
 
 	@Override

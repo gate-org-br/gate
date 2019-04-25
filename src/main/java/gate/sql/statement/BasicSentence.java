@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -154,6 +155,49 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public <K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute(type).ifPresent(e -> consumer.accept(entity, e));
+						}
+					}
+				}
+
+				@Override
+				public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						List<List<K>> generatedKeys = new ArrayList<>();
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute();
+							generatedKeys.add(command.getGeneratedKeys(type));
+						}
+						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute();
+							consumer.accept(entity, command.getGeneratedKeys(type));
+						}
+					}
+				}
+
+				@Override
 				public Sentence.Prepared.Compiled.Connected<T> observe(Consumer<T> consumer)
 				{
 					return consumer != null
@@ -208,6 +252,52 @@ class BasicSentence implements Sentence
 								observer.accept(entity);
 							}
 							return generatedKeys;
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute(type).ifPresent(e -> consumer.accept(entity, e));
+								observer.accept(entity);
+							}
+						}
+					}
+
+					@Override
+					public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							List<List<K>> generatedKeys = new ArrayList<>();
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute();
+								generatedKeys.add(command.getGeneratedKeys(type));
+								observer.accept(entity);
+							}
+							return generatedKeys;
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute();
+								consumer.accept(entity, command.getGeneratedKeys(type));
+								observer.accept(entity);
+							}
 						}
 					}
 
@@ -282,9 +372,27 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
-		public <T> List<T> fetchGeneratedKeys(Class<T> type) throws ConstraintViolationException
+		public <K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException
 		{
 			return parameters(Collections.singletonList(Collections.emptyList())).fetchGeneratedKeys(type);
+		}
+
+		@Override
+		public <K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException
+		{
+			parameters(Collections.singletonList(Collections.emptyList())).fetchGeneratedKeys(type, consumer);
+		}
+
+		@Override
+		public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+		{
+			return parameters(Collections.singletonList(Collections.emptyList())).fetchGeneratedKeyLists(type);
+		}
+
+		@Override
+		public <K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException
+		{
+			parameters(Collections.singletonList(Collections.emptyList())).fetchGeneratedKeyLists(type, consumer);
 		}
 
 		private class Compiled implements Sentence.Connected.Compiled
@@ -310,15 +418,52 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public <T> List<T> fetchGeneratedKeys(Class<T> type) throws ConstraintViolationException
+			public <K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
-					List<T> generatedKeys = new ArrayList<>();
+					List<K> generatedKeys = new ArrayList<>();
 					for (List<? extends Object> parameters : batch)
-						command.setParameters(parameters).execute(type)
-							.ifPresent(generatedKeys::add);
+						command.setParameters(parameters).execute(type).ifPresent(generatedKeys::add);
 					return generatedKeys;
+				}
+			}
+
+			@Override
+			public <K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					for (List<? extends Object> parameters : batch)
+						command.setParameters(parameters).execute(type).ifPresent(consumer);
+				}
+			}
+
+			@Override
+			public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					List<List<K>> generatedKeys = new ArrayList<>();
+					for (List<? extends Object> parameters : batch)
+					{
+						command.setParameters(parameters).execute();
+						generatedKeys.add(command.getGeneratedKeys(type));
+					}
+					return generatedKeys;
+				}
+			}
+
+			@Override
+			public <K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					for (List<? extends Object> parameters : batch)
+					{
+						command.setParameters(parameters).execute();
+						consumer.accept(command.getGeneratedKeys(type));
+					}
 				}
 			}
 
@@ -376,11 +521,53 @@ class BasicSentence implements Sentence
 						List<T> generatedKeys = new ArrayList<>();
 						for (List<? extends Object> parameters : batch)
 						{
-							command.setParameters(parameters).execute(type)
-								.ifPresent(generatedKeys::add);
+							command.setParameters(parameters).execute(type).ifPresent(generatedKeys::add);
 							observer.accept(parameters);
 						}
 						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (List<? extends Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute(type).ifPresent(consumer);
+							observer.accept(parameters);
+						}
+					}
+				}
+
+				@Override
+				public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						List<List<K>> generatedKeys = new ArrayList<>();
+						for (List<? extends Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute();
+							generatedKeys.add(command.getGeneratedKeys(type));
+							observer.accept(parameters);
+						}
+						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (List<? extends Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute();
+							consumer.accept(command.getGeneratedKeys(type));
+							observer.accept(parameters);
+						}
 					}
 				}
 
@@ -475,6 +662,49 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public <K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute(type).ifPresent(e -> consumer.accept(entity, e));
+						}
+					}
+				}
+
+				@Override
+				public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						List<List<K>> generatedKeys = new ArrayList<>();
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute();
+							generatedKeys.add(command.getGeneratedKeys(type));
+						}
+						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (T entity : entities)
+						{
+							extractors.forEach(e -> command.setParameter(e.apply(entity)));
+							command.execute();
+							consumer.accept(entity, command.getGeneratedKeys(type));
+						}
+					}
+				}
+
+				@Override
 				public Sentence.Connected.Prepared.Compiled<T> observe(Consumer<T> consumer)
 				{
 					return consumer != null
@@ -529,6 +759,52 @@ class BasicSentence implements Sentence
 								observer.accept(entity);
 							}
 							return generatedKeys;
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute(type).ifPresent(e -> consumer.accept(entity, e));
+								observer.accept(entity);
+							}
+						}
+					}
+
+					@Override
+					public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							List<List<K>> generatedKeys = new ArrayList<>();
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute();
+								generatedKeys.add(command.getGeneratedKeys(type));
+								observer.accept(entity);
+							}
+							return generatedKeys;
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							for (T entity : entities)
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(entity)));
+								command.execute();
+								consumer.accept(entity, command.getGeneratedKeys(type));
+								observer.accept(entity);
+							}
 						}
 					}
 
@@ -621,6 +897,45 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
+			public <T> void fetchGeneratedKeys(Class<T> type, Consumer<T> consumer) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					for (List<Object> parameters : batch)
+						command.setParameters(parameters).execute(type).ifPresent(consumer);
+				}
+			}
+
+			@Override
+			public <T> List<List<T>> fetchGeneratedKeyLists(Class<T> type) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					List<List<T>> generatedKeys = new ArrayList<>();
+					for (List<Object> parameters : batch)
+					{
+						command.setParameters(parameters).execute();
+						generatedKeys.add(command.getGeneratedKeys(type));
+					}
+
+					return generatedKeys;
+				}
+			}
+
+			@Override
+			public <T> void fetchGeneratedKeyLists(Class<T> type, Consumer<List<T>> consumer) throws ConstraintViolationException
+			{
+				try (Command command = link.createCommand(sql))
+				{
+					for (List<Object> parameters : batch)
+					{
+						command.setParameters(parameters).execute();
+						consumer.accept(command.getGeneratedKeys(type));
+					}
+				}
+			}
+
+			@Override
 			public Sentence.Compiled.Connected observe(Consumer<List<Object>> consumer)
 			{
 				return consumer != null
@@ -679,6 +994,50 @@ class BasicSentence implements Sentence
 							observer.accept(parameters);
 						}
 						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <T> void fetchGeneratedKeys(Class<T> type, Consumer<T> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (List<Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute(type).ifPresent(consumer);
+							observer.accept(parameters);
+						}
+					}
+				}
+
+				@Override
+				public <T> List<List<T>> fetchGeneratedKeyLists(Class<T> type) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						List<List<T>> generatedKeys = new ArrayList<>();
+						for (List<Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute();
+							generatedKeys.add(command.getGeneratedKeys(type));
+							observer.accept(parameters);
+						}
+
+						return generatedKeys;
+					}
+				}
+
+				@Override
+				public <T> void fetchGeneratedKeyLists(Class<T> type, Consumer<List<T>> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						for (List<Object> parameters : batch)
+						{
+							command.setParameters(parameters).execute();
+							consumer.accept(command.getGeneratedKeys(type));
+							observer.accept(parameters);
+						}
 					}
 				}
 

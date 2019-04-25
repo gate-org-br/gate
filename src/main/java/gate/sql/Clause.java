@@ -53,5 +53,4 @@ public interface Clause
 	{
 		return getClause().getProperties();
 	}
-
 }

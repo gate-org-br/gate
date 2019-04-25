@@ -10,8 +10,10 @@ import gate.sql.fetcher.Fetcher;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public class Command implements AutoCloseable, Fetchable
@@ -137,6 +139,17 @@ public class Command implements AutoCloseable, Fetchable
 			return cursor.next()
 				? Optional.of(cursor.getCurrentValue(type))
 				: Optional.empty();
+		}
+	}
+
+	public <T> List<T> getGeneratedKeys(Class<T> type)
+	{
+		try (Cursor cursor = getGeneratedKeys())
+		{
+			List<T> keys = new ArrayList<>();
+			while (cursor.next())
+				keys.add(cursor.getCurrentValue(type));
+			return keys;
 		}
 	}
 
