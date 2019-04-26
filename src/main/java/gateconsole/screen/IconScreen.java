@@ -3,10 +3,11 @@ package gateconsole.screen;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.annotation.Public;
 import gate.base.Screen;
 import gate.error.AppException;
 
-
+@Public
 @Icon("2009")
 @Name("Ícones")
 @Description("Biblioteca de ícones do Gate")
