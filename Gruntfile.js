@@ -71,7 +71,7 @@ module.exports = function (grunt) {
 							"src/main/webapp/components/TreeView.js",
 							"src/main/webapp/components/DateFormat.js",
 							"src/main/webapp/components/Switch.js",
-							"src/main/webapp/components/Clock.js",
+							"src/main/webapp/components/DigitalClock.js",
 							"src/main/webapp/components/FullScreen.js",
 							"src/main/webapp/components/Form.js",
 							"src/main/webapp/components/Focus.js",
