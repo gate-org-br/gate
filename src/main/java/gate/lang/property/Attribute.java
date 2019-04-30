@@ -3,6 +3,7 @@ package gate.lang.property;
 import gate.error.PropertyError;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.util.Icons;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
@@ -172,6 +173,16 @@ public interface Attribute
 	}
 
 	default String getPlaceholder()
+	{
+		return null;
+	}
+
+	default Icons.Icon getIcon()
+	{
+		return null;
+	}
+
+	default String getColor()
 	{
 		return null;
 	}

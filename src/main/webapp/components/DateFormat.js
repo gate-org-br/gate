@@ -2,6 +2,7 @@ function DateFormat(format)
 {
 	this.format = function (date)
 	{
+		var e;
 		var result = "";
 		var regex = /d+|M+|y+|H+|m+|s+|./g;
 		while ((e = regex.exec(format)))

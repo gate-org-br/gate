@@ -10,6 +10,7 @@ import javax.servlet.jsp.JspException;
 abstract class PropertyTag extends DynamicAttributeTag
 {
 
+	private String color;
 	private String name;
 	private Object value;
 	private Class<?> type;
@@ -52,6 +53,11 @@ abstract class PropertyTag extends DynamicAttributeTag
 		return converter;
 	}
 
+	public String getColor()
+	{
+		return color;
+	}
+
 	@Override
 	public void doTag() throws JspException, IOException
 	{
@@ -62,6 +68,7 @@ abstract class PropertyTag extends DynamicAttributeTag
 		Property p = Property.getProperty(screen.getClass(), this.property);
 
 		this.name = p.toString();
+		this.color = p.getColor();
 		this.type = p.getRawType();
 		this.value = p.getValue(screen);
 		this.converter = p.getConverter();
