@@ -2045,31 +2045,66 @@ function Populator(options)
 
 
 
-function Duration(value)
+class Duration
 {
-	this.value = value;
-
-	this.getHours = function ()
+	constructor(value)
 	{
-		return Math.floor(value / 3600);
-	};
+		this.value = value;
+	}
 
-	this.getMinutes = function ()
+	getHours()
 	{
-		return Math.floor((value - (this.getHours() * 3600)) / 60);
-	};
+		return Math.floor(this.value / 3600);
+	}
 
-	this.getSeconds = function ()
+	getMinutes()
 	{
-		return value - (this.getHours() * 3600) - (this.getMinutes() * 60);
-	};
+		return Math.floor((this.value - (this.getHours() * 3600)) / 60);
+	}
 
-	this.toString = function ()
+	getSeconds()
 	{
-		return "00".concat(String(this.getHours())).slice(-2)
-				+ ':' + "00".concat(String(this.getMinutes())).slice(-2)
-				+ ':' + "00".concat(String(this.getSeconds())).slice(-2);
-	};
+		return this.value - (this.getHours() * 3600) - (this.getMinutes() * 60);
+	}
+
+	format(format)
+	{
+		var e;
+		var result = "";
+		var regex = /h+|m+|s+|H+|M+|S+|./g;
+		while ((e = regex.exec(format)))
+		{
+			switch (e[0][0])
+			{
+				case 'h':
+				case 'H':
+					var value = String(this.getHours());
+					var padding = "0".repeat(e[0].length);
+					result += (padding + value).slice(-Math.max(padding.length, value.length));
+					break;
+				case 'm':
+				case 'M':
+					var value = String(this.getMinutes());
+					var padding = "0".repeat(e[0].length);
+					result += (padding + value).slice(-Math.max(padding.length, value.length));
+					break;
+				case 's':
+				case 'S':
+					var value = String(this.getSeconds());
+					var padding = "0".repeat(e[0].length);
+					result += (padding + value).slice(-Math.max(padding.length, value.length));
+					break;
+				default:
+					result += e[0];
+			}
+		}
+		return result;
+	}
+
+	toString()
+	{
+		return this.format("hh:mm:ss");
+	}
 }
 window.addEventListener("load", function ()
 {
@@ -5511,6 +5546,7 @@ function DateFormat(format)
 {
 	this.format = function (date)
 	{
+		var e;
 		var result = "";
 		var regex = /d+|M+|y+|H+|m+|s+|./g;
 		while ((e = regex.exec(format)))

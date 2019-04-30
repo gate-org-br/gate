@@ -22,7 +22,7 @@ import org.junit.Test;
  *
  * @author davins
  */
-public class GenericUtilsTest
+public class ReflectionTest
 {
 
 	private Doctor doctor;
@@ -89,5 +89,14 @@ public class GenericUtilsTest
 		setter.invoke(doctor, 2);
 
 		Assert.assertEquals(2, field.getInt(doctor));
+	}
+
+	@Test
+	public void testFind() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException
+	{
+		Assert.assertEquals(gate.entity.User.class, Reflection.find("gate.entity.User").orElseThrow());
+
+		Assert.assertEquals(gate.entity.User.class.getDeclaredField("name"), Reflection.find("gate.entity.User:name").orElseThrow());
+		Assert.assertEquals(gate.entity.User.class.getDeclaredMethod("getName"), Reflection.find("gate.entity.User:getName()").orElseThrow());
 	}
 }

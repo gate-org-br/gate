@@ -17,8 +17,11 @@ public class LabelTag extends PropertyTag
 		super.doTag();
 
 		if (!getAttributes().containsKey("style"))
-			Color.Extractor.extract(getValue())
-				.ifPresent(e -> getAttributes().put("style", "color: " + e));
+		{
+			String color = Color.Extractor.extract(getValue()).orElse(getColor());
+			if (color != null)
+				getAttributes().put("style", "color: " + getColor());
+		}
 
 		String string = format != null
 			? Converter.toText(getValue(), format)

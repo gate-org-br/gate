@@ -3,7 +3,6 @@ package gate.entity;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
-import gate.util.Icons;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -79,12 +78,9 @@ public class App implements Serializable
 					Module.Screen screen = module.addScreen();
 
 					screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
-					if (type.isAnnotationPresent(Name.class))
-						screen.name = type.getAnnotation(Name.class).value();
-					if (type.isAnnotationPresent(Description.class))
-						screen.description = type.getAnnotation(Description.class).value();
-					if (type.isAnnotationPresent(Icon.class))
-						screen.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value()).getCode();
+					Name.Extractor.extract(type).ifPresent(e -> screen.name = e);
+					Description.Extractor.extract(type).ifPresent(e -> screen.description = e);
+					Icon.Extractor.extract(type).ifPresent(e -> screen.icon = e.getCode());
 
 					for (Method method : type.getMethods())
 					{
@@ -93,22 +89,17 @@ public class App implements Serializable
 						{
 							Module.Screen.Action action = screen.addAction();
 							action.id = method.getName().substring(4);
-							if (method.isAnnotationPresent(Name.class))
-								action.name = method.getAnnotation(Name.class).value();
-							if (method.isAnnotationPresent(Description.class))
-								action.description = method.getAnnotation(Description.class).value();
-							if (method.isAnnotationPresent(Icon.class))
-								action.icon = Icons.getInstance().get(method.getAnnotation(Icon.class).value()).getCode();
+
+							Name.Extractor.extract(method).ifPresent(e -> action.name = e);
+							Description.Extractor.extract(method).ifPresent(e -> action.description = e);
+							Icon.Extractor.extract(method).ifPresent(e -> action.icon = e.getCode());
 						}
 					}
 				} else
 				{
-					if (type.isAnnotationPresent(Name.class))
-						module.name = type.getAnnotation(Name.class).value();
-					if (type.isAnnotationPresent(Description.class))
-						module.description = type.getAnnotation(Description.class).value();
-					if (type.isAnnotationPresent(Icon.class))
-						module.icon = Icons.getInstance().get(type.getAnnotation(Icon.class).value()).getCode();
+					Name.Extractor.extract(type).ifPresent(e -> module.name = e);
+					Description.Extractor.extract(type).ifPresent(e -> module.description = e);
+					Icon.Extractor.extract(type).ifPresent(e -> module.icon = e.getCode());
 				}
 
 				if (!iterator.hasNext())

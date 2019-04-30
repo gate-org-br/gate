@@ -1,14 +1,17 @@
 package gate.lang.property;
 
+import gate.annotation.Color;
 import gate.annotation.Column;
 import gate.annotation.Description;
 import gate.annotation.ElementType;
 import gate.annotation.Entity;
+import gate.annotation.Icon;
 import gate.annotation.Mask;
 import gate.annotation.Name;
 import gate.annotation.Placeholder;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.util.Icons;
 import gate.util.Reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -27,6 +30,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 {
 
 	private final Type genericType;
+	private final Icons.Icon icon;
+	private final String color;
 	private final Field field;
 	private final String mask;
 	private final String name;
@@ -84,9 +89,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 				.noneMatch(c -> c.getName().equals(e.getName()))).forEach(cons::add);
 			constraints = Collections.unmodifiableList(cons);
 
-			description = field.isAnnotationPresent(Description.class)
-				? field.getAnnotation(Description.class).value()
-				: converter.getDescription();
+			name = Name.Extractor.extract(field).orElse(null);
+			icon = Icon.Extractor.extract(field).orElse(null);
+			color = Color.Extractor.extract(field).orElse(null);
+			description = Description.Extractor.extract(field).orElse(converter.getDescription());
 
 			mask = field.isAnnotationPresent(Mask.class)
 				? field.getAnnotation(Mask.class).value()
@@ -95,10 +101,6 @@ class FieldAttribute implements JavaIdentifierAttribute
 			placeholder = field.isAnnotationPresent(Placeholder.class)
 				? field.getAnnotation(Placeholder.class).value()
 				: converter.getPlaceholder();
-
-			name = field.isAnnotationPresent(Name.class)
-				? field.getAnnotation(Name.class).value()
-				: null;
 
 			if (field.isAnnotationPresent(Column.class))
 				columnName = field.getAnnotation(Column.class).value();
@@ -144,6 +146,18 @@ class FieldAttribute implements JavaIdentifierAttribute
 	public Type getElementType()
 	{
 		return elementType;
+	}
+
+	@Override
+	public String getColor()
+	{
+		return color;
+	}
+
+	@Override
+	public Icons.Icon getIcon()
+	{
+		return icon;
 	}
 
 	@Override

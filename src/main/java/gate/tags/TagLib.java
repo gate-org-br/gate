@@ -2,6 +2,7 @@ package gate.tags;
 
 import gate.annotation.Color;
 import gate.annotation.Description;
+import gate.annotation.Icon;
 import gate.util.Icons;
 
 public class TagLib
@@ -9,7 +10,7 @@ public class TagLib
 
 	public static String icon(Object type)
 	{
-		return Icons.getInstance().get(type).toString();
+		return Icon.Extractor.extract(type).orElse(Icons.UNKNOWN).toString();
 	}
 
 	public static String name(Object obj)

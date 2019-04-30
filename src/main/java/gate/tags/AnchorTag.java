@@ -3,6 +3,7 @@ package gate.tags;
 import gate.Gate;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
+import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.User;
@@ -141,9 +142,9 @@ public class AnchorTag extends DynamicAttributeTag
 
 	public Icons.Icon getIcon()
 	{
-		Icons.Icon icon = Icons.getInstance().get(javaMethod);
+		Icons.Icon icon = Icon.Extractor.extract(javaMethod).orElse(Icons.UNKNOWN);
 		if (icon == Icons.UNKNOWN)
-			icon = Icons.getInstance().get(javaClass);
+			icon = Icon.Extractor.extract(javaClass).orElse(Icons.UNKNOWN);
 		return icon;
 	}
 
