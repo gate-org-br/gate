@@ -94,9 +94,9 @@ public class ReflectionTest
 	@Test
 	public void testFind() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException
 	{
-		Assert.assertEquals(gate.entity.User.class, Reflection.find("gate.entity.User").orElseThrow());
+		Assert.assertEquals(gate.entity.User.class, Reflection.find("gate.entity.User").get());
 
-		Assert.assertEquals(gate.entity.User.class.getDeclaredField("name"), Reflection.find("gate.entity.User:name").orElseThrow());
-		Assert.assertEquals(gate.entity.User.class.getDeclaredMethod("getName"), Reflection.find("gate.entity.User:getName()").orElseThrow());
+		Assert.assertEquals(gate.entity.User.class.getDeclaredField("name"), Reflection.find("gate.entity.User:name").get());
+		Assert.assertEquals(gate.entity.User.class.getDeclaredMethod("getName"), Reflection.find("gate.entity.User:getName()").get());
 	}
 }
