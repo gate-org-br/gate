@@ -27,20 +27,20 @@ public class VersionProducer
 	@Named(value = "version")
 	public Version produce() throws IOException
 	{
-		if (version == null)
-			try (InputStream inputStream = servletContext.getResourceAsStream("/META-INF/MANIFEST.MF"))
-			{
-				if (inputStream != null)
-				{
-					Manifest manifest = new Manifest(inputStream);
-					version = Version.of(manifest.getMainAttributes().getValue("Implementation-Version"));
-				} else
-					version = Version.of("0.0.0-SNAPSHOT");
-			} catch (ParseException ex)
-			{
-				throw new IOException(ex.getMessage(), ex);
-			}
-		return version;
-	}
+		if (version != null)
+			return version;
 
+		try (InputStream inputStream = servletContext.getResourceAsStream("/META-INF/MANIFEST.MF"))
+		{
+			if (inputStream == null)
+				return version = Version.UNDEFINED;
+
+			Manifest manifest = new Manifest(inputStream);
+			String value = manifest.getMainAttributes().getValue("Implementation-Version");
+			return version = value != null ? version = Version.of(value) : Version.UNDEFINED;
+		} catch (ParseException ex)
+		{
+			return version = Version.INVALID;
+		}
+	}
 }

@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 public class Version implements Serializable, Comparable<Version>
 {
 
+	public static final Version INVALID = new Version(0, 0, 0, "INVALID", null);
+	public static final Version UNDEFINED = new Version(0, 0, 0, "UNDEFINED", null);
+
 	private final int major;
 	private final int minor;
 	private final int patch;
@@ -26,7 +29,7 @@ public class Version implements Serializable, Comparable<Version>
 	private static final long serialVersionUID = 1L;
 
 	private Version(int major, int minor, int patch,
-			String qualifier, String iteration)
+		String qualifier, String iteration)
 	{
 		this.major = major;
 		this.minor = minor;
@@ -66,10 +69,10 @@ public class Version implements Serializable, Comparable<Version>
 		if (qualifier != null)
 			if (iteration != null)
 				return major + "." + minor + "." + patch
-						+ "-" + qualifier + "-" + iteration;
+					+ "-" + qualifier + "-" + iteration;
 			else
 				return major + "." + minor + "." + patch
-						+ "-" + qualifier;
+					+ "-" + qualifier;
 		else
 			return major + "." + minor + "." + patch;
 	}
@@ -78,11 +81,11 @@ public class Version implements Serializable, Comparable<Version>
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Version
-				&& ((Version) obj).major == major
-				&& ((Version) obj).minor == minor
-				&& ((Version) obj).patch == patch
-				&& Objects.equal(((Version) obj).qualifier, qualifier)
-				&& Objects.equal(((Version) obj).iteration, iteration);
+			&& ((Version) obj).major == major
+			&& ((Version) obj).minor == minor
+			&& ((Version) obj).patch == patch
+			&& Objects.equal(((Version) obj).qualifier, qualifier)
+			&& Objects.equal(((Version) obj).iteration, iteration);
 	}
 
 	@Override
@@ -142,10 +145,10 @@ public class Version implements Serializable, Comparable<Version>
 			throw new ParseException("Invalid version number: " + string, 0);
 
 		return new Version(Short.parseShort(matcher.group(1)),
-				Short.parseShort(matcher.group(2)),
-				Short.parseShort(matcher.group(3)),
-				matcher.group(5),
-				matcher.group(7));
+			Short.parseShort(matcher.group(2)),
+			Short.parseShort(matcher.group(3)),
+			matcher.group(5),
+			matcher.group(7));
 	}
 
 }
