@@ -1,3 +1,5 @@
+/* global Colorizer */
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("tbody")).forEach(function (element)
@@ -48,11 +50,13 @@ window.addEventListener("load", function ()
 					break;
 			}
 
-			Array.from(this.parentNode.parentNode.parentNode.children)
+			var table = this.closest("TABLE");
+			Array.from(table.children)
 				.filter(e => e.tagName.toUpperCase() === "TBODY")
 				.forEach(e => e.sort(Array.prototype.indexOf
 						.call(this.parentNode.children, this),
 						this.getAttribute("data-sortable")));
+			Colorizer.colorize(table);
 		});
 	});
 });

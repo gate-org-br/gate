@@ -20,15 +20,14 @@ public class FuncScreen extends Screen
 {
 
 	private Func form;
-	private Page<Func> page;
+	private List<Func> page;
 
 	@Inject
 	private FuncControl control;
 
 	public String call()
 	{
-		if (isPOST() && getMessages().isEmpty())
-			page = paginate(ordenate(control.search(getForm())));
+		page = control.search(getForm());
 		return "/WEB-INF/views/gateconsole/Func/View.jsp";
 	}
 
@@ -114,7 +113,7 @@ public class FuncScreen extends Screen
 		return form;
 	}
 
-	public Iterable<Func> getPage()
+	public List<Func> getPage()
 	{
 		return page;
 	}
