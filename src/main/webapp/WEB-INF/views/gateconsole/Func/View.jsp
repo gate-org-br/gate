@@ -2,34 +2,8 @@
 
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
-	<form id='form' method='POST' action='#'>
-		<fieldset>
-			<legend>
-				<g:icon type="search"/>Pesquisar Funções
-			</legend>
-			<label style='width: 100%'>
-				Nome:
-				<span>
-					<g:text property='form.name' tabindex='1' required=''/>
-				</span>
-			</label>
-		</fieldset>
-
-		<div class='Coolbar'>
-			<g:link method="post" module='#' screen='#' tabindex='2'>
-				Pesquisar<g:icon type="search"/>
-			</g:link>
-			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3'/>
-		</div>
-
+	<div style="height: calc(100vh - 200px); overflow: auto">
 		<g:choose>
-			<g:when condition="${screen.GET}">
-				<div class='TEXT'>
-					<h1>
-						Entre com os crit&eacute;rios de busca e clique em Pesquisar
-					</h1>
-				</div>
-			</g:when>
 			<g:when condition="${empty screen.page}">
 				<div class='TEXT'>
 					<h1>
@@ -38,27 +12,23 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table style='table-layout: fixed'>
+				<table>
 					<caption>
-						FUNÇÕES ENCONTRADAS: ${screen.page.paginator.dataSize}
+						FUNÇÕES ENCONTRADAS: ${screen.page.size()}
 					</caption>
 					<col/>
 					<thead>
 						<tr>
-							<th>
-								<g:ordenator method="post" property="name">
-									Nome
-								</g:ordenator>
+							<td>
+								<input data-filter type="text"/>
+							</td>
+						</tr>
+						<tr>
+							<th data-sortable>
+								Nome
 							</th>
 						</tr>
 					</thead>
-					<tfoot>
-						<tr>
-							<td colspan='1' style='text-align: right'>
-								<g:paginator/>
-							</td>
-						</tr>
-					</tfoot>
 					<tbody>
 						<g:iterator source="${screen.page}" target="target">
 							<tr data-target='_dialog' title='Usuário'
@@ -72,7 +42,11 @@
 				</table>
 			</g:otherwise>
 		</g:choose>
-	</form>
+	</div>
+
+	<div class='Coolbar'>
+		<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3'/>
+	</div>
 
 	<script>
 		window.addEventListener("load", function ()

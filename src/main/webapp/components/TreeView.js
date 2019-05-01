@@ -1,3 +1,5 @@
+/* global Colorizer */
+
 function registerTreeView(table)
 {
 	function depth(tr)
@@ -38,16 +40,7 @@ function registerTreeView(table)
 				return p;
 	}
 
-	function colorize(table)
-	{
-		Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
-		{
-			Array
-				.from(tbody.children)
-				.filter(e => e.style.display === 'table-row')
-				.forEach((tr, index) => tr.className = index % 2 ? 'odd' : 'even');
-		});
-	}
+
 
 	Array.from(table.children)
 		.filter(e => e.tagName.toLowerCase() === "tbody")
@@ -74,7 +67,7 @@ function registerTreeView(table)
 						else if (this.innerHTML === '-')
 							colapse(this.parentNode);
 
-						colorize(table);
+						Colorizer.colorize(table);
 					};
 				} else
 					tr.children[0].innerHTML = ' ';
@@ -122,10 +115,10 @@ function registerTreeView(table)
 
 				break;
 		}
-		colorize(table);
+		Colorizer.colorize(table);
 	};
 
-	colorize(table);
+	Colorizer.colorize(table);
 }
 
 window.addEventListener("load", function ()

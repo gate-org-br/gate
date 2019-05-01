@@ -1491,6 +1491,25 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+class Colorizer
+{
+	static colorize(table)
+	{
+		var type = "odd";
+		Array.from(table.children)
+			.filter(e => e.tagName.toUpperCase() === "TBODY")
+			.flatMap(e => Array.from(e.children)).forEach(row =>
+		{
+			row.classList.remove("odd");
+			row.classList.remove("even");
+			if (row.style.display !== "none")
+			{
+				row.classList.add(type);
+				type = type === "even" ? "odd" : "even";
+			}
+		});
+	}
+}
 class DataFormat
 {
 	static format(bytes, decimals = 2)
@@ -5407,6 +5426,8 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[popup]")).forEach(element => new Popup(element));
 });
+/* global Colorizer */
+
 function registerTreeView(table)
 {
 	function depth(tr)
@@ -5447,16 +5468,7 @@ function registerTreeView(table)
 				return p;
 	}
 
-	function colorize(table)
-	{
-		Array.from(table.children).filter(e => e.tagName.toLowerCase() === "tbody").forEach(function (tbody)
-		{
-			Array
-				.from(tbody.children)
-				.filter(e => e.style.display === 'table-row')
-				.forEach((tr, index) => tr.className = index % 2 ? 'odd' : 'even');
-		});
-	}
+
 
 	Array.from(table.children)
 		.filter(e => e.tagName.toLowerCase() === "tbody")
@@ -5483,7 +5495,7 @@ function registerTreeView(table)
 						else if (this.innerHTML === '-')
 							colapse(this.parentNode);
 
-						colorize(table);
+						Colorizer.colorize(table);
 					};
 				} else
 					tr.children[0].innerHTML = ' ';
@@ -5531,10 +5543,10 @@ function registerTreeView(table)
 
 				break;
 		}
-		colorize(table);
+		Colorizer.colorize(table);
 	};
 
-	colorize(table);
+	Colorizer.colorize(table);
 }
 
 window.addEventListener("load", function ()
@@ -5902,6 +5914,8 @@ window.addEventListener("load", function ()
 {
 	autofocus(document);
 });
+/* global Colorizer */
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("tbody")).forEach(function (element)
@@ -5952,11 +5966,13 @@ window.addEventListener("load", function ()
 					break;
 			}
 
-			Array.from(this.parentNode.parentNode.parentNode.children)
+			var table = this.closest("TABLE");
+			Array.from(table.children)
 				.filter(e => e.tagName.toUpperCase() === "TBODY")
 				.forEach(e => e.sort(Array.prototype.indexOf
 						.call(this.parentNode.children, this),
 						this.getAttribute("data-sortable")));
+			Colorizer.colorize(table);
 		});
 	});
 });
@@ -6568,3 +6584,24 @@ class ReportDialog extends Modal
 		action.href = "#";
 	}
 }
+/* global Colorizer */
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("input[data-filter]")).forEach(element =>
+	{
+		var table = element.getAttribute("data-filter") ?
+			document.getElementById(element.getAttribute("data-filter"))
+			: element.closest("TABLE");
+
+		element.addEventListener("input", function ()
+		{
+			Array.from(table.children)
+				.filter(e => e.tagName.toUpperCase() === "TBODY")
+				.flatMap(e => Array.from(e.children)).forEach(row =>
+				row.style.display = !this.value || row.innerHTML.toUpperCase()
+					.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
+			Colorizer.colorize(table);
+		});
+	});
+});
