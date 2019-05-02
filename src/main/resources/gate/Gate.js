@@ -6603,5 +6603,12 @@ window.addEventListener("load", function ()
 					.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
 			Colorizer.colorize(table);
 		});
+
+		Array.from(table.children)
+			.filter(e => e.tagName.toUpperCase() === "TBODY")
+			.flatMap(e => Array.from(e.children)).forEach(row =>
+			row.style.display = !this.value || row.innerHTML.toUpperCase()
+				.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
+		Colorizer.colorize(table);
 	});
 });
