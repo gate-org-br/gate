@@ -5,6 +5,7 @@ import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
+import gate.type.Percentage;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
@@ -139,5 +140,24 @@ public class JsonNumber extends BigDecimal implements JsonElement
 	{
 		Objects.requireNonNull(jsonNumber);
 		return JsonElement.format(jsonNumber);
+	}
+
+	public static JsonNumber valueOf(Number number)
+	{
+		if (number instanceof Byte)
+			return new JsonNumber((Byte) number);
+		if (number instanceof Short)
+			return new JsonNumber((Short) number);
+		if (number instanceof Integer)
+			return new JsonNumber((Integer) number);
+		if (number instanceof Long)
+			return new JsonNumber((Long) number);
+		if (number instanceof Float)
+			return new JsonNumber((Float) number);
+		if (number instanceof Double)
+			return new JsonNumber((Double) number);
+		if (number instanceof Percentage)
+			return new JsonNumber(((Percentage) number).getValue().toString());
+		return new JsonNumber(Objects.requireNonNull(number).toString());
 	}
 }

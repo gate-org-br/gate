@@ -1,9 +1,14 @@
 package gate.type;
 
 import gate.converter.Converter;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonString;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import static javassist.CtMethod.ConstParameter.string;
 
 public class DataGrid extends ArrayList<Object[]>
 {
@@ -51,42 +56,22 @@ public class DataGrid extends ArrayList<Object[]>
 
 	public String toString(List<Number> indexes)
 	{
-		StringBuilder string = new StringBuilder();
+		JsonArray result = new JsonArray();
+		result.add(indexes.stream()
+			.map(e -> e.intValue())
+			.map(e -> getHead()[e])
+			.map(e -> new JsonString(e))
+			.collect(Collectors.toCollection(() -> new JsonArray())));
 
-		StringBuilder head = new StringBuilder();
-		for (int i = 0; i < indexes.size(); i++)
-		{
-			Object value = getHead()[indexes.get(i).intValue()];
-			if (head.length() > 0)
-				head.append(", ");
-			if (!(value instanceof Number || value instanceof Boolean))
-				head.append("\"");
-			head.append(value != null ? value.toString() : "");
-			if (!(value instanceof Number || value instanceof Boolean))
-				head.append("\"");
-		}
-		string.append("[").append(head.toString()).append("]");
+		stream().map(values
+			-> indexes.stream()
+				.map(e -> e.intValue())
+				.map(e -> values[e])
+				.map(e -> JsonElement.valueOf(e))
+				.collect(Collectors.toCollection(() -> new JsonArray())))
+			.forEach(result::add);
 
-		for (Object[] values : this)
-		{
-			StringBuilder line = new StringBuilder();
-			for (int i = 0; i < indexes.size(); i++)
-			{
-				Object value = values[indexes.get(i).intValue()];
-				if (line.length() > 0)
-					line.append(", ");
-				if (!(value instanceof Number || value instanceof Boolean))
-					line.append("\"");
-
-				if (i > 0)
-					value = Converter.toNumber(value);
-				line.append(value != null ? value.toString() : "");
-				if (!(value instanceof Number || value instanceof Boolean))
-					line.append("\"");
-			}
-			string.append(", ").append("[").append(line.toString()).append("]");
-		}
-		return String.format("[%s]", string.toString());
+		return result.toString();
 	}
 
 	@Override
