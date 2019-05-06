@@ -49,9 +49,7 @@ public interface JsonElement extends Serializable
 	/**
 	 * Formats the specified JsonElement on JSON notation.
 	 * <p>
-	 * If the specified JsonElement is a JsonArray or a JsonObject, it's
-	 * elements will be formatted recursively as their respective elements
-	 * on JSON notation.
+	 * If the specified JsonElement is a JsonArray or a JsonObject, it's elements will be formatted recursively as their respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
 	 *
@@ -72,5 +70,18 @@ public interface JsonElement extends Serializable
 		{
 			throw new AppError(ex);
 		}
+	}
+
+	public static JsonElement valueOf(Object obj)
+	{
+		if (obj == null)
+			return JsonNull.INSTANCE;
+		if (obj instanceof Boolean)
+			return JsonBoolean.valueOf((Boolean) obj);
+		if (obj instanceof Number)
+			return JsonNumber.valueOf((Number) obj);
+		if (obj instanceof String)
+			return new JsonString((String) obj);
+		return new JsonString(gate.converter.Converter.toText(obj));
 	}
 }

@@ -628,6 +628,94 @@ fieldset > div {
   padding: 0px;
   border-radius: 5px;
 }
+fieldset > label.x1,
+fieldset > fieldset.x1,
+fieldset > label[x1],
+fieldset > fieldset[x1] {
+  width: 25%;
+}
+@media only screen and (min-width: 720px) {
+  fieldset > label.x1,
+  fieldset > fieldset.x1,
+  fieldset > label[x1],
+  fieldset > fieldset[x1] {
+    width: 12.5%;
+  }
+}
+@media only screen and (min-width: 1280px) {
+  fieldset > label.x1,
+  fieldset > fieldset.x1,
+  fieldset > label[x1],
+  fieldset > fieldset[x1] {
+    width: 6.25%;
+  }
+}
+fieldset > label.x2,
+fieldset > fieldset.x2,
+fieldset > label[x2],
+fieldset > fieldset[x2] {
+  width: 50%;
+}
+@media only screen and (min-width: 720px) {
+  fieldset > label.x2,
+  fieldset > fieldset.x2,
+  fieldset > label[x2],
+  fieldset > fieldset[x2] {
+    width: 25%;
+  }
+}
+@media only screen and (min-width: 1280px) {
+  fieldset > label.x2,
+  fieldset > fieldset.x2,
+  fieldset > label[x2],
+  fieldset > fieldset[x2] {
+    width: 12.5%;
+  }
+}
+fieldset > label.x4,
+fieldset > fieldset.x4,
+fieldset > label[x4],
+fieldset > fieldset[x4] {
+  width: 100%;
+}
+@media only screen and (min-width: 720px) {
+  fieldset > label.x4,
+  fieldset > fieldset.x4,
+  fieldset > label[x4],
+  fieldset > fieldset[x4] {
+    width: 50%;
+  }
+}
+@media only screen and (min-width: 1280px) {
+  fieldset > label.x4,
+  fieldset > fieldset.x4,
+  fieldset > label[x4],
+  fieldset > fieldset[x4] {
+    width: 25%;
+  }
+}
+fieldset > label.x8,
+fieldset > fieldset.x8,
+fieldset > label[x8],
+fieldset > fieldset[x8] {
+  width: 100%;
+}
+@media only screen and (min-width: 720px) {
+  fieldset > label.x8,
+  fieldset > fieldset.x8,
+  fieldset > label[x8],
+  fieldset > fieldset[x8] {
+    width: 100%;
+  }
+}
+@media only screen and (min-width: 1280px) {
+  fieldset > label.x8,
+  fieldset > fieldset.x8,
+  fieldset > label[x8],
+  fieldset > fieldset[x8] {
+    width: 50%;
+  }
+}
 fieldset > label {
   float: left;
   width: 100%;
@@ -635,70 +723,6 @@ fieldset > label {
   display: flex;
   align-items: stretch;
   flex-direction: column;
-}
-fieldset > label.x1,
-fieldset > label[x1] {
-  width: 25%;
-}
-@media only screen and (min-width: 640px) {
-  fieldset > label.x1,
-  fieldset > label[x1] {
-    width: 12.5%;
-  }
-}
-@media only screen and (min-width: 1080px) {
-  fieldset > label.x1,
-  fieldset > label[x1] {
-    width: 6.25%;
-  }
-}
-fieldset > label.x2,
-fieldset > label[x2] {
-  width: 50%;
-}
-@media only screen and (min-width: 640px) {
-  fieldset > label.x2,
-  fieldset > label[x2] {
-    width: 25%;
-  }
-}
-@media only screen and (min-width: 1080px) {
-  fieldset > label.x2,
-  fieldset > label[x2] {
-    width: 12.5%;
-  }
-}
-fieldset > label.x4,
-fieldset > label[x4] {
-  width: 100%;
-}
-@media only screen and (min-width: 640px) {
-  fieldset > label.x4,
-  fieldset > label[x4] {
-    width: 50%;
-  }
-}
-@media only screen and (min-width: 1080px) {
-  fieldset > label.x4,
-  fieldset > label[x4] {
-    width: 25%;
-  }
-}
-fieldset > label.x8,
-fieldset > label[x8] {
-  width: 100%;
-}
-@media only screen and (min-width: 640px) {
-  fieldset > label.x8,
-  fieldset > label[x8] {
-    width: 100%;
-  }
-}
-@media only screen and (min-width: 1080px) {
-  fieldset > label.x8,
-  fieldset > label[x8] {
-    width: 50%;
-  }
 }
 fieldset > label > input,
 fieldset > label > select,
@@ -1971,12 +1995,12 @@ div.LinkControl > ul {
 }
 div.PageControl > ul > li,
 div.LinkControl > ul > li {
-  width: 20%;
   margin: 0px;
   float: left;
   border-bottom: none;
   border: 1px solid #DDDAC9;
   border-radius: 8px 8px 0px 0px;
+  width: 50%;
 }
 div.PageControl > ul > li[data-selected=true],
 div.LinkControl > ul > li[data-selected=true] {
@@ -2042,6 +2066,18 @@ div.PageControl > ul > li > button:focus,
 div.LinkControl > ul > li > button:focus {
   border: none;
   outline: none;
+}
+@media only screen and (min-width: 720px) {
+  div.PageControl > ul > li,
+  div.LinkControl > ul > li {
+    width: 25%;
+  }
+}
+@media only screen and (min-width: 1280px) {
+  div.PageControl > ul > li,
+  div.LinkControl > ul > li {
+    width: 12.5%;
+  }
 }
 div.PageControl > div,
 div.LinkControl > div {

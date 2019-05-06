@@ -9,8 +9,7 @@ div.LinkControl { margin-top: 16px;
 			 list-style: none;
 
 
-			 > li { width: 20%;
-				margin: 0px;
+			 > li { margin: 0px;
 				float: left;
 				border-bottom: none;
 				border: 1px solid #DDDAC9;
@@ -53,8 +52,11 @@ div.LinkControl { margin-top: 16px;
 
 					   &:focus { border: none;
 						     outline: none }
-
 				}
+
+				width: 50%;
+				@media only screen and (min-width: @breakpoint1) { width: 25%; }
+				@media only screen and (min-width: @breakpoint2) { width: 12.5%; }
 			 }
 		  }
 
