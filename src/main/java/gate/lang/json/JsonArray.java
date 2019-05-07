@@ -66,14 +66,11 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	/**
 	 * Parses a JSON formatted string into a JsonArray object.
 	 *
-	 * @param json the JSON formatted string to be parsed into a JsonArray
-	 * object
+	 * @param json the JSON formatted string to be parsed into a JsonArray object
 	 *
-	 * @return a JsonArray object representing the JSON formatted string
-	 * specified
+	 * @return a JsonArray object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse
-	 * the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonArray parse(String json) throws ConversionException
@@ -89,11 +86,9 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonArray into a JSON formatted string.
 	 * <p>
-	 * The elements of the specified JsonArray will be formatted recursively
-	 * as their respective elements on JSON notation.
+	 * The elements of the specified JsonArray will be formatted recursively as their respective elements on JSON notation.
 	 *
-	 * @param jsonArray the JsonArray object to be formatted on JSON
-	 * notation
+	 * @param jsonArray the JsonArray object to be formatted on JSON notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonArray
 	 *
