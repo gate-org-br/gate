@@ -13,7 +13,7 @@ import java.util.zip.ZipOutputStream;
 public class ODTTemplate
 {
 
-	public static byte[] evaluate(Object entity, byte[] file) throws AppException, TemplateException
+	public static byte[] evaluate(byte[] file, Object entity) throws AppException, TemplateException
 	{
 
 		try
@@ -32,7 +32,7 @@ public class ODTTemplate
 					{
 						String string = new String(data);
 						entry = new ZipEntry("content.xml");
-						string = Template.evaluate(entity, string);
+						string = Template.compile(string).evaluate(entity);
 						data = string.getBytes();
 					}
 

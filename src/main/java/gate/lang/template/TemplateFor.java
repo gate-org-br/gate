@@ -25,8 +25,7 @@ class TemplateFor implements Evaluable
 	}
 
 	@Override
-	public void evaluate(List<Object> context,
-		Map<String, Object> parameters, Writer writer) throws TemplateException
+	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws TemplateException
 	{
 		try
 		{
@@ -48,7 +47,7 @@ class TemplateFor implements Evaluable
 				for (Object value : iterable)
 				{
 					context.add(0, value);
-					template.evaluate(context, parameters, writer);
+					template.evaluate(writer, context, parameters);
 					context.remove(0);
 				}
 			} else
@@ -59,7 +58,7 @@ class TemplateFor implements Evaluable
 				for (Object value : iterable)
 				{
 					parameters.put(name, value);
-					template.evaluate(context, parameters, writer);
+					template.evaluate(writer, context, parameters);
 					parameters.remove(name);
 				}
 			}

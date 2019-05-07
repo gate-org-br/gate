@@ -29,9 +29,7 @@ public class Expression implements Evaluable
 	}
 
 	@Override
-	public void evaluate(List<Object> context,
-		Map<String, Object> parameters,
-		Writer writer) throws ExpressionException
+	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws ExpressionException
 	{
 		try
 		{

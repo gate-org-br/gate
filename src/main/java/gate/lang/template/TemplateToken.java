@@ -29,8 +29,7 @@ class TemplateToken implements Evaluable
 	}
 
 	@Override
-	public void evaluate(List<Object> context,
-		Map<String, Object> parameters, Writer writer) throws TemplateException
+	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws TemplateException
 	{
 		try
 		{
