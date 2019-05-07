@@ -1,14 +1,10 @@
 package gate.type;
 
-import gate.converter.Converter;
 import gate.lang.json.JsonArray;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonString;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
-import static javassist.CtMethod.ConstParameter.string;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class DataGrid extends ArrayList<Object[]>
 {
@@ -18,12 +14,12 @@ public class DataGrid extends ArrayList<Object[]>
 	public String[] head;
 	public Object[] foot;
 
-	public DataGrid(String[] head)
+	public DataGrid(String... head)
 	{
 		this.head = head;
 	}
 
-	public DataGrid(String[] head, Object[] foot)
+	public DataGrid(String[] head, Object... foot)
 	{
 		this.head = head;
 		this.foot = foot;
@@ -49,38 +45,54 @@ public class DataGrid extends ArrayList<Object[]>
 		return foot;
 	}
 
-	public String toString(Number... indexes)
+	/**
+	 * Insert a new row into the DataGrid.
+	 *
+	 * @param objects the values to be inserted
+	 *
+	 * @return the same object, for chained invocations
+	 */
+	public DataGrid insert(Object... objects)
 	{
-		return this.toString(Arrays.asList(indexes));
+		add(objects);
+		return this;
 	}
 
-	public String toString(List<Number> indexes)
+	/**
+	 * Creates a new DataGrid with the specified columns.
+	 *
+	 * @param indexes the indexes of the columns to be selected
+	 *
+	 * @return a new DataGrid with the specified columns
+	 */
+	public DataGrid select(int... indexes)
 	{
-		JsonArray result = new JsonArray();
-		result.add(indexes.stream()
-			.map(e -> e.intValue())
-			.map(e -> getHead()[e])
-			.map(e -> new JsonString(e))
-			.collect(Collectors.toCollection(() -> new JsonArray())));
+		DataGrid dataGrid
+			= foot != null ? new DataGrid(IntStream.of(indexes)
+					.mapToObj(e -> head[e])
+					.toArray(String[]::new),
+					IntStream.of(indexes)
+						.mapToObj(e -> foot[e])
+						.toArray())
+				: new DataGrid(IntStream.of(indexes)
+					.mapToObj(e -> head[e])
+					.toArray(String[]::new));
 
-		stream().map(values
-			-> indexes.stream()
-				.map(e -> e.intValue())
-				.map(e -> values[e])
-				.map(e -> JsonElement.valueOf(e))
-				.collect(Collectors.toCollection(() -> new JsonArray())))
-			.forEach(result::add);
+		stream().map(values -> IntStream.of(indexes).mapToObj(e -> values[e])
+			.toArray()).collect(Collectors.toCollection(() -> dataGrid));
 
-		return result.toString();
+		return dataGrid;
+	}
+
+	public String toString(int... indexes)
+	{
+		return select(indexes).toString();
 	}
 
 	@Override
 	public String toString()
 	{
-		Number[] indexes = new Number[head.length];
-		for (int i = 0; i < indexes.length; i++)
-			indexes[i] = i;
-		return toString(indexes);
+		return JsonArray.format(Stream.concat(Stream.of((Object) head), stream())).toString();
 	}
 
 	public DataGrid rollup()
