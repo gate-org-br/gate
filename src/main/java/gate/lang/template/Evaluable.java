@@ -8,7 +8,5 @@ import java.util.Map;
 public interface Evaluable
 {
 
-	public void evaluate(List<Object> context,
-			Map<String, Object> parameters,
-			Writer writer) throws EvaluableException;
+	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws EvaluableException;
 }

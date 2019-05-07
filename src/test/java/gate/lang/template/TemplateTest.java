@@ -54,7 +54,7 @@ public final class TemplateTest
 	{
 		try
 		{
-			Assert.assertEquals(getFile("Document.html"), Template.evaluate(this, getFile("TemplateContext.xml")));
+			Assert.assertEquals(getFile("Document.html"), Template.compile(getFile("TemplateContext.xml")).evaluate(this));
 		} catch (IOException ex)
 		{
 			Logger.getLogger(TemplateTest.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,7 +66,7 @@ public final class TemplateTest
 	{
 		try
 		{
-			Assert.assertEquals(getFile("Document.html"), Template.evaluate(this, getFile("TemplateVariable.xml")));
+			Assert.assertEquals(getFile("Document.html"), Template.compile(getFile("TemplateVariable.xml")).evaluate(this));
 		} catch (IOException ex)
 		{
 			Logger.getLogger(TemplateTest.class.getName()).log(Level.SEVERE, null, ex);

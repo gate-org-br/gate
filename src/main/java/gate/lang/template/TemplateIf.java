@@ -20,7 +20,7 @@ class TemplateIf implements Evaluable
 	}
 
 	@Override
-	public void evaluate(List<Object> context, Map<String, Object> parameters, Writer writer) throws TemplateException
+	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws TemplateException
 	{
 		try
 		{
@@ -28,7 +28,7 @@ class TemplateIf implements Evaluable
 			if (check instanceof Boolean)
 			{
 				if (Boolean.TRUE.equals(check))
-					template.evaluate(context, parameters, writer);
+					template.evaluate(writer, context, parameters);
 
 			} else
 				throw new TemplateException(String.format("Expected Boolean and found %s", check));
