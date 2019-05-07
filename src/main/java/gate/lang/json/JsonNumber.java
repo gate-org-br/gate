@@ -21,6 +21,8 @@ import java.util.Objects;
 public class JsonNumber extends BigDecimal implements JsonElement
 {
 
+	private static final long serialVersionUID = 1L;
+
 	public JsonNumber(char[] in, int offset, int len)
 	{
 		super(in, offset, len);
@@ -110,11 +112,14 @@ public class JsonNumber extends BigDecimal implements JsonElement
 	/**
 	 * Parses a JSON formatted string into a JsonNumber object.
 	 *
-	 * @param json the JSON formatted string to be parsed into a JsonNumber object
+	 * @param json the JSON formatted string to be parsed into a JsonNumber
+	 * object
 	 *
-	 * @return a JsonNumber object representing the JSON formatted string specified
+	 * @return a JsonNumber object representing the JSON formatted string
+	 * specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse
+	 * the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNumber parse(String json) throws ConversionException
@@ -130,7 +135,8 @@ public class JsonNumber extends BigDecimal implements JsonElement
 	/**
 	 * Formats the specified JsonNumber into a JSON formatted string.
 	 *
-	 * @param jsonNumber the JsonNumber object to be formatted on JSON notation
+	 * @param jsonNumber the JsonNumber object to be formatted on JSON
+	 * notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonNumber
 	 *

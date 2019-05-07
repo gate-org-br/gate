@@ -11,6 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents a JSON array as a List of JsonElement.
@@ -238,5 +241,51 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	public List<JsonElement> subList(int fromIndex, int toIndex)
 	{
 		return values.subList(fromIndex, toIndex);
+	}
+
+	public static JsonArray valueOf(Stream<?> stream)
+	{
+		return stream.map(e -> JsonElement.valueOf(e))
+			.collect(Collectors.toCollection(() -> new JsonArray()));
+	}
+
+	public static JsonArray valueOf(Collection<?> objects)
+	{
+		return valueOf(objects.stream());
+	}
+
+	public static JsonArray valueOf(Object... objects)
+	{
+		return valueOf(Stream.of(objects));
+	}
+
+	public static JsonArray format(Stream<?> stream)
+	{
+		return stream.map(e -> JsonElement.format(e))
+			.collect(Collectors.toCollection(() -> new JsonArray()));
+	}
+
+	public static JsonArray format(Collection<?> objects)
+	{
+		return format(objects.stream());
+	}
+
+	public static JsonArray format(Object... objects)
+	{
+		return format(Stream.of(objects));
+	}
+
+	public static <T> JsonArray format(List<T> objects,
+		Function<T, String> label, Function<T, Object> value)
+	{
+		return objects.stream().map(e -> JsonObject.format(e, label, value))
+			.collect(Collectors.toCollection(() -> new JsonArray()));
+	}
+
+	public static <T> JsonArray valueOf(List<T> objects,
+		Function<T, String> label, Function<T, Object> value)
+	{
+		return objects.stream().map(e -> JsonObject.valueOf(e, label, value))
+			.collect(Collectors.toCollection(() -> new JsonArray()));
 	}
 }
