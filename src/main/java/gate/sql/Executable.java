@@ -7,6 +7,13 @@ public interface Executable
 {
 
 	/**
+	 * Creates a command for the statement.
+	 *
+	 * @return the new command created
+	 */
+	Command createCommand();
+
+	/**
 	 * Executes the sentence on the database with the specified parameters.
 	 *
 	 * @return the number of records affected by the sentence execution

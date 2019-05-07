@@ -125,6 +125,12 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public Command createCommand()
+				{
+					return link.createCommand(sql);
+				}
+
+				@Override
 				public int execute() throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
@@ -221,6 +227,12 @@ class BasicSentence implements Sentence
 					public Observed(Consumer<T> observer)
 					{
 						this.observer = observer;
+					}
+
+					@Override
+					public Command createCommand()
+					{
+						return link.createCommand(sql);
 					}
 
 					@Override
@@ -366,6 +378,12 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
+		public Command createCommand()
+		{
+			return link.createCommand(sql);
+		}
+
+		@Override
 		public int execute() throws ConstraintViolationException
 		{
 			return batch(Collections.singletonList(Collections.emptyList())).execute();
@@ -403,6 +421,12 @@ class BasicSentence implements Sentence
 			public Compiled(List<List<? extends Object>> batch)
 			{
 				this.batch = batch;
+			}
+
+			@Override
+			public Command createCommand()
+			{
+				return link.createCommand(sql);
 			}
 
 			@Override
@@ -496,6 +520,12 @@ class BasicSentence implements Sentence
 				public Observed(Consumer<List<? extends Object>> observer)
 				{
 					this.observer = observer;
+				}
+
+				@Override
+				public Command createCommand()
+				{
+					return link.createCommand(sql);
 				}
 
 				@Override
@@ -632,6 +662,12 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public Command createCommand()
+				{
+					return link.createCommand(sql);
+				}
+
+				@Override
 				public int execute() throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
@@ -728,6 +764,12 @@ class BasicSentence implements Sentence
 					public Observed(Consumer<T> observer)
 					{
 						this.observer = observer;
+					}
+
+					@Override
+					public Command createCommand()
+					{
+						return link.createCommand(sql);
 					}
 
 					@Override
@@ -872,6 +914,12 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
+			public Command createCommand()
+			{
+				return link.createCommand(sql);
+			}
+
+			@Override
 			public int execute() throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
@@ -964,6 +1012,12 @@ class BasicSentence implements Sentence
 				public Observed(Consumer<List<Object>> observer)
 				{
 					this.observer = observer;
+				}
+
+				@Override
+				public Command createCommand()
+				{
+					return link.createCommand(sql);
 				}
 
 				@Override
