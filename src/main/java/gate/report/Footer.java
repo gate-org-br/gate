@@ -7,9 +7,9 @@ public final class Footer extends ReportElement
 
 	private final Object value;
 
-	Footer(Report report, Object value)
+	public Footer(Object value)
 	{
-		super(report, new Style());
+		super(new Style());
 
 		Objects.requireNonNull(value);
 
@@ -19,5 +19,11 @@ public final class Footer extends ReportElement
 	public Object getValue()
 	{
 		return value;
+	}
+
+	@Override
+	public Footer style(Style style)
+	{
+		return (Footer) super.style(style);
 	}
 }

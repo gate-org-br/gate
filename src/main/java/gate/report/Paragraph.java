@@ -7,18 +7,18 @@ public final class Paragraph extends ReportElement
 
 	private final Object value;
 
-	Paragraph(Report report, Object value)
+	public Paragraph(Object value)
 	{
-		super(report, new Style());
+		super(new Style());
 
 		Objects.requireNonNull(value);
 
 		this.value = value;
 	}
 
-	Paragraph(Report report, Object value, String style)
+	public Paragraph(Report report, Object value, String style)
 	{
-		super(report, new Style());
+		super(new Style());
 
 		Objects.requireNonNull(value);
 
@@ -29,5 +29,11 @@ public final class Paragraph extends ReportElement
 	public Object getValue()
 	{
 		return value;
+	}
+
+	@Override
+	public Paragraph style(Style style)
+	{
+		return (Paragraph) super.style(style);
 	}
 }

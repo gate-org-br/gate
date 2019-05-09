@@ -7,9 +7,9 @@ public final class Header extends ReportElement
 
 	private final Object value;
 
-	Header(Report report, Object value)
+	public Header(Object value)
 	{
-		super(report, new Style());
+		super(new Style());
 
 		Objects.requireNonNull(value);
 
@@ -19,5 +19,11 @@ public final class Header extends ReportElement
 	public Object getValue()
 	{
 		return value;
+	}
+
+	@Override
+	public Header style(Style style)
+	{
+		return (Header) super.style(style);
 	}
 }

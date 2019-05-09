@@ -14,19 +14,14 @@ import java.util.function.Function;
 public final class Column<T> extends Element
 {
 
-	private final Grid grid;
-
 	private Object head;
 	private Object foot;
 	private Function<T, Object> body = e -> e;
 	private BiFunction<T, Style, Style> styler = (object, style) -> style;
 
-	Column(Grid grid)
+	public Column()
 	{
 		super(new Style().left());
-		Objects.requireNonNull(grid);
-		Objects.requireNonNull(body);
-		this.grid = grid;
 	}
 
 	/**
@@ -115,16 +110,6 @@ public final class Column<T> extends Element
 	}
 
 	/**
-	 * Gets the Grid associated with the column.
-	 *
-	 * @return the Grid associated with the column
-	 */
-	public Grid getGrid()
-	{
-		return grid;
-	}
-
-	/**
 	 * Gets the current column header value.
 	 *
 	 * @return the current column header value
@@ -152,5 +137,11 @@ public final class Column<T> extends Element
 	public Object getFoot()
 	{
 		return foot;
+	}
+
+	@Override
+	public Column<T> style(Style style)
+	{
+		return (Column<T>) super.style(style);
 	}
 }

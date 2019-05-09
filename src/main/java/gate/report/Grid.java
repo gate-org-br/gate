@@ -9,14 +9,14 @@ import java.util.function.Function;
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each object of the associated data source
- * will generate a single row on the Grid. The value to be displayed on each column is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each object of the associated data source will generate a single row on the Grid. The
+ * value to be displayed on each column is obtained using a mapping function on it's row value.
  *
  * @param <T> type of the objects to be displayed by the grid
  *
  * @author davins
  */
-public final class Grid<T> extends ReportElement
+public class Grid<T> extends ReportElement
 {
 
 	private String caption;
@@ -24,9 +24,9 @@ public final class Grid<T> extends ReportElement
 	private Function<T, Object> children;
 	private final List<Column<T>> columns = new ArrayList<>();
 
-	Grid(Report report, Iterable<T> datasource)
+	public Grid(Iterable<T> datasource)
 	{
-		super(report, new Style());
+		super(new Style());
 		Objects.requireNonNull(datasource);
 		this.datasource = datasource;
 	}
@@ -40,9 +40,15 @@ public final class Grid<T> extends ReportElement
 	 */
 	public Column<T> add()
 	{
-		Column<T> column = new Column<>(this);
+		Column<T> column = new Column<>();
 		columns.add(column);
 		return column;
+	}
+
+	public Grid<T> add(Column<T> column)
+	{
+		columns.add(column);
+		return this;
 	}
 
 	/**
@@ -77,10 +83,13 @@ public final class Grid<T> extends ReportElement
 	 * Sets a mapping function to select a value to be displayed on a sub grid of the current grid.
 	 *
 	 * @param children the function where to get the values to be displayed on the sub grid
+	 *
+	 * @return the same object, for chained invocations
 	 */
-	public void setChildren(Function<T, Object> children)
+	public Grid<T> setChildren(Function<T, Object> children)
 	{
 		this.children = children;
+		return this;
 	}
 
 	public String getCaption()
@@ -101,5 +110,11 @@ public final class Grid<T> extends ReportElement
 	public List<Column<T>> getColumns()
 	{
 		return Collections.unmodifiableList(columns);
+	}
+
+	@Override
+	public Grid<T> style(Style style)
+	{
+		return (Grid<T>) super.style(style);
 	}
 }

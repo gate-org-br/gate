@@ -3,6 +3,7 @@ package gate.report;
 import gate.annotation.Handler;
 import gate.handler.ReportHandler;
 import gate.type.mime.MimeData;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -78,66 +79,94 @@ public class Report
 		return Collections.unmodifiableList(elements);
 	}
 
+	public Report add(ReportElement element)
+	{
+		elements.add(element);
+		return this;
+	}
+
 	public <T> Grid<T> addGrid(Class<T> type, Iterable<T> data)
 	{
-		Grid<T> grid = new Grid<>(this, data);
+		Grid<T> grid = new Grid<>(data);
 		elements.add(grid);
 		return grid;
 	}
 
 	public Form addForm(int columns)
 	{
-		Form form = new Form(this, columns);
+		Form form = new Form(columns);
 		elements.add(form);
 		return form;
 	}
 
 	public Form addForm(gate.type.Form form)
 	{
-		Form f = new Form(this, form);
+		Form f = new Form(form);
 		elements.add(f);
 		return f;
 	}
 
-	public void addLineBreak()
+	public LineBreak addLineBreak()
 	{
-		elements.add(new LineBreak(this));
+		LineBreak lineBreak = new LineBreak();
+		elements.add(lineBreak);
+		return lineBreak;
 	}
 
-	public void addPageBreak()
+	public PageBreak addPageBreak()
 	{
-		elements.add(new PageBreak(this));
+		PageBreak pageBreak = new PageBreak();
+		elements.add(pageBreak);
+		return pageBreak;
 	}
 
-	public void addHeader(Object value)
+	public Header addHeader(Object value)
 	{
-		elements.add(new Header(this, value));
+		Header header = new Header(value);
+		elements.add(header);
+		return header;
 	}
 
-	public void addParagraph(Object value)
+	public Paragraph addParagraph(Object value)
 	{
-		elements.add(new Paragraph(this, value));
+		Paragraph paragraph = new Paragraph(value);
+		elements.add(new Paragraph(value));
+		return paragraph;
 	}
 
-	public void addParagraph(Object value, String style)
+	public Paragraph addParagraph(Object value, String style)
 	{
-		elements.add(new Paragraph(this, value, style));
+		Paragraph paragraph = new Paragraph(this, value, style);
+		elements.add(paragraph);
+		return paragraph;
 	}
 
-	public void addFooter(Object value)
+	public Footer addFooter(Object value)
 	{
-		elements.add(new Footer(this, value));
+		Footer footer = new Footer(value);
+		elements.add(footer);
+		return footer;
 	}
 
-	public void addImage(byte[] source)
+	public Image addImage(byte[] source)
 	{
-		elements.add(new Image(this, source));
+		Image image = new Image(source);
+		elements.add(new Image(source));
+		return image;
 	}
 
-	public void addImage(MimeData source)
+	public Image addImage(MimeData source)
 	{
-		if (source != null)
-			elements.add(new Image(this, source));
+		Image image = new Image(source);
+		elements.add(new Image(source));
+		return image;
+	}
+
+	public Image addImage(URL source)
+	{
+		Image image = new Image(source);
+		elements.add(new Image(source));
+		return image;
 	}
 
 	public enum Orientation

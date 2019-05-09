@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Used to generate documents from GTL templates
  */
-public class Template implements Evaluable
+public class Template
 {
 
 	private final List<Evaluable> evaluables;
@@ -35,8 +35,7 @@ public class Template implements Evaluable
 		this.evaluables = evaluables;
 	}
 
-	@Override
-	public void evaluate(Writer document, List<Object> context, Map<String, Object> parameters) throws TemplateException
+	void evaluate(Writer document, List<Object> context, Map<String, Object> parameters) throws TemplateException
 	{
 		try
 		{
@@ -53,58 +52,6 @@ public class Template implements Evaluable
 	}
 
 	/**
-	 * Evaluates the template with the specified context and parameters.
-	 *
-	 * @param context the context to be used for evaluation
-	 * @param parameters the parameters to be used for evaluation
-	 * @param document the writer where to print the result document
-	 * @throws TemplateException if an error occurs when evaluating the template or when printing the result document
-	 */
-	public void evaluate(Object context, Map<String, Object> parameters, Writer document) throws TemplateException
-	{
-		evaluate(document, new ArrayList<>(Arrays.asList(context)), parameters);
-	}
-
-	/**
-	 * Evaluates the template with the specified context and parameters.
-	 *
-	 * @param context the context to be used for evaluation
-	 * @param parameters the parameters to be used for evaluation
-	 * @param document the file where to print the evaluated document
-	 * @throws TemplateException if an error occurs when evaluating or saving the template
-	 */
-	public void evaluate(Object context, Map<String, Object> parameters, File document) throws TemplateException
-	{
-		try (Writer writer = new FileWriter(document))
-		{
-			evaluate(context, parameters, writer);
-		} catch (IOException e)
-		{
-			throw new TemplateException(String.format("Error trying to access template file %s.", e.getMessage()));
-		}
-	}
-
-	/**
-	 * Evaluates the template with the specified context and parameters.
-	 *
-	 * @param context the context to be used for evaluation
-	 * @param parameters the parameters to be used for evaluation
-	 * @return the evaluated document string
-	 * @throws TemplateException if an error occurs when evaluating the template
-	 */
-	public String evaluate(Object context, Map<String, Object> parameters) throws TemplateException
-	{
-		try (StringWriter document = new StringWriter())
-		{
-			evaluate(context, parameters, document);
-			return document.toString();
-		} catch (IOException e)
-		{
-			throw new TemplateException(String.format("Error trying to access template file %s.", e.getMessage()));
-		}
-	}
-
-	/**
 	 * Evaluates the template with the specified context.
 	 *
 	 * @param context the context to be used for evaluation
@@ -113,7 +60,7 @@ public class Template implements Evaluable
 	 */
 	public void evaluate(Object context, Writer document) throws TemplateException
 	{
-		evaluate(context, new HashMap<>(), document);
+		evaluate(document, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
 	}
 
 	/**
@@ -125,7 +72,13 @@ public class Template implements Evaluable
 	 */
 	public void evaluate(Object context, File document) throws TemplateException
 	{
-		evaluate(context, new HashMap<>(), document);
+		try (FileWriter writer = new FileWriter(document))
+		{
+			evaluate(writer, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
+		} catch (IOException ex)
+		{
+			throw new TemplateException(ex, ex.getMessage());
+		}
 	}
 
 	/**
@@ -137,7 +90,15 @@ public class Template implements Evaluable
 	 */
 	public String evaluate(Object context) throws TemplateException
 	{
-		return evaluate(context, new HashMap<>());
+		try (StringWriter writer = new StringWriter())
+		{
+			evaluate(writer, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
+			writer.flush();
+			return writer.toString();
+		} catch (IOException ex)
+		{
+			throw new TemplateException(ex, ex.getMessage());
+		}
 	}
 
 	@Override
@@ -295,8 +256,8 @@ public class Template implements Evaluable
 	public static void evaluate(Object context, Reader template, Writer document) throws TemplateException
 	{
 		new TemplateParser().parse(template)
-			.evaluate(new ArrayList<>(Arrays.asList(context)),
-				new HashMap<>(), document);
+			.evaluate(document, new ArrayList<>(Arrays.asList(context)),
+				new HashMap<>());
 	}
 
 	/**

@@ -3,8 +3,14 @@ package gate.report;
 public class PageBreak extends ReportElement
 {
 
-	PageBreak(Report report)
+	public PageBreak()
 	{
-		super(report, new Style());
+		super(new Style());
+	}
+
+	@Override
+	public PageBreak style(Style style)
+	{
+		return (PageBreak) super.style(style);
 	}
 }

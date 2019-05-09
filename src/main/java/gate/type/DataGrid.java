@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.lang.json.JsonArray;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -87,6 +88,11 @@ public class DataGrid extends ArrayList<Object[]>
 	public String toString(int... indexes)
 	{
 		return select(indexes).toString();
+	}
+
+	public String toString(List<Number> indexes)
+	{
+		return select(indexes.stream().mapToInt(e -> e.intValue()).toArray()).toString();
 	}
 
 	@Override
