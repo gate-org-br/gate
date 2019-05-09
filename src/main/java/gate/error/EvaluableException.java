@@ -1,6 +1,6 @@
 package gate.error;
 
-public class EvaluableException extends Exception
+public class EvaluableException extends RuntimeException
 {
 
 	private static final long serialVersionUID = 1L;

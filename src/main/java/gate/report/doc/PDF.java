@@ -117,12 +117,12 @@ public class PDF extends Doc
 					document.add(printLineBreak((LineBreak) element));
 				else if (element instanceof PageBreak)
 					document.add(printPageBreak((PageBreak) element));
-				else if (element instanceof Image)
-					document.add(printImage((Image) element));
 				else if (element instanceof Form)
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid)
 					document.add(printGrid((Grid) element));
+				else if (element instanceof Image && ((Image) element).getSource() != null)
+					document.add(printImage((Image) element));
 			}
 			document.close();
 		} catch (DocumentException | AppError ex)

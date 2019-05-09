@@ -19,11 +19,14 @@ public abstract class Element
 	 * Change the style of the element.
 	 *
 	 * @param style the new style of the element
+	 *
+	 * @return the same object, for chained invocations
 	 */
-	public void setStyle(Style style)
+	public Element style(Style style)
 	{
 		Objects.requireNonNull(style);
 		this.style = style;
+		return this;
 	}
 
 	/**

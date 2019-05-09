@@ -12,6 +12,7 @@ import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.io.Credentials;
+import gate.lang.template.Template;
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;

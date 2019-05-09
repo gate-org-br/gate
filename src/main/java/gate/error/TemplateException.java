@@ -9,4 +9,19 @@ public class TemplateException extends EvaluableException
 	{
 		super(message);
 	}
+
+	public TemplateException(String message, Object... args)
+	{
+		super(message, args);
+	}
+
+	public TemplateException(Throwable cause, String message)
+	{
+		super(cause, message);
+	}
+
+	public TemplateException(Throwable cause, String message, Object... args)
+	{
+		super(cause, message, args);
+	}
 }

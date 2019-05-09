@@ -1,31 +1,29 @@
 package gate.report;
 
-import com.itextpdf.text.Font;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class Form extends ReportElement
+public class Form extends ReportElement
 {
 
-	private Font font;
 	private String caption;
 	private Float percentage;
 	private final int columns;
 	private final List<FormElement> elements = new ArrayList<>();
 
-	Form(Report report, int columns)
+	public Form(int columns)
 	{
-		super(report, new Style());
+		super(new Style());
 		if (columns <= 0)
 			throw new IllegalArgumentException("columns");
 		this.columns = columns;
 	}
 
-	Form(Report report, gate.type.Form form)
+	public Form(gate.type.Form form)
 	{
-		super(report, new Style());
+		super(new Style());
 		this.columns = 8;
 		form.getFields().stream().forEach((e) ->
 		{
@@ -44,6 +42,12 @@ public final class Form extends ReportElement
 	public List<FormElement> getElements()
 	{
 		return Collections.unmodifiableList(elements);
+	}
+
+	public Form add(FormElement field)
+	{
+		elements.add(field);
+		return this;
 	}
 
 	public Field add(String label, Object value)
@@ -97,5 +101,11 @@ public final class Form extends ReportElement
 	{
 		this.percentage = percentage;
 		return this;
+	}
+
+	@Override
+	public Form style(Style style)
+	{
+		return (Form) super.style(style);
 	}
 }

@@ -634,7 +634,7 @@ fieldset > label[x1],
 fieldset > fieldset[x1] {
   width: 25%;
 }
-@media only screen and (min-width: 720px) {
+@media only screen and (min-width: 768px) {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
@@ -656,7 +656,7 @@ fieldset > label[x2],
 fieldset > fieldset[x2] {
   width: 50%;
 }
-@media only screen and (min-width: 720px) {
+@media only screen and (min-width: 768px) {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
@@ -678,7 +678,7 @@ fieldset > label[x4],
 fieldset > fieldset[x4] {
   width: 100%;
 }
-@media only screen and (min-width: 720px) {
+@media only screen and (min-width: 768px) {
   fieldset > label.x4,
   fieldset > fieldset.x4,
   fieldset > label[x4],
@@ -700,7 +700,7 @@ fieldset > label[x8],
 fieldset > fieldset[x8] {
   width: 100%;
 }
-@media only screen and (min-width: 720px) {
+@media only screen and (min-width: 768px) {
   fieldset > label.x8,
   fieldset > fieldset.x8,
   fieldset > label[x8],
@@ -2067,7 +2067,7 @@ div.LinkControl > ul > li > button:focus {
   border: none;
   outline: none;
 }
-@media only screen and (min-width: 720px) {
+@media only screen and (min-width: 768px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
     width: 25%;

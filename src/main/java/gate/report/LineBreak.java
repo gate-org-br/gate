@@ -3,8 +3,15 @@ package gate.report;
 public class LineBreak extends ReportElement
 {
 
-	LineBreak(Report report)
+	public LineBreak()
 	{
-		super(report, new Style());
+		super(new Style());
 	}
+
+	@Override
+	public LineBreak style(Style style)
+	{
+		return (LineBreak) super.style(style);
+	}
+
 }
