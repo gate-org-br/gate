@@ -19,7 +19,7 @@ ul.HMenu
 
 	li {  height: 40px;
 	      display: flex;
-	      flex-basis: 10%;
+	      flex-basis: 40px;
 	      position: relative;
 	      align-items: stretch;
 	      list-style-type: none;
@@ -29,14 +29,14 @@ ul.HMenu
 	li > a
 	{
 		flex-grow: 1;
+		padding: 0px;
 		display: flex;
-		padding: 10px;
-		font-size: 10px;
+		font-size: 0px;
 		align-items: center;
-		justify-content: space-between;
+		justify-content: center;
 		background-color: @main_tinted;
 		border: 1px solid @base;
-		> i { order: 1; }
+		> i { order: 1; font-size: 16px; }
 	}
 
 	li a:hover { background-color: @acent_tinted; }
@@ -45,8 +45,17 @@ ul.HMenu
 	> li > ul li > ul { left: 100%; }
 
 	li > ul > li  { top: -1px;
-			width: 100%;
-			flex-basis: 40px; }
+			width: 120px;
+			flex-basis: 40px; 
+
+			> a
+			{
+				padding: 10px;
+				font-size: 10px;
+				justify-content: space-between;
+				> i { font-size: 12px; }
+			}
+	}
 
 	> li:not(:first-of-type) > a { border-left: none; }
 	ul > li:not(:first-of-type) > a { border-top: none; }
@@ -57,4 +66,68 @@ ul.HMenu
 
 	> li > ul li:empty { flex-basis: 4px;
 			     border: 2px solid @base; }
+
+	.full
+	{
+		flex-basis: 120px;
+
+		> a
+		{
+			padding: 10px;
+			font-size: 10px;
+			justify-content: space-between;
+			> i { font-size: 12px; }
+		}
+	}
+
+
+	> li:only-child,
+		> li:first-child:nth-last-child(2),
+		> li:first-child:nth-last-child(2) ~ li
+		{ .full(); }
+
+	@media only screen and (min-width: @breakpoint0) 
+		{
+
+		> li:first-child:nth-last-child(3),
+			> li:first-child:nth-last-child(3) ~ li,
+			> li:first-child:nth-last-child(4),
+			> li:first-child:nth-last-child(4) ~ li{
+			.full();
+		}
+	}
+
+	@media only screen and (min-width: @breakpoint1) 
+		{
+
+		> li:first-child:nth-last-child(5),
+			> li:first-child:nth-last-child(5) ~ li,
+			> li:first-child:nth-last-child(6),
+			> li:first-child:nth-last-child(6) ~ li
+			{
+			.full();
+		}
+	}
+
+	@media only screen and (min-width: @breakpoint2) 
+		{
+		> li:first-child:nth-last-child(7),
+			> li:first-child:nth-last-child(7) ~ li,
+			> li:first-child:nth-last-child(8),
+			> li:first-child:nth-last-child(8) ~ li
+			{
+			.full();
+		}
+	}
+
+	@media only screen and (min-width: @breakpoint3) 
+		{
+		> li:first-child:nth-last-child(9),
+			> li:first-child:nth-last-child(9) ~ li,
+			> li:first-child:nth-last-child(10),
+			> li:first-child:nth-last-child(10) ~ li
+			{
+			.full();
+		}
+	}
 }
