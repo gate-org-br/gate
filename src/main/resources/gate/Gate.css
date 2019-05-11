@@ -632,9 +632,25 @@ fieldset > label.x1,
 fieldset > fieldset.x1,
 fieldset > label[x1],
 fieldset > fieldset[x1] {
-  width: 25%;
+  width: 100%;
+}
+@media only screen and (min-width: 576px) {
+  fieldset > label.x1,
+  fieldset > fieldset.x1,
+  fieldset > label[x1],
+  fieldset > fieldset[x1] {
+    width: 50%;
+  }
 }
 @media only screen and (min-width: 768px) {
+  fieldset > label.x1,
+  fieldset > fieldset.x1,
+  fieldset > label[x1],
+  fieldset > fieldset[x1] {
+    width: 25%;
+  }
+}
+@media only screen and (min-width: 992px) {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
@@ -642,7 +658,7 @@ fieldset > fieldset[x1] {
     width: 12.5%;
   }
 }
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1200px) {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
@@ -654,9 +670,17 @@ fieldset > label.x2,
 fieldset > fieldset.x2,
 fieldset > label[x2],
 fieldset > fieldset[x2] {
-  width: 50%;
+  width: 100%;
 }
 @media only screen and (min-width: 768px) {
+  fieldset > label.x2,
+  fieldset > fieldset.x2,
+  fieldset > label[x2],
+  fieldset > fieldset[x2] {
+    width: 50%;
+  }
+}
+@media only screen and (min-width: 992px) {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
@@ -664,7 +688,7 @@ fieldset > fieldset[x2] {
     width: 25%;
   }
 }
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1200px) {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
@@ -678,7 +702,7 @@ fieldset > label[x4],
 fieldset > fieldset[x4] {
   width: 100%;
 }
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 992px) {
   fieldset > label.x4,
   fieldset > fieldset.x4,
   fieldset > label[x4],
@@ -686,7 +710,7 @@ fieldset > fieldset[x4] {
     width: 50%;
   }
 }
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1200px) {
   fieldset > label.x4,
   fieldset > fieldset.x4,
   fieldset > label[x4],
@@ -700,15 +724,7 @@ fieldset > label[x8],
 fieldset > fieldset[x8] {
   width: 100%;
 }
-@media only screen and (min-width: 768px) {
-  fieldset > label.x8,
-  fieldset > fieldset.x8,
-  fieldset > label[x8],
-  fieldset > fieldset[x8] {
-    width: 100%;
-  }
-}
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 1200px) {
   fieldset > label.x8,
   fieldset > fieldset.x8,
   fieldset > label[x8],
@@ -1799,8 +1815,8 @@ table.TREEVIEW > tbody > tr > td:first-child {
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
-  height: 40px;
   padding: 2px;
+  overflow-x: auto;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
@@ -1819,7 +1835,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR > *,
 *.Coolbar > * {
   margin: 2px;
-  height: calc(100% - 4px);
+  height: 36px;
 }
 *.COOLBAR > a,
 *.Coolbar > a,
@@ -1827,17 +1843,17 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > button {
   color: black;
   margin: 2px;
-  padding: 4px;
+  width: 36px;
+  padding: 0px;
   float: right;
   display: flex;
+  font-size: 0px;
   cursor: pointer;
-  min-width: 90px;
-  font-size: 10px;
   font-weight: bold;
   border-radius: 5px;
   align-items: center;
+  justify-content: center;
   border: 1px solid #CCCCCC;
-  justify-content: space-between;
   background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
 *.COOLBAR > a:hover,
@@ -1894,11 +1910,11 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR > button > span,
 *.Coolbar > button > span {
   order: 1;
+  margin: 0px;
   display: flex;
   color: inherit;
   cursor: inherit;
-  font-size: 12px;
-  margin-left: 8px;
+  font-size: 16px;
   align-items: center;
   justify-content: center;
 }
@@ -1928,6 +1944,250 @@ table.TREEVIEW > tbody > tr > td:first-child {
   display: inline-block;
   border: 0px none transparent;
   background-color: transparent;
+}
+*.COOLBAR .full,
+*.Coolbar .full {
+  width: auto;
+  padding: 4px;
+  font-size: 10px;
+  min-width: 90px;
+  justify-content: space-between;
+}
+*.COOLBAR .full > i,
+*.Coolbar .full > i {
+  font-size: 12px;
+}
+*.COOLBAR > a:only-child,
+*.Coolbar > a:only-child,
+*.COOLBAR > button:only-child,
+*.Coolbar > button:only-child,
+*.COOLBAR > a:first-child:nth-last-child(2),
+*.Coolbar > a:first-child:nth-last-child(2),
+*.COOLBAR > a:first-child:nth-last-child(2) ~ *,
+*.Coolbar > a:first-child:nth-last-child(2) ~ *,
+*.COOLBAR > button:first-child:nth-last-child(2),
+*.Coolbar > button:first-child:nth-last-child(2),
+*.COOLBAR > button:first-child:nth-last-child(2) ~ *,
+*.Coolbar > button:first-child:nth-last-child(2) ~ *,
+*.COOLBAR > a:first-child:nth-last-child(3),
+*.Coolbar > a:first-child:nth-last-child(3),
+*.COOLBAR > a:first-child:nth-last-child(3) ~ *,
+*.Coolbar > a:first-child:nth-last-child(3) ~ *,
+*.COOLBAR > button:first-child:nth-last-child(3),
+*.Coolbar > button:first-child:nth-last-child(3),
+*.COOLBAR > button:first-child:nth-last-child(3) ~ *,
+*.Coolbar > button:first-child:nth-last-child(3) ~ * {
+  width: auto;
+  padding: 4px;
+  font-size: 10px;
+  min-width: 90px;
+  justify-content: space-between;
+}
+*.COOLBAR > a:only-child > i,
+*.Coolbar > a:only-child > i,
+*.COOLBAR > button:only-child > i,
+*.Coolbar > button:only-child > i,
+*.COOLBAR > a:first-child:nth-last-child(2) > i,
+*.Coolbar > a:first-child:nth-last-child(2) > i,
+*.COOLBAR > a:first-child:nth-last-child(2) ~ * > i,
+*.Coolbar > a:first-child:nth-last-child(2) ~ * > i,
+*.COOLBAR > button:first-child:nth-last-child(2) > i,
+*.Coolbar > button:first-child:nth-last-child(2) > i,
+*.COOLBAR > button:first-child:nth-last-child(2) ~ * > i,
+*.Coolbar > button:first-child:nth-last-child(2) ~ * > i,
+*.COOLBAR > a:first-child:nth-last-child(3) > i,
+*.Coolbar > a:first-child:nth-last-child(3) > i,
+*.COOLBAR > a:first-child:nth-last-child(3) ~ * > i,
+*.Coolbar > a:first-child:nth-last-child(3) ~ * > i,
+*.COOLBAR > button:first-child:nth-last-child(3) > i,
+*.Coolbar > button:first-child:nth-last-child(3) > i,
+*.COOLBAR > button:first-child:nth-last-child(3) ~ * > i,
+*.Coolbar > button:first-child:nth-last-child(3) ~ * > i {
+  font-size: 12px;
+}
+@media only screen and (min-width: 576px) {
+  *.COOLBAR > a:first-child:nth-last-child(4),
+  *.Coolbar > a:first-child:nth-last-child(4),
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(4),
+  *.Coolbar > button:first-child:nth-last-child(4),
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(5),
+  *.Coolbar > a:first-child:nth-last-child(5),
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(5),
+  *.Coolbar > button:first-child:nth-last-child(5),
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(6),
+  *.Coolbar > a:first-child:nth-last-child(6),
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(6),
+  *.Coolbar > button:first-child:nth-last-child(6),
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ * {
+    width: auto;
+    padding: 4px;
+    font-size: 10px;
+    min-width: 90px;
+    justify-content: space-between;
+  }
+  *.COOLBAR > a:first-child:nth-last-child(4) > i,
+  *.Coolbar > a:first-child:nth-last-child(4) > i,
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(4) > i,
+  *.Coolbar > button:first-child:nth-last-child(4) > i,
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(5) > i,
+  *.Coolbar > a:first-child:nth-last-child(5) > i,
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(5) > i,
+  *.Coolbar > button:first-child:nth-last-child(5) > i,
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(6) > i,
+  *.Coolbar > a:first-child:nth-last-child(6) > i,
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(6) > i,
+  *.Coolbar > button:first-child:nth-last-child(6) > i,
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ * > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  *.COOLBAR > a:first-child:nth-last-child(7),
+  *.Coolbar > a:first-child:nth-last-child(7),
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(7),
+  *.Coolbar > button:first-child:nth-last-child(7),
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(8),
+  *.Coolbar > a:first-child:nth-last-child(8),
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(8),
+  *.Coolbar > button:first-child:nth-last-child(8),
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ * {
+    width: auto;
+    padding: 4px;
+    font-size: 10px;
+    min-width: 90px;
+    justify-content: space-between;
+  }
+  *.COOLBAR > a:first-child:nth-last-child(7) > i,
+  *.Coolbar > a:first-child:nth-last-child(7) > i,
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(7) > i,
+  *.Coolbar > button:first-child:nth-last-child(7) > i,
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(8) > i,
+  *.Coolbar > a:first-child:nth-last-child(8) > i,
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(8) > i,
+  *.Coolbar > button:first-child:nth-last-child(8) > i,
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ * > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  *.COOLBAR > a:first-child:nth-last-child(9),
+  *.Coolbar > a:first-child:nth-last-child(9),
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(9),
+  *.Coolbar > button:first-child:nth-last-child(9),
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(10),
+  *.Coolbar > a:first-child:nth-last-child(10),
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(10),
+  *.Coolbar > button:first-child:nth-last-child(10),
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ * {
+    width: auto;
+    padding: 4px;
+    font-size: 10px;
+    min-width: 90px;
+    justify-content: space-between;
+  }
+  *.COOLBAR > a:first-child:nth-last-child(9) > i,
+  *.Coolbar > a:first-child:nth-last-child(9) > i,
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(9) > i,
+  *.Coolbar > button:first-child:nth-last-child(9) > i,
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(10) > i,
+  *.Coolbar > a:first-child:nth-last-child(10) > i,
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(10) > i,
+  *.Coolbar > button:first-child:nth-last-child(10) > i,
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ * > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  *.COOLBAR > a:first-child:nth-last-child(11),
+  *.Coolbar > a:first-child:nth-last-child(11),
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(11) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(11),
+  *.Coolbar > button:first-child:nth-last-child(11),
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(12),
+  *.Coolbar > a:first-child:nth-last-child(12),
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(12),
+  *.Coolbar > button:first-child:nth-last-child(12),
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ * {
+    width: auto;
+    padding: 4px;
+    font-size: 10px;
+    min-width: 90px;
+    justify-content: space-between;
+  }
+  *.COOLBAR > a:first-child:nth-last-child(11) > i,
+  *.Coolbar > a:first-child:nth-last-child(11) > i,
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(11) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(11) > i,
+  *.Coolbar > button:first-child:nth-last-child(11) > i,
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(12) > i,
+  *.Coolbar > a:first-child:nth-last-child(12) > i,
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(12) > i,
+  *.Coolbar > button:first-child:nth-last-child(12) > i,
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ * > i {
+    font-size: 12px;
+  }
 }
 div.Toolbar,
 div.TOOLBAR {
@@ -2073,7 +2333,7 @@ div.LinkControl > ul > li > button:focus {
     width: 25%;
   }
 }
-@media only screen and (min-width: 1280px) {
+@media only screen and (min-width: 992px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
     width: 12.5%;
@@ -2139,7 +2399,7 @@ ul.HMenu li:hover > ul {
 ul.HMenu li {
   height: 40px;
   display: flex;
-  flex-basis: 10%;
+  flex-basis: 40px;
   position: relative;
   align-items: stretch;
   list-style-type: none;
@@ -2148,16 +2408,17 @@ ul.HMenu li {
 }
 ul.HMenu li > a {
   flex-grow: 1;
+  padding: 0px;
   display: flex;
-  padding: 10px;
-  font-size: 10px;
+  font-size: 0px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   background-color: #e6e5dc;
   border: 1px solid #b9c6cd;
 }
 ul.HMenu li > a > i {
   order: 1;
+  font-size: 16px;
 }
 ul.HMenu li a:hover {
   background-color: #d6d2df;
@@ -2170,8 +2431,16 @@ ul.HMenu > li > ul li > ul {
 }
 ul.HMenu li > ul > li {
   top: -1px;
-  width: 100%;
+  width: 120px;
   flex-basis: 40px;
+}
+ul.HMenu li > ul > li > a {
+  padding: 10px;
+  font-size: 10px;
+  justify-content: space-between;
+}
+ul.HMenu li > ul > li > a > i {
+  font-size: 12px;
 }
 ul.HMenu > li:not(:first-of-type) > a {
   border-left: none;
@@ -2187,6 +2456,122 @@ ul.HMenu > li:empty {
 ul.HMenu > li > ul li:empty {
   flex-basis: 4px;
   border: 2px solid #b9c6cd;
+}
+ul.HMenu .full {
+  flex-basis: 120px;
+}
+ul.HMenu .full > a {
+  padding: 10px;
+  font-size: 10px;
+  justify-content: space-between;
+}
+ul.HMenu .full > a > i {
+  font-size: 12px;
+}
+ul.HMenu > li:only-child,
+ul.HMenu > li:first-child:nth-last-child(2),
+ul.HMenu > li:first-child:nth-last-child(2) ~ li {
+  flex-basis: 120px;
+}
+ul.HMenu > li:only-child > a,
+ul.HMenu > li:first-child:nth-last-child(2) > a,
+ul.HMenu > li:first-child:nth-last-child(2) ~ li > a {
+  padding: 10px;
+  font-size: 10px;
+  justify-content: space-between;
+}
+ul.HMenu > li:only-child > a > i,
+ul.HMenu > li:first-child:nth-last-child(2) > a > i,
+ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
+  font-size: 12px;
+}
+@media only screen and (min-width: 576px) {
+  ul.HMenu > li:first-child:nth-last-child(3),
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(4),
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li {
+    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(3) > a,
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(4) > a,
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li > a {
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(3) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(4) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li > a > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  ul.HMenu > li:first-child:nth-last-child(5),
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(6),
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li {
+    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(5) > a,
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(6) > a,
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li > a {
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(5) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(6) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li > a > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 992px) {
+  ul.HMenu > li:first-child:nth-last-child(7),
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(8),
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li {
+    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(7) > a,
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(8) > a,
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li > a {
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(7) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(8) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li > a > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.HMenu > li:first-child:nth-last-child(9),
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(10),
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li {
+    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(9) > a,
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(10) > a,
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li > a {
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(9) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(10) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li > a > i {
+    font-size: 12px;
+  }
 }
 tr.RChart,
 td.RChart,
