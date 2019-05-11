@@ -15,8 +15,8 @@ import java.util.regex.Pattern;
 public class Version implements Serializable, Comparable<Version>
 {
 
+	public static final Version UNDEFINED = new Version(0, 0, 0, null, null);
 	public static final Version INVALID = new Version(0, 0, 0, "INVALID", null);
-	public static final Version UNDEFINED = new Version(0, 0, 0, "UNDEFINED", null);
 
 	private final int major;
 	private final int minor;
