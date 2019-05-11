@@ -76,21 +76,23 @@ fieldset
 
 	> label, > fieldset
 	{
-		&.x1, &[x1] { width: 25%;
-			      @media only screen and (min-width: @breakpoint1) { width: 12.5%; }
-			      @media only screen and (min-width: @breakpoint2) { width: 6.25%; }
-		}
-		&.x2, &[x2] { width: 50%;
+		&.x1, &[x1] { width: 100%;
+			      @media only screen and (min-width: @breakpoint0) { width: 50%; }
 			      @media only screen and (min-width: @breakpoint1) { width: 25%; }
 			      @media only screen and (min-width: @breakpoint2) { width: 12.5%; }
+			      @media only screen and (min-width: @breakpoint3) { width: 6.25%; }
 		}
-		&.x4, &[x4] { width: 100%;
+		&.x2, &[x2] { width: 100%;
 			      @media only screen and (min-width: @breakpoint1) { width: 50%; }
 			      @media only screen and (min-width: @breakpoint2) { width: 25%; }
+			      @media only screen and (min-width: @breakpoint3) { width: 12.5%; }
+		}
+		&.x4, &[x4] { width: 100%;
+			      @media only screen and (min-width: @breakpoint2) { width: 50%; }
+			      @media only screen and (min-width: @breakpoint3) { width: 25%; }
 		}
 		&.x8, &[x8] { width: 100%;
-			      @media only screen and (min-width: @breakpoint1) { width: 100%; }
-			      @media only screen and (min-width: @breakpoint2) { width: 50%; }
+			      @media only screen and (min-width: @breakpoint3) { width: 50%; }
 		}
 	}
 
