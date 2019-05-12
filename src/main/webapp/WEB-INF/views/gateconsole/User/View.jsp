@@ -7,19 +7,20 @@
 			<legend>
 				<g:icon type="search"/>Pesquisar Usu&aacute;rios
 			</legend>
-			<label style='width: 25%'>
+
+			<label x4>
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				Login:
 				<span>
 					<g:text property='form.userID' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 50%'>
+			<label x8>
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -32,46 +33,46 @@
 					</g:link>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Ativo:
 				<span>
 					<g:select property="form.active" tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				CPF:
 				<span>
 					<g:text property='form.CPF' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Data de Nascimento:
 				<span>
 					<g:text class='Date'
 						property='form.birthdate' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Sexo:
 				<span>
 					<g:select property='form.sex' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Telefone:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.phone' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Celular:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.cellPhone' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				E-Mail:
 				<span>
 					<g:icon type="2034"/>
@@ -105,92 +106,59 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table>
-					<caption>
-						USU&Aacute;RIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
-					</caption>
-					<col style="width: 60px"/>
-					<col style="width: 120px"/>
-					<col style="width: 120px"/>
-					<col/>
-					<col/>
-					<col style="width: 240px"/>
-					<col style="width: 120px"/>
-					<col style="width: 120px"/>
-					<col style="width: 120px"/>
-					<thead>
-						<tr>
-							<th style="text-align: center">
-								<g:ordenator method="post" property="active">
-									Ativo
-								</g:ordenator>
-							</th>
-							<th style="text-align: center">
-								<g:ordenator method="post" property="registration">
-									Cadastro
-								</g:ordenator>
-							</th>
-							<th>
-								<g:ordenator method="post" property="userID">
-									Login
-								</g:ordenator>
-							</th>
-							<th>
-								<g:ordenator method="post" property="name">
-									Nome
-								</g:ordenator>
-							</th>
-							<th>
-								<g:ordenator method="post" property="role.name">
-									Perfil
-								</g:ordenator>
-							</th>
-							<th>
-								<g:ordenator method="post" property="role.email">
-									E-Mail
-								</g:ordenator>
-							</th>
-							<th style="text-align: center">
-								<g:ordenator method="post" property="CPF">
-									CPF
-								</g:ordenator>
-							</th>
-							<th style="text-align: center">
-								<g:ordenator method="post" property="sex">
-									Sexo
-								</g:ordenator>
-							</th>
-							<th style="text-align: center">
-								<g:ordenator method="post" property="birthdate">
-									Nascimento
-								</g:ordenator>
-							</th>
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<td colspan='9' style='text-align: right'>
-								<g:paginator/>
-							</td>
-						</tr>
-					</tfoot>
-					<tbody>
-						<g:iterator source="${screen.page}" target="target">
-							<tr data-target='_dialog' title='Usuário'
-							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
-								<td style='text-align: center'><g:print value="${target.active}"/></td>
-								<td style='text-align: center'><g:print value="${target.registration}"/></td>
-								<td><g:print value="${target.userID}"/></td>
-								<td><g:print value="${target.name}"/></td>
-								<td><g:print value="${target.role.name}"/></td>
-								<td><g:print value="${target.email}"/></td>
-								<td style='text-align: center'><g:print value="${target.CPF}"/></td>
-								<td style='text-align: center'><g:print value="${target.sex}"/></td>
-								<td style='text-align: center'><g:print value="${target.birthdate}"/></td>
+				<div style="overflow-x:auto;">
+					<table class="c2 c3 c4" style="min-width: 820px">
+						<caption>
+							USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
+						</caption>
+						<col/>
+						<col style="width: 250px"/>
+						<col style="width: 125px"/>
+						<col style="width: 125px"/>
+						<thead>
+							<tr>
+								<th>
+									<g:ordenator method="post" property="name">
+										Nome
+									</g:ordenator>
+								</th>
+								<th>
+									<g:ordenator method="post" property="userID">
+										Login
+									</g:ordenator>
+								</th>
+								<th>
+									<g:ordenator method="post" property="registration">
+										Cadastro
+									</g:ordenator>
+								</th>
+								<th>
+									<g:ordenator method="post" property="active">
+										Ativo
+									</g:ordenator>
+								</th>
 							</tr>
-						</g:iterator>
-					</tbody>
-				</table>
+						</thead>
+						<tfoot>
+							<tr>
+								<td colspan='4' style='text-align: right'>
+									<g:paginator/>
+								</td>
+							</tr>
+						</tfoot>
+						<tbody>
+							<g:iterator source="${screen.page}" target="target">
+								<tr data-target='_dialog' title='Usuário'
+								    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
+									<td><g:print value="${target.name}"/></td>
+									<td><g:print value="${target.userID}"/></td>
+									<td><g:print value="${target.registration}"/></td>
+									<td><g:print value="${target.active}"/></td>
+								</tr>
+							</g:iterator>
+						</tbody>
+					</table>
+				</div>
 			</g:otherwise>
 		</g:choose>
 	</form>

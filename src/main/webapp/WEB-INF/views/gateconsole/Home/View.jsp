@@ -2,6 +2,11 @@
 
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
+
+	<g:if condition="${not empty subscriptions}">
+		<g:menuitem module="gateconsole.screen" screen="Access" style='color: #990000'/>
+	</g:if>
+
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
