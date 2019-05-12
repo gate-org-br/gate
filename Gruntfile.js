@@ -17,6 +17,7 @@ module.exports = function (grunt)
 							"src/main/webapp/polyfill/webcomponents-ce.js",
 
 							"src/main/webapp/components/Gate.js",
+							"src/main/webapp/components/Objects.js",
 							"src/main/webapp/components/Colorizer.js",
 
 							"src/main/webapp/components/DataFormat.js",
@@ -90,7 +91,7 @@ module.exports = function (grunt)
 
 							"src/main/webapp/components/ReportSelector.js",
 							"src/main/webapp/components/ReportDialog.js",
-							
+
 							"src/main/webapp/components/TableFilter.js"
 						],
 						dest: 'src/main/resources/gate/Gate.js'
