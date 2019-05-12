@@ -1051,12 +1051,19 @@ table td > input:first-child:last-child {
 table > caption {
   height: 32px;
   color: white;
+  text-indent: 8px;
+  text-align: left;
   line-height: 32px;
   font-weight: bold;
-  text-align: center;
   vertical-align: middle;
   border-radius: 5px 5px 0px 0px;
   background-color: #788185;
+}
+@media only screen and (min-width: 768px) {
+  table > caption {
+    text-align: center;
+    text-indent: 0;
+  }
 }
 table > thead > tr {
   background-color: #e6e5dc;
@@ -1968,15 +1975,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR > button:first-child:nth-last-child(2),
 *.Coolbar > button:first-child:nth-last-child(2),
 *.COOLBAR > button:first-child:nth-last-child(2) ~ *,
-*.Coolbar > button:first-child:nth-last-child(2) ~ *,
-*.COOLBAR > a:first-child:nth-last-child(3),
-*.Coolbar > a:first-child:nth-last-child(3),
-*.COOLBAR > a:first-child:nth-last-child(3) ~ *,
-*.Coolbar > a:first-child:nth-last-child(3) ~ *,
-*.COOLBAR > button:first-child:nth-last-child(3),
-*.Coolbar > button:first-child:nth-last-child(3),
-*.COOLBAR > button:first-child:nth-last-child(3) ~ *,
-*.Coolbar > button:first-child:nth-last-child(3) ~ * {
+*.Coolbar > button:first-child:nth-last-child(2) ~ * {
   width: auto;
   padding: 4px;
   font-size: 10px;
@@ -1994,18 +1993,18 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR > button:first-child:nth-last-child(2) > i,
 *.Coolbar > button:first-child:nth-last-child(2) > i,
 *.COOLBAR > button:first-child:nth-last-child(2) ~ * > i,
-*.Coolbar > button:first-child:nth-last-child(2) ~ * > i,
-*.COOLBAR > a:first-child:nth-last-child(3) > i,
-*.Coolbar > a:first-child:nth-last-child(3) > i,
-*.COOLBAR > a:first-child:nth-last-child(3) ~ * > i,
-*.Coolbar > a:first-child:nth-last-child(3) ~ * > i,
-*.COOLBAR > button:first-child:nth-last-child(3) > i,
-*.Coolbar > button:first-child:nth-last-child(3) > i,
-*.COOLBAR > button:first-child:nth-last-child(3) ~ * > i,
-*.Coolbar > button:first-child:nth-last-child(3) ~ * > i {
+*.Coolbar > button:first-child:nth-last-child(2) ~ * > i {
   font-size: 12px;
 }
 @media only screen and (min-width: 576px) {
+  *.COOLBAR > a:first-child:nth-last-child(3),
+  *.Coolbar > a:first-child:nth-last-child(3),
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ *,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(3),
+  *.Coolbar > button:first-child:nth-last-child(3),
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ *,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ *,
   *.COOLBAR > a:first-child:nth-last-child(4),
   *.Coolbar > a:first-child:nth-last-child(4),
   *.COOLBAR > a:first-child:nth-last-child(4) ~ *,
@@ -2036,6 +2035,14 @@ table.TREEVIEW > tbody > tr > td:first-child {
     min-width: 90px;
     justify-content: space-between;
   }
+  *.COOLBAR > a:first-child:nth-last-child(3) > i,
+  *.Coolbar > a:first-child:nth-last-child(3) > i,
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ * > i,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(3) > i,
+  *.Coolbar > button:first-child:nth-last-child(3) > i,
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ * > i,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ * > i,
   *.COOLBAR > a:first-child:nth-last-child(4) > i,
   *.Coolbar > a:first-child:nth-last-child(4) > i,
   *.COOLBAR > a:first-child:nth-last-child(4) ~ * > i,
@@ -2240,8 +2247,12 @@ div.TOOLBAR > a:last-child {
 }
 div.PageControl,
 div.LinkControl {
+  padding: 4px;
   margin-top: 16px;
   margin-bottom: 4px;
+  background-image: url(data:image/png;base64,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);
+  border-radius: 8px 8px 0 0;
+  background-color: transparent;
 }
 div.PageControl:first-child,
 div.LinkControl:first-child {
@@ -2249,18 +2260,21 @@ div.LinkControl:first-child {
 }
 div.PageControl > ul,
 div.LinkControl > ul {
+  border: none;
   margin: 0px;
   padding: 0px;
+  display: flex;
+  flex-wrap: wrap;
   list-style: none;
+  border-radius: 8px 8px 0 0;
+  justify-content: flex-start;
 }
 div.PageControl > ul > li,
 div.LinkControl > ul > li {
   margin: 0px;
-  float: left;
-  border-bottom: none;
-  border: 1px solid #DDDAC9;
-  border-radius: 8px 8px 0px 0px;
+  border: none;
   width: 50%;
+  border-radius: 8px 8px 0 0;
 }
 div.PageControl > ul > li[data-selected=true],
 div.LinkControl > ul > li[data-selected=true] {
@@ -2286,9 +2300,9 @@ div.LinkControl > ul > li > button {
   color: #432F21;
   font-size: 12px;
   cursor: pointer;
+  border-radius: 8px 8px 0 0;
   text-decoration: none;
   background-color: #e6e5dc;
-  border-radius: 8px 8px 0px 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2330,12 +2344,100 @@ div.LinkControl > ul > li > button:focus {
 @media only screen and (min-width: 768px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
+    width: 20%;
+  }
+  div.PageControl > ul > li:only-child,
+  div.LinkControl > ul > li:only-child,
+  div.PageControl > ul > li:first-child:nth-last-child(2),
+  div.LinkControl > ul > li:first-child:nth-last-child(2),
+  div.PageControl > ul > li:first-child:nth-last-child(2) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(2) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(3),
+  div.LinkControl > ul > li:first-child:nth-last-child(3),
+  div.PageControl > ul > li:first-child:nth-last-child(3) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(3) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(4),
+  div.LinkControl > ul > li:first-child:nth-last-child(4),
+  div.PageControl > ul > li:first-child:nth-last-child(4) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(4) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(5),
+  div.LinkControl > ul > li:first-child:nth-last-child(5),
+  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(6),
+  div.LinkControl > ul > li:first-child:nth-last-child(6),
+  div.PageControl > ul > li:first-child:nth-last-child(6) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(6) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(7),
+  div.LinkControl > ul > li:first-child:nth-last-child(7),
+  div.PageControl > ul > li:first-child:nth-last-child(7) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(7) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(8),
+  div.LinkControl > ul > li:first-child:nth-last-child(8),
+  div.PageControl > ul > li:first-child:nth-last-child(8) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(8) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(16),
+  div.LinkControl > ul > li:first-child:nth-last-child(16),
+  div.PageControl > ul > li:first-child:nth-last-child(16) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(16) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(24),
+  div.LinkControl > ul > li:first-child:nth-last-child(24),
+  div.PageControl > ul > li:first-child:nth-last-child(24) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(24) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(32),
+  div.LinkControl > ul > li:first-child:nth-last-child(32),
+  div.PageControl > ul > li:first-child:nth-last-child(32) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(32) ~ li {
     width: 25%;
   }
 }
-@media only screen and (min-width: 992px) {
+@media only screen and (min-width: 1200px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
+    width: 10%;
+  }
+  div.PageControl > ul > li:only-child,
+  div.LinkControl > ul > li:only-child,
+  div.PageControl > ul > li:first-child:nth-last-child(2),
+  div.LinkControl > ul > li:first-child:nth-last-child(2),
+  div.PageControl > ul > li:first-child:nth-last-child(2) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(2) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(3),
+  div.LinkControl > ul > li:first-child:nth-last-child(3),
+  div.PageControl > ul > li:first-child:nth-last-child(3) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(3) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(4),
+  div.LinkControl > ul > li:first-child:nth-last-child(4),
+  div.PageControl > ul > li:first-child:nth-last-child(4) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(4) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(5),
+  div.LinkControl > ul > li:first-child:nth-last-child(5),
+  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(6),
+  div.LinkControl > ul > li:first-child:nth-last-child(6),
+  div.PageControl > ul > li:first-child:nth-last-child(6) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(6) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(7),
+  div.LinkControl > ul > li:first-child:nth-last-child(7),
+  div.PageControl > ul > li:first-child:nth-last-child(7) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(7) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(8),
+  div.LinkControl > ul > li:first-child:nth-last-child(8),
+  div.PageControl > ul > li:first-child:nth-last-child(8) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(8) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(16),
+  div.LinkControl > ul > li:first-child:nth-last-child(16),
+  div.PageControl > ul > li:first-child:nth-last-child(16) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(16) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(24),
+  div.LinkControl > ul > li:first-child:nth-last-child(24),
+  div.PageControl > ul > li:first-child:nth-last-child(24) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(24) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(32),
+  div.LinkControl > ul > li:first-child:nth-last-child(32),
+  div.PageControl > ul > li:first-child:nth-last-child(32) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(32) ~ li {
     width: 12.5%;
   }
 }
@@ -2458,6 +2560,9 @@ ul.HMenu > li > ul li:empty {
   border: 2px solid #b9c6cd;
 }
 ul.HMenu .full {
+  flex-grow: 1;
+  min-width: 120px;
+  max-width: 200px;
   flex-basis: 120px;
 }
 ul.HMenu .full > a {
@@ -2471,6 +2576,9 @@ ul.HMenu .full > a > i {
 ul.HMenu > li:only-child,
 ul.HMenu > li:first-child:nth-last-child(2),
 ul.HMenu > li:first-child:nth-last-child(2) ~ li {
+  flex-grow: 1;
+  min-width: 120px;
+  max-width: 200px;
   flex-basis: 120px;
 }
 ul.HMenu > li:only-child > a,
@@ -2490,6 +2598,9 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
   ul.HMenu > li:first-child:nth-last-child(3) ~ li,
   ul.HMenu > li:first-child:nth-last-child(4),
   ul.HMenu > li:first-child:nth-last-child(4) ~ li {
+    flex-grow: 1;
+    min-width: 120px;
+    max-width: 200px;
     flex-basis: 120px;
   }
   ul.HMenu > li:first-child:nth-last-child(3) > a,
@@ -2512,6 +2623,9 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
   ul.HMenu > li:first-child:nth-last-child(5) ~ li,
   ul.HMenu > li:first-child:nth-last-child(6),
   ul.HMenu > li:first-child:nth-last-child(6) ~ li {
+    flex-grow: 1;
+    min-width: 120px;
+    max-width: 200px;
     flex-basis: 120px;
   }
   ul.HMenu > li:first-child:nth-last-child(5) > a,
@@ -2534,6 +2648,9 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
   ul.HMenu > li:first-child:nth-last-child(7) ~ li,
   ul.HMenu > li:first-child:nth-last-child(8),
   ul.HMenu > li:first-child:nth-last-child(8) ~ li {
+    flex-grow: 1;
+    min-width: 120px;
+    max-width: 200px;
     flex-basis: 120px;
   }
   ul.HMenu > li:first-child:nth-last-child(7) > a,
@@ -2556,6 +2673,9 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
   ul.HMenu > li:first-child:nth-last-child(9) ~ li,
   ul.HMenu > li:first-child:nth-last-child(10),
   ul.HMenu > li:first-child:nth-last-child(10) ~ li {
+    flex-grow: 1;
+    min-width: 120px;
+    max-width: 200px;
     flex-basis: 120px;
   }
   ul.HMenu > li:first-child:nth-last-child(9) > a,
@@ -2830,10 +2950,20 @@ div.Main > div:nth-child(1) > *:nth-child(1) {
 }
 div.Main > div:nth-child(1) > *:nth-child(2) {
   display: flex;
-  font-size: 22px;
+  font-size: 0px;
   align-items: center;
   grid-row: 1 / span 2;
   justify-content: flex-start;
+}
+@media only screen and (min-width: 576px) {
+  div.Main > div:nth-child(1) > *:nth-child(2) {
+    font-size: 18px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  div.Main > div:nth-child(1) > *:nth-child(2) {
+    font-size: 22px;
+  }
 }
 div.Main > div:nth-child(1) > *:nth-child(3) {
   display: flex;

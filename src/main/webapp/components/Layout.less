@@ -67,10 +67,14 @@ div.Main { width: 100%;
 						   justify-content: center; }
 
 				> *:nth-child(2) { display: flex;
-						   font-size: 22px;
+						   font-size: 0px;
 						   align-items: center;
 						   grid-row: 1 / span 2;
-						   justify-content: flex-start; }
+						   justify-content: flex-start; 
+
+						   @media only screen and (min-width: @breakpoint0) { font-size: 18px; }
+						   @media only screen and (min-width: @breakpoint1) { font-size: 22px; }
+				}
 
 				> *:nth-child(3) { display: flex;
 						   grid-row: 1 / span 1;
