@@ -9,39 +9,44 @@
 			</div>
 		</g:when>
 		<g:otherwise>
-			<table>
-				<colgroup>
-					<col style="width: 20%"/>
-					<col style="width: 80%"/>
-				</colgroup>
+			<div style="overflow-x:auto;">
+				<table class="c2 c3 c4" style="min-width: 820px">
+					<col/>
+					<col style="width: 250px"/>
+					<col style="width: 125px"/>
+					<col style="width: 125px"/>
 
-				<caption>
-					USU&Aacute;RIOS
-				</caption>
-				<thead>
-					<tr>
-						<th style='text-align: center'>
-							Login
-						</th>
-						<th>
-							Nome
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<g:iterator source="${screen.page}" target="target">
-						<tr data-target='_parent' 
-							data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
-							<td style='text-align: center'>
-								${target.userID}
-							</td>
-							<td style='text-align: left'>
-								${target.name}
-							</td>
+					<caption>
+						USUÁRIOS
+					</caption>
+					<thead>
+						<tr>
+							<th data-sortable>
+								Nome
+							</th>
+							<th data-sortable>
+								Login
+							</th>
+							<th data-sortable>
+								Cadastro
+							</th>
+							<th data-sortable>
+								Ativo
+							</th>
 						</tr>
-					</g:iterator>
-				</tbody>	
-			</table>			
+					</thead>
+					<tbody>
+						<g:iterator source="${screen.page}" target="target">
+							<tr data-target='_parent' data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
+								<td><g:print value="${target.name}"/></td>
+								<td><g:print value="${target.userID}"/></td>
+								<td data-value="${target.registration.getValue()}"><g:print value="${target.registration}"/></td>
+								<td><g:print value="${target.active}"/></td>
+							</tr>
+						</g:iterator>
+					</tbody>	
+				</table>			
+			</div>
 		</g:otherwise>
 	</g:choose>
 </g:template>

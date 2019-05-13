@@ -2,49 +2,49 @@
 
 <g:template filename="/WEB-INF/views/DIAG.jsp">
 	<fieldset>
-		<label style='width: 50%'>
+		<label x8>
 			Nome:
 			<span>
 				<g:label property='form.name'/>
 			</span>
 		</label>
-		<label style='width: 50%'>
+		<label x8>
 			Perfil Pai:
 			<span>
 				<g:label property='form.role.name'/>
 			</span>
 		</label>
-		<label style='width: 6.25%'>
+		<label x1>
 			Master:
 			<span>
 				<g:label property='form.master'/>
 			</span>
 		</label>
-		<label style='width: 6.25%'>
+		<label x1>
 			Ativa:
 			<span>
 				<g:label property='form.active'/>
 			</span>
 		</label>
-		<label style='width: 12.5%'>
+		<label x2>
 			Sigla:
 			<span>
 				<g:label property='form.roleID'/>
 			</span>
 		</label>
-		<label style='width: 25%'>
+		<label x4>
 			E-Mail:
 			<span>
 				<g:label property='form.email'/>
 			</span>
 		</label>
-		<label style='width: 50%'>
+		<label x8>
 			Respons&aacute;vel:
 			<span>
 				<g:label property='form.manager.name'/>
 			</span>
 		</label>
-		<label style='width: 100%'>
+		<label>
 			Descri&ccedil;&atilde;o:
 			<span style='height: 60px'>
 				<g:print value='${screen.form.description}'/>
@@ -53,7 +53,7 @@
 	</fieldset>
 
 	<div class='COOLBAR'>
-		<a href="#" class='Hide' style='float: left'>
+		<a href="#" class='Cancel Hide'>
 			Fechar<g:icon type="cancel"/>
 		</a>
 
@@ -68,20 +68,10 @@
 
 	<div class='PageControl'>
 		<ul>
-			<g:menuitem module="#" screen="Auth" arguments="form.role.id=${screen.form.id}"
-				    style='width: 200px' data-selected='${param.tab eq "Auth"}'/>
-
-			<g:menuitem module="#" screen="RoleScreen$Func"
-				    arguments="role.id=${screen.form.id}"
-				    style='width: 200px' data-selected='${param.tab eq "Func"}'/>
-
-			<g:menuitem module="#" screen="User" action="Import"
-				    arguments="form.role.id=${screen.form.id}&form.active=true"
-				    style='width: 200px' data-selected='${param.tab eq "User"}'/>
-
-			<g:menuitem module="#" screen="Role" action="Import"
-				    arguments="form.role.id=${screen.form.id}"
-				    style='width: 200px' data-selected='${param.tab eq "Role"}'/>
+			<g:menuitem module="#" screen="Auth" arguments="form.role.id=${screen.form.id}" data-selected='${param.tab eq "Auth"}'/>
+			<g:menuitem module="#" screen="RoleScreen$Func" arguments="role.id=${screen.form.id}" data-selected='${param.tab eq "Func"}'/>
+			<g:menuitem module="#" screen="User" action="Import" arguments="form.role.id=${screen.form.id}&form.active=true" data-selected='${param.tab eq "User"}'/>
+			<g:menuitem module="#" screen="Role" action="Import" arguments="form.role.id=${screen.form.id}" data-selected='${param.tab eq "Role"}'/>
 		</ul>
 	</div>
 </g:template>

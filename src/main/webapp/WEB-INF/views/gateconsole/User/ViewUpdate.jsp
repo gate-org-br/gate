@@ -7,37 +7,37 @@
 				<g:hidden property='form'/>
 				Alterar Usu&aacute;rio<g:icon type="update"/>
 			</legend>
-			<label style='width: 12.5%'>
+			<label x2>
 				Ativo:
 				<span>
 					<g:select property="form.active" tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Cadastro:
 				<span>
 					<g:print value="${screen.form.registration}"/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Login:
 				<span>
 					<g:text property='form.userID' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Senha:
 				<span>
 					******
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -51,52 +51,52 @@
 				</span>
 			</label>
 
-			<label style='width: 12.5%'>
+			<label x2>
 				CPF:
 				<span>
 					<g:text property='form.CPF' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Data de Nascimento:
 				<span>
 					<g:text class='Date' property='form.birthdate' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				Sexo:
 				<span>
 					<g:select property='form.sex' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Telefone:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.phone' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Celular:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.cellPhone' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				E-Mail:
 				<span>
 					<g:icon type="2034"/>
 					<g:text property='form.email' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 100%'>
+			<label>
 				Detalhes:
 				<span style='flex-basis: 80px'>
 					<g:textarea property='form.details' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 100%'>
+			<label>
 				Foto:
 				<span>
 					<g:file property='form.photo' tabindex='1'/>
@@ -105,10 +105,10 @@
 		</fieldset>
 
 		<div class='COOLBAR'>
-			<g:link method="post" module="#" screen="#" action="#" style='color: #006600' tabindex='2'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
-			<g:link module="#" screen="#" action="Select" arguments="form.id=${screen.form.id}" style='float: left; color: #660000' tabindex='2'>
+			<g:link class="Cancel" module="#" screen="#" action="Select" arguments="form.id=${screen.form.id}" tabindex='2'>
 				Desistir<g:icon type='cancel'/>
 			</g:link>
 		</div>
