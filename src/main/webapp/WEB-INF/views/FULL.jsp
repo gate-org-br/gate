@@ -21,15 +21,21 @@
 					<g:menuitem module="gateconsole.screen" screen="Mail"/>
 					<g:menuitem module="gateconsole.screen" screen="Icon"/>
 					<li></li>
-						<g:if condition="${not empty subscriptions}">
-							<g:menuitem module="gateconsole.screen" screen="Access"
-								    style='width: 10%; color: #990000'/>
-						</g:if>
 						<g:menuitem/>
 				</ul>
 			</div>
 
 			<div>
+				<g:if condition="${empty subscriptions}">
+					<div class="TEXT">
+						<g:link module="gateconsole.screen" screen="Access">
+							<h1>
+								Verificar pendências de cadastro
+							</h1>
+						</g:link>
+					</div>
+				</g:if>
+
 				<g:insert/>
 				<g:alert/>
 			</div>

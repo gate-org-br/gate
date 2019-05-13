@@ -7,13 +7,13 @@
 				Alterar Perfil<g:icon type="update"/>
 				<g:hidden property="form.id"/>
 			</legend>
-			<label style='width: 50%'>
+			<label x8>
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 50%'>
+			<label x8>
 				Perfil Pai:
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -26,31 +26,31 @@
 					</g:link>
 				</span>
 			</label>
-			<label style='width: 6.25%'>
+			<label x1>
 				Master:
 				<span>
 					<g:select property='form.master' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 6.25%'>
+			<label x1>
 				Ativa:
 				<span>
 					<g:select property='form.active' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 12.5%'>
+			<label x2>
 				Sigla:
 				<span>
 					<g:text property='form.roleID' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 25%'>
+			<label x4>
 				E-Mail:
 				<span>
 					<g:text property='form.email' tabindex='1'/>
 				</span>
 			</label>
-			<label style='width: 50%'>
+			<label x8>
 				Respons&aacute;vel:
 				<span>
 					<g:select property='form.manager.id' values="${e -> e.id}"
