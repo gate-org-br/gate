@@ -1917,7 +1917,6 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR > button > span,
 *.Coolbar > button > span {
   order: 1;
-  margin: 0px;
   display: flex;
   color: inherit;
   cursor: inherit;
@@ -1948,6 +1947,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > hr {
   width: 12px;
   float: right;
+  max-width: 12px;
   display: inline-block;
   border: 0px none transparent;
   background-color: transparent;
@@ -1963,6 +1963,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.COOLBAR .full > i,
 *.Coolbar .full > i {
   font-size: 12px;
+  margin-left: 4px;
 }
 *.COOLBAR > a:only-child,
 *.Coolbar > a:only-child,
@@ -1970,12 +1971,18 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > button:only-child,
 *.COOLBAR > a:first-child:nth-last-child(2),
 *.Coolbar > a:first-child:nth-last-child(2),
-*.COOLBAR > a:first-child:nth-last-child(2) ~ *,
-*.Coolbar > a:first-child:nth-last-child(2) ~ *,
+*.COOLBAR > a:first-child:nth-last-child(2) ~ a,
+*.Coolbar > a:first-child:nth-last-child(2) ~ a,
 *.COOLBAR > button:first-child:nth-last-child(2),
 *.Coolbar > button:first-child:nth-last-child(2),
-*.COOLBAR > button:first-child:nth-last-child(2) ~ *,
-*.Coolbar > button:first-child:nth-last-child(2) ~ * {
+*.COOLBAR > button:first-child:nth-last-child(2) ~ button > a:first-child:nth-last-child(2),
+*.Coolbar > button:first-child:nth-last-child(2) ~ button > a:first-child:nth-last-child(2),
+*.COOLBAR > a:first-child:nth-last-child(2) ~ button,
+*.Coolbar > a:first-child:nth-last-child(2) ~ button,
+*.COOLBAR > button:first-child:nth-last-child(2),
+*.Coolbar > button:first-child:nth-last-child(2),
+*.COOLBAR > button:first-child:nth-last-child(2) ~ a,
+*.Coolbar > button:first-child:nth-last-child(2) ~ a {
   width: auto;
   padding: 4px;
   font-size: 10px;
@@ -1988,47 +1995,86 @@ table.TREEVIEW > tbody > tr > td:first-child {
 *.Coolbar > button:only-child > i,
 *.COOLBAR > a:first-child:nth-last-child(2) > i,
 *.Coolbar > a:first-child:nth-last-child(2) > i,
-*.COOLBAR > a:first-child:nth-last-child(2) ~ * > i,
-*.Coolbar > a:first-child:nth-last-child(2) ~ * > i,
+*.COOLBAR > a:first-child:nth-last-child(2) ~ a > i,
+*.Coolbar > a:first-child:nth-last-child(2) ~ a > i,
 *.COOLBAR > button:first-child:nth-last-child(2) > i,
 *.Coolbar > button:first-child:nth-last-child(2) > i,
-*.COOLBAR > button:first-child:nth-last-child(2) ~ * > i,
-*.Coolbar > button:first-child:nth-last-child(2) ~ * > i {
+*.COOLBAR > button:first-child:nth-last-child(2) ~ button > a:first-child:nth-last-child(2) > i,
+*.Coolbar > button:first-child:nth-last-child(2) ~ button > a:first-child:nth-last-child(2) > i,
+*.COOLBAR > a:first-child:nth-last-child(2) ~ button > i,
+*.Coolbar > a:first-child:nth-last-child(2) ~ button > i,
+*.COOLBAR > button:first-child:nth-last-child(2) > i,
+*.Coolbar > button:first-child:nth-last-child(2) > i,
+*.COOLBAR > button:first-child:nth-last-child(2) ~ a > i,
+*.Coolbar > button:first-child:nth-last-child(2) ~ a > i {
   font-size: 12px;
+  margin-left: 4px;
 }
 @media only screen and (min-width: 576px) {
   *.COOLBAR > a:first-child:nth-last-child(3),
   *.Coolbar > a:first-child:nth-last-child(3),
-  *.COOLBAR > a:first-child:nth-last-child(3) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(3) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(3),
   *.Coolbar > button:first-child:nth-last-child(3),
-  *.COOLBAR > button:first-child:nth-last-child(3) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(3) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(3),
+  *.Coolbar > a:first-child:nth-last-child(3),
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(3),
+  *.Coolbar > button:first-child:nth-last-child(3),
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(4),
   *.Coolbar > a:first-child:nth-last-child(4),
-  *.COOLBAR > a:first-child:nth-last-child(4) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(4) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(4),
   *.Coolbar > button:first-child:nth-last-child(4),
-  *.COOLBAR > button:first-child:nth-last-child(4) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(4) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(4),
+  *.Coolbar > a:first-child:nth-last-child(4),
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(4),
+  *.Coolbar > button:first-child:nth-last-child(4),
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(5),
   *.Coolbar > a:first-child:nth-last-child(5),
-  *.COOLBAR > a:first-child:nth-last-child(5) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(5) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(5),
   *.Coolbar > button:first-child:nth-last-child(5),
-  *.COOLBAR > button:first-child:nth-last-child(5) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(5) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(5),
+  *.Coolbar > a:first-child:nth-last-child(5),
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(5),
+  *.Coolbar > button:first-child:nth-last-child(5),
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(6),
   *.Coolbar > a:first-child:nth-last-child(6),
-  *.COOLBAR > a:first-child:nth-last-child(6) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(6) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(6),
   *.Coolbar > button:first-child:nth-last-child(6),
-  *.COOLBAR > button:first-child:nth-last-child(6) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(6) ~ * {
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(6),
+  *.Coolbar > a:first-child:nth-last-child(6),
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(6),
+  *.Coolbar > button:first-child:nth-last-child(6),
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ a {
     width: auto;
     padding: 4px;
     font-size: 10px;
@@ -2037,56 +2083,105 @@ table.TREEVIEW > tbody > tr > td:first-child {
   }
   *.COOLBAR > a:first-child:nth-last-child(3) > i,
   *.Coolbar > a:first-child:nth-last-child(3) > i,
-  *.COOLBAR > a:first-child:nth-last-child(3) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(3) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(3) > i,
   *.Coolbar > button:first-child:nth-last-child(3) > i,
-  *.COOLBAR > button:first-child:nth-last-child(3) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(3) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(3) > i,
+  *.Coolbar > a:first-child:nth-last-child(3) > i,
+  *.COOLBAR > a:first-child:nth-last-child(3) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(3) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(3) > i,
+  *.Coolbar > button:first-child:nth-last-child(3) > i,
+  *.COOLBAR > button:first-child:nth-last-child(3) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(3) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(4) > i,
   *.Coolbar > a:first-child:nth-last-child(4) > i,
-  *.COOLBAR > a:first-child:nth-last-child(4) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(4) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(4) > i,
   *.Coolbar > button:first-child:nth-last-child(4) > i,
-  *.COOLBAR > button:first-child:nth-last-child(4) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(4) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(4) > i,
+  *.Coolbar > a:first-child:nth-last-child(4) > i,
+  *.COOLBAR > a:first-child:nth-last-child(4) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(4) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(4) > i,
+  *.Coolbar > button:first-child:nth-last-child(4) > i,
+  *.COOLBAR > button:first-child:nth-last-child(4) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(4) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(5) > i,
   *.Coolbar > a:first-child:nth-last-child(5) > i,
-  *.COOLBAR > a:first-child:nth-last-child(5) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(5) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(5) > i,
   *.Coolbar > button:first-child:nth-last-child(5) > i,
-  *.COOLBAR > button:first-child:nth-last-child(5) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(5) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(5) > i,
+  *.Coolbar > a:first-child:nth-last-child(5) > i,
+  *.COOLBAR > a:first-child:nth-last-child(5) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(5) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(5) > i,
+  *.Coolbar > button:first-child:nth-last-child(5) > i,
+  *.COOLBAR > button:first-child:nth-last-child(5) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(5) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(6) > i,
   *.Coolbar > a:first-child:nth-last-child(6) > i,
-  *.COOLBAR > a:first-child:nth-last-child(6) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(6) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(6) > i,
   *.Coolbar > button:first-child:nth-last-child(6) > i,
-  *.COOLBAR > button:first-child:nth-last-child(6) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(6) ~ * > i {
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(6) > i,
+  *.Coolbar > a:first-child:nth-last-child(6) > i,
+  *.COOLBAR > a:first-child:nth-last-child(6) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(6) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(6) > i,
+  *.Coolbar > button:first-child:nth-last-child(6) > i,
+  *.COOLBAR > button:first-child:nth-last-child(6) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(6) ~ a > i {
     font-size: 12px;
+    margin-left: 4px;
   }
 }
 @media only screen and (min-width: 768px) {
   *.COOLBAR > a:first-child:nth-last-child(7),
   *.Coolbar > a:first-child:nth-last-child(7),
-  *.COOLBAR > a:first-child:nth-last-child(7) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(7) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(7),
   *.Coolbar > button:first-child:nth-last-child(7),
-  *.COOLBAR > button:first-child:nth-last-child(7) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(7) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(7),
+  *.Coolbar > a:first-child:nth-last-child(7),
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(7),
+  *.Coolbar > button:first-child:nth-last-child(7),
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(8),
   *.Coolbar > a:first-child:nth-last-child(8),
-  *.COOLBAR > a:first-child:nth-last-child(8) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(8) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(8),
   *.Coolbar > button:first-child:nth-last-child(8),
-  *.COOLBAR > button:first-child:nth-last-child(8) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(8) ~ * {
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(8),
+  *.Coolbar > a:first-child:nth-last-child(8),
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(8),
+  *.Coolbar > button:first-child:nth-last-child(8),
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ a {
     width: auto;
     padding: 4px;
     font-size: 10px;
@@ -2095,40 +2190,73 @@ table.TREEVIEW > tbody > tr > td:first-child {
   }
   *.COOLBAR > a:first-child:nth-last-child(7) > i,
   *.Coolbar > a:first-child:nth-last-child(7) > i,
-  *.COOLBAR > a:first-child:nth-last-child(7) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(7) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(7) > i,
   *.Coolbar > button:first-child:nth-last-child(7) > i,
-  *.COOLBAR > button:first-child:nth-last-child(7) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(7) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(7) > i,
+  *.Coolbar > a:first-child:nth-last-child(7) > i,
+  *.COOLBAR > a:first-child:nth-last-child(7) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(7) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(7) > i,
+  *.Coolbar > button:first-child:nth-last-child(7) > i,
+  *.COOLBAR > button:first-child:nth-last-child(7) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(7) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(8) > i,
   *.Coolbar > a:first-child:nth-last-child(8) > i,
-  *.COOLBAR > a:first-child:nth-last-child(8) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(8) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(8) > i,
   *.Coolbar > button:first-child:nth-last-child(8) > i,
-  *.COOLBAR > button:first-child:nth-last-child(8) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(8) ~ * > i {
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(8) > i,
+  *.Coolbar > a:first-child:nth-last-child(8) > i,
+  *.COOLBAR > a:first-child:nth-last-child(8) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(8) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(8) > i,
+  *.Coolbar > button:first-child:nth-last-child(8) > i,
+  *.COOLBAR > button:first-child:nth-last-child(8) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(8) ~ a > i {
     font-size: 12px;
+    margin-left: 4px;
   }
 }
 @media only screen and (min-width: 992px) {
   *.COOLBAR > a:first-child:nth-last-child(9),
   *.Coolbar > a:first-child:nth-last-child(9),
-  *.COOLBAR > a:first-child:nth-last-child(9) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(9) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(9),
   *.Coolbar > button:first-child:nth-last-child(9),
-  *.COOLBAR > button:first-child:nth-last-child(9) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(9) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(9),
+  *.Coolbar > a:first-child:nth-last-child(9),
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(9),
+  *.Coolbar > button:first-child:nth-last-child(9),
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(10),
   *.Coolbar > a:first-child:nth-last-child(10),
-  *.COOLBAR > a:first-child:nth-last-child(10) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(10) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(10),
   *.Coolbar > button:first-child:nth-last-child(10),
-  *.COOLBAR > button:first-child:nth-last-child(10) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(10) ~ * {
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(10),
+  *.Coolbar > a:first-child:nth-last-child(10),
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(10),
+  *.Coolbar > button:first-child:nth-last-child(10),
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ a {
     width: auto;
     padding: 4px;
     font-size: 10px;
@@ -2137,40 +2265,71 @@ table.TREEVIEW > tbody > tr > td:first-child {
   }
   *.COOLBAR > a:first-child:nth-last-child(9) > i,
   *.Coolbar > a:first-child:nth-last-child(9) > i,
-  *.COOLBAR > a:first-child:nth-last-child(9) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(9) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(9) > i,
   *.Coolbar > button:first-child:nth-last-child(9) > i,
-  *.COOLBAR > button:first-child:nth-last-child(9) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(9) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(9) > i,
+  *.Coolbar > a:first-child:nth-last-child(9) > i,
+  *.COOLBAR > a:first-child:nth-last-child(9) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(9) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(9) > i,
+  *.Coolbar > button:first-child:nth-last-child(9) > i,
+  *.COOLBAR > button:first-child:nth-last-child(9) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(9) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(10) > i,
   *.Coolbar > a:first-child:nth-last-child(10) > i,
-  *.COOLBAR > a:first-child:nth-last-child(10) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(10) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(10) > i,
   *.Coolbar > button:first-child:nth-last-child(10) > i,
-  *.COOLBAR > button:first-child:nth-last-child(10) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(10) ~ * > i {
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(10) > i,
+  *.Coolbar > a:first-child:nth-last-child(10) > i,
+  *.COOLBAR > a:first-child:nth-last-child(10) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(10) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(10) > i,
+  *.Coolbar > button:first-child:nth-last-child(10) > i,
+  *.COOLBAR > button:first-child:nth-last-child(10) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(10) ~ a > i {
     font-size: 12px;
+    margin-left: 4px;
   }
 }
 @media only screen and (min-width: 1200px) {
   *.COOLBAR > a:first-child:nth-last-child(11),
   *.Coolbar > a:first-child:nth-last-child(11),
-  *.COOLBAR > a:first-child:nth-last-child(11) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(11) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(11) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(11),
   *.Coolbar > button:first-child:nth-last-child(11),
-  *.COOLBAR > button:first-child:nth-last-child(11) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(11) ~ *,
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(11),
+  *.Coolbar > a:first-child:nth-last-child(11),
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ button > button:first-child:nth-last-child(11),
+  *.Coolbar > a:first-child:nth-last-child(11) ~ button > button:first-child:nth-last-child(11),
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ a,
   *.COOLBAR > a:first-child:nth-last-child(12),
   *.Coolbar > a:first-child:nth-last-child(12),
-  *.COOLBAR > a:first-child:nth-last-child(12) ~ *,
-  *.Coolbar > a:first-child:nth-last-child(12) ~ *,
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ a,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ a,
   *.COOLBAR > button:first-child:nth-last-child(12),
   *.Coolbar > button:first-child:nth-last-child(12),
-  *.COOLBAR > button:first-child:nth-last-child(12) ~ *,
-  *.Coolbar > button:first-child:nth-last-child(12) ~ * {
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ button,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ button,
+  *.COOLBAR > a:first-child:nth-last-child(12),
+  *.Coolbar > a:first-child:nth-last-child(12),
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ button,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ button,
+  *.COOLBAR > button:first-child:nth-last-child(12),
+  *.Coolbar > button:first-child:nth-last-child(12),
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ a,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ a {
     width: auto;
     padding: 4px;
     font-size: 10px;
@@ -2179,21 +2338,36 @@ table.TREEVIEW > tbody > tr > td:first-child {
   }
   *.COOLBAR > a:first-child:nth-last-child(11) > i,
   *.Coolbar > a:first-child:nth-last-child(11) > i,
-  *.COOLBAR > a:first-child:nth-last-child(11) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(11) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(11) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(11) > i,
   *.Coolbar > button:first-child:nth-last-child(11) > i,
-  *.COOLBAR > button:first-child:nth-last-child(11) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(11) ~ * > i,
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(11) > i,
+  *.Coolbar > a:first-child:nth-last-child(11) > i,
+  *.COOLBAR > a:first-child:nth-last-child(11) ~ button > button:first-child:nth-last-child(11) > i,
+  *.Coolbar > a:first-child:nth-last-child(11) ~ button > button:first-child:nth-last-child(11) > i,
+  *.COOLBAR > button:first-child:nth-last-child(11) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(11) ~ a > i,
   *.COOLBAR > a:first-child:nth-last-child(12) > i,
   *.Coolbar > a:first-child:nth-last-child(12) > i,
-  *.COOLBAR > a:first-child:nth-last-child(12) ~ * > i,
-  *.Coolbar > a:first-child:nth-last-child(12) ~ * > i,
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ a > i,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ a > i,
   *.COOLBAR > button:first-child:nth-last-child(12) > i,
   *.Coolbar > button:first-child:nth-last-child(12) > i,
-  *.COOLBAR > button:first-child:nth-last-child(12) ~ * > i,
-  *.Coolbar > button:first-child:nth-last-child(12) ~ * > i {
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ button > i,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ button > i,
+  *.COOLBAR > a:first-child:nth-last-child(12) > i,
+  *.Coolbar > a:first-child:nth-last-child(12) > i,
+  *.COOLBAR > a:first-child:nth-last-child(12) ~ button > i,
+  *.Coolbar > a:first-child:nth-last-child(12) ~ button > i,
+  *.COOLBAR > button:first-child:nth-last-child(12) > i,
+  *.Coolbar > button:first-child:nth-last-child(12) > i,
+  *.COOLBAR > button:first-child:nth-last-child(12) ~ a > i,
+  *.Coolbar > button:first-child:nth-last-child(12) ~ a > i {
     font-size: 12px;
+    margin-left: 4px;
   }
 }
 div.Toolbar,
@@ -2252,7 +2426,7 @@ div.LinkControl {
   margin-bottom: 4px;
   background-image: url(data:image/png;base64,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);
   border-radius: 8px 8px 0 0;
-  background-color: transparent;
+  background-color: #b9b6a7;
 }
 div.PageControl:first-child,
 div.LinkControl:first-child {
@@ -2360,10 +2534,6 @@ div.LinkControl > ul > li > button:focus {
   div.LinkControl > ul > li:first-child:nth-last-child(4),
   div.PageControl > ul > li:first-child:nth-last-child(4) ~ li,
   div.LinkControl > ul > li:first-child:nth-last-child(4) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(5),
-  div.LinkControl > ul > li:first-child:nth-last-child(5),
-  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
   div.PageControl > ul > li:first-child:nth-last-child(6),
   div.LinkControl > ul > li:first-child:nth-last-child(6),
   div.PageControl > ul > li:first-child:nth-last-child(6) ~ li,
@@ -2482,6 +2652,7 @@ ul.HMenu {
   padding: 0;
   width: 100%;
   display: flex;
+  flex-basis: 100%;
 }
 ul.HMenu a {
   color: black;
@@ -2495,9 +2666,6 @@ ul.HMenu ul {
   flex-direction: column;
   width: calc(100% + 2px);
 }
-ul.HMenu li:hover > ul {
-  display: flex;
-}
 ul.HMenu li {
   height: 40px;
   display: flex;
@@ -2508,6 +2676,9 @@ ul.HMenu li {
   align-content: stretch;
   justify-content: center;
 }
+ul.HMenu li:hover > ul {
+  display: flex;
+}
 ul.HMenu li > a {
   flex-grow: 1;
   padding: 0px;
@@ -2515,25 +2686,17 @@ ul.HMenu li > a {
   font-size: 0px;
   align-items: center;
   justify-content: center;
-  background-color: #e6e5dc;
   border: 1px solid #b9c6cd;
+  background-color: #e6e5dc;
 }
 ul.HMenu li > a > i {
   order: 1;
   font-size: 16px;
 }
-ul.HMenu li a:hover {
-  background-color: #d6d2df;
-}
-ul.HMenu > li > ul {
-  top: 100%;
-}
-ul.HMenu > li > ul li > ul {
-  left: 100%;
-}
 ul.HMenu li > ul > li {
   top: -1px;
-  width: 120px;
+  width: 100%;
+  min-width: 120px;
   flex-basis: 40px;
 }
 ul.HMenu li > ul > li > a {
@@ -2544,26 +2707,42 @@ ul.HMenu li > ul > li > a {
 ul.HMenu li > ul > li > a > i {
   font-size: 12px;
 }
+ul.HMenu li:empty {
+  width: auto;
+  flex-grow: 1;
+  border: none;
+  min-width: none;
+  max-width: none;
+  flex-basis: unset;
+  background-color: transparent;
+}
+ul.HMenu li a:hover {
+  background-color: #d6d2df;
+}
+ul.HMenu > li > ul {
+  top: 100%;
+}
+ul.HMenu > li > ul li > ul {
+  left: 100%;
+}
+ul.HMenu > li > ul li:empty {
+  flex-basis: 4px;
+  border: 2px solid #b9c6cd;
+}
 ul.HMenu > li:not(:first-of-type) > a {
   border-left: none;
 }
 ul.HMenu ul > li:not(:first-of-type) > a {
   border-top: none;
 }
-ul.HMenu > li:empty {
-  flex-grow: 1;
-  border: none;
-  background-color: transparent;
-}
-ul.HMenu > li > ul li:empty {
-  flex-basis: 4px;
-  border: 2px solid #b9c6cd;
-}
 ul.HMenu .full {
   flex-grow: 1;
   min-width: 120px;
   max-width: 200px;
-  flex-basis: 120px;
+}
+ul.HMenu .full:empty {
+  min-width: none;
+  max-width: none;
 }
 ul.HMenu .full > a {
   padding: 10px;
@@ -2579,7 +2758,12 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li {
   flex-grow: 1;
   min-width: 120px;
   max-width: 200px;
-  flex-basis: 120px;
+}
+ul.HMenu > li:only-child:empty,
+ul.HMenu > li:first-child:nth-last-child(2):empty,
+ul.HMenu > li:first-child:nth-last-child(2) ~ li:empty {
+  min-width: none;
+  max-width: none;
 }
 ul.HMenu > li:only-child > a,
 ul.HMenu > li:first-child:nth-last-child(2) > a,
@@ -2601,7 +2785,13 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
     flex-grow: 1;
     min-width: 120px;
     max-width: 200px;
-    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(3):empty,
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(4):empty,
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li:empty {
+    min-width: none;
+    max-width: none;
   }
   ul.HMenu > li:first-child:nth-last-child(3) > a,
   ul.HMenu > li:first-child:nth-last-child(3) ~ li > a,
@@ -2626,7 +2816,13 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
     flex-grow: 1;
     min-width: 120px;
     max-width: 200px;
-    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(5):empty,
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(6):empty,
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li:empty {
+    min-width: none;
+    max-width: none;
   }
   ul.HMenu > li:first-child:nth-last-child(5) > a,
   ul.HMenu > li:first-child:nth-last-child(5) ~ li > a,
@@ -2651,7 +2847,13 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
     flex-grow: 1;
     min-width: 120px;
     max-width: 200px;
-    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(7):empty,
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(8):empty,
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li:empty {
+    min-width: none;
+    max-width: none;
   }
   ul.HMenu > li:first-child:nth-last-child(7) > a,
   ul.HMenu > li:first-child:nth-last-child(7) ~ li > a,
@@ -2676,7 +2878,13 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
     flex-grow: 1;
     min-width: 120px;
     max-width: 200px;
-    flex-basis: 120px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(9):empty,
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(10):empty,
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li:empty {
+    min-width: none;
+    max-width: none;
   }
   ul.HMenu > li:first-child:nth-last-child(9) > a,
   ul.HMenu > li:first-child:nth-last-child(9) ~ li > a,
