@@ -2,6 +2,7 @@ package gate.tags;
 
 import gate.annotation.Color;
 import gate.annotation.Description;
+import gate.annotation.Name;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -49,6 +50,10 @@ public class MenuItemTag extends AnchorTag
 
 			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Description.class))
 				getAttributes().put("title", getJavaMethod().getAnnotation(Description.class).value());
+
+			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Name.class))
+				getAttributes().put("title", getJavaMethod().getAnnotation(Name.class).value());
+
 			if (!getAttributes().containsKey("style") && getJavaMethod().isAnnotationPresent(Color.class))
 				getAttributes().put("style", String.format("color: %s", getJavaMethod().getAnnotation(Color.class).value()));
 
