@@ -67,7 +67,7 @@ public class CSV extends Doc
 	private void print(PrintWriter writer, Grid<Object> grid, Object data) throws ConversionException
 	{
 		CSVFormatter formatter = new CSVFormatter(writer);
-		for (Object obj : Toolkit.collection(data))
+		for (Object obj : Toolkit.iterable(data))
 		{
 			if (obj != null)
 			{
