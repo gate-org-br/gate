@@ -5,7 +5,6 @@ import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
-import gate.report.Column;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
@@ -66,26 +65,34 @@ public class CSV extends Doc
 
 	private void print(PrintWriter writer, Grid<Object> grid, Object data) throws ConversionException
 	{
-		CSVFormatter formatter = new CSVFormatter(writer);
-		for (Object obj : Toolkit.iterable(data))
+		try
 		{
-			if (obj != null)
-			{
+			CSVFormatter formatter = new CSVFormatter(writer);
 
-				try
+			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
+				formatter.writeLine(grid.getColumns().stream().map(e -> e.getHead())
+					.map(e -> Converter.toText(e)).collect(Collectors.toList()));
+
+			for (Object obj : Toolkit.iterable(data))
+				if (obj != null)
 				{
+
 					formatter.writeLine(grid.getColumns().stream()
-						.map(e -> Converter.toString(e.getBody().apply(obj)))
+						.map(e -> Converter.toText(e.getBody().apply(obj)))
 						.collect(Collectors.toList()));
-				} catch (IOException ex)
-				{
-					throw new ConversionException(ex.getMessage(), ex);
+
+					if (grid.getChildren() != null)
+						for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
+							print(writer, grid, child);
 				}
 
-				if (grid.getChildren() != null)
-					for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
-						print(writer, grid, child);
-			}
+			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
+				formatter.writeLine(grid.getColumns().stream().map(e -> e.getFoot())
+					.map(e -> Converter.toText(e)).collect(Collectors.toList()));
+
+		} catch (IOException ex)
+		{
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 }
