@@ -6,8 +6,11 @@ class DigitalClock extends HTMLElement
 		this.listener = () =>
 		{
 			if (!this.hasAttribute("paused"))
-				this.setAttribute("time",
-					Number(this.getAttribute("time")) + 1);
+			{
+				var time = this.hasAttribute("time") ?
+					Number(this.getAttribute("time")) : 0;
+				this.setAttribute("time", time + 1);
+			}
 		};
 	}
 

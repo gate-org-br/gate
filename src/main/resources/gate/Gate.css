@@ -1282,7 +1282,7 @@ div.Block > div:nth-child(2) > progress {
   flex-grow: 1;
   width: 100%;
 }
-div.Block > div:nth-child(3) {
+div.Block > digital-clock {
   padding: 8px;
   display: flex;
   font-size: 16px;
