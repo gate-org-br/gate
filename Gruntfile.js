@@ -16,6 +16,8 @@ module.exports = function (grunt)
 							"src/main/webapp/polyfill/fetch-polyfill.js",
 							"src/main/webapp/polyfill/webcomponents-ce.js",
 
+							"src/main/webapp/components/DigitalClock.js",
+
 							"src/main/webapp/components/Gate.js",
 							"src/main/webapp/components/Objects.js",
 							"src/main/webapp/components/Colorizer.js",
@@ -74,7 +76,6 @@ module.exports = function (grunt)
 							"src/main/webapp/components/TreeView.js",
 							"src/main/webapp/components/DateFormat.js",
 							"src/main/webapp/components/Switch.js",
-							"src/main/webapp/components/DigitalClock.js",
 							"src/main/webapp/components/FullScreen.js",
 							"src/main/webapp/components/Form.js",
 							"src/main/webapp/components/Focus.js",

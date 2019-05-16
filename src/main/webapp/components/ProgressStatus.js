@@ -31,7 +31,7 @@ class ProgressStatus extends HTMLElement
 		div.style.display = "flex";
 		div.style.alignItems = "center";
 
-		var clock = div.appendChild(document.createElement("label"));
+		var clock = div.appendChild(document.createElement("digital-clock"));
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
 		clock.style.display = "flex";
@@ -62,9 +62,6 @@ class ProgressStatus extends HTMLElement
 		logger.style.margin = "0";
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
-
-		var time = 0;
-		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
 
 		function log(message)
 		{
@@ -135,7 +132,7 @@ class ProgressStatus extends HTMLElement
 
 							this.dispatchEvent(new CustomEvent('commited'));
 
-							this.onClockTick = null;
+							clock.setAttribute("paused", "paused");
 							break;
 						case "CANCELED":
 							if (!progress.max)
@@ -145,7 +142,7 @@ class ProgressStatus extends HTMLElement
 
 							this.dispatchEvent(new CustomEvent('canceled'));
 
-							this.onClockTick = null;
+							clock.setAttribute("paused", "paused");
 							break;
 					}
 
@@ -166,7 +163,6 @@ class ProgressStatus extends HTMLElement
 	}
 }
 
-window.addEventListener("load", () =>
-	customElements.define('progress-status', ProgressStatus));
+customElements.define('progress-status', ProgressStatus);
 
 

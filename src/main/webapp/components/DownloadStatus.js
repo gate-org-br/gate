@@ -22,13 +22,12 @@ class DownloadStatus extends HTMLElement
 		div.style.display = "flex";
 		div.style.alignItems = "center";
 
-		var clock = div.appendChild(document.createElement("label"));
+		var clock = div.appendChild(document.createElement("digital-clock"));
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
 		clock.style.display = "flex";
 		clock.style.alignItems = "center";
 		clock.style.justifyContent = "flex-start";
-		clock.innerHTML = "00:00:00";
 
 		var counter = div.appendChild(document.createElement("label"));
 		counter.style.flexGrow = "1";
@@ -64,7 +63,7 @@ class DownloadStatus extends HTMLElement
 
 			this.request.addEventListener("load", () =>
 			{
-				this.onClockTick = null;
+				clock.setAttribute("paused", "paused");
 
 				if (this.request.status === 200)
 				{
@@ -119,15 +118,11 @@ class DownloadStatus extends HTMLElement
 
 			this.request.addEventListener("error", () =>
 			{
-				this.onClockTick = null;
+				clock.setAttribute("paused", "paused");
 				title.style.color = "#660000";
 				title.innerHTML = "Erro ao efetuar download";
 				this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
 			});
-
-			var time = 0;
-			this.onClockTick = () => clock.innerHTML
-					= new Duration(++time).toString();
 
 			title.innerHTML = "Conectando ao servidor";
 			this.request.responseType = 'blob';
@@ -139,5 +134,4 @@ class DownloadStatus extends HTMLElement
 	}
 }
 
-window.addEventListener("load", () =>
-	customElements.define('download-status', DownloadStatus));
+customElements.define('download-status', DownloadStatus);

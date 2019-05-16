@@ -1428,6 +1428,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 //# sourceMappingURL=webcomponents-ce.js.map
 
+class DigitalClock extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.listener = () =>
+		{
+			if (!this.hasAttribute("paused"))
+			{
+				var time = this.hasAttribute("time") ?
+					Number(this.getAttribute("time")) : 0;
+				this.setAttribute("time", time + 1);
+			}
+		};
+	}
+
+	static get observedAttributes()
+	{
+		return ['time', 'paused'];
+	}
+
+	attributeChangedCallback()
+	{
+		this.innerHTML = new Duration(Number(this.getAttribute("time")))
+			.format(this.getAttribute("format") || "hh:mm:ss");
+	}
+
+	connectedCallback()
+	{
+		window.addEventListener("ClockTick", this.listener);
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("ClockTick", this.listener);
+	}
+}
+
+customElements.define('digital-clock', DigitalClock);
+
+window.addEventListener("load", function ()
+{
+	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
+});
 /* global ENTER, ESC */
 
 if (!document.querySelectorAll)
@@ -1963,10 +2007,7 @@ class Block extends Modal
 
 		body.appendChild(window.top.document.createElement('progress'));
 
-		var foot = dialog.appendChild(window.top.document.createElement('div'));
-
-		foot.innerHTML = "00:00:00";
-		foot.setAttribute("data-clock", '0');
+		dialog.appendChild(window.top.document.createElement('digital-clock'));
 
 		this.show();
 	}
@@ -5724,47 +5765,6 @@ window.addEventListener("load", function ()
 	}, 500);
 });
 
-class DigitalClock extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this.listener = () =>
-		{
-			if (!this.hasAttribute("paused"))
-				this.setAttribute("time",
-					Number(this.getAttribute("time")) + 1);
-		};
-	}
-
-	static get observedAttributes()
-	{
-		return ['time', 'paused'];
-	}
-
-	attributeChangedCallback()
-	{
-		this.innerHTML = new Duration(Number(this.getAttribute("time")))
-			.format(this.getAttribute("format") || "hh:mm:ss");
-	}
-
-	connectedCallback()
-	{
-		window.addEventListener("ClockTick", this.listener);
-	}
-
-	disconnectedCallback()
-	{
-		window.removeEventListener("ClockTick", this.listener);
-	}
-}
-
-customElements.define('digital-clock', DigitalClock);
-
-window.addEventListener("load", function ()
-{
-	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
-});
 window.addEventListener("load", function ()
 {
 	document.addEventListener("fullscreenchange", function ()
@@ -6133,7 +6133,7 @@ class ProgressStatus extends HTMLElement
 		div.style.display = "flex";
 		div.style.alignItems = "center";
 
-		var clock = div.appendChild(document.createElement("label"));
+		var clock = div.appendChild(document.createElement("digital-clock"));
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
 		clock.style.display = "flex";
@@ -6164,9 +6164,6 @@ class ProgressStatus extends HTMLElement
 		logger.style.margin = "0";
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
-
-		var time = 0;
-		this.onClockTick = () => clock.innerHTML = new Duration(++time).toString();
 
 		function log(message)
 		{
@@ -6237,7 +6234,7 @@ class ProgressStatus extends HTMLElement
 
 							this.dispatchEvent(new CustomEvent('commited'));
 
-							this.onClockTick = null;
+							clock.setAttribute("paused", "paused");
 							break;
 						case "CANCELED":
 							if (!progress.max)
@@ -6247,7 +6244,7 @@ class ProgressStatus extends HTMLElement
 
 							this.dispatchEvent(new CustomEvent('canceled'));
 
-							this.onClockTick = null;
+							clock.setAttribute("paused", "paused");
 							break;
 					}
 
@@ -6268,8 +6265,7 @@ class ProgressStatus extends HTMLElement
 	}
 }
 
-window.addEventListener("load", () =>
-	customElements.define('progress-status', ProgressStatus));
+customElements.define('progress-status', ProgressStatus);
 
 
 
@@ -6412,13 +6408,12 @@ class DownloadStatus extends HTMLElement
 		div.style.display = "flex";
 		div.style.alignItems = "center";
 
-		var clock = div.appendChild(document.createElement("label"));
+		var clock = div.appendChild(document.createElement("digital-clock"));
 		clock.style.flexGrow = "1";
 		clock.style.fontSize = "12px";
 		clock.style.display = "flex";
 		clock.style.alignItems = "center";
 		clock.style.justifyContent = "flex-start";
-		clock.innerHTML = "00:00:00";
 
 		var counter = div.appendChild(document.createElement("label"));
 		counter.style.flexGrow = "1";
@@ -6454,7 +6449,7 @@ class DownloadStatus extends HTMLElement
 
 			this.request.addEventListener("load", () =>
 			{
-				this.onClockTick = null;
+				clock.setAttribute("paused", "paused");
 
 				if (this.request.status === 200)
 				{
@@ -6509,15 +6504,11 @@ class DownloadStatus extends HTMLElement
 
 			this.request.addEventListener("error", () =>
 			{
-				this.onClockTick = null;
+				clock.setAttribute("paused", "paused");
 				title.style.color = "#660000";
 				title.innerHTML = "Erro ao efetuar download";
 				this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
 			});
-
-			var time = 0;
-			this.onClockTick = () => clock.innerHTML
-					= new Duration(++time).toString();
 
 			title.innerHTML = "Conectando ao servidor";
 			this.request.responseType = 'blob';
@@ -6529,8 +6520,7 @@ class DownloadStatus extends HTMLElement
 	}
 }
 
-window.addEventListener("load", () =>
-	customElements.define('download-status', DownloadStatus));
+customElements.define('download-status', DownloadStatus);
 class ReportSelector extends HTMLElement
 {
 	constructor()

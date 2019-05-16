@@ -22,10 +22,7 @@ class Block extends Modal
 
 		body.appendChild(window.top.document.createElement('progress'));
 
-		var foot = dialog.appendChild(window.top.document.createElement('div'));
-
-		foot.innerHTML = "00:00:00";
-		foot.setAttribute("data-clock", '0');
+		dialog.appendChild(window.top.document.createElement('digital-clock'));
 
 		this.show();
 	}
