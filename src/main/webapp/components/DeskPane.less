@@ -14,8 +14,7 @@ ul.DeskPane
 	ul { display: none;
 	     margin: 0; padding: 0}
 
-	> li { width: 24%;
-	       margin: 0.5%;
+	> li { margin: 4px;
 	       display: flex;
 	       cursor: pointer;
 	       border-radius: 5px;
@@ -24,34 +23,48 @@ ul.DeskPane
 	       align-content: stretch;
 	       justify-content: center;
 	       border: 2px solid white;
-	       background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);}
+	       width: calc(100% - 8px);
+	       background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
 
-	> li:hover {   border-color: #FFFACD;
-		       background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD); }
 
-	> li > a,
-	> li > button { padding: 8px;
-			height: 100%;
-			flex-grow: 1;
-			display: flex;
-			color: inherit;
-			cursor: inherit;
-			text-align: center;
-			align-items: center;
-			font-weight: inherit;
-			align-content: stretch;
-			justify-content: flex-start;}
+	       @media only screen and (min-width: @breakpoint0) { width: calc(100% - 8px); }
+	       @media only screen and (min-width: @breakpoint1) { width: calc(50% - 8px); }
+	       @media only screen and (min-width: @breakpoint2) { width: calc(50% - 8px); }
+	       @media only screen and (min-width: @breakpoint3) { width: calc(25% - 8px); }
 
-	> li > a[data-disabled],
-	> li > button [data-disabled]{ color: @R;
-				       cursor: not-allowed; }
+	       &:hover {   border-color: #FFFACD;
+			   background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD); }
 
-	> li > a > i { width: 48px; height: 48px; font-size: 40px; display: flex;
-		       margin-right: 8px; order: -1;
-		       color: inherit; cursor: inherit;
-		       align-items: center; justify-content: center }
+	       > a,
+	       > button { padding: 8px;
+			  height: 100%;
+			  flex-grow: 1;
+			  display: flex;
+			  color: inherit;
+			  cursor: inherit;
+			  text-align: center;
+			  align-items: center;
+			  font-weight: inherit;
+			  align-content: stretch;
+			  justify-content: flex-start;
 
-	> li > a > img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+			  > i { order: -1;
+				width: 48px; 
+				height: 48px; 
+				display: flex;
+				color: inherit; 
+				font-size: 40px; 
+				margin-right: 8px; 
+				align-items: center; 
+				justify-content: center }
+
+			  > img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+
+			  &[data-disabled]{ color: @R; cursor: not-allowed; }
+	       }
+	}
+
+
 
 	> li.Reset
 	{

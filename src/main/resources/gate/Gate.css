@@ -429,8 +429,7 @@ ul.DeskPane ul {
   padding: 0;
 }
 ul.DeskPane > li {
-  width: 24%;
-  margin: 0.5%;
+  margin: 4px;
   display: flex;
   cursor: pointer;
   border-radius: 5px;
@@ -439,7 +438,28 @@ ul.DeskPane > li {
   align-content: stretch;
   justify-content: center;
   border: 2px solid white;
+  width: calc(100% - 8px);
   background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
+}
+@media only screen and (min-width: 576px) {
+  ul.DeskPane > li {
+    width: calc(100% - 8px);
+  }
+}
+@media only screen and (min-width: 768px) {
+  ul.DeskPane > li {
+    width: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li {
+    width: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li {
+    width: calc(25% - 8px);
+  }
 }
 ul.DeskPane > li:hover {
   border-color: #FFFACD;
@@ -459,28 +479,29 @@ ul.DeskPane > li > button {
   align-content: stretch;
   justify-content: flex-start;
 }
-ul.DeskPane > li > a[data-disabled],
-ul.DeskPane > li > button [data-disabled] {
-  color: #660000;
-  cursor: not-allowed;
-}
-ul.DeskPane > li > a > i {
+ul.DeskPane > li > a > i,
+ul.DeskPane > li > button > i {
+  order: -1;
   width: 48px;
   height: 48px;
-  font-size: 40px;
   display: flex;
-  margin-right: 8px;
-  order: -1;
   color: inherit;
-  cursor: inherit;
+  font-size: 40px;
+  margin-right: 8px;
   align-items: center;
   justify-content: center;
 }
-ul.DeskPane > li > a > img {
+ul.DeskPane > li > a > img,
+ul.DeskPane > li > button > img {
   width: 48px;
   height: 48px;
   order: -1;
   margin-right: 8px;
+}
+ul.DeskPane > li > a[data-disabled],
+ul.DeskPane > li > button[data-disabled] {
+  color: #660000;
+  cursor: not-allowed;
 }
 ul.DeskPane > li.Reset {
   color: #006600;
