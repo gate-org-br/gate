@@ -5,72 +5,140 @@ table { .margin();
 	background-color: #EEEEEE;
 	border-spacing: 1px;
 
-	tr { height: 32px; }
+	tr { height: 32px;
 
-	th { color: black;
-	     height: 28px;
-	     padding: 4px;
-	     text-align: left;
-	     vertical-align: middle;
-	     background-color: @base; }
+	     th { color: black;
+		  height: 28px;
+		  padding: 4px;
+		  text-align: left;
+		  vertical-align: middle;
+		  background-color: @base; }
 
-	td { padding: 4px;
-	     text-align: left;
-	     word-break: normal;
-	     vertical-align: middle;
-	     background-color: transparent;
+	     td { padding: 4px;
+		  text-align: left;
+		  word-break: normal;
+		  vertical-align: middle;
+		  background-color: transparent;
 
-	     > input:first-child:last-child { width: 100%;
-					      height: 32px;
-					      text-indent: 4px;}
+		  > input:only-child { width: 100%;
+				       height: 32px;
+				       text-indent: 4px;}
+
+		  &.TOOLTIP { color: blue; 
+			      padding: 12px; 
+			      background-image: none; 
+			      border: 1px dashed gray; 
+			      background-color: #F0F0F4; }
+
+		  &.SEPARATOR { height: 0px;
+				color: blue; 
+				margin: 0px; 
+				padding: 0px; 
+				background-image: none; 
+				border: 1px dotted gray;
+				background-color: #CBCAC9; }
+	     }
 	}
-
 
 	> caption { height: 32px;
 		    color: white;
-		    text-indent: 8px;
-		    text-align: left;
 		    line-height: 32px;
 		    font-weight: bold;
+		    text-align: center;
 		    vertical-align: middle;
 		    border-radius: 5px 5px 0px 0px;
-		    background-color: @base_shaded; 
-
-		    @media only screen and (min-width: @breakpoint1){ text-align: center; text-indent: 0 } }
-
-
-		    > thead > tr { background-color: @main_tinted }
-
-		    > tbody {
-			    > tr:nth-child(even) { background-color: white; }
-			    > tr:nth-child(odd) { background-color: @base_tinted; }
-			    > tr.even { background-color: white}
-			    > tr.odd  { background-color: @base_tinted }
-		    }
-
-		    > tfoot > tr {background-image: @base_gradient; }
+		    background-color: @base_shaded;
 	}
 
-	td.TOOLTIP { padding: 12px; background-image: none; background-color: #F0F0F4; color: blue; border: 1px dashed gray}
-	td.SEPARATOR { padding: 0px; margin: 0px; background-image: none; background-color: #CBCAC9; color: blue; border: 1px dotted gray; height: 0px}
+	> thead > tr { background-color: @main_tinted }
 
-	table.c1 > * > tr > *:nth-child(1) { text-align: center }
-	table.c2 > * > tr > *:nth-child(2) { text-align: center }
-	table.c3 > * > tr > *:nth-child(3) { text-align: center }
-	table.c4 > * > tr > *:nth-child(4) { text-align: center }
-	table.c5 > * > tr > *:nth-child(5) { text-align: center }
-	table.c6 > * > tr > *:nth-child(6) { text-align: center }
-	table.c7 > * > tr > *:nth-child(7) { text-align: center }
-	table.c8 > * > tr > *:nth-child(8) { text-align: center }
-	table.c9 > * > tr > *:nth-child(9) { text-align: center }
-	table.c10 > * > tr > *:nth-child(10) { text-align: center }
-	table.c11 > * > tr > *:nth-child(11) { text-align: center }
-	table.c12 > * > tr > *:nth-child(12) { text-align: center }
-	table.c13 > * > tr > *:nth-child(13) { text-align: center }
-	table.c14 > * > tr > *:nth-child(14) { text-align: center }
-	table.c15 > * > tr > *:nth-child(15) { text-align: center }
-	table.c16 > * > tr > *:nth-child(16) { text-align: center }
-	table.c17 > * > tr > *:nth-child(17) { text-align: center }
-	table.c18 > * > tr > *:nth-child(18) { text-align: center }
-	table.c19 > * > tr > *:nth-child(19) { text-align: center }
-	table.c20 > * > tr > *:nth-child(20) { text-align: center }
+	> tbody {
+		> tr:nth-child(even) { background-color: white; }
+		> tr:nth-child(odd) { background-color: @base_tinted; }
+		> tr.even { background-color: white}
+		> tr.odd  { background-color: @base_tinted }
+
+		> tr[data-action], > tr[data-value], > tr[data-ret] { cursor: pointer;
+								      &:focus { 	background-color: @hovered; }
+		}
+	}
+
+	> tfoot > tr {background-image: @base_gradient; }
+
+}
+
+
+table.c1 > * > tr > *:nth-child(1), table[data-c1] > * > tr > *:nth-child(1) { text-align: center }
+table.c2 > * > tr > *:nth-child(2), table[data-c2] > * > tr > *:nth-child(2) { text-align: center }
+table.c3 > * > tr > *:nth-child(3), table[data-c3] > * > tr > *:nth-child(3) { text-align: center }
+table.c4 > * > tr > *:nth-child(4), table[data-c4] > * > tr > *:nth-child(4) { text-align: center }
+table.c5 > * > tr > *:nth-child(5), table[data-c5] > * > tr > *:nth-child(5) { text-align: center }
+table.c6 > * > tr > *:nth-child(6), table[data-c6] > * > tr > *:nth-child(6) { text-align: center }
+table.c7 > * > tr > *:nth-child(7), table[data-c7] > * > tr > *:nth-child(7) { text-align: center }
+table.c8 > * > tr > *:nth-child(8), table[data-c8] > * > tr > *:nth-child(8) { text-align: center }
+table.c9 > * > tr > *:nth-child(9), table[data-c9] > * > tr > *:nth-child(9) { text-align: center }
+table.c10 > * > tr > *:nth-child(10), table[data-c10] > * > tr > *:nth-child(10) { text-align: center }
+table.c11 > * > tr > *:nth-child(11), table[data-c11] > * > tr > *:nth-child(11) { text-align: center }
+table.c12 > * > tr > *:nth-child(12), table[data-c12] > * > tr > *:nth-child(12) { text-align: center }
+table.c13 > * > tr > *:nth-child(13), table[data-c13] > * > tr > *:nth-child(13) { text-align: center }
+table.c14 > * > tr > *:nth-child(14), table[data-c14] > * > tr > *:nth-child(14) { text-align: center }
+table.c15 > * > tr > *:nth-child(15), table[data-c15] > * > tr > *:nth-child(15) { text-align: center }
+table.c16 > * > tr > *:nth-child(16), table[data-c16] > * > tr > *:nth-child(16) { text-align: center }
+table.c17 > * > tr > *:nth-child(17), table[data-c17] > * > tr > *:nth-child(17) { text-align: center }
+table.c18 > * > tr > *:nth-child(18), table[data-c18] > * > tr > *:nth-child(18) { text-align: center }
+table.c19 > * > tr > *:nth-child(19), table[data-c19] > * > tr > *:nth-child(19) { text-align: center }
+table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20) { text-align: center }
+
+.card()
+{
+	> col {display: none}
+	> thead { display: none}
+
+	> caption { text-align: center; text-indent: 0 }
+
+	> tbody
+	{
+		> tr { margin: 4px;
+		       padding: 4px;
+		       height: auto;
+		       display: block;
+		       border-radius: 5px;
+		       border: 2px solid #CCCCCC;
+
+		       > td { margin: 4px;
+			      display: flex;
+
+			      &::before { text-align: left;
+					  font-weight: bold;
+					  margin-right: 8px;
+					  content: attr(title)":"; }
+		       }
+		}
+	}
+
+	> tfoot > tr,
+	> tfoot > tr > td { display: flex;
+			    align-items: center;
+			    justify-content: center }
+}
+
+
+@media only screen and (max-width: @phone)
+{
+	table[data-colapse="Phone"] { .card() }
+}
+
+@media only screen and (max-width: @tablet)
+{
+	table[data-colapse="Tablet"] { .card() }
+}
+
+@media only screen and (max-width: @notebook)
+{
+	table[data-colapse="Notebook"] { .card() }
+}
+
+@media only screen and (max-width: @desktop)
+{
+	table[data-colapse="Desktop"] { .card() }
+}

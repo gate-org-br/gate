@@ -35,10 +35,10 @@
 @Y: #aaaa00;
 @B: #000066;
 
-@breakpoint0: 576px;
-@breakpoint1: 768px;
-@breakpoint2: 992px;
-@breakpoint3: 1200px;
+@phone: 576px;
+@tablet: 768px;
+@notebook: 992px;
+@desktop: 1200px;
 
 body { margin: 0;
        padding: 0;
@@ -102,19 +102,6 @@ img { border-style: none; position: relative; vertical-align: middle; margin-lef
 
 td > label, th > label { width: 100%; display: inline-block}
 td > label > i, td > label > span, th > label > i, th > label > span { position: absolute; right: 2px; color: gray; font-size: 10px}
-
-tr[data-action],
-tr[data-value],
-tr[data-ret],
-td[data-ret],
-tr[data-action] > td,
-tr[data-value] > td,
-tr[data-ret] > td { cursor: pointer }
-
-tr[data-action]:focus > td,
-tr[data-value]:focus > td,
-tr[data-ret]:focus > td { background-image: none;
-			  background-color: @hovered; }
 
 ul.LIST { width: 100%; list-style-type: none; margin: auto; padding: 0px; display: inline-block}
 ul.LIST > li { float: left; width: 10%; height: 32px; background-color: white; padding: 3px; margin: 0.5%; font-size: 24px;

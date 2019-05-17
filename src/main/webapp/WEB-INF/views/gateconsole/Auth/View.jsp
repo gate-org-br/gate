@@ -69,36 +69,29 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table>
-					<col style='width: 10%'/>
-					<col style='width: 10%'/>
-					<col x4/>
-					<col x4/>
-					<col x4/>
-					<col style='width: 05%'/>
-
+				<table breakpoint1 c1 c2 c3 c4 c5 c6>
 					<caption>
 						ACESSOS
 					</caption>
 
 					<thead>
 						<tr>
-							<th style='text-align: center'>
+							<th>
 								Modo
 							</th>
-							<th style='text-align: center'>
+							<th>
 								Tipo
 							</th>
-							<th style='text-align: center'>
+							<th>
 								Module
 							</th>
-							<th style='text-align: center'>
+							<th>
 								Screen
 							</th>
-							<th style='text-align: center'>
+							<th>
 								Action
 							</th>
-							<th style='text-align: center'>
+							<th>
 								<g:icon type="delete"/>
 							</th>
 						</tr>
@@ -109,22 +102,22 @@
 					<tbody>
 						<g:iterator source="${screen.page}" target="item" index="indx">
 							<tr>
-								<td style='text-align: center'>
+								<td title="Modo">
 									<g:icon type="${item.mode}"/>&nbsp;<g:print value="${item.mode}"/>
 								</td>
-								<td style='text-align: center'>
+								<td title="Tipo">
 									<g:icon type="${item.type}"/>&nbsp;<g:print value="${item.type}"/>
 								</td>
-								<td style='text-align: center'>
+								<td title="Module">
 									<g:print value="${item.module}" empty="*"/>
 								</td>
-								<td style='text-align: center'>
+								<td title="Screen">
 									<g:print value="${item.screen}" empty="*"/>
 								</td>
-								<td style='text-align: center'>
+								<td title="Action">
 									<g:print value="${item.action}" empty="*"/>
 								</td>
-								<td style='text-align: center'>
+								<td title="Remover">
 									<g:link module="#" screen="#" action="Delete" arguments="form.id=${item.id}&form.role.id=${screen.form.role.id}&form.user.id=${screen.form.user.id}">
 										<g:icon type="delete"/>
 									</g:link>
