@@ -106,59 +106,59 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<div style="overflow-x:auto;">
-					<table class="c2 c3 c4" style="min-width: 820px">
-						<caption>
-							USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
-						</caption>
-						<col/>
-						<col style="width: 250px"/>
-						<col style="width: 125px"/>
-						<col style="width: 125px"/>
-						<thead>
-							<tr>
-								<th>
-									<g:ordenator method="post" property="name">
-										Nome
-									</g:ordenator>
-								</th>
-								<th>
-									<g:ordenator method="post" property="userID">
-										Login
-									</g:ordenator>
-								</th>
-								<th>
-									<g:ordenator method="post" property="registration">
-										Cadastro
-									</g:ordenator>
-								</th>
-								<th>
-									<g:ordenator method="post" property="active">
-										Ativo
-									</g:ordenator>
-								</th>
+				<table class="c1 c5"  data-colapse="Phone">
+					<caption>
+						USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
+					</caption>
+					<thead>
+						<tr>
+							<th style="width: 60px">
+								<g:ordenator method="post" property="active">
+									Ativo
+								</g:ordenator>
+							</th>
+							<th>
+								<g:ordenator method="post" property="name">
+									Nome
+								</g:ordenator>
+							</th>
+							<th>
+								<g:ordenator method="post" property="userID">
+									Login
+								</g:ordenator>
+							</th>
+							<th>
+								<g:ordenator method="post" property="role.name">
+									Perfil
+								</g:ordenator>
+							</th>
+							<th style="width: 120px">
+								<g:ordenator method="post" property="registration">
+									Cadastro
+								</g:ordenator>
+							</th>
+						</tr>
+					</thead>
+					<tfoot>
+						<tr>
+							<td colspan='5' style='text-align: right;'>
+								<g:paginator/>
+							</td>
+						</tr>
+					</tfoot>
+					<tbody>
+						<g:iterator source="${screen.page}" target="target">
+							<tr data-target='_dialog' title='Usuário'
+							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
+								<td title="Ativo"><g:print value="${target.active}"/></td>
+								<td title="Nome"><g:print value="${target.name}"/></td>
+								<td title="Login"><g:print value="${target.userID}"/></td>
+								<td title="Perfil"><g:print value="${target.role.name}"/></td>
+								<td title="Cadastro"><g:print value="${target.registration}"/></td>
 							</tr>
-						</thead>
-						<tfoot>
-							<tr>
-								<td colspan='4' style='text-align: right'>
-									<g:paginator/>
-								</td>
-							</tr>
-						</tfoot>
-						<tbody>
-							<g:iterator source="${screen.page}" target="target">
-								<tr data-target='_dialog' title='Usuário'
-								    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
-									<td><g:print value="${target.name}"/></td>
-									<td><g:print value="${target.userID}"/></td>
-									<td><g:print value="${target.registration}"/></td>
-									<td><g:print value="${target.active}"/></td>
-								</tr>
-							</g:iterator>
-						</tbody>
-					</table>
-				</div>
+						</g:iterator>
+					</tbody>
+				</table>
 			</g:otherwise>
 		</g:choose>
 	</form>
@@ -173,3 +173,4 @@
 		});
 	</script>
 </g:template>
+

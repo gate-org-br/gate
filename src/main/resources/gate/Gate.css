@@ -123,21 +123,6 @@ th > label > span {
   color: gray;
   font-size: 10px;
 }
-tr[data-action],
-tr[data-value],
-tr[data-ret],
-td[data-ret],
-tr[data-action] > td,
-tr[data-value] > td,
-tr[data-ret] > td {
-  cursor: pointer;
-}
-tr[data-action]:focus > td,
-tr[data-value]:focus > td,
-tr[data-ret]:focus > td {
-  background-image: none;
-  background-color: #FFFACD;
-}
 ul.LIST {
   width: 100%;
   list-style-type: none;
@@ -846,7 +831,6 @@ fieldset > label > form[style] > label {
   padding: 4px;
   text-indent: 0;
   line-height: 16px;
-  overflow: auto;
   white-space: normal;
 }
 fieldset > label > span > input[type="file"],
@@ -1049,7 +1033,7 @@ table:only-child {
 table tr {
   height: 32px;
 }
-table th {
+table tr th {
   color: black;
   height: 28px;
   padding: 4px;
@@ -1057,34 +1041,43 @@ table th {
   vertical-align: middle;
   background-color: #b9c6cd;
 }
-table td {
+table tr td {
   padding: 4px;
   text-align: left;
   word-break: normal;
   vertical-align: middle;
   background-color: transparent;
 }
-table td > input:first-child:last-child {
+table tr td > input:only-child {
   width: 100%;
   height: 32px;
   text-indent: 4px;
 }
+table tr td.TOOLTIP {
+  color: blue;
+  padding: 12px;
+  background-image: none;
+  border: 1px dashed gray;
+  background-color: #F0F0F4;
+}
+table tr td.SEPARATOR {
+  height: 0px;
+  color: blue;
+  margin: 0px;
+  padding: 0px;
+  background-image: none;
+  border: 1px dotted gray;
+  background-color: #CBCAC9;
+}
 table > caption {
   height: 32px;
   color: white;
-  text-indent: 8px;
-  text-align: left;
   line-height: 32px;
   font-weight: bold;
+  text-align: center;
   vertical-align: middle;
   border-radius: 5px 5px 0px 0px;
   background-color: #788185;
-}
-@media only screen and (min-width: 768px) {
-  table > caption {
-    text-align: center;
-    text-indent: 0;
-  }
 }
 table > thead > tr {
   background-color: #e6e5dc;
@@ -1101,84 +1094,242 @@ table > tbody > tr.even {
 table > tbody > tr.odd {
   background-color: #f5f6f8;
 }
+table > tbody > tr[data-action],
+table > tbody > tr[data-value],
+table > tbody > tr[data-ret] {
+  cursor: pointer;
+}
+table > tbody > tr[data-action]:focus,
+table > tbody > tr[data-value]:focus,
+table > tbody > tr[data-ret]:focus {
+  background-color: #FFFACD;
+}
 table > tfoot > tr {
   background-image: linear-gradient(to bottom, #d5dde1 0%, #949ea4 100%);
 }
-td.TOOLTIP {
-  padding: 12px;
-  background-image: none;
-  background-color: #F0F0F4;
-  color: blue;
-  border: 1px dashed gray;
-}
-td.SEPARATOR {
-  padding: 0px;
-  margin: 0px;
-  background-image: none;
-  background-color: #CBCAC9;
-  color: blue;
-  border: 1px dotted gray;
-  height: 0px;
-}
-table.c1 > * > tr > *:nth-child(1) {
+table.c1 > * > tr > *:nth-child(1),
+table[data-c1] > * > tr > *:nth-child(1) {
   text-align: center;
 }
-table.c2 > * > tr > *:nth-child(2) {
+table.c2 > * > tr > *:nth-child(2),
+table[data-c2] > * > tr > *:nth-child(2) {
   text-align: center;
 }
-table.c3 > * > tr > *:nth-child(3) {
+table.c3 > * > tr > *:nth-child(3),
+table[data-c3] > * > tr > *:nth-child(3) {
   text-align: center;
 }
-table.c4 > * > tr > *:nth-child(4) {
+table.c4 > * > tr > *:nth-child(4),
+table[data-c4] > * > tr > *:nth-child(4) {
   text-align: center;
 }
-table.c5 > * > tr > *:nth-child(5) {
+table.c5 > * > tr > *:nth-child(5),
+table[data-c5] > * > tr > *:nth-child(5) {
   text-align: center;
 }
-table.c6 > * > tr > *:nth-child(6) {
+table.c6 > * > tr > *:nth-child(6),
+table[data-c6] > * > tr > *:nth-child(6) {
   text-align: center;
 }
-table.c7 > * > tr > *:nth-child(7) {
+table.c7 > * > tr > *:nth-child(7),
+table[data-c7] > * > tr > *:nth-child(7) {
   text-align: center;
 }
-table.c8 > * > tr > *:nth-child(8) {
+table.c8 > * > tr > *:nth-child(8),
+table[data-c8] > * > tr > *:nth-child(8) {
   text-align: center;
 }
-table.c9 > * > tr > *:nth-child(9) {
+table.c9 > * > tr > *:nth-child(9),
+table[data-c9] > * > tr > *:nth-child(9) {
   text-align: center;
 }
-table.c10 > * > tr > *:nth-child(10) {
+table.c10 > * > tr > *:nth-child(10),
+table[data-c10] > * > tr > *:nth-child(10) {
   text-align: center;
 }
-table.c11 > * > tr > *:nth-child(11) {
+table.c11 > * > tr > *:nth-child(11),
+table[data-c11] > * > tr > *:nth-child(11) {
   text-align: center;
 }
-table.c12 > * > tr > *:nth-child(12) {
+table.c12 > * > tr > *:nth-child(12),
+table[data-c12] > * > tr > *:nth-child(12) {
   text-align: center;
 }
-table.c13 > * > tr > *:nth-child(13) {
+table.c13 > * > tr > *:nth-child(13),
+table[data-c13] > * > tr > *:nth-child(13) {
   text-align: center;
 }
-table.c14 > * > tr > *:nth-child(14) {
+table.c14 > * > tr > *:nth-child(14),
+table[data-c14] > * > tr > *:nth-child(14) {
   text-align: center;
 }
-table.c15 > * > tr > *:nth-child(15) {
+table.c15 > * > tr > *:nth-child(15),
+table[data-c15] > * > tr > *:nth-child(15) {
   text-align: center;
 }
-table.c16 > * > tr > *:nth-child(16) {
+table.c16 > * > tr > *:nth-child(16),
+table[data-c16] > * > tr > *:nth-child(16) {
   text-align: center;
 }
-table.c17 > * > tr > *:nth-child(17) {
+table.c17 > * > tr > *:nth-child(17),
+table[data-c17] > * > tr > *:nth-child(17) {
   text-align: center;
 }
-table.c18 > * > tr > *:nth-child(18) {
+table.c18 > * > tr > *:nth-child(18),
+table[data-c18] > * > tr > *:nth-child(18) {
   text-align: center;
 }
-table.c19 > * > tr > *:nth-child(19) {
+table.c19 > * > tr > *:nth-child(19),
+table[data-c19] > * > tr > *:nth-child(19) {
   text-align: center;
 }
-table.c20 > * > tr > *:nth-child(20) {
+table.c20 > * > tr > *:nth-child(20),
+table[data-c20] > * > tr > *:nth-child(20) {
   text-align: center;
+}
+@media only screen and (max-width: 576px) {
+  table[data-colapse="Phone"] > col {
+    display: none;
+  }
+  table[data-colapse="Phone"] > thead {
+    display: none;
+  }
+  table[data-colapse="Phone"] > caption {
+    text-align: center;
+    text-indent: 0;
+  }
+  table[data-colapse="Phone"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    border: 2px solid #CCCCCC;
+  }
+  table[data-colapse="Phone"] > tbody > tr > td {
+    margin: 4px;
+    display: flex;
+  }
+  table[data-colapse="Phone"] > tbody > tr > td::before {
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-colapse="Phone"] > tfoot > tr,
+  table[data-colapse="Phone"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 768px) {
+  table[data-colapse="Tablet"] > col {
+    display: none;
+  }
+  table[data-colapse="Tablet"] > thead {
+    display: none;
+  }
+  table[data-colapse="Tablet"] > caption {
+    text-align: center;
+    text-indent: 0;
+  }
+  table[data-colapse="Tablet"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    border: 2px solid #CCCCCC;
+  }
+  table[data-colapse="Tablet"] > tbody > tr > td {
+    margin: 4px;
+    display: flex;
+  }
+  table[data-colapse="Tablet"] > tbody > tr > td::before {
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-colapse="Tablet"] > tfoot > tr,
+  table[data-colapse="Tablet"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 992px) {
+  table[data-colapse="Notebook"] > col {
+    display: none;
+  }
+  table[data-colapse="Notebook"] > thead {
+    display: none;
+  }
+  table[data-colapse="Notebook"] > caption {
+    text-align: center;
+    text-indent: 0;
+  }
+  table[data-colapse="Notebook"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    border: 2px solid #CCCCCC;
+  }
+  table[data-colapse="Notebook"] > tbody > tr > td {
+    margin: 4px;
+    display: flex;
+  }
+  table[data-colapse="Notebook"] > tbody > tr > td::before {
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-colapse="Notebook"] > tfoot > tr,
+  table[data-colapse="Notebook"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  table[data-colapse="Desktop"] > col {
+    display: none;
+  }
+  table[data-colapse="Desktop"] > thead {
+    display: none;
+  }
+  table[data-colapse="Desktop"] > caption {
+    text-align: center;
+    text-indent: 0;
+  }
+  table[data-colapse="Desktop"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    border: 2px solid #CCCCCC;
+  }
+  table[data-colapse="Desktop"] > tbody > tr > td {
+    margin: 4px;
+    display: flex;
+  }
+  table[data-colapse="Desktop"] > tbody > tr > td::before {
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-colapse="Desktop"] > tfoot > tr,
+  table[data-colapse="Desktop"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 a {
   color: #000066;

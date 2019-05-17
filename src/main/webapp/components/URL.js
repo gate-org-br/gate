@@ -33,12 +33,21 @@ class URL
 		return this;
 	}
 
+	setContentType(contentType)
+	{
+		this.contentType = contentType;
+		return this;
+	}
+
 	get(callback)
 	{
 		var request =
 			window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject("Microsoft.XMLHTTP");
+
+		if (this.contentType)
+			request.setRequestHeader('Content-type', contentType);
 
 		if (callback)
 		{
@@ -84,6 +93,10 @@ class URL
 			window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject("Microsoft.XMLHTTP");
+
+		if (this.contentType)
+			request.setRequestHeader('Content-type', contentType);
+
 		if (callback)
 		{
 			request.onreadystatechange = function ()
