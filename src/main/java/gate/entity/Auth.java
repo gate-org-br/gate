@@ -1,9 +1,11 @@
 package gate.entity;
 
+import gate.annotation.Color;
 import gate.annotation.Column;
 import gate.annotation.Description;
 import gate.annotation.Entity;
 import gate.annotation.Icon;
+import gate.annotation.Name;
 import gate.annotation.Schema;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
@@ -195,44 +197,23 @@ public class Auth implements Serializable
 	{
 
 		@Icon("2037")
-		ALLOW("Permissão"),
+		@Color("#006600")
+		@Name("Permissão")
+		ALLOW,
 		@Icon("2038")
-		BLOCK("Bloqueio");
-
-		private final String string;
-
-		Mode(String string)
-		{
-			this.string = string;
-		}
-
-		@Override
-		public String toString()
-		{
-			return string;
-		}
+		@Color("#660000")
+		@Name("Bloqueio")
+		BLOCK;
 	}
 
 	public enum Type
 	{
-
 		@Icon("2006")
-		PUBLIC("Público"),
+		@Name("Público")
+		PUBLIC,
 		@Icon("2000")
-		PRIVATE("Privado");
-
-		private final String string;
-
-		Type(String string)
-		{
-			this.string = string;
-		}
-
-		@Override
-		public String toString()
-		{
-			return string;
-		}
+		@Name("Privado")
+		PRIVATE;
 	}
 
 	public boolean blocks(String module, String screen, String action)
