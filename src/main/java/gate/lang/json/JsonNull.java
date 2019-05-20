@@ -42,14 +42,29 @@ public class JsonNull implements JsonElement
 		return 0;
 	}
 
-	public static JsonNull parse(String string) throws ConversionException
+	@Override
+	public String toString()
 	{
-		return (JsonNull) JsonElement.parse(string);
+		return "null";
 	}
 
-	public static String format(JsonNull jsonNull)
+	/**
+	 * Parses a JSON formatted string into a JsonNull object.
+	 *
+	 * @param json the JSON formatted string to be parsed into a JsonNull object
+	 *
+	 * @return a JsonBoolean object representing the JSON formatted string specified
+	 *
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws NullPointerException if any of the parameters is null
+	 */
+	public static JsonNull parse(String json) throws ConversionException
 	{
-		Objects.requireNonNull(jsonNull);
-		return JsonElement.format(jsonNull);
+		Objects.requireNonNull(json);
+
+		JsonElement element = JsonElement.parse(json);
+		if (element.getType() != JsonElement.Type.NULL)
+			throw new ConversionException("the specified JsonElement is not a JsonNull");
+		return (JsonNull) element;
 	}
 }

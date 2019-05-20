@@ -76,7 +76,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonString(value));
+			set(key, JsonString.valueOf(value));
 		return this;
 	}
 
@@ -96,7 +96,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public JsonObject setByte(String key, byte value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setByte(String key, Byte value)
@@ -104,13 +104,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
 	public JsonObject setShort(String key, short value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setShort(String key, Short value)
@@ -118,13 +118,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
 	public JsonObject setInt(String key, int value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setInt(String key, Integer value)
@@ -132,13 +132,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
 	public JsonObject setLong(String key, long value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setLong(String key, Long value)
@@ -146,13 +146,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
 	public JsonObject setFloat(String key, float value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setFloat(String key, Float value)
@@ -160,13 +160,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
 	public JsonObject setDouble(String key, double value)
 	{
-		return set(key, new JsonNumber(value));
+		return set(key, JsonNumber.valueOf(value));
 	}
 
 	public JsonObject setDouble(String key, Double value)
@@ -174,7 +174,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonNumber(value));
+			set(key, JsonNumber.valueOf(value));
 		return this;
 	}
 
@@ -230,7 +230,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, new JsonString(gate.converter.Converter.toString(value)));
+			set(key, JsonString.valueOf(gate.converter.Converter.toString(value)));
 		return this;
 	}
 
@@ -304,14 +304,11 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Parses a JSON formatted string into a JsonObject object.
 	 *
-	 * @param json the JSON formatted string to be parsed into a JsonObject
-	 * object
+	 * @param json the JSON formatted string to be parsed into a JsonObject object
 	 *
-	 * @return a JsonObject object representing the JSON formatted string
-	 * specified
+	 * @return a JsonObject object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse
-	 * the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
@@ -327,11 +324,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonObject into a JSON formatted string.
 	 * <p>
-	 * The attributes of the specified JsonObject will be formatted
-	 * recursively as their respective elements on JSON notation.
+	 * The attributes of the specified JsonObject will be formatted recursively as their respective elements on JSON notation.
 	 *
-	 * @param jsonObject the jsonObject object to be formatted on JSON
-	 * notation
+	 * @param jsonObject the jsonObject object to be formatted on JSON notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonObject
 	 *
@@ -419,7 +414,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject()
-			.set("label", new JsonString(label.apply(obj)))
+			.set("label", JsonString.valueOf(label.apply(obj)))
 			.set("value", JsonElement.valueOf(value.apply(obj)));
 	}
 
@@ -427,7 +422,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject()
-			.set("label", new JsonString(label.apply(obj)))
+			.set("label", JsonString.valueOf(label.apply(obj)))
 			.set("value", JsonElement.valueOf(value.apply(obj)));
 	}
 }

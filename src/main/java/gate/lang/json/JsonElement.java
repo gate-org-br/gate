@@ -50,9 +50,7 @@ public interface JsonElement extends Serializable
 	/**
 	 * Formats the specified JsonElement on JSON notation.
 	 * <p>
-	 * If the specified JsonElement is a JsonArray or a JsonObject, it's
-	 * elements will be formatted recursively as their respective elements
-	 * on JSON notation.
+	 * If the specified JsonElement is a JsonArray or a JsonObject, it's elements will be formatted recursively as their respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
 	 *
@@ -78,12 +76,9 @@ public interface JsonElement extends Serializable
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
-	 * Boolean, Number, String, Collections, Array and null objects will be
-	 * converted respectively to JsonBoolean, JsonNumber, JsonString,
-	 * JsonArray, JsonArray and JsonNull objects.
+	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean, JsonNumber, JsonString, JsonArray, JsonArray and JsonNull objects.
 	 * <p>
-	 * Other object types will be formatted as JsonString objects using the
-	 * associated Converter.toString method
+	 * Other object types will be formatted as JsonString objects using the associated Converter.toString method
 	 *
 	 * @param obj the object to be formatted
 	 *
@@ -93,28 +88,27 @@ public interface JsonElement extends Serializable
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
-		if (obj instanceof Collection<?>)
-			return JsonArray.valueOf((Collection<?>) obj);
-		if (obj instanceof Object[])
-			return JsonArray.valueOf((Object[]) obj);
 		if (obj instanceof Boolean)
 			return JsonBoolean.valueOf((Boolean) obj);
 		if (obj instanceof Number)
 			return JsonNumber.valueOf((Number) obj);
 		if (obj instanceof String)
-			return new JsonString((String) obj);
-		return new JsonString(gate.converter.Converter.toString(obj));
+			return JsonString.valueOf((String) obj);
+
+		if (obj instanceof Collection<?>)
+			return JsonArray.valueOf((Collection<?>) obj);
+		if (obj instanceof Object[])
+			return JsonArray.valueOf((Object[]) obj);
+
+		return JsonString.valueOf(gate.converter.Converter.toString(obj));
 	}
 
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
-	 * Boolean, Number, String, Collections, Array and null objects will be
-	 * converted respectively to JsonBoolean, JsonNumber, JsonString,
-	 * JsonArray, JsonArray and JsonNull objects.
+	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean, JsonNumber, JsonString, JsonArray, JsonArray and JsonNull objects.
 	 * <p>
-	 * Other object types will be formatted as JsonString objects using the
-	 * associated Converter.toText method
+	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
 	 *
 	 * @param obj the object to be formatted
 	 *
@@ -124,16 +118,18 @@ public interface JsonElement extends Serializable
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
-		if (obj instanceof Collection<?>)
-			return JsonArray.valueOf((Collection<?>) obj);
-		if (obj instanceof Object[])
-			return JsonArray.valueOf((Object[]) obj);
 		if (obj instanceof Boolean)
 			return JsonBoolean.valueOf((Boolean) obj);
 		if (obj instanceof Number)
 			return JsonNumber.valueOf((Number) obj);
 		if (obj instanceof String)
-			return new JsonString((String) obj);
-		return new JsonString(gate.converter.Converter.toText(obj));
+			return JsonString.valueOf((String) obj);
+
+		if (obj instanceof Collection<?>)
+			return JsonArray.format((Collection<?>) obj);
+		if (obj instanceof Object[])
+			return JsonArray.format((Object[]) obj);
+
+		return JsonString.valueOf(gate.converter.Converter.toText(obj));
 	}
 }

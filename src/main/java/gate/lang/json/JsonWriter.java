@@ -29,14 +29,13 @@ public class JsonWriter implements AutoCloseable
 	/**
 	 * Writes the specified JsonToken on the associated writer.
 	 *
-	 * @param type  type of the token to be written
+	 * @param type type of the token to be written
 	 * @param value value of the token to be written
 	 *
-	 * @throws gate.error.ConversionException if an error occurs
-	 *                                        white trying to write the token
+	 * @throws gate.error.ConversionException if an error occurs white trying to write the token
 	 */
 	public void write(JsonToken.Type type, String value)
-			throws ConversionException
+		throws ConversionException
 	{
 		Objects.requireNonNull(type);
 		try
@@ -66,6 +65,9 @@ public class JsonWriter implements AutoCloseable
 					break;
 				case COMMA:
 					writer.write(',');
+					break;
+				case NULL:
+					writer.write("null");
 					break;
 				case EOF:
 					break;

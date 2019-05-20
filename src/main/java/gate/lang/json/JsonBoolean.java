@@ -81,14 +81,23 @@ public class JsonBoolean implements JsonElement
 			: JsonBoolean.FALSE;
 	}
 
-	public static JsonBoolean parse(String string) throws ConversionException
+	/**
+	 * Parses a JSON formatted string into a JsonBoolean object.
+	 *
+	 * @param json the JSON formatted string to be parsed into a JsonBoolean object
+	 *
+	 * @return a JsonBoolean object representing the JSON formatted string specified
+	 *
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws NullPointerException if any of the parameters is null
+	 */
+	public static JsonBoolean parse(String json) throws ConversionException
 	{
-		return (JsonBoolean) JsonElement.parse(string);
-	}
+		Objects.requireNonNull(json);
 
-	public static String format(JsonBoolean jsonBoolean)
-	{
-		Objects.requireNonNull(jsonBoolean);
-		return JsonElement.format(jsonBoolean);
+		JsonElement element = JsonElement.parse(json);
+		if (element.getType() != JsonElement.Type.BOOLEAN)
+			throw new ConversionException("the specified JsonElement is not a JsonBoolean");
+		return (JsonBoolean) element;
 	}
 }
