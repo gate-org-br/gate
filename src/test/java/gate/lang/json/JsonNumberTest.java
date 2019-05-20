@@ -13,7 +13,7 @@ public class JsonNumberTest
 	{
 		try
 		{
-			assertEquals(new JsonNumber(30.0), JsonNumber.parse(JsonNumber.format(new JsonNumber(30.0))));
+			assertEquals(JsonNumber.valueOf(30.0), JsonNumber.parse(JsonNumber.valueOf(30.0).toString()));
 		} catch (ConversionException ex)
 		{
 			fail(ex.getMessage());

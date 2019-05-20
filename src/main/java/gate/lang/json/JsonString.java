@@ -19,7 +19,7 @@ public class JsonString implements JsonElement
 
 	private final String value;
 
-	public JsonString(String value)
+	private JsonString(String value)
 	{
 		this.value = value;
 	}
@@ -79,19 +79,8 @@ public class JsonString implements JsonElement
 		return (JsonString) element;
 	}
 
-	/**
-	 * Formats the specified JsonString into a JSON formatted string.
-	 *
-	 * @param jsonString the JsonString object to be formatted on JSON notation
-	 *
-	 * @return a JSON formatted string representing the specified JsonString
-	 *
-	 * @throws NullPointerException if any of the parameters is null
-	 */
-	public static String format(JsonString jsonString)
+	public static JsonString valueOf(String string)
 	{
-		Objects.requireNonNull(jsonString);
-		return JsonElement.format(jsonString);
+		return new JsonString(string);
 	}
-
 }

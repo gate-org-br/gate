@@ -34,10 +34,10 @@ public class ConverterTest
 		try
 		{
 			JsonObject object = new JsonObject();
-			object.put("id", new JsonNumber(1));
-			object.put("name", new JsonString("Jonh"));
-			object.put("birthdate", new JsonString(Converter.toString(LocalDate.of(2000, 1, 1))));
-			object.put("contract", new JsonString(new DateInterval(new Date(1, 1, 2010), new Date(1, 1, 2020))
+			object.put("id", JsonNumber.valueOf(1));
+			object.put("name", JsonString.valueOf("Jonh"));
+			object.put("birthdate", JsonString.valueOf(Converter.toString(LocalDate.of(2000, 1, 1))));
+			object.put("contract", JsonString.valueOf(new DateInterval(new Date(1, 1, 2010), new Date(1, 1, 2020))
 				.toString()));
 			String json = object.toString();
 

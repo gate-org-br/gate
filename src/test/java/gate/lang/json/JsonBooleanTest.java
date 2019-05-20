@@ -13,7 +13,7 @@ public class JsonBooleanTest
 	{
 		try
 		{
-			assertEquals(JsonBoolean.TRUE, JsonBoolean.parse(JsonBoolean.format(JsonBoolean.TRUE)));
+			assertEquals(JsonBoolean.TRUE, JsonBoolean.parse(JsonBoolean.TRUE.toString()));
 		} catch (ConversionException ex)
 		{
 			fail(ex.getMessage());
