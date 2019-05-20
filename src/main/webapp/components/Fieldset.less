@@ -76,23 +76,23 @@ fieldset
 
 	> label, > fieldset
 	{
-		&.x1, &[x1] { width: 100%;
-			      @media only screen and (min-width: @phone) { width: 50%; }
-			      @media only screen and (min-width: @tablet) { width: 25%; }
-			      @media only screen and (min-width: @notebook) { width: 12.5%; }
-			      @media only screen and (min-width: @desktop) { width: 6.25%; }
+		&.x1, &[x1], &[data-size="1"] { width: 100%;
+						@media only screen and (min-width: @phone) { width: 50%; }
+						@media only screen and (min-width: @tablet) { width: 25%; }
+						@media only screen and (min-width: @notebook) { width: 12.5%; }
+						@media only screen and (min-width: @desktop) { width: 6.25%; }
 		}
-		&.x2, &[x2] { width: 100%;
-			      @media only screen and (min-width: @tablet) { width: 50%; }
-			      @media only screen and (min-width: @notebook) { width: 25%; }
-			      @media only screen and (min-width: @desktop) { width: 12.5%; }
+		&.x2, &[x2], &[data-size="2"] { width: 100%;
+						@media only screen and (min-width: @tablet) { width: 50%; }
+						@media only screen and (min-width: @notebook) { width: 25%; }
+						@media only screen and (min-width: @desktop) { width: 12.5%; }
 		}
-		&.x4, &[x4] { width: 100%;
-			      @media only screen and (min-width: @notebook) { width: 50%; }
-			      @media only screen and (min-width: @desktop) { width: 25%; }
+		&.x4, &[x4], &[data-size="4"] { width: 100%;
+						@media only screen and (min-width: @notebook) { width: 50%; }
+						@media only screen and (min-width: @desktop) { width: 25%; }
 		}
-		&.x8, &[x8] { width: 100%;
-			      @media only screen and (min-width: @desktop) { width: 50%; }
+		&.x8, &[x8], &[data-size="8"] { width: 100%;
+						@media only screen and (min-width: @desktop) { width: 50%; }
 		}
 	}
 

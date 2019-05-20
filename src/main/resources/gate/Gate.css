@@ -637,14 +637,18 @@ fieldset > div {
 fieldset > label.x1,
 fieldset > fieldset.x1,
 fieldset > label[x1],
-fieldset > fieldset[x1] {
+fieldset > fieldset[x1],
+fieldset > label[data-size="1"],
+fieldset > fieldset[data-size="1"] {
   width: 100%;
 }
 @media only screen and (min-width: 576px) {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
-  fieldset > fieldset[x1] {
+  fieldset > fieldset[x1],
+  fieldset > label[data-size="1"],
+  fieldset > fieldset[data-size="1"] {
     width: 50%;
   }
 }
@@ -652,7 +656,9 @@ fieldset > fieldset[x1] {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
-  fieldset > fieldset[x1] {
+  fieldset > fieldset[x1],
+  fieldset > label[data-size="1"],
+  fieldset > fieldset[data-size="1"] {
     width: 25%;
   }
 }
@@ -660,7 +666,9 @@ fieldset > fieldset[x1] {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
-  fieldset > fieldset[x1] {
+  fieldset > fieldset[x1],
+  fieldset > label[data-size="1"],
+  fieldset > fieldset[data-size="1"] {
     width: 12.5%;
   }
 }
@@ -668,21 +676,27 @@ fieldset > fieldset[x1] {
   fieldset > label.x1,
   fieldset > fieldset.x1,
   fieldset > label[x1],
-  fieldset > fieldset[x1] {
+  fieldset > fieldset[x1],
+  fieldset > label[data-size="1"],
+  fieldset > fieldset[data-size="1"] {
     width: 6.25%;
   }
 }
 fieldset > label.x2,
 fieldset > fieldset.x2,
 fieldset > label[x2],
-fieldset > fieldset[x2] {
+fieldset > fieldset[x2],
+fieldset > label[data-size="2"],
+fieldset > fieldset[data-size="2"] {
   width: 100%;
 }
 @media only screen and (min-width: 768px) {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
-  fieldset > fieldset[x2] {
+  fieldset > fieldset[x2],
+  fieldset > label[data-size="2"],
+  fieldset > fieldset[data-size="2"] {
     width: 50%;
   }
 }
@@ -690,7 +704,9 @@ fieldset > fieldset[x2] {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
-  fieldset > fieldset[x2] {
+  fieldset > fieldset[x2],
+  fieldset > label[data-size="2"],
+  fieldset > fieldset[data-size="2"] {
     width: 25%;
   }
 }
@@ -698,21 +714,27 @@ fieldset > fieldset[x2] {
   fieldset > label.x2,
   fieldset > fieldset.x2,
   fieldset > label[x2],
-  fieldset > fieldset[x2] {
+  fieldset > fieldset[x2],
+  fieldset > label[data-size="2"],
+  fieldset > fieldset[data-size="2"] {
     width: 12.5%;
   }
 }
 fieldset > label.x4,
 fieldset > fieldset.x4,
 fieldset > label[x4],
-fieldset > fieldset[x4] {
+fieldset > fieldset[x4],
+fieldset > label[data-size="4"],
+fieldset > fieldset[data-size="4"] {
   width: 100%;
 }
 @media only screen and (min-width: 992px) {
   fieldset > label.x4,
   fieldset > fieldset.x4,
   fieldset > label[x4],
-  fieldset > fieldset[x4] {
+  fieldset > fieldset[x4],
+  fieldset > label[data-size="4"],
+  fieldset > fieldset[data-size="4"] {
     width: 50%;
   }
 }
@@ -720,21 +742,27 @@ fieldset > fieldset[x4] {
   fieldset > label.x4,
   fieldset > fieldset.x4,
   fieldset > label[x4],
-  fieldset > fieldset[x4] {
+  fieldset > fieldset[x4],
+  fieldset > label[data-size="4"],
+  fieldset > fieldset[data-size="4"] {
     width: 25%;
   }
 }
 fieldset > label.x8,
 fieldset > fieldset.x8,
 fieldset > label[x8],
-fieldset > fieldset[x8] {
+fieldset > fieldset[x8],
+fieldset > label[data-size="8"],
+fieldset > fieldset[data-size="8"] {
   width: 100%;
 }
 @media only screen and (min-width: 1200px) {
   fieldset > label.x8,
   fieldset > fieldset.x8,
   fieldset > label[x8],
-  fieldset > fieldset[x8] {
+  fieldset > fieldset[x8],
+  fieldset > label[data-size="8"],
+  fieldset > fieldset[data-size="8"] {
     width: 50%;
   }
 }
@@ -2430,97 +2458,137 @@ div.LinkControl > ul > li > button:focus {
 @media only screen and (min-width: 768px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
-    width: 20%;
-  }
-  div.PageControl > ul > li:only-child,
-  div.LinkControl > ul > li:only-child,
-  div.PageControl > ul > li:first-child:nth-last-child(2),
-  div.LinkControl > ul > li:first-child:nth-last-child(2),
-  div.PageControl > ul > li:first-child:nth-last-child(2) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(2) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(3),
-  div.LinkControl > ul > li:first-child:nth-last-child(3),
-  div.PageControl > ul > li:first-child:nth-last-child(3) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(3) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(4),
-  div.LinkControl > ul > li:first-child:nth-last-child(4),
-  div.PageControl > ul > li:first-child:nth-last-child(4) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(4) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(6),
-  div.LinkControl > ul > li:first-child:nth-last-child(6),
-  div.PageControl > ul > li:first-child:nth-last-child(6) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(6) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(7),
-  div.LinkControl > ul > li:first-child:nth-last-child(7),
-  div.PageControl > ul > li:first-child:nth-last-child(7) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(7) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(8),
-  div.LinkControl > ul > li:first-child:nth-last-child(8),
-  div.PageControl > ul > li:first-child:nth-last-child(8) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(8) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(16),
-  div.LinkControl > ul > li:first-child:nth-last-child(16),
-  div.PageControl > ul > li:first-child:nth-last-child(16) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(16) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(24),
-  div.LinkControl > ul > li:first-child:nth-last-child(24),
-  div.PageControl > ul > li:first-child:nth-last-child(24) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(24) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(32),
-  div.LinkControl > ul > li:first-child:nth-last-child(32),
-  div.PageControl > ul > li:first-child:nth-last-child(32) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(32) ~ li {
     width: 25%;
+  }
+  div.PageControl > ul > li:first-child:nth-last-child(5),
+  div.LinkControl > ul > li:first-child:nth-last-child(5),
+  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(10),
+  div.LinkControl > ul > li:first-child:nth-last-child(10),
+  div.PageControl > ul > li:first-child:nth-last-child(10) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(10) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(15),
+  div.LinkControl > ul > li:first-child:nth-last-child(15),
+  div.PageControl > ul > li:first-child:nth-last-child(15) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(15) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(20),
+  div.LinkControl > ul > li:first-child:nth-last-child(20),
+  div.PageControl > ul > li:first-child:nth-last-child(20) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(20) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(25),
+  div.LinkControl > ul > li:first-child:nth-last-child(25),
+  div.PageControl > ul > li:first-child:nth-last-child(25) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(25) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(30),
+  div.LinkControl > ul > li:first-child:nth-last-child(30),
+  div.PageControl > ul > li:first-child:nth-last-child(30) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(30) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(35),
+  div.LinkControl > ul > li:first-child:nth-last-child(35),
+  div.PageControl > ul > li:first-child:nth-last-child(35) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(35) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(40),
+  div.LinkControl > ul > li:first-child:nth-last-child(40),
+  div.PageControl > ul > li:first-child:nth-last-child(40) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(40) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(45),
+  div.LinkControl > ul > li:first-child:nth-last-child(45),
+  div.PageControl > ul > li:first-child:nth-last-child(45) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(45) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(50),
+  div.LinkControl > ul > li:first-child:nth-last-child(50),
+  div.PageControl > ul > li:first-child:nth-last-child(50) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(50) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(55),
+  div.LinkControl > ul > li:first-child:nth-last-child(55),
+  div.PageControl > ul > li:first-child:nth-last-child(55) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(55) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(60),
+  div.LinkControl > ul > li:first-child:nth-last-child(60),
+  div.PageControl > ul > li:first-child:nth-last-child(60) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(60) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(65),
+  div.LinkControl > ul > li:first-child:nth-last-child(65),
+  div.PageControl > ul > li:first-child:nth-last-child(65) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(65) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(70),
+  div.LinkControl > ul > li:first-child:nth-last-child(70),
+  div.PageControl > ul > li:first-child:nth-last-child(70) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(70) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(75),
+  div.LinkControl > ul > li:first-child:nth-last-child(75),
+  div.PageControl > ul > li:first-child:nth-last-child(75) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(75) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(80),
+  div.LinkControl > ul > li:first-child:nth-last-child(80),
+  div.PageControl > ul > li:first-child:nth-last-child(80) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(80) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(85),
+  div.LinkControl > ul > li:first-child:nth-last-child(85),
+  div.PageControl > ul > li:first-child:nth-last-child(85) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(85) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(90),
+  div.LinkControl > ul > li:first-child:nth-last-child(90),
+  div.PageControl > ul > li:first-child:nth-last-child(90) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(90) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(95),
+  div.LinkControl > ul > li:first-child:nth-last-child(95),
+  div.PageControl > ul > li:first-child:nth-last-child(95) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(95) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(100),
+  div.LinkControl > ul > li:first-child:nth-last-child(100),
+  div.PageControl > ul > li:first-child:nth-last-child(100) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(100) ~ li {
+    width: 20%;
   }
 }
 @media only screen and (min-width: 1200px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
-    width: 10%;
-  }
-  div.PageControl > ul > li:only-child,
-  div.LinkControl > ul > li:only-child,
-  div.PageControl > ul > li:first-child:nth-last-child(2),
-  div.LinkControl > ul > li:first-child:nth-last-child(2),
-  div.PageControl > ul > li:first-child:nth-last-child(2) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(2) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(3),
-  div.LinkControl > ul > li:first-child:nth-last-child(3),
-  div.PageControl > ul > li:first-child:nth-last-child(3) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(3) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(4),
-  div.LinkControl > ul > li:first-child:nth-last-child(4),
-  div.PageControl > ul > li:first-child:nth-last-child(4) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(4) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(5),
-  div.LinkControl > ul > li:first-child:nth-last-child(5),
-  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(6),
-  div.LinkControl > ul > li:first-child:nth-last-child(6),
-  div.PageControl > ul > li:first-child:nth-last-child(6) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(6) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(7),
-  div.LinkControl > ul > li:first-child:nth-last-child(7),
-  div.PageControl > ul > li:first-child:nth-last-child(7) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(7) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(8),
-  div.LinkControl > ul > li:first-child:nth-last-child(8),
-  div.PageControl > ul > li:first-child:nth-last-child(8) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(8) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(16),
-  div.LinkControl > ul > li:first-child:nth-last-child(16),
-  div.PageControl > ul > li:first-child:nth-last-child(16) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(16) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(24),
-  div.LinkControl > ul > li:first-child:nth-last-child(24),
-  div.PageControl > ul > li:first-child:nth-last-child(24) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(24) ~ li,
-  div.PageControl > ul > li:first-child:nth-last-child(32),
-  div.LinkControl > ul > li:first-child:nth-last-child(32),
-  div.PageControl > ul > li:first-child:nth-last-child(32) ~ li,
-  div.LinkControl > ul > li:first-child:nth-last-child(32) ~ li {
     width: 12.5%;
+  }
+  div.PageControl > ul > li:first-child:nth-last-child(10),
+  div.LinkControl > ul > li:first-child:nth-last-child(10),
+  div.PageControl > ul > li:first-child:nth-last-child(10) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(10) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(20),
+  div.LinkControl > ul > li:first-child:nth-last-child(20),
+  div.PageControl > ul > li:first-child:nth-last-child(20) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(20) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(30),
+  div.LinkControl > ul > li:first-child:nth-last-child(30),
+  div.PageControl > ul > li:first-child:nth-last-child(30) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(30) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(40),
+  div.LinkControl > ul > li:first-child:nth-last-child(40),
+  div.PageControl > ul > li:first-child:nth-last-child(40) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(40) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(50),
+  div.LinkControl > ul > li:first-child:nth-last-child(50),
+  div.PageControl > ul > li:first-child:nth-last-child(50) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(50) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(60),
+  div.LinkControl > ul > li:first-child:nth-last-child(60),
+  div.PageControl > ul > li:first-child:nth-last-child(60) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(60) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(70),
+  div.LinkControl > ul > li:first-child:nth-last-child(70),
+  div.PageControl > ul > li:first-child:nth-last-child(70) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(70) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(80),
+  div.LinkControl > ul > li:first-child:nth-last-child(80),
+  div.PageControl > ul > li:first-child:nth-last-child(80) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(80) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(90),
+  div.LinkControl > ul > li:first-child:nth-last-child(90),
+  div.PageControl > ul > li:first-child:nth-last-child(90) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(90) ~ li,
+  div.PageControl > ul > li:first-child:nth-last-child(100),
+  div.LinkControl > ul > li:first-child:nth-last-child(100),
+  div.PageControl > ul > li:first-child:nth-last-child(100) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(100) ~ li {
+    width: 10%;
   }
 }
 div.PageControl > div,
