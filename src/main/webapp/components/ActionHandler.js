@@ -57,6 +57,9 @@ function ActionHandler(element)
 				parent = parent.parentNode)
 				if (parent.onclick
 					|| parent.tagName.toLowerCase() === 'a'
+					|| parent.tagName.toLowerCase() === 'input'
+					|| parent.tagName.toLowerCase() === 'select'
+					|| parent.tagName.toLowerCase() === 'textarea'
 					|| parent.tagName.toLowerCase() === 'button')
 					return;
 			switch (this.getAttribute("data-method") ?
