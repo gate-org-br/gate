@@ -52,12 +52,12 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	Array.from(document.querySelectorAll("input.SELECTOR")).forEach(function (element)
+	Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 	{
-		element.onchange = function ()
+		element.addEventListener("change", function ()
 		{
 			var selector = 'input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]';
 			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
-		};
+		});
 	});
 });

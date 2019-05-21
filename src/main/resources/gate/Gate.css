@@ -1076,7 +1076,10 @@ table tr td {
   vertical-align: middle;
   background-color: transparent;
 }
-table tr td > input:only-child {
+table tr td > select:only-child,
+table tr td > textarea:only-child,
+table tr td > input[type='text']:only-child,
+table tr td > input[type='password']:only-child {
   width: 100%;
   height: 32px;
   text-indent: 4px;
