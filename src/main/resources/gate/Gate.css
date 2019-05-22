@@ -2372,7 +2372,7 @@ div.LinkControl {
 }
 div.PageControl:first-child,
 div.LinkControl:first-child {
-  margin-top: 0px;
+  margin-top: 4px;
 }
 div.PageControl > ul,
 div.LinkControl > ul {
@@ -2457,6 +2457,22 @@ div.PageControl > ul > li > button:focus,
 div.LinkControl > ul > li > button:focus {
   border: none;
   outline: none;
+}
+div.PageControl > ul > li > a[data-icon],
+div.LinkControl > ul > li > a[data-icon],
+div.PageControl > ul > li > button[data-icon],
+div.LinkControl > ul > li > button[data-icon] {
+  text-align: left;
+}
+div.PageControl > ul > li > a[data-icon]:after,
+div.LinkControl > ul > li > a[data-icon]:after,
+div.PageControl > ul > li > button[data-icon]:after,
+div.LinkControl > ul > li > button[data-icon]:after {
+  width: 16px;
+  height: 100%;
+  font-family: gate;
+  text-align: center;
+  content: attr(data-icon);
 }
 @media only screen and (min-width: 768px) {
   div.PageControl > ul > li,
@@ -2607,28 +2623,11 @@ div.LinkControl > div iframe {
   width: 100%;
   border: none;
 }
-div.PageControl {
-  border: none;
-  margin: 10px 0 10px 0;
-  background-color: transparent;
-}
 div.PageControl > div {
   display: none;
 }
 div.PageControl > ul > li > div {
   display: none;
-}
-div.LinkControl > ul > li > a[data-icon],
-div.LinkControl > ul > li > button[data-icon] {
-  text-align: left;
-}
-div.LinkControl > ul > li > a[data-icon]:after,
-div.LinkControl > ul > li > button[data-icon]:after {
-  width: 16px;
-  height: 100%;
-  font-family: gate;
-  text-align: center;
-  content: attr(data-icon);
 }
 ul.HMenu {
   margin: 0;

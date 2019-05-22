@@ -5,7 +5,7 @@ div.LinkControl {
 	margin-bottom: 4px;
 	border-radius: 8px 8px 0 0;
 	background-color: @main_shaded2;
-	&:first-child { margin-top: 0px }
+	&:first-child { margin-top: 4px }
 
 	> ul { border: none;
 	       margin: 0px;
@@ -58,6 +58,14 @@ div.LinkControl {
 
 				 &:focus { border: none;
 					   outline: none }
+
+				 &[data-icon] { text-align: left;
+						&:after { width: 16px;
+							  height: 100%;
+							  font-family: gate;
+							  text-align: center;
+							  content: attr(data-icon); }
+				 }
 		      }
 
 		      @media only screen and (min-width: @tablet)
@@ -149,29 +157,12 @@ div.LinkControl {
 			 border: none; }
 	}
 
+
+
 }
 
 
-
-div.PageControl { border: none;
-		  margin: 10px 0 10px 0;
-		  background-color: transparent;
-
-		  > div { display: none }
-
-		  > ul > li > div { display: none }
-}
-
-
-
-
-
-div.LinkControl > ul > li > a[data-icon],
-div.LinkControl > ul > li > button[data-icon] { text-align: left;
-
-						&:after { width: 16px;
-							  height: 100%;
-							  font-family: gate;
-							  text-align: center;
-							  content: attr(data-icon); }
+div.PageControl { 
+	> div { display: none }
+	> ul > li > div { display: none }
 }
