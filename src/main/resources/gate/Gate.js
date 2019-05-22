@@ -1526,13 +1526,13 @@ window.addEventListener("load", function ()
 		};
 	});
 
-	Array.from(document.querySelectorAll("input.SELECTOR")).forEach(function (element)
+	Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 	{
-		element.onchange = function ()
+		element.addEventListener("change", function ()
 		{
 			var selector = 'input[type="checkbox"][name="' + this.getAttribute('data-target') + '"]';
 			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
-		};
+		});
 	});
 });
 class Objects
@@ -3149,6 +3149,9 @@ function ActionHandler(element)
 				parent = parent.parentNode)
 				if (parent.onclick
 					|| parent.tagName.toLowerCase() === 'a'
+					|| parent.tagName.toLowerCase() === 'input'
+					|| parent.tagName.toLowerCase() === 'select'
+					|| parent.tagName.toLowerCase() === 'textarea'
 					|| parent.tagName.toLowerCase() === 'button')
 					return;
 			switch (this.getAttribute("data-method") ?
