@@ -27,6 +27,18 @@ table { .margin();
 							height: 32px;
 							text-indent: 4px;}
 
+		  > form 
+		  {
+			  height: 32px;
+
+			  > select:only-child,
+				  > textarea:only-child,
+				  > input[type='text']:only-child,
+				  > input[type='password']:only-child { width: 100%;
+								height: 32px;
+								text-indent: 4px;}
+		  }
+
 		  &.TOOLTIP { color: blue; 
 			      padding: 12px; 
 			      background-image: none; 
