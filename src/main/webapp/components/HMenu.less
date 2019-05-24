@@ -144,4 +144,20 @@ ul.HMenu
 			.full();
 		}
 	}
+
+	@media only screen and (min-width: @widescreen)
+		{
+		> li:first-child:nth-last-child(11),
+			> li:first-child:nth-last-child(11) ~ li,
+			> li:first-child:nth-last-child(12),
+			> li:first-child:nth-last-child(12) ~ li,
+			> li:first-child:nth-last-child(13),
+			> li:first-child:nth-last-child(13) ~ li,
+			> li:first-child:nth-last-child(14),
+			> li:first-child:nth-last-child(14) ~ li
+			{
+			.full();
+		}
+	}
+
 }
