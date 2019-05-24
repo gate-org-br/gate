@@ -82,57 +82,44 @@
 
 		       > *:only-child,
 			       > *:first-child:nth-last-child(2),
-			       > *:first-child:nth-last-child(2) ~ *
-			       {
-			       .full();
+			       > *:first-child:nth-last-child(2) ~ * { .full(); }
+
+		       @media only screen and (min-width: @phone) { > *:first-child:nth-last-child(3),
+									    > *:first-child:nth-last-child(3) ~ *,
+									    > *:first-child:nth-last-child(4),
+									    > *:first-child:nth-last-child(4) ~ *,
+									    > *:first-child:nth-last-child(5),
+									    > *:first-child:nth-last-child(5) ~ *,
+									    > *:first-child:nth-last-child(6),
+									    > *:first-child:nth-last-child(6) ~ * { .full(); }
 		       }
 
-		       @media only screen and (min-width: @phone)
-			       {
-			       > *:first-child:nth-last-child(3),
-				       > *:first-child:nth-last-child(3) ~ *,
-				       > *:first-child:nth-last-child(4),
-				       > *:first-child:nth-last-child(4) ~ *,
-				       > *:first-child:nth-last-child(5),
-				       > *:first-child:nth-last-child(5) ~ *,
-				       > *:first-child:nth-last-child(6),
-				       > *:first-child:nth-last-child(6) ~ *{
-				       .full();
-			       }
+		       @media only screen and (min-width: @tablet) { > *:first-child:nth-last-child(7),
+									     > *:first-child:nth-last-child(7) ~ *,
+									     > *:first-child:nth-last-child(8),
+									     > *:first-child:nth-last-child(8) ~ * { .full(); }
 		       }
 
-		       @media only screen and (min-width: @tablet)
-			       {
-
-			       > *:first-child:nth-last-child(7),
-				       > *:first-child:nth-last-child(7) ~ *,
-				       > *:first-child:nth-last-child(8),
-				       > *:first-child:nth-last-child(8) ~ *{
-				       .full();
-			       }
+		       @media only screen and (min-width: @notebook) { > *:first-child:nth-last-child(9),
+									       > *:first-child:nth-last-child(9) ~ *,
+									       > *:first-child:nth-last-child(10),
+									       > *:first-child:nth-last-child(10) ~ * { .full(); }
 		       }
 
-		       @media only screen and (min-width: @notebook)
-			       {
-
-			       > *:first-child:nth-last-child(9),
-				       > *:first-child:nth-last-child(9) ~ *,
-				       > *:first-child:nth-last-child(10),
-				       > *:first-child:nth-last-child(10) ~ *{
-				       .full();
-			       }
+		       @media only screen and (min-width: @desktop) { > *:first-child:nth-last-child(11),
+									      > *:first-child:nth-last-child(11) ~ *,
+									      > *:first-child:nth-last-child(12),
+									      > *:first-child:nth-last-child(12) ~ * { .full(); }
 		       }
 
-		       @media only screen and (min-width: @desktop)
-			       {
-
-			       > *:first-child:nth-last-child(11),
-				       > *:first-child:nth-last-child(11) ~ *,
-				       > *:first-child:nth-last-child(12),
-				       > *:first-child:nth-last-child(12) ~ *
-				       {
-				       .full();
-			       }
+		       @media only screen and (min-width: @widescreen) { > *:first-child:nth-last-child(13),
+										 > *:first-child:nth-last-child(13) ~ *,
+										 > *:first-child:nth-last-child(14),
+										 > *:first-child:nth-last-child(14) ~ *,
+										 > *:first-child:nth-last-child(15),
+										 > *:first-child:nth-last-child(15) ~ *,
+										 > *:first-child:nth-last-child(16),
+										 > *:first-child:nth-last-child(16) ~ * { .full(); }
 		       }
 
 } 

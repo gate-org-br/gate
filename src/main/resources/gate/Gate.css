@@ -446,6 +446,11 @@ ul.DeskPane > li {
     width: calc(25% - 8px);
   }
 }
+@media only screen and (min-width: 1800px) {
+  ul.DeskPane > li {
+    width: calc(25% - 8px);
+  }
+}
 ul.DeskPane > li:hover {
   border-color: #FFFACD;
   background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
@@ -1357,6 +1362,42 @@ table[data-c20] > * > tr > *:nth-child(20) {
   }
   table[data-colapse="Desktop"] > tfoot > tr,
   table[data-colapse="Desktop"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1800px) {
+  table[data-colapse="Widescreen"] > col {
+    display: none;
+  }
+  table[data-colapse="Widescreen"] > thead {
+    display: none;
+  }
+  table[data-colapse="Widescreen"] > caption {
+    text-align: center;
+    text-indent: 0;
+  }
+  table[data-colapse="Widescreen"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: block;
+    border-radius: 5px;
+    border: 2px solid #CCCCCC;
+  }
+  table[data-colapse="Widescreen"] > tbody > tr > td {
+    margin: 4px;
+    display: flex;
+  }
+  table[data-colapse="Widescreen"] > tbody > tr > td::before {
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-colapse="Widescreen"] > tfoot > tr,
+  table[data-colapse="Widescreen"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2313,6 +2354,49 @@ table.TREEVIEW > tbody > tr > td:first-child {
     margin-left: 4px;
   }
 }
+@media only screen and (min-width: 1800px) {
+  *.COOLBAR > *:first-child:nth-last-child(13),
+  *.Coolbar > *:first-child:nth-last-child(13),
+  *.COOLBAR > *:first-child:nth-last-child(13) ~ *,
+  *.Coolbar > *:first-child:nth-last-child(13) ~ *,
+  *.COOLBAR > *:first-child:nth-last-child(14),
+  *.Coolbar > *:first-child:nth-last-child(14),
+  *.COOLBAR > *:first-child:nth-last-child(14) ~ *,
+  *.Coolbar > *:first-child:nth-last-child(14) ~ *,
+  *.COOLBAR > *:first-child:nth-last-child(15),
+  *.Coolbar > *:first-child:nth-last-child(15),
+  *.COOLBAR > *:first-child:nth-last-child(15) ~ *,
+  *.Coolbar > *:first-child:nth-last-child(15) ~ *,
+  *.COOLBAR > *:first-child:nth-last-child(16),
+  *.Coolbar > *:first-child:nth-last-child(16),
+  *.COOLBAR > *:first-child:nth-last-child(16) ~ *,
+  *.Coolbar > *:first-child:nth-last-child(16) ~ * {
+    width: auto;
+    padding: 4px;
+    font-size: 10px;
+    min-width: 90px;
+    justify-content: space-between;
+  }
+  *.COOLBAR > *:first-child:nth-last-child(13) > i,
+  *.Coolbar > *:first-child:nth-last-child(13) > i,
+  *.COOLBAR > *:first-child:nth-last-child(13) ~ * > i,
+  *.Coolbar > *:first-child:nth-last-child(13) ~ * > i,
+  *.COOLBAR > *:first-child:nth-last-child(14) > i,
+  *.Coolbar > *:first-child:nth-last-child(14) > i,
+  *.COOLBAR > *:first-child:nth-last-child(14) ~ * > i,
+  *.Coolbar > *:first-child:nth-last-child(14) ~ * > i,
+  *.COOLBAR > *:first-child:nth-last-child(15) > i,
+  *.Coolbar > *:first-child:nth-last-child(15) > i,
+  *.COOLBAR > *:first-child:nth-last-child(15) ~ * > i,
+  *.Coolbar > *:first-child:nth-last-child(15) ~ * > i,
+  *.COOLBAR > *:first-child:nth-last-child(16) > i,
+  *.Coolbar > *:first-child:nth-last-child(16) > i,
+  *.COOLBAR > *:first-child:nth-last-child(16) ~ * > i,
+  *.Coolbar > *:first-child:nth-last-child(16) ~ * > i {
+    font-size: 12px;
+    margin-left: 4px;
+  }
+}
 div.Toolbar,
 div.TOOLBAR {
   margin: 0;
@@ -2880,6 +2964,53 @@ ul.HMenu > li:first-child:nth-last-child(2) ~ li > a > i {
   ul.HMenu > li:first-child:nth-last-child(9) ~ li > a > i,
   ul.HMenu > li:first-child:nth-last-child(10) > a > i,
   ul.HMenu > li:first-child:nth-last-child(10) ~ li > a > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1800px) {
+  ul.HMenu > li:first-child:nth-last-child(11),
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(12),
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(13),
+  ul.HMenu > li:first-child:nth-last-child(13) ~ li,
+  ul.HMenu > li:first-child:nth-last-child(14),
+  ul.HMenu > li:first-child:nth-last-child(14) ~ li {
+    flex-grow: 1;
+    min-width: 120px;
+    max-width: 200px;
+  }
+  ul.HMenu > li:first-child:nth-last-child(11):empty,
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(12):empty,
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(13):empty,
+  ul.HMenu > li:first-child:nth-last-child(13) ~ li:empty,
+  ul.HMenu > li:first-child:nth-last-child(14):empty,
+  ul.HMenu > li:first-child:nth-last-child(14) ~ li:empty {
+    min-width: none;
+    max-width: none;
+  }
+  ul.HMenu > li:first-child:nth-last-child(11) > a,
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(12) > a,
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(13) > a,
+  ul.HMenu > li:first-child:nth-last-child(13) ~ li > a,
+  ul.HMenu > li:first-child:nth-last-child(14) > a,
+  ul.HMenu > li:first-child:nth-last-child(14) ~ li > a {
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(11) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(12) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(13) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(13) ~ li > a > i,
+  ul.HMenu > li:first-child:nth-last-child(14) > a > i,
+  ul.HMenu > li:first-child:nth-last-child(14) ~ li > a > i {
     font-size: 12px;
   }
 }
