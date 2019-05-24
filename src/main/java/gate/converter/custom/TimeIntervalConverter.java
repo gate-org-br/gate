@@ -21,26 +21,24 @@ public class TimeIntervalConverter implements Converter
 {
 
 	private static final List<String> SUFIXES
-			= Arrays.asList("time1", "time2");
+		= Arrays.asList("time1", "time2");
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
 		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new TimeInterval(string);
-				} catch (ParseException e)
-				{
-					throw new ConversionException(String.format(getDescription()));
-				}
-			}
+			return TimeInterval.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
-		return null;
 	}
 
 	@Override
@@ -97,7 +95,7 @@ public class TimeIntervalConverter implements Converter
 		java.sql.Time value2 = rs.getTime(fields++);
 		if (rs.wasNull())
 			return null;
-		return new TimeInterval(new Time(value1), new Time(value2));
+		return new TimeInterval(Time.of(value1), Time.of(value2));
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class TimeIntervalConverter implements Converter
 		java.sql.Time value2 = rs.getTime(fields + ':' + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
-		return new TimeInterval(new Time(value1), new Time(value2));
+		return new TimeInterval(Time.of(value1), Time.of(value2));
 	}
 
 	@Override
@@ -117,8 +115,8 @@ public class TimeIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setTime(fields++, new java.sql.Time(((TimeInterval) value).getTime1().getValue()));
-			ps.setTime(fields++, new java.sql.Time(((TimeInterval) value).getTime2().getValue()));
+			ps.setTime(fields++, new java.sql.Time(((TimeInterval) value).getMin().getValue()));
+			ps.setTime(fields++, new java.sql.Time(((TimeInterval) value).getMax().getValue()));
 		} else
 		{
 			ps.setNull(fields++, Types.TIME);

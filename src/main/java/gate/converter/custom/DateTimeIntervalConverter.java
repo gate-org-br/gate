@@ -21,27 +21,24 @@ public class DateTimeIntervalConverter implements Converter
 {
 
 	private static final List<String> SUFIXES
-			= Arrays.asList("dateTime1", "dateTime2");
+		= Arrays.asList("dateTime1", "dateTime2");
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
-		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new DateTimeInterval(string);
-				} catch (ParseException e)
-				{
-					throw new ConversionException(String.format(getDescription()));
-				}
-			}
-		}
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
 
-		return null;
+		try
+		{
+			return DateTimeInterval.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
+		}
 	}
 
 	@Override
@@ -92,25 +89,25 @@ public class DateTimeIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
-		java.sql.Timestamp value1 = rs.getTimestamp(fields);
+		java.sql.Timestamp min = rs.getTimestamp(fields);
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp value2 = rs.getTimestamp(fields + 1);
+		java.sql.Timestamp max = rs.getTimestamp(fields + 1);
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(new DateTime(value1), new DateTime(value2));
+		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		java.sql.Timestamp value1 = rs.getTimestamp(fields + ":" + SUFIXES.get(0));
+		java.sql.Timestamp min = rs.getTimestamp(fields + ":" + SUFIXES.get(0));
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp value2 = rs.getTimestamp(fields + ":" + SUFIXES.get(1));
+		java.sql.Timestamp max = rs.getTimestamp(fields + ":" + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(new DateTime(value1), new DateTime(value2));
+		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
 	}
 
 	@Override
@@ -118,8 +115,8 @@ public class DateTimeIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getDateTime1().getValue()));
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getDateTime2().getValue()));
+			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMin().getValue()));
+			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMax().getValue()));
 		} else
 		{
 			ps.setNull(fields++, Types.DATE);

@@ -19,18 +19,18 @@ public class JsonObjectTest
 		try
 		{
 			JsonObject object = new JsonObject();
-			object.put("name", JsonString.valueOf("Person 1"));
-			object.put("id", JsonNumber.valueOf(1));
+			object.put("name", JsonString.of("Person 1"));
+			object.put("id", JsonNumber.of(1));
 			object.put("active", JsonBoolean.TRUE);
 
 			JsonArray array = new JsonArray();
-			array.add(JsonString.valueOf("String"));
+			array.add(JsonString.of("String"));
 			array.add(JsonBoolean.TRUE);
-			array.add(JsonNumber.valueOf(4));
+			array.add(JsonNumber.of(4));
 
 			JsonObject object2 = new JsonObject();
-			object2.put("name", JsonString.valueOf("Person 2"));
-			object2.put("id", JsonNumber.valueOf(2));
+			object2.put("name", JsonString.of("Person 2"));
+			object2.put("id", JsonNumber.of(2));
 
 			array.add(object2);
 
@@ -69,7 +69,7 @@ public class JsonObjectTest
 			JsonObject object = JsonObject.parse(
 				"{ \"active\": \r\n\t         true, \"name\"     :\n\t\n\t    \"Jonh\"                      }");
 			assertEquals(JsonBoolean.TRUE, object.get("active"));
-			assertEquals(JsonString.valueOf("Jonh"), object.get("name"));
+			assertEquals(JsonString.of("Jonh"), object.get("name"));
 		} catch (ConversionException ex)
 		{
 			fail(ex.getMessage());

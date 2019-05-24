@@ -29,8 +29,8 @@ public class JsonArrayTest
 		{
 			JsonArray array = new JsonArray();
 			array.add(JsonBoolean.FALSE);
-			array.add(JsonString.valueOf("string"));
-			array.add(JsonNumber.valueOf(20));
+			array.add(JsonString.of("string"));
+			array.add(JsonNumber.of(20));
 
 			assertEquals(array, JsonArray.parse(JsonArray.format(array)));
 		} catch (ConversionException ex)

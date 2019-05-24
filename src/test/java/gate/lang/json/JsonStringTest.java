@@ -13,8 +13,8 @@ public class JsonStringTest
 	{
 		try
 		{
-			assertEquals(JsonString.valueOf("String"), JsonString
-				.parse(JsonString.valueOf("String").toString()));
+			assertEquals(JsonString.of("String"), JsonString
+				.parse(JsonString.of("String").toString()));
 		} catch (ConversionException ex)
 		{
 			fail(ex.getMessage());

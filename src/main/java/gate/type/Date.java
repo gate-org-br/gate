@@ -17,132 +17,9 @@ public final class Date implements Comparable<Date>, Serializable
 {
 
 	private static final long serialVersionUID = 1L;
-
-	public class Field implements Serializable
-	{
-
-		private final int id;
-
-		public Field(int id)
-		{
-			this.id = id;
-		}
-
-		public int getId()
-		{
-			return id;
-		}
-
-		public String getName()
-		{
-			return toCalendar().getDisplayName(id, Calendar.SHORT, new Locale("pt", "br"));
-		}
-
-		public String getFullName()
-		{
-			return toCalendar().getDisplayName(id, Calendar.LONG, new Locale("pt", "br"));
-		}
-
-		public int getValue()
-		{
-			return toCalendar().get(id);
-		}
-
-		public Date getMin()
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, calendar.getActualMinimum(id));
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		public Date getMax()
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, calendar.getActualMaximum(id));
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		public DateInterval getDateInterval()
-		{
-			return new DateInterval(getMin(), getMax());
-		}
-
-		public List<Date> getAll()
-		{
-			Calendar calendar = toCalendar();
-			List<Date> dates = new ArrayList<>();
-			for (int i = calendar.getActualMinimum(id); i <= calendar.getActualMaximum(id); i++)
-			{
-				calendar.set(id, i);
-				dates.add(new Date(calendar.getTimeInMillis()));
-			}
-			return dates;
-		}
-
-		public Date add(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.add(id, value);
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		public Date rem(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.add(id, -value);
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		public Date roll(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.roll(id, value);
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		public Date set(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, value);
-			return new Date(calendar.getTimeInMillis());
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.valueOf(getValue());
-		}
-	}
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	private final long value;
-
-	public Date()
-	{
-		this(System.currentTimeMillis());
-	}
-
-	public Date(Calendar calendar)
-	{
-		this(calendar.getTimeInMillis());
-	}
-
-	public Date(java.util.Date date)
-	{
-		this(date.getTime());
-	}
-
-	public Date(int day, int month, int year)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, day);
-		calendar.set(Calendar.MONTH, month);
-		calendar.set(Calendar.YEAR, year);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		this.value = calendar.getTimeInMillis();
-	}
 
 	public Date(long value)
 	{
@@ -160,34 +37,9 @@ public final class Date implements Comparable<Date>, Serializable
 		return new Month(getMonth().getValue(), getYear().getValue());
 	}
 
-	public Date(String format, String string) throws ParseException
-	{
-		this(new SimpleDateFormat(format).parse(string));
-	}
-
-	public Date(String string) throws ParseException
-	{
-		this("ddMMyyyy", string.replaceAll("[^0123456789]", ""));
-	}
-
 	public DateTime with(Time time)
 	{
-		return new DateTime(this, time);
-	}
-
-	public DateTime with(String time) throws ParseException
-	{
-		return new DateTime(this, new Time(time));
-	}
-
-	public DateTime with(String format, String time) throws ParseException
-	{
-		return new DateTime(this, new Time(format, time));
-	}
-
-	public DateTime with(int h, int m, int s)
-	{
-		return new DateTime(this, new Time(h, m, s, 0));
+		return DateTime.of(this, time);
 	}
 
 	@Override
@@ -285,7 +137,45 @@ public final class Date implements Comparable<Date>, Serializable
 	@Override
 	public String toString()
 	{
-		return format("dd/MM/yyyy");
+		return FORMAT.format(toDate());
+	}
+
+	public static Date now()
+	{
+		return new Date(System.currentTimeMillis());
+	}
+
+	public static Date of(int day, int month, int year)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, day);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return new Date(calendar.getTimeInMillis());
+	}
+
+	public static Date of(String string) throws ParseException
+	{
+		return new Date(FORMAT.parse(string).getTime());
+	}
+
+	public static Date of(String format, String string) throws ParseException
+	{
+		return new Date(new SimpleDateFormat(format).parse(string).getTime());
+	}
+
+	public static Date of(Calendar calendar)
+	{
+		return new Date(calendar.getTimeInMillis());
+	}
+
+	public static Date of(java.util.Date date)
+	{
+		return new Date(date.getTime());
 	}
 
 	public boolean lt(Date date)
@@ -323,4 +213,99 @@ public final class Date implements Comparable<Date>, Serializable
 		return Duration.of(Math.abs(getValue() - date.getValue()) / 1000);
 	}
 
+	public class Field implements Serializable
+	{
+
+		private final int id;
+
+		public Field(int id)
+		{
+			this.id = id;
+		}
+
+		public int getId()
+		{
+			return id;
+		}
+
+		public String getName()
+		{
+			return toCalendar().getDisplayName(id, Calendar.SHORT, new Locale("pt", "br"));
+		}
+
+		public String getFullName()
+		{
+			return toCalendar().getDisplayName(id, Calendar.LONG, new Locale("pt", "br"));
+		}
+
+		public int getValue()
+		{
+			return toCalendar().get(id);
+		}
+
+		public Date getMin()
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, calendar.getActualMinimum(id));
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		public Date getMax()
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, calendar.getActualMaximum(id));
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		public DateInterval getDateInterval()
+		{
+			return new DateInterval(getMin(), getMax());
+		}
+
+		public List<Date> getAll()
+		{
+			Calendar calendar = toCalendar();
+			List<Date> dates = new ArrayList<>();
+			for (int i = calendar.getActualMinimum(id); i <= calendar.getActualMaximum(id); i++)
+			{
+				calendar.set(id, i);
+				dates.add(new Date(calendar.getTimeInMillis()));
+			}
+			return dates;
+		}
+
+		public Date add(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.add(id, value);
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		public Date rem(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.add(id, -value);
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		public Date roll(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.roll(id, value);
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		public Date set(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, value);
+			return new Date(calendar.getTimeInMillis());
+		}
+
+		@Override
+		public String toString()
+		{
+			return String.valueOf(getValue());
+		}
+	}
 }

@@ -90,7 +90,7 @@ public class UserDao extends Dao
 				.set("cellPhone", value.getCellPhone())
 				.set("email", value.getEmail())
 				.set("details", value.getDetails())
-				.set("registration", new DateTime())
+				.set("registration", DateTime.now())
 				.set("photo", value.getPhoto()))
 			.fetchGeneratedKeys(ID.class)
 			.forEach(value::setId);

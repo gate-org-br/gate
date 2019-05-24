@@ -79,7 +79,7 @@ public class JsonString implements JsonElement
 		return (JsonString) element;
 	}
 
-	public static JsonString valueOf(String string)
+	public static JsonString of(String string)
 	{
 		return new JsonString(string);
 	}

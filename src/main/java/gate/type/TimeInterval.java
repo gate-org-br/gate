@@ -6,80 +6,65 @@ import gate.converter.custom.TimeIntervalConverter;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Icon("2167")
 @Converter(TimeIntervalConverter.class)
 public class TimeInterval implements Serializable, Comparable<TimeInterval>
 {
 
+	private final Time min;
+	private final Time max;
+
 	private static final long serialVersionUID = 1L;
-	private final Time time1;
+	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}:[0-9]{2}) - ([0-9]{2}:[0-9]{2})");
 
-	private final Time time2;
-
-	public TimeInterval(String format, String time1, String time2) throws ParseException
+	public TimeInterval(Time min, Time max)
 	{
-		this(new Time(format, time1), new Time(format, time2));
-	}
+		Objects.requireNonNull(min);
+		Objects.requireNonNull(max);
 
-	public TimeInterval(String time1, String time2) throws ParseException
-	{
-		this(new Time(time1), new Time(time2));
-	}
-
-	public TimeInterval(String string) throws ParseException
-	{
-		String value = string.replaceAll("[^0123456789]", "");
-		if (value.length() != 8)
-			throw new IllegalArgumentException(String.format("%s não é um intervalo de horas válido.", string));
-		this.time1 = new Time(value.substring(0, 4));
-		this.time2 = new Time(value.substring(4, 8));
-		if (time1.getValue() > time2.getValue())
+		if (min.getValue() > max.getValue())
 			throw new IllegalArgumentException("time1 must be <= time2");
-		if (time2.getValue() < time1.getValue())
+		if (max.getValue() < min.getValue())
 			throw new IllegalArgumentException("time2 must be >= time1");
-	}
 
-	public TimeInterval(final Time time1, final Time time2)
-	{
-		if (time1.getValue() > time2.getValue())
-			throw new IllegalArgumentException("time1 must be <= time2");
-		if (time2.getValue() < time1.getValue())
-			throw new IllegalArgumentException("time2 must be >= time1");
-		this.time1 = time1;
-		this.time2 = time2;
+		this.min = min;
+		this.max = max;
 	}
 
 	public boolean contains(Time time)
 	{
-		return getTime1().compareTo(time) <= 0 && getTime2().compareTo(time) >= 0;
+		return getMin().compareTo(time) <= 0 && getMax().compareTo(time) >= 0;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof TimeInterval && ((TimeInterval) obj).time1.equals(time1) && ((TimeInterval) obj).time2.equals(time2));
+		return (obj instanceof TimeInterval && ((TimeInterval) obj).min.equals(min) && ((TimeInterval) obj).max.equals(max));
 	}
 
 	public String format(String format)
 	{
-		return String.format("%s - %s", time1.format(format), time2.format(format));
+		return String.format("%s - %s", min.format(format), max.format(format));
 	}
 
-	public Time getTime1()
+	public Time getMin()
 	{
-		return time1;
+		return min;
 	}
 
-	public Time getTime2()
+	public Time getMax()
 	{
-		return time2;
+		return max;
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return (int) (time1.getValue() - time2.getValue());
+		return (int) (min.getValue() - max.getValue());
 	}
 
 	@Override
@@ -90,7 +75,7 @@ public class TimeInterval implements Serializable, Comparable<TimeInterval>
 
 	public long getValue()
 	{
-		return getTime2().getValue() - getTime1().getValue();
+		return getMax().getValue() - getMin().getValue();
 	}
 
 	public Duration getDuration()
@@ -102,5 +87,13 @@ public class TimeInterval implements Serializable, Comparable<TimeInterval>
 	public int compareTo(TimeInterval timeInterval)
 	{
 		return (int) (getValue() - timeInterval.getValue());
+	}
+
+	public static TimeInterval of(String string) throws ParseException
+	{
+		Matcher matcher = PATTERN.matcher(string.trim());
+		if (!matcher.matches())
+			throw new IllegalArgumentException(String.format("%s não é um intervalo de horas válido.", string));
+		return new TimeInterval(Time.of(matcher.group(1)), Time.of(matcher.group(2)));
 	}
 }

@@ -18,25 +18,24 @@ public class DateTimeConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Maxlength.Implementation(16),
-					new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
+		= Arrays.asList(new Maxlength.Implementation(16),
+			new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
 		if (string == null)
 			return null;
-
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
 
 		try
 		{
-			return new DateTime(string);
-		} catch (ParseException e)
+			return DateTime.of(string);
+		} catch (ParseException ex)
 		{
-			throw new ConversionException(String.format(getDescription()));
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
 	}
 
@@ -80,14 +79,14 @@ public class DateTimeConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		java.sql.Timestamp value = rs.getTimestamp(fields);
-		return rs.wasNull() ? null : new DateTime(value);
+		return rs.wasNull() ? null : DateTime.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		java.sql.Timestamp value = rs.getTimestamp(fields);
-		return rs.wasNull() ? null : new DateTime(value);
+		return rs.wasNull() ? null : DateTime.of(value);
 	}
 
 	@Override

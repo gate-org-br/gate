@@ -8,110 +8,70 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Icon("2003")
 @Converter(DateIntervalConverter.class)
 public final class DateInterval implements Serializable, Comparable<DateInterval>
 {
 
+	private final Date min;
+	private final Date max;
+
 	private static final long serialVersionUID = 1L;
+	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{2}/[0-9]{4})");
 
-	private final Date date1;
-
-	private final Date date2;
-
-	public DateInterval(final Date date1, final Date date2)
+	public DateInterval(Date min, Date max)
 	{
-		if (date1.getValue() > date2.getValue())
-			throw new IllegalArgumentException("date1 must be <= date2");
-		if (date2.getValue() < date1.getValue())
-			throw new IllegalArgumentException("date2 must be >= date1");
-		this.date1 = date1;
-		this.date2 = date2;
-	}
+		Objects.requireNonNull(min);
+		Objects.requireNonNull(max);
 
-	public DateInterval(int year)
-	{
-		if (year < 0)
-			throw new IllegalArgumentException("year must be >= 0");
-		date1 = new Date(1, 0, year);
-		date2 = new Date(31, 11, year);
-	}
+		if (min.getValue() > max.getValue())
+			throw new IllegalArgumentException("min must be <= max");
+		if (max.getValue() < min.getValue())
+			throw new IllegalArgumentException("max must be >= min");
 
-	public DateInterval(int year, int month)
-	{
-		if (year < 0)
-			throw new IllegalArgumentException("year must be >= 0");
-		if (month < 0)
-			throw new IllegalArgumentException("month must be >= 0");
-		if (month > 11)
-			throw new IllegalArgumentException("month must be <= 11");
-
-		Calendar c = Calendar.getInstance();
-		c.set(year, month, 1);
-		date1 = new Date(c.getTimeInMillis());
-		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-		date2 = new Date(c.getTimeInMillis());
+		this.min = min;
+		this.max = max;
 	}
 
 	public DateTimeInterval toDateTimeInterval()
 	{
-		return new DateTimeInterval(date1.with(Time.MIN), date2.with(Time.MAX));
-	}
-
-	public DateInterval(String format, String date1, String date2) throws ParseException
-	{
-		this(new Date(format, date1), new Date(format, date2));
-	}
-
-	public DateInterval(String date1, String date2) throws ParseException
-	{
-		this(new Date(date1), new Date(date2));
-	}
-
-	public DateInterval(String string) throws ParseException
-	{
-		String value = string.replaceAll("[^0123456789]", "");
-		if (value.length() != 16)
-			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", string));
-		this.date1 = new Date(value.substring(0, 8));
-		this.date2 = new Date(value.substring(8, 16));
-		if (date1.getValue() > date2.getValue())
-			throw new IllegalArgumentException("date1 must be <= date2");
-		if (date2.getValue() < date1.getValue())
-			throw new IllegalArgumentException("date2 must be >= date1");
+		return new DateTimeInterval(min.with(Time.MIN), max.with(Time.MAX));
 	}
 
 	public boolean contains(Date date)
 	{
-		return getDate1().compareTo(date) <= 0 && getDate2().compareTo(date) >= 0;
+		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof DateInterval && ((DateInterval) obj).date1.equals(date1) && ((DateInterval) obj).date1.equals(date1));
+		return (obj instanceof DateInterval && ((DateInterval) obj).min.equals(min) && ((DateInterval) obj).min.equals(min));
 	}
 
 	public String format(String format)
 	{
-		return String.format("%s - %s", getDate1().format(format), getDate2().format(format));
+		return String.format("%s - %s", getMin().format(format), getMax().format(format));
 	}
 
-	public Date getDate1()
+	public Date getMin()
 	{
-		return date1;
+		return min;
 	}
 
-	public Date getDate2()
+	public Date getMax()
 	{
-		return date2;
+		return max;
 	}
 
 	public Collection<Date> getDates()
 	{
 		Collection<Date> dates = new ArrayList<>();
-		for (Date date = date1; date.compareTo(date2) <= 0; date = date.getDayOfMonth().add(1))
+		for (Date date = min; date.compareTo(max) <= 0; date = date.getDayOfMonth().add(1))
 			dates.add(date);
 		return dates;
 	}
@@ -119,18 +79,18 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 	@Override
 	public int hashCode()
 	{
-		return (int) (date1.getValue() + date2.getValue());
+		return (int) (min.getValue() + max.getValue());
 	}
 
 	@Override
 	public String toString()
 	{
-		return format("dd/MM/yyyy");
+		return String.format("%s - %s", getMin(), getMax());
 	}
 
 	public long getValue()
 	{
-		return getDate2().getValue() - getDate1().getValue();
+		return getMax().getValue() - getMin().getValue();
 	}
 
 	public Duration getDuration()
@@ -142,5 +102,39 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 	public int compareTo(DateInterval dateInterval)
 	{
 		return (int) (getValue() - dateInterval.getValue());
+	}
+
+	public static DateInterval of(int year)
+	{
+		if (year < 0)
+			throw new IllegalArgumentException("year must be >= 0");
+		return new DateInterval(Date.of(1, 0, year), Date.of(31, 11, year));
+	}
+
+	public static DateInterval of(int year, int month)
+	{
+		if (year < 0)
+			throw new IllegalArgumentException("year must be >= 0");
+		if (month < 0)
+			throw new IllegalArgumentException("month must be >= 0");
+		if (month > 11)
+			throw new IllegalArgumentException("month must be <= 11");
+
+		Calendar c = Calendar.getInstance();
+		c.set(year, month, 1);
+		Date min = new Date(c.getTimeInMillis());
+		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		Date max = new Date(c.getTimeInMillis());
+
+		return new DateInterval(min, max);
+	}
+
+	public static DateInterval of(String string) throws ParseException
+	{
+		Matcher matcher = PATTERN.matcher(string.trim());
+		if (!matcher.matches())
+			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", string));
+
+		return new DateInterval(Date.of(matcher.group(1)), Date.of(matcher.group(2)));
 	}
 }

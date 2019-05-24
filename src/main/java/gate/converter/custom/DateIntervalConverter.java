@@ -21,7 +21,7 @@ public class DateIntervalConverter implements Converter
 {
 
 	private static final List<String> SUFIXES
-			= Arrays.asList("date1", "date2");
+		= Arrays.asList("date1", "date2");
 
 	@Override
 	public String getDescription()
@@ -47,22 +47,19 @@ public class DateIntervalConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
-		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new DateInterval(string);
-				} catch (ParseException e)
-				{
-					throw new ConversionException(String.format(getDescription()));
-				}
-			}
-		}
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
 
-		return null;
+		try
+		{
+			return DateInterval.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
+		}
 	}
 
 	@Override
@@ -98,7 +95,7 @@ public class DateIntervalConverter implements Converter
 		java.sql.Date value2 = rs.getDate(fields + 1);
 		if (rs.wasNull())
 			return null;
-		return new DateInterval(new Date(value1), new Date(value2));
+		return new DateInterval(Date.of(value1), Date.of(value2));
 	}
 
 	@Override
@@ -110,7 +107,7 @@ public class DateIntervalConverter implements Converter
 		java.sql.Date value2 = rs.getDate(fields + ":" + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
-		return new DateInterval(new Date(value1), new Date(value2));
+		return new DateInterval(Date.of(value1), Date.of(value2));
 	}
 
 	@Override
@@ -118,8 +115,8 @@ public class DateIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setDate(fields++, new java.sql.Date(((DateInterval) value).getDate1().getValue()));
-			ps.setDate(fields++, new java.sql.Date(((DateInterval) value).getDate2().getValue()));
+			ps.setDate(fields++, new java.sql.Date(((DateInterval) value).getMin().getValue()));
+			ps.setDate(fields++, new java.sql.Date(((DateInterval) value).getMax().getValue()));
 		} else
 		{
 			ps.setNull(fields++, Types.DATE);

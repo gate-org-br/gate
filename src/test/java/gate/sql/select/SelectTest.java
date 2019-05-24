@@ -391,7 +391,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -411,7 +411,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -456,7 +456,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -483,7 +483,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -505,7 +505,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -526,7 +526,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -547,7 +547,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
 		} catch (SQLException ex)
 		{
@@ -571,7 +571,7 @@ public class SelectTest
 			Assert.assertEquals(1, contact.getPerson().getId());
 			Assert.assertEquals("Person 1", contact.getPerson().getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), contact.getPerson().getBirthdate());
-			Assert.assertEquals(new DateInterval(new Date(1, 12, 2000), new Date(1, 12, 2020)),
+			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				contact.getPerson().getContract());
 		} catch (SQLException ex)
 		{

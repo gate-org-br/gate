@@ -27,12 +27,12 @@ public class Password extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException
+		IOException
 	{
 
 		try
 		{
-			request.setAttribute("now", new DateTime());
+			request.setAttribute("now", DateTime.now());
 
 			if (request.getMethod().equals("POST"))
 			{
@@ -65,7 +65,7 @@ public class Password extends HttpServlet
 					"Sua senha foi alterada com sucesso."
 				});
 				request.getRequestDispatcher("/WEB-INF/views/Gate.jsp")
-						.forward(request, response);
+					.forward(request, response);
 				return;
 			}
 		} catch (AppException e)

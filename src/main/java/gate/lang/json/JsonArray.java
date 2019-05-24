@@ -238,20 +238,27 @@ public class JsonArray implements List<JsonElement>, JsonElement
 		return values.subList(fromIndex, toIndex);
 	}
 
-	public static JsonArray valueOf(Stream<?> stream)
+	public static JsonArray of(Stream<?> stream)
 	{
-		return stream.map(e -> JsonElement.valueOf(e))
+		return stream.map(e -> JsonElement.of(e))
 			.collect(Collectors.toCollection(() -> new JsonArray()));
 	}
 
-	public static JsonArray valueOf(Collection<?> objects)
+	public static JsonArray of(Collection<?> objects)
 	{
-		return valueOf(objects.stream());
+		return JsonArray.of(objects.stream());
 	}
 
-	public static JsonArray valueOf(Object... objects)
+	public static JsonArray of(Object... objects)
 	{
-		return valueOf(Stream.of(objects));
+		return JsonArray.of(Stream.of(objects));
+	}
+
+	public static <T> JsonArray of(List<T> objects,
+		Function<T, String> label, Function<T, Object> value)
+	{
+		return objects.stream().map(e -> JsonObject.of(e, label, value))
+			.collect(Collectors.toCollection(() -> new JsonArray()));
 	}
 
 	public static JsonArray format(Stream<?> stream)
@@ -274,13 +281,6 @@ public class JsonArray implements List<JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.format(e, label, value))
-			.collect(Collectors.toCollection(() -> new JsonArray()));
-	}
-
-	public static <T> JsonArray valueOf(List<T> objects,
-		Function<T, String> label, Function<T, Object> value)
-	{
-		return objects.stream().map(e -> JsonObject.valueOf(e, label, value))
 			.collect(Collectors.toCollection(() -> new JsonArray()));
 	}
 }

@@ -378,9 +378,9 @@ public class ConstantConditionTest
 	@Test
 	public void testBw_Object() throws ParseException
 	{
-		DateTime dateTime1 = new DateTime("22/04/1500 00:00:00");
-		DateTime dateTime2 = new DateTime("15/11/1989 00:00:00");
-		DateTimeInterval dateTimeInterval = new DateTimeInterval(dateTime1, dateTime2);
+		DateTime min = DateTime.of("22/04/1500 00:00:00");
+		DateTime max = DateTime.of("15/11/1989 00:00:00");
+		DateTimeInterval dateTimeInterval = new DateTimeInterval(min, max);
 
 		Condition condition1 = Condition.of("column1").bw(dateTimeInterval);
 		assertEquals("column1 between ? and ?", condition1.toString());
@@ -401,9 +401,9 @@ public class ConstantConditionTest
 			Assert.fail();
 		} catch (NullPointerException ex)
 		{
-			DateTime dateTime1 = new DateTime("22/04/1500 00:00:00");
-			DateTime dateTime2 = new DateTime("15/11/1989 00:00:00");
-			DateTimeInterval dateTimeInterval = new DateTimeInterval(dateTime1, dateTime2);
+			DateTime min = DateTime.of("22/04/1500 00:00:00");
+			DateTime max = DateTime.of("15/11/1989 00:00:00");
+			DateTimeInterval dateTimeInterval = new DateTimeInterval(min, max);
 			Condition condition = Condition.of("column1").bw(DateTimeInterval.class, dateTimeInterval);
 			assertEquals("column1 between ? and ?", condition.toString());
 			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTimeInterval)));
@@ -413,19 +413,19 @@ public class ConstantConditionTest
 	@Test
 	public void testBw_Object_Object() throws ParseException
 	{
-		DateTime dateTime1 = new DateTime("22/04/1500 00:00:00");
-		DateTime dateTime2 = new DateTime("15/11/1989 00:00:00");
+		DateTime min = DateTime.of("22/04/1500 00:00:00");
+		DateTime max = DateTime.of("15/11/1989 00:00:00");
 
-		Condition condition1 = Condition.of("column1").bw(dateTime1, dateTime2);
+		Condition condition1 = Condition.of("column1").bw(min, max);
 		assertEquals("column1 between ? and ?", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTime1, dateTime2)));
+		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
 
 		Condition condition2 = Condition
-			.of("column1").bw(dateTime1, (Object) null)
-			.and("column2").bw((Object) null, dateTime2)
-			.and("column3").bw(dateTime1, dateTime2);
+			.of("column1").bw(min, (Object) null)
+			.and("column2").bw((Object) null, max)
+			.and("column3").bw(min, max);
 		assertEquals("column3 between ? and ?", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTime1, dateTime2)));
+		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
 	}
 
 	@Test
@@ -437,11 +437,11 @@ public class ConstantConditionTest
 			Assert.fail();
 		} catch (NullPointerException ex)
 		{
-			DateTime dateTime1 = new DateTime("22/04/1500 00:00:00");
-			DateTime dateTime2 = new DateTime("15/11/1989 00:00:00");
-			Condition condition = Condition.of("column1").bw(DateTime.class, dateTime1, dateTime2);
+			DateTime min = DateTime.of("22/04/1500 00:00:00");
+			DateTime max = DateTime.of("15/11/1989 00:00:00");
+			Condition condition = Condition.of("column1").bw(DateTime.class, min, max);
 			assertEquals("column1 between ? and ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTime1, dateTime2)));
+			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
 		}
 	}
 
