@@ -5,10 +5,9 @@ import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
+import gate.type.Money;
 import gate.type.Percentage;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -23,20 +22,11 @@ public class JsonNumber extends Number implements JsonElement
 
 	private final BigDecimal value;
 
-	private static final DecimalFormat FORMAT
-		= (DecimalFormat) DecimalFormat
-			.getInstance(Locale.ENGLISH);
-
 	private static final long serialVersionUID = 1L;
-
-	static
-	{
-		FORMAT.setParseBigDecimal(true);
-	}
 
 	private JsonNumber(BigDecimal value)
 	{
-		this.value = value;
+		this.value = Objects.requireNonNull(value);
 	}
 
 	@Override
@@ -101,40 +91,182 @@ public class JsonNumber extends Number implements JsonElement
 		return (JsonNumber) element;
 	}
 
+	/**
+	 * Returns an JsonNumber instance representing the specified int value.
+	 *
+	 * @param value an int value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 */
 	public static JsonNumber valueOf(long value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
+	/**
+	 * Returns an JsonNumber instance representing the specified double value.
+	 *
+	 * @param value a double value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 */
 	public static JsonNumber valueOf(double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber valueOf(String string)
+	/**
+	 * Returns an JsonNumber instance representing the specified string value.
+	 *
+	 * @param value a string value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(String value)
 	{
-		return new JsonNumber(new BigDecimal(string));
+		return new JsonNumber(new BigDecimal(value));
 	}
 
-	public static JsonNumber valueOf(Number number)
+	/**
+	 * Returns an JsonNumber instance representing the specified Byte value.
+	 *
+	 * @param value a Byte value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Byte value)
 	{
-		if (number instanceof Byte)
-			return new JsonNumber(BigDecimal.valueOf((Byte) number));
-		if (number instanceof Short)
-			return new JsonNumber(BigDecimal.valueOf((Short) number));
-		if (number instanceof Integer)
-			return new JsonNumber(BigDecimal.valueOf((Integer) number));
-		if (number instanceof Long)
-			return new JsonNumber(BigDecimal.valueOf((Long) number));
-		if (number instanceof Float)
-			return new JsonNumber(BigDecimal.valueOf((Float) number));
-		if (number instanceof Double)
-			return new JsonNumber(BigDecimal.valueOf((Double) number));
-		if (number instanceof BigDecimal)
-			return new JsonNumber(((BigDecimal) number));
-		if (number instanceof Percentage)
-			return new JsonNumber(((Percentage) number).getValue());
-		return valueOf(Objects.requireNonNull(number).toString());
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Short value.
+	 *
+	 * @param value a Short value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Short value)
+	{
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Integer value.
+	 *
+	 * @param value a Integer value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Integer value)
+	{
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Long value.
+	 *
+	 * @param value a Long value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Long value)
+	{
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Float value.
+	 *
+	 * @param value a Float value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Float value)
+	{
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Double value.
+	 *
+	 * @param value a Double value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Double value)
+	{
+		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified BigDecimal value.
+	 *
+	 * @param value a BigDecimal value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(BigDecimal value)
+	{
+		return new JsonNumber(value);
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Percentage value.
+	 *
+	 * @param value a Percentage value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Percentage value)
+	{
+		return new JsonNumber(value.getValue());
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Money value.
+	 *
+	 * @param value a Money value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Money value)
+	{
+		return new JsonNumber(value.getValue());
+	}
+
+	/**
+	 * Returns an JsonNumber instance representing the specified Number value.
+	 *
+	 * @param value a Number value.
+	 *
+	 * @return a JsonNumber instance representing value.
+	 *
+	 * @throws NullPointerException if the specified value is null
+	 */
+	public static JsonNumber valueOf(Number value)
+	{
+		return valueOf(value.toString());
 	}
 
 	@Override
@@ -153,6 +285,6 @@ public class JsonNumber extends Number implements JsonElement
 	@Override
 	public String toString()
 	{
-		return FORMAT.format(this.value);
+		return value.toPlainString();
 	}
 }
