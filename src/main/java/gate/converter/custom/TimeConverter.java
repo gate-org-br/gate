@@ -18,27 +18,25 @@ public class TimeConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Maxlength.Implementation(5),
-					new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
+		= Arrays.asList(new Maxlength.Implementation(5),
+			new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
 		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new Time(string);
-				} catch (ParseException e)
-				{
-					throw new ConversionException(String.format(getDescription()));
-				}
-			}
+			return Time.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
-		return null;
 	}
 
 	@Override
@@ -81,14 +79,14 @@ public class TimeConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		java.sql.Time value = rs.getTime(fields);
-		return rs.wasNull() ? null : new Time(value);
+		return rs.wasNull() ? null : Time.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		java.sql.Time value = rs.getTime(fields);
-		return rs.wasNull() ? null : new Time(value);
+		return rs.wasNull() ? null : Time.of(value);
 	}
 
 	@Override

@@ -8,19 +8,19 @@
 				<g:icon type="search"/>Pesquisar Usu&aacute;rios
 			</legend>
 
-			<label x4>
+			<label data-size='4'>
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Login:
 				<span>
 					<g:text property='form.userID' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x8>
+			<label data-size='8'>
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -33,46 +33,46 @@
 					</g:link>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Ativo:
 				<span>
 					<g:select property="form.active" tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				CPF:
 				<span>
 					<g:text property='form.CPF' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Data de Nascimento:
 				<span>
 					<g:text class='Date'
 						property='form.birthdate' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Sexo:
 				<span>
 					<g:select property='form.sex' tabindex='1' required=''/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Telefone:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.phone' tabindex='1'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Celular:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:text property='form.cellPhone' tabindex='1'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				E-Mail:
 				<span>
 					<g:icon type="2034"/>

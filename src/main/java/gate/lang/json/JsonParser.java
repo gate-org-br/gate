@@ -202,14 +202,14 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 
 	private JsonNumber number() throws ConversionException
 	{
-		JsonNumber value = JsonNumber.valueOf(scanner.getCurrent().toString());
+		JsonNumber value = JsonNumber.of(scanner.getCurrent().toString());
 		scanner.scan();
 		return value;
 	}
 
 	private JsonString string() throws ConversionException
 	{
-		JsonString value = JsonString.valueOf(scanner.getCurrent().toString());
+		JsonString value = JsonString.of(scanner.getCurrent().toString());
 		scanner.scan();
 		return value;
 	}

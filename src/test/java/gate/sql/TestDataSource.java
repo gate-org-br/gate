@@ -74,8 +74,7 @@ public class TestDataSource
 				person.setId(i);
 				person.setName("Person " + i);
 				person.setBirthdate(LocalDate.of(2000, 12, i));
-				person.setContract(new DateInterval(new Date(i, 12, 2000),
-					new Date(i, 12, 2020)));
+				person.setContract(new DateInterval(Date.of(i, 12, 2000), Date.of(i, 12, 2020)));
 
 				Contact contact = new Contact();
 				contact.setId(new ID(i));

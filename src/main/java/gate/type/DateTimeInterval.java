@@ -5,84 +5,70 @@ import gate.annotation.Icon;
 import gate.converter.custom.DateTimeIntervalConverter;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Icon("2003")
 @Converter(DateTimeIntervalConverter.class)
 public class DateTimeInterval implements Serializable, Comparable<DateTimeInterval>
 {
 
-	private final DateTime dateTime1;
+	private final DateTime min;
 
-	private final DateTime dateTime2;
+	private final DateTime max;
 
-	public DateTimeInterval(final DateTime dateTime1, final DateTime dateTime2)
+	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}) - ([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2})");
+
+	public DateTimeInterval(final DateTime min, final DateTime max)
 	{
-		if (dateTime1.getValue() > dateTime2.getValue())
-			throw new IllegalArgumentException("dateTime1 must be <= dateTime2");
-		if (dateTime2.getValue() < dateTime1.getValue())
-			throw new IllegalArgumentException("dateTime2 must be >= dateTime1");
-		this.dateTime1 = dateTime1;
-		this.dateTime2 = dateTime2;
-	}
+		Objects.requireNonNull(min);
+		Objects.requireNonNull(max);
 
-	public DateTimeInterval(String format, String dateTime1, String dateTime2) throws ParseException
-	{
-		this(new DateTime(format, dateTime1), new DateTime(format, dateTime2));
-	}
+		if (min.getValue() > max.getValue())
+			throw new IllegalArgumentException("min must be <= max");
+		if (max.getValue() < min.getValue())
+			throw new IllegalArgumentException("max must be >= min");
 
-	public DateTimeInterval(String dateTime1, String dateTime2) throws ParseException
-	{
-		this(new DateTime(dateTime1), new DateTime(dateTime2));
-	}
-
-	public DateTimeInterval(String string) throws ParseException
-	{
-		String value = string.replaceAll("[^0123456789]", "");
-		if (value.length() != 24)
-			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas/horas válido.", string));
-		this.dateTime1 = new DateTime(value.substring(0, 12));
-		this.dateTime2 = new DateTime(value.substring(12, 24));
-		if (dateTime1.getValue() > dateTime2.getValue())
-			throw new IllegalArgumentException("dateTime1 must be <= dateTime2");
-		if (dateTime2.getValue() < dateTime1.getValue())
-			throw new IllegalArgumentException("dateTime2 must be >= dateTime1");
+		this.min = min;
+		this.max = max;
 	}
 
 	public boolean contains(DateTime dateTime)
 	{
-		return getDateTime1().compareTo(dateTime) <= 0 && getDateTime2().compareTo(dateTime) >= 0;
+		return getMin().compareTo(dateTime) <= 0 && getMax().compareTo(dateTime) >= 0;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof DateTimeInterval && ((DateTimeInterval) obj).dateTime1.equals(dateTime1) && ((DateTimeInterval) obj).dateTime2.equals(dateTime2));
+		return (obj instanceof DateTimeInterval && ((DateTimeInterval) obj).min.equals(min) && ((DateTimeInterval) obj).max.equals(max));
 	}
 
 	public String format(String format)
 	{
-		return String.format("%s - %s", getDateTime1(), getDateTime2());
+		return String.format("%s - %s", getMin(), getMax());
 	}
 
-	public DateTime getDateTime1()
+	public DateTime getMin()
 	{
-		return dateTime1;
+		return min;
 	}
 
-	public DateTime getDateTime2()
+	public DateTime getMax()
 	{
-		return dateTime2;
+		return max;
 	}
 
 	public DateInterval getDateInterval()
 	{
-		return new DateInterval(dateTime1.getDate(), dateTime2.getDate());
+		return new DateInterval(min.getDate(), max.getDate());
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return (int) (dateTime1.getValue() + dateTime2.getValue());
+		return (int) (min.getValue() + max.getValue());
 	}
 
 	@Override
@@ -93,7 +79,7 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 
 	public long getValue()
 	{
-		return getDateTime2().getValue() - getDateTime1().getValue();
+		return getMax().getValue() - getMin().getValue();
 	}
 
 	@Override
@@ -110,5 +96,14 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 	public Period getPeriod()
 	{
 		return Period.of(getValue() / 1000);
+	}
+
+	public static DateTimeInterval of(String string) throws ParseException
+	{
+		Matcher matcher = PATTERN.matcher(string);
+		if (!matcher.matches())
+			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas/horas válido.", string));
+
+		return new DateTimeInterval(DateTime.of(matcher.group(1)), DateTime.of(matcher.group(2)));
 	}
 }

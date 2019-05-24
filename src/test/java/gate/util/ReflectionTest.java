@@ -34,7 +34,7 @@ public class ReflectionTest
 		doctor.setId(1);
 		doctor.setName("Jonh");
 		doctor.setBirthdate(LocalDate.of(1950, Month.MARCH, 1));
-		doctor.setContract(new DateInterval(new Date(1, 2, 2000), new Date(1, 2, 2010)));
+		doctor.setContract(new DateInterval(Date.of(1, 2, 2000), Date.of(1, 2, 2010)));
 	}
 
 	@Test

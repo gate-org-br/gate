@@ -41,7 +41,7 @@ public class DateTimeSet extends HashSet<DateTime>
 		{
 			value = value.trim();
 			if (!value.isEmpty())
-				add(new DateTime(value));
+				add(DateTime.of(value));
 		}
 	}
 

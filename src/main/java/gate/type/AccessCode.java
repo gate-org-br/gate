@@ -29,17 +29,17 @@ public class AccessCode
 		this.value = value;
 
 		try (ObjectInputStream stream
-				= new ObjectInputStream(getClass().getResourceAsStream("public.key")))
+			= new ObjectInputStream(getClass().getResourceAsStream("public.key")))
 		{
 			PublicKey publicKey = (PublicKey) stream.readObject();
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
 			String string = new String(cipher.doFinal(Base64.getDecoder().decode(value)), "UTF-8");
 			macAddress = string.substring(0, 13);
-			period = new DateInterval(new Date(string.substring(0, 21)), new Date(string.substring(0, 21)));
+			period = new DateInterval(Date.of(string.substring(0, 21)), Date.of(string.substring(0, 21)));
 
 		} catch (IOException | ClassNotFoundException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-				| IllegalBlockSizeException | BadPaddingException | ParseException e)
+			| IllegalBlockSizeException | BadPaddingException | ParseException e)
 		{
 			throw new AppError(e);
 		}
@@ -64,7 +64,7 @@ public class AccessCode
 	{
 		try
 		{
-			if (period.contains(new Date()))
+			if (period.contains(Date.now()))
 			{
 				Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
 				while (networkInterfaces.hasMoreElements())

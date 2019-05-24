@@ -18,8 +18,8 @@ public class DateConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Maxlength.Implementation(10),
-					new Pattern.Implementation("^[0-9]{8}|[0-9]{2}[/][0-9]{2}[/][0-9]{4}$"));
+		= Arrays.asList(new Maxlength.Implementation(10),
+			new Pattern.Implementation("^[0-9]{8}|[0-9]{2}[/][0-9]{2}[/][0-9]{4}$"));
 
 	@Override
 	public String getDescription()
@@ -42,21 +42,19 @@ public class DateConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
 		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new Date(string);
-				} catch (ParseException e)
-				{
-					throw new ConversionException(String.format(getDescription()));
-				}
-			}
+			return Date.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
-		return null;
 	}
 
 	@Override
@@ -81,14 +79,14 @@ public class DateConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		java.sql.Date value = rs.getDate(fields);
-		return rs.wasNull() ? null : new Date(value);
+		return rs.wasNull() ? null : Date.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		java.sql.Date value = rs.getDate(fields);
-		return rs.wasNull() ? null : new Date(value);
+		return rs.wasNull() ? null : Date.of(value);
 	}
 
 	@Override

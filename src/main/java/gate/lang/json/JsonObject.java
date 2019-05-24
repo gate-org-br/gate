@@ -76,13 +76,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.valueOf(value));
+			set(key, JsonString.of(value));
 		return this;
 	}
 
 	public JsonObject setBoolean(String key, boolean value)
 	{
-		return set(key, JsonBoolean.valueOf(value));
+		return set(key, JsonBoolean.of(value));
 	}
 
 	public JsonObject setBoolean(String key, Boolean value)
@@ -90,13 +90,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonBoolean.valueOf(value));
+			set(key, JsonBoolean.of(value));
 		return this;
 	}
 
 	public JsonObject setByte(String key, byte value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setByte(String key, Byte value)
@@ -104,13 +104,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
 	public JsonObject setShort(String key, short value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setShort(String key, Short value)
@@ -118,13 +118,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
 	public JsonObject setInt(String key, int value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setInt(String key, Integer value)
@@ -132,13 +132,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
 	public JsonObject setLong(String key, long value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setLong(String key, Long value)
@@ -146,13 +146,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
 	public JsonObject setFloat(String key, float value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setFloat(String key, Float value)
@@ -160,13 +160,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
 	public JsonObject setDouble(String key, double value)
 	{
-		return set(key, JsonNumber.valueOf(value));
+		return set(key, JsonNumber.of(value));
 	}
 
 	public JsonObject setDouble(String key, Double value)
@@ -174,7 +174,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.valueOf(value));
+			set(key, JsonNumber.of(value));
 		return this;
 	}
 
@@ -230,7 +230,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.valueOf(gate.converter.Converter.toString(value)));
+			set(key, JsonString.of(gate.converter.Converter.toString(value)));
 		return this;
 	}
 
@@ -414,15 +414,15 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject()
-			.set("label", JsonString.valueOf(label.apply(obj)))
-			.set("value", JsonElement.valueOf(value.apply(obj)));
+			.set("label", JsonString.of(label.apply(obj)))
+			.set("value", JsonElement.of(value.apply(obj)));
 	}
 
-	public static <T> JsonObject valueOf(T obj,
+	public static <T> JsonObject of(T obj,
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject()
-			.set("label", JsonString.valueOf(label.apply(obj)))
-			.set("value", JsonElement.valueOf(value.apply(obj)));
+			.set("label", JsonString.of(label.apply(obj)))
+			.set("value", JsonElement.of(value.apply(obj)));
 	}
 }

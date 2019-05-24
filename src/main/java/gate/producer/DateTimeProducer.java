@@ -19,6 +19,6 @@ public class DateTimeProducer implements Serializable
 	@Named("now")
 	public DateTime now()
 	{
-		return new DateTime();
+		return DateTime.now();
 	}
 }

@@ -18,159 +18,13 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 {
 
 	private static final long serialVersionUID = 1L;
-
-	public class Field implements Serializable
-	{
-
-		private final int id;
-
-		public Field(int id)
-		{
-			this.id = id;
-		}
-
-		public int getId()
-		{
-			return id;
-		}
-
-		public String getName()
-		{
-			return toCalendar().getDisplayName(id, Calendar.SHORT, new Locale("pt", "br"));
-		}
-
-		public String getFullName()
-		{
-			return toCalendar().getDisplayName(id, Calendar.LONG, new Locale("pt", "br"));
-		}
-
-		public int getValue()
-		{
-			return toCalendar().get(id);
-		}
-
-		public DateTime getMin()
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, calendar.getActualMinimum(id));
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		public DateTime getMax()
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, calendar.getActualMaximum(id));
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		public DateTimeInterval getInterval()
-		{
-			return new DateTimeInterval(getMin(), getMax());
-		}
-
-		public List<DateTime> getAll()
-		{
-			Calendar calendar = toCalendar();
-			List<DateTime> dateTimes = new ArrayList<>();
-			for (int i = calendar.getActualMinimum(id); i <= calendar.getActualMaximum(id); i++)
-			{
-				calendar.set(id, i);
-				dateTimes.add(new DateTime(calendar.getTimeInMillis()));
-			}
-			return dateTimes;
-		}
-
-		public DateTime roll(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.roll(id, value);
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		public DateTime add(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.add(id, value);
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		public DateTime rem(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.add(id, -value);
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		public DateTime set(int value)
-		{
-			Calendar calendar = toCalendar();
-			calendar.set(id, value);
-			return new DateTime(calendar.getTimeInMillis());
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.valueOf(getValue());
-		}
-	}
+	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
 	private final long value;
-
-	public DateTime()
-	{
-		this(System.currentTimeMillis());
-	}
-
-	public DateTime(Calendar calendar)
-	{
-		this(calendar.getTimeInMillis());
-	}
-
-	public DateTime(Date date, Time time)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth().getValue());
-		calendar.set(Calendar.MONTH, date.getMonth().getValue());
-		calendar.set(Calendar.YEAR, date.getYear().getValue());
-		calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay().getValue());
-		calendar.set(Calendar.MINUTE, time.getMinute().getValue());
-		calendar.set(Calendar.SECOND, time.getSecond().getValue());
-		calendar.set(Calendar.MILLISECOND, time.getMillisecond().getValue());
-		this.value = calendar.getTimeInMillis();
-	}
-
-	public DateTime(int day, int month, int year, int hour, int minute, int second, int millisecond)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, day);
-		calendar.set(Calendar.MONTH, month);
-		calendar.set(Calendar.YEAR, year);
-		calendar.set(Calendar.HOUR_OF_DAY, hour);
-		calendar.set(Calendar.MINUTE, minute);
-		calendar.set(Calendar.SECOND, second);
-		calendar.set(Calendar.MILLISECOND, millisecond);
-		this.value = calendar.getTimeInMillis();
-	}
-
-	public DateTime(java.util.Date date)
-	{
-		this(date.getTime());
-	}
 
 	public DateTime(long value)
 	{
 		this.value = value;
-	}
-
-	public DateTime(String string) throws ParseException
-	{
-		this("ddMMyyyyHHmm", string.replaceAll("[^0123456789]", ""));
-	}
-
-	public DateTime(String format, String string) throws ParseException
-	{
-		this(new SimpleDateFormat(format).parse(string));
 	}
 
 	@Override
@@ -296,7 +150,7 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	@Override
 	public String toString()
 	{
-		return format("dd/MM/yyyy HH:mm");
+		return FORMAT.format(toDate());
 	}
 
 	public boolean isWeekendDay()
@@ -309,11 +163,6 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	{
 		int dayOfWeek = getDayOfWeek().getValue();
 		return dayOfWeek != Calendar.SATURDAY && dayOfWeek != Calendar.SUNDAY;
-	}
-
-	public DateTime getNow()
-	{
-		return new DateTime();
 	}
 
 	public boolean lt(DateTime dateTime)
@@ -354,5 +203,163 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	public DateTime add(Duration duration)
 	{
 		return new DateTime(getValue() + (duration.getValue() * 1000));
+	}
+
+	public static DateTime now()
+	{
+		return new DateTime(System.currentTimeMillis());
+	}
+
+	public static DateTime of(Date date, Time time)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, date.getDayOfMonth().getValue());
+		calendar.set(Calendar.MONTH, date.getMonth().getValue());
+		calendar.set(Calendar.YEAR, date.getYear().getValue());
+		calendar.set(Calendar.HOUR_OF_DAY, time.getHourOfDay().getValue());
+		calendar.set(Calendar.MINUTE, time.getMinute().getValue());
+		calendar.set(Calendar.SECOND, time.getSecond().getValue());
+		calendar.set(Calendar.MILLISECOND, time.getMillisecond().getValue());
+		return new DateTime(calendar.getTimeInMillis());
+	}
+
+	public static DateTime of(int day, int month, int year, int hour,
+		int minute, int second, int millisecond)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, day);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.HOUR_OF_DAY, hour);
+		calendar.set(Calendar.MINUTE, minute);
+		calendar.set(Calendar.SECOND, second);
+		calendar.set(Calendar.MILLISECOND, millisecond);
+		return new DateTime(calendar.getTimeInMillis());
+	}
+
+	public static DateTime of(int day, int month, int year, int hour, int minute, int second)
+	{
+		return of(day, month, year, hour, minute, second, 0);
+	}
+
+	public static DateTime of(int day, int month, int year, int hour, int minute)
+	{
+		return of(day, month, year, hour, minute, 0, 0);
+	}
+
+	public static DateTime of(java.util.Date date)
+	{
+		return new DateTime(date.getTime());
+	}
+
+	public static DateTime of(Calendar calendar)
+	{
+		return new DateTime(calendar.getTimeInMillis());
+	}
+
+	public static DateTime of(String string) throws ParseException
+	{
+		return new DateTime(FORMAT.parse(string).getTime());
+	}
+
+	public static DateTime of(String format, String string) throws ParseException
+	{
+		return new DateTime(new SimpleDateFormat(format).parse(string).getTime());
+	}
+
+	public class Field implements Serializable
+	{
+
+		private final int id;
+
+		public Field(int id)
+		{
+			this.id = id;
+		}
+
+		public int getId()
+		{
+			return id;
+		}
+
+		public String getName()
+		{
+			return toCalendar().getDisplayName(id, Calendar.SHORT, new Locale("pt", "br"));
+		}
+
+		public String getFullName()
+		{
+			return toCalendar().getDisplayName(id, Calendar.LONG, new Locale("pt", "br"));
+		}
+
+		public int getValue()
+		{
+			return toCalendar().get(id);
+		}
+
+		public DateTime getMin()
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, calendar.getActualMinimum(id));
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		public DateTime getMax()
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, calendar.getActualMaximum(id));
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		public DateTimeInterval getInterval()
+		{
+			return new DateTimeInterval(getMin(), getMax());
+		}
+
+		public List<DateTime> getAll()
+		{
+			Calendar calendar = toCalendar();
+			List<DateTime> dateTimes = new ArrayList<>();
+			for (int i = calendar.getActualMinimum(id); i <= calendar.getActualMaximum(id); i++)
+			{
+				calendar.set(id, i);
+				dateTimes.add(new DateTime(calendar.getTimeInMillis()));
+			}
+			return dateTimes;
+		}
+
+		public DateTime roll(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.roll(id, value);
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		public DateTime add(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.add(id, value);
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		public DateTime rem(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.add(id, -value);
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		public DateTime set(int value)
+		{
+			Calendar calendar = toCalendar();
+			calendar.set(id, value);
+			return new DateTime(calendar.getTimeInMillis());
+		}
+
+		@Override
+		public String toString()
+		{
+			return String.valueOf(getValue());
+		}
 	}
 }

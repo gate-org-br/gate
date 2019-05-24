@@ -84,23 +84,23 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return a JsonElement representing the specified object
 	 */
-	public static JsonElement valueOf(Object obj)
+	public static JsonElement of(Object obj)
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
 		if (obj instanceof Boolean)
-			return JsonBoolean.valueOf((Boolean) obj);
+			return JsonBoolean.of((Boolean) obj);
 		if (obj instanceof Number)
-			return JsonNumber.valueOf((Number) obj);
+			return JsonNumber.of((Number) obj);
 		if (obj instanceof String)
-			return JsonString.valueOf((String) obj);
+			return JsonString.of((String) obj);
 
 		if (obj instanceof Collection<?>)
-			return JsonArray.valueOf((Collection<?>) obj);
+			return JsonArray.of((Collection<?>) obj);
 		if (obj instanceof Object[])
-			return JsonArray.valueOf((Object[]) obj);
+			return JsonArray.of((Object[]) obj);
 
-		return JsonString.valueOf(gate.converter.Converter.toString(obj));
+		return JsonString.of(gate.converter.Converter.toString(obj));
 	}
 
 	/**
@@ -119,17 +119,17 @@ public interface JsonElement extends Serializable
 		if (obj == null)
 			return JsonNull.INSTANCE;
 		if (obj instanceof Boolean)
-			return JsonBoolean.valueOf((Boolean) obj);
+			return JsonBoolean.of((Boolean) obj);
 		if (obj instanceof Number)
-			return JsonNumber.valueOf((Number) obj);
+			return JsonNumber.of((Number) obj);
 		if (obj instanceof String)
-			return JsonString.valueOf((String) obj);
+			return JsonString.of((String) obj);
 
 		if (obj instanceof Collection<?>)
 			return JsonArray.format((Collection<?>) obj);
 		if (obj instanceof Object[])
 			return JsonArray.format((Object[]) obj);
 
-		return JsonString.valueOf(gate.converter.Converter.toText(obj));
+		return JsonString.of(gate.converter.Converter.toText(obj));
 	}
 }

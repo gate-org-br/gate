@@ -39,9 +39,8 @@ public class UpdateTest
 		{
 			ID id = new ID(1);
 			String name = "Jonh";
-			Date birthdate = new Date(31, 12, 2005);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			Date birthdate = Date.of(31, 12, 2005);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			assertTrue(link.prepare("update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?")
 				.parameters(name, birthdate, contract, id)
@@ -76,8 +75,8 @@ public class UpdateTest
 		{
 			ID id = new ID(2);
 			String name = "Paul";
-			Date birthdate = new Date(20, 11, 2004);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2008), new Date(31, 12, 2010));
+			Date birthdate = Date.of(20, 11, 2004);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2008), Date.of(31, 12, 2010));
 
 			assertTrue(link
 				.prepare(getClass().getResource("UpdateTest/Update.sql"))
@@ -114,9 +113,8 @@ public class UpdateTest
 		{
 			ID id = new ID(3);
 			String name = "Richard";
-			Date birthdate = new Date(9, 8, 2000);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2012),
-				new Date(31, 12, 2014));
+			Date birthdate = Date.of(9, 8, 2000);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2012), Date.of(31, 12, 2014));
 
 			assertTrue(link
 				.prepare(Update
@@ -157,9 +155,8 @@ public class UpdateTest
 		{
 			ID id = new ID(4);
 			String name = "Thomas";
-			Date birthdate = new Date(7, 8, 2000);
-			DateInterval contract = new DateInterval(new Date(2, 1, 2012),
-				new Date(4, 12, 2014));
+			Date birthdate = Date.of(7, 8, 2000);
+			DateInterval contract = new DateInterval(Date.of(2, 1, 2012), Date.of(4, 12, 2014));
 
 			assertTrue(link
 				.prepare(Update
@@ -202,8 +199,7 @@ public class UpdateTest
 			int id = 5;
 			String name = "Maria";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)
@@ -249,8 +245,7 @@ public class UpdateTest
 			int id = 6;
 			String name = "Newton";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)
@@ -295,8 +290,7 @@ public class UpdateTest
 			int id = 7;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)
@@ -340,8 +334,7 @@ public class UpdateTest
 			int id = 8;
 			String name = "Alfred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)

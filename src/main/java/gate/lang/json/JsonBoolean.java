@@ -69,12 +69,12 @@ public class JsonBoolean implements JsonElement
 		return value ? "true" : "false";
 	}
 
-	public static JsonBoolean valueOf(boolean value)
+	public static JsonBoolean of(boolean value)
 	{
 		return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;
 	}
 
-	public static JsonBoolean valueOf(Boolean value)
+	public static JsonBoolean of(Boolean value)
 	{
 		return Boolean.TRUE.equals(value)
 			? JsonBoolean.TRUE

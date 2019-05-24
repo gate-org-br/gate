@@ -21,8 +21,8 @@ public class IconTest
 	@Test
 	public void testObject()
 	{
-		Assert.assertEquals("2003", Icon.Extractor.extract(new Date()).get().getCode());
-		Assert.assertEquals("2167", Icon.Extractor.extract(new Time()).get().getCode());
+		Assert.assertEquals("2003", Icon.Extractor.extract(Date.now()).get().getCode());
+		Assert.assertEquals("2167", Icon.Extractor.extract(Time.now()).get().getCode());
 
 	}
 

@@ -18,6 +18,7 @@ import gate.report.Report;
 import gate.report.doc.Doc;
 import gate.type.DataFile;
 import gate.type.DateTime;
+import gate.type.Time;
 import gate.type.mime.MimeData;
 import gate.util.Backup;
 import gate.util.Page;
@@ -179,7 +180,7 @@ public class UserScreen extends Screen
 		Report report = new Report();
 
 		report.addImage(getOrg().getIcon());
-		report.addHeader(new DateTime());
+		report.addHeader(DateTime.now());
 		report.addHeader("Relatórios de Usuários");
 		report.addHeader(getApp().getId() + " - " + getApp().getName());
 
@@ -338,5 +339,4 @@ public class UserScreen extends Screen
 	{
 		this.value = value;
 	}
-
 }

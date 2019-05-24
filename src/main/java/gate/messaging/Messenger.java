@@ -56,22 +56,22 @@ public class Messenger
 				ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("/ConnectionFactory");
 
 				try (Connection connection = connectionFactory.createConnection();
-						Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-						MessageConsumer consumer = session.createConsumer(queue))
+					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+					MessageConsumer consumer = session.createConsumer(queue))
 
 				{
 					connection.start();
 					ObjectMessage objectMessage
-							= (ObjectMessage) consumer.receiveNoWait();
+						= (ObjectMessage) consumer.receiveNoWait();
 					if (objectMessage != null)
 						send(objectMessage.getStringProperty("sender"),
-								objectMessage.getStringProperty("receiver"),
-								objectMessage.getBody(MimeMail.class));
+							objectMessage.getStringProperty("receiver"),
+							objectMessage.getBody(MimeMail.class));
 				}
 			} catch (NamingException | JMSException | RuntimeException | MessagingException ex)
 			{
 				Logger.getLogger(Messenger.class.getName())
-						.log(Level.SEVERE, null, ex);
+					.log(Level.SEVERE, null, ex);
 			}
 		}, 0, 60, TimeUnit.SECONDS);
 	}
@@ -87,9 +87,9 @@ public class Messenger
 	}
 
 	public void post(String sender,
-			String receiver,
-			MimeMail<?> mail)
-			throws MessageException
+		String receiver,
+		MimeMail<?> mail)
+		throws MessageException
 	{
 		if (receiver == null)
 			throw new MessageException("Esquecifique o destinatário da mensagem.");
@@ -101,7 +101,7 @@ public class Messenger
 			try
 			{
 				ConnectionFactory connectionFactory
-						= (ConnectionFactory) context.lookup("/ConnectionFactory");
+					= (ConnectionFactory) context.lookup("/ConnectionFactory");
 				try
 				{
 					Queue queue = (Queue) new InitialContext().lookup("java:/jms/queue/MailBox");
@@ -113,20 +113,20 @@ public class Messenger
 						{
 
 							if (sender == null
-									&& mailSession.getProperties().get("mail.smtp.user") != null)
+								&& mailSession.getProperties().get("mail.smtp.user") != null)
 								sender = (String) mailSession.getProperties().get("mail.smtp.user");
 							if (sender == null)
 								throw new MessageException("Esquecifique o remetente da mensagem.");
 
 							try (Connection connection = connectionFactory.createConnection();
-									Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-									MessageProducer producer = session.createProducer(queue))
+								Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+								MessageProducer producer = session.createProducer(queue))
 							{
 
 								ObjectMessage message = session.createObjectMessage();
 								message.setObject(mail);
 								message.setStringProperty("date", LocalDateTime.now()
-										.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+									.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 								message.setStringProperty("sender", sender);
 								message.setStringProperty("receiver", receiver);
 
@@ -138,7 +138,7 @@ public class Messenger
 						} catch (JMSException ex)
 						{
 							throw new MessageException(ex, "Erro ao enviar messagem de %s para %s: "
-									+ ex.getMessage(), sender, receiver);
+								+ ex.getMessage(), sender, receiver);
 						}
 					} catch (NamingException ex)
 					{
@@ -159,8 +159,8 @@ public class Messenger
 	}
 
 	public void post(String receiver,
-			MimeMail<?> mail)
-			throws MessageException
+		MimeMail<?> mail)
+		throws MessageException
 	{
 		post(null, receiver, mail);
 	}
@@ -173,14 +173,14 @@ public class Messenger
 			try
 			{
 				ConnectionFactory connectionFactory
-						= (ConnectionFactory) context.lookup("/ConnectionFactory");
+					= (ConnectionFactory) context.lookup("/ConnectionFactory");
 				try
 				{
 					Queue queue = (Queue) new InitialContext().lookup("java:/jms/queue/MailBox");
 					try (Connection connection = connectionFactory.createConnection();
-							javax.jms.Session session = connection.createSession(true,
-									javax.jms.Session.AUTO_ACKNOWLEDGE);
-							QueueBrowser browser = session.createBrowser(queue))
+						javax.jms.Session session = connection.createSession(true,
+							javax.jms.Session.AUTO_ACKNOWLEDGE);
+						QueueBrowser browser = session.createBrowser(queue))
 					{
 
 						List<Message> messages = new ArrayList<>();
@@ -188,8 +188,8 @@ public class Messenger
 						{
 							ObjectMessage objectMessage = (ObjectMessage) object;
 							LocalDateTime date = LocalDateTime
-									.parse(objectMessage.getStringProperty("date"),
-											DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+								.parse(objectMessage.getStringProperty("date"),
+									DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 							String sender = objectMessage.getStringProperty("sender");
 							String receiver = objectMessage.getStringProperty("receiver");
 							MimeMail data = objectMessage.getBody(MimeMail.class);
@@ -217,13 +217,13 @@ public class Messenger
 	}
 
 	private void send(String sender, String receiver, MimeMail<?> mail)
-			throws NamingException, MessagingException
+		throws NamingException, MessagingException
 	{
 		javax.mail.Session mailSession = (javax.mail.Session) new InitialContext().lookup("java:/comp/env/MailSession");
 		MimeMessage mimeMessage = new MimeMessage(mailSession);
 		mimeMessage.setFrom(sender);
 		mimeMessage.setSubject(mail.getSubject());
-		mimeMessage.setSentDate(new DateTime().toDate());
+		mimeMessage.setSentDate(new java.util.Date());
 
 		if (mail.getPriority() == MimeMail.Priority.LOW)
 			mimeMessage.setHeader("X-Priority", "5");

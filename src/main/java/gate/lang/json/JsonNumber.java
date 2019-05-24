@@ -98,7 +98,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @return a JsonNumber instance representing value.
 	 */
-	public static JsonNumber valueOf(long value)
+	public static JsonNumber of(long value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -110,7 +110,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @return a JsonNumber instance representing value.
 	 */
-	public static JsonNumber valueOf(double value)
+	public static JsonNumber of(double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -124,7 +124,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(String value)
+	public static JsonNumber of(String value)
 	{
 		return new JsonNumber(new BigDecimal(value));
 	}
@@ -138,7 +138,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Byte value)
+	public static JsonNumber of(Byte value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -152,7 +152,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Short value)
+	public static JsonNumber of(Short value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -166,7 +166,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Integer value)
+	public static JsonNumber of(Integer value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -180,7 +180,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Long value)
+	public static JsonNumber of(Long value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -194,7 +194,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Float value)
+	public static JsonNumber of(Float value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -208,7 +208,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Double value)
+	public static JsonNumber of(Double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
@@ -222,7 +222,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(BigDecimal value)
+	public static JsonNumber of(BigDecimal value)
 	{
 		return new JsonNumber(value);
 	}
@@ -236,7 +236,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Percentage value)
+	public static JsonNumber of(Percentage value)
 	{
 		return new JsonNumber(value.getValue());
 	}
@@ -250,7 +250,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Money value)
+	public static JsonNumber of(Money value)
 	{
 		return new JsonNumber(value.getValue());
 	}
@@ -264,9 +264,9 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber valueOf(Number value)
+	public static JsonNumber of(Number value)
 	{
-		return valueOf(value.toString());
+		return JsonNumber.of(value.toString());
 	}
 
 	@Override

@@ -40,9 +40,8 @@ public class InsertTest
 		{
 			ID id = new ID(40);
 			String name = "Jonh";
-			Date birthdate = new Date(31, 12, 2005);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			Date birthdate = Date.of(31, 12, 2005);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			link.prepare(
 				"insert into Person (id, name, birthdate, contract$date1, contract$date2) values (?, ?, ?, ?, ?)")
@@ -79,9 +78,8 @@ public class InsertTest
 		{
 			ID id = new ID(140);
 			String name = "Mary";
-			Date birthdate = new Date(31, 12, 2005);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			Date birthdate = Date.of(31, 12, 2005);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			link.prepare(getClass().getResource("InsertTest/Insert.sql"))
 				.parameters(id, name, birthdate, contract)
@@ -117,9 +115,8 @@ public class InsertTest
 		{
 			ID id = new ID(41);
 			String name = "Paul";
-			Date birthdate = new Date(29, 8, 2008);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			Date birthdate = Date.of(29, 8, 2008);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			link
 				.prepare(Insert
@@ -160,9 +157,8 @@ public class InsertTest
 		{
 			ID id = new ID(42);
 			String name = "Richard";
-			Date birthdate = new Date(19, 7, 2001);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			Date birthdate = Date.of(19, 7, 2001);
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			link
 				.prepare(Insert
@@ -205,8 +201,7 @@ public class InsertTest
 			int id = 43;
 			String name = "Richard";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)
@@ -251,8 +246,7 @@ public class InsertTest
 		{
 			String name = "Bill Gates";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setName(name)
@@ -275,8 +269,8 @@ public class InsertTest
 				Map<String, Object> result = optional.get();
 				assertEquals(name, result.get("name"));
 				assertEquals(birthdate, result.get("birthdate"));
-				assertEquals(contract.getDate1(), result.get("contract$date1"));
-				assertEquals(contract.getDate2(), result.get("contract$date2"));
+				assertEquals(contract.getMin(), result.get("contract$date1"));
+				assertEquals(contract.getMax(), result.get("contract$date2"));
 			} else
 				fail("No result found");
 		} catch (SQLException | ConstraintViolationException ex)
@@ -293,8 +287,7 @@ public class InsertTest
 			int id = 100;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 9);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setId(id)
@@ -337,8 +330,7 @@ public class InsertTest
 		{
 			String name = "Jobs";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(new Date(1, 1, 2010),
-				new Date(31, 12, 2010));
+			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
 			Person person = new Person()
 				.setName(name)
@@ -357,8 +349,8 @@ public class InsertTest
 				Map<String, Object> result = optional.get();
 				assertEquals(name, result.get("name"));
 				assertEquals(birthdate, result.get("birthdate"));
-				assertEquals(contract.getDate1(), result.get("contract$date1"));
-				assertEquals(contract.getDate2(), result.get("contract$date2"));
+				assertEquals(contract.getMin(), result.get("contract$date1"));
+				assertEquals(contract.getMax(), result.get("contract$date2"));
 			} else
 				fail("No result found");
 		} catch (SQLException | ConstraintViolationException ex)
