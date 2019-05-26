@@ -23,21 +23,7 @@ public class BigDecimalConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Pattern.Implementation("^[0-9]+(,[0-9]{1,2})?$"));
-
-	private static class Format
-	{
-
-		private static final DecimalFormat VALUE
-				= (DecimalFormat) DecimalFormat
-						.getInstance(Locale.getDefault());
-
-		static
-		{
-			VALUE.setParseBigDecimal(true);
-		}
-
-	}
+		= Arrays.asList(new Pattern.Implementation("^[0-9]+(,[0-9]{1,2})?$"));
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -57,6 +43,15 @@ public class BigDecimalConverter implements Converter
 		return null;
 	}
 
+	private DecimalFormat getFormat()
+	{
+		DecimalFormat decimalFormat
+			= (DecimalFormat) DecimalFormat
+				.getInstance(Locale.getDefault());
+		decimalFormat.setParseBigDecimal(true);
+		return decimalFormat;
+	}
+
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
@@ -68,13 +63,16 @@ public class BigDecimalConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			BigDecimal bd = (BigDecimal) Format.VALUE.parse(string);
-			bd = bd.setScale(2, RoundingMode.UNNECESSARY);
-			return bd;
+			DecimalFormat decimalFormat
+				= (DecimalFormat) DecimalFormat
+					.getInstance(Locale.getDefault());
+			decimalFormat.setParseBigDecimal(true);
+
+			return ((BigDecimal) getFormat().parse(string))
+				.setScale(2, RoundingMode.UNNECESSARY);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(String.format("%s não representa um número com duas casas decimais válido.",
-					string));
+			throw new ConversionException(ex, "%s não representa um número com duas casas decimais válido.", string);
 		}
 
 	}
@@ -88,7 +86,7 @@ public class BigDecimalConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null ? Format.VALUE.format(object) : "";
+		return object != null ? getFormat().format(object) : "";
 	}
 
 	@Override
@@ -100,7 +98,7 @@ public class BigDecimalConverter implements Converter
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? Format.VALUE.format(object) : "";
+		return object != null ? getFormat().format(object) : "";
 	}
 
 	@Override
