@@ -71,13 +71,13 @@ public class DateIntervalConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((DateInterval) object).format(format) : "";
+		return object != null ? DateInterval.formatter(format).format((DateInterval) object) : "";
 	}
 
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? ((DateInterval) object).format("dd/MM/yyyy") : "";
+		return object != null ? ((DateInterval) object).toString() : "";
 	}
 
 	@Override

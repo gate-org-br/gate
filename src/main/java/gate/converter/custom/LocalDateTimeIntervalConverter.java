@@ -5,59 +5,23 @@ import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.type.DateTime;
-import gate.type.DateTimeInterval;
+import gate.type.DateInterval;
+import gate.type.LocalDateTimeInterval;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DateTimeIntervalConverter implements Converter
+public class LocalDateTimeIntervalConverter implements Converter
 {
 
-	private static final List<String> SUFIXES
-		= Arrays.asList("dateTime1", "dateTime2");
-
-	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
-	{
-		if (string == null)
-			return null;
-		string = string.trim();
-		if (string.isEmpty())
-			return null;
-
-		try
-		{
-			return DateTimeInterval.of(string);
-		} catch (ParseException ex)
-		{
-			throw new ConversionException(ex, String.format(getDescription()));
-		}
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object, String format)
-	{
-		return object != null ? DateTimeInterval.formatter(format).format((DateTimeInterval) object) : "";
-	}
-
-	@Override
-	public String toString(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
+	private static final List<String> SUFIXES = Arrays.asList("min", "max");
 
 	@Override
 	public String getDescription()
@@ -81,6 +45,42 @@ public class DateTimeIntervalConverter implements Converter
 	}
 
 	@Override
+	public Object ofString(Class<?> type, String string) throws ConversionException
+	{
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
+		{
+			return LocalDateTimeInterval.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
+		}
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object)
+	{
+		return object != null ? object.toString() : "";
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object, String format)
+	{
+		return object != null ? LocalDateTimeInterval.formatter(format).format((LocalDateTimeInterval) object) : "";
+	}
+
+	@Override
+	public String toString(Class<?> type, Object object)
+	{
+		return object != null ? ((LocalDateTimeInterval) object).toString() : "";
+	}
+
+	@Override
 	public List<String> getSufixes()
 	{
 		return SUFIXES;
@@ -89,25 +89,25 @@ public class DateTimeIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
-		java.sql.Timestamp min = rs.getTimestamp(fields);
+		LocalDateTime min = rs.getObject(fields, LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp max = rs.getTimestamp(fields + 1);
+		LocalDateTime max = rs.getObject(fields + 1, LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
+		return new LocalDateTimeInterval(min, max);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		java.sql.Timestamp min = rs.getTimestamp(fields + ":" + SUFIXES.get(0));
+		LocalDateTime min = rs.getObject(fields + ":" + SUFIXES.get(0), LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp max = rs.getTimestamp(fields + ":" + SUFIXES.get(1));
+		LocalDateTime max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
+		return new LocalDateTimeInterval(min, max);
 	}
 
 	@Override
@@ -115,8 +115,8 @@ public class DateTimeIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMin().getValue()));
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMax().getValue()));
+			ps.setObject(fields++, ((LocalDateTimeInterval) value).getMin());
+			ps.setObject(fields++, ((LocalDateTimeInterval) value).getMax());
 		} else
 		{
 			ps.setNull(fields++, Types.DATE);

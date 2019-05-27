@@ -5,23 +5,43 @@ import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.type.DateTime;
-import gate.type.DateTimeInterval;
+import gate.type.LocalDateInterval;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DateTimeIntervalConverter implements Converter
+public class LocalDateIntervalConverter implements Converter
 {
 
-	private static final List<String> SUFIXES
-		= Arrays.asList("dateTime1", "dateTime2");
+	private static final List<String> SUFIXES = Arrays.asList("min", "max");
+
+	@Override
+	public String getDescription()
+	{
+		return "Campos de intervalo de datas devem ser preenchidos no formato DD/MM/YYYY - DD/MM/YYYY";
+	}
+
+	@Override
+	public String getMask()
+	{
+		return "##/##/#### - ##/##/####";
+	}
+
+	@Override
+	public List<Constraint.Implementation<?>> getConstraints()
+	{
+		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
+		constraints.add(new Maxlength.Implementation(23));
+		constraints.add(new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4}[ ][-][ ][0-9]{2}[/][0-9]{2}[/][0-9]{4}$"));
+		return constraints;
+	}
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
@@ -34,7 +54,7 @@ public class DateTimeIntervalConverter implements Converter
 
 		try
 		{
-			return DateTimeInterval.of(string);
+			return LocalDateInterval.of(string);
 		} catch (ParseException ex)
 		{
 			throw new ConversionException(ex, String.format(getDescription()));
@@ -50,34 +70,13 @@ public class DateTimeIntervalConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? DateTimeInterval.formatter(format).format((DateTimeInterval) object) : "";
+		return object != null ? LocalDateInterval.formatter(format).format((LocalDateInterval) object) : "";
 	}
 
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de intervalo de data/hora devem ser preenchidos no formato DD/MM/YYYY HH:MM - DD/MM/YYYY HH:MM";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##/##/#### ##:## - ##/##/#### ##:##";
-	}
-
-	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
-		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Maxlength.Implementation(35));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2} [-] [0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
-		return constraints;
+		return object != null ? ((LocalDateInterval) object).toString() : "";
 	}
 
 	@Override
@@ -89,25 +88,25 @@ public class DateTimeIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
-		java.sql.Timestamp min = rs.getTimestamp(fields);
+		LocalDate min = rs.getObject(fields, LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp max = rs.getTimestamp(fields + 1);
+		LocalDate max = rs.getObject(fields + 1, LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
+		return new LocalDateInterval(min, max);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		java.sql.Timestamp min = rs.getTimestamp(fields + ":" + SUFIXES.get(0));
+		LocalDate min = rs.getObject(fields + ":" + SUFIXES.get(0), LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp max = rs.getTimestamp(fields + ":" + SUFIXES.get(1));
+		LocalDate max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));
+		return new LocalDateInterval(min, max);
 	}
 
 	@Override
@@ -115,8 +114,8 @@ public class DateTimeIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMin().getValue()));
-			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMax().getValue()));
+			ps.setObject(fields++, ((LocalDateInterval) value).getMin());
+			ps.setObject(fields++, ((LocalDateInterval) value).getMax());
 		} else
 		{
 			ps.setNull(fields++, Types.DATE);

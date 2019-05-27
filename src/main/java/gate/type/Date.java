@@ -16,8 +16,8 @@ import java.util.Locale;
 public final class Date implements Comparable<Date>, Serializable
 {
 
+	private static String FORMAT = "dd/MM/yyyy";
 	private static final long serialVersionUID = 1L;
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
 	private final long value;
 
@@ -52,11 +52,6 @@ public final class Date implements Comparable<Date>, Serializable
 	public boolean equals(Object date)
 	{
 		return date instanceof Date && ((Date) date).getValue() == getValue();
-	}
-
-	public String format(String format)
-	{
-		return new SimpleDateFormat(format).format(new java.util.Date(getValue()));
 	}
 
 	public Field getDayOfMonth()
@@ -137,7 +132,7 @@ public final class Date implements Comparable<Date>, Serializable
 	@Override
 	public String toString()
 	{
-		return FORMAT.format(toDate());
+		return Date.formatter(FORMAT).format(this);
 	}
 
 	public static Date now()
@@ -160,12 +155,7 @@ public final class Date implements Comparable<Date>, Serializable
 
 	public static Date of(String string) throws ParseException
 	{
-		return new Date(FORMAT.parse(string).getTime());
-	}
-
-	public static Date of(String format, String string) throws ParseException
-	{
-		return new Date(new SimpleDateFormat(format).parse(string).getTime());
+		return Date.formatter(FORMAT).parse(string);
 	}
 
 	public static Date of(Calendar calendar)
@@ -211,6 +201,26 @@ public final class Date implements Comparable<Date>, Serializable
 	public Duration getDuration(Date date)
 	{
 		return Duration.of(Math.abs(getValue() - date.getValue()) / 1000);
+	}
+
+	public static Formatter<Date> formatter(String format)
+	{
+		SimpleDateFormat SimpleDateFormat = new SimpleDateFormat(format);
+
+		return new Formatter<Date>()
+		{
+			@Override
+			public Date parse(String source) throws ParseException
+			{
+				return Date.of(SimpleDateFormat.parse(source));
+			}
+
+			@Override
+			public String format(Date source)
+			{
+				return SimpleDateFormat.format(source.toDate());
+			}
+		};
 	}
 
 	public class Field implements Serializable

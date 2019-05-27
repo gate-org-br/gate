@@ -2187,7 +2187,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
 }
 *.COOLBAR > progress,
 *.Coolbar > progress {
-  width: calc(100% - 4px);
+  flex-grow: 1;
 }
 *.COOLBAR > label,
 *.Coolbar > label {

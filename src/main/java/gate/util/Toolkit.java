@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import javax.servlet.http.HttpServletRequest;
 
 public class Toolkit
 {
@@ -18,16 +17,6 @@ public class Toolkit
 	public static boolean isEmpty(String string)
 	{
 		return string == null || string.isEmpty();
-	}
-
-	public static Object coalesce(Object obj1, Object obj2)
-	{
-		return obj1 != null ? obj1 : obj2;
-	}
-
-	public static Object coalesce(Object obj, Supplier<Object> supplier)
-	{
-		return obj != null ? obj : supplier.get();
 	}
 
 	public static boolean isEmpty(Object obj)
@@ -58,20 +47,6 @@ public class Toolkit
 		if (obj instanceof String)
 			return ((CharSequence) obj).length();
 		return 1;
-	}
-
-	public static <T extends Comparable<T>> int compare(T obj1, T obj2)
-	{
-		if (obj1 != null)
-			if (obj2 != null)
-				return obj1.compareTo(obj2);
-			else
-				return 1;
-		else if (obj2 != null)
-			return -1;
-		else
-			return 0;
-
 	}
 
 	public static String write(Object object) throws ConversionException
@@ -138,21 +113,13 @@ public class Toolkit
 			return Collections.singletonList(obj);
 	}
 
-	public static String html(Object object)
+	public static Object coalesce(Object a, Object b)
 	{
-		return object != null ? object.toString().replaceAll("\\n", "<br/>") : "";
+		return a != null ? a : b;
 	}
 
-	public static String qs(HttpServletRequest request, String qs)
+	public static Object coalesce(Object obj, Supplier<Object> supplier)
 	{
-		if (request.getQueryString() == null)
-			return qs;
-		if (request.getQueryString().isEmpty())
-			return qs;
-		if (!"GET".equals(request.getMethod()))
-			return qs;
-		if (request.getParameter("$keep") == null)
-			return qs;
-		return request.getQueryString();
+		return obj != null ? obj : supplier.get();
 	}
 }

@@ -2,10 +2,12 @@ package gate.converter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
@@ -62,6 +64,8 @@ public class Converters
 		INSTANCES.put(YearMonth.class, new YearMonthConverter());
 		INSTANCES.put(String[][].class, new StringMatrixConverter());
 		INSTANCES.put(byte[].class, new ByteArrayConverter());
+		INSTANCES.put(Month.class, new MonthConverter());
+		INSTANCES.put(DayOfWeek.class, new DayOfWeekConverter());
 	}
 
 	public Converter get(Class<?> type)

@@ -225,6 +225,15 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 			.map(e -> e.floatValue());
 	}
 
+	public JsonObject setObject(String key, Object value)
+	{
+		if (value == null)
+			remove(key);
+		else
+			set(key, JsonString.of(gate.converter.Converter.toString(value)));
+		return this;
+	}
+
 	public <T> JsonObject setObject(String key, Class<T> type, T value)
 	{
 		if (value == null)

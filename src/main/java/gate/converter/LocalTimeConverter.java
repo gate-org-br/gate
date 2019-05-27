@@ -18,11 +18,11 @@ public class LocalTimeConverter implements Converter
 {
 
 	private static final DateTimeFormatter FORMATTTER
-			= DateTimeFormatter.ofPattern("HH:mm:ss");
+		= DateTimeFormatter.ofPattern("HH:mm");
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Maxlength.Implementation(8),
-					new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}[:][0-9]{2}$"));
+		= Arrays.asList(new Maxlength.Implementation(8),
+			new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
 
 	@Override
 	public String getDescription()
@@ -33,7 +33,7 @@ public class LocalTimeConverter implements Converter
 	@Override
 	public String getMask()
 	{
-		return "##:##:##";
+		return "##:##";
 	}
 
 	@Override
@@ -76,29 +76,29 @@ public class LocalTimeConverter implements Converter
 		} catch (DateTimeParseException ex)
 		{
 			throw new ConversionException(ex,
-					"%s não é uma hora válida.%n%s.",
-					ex.getParsedString(),
-					getDescription());
+				"%s não é uma hora válida.%n%s.",
+				ex.getParsedString(),
+				getDescription());
 		}
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index,
-			Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException, ConversionException
 	{
 		return rs.getObject(index, LocalTime.class);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-			Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException, ConversionException
 	{
 		return rs.getObject(fields, LocalTime.class);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-			ConversionException
+		ConversionException
 	{
 		ps.setObject(index, value);
 		return index + 1;
