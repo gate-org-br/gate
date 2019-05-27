@@ -109,19 +109,4 @@ public class DataGrid extends ArrayList<Object[]>
 			setFoot(remove(size() - 1));
 		return this;
 	}
-
-	public static void main(String[] args)
-	{
-		DataGrid dataGrid = new DataGrid("Tipo", "Quantidade");
-		dataGrid.add(new Object[]
-		{
-			Auth.Type.PRIVATE, 10
-		});
-		dataGrid.add(new Object[]
-		{
-			Auth.Type.PUBLIC, 11
-		});
-
-		System.out.println(dataGrid);
-	}
 }

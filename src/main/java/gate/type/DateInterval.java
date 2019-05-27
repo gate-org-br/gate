@@ -14,13 +14,14 @@ import java.util.regex.Pattern;
 
 @Icon("2003")
 @Converter(DateIntervalConverter.class)
-public final class DateInterval implements Serializable, Comparable<DateInterval>
+public final class DateInterval implements Serializable, Comparable<DateInterval>, Interval<Date>
 {
 
 	private final Date min;
 	private final Date max;
 
 	private static final long serialVersionUID = 1L;
+	private static final String FORMAT = "dd/MM/yyyy";
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{2}/[0-9]{4})");
 
 	public DateInterval(Date min, Date max)
@@ -42,6 +43,7 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 		return new DateTimeInterval(min.with(Time.MIN), max.with(Time.MAX));
 	}
 
+	@Override
 	public boolean contains(Date date)
 	{
 		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
@@ -53,16 +55,13 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 		return (obj instanceof DateInterval && ((DateInterval) obj).min.equals(min) && ((DateInterval) obj).min.equals(min));
 	}
 
-	public String format(String format)
-	{
-		return String.format("%s - %s", getMin().format(format), getMax().format(format));
-	}
-
+	@Override
 	public Date getMin()
 	{
 		return min;
 	}
 
+	@Override
 	public Date getMax()
 	{
 		return max;
@@ -85,7 +84,7 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 	@Override
 	public String toString()
 	{
-		return String.format("%s - %s", getMin(), getMax());
+		return DateInterval.formatter(FORMAT).format(this);
 	}
 
 	public long getValue()
@@ -131,10 +130,29 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 
 	public static DateInterval of(String string) throws ParseException
 	{
-		Matcher matcher = PATTERN.matcher(string.trim());
-		if (!matcher.matches())
-			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", string));
+		return DateInterval.formatter(FORMAT).parse(string);
+	}
 
-		return new DateInterval(Date.of(matcher.group(1)), Date.of(matcher.group(2)));
+	public static Formatter<DateInterval> formatter(String format)
+	{
+		Formatter<Date> formatter = Date.formatter(format);
+
+		return new Formatter<DateInterval>()
+		{
+			@Override
+			public DateInterval parse(String source) throws ParseException
+			{
+				Matcher matcher = PATTERN.matcher(source.trim());
+				if (!matcher.matches())
+					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
+				return new DateInterval(formatter.parse(matcher.group(1)), formatter.parse(matcher.group(2)));
+			}
+
+			@Override
+			public String format(DateInterval source)
+			{
+				return formatter.format(source.getMin()) + " - " + formatter.format(source.getMax());
+			}
+		};
 	}
 }

@@ -48,7 +48,8 @@ public class DateTimeConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((DateTime) object).format(format) : "";
+		return object != null
+			? DateTime.formatter(format).format(((DateTime) object)) : "";
 	}
 
 	@Override

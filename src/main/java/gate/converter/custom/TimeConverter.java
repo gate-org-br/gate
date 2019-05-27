@@ -16,11 +16,9 @@ import java.util.List;
 
 public class TimeConverter implements Converter
 {
-
-	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-		= Arrays.asList(new Maxlength.Implementation(5),
-			new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
-
+	
+	private static final List<Constraint.Implementation<?>> CONSTRAINTS = Arrays.asList(new Maxlength.Implementation(5), new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
+	
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
@@ -29,7 +27,7 @@ public class TimeConverter implements Converter
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
-
+		
 		try
 		{
 			return Time.of(string);
@@ -38,57 +36,57 @@ public class TimeConverter implements Converter
 			throw new ConversionException(ex, String.format(getDescription()));
 		}
 	}
-
+	
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
-
+	
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((Time) object).format(format) : "";
+		return object != null ? Time.formatter(format).format((Time) object) : "";
 	}
-
+	
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
-
+	
 	@Override
 	public String getDescription()
 	{
 		return "Campos de hora devem ser preenchidos no formato HH:MM";
 	}
-
+	
 	@Override
 	public String getMask()
 	{
 		return "##:##";
 	}
-
+	
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return CONSTRAINTS;
 	}
-
+	
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		java.sql.Time value = rs.getTime(fields);
 		return rs.wasNull() ? null : Time.of(value);
 	}
-
+	
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		java.sql.Time value = rs.getTime(fields);
 		return rs.wasNull() ? null : Time.of(value);
 	}
-
+	
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{

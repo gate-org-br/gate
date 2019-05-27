@@ -18,7 +18,7 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 {
 
 	private static final long serialVersionUID = 1L;
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private static final String FORMAT = "dd/MM/yyyy HH:mm";
 
 	private final long value;
 
@@ -37,11 +37,6 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	public boolean equals(Object dateTime)
 	{
 		return dateTime instanceof DateTime && ((DateTime) dateTime).getValue() == getValue();
-	}
-
-	public String format(String format)
-	{
-		return new SimpleDateFormat(format).format(new java.util.Date(getValue()));
 	}
 
 	public Time getTime()
@@ -150,7 +145,7 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	@Override
 	public String toString()
 	{
-		return FORMAT.format(toDate());
+		return DateTime.formatter(FORMAT).format(this);
 	}
 
 	public boolean isWeekendDay()
@@ -259,12 +254,27 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 
 	public static DateTime of(String string) throws ParseException
 	{
-		return new DateTime(FORMAT.parse(string).getTime());
+		return DateTime.formatter(FORMAT).parse(string);
 	}
 
-	public static DateTime of(String format, String string) throws ParseException
+	public static Formatter<DateTime> formatter(String format)
 	{
-		return new DateTime(new SimpleDateFormat(format).parse(string).getTime());
+		SimpleDateFormat SimpleDateFormat = new SimpleDateFormat(format);
+
+		return new Formatter<DateTime>()
+		{
+			@Override
+			public DateTime parse(String source) throws ParseException
+			{
+				return DateTime.of(SimpleDateFormat.parse(source));
+			}
+
+			@Override
+			public String format(DateTime source)
+			{
+				return SimpleDateFormat.format(source.toDate());
+			}
+		};
 	}
 
 	public class Field implements Serializable

@@ -20,11 +20,11 @@ public class LocalDateTimeConverter implements Converter
 {
 
 	private static final DateTimeFormatter FORMATTTER
-			= DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+			= DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 			= Arrays.asList(new Maxlength.Implementation(19),
-					new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}[:][0-9]{2}$"));
+					new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
 
 	@Override
 	public String getDescription()
@@ -35,7 +35,7 @@ public class LocalDateTimeConverter implements Converter
 	@Override
 	public String getMask()
 	{
-		return "##/##/#### ##:##:##";
+		return "##/##/#### ##:##";
 	}
 
 	@Override

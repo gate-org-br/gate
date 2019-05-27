@@ -11,12 +11,14 @@ import java.util.regex.Pattern;
 
 @Icon("2003")
 @Converter(DateTimeIntervalConverter.class)
-public class DateTimeInterval implements Serializable, Comparable<DateTimeInterval>
+public class DateTimeInterval implements Serializable, Comparable<DateTimeInterval>, Interval<DateTime>
 {
 
 	private final DateTime min;
 
 	private final DateTime max;
+
+	private static final String FORMAT = "dd/MM/yyyy HH:mm";
 
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}) - ([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2})");
 
@@ -34,6 +36,7 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 		this.max = max;
 	}
 
+	@Override
 	public boolean contains(DateTime dateTime)
 	{
 		return getMin().compareTo(dateTime) <= 0 && getMax().compareTo(dateTime) >= 0;
@@ -45,16 +48,13 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 		return (obj instanceof DateTimeInterval && ((DateTimeInterval) obj).min.equals(min) && ((DateTimeInterval) obj).max.equals(max));
 	}
 
-	public String format(String format)
-	{
-		return String.format("%s - %s", getMin(), getMax());
-	}
-
+	@Override
 	public DateTime getMin()
 	{
 		return min;
 	}
 
+	@Override
 	public DateTime getMax()
 	{
 		return max;
@@ -74,7 +74,7 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 	@Override
 	public String toString()
 	{
-		return format("dd/MM/yyyy HH:mm");
+		return DateTimeInterval.formatter(FORMAT).format(this);
 	}
 
 	public long getValue()
@@ -100,10 +100,29 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 
 	public static DateTimeInterval of(String string) throws ParseException
 	{
-		Matcher matcher = PATTERN.matcher(string);
-		if (!matcher.matches())
-			throw new IllegalArgumentException(String.format("%s não é um intervalo de datas/horas válido.", string));
+		return DateTimeInterval.formatter(FORMAT).parse(string);
+	}
 
-		return new DateTimeInterval(DateTime.of(matcher.group(1)), DateTime.of(matcher.group(2)));
+	public static Formatter<DateTimeInterval> formatter(String format)
+	{
+		Formatter<DateTime> formatter = DateTime.formatter(format);
+
+		return new Formatter<DateTimeInterval>()
+		{
+			@Override
+			public DateTimeInterval parse(String source) throws ParseException
+			{
+				Matcher matcher = PATTERN.matcher(source.trim());
+				if (!matcher.matches())
+					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
+				return new DateTimeInterval(formatter.parse(matcher.group(1)), formatter.parse(matcher.group(2)));
+			}
+
+			@Override
+			public String format(DateTimeInterval source)
+			{
+				return formatter.format(source.getMin()) + " - " + formatter.format(source.getMax());
+			}
+		};
 	}
 }

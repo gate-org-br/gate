@@ -66,7 +66,7 @@ public class DateConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((Date) object).format(format) : "";
+		return object != null ? Date.formatter(format).format((Date) object) : "";
 	}
 
 	@Override

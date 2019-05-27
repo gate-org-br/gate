@@ -3,28 +3,30 @@ package gate.converter;
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.error.ConversionException;
+import gate.lang.json.JsonScanner;
+import gate.lang.json.JsonToken;
+import gate.lang.json.JsonWriter;
+import gate.util.DurationFormatter;
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
 public class DurationConverter implements Converter
 {
 
-	protected final static long S = 1;
-	protected final static long M = 60 * S;
-	protected final static long H = 60 * M;
-
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Pattern.Implementation("^(\\d+:)?(\\d+:)?\\d+$"));
+		= Arrays.asList(new Pattern.Implementation(DurationFormatter.PATTERN.toString()));
 
 	@Override
-	public String getMask()
+	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		return null;
+		return CONSTRAINTS;
 	}
 
 	@Override
@@ -34,124 +36,97 @@ public class DurationConverter implements Converter
 	}
 
 	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
+	public String getMask()
 	{
-		return CONSTRAINTS;
-	}
-
-	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException, ConversionException
-	{
-		long value = rs.getLong(index);
-		if (rs.wasNull())
-			return null;
-		return Duration.ofSeconds(value);
-	}
-
-	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
-	{
-		long value = rs.getLong(fields);
-		if (rs.wasNull())
-			return null;
-		return Duration.ofSeconds(value);
-	}
-
-	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-			ConversionException
-	{
-		if (value == null)
-			ps.setNull(index++, Types.INTEGER);
-		else
-			ps.setLong(index++, ((Duration) value).getSeconds());
-		return index;
-	}
-
-	@Override
-	public String toString(Class<?> type, Object object)
-	{
-		if (object == null)
-			return "";
-		Duration duration = (Duration) object;
-		long value = duration.getSeconds();
-		long h = value / H;
-		long m = (value % H) / M;
-		long s = ((value % H) % M) / S;
-		return String.format("%02d:%02d:%02d", h, m, s);
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object)
-	{
-		return toString(type, object);
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object, String format)
-	{
-		return String.format(format, toString(type, object));
+		return null;
 	}
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string == null)
-			return null;
+		try
+		{
+			if (string == null)
+				return null;
+			string = string.trim();
+			if (string.isEmpty())
+				return null;
 
-		string = string.trim();
-		if (string.isEmpty())
-			return null;
+			return DurationFormatter.parse(string);
+		} catch (DateTimeParseException ex)
+		{
+			throw new ConversionException(ex, "%s não representa uma duração no formato HH:MM:SS", string);
+		}
 
-		int i = 0;
-		long value = 0;
-		long field = -1;
+	}
 
-		while (i < string.length())
-			switch (string.charAt(i++))
-			{
-				case '0':
-					field = field == -1 ? 0 : (field * 10) + 0;
-					break;
-				case '1':
-					field = field == -1 ? 1 : (field * 10) + 1;
-					break;
-				case '2':
-					field = field == -1 ? 2 : (field * 10) + 2;
-					break;
-				case '3':
-					field = field == -1 ? 3 : (field * 10) + 3;
-					break;
-				case '4':
-					field = field == -1 ? 4 : (field * 10) + 4;
-					break;
-				case '5':
-					field = field == -1 ? 5 : (field * 10) + 5;
-					break;
-				case '6':
-					field = field == -1 ? 6 : (field * 10) + 6;
-					break;
-				case '7':
-					field = field == -1 ? 7 : (field * 10) + 7;
-					break;
-				case '8':
-					field = field == -1 ? 8 : (field * 10) + 8;
-					break;
-				case '9':
-					field = field == -1 ? 9 : (field * 10) + 9;
-					break;
-				case ':':
-					if (field == -1)
-						throw new ConversionException(string + " não é uma duração válida");
-					value = value * 60 + field * 60;
-					field = -1;
-					break;
-				default:
-					throw new ConversionException(string + " não é uma duração válida");
-			}
+	@Override
+	public String toText(Class<?> type, Object object)
+	{
+		return object != null ? DurationFormatter.format((Duration) object) : "";
+	}
 
-		if (field == -1)
-			throw new ConversionException(string + " não é uma duração válida");
-		return Duration.ofSeconds(value + field);
+	@Override
+	public String toText(Class<?> type, Object object, String format)
+	{
+		return object != null ? String.format(format, object) : "";
+	}
+
+	@Override
+	public String toString(Class<?> type, Object object)
+	{
+		return object != null ? DurationFormatter.format((Duration) object) : "";
+	}
+
+	@Override
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	{
+		long value = rs.getLong(fields);
+		return rs.wasNull() ? null : Duration.ofSeconds(value);
+	}
+
+	@Override
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	{
+		long value = rs.getLong(fields);
+		return rs.wasNull() ? null : Duration.ofSeconds(value);
+	}
+
+	@Override
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
+	{
+		if (value != null)
+			ps.setLong(fields++, ((Duration) value).getSeconds());
+		else
+			ps.setNull(fields++, Types.INTEGER);
+		return fields;
+	}
+
+	@Override
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	{
+		switch (scanner.getCurrent().getType())
+		{
+			case NULL:
+				scanner.scan();
+				return null;
+			case NUMBER:
+				Duration value = Duration.ofSeconds(Long.parseLong(scanner.getCurrent().toString()));
+				scanner.scan();
+				return value;
+			default:
+				throw new ConversionException(scanner.getCurrent() + " is not a duration");
+		}
+	}
+
+	@Override
+	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	{
+		if (object == null)
+			writer.write(JsonToken.Type.NULL, null);
+		else if (object instanceof Duration)
+			writer.write(JsonToken.Type.NUMBER, Long.toString(((Duration) object).getSeconds()));
+		else
+			throw new ConversionException(object.getClass().getName() + " is not a duration");
 	}
 }

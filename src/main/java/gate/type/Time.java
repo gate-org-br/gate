@@ -21,7 +21,7 @@ public final class Time implements Comparable<Time>, Serializable
 	public static final Time MAX = Time.of(23, 59, 59, 0);
 	private static final long serialVersionUID = 1L;
 
-	private static final SimpleDateFormat FORMAT = new SimpleDateFormat("HH:mm");
+	private static final String FORMAT = "HH:mm";
 
 	private final long value;
 
@@ -153,20 +153,15 @@ public final class Time implements Comparable<Time>, Serializable
 		return new Time(calendar.getTimeInMillis());
 	}
 
-	public static Time of(String format, String string) throws ParseException
-	{
-		return new Time(new SimpleDateFormat(format).parse(string).getTime());
-	}
-
 	public static Time of(String string) throws ParseException
 	{
-		return new Time(FORMAT.parse(string).getTime());
+		return Time.formatter(FORMAT).parse(string);
 	}
 
 	@Override
 	public String toString()
 	{
-		return FORMAT.format(toDate());
+		return Time.formatter(FORMAT).format(this);
 	}
 
 	public boolean lt(Time time)
@@ -202,6 +197,26 @@ public final class Time implements Comparable<Time>, Serializable
 	public Duration getDuration(Time time)
 	{
 		return Duration.of(Math.abs(getValue() - time.getValue()) / 1000);
+	}
+
+	public static Formatter<Time> formatter(String format)
+	{
+		SimpleDateFormat SimpleDateFormat = new SimpleDateFormat(format);
+
+		return new Formatter<Time>()
+		{
+			@Override
+			public Time parse(String source) throws ParseException
+			{
+				return Time.of(SimpleDateFormat.parse(source));
+			}
+
+			@Override
+			public String format(Time source)
+			{
+				return SimpleDateFormat.format(source.toDate());
+			}
+		};
 	}
 
 	public class Field implements Serializable
