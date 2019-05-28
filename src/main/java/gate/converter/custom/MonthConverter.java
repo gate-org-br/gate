@@ -1,27 +1,30 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Month;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MonthConverter implements Converter
 {
 
+	private static final List<Constraint.Implementation<?>> CONSTRAINTS
+		= Arrays.asList(new Maxlength.Implementation(7),
+			new Pattern.Implementation("^[0-9]{2}/[0-9]{4}$"));
+
 	@Override
 	public String getDescription()
 	{
-		return "Campos de MÊS devem ser preenchidos no formato MM/YYYY. Os caracteres de formatação são opcionais";
+		return "Campos de mês devem ser preenchidos no formato MM/YYYY";
 	}
 
 	@Override
@@ -33,10 +36,7 @@ public class MonthConverter implements Converter
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Maxlength.Implementation(7));
-		constraints.add(new Pattern.Implementation("^__[/]____|[0-9]{6}|[0-9]{2}[/][0-9]{4}$"));
-		return constraints;
+		return CONSTRAINTS;
 	}
 
 	@Override
@@ -47,14 +47,13 @@ public class MonthConverter implements Converter
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
-		if (string.equals("__/____"))
-			return null;
+
 		try
 		{
-			return new Month(string);
-		} catch (ParseException e)
+			return Month.of(string);
+		} catch (ParseException ex)
 		{
-			throw new ConversionException(String.format(getDescription()));
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
 	}
 
@@ -67,7 +66,7 @@ public class MonthConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((Month) object).format(format) : "";
+		return object != null ? Month.formatter(format).format((Month) object) : "";
 	}
 
 	@Override
@@ -80,14 +79,14 @@ public class MonthConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		java.sql.Date value = rs.getDate(fields);
-		return rs.wasNull() ? null : new Month(value);
+		return rs.wasNull() ? null : Month.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		java.sql.Date value = rs.getDate(fields);
-		return rs.wasNull() ? null : new Month(value);
+		return rs.wasNull() ? null : Month.of(value);
 	}
 
 	@Override

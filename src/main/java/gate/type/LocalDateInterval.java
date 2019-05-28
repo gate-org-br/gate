@@ -9,13 +9,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Icon("2003")
 @Converter(LocalDateIntervalConverter.class)
-public final class LocalDateInterval implements Serializable, Comparable<LocalDateInterval>, Interval<LocalDate>
+public final class LocalDateInterval implements Serializable, Comparable<LocalDateInterval>, DiscreteInterval<LocalDate>
 {
 
 	private final LocalDate min;
@@ -26,7 +28,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	private static final Formatter<LocalDateInterval> FORMATTER = LocalDateInterval.formatter(FORMAT);
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{2}/[0-9]{4})");
 
-	public LocalDateInterval(LocalDate min, LocalDate max)
+	private LocalDateInterval(LocalDate min, LocalDate max)
 	{
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
@@ -48,6 +50,18 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	public LocalDate getMax()
 	{
 		return max;
+	}
+
+	@Override
+	public Stream<LocalDate> stream()
+	{
+		return min.datesUntil(max);
+	}
+
+	@Override
+	public long size()
+	{
+		return ChronoUnit.DAYS.between(min, max);
 	}
 
 	@Override
@@ -85,14 +99,19 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		return getPeriod().getDays() - value.getPeriod().getDays();
 	}
 
-	public LocalDateTimeInterval timed()
+	public LocalDateTimeInterval toLocalDateTimeInterval()
 	{
-		return new LocalDateTimeInterval(min.atTime(LocalTime.MIN), max.atTime(LocalTime.MAX));
+		return LocalDateTimeInterval.of(min.atTime(LocalTime.MIN), max.atTime(LocalTime.MAX));
 	}
 
 	public static LocalDateInterval of(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
+	}
+
+	public static LocalDateInterval of(LocalDate min, LocalDate max)
+	{
+		return new LocalDateInterval(min, max);
 	}
 
 	public static Formatter<LocalDateInterval> formatter(String format)
@@ -115,5 +134,31 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 				return source.getMin().format(formatter) + " - " + source.getMax().format(formatter);
 			}
 		};
+	}
+
+	@Override
+	public Iterator<LocalDate> iterator()
+	{
+		return new LocalDateIntervalIterator();
+	}
+
+	private class LocalDateIntervalIterator implements Iterator<LocalDate>
+	{
+
+		private LocalDate curr = min;
+
+		@Override
+		public boolean hasNext()
+		{
+			return contains(curr);
+		}
+
+		@Override
+		public LocalDate next()
+		{
+			LocalDate next = curr;
+			curr = curr.plusDays(1);
+			return next;
+		}
 	}
 }

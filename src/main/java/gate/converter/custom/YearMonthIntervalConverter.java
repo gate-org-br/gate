@@ -94,7 +94,7 @@ public class YearMonthIntervalConverter implements Converter
 		YearMonth max = rs.getObject(fields + 1, YearMonth.class);
 		if (rs.wasNull())
 			return null;
-		return new YearMonthInterval(min, max);
+		return YearMonthInterval.of(min, max);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class YearMonthIntervalConverter implements Converter
 		YearMonth max = rs.getObject(fields + ":" + SUFIXES.get(1), YearMonth.class);
 		if (rs.wasNull())
 			return null;
-		return new YearMonthInterval(min, max);
+		return YearMonthInterval.of(min, max);
 	}
 
 	@Override

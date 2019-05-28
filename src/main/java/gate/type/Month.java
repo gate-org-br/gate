@@ -17,7 +17,165 @@ import java.util.Locale;
 public final class Month implements Comparable<Month>, Serializable
 {
 
+	private static final String FORMAT = "MM/yyyy";
+
 	private static final long serialVersionUID = 1L;
+
+	private final long value;
+
+	public Collection<Date> getDates()
+	{
+		return new Date(getValue()).getDayOfMonth().getAll();
+	}
+
+	public DateInterval getDateInterval()
+	{
+		return new Date(getValue()).getDayOfMonth().getDateInterval();
+	}
+
+	public DateTimeInterval getDateTimeInterval()
+	{
+		return new Date(getValue()).getDayOfMonth()
+			.getDateInterval().toDateTimeInterval();
+	}
+
+	public Month(long value)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(value);
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		this.value = calendar.getTimeInMillis();
+	}
+
+	@Override
+	public int compareTo(Month month)
+	{
+		return getValue() > month.getValue() ? 1 : getValue() < month.getValue() ? -1 : 0;
+	}
+
+	@Override
+	public boolean equals(Object month)
+	{
+		return month instanceof Month && ((Month) month).getValue() == getValue();
+	}
+
+	public String format(String format)
+	{
+		return new SimpleDateFormat(format).format(new java.util.Date(getValue()));
+	}
+
+	public Field getEra()
+	{
+		return new Field(Calendar.ERA);
+	}
+
+	public Field getYear()
+	{
+		return new Field(Calendar.YEAR);
+	}
+
+	public Field getMonth()
+	{
+		return new Field(Calendar.MONTH);
+	}
+
+	public Date with(int day)
+	{
+		Calendar calendar = toCalendar();
+		calendar.set(Calendar.DAY_OF_MONTH, day);
+		return new Date(calendar.getTimeInMillis());
+	}
+
+	public long getValue()
+	{
+		return value;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return (int) value;
+	}
+
+	public Calendar toCalendar()
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(getValue());
+		return calendar;
+	}
+
+	public java.util.Date toDate()
+	{
+		return new java.util.Date(getValue());
+	}
+
+	@Override
+	public String toString()
+	{
+		return Month.formatter(FORMAT).format(this);
+	}
+
+	public Duration getDuration(Month month)
+	{
+		return Duration.of(Math.abs(getValue() - month.getValue()) / 1000);
+	}
+
+	public static Month now()
+	{
+		return new Month(System.currentTimeMillis());
+	}
+
+	public static Month of(int month, int year)
+	{
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.DAY_OF_MONTH, 1);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return new Month(calendar.getTimeInMillis());
+	}
+
+	public static Month of(String string) throws ParseException
+	{
+		return Month.formatter(FORMAT).parse(string);
+	}
+
+	public static Month of(Calendar calendar)
+	{
+		return new Month(calendar.getTimeInMillis());
+	}
+
+	public static Month of(java.util.Date date)
+	{
+		return new Month(date.getTime());
+	}
+
+	public static Formatter<Month> formatter(String format)
+	{
+		SimpleDateFormat SimpleDateFormat = new SimpleDateFormat(format);
+
+		return new Formatter<Month>()
+		{
+			@Override
+			public Month parse(String source) throws ParseException
+			{
+				return Month.of(SimpleDateFormat.parse(source));
+			}
+
+			@Override
+			public String format(Month source)
+			{
+				return SimpleDateFormat.format(source.toDate());
+			}
+		};
+	}
 
 	public class Field implements Serializable
 	{
@@ -109,144 +267,4 @@ public final class Month implements Comparable<Month>, Serializable
 		}
 	}
 
-	private final long value;
-
-	public Collection<Date> getDates()
-	{
-		return new Date(getValue()).getDayOfMonth().getAll();
-	}
-
-	public DateInterval getDateInterval()
-	{
-		return new Date(getValue()).getDayOfMonth().getDateInterval();
-	}
-
-	public DateTimeInterval getDateTimeInterval()
-	{
-		return new Date(getValue()).getDayOfMonth()
-				.getDateInterval().toDateTimeInterval();
-	}
-
-	public Month()
-	{
-		this(System.currentTimeMillis());
-	}
-
-	public Month(Calendar calendar)
-	{
-		this(calendar.getTimeInMillis());
-	}
-
-	public Month(java.util.Date date)
-	{
-		this(date.getTime());
-	}
-
-	public Month(int month, int year)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		calendar.set(Calendar.MONTH, month);
-		calendar.set(Calendar.YEAR, year);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		this.value = calendar.getTimeInMillis();
-	}
-
-	public Month(long value)
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(value);
-		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		this.value = calendar.getTimeInMillis();
-	}
-
-	public Month(String format, String string) throws ParseException
-	{
-		this(new SimpleDateFormat(format).parse(string));
-	}
-
-	public Month(String string) throws ParseException
-	{
-		this("MMyyyy", string.replaceAll("[^0123456789]", ""));
-	}
-
-	@Override
-	public int compareTo(Month month)
-	{
-		return getValue() > month.getValue() ? 1 : getValue() < month.getValue() ? -1 : 0;
-	}
-
-	@Override
-	public boolean equals(Object month)
-	{
-		return month instanceof Month && ((Month) month).getValue() == getValue();
-	}
-
-	public String format(String format)
-	{
-		return new SimpleDateFormat(format).format(new java.util.Date(getValue()));
-	}
-
-	public Field getEra()
-	{
-		return new Field(Calendar.ERA);
-	}
-
-	public Field getYear()
-	{
-		return new Field(Calendar.YEAR);
-	}
-
-	public Field getMonth()
-	{
-		return new Field(Calendar.MONTH);
-	}
-
-	public Date with(int day)
-	{
-		Calendar calendar = toCalendar();
-		calendar.set(Calendar.DAY_OF_MONTH, day);
-		return new Date(calendar.getTimeInMillis());
-	}
-
-	public long getValue()
-	{
-		return value;
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return (int) value;
-	}
-
-	public Calendar toCalendar()
-	{
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(getValue());
-		return calendar;
-	}
-
-	public java.util.Date toDate()
-	{
-		return new java.util.Date(getValue());
-	}
-
-	@Override
-	public String toString()
-	{
-		return format("MM/yyyy");
-	}
-
-	public Duration getDuration(Month month)
-	{
-		return Duration.of(Math.abs(getValue() - month.getValue()) / 1000);
-	}
 }

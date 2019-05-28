@@ -8,13 +8,19 @@ import java.text.ParseException;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Icon("2003")
 @Converter(YearMonthIntervalConverter.class)
-public final class YearMonthInterval implements Serializable, Comparable<YearMonthInterval>, Interval<YearMonth>
+public final class YearMonthInterval implements Serializable, Comparable<YearMonthInterval>, DiscreteInterval<YearMonth>
 {
 
 	private final YearMonth min;
@@ -24,7 +30,7 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{4})");
 	private static final Formatter<YearMonthInterval> FORMATTER = YearMonthInterval.formatter("MM/yyyy");
 
-	public YearMonthInterval(YearMonth min, YearMonth max)
+	private YearMonthInterval(YearMonth min, YearMonth max)
 	{
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
@@ -49,9 +55,94 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 	}
 
 	@Override
-	public boolean contains(YearMonth date)
+	public long size()
 	{
-		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
+		return ChronoUnit.MONTHS.between(min, max);
+	}
+
+	@Override
+	public Iterator<YearMonth> iterator()
+	{
+		return new Iterator<YearMonth>()
+		{
+
+			private YearMonth curr = min;
+
+			@Override
+			public boolean hasNext()
+			{
+				return contains(curr);
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super YearMonth> action)
+			{
+				while (contains(curr))
+				{
+					action.accept(curr);
+					curr = curr.plusMonths(1);
+				}
+			}
+
+			@Override
+			public YearMonth next()
+			{
+				if (!hasNext())
+					throw new NoSuchElementException();
+				YearMonth next = curr;
+				curr = curr.plusMonths(1);
+				return next;
+			}
+		};
+	}
+
+	@Override
+	public Stream<YearMonth> stream()
+	{
+		return StreamSupport.stream(new Spliterator<YearMonth>()
+		{
+			private YearMonth curr;
+
+			@Override
+			public boolean tryAdvance(Consumer<? super YearMonth> action)
+			{
+				curr = curr == null ? min : curr.plusMonths(1);
+
+				if (!contains(curr))
+					return false;
+				action.accept(curr);
+				return true;
+			}
+
+			@Override
+			public Spliterator<YearMonth> trySplit()
+			{
+				return null;
+			}
+
+			@Override
+			public long estimateSize()
+			{
+				return size();
+			}
+
+			@Override
+			public int characteristics()
+			{
+				return Spliterator.ORDERED
+					| Spliterator.NONNULL
+					| Spliterator.IMMUTABLE
+					| Spliterator.DISTINCT
+					| Spliterator.SIZED
+					| Spliterator.SUBSIZED;
+			}
+		}, false);
+	}
+
+	@Override
+	public int compareTo(YearMonthInterval value)
+	{
+		return (int) (size() - value.size());
 	}
 
 	@Override
@@ -72,15 +163,9 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 		return FORMATTER.format(this);
 	}
 
-	public long size()
+	public static YearMonthInterval of(YearMonth min, YearMonth max)
 	{
-		return ChronoUnit.MONTHS.between(min, max);
-	}
-
-	@Override
-	public int compareTo(YearMonthInterval value)
-	{
-		return (int) (size() - value.size());
+		return new YearMonthInterval(min, max);
 	}
 
 	public static YearMonthInterval of(String string) throws ParseException

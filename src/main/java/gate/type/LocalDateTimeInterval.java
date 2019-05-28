@@ -25,7 +25,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	private static final Formatter<LocalDateTimeInterval> FORMATTER = LocalDateTimeInterval.formatter("dd/MM/yyyy HH:mm");
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}) - ([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2})");
 
-	public LocalDateTimeInterval(LocalDateTime min, LocalDateTime max)
+	private LocalDateTimeInterval(LocalDateTime min, LocalDateTime max)
 	{
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
@@ -47,12 +47,6 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	public LocalDateTime getMax()
 	{
 		return max;
-	}
-
-	@Override
-	public boolean contains(LocalDateTime value)
-	{
-		return min.compareTo(value) <= 0 && max.compareTo(value) >= 0;
 	}
 
 	@Override
@@ -88,6 +82,11 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	public static LocalDateTimeInterval of(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
+	}
+
+	public static LocalDateTimeInterval of(LocalDateTime min, LocalDateTime max)
+	{
+		return new LocalDateTimeInterval(min, max);
 	}
 
 	public static Formatter<LocalDateTimeInterval> formatter(String format)
