@@ -21,6 +21,6 @@ public class MonthProducer implements Serializable
 	@Named("month")
 	public Month produce()
 	{
-		return new Month();
+		return Month.now();
 	}
 }

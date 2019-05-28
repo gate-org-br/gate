@@ -20,13 +20,12 @@ import java.util.List;
 public class MonthIntervalConverter implements Converter
 {
 
-	private static final List<String> SUFIXES
-			= Arrays.asList("month1", "month2");
+	private static final List<String> SUFIXES = Arrays.asList("month1", "month2");
 
 	@Override
 	public String getDescription()
 	{
-		return "Campos de intervalo de meses devem ser preenchidos no formato MM/YYYY - MM/YYYY. Os caracteres de formatação são opcionais.";
+		return "Campos de intervalo de datas devem ser preenchidos no formato MM/YYYY - MM/YYYY";
 	}
 
 	@Override
@@ -40,35 +39,26 @@ public class MonthIntervalConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(17));
-		constraints.add(new Pattern.Implementation("^(([0-9]{12})|([0-9]{2}[/][0-9]{4}[ ][-][ ][0-9]{2}[/][0-9]{4}))$"));
+		constraints.add(new Pattern.Implementation("^[0-9]{2}/[0-9]{4} - [0-9]{2}/[0-9]{4}$"));
 		return constraints;
 	}
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null && string.trim().length() > 0)
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
 		{
-			try
-			{
-				String[] strings = string.contains(" - ") ? string.split(" - ") : new String[]
-				{
-					string.substring(0, string.length() / 2), string.substring(string.length() / 2, string.length())
-				};
-
-				if (string.matches("^[0-9]{12}$"))
-					return new MonthInterval("MMyyyy", strings[0], strings[1]);
-				else if (string.matches("^[0-9]{2}[/][0-9]{4}[ ][-][ ][0-9]{2}[/][0-9]{4}$"))
-					return new MonthInterval("MM/yyyy", strings[0], strings[1]);
-				else
-					throw new ConversionException(String.format(getDescription()));
-			} catch (ConversionException | ParseException e)
-			{
-				throw new ConversionException(String.format(getDescription()));
-			}
+			return MonthInterval.of(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException(ex, String.format(getDescription()));
 		}
-
-		return null;
 	}
 
 	@Override
@@ -80,13 +70,13 @@ public class MonthIntervalConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? ((MonthInterval) object).format(format) : "";
+		return object != null ? MonthInterval.formatter(format).format((MonthInterval) object) : "";
 	}
 
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? ((MonthInterval) object).format("MM/yyyy") : "";
+		return object != null ? ((MonthInterval) object).toString() : "";
 	}
 
 	@Override
@@ -104,7 +94,7 @@ public class MonthIntervalConverter implements Converter
 		java.sql.Date value2 = rs.getDate(fields + 1);
 		if (rs.wasNull())
 			return null;
-		return new MonthInterval(new Month(value1), new Month(value2));
+		return new MonthInterval(Month.of(value1), Month.of(value2));
 	}
 
 	@Override
@@ -116,7 +106,7 @@ public class MonthIntervalConverter implements Converter
 		java.sql.Date value2 = rs.getDate(fields + ":" + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
-		return new MonthInterval(new Month(value1), new Month(value2));
+		return new MonthInterval(Month.of(value1), Month.of(value2));
 	}
 
 	@Override
@@ -124,8 +114,8 @@ public class MonthIntervalConverter implements Converter
 	{
 		if (value != null)
 		{
-			ps.setDate(fields++, new java.sql.Date(((MonthInterval) value).getMonth1().getValue()));
-			ps.setDate(fields++, new java.sql.Date(((MonthInterval) value).getMonth2().getValue()));
+			ps.setDate(fields++, new java.sql.Date(((MonthInterval) value).getMin().getValue()));
+			ps.setDate(fields++, new java.sql.Date(((MonthInterval) value).getMax().getValue()));
 		} else
 		{
 			ps.setNull(fields++, Types.DATE);

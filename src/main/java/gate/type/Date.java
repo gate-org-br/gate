@@ -16,7 +16,7 @@ import java.util.Locale;
 public final class Date implements Comparable<Date>, Serializable
 {
 
-	private static String FORMAT = "dd/MM/yyyy";
+	private static final String FORMAT = "dd/MM/yyyy";
 	private static final long serialVersionUID = 1L;
 
 	private final long value;
@@ -34,7 +34,7 @@ public final class Date implements Comparable<Date>, Serializable
 
 	public Month getMonthYear()
 	{
-		return new Month(getMonth().getValue(), getYear().getValue());
+		return Month.of(getMonth().getValue(), getYear().getValue());
 	}
 
 	public DateTime with(Time time)

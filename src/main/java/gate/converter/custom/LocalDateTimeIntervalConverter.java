@@ -5,7 +5,6 @@ import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.type.DateInterval;
 import gate.type.LocalDateTimeInterval;
 
 import java.sql.PreparedStatement;
@@ -40,7 +39,7 @@ public class LocalDateTimeIntervalConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(35));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2} [-] [0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
+		constraints.add(new Pattern.Implementation("^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2} - [0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$"));
 		return constraints;
 	}
 
@@ -95,7 +94,7 @@ public class LocalDateTimeIntervalConverter implements Converter
 		LocalDateTime max = rs.getObject(fields + 1, LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalDateTimeInterval(min, max);
+		return LocalDateTimeInterval.of(min, max);
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class LocalDateTimeIntervalConverter implements Converter
 		LocalDateTime max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalDateTime.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalDateTimeInterval(min, max);
+		return LocalDateTimeInterval.of(min, max);
 	}
 
 	@Override

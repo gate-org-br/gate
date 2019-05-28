@@ -7,7 +7,6 @@ import gate.converter.custom.LocalTimeIntervalConverter;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 import java.time.temporal.ChronoUnit;
@@ -27,7 +26,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	private static final Formatter<LocalTimeInterval> FORMATTER = LocalTimeInterval.formatter("HH:mm");
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}:[0-9]{2}) - ([0-9]{2}:[0-9]{2})");
 
-	public LocalTimeInterval(LocalTime min, LocalTime max)
+	private LocalTimeInterval(LocalTime min, LocalTime max)
 	{
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
@@ -90,6 +89,11 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	public int compareTo(LocalTimeInterval value)
 	{
 		return (int) (size() - value.size());
+	}
+
+	public static LocalTimeInterval of(LocalTime min, LocalTime max)
+	{
+		return new LocalTimeInterval(min, max);
 	}
 
 	public static LocalTimeInterval of(String string) throws ParseException

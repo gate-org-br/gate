@@ -39,7 +39,7 @@ public class LocalTimeIntervalConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(13));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}[ ][-][ ][0-9]{2}[:][0-9]{2}$"));
+		constraints.add(new Pattern.Implementation("^[0-9]{2}:[0-9]{2} - [0-9]{2}:[0-9]{2}$"));
 		return constraints;
 	}
 
@@ -94,7 +94,7 @@ public class LocalTimeIntervalConverter implements Converter
 		LocalTime max = rs.getObject(fields + 1, LocalTime.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalTimeInterval(min, max);
+		return LocalTimeInterval.of(min, max);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class LocalTimeIntervalConverter implements Converter
 		LocalTime max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalTime.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalTimeInterval(min, max);
+		return LocalTimeInterval.of(min, max);
 	}
 
 	@Override

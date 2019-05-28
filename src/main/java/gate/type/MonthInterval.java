@@ -1,113 +1,124 @@
 package gate.type;
 
 import gate.annotation.Converter;
+import gate.annotation.Icon;
 import gate.converter.custom.MonthIntervalConverter;
 import java.io.Serializable;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Icon("2003")
 @Converter(MonthIntervalConverter.class)
-public final class MonthInterval implements Serializable, Cloneable, Comparable<MonthInterval>
+public final class MonthInterval implements Serializable, Comparable<MonthInterval>, Interval<Month>
 {
 
-    private final Month month1;
+	private final Month min;
+	private final Month max;
 
-    private final Month month2;
+	private static final String FORMAT = "MM/yyyy";
+	private static final long serialVersionUID = 1L;
+	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{4})");
 
-    public MonthInterval(final Month month1, final Month month2)
-    {
-	if (month1.getValue() > month2.getValue())
-	    throw new IllegalArgumentException("month1 must be <= month2");
-	if (month2.getValue() < month1.getValue())
-	    throw new IllegalArgumentException("month2 must be >= month1");
-	this.month1 = month1;
-	this.month2 = month2;
-    }
+	public MonthInterval(Month min, Month max)
+	{
+		Objects.requireNonNull(min);
+		Objects.requireNonNull(max);
 
-    public MonthInterval(int year)
-    {
-	if (year < 0)
-	    throw new IllegalArgumentException("year must be >= 0");
-	month1 = new Month(0, year);
-	month2 = new Month(11, year);
-    }
+		if (min.getValue() > max.getValue())
+			throw new IllegalArgumentException("min must be <= max");
+		if (max.getValue() < min.getValue())
+			throw new IllegalArgumentException("max must be >= min");
 
-    public MonthInterval(String format, String month1, String month2) throws ParseException
-    {
-	this(new Month(format, month1), new Month(format, month2));
-    }
+		this.min = min;
+		this.max = max;
+	}
 
-    public MonthInterval(String month1, String month2) throws ParseException
-    {
-	this(new Month("MM/yyyy", month1), new Month("MM/yyyy", month2));
-    }
+	@Override
+	public boolean contains(Month date)
+	{
+		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
+	}
 
-    @Override
-    protected MonthInterval clone() throws CloneNotSupportedException
-    {
-	return new MonthInterval(month1, month2);
-    }
+	@Override
+	public boolean equals(Object obj)
+	{
+		return (obj instanceof MonthInterval && ((MonthInterval) obj).min.equals(min) && ((MonthInterval) obj).min.equals(min));
+	}
 
-    public boolean contains(Month month)
-    {
-	return getMonth1().compareTo(month) <= 0 && getMonth2().compareTo(month) >= 0;
-    }
+	@Override
+	public Month getMin()
+	{
+		return min;
+	}
 
-    @Override
-    public boolean equals(Object obj)
-    {
-	return (obj instanceof MonthInterval && ((MonthInterval) obj).month1.equals(month1) && ((MonthInterval) obj).month1.equals(month1));
-    }
+	@Override
+	public Month getMax()
+	{
+		return max;
+	}
 
-    public String format(String format)
-    {
-	return String.format("%s - %s", getMonth1().format(format), getMonth2().format(format));
-    }
+	@Override
+	public int hashCode()
+	{
+		return (int) (min.getValue() + max.getValue());
+	}
 
-    public Month getMonth1()
-    {
-	return month1;
-    }
+	@Override
+	public String toString()
+	{
+		return MonthInterval.formatter(FORMAT).format(this);
+	}
 
-    public Month getMonth2()
-    {
-	return month2;
-    }
+	public long getValue()
+	{
+		return getMax().getValue() - getMin().getValue();
+	}
 
-    public Collection<Month> getMonths()
-    {
-	Collection<Month> months = new ArrayList<Month>();
-	for (Month month = month1; month.compareTo(month2) <= 0; month = month.getMonth().add(1))
-	    months.add(month);
-	return months;
-    }
+	public Duration getDuration()
+	{
+		return Duration.of(getValue() / 1000);
+	}
 
-    @Override
-    public int hashCode()
-    {
-	return (int) (month1.getValue() + month2.getValue());
-    }
+	@Override
+	public int compareTo(MonthInterval dateInterval)
+	{
+		return (int) (getValue() - dateInterval.getValue());
+	}
 
-    @Override
-    public String toString()
-    {
-	return format("MM/yyyy");
-    }
+	public static MonthInterval of(int year)
+	{
+		if (year < 0)
+			throw new IllegalArgumentException("year must be >= 0");
+		return new MonthInterval(Month.of(0, year), Month.of(11, year));
+	}
 
-    public long getValue()
-    {
-	return getMonth2().getValue() - getMonth1().getValue();
-    }
+	public static MonthInterval of(String string) throws ParseException
+	{
+		return MonthInterval.formatter(FORMAT).parse(string);
+	}
 
-    public Duration getDuration()
-    {
-	return Duration.of(getValue() / 1000);
-    }
+	public static Formatter<MonthInterval> formatter(String format)
+	{
+		Formatter<Month> formatter = Month.formatter(format);
 
-    @Override
-    public int compareTo(MonthInterval monthInterval)
-    {
-	return (int) (getValue() - monthInterval.getValue());
-    }
+		return new Formatter<MonthInterval>()
+		{
+			@Override
+			public MonthInterval parse(String source) throws ParseException
+			{
+				Matcher matcher = PATTERN.matcher(source.trim());
+				if (!matcher.matches())
+					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
+				return new MonthInterval(formatter.parse(matcher.group(1)), formatter.parse(matcher.group(2)));
+			}
+
+			@Override
+			public String format(MonthInterval source)
+			{
+				return formatter.format(source.getMin()) + " - " + formatter.format(source.getMax());
+			}
+		};
+	}
 }

@@ -39,7 +39,7 @@ public class LocalDateIntervalConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(23));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4}[ ][-][ ][0-9]{2}[/][0-9]{2}[/][0-9]{4}$"));
+		constraints.add(new Pattern.Implementation("^[0-9]{2}/[0-9]{2}/[0-9]{4} - [0-9]{2}/[0-9]{2}/[0-9]{4}$"));
 		return constraints;
 	}
 
@@ -94,7 +94,7 @@ public class LocalDateIntervalConverter implements Converter
 		LocalDate max = rs.getObject(fields + 1, LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalDateInterval(min, max);
+		return LocalDateInterval.of(min, max);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class LocalDateIntervalConverter implements Converter
 		LocalDate max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalDate.class);
 		if (rs.wasNull())
 			return null;
-		return new LocalDateInterval(min, max);
+		return LocalDateInterval.of(min, max);
 	}
 
 	@Override
