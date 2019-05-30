@@ -3320,23 +3320,21 @@ function Slider(element, value, next, prev, format)
 	if (!format)
 		format = e => e;
 
-	element.addEventListener((/Firefox/i.test(navigator.userAgent))
-		? "DOMMouseScroll" : "mousewheel",
-		function (event)
-		{
-			event.preventDefault();
+	element.addEventListener((/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel", function (event)
+	{
+		event.preventDefault();
 
-			if (event.detail)
-				if (event.detail > 0)
-					gonext.click();
-				else
-					goprev.click();
-			else if (event.wheelDelta)
-				if (event.wheelDelta > 0)
-					gonext.click();
-				else
-					goprev.click();
-		});
+		if (event.detail)
+			if (event.detail > 0)
+				gonext.click();
+			else
+				goprev.click();
+		else if (event.wheelDelta)
+			if (event.wheelDelta > 0)
+				gonext.click();
+			else
+				goprev.click();
+	});
 
 
 	element.addEventListener("keydown", function (event)
@@ -3358,11 +3356,37 @@ function Slider(element, value, next, prev, format)
 	goprev.appendChild(document.createElement("i")).innerHTML = "&#X2278;";
 	goprev.addEventListener("click", () => update(prev(value)));
 
+	var prev5 = element.appendChild(document.createElement("label"));
+	prev5.onclick = () => update(prev(prev(prev(prev(prev(value))))));
+
+	var prev4 = element.appendChild(document.createElement("label"));
+	prev4.onclick = () => update(prev(prev(prev(prev(value)))));
+
+	var prev3 = element.appendChild(document.createElement("label"));
+	prev3.onclick = () => update(prev(prev(prev(value))));
+
 	var prev2 = element.appendChild(document.createElement("label"));
+	prev2.onclick = () => update(prev(prev(value)));
+
 	var prev1 = element.appendChild(document.createElement("label"));
+	prev1.onclick = () => update(prev(value));
+
 	var main = element.appendChild(document.createElement("label"));
+
 	var next1 = element.appendChild(document.createElement("label"));
+	next1.onclick = () => update(next(value));
+
 	var next2 = element.appendChild(document.createElement("label"));
+	next2.onclick = () => update(next(next(value)));
+
+	var next3 = element.appendChild(document.createElement("label"));
+	next3.onclick = () => update(next(next(next(value))));
+
+	var next4 = element.appendChild(document.createElement("label"));
+	next4.onclick = () => update(next(next(next(next(value)))));
+
+	var next5 = element.appendChild(document.createElement("label"));
+	next5.onclick = () => update(next(next(next(next(next(value))))));
 
 	var gonext = element.appendChild(document.createElement("a"));
 	gonext.href = "#";
@@ -3379,11 +3403,18 @@ function Slider(element, value, next, prev, format)
 				return false;
 
 			value = val;
-			main.innerHTML = format(value);
+
 			prev1.innerHTML = '-';
 			prev2.innerHTML = '-';
+			prev3.innerHTML = '-';
+			prev4.innerHTML = '-';
+			prev5.innerHTML = '-';
+			main.innerHTML = format(value);
 			next1.innerHTML = '-';
 			next2.innerHTML = '-';
+			next3.innerHTML = '-';
+			next4.innerHTML = '-';
+			next5.innerHTML = '-';
 
 			var data = prev(value);
 			if (data !== null)
@@ -3391,7 +3422,24 @@ function Slider(element, value, next, prev, format)
 				prev1.innerHTML = format(data);
 				var data = prev(data);
 				if (data !== null)
+				{
 					prev2.innerHTML = format(data);
+					var data = prev(data);
+					if (data !== null)
+					{
+						prev3.innerHTML = format(data);
+
+						var data = prev(data);
+						if (data !== null)
+						{
+							prev4.innerHTML = format(data);
+
+							var data = prev(data);
+							if (data !== null)
+								prev5.innerHTML = format(data);
+						}
+					}
+				}
 			}
 
 			var data = next(value);
@@ -3400,7 +3448,25 @@ function Slider(element, value, next, prev, format)
 				next1.innerHTML = format(data);
 				var data = next(data);
 				if (data !== null)
+				{
 					next2.innerHTML = format(data);
+
+					var data = next(data);
+					if (data !== null)
+					{
+						next3.innerHTML = format(data);
+
+						var data = next(data);
+						if (data !== null)
+						{
+							next4.innerHTML = format(data);
+
+							var data = next(data);
+							if (data !== null)
+								next5.innerHTML = format(data);
+						}
+					}
+				}
 			}
 
 			element.dispatchEvent(new CustomEvent('update', {detail: {slider: this}}));
@@ -6547,38 +6613,23 @@ class ReportSelector extends HTMLElement
 	connectedCallback()
 	{
 		var selector = this;
-		var table = this.appendChild(document.createElement("table"));
 
-		table.appendChild(document.createElement("col")).style.width = "64px";
-		table.appendChild(document.createElement("col"));
+		this.appendChild(createLink("PDF", "&#x2218;"));
+		this.appendChild(createLink("XLS", "&#x2219;"));
+		this.appendChild(createLink("CSV", "&#x2220;"));
 
-		var tbody = table.appendChild(document.createElement("tbody"));
-
-
-		tbody.appendChild(createRow("PDF", "&#x2218;"));
-		tbody.appendChild(createRow("XLS", "&#x2219;"));
-		tbody.appendChild(createRow("CSV", "&#x2220;"));
-
-
-		function createRow(type, icon)
+		function createLink(type, icon)
 		{
-			var line = document.createElement("tr");
-
-			var td = line.appendChild(document.createElement("td"))
-			td.style.textAlign = "center";
-			td.appendChild(document.createElement("i")).innerHTML = icon;
-			line.appendChild(document.createElement("td")).innerHTML = type;
-			line.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected',
-					{cancelable: false, detail: type})));
-
-			return line;
+			var link = selector.appendChild(document.createElement("a"));
+			link.innerHTML = icon;
+			link.setAttribute("data-type", type);
+			link.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected', {cancelable: false, detail: type})));
+			return link;
 		}
 	}
 }
 
-
-window.addEventListener("load", () =>
-	customElements.define('report-selector', ReportSelector));
+window.addEventListener("load", () => customElements.define('report-selector', ReportSelector));
 class ReportDialog extends Modal
 {
 	constructor(options)
