@@ -8,35 +8,20 @@ class ReportSelector extends HTMLElement
 	connectedCallback()
 	{
 		var selector = this;
-		var table = this.appendChild(document.createElement("table"));
 
-		table.appendChild(document.createElement("col")).style.width = "64px";
-		table.appendChild(document.createElement("col"));
+		this.appendChild(createLink("PDF", "&#x2218;"));
+		this.appendChild(createLink("XLS", "&#x2219;"));
+		this.appendChild(createLink("CSV", "&#x2220;"));
 
-		var tbody = table.appendChild(document.createElement("tbody"));
-
-
-		tbody.appendChild(createRow("PDF", "&#x2218;"));
-		tbody.appendChild(createRow("XLS", "&#x2219;"));
-		tbody.appendChild(createRow("CSV", "&#x2220;"));
-
-
-		function createRow(type, icon)
+		function createLink(type, icon)
 		{
-			var line = document.createElement("tr");
-
-			var td = line.appendChild(document.createElement("td"))
-			td.style.textAlign = "center";
-			td.appendChild(document.createElement("i")).innerHTML = icon;
-			line.appendChild(document.createElement("td")).innerHTML = type;
-			line.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected',
-					{cancelable: false, detail: type})));
-
-			return line;
+			var link = selector.appendChild(document.createElement("a"));
+			link.innerHTML = icon;
+			link.setAttribute("data-type", type);
+			link.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected', {cancelable: false, detail: type})));
+			return link;
 		}
 	}
 }
 
-
-window.addEventListener("load", () =>
-	customElements.define('report-selector', ReportSelector));
+window.addEventListener("load", () => customElements.define('report-selector', ReportSelector));

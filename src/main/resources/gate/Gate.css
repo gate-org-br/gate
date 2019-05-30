@@ -1649,9 +1649,21 @@ div.Slider > * {
   justify-content: center;
   background-color: transparent;
 }
-div.Slider > label:nth-of-type(3) {
+div.Slider label:not(:nth-of-type(6)) {
+  cursor: pointer;
+}
+div.Slider label:not(:nth-of-type(6)):hover {
+  text-decoration: underline;
+}
+div.Slider > a:nth-of-type(1) {
+  cursor: n-resize;
+}
+div.Slider > label:nth-of-type(6) {
   color: black;
   font-weight: bold;
+}
+div.Slider > a:nth-of-type(2) {
+  cursor: s-resize;
 }
 div.Slider:hover {
   border-color: #FFFACD;
@@ -3450,13 +3462,37 @@ report-selector {
   padding: 10px;
   border-radius: 5px;
   align-items: stretch;
-  flex-direction: column;
   justify-content: center;
   background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
 }
-report-selector > table > tbody > tr:hover {
+report-selector > a {
+  speak: none;
+  margin: 8px;
+  flex-grow: 1;
+  display: flex;
   cursor: pointer;
+  font-size: 50px;
+  border-radius: 5px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  font-style: normal;
+  font-weight: normal;
+  font-family: 'gate';
+  font-variant: normal;
+  text-transform: none;
+  background-color: white;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+report-selector > a:hover {
   background-color: #FFFACD;
+}
+report-selector > a::after {
+  margin: 8px;
+  font-size: 24px;
+  border-radius: 5px;
+  content: attr(data-type);
 }
 div.ReportDialog {
   display: flex;
