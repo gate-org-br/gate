@@ -3,10 +3,37 @@ report-selector { width: 100%;
 		  padding: 10px;
 		  border-radius: 5px;
 		  align-items: stretch;
-		  flex-direction: column;
 		  justify-content: center;
 		  background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
 
-		  > table > tbody > tr:hover { cursor: pointer;
-					       background-color: @hovered; }
+		  > a {  speak: none;
+			 margin: 8px;
+			 flex-grow: 1;
+			 display: flex;
+			 cursor: pointer;
+			 font-size: 50px;
+			 border-radius: 5px;
+			 align-items: center;    
+			 flex-direction: column;
+			 justify-content: center;
+
+			 font-style: normal;
+			 font-weight: normal;
+			 font-family: 'gate';
+			 font-variant: normal;
+			 text-transform: none;
+			 background-color: white;
+			 -moz-osx-font-smoothing: grayscale;
+			 -webkit-font-smoothing: antialiased;
+
+			 &:hover { background-color: @hovered }
+
+			 &::after
+			 {
+				 margin: 8px;
+				 font-size: 24px;
+				 border-radius: 5px;
+				 content: attr(data-type);
+			 }
+		  }
 }

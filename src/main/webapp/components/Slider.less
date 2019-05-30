@@ -21,13 +21,18 @@ div.Slider
 	      justify-content: center;
 	      background-color: transparent;}
 
-	> label:nth-of-type(3) { color: black;
-				 font-weight: bold; }
+	label:not(:nth-of-type(6)) { cursor: pointer }
+	label:not(:nth-of-type(6)):hover { text-decoration: underline }
+
+	> a:nth-of-type(1) { cursor: n-resize }
+	> label:nth-of-type(6) { color: black;
+				 font-weight: bold;  }
+	> a:nth-of-type(2) { cursor: s-resize }
+
+	&:hover {
+		border-color: @hovered;
+
+		> a {color: black;}
+	}
 }
 
-div.Slider:hover
-{
-	border-color: @hovered;
-
-	> a {color: black;}
-}
