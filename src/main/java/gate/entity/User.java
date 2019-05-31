@@ -10,13 +10,13 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.CPF;
-import gate.type.Date;
-import gate.type.DateTime;
 import gate.type.ID;
 import gate.type.Phone;
 import gate.type.Sex;
 import gate.type.mime.MimeData;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -104,7 +104,7 @@ public class User implements Serializable
 	private MimeData photo;
 
 	@Name("Data de Nascimento")
-	private Date birthdate;
+	private LocalDate birthdate;
 
 	@Name("CPF")
 	private CPF CPF;
@@ -115,7 +115,7 @@ public class User implements Serializable
 	@Required
 	@Name("Data de Cadastro")
 	@Description("Data de cadastro do usuário.")
-	private DateTime registration;
+	private LocalDateTime registration;
 
 	private List<Func> funcs;
 
@@ -274,12 +274,12 @@ public class User implements Serializable
 		this.CPF = CPF;
 	}
 
-	public DateTime getRegistration()
+	public LocalDateTime getRegistration()
 	{
 		return registration;
 	}
 
-	public void setRegistration(DateTime registration)
+	public void setRegistration(LocalDateTime registration)
 	{
 		this.registration = registration;
 	}
@@ -310,12 +310,12 @@ public class User implements Serializable
 		return phone;
 	}
 
-	public Date getBirthdate()
+	public LocalDate getBirthdate()
 	{
 		return birthdate;
 	}
 
-	public void setBirthdate(Date birthdate)
+	public void setBirthdate(LocalDate birthdate)
 	{
 		this.birthdate = birthdate;
 	}

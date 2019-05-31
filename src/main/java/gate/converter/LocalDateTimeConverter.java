@@ -7,8 +7,6 @@ import gate.error.ConversionException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -19,12 +17,8 @@ import java.util.List;
 public class LocalDateTimeConverter implements Converter
 {
 
-	private static final DateTimeFormatter FORMATTTER
-			= DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Maxlength.Implementation(19),
-					new Pattern.Implementation("^[0-9]{2}[/][0-9]{2}[/][0-9]{4} [0-9]{2}[:][0-9]{2}$"));
+	private static final DateTimeFormatter FORMATTTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+	private static final List<Constraint.Implementation<?>> CONSTRAINTS = Arrays.asList(new Maxlength.Implementation(19), new Pattern.Implementation("^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$"));
 
 	@Override
 	public String getDescription()
@@ -78,41 +72,32 @@ public class LocalDateTimeConverter implements Converter
 		} catch (DateTimeParseException ex)
 		{
 			throw new ConversionException(ex,
-					"%s não é uma data/hora válida.%n%s.",
-					ex.getParsedString(),
-					getDescription());
+				"%s não é uma data/hora válida.%n%s.",
+				ex.getParsedString(),
+				getDescription());
 		}
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index,
-			Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException, ConversionException
 	{
-		Timestamp timestamp = rs.getTimestamp(index);
-		return timestamp != null ? timestamp.toLocalDateTime()
-				: null;
+		return rs.getObject(index, LocalDateTime.class);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-			Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException, ConversionException
 	{
-		Timestamp timestamp = rs.getTimestamp(fields);
-		return timestamp != null ? timestamp.toLocalDateTime()
-				: null;
+		return rs.getObject(fields, LocalDateTime.class);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-			ConversionException
+		ConversionException
 	{
-		if (value != null)
-		{
-			LocalDateTime localDateTime = (LocalDateTime) value;
-			ps.setTimestamp(index++, Timestamp.valueOf(localDateTime));
-		} else
-			ps.setNull(index++, Types.TIMESTAMP);
-		return index;
+		ps.setObject(index, value);
+		return index + 1;
 	}
 
 }
