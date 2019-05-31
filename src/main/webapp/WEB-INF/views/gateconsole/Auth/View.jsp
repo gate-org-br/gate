@@ -69,7 +69,7 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table breakpoint1 c1 c2 c3 c4 c5 c6>
+				<table data-collapse="Phone" class="c1 c2 c3 c4 c5 c6">
 					<caption>
 						ACESSOS
 					</caption>
@@ -91,7 +91,7 @@
 							<th>
 								Action
 							</th>
-							<th>
+							<th style="width: 64px">
 								<g:icon type="delete"/>
 							</th>
 						</tr>

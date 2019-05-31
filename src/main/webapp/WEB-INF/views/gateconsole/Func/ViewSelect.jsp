@@ -28,9 +28,9 @@
 
 	<div class='PageControl'>
 		<ul>
-			<g:menuitem module="#" screen="Auth" arguments="form.func.id=${screen.form.id}" style="width: 200px"/>
-			<g:menuitem module="#" screen="FuncScreen$User" arguments="func.id=${screen.form.id}" style="width: 200px"/>
-			<g:menuitem module="#" screen="FuncScreen$Role" arguments="func.id=${screen.form.id}" style="width: 200px"/>
+			<g:menuitem module="#" screen="Auth" arguments="form.func.id=${screen.form.id}"/>
+			<g:menuitem module="#" screen="FuncScreen$User" arguments="func.id=${screen.form.id}"/>
+			<g:menuitem module="#" screen="FuncScreen$Role" arguments="func.id=${screen.form.id}"/>
 		</ul>
 	</div>
 </g:template>
