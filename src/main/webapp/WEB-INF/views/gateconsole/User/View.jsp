@@ -106,7 +106,7 @@
 				</div>
 			</g:when>
 			<g:otherwise>
-				<table class="c1 c5"  data-colapse="Phone">
+				<table class="c1 c5"  data-collapse="Phone">
 					<caption>
 						USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
 					</caption>

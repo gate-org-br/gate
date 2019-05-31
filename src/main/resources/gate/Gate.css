@@ -1235,17 +1235,17 @@ table[data-c20] > * > tr > *:nth-child(20) {
   text-align: center;
 }
 @media only screen and (max-width: 576px) {
-  table[data-colapse="Phone"] > col {
+  table[data-collapse="Phone"] > col {
     display: none;
   }
-  table[data-colapse="Phone"] > thead {
+  table[data-collapse="Phone"] > thead {
     display: none;
   }
-  table[data-colapse="Phone"] > caption {
+  table[data-collapse="Phone"] > caption {
     text-align: center;
     text-indent: 0;
   }
-  table[data-colapse="Phone"] > tbody > tr {
+  table[data-collapse="Phone"] > tbody > tr {
     margin: 4px;
     padding: 4px;
     height: auto;
@@ -1253,35 +1253,35 @@ table[data-c20] > * > tr > *:nth-child(20) {
     border-radius: 5px;
     border: 2px solid #CCCCCC;
   }
-  table[data-colapse="Phone"] > tbody > tr > td {
+  table[data-collapse="Phone"] > tbody > tr > td {
     margin: 4px;
     display: flex;
   }
-  table[data-colapse="Phone"] > tbody > tr > td::before {
+  table[data-collapse="Phone"] > tbody > tr > td::before {
     text-align: left;
     font-weight: bold;
     margin-right: 8px;
     content: attr(title) ":";
   }
-  table[data-colapse="Phone"] > tfoot > tr,
-  table[data-colapse="Phone"] > tfoot > tr > td {
+  table[data-collapse="Phone"] > tfoot > tr,
+  table[data-collapse="Phone"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 }
 @media only screen and (max-width: 768px) {
-  table[data-colapse="Tablet"] > col {
+  table[data-collapse="Tablet"] > col {
     display: none;
   }
-  table[data-colapse="Tablet"] > thead {
+  table[data-collapse="Tablet"] > thead {
     display: none;
   }
-  table[data-colapse="Tablet"] > caption {
+  table[data-collapse="Tablet"] > caption {
     text-align: center;
     text-indent: 0;
   }
-  table[data-colapse="Tablet"] > tbody > tr {
+  table[data-collapse="Tablet"] > tbody > tr {
     margin: 4px;
     padding: 4px;
     height: auto;
@@ -1289,35 +1289,35 @@ table[data-c20] > * > tr > *:nth-child(20) {
     border-radius: 5px;
     border: 2px solid #CCCCCC;
   }
-  table[data-colapse="Tablet"] > tbody > tr > td {
+  table[data-collapse="Tablet"] > tbody > tr > td {
     margin: 4px;
     display: flex;
   }
-  table[data-colapse="Tablet"] > tbody > tr > td::before {
+  table[data-collapse="Tablet"] > tbody > tr > td::before {
     text-align: left;
     font-weight: bold;
     margin-right: 8px;
     content: attr(title) ":";
   }
-  table[data-colapse="Tablet"] > tfoot > tr,
-  table[data-colapse="Tablet"] > tfoot > tr > td {
+  table[data-collapse="Tablet"] > tfoot > tr,
+  table[data-collapse="Tablet"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 }
 @media only screen and (max-width: 992px) {
-  table[data-colapse="Notebook"] > col {
+  table[data-collapse="Notebook"] > col {
     display: none;
   }
-  table[data-colapse="Notebook"] > thead {
+  table[data-collapse="Notebook"] > thead {
     display: none;
   }
-  table[data-colapse="Notebook"] > caption {
+  table[data-collapse="Notebook"] > caption {
     text-align: center;
     text-indent: 0;
   }
-  table[data-colapse="Notebook"] > tbody > tr {
+  table[data-collapse="Notebook"] > tbody > tr {
     margin: 4px;
     padding: 4px;
     height: auto;
@@ -1325,35 +1325,35 @@ table[data-c20] > * > tr > *:nth-child(20) {
     border-radius: 5px;
     border: 2px solid #CCCCCC;
   }
-  table[data-colapse="Notebook"] > tbody > tr > td {
+  table[data-collapse="Notebook"] > tbody > tr > td {
     margin: 4px;
     display: flex;
   }
-  table[data-colapse="Notebook"] > tbody > tr > td::before {
+  table[data-collapse="Notebook"] > tbody > tr > td::before {
     text-align: left;
     font-weight: bold;
     margin-right: 8px;
     content: attr(title) ":";
   }
-  table[data-colapse="Notebook"] > tfoot > tr,
-  table[data-colapse="Notebook"] > tfoot > tr > td {
+  table[data-collapse="Notebook"] > tfoot > tr,
+  table[data-collapse="Notebook"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 }
 @media only screen and (max-width: 1200px) {
-  table[data-colapse="Desktop"] > col {
+  table[data-collapse="Desktop"] > col {
     display: none;
   }
-  table[data-colapse="Desktop"] > thead {
+  table[data-collapse="Desktop"] > thead {
     display: none;
   }
-  table[data-colapse="Desktop"] > caption {
+  table[data-collapse="Desktop"] > caption {
     text-align: center;
     text-indent: 0;
   }
-  table[data-colapse="Desktop"] > tbody > tr {
+  table[data-collapse="Desktop"] > tbody > tr {
     margin: 4px;
     padding: 4px;
     height: auto;
@@ -1361,35 +1361,35 @@ table[data-c20] > * > tr > *:nth-child(20) {
     border-radius: 5px;
     border: 2px solid #CCCCCC;
   }
-  table[data-colapse="Desktop"] > tbody > tr > td {
+  table[data-collapse="Desktop"] > tbody > tr > td {
     margin: 4px;
     display: flex;
   }
-  table[data-colapse="Desktop"] > tbody > tr > td::before {
+  table[data-collapse="Desktop"] > tbody > tr > td::before {
     text-align: left;
     font-weight: bold;
     margin-right: 8px;
     content: attr(title) ":";
   }
-  table[data-colapse="Desktop"] > tfoot > tr,
-  table[data-colapse="Desktop"] > tfoot > tr > td {
+  table[data-collapse="Desktop"] > tfoot > tr,
+  table[data-collapse="Desktop"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 }
 @media only screen and (max-width: 1800px) {
-  table[data-colapse="Widescreen"] > col {
+  table[data-collapse="Widescreen"] > col {
     display: none;
   }
-  table[data-colapse="Widescreen"] > thead {
+  table[data-collapse="Widescreen"] > thead {
     display: none;
   }
-  table[data-colapse="Widescreen"] > caption {
+  table[data-collapse="Widescreen"] > caption {
     text-align: center;
     text-indent: 0;
   }
-  table[data-colapse="Widescreen"] > tbody > tr {
+  table[data-collapse="Widescreen"] > tbody > tr {
     margin: 4px;
     padding: 4px;
     height: auto;
@@ -1397,18 +1397,18 @@ table[data-c20] > * > tr > *:nth-child(20) {
     border-radius: 5px;
     border: 2px solid #CCCCCC;
   }
-  table[data-colapse="Widescreen"] > tbody > tr > td {
+  table[data-collapse="Widescreen"] > tbody > tr > td {
     margin: 4px;
     display: flex;
   }
-  table[data-colapse="Widescreen"] > tbody > tr > td::before {
+  table[data-collapse="Widescreen"] > tbody > tr > td::before {
     text-align: left;
     font-weight: bold;
     margin-right: 8px;
     content: attr(title) ":";
   }
-  table[data-colapse="Widescreen"] > tfoot > tr,
-  table[data-colapse="Widescreen"] > tfoot > tr > td {
+  table[data-collapse="Widescreen"] > tfoot > tr,
+  table[data-collapse="Widescreen"] > tfoot > tr > td {
     display: flex;
     align-items: center;
     justify-content: center;
