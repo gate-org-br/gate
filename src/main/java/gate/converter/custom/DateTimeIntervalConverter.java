@@ -119,8 +119,8 @@ public class DateTimeIntervalConverter implements Converter
 			ps.setTimestamp(fields++, new java.sql.Timestamp(((DateTimeInterval) value).getMax().getValue()));
 		} else
 		{
-			ps.setNull(fields++, Types.DATE);
-			ps.setNull(fields++, Types.DATE);
+			ps.setNull(fields++, Types.TIMESTAMP);
+			ps.setNull(fields++, Types.TIMESTAMP);
 		}
 		return fields;
 	}

@@ -118,8 +118,8 @@ public class LocalDateTimeIntervalConverter implements Converter
 			ps.setObject(fields++, ((LocalDateTimeInterval) value).getMax());
 		} else
 		{
-			ps.setNull(fields++, Types.DATE);
-			ps.setNull(fields++, Types.DATE);
+			ps.setNull(fields++, Types.TIMESTAMP);
+			ps.setNull(fields++, Types.TIMESTAMP);
 		}
 		return fields;
 	}
