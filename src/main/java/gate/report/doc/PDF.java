@@ -191,10 +191,7 @@ public class PDF extends Doc
 		try
 		{
 			com.itextpdf.text.Image element;
-			if (image.getSource() instanceof byte[])
-				element = com.itextpdf.text.Image.getInstance((byte[]) image.getSource());
-			else
-				element = com.itextpdf.text.Image.getInstance(Image.class.getResource((String) image.getSource()));
+			element = com.itextpdf.text.Image.getInstance((byte[]) image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)
@@ -266,9 +263,7 @@ public class PDF extends Doc
 			body.setPadding(4);
 			body.setBorderColor(BaseColor.GRAY);
 
-			form.getElements().stream()
-				.filter(e -> e instanceof Field)
-				.map(e -> (Field) e)
+			form.getFields().stream()
 				.forEachOrdered(e -> table.addCell(printField(e)));
 
 			element.addCell(body);

@@ -11,7 +11,7 @@ public class Form extends ReportElement
 	private String caption;
 	private Float percentage;
 	private final int columns;
-	private final List<FormElement> elements = new ArrayList<>();
+	private final List<Field> elements = new ArrayList<>();
 
 	public Form(int columns)
 	{
@@ -39,12 +39,12 @@ public class Form extends ReportElement
 		return caption;
 	}
 
-	public List<FormElement> getElements()
+	public List<Field> getFields()
 	{
 		return Collections.unmodifiableList(elements);
 	}
 
-	public Form add(FormElement field)
+	public Form add(Field field)
 	{
 		elements.add(field);
 		return this;

@@ -8,6 +8,7 @@ public class Color
 	public static final Color RED = Color.of("#660000");
 	public static final Color GREEN = Color.of("#006600");
 	public static final Color BLUE = Color.of("#000066");
+	public static final Color LIGHT_GRAY = Color.of("#CCCCCC");
 
 	private final int r;
 	private final int g;

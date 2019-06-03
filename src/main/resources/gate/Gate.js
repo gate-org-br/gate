@@ -2536,7 +2536,8 @@ function Link(link, creator)
 						this.setAttribute("target", "_blank");
 						this.click();
 						this.setAttribute("target", "_dialog");
-					} else {
+					} else
+					{
 						new Dialog({creator: creator || this,
 							title: this.getAttribute("title"),
 							target: this.getAttribute("href"),
@@ -2666,6 +2667,7 @@ function Link(link, creator)
 
 					break;
 
+				case "_report":
 				case "_report-dialog":
 					event.preventDefault();
 					event.stopPropagation();
@@ -2990,6 +2992,7 @@ function Button(button, creator)
 
 					break;
 
+				case "_report":
 				case "_report-dialog":
 					event.preventDefault();
 					event.stopPropagation();
@@ -6616,6 +6619,7 @@ class ReportSelector extends HTMLElement
 
 		this.appendChild(createLink("PDF", "&#x2218;"));
 		this.appendChild(createLink("XLS", "&#x2219;"));
+		this.appendChild(createLink("DOC", "&#x2221;"));
 		this.appendChild(createLink("CSV", "&#x2220;"));
 
 		function createLink(type, icon)

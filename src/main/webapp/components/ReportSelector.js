@@ -11,6 +11,7 @@ class ReportSelector extends HTMLElement
 
 		this.appendChild(createLink("PDF", "&#x2218;"));
 		this.appendChild(createLink("XLS", "&#x2219;"));
+		this.appendChild(createLink("DOC", "&#x2221;"));
 		this.appendChild(createLink("CSV", "&#x2220;"));
 
 		function createLink(type, icon)

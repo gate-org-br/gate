@@ -9,21 +9,11 @@ public final class Paragraph extends ReportElement
 
 	public Paragraph(Object value)
 	{
-		super(new Style());
+		super(new Style().justify());
 
 		Objects.requireNonNull(value);
 
 		this.value = value;
-	}
-
-	public Paragraph(Report report, Object value, String style)
-	{
-		super(new Style());
-
-		Objects.requireNonNull(value);
-
-		this.value = value;
-
 	}
 
 	public Object getValue()

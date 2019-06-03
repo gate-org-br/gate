@@ -10,8 +10,8 @@ import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
 import gate.report.Style;
+import gate.type.Color;
 import gate.util.Toolkit;
-import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
@@ -29,6 +29,7 @@ import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -42,7 +43,7 @@ public class XLS extends Doc
 
 	private int i;
 	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
-	private static final Map<gate.type.Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
+	private static final Map<Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
 
 	/**
 	 * Constructs a new XLS Doc for the specified report.
@@ -75,7 +76,8 @@ public class XLS extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try (SXSSFWorkbook workbook = new SXSSFWorkbook())
+
+		try ( SXSSFWorkbook workbook = new SXSSFWorkbook())
 		{
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Grid)
@@ -98,7 +100,7 @@ public class XLS extends Doc
 			= form.getCaption() != null
 			? workbook.createSheet(form.getCaption().replaceAll("[^a-zA-Z0-9 ]", " "))
 			: workbook.createSheet();
-		for (Field e : form.getElements().stream().filter(e -> e instanceof Field).map(e -> (Field) e).collect(Collectors.toList()))
+		for (Field e : form.getFields().stream().filter(e -> e instanceof Field).map(e -> (Field) e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
 
@@ -115,7 +117,7 @@ public class XLS extends Doc
 			label.getCellStyle().setFont(workbook.createFont());
 			label.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
 			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(new XSSFColor(Color.GRAY));
+			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(getXLSColor(Color.LIGHT_GRAY));
 			((XSSFCellStyle) label.getCellStyle()).getFont().setBold(true);
 			label.setCellValue(new XSSFRichTextString(Converter.toText(e.getName())));
 
@@ -129,7 +131,7 @@ public class XLS extends Doc
 
 			value.getCellStyle().setFont(workbook.createFont());
 			value.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
-			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(new XSSFColor(Color.white));
+			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
 			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			((XSSFCellStyle) value.getCellStyle()).getFont().setBold(true);
 
@@ -196,7 +198,7 @@ public class XLS extends Doc
 				cell.setCellStyle(workbook.createCellStyle());
 				cell.getCellStyle().setFont(workbook.createFont());
 				cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(new XSSFColor(Color.LIGHT_GRAY));
+				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(Color.LIGHT_GRAY));
 				((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 
 				switch (col.style().getTextAlign())
@@ -233,7 +235,7 @@ public class XLS extends Doc
 				cell.setCellStyle(workbook.createCellStyle());
 				cell.getCellStyle().setFont(workbook.createFont());
 				cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(new XSSFColor(Color.LIGHT_GRAY));
+				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(Color.LIGHT_GRAY));
 				((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 
 				switch (col.style().getTextAlign())
@@ -330,10 +332,13 @@ public class XLS extends Doc
 		}
 	}
 
-	private XSSFColor getXLSColor(Style style)
+	private XSSFColor getXLSColor(Color color)
 	{
-		return COLORS.computeIfAbsent(style.getColor(), e
-			-> new XSSFColor(new java.awt.Color(e.getR(), e.getG(), e.getB())));
+		return COLORS.computeIfAbsent(color, e
+			-> new XSSFColor(new byte[]
+			{
+				(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
+		}, new DefaultIndexedColorMap()));
 	}
 
 	private HorizontalAlignment getXLSAligment(Style style)
@@ -359,7 +364,7 @@ public class XLS extends Doc
 		{
 			XSSFCellStyle XSSFCellStyle = (XSSFCellStyle) workbook.createCellStyle();
 			XSSFCellStyle.setFont(workbook.createFont());
-			XSSFCellStyle.getFont().setColor(getXLSColor(style));
+			XSSFCellStyle.getFont().setColor(getXLSColor(style.getColor()));
 			XSSFCellStyle.getFont().setBold(style.getFontWeight() == Style.FontWeight.BOLD);
 			XSSFCellStyle.getFont().setFontHeight(style.getFontSize());
 			XSSFCellStyle.setAlignment(getXLSAligment(style));

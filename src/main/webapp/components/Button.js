@@ -211,6 +211,7 @@ function Button(button, creator)
 
 					break;
 
+				case "_report":
 				case "_report-dialog":
 					event.preventDefault();
 					event.stopPropagation();
