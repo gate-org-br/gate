@@ -6,7 +6,7 @@
 
 	<groupId>com.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>6.1.0</version>
+	<version>6.2.0</version>
 	<packaging>war</packaging>
 
 	<name>gate</name>
@@ -110,13 +110,14 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.17</version>
+			<version>4.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.17</version>
+			<version>4.1.0</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.itextpdf</groupId>
 			<artifactId>itextpdf</artifactId>

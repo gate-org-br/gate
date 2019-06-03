@@ -1,6 +1,6 @@
 package gate.report;
 
-public class Field implements FormElement
+public class Field
 {
 
 	private final String name;

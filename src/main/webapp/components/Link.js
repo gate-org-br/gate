@@ -80,7 +80,8 @@ function Link(link, creator)
 						this.setAttribute("target", "_blank");
 						this.click();
 						this.setAttribute("target", "_dialog");
-					} else {
+					} else
+					{
 						new Dialog({creator: creator || this,
 							title: this.getAttribute("title"),
 							target: this.getAttribute("href"),
@@ -210,6 +211,7 @@ function Link(link, creator)
 
 					break;
 
+				case "_report":
 				case "_report-dialog":
 					event.preventDefault();
 					event.stopPropagation();

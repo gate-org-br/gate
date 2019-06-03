@@ -51,7 +51,7 @@
 				  &:only-child { float: right }
 		       }
 
-		       > progress { flex-grow: 1 }
+		       > progress { width: 100% }
 
 		       > label { float: left;
 				 padding: 4px;
@@ -80,46 +80,46 @@
 			       > i { font-size: 12px; margin-left: 4px }
 		       }
 
-		       > *:only-child,
-			       > *:first-child:nth-last-child(2),
-			       > *:first-child:nth-last-child(2) ~ * { .full(); }
+		       > *:not(progress):only-child,
+			       > *:not(progress):first-child:nth-last-child(2),
+			       > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress) { .full(); }
 
-		       @media only screen and (min-width: @phone) { > *:first-child:nth-last-child(3),
-									    > *:first-child:nth-last-child(3) ~ *,
-									    > *:first-child:nth-last-child(4),
-									    > *:first-child:nth-last-child(4) ~ *,
-									    > *:first-child:nth-last-child(5),
-									    > *:first-child:nth-last-child(5) ~ *,
-									    > *:first-child:nth-last-child(6),
-									    > *:first-child:nth-last-child(6) ~ * { .full(); }
+		       @media only screen and (min-width: @phone) { > *:not(progress):first-child:nth-last-child(3),
+									    > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress),
+									    > *:not(progress):first-child:nth-last-child(4),
+									    > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress),
+									    > *:not(progress):first-child:nth-last-child(5),
+									    > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress),
+									    > *:not(progress):first-child:nth-last-child(6),
+									    > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress) { .full(); }
 		       }
 
-		       @media only screen and (min-width: @tablet) { > *:first-child:nth-last-child(7),
-									     > *:first-child:nth-last-child(7) ~ *,
-									     > *:first-child:nth-last-child(8),
-									     > *:first-child:nth-last-child(8) ~ * { .full(); }
+		       @media only screen and (min-width: @tablet) { > *:not(progress):first-child:nth-last-child(7),
+									     > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress),
+									     > *:not(progress):first-child:nth-last-child(8),
+									     > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress) { .full(); }
 		       }
 
-		       @media only screen and (min-width: @notebook) { > *:first-child:nth-last-child(9),
-									       > *:first-child:nth-last-child(9) ~ *,
-									       > *:first-child:nth-last-child(10),
-									       > *:first-child:nth-last-child(10) ~ * { .full(); }
+		       @media only screen and (min-width: @notebook) { > *:not(progress):first-child:nth-last-child(9),
+									       > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress),
+									       > *:not(progress):first-child:nth-last-child(10),
+									       > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress) { .full(); }
 		       }
 
-		       @media only screen and (min-width: @desktop) { > *:first-child:nth-last-child(11),
-									      > *:first-child:nth-last-child(11) ~ *,
-									      > *:first-child:nth-last-child(12),
-									      > *:first-child:nth-last-child(12) ~ * { .full(); }
+		       @media only screen and (min-width: @desktop) { > *:not(progress):first-child:nth-last-child(11),
+									      > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress),
+									      > *:not(progress):first-child:nth-last-child(12),
+									      > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress) { .full(); }
 		       }
 
-		       @media only screen and (min-width: @widescreen) { > *:first-child:nth-last-child(13),
-										 > *:first-child:nth-last-child(13) ~ *,
-										 > *:first-child:nth-last-child(14),
-										 > *:first-child:nth-last-child(14) ~ *,
-										 > *:first-child:nth-last-child(15),
-										 > *:first-child:nth-last-child(15) ~ *,
-										 > *:first-child:nth-last-child(16),
-										 > *:first-child:nth-last-child(16) ~ * { .full(); }
+		       @media only screen and (min-width: @widescreen) { > *:not(progress):first-child:nth-last-child(13),
+										 > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress),
+										 > *:not(progress):first-child:nth-last-child(14),
+										 > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress),
+										 > *:not(progress):first-child:nth-last-child(15),
+										 > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress),
+										 > *:not(progress):first-child:nth-last-child(16),
+										 > *:not(progress):first-child:nth-last-child(16) ~ * { .full(); }
 		       }
 
 } 

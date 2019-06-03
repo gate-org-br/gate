@@ -3,6 +3,8 @@ package gate.report;
 import gate.annotation.Handler;
 import gate.handler.ReportHandler;
 import gate.type.mime.MimeData;
+import gate.type.mime.MimeDataFile;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,13 +136,6 @@ public class Report
 		return paragraph;
 	}
 
-	public Paragraph addParagraph(Object value, String style)
-	{
-		Paragraph paragraph = new Paragraph(this, value, style);
-		elements.add(paragraph);
-		return paragraph;
-	}
-
 	public Footer addFooter(Object value)
 	{
 		Footer footer = new Footer(value);
@@ -150,22 +145,36 @@ public class Report
 
 	public Image addImage(byte[] source)
 	{
-		Image image = new Image(source);
-		elements.add(new Image(source));
+		Image image = Image.of(source);
+		elements.add(image);
 		return image;
 	}
 
 	public Image addImage(MimeData source)
 	{
-		Image image = new Image(source);
-		elements.add(new Image(source));
+		Image image = Image.of(source);
+		elements.add(image);
+		return image;
+	}
+
+	public Image addImage(MimeDataFile source)
+	{
+		Image image = Image.of(source);
+		elements.add(image);
 		return image;
 	}
 
 	public Image addImage(URL source)
 	{
-		Image image = new Image(source);
-		elements.add(new Image(source));
+		Image image = Image.of(source);
+		elements.add(image);
+		return image;
+	}
+
+	public Image addImage(File source)
+	{
+		Image image = Image.of(source);
+		elements.add(image);
 		return image;
 	}
 
