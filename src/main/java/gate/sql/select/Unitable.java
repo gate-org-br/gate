@@ -7,11 +7,11 @@ import java.util.stream.Stream;
 public interface Unitable extends Clause
 {
 
-	public UnitedSelect union(Query.Constant query);
+	UnitedSelect union(Query.Constant query);
 
-	public UnitedSelect union(Query.Constant.Builder query);
+	UnitedSelect union(Query.Constant.Builder query);
 
-	public interface Constant extends Unitable
+	interface Constant extends Unitable
 	{
 
 		@Override
@@ -75,7 +75,7 @@ public interface Unitable extends Clause
 		}
 	}
 
-	public interface Generic extends Unitable
+	interface Generic extends Unitable
 	{
 
 		@Override
@@ -116,7 +116,7 @@ public interface Unitable extends Clause
 
 	}
 
-	public interface Compiled extends Unitable
+	interface Compiled extends Unitable
 	{
 
 		@Override

@@ -14,7 +14,7 @@ public class TemplatePropertyException extends TemplateException
 	public TemplatePropertyException(Class<?> type, String property)
 	{
 		super(String.format("Nenhuma propriedade de nome %s encontrada no contexto especificado",
-			property, type.getName()));
+			property));
 		this.type = type;
 		this.property = property;
 	}

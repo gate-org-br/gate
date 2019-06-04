@@ -5,11 +5,11 @@ import gate.type.Color;
 public final class Style
 {
 
-	private int fontSize = 12;
-	private double width = 100;
-	private Color color = Color.BLACK;
-	private TextAlign textAlign = TextAlign.CENTER;
-	private FontWeight fontWeight = FontWeight.NORMAL;
+	private int fontSize;
+	private double width;
+	private Color color;
+	private TextAlign textAlign;
+	private FontWeight fontWeight;
 
 	public Style()
 	{

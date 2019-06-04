@@ -16,7 +16,7 @@ public @interface Required
 
 	String value() default "required";
 
-	public static class Implementation extends Constraint.Implementation<String>
+	class Implementation extends Constraint.Implementation<String>
 	{
 
 		private static final long serialVersionUID = 1L;

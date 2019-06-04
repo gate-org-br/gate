@@ -69,7 +69,7 @@ public class HierarchyTest
 		Hierarchy.setup(MOCKS);
 		Assert.assertEquals(Arrays.asList(MOCK1,
 				MOCK11, MOCK111, MOCK112, MOCK113, MOCK12, MOCK121, MOCK122, MOCK123,
-				MOCK13, MOCK131, MOCK132, MOCK133), MOCK1.toList());;
+				MOCK13, MOCK131, MOCK132, MOCK133), MOCK1.toList());
 	}
 
 	@Test

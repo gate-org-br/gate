@@ -14,7 +14,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate expression(String expression);
+	Predicate expression(String expression);
 
 	/**
 	 * Evaluates to the result of the specified sub condition.
@@ -24,7 +24,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public Condition condition(ConstantCondition condition);
+	Condition condition(ConstantCondition condition);
 
 	/**
 	 * Adds a new predicate with the specified sub query to the current condition.
@@ -34,7 +34,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate subquery(Query.Constant.Builder subquery);
+	Predicate subquery(Query.Constant.Builder subquery);
 
 	/**
 	 * Adds a new predicate with the specified sub query to the current condition.
@@ -44,7 +44,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate subquery(Query.Constant subquery);
+	Predicate subquery(Query.Constant subquery);
 
 	/**
 	 * Evaluates to true if the specified sub query is not empty.
@@ -54,7 +54,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public Condition exists(Query.Constant subquery);
+	Condition exists(Query.Constant subquery);
 
 	/**
 	 * Evaluates to true if the specified sub query is not empty.
@@ -64,7 +64,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public Condition exists(Query.Constant.Builder subquery);
+	Condition exists(Query.Constant.Builder subquery);
 
 	/**
 	 * Negates the current predicate.
@@ -73,7 +73,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Relation not();
+	Relation not();
 
 	/**
 	 * Adds a new negated predicate with the specified expression to the current condition.
@@ -83,7 +83,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate not(String expression);
+	Predicate not(String expression);
 
 	/**
 	 * Evaluates to true if the specified sub condition is false.
@@ -93,7 +93,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public Condition not(ConstantCondition condition);
+	Condition not(ConstantCondition condition);
 
 	/**
 	 * Adds a new negated predicate with the specified sub query to the current condition.
@@ -103,7 +103,7 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate not(Query.Constant subquery);
+	Predicate not(Query.Constant subquery);
 
 	/**
 	 * Adds a new negated predicate with the specified sub query to the current condition.
@@ -113,6 +113,6 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public Predicate not(Query.Constant.Builder subquery);
+	Predicate not(Query.Constant.Builder subquery);
 
 }

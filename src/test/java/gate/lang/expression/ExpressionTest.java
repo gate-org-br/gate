@@ -64,19 +64,19 @@ public class ExpressionTest
 	@Test
 	public void test5() throws ExpressionException
 	{
-		Assert.assertTrue(new Expression("size children").evaluate(person).equals(2));
+		Assert.assertEquals(2, new Expression("size children").evaluate(person));
 	}
 
 	@Test
 	public void test6() throws ExpressionException
 	{
-		Assert.assertTrue(new Expression("children[0].age + children[1].age").evaluate(person).equals(60));
+		Assert.assertEquals(60, new Expression("children[0].age + children[1].age").evaluate(person));
 	}
 
 	@Test
 	public void test7() throws ExpressionException
 	{
-		Assert.assertTrue(new Expression("(age + relationships.wife.age) / 2").evaluate(person).equals(60));
+		Assert.assertEquals(60, new Expression("(age + relationships.wife.age) / 2").evaluate(person));
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class ExpressionTest
 	@Test
 	public void test9() throws ExpressionException
 	{
-		Assert.assertTrue(new Expression("@idade").evaluate(context, parameters).equals(1));
+		Assert.assertEquals(1, new Expression("@idade").evaluate(context, parameters));
 	}
 
 	@Test

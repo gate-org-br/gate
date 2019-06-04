@@ -153,7 +153,7 @@ interface GenericRelationMethods extends Clause
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public GenericCondition not(GenericCondition condition);
+	GenericCondition not(GenericCondition condition);
 
 	interface Rollback extends GenericRelationMethods
 	{

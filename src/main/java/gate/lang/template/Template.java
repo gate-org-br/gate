@@ -302,7 +302,7 @@ public class Template
 			}
 		} catch (IOException ex)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate template.", ex.getMessage()));
+			throw new TemplateException("Error trying to evaluate template: " + ex.getMessage());
 		}
 	}
 
@@ -325,7 +325,7 @@ public class Template
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
+			throw new TemplateException("Error trying to evaluate template: " + e.getMessage());
 		}
 	}
 
@@ -348,7 +348,7 @@ public class Template
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
+			throw new TemplateException("Error trying to evaluate template: " + e.getMessage());
 		}
 	}
 
@@ -372,7 +372,7 @@ public class Template
 			}
 		} catch (IOException e)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate template.", e.getMessage()));
+			throw new TemplateException("Error trying to evaluate template: " + e.getMessage());
 		}
 	}
 }

@@ -227,12 +227,12 @@ public class GridTag extends DynamicAttributeTag
 
 	public enum Method
 	{
-		get, post;
+		get, post
 	}
 
 	public enum Target
 	{
-		_blank, _self, _dialog;
+		_blank, _self, _dialog
 	}
 
 }

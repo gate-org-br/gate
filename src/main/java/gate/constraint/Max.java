@@ -17,7 +17,7 @@ public @interface Max
 
 	double value();
 
-	public static class Implementation extends Constraint.Implementation<Double>
+	class Implementation extends Constraint.Implementation<Double>
 	{
 
 		private static final long serialVersionUID = 1L;

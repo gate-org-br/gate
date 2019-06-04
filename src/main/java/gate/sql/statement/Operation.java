@@ -32,7 +32,7 @@ public interface Operation<T> extends SQL
 	 *
 	 * @return a new operation for the specified SQL string, java type and list of properties
 	 */
-	public static <T> Operation<T> of(Class<T> type, List<Property> properties, String sql)
+	static <T> Operation<T> of(Class<T> type, List<Property> properties, String sql)
 	{
 		return new BasicOperation<>(type, properties, sql);
 	}

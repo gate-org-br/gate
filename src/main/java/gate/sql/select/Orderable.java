@@ -7,7 +7,7 @@ public interface Orderable extends Clause
 
 	OrderedSelect orderBy(String exp);
 
-	public interface Constant extends Orderable
+	interface Constant extends Orderable
 	{
 
 		@Override
@@ -25,7 +25,7 @@ public interface Orderable extends Clause
 
 	}
 
-	public interface Generic extends Orderable
+	interface Generic extends Orderable
 	{
 
 		@Override
@@ -43,7 +43,7 @@ public interface Orderable extends Clause
 
 	}
 
-	public interface Compiled extends Orderable
+	interface Compiled extends Orderable
 	{
 
 		@Override

@@ -19,12 +19,12 @@ public interface Filterable extends Clause
 	 *
 	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
 	 */
-	public FilteredSelect where(ConstantCondition predicate);
+	FilteredSelect where(ConstantCondition predicate);
 
 	/**
 	 * A filtered clause without parameters
 	 */
-	public interface Constant extends Filterable
+	interface Constant extends Filterable
 	{
 
 		@Override
@@ -88,7 +88,7 @@ public interface Filterable extends Clause
 	/**
 	 * A filtered clause whose parameters are yet to be defined
 	 */
-	public interface Generic extends Filterable
+	interface Generic extends Filterable
 	{
 
 		@Override
@@ -128,7 +128,7 @@ public interface Filterable extends Clause
 	/**
 	 * A filtered clause whose parameters are already defined
 	 */
-	public interface Compiled extends Filterable
+	interface Compiled extends Filterable
 	{
 
 		@Override

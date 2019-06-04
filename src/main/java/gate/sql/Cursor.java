@@ -48,7 +48,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	@Override
 	public boolean fetchBoolean()
 	{
-		return next() ? getCurrentBooleanValue() : false;
+		return next() && getCurrentBooleanValue();
 	}
 
 	@Override

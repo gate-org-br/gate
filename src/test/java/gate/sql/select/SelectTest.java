@@ -81,7 +81,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Uzers", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
 	}
 
 	@Test
@@ -233,7 +233,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
 	}
 
 	@Test
@@ -252,7 +252,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
 	}
 
 	@Test
@@ -271,7 +271,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
 	}
 
 	@Test
@@ -319,7 +319,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select Uzer.id as 'id', Uzer.name as 'name', Role.id as 'role.id', Role.name as 'role.name' from Uzer join Role on Uzer.Role$id = ?", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
 	}
 
 	@Test
@@ -376,7 +376,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select Role.id as 'id', Role.name as 'name', (select count(*) from Uzer where Role$id = Role.id and active = ?) as 'users' from Role where Role.id = ?", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList(Boolean.TRUE, 1)));
+		Assert.assertEquals(query.getParameters(), Arrays.asList(Boolean.TRUE, 1));
 	}
 
 	@Test
@@ -614,7 +614,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
-		Assert.assertTrue(query.getParameters().equals(Arrays.asList("%name%", "%name%")));
+		Assert.assertEquals(query.getParameters(), Arrays.asList("%name%", "%name%"));
 	}
 
 	@Test

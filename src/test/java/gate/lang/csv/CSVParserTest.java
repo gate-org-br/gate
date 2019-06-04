@@ -23,19 +23,19 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 3);
+			Assert.assertEquals(3, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 3);
+			Assert.assertEquals(3, lines.get(0).size());
 			Assert.assertEquals("Jonh Matheus", lines.get(0).get(0));
 			Assert.assertEquals("Davis", lines.get(0).get(1));
 			Assert.assertEquals("true", lines.get(0).get(2));
 
-			Assert.assertTrue(lines.get(1).size() == 3);
+			Assert.assertEquals(3, lines.get(1).size());
 			Assert.assertEquals("Paul", lines.get(1).get(0));
 			Assert.assertEquals("Richard\"", lines.get(1).get(1));
 			Assert.assertEquals("false", lines.get(1).get(2));
 
-			Assert.assertTrue(lines.get(2).size() == 3);
+			Assert.assertEquals(3, lines.get(2).size());
 			Assert.assertEquals("Marie", lines.get(2).get(0));
 			Assert.assertEquals("Anderson", lines.get(2).get(1));
 			Assert.assertEquals("true", lines.get(2).get(2));
@@ -52,19 +52,19 @@ public class CSVParserTest
 			for (List<String> line : reader)
 				lines.add(line);
 
-			Assert.assertTrue(lines.size() == 3);
+			Assert.assertEquals(3, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 3);
+			Assert.assertEquals(3, lines.get(0).size());
 			Assert.assertEquals("Jonh Matheus", lines.get(0).get(0));
 			Assert.assertEquals("Davis", lines.get(0).get(1));
 			Assert.assertEquals("true", lines.get(0).get(2));
 
-			Assert.assertTrue(lines.get(1).size() == 3);
+			Assert.assertEquals(3, lines.get(1).size());
 			Assert.assertEquals("Paul", lines.get(1).get(0));
 			Assert.assertEquals("Richard\"", lines.get(1).get(1));
 			Assert.assertEquals("false", lines.get(1).get(2));
 
-			Assert.assertTrue(lines.get(2).size() == 3);
+			Assert.assertEquals(3, lines.get(2).size());
 			Assert.assertEquals("Marie", lines.get(2).get(0));
 			Assert.assertEquals("Anderson", lines.get(2).get(1));
 			Assert.assertEquals("true", lines.get(2).get(2));
@@ -79,19 +79,19 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = reader.stream().collect(Collectors.toList());
 
-			Assert.assertTrue(lines.size() == 3);
+			Assert.assertEquals(3, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 3);
+			Assert.assertEquals(3, lines.get(0).size());
 			Assert.assertEquals("Jonh Matheus", lines.get(0).get(0));
 			Assert.assertEquals("Davis", lines.get(0).get(1));
 			Assert.assertEquals("true", lines.get(0).get(2));
 
-			Assert.assertTrue(lines.get(1).size() == 3);
+			Assert.assertEquals(3, lines.get(1).size());
 			Assert.assertEquals("Paul", lines.get(1).get(0));
 			Assert.assertEquals("Richard\"", lines.get(1).get(1));
 			Assert.assertEquals("false", lines.get(1).get(2));
 
-			Assert.assertTrue(lines.get(2).size() == 3);
+			Assert.assertEquals(3, lines.get(2).size());
 			Assert.assertEquals("Marie", lines.get(2).get(0));
 			Assert.assertEquals("Anderson", lines.get(2).get(1));
 			Assert.assertEquals("true", lines.get(2).get(2));
@@ -109,9 +109,9 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 13);
+			Assert.assertEquals(13, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 7);
+			Assert.assertEquals(7, lines.get(0).size());
 			Assert.assertEquals("User 1", lines.get(0).get(0));
 			Assert.assertEquals("Role 1", lines.get(0).get(1));
 			Assert.assertEquals("", lines.get(0).get(2));
@@ -120,7 +120,7 @@ public class CSVParserTest
 			Assert.assertEquals("", lines.get(0).get(5));
 			Assert.assertEquals("Name 1", lines.get(0).get(6));
 
-			Assert.assertTrue(lines.get(1).size() == 7);
+			Assert.assertEquals(7, lines.get(1).size());
 			Assert.assertEquals("User 2", lines.get(1).get(0));
 			Assert.assertEquals("Role 2", lines.get(1).get(1));
 			Assert.assertEquals("", lines.get(1).get(2));
@@ -129,7 +129,7 @@ public class CSVParserTest
 			Assert.assertEquals("", lines.get(1).get(5));
 			Assert.assertEquals("Name 2", lines.get(1).get(6));
 
-			Assert.assertTrue(lines.get(2).size() == 7);
+			Assert.assertEquals(7, lines.get(2).size());
 			Assert.assertEquals("User 3", lines.get(2).get(0));
 			Assert.assertEquals("Role 3", lines.get(2).get(1));
 			Assert.assertEquals("", lines.get(2).get(2));
@@ -146,7 +146,7 @@ public class CSVParserTest
 			Assert.assertTrue(lines.get(8).isEmpty());
 			Assert.assertTrue(lines.get(9).isEmpty());
 
-			Assert.assertTrue(lines.get(10).size() == 7);
+			Assert.assertEquals(7, lines.get(10).size());
 			Assert.assertEquals("User 4", lines.get(10).get(0));
 			Assert.assertEquals("Role 4", lines.get(10).get(1));
 			Assert.assertEquals("", lines.get(10).get(2));
@@ -155,7 +155,7 @@ public class CSVParserTest
 			Assert.assertEquals("", lines.get(10).get(5));
 			Assert.assertEquals("Name 4", lines.get(10).get(6));
 
-			Assert.assertTrue(lines.get(11).size() == 7);
+			Assert.assertEquals(7, lines.get(11).size());
 			Assert.assertEquals("User 5", lines.get(11).get(0));
 			Assert.assertEquals("Role 5", lines.get(11).get(1));
 			Assert.assertEquals("", lines.get(11).get(2));
@@ -178,9 +178,9 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 17);
+			Assert.assertEquals(17, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 7);
+			Assert.assertEquals(7, lines.get(0).size());
 			Assert.assertEquals("User 1", lines.get(0).get(0));
 			Assert.assertEquals("Role 1", lines.get(0).get(1));
 			Assert.assertEquals("", lines.get(0).get(2));
@@ -246,9 +246,9 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 20);
+			Assert.assertEquals(20, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 7);
+			Assert.assertEquals(7, lines.get(0).size());
 			Assert.assertEquals("User 1", lines.get(0).get(0));
 			Assert.assertEquals("Role 1", lines.get(0).get(1));
 			Assert.assertEquals("", lines.get(0).get(2));
@@ -318,14 +318,14 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 6);
+			Assert.assertEquals(6, lines.size());
 
-			Assert.assertTrue(lines.get(0).size() == 3);
+			Assert.assertEquals(3, lines.get(0).size());
 			Assert.assertEquals("User 1", lines.get(0).get(0));
 			Assert.assertEquals("Role 1", lines.get(0).get(1));
 			Assert.assertEquals("", lines.get(0).get(2));
 
-			Assert.assertTrue(lines.get(1).size() == 3);
+			Assert.assertEquals(3, lines.get(1).size());
 			Assert.assertEquals("User 2", lines.get(1).get(0));
 			Assert.assertEquals("Role 2", lines.get(1).get(1));
 			Assert.assertEquals("", lines.get(0).get(2));
@@ -345,7 +345,7 @@ public class CSVParserTest
 					line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
-			Assert.assertTrue(lines.size() == 35);
+			Assert.assertEquals(35, lines.size());
 
 		}
 	}

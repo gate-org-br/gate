@@ -13,7 +13,7 @@ interface CompiledConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public CompiledCondition and(CompiledCondition condition);
+	CompiledCondition and(CompiledCondition condition);
 
 	/**
 	 * Adds a new sub query to the condition associated by an AND relation.
@@ -23,7 +23,7 @@ interface CompiledConditionMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public CompiledPredicate and(Query.Compiled subquery);
+	CompiledPredicate and(Query.Compiled subquery);
 
 	/**
 	 * Adds a new sub condition to the current condition associated by an OR relation.
@@ -33,7 +33,7 @@ interface CompiledConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public CompiledCondition or(CompiledCondition condition);
+	CompiledCondition or(CompiledCondition condition);
 
 	/**
 	 * Adds a new sub query to the condition associated by an OR relation.
@@ -43,5 +43,5 @@ interface CompiledConditionMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public CompiledPredicate or(Query.Compiled subquery);
+	CompiledPredicate or(Query.Compiled subquery);
 }

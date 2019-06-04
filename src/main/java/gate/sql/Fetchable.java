@@ -38,14 +38,14 @@ public interface Fetchable
 	 *
 	 * @return the results fetched as a java object of the specified type
 	 */
-	public <T> T fetch(Fetcher<T> fecher);
+	<T> T fetch(Fetcher<T> fecher);
 
 	/**
 	 * Fetches the first column of the first row as a java object.
 	 *
 	 * @return an Optional describing the first column of the first row as a java object or an empty Optional if the result is empty
 	 */
-	public default Optional<Object> fetchObject()
+	default Optional<Object> fetchObject()
 	{
 		return fetch(new ObjectFetcher());
 	}
@@ -58,7 +58,7 @@ public interface Fetchable
 	 *
 	 * @return an Optional describing the first column of the first row as a java object of the specified type or an empty Optional if the result is empty
 	 */
-	public default <T> Optional<T> fetchObject(Class<T> type)
+	default <T> Optional<T> fetchObject(Class<T> type)
 	{
 		return fetch(new TypedObjectFetcher<>(type));
 	}
@@ -68,7 +68,7 @@ public interface Fetchable
 	 *
 	 * @return the first column of each row as as list of java objects
 	 */
-	public default List<Object> fetchObjectList()
+	default List<Object> fetchObjectList()
 	{
 		return fetch(new ObjectListFetcher());
 	}
@@ -81,7 +81,7 @@ public interface Fetchable
 	 *
 	 * @return the first column of each row as as list of java objects of the specified type
 	 */
-	public default <T> List<T> fetchObjectList(Class<T> type)
+	default <T> List<T> fetchObjectList(Class<T> type)
 	{
 		return fetch(new TypedObjectListFetcher<>(type));
 	}
@@ -91,7 +91,7 @@ public interface Fetchable
 	 *
 	 * @return an Optional describing the first row as a java array or an empty Optional if the result is empty
 	 */
-	public default Optional<Object[]> fetchArray()
+	default Optional<Object[]> fetchArray()
 	{
 		return fetch(new ArrayFetcher());
 	}
@@ -103,7 +103,7 @@ public interface Fetchable
 	 *
 	 * @return an Optional describing the first row as a java array of the specified types or an empty Optional if the result is empty
 	 */
-	public default Optional<Object[]> fetchArray(Class<?>... types)
+	default Optional<Object[]> fetchArray(Class<?>... types)
 	{
 		return fetch(new TypedArrayFetcher(types));
 	}
@@ -113,7 +113,7 @@ public interface Fetchable
 	 *
 	 * @return each row fetched as a list of java arrays
 	 */
-	public default List<Object[]> fetchArrayList()
+	default List<Object[]> fetchArrayList()
 	{
 		return fetch(new ArrayListFetcher());
 	}
@@ -125,7 +125,7 @@ public interface Fetchable
 	 *
 	 * @return each row fetched as a list of java arrays of Objects of the specified types
 	 */
-	public default List<Object[]> fetchArrayList(Class<?>... types)
+	default List<Object[]> fetchArrayList(Class<?>... types)
 	{
 		return fetch(new TypedArrayListFetcher(types));
 	}
@@ -136,7 +136,7 @@ public interface Fetchable
 	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values or an empty Optional if the
 	 * result is empty
 	 */
-	public default Optional<Map<String, Object>> fetchMap()
+	default Optional<Map<String, Object>> fetchMap()
 	{
 		return fetch(new MapFetcher());
 	}
@@ -149,7 +149,7 @@ public interface Fetchable
 	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values as objects of the specified
 	 * type or an empty Optional if the result is empty
 	 */
-	public default Optional<Map<String, Object>> fetchMap(Class<?>... types)
+	default Optional<Map<String, Object>> fetchMap(Class<?>... types)
 	{
 		return fetch(new TypedMapFetcher(types));
 	}
@@ -159,7 +159,7 @@ public interface Fetchable
 	 *
 	 * @return each row as a list of maps whose keys are the column names and values are the column values
 	 */
-	public default List<Map<String, Object>> fetchMapList()
+	default List<Map<String, Object>> fetchMapList()
 	{
 		return fetch(new MapListFetcher());
 	}
@@ -171,7 +171,7 @@ public interface Fetchable
 	 *
 	 * @return each row as a list of maps whose keys are the column names and values are the column values as objects of the specified types
 	 */
-	public default List<Map<String, Object>> fetchMapList(Class<?>... types)
+	default List<Map<String, Object>> fetchMapList(Class<?>... types)
 	{
 		return fetch(new TypedMapListFetcher(types));
 	}
@@ -185,7 +185,7 @@ public interface Fetchable
 	 * @return an Optional describing the first row of the result as a java object of the specified type with it's properties set to their respective column
 	 * values or an empty Optional if result is empty
 	 */
-	public default <T> Optional<T> fetchEntity(Class<T> type)
+	default <T> Optional<T> fetchEntity(Class<T> type)
 	{
 		return fetch(new EntityFetcher<>(type));
 	}
@@ -198,7 +198,7 @@ public interface Fetchable
 	 *
 	 * @return each row as a list of java objects of the specified type with it's properties set to their respective column values
 	 */
-	public default <T> List<T> fetchEntityList(Class<T> type)
+	default <T> List<T> fetchEntityList(Class<T> type)
 	{
 		return fetch(new EntityListFetcher<>(type));
 	}
@@ -212,7 +212,7 @@ public interface Fetchable
 	 *
 	 * @return a list of java object of the specified type with the specified properties set to their respective column values
 	 */
-	public default <T> List<T> fetchEntityList(Class<T> type, List<Property> properties)
+	default <T> List<T> fetchEntityList(Class<T> type, List<Property> properties)
 	{
 		return fetch(new PropertyEntityListFetcher<>(type, properties));
 	}
@@ -226,7 +226,7 @@ public interface Fetchable
 	 *
 	 * @return a list of java object of the specified type with the specified properties set to their respective column values
 	 */
-	public default <T> List<T> fetchEntityList(Class<T> type, String... properties)
+	default <T> List<T> fetchEntityList(Class<T> type, String... properties)
 	{
 		return fetch(new PropertyEntityListFetcher<>(type, properties));
 	}
@@ -236,7 +236,7 @@ public interface Fetchable
 	 *
 	 * @return each row as a data grid
 	 */
-	public default DataGrid fetchDataGrid()
+	default DataGrid fetchDataGrid()
 	{
 		return fetch(new DataGridFetcher());
 	}
@@ -248,7 +248,7 @@ public interface Fetchable
 	 *
 	 * @return each row as a data grid of the specified types
 	 */
-	public default DataGrid fetchDataGrid(Class<?>... types)
+	default DataGrid fetchDataGrid(Class<?>... types)
 	{
 		return fetch(new TypedDataGridFetcher(types));
 	}
@@ -258,54 +258,54 @@ public interface Fetchable
 	 *
 	 * @return the result fetched as a java boolean
 	 */
-	public boolean fetchBoolean();
+	boolean fetchBoolean();
 
 	/**
 	 * Fetches a char value from database.
 	 *
 	 * @return the result fetched as a java char
 	 */
-	public char fetchChar();
+	char fetchChar();
 
 	/**
 	 * Fetches a byte value from database.
 	 *
 	 * @return the result fetched as a java byte
 	 */
-	public byte fetchByte();
+	byte fetchByte();
 
 	/**
 	 * Fetches a short value from database.
 	 *
 	 * @return the result fetched as a java short
 	 */
-	public short fetchShort();
+	short fetchShort();
 
 	/**
 	 * Fetches an int value from database.
 	 *
 	 * @return the result fetched as a java int
 	 */
-	public int fetchInt();
+	int fetchInt();
 
 	/**
 	 * Fetches a long value from database.
 	 *
 	 * @return the result fetched as a java long
 	 */
-	public long fetchLong();
+	long fetchLong();
 
 	/**
 	 * Fetches a float value from database.
 	 *
 	 * @return the result fetched as a java float
 	 */
-	public float fetchFloat();
+	float fetchFloat();
 
 	/**
 	 * Fetches a double value from database.
 	 *
 	 * @return the result fetched as a java double
 	 */
-	public double fetchDouble();
+	double fetchDouble();
 }

@@ -10,9 +10,9 @@ import java.util.Iterator;
 public interface Authenticator
 {
 
-	public void authenticate(String server,
-				 String username,
-				 String password) throws
+	void authenticate(String server,
+			  String username,
+			  String password) throws
 		InvalidUsernameException,
 		InvalidPasswordException,
 		InvalidServiceException,

@@ -20,7 +20,7 @@ public @interface Color
 
 	String value();
 
-	public static class Extractor
+	class Extractor
 	{
 
 		private static final Pattern PATTERN = Pattern.compile("^#[0-9ABCDEFabcdef]{6}$");
@@ -50,7 +50,7 @@ public @interface Color
 						? extract(((AnnotatedElement) element).getAnnotation(Color.class).value())
 						: Optional.empty();
 
-				if (element instanceof Object)
+				if (element != null)
 					return extract(element.getClass());
 
 			} catch (ClassNotFoundException | NoSuchFieldException ex)

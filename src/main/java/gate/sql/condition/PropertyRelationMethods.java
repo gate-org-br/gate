@@ -52,7 +52,7 @@ interface PropertyRelationMethods extends Clause
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public PropertyCondition not(PropertyCondition condition);
+	PropertyCondition not(PropertyCondition condition);
 
 	interface Rollback extends PropertyRelationMethods
 	{

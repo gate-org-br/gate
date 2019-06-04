@@ -203,7 +203,7 @@ public class Auth implements Serializable
 		@Icon("2038")
 		@Color("#660000")
 		@Name("Bloqueio")
-		BLOCK;
+		BLOCK
 	}
 
 	public enum Type
@@ -213,7 +213,7 @@ public class Auth implements Serializable
 		PUBLIC,
 		@Icon("2000")
 		@Name("Privado")
-		PRIVATE;
+		PRIVATE
 	}
 
 	public boolean blocks(String module, String screen, String action)

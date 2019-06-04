@@ -28,8 +28,6 @@ public class TimeInterval implements Serializable, Comparable<TimeInterval>
 
 		if (min.getValue() > max.getValue())
 			throw new IllegalArgumentException("time1 must be <= time2");
-		if (max.getValue() < min.getValue())
-			throw new IllegalArgumentException("time2 must be >= time1");
 
 		this.min = min;
 		this.max = max;

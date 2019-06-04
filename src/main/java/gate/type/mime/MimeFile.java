@@ -11,5 +11,5 @@ public interface MimeFile extends Mime
 	 *
 	 * @return the mime file name
 	 */
-	public String getName();
+	String getName();
 }

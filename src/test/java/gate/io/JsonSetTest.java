@@ -69,7 +69,7 @@ public class JsonSetTest
 		table.commit();
 		table.rollback();
 		assertEquals(table.size(), 0);
-		Assert.assertTrue(!USERS.exists());
+		Assert.assertFalse(USERS.exists());
 	}
 
 	@Test

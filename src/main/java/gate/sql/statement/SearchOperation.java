@@ -18,14 +18,14 @@ public interface SearchOperation<T>
 	 *
 	 * @return a Matcher object to be used to define the query parameters
 	 */
-	public Matcher<T> properties(String... GQN);
+	Matcher<T> properties(String... GQN);
 
 	/**
 	 * Interface used to define the parameters of fetching operations.
 	 *
 	 * @param <T> type of the object to be fetched by the fetching operation
 	 */
-	public interface Matcher<T>
+	interface Matcher<T>
 	{
 
 		/**
@@ -35,7 +35,7 @@ public interface SearchOperation<T>
 		 *
 		 * @return the results of the query fetched a an object of the specified type
 		 */
-		public List<T> matching(T filter);
+		List<T> matching(T filter);
 
 		/**
 		 * Defines the parameters to be used for query execution.
@@ -44,7 +44,7 @@ public interface SearchOperation<T>
 		 *
 		 * @return the results of the query fetched a an object of the specified type
 		 */
-		public List<T> parameters(List<Object> parameters);
+		List<T> parameters(List<Object> parameters);
 
 		/**
 		 * Defines the parameters to be used for query execution.
@@ -53,7 +53,7 @@ public interface SearchOperation<T>
 		 *
 		 * @return the results of the query fetched a an object of the specified type
 		 */
-		public default List<T> parameters(Object... parameters)
+		default List<T> parameters(Object... parameters)
 		{
 			return parameters(Arrays.asList(parameters));
 		}

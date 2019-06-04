@@ -77,7 +77,7 @@ public interface InsertOperation<T>
 	 *
 	 * @return a Parameters object to be used to define the values
 	 */
-	public Properties<T> properties(String... properties);
+	Properties<T> properties(String... properties);
 
 	/**
 	 * Context to define the properties and the values to be inserted.

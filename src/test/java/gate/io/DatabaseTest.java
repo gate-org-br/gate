@@ -17,9 +17,9 @@ public class DatabaseTest
 		database.insert("table2", "table2.string1");
 		database.insert("table2", "table2.string2");
 
-		Assert.assertTrue(database.size("table1") == 2);
-		Assert.assertTrue(database.size("table2") == 2);
-		Assert.assertTrue(database.size() == 4);
+		Assert.assertEquals(2, database.size("table1"));
+		Assert.assertEquals(2, database.size("table2"));
+		Assert.assertEquals(4, database.size());
 
 		database.drop();
 	}
@@ -35,9 +35,9 @@ public class DatabaseTest
 
 		database.delete("table2", "table2.string2");
 
-		Assert.assertTrue(database.size("table1") == 2);
-		Assert.assertTrue(database.size("table2") == 1);
-		Assert.assertTrue(database.size() == 3);
+		Assert.assertEquals(2, database.size("table1"));
+		Assert.assertEquals(1, database.size("table2"));
+		Assert.assertEquals(3, database.size());
 
 		database.drop();
 	}
@@ -51,11 +51,11 @@ public class DatabaseTest
 		database.insert("table2", "table2.string1");
 		database.insert("table2", "table2.string2");
 
-		Assert.assertTrue(database.search(e -> e.startsWith("table1"))
-			.size() == 2);
+		Assert.assertEquals(2, database.search(e -> e.startsWith("table1"))
+			.size());
 
-		Assert.assertTrue(database.search(e -> e.endsWith("string1"))
-			.size() == 2);
+		Assert.assertEquals(2, database.search(e -> e.endsWith("string1"))
+			.size());
 		database.drop();
 	}
 }

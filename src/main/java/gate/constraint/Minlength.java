@@ -17,7 +17,7 @@ public @interface Minlength
 
 	int value();
 
-	public static class Implementation extends Constraint.Implementation
+	class Implementation extends Constraint.Implementation
 	{
 
 		private static final long serialVersionUID = 1L;

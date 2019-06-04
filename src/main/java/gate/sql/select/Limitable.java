@@ -34,7 +34,7 @@ public interface Limitable extends Clause
 	 */
 	LimitedSelect paginate(int pageSize, int pageIndex);
 
-	public interface Constant extends Limitable
+	interface Constant extends Limitable
 	{
 
 		@Override
@@ -51,7 +51,7 @@ public interface Limitable extends Clause
 		}
 
 		@Override
-		public default LimitedSelect.Constant limit(int offset, int count)
+		default LimitedSelect.Constant limit(int offset, int count)
 		{
 			return new LimitedSelect.Constant(this)
 			{
@@ -77,7 +77,7 @@ public interface Limitable extends Clause
 		}
 	}
 
-	public interface Generic extends Limitable
+	interface Generic extends Limitable
 	{
 
 		@Override
@@ -94,7 +94,7 @@ public interface Limitable extends Clause
 		}
 
 		@Override
-		public default LimitedSelect.Generic limit(int offset, int count)
+		default LimitedSelect.Generic limit(int offset, int count)
 		{
 			return new LimitedSelect.Generic(this)
 			{
@@ -121,7 +121,7 @@ public interface Limitable extends Clause
 
 	}
 
-	public interface Compiled extends Limitable
+	interface Compiled extends Limitable
 	{
 
 		@Override
@@ -138,7 +138,7 @@ public interface Limitable extends Clause
 		}
 
 		@Override
-		public default LimitedSelect.Compiled limit(int offset, int count)
+		default LimitedSelect.Compiled limit(int offset, int count)
 		{
 			return new LimitedSelect.Compiled(this)
 			{

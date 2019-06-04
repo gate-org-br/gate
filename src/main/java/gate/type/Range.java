@@ -60,8 +60,7 @@ public class Range implements Iterable<Long>, Serializable
 			return String
 				.valueOf(min);
 		else
-			return String
-				.valueOf(min) + " - " + String.valueOf(max);
+			return min + " - " + max;
 	}
 
 	public static Range of(long value)

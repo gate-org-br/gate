@@ -19,14 +19,14 @@ public interface SelectOperation<T>
 	 *
 	 * @return a Matcher object to be used to define the query parameters
 	 */
-	public Matcher<T> properties(String... GQN);
+	Matcher<T> properties(String... GQN);
 
 	/**
 	 * Interface used to define the parameters of fetching operations.
 	 *
 	 * @param <T> type of the object to be fetched by the fetching operation
 	 */
-	public interface Matcher<T>
+	interface Matcher<T>
 	{
 
 		/**
@@ -37,7 +37,7 @@ public interface SelectOperation<T>
 		 * @return an Optional describing the first row of the result as an object of the specified type or an empty
 		 *         Optional if the result is empty
 		 */
-		public Optional<T> matching(T filter);
+		Optional<T> matching(T filter);
 
 		/**
 		 * Defines the parameters to be used for query execution.
@@ -47,7 +47,7 @@ public interface SelectOperation<T>
 		 * @return an Optional describing the first row of the result as an object of the specified type or an empty
 		 *         Optional if the result is empty
 		 */
-		public Optional<T> parameters(List<Object> parameters);
+		Optional<T> parameters(List<Object> parameters);
 
 		/**
 		 * Defines the parameters to be used for query execution.
@@ -57,7 +57,7 @@ public interface SelectOperation<T>
 		 * @return an Optional describing the first row of the result as an object of the specified type or an empty
 		 *         Optional if the result is empty
 		 */
-		public default Optional<T> parameters(Object... parameters)
+		default Optional<T> parameters(Object... parameters)
 		{
 			return parameters(Arrays.asList(parameters));
 		}

@@ -19,7 +19,7 @@ public class CompiledRelationTest
 			.and().not(Condition.of("column4").eq(4)
 				.or().not("column5").eq(5));
 		Assert.assertEquals("column1 = ? and not column2 <> ? and not column3 = ? and not (column4 = ? or not column5 = ?)", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 5)));
+		Assert.assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 5));
 	}
 
 	@Test
@@ -32,7 +32,7 @@ public class CompiledRelationTest
 				.from("table1")
 				.where(gate.sql.condition.Condition.of("column3").eq(2)));
 		Assert.assertEquals("column1 = ? and exists (select column2 from table1 where column3 = ?)", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2)));
+		Assert.assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 	}
 
 	@Test
@@ -43,6 +43,6 @@ public class CompiledRelationTest
 			.and().not().exists(Select.expression("column2").from("table1")
 				.where(gate.sql.condition.Condition.of("column3").eq(2)));
 		Assert.assertEquals("column1 = ? and not exists (select column2 from table1 where column3 = ?)", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2)));
+		Assert.assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 	}
 }

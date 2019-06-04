@@ -115,8 +115,8 @@ public class PNG implements Serializable
 			}
 		} catch (IOException e)
 		{
-			throw new IllegalArgumentException(String.format("The image type must be:", new StringList(ImageIO
-					.getReaderFileSuffixes()).toString()));
+			throw new IllegalArgumentException("The image type must be: " + new StringList(ImageIO
+					.getReaderFileSuffixes()));
 		}
 	}
 

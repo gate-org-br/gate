@@ -16,7 +16,7 @@ public class CollectionConverter extends ObjectConverter
 	public String toText(Class<?> type, Object object)
 	{
 		StringBuilder string = new StringBuilder();
-		for (Object obj : ((Iterable<? extends Object>) object))
+		for (Object obj : ((Iterable<?>) object))
 		{
 			if (obj != null)
 			{
@@ -35,7 +35,7 @@ public class CollectionConverter extends ObjectConverter
 		writer.write(JsonToken.Type.OPEN_ARRAY, null);
 
 		boolean first = true;
-		for (Object element : ((Iterable<? extends Object>) object))
+		for (Object element : ((Iterable<?>) object))
 		{
 			if (first)
 				first = false;

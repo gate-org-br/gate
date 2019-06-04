@@ -14,7 +14,7 @@ public interface Clause
 	 *
 	 * @return the preceeding clause
 	 */
-	public abstract Clause getClause();
+	Clause getClause();
 
 	/**
 	 * Returns the clause SQL string.
@@ -22,7 +22,7 @@ public interface Clause
 	 * @return the clause SQL string
 	 */
 	@Override
-	public abstract String toString();
+	String toString();
 
 	/**
 	 * Rollback the clause.

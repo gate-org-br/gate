@@ -2,6 +2,8 @@ package gate.type;
 
 import java.text.ParseException;
 import org.junit.Assert;
+
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -15,18 +17,18 @@ public class YearMonthIntervalTest
 	@Test
 	public void testContainsYearMonth() throws ParseException
 	{
-		Assert.assertEquals(true, OBJECT.contains(YearMonth.of(2018, java.time.Month.NOVEMBER)));
-		Assert.assertEquals(false, OBJECT.contains(YearMonth.of(2019, java.time.Month.NOVEMBER)));
+		Assert.assertTrue(OBJECT.contains(YearMonth.of(2018, Month.NOVEMBER)));
+		Assert.assertFalse(OBJECT.contains(YearMonth.of(2019, Month.NOVEMBER)));
 	}
 
 	@Test
 	public void testContainsYearMonthInterval() throws ParseException
 	{
-		Assert.assertEquals(true, OBJECT.contains(YearMonthInterval.of(YearMonth.of(2018, java.time.Month.NOVEMBER),
-			YearMonth.of(2019, java.time.Month.JANUARY))));
+		Assert.assertTrue(OBJECT.contains(YearMonthInterval.of(YearMonth.of(2018, Month.NOVEMBER),
+			YearMonth.of(2019, Month.JANUARY))));
 
-		Assert.assertEquals(false, OBJECT.contains(YearMonthInterval.of(YearMonth.of(2018, java.time.Month.NOVEMBER),
-			YearMonth.of(2019, java.time.Month.MARCH))));
+		Assert.assertFalse(OBJECT.contains(YearMonthInterval.of(YearMonth.of(2018, Month.NOVEMBER),
+			YearMonth.of(2019, Month.MARCH))));
 	}
 
 	@Test

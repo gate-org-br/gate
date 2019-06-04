@@ -13,12 +13,12 @@ public interface Mime extends Serializable
 	 *
 	 * @return the mime content type
 	 */
-	public String getType();
+	String getType();
 
 	/**
 	 * Gets the mime content subtype.
 	 *
 	 * @return the mime content subtype
 	 */
-	public String getSubType();
+	String getSubType();
 }

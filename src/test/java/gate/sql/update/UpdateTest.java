@@ -42,9 +42,9 @@ public class UpdateTest
 			Date birthdate = Date.of(31, 12, 2005);
 			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
-			assertTrue(link.prepare("update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?")
+			assertEquals(1, link.prepare("update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?")
 				.parameters(name, birthdate, contract, id)
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
@@ -78,10 +78,10 @@ public class UpdateTest
 			Date birthdate = Date.of(20, 11, 2004);
 			DateInterval contract = new DateInterval(Date.of(1, 1, 2008), Date.of(31, 12, 2010));
 
-			assertTrue(link
+			assertEquals(1, link
 				.prepare(getClass().getResource("UpdateTest/Update.sql"))
 				.parameters(name, birthdate, contract, id)
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link
@@ -116,14 +116,14 @@ public class UpdateTest
 			Date birthdate = Date.of(9, 8, 2000);
 			DateInterval contract = new DateInterval(Date.of(1, 1, 2012), Date.of(31, 12, 2014));
 
-			assertTrue(link
+			assertEquals(1, link
 				.prepare(Update
 					.table("Person")
 					.set(String.class, "name", name)
 					.set(Date.class, "birthdate", birthdate)
 					.set(DateInterval.class, "contract", contract)
 					.where(Condition.of("id").eq(id)))
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link
@@ -158,7 +158,7 @@ public class UpdateTest
 			Date birthdate = Date.of(7, 8, 2000);
 			DateInterval contract = new DateInterval(Date.of(2, 1, 2012), Date.of(4, 12, 2014));
 
-			assertTrue(link
+			assertEquals(1, link
 				.prepare(Update
 					.table("Person")
 					.set(String.class, "name")
@@ -166,7 +166,7 @@ public class UpdateTest
 					.set(DateInterval.class, "contract")
 					.where(Condition.of("id").eq()))
 				.parameters(name, birthdate, contract, id)
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link
@@ -207,12 +207,12 @@ public class UpdateTest
 				.setBirthdate(birthdate)
 				.setContract(contract);
 
-			assertTrue(link
+			assertEquals(1, link
 				.prepare(Update
 					.type(Person.class)
 					.set("id", "name", "birthdate", "contract"))
 				.value(person)
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link
@@ -253,11 +253,11 @@ public class UpdateTest
 				.setBirthdate(birthdate)
 				.setContract(contract);
 
-			assertTrue(link
+			assertEquals(1, link
 				.prepare(Update
 					.type(Person.class))
 				.value(person)
-				.execute() == 1);
+				.execute());
 
 			Optional<Object[]> optional
 				= link
@@ -298,10 +298,10 @@ public class UpdateTest
 				.setBirthdate(birthdate)
 				.setContract(contract);
 
-			assertTrue(link
+			assertEquals(1, link
 				.update(Person.class)
 				.properties("=id", "name", "birthdate", "contract")
-				.execute(person) == 1);
+				.execute(person));
 
 			Optional<Object[]> optional
 				= link
@@ -342,9 +342,9 @@ public class UpdateTest
 				.setBirthdate(birthdate)
 				.setContract(contract);
 
-			assertTrue(link
+			assertEquals(1, link
 				.update(Person.class)
-				.execute(person) == 1);
+				.execute(person));
 
 			Optional<Object[]> optional
 				= link
@@ -382,10 +382,10 @@ public class UpdateTest
 					.setPerson(new Person()
 						.setId(1));
 
-			assertTrue(link
+			assertEquals(1, link
 				.update(Contact.class)
 				.properties("=id", "type", "value", "person.id")
-				.execute(expected) == 1);
+				.execute(expected));
 
 			Contact result = link
 				.select(Contact.class)

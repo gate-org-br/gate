@@ -132,7 +132,7 @@ public class Data extends Number implements Serializable, Comparable<Data>
 		return getBytes().doubleValue();
 	}
 
-	public static enum Unit
+	public enum Unit
 	{
 
 		B(BigDecimal.ONE), K(BigDecimal.ONE.multiply(FACTOR)), M(BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR)), G(

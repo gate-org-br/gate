@@ -29,8 +29,6 @@ public class DateTimeInterval implements Serializable, Comparable<DateTimeInterv
 
 		if (min.getValue() > max.getValue())
 			throw new IllegalArgumentException("min must be <= max");
-		if (max.getValue() < min.getValue())
-			throw new IllegalArgumentException("max must be >= min");
 
 		this.min = min;
 		this.max = max;

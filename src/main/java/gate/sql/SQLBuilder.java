@@ -15,5 +15,5 @@ public interface SQLBuilder<T extends SQL>
 	 *
 	 * @return the SQL to be executed on the database
 	 */
-	public T build();
+	T build();
 }

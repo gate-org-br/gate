@@ -32,7 +32,7 @@ public class UncheckedConversionEception extends UncheckedIOException
 	public interface UncheckedConversionEceptionWrapper<T>
 	{
 
-		public T get() throws ConversionException;
+		T get() throws ConversionException;
 	}
 
 }

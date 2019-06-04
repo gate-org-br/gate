@@ -166,7 +166,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").eq(Integer.class, 1);
 			assertEquals("column1 = ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -183,7 +183,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isEq(Select.expression("column2").from("table1").where(Condition.of("column3").eq(3)));
 		assertEquals("column1 = (select column2 from table1 where column3 = ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -197,7 +197,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").ne(Integer.class, 1);
 			assertEquals("column1 <> ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -214,7 +214,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isNe(Select.expression("column2").from("table1").where(Condition.of("column3").ne(3)));
 		assertEquals("column1 <> (select column2 from table1 where column3 <> ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -228,7 +228,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").lt(Integer.class, 1);
 			assertEquals("column1 < ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -245,7 +245,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isLt(Select.expression("column2").from("table1").where(Condition.of("column3").lt(3)));
 		assertEquals("column1 < (select column2 from table1 where column3 < ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -253,11 +253,11 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").le(1);
 		assertEquals("column1 <= ?", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 
 		Condition condition2 = Condition.of("column1").eq((Object) null).and("column2").le(2);
 		assertEquals("column2 <= ?", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(2)));
+		assertEquals(condition2.getParameters().collect(Collectors.toList()), Arrays.asList(2));
 
 	}
 
@@ -272,7 +272,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").le(Integer.class, 1);
 			assertEquals("column1 <= ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -289,7 +289,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isLe(Select.expression("column2").from("table1").where(Condition.of("column3").le(3)));
 		assertEquals("column1 <= (select column2 from table1 where column3 <= ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -303,7 +303,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").gt(Integer.class, 1);
 			assertEquals("column1 > ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -320,7 +320,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isGt(Select.expression("column2").from("table1").where(Condition.of("column3").gt(3)));
 		assertEquals("column1 > (select column2 from table1 where column3 > ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -328,11 +328,11 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").ge(1);
 		assertEquals("column1 >= ?", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 
 		Condition condition2 = Condition.of("column1").eq((Object) null).and("column2").ge(2);
 		assertEquals("column2 >= ?", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(2)));
+		assertEquals(condition2.getParameters().collect(Collectors.toList()), Arrays.asList(2));
 
 	}
 
@@ -347,7 +347,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").ge(Integer.class, 1);
 			assertEquals("column1 >= ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 		}
 	}
 
@@ -364,7 +364,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isGe(Select.expression("column2").from("table1").where(Condition.of("column3").ge(3)));
 		assertEquals("column1 >= (select column2 from table1 where column3 >= ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -384,11 +384,11 @@ public class ConstantConditionTest
 
 		Condition condition1 = Condition.of("column1").bw(dateTimeInterval);
 		assertEquals("column1 between ? and ?", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTimeInterval)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(dateTimeInterval));
 
 		Condition condition2 = Condition.of("column1").bw(null).and("column2").bw(dateTimeInterval);
 		assertEquals("column2 between ? and ?", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTimeInterval)));
+		assertEquals(condition2.getParameters().collect(Collectors.toList()), Arrays.asList(dateTimeInterval));
 
 	}
 
@@ -406,7 +406,7 @@ public class ConstantConditionTest
 			DateTimeInterval dateTimeInterval = new DateTimeInterval(min, max);
 			Condition condition = Condition.of("column1").bw(DateTimeInterval.class, dateTimeInterval);
 			assertEquals("column1 between ? and ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(dateTimeInterval)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(dateTimeInterval));
 		}
 	}
 
@@ -418,14 +418,14 @@ public class ConstantConditionTest
 
 		Condition condition1 = Condition.of("column1").bw(min, max);
 		assertEquals("column1 between ? and ?", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 
 		Condition condition2 = Condition
 			.of("column1").bw(min, (Object) null)
 			.and("column2").bw((Object) null, max)
 			.and("column3").bw(min, max);
 		assertEquals("column3 between ? and ?", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
+		assertEquals(condition2.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 	}
 
 	@Test
@@ -441,7 +441,7 @@ public class ConstantConditionTest
 			DateTime max = DateTime.of("15/11/1989 00:00:00");
 			Condition condition = Condition.of("column1").bw(DateTime.class, min, max);
 			assertEquals("column1 between ? and ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(min, max)));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 		}
 	}
 
@@ -452,11 +452,11 @@ public class ConstantConditionTest
 
 		Condition condition1 = Condition.of("column1").in(values);
 		assertEquals("column1 in (?, ?, ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(values));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), values);
 
 		Condition condition2 = Condition.of("column1").in((List<Object>) null).and("column2").in(values);
 		assertEquals("column2 in (?, ?, ?)", condition2.toString());
-		assertTrue(condition2.getParameters().collect(Collectors.toList()).equals(values));
+		assertEquals(condition2.getParameters().collect(Collectors.toList()), values);
 	}
 
 	public void testIn_Class_List()
@@ -470,7 +470,7 @@ public class ConstantConditionTest
 			List<String> values = Arrays.asList("value1", "value2", "value2");
 			Condition condition = Condition.of("column1").in(String.class, values);
 			assertEquals("column1 in (?, ?, ?)", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(values));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), values);
 		}
 	}
 
@@ -479,7 +479,7 @@ public class ConstantConditionTest
 	{
 		Condition condition1 = Condition.of("column1").isIn(Select.expression("column2").from("table1").where(Condition.of("column3").ne(3)));
 		assertEquals("column1 in (select column2 from table1 where column3 <> ?)", condition1.toString());
-		assertTrue(condition1.getParameters().collect(Collectors.toList()).equals(Arrays.asList(3)));
+		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(3));
 	}
 
 	@Test
@@ -493,7 +493,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").lk(String.class, "value1");
 			assertEquals("column1 like ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList("%value1%")));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList("%value1%"));
 		}
 	}
 
@@ -508,7 +508,7 @@ public class ConstantConditionTest
 		{
 			Condition condition = Condition.of("column1").rx(String.class, "value1");
 			assertEquals("column1 rlike ?", condition.toString());
-			assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList("value1")));
+			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList("value1"));
 		}
 	}
 
@@ -522,7 +522,7 @@ public class ConstantConditionTest
 				.where(Condition
 					.of("id").isEq("1")));
 		Assert.assertEquals("Role.id = ? and exists (select id from Cliente where id = 1)", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
 
 	@Test
@@ -536,7 +536,7 @@ public class ConstantConditionTest
 				.where(Condition
 					.of("id").isEq("1"))).when(true).eq(2);
 		Assert.assertEquals("Role.id = ? and (select id from Cliente where id = 1) = ?", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 
 		condition = Condition.of("Role.id").eq(1)
 			.and(Select
@@ -545,7 +545,7 @@ public class ConstantConditionTest
 				.where(Condition
 					.of("id").isEq("1"))).when(false).eq(2);
 		Assert.assertEquals("Role.id = ?", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
 
 	@Test

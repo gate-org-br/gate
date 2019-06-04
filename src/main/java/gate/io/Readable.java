@@ -8,44 +8,44 @@ import java.util.Optional;
 public interface Readable
 {
 
-	public <T> T read(Reader<T> reader) throws IOException;
+	<T> T read(Reader<T> reader) throws IOException;
 
-	public default List<String> readLines() throws IOException
+	default List<String> readLines() throws IOException
 	{
 		return read(LineReader.getInstance());
 	}
 
-	public default <T> Optional<T> readObject(Class<T> type) throws IOException
+	default <T> Optional<T> readObject(Class<T> type) throws IOException
 	{
 		return read(ObjectReader.getInstance(type));
 	}
 
-	public default Optional<JsonElement> readJsonElement() throws IOException
+	default Optional<JsonElement> readJsonElement() throws IOException
 	{
 		return read(JsonElementReader.getInstance());
 	}
 
-	public default String readString() throws IOException
+	default String readString() throws IOException
 	{
 		return read(StringReader.getInstance());
 	}
 
-	public default List<String> readLines(String charset) throws IOException
+	default List<String> readLines(String charset) throws IOException
 	{
 		return read(LineReader.getInstance(charset));
 	}
 
-	public default String readString(String charset) throws IOException
+	default String readString(String charset) throws IOException
 	{
 		return read(StringReader.getInstance(charset));
 	}
 
-	public default List<List<String>> readCSV(String charset) throws IOException
+	default List<List<String>> readCSV(String charset) throws IOException
 	{
 		return read(CSVReader.getInstance(charset));
 	}
 
-	public default List<List<String>> readCSV() throws IOException
+	default List<List<String>> readCSV() throws IOException
 	{
 		return read(CSVReader.getInstance());
 	}

@@ -353,7 +353,7 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
-		public Sentence.Connected.Compiled batch(List<List<? extends Object>> batch)
+		public Sentence.Connected.Compiled batch(List<List<?>> batch)
 		{
 			return new Compiled(batch);
 		}
@@ -416,9 +416,9 @@ class BasicSentence implements Sentence
 		private class Compiled implements Sentence.Connected.Compiled
 		{
 
-			private final List<List<? extends Object>> batch;
+			private final List<List<?>> batch;
 
-			public Compiled(List<List<? extends Object>> batch)
+			public Compiled(List<List<?>> batch)
 			{
 				this.batch = batch;
 			}
@@ -435,7 +435,7 @@ class BasicSentence implements Sentence
 				try (Command command = link.createCommand(sql))
 				{
 					int count = 0;
-					for (List<? extends Object> parameters : batch)
+					for (List<?> parameters : batch)
 						count += command.setParameters(parameters).execute();
 					return count;
 				}
@@ -447,7 +447,7 @@ class BasicSentence implements Sentence
 				try (Command command = link.createCommand(sql))
 				{
 					List<K> generatedKeys = new ArrayList<>();
-					for (List<? extends Object> parameters : batch)
+					for (List<?> parameters : batch)
 						command.setParameters(parameters).execute(type).ifPresent(generatedKeys::add);
 					return generatedKeys;
 				}
@@ -458,7 +458,7 @@ class BasicSentence implements Sentence
 			{
 				try (Command command = link.createCommand(sql))
 				{
-					for (List<? extends Object> parameters : batch)
+					for (List<?> parameters : batch)
 						command.setParameters(parameters).execute(type).ifPresent(consumer);
 				}
 			}
@@ -469,7 +469,7 @@ class BasicSentence implements Sentence
 				try (Command command = link.createCommand(sql))
 				{
 					List<List<K>> generatedKeys = new ArrayList<>();
-					for (List<? extends Object> parameters : batch)
+					for (List<?> parameters : batch)
 					{
 						command.setParameters(parameters).execute();
 						generatedKeys.add(command.getGeneratedKeys(type));
@@ -483,7 +483,7 @@ class BasicSentence implements Sentence
 			{
 				try (Command command = link.createCommand(sql))
 				{
-					for (List<? extends Object> parameters : batch)
+					for (List<?> parameters : batch)
 					{
 						command.setParameters(parameters).execute();
 						consumer.accept(command.getGeneratedKeys(type));
@@ -492,7 +492,7 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public Sentence.Connected.Compiled observe(Consumer<List<? extends Object>> consumer)
+			public Sentence.Connected.Compiled observe(Consumer<List<?>> consumer)
 			{
 				return consumer != null
 					? new Observed(consumer) : this;
@@ -515,9 +515,9 @@ class BasicSentence implements Sentence
 			private class Observed implements Sentence.Connected.Compiled
 			{
 
-				private final Consumer<List<? extends Object>> observer;
+				private final Consumer<List<?>> observer;
 
-				public Observed(Consumer<List<? extends Object>> observer)
+				public Observed(Consumer<List<?>> observer)
 				{
 					this.observer = observer;
 				}
@@ -534,7 +534,7 @@ class BasicSentence implements Sentence
 					try (Command command = link.createCommand(sql))
 					{
 						int count = 0;
-						for (List<? extends Object> parameters : batch)
+						for (List<?> parameters : batch)
 						{
 							count += command.setParameters(parameters).execute();
 							observer.accept(parameters);
@@ -549,7 +549,7 @@ class BasicSentence implements Sentence
 					try (Command command = link.createCommand(sql))
 					{
 						List<T> generatedKeys = new ArrayList<>();
-						for (List<? extends Object> parameters : batch)
+						for (List<?> parameters : batch)
 						{
 							command.setParameters(parameters).execute(type).ifPresent(generatedKeys::add);
 							observer.accept(parameters);
@@ -563,7 +563,7 @@ class BasicSentence implements Sentence
 				{
 					try (Command command = link.createCommand(sql))
 					{
-						for (List<? extends Object> parameters : batch)
+						for (List<?> parameters : batch)
 						{
 							command.setParameters(parameters).execute(type).ifPresent(consumer);
 							observer.accept(parameters);
@@ -577,7 +577,7 @@ class BasicSentence implements Sentence
 					try (Command command = link.createCommand(sql))
 					{
 						List<List<K>> generatedKeys = new ArrayList<>();
-						for (List<? extends Object> parameters : batch)
+						for (List<?> parameters : batch)
 						{
 							command.setParameters(parameters).execute();
 							generatedKeys.add(command.getGeneratedKeys(type));
@@ -592,7 +592,7 @@ class BasicSentence implements Sentence
 				{
 					try (Command command = link.createCommand(sql))
 					{
-						for (List<? extends Object> parameters : batch)
+						for (List<?> parameters : batch)
 						{
 							command.setParameters(parameters).execute();
 							consumer.accept(command.getGeneratedKeys(type));
@@ -602,7 +602,7 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
-				public Sentence.Connected.Compiled observe(Consumer<List<? extends Object>> consumer)
+				public Sentence.Connected.Compiled observe(Consumer<List<?>> consumer)
 				{
 					return Compiled.this.observe(consumer);
 				}
