@@ -52,8 +52,7 @@ public abstract class Doc
 	public abstract String getFileName();
 
 	/**
-	 * Generates a document from the previously specified {@link gate.report.Report} and prints it on the specified
-	 * output stream.
+	 * Generates a document from the previously specified {@link gate.report.Report} and prints it on the specified output stream.
 	 *
 	 * @param outputStream the OutputStream where the generated document document must be printed
 	 */
@@ -109,6 +108,8 @@ public abstract class Doc
 				return new XLS(report);
 			case CSV:
 				return new CSV(report);
+			case DOC:
+				return new DOC(report);
 			default:
 				return null;
 		}
@@ -122,14 +123,22 @@ public abstract class Doc
 		/**
 		 * PDF document type.
 		 */
+		@Icon("2218")
 		PDF,
 		/**
 		 * XLS document type.
 		 */
+		@Icon("2221")
 		XLS,
 		/**
 		 * CSV document type.
 		 */
-		CSV
+		@Icon("2222")
+		CSV,
+		/**
+		 * DOC document type.
+		 */
+		@Icon("2220")
+		DOC
 	}
 }

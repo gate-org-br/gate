@@ -16,6 +16,7 @@ import gate.report.Form;
 import gate.report.Report;
 import gate.report.Style;
 import gate.report.Style.TextAlign;
+import gate.util.Icons;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -43,7 +44,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 /**
  * Generates XLS documents from objects of type {@link gate.report.Report}.
  */
-@Icon("2220")
+@Icon("gate.report.doc.Doc$Type:DOC")
 public class DOC extends Doc
 {
 

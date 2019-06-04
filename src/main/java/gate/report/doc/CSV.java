@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Generates CSV documents from objects of type {@link gate.report.Report}.
  */
-@Icon("2222")
+@Icon("gate.report.doc.Doc$Type:CSV")
 public class CSV extends Doc
 {
 
