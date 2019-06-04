@@ -2,7 +2,7 @@
 
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
-	<div style="height: calc(100vh - 200px); overflow: auto">
+	<div style="max-height: calc(100vh - 200px); overflow: auto">
 		<g:choose>
 			<g:when condition="${empty screen.page}">
 				<div class='TEXT'>
