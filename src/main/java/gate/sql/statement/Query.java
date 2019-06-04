@@ -25,7 +25,7 @@ public interface Query extends SQL, Compilable
 	 *
 	 * @return the new query created
 	 */
-	public static Query of(String sql)
+	static Query of(String sql)
 	{
 		return new BasicQuery(sql);
 	}
@@ -61,7 +61,7 @@ public interface Query extends SQL, Compilable
 	 *
 	 * @author Davi Nunes da Silva
 	 */
-	public interface Compiled extends SQL
+	interface Compiled extends SQL
 	{
 
 		/**
@@ -86,7 +86,7 @@ public interface Query extends SQL, Compilable
 		 *
 		 * @author Davi Nunes da Silva
 		 */
-		public interface Connected extends SQL, Fetchable
+		interface Connected extends SQL, Fetchable
 		{
 
 			/**
@@ -109,7 +109,7 @@ public interface Query extends SQL, Compilable
 		/**
 		 * Compiled query builder.
 		 */
-		public interface Builder extends SQLBuilder<Query.Compiled>
+		interface Builder extends SQLBuilder<Query.Compiled>
 		{
 
 			/**
@@ -118,7 +118,7 @@ public interface Query extends SQL, Compilable
 			 * @return the compile query created
 			 */
 			@Override
-			public Query.Compiled build();
+			Query.Compiled build();
 		}
 	}
 
@@ -129,7 +129,7 @@ public interface Query extends SQL, Compilable
 	 *
 	 * @author Davi Nunes da Silva
 	 */
-	public interface Constant extends SQL
+	interface Constant extends SQL
 	{
 
 		/**
@@ -154,7 +154,7 @@ public interface Query extends SQL, Compilable
 		 *
 		 * @author Davi Nunes da Silva
 		 */
-		public interface Connected extends SQL, Fetchable
+		interface Connected extends SQL, Fetchable
 		{
 
 			/**
@@ -177,7 +177,7 @@ public interface Query extends SQL, Compilable
 		/**
 		 * Compiled query builder.
 		 */
-		public interface Builder extends SQLBuilder<Query.Constant>
+		interface Builder extends SQLBuilder<Query.Constant>
 		{
 
 			/**
@@ -186,7 +186,7 @@ public interface Query extends SQL, Compilable
 			 * @return the compile query created
 			 */
 			@Override
-			public Query.Constant build();
+			Query.Constant build();
 		}
 	}
 
@@ -235,7 +235,7 @@ public interface Query extends SQL, Compilable
 		 * <p>
 		 * A connected and compiled query is ready for execution
 		 */
-		public interface Compiled extends SQL, Fetchable
+		interface Compiled extends SQL, Fetchable
 		{
 
 			/**
@@ -260,7 +260,7 @@ public interface Query extends SQL, Compilable
 		 * <p>
 		 * A connected and constant query is ready for execution
 		 */
-		public interface Constant extends SQL, Fetchable
+		interface Constant extends SQL, Fetchable
 		{
 
 			/**
@@ -284,7 +284,7 @@ public interface Query extends SQL, Compilable
 	/**
 	 * Query builder.
 	 */
-	public interface Builder extends SQLBuilder<Query>
+	interface Builder extends SQLBuilder<Query>
 	{
 
 		/**

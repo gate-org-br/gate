@@ -29,7 +29,7 @@ public abstract class Policonverter
 		{
 			if (!type.isArray())
 			{
-				Policonverter policonverter = null;
+				Policonverter policonverter;
 
 				do
 				{

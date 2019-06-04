@@ -13,7 +13,7 @@ interface GenericConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public GenericCondition and(GenericCondition condition);
+	GenericCondition and(GenericCondition condition);
 
 	/**
 	 * Adds a new sub query to the condition associated by an AND relation.
@@ -23,7 +23,7 @@ interface GenericConditionMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public GenericPredicate and(Query subquery);
+	GenericPredicate and(Query subquery);
 
 	/**
 	 * Adds a new sub condition to the current condition associated by an OR relation.
@@ -33,7 +33,7 @@ interface GenericConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public GenericCondition or(GenericCondition condition);
+	GenericCondition or(GenericCondition condition);
 
 	/**
 	 * Adds a new sub query to the condition associated by an OR relation.
@@ -43,5 +43,5 @@ interface GenericConditionMethods
 	 *
 	 * @see gate.sql.condition.Predicate
 	 */
-	public GenericPredicate or(Query subquery);
+	GenericPredicate or(Query subquery);
 }

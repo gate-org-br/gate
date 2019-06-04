@@ -20,7 +20,7 @@ public class RangeTest
 		int value = 0;
 		for (long i : Range.of(0, 10))
 			value++;
-		Assert.assertTrue(value == 11);
+		Assert.assertEquals(11, value);
 	}
 
 	@Test
@@ -29,7 +29,7 @@ public class RangeTest
 		long value = Range.of(1, 3)
 			.stream().sum();
 
-		Assert.assertTrue(value == 6);
+		Assert.assertEquals(6, value);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class RangeTest
 		long value = Range.of("1-3")
 			.stream().sum();
 
-		Assert.assertTrue(value == 6);
+		Assert.assertEquals(6, value);
 	}
 
 	@Test

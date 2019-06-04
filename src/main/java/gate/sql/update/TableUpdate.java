@@ -291,7 +291,7 @@ public class TableUpdate implements Update
 				return set((Class<Object>) value.getClass(), column, value);
 
 			columns.add(column + " = ?");
-			values.add(value);
+			values.add(null);
 			return this;
 		}
 

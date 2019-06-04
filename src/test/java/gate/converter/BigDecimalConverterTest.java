@@ -21,7 +21,7 @@ public class BigDecimalConverterTest
 	{
 		BigDecimal expected = new BigDecimal("2.3");
 		BigDecimal result = (BigDecimal) Converter.getConverter(BigDecimal.class).ofString(BigDecimal.class, "2,3");
-		Assert.assertTrue(expected.compareTo(result) == 0);
+		Assert.assertEquals(0, expected.compareTo(result));
 	}
 	
 }

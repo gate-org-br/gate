@@ -160,9 +160,8 @@ public class PropertyTest
 	{
 		try
 		{
-			Boolean expected = Boolean.FALSE;
 			Object result = Property.getProperty(Role.class, "users[0].checkAccess('module', 'screen', 'action')").getValue(role);
-			assertEquals(expected, result);
+			assertEquals(false, result);
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());

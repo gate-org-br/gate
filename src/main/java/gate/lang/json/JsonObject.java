@@ -34,7 +34,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public JsonObject(Map<String, JsonElement> values)
 	{
-		values.putAll(values);
+		this.values.putAll(values);
 	}
 
 	@Override

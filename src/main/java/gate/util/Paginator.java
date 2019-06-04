@@ -134,7 +134,7 @@ public class Paginator<E> implements Iterable<Page<E>>, Serializable
 			@Override
 			public boolean hasNext()
 			{
-				return data != null ? indx < getSize() - 1 : false;
+				return data != null && indx < getSize() - 1;
 			}
 
 			@Override

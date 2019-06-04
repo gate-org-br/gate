@@ -236,43 +236,43 @@ interface PropertyPredicateMethods extends Clause
 	{
 
 		@Override
-		public default PropertyCondition isEq(Property property)
+		default PropertyCondition isEq(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isNe(Property property)
+		default PropertyCondition isNe(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isLt(Property property)
+		default PropertyCondition isLt(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isLe(Property property)
+		default PropertyCondition isLe(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isGt(Property property)
+		default PropertyCondition isGt(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isGe(Property property)
+		default PropertyCondition isGe(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}
 
 		@Override
-		public default PropertyCondition isLk(Property property)
+		default PropertyCondition isLk(Property property)
 		{
 			return new PropertyCondition(getClause().rollback());
 		}

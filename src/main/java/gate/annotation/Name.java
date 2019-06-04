@@ -18,10 +18,9 @@ import javax.enterprise.util.Nonbinding;
 public @interface Name
 {
 
-	@Nonbinding
-	public String value();
+	@Nonbinding String value();
 
-	public static class Extractor
+	class Extractor
 	{
 
 		public static Optional<String> extract(Object element)
@@ -43,7 +42,7 @@ public @interface Name
 				if (element instanceof Enum<?>)
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
 
-				if (element instanceof Object)
+				if (element != null)
 					return extract(element.getClass());
 
 				return Optional.empty();

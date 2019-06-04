@@ -30,7 +30,7 @@ public class CompiledConditionTest
 			.and("column8").eq(null)
 			.and().not("column9").eq(null);
 		assertEquals("column1 = ? and not column2 = ? and column3 = ? and not column4 = ? and column7 = ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class CompiledConditionTest
 			.and("column8").ne(null)
 			.and().not("column9").ne(null);
 		assertEquals("column1 <> ? and not column2 <> ? and column3 <> ? and not column4 <> ? and column7 <> ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -64,7 +64,7 @@ public class CompiledConditionTest
 			.and("column8").lt(null)
 			.and().not("column9").lt(null);
 		assertEquals("column1 < ? and not column2 < ? and column3 < ? and not column4 < ? and column7 < ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class CompiledConditionTest
 			.and("column8").le(null)
 			.and().not("column9").le(null);
 		assertEquals("column1 <= ? and not column2 <= ? and column3 <= ? and not column4 <= ? and column7 <= ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -98,7 +98,7 @@ public class CompiledConditionTest
 			.and("column8").gt(null)
 			.and().not("column9").gt(null);
 		assertEquals("column1 > ? and not column2 > ? and column3 > ? and not column4 > ? and column7 > ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class CompiledConditionTest
 			.and("column8").ge(null)
 			.and().not("column9").ge(null);
 		assertEquals("column1 >= ? and not column2 >= ? and column3 >= ? and not column4 >= ? and column7 >= ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(1, 2, 3, 4, 7)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class CompiledConditionTest
 			.and("column8").lk(null)
 			.and().not("column9").lk(null);
 		assertEquals("column1 like ? and not column2 like ? and column3 like ? and not column4 like ? and column7 like ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList("%1%", "%2%", "%3%", "%4%", "%7%")));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList("%1%", "%2%", "%3%", "%4%", "%7%"));
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class CompiledConditionTest
 			.and("column8").rx(null)
 			.and().not("column9").rx(null);
 		assertEquals("column1 rlike ? and not column2 rlike ? and column3 rlike ? and not column4 rlike ? and column7 rlike ?", condition.toString());
-		assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList("1", "2", "3", "4", "7")));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList("1", "2", "3", "4", "7"));
 	}
 
 	@Test
@@ -160,9 +160,9 @@ public class CompiledConditionTest
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals("id = ? and name = ?", condition.toString());
-		Assert.assertTrue(parameters.size() == 2);
-		Assert.assertTrue(parameters.get(0).equals(1));
-		Assert.assertTrue("Person 1".equals(parameters.get(1)));
+		assertEquals(2, parameters.size());
+		assertEquals(1, parameters.get(0));
+		assertEquals("Person 1", parameters.get(1));
 	}
 
 	@Test
@@ -173,9 +173,9 @@ public class CompiledConditionTest
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals("id = ? or name = ?", condition.toString());
-		Assert.assertTrue(parameters.size() == 2);
-		Assert.assertTrue(parameters.get(0).equals(1));
-		Assert.assertTrue("Person 1".equals(parameters.get(1)));
+		assertEquals(2, parameters.size());
+		assertEquals(1, parameters.get(0));
+		assertEquals("Person 1", parameters.get(1));
 	}
 
 	@Test
@@ -187,7 +187,7 @@ public class CompiledConditionTest
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 		Assert.assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(new ID(1), "Person 1", new ID(2))));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(new ID(1), "Person 1", new ID(2)));
 	}
 
 	@Test
@@ -199,7 +199,7 @@ public class CompiledConditionTest
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 		Assert.assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).equals(Arrays.asList(new ID(1), "Person 1", new ID(2))));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(new ID(1), "Person 1", new ID(2)));
 	}
 
 	@Test
@@ -216,9 +216,9 @@ public class CompiledConditionTest
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals(expected, result);
-		Assert.assertTrue(parameters.size() == 2);
-		Assert.assertTrue(parameters.get(0).equals(new ID(1)));
-		Assert.assertTrue("%Person 1%".equals(parameters.get(1)));
+		assertEquals(2, parameters.size());
+		assertEquals(parameters.get(0), new ID(1));
+		assertEquals("%Person 1%", parameters.get(1));
 	}
 
 	@Test
@@ -244,8 +244,8 @@ public class CompiledConditionTest
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals("name = ?", condition.toString());
-		Assert.assertTrue(parameters.size() == 1);
-		Assert.assertTrue(parameters.get(0).equals("Person 1"));
+		assertEquals(1, parameters.size());
+		assertEquals("Person 1", parameters.get(0));
 	}
 
 	@Test
@@ -260,9 +260,9 @@ public class CompiledConditionTest
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals("Uzer.id = ? and Uzer$Role.id = ?",
 			condition.toString());
-		Assert.assertTrue(parameters.size() == 2);
-		Assert.assertTrue(parameters.get(0).equals(new ID(1)));
-		Assert.assertTrue(parameters.get(1).equals(new ID(2)));
+		assertEquals(2, parameters.size());
+		assertEquals(parameters.get(0), new ID(1));
+		assertEquals(parameters.get(1), new ID(2));
 	}
 
 }

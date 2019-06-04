@@ -22,5 +22,5 @@ public interface Fetcher<T>
 	 * @throws SQLException if a SQLException is thrown while fetching the results
 	 * @throws ConversionException if the result cannot be converted to an object of the specified type
 	 */
-	public T fetch(Cursor cursor) throws SQLException, ConversionException;
+	T fetch(Cursor cursor) throws SQLException, ConversionException;
 }

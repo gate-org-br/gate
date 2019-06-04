@@ -12,21 +12,21 @@ public interface DiscreteInterval<T extends Comparable<? super T>> extends Inter
 	 *
 	 * @return the number of values in this range
 	 */
-	public long size();
+	long size();
 
 	/**
 	 * Returns a sequential Stream with all values in this range.
 	 *
 	 * @return a sequential Stream with all values in this range
 	 */
-	public Stream<T> stream();
+	Stream<T> stream();
 
 	/**
 	 * Returns a list with all values in this range.
 	 *
 	 * @return a list with all values in this range
 	 */
-	default public List<T> toList()
+	default List<T> toList()
 	{
 		return stream().collect(Collectors.toList());
 	}

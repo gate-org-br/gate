@@ -59,7 +59,7 @@ public interface DeleteOperation<T>
 	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
 	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
 	 */
-	public default int execute(T... values) throws ConstraintViolationException,
+	default int execute(T... values) throws ConstraintViolationException,
 			FKViolationException,
 			UKViolationException
 	{
@@ -73,14 +73,14 @@ public interface DeleteOperation<T>
 	 *
 	 * @return a Parameters object to be used to define the objects to be deleted
 	 */
-	public Criteria<T> criteria(String... properties);
+	Criteria<T> criteria(String... properties);
 
 	/**
 	 * Context to define the objects to be deleted from the database.
 	 *
 	 * @param <T> type of the objects to be deleted
 	 */
-	public interface Criteria<T>
+	interface Criteria<T>
 	{
 
 		/**

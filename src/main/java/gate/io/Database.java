@@ -45,8 +45,7 @@ public class Database<T> implements Observable<T>
 
 	public boolean isEmpty(String tableName)
 	{
-		return tables.containsKey(tableName)
-			? tables.get(tableName).isEmpty() : true;
+		return !tables.containsKey(tableName) || tables.get(tableName).isEmpty();
 	}
 
 	public int size(String tableName)

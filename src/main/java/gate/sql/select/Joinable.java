@@ -7,25 +7,25 @@ import java.util.stream.Stream;
 public interface Joinable extends Clause
 {
 
-	public JoinedSelect join(String exp);
+	JoinedSelect join(String exp);
 
-	public JoinedSelect leftJoin(String exp);
+	JoinedSelect leftJoin(String exp);
 
-	public JoinedSelect rightJoin(String exp);
+	JoinedSelect rightJoin(String exp);
 
-	public JoinedSubqueryAlias join(Query.Constant query);
+	JoinedSubqueryAlias join(Query.Constant query);
 
-	public JoinedSubqueryAlias join(Query.Constant.Builder query);
+	JoinedSubqueryAlias join(Query.Constant.Builder query);
 
-	public JoinedSubqueryAlias leftJoin(Query.Constant query);
+	JoinedSubqueryAlias leftJoin(Query.Constant query);
 
-	public JoinedSubqueryAlias leftJoin(Query.Constant.Builder query);
+	JoinedSubqueryAlias leftJoin(Query.Constant.Builder query);
 
-	public JoinedSubqueryAlias rightJoin(Query.Constant query);
+	JoinedSubqueryAlias rightJoin(Query.Constant query);
 
-	public JoinedSubqueryAlias rightJoin(Query.Constant.Builder query);
+	JoinedSubqueryAlias rightJoin(Query.Constant.Builder query);
 
-	public interface Constant extends Joinable
+	interface Constant extends Joinable
 	{
 
 		@Override
@@ -248,7 +248,7 @@ public interface Joinable extends Clause
 		}
 	}
 
-	public interface Generic extends Joinable
+	interface Generic extends Joinable
 	{
 
 		@Override
@@ -400,7 +400,7 @@ public interface Joinable extends Clause
 
 	}
 
-	public interface Compiled extends Joinable
+	interface Compiled extends Joinable
 	{
 
 		@Override

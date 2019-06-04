@@ -17,7 +17,7 @@ public @interface Step
 
 	double value();
 
-	public static class Implementation extends Constraint.Implementation<Number>
+	class Implementation extends Constraint.Implementation<Number>
 	{
 
 		private static final long serialVersionUID = 1L;

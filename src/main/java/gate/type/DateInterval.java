@@ -31,8 +31,6 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 
 		if (min.getValue() > max.getValue())
 			throw new IllegalArgumentException("min must be <= max");
-		if (max.getValue() < min.getValue())
-			throw new IllegalArgumentException("max must be >= min");
 
 		this.min = min;
 		this.max = max;
@@ -52,7 +50,7 @@ public final class DateInterval implements Serializable, Comparable<DateInterval
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof DateInterval && ((DateInterval) obj).min.equals(min) && ((DateInterval) obj).min.equals(min));
+		return (obj instanceof DateInterval && ((DateInterval) obj).min.equals(min) && ((DateInterval) obj).max.equals(max));
 	}
 
 	@Override

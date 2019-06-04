@@ -120,7 +120,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 
 	public void getInflatedChars(String charset, IntConsumer consumer) throws IOException
 	{
-		ZipInputStream stream = null;
+		ZipInputStream stream;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream = new ZipInputStream(istream), charset)))
 		{
 			for (ZipEntry entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry())
@@ -177,7 +177,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 
 	public void getInflatedLines(String charset, Consumer<String> consumer) throws IOException
 	{
-		ZipInputStream stream = null;
+		ZipInputStream stream;
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream = new ZipInputStream(istream), charset)))
 		{
 			for (ZipEntry entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry())

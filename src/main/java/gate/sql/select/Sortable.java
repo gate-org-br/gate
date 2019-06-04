@@ -5,11 +5,11 @@ import gate.sql.Clause;
 public interface Sortable extends Clause
 {
 
-	public SortedSelect asc();
+	SortedSelect asc();
 
-	public SortedSelect desc();
+	SortedSelect desc();
 
-	public interface Constant extends Sortable
+	interface Constant extends Sortable
 	{
 
 		@Override
@@ -39,7 +39,7 @@ public interface Sortable extends Clause
 		}
 	}
 
-	public interface Generic extends Sortable
+	interface Generic extends Sortable
 	{
 
 		@Override
@@ -69,7 +69,7 @@ public interface Sortable extends Clause
 		}
 	}
 
-	public interface Compiled extends Sortable
+	interface Compiled extends Sortable
 	{
 
 		@Override

@@ -28,8 +28,6 @@ public final class MonthInterval implements Serializable, Comparable<MonthInterv
 
 		if (min.getValue() > max.getValue())
 			throw new IllegalArgumentException("min must be <= max");
-		if (max.getValue() < min.getValue())
-			throw new IllegalArgumentException("max must be >= min");
 
 		this.min = min;
 		this.max = max;
@@ -44,7 +42,7 @@ public final class MonthInterval implements Serializable, Comparable<MonthInterv
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof MonthInterval && ((MonthInterval) obj).min.equals(min) && ((MonthInterval) obj).min.equals(min));
+		return (obj instanceof MonthInterval && ((MonthInterval) obj).min.equals(min) && ((MonthInterval) obj).max.equals(max));
 	}
 
 	@Override

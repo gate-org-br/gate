@@ -284,49 +284,49 @@ interface ExtractorPredicateMethods<T> extends Clause
 	{
 
 		@Override
-		public default ExtractorCondition<T> eq(Function<T, Object> parameter)
+		default ExtractorCondition<T> eq(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> ne(Function<T, Object> parameter)
+		default ExtractorCondition<T> ne(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> lt(Function<T, Object> parameter)
+		default ExtractorCondition<T> lt(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> le(Function<T, Object> parameter)
+		default ExtractorCondition<T> le(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> gt(Function<T, Object> parameter)
+		default ExtractorCondition<T> gt(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> ge(Function<T, Object> parameter)
+		default ExtractorCondition<T> ge(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> bw(Function<T, Object> parameter)
+		default ExtractorCondition<T> bw(Function<T, Object> parameter)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		public default ExtractorCondition<T> bw(Function<T, Object> parameter1, T parameter2)
+		default ExtractorCondition<T> bw(Function<T, Object> parameter1, T parameter2)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}

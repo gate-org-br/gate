@@ -23,17 +23,17 @@ import java.util.stream.Stream;
 public interface Attribute
 {
 
-	public Type getGenericType();
+	Type getGenericType();
 
-	public Type getElementType();
+	Type getElementType();
 
-	public Class<?> getRawType();
+	Class<?> getRawType();
 
-	public Object getValue(Object object);
+	Object getValue(Object object);
 
-	public void setValue(Object object, Object value);
+	void setValue(Object object, Object value);
 
-	public Object forceValue(Object object);
+	Object forceValue(Object object);
 
 	default boolean isEntityId()
 	{
@@ -82,82 +82,82 @@ public interface Attribute
 
 	}
 
-	public default boolean getBoolean(Object object)
+	default boolean getBoolean(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a boolean value from a non boolean attribute");
 	}
 
-	public default void setBoolean(Object object, boolean value)
+	default void setBoolean(Object object, boolean value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a boolean value to a non boolean attribute");
 	}
 
-	public default char getChar(Object object)
+	default char getChar(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a char value from a non char attribute");
 	}
 
-	public default void setChar(Object object, char value)
+	default void setChar(Object object, char value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a char value to a non char attribute");
 	}
 
-	public default byte getByte(Object object)
+	default byte getByte(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a byte value from a non byte attribute");
 	}
 
-	public default void setByte(Object object, byte value)
+	default void setByte(Object object, byte value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a byte value to a non byte attribute");
 	}
 
-	public default short getShort(Object object)
+	default short getShort(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a short value from a non short attribute");
 	}
 
-	public default void setShort(Object object, short value)
+	default void setShort(Object object, short value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a short value to a non short attribute");
 	}
 
-	public default int getInt(Object object)
+	default int getInt(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read an int value from a non int attribute");
 	}
 
-	public default void setInt(Object object, int value)
+	default void setInt(Object object, int value)
 	{
 		throw new UnsupportedOperationException("Attempt to write an int value to a non int attribute");
 	}
 
-	public default long getLong(Object object)
+	default long getLong(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a long value from a non long attribute");
 	}
 
-	public default void setLong(Object object, long value)
+	default void setLong(Object object, long value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a long value to a non long attribute");
 	}
 
-	public default float getFloat(Object object)
+	default float getFloat(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a float value from a non float attribute");
 	}
 
-	public default void setFloat(Object object, float value)
+	default void setFloat(Object object, float value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a float value to a non float attribute");
 	}
 
-	public default double getDouble(Object object)
+	default double getDouble(Object object)
 	{
 		throw new UnsupportedOperationException("Attempt to read a double value from a non double attribute");
 	}
 
-	public default void setDouble(Object object, double value)
+	default void setDouble(Object object, double value)
 	{
 		throw new UnsupportedOperationException("Attempt to write a double value to a non double attribute");
 	}

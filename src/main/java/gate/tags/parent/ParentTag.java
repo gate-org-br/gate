@@ -20,7 +20,7 @@ public class ParentTag extends SimpleTagSupport
 
 	public void setTarget(String target)
 	{
-		this.target = Objects.requireNonNull(target);;
+		this.target = Objects.requireNonNull(target);
 	}
 
 	@Override

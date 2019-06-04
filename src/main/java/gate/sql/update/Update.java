@@ -19,7 +19,7 @@ public interface Update
 	 *
 	 * @return the new update sentence builder created
 	 */
-	public static TableUpdate table(String name)
+	static TableUpdate table(String name)
 	{
 		return new TableUpdate(name);
 	}
@@ -32,7 +32,7 @@ public interface Update
 	 *
 	 * @return the new update sentence builder created
 	 */
-	public static <T> TypedUpdate<T> type(Class<T> type)
+	static <T> TypedUpdate<T> type(Class<T> type)
 	{
 		return new TypedUpdate<>(type);
 	}
@@ -49,7 +49,7 @@ public interface Update
 	 * @throws gate.error.PropertyError if specified type is not an entity
 	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
 	 */
-	public static <T> Operation.Builder<T> of(Class<T> type, String... notation)
+	static <T> Operation.Builder<T> of(Class<T> type, String... notation)
 	{
 		GQN<T> GQN = new GQN<>(type, notation);
 		return Update.type(type).set(GQN.getProperties()).where(GQN.getCondition(Property::getColumnName));

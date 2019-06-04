@@ -6,7 +6,7 @@ import java.io.InputStream;
 public interface Reader<T>
 {
 
-	public T read(InputStream is) throws IOException;
+	T read(InputStream is) throws IOException;
 
-	public String getCharset();
+	String getCharset();
 }

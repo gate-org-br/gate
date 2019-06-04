@@ -11,7 +11,7 @@ interface ExtractorConditionMethods<T>
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public ExtractorCondition<T> and(ExtractorCondition<T> condition);
+	ExtractorCondition<T> and(ExtractorCondition<T> condition);
 
 	/**
 	 * Adds a new sub condition to the current condition associated by an OR relation.
@@ -21,5 +21,5 @@ interface ExtractorConditionMethods<T>
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public ExtractorCondition<T> or(ExtractorCondition<T> condition);
+	ExtractorCondition<T> or(ExtractorCondition<T> condition);
 }

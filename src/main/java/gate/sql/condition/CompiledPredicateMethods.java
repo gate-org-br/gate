@@ -876,217 +876,217 @@ interface CompiledPredicateMethods extends Clause
 	{
 
 		@Override
-		public default CompiledCondition eq(Object parameter)
+		default CompiledCondition eq(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition eq(Class<T> type, T parameter)
+		default <T> CompiledCondition eq(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isEq(Query.Compiled subquery)
+		default CompiledCondition isEq(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isEq(Query.Compiled.Builder subquery)
+		default CompiledCondition isEq(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition ne(Object parameter)
+		default CompiledCondition ne(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition ne(Class<T> type, T parameter)
+		default <T> CompiledCondition ne(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isNe(Query.Compiled subquery)
+		default CompiledCondition isNe(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isNe(Query.Compiled.Builder subquery)
+		default CompiledCondition isNe(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition lt(Object parameter)
+		default CompiledCondition lt(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition lt(Class<T> type, T parameter)
+		default <T> CompiledCondition lt(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isLt(Query.Compiled subquery)
+		default CompiledCondition isLt(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isLt(Query.Compiled.Builder subquery)
+		default CompiledCondition isLt(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition le(Object parameter)
+		default CompiledCondition le(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition le(Class<T> type, T parameter)
+		default <T> CompiledCondition le(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isLe(Query.Compiled subquery)
+		default CompiledCondition isLe(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isLe(Query.Compiled.Builder subquery)
+		default CompiledCondition isLe(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition gt(Object parameter)
+		default CompiledCondition gt(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition gt(Class<T> type, T parameter)
+		default <T> CompiledCondition gt(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isGt(Query.Compiled subquery)
+		default CompiledCondition isGt(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isGt(Query.Compiled.Builder subquery)
+		default CompiledCondition isGt(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition ge(Object parameter)
+		default CompiledCondition ge(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition ge(Class<T> type, T parameter)
+		default <T> CompiledCondition ge(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isGe(Query.Compiled subquery)
+		default CompiledCondition isGe(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isGe(Query.Compiled.Builder subquery)
+		default CompiledCondition isGe(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition lk(Object parameter)
+		default CompiledCondition lk(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition lk(Class<T> type, T parameter)
+		default <T> CompiledCondition lk(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition rx(Object regex)
+		default CompiledCondition rx(Object regex)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition rx(Class<T> type, T regex)
+		default <T> CompiledCondition rx(Class<T> type, T regex)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition bw(Object parameter)
+		default CompiledCondition bw(Object parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition bw(Class<T> type, T parameter)
+		default <T> CompiledCondition bw(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition bw(Object parameter1, Object parameter2)
+		default CompiledCondition bw(Object parameter1, Object parameter2)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition bw(Class<T> type, T parameter1, T parameter2)
+		default <T> CompiledCondition bw(Class<T> type, T parameter1, T parameter2)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition in(List<?> parameters)
+		default CompiledCondition in(List<?> parameters)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default <T> CompiledCondition in(Class<T> type, List<T> parameters)
+		default <T> CompiledCondition in(Class<T> type, List<T> parameters)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isIn(Query.Compiled subquery)
+		default CompiledCondition isIn(Query.Compiled subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
 
 		@Override
-		public default CompiledCondition isIn(Query.Compiled.Builder subquery)
+		default CompiledCondition isIn(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}

@@ -17,5 +17,5 @@ public interface Aliasable
 	 *
 	 * @throws NullPointerException if any of the parameters is null
 	 */
-	public Clause as(String alias);
+	Clause as(String alias);
 }

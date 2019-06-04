@@ -15,21 +15,21 @@ public interface SQL
 	 * @return the statement SQL string
 	 */
 	@Override
-	public abstract String toString();
+	String toString();
 
 	/**
 	 * Prints the statement.
 	 *
 	 * @return the same statement allowing for chained invocations
 	 */
-	public abstract SQL print();
+	SQL print();
 
 	/**
 	 * Returns the list of parameters associated with this SQL.
 	 *
 	 * @return the list of parameters associated with this SQL
 	 */
-	public default List<Object> getParameters()
+	default List<Object> getParameters()
 	{
 		return Collections.emptyList();
 	}

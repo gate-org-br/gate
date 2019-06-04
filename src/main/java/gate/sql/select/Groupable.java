@@ -14,7 +14,7 @@ public interface Groupable extends Clause
 	 *
 	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
 	 */
-	public GroupedSelect groupBy(List<String> columns);
+	GroupedSelect groupBy(List<String> columns);
 
 	/**
 	 * Defines the group by clause of the query.
@@ -23,9 +23,9 @@ public interface Groupable extends Clause
 	 *
 	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
 	 */
-	public GroupedSelect groupBy(String... columns);
+	GroupedSelect groupBy(String... columns);
 
-	public interface Constant extends Groupable
+	interface Constant extends Groupable
 	{
 
 		@Override
@@ -57,7 +57,7 @@ public interface Groupable extends Clause
 		}
 	}
 
-	public interface Generic extends Groupable
+	interface Generic extends Groupable
 	{
 
 		@Override
@@ -90,7 +90,7 @@ public interface Groupable extends Clause
 
 	}
 
-	public interface Compiled extends Groupable
+	interface Compiled extends Groupable
 	{
 
 		@Override

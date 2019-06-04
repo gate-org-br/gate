@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 public interface Projectable extends Clause
 {
 
-	public ProjectedSelect expression(String exp);
+	ProjectedSelect expression(String exp);
 
-	public interface Constant extends Projectable
+	interface Constant extends Projectable
 	{
 
 		@Override
@@ -84,7 +84,7 @@ public interface Projectable extends Clause
 		}
 	}
 
-	public interface Generic extends Projectable
+	interface Generic extends Projectable
 	{
 
 		@Override
@@ -136,7 +136,7 @@ public interface Projectable extends Clause
 
 	}
 
-	public interface Compiled extends Projectable
+	interface Compiled extends Projectable
 	{
 
 		@Override

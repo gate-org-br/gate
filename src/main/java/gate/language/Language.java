@@ -9,28 +9,26 @@ import java.util.Comparator;
 public interface Language extends Comparator<String>
 {
 
-	public static final Language PORTUGUESE = new Portuguese();
+	Language PORTUGUESE = new Portuguese();
 
 	/**
 	 * Capitalizes each word a string ignoring connectives.
 	 *
 	 * @param stringToBeCapitalized the string to be capitalized
-	 *
 	 * @return the capitalized string if the stringToBeCapitalized is not null or null otherwise
 	 */
-	public String capitalize(String stringToBeCapitalized);
+	String capitalize(String stringToBeCapitalized);
 
 	/**
 	 * Removes replaces all non ASCII characters of the specified string with ASCII characters
 	 *
 	 * @param nonASCIIString the string from witch non ASCII characters are to be replaced
-	 *
 	 * @return the ASCII representation of nonASCIIString if it is not null or null otherwise
 	 */
-	default public String toASCII(String nonASCIIString)
+	default String toASCII(String nonASCIIString)
 	{
 		return Normalizer.normalize(nonASCIIString,
-				Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+			Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
 
 	/**
@@ -40,7 +38,6 @@ public interface Language extends Comparator<String>
 	 *
 	 * @param string1 the first string to be compared
 	 * @param string2 the second string to be compared
-	 *
 	 * @return the value 0 if string1 is equal to this string2 or if both are null; a value less than 0 if this string1
 	 * is lexicographically less than the string2 or string2 is null; and a value greater than 0 if string1 is
 	 * lexicographically greater than the string2 or string2 is null.
@@ -50,12 +47,11 @@ public interface Language extends Comparator<String>
 	{
 		if (string1 == null && string2 == null)
 			return 0;
-		else if (string1 != null && string2 == null)
+		if (string1 != null && string2 == null)
 			return 1;
-		else if (string1 != null && string2 == null)
+		if (string1 == null && string2 != null)
 			return -1;
-		else
-			return toASCII(string1).toLowerCase().compareTo(toASCII(string2).toLowerCase());
+		return toASCII(string1).toLowerCase().compareTo(toASCII(string2).toLowerCase());
 	}
 
 	/**
@@ -64,9 +60,8 @@ public interface Language extends Comparator<String>
 	 * <p>
 	 * Both parameters will have all non ASCII characters replaced with ASCII characters before execution.
 	 *
-	 * @param string the string to be parsed
+	 * @param string    the string to be parsed
 	 * @param substring the substring to search for
-	 *
 	 * @return true if the specified string contains the specified substring or both are null, false otherwise
 	 */
 	default boolean contains(String string, String substring)
@@ -77,6 +72,6 @@ public interface Language extends Comparator<String>
 			return false;
 		else
 			return toASCII(string).toLowerCase()
-					.contains(toASCII(substring).toLowerCase());
+				.contains(toASCII(substring).toLowerCase());
 	}
 }

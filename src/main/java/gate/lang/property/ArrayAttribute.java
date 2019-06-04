@@ -62,7 +62,7 @@ class ArrayAttribute implements Attribute
 	@Override
 	public boolean getBoolean(Object object)
 	{
-		return object != null ? ((boolean[]) object)[index] : false;
+		return object != null && ((boolean[]) object)[index];
 	}
 
 	@Override

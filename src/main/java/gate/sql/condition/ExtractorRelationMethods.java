@@ -44,7 +44,7 @@ interface ExtractorRelationMethods<T> extends Clause
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public ExtractorCondition not(ExtractorCondition condition);
+	ExtractorCondition not(ExtractorCondition condition);
 
 	interface Rollback<T> extends ExtractorRelationMethods<T>
 	{
@@ -56,7 +56,7 @@ interface ExtractorRelationMethods<T> extends Clause
 		}
 
 		@Override
-		public default ExtractorCondition<T> not(ExtractorCondition condition)
+		default ExtractorCondition<T> not(ExtractorCondition condition)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}

@@ -12,15 +12,15 @@ import java.util.stream.Stream;
 public interface Hierarchy<T extends Hierarchy<T>>
 {
 
-	public ID getId();
+	ID getId();
 
-	public T getParent();
+	T getParent();
 
-	public List<T> getChildren();
+	List<T> getChildren();
 
-	public T setParent(T parent);
+	T setParent(T parent);
 
-	public T setChildren(List<T> children);
+	T setChildren(List<T> children);
 
 	/**
 	 * Checks if this entity is a parent of the specified entity.
@@ -34,7 +34,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * null id
 	 */
 	@SuppressWarnings("unchecked")
-	public default boolean isParentOf(T entity)
+	default boolean isParentOf(T entity)
 	{
 		Objects.requireNonNull(entity);
 		return getChildren().stream().anyMatch(e -> e.equals(entity) || e.isParentOf(entity));
@@ -46,7 +46,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return the root of this entity hierarchy
 	 */
 	@SuppressWarnings("unchecked")
-	public default T getRoot()
+	default T getRoot()
 	{
 		return getParent() == null
 			|| getParent().getId() == null ? (T) this : getParent().getRoot();
@@ -64,7 +64,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @throws NullPointerException if the specified entity is null or has a
 	 * null id
 	 */
-	public default boolean contains(T entity)
+	default boolean contains(T entity)
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
@@ -82,7 +82,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @throws NullPointerException if the specified entity is null or has a
 	 * null id
 	 */
-	public default boolean isChildOf(T entity)
+	default boolean isChildOf(T entity)
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
@@ -101,7 +101,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @throws NullPointerException if the specified entity is null or has a
 	 * null id
 	 */
-	public default boolean isContainedBy(T entity)
+	default boolean isContainedBy(T entity)
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
@@ -114,7 +114,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return a stream of this element and it's children recursively
 	 */
 	@SuppressWarnings("unchecked")
-	public default Stream<T> stream()
+	default Stream<T> stream()
 	{
 		return Stream.concat((Stream<T>) Stream.of(this),
 			getChildren().stream().flatMap(e -> e.stream()));
@@ -125,7 +125,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @return a list with this element and it's children recursively
 	 */
-	public default List<T> toList()
+	default List<T> toList()
 	{
 		return stream().collect(Collectors.toList());
 	}
@@ -139,7 +139,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return a list with the data extracted setup this element and it's
 	 * children recursively
 	 */
-	public default <E> List<E> toList(Function<T, E> extractor)
+	default <E> List<E> toList(Function<T, E> extractor)
 	{
 		return stream()
 			.map(extractor)
@@ -155,7 +155,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * no such entity if found
 	 */
 	@SuppressWarnings("unchecked")
-	public default T select(ID id)
+	default T select(ID id)
 	{
 		return getId().equals(id)
 			? (T) this : getChildren().stream().map(e -> e.select(id))
@@ -171,7 +171,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return a list with the data extracted setup this element and it's
 	 * parents recursively
 	 */
-	public default <E> List<E> toParentList(Function<T, E> extractor)
+	default <E> List<E> toParentList(Function<T, E> extractor)
 	{
 		return parentStream()
 			.map(extractor)
@@ -183,7 +183,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @return a list with this element and it's parent recursively
 	 */
-	public default List<T> toParentList()
+	default List<T> toParentList()
 	{
 		return parentStream().collect(Collectors.toList());
 	}
@@ -194,7 +194,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return a stream of this element and it's parents recursively
 	 */
 	@SuppressWarnings("unchecked")
-	public default Stream<T> parentStream()
+	default Stream<T> parentStream()
 	{
 		return getParent().getId() == null
 			? Stream.of((T) this)
@@ -202,13 +202,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	@Override
-	public boolean equals(Object obj);
+	boolean equals(Object obj);
 
 	@Override
-	public int hashCode();
+	int hashCode();
 
 	@Override
-	public String toString();
+	String toString();
 
 	/**
 	 *
@@ -229,7 +229,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @throws gate.error.NotFoundException if any object in the specified
 	 * list references a non existent object
 	 */
-	public static <T extends Hierarchy<T>> List<T> setup(List<T> list)
+	static <T extends Hierarchy<T>> List<T> setup(List<T> list)
 		throws DuplicateException,
 		InvalidCircularRelationException,
 		NotFoundException

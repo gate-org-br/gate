@@ -20,7 +20,7 @@ public interface Executable
 	 *
 	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 	 */
-	public int execute() throws ConstraintViolationException;
+	int execute() throws ConstraintViolationException;
 
 	/**
 	 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
@@ -32,7 +32,7 @@ public interface Executable
 	 *
 	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 	 */
-	public <K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException;
+	<K> List<K> fetchGeneratedKeys(Class<K> type) throws ConstraintViolationException;
 
 	/**
 	 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
@@ -44,6 +44,6 @@ public interface Executable
 	 *
 	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 	 */
-	public <K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException;
+	<K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException;
 
 }

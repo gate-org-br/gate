@@ -17,7 +17,7 @@ public @interface Pattern
 
 	String value();
 
-	public static class Implementation extends Constraint.Implementation<String>
+	class Implementation extends Constraint.Implementation<String>
 	{
 
 		private static final long serialVersionUID = 1L;

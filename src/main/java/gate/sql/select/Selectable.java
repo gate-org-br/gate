@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 public interface Selectable extends Clause
 {
 
-	public SelectedSelect from(String exp);
+	SelectedSelect from(String exp);
 
-	public interface Constant extends Selectable
+	interface Constant extends Selectable
 	{
 
 		@Override
@@ -84,7 +84,7 @@ public interface Selectable extends Clause
 		}
 	}
 
-	public interface Generic extends Selectable
+	interface Generic extends Selectable
 	{
 
 		@Override
@@ -135,7 +135,7 @@ public interface Selectable extends Clause
 		}
 	}
 
-	public interface Compiled extends Selectable
+	interface Compiled extends Selectable
 	{
 
 		@Override

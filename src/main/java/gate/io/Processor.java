@@ -6,8 +6,8 @@ import java.io.InputStream;
 public interface Processor<T>
 {
 
-	public void process(InputStream is) throws IOException;
+	void process(InputStream is) throws IOException;
 
-	public String getCharset();
+	String getCharset();
 
 }

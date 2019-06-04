@@ -57,7 +57,7 @@ public class ObjectConverterTest
 	{
 		Converter converter = Converter.getConverter(Object.class);
 		Assert.assertEquals("", converter.toString(Object.class, null));
-		Assert.assertTrue(converter.ofString(Object.class, "") == null);
+		Assert.assertNull(converter.ofString(Object.class, ""));
 	}
 
 	@SecurityKey("/zgq2IL4H6tN4kRrzybBQA==")

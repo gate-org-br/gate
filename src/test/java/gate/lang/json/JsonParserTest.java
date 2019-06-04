@@ -65,7 +65,7 @@ public class JsonParserTest
 				for (JsonElement element : parser)
 					elements.add(element);
 
-				Assert.assertTrue(elements.size() == 4);
+				Assert.assertEquals(4, elements.size());
 				Assert.assertEquals(JsonElement.Type.OBJECT,
 					elements.get(0).getType());
 				Assert.assertEquals(JsonElement.Type.ARRAY,
@@ -91,7 +91,7 @@ public class JsonParserTest
 						.map(e -> e.getType())
 						.collect(Collectors.toList());
 
-				Assert.assertTrue(elements.size() == 4);
+				Assert.assertEquals(4, elements.size());
 				Assert.assertEquals(JsonElement.Type.OBJECT,
 					elements.get(0));
 				Assert.assertEquals(JsonElement.Type.ARRAY,

@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public interface Refinable extends Clause
 {
 
-	public interface Constant extends Refinable
+	interface Constant extends Refinable
 	{
 
 		/**
@@ -19,11 +19,11 @@ public interface Refinable extends Clause
 		 *
 		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
 		 */
-		public RefinedSelect having(ConstantCondition predicate);
+		RefinedSelect having(ConstantCondition predicate);
 
 	}
 
-	public interface Generic extends Refinable
+	interface Generic extends Refinable
 	{
 
 		/**
@@ -47,7 +47,7 @@ public interface Refinable extends Clause
 
 	}
 
-	public interface Compiled extends Refinable
+	interface Compiled extends Refinable
 	{
 
 		/**

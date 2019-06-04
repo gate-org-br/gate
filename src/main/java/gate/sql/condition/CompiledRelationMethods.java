@@ -174,7 +174,7 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public CompiledCondition not(CompiledCondition condition);
+	CompiledCondition not(CompiledCondition condition);
 
 	interface Rollback extends CompiledRelationMethods
 	{
@@ -186,7 +186,7 @@ interface CompiledRelationMethods extends Clause
 		}
 
 		@Override
-		public default CompiledCondition not(CompiledCondition condition)
+		default CompiledCondition not(CompiledCondition condition)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}

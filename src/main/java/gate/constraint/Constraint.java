@@ -17,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 public @interface Constraint
 {
 
-	public static abstract class Implementation<T> implements Serializable
+	abstract class Implementation<T> implements Serializable
 	{
 
 		private static final long serialVersionUID = 1L;

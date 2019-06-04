@@ -11,7 +11,7 @@ interface PropertyConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public PropertyCondition and(PropertyCondition condition);
+	PropertyCondition and(PropertyCondition condition);
 
 	/**
 	 * Adds a new sub condition to the current condition associated by an OR relation.
@@ -21,5 +21,5 @@ interface PropertyConditionMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	public PropertyCondition or(PropertyCondition condition);
+	PropertyCondition or(PropertyCondition condition);
 }

@@ -24,6 +24,6 @@ public interface Handler
 		return Handlers.INSTANCE.getInstance(type);
 	}
 
-	public abstract void handle(HttpServletRequest request,
-				    HttpServletResponse response, Object value);
+	void handle(HttpServletRequest request,
+		    HttpServletResponse response, Object value);
 }

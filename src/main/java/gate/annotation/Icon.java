@@ -19,7 +19,7 @@ public @interface Icon
 
 	String value();
 
-	public static class Extractor
+	class Extractor
 	{
 
 		public static Optional<Icons.Icon> extract(Object element)
@@ -46,7 +46,7 @@ public @interface Icon
 						? extract(((AnnotatedElement) element).getAnnotation(Icon.class).value())
 						: Optional.empty();
 
-				if (element instanceof Object)
+				if (element != null)
 					return extract(element.getClass());
 
 				return Optional.empty();

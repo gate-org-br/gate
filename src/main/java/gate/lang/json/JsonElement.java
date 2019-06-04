@@ -38,7 +38,7 @@ public interface JsonElement extends Serializable
 		STRING, NUMBER, BOOLEAN, ARRAY, OBJECT, NULL
 	}
 
-	public static JsonElement parse(String string)
+	static JsonElement parse(String string)
 		throws ConversionException
 	{
 		try (JsonParser parser = new JsonParser(new StringReader(string)))
@@ -58,7 +58,7 @@ public interface JsonElement extends Serializable
 	 *
 	 * @throws NullPointerException if any of the parameters is null
 	 */
-	public static String format(JsonElement element)
+	static String format(JsonElement element)
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
@@ -84,7 +84,7 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return a JsonElement representing the specified object
 	 */
-	public static JsonElement of(Object obj)
+	static JsonElement of(Object obj)
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
@@ -114,7 +114,7 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return a JsonElement representing the specified object
 	 */
-	public static JsonElement format(Object obj)
+	static JsonElement format(Object obj)
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
