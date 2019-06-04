@@ -37,7 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 /**
  * Generates XLS documents from objects of type {@link gate.report.Report}.
  */
-@Icon("2221")
+@Icon("gate.report.doc.Doc$Type:XLS")
 public class XLS extends Doc
 {
 

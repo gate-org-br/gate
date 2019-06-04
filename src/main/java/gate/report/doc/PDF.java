@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Generates PDF documents from objects of type {@link gate.report.Report}.
  */
-@Icon("2218")
+@Icon("gate.report.doc.Doc$Type:PDF")
 public class PDF extends Doc
 {
 

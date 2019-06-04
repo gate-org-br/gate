@@ -2,7 +2,6 @@ package gateconsole.contol;
 
 import gate.Progress;
 import gate.base.Control;
-import gate.base.Dao;
 import gate.constraint.Constraints;
 import gate.entity.Func;
 import gate.entity.Role;
