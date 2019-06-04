@@ -118,7 +118,7 @@
 									<g:print value="${item.action}" empty="*"/>
 								</td>
 								<td title="Remover">
-									<g:link module="#" screen="#" action="Delete" arguments="form.id=${item.id}&form.role.id=${screen.form.role.id}&form.user.id=${screen.form.user.id}">
+									<g:link module="#" screen="#" action="Delete" arguments="form.id=${item.id}&form.role.id=${screen.form.role.id}&form.user.id=${screen.form.user.id}&form.func.id=${screen.form.func.id}">
 										<g:icon type="delete"/>
 									</g:link>
 								</td>

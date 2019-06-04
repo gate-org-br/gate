@@ -6,7 +6,7 @@
 			<div>
 				<img src='Logo.svg'/>
 				<label>${app.id} - ${app.name}</label>
-				<label>Vers&atilde;o ${version}</label>
+				<label>Versão ${version}</label>
 				<label>${screen.user.name}</label>
 			</div>
 
@@ -26,7 +26,7 @@
 			</div>
 
 			<div>
-				<g:if condition="${empty subscriptions}">
+				<g:if condition="${not empty subscriptions}">
 					<div class="TEXT">
 						<g:link module="gateconsole.screen" screen="Access">
 							<h1>
