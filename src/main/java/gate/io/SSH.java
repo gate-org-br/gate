@@ -123,6 +123,11 @@ public class SSH implements AutoCloseable
 		}
 	}
 
+	public void put(String filename, byte[] data) throws IOException
+	{
+		put(folder, filename, data);
+	}
+
 	public DataFile download(String filename) throws IOException
 	{
 		return new DataFile(get(filename), new File(filename).getName());
