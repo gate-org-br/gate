@@ -83,7 +83,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			List<Constraint.Implementation> cons = new ArrayList<>();
 			Stream.of(field.getAnnotations())
 				.filter(annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
-				.map(constraint -> Constraint.Implementation.getImplementation(constraint))
+				.map(Constraint.Implementation::getImplementation)
 				.forEach(cons::add);
 			converter.getConstraints().stream().filter(e -> cons.stream()
 				.noneMatch(c -> c.getName().equals(e.getName()))).forEach(cons::add);

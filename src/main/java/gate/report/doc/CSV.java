@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
+import gate.report.Column;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
@@ -70,8 +71,8 @@ public class CSV extends Doc
 			CSVFormatter formatter = new CSVFormatter(writer);
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
-				formatter.writeLine(grid.getColumns().stream().map(e -> e.getHead())
-					.map(e -> Converter.toText(e)).collect(Collectors.toList()));
+				formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
+					.map(Converter::toText).collect(Collectors.toList()));
 
 			for (Object obj : Toolkit.iterable(data))
 				if (obj != null)
@@ -87,8 +88,8 @@ public class CSV extends Doc
 				}
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
-				formatter.writeLine(grid.getColumns().stream().map(e -> e.getFoot())
-					.map(e -> Converter.toText(e)).collect(Collectors.toList()));
+				formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
+					.map(Converter::toText).collect(Collectors.toList()));
 
 		} catch (IOException ex)
 		{

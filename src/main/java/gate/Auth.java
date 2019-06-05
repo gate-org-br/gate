@@ -12,7 +12,7 @@ import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.io.Credentials;
-import gate.lang.template.Template;
+
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ public class Auth extends HttpServlet
 	@Override
 	public void service(HttpServletRequest request,
 		HttpServletResponse response)
-		throws ServletException, IOException
+		throws IOException
 	{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");

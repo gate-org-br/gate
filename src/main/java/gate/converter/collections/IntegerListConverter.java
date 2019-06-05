@@ -53,7 +53,7 @@ public class IntegerListConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Class<?> type, String string)
 	{
 		if (string == null)
 			return null;
@@ -61,7 +61,7 @@ public class IntegerListConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
 		if (rs.wasNull())
@@ -104,7 +104,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object ofString(Class<?> type, String string) throws ConversionException
+		public Object ofString(Class<?> type, String string)
 		{
 			if (string == null)
 				return null;
@@ -112,7 +112,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
@@ -146,7 +146,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object ofString(Class<?> type, String string) throws ConversionException
+		public Object ofString(Class<?> type, String string)
 		{
 			if (string == null)
 				return null;
@@ -154,7 +154,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
@@ -188,7 +188,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object ofString(Class<?> type, String string) throws ConversionException
+		public Object ofString(Class<?> type, String string)
 		{
 			if (string == null)
 				return null;
@@ -196,7 +196,7 @@ public class IntegerListConverter implements Converter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())

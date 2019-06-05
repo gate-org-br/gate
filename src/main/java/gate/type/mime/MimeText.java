@@ -110,9 +110,7 @@ public class MimeText implements Mime
 		{
 			DataURL dataURL = DataURL.parse(string);
 
-			String charset = dataURL.getParameters().containsKey("charset")
-					? dataURL.getParameters().get("charset")
-					: "utf-8";
+			String charset = dataURL.getParameters().getOrDefault("charset", "utf-8");
 
 			String text = dataURL.isBase64()
 					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)

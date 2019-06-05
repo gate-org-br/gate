@@ -2,7 +2,6 @@ package gate.converter.custom;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.type.mime.MimeDataFile;
@@ -91,7 +90,7 @@ public class MimeDataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException, ConversionException
+		throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
@@ -111,8 +110,7 @@ public class MimeDataFileConverter implements Converter
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
-		throws SQLException,
-		       ConversionException
+		throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, value.toString());

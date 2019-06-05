@@ -45,7 +45,7 @@ public class PNGConverter implements Converter
 	}
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Class<?> type, Part part)
 	{
 		if (part == null
 				|| part.getSubmittedFileName().isEmpty())
@@ -85,7 +85,7 @@ public class PNGConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-			throws SQLException, ConversionException, ConversionException
+			throws SQLException
 	{
 		byte[] bytes = rs.getBytes(fields);
 		if (rs.wasNull())
@@ -94,7 +94,7 @@ public class PNGConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		byte[] bytes = rs.getBytes(fields);
 		if (rs.wasNull())
@@ -103,7 +103,7 @@ public class PNGConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException, ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
 			ps.setBytes(fields++, ((PNG) value).getBytes());

@@ -57,7 +57,7 @@ public class LocalDateIntervalConverter implements Converter
 			return LocalDateInterval.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class LocalDateIntervalConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		LocalDate min = rs.getObject(fields, LocalDate.class);
 		if (rs.wasNull())

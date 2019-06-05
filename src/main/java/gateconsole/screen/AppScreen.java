@@ -23,14 +23,14 @@ public class AppScreen extends Screen
 	@Current
 	private Collection<App> page;
 
-	public String call() throws AppException
+	public String call()
 	{
 		return "/WEB-INF/views/gateconsole/App/View.jsp";
 	}
 
 	@Icon("2199")
 	@Name("Detalhes")
-	public String callSelect() throws AppException
+	public String callSelect()
 	{
 		form = page.stream().filter(e -> e.getId().equals(id)).findAny().orElse(null);
 		return "/WEB-INF/views/gateconsole/App/ViewSelect.jsp";

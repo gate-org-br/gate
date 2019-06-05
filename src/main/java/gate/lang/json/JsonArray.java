@@ -240,8 +240,8 @@ public class JsonArray implements List<JsonElement>, JsonElement
 
 	public static JsonArray of(Stream<?> stream)
 	{
-		return stream.map(e -> JsonElement.of(e))
-			.collect(Collectors.toCollection(() -> new JsonArray()));
+		return stream.map(JsonElement::of)
+			.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static JsonArray of(Collection<?> objects)
@@ -258,13 +258,13 @@ public class JsonArray implements List<JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value))
-			.collect(Collectors.toCollection(() -> new JsonArray()));
+			.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static JsonArray format(Stream<?> stream)
 	{
-		return stream.map(e -> JsonElement.format(e))
-			.collect(Collectors.toCollection(() -> new JsonArray()));
+		return stream.map(JsonElement::format)
+			.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static JsonArray format(Collection<?> objects)
@@ -281,6 +281,6 @@ public class JsonArray implements List<JsonElement>, JsonElement
 		Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.format(e, label, value))
-			.collect(Collectors.toCollection(() -> new JsonArray()));
+			.collect(Collectors.toCollection(JsonArray::new));
 	}
 }

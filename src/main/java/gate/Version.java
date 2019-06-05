@@ -20,7 +20,7 @@ public class Version extends HttpServlet
 	private gate.type.Version version;
 
 	@Override
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		try (Writer writer = response.getWriter())
 		{

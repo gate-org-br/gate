@@ -112,9 +112,7 @@ class BasicOperation<T> implements Operation<T>
 
 			@Override
 			public int execute()
-				throws ConstraintViolationException,
-				FKViolationException,
-				UKViolationException
+				throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -148,7 +146,7 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Compiled.Connected<T> observe(Consumer<T> observer) throws ConstraintViolationException
+			public Operation.Compiled.Connected<T> observe(Consumer<T> observer)
 			{
 				return observer != null ? new Observed(observer) : this;
 			}
@@ -179,9 +177,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public int execute()
-					throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+					throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{
@@ -290,9 +286,7 @@ class BasicOperation<T> implements Operation<T>
 
 			@Override
 			public int execute()
-				throws ConstraintViolationException,
-				FKViolationException,
-				UKViolationException
+				throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -322,7 +316,7 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Connected.Compiled<T> observe(Consumer<T> observer) throws ConstraintViolationException
+			public Operation.Connected.Compiled<T> observe(Consumer<T> observer)
 			{
 				return observer != null ? new Observed(observer) : this;
 			}
@@ -354,9 +348,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public int execute()
-					throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+					throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{

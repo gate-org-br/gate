@@ -21,11 +21,9 @@ public class ArrayFetcher implements Fetcher<Optional<Object[]>>
 	 * @return an Optional describing the first row of the Cursor as a java array, or an empty Optional if the
 	 *         cursor is empty
 	 *
-	 * @throws SQLException        if a SQLException is thrown while fetching the results
-	 * @throws ConversionException if the result cannot be converted to a java array
 	 */
 	@Override
-	public Optional<Object[]> fetch(Cursor cursor) throws SQLException, ConversionException
+	public Optional<Object[]> fetch(Cursor cursor)
 	{
 		if (!cursor.next())
 			return Optional.empty();

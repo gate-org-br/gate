@@ -1,6 +1,7 @@
 package gate.policonverter;
 
 import gate.error.ConversionException;
+import gate.type.DateTime;
 import gate.type.collections.DateTimeSet;
 import java.text.ParseException;
 import java.util.stream.Stream;
@@ -22,15 +23,15 @@ public class DateTimeSetPoliconverter extends Policonverter
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		throw new java.lang.UnsupportedOperationException();
 	}
 
 	@Override
-	public String[] getString(Class<?> type, Object value) throws ConversionException
+	public String[] getString(Class<?> type, Object value)
 	{
-		return Stream.of(((DateTimeSet) value)).map(e -> e.toString()).toArray(String[]::new);
+		return Stream.of(((DateTimeSet) value)).map(DateTimeSet::toString).toArray(String[]::new);
 	}
 
 	@Override
@@ -55,9 +56,9 @@ public class DateTimeSetPoliconverter extends Policonverter
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return ((DateTimeSet.Comma) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((DateTimeSet.Comma) value).stream().map(DateTime::toString).toArray(String[]::new);
 		}
 	}
 
@@ -78,9 +79,8 @@ public class DateTimeSetPoliconverter extends Policonverter
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-				throws ConversionException
 		{
-			return ((DateTimeSet.Semicolon) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((DateTimeSet.Semicolon) value).stream().map(DateTime::toString).toArray(String[]::new);
 		}
 	}
 
@@ -101,9 +101,9 @@ public class DateTimeSetPoliconverter extends Policonverter
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return ((DateTimeSet.LineBreak) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((DateTimeSet.LineBreak) value).stream().map(DateTime::toString).toArray(String[]::new);
 		}
 	}
 }

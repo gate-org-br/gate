@@ -89,8 +89,7 @@ public class JsonElementConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException,
-		ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, JsonElement.format((JsonElement) value));

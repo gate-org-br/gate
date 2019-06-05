@@ -30,7 +30,7 @@ public final class DateTime implements Comparable<DateTime>, Serializable
 	@Override
 	public int compareTo(DateTime dateTime)
 	{
-		return getValue() > dateTime.getValue() ? 1 : getValue() < dateTime.getValue() ? -1 : 0;
+		return Long.compare(getValue(), dateTime.getValue());
 	}
 
 	@Override

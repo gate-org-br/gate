@@ -20,7 +20,7 @@ public class ChooseTag
 		super.doTag();
 		getJspBody().invoke(null);
 		WhenTag whenTag = whenTags.stream()
-				.filter(e -> e.isCondition())
+				.filter(WhenTag::isCondition)
 				.findAny().orElse(null);
 		if (whenTag != null)
 			whenTag.invoke();

@@ -7,7 +7,7 @@ public class DynamicAttributeTag extends AttributeTag implements DynamicAttribut
 {
 
 	@Override
-	public void setDynamicAttribute(String uri, String name, Object value) throws JspException
+	public void setDynamicAttribute(String uri, String name, Object value)
 	{
 		getAttributes().put(name, value);
 	}

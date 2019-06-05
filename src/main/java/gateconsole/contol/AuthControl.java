@@ -10,12 +10,14 @@ import gate.constraint.Constraints;
 import gate.error.NotFoundException;
 import gate.type.ID;
 import gateconsole.dao.AuthDao;
+
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class AuthControl extends Control
 {
 
-	public Collection<Auth> search(Auth auth) throws AppException
+	public Collection<Auth> search(Auth auth)
 	{
 		try (AuthDao dao = new AuthDao())
 		{
@@ -37,7 +39,7 @@ public class AuthControl extends Control
 		if (Stream.of(model.getRole().getId(),
 			model.getUser().getId(),
 			model.getFunc().getId())
-			.filter(e -> e != null).count() != 1)
+			.filter(Objects::nonNull).count() != 1)
 			throw new AppException("Selecione um usuário, perfil ou função para o acesso.");
 		if (model.getUser().getId() != null
 			&& model.getType().equals(Auth.Type.PUBLIC))
@@ -58,7 +60,7 @@ public class AuthControl extends Control
 			if (Stream.of(model.getRole().getId(),
 				model.getUser().getId(),
 				model.getFunc().getId())
-				.filter(e -> e != null).count() != 1)
+				.filter(Objects::nonNull).count() != 1)
 				throw new AppException("Selecione um usuário, perfil ou função para o acesso.");
 
 			if (model.getUser().getId() != null

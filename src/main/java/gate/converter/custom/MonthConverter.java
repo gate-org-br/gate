@@ -53,7 +53,7 @@ public class MonthConverter implements Converter
 			return Month.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -76,7 +76,7 @@ public class MonthConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		java.sql.Date value = rs.getDate(fields);
 		return rs.wasNull() ? null : Month.of(value);

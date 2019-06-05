@@ -16,13 +16,12 @@ import gate.report.Form;
 import gate.report.Report;
 import gate.report.Style;
 import gate.report.Style.TextAlign;
-import gate.util.Icons;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.util.Objects;
 import javax.imageio.ImageIO;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -86,8 +85,8 @@ public class DOC extends Doc
 		{
 			CTSectPr section = XWPFDocument.getDocument().getBody().addNewSectPr();
 			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy = new XWPFHeaderFooterPolicy(XWPFDocument, section);
-			XWPFHeader XWPFHeader = XWPFHeaderFooterPolicy.createHeader(XWPFHeaderFooterPolicy.DEFAULT);
-			XWPFFooter XWPFFooter = XWPFHeaderFooterPolicy.createFooter(XWPFHeaderFooterPolicy.DEFAULT);
+			XWPFHeader XWPFHeader = XWPFHeaderFooterPolicy.createHeader(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
+			XWPFFooter XWPFFooter = XWPFHeaderFooterPolicy.createFooter(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
 
 			for (ReportElement e : getReport().getElements())
 			{
@@ -224,18 +223,17 @@ public class DOC extends Doc
 
 	private XWPFTableRow getXWPFTableRow(XWPFTable XWPFTable, int index)
 	{
-		return Objects.requireNonNullElseGet(XWPFTable.getRow(index), () -> XWPFTable.createRow());
+		return XWPFTable.getRow(index) != null ? XWPFTable.getRow(index) : XWPFTable.createRow();
 	}
 
 	private XWPFTableCell getXWPFTableCell(XWPFTableRow XWPFTableRow, int index)
 	{
-		return Objects.requireNonNullElseGet(XWPFTableRow.getCell(index), () -> XWPFTableRow.addNewTableCell());
+		return XWPFTableRow.getCell(index) != null ? XWPFTableRow.getCell(index) : XWPFTableRow.addNewTableCell();
 	}
 
 	private CTTcPr getCTTcPr(XWPFTableCell XWPFTableCell)
 	{
-		return Objects.requireNonNullElseGet(XWPFTableCell.getCTTc().getTcPr(),
-			() -> XWPFTableCell.getCTTc().addNewTcPr());
+		return XWPFTableCell.getCTTc().getTcPr() != null ? XWPFTableCell.getCTTc().getTcPr() : XWPFTableCell.getCTTc().addNewTcPr();
 	}
 
 	private void printCaption(XWPFTable XWPFTable, String caption, long span)

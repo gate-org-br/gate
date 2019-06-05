@@ -55,7 +55,7 @@ public class SelectTTag extends PropertyTag
 		getJspContext().getOut().println("</select>");
 	}
 
-	public void write(Object obj, int depth) throws JspException, IOException, ConversionException
+	public void write(Object obj, int depth) throws JspException, IOException
 	{
 		Attributes attributes = new Attributes();
 

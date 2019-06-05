@@ -28,7 +28,7 @@ public class ArrayPoliconverter extends Policonverter
 	}
 
 	@Override
-	public String[] getString(Class<?> type, Object value) throws ConversionException
+	public String[] getString(Class<?> type, Object value)
 	{
 		Object[] objects = (Object[]) value;
 		String[] strings = new String[objects.length];

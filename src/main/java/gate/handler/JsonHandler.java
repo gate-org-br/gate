@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.converter.Converter;
 import java.io.IOException;
 

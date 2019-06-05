@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -179,27 +180,27 @@ public class Gate extends HttpServlet
 			| AccessDeniedException
 			| InvalidServiceException ex)
 		{
-			httpServletRequest.setAttribute("messages", Arrays.asList(ex.getMessage()));
+			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (DefaultPasswordException ex)
 		{
-			httpServletRequest.setAttribute("messages", Arrays.asList(ex.getMessage()));
+			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.getRequestDispatcher(Password.JSP).forward(httpServletRequest, response);
 		} catch (AuthenticatorException | AppError ex)
 		{
-			httpServletRequest.setAttribute("messages", Arrays.asList(ex.getMessage()));
+			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.setAttribute("exception", ex.getCause());
 			Logger.getGlobal().log(Level.SEVERE, ex.getCause().getMessage(), ex.getCause());
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
 		{
-			httpServletRequest.setAttribute("messages", Arrays.asList("Banco de dados inconsistente"));
+			httpServletRequest.setAttribute("messages", Collections.singletonList("Banco de dados inconsistente"));
 			httpServletRequest.setAttribute("exception", ex);
 			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (IOException | IllegalAccessException | ServletException | RuntimeException ex)
 		{
-			httpServletRequest.setAttribute("messages", Arrays.asList("Erro de sistema"));
+			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 			httpServletRequest.setAttribute("exception", ex);
 			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
@@ -211,7 +212,7 @@ public class Gate extends HttpServlet
 					handle(httpServletRequest, response, ex.getCause());
 			} else
 			{
-				httpServletRequest.setAttribute("messages", Arrays.asList("Erro de sistema"));
+				httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 				httpServletRequest.setAttribute("exception", ex.getTargetException());
 				Logger.getGlobal().log(Level.SEVERE, ex.getTargetException().getMessage(), ex.getTargetException());
 				httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);

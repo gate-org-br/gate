@@ -10,6 +10,7 @@ import io.jsonwebtoken.security.Keys;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
@@ -80,9 +81,9 @@ public class Credentials
 		return Optional
 			.ofNullable(request)
 			.map(e -> e.getHeader("Authorization"))
-			.map(e -> BEARER.matcher(e))
-			.filter(e -> e.matches())
+			.map(BEARER::matcher)
+			.filter(Matcher::matches)
 			.map(e -> e.group(1))
-			.map(e -> Credentials.of(e));
+			.map(Credentials::of);
 	}
 }

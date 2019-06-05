@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class Backup<T>
 		{
 			for (T obj : objs)
 				csv.writeLine(properties.stream().map(e -> e.getValue(obj))
-						.map(e -> Converter.toString(e)).collect(Collectors.toList()));
+						.map(Converter::toString).collect(Collectors.toList()));
 		}
 	}
 
@@ -114,13 +115,7 @@ public class Backup<T>
 
 	public List<T> load(DataFile file) throws ConversionException
 	{
-		try
-		{
-			return load(new StringReader(new String(file.getData(), "UTF-8")));
-		} catch (UnsupportedEncodingException ex)
-		{
-			throw new ConversionException("Erro ao interpretar CSV", ex);
-		}
+		return load(new StringReader(new String(file.getData(), StandardCharsets.UTF_8)));
 	}
 
 	public List<T> load(String filename) throws ConversionException, FileNotFoundException

@@ -25,7 +25,7 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 
 	public static <T> ObjectReader<T> getInstance(Class<T> type)
 	{
-		return (ObjectReader<T>) INSTANCES.computeIfAbsent(type, e -> new ObjectReader(e));
+		return (ObjectReader<T>) INSTANCES.computeIfAbsent(type, ObjectReader::new);
 	}
 
 	@Override

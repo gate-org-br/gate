@@ -3,6 +3,7 @@ package gate.policonverter;
 import gate.error.ConversionException;
 import gate.type.collections.LocalDateTimeSet;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import javax.servlet.http.Part;
 
@@ -22,15 +23,15 @@ public class LocalDateTimeSetPoliconverter extends Policonverter
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		throw new java.lang.UnsupportedOperationException();
 	}
 
 	@Override
-	public String[] getString(Class<?> type, Object value) throws ConversionException
+	public String[] getString(Class<?> type, Object value)
 	{
-		return Stream.of(((LocalDateTimeSet) value)).map(e -> e.toString()).toArray(String[]::new);
+		return Stream.of(((LocalDateTimeSet) value)).map(LocalDateTimeSet::toString).toArray(String[]::new);
 	}
 
 	@Override
@@ -55,9 +56,9 @@ public class LocalDateTimeSetPoliconverter extends Policonverter
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return ((LocalDateTimeSet.Comma) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((LocalDateTimeSet.Comma) value).stream().map(LocalDateTime::toString).toArray(String[]::new);
 		}
 	}
 
@@ -78,9 +79,8 @@ public class LocalDateTimeSetPoliconverter extends Policonverter
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 		{
-			return ((LocalDateTimeSet.Semicolon) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((LocalDateTimeSet.Semicolon) value).stream().map(LocalDateTime::toString).toArray(String[]::new);
 		}
 	}
 
@@ -101,9 +101,9 @@ public class LocalDateTimeSetPoliconverter extends Policonverter
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return ((LocalDateTimeSet.LineBreak) value).stream().map(e -> e.toString()).toArray(String[]::new);
+			return ((LocalDateTimeSet.LineBreak) value).stream().map(LocalDateTime::toString).toArray(String[]::new);
 		}
 	}
 }

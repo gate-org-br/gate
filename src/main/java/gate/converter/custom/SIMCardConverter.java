@@ -50,7 +50,7 @@ public class SIMCardConverter implements Converter
 					return new SIMCard(string);
 				} catch (Exception e)
 				{
-					throw new ConversionException(String.format(getDescription()));
+					throw new ConversionException(getDescription());
 				}
 		}
 		return null;
@@ -75,7 +75,7 @@ public class SIMCardConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : new SIMCard(value);

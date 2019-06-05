@@ -28,7 +28,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 
 	@Override
 	public int execute(Collection<T> values)
-		throws ConstraintViolationException, FKViolationException, UKViolationException
+		throws ConstraintViolationException
 	{
 		return Insert.into(type).build().values(values).connect(link).execute();
 	}
@@ -56,7 +56,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		}
 
 		@Override
-		public int execute(Collection<T> values) throws ConstraintViolationException, FKViolationException, UKViolationException
+		public int execute(Collection<T> values) throws ConstraintViolationException
 		{
 			return Insert.into(type).build().values(values).connect(link)
 				.observe(observer)
@@ -88,7 +88,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		}
 
 		@Override
-		public int execute(Collection<T> values) throws ConstraintViolationException, FKViolationException, UKViolationException
+		public int execute(Collection<T> values) throws ConstraintViolationException
 		{
 			return Insert.into(type)
 				.set(properties)
@@ -114,7 +114,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 			}
 
 			@Override
-			public int execute(Collection<T> values) throws ConstraintViolationException, FKViolationException, UKViolationException
+			public int execute(Collection<T> values) throws ConstraintViolationException
 			{
 				return Insert
 					.into(type)

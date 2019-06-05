@@ -15,7 +15,7 @@ public class MapListFetcher implements Fetcher<List<Map<String, Object>>>
 {
 
 	@Override
-	public List<Map<String, Object>> fetch(Cursor rs) throws SQLException, ConversionException
+	public List<Map<String, Object>> fetch(Cursor rs)
 	{
 		Map<String, Class<?>> metaData = rs.getMetaData();
 		List<Map<String, Object>> results = new ArrayList<>();

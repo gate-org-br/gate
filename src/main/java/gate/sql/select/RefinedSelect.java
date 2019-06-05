@@ -1,7 +1,6 @@
 package gate.sql.select;
 
 import gate.sql.Clause;
-import gate.sql.SQLBuilder;
 import gate.sql.statement.Query;
 import java.util.Collections;
 import java.util.stream.Collectors;

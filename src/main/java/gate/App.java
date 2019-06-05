@@ -3,6 +3,7 @@ package gate;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
@@ -20,7 +21,7 @@ public class App extends Application
 	@Override
 	public Set<Class<?>> getClasses()
 	{
-		return new HashSet<>(Arrays.asList(Resources.class));
+		return new HashSet<>(Collections.singletonList(Resources.class));
 	}
 
 	@Path("resources")

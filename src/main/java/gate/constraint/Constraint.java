@@ -46,8 +46,7 @@ public @interface Constraint
 			{
 				Class<? extends Constraint.Implementation> implementationClass = constraint.annotationType().getAnnotation(gate.constraint.Implementation.class).value();
 				Constructor<? extends Constraint.Implementation> implementationConstructor = implementationClass.getConstructor(Object.class);
-				Implementation implementation = implementationConstructor.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
-				return implementation;
+				return implementationConstructor.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException
 					| IllegalArgumentException | InvocationTargetException | InstantiationException e)
 			{

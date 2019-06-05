@@ -33,12 +33,11 @@ public class ListPoliconverter extends Policonverter
 
 	@Override
 	public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 	{
 		List<String> strings = new ArrayList<>();
 		for (Object object : (List<?>) value)
 			strings.add(Converter.getConverter(type).toString(type, object));
-		return strings.toArray(new String[strings.size()]);
+		return strings.toArray(new String[0]);
 	}
 
 	@Override

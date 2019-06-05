@@ -32,7 +32,7 @@ public class Compactor
 		}
 	}
 
-	public static byte[] extract(byte[] bytes) throws ConversionException
+	public static byte[] extract(byte[] bytes)
 	{
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				InflaterOutputStream inflaterOutputStream = new InflaterOutputStream(byteArrayOutputStream))

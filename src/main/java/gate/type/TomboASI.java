@@ -19,7 +19,7 @@ public class TomboASI implements Serializable, Cloneable, Comparable<TomboASI>
 	}
 
 	@Override
-	protected TomboASI clone() throws CloneNotSupportedException
+	protected TomboASI clone()
 	{
 		return new TomboASI(value);
 	}

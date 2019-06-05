@@ -30,11 +30,9 @@ public class TypedArrayFetcher implements Fetcher<Optional<Object[]>>
 	 *
 	 * @return each row fetched as a list of java arrays of Objects of the specified types
 	 *
-	 * @throws SQLException if a SQLException is thrown while fetching the results
-	 * @throws ConversionException if the result cannot be converted to a java array
 	 */
 	@Override
-	public Optional<Object[]> fetch(Cursor cursor) throws SQLException, ConversionException
+	public Optional<Object[]> fetch(Cursor cursor)
 	{
 		if (!cursor.next())
 			return Optional.empty();

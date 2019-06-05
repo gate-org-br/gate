@@ -84,21 +84,20 @@ public class LocalDateConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index,
-			Class<?> type) throws SQLException, ConversionException
+			Class<?> type) throws SQLException
 	{
 		return rs.getObject(index, LocalDate.class);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-			Class<?> type) throws SQLException, ConversionException
+			Class<?> type) throws SQLException
 	{
 		return rs.getObject(fields, LocalDate.class);
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-			ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		ps.setObject(index, value);
 		return index + 1;

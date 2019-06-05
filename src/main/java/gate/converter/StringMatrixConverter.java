@@ -53,7 +53,7 @@ public class StringMatrixConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException, ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		if (value != null)
 			ps.setString(index, toString(String[][].class, value));
@@ -81,7 +81,7 @@ public class StringMatrixConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Class<?> type, String string)
 	{
 		if (string == null)
 			return null;
@@ -92,7 +92,7 @@ public class StringMatrixConverter implements Converter
 		try (CSVParser reader = new CSVParser(new StringReader(string)))
 		{
 			return reader.stream()
-				.map(e -> e.stream().toArray(String[]::new))
+				.map(e -> e.toArray(new String[0]))
 				.toArray(String[][]::new);
 		}
 	}
@@ -115,7 +115,7 @@ public class StringMatrixConverter implements Converter
 		try (CSVParser reader = new CSVParser(new InputStreamReader(part.getInputStream())))
 		{
 			return reader.stream()
-				.map(e -> e.stream().toArray(String[]::new))
+				.map(e -> e.toArray(new String[0]))
 				.toArray(String[][]::new);
 		} catch (IOException ex)
 		{

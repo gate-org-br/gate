@@ -50,7 +50,7 @@ public class JsonElementReader extends AbstractReader<Optional<JsonElement>>
 
 	public static JsonElementReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, e -> new JsonElementReader(e));
+		return INSTANCES.computeIfAbsent(charset, JsonElementReader::new);
 	}
 
 	public static Optional<JsonElement> read(File file) throws IOException

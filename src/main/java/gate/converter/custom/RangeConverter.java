@@ -84,7 +84,7 @@ public class RangeConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		long min = rs.getLong(fields);
 		if (rs.wasNull())

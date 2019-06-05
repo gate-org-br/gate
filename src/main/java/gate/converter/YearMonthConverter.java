@@ -77,22 +77,21 @@ public class YearMonthConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index,
-		Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException
 	{
 		LocalDate localDate = rs.getObject(index, LocalDate.class);
 		return localDate != null ? YearMonth.of(localDate.getYear(), localDate.getMonth()) : null;
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		LocalDate localDate = rs.getObject(fields, LocalDate.class);
 		return localDate != null ? YearMonth.of(localDate.getYear(), localDate.getMonth()) : null;
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-		ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		ps.setObject(index, ((YearMonth) value).atDay(1));
 		return index + 1;

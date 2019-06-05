@@ -16,7 +16,7 @@ public class Parameters extends HashMap<String, Object>
 
 	public Parameters(List<Parameter> parameters)
 	{
-		parameters.stream().forEach(e -> put(e.getName(), e.getValue()));
+		parameters.forEach(e -> put(e.getName(), e.getValue()));
 	}
 
 	@Override

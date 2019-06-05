@@ -46,10 +46,7 @@ public abstract class Screen extends Base
 
 	public void prepare(HttpServletRequest request,
 			HttpServletResponse response)
-			throws RuntimeException,
-			IllegalAccessException,
-			IllegalArgumentException,
-			InvocationTargetException
+			throws RuntimeException
 	{
 		this.request = request;
 		this.response = response;
@@ -87,8 +84,7 @@ public abstract class Screen extends Base
 	public Object execute(Method method)
 			throws RuntimeException,
 			IllegalAccessException,
-			IllegalArgumentException,
-			InvocationTargetException
+		InvocationTargetException
 	{
 		return method.invoke(this);
 	}
@@ -207,7 +203,7 @@ public abstract class Screen extends Base
 	public <T> List<T> ordenate(List<T> data)
 	{
 		if (getOrderBy() != null)
-			Collections.sort(data, new PropertyComparator(getOrderBy()));
+			data.sort(new PropertyComparator(getOrderBy()));
 		return data;
 	}
 

@@ -37,7 +37,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 		this(Arrays.asList(values));
 	}
 
-	public LocalDateTimeSet(List<String> values) throws ParseException
+	public LocalDateTimeSet(List<String> values)
 	{
 		for (String value : values)
 		{
@@ -50,12 +50,12 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 	@Override
 	public String toString()
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+		return stream().map(LocalDateTime::toString).collect(Collectors.joining(", "));
 	}
 
 	public String toString(String join)
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(join));
+		return stream().map(LocalDateTime::toString).collect(Collectors.joining(join));
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+			return stream().map(LocalDateTime::toString).collect(Collectors.joining(", "));
 		}
 	}
 
@@ -128,7 +128,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining("; "));
+			return stream().map(LocalDateTime::toString).collect(Collectors.joining("; "));
 		}
 	}
 
@@ -162,7 +162,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(String.format("%n ")));
+			return stream().map(LocalDateTime::toString).collect(Collectors.joining(String.format("%n ")));
 		}
 	}
 }

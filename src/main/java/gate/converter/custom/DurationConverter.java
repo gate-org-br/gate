@@ -42,7 +42,7 @@ public class DurationConverter implements Converter
 		return Duration.of(string);
 	    } catch (IllegalArgumentException e)
 	    {
-		throw new ConversionException(String.format(getDescription()));
+		throw new ConversionException(getDescription());
 	    }
 	}
 
@@ -89,7 +89,7 @@ public class DurationConverter implements Converter
     }
 
     @Override
-    public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+    public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
     {
 	long value = rs.getLong(fields);
 	return rs.wasNull() ? null : Duration.of(value);

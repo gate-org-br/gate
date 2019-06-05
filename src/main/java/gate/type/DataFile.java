@@ -163,12 +163,12 @@ public class DataFile implements Serializable
 	public List<DataFile> inflate()
 	{
 		List<DataFile> result = new ArrayList<>();
-		inflate(e -> result.add(e));
+		inflate(result::add);
 		return result;
 	}
 
 	public static DataFile of(File file)
-			throws FileNotFoundException, IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
 				= new BufferedInputStream(new FileInputStream(file)))
@@ -184,7 +184,7 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(URL url)
-			throws FileNotFoundException, IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
 				= new BufferedInputStream(url.openStream()))

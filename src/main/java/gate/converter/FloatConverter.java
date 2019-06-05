@@ -81,7 +81,7 @@ public class FloatConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		float value = rs.getFloat(fields);
 		return rs.wasNull() ? null : value;

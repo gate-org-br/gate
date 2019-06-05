@@ -94,7 +94,7 @@ public class ByteConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		byte value = rs.getByte(fields);
 		return rs.wasNull() ? null : value;

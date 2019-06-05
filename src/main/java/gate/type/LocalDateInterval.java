@@ -11,9 +11,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 @Icon("2003")
 @Converter(LocalDateIntervalConverter.class)
@@ -55,7 +58,44 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	@Override
 	public Stream<LocalDate> stream()
 	{
-		return min.datesUntil(max);
+		return StreamSupport.stream(new Spliterator<LocalDate>()
+		{
+			private LocalDate curr;
+
+			@Override
+			public boolean tryAdvance(Consumer<? super LocalDate> action)
+			{
+				curr = curr == null ? min : curr.plusDays(1);
+
+				if (!contains(curr))
+					return false;
+				action.accept(curr);
+				return true;
+			}
+
+			@Override
+			public Spliterator<LocalDate> trySplit()
+			{
+				return null;
+			}
+
+			@Override
+			public long estimateSize()
+			{
+				return size();
+			}
+
+			@Override
+			public int characteristics()
+			{
+				return Spliterator.ORDERED
+					| Spliterator.NONNULL
+					| Spliterator.IMMUTABLE
+					| Spliterator.DISTINCT
+					| Spliterator.SIZED
+					| Spliterator.SUBSIZED;
+			}
+		}, false);
 	}
 
 	@Override
@@ -120,7 +160,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		return new Formatter<LocalDateInterval>()
 		{
 			@Override
-			public LocalDateInterval parse(String source) throws ParseException
+			public LocalDateInterval parse(String source)
 			{
 				Matcher matcher = PATTERN.matcher(source.trim());
 				if (!matcher.matches())

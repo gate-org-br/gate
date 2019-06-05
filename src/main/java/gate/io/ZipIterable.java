@@ -20,7 +20,7 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 {
 
 	private int size;
-	private byte[] data;
+	private final byte[] data;
 	private final List<ZipIterator> iterators = new ArrayList<>();
 
 	public ZipIterable(byte[] data)

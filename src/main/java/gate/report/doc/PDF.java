@@ -263,8 +263,8 @@ public class PDF extends Doc
 			body.setPadding(4);
 			body.setBorderColor(BaseColor.GRAY);
 
-			form.getFields().stream()
-				.forEachOrdered(e -> table.addCell(printField(e)));
+			form.getFields()
+				.forEach(e -> table.addCell(printField(e)));
 
 			element.addCell(body);
 

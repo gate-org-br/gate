@@ -57,7 +57,7 @@ public abstract class Policonverter
 
 	public abstract Object getObject(Class<?> type, String[] strings) throws ConversionException;
 
-	public abstract String[] getString(Class<?> type, Object object) throws ConversionException;
+	public abstract String[] getString(Class<?> type, Object object);
 
 	public abstract Object getObject(Class<?> type, Part[] parts) throws ConversionException;
 }

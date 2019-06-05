@@ -68,7 +68,7 @@ public abstract class Encoder<T>
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public T decode(String string) throws ConversionException
+		public T decode(String string)
 		{
 			if (string == null)
 				return null;

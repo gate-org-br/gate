@@ -7,12 +7,7 @@ import gate.util.Icons;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -542,8 +537,8 @@ public class Property
 
 	public String getColumnName()
 	{
-		return getAttributes().stream().map(e -> e.getColumnName())
-			.filter(e -> e != null).collect(Collectors.joining("$"));
+		return getAttributes().stream().map(Attribute::getColumnName)
+			.filter(Objects::nonNull).collect(Collectors.joining("$"));
 	}
 
 	@Override

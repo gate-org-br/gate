@@ -13,7 +13,7 @@ public class ArrayListFetcher implements Fetcher<List<Object[]>>
 {
 
 	@Override
-	public List<Object[]> fetch(Cursor rs) throws SQLException, ConversionException
+	public List<Object[]> fetch(Cursor rs)
 	{
 		Class[] types = rs.getColumnTypes();
 		List<Object[]> results = new ArrayList<>();

@@ -2,10 +2,7 @@ package gate.sql;
 
 import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
-import gate.error.ConversionException;
 import gate.error.DatabaseException;
-import gate.error.FKViolationException;
-import gate.error.UKViolationException;
 import gate.sql.fetcher.Fetcher;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -101,7 +98,7 @@ public class Command implements AutoCloseable, Fetchable
 		return index;
 	}
 
-	public int execute() throws ConstraintViolationException, FKViolationException, UKViolationException
+	public int execute() throws ConstraintViolationException
 	{
 		try
 		{
@@ -115,7 +112,7 @@ public class Command implements AutoCloseable, Fetchable
 	}
 
 	public <T> Optional<T> execute(Class<T> type)
-		throws ConstraintViolationException, FKViolationException, UKViolationException
+		throws ConstraintViolationException
 	{
 		execute();
 		return getGeneratedKey(type);
@@ -290,9 +287,9 @@ public class Command implements AutoCloseable, Fetchable
 		{
 			return Converter.getConverter(type)
 				.writeToPreparedStatement(getPreparedStatement(), index, object);
-		} catch (SQLException | ConversionException e)
+		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -322,7 +319,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public Command setParameters(Collection<?> objs)
 	{
-		objs.forEach(e -> setParameter(e));
+		objs.forEach(this::setParameter);
 		return this;
 	}
 

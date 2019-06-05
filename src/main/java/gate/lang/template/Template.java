@@ -16,11 +16,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Used to generate documents from GTL templates
@@ -60,7 +56,7 @@ public class Template
 	 */
 	public void evaluate(Object context, Writer document) throws TemplateException
 	{
-		evaluate(document, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
+		evaluate(document, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
 	}
 
 	/**
@@ -74,7 +70,7 @@ public class Template
 	{
 		try (FileWriter writer = new FileWriter(document))
 		{
-			evaluate(writer, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
 		} catch (IOException ex)
 		{
 			throw new TemplateException(ex, ex.getMessage());
@@ -92,7 +88,7 @@ public class Template
 	{
 		try (StringWriter writer = new StringWriter())
 		{
-			evaluate(writer, new ArrayList<>(Arrays.asList(context)), new HashMap<>());
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
 			writer.flush();
 			return writer.toString();
 		} catch (IOException ex)
@@ -256,7 +252,7 @@ public class Template
 	public static void evaluate(Object context, Reader template, Writer document) throws TemplateException
 	{
 		new TemplateParser().parse(template)
-			.evaluate(document, new ArrayList<>(Arrays.asList(context)),
+			.evaluate(document, new ArrayList<>(Collections.singletonList(context)),
 				new HashMap<>());
 	}
 

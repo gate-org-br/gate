@@ -1,5 +1,7 @@
 package gate.report;
 
+import gate.type.Color;
+
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -102,8 +104,8 @@ public final class Column<T> extends Element
 
 		gate.annotation.Color.Extractor
 			.extract(value)
-			.map(e -> gate.type.Color.of(e))
-			.ifPresent(e -> style.color(e));
+			.map(Color::of)
+			.ifPresent(style::color);
 
 		styler.apply(object, style);
 		return style;

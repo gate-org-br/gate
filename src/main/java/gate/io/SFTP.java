@@ -25,7 +25,6 @@ public class SFTP implements AutoCloseable
 	private final ChannelSftp channel;
 
 	private SFTP(Session session, ChannelSftp channel)
-			throws IOException
 	{
 		this.session = session;
 		this.channel = channel;
@@ -78,7 +77,7 @@ public class SFTP implements AutoCloseable
 			return list
 					.stream()
 					.map(e -> ((ChannelSftp.LsEntry) e))
-					.map(e -> e.getFilename())
+					.map(ChannelSftp.LsEntry::getFilename)
 					.collect(Collectors.toList());
 		} catch (SftpException ex)
 		{

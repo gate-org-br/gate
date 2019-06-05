@@ -2,13 +2,11 @@ package gate.converter.custom;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.type.mime.MimeText;
 import gate.util.Strings;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
@@ -94,7 +92,7 @@ public class MimeTextConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException, ConversionException
+		throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
@@ -114,8 +112,7 @@ public class MimeTextConverter implements Converter
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
-		throws SQLException,
-		       ConversionException
+		throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, value.toString());

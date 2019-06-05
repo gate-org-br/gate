@@ -37,7 +37,7 @@ public class StringReader implements Reader<String>
 
 	public static StringReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, e -> new StringReader(e));
+		return INSTANCES.computeIfAbsent(charset, StringReader::new);
 	}
 
 	@Override

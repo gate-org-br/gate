@@ -76,7 +76,7 @@ public class IDConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		int value = rs.getInt(fields);
 		return rs.wasNull() ? null : new ID(value);

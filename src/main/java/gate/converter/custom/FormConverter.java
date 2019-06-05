@@ -37,7 +37,7 @@ public class FormConverter implements Converter
 	public String toText(Class<?> type, Object object)
 	{
 		return object != null
-			? ((Form) object).getFields().stream().map(e -> Converter.toText(e))
+			? ((Form) object).getFields().stream().map(Converter::toText)
 				.collect(Collectors.joining()) : "";
 	}
 

@@ -1,15 +1,7 @@
 package gate.io;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -34,13 +26,13 @@ public class Database<T> implements Observable<T>
 	public boolean isEmpty()
 	{
 		return tables.values()
-			.stream().allMatch(e -> e.isEmpty());
+			.stream().allMatch(AbstractCollection::isEmpty);
 	}
 
 	public int size()
 	{
 		return tables.values().stream()
-			.mapToInt(e -> e.size()).sum();
+			.mapToInt(PersistentSet::size).sum();
 	}
 
 	public boolean isEmpty(String tableName)
@@ -57,14 +49,14 @@ public class Database<T> implements Observable<T>
 	public Optional<T> select()
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.findAny();
 	}
 
 	public Optional<T> select(Predicate<T> predicate)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.filter(predicate)
 			.findAny();
 	}
@@ -72,31 +64,27 @@ public class Database<T> implements Observable<T>
 	public Optional<T> select(Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
-			.sorted(comparator)
-			.findFirst();
+			.flatMap(Collection::stream).min(comparator);
 	}
 
 	public Optional<T> select(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
-			.filter(predicate)
-			.sorted(comparator)
-			.findFirst();
+			.flatMap(Collection::stream)
+			.filter(predicate).min(comparator);
 	}
 
 	public List<T> search()
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
 	}
 
 	public List<T> search(Predicate<T> predicate)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.filter(predicate)
 			.collect(Collectors.toList());
 	}
@@ -104,7 +92,7 @@ public class Database<T> implements Observable<T>
 	public List<T> search(Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.sorted(comparator)
 			.collect(Collectors.toList());
 	}
@@ -112,7 +100,7 @@ public class Database<T> implements Observable<T>
 	public List<T> search(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream()
-			.flatMap(e -> e.stream())
+			.flatMap(Collection::stream)
 			.filter(predicate)
 			.sorted(comparator)
 			.collect(Collectors.toList());
@@ -133,7 +121,7 @@ public class Database<T> implements Observable<T>
 	public Optional<T> select(String tableName, Comparator<T> comparator)
 	{
 		return tables.values().stream().filter(e -> e.getFile().getName().equals(tableName))
-			.findAny().flatMap(e -> e.stream().sorted(comparator).findFirst());
+			.findAny().flatMap(e -> e.stream().min(comparator));
 	}
 
 	public Optional<T> select(String tableName, Predicate<T> predicate, Comparator<T> comparator)
@@ -185,23 +173,23 @@ public class Database<T> implements Observable<T>
 		PersistentSet<T> table = tables.get(tableName);
 		table.removeIf(predicate);
 		table.commit();
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	public void delete(Predicate<T> predicate)
 	{
-		tables.values().stream().forEach(e -> e.removeIf(predicate));
-		tables.values().stream().forEach(e -> e.commit());
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().forEach(e -> e.removeIf(predicate));
+		tables.values().forEach(PersistentSet::commit);
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	public void delete(Collection<T> values)
 	{
-		tables.values().stream().forEach(e -> e.removeAll(values));
-		tables.values().stream().forEach(e -> e.commit());
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().forEach(e -> e.removeAll(values));
+		tables.values().forEach(PersistentSet::commit);
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -213,9 +201,9 @@ public class Database<T> implements Observable<T>
 
 	public void delete(List<T> values)
 	{
-		tables.values().stream().forEach(e -> e.removeAll(values));
-		tables.values().stream().forEach(e -> e.commit());
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().forEach(e -> e.removeAll(values));
+		tables.values().forEach(PersistentSet::commit);
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -224,7 +212,7 @@ public class Database<T> implements Observable<T>
 		PersistentSet<T> table = tables.get(tableName);
 		table.removeAll(values);
 		table.commit();
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -234,7 +222,7 @@ public class Database<T> implements Observable<T>
 		PersistentSet<T> table = tables.get(tableName);
 		table.removeAll(Arrays.asList(values));
 		table.commit();
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(AbstractCollection::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -265,8 +253,8 @@ public class Database<T> implements Observable<T>
 
 	public void drop()
 	{
-		tables.values().forEach(table -> table.clear());
-		tables.values().forEach(table -> table.commit());
+		tables.values().forEach(AbstractCollection::clear);
+		tables.values().forEach(PersistentSet::commit);
 		tables.clear();
 		folder.delete();
 		observers.forEach(Observer::onUpdate);

@@ -19,12 +19,9 @@ public class MapFetcher implements Fetcher<Optional<Map<String, Object>>>
 	 * @return an Optional describing the first row as a map whose keys are the column names and values are the
 	 * column values or an empty Optional if the result is empty
 	 *
-	 * @throws SQLException if a SQLException is thrown while fetching the results
-	 * @throws ConversionException if the result cannot be converted to a java map
 	 */
 	@Override
 	public Optional<Map<String, Object>> fetch(Cursor cursor)
-		throws SQLException, ConversionException
 	{
 		if (!cursor.next())
 			return Optional.empty();

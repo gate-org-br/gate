@@ -18,7 +18,6 @@ import gate.report.Report;
 import gate.report.doc.Doc;
 import gate.type.DataFile;
 import gate.type.DateTime;
-import gate.type.Time;
 import gate.type.mime.MimeData;
 import gate.util.Backup;
 import gate.util.Page;
@@ -59,7 +58,7 @@ public class UserScreen extends Screen
 
 	@Name("Usuários")
 	@Icon("gate.entity.User")
-	public Object callImport() throws ServletException, IOException
+	public Object callImport()
 	{
 		page = control.search(getForm());
 		return "/WEB-INF/views/gateconsole/User/ViewImport.jsp";
@@ -108,7 +107,7 @@ public class UserScreen extends Screen
 
 	@Icon("update")
 	@Name("Alterar")
-	public String callUpdate() throws AppException
+	public String callUpdate()
 	{
 		if (isGET())
 		{
@@ -145,7 +144,7 @@ public class UserScreen extends Screen
 
 	@Icon("delete")
 	@Name("Remover")
-	public String callDelete() throws AppException
+	public String callDelete()
 	{
 		try
 		{

@@ -48,12 +48,12 @@ public class DateTimeSet extends HashSet<DateTime>
 	@Override
 	public String toString()
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+		return stream().map(DateTime::toString).collect(Collectors.joining(", "));
 	}
 
 	public String toString(String join)
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(join));
+		return stream().map(DateTime::toString).collect(Collectors.joining(join));
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public class DateTimeSet extends HashSet<DateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+			return stream().map(DateTime::toString).collect(Collectors.joining(", "));
 		}
 	}
 
@@ -126,7 +126,7 @@ public class DateTimeSet extends HashSet<DateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining("; "));
+			return stream().map(DateTime::toString).collect(Collectors.joining("; "));
 		}
 	}
 
@@ -160,7 +160,7 @@ public class DateTimeSet extends HashSet<DateTime>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(String.format("%n ")));
+			return stream().map(DateTime::toString).collect(Collectors.joining(String.format("%n ")));
 		}
 	}
 }

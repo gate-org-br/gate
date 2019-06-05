@@ -43,7 +43,7 @@ public final class Time implements Comparable<Time>, Serializable
 	@Override
 	public int compareTo(Time time)
 	{
-		return getValue() > time.getValue() ? 1 : getValue() < time.getValue() ? -1 : 0;
+		return Long.compare(getValue(), time.getValue());
 	}
 
 	@Override

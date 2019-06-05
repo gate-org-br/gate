@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Icon("$")
@@ -242,6 +243,6 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 
 	public static Money sum(Stream<Money> values)
 	{
-		return new Money(values.filter(e -> e != null).map(Money::getValue).reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
+		return new Money(values.filter(Objects::nonNull).map(Money::getValue).reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 }

@@ -57,7 +57,7 @@ public class MD5Converter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Class<?> type, String string)
 	{
 		if (string != null)
 		{
@@ -69,7 +69,7 @@ public class MD5Converter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : MD5.of(value);

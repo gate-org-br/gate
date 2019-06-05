@@ -43,7 +43,7 @@ class GateControl extends gate.base.Control
 		try (GateDao dao = new GateDao())
 		{
 			User user = dao.getUser(username)
-				.orElseThrow(() -> new InvalidUsernameException());
+				.orElseThrow(InvalidUsernameException::new);
 
 			if (user.isDisabled())
 				throw new InvalidUsernameException();
@@ -59,10 +59,10 @@ class GateControl extends gate.base.Control
 			funcs.forEach(func -> func.getFunc().setAuths(auths.stream().filter(auth -> func.getFunc().equals(auth.getFunc())).collect(Collectors.toList())));
 
 			user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList()));
-			user.setFuncs(funcs.stream().filter(func -> user.equals(func.getUser())).map(e -> e.getFunc()).collect(Collectors.toList()));
+			user.setFuncs(funcs.stream().filter(func -> user.equals(func.getUser())).map(Bond::getFunc).collect(Collectors.toList()));
 
 			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
-			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(e -> e.getFunc()).collect(Collectors.toList())));
+			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
 
 			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(NotFoundException::new));
 

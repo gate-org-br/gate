@@ -10,7 +10,6 @@ import gate.entity.User;
 import gate.error.AppException;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
-import gate.type.Hierarchy;
 import gate.type.ID;
 import gateconsole.dao.AuthDao;
 import gateconsole.dao.BondDao;
@@ -38,10 +37,10 @@ public class RoleControl extends Control
 
 			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
 			users.forEach(user -> user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList())));
-			bonds.stream().map(e -> e.getFunc()).forEach(func -> func.setAuths(auths.stream().filter(auth -> func.equals(auth.getFunc())).collect(Collectors.toList())));
+			bonds.stream().map(Bond::getFunc).forEach(func -> func.setAuths(auths.stream().filter(auth -> func.equals(auth.getFunc())).collect(Collectors.toList())));
 
-			roles.forEach(role -> role.setFuncs(bonds.stream().filter(bond -> role.equals(bond.getRole())).map(bond -> bond.getFunc()).collect(Collectors.toList())));
-			users.forEach(user -> user.setFuncs(bonds.stream().filter(bond -> user.equals(bond.getUser())).map(bond -> bond.getFunc()).collect(Collectors.toList())));
+			roles.forEach(role -> role.setFuncs(bonds.stream().filter(bond -> role.equals(bond.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
+			users.forEach(user -> user.setFuncs(bonds.stream().filter(bond -> user.equals(bond.getUser())).map(Bond::getFunc).collect(Collectors.toList())));
 
 			roles.forEach(role -> role.setUsers(users.stream().filter(user -> role.equals(user.getRole())).collect(Collectors.toList())));
 

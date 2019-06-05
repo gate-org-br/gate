@@ -16,10 +16,10 @@ import java.util.concurrent.ConcurrentMap;
 public class LineReader extends AbstractReader<List<String>>
 {
 
-	private static LineReader INSTANCE
+	private static final LineReader INSTANCE
 			= new LineReader();
 
-	private static ConcurrentMap<String, LineReader> INSTANCES
+	private static final ConcurrentMap<String, LineReader> INSTANCES
 			= new ConcurrentHashMap<String, LineReader>();
 
 	private LineReader()
@@ -51,7 +51,7 @@ public class LineReader extends AbstractReader<List<String>>
 
 	public static LineReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, e -> new LineReader(e));
+		return INSTANCES.computeIfAbsent(charset, LineReader::new);
 	}
 
 	public static List<String> read(byte[] bytes) throws IOException

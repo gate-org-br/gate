@@ -92,7 +92,7 @@ public class XLS extends Doc
 		}
 	}
 
-	private void printForm(SXSSFWorkbook workbook, Form form) throws ConversionException
+	private void printForm(SXSSFWorkbook workbook, Form form)
 	{
 		short index = -1;
 
@@ -265,7 +265,7 @@ public class XLS extends Doc
 	}
 
 	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet,
-		Grid<Object> grid, Iterable<?> data, int level) throws ConversionException
+		Grid<Object> grid, Iterable<?> data, int level)
 	{
 
 		for (Object object : data)

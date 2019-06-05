@@ -31,11 +31,9 @@ public class TypedArrayListFetcher implements Fetcher<List<Object[]>>
 	 *
 	 * @return each row fetched as a list of java arrays of Objects of the specified types
 	 *
-	 * @throws SQLException if a SQLException is thrown while fetching the results
-	 * @throws ConversionException if the result cannot be converted to a list of java array
 	 */
 	@Override
-	public List<Object[]> fetch(Cursor cursor) throws SQLException, ConversionException
+	public List<Object[]> fetch(Cursor cursor)
 	{
 		List<Object[]> results = new ArrayList<>();
 		while (cursor.next())

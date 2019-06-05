@@ -6,10 +6,7 @@ import gate.annotation.Name;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.servlet.ServletContext;
 import org.reflections.Reflections;
@@ -56,7 +53,7 @@ public class App implements Serializable
 		List<Class<? extends gate.base.Screen>> screens
 			= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
 		screens.removeIf(e -> Modifier.isAbstract(e.getModifiers()) || !e.getSimpleName().endsWith("Screen"));
-		Collections.sort(screens, (a, b) -> a.getPackage().getName().compareTo(b.getPackage().getName()));
+		screens.sort(Comparator.comparing(a -> a.getPackage().getName()));
 
 		App app = new App();
 		app.id = context.getServletContextName();

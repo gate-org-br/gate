@@ -1,7 +1,6 @@
 package gate.messaging;
 
 import gate.type.DataFile;
-import gate.type.DateTime;
 import gate.type.mime.Mime;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;

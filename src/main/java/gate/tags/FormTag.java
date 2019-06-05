@@ -16,7 +16,7 @@ public class FormTag extends DynamicAttributeTag
 	private String property;
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void doTag() throws IOException
 	{
 		Screen screen = (Screen) getJspContext().findAttribute("screen");
 		Property p = Property.getProperty(screen.getClass(), this.property);

@@ -13,7 +13,7 @@ public class ObjectListFetcher implements Fetcher<List<Object>>
 {
 
 	@Override
-	public List<Object> fetch(Cursor rs) throws SQLException, ConversionException
+	public List<Object> fetch(Cursor rs)
 	{
 		List<Object> results = new ArrayList<>();
 		while (rs.next())

@@ -33,7 +33,7 @@ public class ValuesTag extends SimpleTagSupport
 
 	public void setReverse(boolean reverse)
 	{
-		this.reverse = Objects.requireNonNull(reverse);
+		this.reverse = reverse;
 	}
 
 	@Override

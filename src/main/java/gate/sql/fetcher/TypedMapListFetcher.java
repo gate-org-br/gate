@@ -19,7 +19,7 @@ public class TypedMapListFetcher implements Fetcher<List<Map<String, Object>>>
 	}
 
 	@Override
-	public List<Map<String, Object>> fetch(Cursor rs) throws SQLException, ConversionException
+	public List<Map<String, Object>> fetch(Cursor rs)
 	{
 
 		String[] names = rs.getColumnNames();

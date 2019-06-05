@@ -312,7 +312,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return Boolean.TRUE.equals(getMaster())
 			? Stream.concat(Stream.of(this), getChildren().stream()
 				.filter(e -> !Boolean.TRUE.equals(e.getMaster()))
-				.flatMap(e -> e.stream()))
+				.flatMap(Hierarchy::stream))
 			: Stream.empty();
 	}
 

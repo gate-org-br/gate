@@ -120,17 +120,17 @@ public class AnchorTag extends DynamicAttributeTag
 		return tabindex;
 	}
 
-	public Class<Screen> getJavaClass() throws IOException
+	public Class<Screen> getJavaClass()
 	{
 		return javaClass;
 	}
 
-	public Method getJavaMethod() throws IOException
+	public Method getJavaMethod()
 	{
 		return javaMethod;
 	}
 
-	public boolean checkAccess() throws IOException
+	public boolean checkAccess()
 	{
 		return Gate.checkAccess(user, module, screen, action, javaClass, javaMethod);
 	}

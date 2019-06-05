@@ -21,11 +21,9 @@ public class ObjectFetcher implements Fetcher<Optional<Object>>
 	 * @return an Optional containing the first column of the first row of the specified Cursor as a java object or a
 	 *         empty optional if the Cursor is empty
 	 *
-	 * @throws java.sql.SQLException          if a SQLException is thrown when fetching results
-	 * @throws gate.error.ConversionException if the result cannot be converted to a java object
 	 */
 	@Override
-	public Optional<Object> fetch(Cursor cursor) throws SQLException, ConversionException
+	public Optional<Object> fetch(Cursor cursor)
 	{
 		if (!cursor.next())
 			return Optional.empty();

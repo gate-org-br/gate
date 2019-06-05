@@ -93,7 +93,7 @@ public class NumberConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		BigDecimal value = rs.getBigDecimal(fields);
 		return rs.wasNull() ? null : value;
