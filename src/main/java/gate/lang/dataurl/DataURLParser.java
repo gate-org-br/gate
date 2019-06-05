@@ -8,7 +8,6 @@ import java.util.Map;
 public class DataURLParser implements AutoCloseable
 {
 
-	private Object current;
 	private final DataURLScanner scanner;
 
 	public DataURLParser(DataURLScanner scanner)
@@ -19,7 +18,7 @@ public class DataURLParser implements AutoCloseable
 	public DataURL parse() throws IOException,
 				      ParseException
 	{
-		current = scanner.scan();
+		Object current = scanner.scan();
 		if (!"data".equals(current))
 			throw new ParseException("expected data and found " + current, 0);
 

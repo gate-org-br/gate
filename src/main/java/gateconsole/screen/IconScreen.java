@@ -14,7 +14,7 @@ import gate.error.AppException;
 public class IconScreen extends Screen
 {
 
-	public String call() throws AppException
+	public String call()
 	{
 		return "/WEB-INF/views/gateconsole/Icon/View.jsp";
 	}

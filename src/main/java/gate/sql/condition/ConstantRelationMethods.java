@@ -1,6 +1,5 @@
 package gate.sql.condition;
 
-import gate.lang.property.Property;
 import gate.sql.statement.Query;
 
 interface ConstantRelationMethods

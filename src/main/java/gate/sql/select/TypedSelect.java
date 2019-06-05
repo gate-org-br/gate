@@ -106,13 +106,13 @@ public class TypedSelect<T> implements Query.Builder
 
 		public Properties properties(List<Property> properties)
 		{
-			properties.forEach((e) -> property(e));
+			properties.forEach(this::property);
 			return this;
 		}
 
 		public Properties properties(String... properties)
 		{
-			Stream.of(properties).forEach((e) -> property(e));
+			Stream.of(properties).forEach(this::property);
 			return this;
 		}
 

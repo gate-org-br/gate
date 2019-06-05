@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -190,7 +191,7 @@ public class Data extends Number implements Serializable, Comparable<Data>
 
 	public static Data sum(Stream<Data> values)
 	{
-		return new Data(values.filter(e -> e != null).map(Data::getBytes)
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
+		return new Data(values.filter(Objects::nonNull).map(Data::getBytes)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 }

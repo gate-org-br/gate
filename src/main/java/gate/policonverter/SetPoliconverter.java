@@ -33,19 +33,16 @@ public class SetPoliconverter extends Policonverter
 
 	@Override
 	public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 	{
 		Set<String> strings = new HashSet<>();
 		for (Object object : (Set<?>) value)
 			strings.add(Converter.getConverter(type).toString(type, object));
-		return strings.toArray(new String[strings.size()]);
+		return strings.toArray(new String[0]);
 	}
 
 	@Override
 	public Object toCollection(Class<?> type, Object[] objects)
 	{
-		Collection<Object> result = new HashSet<>();
-		result.addAll(Arrays.asList(objects));
-		return result;
+		return new HashSet<>(Arrays.asList(objects));
 	}
 }

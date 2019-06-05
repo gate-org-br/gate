@@ -57,13 +57,13 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		for (Enumeration<String> enumeration = getParameterNames();
 			enumeration.hasMoreElements();)
 			parameters.add(enumeration.nextElement());
-		parts.stream().map(e -> e.getName())
+		parts.stream().map(Part::getName)
 			.collect(Collectors.toCollection(() -> parameters));
 		return new ArrayList<>(parameters);
 	}
 
 	public Object getParameterValues(Class<?> type,
-					 Class<?> elementType, String name) throws ConversionException
+					 Class<?> elementType, String name)
 	{
 		try
 		{
@@ -98,7 +98,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Object getParameterValue(String name) throws ConversionException
+	public Object getParameterValue(String name)
 	{
 		String string = getParameter(name);
 		return string != null

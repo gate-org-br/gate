@@ -365,7 +365,7 @@ public class User implements Serializable
 
 	public boolean isSuperUser()
 	{
-		return computedAuthStream().anyMatch(e -> e.isSuperAuth());
+		return computedAuthStream().anyMatch(Auth::isSuperAuth);
 	}
 
 	public boolean checkAccess(String module, String screen, String action)

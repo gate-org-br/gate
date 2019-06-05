@@ -35,7 +35,7 @@ public class StringList extends ArrayList<String>
 
 	public StringList(List<String> values)
 	{
-		values.stream().map(v -> v.trim()).filter(v -> !v.isEmpty()).forEach(v -> add(v));
+		values.stream().map(String::trim).filter(v -> !v.isEmpty()).forEach(this::add);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class StringList extends ArrayList<String>
 
 	public String toString(String join)
 	{
-		return stream().collect(Collectors.joining(join));
+		return String.join(join, this);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class StringList extends ArrayList<String>
 		@Override
 		public String toString()
 		{
-			return stream().collect(Collectors.joining(", "));
+			return String.join(", ", this);
 		}
 
 		@Override
@@ -131,7 +131,7 @@ public class StringList extends ArrayList<String>
 		@Override
 		public String toString()
 		{
-			return stream().collect(Collectors.joining("; "));
+			return String.join("; ", this);
 		}
 
 		@Override

@@ -109,10 +109,8 @@ public interface Converter
 	 * @return the index to be used on the next call to this method
 	 *
 	 * @throws java.sql.SQLException if a SQLException exception is thrown while setting the parameters
-	 * @throws gate.error.ConversionException if the specified value can't be set as parameters of a JDBC PreparedStatement
 	 */
-	int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException,
-		ConversionException;
+	int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException;
 
 	/**
 	 * Converts the specified java object to a {@link java.math.Number}.

@@ -31,7 +31,7 @@ class BasicSentence implements Sentence
 	@Override
 	public Sentence.Compiled parameters(List<Object> parameters)
 	{
-		return new Compiled(Arrays.asList(parameters));
+		return new Compiled(Collections.singletonList(parameters));
 	}
 
 	@Override
@@ -349,7 +349,7 @@ class BasicSentence implements Sentence
 		@Override
 		public Sentence.Connected.Compiled parameters(List<Object> parameters)
 		{
-			return new Compiled(Arrays.asList(parameters));
+			return new Compiled(Collections.singletonList(parameters));
 		}
 
 		@Override

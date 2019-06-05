@@ -62,14 +62,14 @@ public class BooleanConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
-		Boolean value = rs.getBoolean(fields);
+		boolean value = rs.getBoolean(fields);
 		return rs.wasNull() ? null : value;
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		Boolean value = rs.getBoolean(fields);
+		boolean value = rs.getBoolean(fields);
 		return rs.wasNull() ? null : value;
 	}
 

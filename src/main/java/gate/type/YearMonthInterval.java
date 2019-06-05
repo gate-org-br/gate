@@ -179,7 +179,7 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 		return new Formatter<YearMonthInterval>()
 		{
 			@Override
-			public YearMonthInterval parse(String source) throws ParseException
+			public YearMonthInterval parse(String source)
 			{
 				Matcher matcher = PATTERN.matcher(source.trim());
 				if (!matcher.matches())

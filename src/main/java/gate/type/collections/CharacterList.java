@@ -24,7 +24,7 @@ public class CharacterList extends ArrayList<Character>
 
 	public CharacterList(String values)
 	{
-		Arrays.asList(values.split(",")).stream().map(e -> e.trim()).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(e -> add(e));
+		Arrays.stream(values.split(",")).map(String::trim).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(this::add);
 	}
 
 	public CharacterList(Character... values)
@@ -40,12 +40,12 @@ public class CharacterList extends ArrayList<Character>
 	@Override
 	public String toString()
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+		return stream().map(Object::toString).collect(Collectors.joining(", "));
 	}
 
 	public String toString(String join)
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(join));
+		return stream().map(Object::toString).collect(Collectors.joining(join));
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class CharacterList extends ArrayList<Character>
 
 		public Comma(String values)
 		{
-			Arrays.asList(values.split(",")).stream().map(e -> e.trim()).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(e -> add(e));
+			Arrays.stream(values.split(",")).map(String::trim).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(this::add);
 		}
 
 		public Comma(Character... values)
@@ -84,7 +84,7 @@ public class CharacterList extends ArrayList<Character>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+			return stream().map(Object::toString).collect(Collectors.joining(", "));
 		}
 	}
 
@@ -102,7 +102,7 @@ public class CharacterList extends ArrayList<Character>
 
 		public Semicolon(String values)
 		{
-			Arrays.asList(values.split(";")).stream().map(e -> e.trim()).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(e -> add(e));
+			Arrays.stream(values.split(";")).map(String::trim).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(this::add);
 		}
 
 		public Semicolon(Character... values)
@@ -118,7 +118,7 @@ public class CharacterList extends ArrayList<Character>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining("; "));
+			return stream().map(Object::toString).collect(Collectors.joining("; "));
 		}
 	}
 
@@ -136,7 +136,7 @@ public class CharacterList extends ArrayList<Character>
 
 		public LineBreak(String values)
 		{
-			Arrays.asList(values.split("\r?\r|\n")).stream().map(e -> e.trim()).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(e -> add(e));
+			Arrays.stream(values.split("\r?\r|\n")).map(String::trim).filter(e -> !e.isEmpty()).map(e -> e.charAt(0)).forEach(this::add);
 		}
 
 		public LineBreak(Character... values)
@@ -152,7 +152,7 @@ public class CharacterList extends ArrayList<Character>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(String.format("%n ")));
+			return stream().map(Object::toString).collect(Collectors.joining(String.format("%n ")));
 		}
 	}
 }

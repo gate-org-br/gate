@@ -55,7 +55,7 @@ public class ZipByteArrayReader extends AbstractReader<byte[]>
 
 	public static ZipByteArrayReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, e -> new ZipByteArrayReader(e));
+		return INSTANCES.computeIfAbsent(charset, ZipByteArrayReader::new);
 	}
 
 	public static byte[] read(File file) throws IOException

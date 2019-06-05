@@ -32,7 +32,7 @@ public class Annotations
 	}
 
 	public static Optional<Annotation> search(Class<? extends Annotation> annotation,
-		Class<?> clazz, Method method) throws ClassNotFoundException, NoSuchMethodException
+		Class<?> clazz, Method method)
 	{
 		if (method.isAnnotationPresent(annotation))
 			return Optional.of(method.getAnnotation(annotation));

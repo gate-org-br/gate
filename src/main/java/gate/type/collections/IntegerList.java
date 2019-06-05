@@ -35,18 +35,18 @@ public class IntegerList extends ArrayList<Integer>
 
 	public IntegerList(List<String> values)
 	{
-		values.stream().map(v -> v.trim()).filter(v -> !v.isEmpty()).map(e -> Integer.valueOf(e)).forEach(v -> add(v));
+		values.stream().map(String::trim).filter(v -> !v.isEmpty()).map(Integer::valueOf).forEach(this::add);
 	}
 
 	@Override
 	public String toString()
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+		return stream().map(Object::toString).collect(Collectors.joining(", "));
 	}
 
 	public String toString(String join)
 	{
-		return stream().map(e -> e.toString()).collect(Collectors.joining(join));
+		return stream().map(Object::toString).collect(Collectors.joining(join));
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class IntegerList extends ArrayList<Integer>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(", "));
+			return stream().map(Object::toString).collect(Collectors.joining(", "));
 		}
 	}
 
@@ -119,7 +119,7 @@ public class IntegerList extends ArrayList<Integer>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining("; "));
+			return stream().map(Object::toString).collect(Collectors.joining("; "));
 		}
 	}
 
@@ -153,7 +153,7 @@ public class IntegerList extends ArrayList<Integer>
 		@Override
 		public String toString()
 		{
-			return stream().map(e -> e.toString()).collect(Collectors.joining(String.format("%n ")));
+			return stream().map(Object::toString).collect(Collectors.joining(String.format("%n ")));
 		}
 	}
 }

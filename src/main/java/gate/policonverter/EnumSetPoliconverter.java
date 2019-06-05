@@ -14,7 +14,7 @@ public class EnumSetPoliconverter extends Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value) throws ConversionException
+	public Object getObject(Class<?> type, String[] value)
 	{
 		try
 		{
@@ -30,7 +30,7 @@ public class EnumSetPoliconverter extends Policonverter
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		try
 		{
@@ -46,12 +46,12 @@ public class EnumSetPoliconverter extends Policonverter
 	}
 
 	@Override
-	public String[] getString(Class<?> type, Object value) throws ConversionException
+	public String[] getString(Class<?> type, Object value)
 	{
 		List<String> strings = new ArrayList<>();
 		for (Enum<?> object : (EnumSet<?>) value)
 			strings.add(Converter.getConverter(type).toString(type, object));
-		return strings.toArray(new String[strings.size()]);
+		return strings.toArray(new String[0]);
 	}
 
 	@Override

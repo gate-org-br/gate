@@ -15,7 +15,7 @@ public class PaginatorTag extends AttributeTag
 	private Page<?> page;
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void doTag() throws IOException
 	{
 		HttpServletRequest request = (HttpServletRequest) ((PageContext) getJspContext()).getRequest();
 

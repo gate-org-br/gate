@@ -16,6 +16,7 @@ import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,7 +24,7 @@ public class BigDecimalConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-		= Arrays.asList(new Pattern.Implementation("^[0-9]+(,[0-9]{1,2})?$"));
+		= Collections.singletonList(new Pattern.Implementation("^[0-9]+(,[0-9]{1,2})?$"));
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -102,7 +103,7 @@ public class BigDecimalConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		BigDecimal value = rs.getBigDecimal(fields);
 		return rs.wasNull() ? null : value;

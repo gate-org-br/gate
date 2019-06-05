@@ -57,7 +57,7 @@ public class YearMonthIntervalConverter implements Converter
 			return YearMonthInterval.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class YearMonthIntervalConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		YearMonth min = rs.getObject(fields, YearMonth.class);
 		if (rs.wasNull())

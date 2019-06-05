@@ -107,7 +107,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 		return new Formatter<LocalTimeInterval>()
 		{
 			@Override
-			public LocalTimeInterval parse(String source) throws ParseException
+			public LocalTimeInterval parse(String source)
 			{
 				Matcher matcher = PATTERN.matcher(source.trim());
 				if (!matcher.matches())

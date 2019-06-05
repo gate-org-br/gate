@@ -42,7 +42,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 	{
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			getBytes(e -> baos.write(e));
+			getBytes(baos::write);
 			baos.flush();
 			return baos.toByteArray();
 		}
@@ -63,7 +63,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 	{
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 		{
-			getInflatedBytes(e -> baos.write(e));
+			getInflatedBytes(baos::write);
 			baos.flush();
 			return baos.toByteArray();
 		}
@@ -87,7 +87,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 	{
 		try (CharArrayWriter writer = new CharArrayWriter())
 		{
-			getChars(charset, e -> writer.write(e));
+			getChars(charset, writer::write);
 			writer.flush();
 			return writer.toCharArray();
 		}
@@ -139,7 +139,7 @@ public class GateInputStream<T extends InputStream> extends InputStream
 	{
 		try (CharArrayWriter writer = new CharArrayWriter())
 		{
-			getInflatedChars(charset, e -> writer.write(e));
+			getInflatedChars(charset, writer::write);
 			writer.flush();
 			return writer.toCharArray();
 		}

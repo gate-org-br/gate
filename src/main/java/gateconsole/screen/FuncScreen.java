@@ -65,7 +65,7 @@ public class FuncScreen extends Screen
 
 	@Icon("update")
 	@Name("Alterar")
-	public String callUpdate() throws AppException
+	public String callUpdate()
 	{
 		if (isGET())
 		{
@@ -93,7 +93,7 @@ public class FuncScreen extends Screen
 
 	@Icon("delete")
 	@Name("Remover")
-	public String callDelete() throws AppException
+	public String callDelete()
 	{
 		try
 		{

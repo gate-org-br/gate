@@ -159,7 +159,7 @@ public class SearchCommand implements AutoCloseable
 	{
 		this.c = c;
 		sql.apd(string);
-		Arrays.asList(parameters).stream().forEach(e -> sql.add(e));
+		Arrays.asList(parameters).forEach(sql::add);
 	}
 
 	public void setMaxRows(Integer maxRows)
@@ -230,18 +230,18 @@ public class SearchCommand implements AutoCloseable
 			ps.setMaxRows(maxRows);
 		if (queryTimeout != null)
 			ps.setQueryTimeout(queryTimeout);
-		sql.getValues().stream().forEach(e -> ps.setParameter(e.getClass(), e));
+		sql.getValues().forEach(e -> ps.setParameter(e.getClass(), e));
 		return ps.getCursor();
 	}
 
-	public int executeUpdate() throws ConstraintViolationException, FKViolationException, UKViolationException
+	public int executeUpdate() throws ConstraintViolationException
 	{
 		ps = c.createCommand(sql.toString());
 		if (maxRows != null)
 			ps.setMaxRows(maxRows);
 		if (queryTimeout != null)
 			ps.setQueryTimeout(queryTimeout);
-		sql.getValues().stream().forEach(e -> ps.setParameter(e.getClass(), e));
+		sql.getValues().forEach(e -> ps.setParameter(e.getClass(), e));
 		return ps.execute();
 	}
 

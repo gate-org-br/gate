@@ -238,12 +238,12 @@ public class Select implements Clause
 		return ordering != null
 			? Select.from(type)
 				.properties(GQN.getProperties())
-				.where(GQN.getCondition(e -> Entity.getFullColumnName(e)))
+				.where(GQN.getCondition(Entity::getFullColumnName))
 				.orderBy(ordering)
 				.build()
 			: Select.from(type)
 				.properties(GQN.getProperties())
-				.where(GQN.getCondition(e -> Entity.getFullColumnName(e)))
+				.where(GQN.getCondition(Entity::getFullColumnName))
 				.build();
 	}
 

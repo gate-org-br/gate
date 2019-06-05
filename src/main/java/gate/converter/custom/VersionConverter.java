@@ -11,13 +11,14 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class VersionConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Arrays.asList(new Pattern.Implementation(Version.PATTERN.toString()));
+			= Collections.singletonList(new Pattern.Implementation(Version.PATTERN.toString()));
 
 	@Override
 	public String getMask()

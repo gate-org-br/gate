@@ -54,7 +54,7 @@ public final class Month implements Comparable<Month>, Serializable
 	@Override
 	public int compareTo(Month month)
 	{
-		return getValue() > month.getValue() ? 1 : getValue() < month.getValue() ? -1 : 0;
+		return Long.compare(getValue(), month.getValue());
 	}
 
 	@Override

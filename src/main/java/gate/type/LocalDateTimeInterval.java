@@ -95,7 +95,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 		return new Formatter<LocalDateTimeInterval>()
 		{
 			@Override
-			public LocalDateTimeInterval parse(String source) throws ParseException
+			public LocalDateTimeInterval parse(String source)
 			{
 				Matcher matcher = PATTERN.matcher(source.trim());
 				if (!matcher.matches())

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -34,7 +35,7 @@ public class AccessCode
 			PublicKey publicKey = (PublicKey) stream.readObject();
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(Cipher.DECRYPT_MODE, publicKey);
-			String string = new String(cipher.doFinal(Base64.getDecoder().decode(value)), "UTF-8");
+			String string = new String(cipher.doFinal(Base64.getDecoder().decode(value)), StandardCharsets.UTF_8);
 			macAddress = string.substring(0, 13);
 			period = new DateInterval(Date.of(string.substring(0, 21)), Date.of(string.substring(0, 21)));
 

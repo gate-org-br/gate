@@ -17,7 +17,7 @@ public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	@Override
-	public List<T> fetch(Cursor rs) throws SQLException, ConversionException
+	public List<T> fetch(Cursor rs)
 	{
 		List<T> result = new ArrayList<>();
 		while (rs.next())

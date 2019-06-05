@@ -57,7 +57,7 @@ public class LocalTimeIntervalConverter implements Converter
 			return LocalTimeInterval.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class LocalTimeIntervalConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		LocalTime min = rs.getObject(fields, LocalTime.class);
 		if (rs.wasNull())

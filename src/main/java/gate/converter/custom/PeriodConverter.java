@@ -40,7 +40,7 @@ public class PeriodConverter implements Converter
 				return Period.of(string);
 			} catch (IllegalArgumentException e)
 			{
-				throw new ConversionException(String.format(getDescription()));
+				throw new ConversionException(getDescription());
 			}
 		}
 
@@ -86,7 +86,7 @@ public class PeriodConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		long value = rs.getLong(fields);
 		return rs.wasNull() ? null : Period.of(value);

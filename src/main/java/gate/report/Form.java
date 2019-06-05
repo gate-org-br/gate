@@ -25,7 +25,7 @@ public class Form extends ReportElement
 	{
 		super(new Style());
 		this.columns = 8;
-		form.getFields().stream().forEach((e) ->
+		form.getFields().forEach((e) ->
 		{
 			if (Boolean.TRUE.equals(e.getMultiple()))
 				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1).height(40f));

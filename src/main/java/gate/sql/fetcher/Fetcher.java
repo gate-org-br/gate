@@ -19,8 +19,6 @@ public interface Fetcher<T>
 	 * @param cursor the cursor to be fetched
 	 *
 	 * @return the results as a object of the specified type
-	 * @throws SQLException if a SQLException is thrown while fetching the results
-	 * @throws ConversionException if the result cannot be converted to an object of the specified type
 	 */
-	T fetch(Cursor cursor) throws SQLException, ConversionException;
+	T fetch(Cursor cursor);
 }

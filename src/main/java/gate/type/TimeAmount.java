@@ -8,7 +8,7 @@ public abstract class TimeAmount extends Number
 
 	private static final long serialVersionUID = 1L;
 
-	protected long value;
+	protected final long value;
 	protected final static long S = 1;
 	protected final static long M = 60 * S;
 	protected final static long H = 60 * M;

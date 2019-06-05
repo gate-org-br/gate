@@ -69,8 +69,8 @@ public class ObjectConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-			throws SQLException, ConversionException,
-			ConversionException
+			throws SQLException,
+		ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(type, value);
@@ -84,8 +84,7 @@ public class ObjectConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException,
-			ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, toString(value.getClass(), value));

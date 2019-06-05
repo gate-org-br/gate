@@ -52,7 +52,7 @@ public class ProcessNumber implements Serializable, Cloneable
 	}
 
 	@Override
-	protected ProcessNumber clone() throws CloneNotSupportedException
+	protected ProcessNumber clone()
 	{
 		return new ProcessNumber(value);
 	}

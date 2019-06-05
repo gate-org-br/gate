@@ -3,6 +3,8 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.custom.PeriodConverter;
 import static gate.type.TimeAmount.H;
+
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -129,21 +131,21 @@ public class Period extends TimeAmount
 
 	public static <T> Period sum(Stream<Period> durations)
 	{
-		return new Period(durations.filter(e -> e != null).mapToLong(Period::getValue).sum());
+		return new Period(durations.filter(Objects::nonNull).mapToLong(Period::getValue).sum());
 	}
 
 	public static <T> Period avg(Stream<Period> durations)
 	{
-		return new Period((long) durations.filter(e -> e != null).mapToLong(Period::getValue).average().orElse(0));
+		return new Period((long) durations.filter(Objects::nonNull).mapToLong(Period::getValue).average().orElse(0));
 	}
 
 	public static <T> Period max(Stream<Period> durations)
 	{
-		return new Period(durations.filter(e -> e != null).mapToLong(Period::getValue).max().orElse(0));
+		return new Period(durations.filter(Objects::nonNull).mapToLong(Period::getValue).max().orElse(0));
 	}
 
 	public static <T> Period min(Stream<Period> durations)
 	{
-		return new Period(durations.filter(e -> e != null).mapToLong(Period::getValue).max().orElse(0));
+		return new Period(durations.filter(Objects::nonNull).mapToLong(Period::getValue).max().orElse(0));
 	}
 }

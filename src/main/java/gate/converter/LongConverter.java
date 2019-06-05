@@ -94,7 +94,7 @@ public class LongConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		long value = rs.getLong(fields);
 		return rs.wasNull() ? null : value;

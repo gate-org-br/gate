@@ -182,7 +182,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	{
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonString)
-			.map(e -> e.toString());
+			.map(Object::toString);
 	}
 
 	public Optional<Integer> getInt(String key)
@@ -190,7 +190,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.intValue());
+			.map(JsonNumber::intValue);
 	}
 
 	public Optional<Long> getLong(String key)
@@ -198,7 +198,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.longValue());
+			.map(JsonNumber::longValue);
 	}
 
 	public Optional<Short> getShort(String key)
@@ -206,7 +206,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.shortValue());
+			.map(JsonNumber::shortValue);
 	}
 
 	public Optional<Byte> getByte(String key)
@@ -214,7 +214,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.byteValue());
+			.map(JsonNumber::byteValue);
 	}
 
 	public Optional<Float> getFloat(String key)
@@ -222,7 +222,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.floatValue());
+			.map(JsonNumber::floatValue);
 	}
 
 	public JsonObject setObject(String key, Object value)
@@ -263,7 +263,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonNumber)
 			.map(e -> (JsonNumber) e)
-			.map(e -> e.doubleValue());
+			.map(JsonNumber::doubleValue);
 	}
 
 	public Optional<Boolean> getBoolean(String key)
@@ -271,7 +271,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return Optional.ofNullable(get(key))
 			.filter(e -> e instanceof JsonBoolean)
 			.map(e -> (JsonBoolean) e)
-			.map(e -> e.getValue());
+			.map(JsonBoolean::getValue);
 	}
 
 	public Optional<JsonObject> getJsonObject(String key)

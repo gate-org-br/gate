@@ -52,7 +52,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 	}
 
 	public static MimeDataFile of(File file)
-			throws FileNotFoundException, IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
 				= new BufferedInputStream(new FileInputStream(file)))
@@ -68,7 +68,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 	}
 
 	public static MimeDataFile of(URL url)
-			throws FileNotFoundException, IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
 				= new BufferedInputStream(url.openStream()))

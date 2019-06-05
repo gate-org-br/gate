@@ -7,6 +7,7 @@ import gate.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ElementType(ID.class)
@@ -39,7 +40,7 @@ public class IDS extends ArrayList<ID>
 	@Override
 	public String toString()
 	{
-		return stream().filter(e -> e != null).map(e -> e.toString()).collect(Collectors.joining(", "));
+		return stream().filter(Objects::nonNull).map(ID::toString).collect(Collectors.joining(", "));
 	}
 
 	@Override

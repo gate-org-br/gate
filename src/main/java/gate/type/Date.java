@@ -45,7 +45,7 @@ public final class Date implements Comparable<Date>, Serializable
 	@Override
 	public int compareTo(Date date)
 	{
-		return getValue() > date.getValue() ? 1 : getValue() < date.getValue() ? -1 : 0;
+		return Long.compare(getValue(), date.getValue());
 	}
 
 	@Override

@@ -84,6 +84,19 @@ public final class Entity
 		return properties;
 	}
 
+	public static List<Property> getProperties(Class<?> type)
+	{
+		return getProperties(type, e -> true);
+	}
+
+	public static String[] getFullGQN(Class<?> type)
+	{
+		return getProperties(type)
+			.stream().map(Property::toString)
+			.map(e -> "=" + e)
+			.toArray(String[]::new);
+	}
+
 	public static Stream<String> getColumnNames(Class<?> type, String name)
 	{
 		Property property = Property.getProperty(type, name);

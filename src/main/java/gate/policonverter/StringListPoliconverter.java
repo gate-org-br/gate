@@ -9,20 +9,18 @@ public class StringListPoliconverter extends Policonverter
 
 	@Override
 	public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
 	{
 		return new StringList(value);
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		throw new java.lang.UnsupportedOperationException();
 	}
 
 	@Override
 	public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 	{
 		return ((StringList) value).toArray();
 	}
@@ -38,14 +36,12 @@ public class StringListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-				throws ConversionException
 		{
 			return new StringList.Comma(value);
 		}
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-				throws ConversionException
 		{
 			return ((StringList.Comma) value).toArray();
 		}
@@ -56,14 +52,12 @@ public class StringListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-				throws ConversionException
 		{
 			return new StringList.Semicolon(value);
 		}
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-				throws ConversionException
 		{
 			return ((StringList.Semicolon) value).toArray();
 		}
@@ -74,14 +68,12 @@ public class StringListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-				throws ConversionException
 		{
 			return new StringList.LineBreak(value);
 		}
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-				throws ConversionException
 		{
 			return ((StringList.LineBreak) value).toArray();
 		}

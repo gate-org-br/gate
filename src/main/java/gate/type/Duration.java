@@ -3,6 +3,8 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DurationConverter;
+
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -154,22 +156,22 @@ public class Duration extends TimeAmount
 
 	public static <T> Duration sum(Stream<Duration> durations)
 	{
-		return new Duration(durations.filter(e -> e != null).mapToLong(Duration::getValue).sum());
+		return new Duration(durations.filter(Objects::nonNull).mapToLong(Duration::getValue).sum());
 	}
 
 	public static <T> Duration avg(Stream<Duration> durations)
 	{
-		return new Duration((long) durations.filter(e -> e != null).mapToLong(Duration::getValue).average().orElse(0));
+		return new Duration((long) durations.filter(Objects::nonNull).mapToLong(Duration::getValue).average().orElse(0));
 	}
 
 	public static <T> Duration max(Stream<Duration> durations)
 	{
-		return new Duration(durations.filter(e -> e != null).mapToLong(Duration::getValue).max().orElse(0));
+		return new Duration(durations.filter(Objects::nonNull).mapToLong(Duration::getValue).max().orElse(0));
 	}
 
 	public static <T> Duration min(Stream<Duration> durations)
 	{
-		return new Duration(durations.filter(e -> e != null).mapToLong(Duration::getValue).max().orElse(0));
+		return new Duration(durations.filter(Objects::nonNull).mapToLong(Duration::getValue).max().orElse(0));
 	}
 
 }

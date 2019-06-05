@@ -81,7 +81,7 @@ public class DoubleConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		double value = rs.getDouble(fields);
 		return rs.wasNull() ? null : value;

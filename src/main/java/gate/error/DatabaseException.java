@@ -16,25 +16,22 @@ public class DatabaseException extends RuntimeException
 
 	public static void handle(Link link, SQLException cause)
 			throws DatabaseException,
-			ConstraintViolationException,
-			FKViolationException,
-			UKViolationException
+			ConstraintViolationException
 	{
 		try
 		{
-			switch (link.getConnection().getMetaData()
-					.getDatabaseProductName().toUpperCase())
+			if ("MYSQL".equals(link.getConnection().getMetaData()
+				.getDatabaseProductName().toUpperCase()))
 			{
-				case "MYSQL":
-					switch (cause.getErrorCode())
-					{
-						case 1062:
-						case 1586:
-							throw new UKViolationException(cause);
-						case 1451:
-						case 1452:
-							throw new FKViolationException(cause);
-					}
+				switch (cause.getErrorCode())
+				{
+					case 1062:
+					case 1586:
+						throw new UKViolationException(cause);
+					case 1451:
+					case 1452:
+						throw new FKViolationException(cause);
+				}
 			}
 
 			switch (cause.getSQLState())

@@ -81,7 +81,7 @@ public final class MimeMail<T extends Mime> implements Serializable
 	public static MimeMail<MimeList> of(String subject, Mime... mime)
 	{
 		MimeList mimeList = new MimeList();
-		Stream.of(mime).forEach(e -> mimeList.add(e));
+		Stream.of(mime).forEach(mimeList::add);
 		return new MimeMail<>(Priority.NORMAL, subject, mimeList);
 	}
 
@@ -97,7 +97,7 @@ public final class MimeMail<T extends Mime> implements Serializable
 	public static MimeMail<MimeList> of(Priority priority, String subject, Mime... mime)
 	{
 		MimeList mimeList = new MimeList();
-		Stream.of(mime).forEach(e -> mimeList.add(e));
+		Stream.of(mime).forEach(mimeList::add);
 		return new MimeMail<>(priority, subject, mimeList);
 	}
 

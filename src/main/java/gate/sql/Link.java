@@ -685,9 +685,7 @@ public class Link implements AutoCloseable
 		return new UpdateOperation<T>()
 		{
 			@Override
-			public int execute(Collection<T> values) throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+			public int execute(Collection<T> values) throws ConstraintViolationException
 			{
 				return Update.type(type).build().values(values).connect(Link.this).execute();
 			}
@@ -718,9 +716,7 @@ public class Link implements AutoCloseable
 		return new DeleteOperation<T>()
 		{
 			@Override
-			public int execute(Collection<T> values) throws ConstraintViolationException,
-					FKViolationException,
-					UKViolationException
+			public int execute(Collection<T> values) throws ConstraintViolationException
 			{
 				return Delete.from(type).build().values(values).connect(Link.this).execute();
 			}

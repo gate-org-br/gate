@@ -30,13 +30,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	@Override
 	public <T> T fetch(Fetcher<T> fetcher)
 	{
-		try
-		{
-			return fetcher.fetch(this);
-		} catch (ConversionException | SQLException e)
-		{
-			throw new UnsupportedOperationException(e);
-		}
+		return fetcher.fetch(this);
 	}
 
 	@Override

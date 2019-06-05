@@ -10,23 +10,21 @@ public class CharacterListPoliconverter extends Policonverter
 
 	@Override
 	public Object getObject(Class<?> type, String[] value)
-		throws ConversionException
 	{
 		return new CharacterList(Stream.of(value)
 			.map(e -> e.charAt(0)).toArray(Character[]::new));
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		throw new java.lang.UnsupportedOperationException();
 	}
 
 	@Override
 	public String[] getString(Class<?> type, Object value)
-		throws ConversionException
 	{
-		return Stream.of(((CharacterList) value).toArray()).map(e -> String.valueOf(e))
+		return Stream.of(((CharacterList) value).toArray()).map(String::valueOf)
 			.toArray(String[]::new);
 	}
 
@@ -41,7 +39,6 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
 		{
 			return new CharacterList.Comma(Stream.of(value).filter(e -> !e.isEmpty())
 				.map(e -> e.charAt(0)).toArray(Character[]::new));
@@ -49,9 +46,8 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 		{
-			return Stream.of(((CharacterList.Comma) value).toArray()).map(e -> String.valueOf(e))
+			return Stream.of(((CharacterList.Comma) value).toArray()).map(String::valueOf)
 				.toArray(String[]::new);
 		}
 	}
@@ -61,7 +57,6 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
 		{
 			return new CharacterList.Semicolon(Stream.of(value).filter(e -> !e.isEmpty())
 				.map(e -> e.charAt(0)).toArray(Character[]::new));
@@ -69,9 +64,8 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 		{
-			return Stream.of(((CharacterList.Semicolon) value).toArray()).map(e -> String.valueOf(e))
+			return Stream.of(((CharacterList.Semicolon) value).toArray()).map(String::valueOf)
 				.toArray(String[]::new);
 
 		}
@@ -82,7 +76,6 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
 		{
 			return new CharacterList.LineBreak(Stream.of(value).filter(e -> !e.isEmpty())
 				.map(e -> e.charAt(0)).toArray(Character[]::new));
@@ -90,9 +83,8 @@ public class CharacterListPoliconverter extends Policonverter
 
 		@Override
 		public String[] getString(Class<?> type, Object value)
-			throws ConversionException
 		{
-			return Stream.of(((CharacterList.LineBreak) value).toArray()).map(e -> String.valueOf(e))
+			return Stream.of(((CharacterList.LineBreak) value).toArray()).map(String::valueOf)
 				.toArray(String[]::new);
 		}
 	}

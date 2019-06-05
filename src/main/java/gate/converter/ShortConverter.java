@@ -94,7 +94,7 @@ public class ShortConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		short value = rs.getShort(fields);
 		return rs.wasNull() ? null : value;

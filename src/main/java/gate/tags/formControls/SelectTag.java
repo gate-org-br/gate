@@ -55,7 +55,7 @@ public class SelectTag extends SelectorTag
 		else
 			print(0, options);
 
-		getJspContext().getOut().println(String.format("</select>"));
+		getJspContext().getOut().println("</select>");
 	}
 
 	private void print(int level, Iterable<?> options) throws IOException, JspException

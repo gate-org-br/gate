@@ -33,11 +33,9 @@ public class TypedObjectFetcher<T> implements Fetcher<Optional<T>>
 	 * @return an Optional describing the first column of the first row as a java object of the specified type or an
 	 * empty Optional if the result is empty
 	 *
-	 * @throws java.sql.SQLException if a SQLException is thrown when fetching results
-	 * @throws gate.error.ConversionException if the result cannot be converted to a java object
 	 */
 	@Override
-	public Optional<T> fetch(Cursor cursor) throws SQLException, ConversionException
+	public Optional<T> fetch(Cursor cursor)
 	{
 		if (!cursor.next())
 			return Optional.empty();

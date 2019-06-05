@@ -40,7 +40,7 @@ public class ZipLineReader implements Reader<List<String>>
 
 	public static ZipLineReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, e -> new ZipLineReader(e));
+		return INSTANCES.computeIfAbsent(charset, ZipLineReader::new);
 	}
 
 	@Override

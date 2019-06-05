@@ -57,7 +57,7 @@ public class MonthIntervalConverter implements Converter
 			return MonthInterval.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -86,7 +86,7 @@ public class MonthIntervalConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		java.sql.Date value1 = rs.getDate(fields);
 		if (rs.wasNull())

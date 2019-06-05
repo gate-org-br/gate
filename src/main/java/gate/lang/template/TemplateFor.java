@@ -36,7 +36,7 @@ class TemplateFor implements Evaluable
 			if (values instanceof Collection<?>)
 				iterable = (Collection<?>) values;
 			else if (values instanceof Object[])
-				iterable = Arrays.asList(values);
+				iterable = Collections.singletonList(values);
 			else if (values instanceof Map<?, ?>)
 				iterable = ((Map<?, ?>) values).entrySet();
 			else

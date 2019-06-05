@@ -37,7 +37,7 @@ public class GQN<T>
 	public List<Property> getProperties()
 	{
 		return Stream.of(notation)
-			.map(e -> GQN.getProperty(e))
+			.map(GQN::getProperty)
 			.map(e -> Property.getProperty(type, e))
 			.collect(Collectors.toList());
 	}

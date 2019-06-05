@@ -68,7 +68,7 @@ public class DataURL
 		if (subtype != null)
 			string.append('/').append(subtype);
 
-		parameters.entrySet().stream().forEach(e -> string.append(';')
+		parameters.entrySet().forEach(e -> string.append(';')
 			.append(e.getKey()).append('=').append(e.getValue()));
 
 		if (base64)

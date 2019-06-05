@@ -49,17 +49,17 @@ public class Toolkit
 		return 1;
 	}
 
-	public static String write(Object object) throws ConversionException
+	public static String write(Object object)
 	{
 		return Converter.toString(object);
 	}
 
-	public static String print(Object object) throws ConversionException
+	public static String print(Object object)
 	{
 		return Converter.toText(object);
 	}
 
-	public static String print(Object object, String format) throws ConversionException
+	public static String print(Object object, String format)
 	{
 		return Converter.toText(object, format);
 	}
@@ -108,7 +108,7 @@ public class Toolkit
 		else if (obj instanceof Collection)
 			return new ArrayList((Collection) obj);
 		else if (obj.getClass().isArray())
-			return Arrays.asList(obj);
+			return Collections.singletonList(obj);
 		else
 			return Collections.singletonList(obj);
 	}

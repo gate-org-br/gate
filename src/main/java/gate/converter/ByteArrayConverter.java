@@ -37,20 +37,20 @@ public class ByteArrayConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
-			throws SQLException, ConversionException
+			throws SQLException
 	{
 		return rs.getBytes(index);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-			Class<?> type) throws SQLException, ConversionException
+			Class<?> type) throws SQLException
 	{
 		return rs.getBytes(fields);
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException, ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		if (value != null)
 			ps.setBytes(index, (byte[]) value);
@@ -68,7 +68,7 @@ public class ByteArrayConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Class<?> type, String string)
 	{
 		if (string == null)
 			return null;

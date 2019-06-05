@@ -69,7 +69,7 @@ public class DataFileConverter implements Converter
 	}
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Class<?> type, Part part)
 	{
 		if (part == null
 				|| part.getSubmittedFileName().isEmpty())
@@ -131,7 +131,7 @@ public class DataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-			throws SQLException, ConversionException, ConversionException
+			throws SQLException
 	{
 		String name = rs.getString(fields);
 		if (rs.wasNull())
@@ -147,7 +147,7 @@ public class DataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
-			throws SQLException, ConversionException
+			throws SQLException
 	{
 		String name = rs.getString(fields + ":" + SUFIXES.get(0));
 		if (rs.wasNull())
@@ -162,8 +162,7 @@ public class DataFileConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException,
-			ConversionException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
 		{

@@ -41,7 +41,7 @@ public class AuthScreen extends Screen
 	@Icon("search")
 	@Name("Pesquisar")
 	@Description("Pesquisar acessos")
-	public String callSearch() throws AppException
+	public String callSearch()
 	{
 		return "/WEB-INF/views/gateconsole/Auth/ViewSearch.jsp";
 	}

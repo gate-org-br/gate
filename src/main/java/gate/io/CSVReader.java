@@ -40,7 +40,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static CSVReader getInstance(String charset)
 	{
-		return Instance.VALUES.computeIfAbsent(charset, e -> new CSVReader(e));
+		return Instance.VALUES.computeIfAbsent(charset, CSVReader::new);
 	}
 
 	public static List<List<String>> load(byte[] bytes) throws IOException
@@ -110,8 +110,8 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	private static class Instance
 	{
 
-		public static CSVReader VALUE = new CSVReader();
-		private static ConcurrentMap<String, CSVReader> VALUES = new ConcurrentHashMap<String, CSVReader>();
+		public static final CSVReader VALUE = new CSVReader();
+		private static final ConcurrentMap<String, CSVReader> VALUES = new ConcurrentHashMap<String, CSVReader>();
 	}
 
 }

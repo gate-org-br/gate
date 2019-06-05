@@ -18,7 +18,7 @@ public class IconTag extends DynamicAttributeTag
 	}
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void doTag()
 	{
 		try
 		{

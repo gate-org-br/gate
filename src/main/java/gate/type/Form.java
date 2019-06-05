@@ -42,7 +42,7 @@ public class Form implements Serializable
 	public String toString()
 	{
 		return getFields().stream()
-			.map(e -> e.toString())
+			.map(Field::toString)
 			.collect(Collectors.joining(",", "[", "]"));
 	}
 
@@ -73,7 +73,7 @@ public class Form implements Serializable
 		return forms.stream()
 			.flatMap(e -> e.getFields().stream())
 			.filter(e -> !e.getOptions().isEmpty())
-			.collect(Collectors.groupingBy(e -> e.getName(),
+			.collect(Collectors.groupingBy(Field::getName,
 				Collectors.collectingAndThen(Collectors.toList(),
 					e -> e.stream().flatMap(v -> v.getValue().stream())
 						.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));

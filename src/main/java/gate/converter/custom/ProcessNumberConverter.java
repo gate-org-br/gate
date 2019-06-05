@@ -70,7 +70,7 @@ public class ProcessNumberConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : new ProcessNumber(value);

@@ -13,7 +13,7 @@ import java.util.zip.ZipOutputStream;
 public class ODTTemplate
 {
 
-	public static byte[] evaluate(byte[] file, Object entity) throws AppException, TemplateException
+	public static byte[] evaluate(byte[] file, Object entity) throws TemplateException
 	{
 
 		try

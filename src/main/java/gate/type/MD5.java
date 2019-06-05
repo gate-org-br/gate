@@ -34,10 +34,10 @@ public class MD5 implements Serializable
 			byte[] digest = MessageDigest.getInstance("MD5")
 					.digest(password.getBytes());
 			BigInteger bigInt = new BigInteger(1, digest);
-			String hash = bigInt.toString(16);
+			StringBuilder hash = new StringBuilder(bigInt.toString(16));
 			while (hash.length() < 32)
-				hash = "0" + hash;
-			return new MD5(hash);
+				hash.insert(0, "0");
+			return new MD5(hash.toString());
 		} catch (NoSuchAlgorithmException ex)
 		{
 			throw new AppError(ex.getMessage(), ex);

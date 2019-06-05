@@ -36,14 +36,14 @@ public class OrderBy
 	public static Ordering asc(String... columns)
 	{
 		Ordering ordering = new Ordering();
-		Stream.of(columns).forEach(e -> ordering.asc(e));
+		Stream.of(columns).forEach(ordering::asc);
 		return ordering;
 	}
 
 	public static Ordering desc(String... columns)
 	{
 		Ordering ordering = new Ordering();
-		Stream.of(columns).forEach(e -> ordering.desc(e));
+		Stream.of(columns).forEach(ordering::desc);
 		return ordering;
 	}
 

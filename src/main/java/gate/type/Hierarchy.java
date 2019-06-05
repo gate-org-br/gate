@@ -117,7 +117,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	default Stream<T> stream()
 	{
 		return Stream.concat((Stream<T>) Stream.of(this),
-			getChildren().stream().flatMap(e -> e.stream()));
+			getChildren().stream().flatMap(Hierarchy::stream));
 	}
 
 	/**
@@ -159,7 +159,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	{
 		return getId().equals(id)
 			? (T) this : getChildren().stream().map(e -> e.select(id))
-				.filter(e -> e != null).findFirst().orElse(null);
+				.filter(Objects::nonNull).findFirst().orElse(null);
 	}
 
 	/**
@@ -254,7 +254,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 			}
 		}
 
-		list.stream().forEach(p -> p.setChildren(list.stream()
+		list.forEach(p -> p.setChildren(list.stream()
 			.filter(c -> Objects.equals(c.getParent(), p))
 			.peek(c -> c.setParent(p))
 			.collect(Collectors.toList())));

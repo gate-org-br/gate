@@ -35,7 +35,7 @@ public class DateTimeConverter implements Converter
 			return DateTime.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, String.format(getDescription()));
+			throw new ConversionException(ex, getDescription());
 		}
 	}
 
@@ -77,7 +77,7 @@ public class DateTimeConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		java.sql.Timestamp value = rs.getTimestamp(fields);
 		return rs.wasNull() ? null : DateTime.of(value);

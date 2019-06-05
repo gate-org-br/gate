@@ -10,15 +10,15 @@ public class IntegerListPoliconverter extends Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value) throws ConversionException
+	public Object getObject(Class<?> type, String[] value)
 	{
 		return new IntegerList(value);
 	}
 
 	@Override
-	public String[] getString(Class<?> type, Object value) throws ConversionException
+	public String[] getString(Class<?> type, Object value)
 	{
-		return Stream.of(((IntegerList) value)).map(e -> e.toString()).toArray(String[]::new);
+		return Stream.of(((IntegerList) value)).map(IntegerList::toString).toArray(String[]::new);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class IntegerListPoliconverter extends Policonverter
 	}
 
 	@Override
-	public Object getObject(Class<?> type, Part[] value) throws ConversionException
+	public Object getObject(Class<?> type, Part[] value)
 	{
 		throw new java.lang.UnsupportedOperationException();
 	}
@@ -37,15 +37,15 @@ public class IntegerListPoliconverter extends Policonverter
 	{
 
 		@Override
-		public Object getObject(Class<?> type, String[] value) throws ConversionException
+		public Object getObject(Class<?> type, String[] value)
 		{
 			return new IntegerList.Comma(value);
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return Stream.of(((IntegerList.Comma) value)).map(e -> e.toString()).toArray(String[]::new);
+			return Stream.of(((IntegerList.Comma) value)).map(IntegerList.Comma::toString).toArray(String[]::new);
 		}
 	}
 
@@ -53,15 +53,15 @@ public class IntegerListPoliconverter extends Policonverter
 	{
 
 		@Override
-		public Object getObject(Class<?> type, String[] value) throws ConversionException
+		public Object getObject(Class<?> type, String[] value)
 		{
 			return new IntegerList.Semicolon(value);
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return Stream.of(((IntegerList.Semicolon) value)).map(e -> e.toString()).toArray(String[]::new);
+			return Stream.of(((IntegerList.Semicolon) value)).map(IntegerList.Semicolon::toString).toArray(String[]::new);
 		}
 	}
 
@@ -69,15 +69,15 @@ public class IntegerListPoliconverter extends Policonverter
 	{
 
 		@Override
-		public Object getObject(Class<?> type, String[] value) throws ConversionException
+		public Object getObject(Class<?> type, String[] value)
 		{
 			return new IntegerList.LineBreak(value);
 		}
 
 		@Override
-		public String[] getString(Class<?> type, Object value) throws ConversionException
+		public String[] getString(Class<?> type, Object value)
 		{
-			return Stream.of(((IntegerList.LineBreak) value)).map(e -> e.toString()).toArray(String[]::new);
+			return Stream.of(((IntegerList.LineBreak) value)).map(IntegerList.LineBreak::toString).toArray(String[]::new);
 		}
 	}
 }

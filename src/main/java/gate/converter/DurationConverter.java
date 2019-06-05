@@ -15,13 +15,14 @@ import java.sql.Types;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class DurationConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-		= Arrays.asList(new Pattern.Implementation(DurationFormatter.PATTERN.toString()));
+		= Collections.singletonList(new Pattern.Implementation(DurationFormatter.PATTERN.toString()));
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -79,7 +80,7 @@ public class DurationConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		long value = rs.getLong(fields);
 		return rs.wasNull() ? null : Duration.ofSeconds(value);

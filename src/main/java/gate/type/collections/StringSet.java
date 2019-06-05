@@ -37,7 +37,7 @@ public class StringSet extends HashSet<String>
 
 	public StringSet(Collection<String> values)
 	{
-		values.stream().map(v -> v.trim()).filter(v -> !v.isEmpty()).forEach(v -> add(v));
+		values.stream().map(String::trim).filter(v -> !v.isEmpty()).forEach(this::add);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class StringSet extends HashSet<String>
 
 	public String toString(String join)
 	{
-		return stream().collect(Collectors.joining(join));
+		return String.join(join, this);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class StringSet extends HashSet<String>
 		@Override
 		public String toString()
 		{
-			return stream().collect(Collectors.joining(", "));
+			return String.join(", ", this);
 		}
 
 		@Override
@@ -133,7 +133,7 @@ public class StringSet extends HashSet<String>
 		@Override
 		public String toString()
 		{
-			return stream().collect(Collectors.joining("; "));
+			return String.join("; ", this);
 		}
 
 		@Override
