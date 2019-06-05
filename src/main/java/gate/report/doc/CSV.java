@@ -6,6 +6,7 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
 import gate.report.Column;
+import gate.report.Doc;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Generates CSV documents from objects of type {@link gate.report.Report}.
  */
-@Icon("gate.report.doc.Doc$Type:CSV")
+@Icon("gate.report.Doc$Type:CSV")
 public class CSV extends Doc
 {
 

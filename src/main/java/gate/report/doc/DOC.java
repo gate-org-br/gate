@@ -1,5 +1,6 @@
 package gate.report.doc;
 
+import gate.report.Doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.report.Image;
@@ -43,7 +44,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
 /**
  * Generates XLS documents from objects of type {@link gate.report.Report}.
  */
-@Icon("gate.report.doc.Doc$Type:DOC")
+@Icon("gate.report.Doc$Type:DOC")
 public class DOC extends Doc
 {
 
