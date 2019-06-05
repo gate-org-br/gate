@@ -70,14 +70,14 @@ public class EnumConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		int value = rs.getInt(fields);
 		return rs.wasNull() ? null : type.getEnumConstants()[value];
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		int value = rs.getInt(fields);
 		return rs.wasNull() ? null : type.getEnumConstants()[value];
