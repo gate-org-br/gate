@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -22,6 +23,8 @@ import java.util.Objects;
 @Converter(JsonElementConverter.class)
 public interface JsonElement extends Serializable
 {
+
+	public static final JsonString UNDEFINED = JsonString.of("Indefinido");
 
 	/**
 	 * Gets the type of this JSON element.
@@ -35,7 +38,37 @@ public interface JsonElement extends Serializable
 	 */
 	enum Type
 	{
-		STRING, NUMBER, BOOLEAN, ARRAY, OBJECT, NULL
+		NULL, STRING, NUMBER, BOOLEAN, ARRAY, OBJECT;
+
+		/**
+		 * return the JSON type associated with the specified object.
+		 *
+		 * @param obj the object whose JSON type is to be returned
+		 * @return the JSON type associated with the specified object
+		 */
+		public static Type of(Object obj)
+		{
+			if (obj instanceof Type)
+				return (Type) obj;
+			if (obj instanceof JsonElement)
+				return ((JsonElement) obj).getType();
+
+			if (obj == null)
+				return NULL;
+			if (obj instanceof String)
+				return STRING;
+			if (obj instanceof Number)
+				return NUMBER;
+			if (obj instanceof Boolean)
+				return BOOLEAN;
+			if (obj instanceof Collection<?>)
+				return ARRAY;
+			if (obj instanceof Object[])
+				return ARRAY;
+			if (obj instanceof Map<?, ?>)
+				return OBJECT;
+			return STRING;
+		}
 	}
 
 	static JsonElement parse(String string)
@@ -106,7 +139,9 @@ public interface JsonElement extends Serializable
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
-	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean, JsonNumber, JsonString, JsonArray, JsonArray and JsonNull objects.
+	 * Number, Array and Collection objects will be converted respectively to JsonNumber, JsonArray and JsonArray objects.
+	 * <p>
+	 * null references will be converted to a JsonString representing an undefined value.
 	 * <p>
 	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
 	 *
@@ -117,14 +152,9 @@ public interface JsonElement extends Serializable
 	static JsonElement format(Object obj)
 	{
 		if (obj == null)
-			return JsonNull.INSTANCE;
-		if (obj instanceof Boolean)
-			return JsonBoolean.of((Boolean) obj);
+			return UNDEFINED;
 		if (obj instanceof Number)
 			return JsonNumber.of((Number) obj);
-		if (obj instanceof String)
-			return JsonString.of((String) obj);
-
 		if (obj instanceof Collection<?>)
 			return JsonArray.format((Collection<?>) obj);
 		if (obj instanceof Object[])
