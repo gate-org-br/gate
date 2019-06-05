@@ -22,6 +22,7 @@ import gate.converter.Converter;
 import gate.error.AppError;
 import gate.type.Color;
 import gate.report.Column;
+import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Footer;
 import gate.report.Form;
@@ -32,6 +33,8 @@ import gate.report.LineBreak;
 import gate.report.PageBreak;
 import gate.report.Paragraph;
 import gate.report.Report;
+import static gate.report.Report.Orientation.LANDSCAPE;
+import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
 import gate.report.Style;
 import gate.util.Toolkit;
@@ -44,7 +47,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Generates PDF documents from objects of type {@link gate.report.Report}.
  */
-@Icon("gate.report.doc.Doc$Type:PDF")
+@Icon("gate.report.Doc$Type:PDF")
 public class PDF extends Doc
 {
 
