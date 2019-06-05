@@ -15,7 +15,7 @@ import gate.lang.property.Property;
 import gate.report.Form;
 import gate.report.Grid;
 import gate.report.Report;
-import gate.report.doc.Doc;
+import gate.report.Doc;
 import gate.type.DataFile;
 import gate.type.DateTime;
 import gate.type.mime.MimeData;
