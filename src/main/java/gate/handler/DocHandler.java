@@ -1,7 +1,7 @@
 package gate.handler;
 
 import gate.error.AppError;
-import gate.report.doc.Doc;
+import gate.report.Doc;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
