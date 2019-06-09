@@ -2083,126 +2083,159 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-weight: bold;
   text-align: center;
 }
-*.COOLBAR,
-*.Coolbar {
+cool-bar,
+div.COOLBAR,
+div.Coolbar {
   margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%;
-  padding: 2px;
+  height: 48px;
+  padding: 4px;
+  display: block;
   overflow-x: auto;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
-*.COOLBAR:first-child,
-*.Coolbar:first-child {
+cool-bar:first-child,
+div.COOLBAR:first-child,
+div.Coolbar:first-child {
   margin-top: 0px;
 }
-*.COOLBAR:last-child,
-*.Coolbar:last-child {
+cool-bar:last-child,
+div.COOLBAR:last-child,
+div.Coolbar:last-child {
   margin-bottom: 0px;
 }
-*.COOLBAR:only-child,
-*.Coolbar:only-child {
+cool-bar:only-child,
+div.COOLBAR:only-child,
+div.Coolbar:only-child {
   margin-bottom: 0px;
 }
-*.COOLBAR > *,
-*.Coolbar > * {
+cool-bar > *,
+div.COOLBAR > *,
+div.Coolbar > * {
   margin: 2px;
   height: 36px;
 }
-*.COOLBAR > a,
-*.Coolbar > a,
-*.COOLBAR > button,
-*.Coolbar > button {
+cool-bar > a,
+div.COOLBAR > a,
+div.Coolbar > a,
+cool-bar > button,
+div.COOLBAR > button,
+div.Coolbar > button {
   color: black;
   margin: 2px;
-  width: 36px;
-  padding: 0px;
+  width: auto;
+  padding: 4px;
   float: right;
   display: flex;
-  font-size: 0px;
+  font-size: 10px;
   cursor: pointer;
+  min-width: 90px;
   font-weight: bold;
   border-radius: 5px;
   align-items: center;
-  justify-content: center;
   border: 1px solid #CCCCCC;
+  justify-content: space-between;
   background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
-*.COOLBAR > a:hover,
-*.Coolbar > a:hover,
-*.COOLBAR > button:hover,
-*.Coolbar > button:hover {
+cool-bar > a:hover,
+div.COOLBAR > a:hover,
+div.Coolbar > a:hover,
+cool-bar > button:hover,
+div.COOLBAR > button:hover,
+div.Coolbar > button:hover {
   background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
 }
-*.COOLBAR > a:focus,
-*.Coolbar > a:focus,
-*.COOLBAR > button:focus,
-*.Coolbar > button:focus {
+cool-bar > a:focus,
+div.COOLBAR > a:focus,
+div.Coolbar > a:focus,
+cool-bar > button:focus,
+div.COOLBAR > button:focus,
+div.Coolbar > button:focus {
   outline: none;
   border: 2px solid #FFFACD;
 }
-*.COOLBAR > a.Delete,
-*.Coolbar > a.Delete,
-*.COOLBAR > button.Delete,
-*.Coolbar > button.Delete {
+cool-bar > a.Delete,
+div.COOLBAR > a.Delete,
+div.Coolbar > a.Delete,
+cool-bar > button.Delete,
+div.COOLBAR > button.Delete,
+div.Coolbar > button.Delete {
   color: #660000;
 }
-*.COOLBAR > a.Commit,
-*.Coolbar > a.Commit,
-*.COOLBAR > button.Commit,
-*.Coolbar > button.Commit {
+cool-bar > a.Commit,
+div.COOLBAR > a.Commit,
+div.Coolbar > a.Commit,
+cool-bar > button.Commit,
+div.COOLBAR > button.Commit,
+div.Coolbar > button.Commit {
   color: #006600;
 }
-*.COOLBAR > a.Action,
-*.Coolbar > a.Action,
-*.COOLBAR > button.Action,
-*.Coolbar > button.Action {
+cool-bar > a.Action,
+div.COOLBAR > a.Action,
+div.Coolbar > a.Action,
+cool-bar > button.Action,
+div.COOLBAR > button.Action,
+div.Coolbar > button.Action {
   color: #000066;
 }
-*.COOLBAR > a.Cancel,
-*.Coolbar > a.Cancel,
-*.COOLBAR > button.Cancel,
-*.Coolbar > button.Cancel {
+cool-bar > a.Cancel,
+div.COOLBAR > a.Cancel,
+div.Coolbar > a.Cancel,
+cool-bar > button.Cancel,
+div.COOLBAR > button.Cancel,
+div.Coolbar > button.Cancel {
   color: #660000;
   float: left;
 }
-*.COOLBAR > a.Return,
-*.Coolbar > a.Return,
-*.COOLBAR > button.Return,
-*.Coolbar > button.Return {
+cool-bar > a.Return,
+div.COOLBAR > a.Return,
+div.Coolbar > a.Return,
+cool-bar > button.Return,
+div.COOLBAR > button.Return,
+div.Coolbar > button.Return {
   color: #660000;
   float: left;
 }
-*.COOLBAR > a > i,
-*.Coolbar > a > i,
-*.COOLBAR > button > i,
-*.Coolbar > button > i,
-*.COOLBAR > a > span,
-*.Coolbar > a > span,
-*.COOLBAR > button > span,
-*.Coolbar > button > span {
+cool-bar > a > i,
+div.COOLBAR > a > i,
+div.Coolbar > a > i,
+cool-bar > button > i,
+div.COOLBAR > button > i,
+div.Coolbar > button > i,
+cool-bar > a > span,
+div.COOLBAR > a > span,
+div.Coolbar > a > span,
+cool-bar > button > span,
+div.COOLBAR > button > span,
+div.Coolbar > button > span {
   order: 1;
   display: flex;
   color: inherit;
   cursor: inherit;
-  font-size: 16px;
+  font-size: 12px;
+  margin-left: 4px;
   align-items: center;
   justify-content: center;
 }
-*.COOLBAR > a:only-child,
-*.Coolbar > a:only-child,
-*.COOLBAR > button:only-child,
-*.Coolbar > button:only-child {
+cool-bar > a:only-child,
+div.COOLBAR > a:only-child,
+div.Coolbar > a:only-child,
+cool-bar > button:only-child,
+div.COOLBAR > button:only-child,
+div.Coolbar > button:only-child {
   float: right;
 }
-*.COOLBAR > progress,
-*.Coolbar > progress {
+cool-bar > progress,
+div.COOLBAR > progress,
+div.Coolbar > progress {
   width: 100%;
 }
-*.COOLBAR > label,
-*.Coolbar > label {
+cool-bar > label,
+div.COOLBAR > label,
+div.Coolbar > label {
   float: left;
   padding: 4px;
   font-size: 16px;
@@ -2210,8 +2243,9 @@ table.TREEVIEW > tbody > tr > td:first-child {
   display: inline-flex;
   justify-content: flex-start;
 }
-*.COOLBAR > hr,
-*.Coolbar > hr {
+cool-bar > hr,
+div.COOLBAR > hr,
+div.Coolbar > hr {
   width: 12px;
   float: right;
   max-width: 12px;
@@ -2219,206 +2253,25 @@ table.TREEVIEW > tbody > tr > td:first-child {
   border: 0px none transparent;
   background-color: transparent;
 }
-*.COOLBAR .full,
-*.Coolbar .full {
-  width: auto;
-  padding: 4px;
-  font-size: 10px;
-  min-width: 90px;
-  justify-content: space-between;
+cool-bar[data-overflow],
+div.COOLBAR[data-overflow],
+div.Coolbar[data-overflow] {
+  height: auto;
 }
-*.COOLBAR .full > i,
-*.Coolbar .full > i {
-  font-size: 12px;
-  margin-left: 4px;
+cool-bar[data-overflow] > a,
+div.COOLBAR[data-overflow] > a,
+div.Coolbar[data-overflow] > a {
+  width: 36px;
+  padding: 0px;
+  font-size: 0px;
+  min-width: 0px;
+  justify-content: center;
 }
-*.COOLBAR > *:not(progress):only-child,
-*.Coolbar > *:not(progress):only-child,
-*.COOLBAR > *:not(progress):first-child:nth-last-child(2),
-*.Coolbar > *:not(progress):first-child:nth-last-child(2),
-*.COOLBAR > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress),
-*.Coolbar > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress) {
-  width: auto;
-  padding: 4px;
-  font-size: 10px;
-  min-width: 90px;
-  justify-content: space-between;
-}
-*.COOLBAR > *:not(progress):only-child > i,
-*.Coolbar > *:not(progress):only-child > i,
-*.COOLBAR > *:not(progress):first-child:nth-last-child(2) > i,
-*.Coolbar > *:not(progress):first-child:nth-last-child(2) > i,
-*.COOLBAR > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress) > i,
-*.Coolbar > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress) > i {
-  font-size: 12px;
-  margin-left: 4px;
-}
-@media only screen and (min-width: 576px) {
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(3),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(3),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(4),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(4),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(5),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(5),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(6),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(6),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress) {
-    width: auto;
-    padding: 4px;
-    font-size: 10px;
-    min-width: 90px;
-    justify-content: space-between;
-  }
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(3) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(3) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(4) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(4) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(5) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(5) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(6) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(6) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress) > i {
-    font-size: 12px;
-    margin-left: 4px;
-  }
-}
-@media only screen and (min-width: 768px) {
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(7),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(7),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(8),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(8),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress) {
-    width: auto;
-    padding: 4px;
-    font-size: 10px;
-    min-width: 90px;
-    justify-content: space-between;
-  }
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(7) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(7) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(8) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(8) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress) > i {
-    font-size: 12px;
-    margin-left: 4px;
-  }
-}
-@media only screen and (min-width: 992px) {
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(9),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(9),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(10),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(10),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress) {
-    width: auto;
-    padding: 4px;
-    font-size: 10px;
-    min-width: 90px;
-    justify-content: space-between;
-  }
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(9) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(9) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(10) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(10) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress) > i {
-    font-size: 12px;
-    margin-left: 4px;
-  }
-}
-@media only screen and (min-width: 1200px) {
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(11),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(11),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(12),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(12),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress) {
-    width: auto;
-    padding: 4px;
-    font-size: 10px;
-    min-width: 90px;
-    justify-content: space-between;
-  }
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(11) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(11) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(12) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(12) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress) > i {
-    font-size: 12px;
-    margin-left: 4px;
-  }
-}
-@media only screen and (min-width: 1800px) {
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(13),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(13),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(14),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(14),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(15),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(15),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(16),
-  *.Coolbar > *:not(progress):first-child:nth-last-child(16),
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(16) ~ *,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(16) ~ * {
-    width: auto;
-    padding: 4px;
-    font-size: 10px;
-    min-width: 90px;
-    justify-content: space-between;
-  }
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(13) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(13) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(14) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(14) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(15) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(15) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(16) > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(16) > i,
-  *.COOLBAR > *:not(progress):first-child:nth-last-child(16) ~ * > i,
-  *.Coolbar > *:not(progress):first-child:nth-last-child(16) ~ * > i {
-    font-size: 12px;
-    margin-left: 4px;
-  }
+cool-bar[data-overflow] > a > i,
+div.COOLBAR[data-overflow] > a > i,
+div.Coolbar[data-overflow] > a > i {
+  font-size: 16px;
+  margin-left: 0px;
 }
 div.Toolbar,
 div.TOOLBAR {

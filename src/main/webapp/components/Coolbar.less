@@ -1,125 +1,94 @@
-*.COOLBAR, *.Coolbar { .margin();
-		       width: 100%;
-		       padding: 2px;
-		       overflow-x: auto;
-		       border-radius: 5px;
-		       background-image: @main_gradient;
+cool-bar, 
+div.COOLBAR, 
+div.Coolbar { .margin();
+	      width: 100%;
+	      height: 48px;
+	      padding: 4px;
+	      display: block;
+	      overflow-x: auto;
+	      border-radius: 5px;
+	      background-image: @main_gradient;
 
-		       > * { margin: 2px;
-			     height: 36px; }
+	      > * { margin: 2px;
+		    height: 36px; }
 
-		       > a ,
-		       > button { color: black;
-				  margin: 2px;
-				  width: 36px;
-				  padding: 0px;
-				  float: right;
+	      > a ,
+	      > button { color: black;
+			 margin: 2px;
+			 width: auto;
+			 padding: 4px;
+			 float: right;
+			 display: flex;
+			 font-size: 10px;
+			 cursor: pointer;
+			 min-width: 90px;
+			 font-weight: bold;
+			 border-radius: 5px;
+			 align-items: center;
+			 border: 1px solid #CCCCCC;
+			 justify-content: space-between;
+			 background-image: @neutral_gradient;
+
+
+			 &:hover { background-image: @acent_gradient }
+			 &:focus { outline: none; border: 2px solid @hovered; }
+
+
+			 &.Delete { color: @R }
+
+			 &.Commit { color: @G }
+
+			 &.Action { color: @B; }
+
+			 &.Cancel { color: @R; float: left; }
+
+			 &.Return { color: @R; float: left; }
+
+			 > i,
+			 > span { order: 1;
 				  display: flex;
-				  font-size: 0px;
-				  cursor: pointer;
-				  font-weight: bold;
-				  border-radius: 5px;
+				  color: inherit;
+				  cursor: inherit;
+				  font-size: 12px;
+				  margin-left: 4px;
 				  align-items: center;
-				  justify-content: center;
-				  border: 1px solid #CCCCCC;
-				  background-image: @neutral_gradient;
+				  justify-content: center; }
 
+			 &:only-child { float: right }
+	      }
 
-				  &:hover { background-image: @acent_gradient }
-				  &:focus { outline: none; border: 2px solid @hovered; }
+	      > progress { width: 100% }
 
+	      > label { float: left;
+			padding: 4px;
+			font-size: 16px;
+			align-items: center;
+			display: inline-flex;
+			justify-content: flex-start;}
 
-				  &.Delete { color: @R }
-
-				  &.Commit { color: @G }
-
-				  &.Action { color: @B; }
-
-				  &.Cancel { color: @R; float: left; }
-
-				  &.Return { color: @R; float: left; }
-
-				  > i,
-				  > span { order: 1;
-					   display: flex;
-					   color: inherit;
-					   cursor: inherit;
-					   font-size: 16px;
-					   align-items: center;
-					   justify-content: center; }
-
-				  &:only-child { float: right }
-		       }
-
-		       > progress { width: 100% }
-
-		       > label { float: left;
-				 padding: 4px;
-				 font-size: 16px;
-				 align-items: center;
-				 display: inline-flex;
-				 justify-content: flex-start;}
-
-		       > hr { width: 12px;
-			      float: right;
-			      max-width: 12px;
-			      display: inline-block;
-			      border: 0px none transparent;
-			      background-color: transparent }
+	      > hr { width: 12px;
+		     float: right;
+		     max-width: 12px;
+		     display: inline-block;
+		     border: 0px none transparent;
+		     background-color: transparent }
 
 
 
-		       .full
-		       {
-			       width: auto;
-			       padding: 4px;
-			       font-size: 10px;
-			       min-width: 90px;
-			       justify-content: space-between;
+	      &[data-overflow]
+	      {
+		      height: auto;	
 
-			       > i { font-size: 12px; margin-left: 4px }
-		       }
+		      > a
+		      {
+			      > i { font-size: 16px;
+				    margin-left: 0px; }
+			      width: 36px;
+			      padding: 0px;
+			      font-size: 0px;
+			      min-width: 0px;
+			      justify-content: center;
 
-		       > *:not(progress):only-child,
-			       > *:not(progress):first-child:nth-last-child(2),
-			       > *:not(progress):first-child:nth-last-child(2) ~ *:not(progress) { .full(); }
-
-		       @media only screen and (min-width: @phone) { > *:not(progress):first-child:nth-last-child(3),
-									    > *:not(progress):first-child:nth-last-child(3) ~ *:not(progress),
-									    > *:not(progress):first-child:nth-last-child(4),
-									    > *:not(progress):first-child:nth-last-child(4) ~ *:not(progress),
-									    > *:not(progress):first-child:nth-last-child(5),
-									    > *:not(progress):first-child:nth-last-child(5) ~ *:not(progress),
-									    > *:not(progress):first-child:nth-last-child(6),
-									    > *:not(progress):first-child:nth-last-child(6) ~ *:not(progress) { .full(); }
-		       }
-
-		       @media only screen and (min-width: @tablet) { > *:not(progress):first-child:nth-last-child(7),
-									     > *:not(progress):first-child:nth-last-child(7) ~ *:not(progress),
-									     > *:not(progress):first-child:nth-last-child(8),
-									     > *:not(progress):first-child:nth-last-child(8) ~ *:not(progress) { .full(); }
-		       }
-
-		       @media only screen and (min-width: @notebook) { > *:not(progress):first-child:nth-last-child(9),
-									       > *:not(progress):first-child:nth-last-child(9) ~ *:not(progress),
-									       > *:not(progress):first-child:nth-last-child(10),
-									       > *:not(progress):first-child:nth-last-child(10) ~ *:not(progress) { .full(); }
-		       }
-
-		       @media only screen and (min-width: @desktop) { > *:not(progress):first-child:nth-last-child(11),
-									      > *:not(progress):first-child:nth-last-child(11) ~ *:not(progress),
-									      > *:not(progress):first-child:nth-last-child(12),
-									      > *:not(progress):first-child:nth-last-child(12) ~ *:not(progress) { .full(); }
-		       }
-
-		       @media only screen and (min-width: @widescreen) { > *:not(progress):first-child:nth-last-child(13),
-										 > *:not(progress):first-child:nth-last-child(13) ~ *:not(progress),
-										 > *:not(progress):first-child:nth-last-child(14),
-										 > *:not(progress):first-child:nth-last-child(14) ~ *:not(progress),
-										 > *:not(progress):first-child:nth-last-child(15),
-										 > *:not(progress):first-child:nth-last-child(15) ~ *:not(progress),
-										 > *:not(progress):first-child:nth-last-child(16),
-										 > *:not(progress):first-child:nth-last-child(16) ~ * { .full(); }
-		       }
-
+		      }
+	      }
 } 

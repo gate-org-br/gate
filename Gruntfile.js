@@ -93,7 +93,8 @@ module.exports = function (grunt)
 							"src/main/webapp/components/ReportSelector.js",
 							"src/main/webapp/components/ReportDialog.js",
 
-							"src/main/webapp/components/TableFilter.js"
+							"src/main/webapp/components/TableFilter.js",
+							"src/main/webapp/components/Coolbar.js"
 						],
 						dest: 'src/main/resources/gate/Gate.js'
 					}
