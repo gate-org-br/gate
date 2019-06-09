@@ -6618,9 +6618,9 @@ class ReportSelector extends HTMLElement
 		var selector = this;
 
 		this.appendChild(createLink("PDF", "&#x2218;"));
-		this.appendChild(createLink("XLS", "&#x2219;"));
-		this.appendChild(createLink("DOC", "&#x2221;"));
-		this.appendChild(createLink("CSV", "&#x2220;"));
+		this.appendChild(createLink("XLS", "&#x2221;"));
+		this.appendChild(createLink("DOC", "&#x2220;"));
+		this.appendChild(createLink("CSV", "&#x2222;"));
 
 		function createLink(type, icon)
 		{
@@ -6698,3 +6698,33 @@ window.addEventListener("load", function ()
 		Colorizer.colorize(table);
 	});
 });
+
+/* global customElements */
+
+class Coolbar extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	static resize()
+	{
+		Array.from(document.querySelectorAll('cool-bar, div.COOLBAR, div.Coolbar'))
+			.forEach(function (element)
+			{
+				element.style.visibility = "hidden";
+				element.removeAttribute("data-overflow");
+				if (element.scrollWidth > element.clientWidth
+					|| element.scrollHeight > element.clientHeight)
+					element.setAttribute("data-overflow", "true");
+				element.style.visibility = "visible";
+			});
+	}
+}
+
+customElements.define('cool-bar', Coolbar);
+
+window.addEventListener("load", () => Coolbar.resize());
+window.addEventListener("resize", () => Coolbar.resize());
+
