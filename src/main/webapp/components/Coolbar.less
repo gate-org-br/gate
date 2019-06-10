@@ -5,7 +5,7 @@ div.Coolbar { .margin();
 	      height: 48px;
 	      padding: 4px;
 	      display: block;
-	      overflow-x: auto;
+	      overflow: hidden;
 	      border-radius: 5px;
 	      background-image: @main_gradient;
 
@@ -57,7 +57,7 @@ div.Coolbar { .margin();
 			 &:only-child { float: right }
 	      }
 
-	      > progress { width: 100% }
+	      > progress { width: calc(100% - 4px) }
 
 	      > label { float: left;
 			padding: 4px;
