@@ -2093,7 +2093,7 @@ div.Coolbar {
   height: 48px;
   padding: 4px;
   display: block;
-  overflow-x: auto;
+  overflow: hidden;
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
@@ -2231,7 +2231,7 @@ div.Coolbar > button:only-child {
 cool-bar > progress,
 div.COOLBAR > progress,
 div.Coolbar > progress {
-  width: 100%;
+  width: calc(100% - 4px);
 }
 cool-bar > label,
 div.COOLBAR > label,
