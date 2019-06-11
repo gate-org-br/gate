@@ -1,7 +1,10 @@
+
 class Modal
 {
 	constructor(options)
 	{
+		this.preventBodyScroll = e => e.preventDefault();
+
 		var element = window.top.document.createElement('div');
 		element.className = "Modal";
 		this.element = () => element;
@@ -23,6 +26,7 @@ class Modal
 		{
 			window.top.document.body.style.overflow = "hidden";
 			window.top.document.body.appendChild(this.element());
+			window.top.document.body.addEventListener("touchmove", this.preventBodyScroll, false);
 			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
@@ -35,9 +39,11 @@ class Modal
 			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			window.top.document.body.style.overflow = "";
+			window.top.document.body.removeEventListener("touchmove", this.preventBodyScroll, false);
 			this.element().parentNode.removeChild(this.element());
 		}
 
 		return this;
 	}
 }
+

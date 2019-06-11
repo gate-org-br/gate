@@ -1940,10 +1940,13 @@ window.addEventListener("load", function ()
 	Array.from(document.querySelectorAll('input[data-mask]'))
 		.forEach(element => new Mask(element));
 });
+
 class Modal
 {
 	constructor(options)
 	{
+		this.preventBodyScroll = e => e.preventDefault();
+
 		var element = window.top.document.createElement('div');
 		element.className = "Modal";
 		this.element = () => element;
@@ -1965,6 +1968,7 @@ class Modal
 		{
 			window.top.document.body.style.overflow = "hidden";
 			window.top.document.body.appendChild(this.element());
+			window.top.document.body.addEventListener("touchmove", this.preventBodyScroll, false);
 			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
@@ -1977,12 +1981,15 @@ class Modal
 			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			window.top.document.body.style.overflow = "";
+			window.top.document.body.removeEventListener("touchmove", this.preventBodyScroll, false);
 			this.element().parentNode.removeChild(this.element());
 		}
 
 		return this;
 	}
 }
+
+
 class Block extends Modal
 {
 	constructor(text)
@@ -6728,3 +6735,19 @@ customElements.define('cool-bar', Coolbar);
 window.addEventListener("load", () => Coolbar.resize());
 window.addEventListener("resize", () => Coolbar.resize());
 
+
+window.addEventListener("load", () => Array.from(document.all)
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true")));
+
+window.addEventListener("resize", () => {
+	Array.from(document.all)
+		.filter(e => e.hasAtribute("data-overflow"))
+		.forEach(e => e.removeAttribute("data-overflow"));
+
+	Array.from(document.all)
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true"));
+});
