@@ -20,11 +20,11 @@ div.Dialog
 	> div:first-child
 		{
 		color: white;
-		height: 40px;
 		padding: 8px;
 		outline: none;
 		display: flex;
 		font-size: 20px;
+		flex-basis: 40px;
 		font-weight: bold;
 		align-items: stretch;
 		background-color: @base_shaded;
@@ -39,29 +39,31 @@ div.Dialog
 			  justify-content: flex-start; }
 
 		> a { order: 1;
-		      width: 48px;
 		      display: flex;
 		      color: inherit;
 		      cursor: pointer;
+		      flex-basis: 48px;
 		      font-family: gate;
 		      font-size: inherit;
 		      align-items: center;
-		      justify-content: center; 	}
+		      justify-content: center; }
 	}
 
-	> div:last-child { height: calc(100% - 40px);
+	> div:last-child { flex-grow: 1;
 			   background-image: @noise;
 			   background-color: @main_shaded2;
+
+			   display: flex;
+			   overflow: auto;
+			   align-items: stretch;
+			   justify-content: center;
+			   -webkit-overflow-scrolling: touch;
 
 			   > iframe,
 			   >  div,
 			   > dialog { margin: 0px;
-				      width: 100%;
-				      height: 100%;
-				      padding: 0px;
 				      border: none;
-				      overflow: auto; }
+				      padding: 0px;
+				      flex-grow: 1; }
 	}
 }
-
-
