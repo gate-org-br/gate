@@ -23,10 +23,8 @@ import gate.util.Backup;
 import gate.util.Page;
 import gateconsole.contol.FuncControl;
 import gateconsole.contol.UserControl;
-import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 
 @Name("Usuários")
 @Icon("gate.entity.User")

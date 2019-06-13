@@ -5,10 +5,7 @@ import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.App;
-import gate.error.AppException;
-
 import java.util.Collection;
-
 import javax.inject.Inject;
 
 @Icon("2044")
