@@ -3,7 +3,6 @@ package gate.sql.insert;
 import gate.converter.Converter;
 import gate.sql.statement.Sentence;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +30,13 @@ public class TableInsert implements Insert
 	 * Binds the insert statement to a list of entities.
 	 *
 	 * @param <T> type of entities to be associated with the insert statement
-	 * @param entities the list of entities to be associated with the insert statement
+	 * @param type the type of the entity where parameter values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
 	 */
-	public <T> Prepared<T> entities(List<T> entities)
+	public <T> Prepared<T> from(Class<T> type)
 	{
-		return new Prepared<>(entities);
+		return new Prepared<>(type);
 	}
 
 	/**
@@ -367,17 +366,17 @@ public class TableInsert implements Insert
 	 *
 	 * @param <E> type of the entities to be inserted on database
 	 */
-	public class Prepared<E> implements Sentence.Prepared.Compiled.Builder
+	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder
 	{
 
-		private final Collection<E> entities;
+		private final Class<E> type;
 		private final List<Function<E, ?>> extractors = new ArrayList<>();
 		private final StringJoiner columns = new StringJoiner(", ", "(", ")");
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
-		private Prepared(List<E> entities)
+		private Prepared(Class<E> type)
 		{
-			this.entities = entities;
+			this.type = type;
 		}
 
 		/**
@@ -418,9 +417,9 @@ public class TableInsert implements Insert
 		}
 
 		@Override
-		public Sentence.Prepared.Compiled build()
+		public Sentence.Extractor.Compiled build()
 		{
-			return Sentence.of(toString()).entities(entities).parameters(extractors);
+			return Sentence.of(toString()).from(type).parameters(extractors);
 		}
 
 		@Override

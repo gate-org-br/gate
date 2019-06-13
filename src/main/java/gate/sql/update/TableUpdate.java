@@ -7,7 +7,6 @@ import gate.sql.condition.ExtractorCondition;
 import gate.sql.condition.GenericCondition;
 import gate.sql.statement.Sentence;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
@@ -33,13 +32,13 @@ public class TableUpdate implements Update
 	 * Binds the update statement to a list of entities.
 	 *
 	 * @param <T> type of entities to be associated with the update statement
-	 * @param entities the list of entities to be associated with the update statement
+	 * @param type of the entities from where the values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
 	 */
-	public <T> Prepared<T> entities(List<T> entities)
+	public <T> Prepared<T> from(Class<T> type)
 	{
-		return new Prepared<>(entities);
+		return new Prepared<>(type);
 	}
 
 	/**
@@ -487,16 +486,16 @@ public class TableUpdate implements Update
 	 *
 	 * @param <E> type of the entities to be inserted on database
 	 */
-	public class Prepared<E> implements Sentence.Prepared.Compiled.Builder
+	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder
 	{
 
-		private final Collection<E> entities;
+		private final Class<E> type;
 		private final StringJoiner columns = new StringJoiner(", ");
 		private final List<Function<E, ?>> extractors = new ArrayList<>();
 
-		private Prepared(List<E> entities)
+		private Prepared(Class<E> type)
 		{
-			this.entities = entities;
+			this.type = type;
 		}
 
 		/**
@@ -541,9 +540,11 @@ public class TableUpdate implements Update
 		 *
 		 * @return A SQLBuilder with the conditions specified
 		 */
-		public Sentence.Prepared.Compiled.Builder<E> where(ConstantCondition condition)
+		public Sentence.Extractor.Compiled.Builder<E> where(ConstantCondition condition)
 		{
-			return () -> Sentence.of(Prepared.this + " where " + condition).entities(entities).parameters(extractors);
+			return () -> Sentence.of(Prepared.this + " where " + condition)
+				.from(type)
+				.parameters(extractors);
 		}
 
 		/**
@@ -553,18 +554,18 @@ public class TableUpdate implements Update
 		 *
 		 * @return the same builder with the added condition
 		 */
-		public Sentence.Prepared.Compiled.Builder<E> where(ExtractorCondition<E> condition)
+		public Sentence.Extractor.Compiled.Builder<E> where(ExtractorCondition<E> condition)
 		{
 			return () -> Sentence.of(Prepared.this + " where " + condition)
-				.entities(entities)
+				.from(type)
 				.parameters(Stream.concat(extractors.stream(), condition.getParameters().map(e -> (Function<E, ?>) e))
 					.collect(Collectors.toList()));
 		}
 
 		@Override
-		public Sentence.Prepared.Compiled<E> build()
+		public Sentence.Extractor.Compiled<E> build()
 		{
-			return Sentence.of(toString()).entities(entities).parameters(extractors);
+			return Sentence.of(toString()).from(type).parameters(extractors);
 		}
 
 		@Override

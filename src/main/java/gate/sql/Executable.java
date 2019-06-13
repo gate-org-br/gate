@@ -2,6 +2,8 @@ package gate.sql;
 
 import gate.error.ConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public interface Executable
 {
@@ -23,7 +25,19 @@ public interface Executable
 	int execute() throws ConstraintViolationException;
 
 	/**
-	 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
+	 * Executes the sentence on the database with the first specified list of parameters and fetches the generated key as an object of the specified type.
+	 *
+	 * @param <K> type of the key to be fetched
+	 * @param type type of the key to be fetched
+	 *
+	 * @return the generated key as objects of the specified type
+	 *
+	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
+	 */
+	<K> Optional<K> fetchGeneratedKey(Class<K> type) throws ConstraintViolationException;
+
+	/**
+	 * Executes the sentence on the database with the first specified list of parameters and fetches generated keys as objects of the specified type.
 	 *
 	 * @param <K> type of the keys to be fetched
 	 * @param type type of the keys to be fetched
@@ -39,11 +53,20 @@ public interface Executable
 	 *
 	 * @param <K> type of the keys to be fetched
 	 * @param type type of the keys to be fetched
-	 *
-	 * @return any generated keys as objects of the specified type
+	 * @param consumer the consumer to be used to process the fetched keys
 	 *
 	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
 	 */
-	<K> List<List<K>> fetchGeneratedKeyLists(Class<K> type) throws ConstraintViolationException;
+	<K> void fetchGeneratedKey(Class<K> type, BiConsumer<List<?>, K> consumer) throws ConstraintViolationException;
 
+	/**
+	 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
+	 *
+	 * @param <K> type of the keys to be fetched
+	 * @param type type of the keys to be fetched
+	 * @param consumer the consumer to be used to process the fetched keys
+	 *
+	 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
+	 */
+	<K> void fetchGeneratedKeys(Class<K> type, BiConsumer<List<?>, List<K>> consumer) throws ConstraintViolationException;
 }

@@ -1,15 +1,13 @@
 package gate.sql.statement;
 
-import gate.error.ConstraintViolationException;
 import gate.sql.Executable;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import gate.sql.Batch;
 
 /**
  * A SQL sentence not linked to a database and whose parameters are not defined.
@@ -67,24 +65,11 @@ public interface Sentence extends SQL
 	 * Prepares the sentence to be compiled with a list of entities and functions.
 	 *
 	 * @param <T> type of the entities to be compiled with the sentence
-	 * @param entities the list of entities whose attributes will be updated
+	 * @param type type of the entities to be compiled with the sentence
 	 *
 	 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
 	 */
-	<T> Prepared<T> entities(Collection<T> entities);
-
-	/**
-	 * Prepares the sentence to be compiled with a list of entities and functions.
-	 *
-	 * @param <T> type of the entities to be compiled with the sentence
-	 * @param entities the list of entities whose attributes will be updated
-	 *
-	 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
-	 */
-	default <T> Prepared<T> entities(T... entities)
-	{
-		return entities(Arrays.asList(entities));
-	}
+	<T> Extractor<T> from(Class<T> type);
 
 	/**
 	 * Compiles the sentence with a batch of parameters.
@@ -124,28 +109,6 @@ public interface Sentence extends SQL
 		{
 
 			/**
-			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-			 *
-			 * @param <K> type of the keys to be fetched
-			 * @param type type of the keys to be fetched
-			 * @param consumer the consumer to be used to process the fetched keys
-			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-			 */
-			<K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException;
-
-			/**
-			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-			 *
-			 * @param <K> type of the keys to be fetched
-			 * @param type type of the keys to be fetched
-			 * @param consumer the consumer to be used to process the fetched keys
-			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-			 */
-			<K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException;
-
-			/**
 			 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
 			 * <p>
 			 * Very useful for tracking the progress of long batch operations
@@ -174,7 +137,7 @@ public interface Sentence extends SQL
 		}
 	}
 
-	interface Prepared<T> extends SQL
+	interface Extractor<T> extends SQL
 	{
 
 		/**
@@ -184,7 +147,7 @@ public interface Sentence extends SQL
 		 *
 		 * @return the same sentence compiled with the specified functions
 		 */
-		Compiled<T> parameters(List<Function<T, ?>> extractors);
+		Compiled parameters(List<Function<T, ?>> extractors);
 
 		/**
 		 * Specify the functions to be used to extract the attributes to be updated on the database.
@@ -193,20 +156,19 @@ public interface Sentence extends SQL
 		 *
 		 * @return the same sentence compiled with the specified functions
 		 */
-		default Compiled<T> parameters(Function<T, ?>... extractors)
+		default Compiled parameters(Function<T, ?>... extractors)
 		{
-			return Prepared.this.parameters(Arrays.asList(extractors));
+			return Extractor.this.parameters(Arrays.asList(extractors));
 		}
 
 		@Override
-		Prepared<T> print();
+		Extractor<T> print();
 
 		/**
 		 * A SQL sentence linked to a database and compiled with a set or parameters.
 		 * <p>
 		 * A connected and compiled sentence is ready for execution
 		 *
-		 * @param <T> type of the parameters compiled with sentence
 		 */
 		interface Compiled<T> extends SQL
 		{
@@ -218,41 +180,15 @@ public interface Sentence extends SQL
 			 *
 			 * @return the same sentence bound to the specified database link
 			 */
-			Connected<T> connect(Link link);
+			Connected connect(Link link);
 
 			/**
 			 * A SQL sentence linked to a database and compiled with a set of parameters.
 			 * <p>
 			 * A compiled and connected sentence is ready for execution
-			 *
-			 * @param <T> type of the parameters compiled with sentence
 			 */
-			interface Connected<T> extends SQL, Executable
+			interface Connected<T> extends SQL, Batch<T>
 			{
-
-				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
-				 * type.
-				 *
-				 * @param <K> type of the keys to be fetched
-				 * @param type type of the keys to be fetched
-				 * @param consumer the consumer to be used to process the fetched keys
-				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-				 */
-				<K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException;
-
-				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
-				 * type.
-				 *
-				 * @param <K> type of the keys to be fetched
-				 * @param type type of the keys to be fetched
-				 * @param consumer the consumer to be used to process the fetched keys
-				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-				 */
-				<K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException;
 
 				/**
 				 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
@@ -264,10 +200,10 @@ public interface Sentence extends SQL
 				 *
 				 * @return the current sentence, for chained invocations
 				 */
-				Connected<T> observe(Consumer<T> consumer);
+				Connected observe(Consumer<T> consumer);
 
 				@Override
-				Connected<T> print();
+				Connected print();
 
 			}
 
@@ -276,7 +212,7 @@ public interface Sentence extends SQL
 			 *
 			 * @param <T> type of the parameters compiled with sentence
 			 */
-			interface Builder<T> extends SQLBuilder<Sentence.Prepared.Compiled<T>>
+			interface Builder<T> extends SQLBuilder<Sentence.Extractor.Compiled<T>>
 			{
 
 			}
@@ -321,51 +257,6 @@ public interface Sentence extends SQL
 		 */
 		Compiled batch(List<List<?>> batch);
 
-		/**
-		 * Prepares the sentence to be compiled with a list of entities and functions.
-		 *
-		 * @param <T> type of the entities to be compiled with the sentence
-		 * @param entities the list of entities whose attributes will be updated
-		 *
-		 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
-		 */
-		<T> Prepared<T> entities(List<T> entities);
-
-		/**
-		 * Prepares the sentence to be compiled with a list of entities and functions.
-		 *
-		 * @param <T> type of the entities to be compiled with the sentence
-		 * @param entities the list of entities whose attributes will be updated
-		 *
-		 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
-		 */
-		default <T> Prepared<T> entities(T... entities)
-		{
-			return entities(Arrays.asList(entities));
-		}
-
-		/**
-		 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-		 *
-		 * @param <K> type of the keys to be fetched
-		 * @param type type of the keys to be fetched
-		 * @param consumer the consumer to be used to process the fetched keys
-		 *
-		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-		 */
-		<K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException;
-
-		/**
-		 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-		 *
-		 * @param <K> type of the keys to be fetched
-		 * @param type type of the keys to be fetched
-		 * @param consumer the consumer to be used to process the fetched keys
-		 *
-		 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-		 */
-		<K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException;
-
 		@Override
 		Connected print();
 
@@ -376,28 +267,6 @@ public interface Sentence extends SQL
 		 */
 		interface Compiled extends SQL, Executable
 		{
-
-			/**
-			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-			 *
-			 * @param <K> type of the keys to be fetched
-			 * @param type type of the keys to be fetched
-			 * @param consumer the consumer to be used to process the fetched keys
-			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-			 */
-			<K> void fetchGeneratedKeys(Class<K> type, Consumer<K> consumer) throws ConstraintViolationException;
-
-			/**
-			 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified type.
-			 *
-			 * @param <K> type of the keys to be fetched
-			 * @param type type of the keys to be fetched
-			 * @param consumer the consumer to be used to process the fetched keys
-			 *
-			 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-			 */
-			<K> void fetchGeneratedKeyLists(Class<K> type, Consumer<List<K>> consumer) throws ConstraintViolationException;
 
 			/**
 			 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
@@ -415,7 +284,7 @@ public interface Sentence extends SQL
 			Compiled print();
 		}
 
-		interface Prepared<T> extends SQL
+		interface Extractor<T> extends SQL
 		{
 
 			/**
@@ -440,7 +309,7 @@ public interface Sentence extends SQL
 			}
 
 			@Override
-			Prepared<T> print();
+			Extractor<T> print();
 
 			/**
 			 * A SQL sentence linked to a database and compiled with a set or parameters.
@@ -449,32 +318,8 @@ public interface Sentence extends SQL
 			 *
 			 * @param <T> type of the parameters compiled with sentence
 			 */
-			interface Compiled<T> extends SQL, Executable
+			interface Compiled<T> extends SQL, Batch<T>
 			{
-
-				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
-				 * type.
-				 *
-				 * @param <K> type of the keys to be fetched
-				 * @param type type of the keys to be fetched
-				 * @param consumer the consumer to be used to process the fetched keys
-				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-				 */
-				<K> void fetchGeneratedKeys(Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException;
-
-				/**
-				 * Executes the sentence on the database with the specified parameters and fetches generated keys as objects of the specified
-				 * type.
-				 *
-				 * @param <K> type of the keys to be fetched
-				 * @param type type of the keys to be fetched
-				 * @param consumer the consumer to be used to process the fetched keys
-				 *
-				 * @throws gate.error.ConstraintViolationException if any database constraint is violated during sentence execution
-				 */
-				<K> void fetchGeneratedKeyLists(Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException;
 
 				/**
 				 * Defines a Consumer to be called each time a set or parameters is processed by the statement.

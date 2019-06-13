@@ -335,7 +335,7 @@ public class Link implements AutoCloseable
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Prepared.Compiled.Connected<T> prepare(Sentence.Prepared.Compiled<T> sentence)
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence)
 	{
 		return sentence.connect(this);
 	}
@@ -372,7 +372,7 @@ public class Link implements AutoCloseable
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Prepared.Compiled.Connected<T> prepare(Sentence.Prepared.Compiled.Builder<T> builder)
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled.Builder<T> builder)
 	{
 		return builder.build().connect(this);
 	}
