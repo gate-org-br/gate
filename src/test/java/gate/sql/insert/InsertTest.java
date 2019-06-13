@@ -371,13 +371,13 @@ public class InsertTest
 					.setBirthdate(LocalDate.now()));
 
 			Insert.into("Person")
-				.entities(expected)
+				.from(Person.class)
 				.set("id", Person::getId)
 				.set("name", Person::getName)
 				.set("birthdate", Person::getBirthdate)
 				.build()
 				.connect(link)
-				.execute();
+				.execute(expected);
 
 			List<Person> result = Select
 				.expression("id")
