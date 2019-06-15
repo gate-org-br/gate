@@ -50,23 +50,13 @@ public final class TemplateTest
 	}
 
 	@Test
-	public void templateContext() throws TemplateException
+	public void template() throws TemplateException
 	{
 		try
 		{
-			Assert.assertEquals(getFile("Document.html"), Template.compile(getFile("TemplateContext.xml")).evaluate(this));
-		} catch (IOException ex)
-		{
-			Logger.getLogger(TemplateTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
-
-	@Test
-	public void templateVariable() throws TemplateException
-	{
-		try
-		{
-			Assert.assertEquals(getFile("Document.html"), Template.compile(getFile("TemplateVariable.xml")).evaluate(this));
+			String expected = getFile("Document.html");
+			String result = Template.compile(getFile("Template.xml")).evaluate(this);
+			Assert.assertEquals(expected, result);
 		} catch (IOException ex)
 		{
 			Logger.getLogger(TemplateTest.class.getName()).log(Level.SEVERE, null, ex);
