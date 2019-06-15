@@ -13,25 +13,25 @@ public class ExpressionTest
 
 	public final Person person;
 	private final List<Object> context = new ArrayList<>();
-	private final Map<String, Object> parameters = new HashMap<>();
+	private final Parameters parameters = new Parameters();
 
 	public ExpressionTest()
 	{
 		person = new Person().setName("Pessoa 1")
-				.setAge(64)
-				.setWeight(80.5)
-				.addChild(new Person()
-						.setName("Filho 1 Pessoa 1")
-						.setAge(35)
-						.setWeight(60.0))
-				.addChild(new Person()
-						.setName("Filho 2 Pessoa 1")
-						.setAge(25)
-						.setWeight(50.0))
-				.addRelacionamento("wife", new Person()
-						.setAge(56)
-						.setName("Esposa Pessoa 1")
-						.setWeight(65.7));
+			.setAge(64)
+			.setWeight(80.5)
+			.addChild(new Person()
+				.setName("Filho 1 Pessoa 1")
+				.setAge(35)
+				.setWeight(60.0))
+			.addChild(new Person()
+				.setName("Filho 2 Pessoa 1")
+				.setAge(25)
+				.setWeight(50.0))
+			.addRelacionamento("wife", new Person()
+				.setAge(56)
+				.setName("Esposa Pessoa 1")
+				.setWeight(65.7));
 
 		context.add(person);
 		parameters.put("idade", 1);
@@ -83,8 +83,8 @@ public class ExpressionTest
 	public void test8() throws ExpressionException
 	{
 		Assert.assertEquals(Boolean.TRUE, new Expression(
-				"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
-				.evaluate(person));
+			"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
+			.evaluate(person));
 	}
 
 	@Test

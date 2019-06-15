@@ -4,6 +4,7 @@ import gate.error.EvaluableException;
 import gate.error.NoSuchPropertyError;
 import gate.error.TemplateException;
 import gate.error.TemplatePropertyException;
+import gate.lang.expression.Parameters;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
@@ -31,7 +32,7 @@ public class Template
 		this.evaluables = evaluables;
 	}
 
-	void evaluate(Writer document, List<Object> context, Map<String, Object> parameters) throws TemplateException
+	void evaluate(Writer document, List<Object> context, Parameters parameters) throws TemplateException
 	{
 		try
 		{
@@ -56,7 +57,7 @@ public class Template
 	 */
 	public void evaluate(Object context, Writer document) throws TemplateException
 	{
-		evaluate(document, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
+		evaluate(document, new ArrayList<>(Collections.singletonList(context)), new Parameters());
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class Template
 	{
 		try (FileWriter writer = new FileWriter(document))
 		{
-			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters());
 		} catch (IOException ex)
 		{
 			throw new TemplateException(ex, ex.getMessage());
@@ -88,7 +89,7 @@ public class Template
 	{
 		try (StringWriter writer = new StringWriter())
 		{
-			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new HashMap<>());
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters());
 			writer.flush();
 			return writer.toString();
 		} catch (IOException ex)
@@ -253,7 +254,7 @@ public class Template
 	{
 		new TemplateParser().parse(template)
 			.evaluate(document, new ArrayList<>(Collections.singletonList(context)),
-				new HashMap<>());
+				new Parameters());
 	}
 
 	/**

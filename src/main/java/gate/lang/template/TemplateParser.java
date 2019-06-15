@@ -17,9 +17,9 @@ class TemplateParser
 		try (TemplateScanner scanner = new TemplateScanner(reader))
 		{
 			return template(scanner);
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to parse template.");
+			throw new TemplateException(ex, "Error trying to parse template.");
 		}
 	}
 
@@ -44,8 +44,8 @@ class TemplateParser
 				return expression(scanner);
 			case IF_HEAD:
 				return ifTag(scanner);
-			case FOR_HEAD:
-				return forTag(scanner);
+			case ITERATOR_HEAD:
+				return iteratorTag(scanner);
 			default:
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 		}
@@ -102,7 +102,7 @@ class TemplateParser
 		}
 	}
 
-	public String encolosedName(TemplateScanner scanner) throws TemplateException
+	public String encolosedTarget(TemplateScanner scanner) throws TemplateException
 	{
 		token = scanner.nextTagToken();
 		switch (token.getType())
@@ -110,7 +110,7 @@ class TemplateParser
 			case QUOTE:
 			{
 				token = scanner.nextTagToken();
-				if (!TemplateToken.Type.NAME.equals(token.getType()))
+				if (!TemplateToken.Type.TARGET.equals(token.getType()))
 					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 				String result = token.getValue();
 
@@ -124,7 +124,45 @@ class TemplateParser
 			case DOUBLE_QUOTE:
 			{
 				token = scanner.nextTagToken();
-				if (!TemplateToken.Type.NAME.equals(token.getType()))
+				if (!TemplateToken.Type.TARGET.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				String result = token.getValue();
+
+				token = scanner.nextTagToken();
+				if (!TemplateToken.Type.DOUBLE_QUOTE.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+				token = scanner.nextTagToken();
+				return result;
+			}
+			default:
+				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+		}
+	}
+
+	public String encolosedIndex(TemplateScanner scanner) throws TemplateException
+	{
+		token = scanner.nextTagToken();
+		switch (token.getType())
+		{
+			case QUOTE:
+			{
+				token = scanner.nextTagToken();
+				if (!TemplateToken.Type.INDEX.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				String result = token.getValue();
+
+				token = scanner.nextTagToken();
+				if (!TemplateToken.Type.QUOTE.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+				token = scanner.nextTagToken();
+				return result;
+			}
+			case DOUBLE_QUOTE:
+			{
+				token = scanner.nextTagToken();
+				if (!TemplateToken.Type.INDEX.equals(token.getType()))
 					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 				String result = token.getValue();
 
@@ -164,10 +202,11 @@ class TemplateParser
 		return new TemplateIf(expression, template);
 	}
 
-	public TemplateFor forTag(TemplateScanner scanner) throws TemplateException
+	public TemplateIterator iteratorTag(TemplateScanner scanner) throws TemplateException
 	{
-		String name = null;
-		Expression each = null;
+		Expression source = null;
+		String target = null;
+		String index = null;
 
 		token = scanner.nextTagToken();
 
@@ -175,28 +214,40 @@ class TemplateParser
 		{
 			switch (token.getType())
 			{
-				case EACH:
+				case SOURCE:
 
-					if (each != null)
-						throw new TemplateException("Attempt to specify more than one each parameter.");
+					if (source != null)
+						throw new TemplateException("Attempt to specify duplicate target parameter.");
 
 					token = scanner.nextTagToken();
 					if (!TemplateToken.Type.EQUALS.equals(token.getType()))
 						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
-					each = encolosedExpression(scanner);
+					source = encolosedExpression(scanner);
 
 					break;
-				case NAME:
+				case TARGET:
 
-					if (name != null)
-						throw new TemplateException("Attempt to specify more than one name parameter.");
+					if (target != null)
+						throw new TemplateException("Attempt to specify duplicate source parameter.");
 
 					token = scanner.nextTagToken();
 					if (!TemplateToken.Type.EQUALS.equals(token.getType()))
 						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
-					name = encolosedName(scanner);
+					target = encolosedTarget(scanner);
+					break;
+				case INDEX:
+
+					if (index != null)
+						throw new TemplateException("Attempt to specify duplicate index parameter.");
+
+					token = scanner.nextTagToken();
+					if (!TemplateToken.Type.EQUALS.equals(token.getType()))
+						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+					index = encolosedIndex(scanner);
+
 					break;
 				case CLOSE_TAG:
 					token = scanner.nextTagToken();
@@ -207,16 +258,15 @@ class TemplateParser
 			}
 		}
 
-		if (each == null)
-			throw new TemplateException("Tag for required each parameter not specified.");
-
+		if (source == null)
+			throw new TemplateException("Iterator required source parameter not specified.");
 		Template template = template(scanner);
 
 		token = scanner.nextTagToken();
-		if (!TemplateToken.Type.FOR_TAIL.equals(token.getType()))
+		if (!TemplateToken.Type.ITERATOR_TAIL.equals(token.getType()))
 			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
-		return new TemplateFor(each, name, template);
+		return new TemplateIterator(source, target, index, template);
 	}
 
 }

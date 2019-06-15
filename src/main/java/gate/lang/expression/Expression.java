@@ -15,7 +15,7 @@ public class Expression implements Evaluable
 	private Object current;
 	private final String value;
 	private List<Object> context;
-	private Map<String, Object> parameters;
+	private Parameters parameters;
 
 	public Expression(String value)
 	{
@@ -23,7 +23,7 @@ public class Expression implements Evaluable
 	}
 
 	@Override
-	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws ExpressionException
+	public void evaluate(Writer writer, List<Object> context, Parameters parameters) throws ExpressionException
 	{
 		try
 		{
@@ -36,11 +36,10 @@ public class Expression implements Evaluable
 
 	public Object evaluate(Object context) throws ExpressionException
 	{
-		return evaluate(new ArrayList<>(Collections.singletonList(context)),
-			new HashMap<>());
+		return evaluate(new ArrayList<>(Collections.singletonList(context)), new Parameters());
 	}
 
-	public Object evaluate(List<Object> context, Map<String, Object> parameters) throws ExpressionException
+	public Object evaluate(List<Object> context, Parameters parameters) throws ExpressionException
 	{
 		this.context = context;
 		this.parameters = parameters;

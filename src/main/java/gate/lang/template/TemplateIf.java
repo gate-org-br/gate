@@ -3,6 +3,7 @@ package gate.lang.template;
 import gate.error.ExpressionException;
 import gate.error.TemplateException;
 import gate.lang.expression.Expression;
+import gate.lang.expression.Parameters;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ class TemplateIf implements Evaluable
 	}
 
 	@Override
-	public void evaluate(Writer writer, List<Object> context, Map<String, Object> parameters) throws TemplateException
+	public void evaluate(Writer writer, List<Object> context, Parameters parameters) throws TemplateException
 	{
 		try
 		{
