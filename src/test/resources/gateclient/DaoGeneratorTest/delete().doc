@@ -1,0 +1,9 @@
+	public void delete(User value) throws AppException
+	{
+		if (Delete.from("Uzer")
+			.where(Condition.of("id").eq(value.getId()))
+			.build()
+			.connect(getLink())
+			.execute() == 0)
+			throw new NotFoundException();
+	}

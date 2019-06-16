@@ -27,15 +27,15 @@ class TemplateToken implements Evaluable
 
 	static final TemplateToken EXPRESSION_TAIL = new TemplateToken(Type.EXPRESSION_TAIL, "}");
 
-	static final TemplateToken IF_HEAD = new TemplateToken(Type.IF_HEAD, "<g:if");
+	static final TemplateToken IF_HEAD = new TemplateToken(Type.IF_HEAD, "<g-if");
 
-	static final TemplateToken ITERATOR_HEAD = new TemplateToken(Type.ITERATOR_HEAD, "<g:iterator");
+	static final TemplateToken ITERATOR_HEAD = new TemplateToken(Type.ITERATOR_HEAD, "<g-iterator");
 
 	static final TemplateToken CLOSE_TAG = new TemplateToken(Type.CLOSE_TAG, ">");
 
-	static final TemplateToken IF_TAIL = new TemplateToken(Type.IF_TAIL, "</g:if>");
+	static final TemplateToken IF_TAIL = new TemplateToken(Type.IF_TAIL, "</g-if>");
 
-	static final TemplateToken ITERATOR_TAIL = new TemplateToken(Type.ITERATOR_TAIL, "</g:iterator>");
+	static final TemplateToken ITERATOR_TAIL = new TemplateToken(Type.ITERATOR_TAIL, "</g-iterator>");
 
 	public TemplateToken(Type type, String value)
 	{
