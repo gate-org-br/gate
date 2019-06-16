@@ -1,0 +1,9 @@
+	public ${name} select(${id.type} id) throws NotFoundException
+	{
+		return Select.of(getClass().getResource("${name}Dao/select(${id.type}).sql"))
+			.where(Condition.of("${tableName}.${id.columnName}").eq(id))
+			.build()
+			.connect(getLink())
+			.fetchEntity(${name}.class)
+			.orElseThrow(NotFoundException::new);
+	}

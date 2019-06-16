@@ -1,0 +1,39 @@
+package ${parentPackageName}.dao;
+
+import gate.base.Dao;
+import ${fullName};
+import gate.error.AppException;
+import gate.error.ConstraintViolationException;
+import gate.error.NotFoundException;
+import gate.sql.Link;
+import gate.sql.condition.Condition;
+import gate.sql.select.Select;
+import gate.sql.delete.Delete;
+import gate.sql.insert.Insert;
+import gate.sql.update.Update;
+import ${id.typeFullName};
+import java.util.List;
+
+public class ${name}Dao extends Dao
+{
+
+	public ${name}Dao()
+	{
+		super();
+	}
+
+	public ${name}Dao(Link link)
+	{
+		super(link);
+	}
+
+${search()}
+
+${select()}
+
+${insert()}
+
+${update()}
+
+${delete()}
+}

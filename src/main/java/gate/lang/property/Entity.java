@@ -14,13 +14,77 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public final class Entity
+public class Entity
 {
 
+	private final Class<?> type;
+	private final String name;
+	private final String fullName;
+	private final String tableName;
+	private final EntityProperty id;
+	private final String packageName;
+	private final String parentPackageName;
+	private final List<EntityProperty> properties;
 	private static final Map<Property, List<String>> JOINS = new ConcurrentHashMap<>();
 	private static final Map<Property, String> FULL_COLUMN_NAMES = new ConcurrentHashMap<>();
+
+	public Entity(Class<?> type)
+	{
+		this.type = type;
+		this.fullName = type.getName();
+		this.name = type.getSimpleName();
+		this.tableName = Entity.getTableName(type);
+		this.packageName = type.getPackageName();
+		this.id = new EntityProperty(Property.getProperty(type, Entity.getId(type)));
+		this.properties = Entity.getProperties(type, e -> !e.isEntityId()).stream()
+			.map(e -> new EntityProperty(e)).collect(Collectors.toList());
+
+		String[] names = this.packageName.split("[.]");
+		this.parentPackageName = Stream.of(names).limit(names.length - 1).collect(Collectors.joining("."));
+	}
+
+	public Class<?> getType()
+	{
+		return type;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public String getFullName()
+	{
+		return fullName;
+	}
+
+	public String getTableName()
+	{
+		return tableName;
+	}
+
+	public String getPackageName()
+	{
+		return packageName;
+	}
+
+	public String getParentPackageName()
+	{
+		return parentPackageName;
+	}
+
+	public EntityProperty getId()
+	{
+		return id;
+	}
+
+	public List<EntityProperty> getProperties()
+	{
+		return properties;
+	}
 
 	public static boolean isEntity(Class type)
 	{
@@ -163,5 +227,61 @@ public final class Entity
 			}
 			return Collections.unmodifiableList(joins);
 		});
+	}
+
+	public static class EntityProperty
+	{
+
+		private final String columnName;
+		private final String type;
+		private final String getter;
+		private final String setterName;
+		private final String typeFullName;
+
+		EntityProperty(Property property)
+		{
+			this.columnName = property.getColumnName();
+			this.typeFullName = property.getRawType().getName();
+			this.type = property.getRawType().getSimpleName();
+			this.getter = property.getAttributes()
+				.stream()
+				.skip(1)
+				.map(e -> e.toString())
+				.map(e -> "get" + Character.toUpperCase(e.charAt(0)) + e.substring(1) + "()")
+				.collect(Collectors.joining("."));
+
+			this.setterName = property.getAttributes()
+				.stream()
+				.skip(1)
+				.limit(1)
+				.map(e -> e.toString())
+				.map(e -> "set" + Character.toUpperCase(e.charAt(0)) + e.substring(1))
+				.collect(Collectors.joining("."));
+		}
+
+		public String getColumnName()
+		{
+			return columnName;
+		}
+
+		public String getType()
+		{
+			return type;
+		}
+
+		public String getGetter()
+		{
+			return getter;
+		}
+
+		public String getSetterName()
+		{
+			return setterName;
+		}
+
+		public String getTypeFullName()
+		{
+			return typeFullName;
+		}
 	}
 }
