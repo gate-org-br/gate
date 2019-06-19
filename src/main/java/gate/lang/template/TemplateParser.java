@@ -46,6 +46,8 @@ class TemplateParser
 				return ifTag(scanner);
 			case ITERATOR_HEAD:
 				return iteratorTag(scanner);
+			case IMPORT:
+				return importTag(scanner);
 			default:
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 		}
@@ -64,6 +66,14 @@ class TemplateParser
 			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
 		return result;
+	}
+
+	public String identifier(TemplateScanner scanner) throws TemplateException
+	{
+		token = scanner.nextTagToken();
+		if (!TemplateToken.Type.IDENTIFIER.equals(token.getType()))
+			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+		return token.getValue();
 	}
 
 	public Expression encolosedExpression(TemplateScanner scanner) throws TemplateException
@@ -102,7 +112,7 @@ class TemplateParser
 		}
 	}
 
-	public String encolosedTarget(TemplateScanner scanner) throws TemplateException
+	public String encolosedIdentifier(TemplateScanner scanner) throws TemplateException
 	{
 		token = scanner.nextTagToken();
 		switch (token.getType())
@@ -110,7 +120,7 @@ class TemplateParser
 			case QUOTE:
 			{
 				token = scanner.nextTagToken();
-				if (!TemplateToken.Type.TARGET.equals(token.getType()))
+				if (!TemplateToken.Type.IDENTIFIER.equals(token.getType()))
 					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 				String result = token.getValue();
 
@@ -124,7 +134,7 @@ class TemplateParser
 			case DOUBLE_QUOTE:
 			{
 				token = scanner.nextTagToken();
-				if (!TemplateToken.Type.TARGET.equals(token.getType()))
+				if (!TemplateToken.Type.IDENTIFIER.equals(token.getType()))
 					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 				String result = token.getValue();
 
@@ -134,6 +144,96 @@ class TemplateParser
 
 				token = scanner.nextTagToken();
 				return result;
+			}
+			default:
+				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+		}
+	}
+
+	public String className(TemplateScanner scanner)
+	{
+		StringBuilder string = new StringBuilder();
+		while (true)
+		{
+
+			token = scanner.nextTagToken();
+			if (!TemplateToken.Type.IDENTIFIER.equals(token.getType()))
+				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+			string.append(token.getValue());
+
+			token = scanner.nextTagToken();
+			if (token.getType() != TemplateToken.Type.DOT)
+				break;
+			string.append(token.getValue());
+		}
+
+		return string.toString();
+	}
+
+	public String encolosedClassName(TemplateScanner scanner) throws TemplateException
+	{
+		token = scanner.nextTagToken();
+		switch (token.getType())
+		{
+			case QUOTE:
+			{
+				String result = className(scanner);
+
+				if (!TemplateToken.Type.QUOTE.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+				token = scanner.nextTagToken();
+				return result;
+			}
+			case DOUBLE_QUOTE:
+			{
+				String result = className(scanner);
+
+				if (!TemplateToken.Type.DOUBLE_QUOTE.equals(token.getType()))
+					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+				token = scanner.nextTagToken();
+				return result;
+			}
+			default:
+				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+		}
+	}
+
+	public String encolosedUrl(TemplateScanner scanner) throws TemplateException
+	{
+		StringBuilder url = new StringBuilder();
+
+		token = scanner.nextTagToken();
+		switch (token.getType())
+		{
+			case QUOTE:
+			{
+				token = scanner.nextTagToken();
+				while (token.getType() != TemplateToken.Type.QUOTE)
+				{
+					if (token.getType() == TemplateToken.Type.EOF)
+						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+					url.append(token.getValue());
+					token = scanner.nextTagToken();
+				}
+
+				return url.toString();
+			}
+			case DOUBLE_QUOTE:
+			{
+				token = scanner.nextTagToken();
+				while (token.getType() != TemplateToken.Type.DOUBLE_QUOTE)
+				{
+					if (token.getType() == TemplateToken.Type.EOF)
+						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+					url.append(token.getValue());
+					token = scanner.nextTagToken();
+				}
+
+				return url.toString();
 			}
 			default:
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
@@ -202,6 +302,61 @@ class TemplateParser
 		return new TemplateIf(expression, template);
 	}
 
+	public TemplateImport importTag(TemplateScanner scanner) throws TemplateException
+	{
+		try
+		{
+			String type = null;
+			String resource = null;
+
+			token = scanner.nextTagToken();
+
+			while (!TemplateToken.Type.SELF_CLOSE_TAG.equals(token.getType()))
+			{
+				switch (token.getType())
+				{
+					case TYPE:
+
+						if (type != null)
+							throw new TemplateException("Attempt to specify duplicate type parameter.");
+
+						token = scanner.nextTagToken();
+						if (!TemplateToken.Type.EQUALS.equals(token.getType()))
+							throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+						type = encolosedClassName(scanner);
+
+						break;
+					case RESOURCE:
+
+						if (resource != null)
+							throw new TemplateException("Attempt to specify duplicate resource parameter.");
+
+						token = scanner.nextTagToken();
+						if (!TemplateToken.Type.EQUALS.equals(token.getType()))
+							throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+						resource = encolosedUrl(scanner);
+						token = scanner.nextTagToken();
+						break;
+
+					default:
+						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				}
+			}
+
+			if (type == null)
+				throw new TemplateException("Iterator required type parameter not specified.");
+			if (resource == null)
+				throw new TemplateException("Iterator required resource parameter not specified.");
+
+			return new TemplateImport(Template.compile(Class.forName(type).getResource(resource)));
+		} catch (ClassNotFoundException ex)
+		{
+			throw new TemplateException(ex.getMessage(), ex);
+		}
+	}
+
 	public TemplateIterator iteratorTag(TemplateScanner scanner) throws TemplateException
 	{
 		Expression source = null;
@@ -235,7 +390,7 @@ class TemplateParser
 					if (!TemplateToken.Type.EQUALS.equals(token.getType()))
 						throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
-					target = encolosedTarget(scanner);
+					target = encolosedIdentifier(scanner);
 					break;
 				case INDEX:
 

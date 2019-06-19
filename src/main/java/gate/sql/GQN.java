@@ -1,6 +1,6 @@
 package gate.sql;
 
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.PropertyCondition;
@@ -120,10 +120,10 @@ public class GQN<T>
 			switch (predicate)
 			{
 				case "@":
-					condition = condition.and(Entity.getFullColumnName(property)).isNull();
+					condition = condition.and(EntityInfo.getFullColumnName(property)).isNull();
 					break;
 				case "!@":
-					condition = condition.and().not(Entity.getFullColumnName(property)).isNull();
+					condition = condition.and().not(EntityInfo.getFullColumnName(property)).isNull();
 					break;
 				default:
 					Object value = property.getValue(object);
@@ -131,28 +131,28 @@ public class GQN<T>
 						switch (predicate)
 						{
 							case "=":
-								condition = condition.and(Entity.getFullColumnName(property)).eq(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).eq(value);
 								break;
 							case "!=":
-								condition = condition.and(Entity.getFullColumnName(property)).ne(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).ne(value);
 								break;
 							case ">":
-								condition = condition.and(Entity.getFullColumnName(property)).gt(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).gt(value);
 								break;
 							case "!<":
-								condition = condition.and(Entity.getFullColumnName(property)).ge(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).ge(value);
 								break;
 							case "<":
-								condition = condition.and(Entity.getFullColumnName(property)).lt(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).lt(value);
 								break;
 							case "!>":
-								condition = condition.and(Entity.getFullColumnName(property)).le(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).le(value);
 								break;
 							case "%":
-								condition = condition.and(Entity.getFullColumnName(property)).lk(value);
+								condition = condition.and(EntityInfo.getFullColumnName(property)).lk(value);
 								break;
 							case "!%":
-								condition = condition.and().not(Entity.getFullColumnName(property)).lk(value);
+								condition = condition.and().not(EntityInfo.getFullColumnName(property)).lk(value);
 								break;
 						}
 			}

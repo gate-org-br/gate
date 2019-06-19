@@ -1,12 +1,13 @@
 package gateclient;
 
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.template.Template;
+import java.io.File;
 
 public class DaoGenerator
 {
 
-	private final DaoGeneratorEntity entity;
+	private final EntityInfo entityInfo;
 
 	private static final Template DAO = Template.compile(DaoGenerator.class.getResource("DaoGenerator/dao().gtf"));
 
@@ -18,75 +19,41 @@ public class DaoGenerator
 
 	public DaoGenerator(Class<?> type)
 	{
-		this.entity = new DaoGeneratorEntity(type);
+		this.entityInfo = new EntityInfo(type);
 	}
 
 	public String dao()
 	{
-		return DAO.evaluate(entity);
+		return DAO.evaluate(entityInfo);
+	}
+
+	public void dao(File file)
+	{
+		DAO.evaluate(entityInfo, file);
 	}
 
 	public String search()
 	{
-		return SEARCH.evaluate(entity);
+		return SEARCH.evaluate(entityInfo);
 	}
 
 	public String select()
 	{
-		return SELECT.evaluate(entity);
+		return SELECT.evaluate(entityInfo);
 	}
 
 	public String insert()
 	{
-		return INSERT.evaluate(entity);
+		return INSERT.evaluate(entityInfo);
 	}
 
 	public String update()
 	{
-		return UPDATE.evaluate(entity);
+		return UPDATE.evaluate(entityInfo);
 	}
 
 	public String delete()
 	{
-		return DELETE.evaluate(entity);
-	}
-
-	private class DaoGeneratorEntity extends Entity
-	{
-
-		public DaoGeneratorEntity(Class<?> type)
-		{
-			super(type);
-		}
-
-		public String dao()
-		{
-			return DaoGenerator.this.dao();
-		}
-
-		public String search()
-		{
-			return DaoGenerator.this.search();
-		}
-
-		public String select()
-		{
-			return DaoGenerator.this.select();
-		}
-
-		public String insert()
-		{
-			return DaoGenerator.this.insert();
-		}
-
-		public String update()
-		{
-			return DaoGenerator.this.update();
-		}
-
-		public String delete()
-		{
-			return DaoGenerator.this.delete();
-		}
+		return DELETE.evaluate(entityInfo);
 	}
 }

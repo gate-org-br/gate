@@ -27,13 +27,18 @@ public class ${name}Dao extends Dao
 		super(link);
 	}
 
-${search()}
 
-${select()}
+	<g-import type="gateclient.DaoGenerator" resource="DaoGenerator/search().gtf"/>
 
-${insert()}
 
-${update()}
+	<g-import type="gateclient.DaoGenerator" resource="DaoGenerator/select().gtf"/>
 
-${delete()}
+
+	<g-import type="gateclient.DaoGenerator" resource="DaoGenerator/insert().gtf"/>
+
+
+	<g-import type="gateclient.DaoGenerator" resource="DaoGenerator/update().gtf"/>
+
+
+	<g-import type="gateclient.DaoGenerator" resource="DaoGenerator/delete().gtf"/>
 }

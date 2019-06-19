@@ -204,17 +204,17 @@ public interface Attribute
 
 	default String getTableName()
 	{
-		return Entity.getTableName(getRawType());
+		return EntityInfo.getTableName(getRawType());
 	}
 
 	default String getFullTableName()
 	{
-		return Entity.getFullTableName(getRawType());
+		return EntityInfo.getFullTableName(getRawType());
 	}
 
 	default boolean isEntity()
 	{
-		return Entity.isEntity(getRawType());
+		return EntityInfo.isEntity(getRawType());
 	}
 
 	default Converter getConverter()

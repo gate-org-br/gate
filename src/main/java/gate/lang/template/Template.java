@@ -69,6 +69,7 @@ public class Template
 	 */
 	public void evaluate(Object context, File document) throws TemplateException
 	{
+		document.getParentFile().mkdirs();
 		try (FileWriter writer = new FileWriter(document))
 		{
 			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters());

@@ -3,7 +3,7 @@ package gate.sql.select;
 import gate.Contact;
 import gate.Person;
 import gate.error.NotFoundException;
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
@@ -499,7 +499,7 @@ public class SelectTest
 			Person person = link
 				.from(Select
 					.from(Person.class)
-					.where(Condition.of(Entity.getFullColumnName(Property.getProperty(Person.class, "id"))).eq()))
+					.where(Condition.of(EntityInfo.getFullColumnName(Property.getProperty(Person.class, "id"))).eq()))
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
 			Assert.assertEquals(1, person.getId());

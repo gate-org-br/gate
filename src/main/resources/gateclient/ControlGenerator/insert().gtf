@@ -1,0 +1,12 @@
+	public void insert(${name} value) throws ConstraintViolationException
+	{
+		Constraints.validate(value
+		<g-iterator source="${properties}" target="property">,
+			"${@property.name}"
+		</g-iterator>);
+
+		try (${name}Dao dao = new ${name}Dao())
+		{
+			dao.insert(value);
+		}
+	}

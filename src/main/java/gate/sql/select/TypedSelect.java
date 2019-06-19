@@ -1,7 +1,7 @@
 package gate.sql.select;
 
 import gate.converter.Converter;
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import gate.sql.OrderBy;
 import gate.sql.OrderBy.Ordering;
@@ -26,7 +26,7 @@ public class TypedSelect<T> implements Query.Builder
 	public TypedSelect(Class<T> type)
 	{
 		this.type = type;
-		sources.add(Entity.getFullTableName(type));
+		sources.add(EntityInfo.getFullTableName(type));
 	}
 
 	public Properties property(Property property)
@@ -51,29 +51,29 @@ public class TypedSelect<T> implements Query.Builder
 
 	public Query.Builder where(GenericCondition condition)
 	{
-		return properties(Entity.getProperties(type, e -> true)).where(condition);
+		return properties(EntityInfo.getProperties(type, e -> true)).where(condition);
 	}
 
 	public Query.Builder where(PropertyCondition condition)
 	{
-		return properties(Entity.getProperties(type, e -> true)).where(condition);
+		return properties(EntityInfo.getProperties(type, e -> true)).where(condition);
 	}
 
 	public Query.Constant.Builder where(ConstantCondition condition)
 	{
-		return properties(Entity.getProperties(type, e -> true)).where(condition);
+		return properties(EntityInfo.getProperties(type, e -> true)).where(condition);
 	}
 
 	public Query.Compiled.Builder where(CompiledCondition condition)
 	{
-		return properties(Entity.getProperties(type, e -> true)).where(condition);
+		return properties(EntityInfo.getProperties(type, e -> true)).where(condition);
 	}
 
 	@Override
 	public Query build()
 	{
-		Property property = Property.getProperty(type, Entity.getId(type));
-		return where(Condition.of(Entity.getFullColumnName(property))
+		Property property = Property.getProperty(type, EntityInfo.getId(type));
+		return where(Condition.of(EntityInfo.getFullColumnName(property))
 			.isEq(property)).build();
 	}
 
@@ -89,9 +89,9 @@ public class TypedSelect<T> implements Query.Builder
 		public Properties property(Property property)
 		{
 			String name = property.toString();
-			sources.addAll(Entity.getJoins(property));
+			sources.addAll(EntityInfo.getJoins(property));
 			Converter converter = property.getConverter();
-			String columnName = Entity.getFullColumnName(property);
+			String columnName = EntityInfo.getFullColumnName(property);
 			if (converter.getSufixes().isEmpty())
 				columns.add(columnName + " as '" + name + "'");
 			else
@@ -118,39 +118,39 @@ public class TypedSelect<T> implements Query.Builder
 
 		public PropertyWhere where(PropertyCondition condition)
 		{
-			condition.getProperties().forEach(e -> sources.addAll(Entity.getJoins(e)));
+			condition.getProperties().forEach(e -> sources.addAll(EntityInfo.getJoins(e)));
 			return new PropertyWhere(condition);
 		}
 
 		public ConstantWhere where(ConstantCondition condition)
 		{
-			condition.getProperties().forEach(e -> sources.addAll(Entity.getJoins(e)));
+			condition.getProperties().forEach(e -> sources.addAll(EntityInfo.getJoins(e)));
 			return new ConstantWhere(condition);
 		}
 
 		public GenericWhere where(GenericCondition condition)
 		{
-			condition.getProperties().forEach(e -> sources.addAll(Entity.getJoins(e)));
+			condition.getProperties().forEach(e -> sources.addAll(EntityInfo.getJoins(e)));
 			return new GenericWhere(condition);
 		}
 
 		public CompiledWhere where(CompiledCondition condition)
 		{
-			condition.getProperties().forEach(e -> sources.addAll(Entity.getJoins(e)));
+			condition.getProperties().forEach(e -> sources.addAll(EntityInfo.getJoins(e)));
 			return new CompiledWhere(condition);
 		}
 
 		public Query.Builder orderBy(Ordering ordering)
 		{
-			ordering.getColumns().forEach(e -> sources.addAll(Entity.getJoins(Property.getProperty(type, e))));
-			return () -> Query.of(this + " order by " + ordering.toString(e -> Entity.getFullColumnNames(type, e)));
+			ordering.getColumns().forEach(e -> sources.addAll(EntityInfo.getJoins(Property.getProperty(type, e))));
+			return () -> Query.of(this + " order by " + ordering.toString(e -> EntityInfo.getFullColumnNames(type, e)));
 		}
 
 		@Override
 		public Query build()
 		{
-			Property property = Property.getProperty(type, Entity.getId(type));
-			return where(Condition.of(Entity.getFullColumnName(property))
+			Property property = Property.getProperty(type, EntityInfo.getId(type));
+			return where(Condition.of(EntityInfo.getFullColumnName(property))
 				.isEq(property)).build();
 		}
 
@@ -172,8 +172,8 @@ public class TypedSelect<T> implements Query.Builder
 
 			public Query.Constant.Builder orderBy(Ordering ordering)
 			{
-				ordering.getColumns().forEach(e -> sources.addAll(Entity.getJoins(Property.getProperty(type, e))));
-				return () -> Query.of(ConstantWhere.this + " order by " + ordering.toString(e -> Entity.getFullColumnNames(type, e))).constant();
+				ordering.getColumns().forEach(e -> sources.addAll(EntityInfo.getJoins(Property.getProperty(type, e))));
+				return () -> Query.of(ConstantWhere.this + " order by " + ordering.toString(e -> EntityInfo.getFullColumnNames(type, e))).constant();
 			}
 
 			@Override
@@ -201,8 +201,8 @@ public class TypedSelect<T> implements Query.Builder
 
 			public Query.Builder orderBy(OrderBy.Ordering ordering)
 			{
-				ordering.getColumns().forEach(e -> sources.addAll(Entity.getJoins(Property.getProperty(type, e))));
-				return () -> Query.of(PropertyWhere.this + " order by " + ordering.toString(e -> Entity.getFullColumnNames(type, e)));
+				ordering.getColumns().forEach(e -> sources.addAll(EntityInfo.getJoins(Property.getProperty(type, e))));
+				return () -> Query.of(PropertyWhere.this + " order by " + ordering.toString(e -> EntityInfo.getFullColumnNames(type, e)));
 			}
 
 			@Override
@@ -230,8 +230,8 @@ public class TypedSelect<T> implements Query.Builder
 
 			public Query.Builder orderBy(OrderBy.Ordering ordering)
 			{
-				ordering.getColumns().forEach(e -> sources.addAll(Entity.getJoins(Property.getProperty(type, e))));
-				return () -> Query.of(GenericWhere.this + " order by " + ordering.toString(e -> Entity.getFullColumnNames(type, e)));
+				ordering.getColumns().forEach(e -> sources.addAll(EntityInfo.getJoins(Property.getProperty(type, e))));
+				return () -> Query.of(GenericWhere.this + " order by " + ordering.toString(e -> EntityInfo.getFullColumnNames(type, e)));
 			}
 
 			@Override
@@ -259,8 +259,8 @@ public class TypedSelect<T> implements Query.Builder
 
 			public Query.Compiled.Builder orderBy(Ordering ordering)
 			{
-				ordering.getColumns().forEach(e -> sources.addAll(Entity.getJoins(Property.getProperty(type, e))));
-				return () -> Query.of(CompiledWhere.this + " order by " + ordering.toString(e -> Entity.getFullColumnNames(type, e)))
+				ordering.getColumns().forEach(e -> sources.addAll(EntityInfo.getJoins(Property.getProperty(type, e))));
+				return () -> Query.of(CompiledWhere.this + " order by " + ordering.toString(e -> EntityInfo.getFullColumnNames(type, e)))
 					.parameters(condition.getParameters().collect(Collectors.toList()));
 
 			}

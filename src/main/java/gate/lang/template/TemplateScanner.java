@@ -112,7 +112,7 @@ class TemplateScanner extends BufferedReader
 		}
 	}
 
-	private String consumeTarget() throws IOException
+	private String consumeIdentifier() throws IOException
 	{
 		mark(1);
 		int c = read();
@@ -171,6 +171,9 @@ class TemplateScanner extends BufferedReader
 				|| check(TemplateToken.ITERATOR_TAIL.getValue()))
 				return TemplateToken.EOF;
 
+			if (consume(TemplateToken.IMPORT.getValue()))
+				return TemplateToken.IMPORT;
+
 			if (consume(TemplateToken.IF_HEAD.getValue()))
 				return TemplateToken.IF_HEAD;
 
@@ -181,6 +184,7 @@ class TemplateScanner extends BufferedReader
 			while (!isEOF()
 				&& !check("\n")
 				&& !check(TemplateToken.EXPRESSION_HEAD.getValue())
+				&& !check(TemplateToken.IMPORT.getValue())
 				&& !check(TemplateToken.IF_HEAD.getValue())
 				&& !check(TemplateToken.ITERATOR_HEAD.getValue())
 				&& !check(TemplateToken.IF_TAIL.getValue())
@@ -244,6 +248,10 @@ class TemplateScanner extends BufferedReader
 				return TemplateToken.SOURCE;
 			if (consume(TemplateToken.TARGET.getValue()))
 				return TemplateToken.TARGET;
+			if (consume(TemplateToken.TYPE.getValue()))
+				return TemplateToken.TYPE;
+			if (consume(TemplateToken.RESOURCE.getValue()))
+				return TemplateToken.RESOURCE;
 			if (consume(TemplateToken.INDEX.getValue()))
 				return TemplateToken.INDEX;
 			if (consume(TemplateToken.EQUALS.getValue()))
@@ -255,8 +263,14 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.EXPRESSION_HEAD.getValue()))
 				return TemplateToken.EXPRESSION_HEAD;
 
+			if (consume(TemplateToken.SELF_CLOSE_TAG.getValue()))
+				return TemplateToken.SELF_CLOSE_TAG;
+
 			if (consume(TemplateToken.CLOSE_TAG.getValue()))
 				return TemplateToken.CLOSE_TAG;
+
+			if (consume(TemplateToken.IMPORT.getValue()))
+				return TemplateToken.IMPORT;
 
 			if (consume(TemplateToken.IF_TAIL.getValue()))
 				return TemplateToken.IF_TAIL;
@@ -264,9 +278,18 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.ITERATOR_TAIL.getValue()))
 				return TemplateToken.ITERATOR_TAIL;
 
-			String string = consumeTarget();
+			if (consume(TemplateToken.SLASH.getValue()))
+				return TemplateToken.SLASH;
+			if (consume(TemplateToken.DOT.getValue()))
+				return TemplateToken.DOT;
+			if (consume(TemplateToken.OPEN_PARENTESIS.getValue()))
+				return TemplateToken.OPEN_PARENTESIS;
+			if (consume(TemplateToken.CLOSE_PARENTESIS.getValue()))
+				return TemplateToken.CLOSE_PARENTESIS;
+
+			String string = consumeIdentifier();
 			if (string != null)
-				return new TemplateToken(TemplateToken.Type.TARGET, string);
+				return new TemplateToken(TemplateToken.Type.IDENTIFIER, string);
 
 			throw new TemplateException(String.format("Unexpected character found : %c", (char) read()));
 		} catch (IOException e)

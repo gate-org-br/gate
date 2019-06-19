@@ -4,7 +4,7 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
@@ -42,7 +42,7 @@ public class EntityConverter implements Converter
 		{
 			if (string != null && string.trim().length() > 0)
 			{
-				Property property = Property.getProperty(type, Entity.getId(type));
+				Property property = Property.getProperty(type, EntityInfo.getId(type));
 				Object entity = type.getDeclaredConstructor().newInstance();
 				property.setValue(entity, Converter
 					.getConverter(property.getRawType())
@@ -65,7 +65,7 @@ public class EntityConverter implements Converter
 		{
 			if (object == null)
 				return "";
-			return Converter.toString(Property.getProperty(type, Entity.getId(type))
+			return Converter.toString(Property.getProperty(type, EntityInfo.getId(type))
 				.getValue(object));
 		} catch (RuntimeException e)
 		{

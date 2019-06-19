@@ -17,30 +17,30 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Entity
+public class EntityInfo
 {
 
 	private final Class<?> type;
 	private final String name;
 	private final String fullName;
 	private final String tableName;
-	private final EntityProperty id;
+	private final PropertyInfo id;
 	private final String packageName;
 	private final String parentPackageName;
-	private final List<EntityProperty> properties;
+	private final List<PropertyInfo> properties;
 	private static final Map<Property, List<String>> JOINS = new ConcurrentHashMap<>();
 	private static final Map<Property, String> FULL_COLUMN_NAMES = new ConcurrentHashMap<>();
 
-	public Entity(Class<?> type)
+	public EntityInfo(Class<?> type)
 	{
 		this.type = type;
 		this.fullName = type.getName();
 		this.name = type.getSimpleName();
-		this.tableName = Entity.getTableName(type);
+		this.tableName = EntityInfo.getTableName(type);
 		this.packageName = type.getPackageName();
-		this.id = new EntityProperty(Property.getProperty(type, Entity.getId(type)));
-		this.properties = Entity.getProperties(type, e -> !e.isEntityId()).stream()
-			.map(e -> new EntityProperty(e)).collect(Collectors.toList());
+		this.id = new PropertyInfo(Property.getProperty(type, EntityInfo.getId(type)));
+		this.properties = EntityInfo.getProperties(type, e -> !e.isEntityId()).stream()
+			.map(e -> new PropertyInfo(e)).collect(Collectors.toList());
 
 		String[] names = this.packageName.split("[.]");
 		this.parentPackageName = Stream.of(names).limit(names.length - 1).collect(Collectors.joining("."));
@@ -76,12 +76,12 @@ public class Entity
 		return parentPackageName;
 	}
 
-	public EntityProperty getId()
+	public PropertyInfo getId()
 	{
 		return id;
 	}
 
-	public List<EntityProperty> getProperties()
+	public List<PropertyInfo> getProperties()
 	{
 		return properties;
 	}
@@ -134,7 +134,7 @@ public class Entity
 				{
 					String name = field.getName();
 					if (isEntity(field.getType()))
-						name = name + "." + Entity.getId(type);
+						name = name + "." + EntityInfo.getId(type);
 
 					Property property = Property.getProperty(type, name);
 
@@ -216,7 +216,7 @@ public class Entity
 					name.add(attribute.getColumnName());
 					if (attribute.isEntity())
 					{
-						String id = Entity.getId(attribute.getRawType());
+						String id = EntityInfo.getId(attribute.getRawType());
 						String FK = path + "." + attribute.getColumnName() + "$" + id;
 						path.merge(name);
 						name = new StringJoiner("$");
@@ -229,20 +229,29 @@ public class Entity
 		});
 	}
 
-	public static class EntityProperty
+	public static class PropertyInfo
 	{
 
-		private final String columnName;
 		private final String type;
+		private final String name;
 		private final String getter;
+		private final String columnName;
 		private final String setterName;
 		private final String typeFullName;
 
-		EntityProperty(Property property)
+		PropertyInfo(Property property)
 		{
 			this.columnName = property.getColumnName();
 			this.typeFullName = property.getRawType().getName();
 			this.type = property.getRawType().getSimpleName();
+
+			this.name = property
+				.getAttributes()
+				.stream()
+				.skip(1)
+				.map(e -> e.toString())
+				.collect(Collectors.joining("."));
+
 			this.getter = property.getAttributes()
 				.stream()
 				.skip(1)
@@ -282,6 +291,11 @@ public class Entity
 		public String getTypeFullName()
 		{
 			return typeFullName;
+		}
+
+		public String getName()
+		{
+			return name;
 		}
 	}
 }
