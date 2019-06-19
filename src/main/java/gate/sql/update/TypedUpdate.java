@@ -1,6 +1,6 @@
 package gate.sql.update;
 
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
@@ -26,7 +26,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	TypedUpdate(Class<T> type)
 	{
 		Objects.requireNonNull(type);
-		Entity.check(type);
+		EntityInfo.check(type);
 
 		this.type = type;
 	}
@@ -88,7 +88,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 */
 	public Generic.ConstantWhere where(ConstantCondition condition)
 	{
-		return set(Entity.getProperties(type, (e) -> !e.isEntityId())).where(condition);
+		return set(EntityInfo.getProperties(type, (e) -> !e.isEntityId())).where(condition);
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 */
 	public Generic.GenericWhere where(PropertyCondition condition)
 	{
-		return set(Entity.getProperties(type, (e) -> !e.isEntityId())).where(condition);
+		return set(EntityInfo.getProperties(type, (e) -> !e.isEntityId())).where(condition);
 	}
 
 	/**
@@ -111,14 +111,14 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	@Override
 	public Operation<T> build()
 	{
-		Property property = Property.getProperty(type, Entity.getId(type));
+		Property property = Property.getProperty(type, EntityInfo.getId(type));
 		return where(Condition.of(property.getColumnName()).isEq(property)).build();
 	}
 
 	@Override
 	public String toString()
 	{
-		return "update " + Entity.getFullTableName(type);
+		return "update " + EntityInfo.getFullTableName(type);
 	}
 
 	/**
@@ -227,7 +227,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		@Override
 		public Operation<T> build()
 		{
-			Property property = Property.getProperty(type, Entity.getId(type));
+			Property property = Property.getProperty(type, EntityInfo.getId(type));
 			return where(Condition.of(property.getColumnName()).isEq(property)).build();
 		}
 

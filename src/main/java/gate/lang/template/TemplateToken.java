@@ -23,6 +23,11 @@ class TemplateToken implements Evaluable
 	static final TemplateToken QUOTE = new TemplateToken(Type.QUOTE, "'");
 	static final TemplateToken DOUBLE_QUOTE = new TemplateToken(Type.DOUBLE_QUOTE, "\"");
 
+	static final TemplateToken DOT = new TemplateToken(Type.DOT, ".");
+	static final TemplateToken SLASH = new TemplateToken(Type.SLASH, "/");
+	static final TemplateToken OPEN_PARENTESIS = new TemplateToken(Type.OPEN_PARENTESIS, "(");
+	static final TemplateToken CLOSE_PARENTESIS = new TemplateToken(Type.CLOSE_PARENTESIS, ")");
+
 	static final TemplateToken EXPRESSION_HEAD = new TemplateToken(Type.EXPRESSION_HEAD, "${");
 
 	static final TemplateToken EXPRESSION_TAIL = new TemplateToken(Type.EXPRESSION_TAIL, "}");
@@ -32,10 +37,15 @@ class TemplateToken implements Evaluable
 	static final TemplateToken ITERATOR_HEAD = new TemplateToken(Type.ITERATOR_HEAD, "<g-iterator");
 
 	static final TemplateToken CLOSE_TAG = new TemplateToken(Type.CLOSE_TAG, ">");
+	static final TemplateToken SELF_CLOSE_TAG = new TemplateToken(Type.SELF_CLOSE_TAG, "/>");
 
 	static final TemplateToken IF_TAIL = new TemplateToken(Type.IF_TAIL, "</g-if>");
 
 	static final TemplateToken ITERATOR_TAIL = new TemplateToken(Type.ITERATOR_TAIL, "</g-iterator>");
+
+	static final TemplateToken IMPORT = new TemplateToken(Type.IMPORT, "<g-import");
+	static final TemplateToken TYPE = new TemplateToken(Type.TYPE, "type");
+	static final TemplateToken RESOURCE = new TemplateToken(Type.RESOURCE, "resource");
 
 	public TemplateToken(Type type, String value)
 	{
@@ -88,7 +98,8 @@ class TemplateToken implements Evaluable
 	{
 		TEXT, EXPRESSION_HEAD, EXPRESSION_TAIL,
 		IF_HEAD, IF_TAIL, ITERATOR_HEAD, ITERATOR_TAIL, SOURCE, TARGET, INDEX,
-		CONDITION, QUOTE, DOUBLE_QUOTE, CLOSE_TAG, EQUALS, EOF
+		CONDITION, QUOTE, DOUBLE_QUOTE, CLOSE_TAG, EQUALS, EOF, IMPORT, TYPE, RESOURCE, DOT, SLASH,
+		OPEN_PARENTESIS, CLOSE_PARENTESIS, IDENTIFIER, SELF_CLOSE_TAG
 	}
 
 	public enum Subtype

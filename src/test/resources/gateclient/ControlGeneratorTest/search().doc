@@ -1,0 +1,7 @@
+	public List<User> search(User filter)
+	{
+		try (UserDao dao = new UserDao())
+		{
+			return dao.search(filter);
+		}
+	}

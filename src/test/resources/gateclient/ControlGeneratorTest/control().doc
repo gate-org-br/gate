@@ -1,0 +1,87 @@
+package gate.control;
+
+import gate.base.Control;
+import gate.entity.User;
+import gate.error.AppException;
+import gate.error.ConstraintViolationException;
+import gate.error.NotFoundException;
+import gate.type.ID;
+import java.util.List;
+import gate.dao.UserDao;
+
+public class UserControl extends Control
+{
+
+	public List<User> search(User filter)
+	{
+		try (UserDao dao = new UserDao())
+		{
+			return dao.search(filter);
+		}
+	}
+
+	public User select(ID id) throws NotFoundException
+	{
+		try (UserDao dao = new UserDao())
+		{
+			return dao.select(id);
+		}
+	}
+
+	public void insert(User value) throws ConstraintViolationException
+	{
+		Constraints.validate(value,
+			"active",
+			"userID",
+			"passwd",
+			"name",
+			"email",
+			"role.id",
+			"details",
+			"cellPhone",
+			"phone",
+			"photo",
+			"birthdate",
+			"CPF",
+			"sex",
+			"registration");
+
+		try (UserDao dao = new UserDao())
+		{
+			dao.insert(value);
+		}
+	}
+
+	public void update(User value) throws AppException
+	{
+		Constraints.validate(value,
+			"id",
+			"active",
+			"userID",
+			"passwd",
+			"name",
+			"email",
+			"role.id",
+			"details",
+			"cellPhone",
+			"phone",
+			"photo",
+			"birthdate",
+			"CPF",
+			"sex",
+			"registration");
+
+		try (UserDao dao = new UserDao())
+		{
+			dao.update(value);
+		}
+	}
+
+	public void delete(User value) throws AppException
+	{
+		try (UserDao dao = new UserDao())
+		{
+			dao.delete(value);
+		}
+	}
+}

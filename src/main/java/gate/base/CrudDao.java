@@ -1,7 +1,7 @@
 package gate.base;
 
 import gate.error.NotFoundException;
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.sql.Link;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
@@ -36,7 +36,7 @@ public class CrudDao<T> extends Dao implements Crud<T>
 	public List<T> search(T filter)
 	{
 		return getLink().search(type)
-			.properties(Entity.getFullGQN(type))
+			.properties(EntityInfo.getFullGQN(type))
 			.matching(filter);
 	}
 

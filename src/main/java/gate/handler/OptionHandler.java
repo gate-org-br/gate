@@ -2,7 +2,7 @@ package gate.handler;
 
 import gate.error.AppError;
 import gate.converter.Converter;
-import gate.lang.property.Entity;
+import gate.lang.property.EntityInfo;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class OptionHandler implements Handler
 	{
 		Objects.requireNonNull(object);
 		Class type = object.getClass();
-		Property property = Property.getProperty(type, Entity.getId(type));
+		Property property = Property.getProperty(type, EntityInfo.getId(type));
 		Object id = property.getValue(object);
 		String label = object.toString();
 		String value = Converter.toString(id);
