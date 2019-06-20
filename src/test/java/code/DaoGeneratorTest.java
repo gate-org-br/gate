@@ -1,4 +1,4 @@
-package gateclient;
+package code;
 
 import gate.entity.User;
 import gate.io.StringReader;
