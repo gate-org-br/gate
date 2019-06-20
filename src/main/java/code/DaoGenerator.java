@@ -1,4 +1,4 @@
-package gateclient;
+package code;
 
 import gate.lang.property.EntityInfo;
 import gate.lang.template.Template;

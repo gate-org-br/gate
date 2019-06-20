@@ -11,6 +11,15 @@ public class Parameters
 
 	private final Map<String, Deque<Object>> parameters = new HashMap();
 
+	public Parameters()
+	{
+	}
+
+	public Parameters(Parameters parameters)
+	{
+		this.parameters.putAll(parameters.parameters);
+	}
+
 	public Parameters put(String name, Object value)
 	{
 		parameters.computeIfAbsent(name,

@@ -36,8 +36,7 @@ public class Template
 	{
 		try
 		{
-			for (Evaluable evaluable : evaluables)
-				evaluable.evaluate(document, context, parameters);
+			evaluables.forEach(evaluable -> evaluable.evaluate(document, context, parameters));
 			document.flush();
 		} catch (EvaluableException | IOException ex)
 		{
@@ -64,6 +63,19 @@ public class Template
 	 * Evaluates the template with the specified context.
 	 *
 	 * @param context the context to be used for evaluation
+	 * @param parameters parameters to be used for evaluation
+	 * @param document the writer where to print the result document
+	 * @throws TemplateException if an error occurs when evaluating the template or when printing the result document
+	 */
+	public void evaluate(Object context, Parameters parameters, Writer document) throws TemplateException
+	{
+		evaluate(document, new ArrayList<>(Collections.singletonList(context)), new Parameters(parameters));
+	}
+
+	/**
+	 * Evaluates the template with the specified context.
+	 *
+	 * @param context the context to be used for evaluation
 	 * @param document the file where to print the evaluated document
 	 * @throws TemplateException if an error occurs when evaluating or saving the template
 	 */
@@ -83,6 +95,26 @@ public class Template
 	 * Evaluates the template with the specified context.
 	 *
 	 * @param context the context to be used for evaluation
+	 * @param parameters parameters to be used for evaluation
+	 * @param document the file where to print the evaluated document
+	 * @throws TemplateException if an error occurs when evaluating or saving the template
+	 */
+	public void evaluate(Object context, Parameters parameters, File document) throws TemplateException
+	{
+		document.getParentFile().mkdirs();
+		try (FileWriter writer = new FileWriter(document))
+		{
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters(parameters));
+		} catch (IOException ex)
+		{
+			throw new TemplateException(ex, ex.getMessage());
+		}
+	}
+
+	/**
+	 * Evaluates the template with the specified context.
+	 *
+	 * @param context the context to be used for evaluation
 	 * @return the evaluated document string
 	 * @throws TemplateException if an error occurs when evaluating the template
 	 */
@@ -91,6 +123,27 @@ public class Template
 		try (StringWriter writer = new StringWriter())
 		{
 			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters());
+			writer.flush();
+			return writer.toString();
+		} catch (IOException ex)
+		{
+			throw new TemplateException(ex, ex.getMessage());
+		}
+	}
+
+	/**
+	 * Evaluates the template with the specified context.
+	 *
+	 * @param context the context to be used for evaluation
+	 * @param parameters parameters to be used for evaluation
+	 * @return the evaluated document string
+	 * @throws TemplateException if an error occurs when evaluating the template
+	 */
+	public String evaluate(Object context, Parameters parameters) throws TemplateException
+	{
+		try (StringWriter writer = new StringWriter())
+		{
+			evaluate(writer, new ArrayList<>(Collections.singletonList(context)), new Parameters(parameters));
 			writer.flush();
 			return writer.toString();
 		} catch (IOException ex)
