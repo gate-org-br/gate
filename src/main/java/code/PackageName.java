@@ -5,44 +5,44 @@ import java.util.Iterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Pack implements Iterable<String>
+public class PackageName implements Iterable<String>
 {
 
 	private final String[] names;
 
-	private Pack(String[] names)
+	private PackageName(String[] names)
 	{
 		this.names = names;
 	}
 
-	public Pack getParent()
+	public PackageName getParent()
 	{
-		return new Pack(Stream.of(names).limit(names.length - 1).toArray(String[]::new));
+		return new PackageName(Stream.of(names).limit(names.length - 1).toArray(String[]::new));
 	}
 
-	public Pack resolve(String name)
+	public PackageName resolve(String name)
 	{
-		return new Pack(Stream.concat(Stream.of(names), Stream.of(name)).toArray(String[]::new));
+		return new PackageName(Stream.concat(Stream.of(names), Stream.of(name)).toArray(String[]::new));
 	}
 
-	public Pack resolveSibling(String name)
+	public PackageName resolveSibling(String name)
 	{
 		return getParent().resolve(name);
 	}
 
-	public static Pack of(Class<?> type)
+	public static PackageName of(Class<?> type)
 	{
 		return of(type.getPackageName());
 	}
 
-	public static Pack of(String string)
+	public static PackageName of(String string)
 	{
 		return of(string.split("[.]"));
 	}
 
-	public static Pack of(String[] names)
+	public static PackageName of(String[] names)
 	{
-		return new Pack(names);
+		return new PackageName(names);
 	}
 
 	public int size()

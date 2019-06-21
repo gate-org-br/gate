@@ -1,6 +1,7 @@
 package code;
 
 import gate.error.AppException;
+import gate.lang.expression.Parameters;
 import gate.util.ConsoleParameters;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -61,15 +62,10 @@ public class Code
 
 	public static void createDao(Class<?> type) throws URISyntaxException
 	{
-		new DaoGenerator(type).dao(Project.of(type).getSourcesPath(Pack.of(type).resolveSibling("dao"))
-			.resolve(type.getSimpleName() + "Dao.java")
-			.toFile());
+		
 	}
 
 	public static void createControl(Class<?> type) throws URISyntaxException
 	{
-		new ControlGenerator(type).control(Project.of(type).getSourcesPath(Pack.of(type).resolveSibling("control"))
-			.resolve(type.getSimpleName() + "Control.java")
-			.toFile());
 	}
 }

@@ -1,5 +1,6 @@
 package code;
 
+import gate.lang.expression.Parameters;
 import gate.lang.property.EntityInfo;
 import gate.lang.template.Template;
 import java.io.File;
@@ -24,12 +25,27 @@ public class DaoGenerator
 
 	public String dao()
 	{
-		return DAO.evaluate(entityInfo);
+		return dao(getDefault(entityInfo.getType()));
+	}
+
+	public String dao(ClassName className)
+	{
+		return DAO.evaluate(entityInfo,
+			new Parameters()
+				.put("className", className));
+	}
+
+	public void dao(ClassName className, File file)
+	{
+		DAO.evaluate(entityInfo,
+			new Parameters()
+				.put("className", className),
+			file);
 	}
 
 	public void dao(File file)
 	{
-		DAO.evaluate(entityInfo, file);
+		dao(getDefault(entityInfo.getType()), file);
 	}
 
 	public String search()
@@ -55,5 +71,10 @@ public class DaoGenerator
 	public String delete()
 	{
 		return DELETE.evaluate(entityInfo);
+	}
+
+	public static ClassName getDefault(Class<?> type)
+	{
+		return ClassName.of(PackageName.of(type).resolveSibling("dao"), type.getSimpleName() + "Dao");
 	}
 }
