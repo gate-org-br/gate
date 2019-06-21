@@ -1,5 +1,6 @@
 package code;
 
+import gate.lang.expression.Parameters;
 import gate.lang.property.EntityInfo;
 import gate.lang.template.Template;
 import java.io.File;
@@ -24,12 +25,27 @@ public class ControlGenerator
 
 	public String control()
 	{
-		return CONTROL.evaluate(entityInfo);
+		return control(getDefault(entityInfo.getType()));
+	}
+
+	public String control(ClassName className)
+	{
+		return CONTROL.evaluate(entityInfo,
+			new Parameters()
+				.put("className", className));
+	}
+
+	public void control(ClassName className, File file)
+	{
+		CONTROL.evaluate(entityInfo,
+			new Parameters()
+				.put("className", className),
+			file);
 	}
 
 	public void control(File file)
 	{
-		CONTROL.evaluate(entityInfo, file);
+		control(getDefault(entityInfo.getType()), file);
 	}
 
 	public String search()
@@ -56,4 +72,10 @@ public class ControlGenerator
 	{
 		return DELETE.evaluate(entityInfo);
 	}
+
+	public static ClassName getDefault(Class<?> type)
+	{
+		return ClassName.of(PackageName.of(type).resolveSibling("control"), type.getSimpleName() + "Control");
+	}
+
 }
