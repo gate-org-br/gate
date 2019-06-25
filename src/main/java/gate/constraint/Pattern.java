@@ -33,7 +33,7 @@ public @interface Pattern
 			Object object = property.getValue(entity);
 			if (object != null && !Converter.toString(object).matches(getValue()))
 			{
-				String name = property.getName();
+				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
 				throw new AppException("O campo %s deve estar no formato %s.", name, getValue());

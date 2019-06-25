@@ -37,7 +37,7 @@ public @interface Maxlength
 				.toString(type, property.getValue(entity));
 			if (value.length() > constraint)
 			{
-				String name = property.getName();
+				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
 				throw new AppException("O campo %s deve possuir no máximo %d caracteres.", name, getValue());

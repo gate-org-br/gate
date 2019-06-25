@@ -32,18 +32,18 @@ class TemplateToken implements Evaluable
 
 	static final TemplateToken EXPRESSION_TAIL = new TemplateToken(Type.EXPRESSION_TAIL, "}");
 
-	static final TemplateToken IF_HEAD = new TemplateToken(Type.IF_HEAD, "<g-if");
+	static final TemplateToken IF_HEAD = new TemplateToken(Type.IF_HEAD, "<g:if");
 
-	static final TemplateToken ITERATOR_HEAD = new TemplateToken(Type.ITERATOR_HEAD, "<g-iterator");
+	static final TemplateToken ITERATOR_HEAD = new TemplateToken(Type.ITERATOR_HEAD, "<g:iterator");
 
 	static final TemplateToken CLOSE_TAG = new TemplateToken(Type.CLOSE_TAG, ">");
 	static final TemplateToken SELF_CLOSE_TAG = new TemplateToken(Type.SELF_CLOSE_TAG, "/>");
 
-	static final TemplateToken IF_TAIL = new TemplateToken(Type.IF_TAIL, "</g-if>");
+	static final TemplateToken IF_TAIL = new TemplateToken(Type.IF_TAIL, "</g:if>");
 
-	static final TemplateToken ITERATOR_TAIL = new TemplateToken(Type.ITERATOR_TAIL, "</g-iterator>");
+	static final TemplateToken ITERATOR_TAIL = new TemplateToken(Type.ITERATOR_TAIL, "</g:iterator>");
 
-	static final TemplateToken IMPORT = new TemplateToken(Type.IMPORT, "<g-import");
+	static final TemplateToken IMPORT = new TemplateToken(Type.IMPORT, "<g:import");
 	static final TemplateToken TYPE = new TemplateToken(Type.TYPE, "type");
 	static final TemplateToken RESOURCE = new TemplateToken(Type.RESOURCE, "resource");
 

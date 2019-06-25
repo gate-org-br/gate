@@ -1,0 +1,107 @@
+<%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
+
+<g:template filename="/WEB-INF/views/DIAG.jsp">
+	<fieldset>
+		<legend>
+			Usuário<g:icon type="select"/>
+		</legend>
+
+		<label>
+			Ativo:
+			<span>
+				<g:label property="active"/>
+			</span>
+		</label>
+		<label>
+			Login do Usuário:
+			<span>
+				<g:label property="userID"/>
+			</span>
+		</label>
+		<label>
+			Senha do Usuário:
+			<span>
+				<g:label property="passwd"/>
+			</span>
+		</label>
+		<label>
+			Nome do Usuário:
+			<span>
+				<g:label property="name"/>
+			</span>
+		</label>
+		<label>
+			E-Mail do Usuário:
+			<span>
+				<g:label property="email"/>
+			</span>
+		</label>
+		<label>
+			Perfil:
+			<span>
+				<g:label property="role.id"/>
+			</span>
+		</label>
+		<label>
+			Comentários sobre o Usuário:
+			<span>
+				<g:label property="details"/>
+			</span>
+		</label>
+		<label>
+			Telefone Celular do Usuário:
+			<span>
+				<g:label property="cellPhone"/>
+			</span>
+		</label>
+		<label>
+			Telefone Fixo do Usuário:
+			<span>
+				<g:label property="phone"/>
+			</span>
+		</label>
+		<label>
+			Foto do Usuário:
+			<span>
+				<g:label property="photo"/>
+			</span>
+		</label>
+		<label>
+			Data de Nascimento:
+			<span>
+				<g:label property="birthdate"/>
+			</span>
+		</label>
+		<label>
+			CPF:
+			<span>
+				<g:label property="CPF"/>
+			</span>
+		</label>
+		<label>
+			Sexo:
+			<span>
+				<g:label property="sex"/>
+			</span>
+		</label>
+		<label>
+			Data de Cadastro:
+			<span>
+				<g:label property="registration"/>
+			</span>
+		</label>
+	</fieldset>
+
+	<div class='Coolbar'>
+		<g:link module="#" screen="#" action="Update" arguments="form.id=${screen.form.id}" tabindex='2'>
+			Alterar<g:icon type="update"/>
+		</g:link>
+		<g:link module="#" screen="#" action="Delete" arguments="form.id=${screen.form.id}" tabindex='2'
+			data-confirm="Tem certeza de que deseja remover este registro?">
+			Remover<g:icon type="delete"/>
+		</g:link>
+		<a class='Cancel Hide' tabindex='1'>
+			Fechar<g:icon type='cancel'/>
+		</a>
+	</div>
+</g:template>

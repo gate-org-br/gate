@@ -1,0 +1,12 @@
+	public void insert(${className.getName()} value) throws AppException
+	{
+		Constraints.validate(value
+		<g:iterator source="${properties}" target="property">,
+			"${@property.getName()}"
+		</g:iterator>);
+
+		try (${@dao.getName()} dao = new ${@dao.getName()}())
+		{
+			dao.insert(value);
+		}
+	}

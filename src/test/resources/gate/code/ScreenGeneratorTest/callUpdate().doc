@@ -1,0 +1,27 @@
+	@Icon("update")
+	@Name("Alterar")
+	public String callUpdate()
+	{
+		if (isGET())
+		{
+			try
+			{
+				form = control.select(getForm().getId());
+			} catch (NotFoundException ex)
+			{
+				setMessages(ex.getMessages());
+				return call();
+			}
+		} else if (getMessages().isEmpty())
+		{
+			try
+			{
+				control.update(getForm());
+				return callSelect();
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+		}
+		return "/WEB-INF/views/gate/modules/User/ViewUpdate.jsp";
+	}

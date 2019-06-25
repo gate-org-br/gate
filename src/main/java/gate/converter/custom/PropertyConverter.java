@@ -11,7 +11,7 @@ public class PropertyConverter extends ObjectConverter
 	{
 		if (object == null)
 			return "";
-		String name = ((Property) object).getName();
+		String name = ((Property) object).getDisplayName();
 		if (name == null)
 			name = object.toString();
 		return name;
@@ -22,7 +22,7 @@ public class PropertyConverter extends ObjectConverter
 	{
 		if (object == null)
 			return "";
-		String name = ((Property) object).getName();
+		String name = ((Property) object).getDisplayName();
 		if (name == null)
 			name = object.toString();
 		return String.format(format, name);

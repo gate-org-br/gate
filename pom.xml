@@ -229,7 +229,7 @@
 						</goals>
 					</execution>
 				</executions>
-                                <configuration>
+				<configuration>
 					<archive>
 						<manifest>
 							<mainClass>gateclient.GateClient</mainClass>

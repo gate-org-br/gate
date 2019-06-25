@@ -1,0 +1,20 @@
+select 
+    Uzer.id as 'id',
+    Uzer.active as 'active',
+    Uzer.userID as 'userID',
+    Uzer.passwd as 'passwd',
+    Uzer.name as 'name',
+    Uzer.email as 'email',
+    Uzer.Role$id as 'role.id',
+    Uzer.details as 'details',
+    Uzer.cellPhone as 'cellPhone',
+    Uzer.phone as 'phone',
+    Uzer.photo as 'photo',
+    Uzer.birthdate as 'birthdate',
+    Uzer.CPF as 'CPF',
+    Uzer.sex as 'sex',
+    Uzer.registration as 'registration'
+from
+    Uzer
+where
+    Uzer.id = ?

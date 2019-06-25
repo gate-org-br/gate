@@ -31,7 +31,7 @@ public @interface Required
 		{
 			if (getValue().equals("required") && property.getValue(entity) == null)
 			{
-				String name = property.getName();
+				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
 				throw new AppException("O campo %s é requerido.", name);

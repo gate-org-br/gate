@@ -446,9 +446,9 @@ public class Property
 		return lastAttribute.getIcon();
 	}
 
-	public String getName()
+	public String getDisplayName()
 	{
-		return lastAttribute.getName();
+		return lastAttribute.getDisplayName();
 	}
 
 	public String getDescription()

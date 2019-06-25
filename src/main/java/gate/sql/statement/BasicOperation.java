@@ -3,7 +3,7 @@ package gate.sql.statement;
 import gate.error.ConstraintViolationException;
 import gate.error.FKViolationException;
 import gate.error.UKViolationException;
-import gate.lang.property.EntityInfo;
+import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.Command;
 import gate.sql.Link;
@@ -118,10 +118,10 @@ class BasicOperation<T> implements Operation<T>
 				{
 					int result = 0;
 
-					if (EntityInfo.isEntity(type))
+					if (Entity.isEntity(type))
 					{
 						Property entityId
-							= Property.getProperty(type, EntityInfo.getId(type));
+							= Property.getProperty(type, Entity.getId(type));
 
 						for (T value : values)
 						{
@@ -183,10 +183,10 @@ class BasicOperation<T> implements Operation<T>
 					{
 						int result = 0;
 
-						if (EntityInfo.isEntity(type))
+						if (Entity.isEntity(type))
 						{
 							Property entityId
-								= Property.getProperty(type, EntityInfo.getId(type));
+								= Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{
@@ -292,9 +292,9 @@ class BasicOperation<T> implements Operation<T>
 				{
 					int result = 0;
 
-					if (EntityInfo.isEntity(type))
+					if (Entity.isEntity(type))
 					{
-						Property entityId = Property.getProperty(type, EntityInfo.getId(type));
+						Property entityId = Property.getProperty(type, Entity.getId(type));
 
 						for (T value : values)
 						{
@@ -354,10 +354,10 @@ class BasicOperation<T> implements Operation<T>
 					{
 						int result = 0;
 
-						if (EntityInfo.isEntity(type))
+						if (Entity.isEntity(type))
 						{
 							Property entityId
-								= Property.getProperty(type, EntityInfo.getId(type));
+								= Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{

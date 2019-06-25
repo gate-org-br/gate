@@ -1,15 +1,13 @@
 package gate.lang.template;
 
-import gate.error.TemplateException;
 import gate.entity.Role;
 import gate.entity.User;
+import gate.error.TemplateException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,17 +48,11 @@ public final class TemplateTest
 	}
 
 	@Test
-	public void template() throws TemplateException
+	public void template() throws TemplateException, IOException
 	{
-		try
-		{
-			String expected = getFile("Document.html");
-			String result = Template.compile(getFile("Template.xml")).evaluate(this);
-			Assert.assertEquals(expected, result);
-		} catch (IOException ex)
-		{
-			Logger.getLogger(TemplateTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		String expected = getFile("Document.html");
+		String result = Template.compile(getFile("Template.xml")).evaluate(this);
+		Assert.assertEquals(expected, result);
 	}
 
 	public List<Role> getRoles()

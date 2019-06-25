@@ -1,6 +1,6 @@
 package gate.sql.insert;
 
-import gate.lang.property.EntityInfo;
+import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.statement.Operation;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class TypedInsert<T> implements Insert, Operation.Builder<T>
 	@Override
 	public Operation<T> build()
 	{
-		return set(EntityInfo.getProperties(type, e -> !e.isEntityId())).build();
+		return set(Entity.getProperties(type, e -> !e.isEntityId())).build();
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class TypedInsert<T> implements Insert, Operation.Builder<T>
 		@Override
 		public String toString()
 		{
-			return "insert into " + EntityInfo.getFullTableName(type) + " " + columns + " values " + parameters;
+			return "insert into " + Entity.getFullTableName(type) + " " + columns + " values " + parameters;
 		}
 	}
 }

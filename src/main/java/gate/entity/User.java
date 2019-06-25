@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 @Icon("2004")
 @Table("Uzer")
 @Schema("gate")
+@Name("Usuário")
 public class User implements Serializable
 {
 
@@ -43,6 +44,7 @@ public class User implements Serializable
 	private ID id;
 
 	@Required
+	@Name("Ativo")
 	@Description("O campo ATIVO é requerido.")
 	private Boolean active;
 

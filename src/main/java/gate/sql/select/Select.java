@@ -1,7 +1,7 @@
 package gate.sql.select;
 
 import gate.io.StringReader;
-import gate.lang.property.EntityInfo;
+import gate.lang.property.Entity;
 import gate.sql.Clause;
 import gate.sql.Formatter;
 import gate.sql.GQN;
@@ -238,12 +238,12 @@ public class Select implements Clause
 		return ordering != null
 			? Select.from(type)
 				.properties(GQN.getProperties())
-				.where(GQN.getCondition(EntityInfo::getFullColumnName))
+				.where(GQN.getCondition(Entity::getFullColumnName))
 				.orderBy(ordering)
 				.build()
 			: Select.from(type)
 				.properties(GQN.getProperties())
-				.where(GQN.getCondition(EntityInfo::getFullColumnName))
+				.where(GQN.getCondition(Entity::getFullColumnName))
 				.build();
 	}
 

@@ -43,7 +43,7 @@ public class PropertiesTag extends DynamicAttributeTag
 		int i = 0;
 		for (Property property : source)
 		{
-			String name = property.getName();
+			String name = property.getDisplayName();
 			if (name == null)
 				name = property.toString();
 			getJspContext().getOut().print("<tr>");

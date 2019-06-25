@@ -1,14 +1,12 @@
 package gate.tags;
 
 import gate.util.Toolkit;
-
 import java.io.IOException;
 import java.util.Objects;
 import javax.el.ELContext;
 import javax.el.ExpressionFactory;
 import javax.el.LambdaExpression;
 import javax.el.StandardELContext;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;

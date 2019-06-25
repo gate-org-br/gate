@@ -93,7 +93,7 @@ abstract class PropertyTag extends DynamicAttributeTag
 			String description = p.getDescription();
 			if (description == null || description.isEmpty())
 			{
-				String propertyName = p.getName();
+				String propertyName = p.getDisplayName();
 				if (propertyName != null && !propertyName.isEmpty())
 					getAttributes().put("title", propertyName);
 			} else

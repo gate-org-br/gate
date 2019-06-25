@@ -1,7 +1,0 @@
-	public void delete(${name} value) throws AppException
-	{
-		try (${name}Dao dao = new ${name}Dao())
-		{
-			dao.delete(value);
-		}
-	}
