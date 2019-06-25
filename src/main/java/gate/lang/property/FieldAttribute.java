@@ -161,7 +161,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public String getName()
+	public String getDisplayName()
 	{
 		return name;
 	}

@@ -13,14 +13,20 @@ class TemplateScanner extends BufferedReader
 		super(reader);
 	}
 
-	private boolean isEOF()
-		throws IOException
+	private boolean isEOF() throws IOException
 	{
 		mark(1);
-		if (read() == -1)
-			return true;
+		int c = read();
 		reset();
-		return false;
+		return c == -1;
+	}
+
+	private boolean isEscape() throws IOException
+	{
+		mark(1);
+		int c = read();
+		reset();
+		return c == '\\';
 	}
 
 	private String identation() throws TemplateException
@@ -162,6 +168,15 @@ class TemplateScanner extends BufferedReader
 			if (isEOF())
 				return TemplateToken.EOF;
 
+			if (isEscape())
+			{
+				skip(1);
+				if (isEOF())
+					return TemplateToken.EOF;
+				return new TemplateToken(TemplateToken.Type.TEXT,
+					Character.toString((char) read()));
+			}
+
 			if (consume(TemplateToken.EXPRESSION_HEAD.getValue()))
 				return TemplateToken.EXPRESSION_HEAD;
 
@@ -180,20 +195,11 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.ITERATOR_HEAD.getValue()))
 				return TemplateToken.ITERATOR_HEAD;
 
-			StringBuilder string = new StringBuilder(identation);
-			while (!isEOF()
-				&& !check("\n")
-				&& !check(TemplateToken.EXPRESSION_HEAD.getValue())
-				&& !check(TemplateToken.IMPORT.getValue())
-				&& !check(TemplateToken.IF_HEAD.getValue())
-				&& !check(TemplateToken.ITERATOR_HEAD.getValue())
-				&& !check(TemplateToken.IF_TAIL.getValue())
-				&& !check(TemplateToken.ITERATOR_TAIL.getValue()))
-				string.append((char) read());
-			return new TemplateToken(TemplateToken.Type.TEXT, string.toString());
-		} catch (IOException e)
+			return new TemplateToken(TemplateToken.Type.TEXT,
+				identation.isEmpty() ? Character.toString((char) read()) : identation);
+		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to parse template.");
+			throw new TemplateException(ex, "Error trying to parse template.");
 		}
 	}
 

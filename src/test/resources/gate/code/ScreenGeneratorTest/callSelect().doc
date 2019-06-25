@@ -1,0 +1,14 @@
+	@Icon("select")
+	@Name("Detalhes")
+	public String callSelect()
+	{
+		try
+		{
+			form = control.select(getForm().getId());
+			return "/WEB-INF/views/gate/modules/User/ViewSelect.jsp";
+		} catch (NotFoundException ex)
+		{
+			setMessages(ex.getMessages());
+			return call();
+		}
+	}

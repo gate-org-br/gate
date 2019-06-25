@@ -1,7 +1,0 @@
-	public ${name} select(${id.type} id) throws NotFoundException
-	{
-		try (${name}Dao dao = new ${name}Dao())
-		{
-			return dao.select(id);
-		}
-	}

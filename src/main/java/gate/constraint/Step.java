@@ -33,7 +33,7 @@ public @interface Step
 			Object object = property.getValue(entity);
 			if (object != null && Converter.toNumber(object).doubleValue() % getValue().doubleValue() != 0)
 			{
-				String name = property.getName();
+				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
 				throw new AppException("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue()));

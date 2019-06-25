@@ -1,0 +1,6 @@
+	public String callSearch()
+	{
+		if (isPOST() && getMessages().isEmpty())
+			page = control.search(getForm());
+		return "/WEB-INF/views/gate/modules/User/ViewSearch.jsp";
+	}

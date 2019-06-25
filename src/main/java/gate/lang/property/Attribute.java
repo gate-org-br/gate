@@ -162,7 +162,7 @@ public interface Attribute
 		throw new UnsupportedOperationException("Attempt to write a double value to a non double attribute");
 	}
 
-	default String getName()
+	default String getDisplayName()
 	{
 		return null;
 	}
@@ -204,17 +204,17 @@ public interface Attribute
 
 	default String getTableName()
 	{
-		return EntityInfo.getTableName(getRawType());
+		return Entity.getTableName(getRawType());
 	}
 
 	default String getFullTableName()
 	{
-		return EntityInfo.getFullTableName(getRawType());
+		return Entity.getFullTableName(getRawType());
 	}
 
 	default boolean isEntity()
 	{
-		return EntityInfo.isEntity(getRawType());
+		return Entity.isEntity(getRawType());
 	}
 
 	default Converter getConverter()

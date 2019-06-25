@@ -34,7 +34,7 @@ public class TemplateTag extends SimpleTagSupport
 			((PageContext) getJspContext()).include(filename);
 		} catch (ServletException ex)
 		{
-			throw new IOException(ex);
+			throw new JspException(ex);
 		}
 		super.doTag();
 	}

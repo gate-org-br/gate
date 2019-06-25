@@ -1,9 +1,0 @@
-	public void delete(${name} value) throws AppException
-	{
-		if (Delete.from("${tableName}")
-			.where(Condition.of("${id.columnName}").eq(value.${id.getter}))
-			.build()
-			.connect(getLink())
-			.execute() == 0)
-			throw new NotFoundException();
-	}

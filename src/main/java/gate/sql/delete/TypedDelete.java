@@ -1,6 +1,6 @@
 package gate.sql.delete;
 
-import gate.lang.property.EntityInfo;
+import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
@@ -34,7 +34,7 @@ public class TypedDelete<T> implements Delete, Operation.Builder<T>
 	@Override
 	public Operation<T> build()
 	{
-		Property property = Property.getProperty(type, EntityInfo.getId(type));
+		Property property = Property.getProperty(type, Entity.getId(type));
 
 		return where(Condition.of(property.getColumnName()).isEq(property)).build();
 	}
@@ -68,6 +68,6 @@ public class TypedDelete<T> implements Delete, Operation.Builder<T>
 	@Override
 	public String toString()
 	{
-		return "delete from " + EntityInfo.getFullTableName(type);
+		return "delete from " + Entity.getFullTableName(type);
 	}
 }

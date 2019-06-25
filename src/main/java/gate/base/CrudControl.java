@@ -5,7 +5,7 @@ import gate.constraint.Required;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.NotFoundException;
-import gate.lang.property.EntityInfo;
+import gate.lang.property.Entity;
 import gate.type.ID;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class CrudControl<T> extends Control implements Crud<T>
 	@Override
 	public void insert(T value) throws AppException
 	{
-		Constraints.validate(value, EntityInfo.getProperties(User.class, e -> !e.isEntityId()
+		Constraints.validate(value, Entity.getProperties(User.class, e -> !e.isEntityId()
 			&& (!e.getAttributes().get(1).isEntity() || e.getAttributes().get(1).getConstraints().stream().anyMatch(c -> c.getClass() == Required.Implementation.class))));
 		try (CrudDao<T> dao = new CrudDao<>(type))
 		{
@@ -51,7 +51,7 @@ public class CrudControl<T> extends Control implements Crud<T>
 	@Override
 	public void update(T value) throws AppException
 	{
-		Constraints.validate(value, EntityInfo.getProperties(User.class, e -> !e.getAttributes().get(1).isEntity() || e.getAttributes().get(1).getConstraints()
+		Constraints.validate(value, Entity.getProperties(User.class, e -> !e.getAttributes().get(1).isEntity() || e.getAttributes().get(1).getConstraints()
 			.stream().anyMatch(c -> c.getClass() == Required.Implementation.class)));
 		try (CrudDao<T> dao = new CrudDao<>(type))
 		{

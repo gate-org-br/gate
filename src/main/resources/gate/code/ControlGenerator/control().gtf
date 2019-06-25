@@ -1,0 +1,29 @@
+package ${@control.getPackageName()};
+
+import gate.base.Control;
+import gate.constraint.Constraints;
+import ${className};
+import gate.error.AppException;
+import gate.error.NotFoundException;
+import ${id.getClassName()};
+import java.util.List;
+import ${@dao};
+
+public class ${@control.getName()} extends Control
+{
+
+
+	<g:import type="gate.code.ControlGenerator" resource="ControlGenerator/search().gtf"/>
+
+
+	<g:import type="gate.code.ControlGenerator" resource="ControlGenerator/select().gtf"/>
+
+
+	<g:import type="gate.code.ControlGenerator" resource="ControlGenerator/insert().gtf"/>
+
+
+	<g:import type="gate.code.ControlGenerator" resource="ControlGenerator/update().gtf"/>
+
+
+	<g:import type="gate.code.ControlGenerator" resource="ControlGenerator/delete().gtf"/>
+}

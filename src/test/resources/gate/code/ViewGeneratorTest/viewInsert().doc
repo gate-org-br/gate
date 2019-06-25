@@ -1,0 +1,105 @@
+<%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
+
+<g:template filename="/WEB-INF/views/DIAG.jsp">
+	<form method='POST' action='#' enctype="multipart/form-data">
+		<fieldset>
+			<legend>
+				Novo Usuário<g:icon type="insert"/>
+			</legend>
+
+			<label>
+				Ativo:
+				<span>
+					<g:select property="active" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Login do Usuário:
+				<span>
+					<g:text property="userID" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Senha do Usuário:
+				<span>
+					<g:text property="passwd" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Nome do Usuário:
+				<span>
+					<g:text property="name" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				E-Mail do Usuário:
+				<span>
+					<g:text property="email" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Perfil:
+				<span>
+					<g:text property="role.id" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Comentários sobre o Usuário:
+				<span>
+					<g:text property="details" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Telefone Celular do Usuário:
+				<span>
+					<g:text property="cellPhone" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Telefone Fixo do Usuário:
+				<span>
+					<g:text property="phone" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Foto do Usuário:
+				<span>
+					<g:file property="photo" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Data de Nascimento:
+				<span>
+					<g:text property="birthdate" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				CPF:
+				<span>
+					<g:text property="CPF" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Sexo:
+				<span>
+					<g:select property="sex" tabindex="1"/>
+				</span>
+			</label>
+			<label>
+				Data de Cadastro:
+				<span>
+					<g:text property="registration" tabindex="1"/>
+				</span>
+			</label>
+		</fieldset>
+
+		<div class='Coolbar'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
+				Concluir<g:icon type="commit"/>
+			</g:link>
+			<a class='Cancel Hide' tabindex='2'>
+				Desistir<g:icon type='cancel'/>
+			</a>
+		</div>
+	</form>
+</g:template>

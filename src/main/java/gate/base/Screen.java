@@ -1,5 +1,6 @@
 package gate.base;
 
+import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
@@ -11,7 +12,6 @@ import gate.util.PropertyComparator;
 import gate.util.ScreenServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -45,8 +45,8 @@ public abstract class Screen extends Base
 	}
 
 	public void prepare(HttpServletRequest request,
-			HttpServletResponse response)
-			throws RuntimeException
+		HttpServletResponse response)
+		throws RuntimeException
 	{
 		this.request = request;
 		this.response = response;
@@ -62,7 +62,7 @@ public abstract class Screen extends Base
 					{
 						Property previous = property.getPreviousProperty();
 						previous.setValue(this, getRequest()
-								.getParameterValues(previous.getRawType(), property.getRawType(), name));
+							.getParameterValues(previous.getRawType(), property.getRawType(), name));
 					} else
 					{
 						Converter converter = property.getConverter();
@@ -82,8 +82,8 @@ public abstract class Screen extends Base
 	}
 
 	public Object execute(Method method)
-			throws RuntimeException,
-			IllegalAccessException,
+		throws RuntimeException,
+		IllegalAccessException,
 		InvocationTargetException
 	{
 		return method.invoke(this);
@@ -212,9 +212,9 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Class.forName(screen != null
-					? module + "." + screen
-					+ "Screen" : module + ".Screen"))
-					.map(e -> e.asSubclass(Screen.class));
+				? module + "." + screen
+				+ "Screen" : module + ".Screen"))
+				.map(e -> e.asSubclass(Screen.class));
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();
@@ -229,5 +229,17 @@ public abstract class Screen extends Base
 	public static Optional<Method> getAction(String module, String screen, String action)
 	{
 		return getScreen(module, screen).flatMap(e -> getAction(e, action));
+	}
+
+	public String getDefaultJSP(Method method)
+	{
+		String screenName = getClass().getSimpleName();
+		PackageName packageName = PackageName.of(getClass());
+		return "/WEB-INF/vies/"
+			+ packageName.getFolderName()
+			+ "/"
+			+ screenName.substring(0, screenName.length() - 6)
+			+ "/"
+			+ method.getName().substring(4);
 	}
 }
