@@ -24,7 +24,7 @@ class Identation implements Evaluable
 			writer.write(text);
 		} catch (IOException ex)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate templete: %s.", ex.getMessage()));
+			throw new TemplateException(String.format("Error trying to evaluate template: %s.", ex.getMessage()));
 		}
 	}
 
