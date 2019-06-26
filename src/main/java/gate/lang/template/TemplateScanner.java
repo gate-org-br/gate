@@ -29,57 +29,7 @@ class TemplateScanner extends BufferedReader
 		return c == '\\';
 	}
 
-	private String identation() throws TemplateException
-	{
-		try
-		{
-
-			mark(2);
-			if (read() == '\r' && read() == '\n')
-			{
-				StringBuilder string = new StringBuilder("\r\n");
-
-				mark(1);
-				int c = read();
-				while (c == ' ' || c == '\t')
-				{
-					string.append((char) c);
-					mark(1);
-					c = read();
-				}
-
-				reset();
-				return string.toString();
-			}
-			reset();
-
-			mark(1);
-			if (read() == '\n')
-			{
-				StringBuilder string = new StringBuilder("\n");
-
-				mark(1);
-				int c = read();
-				while (c == ' ' || c == '\t')
-				{
-					string.append((char) c);
-					mark(1);
-					c = read();
-				}
-
-				reset();
-				return string.toString();
-			}
-			reset();
-			return "";
-
-		} catch (IOException e)
-		{
-			throw new TemplateException("Error trying to parse template.");
-		}
-	}
-
-	private void skipSpaces() throws TemplateException
+	public void skipSpaces() throws TemplateException
 
 	{
 		try
@@ -93,50 +43,6 @@ class TemplateScanner extends BufferedReader
 		{
 			throw new TemplateException("Error trying to parse template.");
 		}
-	}
-
-	private boolean check(String string) throws TemplateException
-	{
-		try
-		{
-			mark(string.length());
-
-			for (int i = 0; i < string.length(); i++)
-			{
-				if (string.charAt(i) != read())
-				{
-					reset();
-					return false;
-				}
-			}
-
-			reset();
-			return true;
-		} catch (IOException e)
-		{
-			throw new TemplateException("Error trying to parse template.");
-		}
-	}
-
-	private String consumeIdentifier() throws IOException
-	{
-		mark(1);
-		int c = read();
-		if (Character.isJavaIdentifierStart(c))
-		{
-			StringBuilder string = new StringBuilder();
-			while (Character.isJavaIdentifierPart(c))
-			{
-				string.append((char) c);
-				mark(1);
-				c = read();
-			}
-
-			reset();
-			return string.toString();
-		}
-		reset();
-		return null;
 	}
 
 	private boolean consume(String string) throws TemplateException
@@ -161,7 +67,7 @@ class TemplateScanner extends BufferedReader
 		}
 	}
 
-	public TemplateToken nextTplToken() throws TemplateException
+	public Evaluable nextTagToken() throws TemplateException
 	{
 		try
 		{
@@ -173,132 +79,75 @@ class TemplateScanner extends BufferedReader
 				skip(1);
 				if (isEOF())
 					return TemplateToken.EOF;
-				return new TemplateToken(TemplateToken.Type.TEXT,
-					Character.toString((char) read()));
+				return new Char((char) read());
 			}
 
-			if (consume(TemplateToken.EXPRESSION_HEAD.getValue()))
+			if (consume(TemplateToken.WINDOWS_LINE_BREAK.toString()))
+				return TemplateToken.WINDOWS_LINE_BREAK;
+			if (consume(TemplateToken.LINE_BREAK.toString()))
+				return TemplateToken.LINE_BREAK;
+			if (consume(TemplateToken.SPACE.toString()))
+				return TemplateToken.SPACE;
+			if (consume(TemplateToken.TAB.toString()))
+				return TemplateToken.TAB;
+
+			if (consume(TemplateToken.EXPRESSION_HEAD.toString()))
 				return TemplateToken.EXPRESSION_HEAD;
 
-			String identation = identation();
-
-			if (check(TemplateToken.IF_TAIL.getValue())
-				|| check(TemplateToken.ITERATOR_TAIL.getValue()))
-				return TemplateToken.EOF;
-
-			if (consume(TemplateToken.IMPORT.getValue()))
+			if (consume(TemplateToken.IMPORT.toString()))
 				return TemplateToken.IMPORT;
 
-			if (consume(TemplateToken.IF_HEAD.getValue()))
+			if (consume(TemplateToken.IF_HEAD.toString()))
 				return TemplateToken.IF_HEAD;
 
-			if (consume(TemplateToken.ITERATOR_HEAD.getValue()))
+			if (consume(TemplateToken.ITERATOR_HEAD.toString()))
 				return TemplateToken.ITERATOR_HEAD;
 
-			return new TemplateToken(TemplateToken.Type.TEXT,
-				identation.isEmpty() ? Character.toString((char) read()) : identation);
-		} catch (IOException ex)
-		{
-			throw new TemplateException(ex, "Error trying to parse template.");
-		}
-	}
-
-	public TemplateToken nextExpToken() throws TemplateException
-	{
-		try
-		{
-			skipSpaces();
-
-			if (isEOF())
-				throw new TemplateException("Unexpected end of file.");
-
-			if (consume(TemplateToken.EXPRESSION_TAIL.getValue()))
-				return TemplateToken.EXPRESSION_TAIL;
-
-			StringBuilder string = new StringBuilder();
-			while (!check(TemplateToken.EXPRESSION_TAIL.getValue()))
-			{
-				int c = read();
-				if (c == '"')
-				{
-					string.append((char) c);
-					for (c = read(); c != '"'; c = read())
-						string.append((char) c);
-				}
-
-				if (c == '\'')
-				{
-					string.append((char) c);
-					for (c = read(); c != '\''; c = read())
-						string.append((char) c);
-				}
-
-				string.append((char) c);
-			}
-			return new TemplateToken(TemplateToken.Type.TEXT, string.toString());
-		} catch (IOException e)
-		{
-			throw new TemplateException("Error trying to parse template.");
-		}
-	}
-
-	public TemplateToken nextTagToken() throws TemplateException
-	{
-		try
-		{
-			skipSpaces();
-
-			if (consume(TemplateToken.CONDITION.getValue()))
+			if (consume(TemplateToken.CONDITION.toString()))
 				return TemplateToken.CONDITION;
-			if (consume(TemplateToken.SOURCE.getValue()))
+			if (consume(TemplateToken.SOURCE.toString()))
 				return TemplateToken.SOURCE;
-			if (consume(TemplateToken.TARGET.getValue()))
+			if (consume(TemplateToken.TARGET.toString()))
 				return TemplateToken.TARGET;
-			if (consume(TemplateToken.TYPE.getValue()))
+			if (consume(TemplateToken.TYPE.toString()))
 				return TemplateToken.TYPE;
-			if (consume(TemplateToken.RESOURCE.getValue()))
+			if (consume(TemplateToken.RESOURCE.toString()))
 				return TemplateToken.RESOURCE;
-			if (consume(TemplateToken.INDEX.getValue()))
+			if (consume(TemplateToken.INDEX.toString()))
 				return TemplateToken.INDEX;
-			if (consume(TemplateToken.EQUALS.getValue()))
+			if (consume(TemplateToken.EQUALS.toString()))
 				return TemplateToken.EQUALS;
-			if (consume(TemplateToken.DOUBLE_QUOTE.getValue()))
+			if (consume(TemplateToken.DOUBLE_QUOTE.toString()))
 				return TemplateToken.DOUBLE_QUOTE;
-			if (consume(TemplateToken.QUOTE.getValue()))
+			if (consume(TemplateToken.QUOTE.toString()))
 				return TemplateToken.QUOTE;
-			if (consume(TemplateToken.EXPRESSION_HEAD.getValue()))
-				return TemplateToken.EXPRESSION_HEAD;
 
-			if (consume(TemplateToken.SELF_CLOSE_TAG.getValue()))
+			if (consume(TemplateToken.SELF_CLOSE_TAG.toString()))
 				return TemplateToken.SELF_CLOSE_TAG;
 
-			if (consume(TemplateToken.CLOSE_TAG.getValue()))
-				return TemplateToken.CLOSE_TAG;
-
-			if (consume(TemplateToken.IMPORT.getValue()))
+			if (consume(TemplateToken.IMPORT.toString()))
 				return TemplateToken.IMPORT;
 
-			if (consume(TemplateToken.IF_TAIL.getValue()))
+			if (consume(TemplateToken.IF_TAIL.toString()))
 				return TemplateToken.IF_TAIL;
 
-			if (consume(TemplateToken.ITERATOR_TAIL.getValue()))
+			if (consume(TemplateToken.ITERATOR_TAIL.toString()))
 				return TemplateToken.ITERATOR_TAIL;
 
-			if (consume(TemplateToken.SLASH.getValue()))
-				return TemplateToken.SLASH;
-			if (consume(TemplateToken.DOT.getValue()))
+			if (consume(TemplateToken.EXPRESSION_TAIL.toString()))
+				return TemplateToken.EXPRESSION_TAIL;
+
+			if (consume(TemplateToken.CLOSE_TAG.toString()))
+				return TemplateToken.CLOSE_TAG;
+			if (consume(TemplateToken.DOT.toString()))
 				return TemplateToken.DOT;
-			if (consume(TemplateToken.OPEN_PARENTESIS.getValue()))
+			if (consume(TemplateToken.OPEN_PARENTESIS.toString()))
 				return TemplateToken.OPEN_PARENTESIS;
-			if (consume(TemplateToken.CLOSE_PARENTESIS.getValue()))
+			if (consume(TemplateToken.CLOSE_PARENTESIS.toString()))
 				return TemplateToken.CLOSE_PARENTESIS;
 
-			String string = consumeIdentifier();
-			if (string != null)
-				return new TemplateToken(TemplateToken.Type.IDENTIFIER, string);
-
-			throw new TemplateException(String.format("Unexpected character found : %c", (char) read()));
-		} catch (IOException e)
+			return new Char((char) read());
+		} catch (IOException ex)
 		{
 			throw new TemplateException("Error trying to parse template.");
 		}
