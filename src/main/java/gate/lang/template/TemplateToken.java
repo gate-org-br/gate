@@ -31,8 +31,8 @@ enum TemplateToken implements Evaluable
 	OPEN_PARENTESIS("("),
 	CLOSE_PARENTESIS(")"),
 	SELF_CLOSE_TAG("/>"),
-	LINE_BREAK("\n"),
-	WINDOWS_LINE_BREAK("\r\n"),
+	SIMPLE_LINE_BREAK("\n"),
+	COMPLEX_LINE_BREAK("\r\n"),
 	SPACE(" "),
 	TAB("\t");
 
