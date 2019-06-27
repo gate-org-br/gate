@@ -13,23 +13,7 @@ class TemplateScanner extends BufferedReader
 		super(reader);
 	}
 
-	private boolean isEOF() throws IOException
-	{
-		mark(1);
-		int c = read();
-		reset();
-		return c == -1;
-	}
-
-	private boolean isEscape() throws IOException
-	{
-		mark(1);
-		int c = read();
-		reset();
-		return c == '\\';
-	}
-
-	public void skipSpaces() throws TemplateException
+	public TemplateScanner skipSpaces() throws TemplateException
 
 	{
 		try
@@ -39,53 +23,28 @@ class TemplateScanner extends BufferedReader
 				mark(1);
 			} while (Character.isWhitespace(read()));
 			reset();
-		} catch (IOException e)
+			return this;
+		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to parse template.");
+			throw new TemplateException(ex, "Error trying to parse template.");
 		}
 	}
 
-	private boolean consume(String string) throws TemplateException
-	{
-		try
-		{
-			mark(string.length());
-
-			for (int i = 0; i < string.length(); i++)
-			{
-				if (string.charAt(i) != read())
-				{
-					reset();
-					return false;
-				}
-			}
-
-			return true;
-		} catch (IOException e)
-		{
-			throw new TemplateException("Error trying to parse template.");
-		}
-	}
-
-	public Evaluable nextTagToken() throws TemplateException
+	public Evaluable next() throws TemplateException
 	{
 		try
 		{
 			if (isEOF())
 				return TemplateToken.EOF;
 
-			if (isEscape())
-			{
-				skip(1);
-				if (isEOF())
-					return TemplateToken.EOF;
-				return new Char((char) read());
-			}
+			if (consume("\\"))
+				return isEOF() ? TemplateToken.EOF
+					: new Char((char) read());
 
-			if (consume(TemplateToken.WINDOWS_LINE_BREAK.toString()))
-				return TemplateToken.WINDOWS_LINE_BREAK;
-			if (consume(TemplateToken.LINE_BREAK.toString()))
-				return TemplateToken.LINE_BREAK;
+			if (consume(TemplateToken.COMPLEX_LINE_BREAK.toString()))
+				return TemplateToken.COMPLEX_LINE_BREAK;
+			if (consume(TemplateToken.SIMPLE_LINE_BREAK.toString()))
+				return TemplateToken.SIMPLE_LINE_BREAK;
 			if (consume(TemplateToken.SPACE.toString()))
 				return TemplateToken.SPACE;
 			if (consume(TemplateToken.TAB.toString()))
@@ -149,7 +108,37 @@ class TemplateScanner extends BufferedReader
 			return new Char((char) read());
 		} catch (IOException ex)
 		{
-			throw new TemplateException("Error trying to parse template.");
+			throw new TemplateException(ex, "Error trying to parse template.");
+		}
+	}
+
+	private boolean isEOF() throws IOException
+	{
+		mark(1);
+		int c = read();
+		reset();
+		return c == -1;
+	}
+
+	private boolean consume(String string) throws TemplateException
+	{
+		try
+		{
+			mark(string.length());
+
+			for (int i = 0; i < string.length(); i++)
+			{
+				if (string.charAt(i) != read())
+				{
+					reset();
+					return false;
+				}
+			}
+
+			return true;
+		} catch (IOException ex)
+		{
+			throw new TemplateException(ex, "Error trying to parse template.");
 		}
 	}
 }
