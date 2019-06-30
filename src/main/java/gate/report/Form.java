@@ -34,30 +34,30 @@ public class Form extends ReportElement
 		});
 	}
 
-	public String getCaption()
+	public final String getCaption()
 	{
 		return caption;
 	}
 
-	public List<Field> getFields()
+	public final List<Field> getFields()
 	{
 		return Collections.unmodifiableList(elements);
 	}
 
-	public Form add(Field field)
+	public final Form add(Field field)
 	{
 		elements.add(field);
 		return this;
 	}
 
-	public Field add(String label, Object value)
+	public final Field add(String label, Object value)
 	{
 		Field field = new Field(label, value);
 		elements.add(field);
 		return field;
 	}
 
-	public Form add(gate.type.Form form)
+	public final Form add(gate.type.Form form)
 	{
 		Objects.requireNonNull(form);
 
@@ -79,32 +79,32 @@ public class Form extends ReportElement
 		return this;
 	}
 
-	public Float getPercentage()
+	public final Float getPercentage()
 	{
 		if (percentage == null)
 			percentage = 100F;
 		return percentage;
 	}
 
-	public int getColumns()
+	public final int getColumns()
 	{
 		return columns;
 	}
 
-	public Form setCaption(String caption)
+	public final Form setCaption(String caption)
 	{
 		this.caption = caption;
 		return this;
 	}
 
-	public Form setPercentage(Float percentage)
+	public final Form setPercentage(Float percentage)
 	{
 		this.percentage = percentage;
 		return this;
 	}
 
 	@Override
-	public Form style(Style style)
+	public final Form style(Style style)
 	{
 		return (Form) super.style(style);
 	}

@@ -9,8 +9,10 @@ import java.util.function.Function;
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each object of the associated data source will generate a single row on the Grid. The
- * value to be displayed on each column is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to
+ * be displayed on each of it's cells. Each object of the associated data source
+ * will generate a single row on the Grid. The value to be displayed on each
+ * column is obtained using a mapping function on it's row value.
  *
  * @param <T> type of the objects to be displayed by the grid
  *
@@ -34,18 +36,19 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Adds a new Column to the Grid.
 	 * <p>
-	 * Each column is associated with a mapping function used to get the value to be displayed for each row of the Grid.
+	 * Each column is associated with a mapping function used to get the
+	 * value to be displayed for each row of the Grid.
 	 *
 	 * @return the new Column added
 	 */
-	public Column<T> add()
+	public final Column<T> add()
 	{
 		Column<T> column = new Column<>();
 		columns.add(column);
 		return column;
 	}
 
-	public Grid<T> add(Column<T> column)
+	public final Grid<T> add(Column<T> column)
 	{
 		columns.add(column);
 		return this;
@@ -58,62 +61,66 @@ public class Grid<T> extends ReportElement
 	 *
 	 * @return this, for chained invocations
 	 */
-	public Grid<T> setCaption(String caption)
+	public final Grid<T> setCaption(String caption)
 	{
 		this.caption = caption;
 		return this;
 	}
 
 	/**
-	 * Sets a value to be displayed on the grid's caption using a java Formatter.
+	 * Sets a value to be displayed on the grid's caption using a java
+	 * Formatter.
 	 *
-	 * @param caption the format string of the caption to be passed to the java Formatter
+	 * @param caption the format string of the caption to be passed to the
+	 * java Formatter
 	 * @param args the parameters to be passed to the java Formatter
 	 *
 	 * @return this, for chained invocations
 	 * @see java.util.Formatter
 	 */
-	public Grid<T> setCaption(String caption, Object... args)
+	public final Grid<T> setCaption(String caption, Object... args)
 	{
 		this.caption = String.format(caption, args);
 		return this;
 	}
 
 	/**
-	 * Sets a mapping function to select a value to be displayed on a sub grid of the current grid.
+	 * Sets a mapping function to select a value to be displayed on a sub
+	 * grid of the current grid.
 	 *
-	 * @param children the function where to get the values to be displayed on the sub grid
+	 * @param children the function where to get the values to be displayed
+	 * on the sub grid
 	 *
 	 * @return the same object, for chained invocations
 	 */
-	public Grid<T> setChildren(Function<T, Object> children)
+	public final Grid<T> setChildren(Function<T, Object> children)
 	{
 		this.children = children;
 		return this;
 	}
 
-	public String getCaption()
+	public final String getCaption()
 	{
 		return caption;
 	}
 
-	public Iterable<?> getData()
+	public final Iterable<?> getData()
 	{
 		return datasource;
 	}
 
-	public Function<T, Object> getChildren()
+	public final Function<T, Object> getChildren()
 	{
 		return children;
 	}
 
-	public List<Column<T>> getColumns()
+	public final List<Column<T>> getColumns()
 	{
 		return Collections.unmodifiableList(columns);
 	}
 
 	@Override
-	public Grid<T> style(Style style)
+	public final Grid<T> style(Style style)
 	{
 		return (Grid<T>) super.style(style);
 	}

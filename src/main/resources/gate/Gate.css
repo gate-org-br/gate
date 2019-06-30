@@ -2094,7 +2094,7 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-weight: bold;
   text-align: center;
 }
-cool-bar,
+gate-coolbar,
 div.COOLBAR,
 div.Coolbar {
   margin: 0;
@@ -2108,31 +2108,31 @@ div.Coolbar {
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
-cool-bar:first-child,
+gate-coolbar:first-child,
 div.COOLBAR:first-child,
 div.Coolbar:first-child {
   margin-top: 0px;
 }
-cool-bar:last-child,
+gate-coolbar:last-child,
 div.COOLBAR:last-child,
 div.Coolbar:last-child {
   margin-bottom: 0px;
 }
-cool-bar:only-child,
+gate-coolbar:only-child,
 div.COOLBAR:only-child,
 div.Coolbar:only-child {
   margin-bottom: 0px;
 }
-cool-bar > *,
+gate-coolbar > *,
 div.COOLBAR > *,
 div.Coolbar > * {
   margin: 2px;
   height: 36px;
 }
-cool-bar > a,
+gate-coolbar > a,
 div.COOLBAR > a,
 div.Coolbar > a,
-cool-bar > button,
+gate-coolbar > button,
 div.COOLBAR > button,
 div.Coolbar > button {
   color: black;
@@ -2151,75 +2151,75 @@ div.Coolbar > button {
   justify-content: space-between;
   background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
-cool-bar > a:hover,
+gate-coolbar > a:hover,
 div.COOLBAR > a:hover,
 div.Coolbar > a:hover,
-cool-bar > button:hover,
+gate-coolbar > button:hover,
 div.COOLBAR > button:hover,
 div.Coolbar > button:hover {
   background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
 }
-cool-bar > a:focus,
+gate-coolbar > a:focus,
 div.COOLBAR > a:focus,
 div.Coolbar > a:focus,
-cool-bar > button:focus,
+gate-coolbar > button:focus,
 div.COOLBAR > button:focus,
 div.Coolbar > button:focus {
   outline: none;
   border: 2px solid #FFFACD;
 }
-cool-bar > a.Delete,
+gate-coolbar > a.Delete,
 div.COOLBAR > a.Delete,
 div.Coolbar > a.Delete,
-cool-bar > button.Delete,
+gate-coolbar > button.Delete,
 div.COOLBAR > button.Delete,
 div.Coolbar > button.Delete {
   color: #660000;
 }
-cool-bar > a.Commit,
+gate-coolbar > a.Commit,
 div.COOLBAR > a.Commit,
 div.Coolbar > a.Commit,
-cool-bar > button.Commit,
+gate-coolbar > button.Commit,
 div.COOLBAR > button.Commit,
 div.Coolbar > button.Commit {
   color: #006600;
 }
-cool-bar > a.Action,
+gate-coolbar > a.Action,
 div.COOLBAR > a.Action,
 div.Coolbar > a.Action,
-cool-bar > button.Action,
+gate-coolbar > button.Action,
 div.COOLBAR > button.Action,
 div.Coolbar > button.Action {
   color: #000066;
 }
-cool-bar > a.Cancel,
+gate-coolbar > a.Cancel,
 div.COOLBAR > a.Cancel,
 div.Coolbar > a.Cancel,
-cool-bar > button.Cancel,
+gate-coolbar > button.Cancel,
 div.COOLBAR > button.Cancel,
 div.Coolbar > button.Cancel {
   color: #660000;
   float: left;
 }
-cool-bar > a.Return,
+gate-coolbar > a.Return,
 div.COOLBAR > a.Return,
 div.Coolbar > a.Return,
-cool-bar > button.Return,
+gate-coolbar > button.Return,
 div.COOLBAR > button.Return,
 div.Coolbar > button.Return {
   color: #660000;
   float: left;
 }
-cool-bar > a > i,
+gate-coolbar > a > i,
 div.COOLBAR > a > i,
 div.Coolbar > a > i,
-cool-bar > button > i,
+gate-coolbar > button > i,
 div.COOLBAR > button > i,
 div.Coolbar > button > i,
-cool-bar > a > span,
+gate-coolbar > a > span,
 div.COOLBAR > a > span,
 div.Coolbar > a > span,
-cool-bar > button > span,
+gate-coolbar > button > span,
 div.COOLBAR > button > span,
 div.Coolbar > button > span {
   order: 1;
@@ -2231,20 +2231,20 @@ div.Coolbar > button > span {
   align-items: center;
   justify-content: center;
 }
-cool-bar > a:only-child,
+gate-coolbar > a:only-child,
 div.COOLBAR > a:only-child,
 div.Coolbar > a:only-child,
-cool-bar > button:only-child,
+gate-coolbar > button:only-child,
 div.COOLBAR > button:only-child,
 div.Coolbar > button:only-child {
   float: right;
 }
-cool-bar > progress,
+gate-coolbar > progress,
 div.COOLBAR > progress,
 div.Coolbar > progress {
   width: calc(100% - 4px);
 }
-cool-bar > label,
+gate-coolbar > label,
 div.COOLBAR > label,
 div.Coolbar > label {
   float: left;
@@ -2254,7 +2254,7 @@ div.Coolbar > label {
   display: inline-flex;
   justify-content: flex-start;
 }
-cool-bar > hr,
+gate-coolbar > hr,
 div.COOLBAR > hr,
 div.Coolbar > hr {
   width: 12px;
@@ -2264,23 +2264,29 @@ div.Coolbar > hr {
   border: 0px none transparent;
   background-color: transparent;
 }
-cool-bar[data-overflow],
+gate-coolbar[data-overflow],
 div.COOLBAR[data-overflow],
 div.Coolbar[data-overflow] {
   height: auto;
 }
-cool-bar[data-overflow] > a,
+gate-coolbar[data-overflow] > a,
 div.COOLBAR[data-overflow] > a,
-div.Coolbar[data-overflow] > a {
+div.Coolbar[data-overflow] > a,
+gate-coolbar[data-overflow] > button,
+div.COOLBAR[data-overflow] > button,
+div.Coolbar[data-overflow] > button {
   width: 36px;
   padding: 0px;
   font-size: 0px;
   min-width: 0px;
   justify-content: center;
 }
-cool-bar[data-overflow] > a > i,
+gate-coolbar[data-overflow] > a > i,
 div.COOLBAR[data-overflow] > a > i,
-div.Coolbar[data-overflow] > a > i {
+div.Coolbar[data-overflow] > a > i,
+gate-coolbar[data-overflow] > button > i,
+div.COOLBAR[data-overflow] > button > i,
+div.Coolbar[data-overflow] > button > i {
   font-size: 16px;
   margin-left: 0px;
 }
@@ -3415,3 +3421,4 @@ div.ReportDialog > div:nth-child(3) > a:hover {
   border-color: #FFFACD;
   background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
 }
+/*# sourceMappingURL=Gate.css.map */
