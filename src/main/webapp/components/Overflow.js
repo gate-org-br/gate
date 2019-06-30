@@ -5,7 +5,7 @@ window.addEventListener("load", () => Array.from(document.all)
 
 window.addEventListener("resize", () => {
 	Array.from(document.all)
-		.filter(e => e.hasAtribute("data-overflow"))
+		.filter(e => e.hasAttribute("data-overflow"))
 		.forEach(e => e.removeAttribute("data-overflow"));
 
 	Array.from(document.all)

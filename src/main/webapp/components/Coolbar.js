@@ -9,4 +9,4 @@ class Coolbar extends HTMLElement
 	}
 }
 
-customElements.define('cool-bar', Coolbar);
+customElements.define('gate-coolbar', Coolbar);

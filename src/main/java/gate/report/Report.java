@@ -46,7 +46,7 @@ public class Report
 	 *
 	 * @return the orientation of this report
 	 */
-	public Orientation getOrientation()
+	public final Orientation getOrientation()
 	{
 		return orientation;
 	}
@@ -56,7 +56,7 @@ public class Report
 	 *
 	 * @return the name of this report
 	 */
-	public String getName()
+	public final String getName()
 	{
 		if (name == null)
 			name = "relatorio";
@@ -70,108 +70,108 @@ public class Report
 	 *
 	 * @return this, for chained invocations
 	 */
-	public Report setName(String name)
+	public final Report setName(String name)
 	{
 		this.name = name;
 		return this;
 	}
 
-	public List<ReportElement> getElements()
+	public final List<ReportElement> getElements()
 	{
 		return Collections.unmodifiableList(elements);
 	}
 
-	public Report add(ReportElement element)
+	public final Report add(ReportElement element)
 	{
 		elements.add(element);
 		return this;
 	}
 
-	public <T> Grid<T> addGrid(Class<T> type, Iterable<T> data)
+	public final <T> Grid<T> addGrid(Class<T> type, Iterable<T> data)
 	{
 		Grid<T> grid = new Grid<>(data);
 		elements.add(grid);
 		return grid;
 	}
 
-	public Form addForm(int columns)
+	public final Form addForm(int columns)
 	{
 		Form form = new Form(columns);
 		elements.add(form);
 		return form;
 	}
 
-	public Form addForm(gate.type.Form form)
+	public final Form addForm(gate.type.Form form)
 	{
 		Form f = new Form(form);
 		elements.add(f);
 		return f;
 	}
 
-	public LineBreak addLineBreak()
+	public final LineBreak addLineBreak()
 	{
 		LineBreak lineBreak = new LineBreak();
 		elements.add(lineBreak);
 		return lineBreak;
 	}
 
-	public PageBreak addPageBreak()
+	public final PageBreak addPageBreak()
 	{
 		PageBreak pageBreak = new PageBreak();
 		elements.add(pageBreak);
 		return pageBreak;
 	}
 
-	public Header addHeader(Object value)
+	public final Header addHeader(Object value)
 	{
 		Header header = new Header(value);
 		elements.add(header);
 		return header;
 	}
 
-	public Paragraph addParagraph(Object value)
+	public final Paragraph addParagraph(Object value)
 	{
 		Paragraph paragraph = new Paragraph(value);
 		elements.add(new Paragraph(value));
 		return paragraph;
 	}
 
-	public Footer addFooter(Object value)
+	public final Footer addFooter(Object value)
 	{
 		Footer footer = new Footer(value);
 		elements.add(footer);
 		return footer;
 	}
 
-	public Image addImage(byte[] source)
+	public final Image addImage(byte[] source)
 	{
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
 	}
 
-	public Image addImage(MimeData source)
+	public final Image addImage(MimeData source)
 	{
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
 	}
 
-	public Image addImage(MimeDataFile source)
+	public final Image addImage(MimeDataFile source)
 	{
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
 	}
 
-	public Image addImage(URL source)
+	public final Image addImage(URL source)
 	{
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
 	}
 
-	public Image addImage(File source)
+	public final Image addImage(File source)
 	{
 		Image image = Image.of(source);
 		elements.add(image);
