@@ -41,19 +41,19 @@ public class LocalDateTimeConverter implements Converter
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return FORMATTTER.format((TemporalAccessor) object);
+		return object != null ? FORMATTTER.format((TemporalAccessor) object) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return FORMATTTER.format((TemporalAccessor) object);
+		return object != null ? FORMATTTER.format((TemporalAccessor) object) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return DateTimeFormatter.ofPattern(format).format((TemporalAccessor) object);
+		return object != null ? DateTimeFormatter.ofPattern(format).format((TemporalAccessor) object) : "";
 	}
 
 	@Override
