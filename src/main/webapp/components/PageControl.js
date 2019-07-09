@@ -80,10 +80,10 @@ function PageControl(pageControl)
 		function frame()
 		{
 			var iframe = body.appendChild(document.createElement("iframe"));
-			iframe.setAttribute("allowfullscreen", "true");
+			iframe.scrolling = "no";
 			iframe.style.backgroundPosition = "center";
 			iframe.style.backgroundRepeat = "no-repeat";
-			iframe.scrolling = "no";
+			iframe.setAttribute("allowfullscreen", "true");
 			iframe.style.backgroundImage = "url('../gate/imge/back/LOADING.gif')";
 			iframe.setAttribute("src", link.getAttribute('href'));
 
@@ -98,14 +98,15 @@ function PageControl(pageControl)
 			{
 				observer.disconnect();
 
-				this.height = 0;
-				this.height = this.contentWindow.document
-					.body.scrollHeight + "px";
+				this.style.height = this.contentWindow.document.body.scrollHeight + "px";
 
 				this.style.backgroundImage = "";
 				var elements = iframe.contentWindow.document.querySelectorAll("*");
 				for (var i = 0; i < elements.length; i++)
 					observer.observe(elements[i], {attributes: true, childList: true, characterData: true});
+
+				Array.from(window.parent.document.querySelectorAll("iframe"))
+					.forEach(e => e.style.height = e.contentWindow.document.body.scrollHeight + "px");
 			};
 			iframe.refresh = function ()
 			{
