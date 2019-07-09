@@ -96,18 +96,14 @@ function PageControl(pageControl)
 
 			iframe.onload = function ()
 			{
+				iframe.style.backgroundImage = "";
+				iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+
 				observer.disconnect();
-
-				this.style.height = this.contentWindow.document.body.scrollHeight + "px";
-
-				this.style.backgroundImage = "";
-				var elements = iframe.contentWindow.document.querySelectorAll("*");
-				for (var i = 0; i < elements.length; i++)
-					observer.observe(elements[i], {attributes: true, childList: true, characterData: true});
-
-				Array.from(window.parent.document.querySelectorAll("iframe"))
-					.forEach(e => e.style.height = e.contentWindow.document.body.scrollHeight + "px");
+				Array.from(iframe.contentWindow.document.querySelectorAll("*"))
+					.forEach(e => observer.observe(e, {attributes: true, childList: true, characterData: true}));
 			};
+
 			iframe.refresh = function ()
 			{
 				var divs = Array.from(this.parentNode.parentNode.children).filter(e => e.tagName.toLowerCase() === "div");

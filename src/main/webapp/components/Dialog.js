@@ -39,8 +39,16 @@ class Dialog extends Modal
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
+		var observer = new MutationObserver(function ()
+		{
+			iframe.style.height = 0;
+			iframe.style.height = Math.max(iframe.contentWindow.document.body.scrollHeight,
+				body.offsetHeight) + "px";
+		});
+
 		iframe.addEventListener("load", () =>
 		{
+			observer.disconnect();
 			iframe.name = "_frame";
 			iframe.setAttribute("name", "_frame");
 
@@ -74,9 +82,11 @@ class Dialog extends Modal
 				}
 			});
 
-			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+			observer.disconnect();
+			Array.from(iframe.contentWindow.document.querySelectorAll("*"))
+				.forEach(e => observer.observe(e, {attributes: true, childList: true, characterData: true}));
 
-			iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 		});
 
 		if (options && options.navigator)
