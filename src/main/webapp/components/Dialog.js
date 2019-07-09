@@ -35,6 +35,7 @@ class Dialog extends Modal
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
+		iframe.setAttribute("scrolling", "no");
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
@@ -74,10 +75,9 @@ class Dialog extends Modal
 			});
 
 			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+
+			iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
 		});
-
-
-
 
 		if (options && options.navigator)
 		{
