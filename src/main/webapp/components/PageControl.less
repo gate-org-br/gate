@@ -20,7 +20,7 @@ div.LinkControl {
 		      margin: 0px;
 		      border-radius: 8px 8px 0 0;
 		      border: 1px solid transparent;
-		      border-bottom: 0px solid transparent; 
+		      border-bottom: 0px solid transparent;
 
 		      &[data-selected=true] { border-color: @main_shaded1;
 					      background-color: @main_shaded1;
@@ -154,15 +154,13 @@ div.LinkControl {
 
 
 		iframe { width: 100%;
-			 border: none; }
+			 border: none;
+			 overflow:  hidden}
 	}
-
-
-
 }
 
 
-div.PageControl { 
+div.PageControl {
 	> div { display: none }
 	> ul > li > div { display: none }
 }
