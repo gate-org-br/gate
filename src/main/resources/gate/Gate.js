@@ -5275,9 +5275,13 @@ function PageControl(pageControl)
 
 			var observer = new MutationObserver(function ()
 			{
-				iframe.height = 0;
-				iframe.height = iframe.contentWindow.document
-					.body.scrollHeight + "px";
+				var height = iframe.contentWindow.document.body.scrollHeight + "px";
+
+				if (iframe.style.height !== height)
+				{
+					iframe.style.height = "0px";
+					iframe.style.height = height;
+				}
 			});
 
 			iframe.onload = function ()
@@ -5369,15 +5373,20 @@ class Dialog extends Modal
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
-		iframe.setAttribute("scrolling", "no");
+		iframe.scrolling = "no";
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
 		var observer = new MutationObserver(function ()
 		{
-			iframe.style.height = 0;
-			iframe.style.height = Math.max(iframe.contentWindow.document.body.scrollHeight,
+			var height = Math.max(iframe.contentWindow.document.body.scrollHeight,
 				body.offsetHeight) + "px";
+
+			if (iframe.style.height !== height)
+			{
+				iframe.style.height = "0px";
+				iframe.style.height = height;
+			}
 		});
 
 		iframe.addEventListener("load", () =>

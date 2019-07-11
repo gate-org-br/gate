@@ -89,9 +89,13 @@ function PageControl(pageControl)
 
 			var observer = new MutationObserver(function ()
 			{
-				iframe.height = 0;
-				iframe.height = iframe.contentWindow.document
-					.body.scrollHeight + "px";
+				var height = iframe.contentWindow.document.body.scrollHeight + "px";
+
+				if (iframe.style.height !== height)
+				{
+					iframe.style.height = "0px";
+					iframe.style.height = height;
+				}
 			});
 
 			iframe.onload = function ()

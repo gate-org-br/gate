@@ -138,15 +138,15 @@
 	</div>
 
 	<style>
-		fieldset.Foto 
+		fieldset.Foto
 		{
-			margin: 4px; 
+			margin: 4px;
 			display: none;
 			flex-shrink: 0;
-			flex-basis: 250px; 
+			flex-basis: 250px;
 		}
 
-		@media only screen and (min-width: 576px) 
+		@media only screen and (min-width: 576px)
 		{
 			fieldset.Foto { display: flex }
 		}
