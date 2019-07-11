@@ -10,11 +10,9 @@ public class SSML
 	private final String source;
 	private final StringBuilder target = new StringBuilder();
 
-	private final static String DOT = ".<break strength='strong'/>";
-	private final static String COMMA = ",<break strength='weak'/>";
-	private final static String DOUBLE_DOT = ":<break strength='x-strong'/>";
-	private final static String SEMICOLON = ";<break strength='medium'/>";
-	private final static String QUESTION_MARK = "?<break strength='medium'/>";
+	private final static String MEDIUM = "<break strength='medium'/>";
+	private final static String STRONG = "<break strength='strong'/>";
+	private final static String XSTRONG = "<break strength='x-strong'/>";
 
 	private SSML(String source)
 	{
@@ -51,17 +49,56 @@ public class SSML
 		else if (current() == '<')
 			tag();
 		else if (current() == '.')
-			pause(DOT);
+			dot();
 		else if (current() == ',')
-			pause(COMMA);
+			comma();
 		else if (current() == ':')
-			pause(DOUBLE_DOT);
+			doubleDot();
 		else if (current() == ';')
-			pause(SEMICOLON);
+			semicolon();
 		else if (current() == '?')
-			pause(QUESTION_MARK);
+			questionMark();
 		else if (current() != -1)
 			target.append((char) consume());
+	}
+
+	private void dot()
+	{
+		consume();
+		target.append(".");
+		if (current() == '\n'
+			|| current() == '\r')
+			paragraph();
+		else
+			target.append(STRONG);
+	}
+
+	private void comma()
+	{
+		consume();
+		target.append(",");
+		target.append(MEDIUM);
+	}
+
+	private void semicolon()
+	{
+		consume();
+		target.append(";");
+		target.append(MEDIUM);
+	}
+
+	private void questionMark()
+	{
+		consume();
+		target.append("?");
+		target.append(MEDIUM);
+	}
+
+	private void doubleDot()
+	{
+		consume();
+		target.append(":");
+		target.append(XSTRONG);
 	}
 
 	private void space()
@@ -69,6 +106,28 @@ public class SSML
 		target.append(' ');
 		while (current() != -1 && Character.isSpaceChar(current()))
 			consume();
+	}
+
+	public void paragraph()
+	{
+		if (current() == '\r')
+		{
+			consume();
+			target.append("\r");
+
+			if (current() == '\n')
+			{
+				consume();
+				target.append("\n");
+			}
+
+		} else if (current() == '\n')
+		{
+			consume();
+			target.append("\n");
+		}
+
+		target.append(XSTRONG);
 	}
 
 	private void pause(String string)
@@ -111,7 +170,8 @@ public class SSML
 	}
 
 	/**
-	 * Creates SSML markup text from the specified source string with pauses added to it's punctuation marks.
+	 * Creates SSML markup text from the specified source string with pauses
+	 * added to it's punctuation marks.
 	 *
 	 * @param source the string to be converted to SSML markup text
 	 * @return the SSML text markup text generated from the specified string
