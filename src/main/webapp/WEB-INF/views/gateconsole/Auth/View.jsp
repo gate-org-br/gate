@@ -9,13 +9,13 @@
 			<g:hidden property="form.user.id" required=''/>
 			<g:hidden property="form.role.id" required=''/>
 			<g:hidden property="form.func.id" required=''/>
-			<label x2>
+			<label data-size='2'>
 				Modo:
 				<span>
 					<g:select property="form.mode" tabindex='1'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Tipo:
 				<span>
 					<g:choose>
@@ -32,21 +32,21 @@
 					</g:choose>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Module:
 				<span>
 					<g:text id='module' property="form.module" tabindex='1'/>
 					<g:shortcut module="#" screen="#" action="Search" data-get='module, screen, action' title='Pesquisar acessos'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Screen:
 				<span>
 					<g:text id='screen' property="form.screen" tabindex='1'/>
 					<g:shortcut module="#" screen="#" action="Search" data-get='module, screen, action' title='Pesquisar acessos'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Action:
 				<span>
 					<g:text id='action' property="form.action" tabindex='1'/>

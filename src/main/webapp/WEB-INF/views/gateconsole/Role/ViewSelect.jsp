@@ -2,43 +2,43 @@
 
 <g:template filename="/WEB-INF/views/DIAG.jsp">
 	<fieldset>
-		<label x8>
+		<label data-size='8'>
 			Nome:
 			<span>
 				<g:label property='form.name'/>
 			</span>
 		</label>
-		<label x8>
+		<label data-size='8'>
 			Perfil Pai:
 			<span>
 				<g:label property='form.role.name'/>
 			</span>
 		</label>
-		<label x1>
+		<label data-size='1'>
 			Master:
 			<span>
 				<g:label property='form.master'/>
 			</span>
 		</label>
-		<label x1>
+		<label data-size='1'>
 			Ativa:
 			<span>
 				<g:label property='form.active'/>
 			</span>
 		</label>
-		<label x2>
+		<label data-size='2'>
 			Sigla:
 			<span>
 				<g:label property='form.roleID'/>
 			</span>
 		</label>
-		<label x4>
+		<label data-size='4'>
 			E-Mail:
 			<span>
 				<g:label property='form.email'/>
 			</span>
 		</label>
-		<label x8>
+		<label data-size='8'>
 			Respons&aacute;vel:
 			<span>
 				<g:label property='form.manager.name'/>

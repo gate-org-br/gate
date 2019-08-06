@@ -1,7 +1,18 @@
 {
-    "name": "gate", "version": "1.0.0", "keywords": [
-        "util", "functional", "server", "client", "browser"
-    ], "author": "davins", "contributors": [], "dependencies": {
-        "grunt": "~0.4.5", "grunt-contrib-watch": "~1.1.0", "grunt-contrib-concat": "~1.0.1"
+    "name": "gate",
+    "version": "1.0.0",
+    "keywords": [
+        "util",
+        "functional",
+        "server",
+        "client",
+        "browser"
+    ],
+    "author": "davins",
+    "contributors": [],
+    "dependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-watch": "~1.1.0",
+        "grunt-contrib-concat": "~1.0.1"
     }
 }

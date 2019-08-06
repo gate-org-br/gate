@@ -145,6 +145,8 @@ public class Report
 
 	public final Image addImage(byte[] source)
 	{
+		if (source == null)
+			return Image.EMPTY;
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
@@ -152,6 +154,8 @@ public class Report
 
 	public final Image addImage(MimeData source)
 	{
+		if (source == null)
+			return Image.EMPTY;
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
@@ -159,6 +163,8 @@ public class Report
 
 	public final Image addImage(MimeDataFile source)
 	{
+		if (source == null)
+			return Image.EMPTY;
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
@@ -166,6 +172,8 @@ public class Report
 
 	public final Image addImage(URL source)
 	{
+		if (source == null)
+			return Image.EMPTY;
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
@@ -173,6 +181,9 @@ public class Report
 
 	public final Image addImage(File source)
 	{
+		if (source == null)
+			return Image.EMPTY;
+
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;

@@ -7,13 +7,13 @@
 				Alterar Perfil<g:icon type="update"/>
 				<g:hidden property="form.id"/>
 			</legend>
-			<label x8>
+			<label data-size="8">
 				Nome:
 				<span>
 					<g:text property='form.name' tabindex='1'/>
 				</span>
-			</label>
-			<label x8>
+			</label> 
+			<label data-size="8">
 				Perfil Pai:
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -26,40 +26,40 @@
 					</g:link>
 				</span>
 			</label>
-			<label x1>
+			<label data-size="1">
 				Master:
 				<span>
 					<g:select property='form.master' tabindex='1'/>
 				</span>
 			</label>
-			<label x1>
+			<label data-size="1">
 				Ativa:
 				<span>
 					<g:select property='form.active' tabindex='1'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size="2">
 				Sigla:
 				<span>
 					<g:text property='form.roleID' tabindex='1'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size="4">
 				E-Mail:
 				<span>
 					<g:text property='form.email' tabindex='1'/>
 				</span>
 			</label>
-			<label x8>
-				Respons&aacute;vel:
+			<label data-size="8">
+				Responsável:
 				<span>
 					<g:select property='form.manager.id' values="${e -> e.id}"
 						  tabindex='1' options="${screen.users}" required=''/>
 				</span>
 			</label>
-			<label style='width: 100%'>
-				Descri&ccedil;&atilde;o:
-				<span style='height: 60px'>
+			<label>
+				Descrição:
+				<span style='flex-basis: 120px'>
 					<g:textarea property='form.description' tabindex='1'/>
 				</span>
 			</label>

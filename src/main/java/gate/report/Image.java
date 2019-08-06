@@ -14,6 +14,8 @@ public final class Image extends ReportElement
 	private final byte[] source;
 	private final String filename;
 
+	public static final Image EMPTY = new Image("empty", new byte[0]);
+
 	private Image(String filename, byte[] source)
 	{
 		super(new Style());

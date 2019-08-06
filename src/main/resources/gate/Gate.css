@@ -2543,11 +2543,15 @@ div.LinkControl > ul > li > button[data-icon]:after {
     width: 20%;
   }
 }
-@media only screen and (min-width: 1200px) {
+@media only screen and (min-width: 1800px) {
   div.PageControl > ul > li,
   div.LinkControl > ul > li {
     width: 12.5%;
   }
+  div.PageControl > ul > li:first-child:nth-last-child(5),
+  div.LinkControl > ul > li:first-child:nth-last-child(5),
+  div.PageControl > ul > li:first-child:nth-last-child(5) ~ li,
+  div.LinkControl > ul > li:first-child:nth-last-child(5) ~ li,
   div.PageControl > ul > li:first-child:nth-last-child(10),
   div.LinkControl > ul > li:first-child:nth-last-child(10),
   div.PageControl > ul > li:first-child:nth-last-child(10) ~ li,
