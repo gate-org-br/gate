@@ -1,5 +1,6 @@
 package gate.sql.condition;
 
+import gate.entity.Role;
 import gate.sql.select.Select;
 import gate.type.DateTime;
 import gate.type.DateTimeInterval;
@@ -557,6 +558,15 @@ public class ConstantConditionTest
 				.expression("id")
 				.from("Cliente")
 				.where(Condition.of("id").isEq("1"))).when(true).isEq("1")
+			.toString();
+		Assert.assertEquals(expected, result);
+	}
+
+	@Test
+	public void testFrom()
+	{
+		String expected = "Role.id = ?";
+		String result = Condition.of("Role.id").from(Role.class).eq(Role::getId)
 			.toString();
 		Assert.assertEquals(expected, result);
 	}

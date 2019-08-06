@@ -143,7 +143,7 @@ public abstract class ConstantPredicate extends Predicate
 
 	public <T> ExtractorPredicate<T> from(Class<T> type)
 	{
-		return new ExtractorPredicate<T>(getClause());
+		return new ExtractorPredicate<>(this);
 	}
 
 	static class Rollback extends ConstantPredicate
