@@ -6,38 +6,38 @@
 			<legend>
 				Usu&aacute;rio<g:icon type="gate.entity.User"/>
 			</legend>
-			<label x2>
+			<label data-size='2'>
 				Ativo:
 				<span>
 					<g:label property='form.active'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Cadastro:
 				<span>
 					<g:label property='form.registration'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Login:
 				<span>
 					<g:label property='form.userID'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Senha:
 				<span>
 					<label>Resetar</label>
 					<g:shortcut module="#" screen="#" action="Passwd" arguments="form.id=${screen.form.id}"/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Nome:
 				<span>
 					<g:label property='form.name'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Perfil:
 				<span>
 					<label>
@@ -49,40 +49,40 @@
 					</g:if>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				CPF:
 				<span>
 					<g:label property='form.CPF'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Nascimento:
 				<span>
 					<g:icon type="gate.type.Date"/>
 					<g:label property='form.birthdate'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				Sexo:
 				<span>
 					<g:label property='form.sex'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Telefone:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:label property='form.phone'/>
 				</span>
 			</label>
-			<label x2>
+			<label data-size='2'>
 				Celular:
 				<span>
 					<g:icon type="gate.type.Phone"/>
 					<g:label property='form.cellPhone'/>
 				</span>
 			</label>
-			<label x4>
+			<label data-size='4'>
 				E-Mail:
 				<span>
 					<g:icon type="2034"/>

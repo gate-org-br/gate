@@ -117,12 +117,14 @@ div.LinkControl {
 				      { width: 20%; }
 		      }
 
-		      @media only screen and (min-width: @desktop)
+		      @media only screen and (min-width: @widescreen)
 			      {
 
 			      width: 12.5%;
 
-			      &:first-child:nth-last-child(10),
+			      &:first-child:nth-last-child(5),
+				      &:first-child:nth-last-child(5) ~ li ,
+				      &:first-child:nth-last-child(10),
 				      &:first-child:nth-last-child(10) ~ li,
 				      &:first-child:nth-last-child(20),
 				      &:first-child:nth-last-child(20) ~ li,

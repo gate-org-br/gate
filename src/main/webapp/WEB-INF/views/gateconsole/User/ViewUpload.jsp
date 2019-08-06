@@ -8,7 +8,7 @@
 				<g:icon type="upload" />
 				Importar Usu&aacute;rios
 			</legend>
-			<label x4>
+			<label data-size='4'>
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -21,7 +21,7 @@
 					</g:link>
 				</span>
 			</label>				
-			<label x4>
+			<label data-size='4'>
 				Arquivo:
 				<span>
 					<g:file property="file"/>
