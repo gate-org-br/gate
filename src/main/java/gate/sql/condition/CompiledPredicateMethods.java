@@ -5,6 +5,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,8 +16,8 @@ interface CompiledPredicateMethods extends Clause
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is equals to the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is equals to
+	 * the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -25,8 +26,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition eq(Object parameter)
 	{
 		return parameter != null
-				? eq((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? eq((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -51,7 +52,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -81,7 +82,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -107,12 +108,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isEq(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is equals to the parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition eqGet(Supplier<Object> supplier)
+	{
+		return eq(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Ne
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is equals to the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is equals to
+	 * the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -121,8 +137,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition ne(Object parameter)
 	{
 		return parameter != null
-				? ne((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? ne((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -146,7 +162,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -175,7 +191,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -201,12 +217,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isNe(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is not equals to the parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition neGet(Supplier<Object> supplier)
+	{
+		return ne(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lt
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is less than the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is less than
+	 * the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -215,8 +246,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition lt(Object parameter)
 	{
 		return parameter != null
-				? lt((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? lt((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -240,7 +271,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -269,7 +300,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -295,12 +326,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isLt(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is less than the specified parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition ltGet(Supplier<Object> supplier)
+	{
+		return lt(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Lt
+	// Le
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is less than or equals the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is less than
+	 * or equals the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -309,8 +355,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition le(Object parameter)
 	{
 		return parameter != null
-				? le((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? le((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -334,7 +380,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -363,7 +409,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -389,12 +435,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isLe(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is less than or equals the specified parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition leGet(Supplier<Object> supplier)
+	{
+		return le(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Gt
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is greater than the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is greater
+	 * than the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -403,8 +464,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition gt(Object parameter)
 	{
 		return parameter != null
-				? gt((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? gt((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -428,7 +489,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -457,7 +518,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -483,12 +544,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isGt(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is greater than the specified parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition gtGet(Supplier<Object> supplier)
+	{
+		return gt(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Ge
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is greater than or equals the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is greater
+	 * than or equals the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -497,8 +573,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition ge(Object parameter)
 	{
 		return parameter != null
-				? ge((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? ge((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -522,7 +598,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -551,7 +627,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
@@ -577,12 +653,27 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isGe(subquery.build());
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause is greater than or equals the parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition geGet(Supplier<Object> supplier)
+	{
+		return ge(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lk
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the clause is like the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the clause is like the
+	 * parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -591,8 +682,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition lk(Object parameter)
 	{
 		return parameter != null
-				? lk((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? lk((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -616,7 +707,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of("%" + Converter.getConverter(type).toString(type, parameter) + "%"));
+					Stream.of("%" + Converter.getConverter(type).toString(type, parameter) + "%"));
 			}
 
 			@Override
@@ -627,12 +718,27 @@ interface CompiledPredicateMethods extends Clause
 		};
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates if the
+	 * clause is like the parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition lkGet(Supplier<Object> supplier)
+	{
+		return lk(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Rx
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified regular expression, if the regular expression is not
-	 * null, and evaluates to true if the clause matches the regular expression.
+	 * Compares the previously specified clause with the specified regular expression, if the regular expression is not null, and evaluates to true if the
+	 * clause matches the regular expression.
 	 *
 	 * @param regex regular expression to be compared with the specified clause
 	 *
@@ -641,8 +747,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition rx(Object regex)
 	{
 		return regex != null
-				? rx((Class<Object>) regex.getClass(), regex)
-				: new CompiledCondition(getClause().rollback());
+			? rx((Class<Object>) regex.getClass(), regex)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -666,7 +772,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(Converter.getConverter(type).toString(type, regex)));
+					Stream.of(Converter.getConverter(type).toString(type, regex)));
 			}
 
 			@Override
@@ -677,12 +783,27 @@ interface CompiledPredicateMethods extends Clause
 		};
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the clause matches the regular expression.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition rxGet(Supplier<Object> supplier)
+	{
+		return rx(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Bw
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and
-	 * evaluates to true if the the clause is between the parameter.
+	 * Compares the previously specified clause with the specified parameter, if the parameter is not null, and evaluates to true if the the clause is
+	 * between the parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -691,8 +812,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition bw(Object parameter)
 	{
 		return parameter != null
-				? bw((Class<Object>) parameter.getClass(), parameter)
-				: new CompiledCondition(getClause().rollback());
+			? bw((Class<Object>) parameter.getClass(), parameter)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -716,7 +837,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter));
+					Stream.of(parameter));
 			}
 
 			@Override
@@ -728,8 +849,8 @@ interface CompiledPredicateMethods extends Clause
 	}
 
 	/**
-	 * Compares the previously specified clause with the specified parameters, if the parameters are both not null, and
-	 * evaluates to true if the clause is between the first parameter and the second one.
+	 * Compares the previously specified clause with the specified parameters, if the parameters are both not null, and evaluates to true if the clause is
+	 * between the first parameter and the second one.
 	 *
 	 * @param parameter1 first parameter to be compared with the specified clause
 	 * @param parameter2 second parameter to be compared with the specified clause
@@ -739,8 +860,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition bw(Object parameter1, Object parameter2)
 	{
 		return parameter1 != null && parameter2 != null
-				? bw((Class<Object>) parameter1.getClass(), parameter1, parameter2)
-				: new CompiledCondition(getClause().rollback());
+			? bw((Class<Object>) parameter1.getClass(), parameter1, parameter2)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -766,7 +887,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						Stream.of(parameter1, parameter2));
+					Stream.of(parameter1, parameter2));
 			}
 
 			@Override
@@ -777,12 +898,27 @@ interface CompiledPredicateMethods extends Clause
 		};
 	}
 
+	/**
+	 * Compares the previously specified clause with the parameter supplied by the specified supplier, if the parameter is not null, and evaluates to true
+	 * if the the clause is between the parameter.
+	 *
+	 * @param supplier supplier from where to get the parameter to be compared with the specified clause
+	 *
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+	 *
+	 * @throws java.lang.NullPointerException if any of the parameters is null
+	 */
+	default CompiledCondition bwGet(Supplier<Object> supplier)
+	{
+		return bw(supplier.get());
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// In
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Compares the previously specified clause with the specified parameter list, if the parameter list is not null,
-	 * and evaluates to true if the parameter list contains the clause.
+	 * Compares the previously specified clause with the specified parameter list, if the parameter list is not null, and evaluates to true if the parameter
+	 * list contains the clause.
 	 *
 	 * @param parameters parameter list to be compared with the specified clause
 	 *
@@ -791,8 +927,8 @@ interface CompiledPredicateMethods extends Clause
 	default CompiledCondition in(List<?> parameters)
 	{
 		return parameters != null
-				? in(Object.class, (List<Object>) parameters)
-				: new CompiledCondition(getClause().rollback());
+			? in(Object.class, (List<Object>) parameters)
+			: new CompiledCondition(getClause().rollback());
 	}
 
 	/**
@@ -816,14 +952,14 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						parameters.stream());
+					parameters.stream());
 			}
 
 			@Override
 			public String toString()
 			{
 				return getClause() + Stream.generate(() -> "?")
-						.limit(parameters.size()).collect(Collectors.joining(", ", " in (", ")"));
+					.limit(parameters.size()).collect(Collectors.joining(", ", " in (", ")"));
 			}
 		};
 	}
@@ -846,7 +982,7 @@ interface CompiledPredicateMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-						subquery.getParameters().stream());
+					subquery.getParameters().stream());
 			}
 
 			@Override
