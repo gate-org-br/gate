@@ -18,7 +18,7 @@ public class YearMonthConverter implements Converter
 {
 
 	private static final DateTimeFormatter FORMATTTER = DateTimeFormatter.ofPattern("MM/yyyy");
-	private static final List<Constraint.Implementation<?>> CONSTRAINTS = Arrays.asList(new Maxlength.Implementation(7), new Pattern.Implementation("^(0[123456789]|11|12)[/][0-9]{4}$"));
+	private static final List<Constraint.Implementation<?>> CONSTRAINTS = Arrays.asList(new Maxlength.Implementation(7), new Pattern.Implementation("^(0[123456789]|10|11|12)[/][0-9]{4}$"));
 
 	@Override
 	public String getMask()
