@@ -228,6 +228,16 @@ public interface Sentence extends SQL
 	{
 
 		/**
+		 * Specify the type with the attributes to be updated on the database
+		 *
+		 * @param <T> type with the attributes to be updated on the database
+		 * @param type type with the attributes to be updated on the database
+		 *
+		 * @return the same sentence compiled with the specified type
+		 */
+		<T> Extractor<T> from(Class<T> type);
+
+		/**
 		 * Compiles the sentence with a list of parameters.
 		 *
 		 * @param parameters the list of parameters to be compiled with the sentence
