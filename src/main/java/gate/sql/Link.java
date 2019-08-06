@@ -1,9 +1,8 @@
 package gate.sql;
 
+import gate.entity.User;
 import gate.error.AppError;
 import gate.error.ConstraintViolationException;
-import gate.error.FKViolationException;
-import gate.error.UKViolationException;
 import gate.io.StringReader;
 import gate.producer.AppProducer;
 import gate.sql.condition.CompiledCondition;
@@ -40,8 +39,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
- * Holds the connection to the database and provides a clean interface for transaction management, querying and
- * execution of statements.
+ * Holds the connection to the database and provides a clean interface for transaction management, querying and execution of statements.
  *
  * @author davins
  */
@@ -70,7 +68,7 @@ public class Link implements AutoCloseable
 				try (StringWriter writer = new StringWriter())
 				{
 					for (int c = reader.read();
-							c != -1; c = reader.read())
+						c != -1; c = reader.read())
 						writer.write((char) c);
 					writer.flush();
 					return new SearchCommand(this, writer.toString(), parameters);
@@ -98,8 +96,8 @@ public class Link implements AutoCloseable
 	public Link()
 	{
 		this(CDI.current()
-				.select(AppProducer.class)
-				.get().produce().getId());
+			.select(AppProducer.class)
+			.get().produce().getId());
 	}
 
 	/**
@@ -122,9 +120,9 @@ public class Link implements AutoCloseable
 		try
 		{
 			connection
-					= ((DataSource) new InitialContext()
-							.lookup(String.format("java:/comp/env/%s", datasource)))
-							.getConnection();
+				= ((DataSource) new InitialContext()
+					.lookup(String.format("java:/comp/env/%s", datasource)))
+					.getConnection();
 		} catch (SQLException | NamingException e)
 		{
 			throw new AppError(e);
@@ -143,7 +141,7 @@ public class Link implements AutoCloseable
 		try
 		{
 			return new Command(this,
-					connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
+				connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
 		} catch (SQLException e)
 		{
 			throw new AppError(e);
@@ -279,7 +277,7 @@ public class Link implements AutoCloseable
 				try (StringWriter writer = new StringWriter())
 				{
 					for (int c = reader.read();
-							c != -1; c = reader.read())
+						c != -1; c = reader.read())
 						writer.write((char) c);
 					writer.flush();
 					return Sentence.of(writer.toString()).connect(this);
@@ -486,18 +484,17 @@ public class Link implements AutoCloseable
 	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param query the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled
-	 * into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
 	public Query.Compiled.Connected from(String query, CompiledCondition... conditions)
 	{
 		return Query.of(Formatter.format(query, (Object[]) conditions))
-				.parameters(Stream.of(conditions)
-						.flatMap(Clause::getParameters)
-						.collect(Collectors.toList()))
-				.connect(this);
+			.parameters(Stream.of(conditions)
+				.flatMap(Clause::getParameters)
+				.collect(Collectors.toList()))
+			.connect(this);
 	}
 
 	/**
@@ -508,8 +505,7 @@ public class Link implements AutoCloseable
 	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param resource a resource containing the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled
-	 * into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
@@ -616,15 +612,15 @@ public class Link implements AutoCloseable
 			public List<T> matching(T filter)
 			{
 				return Select.of(type, filter, GQN)
-						.connect(Link.this).fetchEntityList(type);
+					.connect(Link.this).fetchEntityList(type);
 			}
 
 			@Override
 			public List<T> parameters(List<Object> parameters)
 			{
 				return Select.of(type, GQN)
-						.parameters(parameters)
-						.connect(Link.this).fetchEntityList(type);
+					.parameters(parameters)
+					.connect(Link.this).fetchEntityList(type);
 
 			}
 		};
@@ -646,15 +642,15 @@ public class Link implements AutoCloseable
 			public Optional<T> matching(T filter)
 			{
 				return Select.of(type, filter, GQN)
-						.connect(Link.this).fetchEntity(type);
+					.connect(Link.this).fetchEntity(type);
 			}
 
 			@Override
 			public Optional<T> parameters(List<Object> parameters)
 			{
 				return Select.of(type, GQN)
-						.parameters(parameters)
-						.connect(Link.this).fetchEntity(type);
+					.parameters(parameters)
+					.connect(Link.this).fetchEntity(type);
 			}
 		};
 	}
@@ -694,11 +690,11 @@ public class Link implements AutoCloseable
 			public UpdateOperation.Properties<T> properties(String... GQN)
 			{
 				return e -> Update
-						.of(type, GQN)
-						.build()
-						.values(e)
-						.connect(Link.this)
-						.execute();
+					.of(type, GQN)
+					.build()
+					.values(e)
+					.connect(Link.this)
+					.execute();
 			}
 		};
 	}
