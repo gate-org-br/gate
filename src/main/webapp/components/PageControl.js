@@ -80,7 +80,6 @@ function PageControl(pageControl)
 		function frame()
 		{
 			var iframe = body.appendChild(document.createElement("iframe"));
-			iframe.scrolling = "no";
 			iframe.style.backgroundPosition = "center";
 			iframe.style.backgroundRepeat = "no-repeat";
 			iframe.setAttribute("allowfullscreen", "true");

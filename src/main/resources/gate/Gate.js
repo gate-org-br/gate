@@ -5266,7 +5266,6 @@ function PageControl(pageControl)
 		function frame()
 		{
 			var iframe = body.appendChild(document.createElement("iframe"));
-			iframe.scrolling = "no";
 			iframe.style.backgroundPosition = "center";
 			iframe.style.backgroundRepeat = "no-repeat";
 			iframe.setAttribute("allowfullscreen", "true");
@@ -5368,12 +5367,10 @@ class Dialog extends Modal
 			close.innerHTML = "&#x1011;";
 			close.onclick = () => this.hide();
 		}
-
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
-		iframe.scrolling = "no";
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 

@@ -1600,9 +1600,6 @@ div.Dialog > div:last-child > dialog {
   padding: 0px;
   flex-grow: 1;
 }
-div.Dialog > div:last-child > iframe {
-  overflow: hidden;
-}
 div.Message {
   width: 800px;
   height: 280px;
