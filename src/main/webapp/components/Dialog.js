@@ -30,12 +30,10 @@ class Dialog extends Modal
 			close.innerHTML = "&#x1011;";
 			close.onclick = () => this.hide();
 		}
-
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
-		iframe.scrolling = "no";
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
