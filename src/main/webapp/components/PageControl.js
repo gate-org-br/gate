@@ -100,6 +100,7 @@ function PageControl(pageControl)
 			iframe.onload = function ()
 			{
 				iframe.style.backgroundImage = "";
+				iframe.style.height = "0px";
 				iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
 
 				observer.disconnect();
