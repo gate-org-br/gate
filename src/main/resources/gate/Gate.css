@@ -1599,6 +1599,7 @@ div.Dialog > div:last-child > dialog {
   border: none;
   padding: 0px;
   flex-grow: 1;
+  overflow: hidden;
 }
 div.Message {
   width: 800px;
