@@ -1,8 +1,6 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import gate.error.ConversionException;
-import java.sql.SQLException;
 
 /**
  * Fetches a cursor as a java object of the specified type.

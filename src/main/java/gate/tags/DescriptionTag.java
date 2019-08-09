@@ -19,7 +19,7 @@ public class DescriptionTag extends DynamicAttributeTag
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		getJspContext().getOut().print(Description.Extractor.extract(type));
+		getJspContext().getOut().print(Description.Extractor.extract(type).orElse("?"));
 	}
 
 }
