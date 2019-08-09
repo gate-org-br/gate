@@ -3,6 +3,7 @@ package gate.tags;
 import gate.annotation.Color;
 import gate.annotation.Description;
 import gate.annotation.Icon;
+import gate.annotation.Name;
 import gate.util.Icons;
 
 public class TagLib
@@ -15,7 +16,7 @@ public class TagLib
 
 	public static String name(Object obj)
 	{
-		return Description.Extractor.extract(obj).orElse("Unnamed");
+		return Name.Extractor.extract(obj).orElse("Unnamed");
 	}
 
 	public static String color(Object obj)
