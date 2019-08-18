@@ -6,6 +6,7 @@ import gate.converter.custom.LocalDateTimeIntervalConverter;
 
 import java.io.Serializable;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -109,5 +110,47 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 				return source.getMin().format(formatter) + " - " + source.getMax().format(formatter);
 			}
 		};
+	}
+	
+	public static class Mutable
+	{
+
+		private LocalDateTime min;
+		private LocalDateTime max;
+
+		public LocalDateTime getMin()
+		{
+			return min;
+		}
+
+		public void setMin(LocalDateTime min)
+		{
+			this.min = min;
+		}
+
+		public LocalDateTime getMax()
+		{
+			return max;
+		}
+
+		public void setMax(LocalDateTime max)
+		{
+			this.max = max;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			return obj instanceof Mutable
+				&& Objects.equals(min, ((Mutable) obj).min)
+				&& Objects.equals(max, ((Mutable) obj).max);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return (min != null ? min.hashCode() : 0)
+				+ (max != null ? max.hashCode() : 0);
+		}
 	}
 }

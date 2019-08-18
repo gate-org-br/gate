@@ -201,4 +201,46 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 			return next;
 		}
 	}
+
+	public static class Mutable
+	{
+
+		private LocalDate min;
+		private LocalDate max;
+
+		public LocalDate getMin()
+		{
+			return min;
+		}
+
+		public void setMin(LocalDate min)
+		{
+			this.min = min;
+		}
+
+		public LocalDate getMax()
+		{
+			return max;
+		}
+
+		public void setMax(LocalDate max)
+		{
+			this.max = max;
+		}
+
+		@Override
+		public boolean equals(Object obj)
+		{
+			return obj instanceof Mutable
+				&& Objects.equals(min, ((Mutable) obj).min)
+				&& Objects.equals(max, ((Mutable) obj).max);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return (min != null ? min.hashCode() : 0)
+				+ (max != null ? max.hashCode() : 0);
+		}
+	}
 }
