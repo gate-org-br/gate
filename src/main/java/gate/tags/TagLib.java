@@ -5,6 +5,10 @@ import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.util.Icons;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.Temporal;
 
 public class TagLib
 {
@@ -29,4 +33,15 @@ public class TagLib
 		return Description.Extractor.extract(obj).orElse("Undescribed");
 	}
 
+	public static long number(Temporal temporal)
+	{
+		if (temporal instanceof LocalDateTime)
+			return ((LocalDateTime) temporal)
+				.atZone(ZoneId.of("UTC")).toEpochSecond();
+		if (temporal instanceof LocalDate)
+			return ((LocalDate) temporal).atStartOfDay()
+				.atZone(ZoneId.of("UTC")).toEpochSecond();
+		return 0;
+
+	}
 }

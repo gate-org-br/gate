@@ -1808,4 +1808,15 @@
 			</description>
 		</attribute>
 	</tag>
+	
+	<function>
+		<name>number</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			long number(java.time.temporal.Temporal)
+		</function-signature>
+		<description>
+			Converts the provided temporal value into a number.
+		</description>
+	</function>
 </taglib>
