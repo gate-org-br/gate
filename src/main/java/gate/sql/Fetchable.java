@@ -1,5 +1,7 @@
 package gate.sql;
 
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonObject;
 import gate.lang.property.Property;
 import gate.sql.fetcher.ArrayFetcher;
 import gate.sql.fetcher.ArrayListFetcher;
@@ -7,6 +9,8 @@ import gate.sql.fetcher.DataGridFetcher;
 import gate.sql.fetcher.EntityFetcher;
 import gate.sql.fetcher.EntityListFetcher;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.fetcher.JsonArrayFetcher;
+import gate.sql.fetcher.JsonObjectFetcher;
 import gate.sql.fetcher.MapFetcher;
 import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
@@ -251,6 +255,27 @@ public interface Fetchable
 	default DataGrid fetchDataGrid(Class<?>... types)
 	{
 		return fetch(new TypedDataGridFetcher(types));
+	}
+
+	/**
+	 * Fetches first row as a JSON object with it's properties set to their respective column values.
+	 *
+	 * @return an Optional describing the first row of the result as a JSON object with it's properties set to their respective column
+	 * values or an empty Optional if result is empty
+	 */
+	default Optional<JsonObject> fetchJsonObject()
+	{
+		return fetch(new JsonObjectFetcher());
+	}
+
+	/**
+	 * Fetches the result set as a JSON array.
+	 *
+	 * @return a JSON array with the result set rows as JSON objects
+	 */
+	default JsonArray fetchJsonArray()
+	{
+		return fetch(new JsonArrayFetcher());
 	}
 
 	/**
