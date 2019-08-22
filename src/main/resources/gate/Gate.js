@@ -6752,3 +6752,8 @@ window.addEventListener("resize", () => {
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
+});

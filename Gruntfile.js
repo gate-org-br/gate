@@ -95,7 +95,8 @@ module.exports = function (grunt)
 
 							"src/main/webapp/components/TableFilter.js",
 							"src/main/webapp/components/Coolbar.js",
-							"src/main/webapp/components/Overflow.js"
+							"src/main/webapp/components/Overflow.js",
+							"src/main/webapp/components/AutoClick.js"
 						],
 						dest: 'src/main/resources/gate/Gate.js'
 					}
