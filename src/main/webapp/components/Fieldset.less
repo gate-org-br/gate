@@ -240,12 +240,14 @@ fieldset
 
 		li
 		{
+			&[data-ret] { cursor: pointer }
 
 			> label
 			{
 				height: 36px;
 				display: flex;
 				font-size: 16px;
+				cursor: inherit;
 				align-items: center;
 				justify-content: flex-start;
 				&:hover { background-color: @hovered }

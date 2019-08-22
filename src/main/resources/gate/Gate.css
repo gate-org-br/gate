@@ -954,11 +954,16 @@ fieldset > ul ul,
 fieldset > div > ul ul {
   list-style-type: none;
 }
+fieldset > ul li[data-ret],
+fieldset > div > ul li[data-ret] {
+  cursor: pointer;
+}
 fieldset > ul li > label,
 fieldset > div > ul li > label {
   height: 36px;
   display: flex;
   font-size: 16px;
+  cursor: inherit;
   align-items: center;
   justify-content: flex-start;
 }
