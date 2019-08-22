@@ -5,6 +5,8 @@ table { .margin();
 	background-color: #EEEEEE;
 	border-spacing: 1px;
 
+	> * > tr > * > fieldset { padding: 0 }
+
 	tr { height: 32px;
 
 	     th { color: black;
@@ -78,7 +80,11 @@ table { .margin();
 		}
 	}
 
-	> tfoot > tr {background-image: @base_gradient; }
+	> tfoot > tr 
+	{
+		background-image: @base_gradient; 
+		> td:only-child { text-align: right }
+	}
 
 }
 
@@ -109,24 +115,37 @@ table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20)
 	> col {display: none}
 	> thead { display: none}
 
-	> caption { text-align: center; text-indent: 0 }
-
 	> tbody
 	{
+		display: flex;
+		align-items: stretch;
+		flex-direction: column;
+
 		> tr { margin: 4px;
 		       padding: 4px;
 		       height: auto;
-		       display: block;
+		       display: flex;
 		       border-radius: 5px;
+		       align-items: stretch;
+		       flex-direction: column;
 		       border: 2px solid #CCCCCC;
+		       justify-content: flex-start;
 
-		       > td { margin: 4px;
-			      display: flex;
 
-			      &::before { text-align: left;
-					  font-weight: bold;
-					  margin-right: 8px;
-					  content: attr(title)":"; }
+		       > td{ 
+			       &:not([title]) { display: none }
+
+			       &[title] { margin: 4px;
+					  padding: 4px;
+					  flex-grow: 1;
+					  display: block;
+					  text-align: left;
+					  width: calc(100% - 8px) !important;
+					  &::before { float: left;
+						      text-align: left;
+						      font-weight: bold;
+						      margin-right: 8px;
+						      content: attr(title)":"; } }
 		       }
 		}
 	}
@@ -161,4 +180,104 @@ table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20)
 @media only screen and (max-width: @widescreen)
 {
 	table[data-collapse="Widescreen"] { .card() }
+}
+
+@media only screen and (max-width: 100px )
+{
+	table[data-collapse="100px"] { .card() }
+}
+
+@media only screen and (max-width: 200px)
+{
+	table[data-collapse="200px"] { .card() }
+}
+
+@media only screen and (max-width: 300px)
+{
+	table[data-collapse="300px"] { .card() }
+}
+
+@media only screen and (max-width: 400px)
+{
+	table[data-collapse="400px"] { .card() }
+}
+
+@media only screen and (max-width: 500px)
+{
+	table[data-collapse="500px"] { .card() }
+}
+
+@media only screen and (max-width: 600px)
+{
+	table[data-collapse="600px"] { .card() }
+}
+
+@media only screen and (max-width: 700px)
+{
+	table[data-collapse="700px"] { .card() }
+}
+
+@media only screen and (max-width: 800px)
+{
+	table[data-collapse="800px"] { .card() }
+}
+
+@media only screen and (max-width: 900px)
+{
+	table[data-collapse="900px"] { .card() }
+}
+
+@media only screen and (max-width: 1000px)
+{
+	table[data-collapse="1000px"] { .card() }
+}
+
+@media only screen and (max-width: 1100px)
+{
+	table[data-collapse="1100px"] { .card() }
+}
+
+@media only screen and (max-width: 1200px)
+{
+	table[data-collapse="1200px"] { .card() }
+}
+
+@media only screen and (max-width: 1300px)
+{
+	table[data-collapse="1300px"] { .card() }
+}
+
+@media only screen and (max-width: 1400px)
+{
+	table[data-collapse="1400px"] { .card() }
+}
+
+@media only screen and (max-width: 1500px)
+{
+	table[data-collapse="1500px"] { .card() }
+}
+
+@media only screen and (max-width: 1600px)
+{
+	table[data-collapse="1600px"] { .card() }
+}
+
+@media only screen and (max-width: 1700px)
+{
+	table[data-collapse="1700px"] { .card() }
+}
+
+@media only screen and (max-width: 1800px)
+{
+	table[data-collapse="1800px"] { .card() }
+}
+
+@media only screen and (max-width: 1900px)
+{
+	table[data-collapse="1900px"] { .card() }
+}
+
+@media only screen and (max-width: 1600px)
+{
+	table[data-collapse="2000px"] { .card() }
 }

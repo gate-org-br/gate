@@ -108,7 +108,7 @@
 			<g:otherwise>
 				<table class="c1 c5"  data-collapse="Phone">
 					<caption>
-						USUÁRIOS ENCONTRADOS: ${screen.page.paginator.dataSize}
+						USUÁRIOS: ${screen.page.paginator.dataSize}
 					</caption>
 					<thead>
 						<tr>
@@ -141,7 +141,7 @@
 					</thead>
 					<tfoot>
 						<tr>
-							<td colspan='5' style='text-align: right;'>
+							<td colspan="5">
 								<g:paginator/>
 							</td>
 						</tr>
@@ -162,6 +162,8 @@
 			</g:otherwise>
 		</g:choose>
 	</form>
+
+
 
 	<script>
 		window.addEventListener("load", function ()

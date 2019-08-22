@@ -1754,7 +1754,6 @@
 			</description>
 		</attribute>
 	</tag>
-
 	<tag>
 		<name>list</name>
 		<body-content>scriptless</body-content>
@@ -1808,7 +1807,6 @@
 			</description>
 		</attribute>
 	</tag>
-	
 	<function>
 		<name>number</name>
 		<function-class>gate.tags.TagLib</function-class>
