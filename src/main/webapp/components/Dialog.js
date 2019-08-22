@@ -124,12 +124,15 @@ class Dialog extends Modal
 				{
 					case "input":
 						this.arguments[i].value = arguments[i];
+						this.dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "textarea":
 						this.arguments[i].innerHTML = arguments[i];
+						this.dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "select":
 						this.arguments[i].value = arguments[i];
+						this.dispatchEvent(new CustomEvent('changed'));
 						break;
 				}
 		}
