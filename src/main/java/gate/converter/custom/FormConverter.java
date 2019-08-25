@@ -36,9 +36,15 @@ public class FormConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return object != null
-			? ((Form) object).getFields().stream().map(Converter::toText)
-				.collect(Collectors.joining()) : "";
+		if (object instanceof Form)
+		{
+			Form form = (Form) object;
+			if (form.getFields().isEmpty())
+				return "";
+			return form.getFields().stream().map(e -> Converter.toText(e))
+				.collect(Collectors.joining("", "<fieldset>", "</fieldset>"));
+		}
+		return "";
 	}
 
 	@Override
@@ -89,4 +95,5 @@ public class FormConverter implements Converter
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;
 	}
+
 }
