@@ -8,7 +8,6 @@ import gate.type.Field;
 import gate.type.Form;
 import gate.util.Toolkit;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
 
 public class FormTag extends DynamicAttributeTag
 {
@@ -44,6 +43,9 @@ public class FormTag extends DynamicAttributeTag
 	public String getFieldControl(Field field,
 		String property, Attributes attributes)
 	{
+
+		int size = Integer.parseInt(field.getSize().toString()) * 2;
+
 		if (!Toolkit.isEmpty(field.getName()))
 		{
 			attributes = new Attributes(attributes);
@@ -75,11 +77,10 @@ public class FormTag extends DynamicAttributeTag
 					attributes.put("type", "text");
 					if (field.getValue() != null)
 						attributes.put("value", field.getValue());
-					return String.format("<label style='width: %s%%'>%s:<span><input %s/></span></label>", field.getSize().getPercentage().toString(), field
-						.getName(), attributes.toString());
+					return String.format("<label data-size='%d'>%s:<span><input %s/></span></label>", size, field.getName(), attributes.toString());
 				} else
-					return String.format("<label style='width: %s%%'>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>", field.getSize()
-						.getPercentage().toString(), field.getName(), attributes.toString(), field.getValue() != null ? field.getValue() : "");
+					return String.format("<label data-size='%d'>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
+						size, field.getName(), attributes.toString(), field.getValue() != null ? field.getValue() : "");
 			} else
 			{
 				StringBuilder options = new StringBuilder();
@@ -97,7 +98,7 @@ public class FormTag extends DynamicAttributeTag
 
 					attributes.put("name", property);
 					return String
-						.format("<label style='width: %s%%'>%s:<span><select %s>%s</select></span></label>", field.getSize().getPercentage().toString(),
+						.format("<label data-size='%d'>%s:<span><select %s>%s</select></span></label>", size,
 							field.getName(), attributes.toString(), options.toString());
 				} else
 				{
@@ -112,18 +113,16 @@ public class FormTag extends DynamicAttributeTag
 							attributes.remove("checked");
 						options.append(String.format("<label><input %s/>%s</label>", attributes.toString(), option));
 					}
-					return String.format("<fieldset style='width: %s%%'><legend>%s:</legend>%s</fieldset>",
-						field.getSize().getPercentage().toString(), field.getName(), options.toString());
+					return String.format("<fieldset data-size='%d'><legend>%s:</legend>%s</fieldset>",
+						size, field.getName(), options.toString());
 				}
 			}
 		} else if (Boolean.FALSE.equals(field.getMultiple()))
 		{
-			return String.format("<label style='width: %s%%'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", field.getSize()
-				.getPercentage().toString());
+			return String.format("<label data-size='%d'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		} else
 		{
-			return String.format("<label style='width: %s%%'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", field
-				.getSize().getPercentage().toString());
+			return String.format("<label data-size='%d'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		}
 	}
 }

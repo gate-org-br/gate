@@ -14,7 +14,6 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonObject;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -243,18 +242,24 @@ public class Field implements Serializable
 
 	public static Field parse(JsonObject jsonObject) throws ConversionException
 	{
-		return new Field()
-			.setName(jsonObject.getString("name").orElse(null))
-			.setSize(jsonObject.getObject("size", Size.class).orElse(Size.EIGHT))
-			.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
-			.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
-			.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
-			.setOptions(jsonObject.getObject("options", StringList.class).orElse(null))
-			.setValue(jsonObject.getObject("value", StringList.class).orElse(null))
-			.setMask(jsonObject.getString("mask").orElse(null))
-			.setDescription(jsonObject.getString("description").orElse(null))
-			.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null))
-			.setMaxlength(jsonObject.getInt("maxlength").orElse(null));
+		try
+		{
+			return new Field()
+				.setName(jsonObject.getString("name").orElse(null))
+				.setSize(Size.parse(jsonObject.getString("size").orElse("8")))
+				.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
+				.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
+				.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
+				.setOptions(jsonObject.getObject("options", StringList.class).orElse(null))
+				.setValue(jsonObject.getObject("value", StringList.class).orElse(null))
+				.setMask(jsonObject.getString("mask").orElse(null))
+				.setDescription(jsonObject.getString("description").orElse(null))
+				.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null))
+				.setMaxlength(jsonObject.getInt("maxlength").orElse(null));
+		} catch (ParseException ex)
+		{
+			throw new ConversionException("Error trying to parse field size", ex);
+		}
 	}
 
 	public void validate() throws AppException
@@ -279,57 +284,35 @@ public class Field implements Serializable
 	public enum Size
 	{
 
-		ONE("1", new BigDecimal("12.5")),
-		TWO("2", new BigDecimal("25.0")),
-		THREE("3", new BigDecimal("37.5")),
-		FOUR("4", new BigDecimal("50.0")),
-		FIVE("5", new BigDecimal("62.5")),
-		SIX("6", new BigDecimal("75.0")),
-		SEVEN("7", new BigDecimal("87.5")),
-		EIGHT("8", new BigDecimal("100"));
-
-		private final String string;
-		private final BigDecimal percentage;
-
-		Size(String string, BigDecimal percentage)
-		{
-			this.string = string;
-			this.percentage = percentage;
-		}
+		@Name("1")
+		ONE,
+		@Name("2")
+		TWO,
+		@Name("4")
+		FOUR,
+		@Name("8")
+		EIGHT;
 
 		@Override
 		public String toString()
 		{
-			return string;
-		}
-
-		public BigDecimal getPercentage()
-		{
-			return percentage;
+			return Name.Extractor.extract(this).orElse(name());
 		}
 
 		public static Size parse(String string) throws ParseException
 		{
 			switch (string.trim())
 			{
-				case "1":
+				case "0":
 					return ONE;
-				case "2":
+				case "1":
 					return TWO;
-				case "3":
-					return THREE;
-				case "4":
+				case "2":
 					return FOUR;
-				case "5":
-					return FIVE;
-				case "6":
-					return SIX;
-				case "7":
-					return SEVEN;
-				case "8":
+				case "3":
 					return EIGHT;
 				default:
-					throw new ParseException(string + " não é um número de colunas válido", 0);
+					return EIGHT;
 			}
 		}
 	}

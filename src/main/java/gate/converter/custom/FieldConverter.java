@@ -40,15 +40,16 @@ public class FieldConverter implements Converter
 			return "";
 
 		Field field = (Field) object;
+		int size = Integer.parseInt(field.getSize().toString()) * 2;
 		if (!Toolkit.isEmpty(field.getName()))
 			if (Boolean.FALSE.equals(field.getMultiple()))
-				return String.format("<label style='width: %s%%'>%s: <span><label>%s</label></span></label>", field.getSize().getPercentage().toString(), field.getName(), Converter.toText(field.getValue()));
+				return String.format("<label data-size='%d'>%s: <span><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
 			else
-				return String.format("<label style='width: %s%%'>%s: <span style='height: 60px;'><label>%s</label></span></label>", field.getSize().getPercentage().toString(), field.getName(), Converter.toText(field.getValue()));
+				return String.format("<label data-size='%d'>%s: <span style='height: 60px;'><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
 		else if (Boolean.FALSE.equals(field.getMultiple()))
-			return String.format("<label style='width: %s%%'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", field.getSize().getPercentage().toString());
+			return String.format("<label data-size='%d'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		else
-			return String.format("<label style='width: %s%%'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", field.getSize().getPercentage().toString());
+			return String.format("<label data-size='%d'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class FieldConverter implements Converter
 	{
 		return toText(type, object);
 	}
-	
+
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
