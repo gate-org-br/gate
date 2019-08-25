@@ -3,6 +3,9 @@ package gate.lang.dataurl;
 import gate.error.AppError;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UncheckedIOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Map;
@@ -18,10 +21,10 @@ public class DataURL
 	private final String data;
 
 	public DataURL(String type,
-		       String subtype,
-		       boolean base64,
-		       Map<String, String> parameters,
-		       String data)
+		String subtype,
+		boolean base64,
+		Map<String, String> parameters,
+		String data)
 	{
 		Objects.requireNonNull(parameters);
 		this.type = type;
@@ -68,8 +71,17 @@ public class DataURL
 		if (subtype != null)
 			string.append('/').append(subtype);
 
-		parameters.entrySet().forEach(e -> string.append(';')
-			.append(e.getKey()).append('=').append(e.getValue()));
+		parameters
+			.entrySet().forEach(e ->
+			{
+				try
+				{
+					string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
+				} catch (UnsupportedEncodingException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			});
 
 		if (base64)
 			string.append(";base64");

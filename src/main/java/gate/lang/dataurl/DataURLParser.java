@@ -1,6 +1,7 @@
 package gate.lang.dataurl;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class DataURLParser implements AutoCloseable
 	}
 
 	public DataURL parse() throws IOException,
-				      ParseException
+		ParseException
 	{
 		Object current = scanner.scan();
 		if (!"data".equals(current))
@@ -72,7 +73,7 @@ public class DataURLParser implements AutoCloseable
 				String value = (String) current;
 				current = scanner.scan();
 
-				parameters.put(name, value);
+				parameters.put(name, URLDecoder.decode(value, "UTF-8"));
 			}
 		}
 
