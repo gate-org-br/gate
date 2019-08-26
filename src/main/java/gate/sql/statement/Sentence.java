@@ -1,5 +1,6 @@
 package gate.sql.statement;
 
+import gate.sql.Batch;
 import gate.sql.Executable;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
@@ -7,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import gate.sql.Batch;
 
 /**
  * A SQL sentence not linked to a database and whose parameters are not defined.
