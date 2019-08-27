@@ -4,7 +4,11 @@ import gate.entity.Auth;
 import gate.entity.Bond;
 import gate.entity.Role;
 import gate.entity.User;
-import gate.error.ConstraintViolationException;
+import gate.error.AppException;
+import gate.error.NotFoundException;
+import gate.sql.condition.Condition;
+import gate.sql.update.Update;
+import gate.type.MD5;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +20,9 @@ class GateDao extends gate.base.Dao
 		super("Gate");
 	}
 
-	public Optional<User> getUser(String username)
+	public Optional<User> select(String username)
 	{
-		return getLink().from(getClass().getResource("getUser(String).sql"))
+		return getLink().from(getClass().getResource("select(String).sql"))
 			.parameters(username, username)
 			.fetchEntity(User.class);
 	}
@@ -47,9 +51,27 @@ class GateDao extends gate.base.Dao
 			.fetchEntityList(Bond.class);
 	}
 
-	public boolean update(User user) throws ConstraintViolationException
+	public void update(User user, String password) throws AppException
 	{
-		return getLink().prepare("update Uzer set passwd = MD5(?) where userId = ? and passwd = MD5(?)").parameters(user.getChange(), user.getUserID(), user.getPasswd()).execute() > 0;
+		if (Update.table("Uzer")
+			.set("passwd", MD5.digest(password))
+			.where(Condition.of("id").eq(user.getId()))
+			.build()
+			.connect(getLink())
+			.execute() == 0)
+			throw new NotFoundException();
+	}
+
+	public void update(User user) throws AppException
+	{
+		if (Update.table("Uzer")
+			.set("passwd", MD5.digest(user.getChange()))
+			.where(Condition.of("userId").eq(user.getUserID())
+				.and("passwd").eq(MD5.digest(user.getPasswd())))
+			.build()
+			.connect(getLink())
+			.execute() == 0)
+			throw new NotFoundException("Usuário se senha inválidos.");
 	}
 
 }

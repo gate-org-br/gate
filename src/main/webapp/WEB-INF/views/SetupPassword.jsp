@@ -2,57 +2,62 @@
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
-		<form action="Password" method="post">
+		<form action="SetupPassword" method="post">
 			<div class="Login">
 				<div>
 					<div>
 						<img src='Logo.svg'/>
 						<label>${app.id}</label>
-						<label>Vers&atilde;o ${version}</label>
+						<label>Versão ${version}</label>
 					</div>
 
 					<div class='LinkControl'>
 						<ul>
-							<li style='width: 25%'>
+							<li>
 								<a href='Gate'>
 									Fazer Logon<g:icon type="2000"/>
 								</a>
 							</li>
-							<li style='width: 25%' data-selected="true">
-								<a href='Password'>
+							<li data-selected="true">
+								<a href='SetupPassword'>
 									Trocar Senha<g:icon type="passwd"/>
 								</a>
 							</li>
-							<li style='width: 25%'>
-								<a href='Register'>
-									Solicitar acesso<g:icon type="gate.entity.User"/>
+							<li >
+								<a href='ResetPassword'>
+									Recuperar Senha<g:icon type="passwd"/>
+								</a>
+							</li>
+							<li >
+								<a href='CreateAccount'>
+									Criar Conta<g:icon type="gate.entity.User"/>
 								</a>
 							</li>
 						</ul>
 						<div>
 							<fieldset>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Login:
 									<span>
 										<g:icon type="gate.entity.User"/>
 										<input type='TEXT' required='required' name='user.userID' maxlength='64' tabindex='1' title='Entre com o seu login.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Senha atual:
 									<span>
 										<g:icon type="passwd"/>
 										<input type='PASSWORD' required='required' name='user.passwd' maxlength='64' tabindex='1' title='Entre com a sua senha atual.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label  data-size="8">
 									Nova senha:
 									<span>
 										<g:icon type="2057"/>
 										<input type='PASSWORD' required='required' name='user.change' maxlength='64' tabindex='1' title='Entre com a sua nova senha.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label  data-size="8">
 									Repita a nova senha:
 									<span>
 										<g:icon type="2058"/>
@@ -66,7 +71,7 @@
 						<a class="Cancel" href="Gate" tabindex='3'>
 							Desistir<g:icon type="cancel"/>
 						</a>
-						<button class="Commit" formaction="Password" tabindex='2'>
+						<button class="Commit" tabindex='2'>
 							Concluir<g:icon type="commit"/>
 						</button>
 					</div>

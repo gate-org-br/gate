@@ -41,6 +41,11 @@ div.Login
 					   align-items: flex-start;
 					   justify-content: flex-end; }
 		}
+
+		> div:nth-child(2) > ul > li { 
+			flex-basis: 50%;
+			@media only screen and (min-width: @tablet) { flex-basis: 25% }
+		}
 	}
 }
 

@@ -1,12 +1,12 @@
 package gate;
 
-import gate.entity.Bond;
 import gate.authenticator.LDAPAuthenticator;
+import gate.entity.Bond;
 import gate.entity.Org;
 import gate.entity.Role;
 import gate.entity.User;
+import gate.error.AppException;
 import gate.error.AuthenticatorException;
-import gate.error.ConstraintViolationException;
 import gate.error.DefaultPasswordException;
 import gate.error.DuplicateException;
 import gate.error.InvalidCircularRelationException;
@@ -16,6 +16,7 @@ import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.type.Hierarchy;
 import gate.type.MD5;
+import gate.util.Toolkit;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
@@ -25,6 +26,17 @@ class GateControl extends gate.base.Control
 {
 
 	private static final LDAPAuthenticator AUTHENTICATOR = new LDAPAuthenticator();
+
+	public User select(String username) throws AppException
+	{
+		if (Toolkit.isEmpty(username) || username.length() > 64)
+			throw new AppException("O campo login é obrigatório e deve conter no máximo 64 caracteres.");
+		try (GateDao dao = new GateDao())
+		{
+			return dao.select(username)
+				.orElseThrow(NotFoundException::new);
+		}
+	}
 
 	public User select(Org org,
 		String username,
@@ -42,7 +54,7 @@ class GateControl extends gate.base.Control
 
 		try (GateDao dao = new GateDao())
 		{
-			User user = dao.getUser(username)
+			User user = dao.select(username)
 				.orElseThrow(InvalidUsernameException::new);
 
 			if (user.isDisabled())
@@ -90,11 +102,20 @@ class GateControl extends gate.base.Control
 		}
 	}
 
-	public boolean update(User user) throws ConstraintViolationException
+	public void update(User user) throws AppException
 	{
 		try (GateDao dao = new GateDao())
 		{
-			return dao.update(user);
+			dao.update(user);
 		}
 	}
+
+	public void update(User user, String password) throws AppException
+	{
+		try (GateDao dao = new GateDao())
+		{
+			dao.update(user, password);
+		}
+	}
+
 }

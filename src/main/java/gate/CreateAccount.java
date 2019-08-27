@@ -16,16 +16,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @MultipartConfig
-@WebServlet("/Register")
-public class Register extends HttpServlet
+@WebServlet("/CreateAccount")
+public class CreateAccount extends HttpServlet
 {
 
-	static final String JSP = "/WEB-INF/views/Register.jsp";
+	static final String JSP = "/WEB-INF/views/CreateAccount.jsp";
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException
+		throws ServletException, IOException
 	{
 		if (request.getMethod().equals("POST"))
 		{
@@ -71,13 +71,13 @@ public class Register extends HttpServlet
 			} catch (AppException e)
 			{
 				request.setAttribute("messages", e.getMessages());
-				request.getRequestDispatcher(Register.JSP).forward(request, response);
+				request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
 			} catch (ConversionException ex)
 			{
-				Logger.getLogger(Register.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 
-		request.getRequestDispatcher(Register.JSP).forward(request, response);
+		request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
 	}
 }

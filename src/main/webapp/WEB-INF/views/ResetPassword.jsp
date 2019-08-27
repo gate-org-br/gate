@@ -2,7 +2,7 @@
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
-		<g:login module="gateconsole.screen">
+		<form action="ResetPassword" method="post">
 			<div class="Login">
 				<div>
 					<div>
@@ -13,7 +13,7 @@
 
 					<div class='LinkControl'>
 						<ul>
-							<li data-selected="true">
+							<li>
 								<a href='Gate'>
 									Fazer Logon<g:icon type="2000"/>
 								</a>
@@ -23,7 +23,7 @@
 									Trocar Senha<g:icon type="passwd"/>
 								</a>
 							</li>
-							<li>
+							<li data-selected="true">
 								<a href='ResetPassword'>
 									Recuperar Senha<g:icon type="passwd"/>
 								</a>
@@ -35,25 +35,35 @@
 							</li>
 						</ul>
 						<div>
+
 							<fieldset>
-								<label>
-									Login:
-									<span>
-										<g:icon type="gate.entity.User"/>
-										<input type='text' required='required' name='$userid' maxlength='64' tabindex='1' title='Entre com o seu login.'/>
-									</span>
-								</label>
-								<label>
-									Senha:
-									<span>
-										<g:icon type="passwd"/>
-										<input type='password' required='required' name='$passwd' maxlength='32' tabindex='1' title='Entre com a sua senha.'/>
-									</span>
-								</label>
+								<div>
+									<p>
+										Entre com o seu login ou email na caixa de texto
+										abaixo e clique em concluir Uma nova senha alatória
+										será criada e enviada para seu endereço de email. Você
+										poderá então permanecer com ela ou trocá-la por outra
+										de sua escolha.
+									</p>
+								</div>
+								<fieldset>
+									<legend>
+										Login ou e-mail
+									</legend>
+									<label>
+										<span>
+											<g:icon type="gate.entity.User"/>
+											<input type='TEXT' required='required' name='user.userID' maxlength='64' tabindex='1' title='Entre com o seu login.'/>
+										</span>
+									</label>
+								</fieldset>
 							</fieldset>
 						</div>
 					</div>
 					<div class='COOLBAR'>
+						<a class="Cancel" href="Gate" tabindex='3'>
+							Desistir<g:icon type="cancel"/>
+						</a>
 						<button class="Commit" tabindex='2'>
 							Concluir<g:icon type="commit"/>
 						</button>
@@ -76,7 +86,7 @@
 					</g:iterator>
 				</script>
 			</g:if>
-		</g:login>
+		</form>
 	</body>
 </g:template>
 

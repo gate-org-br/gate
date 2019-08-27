@@ -2,36 +2,42 @@
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
-		<form action="Register" method="post">
+		<form action="CreateAccount" method="post">
 			<div class="Login">
 				<div>
 					<div>
 						<img src='Logo.svg'/>
 						<label>${app.id}</label>
-						<label>Vers&atilde;o ${version}</label>
+						<label>Versão ${version}</label>
 					</div>
 
 					<div class='LinkControl'>
 						<ul>
-							<li style='width: 25%'>
+							<li>
 								<a href='Gate'>
 									Fazer Logon<g:icon type="2000"/>
 								</a>
 							</li>
-							<li style='width: 25%'>
-								<a href='Password'>
+							<li>
+								<a href='SetupPassword'>
 									Trocar Senha<g:icon type="passwd"/>
 								</a>
 							</li>
-							<li style='width: 25%' data-selected="true">
-								<a href='Register'>
-									Solicitar acesso<g:icon type="gate.entity.User"/>
+							<li>
+								<a href='ResetPassword'>
+									Recuperar Senha<g:icon type="passwd"/>
 								</a>
 							</li>
+							<li data-selected="true">
+								<a href='CreateAccount'>
+									Criar Conta<g:icon type="gate.entity.User"/>
+								</a>
+							</li>
+
 						</ul>
 						<div>
 							<fieldset>
-								<label style='width: 100%'>
+								<label>
 									Nome:
 									<span>
 										<g:icon type="gate.entity.User"/>
@@ -39,7 +45,7 @@
 										       maxlength='64' tabindex='1' title='Entre com o seu nome.'/>
 									</span>
 								</label>
-								<label style='width: 100%'>
+								<label>
 									Login:
 									<span>
 										<g:icon type="2096"/>
@@ -47,7 +53,7 @@
 										       maxlength='64' tabindex='1' title='Entre com o seu login.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Senha:
 									<span>
 										<g:icon type="passwd"/>
@@ -55,7 +61,7 @@
 										       maxlength='32' tabindex='1' title='Entre com a sua senha.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Repita:
 									<span>
 										<g:icon type="passwd"/>
@@ -63,7 +69,7 @@
 										       maxlength='32' tabindex='1' title='repita sua senha.'/>
 									</span>
 								</label>
-								<label style='width: 100%'>
+								<label>
 									Empresa:
 									<span>
 										<g:icon type="2048"/>
@@ -71,7 +77,7 @@
 										       maxlength='256' tabindex='1' title='Entre com o nome da empresa onde trabalha.'/>
 									</span>
 								</label>
-								<label style='width: 100%'>
+								<label>
 									E-Mail:
 									<span>
 										<g:icon type="2034"/>
@@ -79,7 +85,7 @@
 										       maxlength='64' tabindex='1' title='Entre com o seu endere&ccedil;o de email.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Telefone:
 									<span>
 										<g:icon type="gate.type.Phone"/>
@@ -87,7 +93,7 @@
 										       maxlength='24' tabindex='1' title='Entre com o seu n&uacute;mero de telefone fixo.'/>
 									</span>
 								</label>
-								<label style='width: 50%'>
+								<label data-size="8">
 									Celular:
 									<span>
 										<g:icon type="2145"/>
