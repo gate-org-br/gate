@@ -5266,28 +5266,26 @@ function PageControl(pageControl)
 		function frame()
 		{
 			var iframe = body.appendChild(document.createElement("iframe"));
-			iframe.style.backgroundPosition = "center";
-			iframe.style.backgroundRepeat = "no-repeat";
+			iframe.scrolling = "no";
 			iframe.setAttribute("allowfullscreen", "true");
-			iframe.style.backgroundImage = "url('../gate/imge/back/LOADING.gif')";
 			iframe.setAttribute("src", link.getAttribute('href'));
 
-			var observer = new MutationObserver(function ()
+			function resize()
 			{
-				var height = iframe.contentWindow.document.body.scrollHeight + "px";
+				var height = iframe.contentWindow.document.body.scrollHeight;
 
-				if (iframe.style.height !== height)
+				if (iframe.height !== height)
 				{
-					iframe.style.height = "0px";
-					iframe.style.height = height;
+					iframe.height = 0;
+					iframe.height = height;
 				}
-			});
+			}
+
+			var observer = new MutationObserver(() => setTimeout(resize, 100));
 
 			iframe.onload = function ()
 			{
-				iframe.style.backgroundImage = "";
-				iframe.style.height = "0px";
-				iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+				setTimeout(resize, 100);
 
 				observer.disconnect();
 				Array.from(iframe.contentWindow.document.querySelectorAll("*"))
@@ -5376,17 +5374,18 @@ class Dialog extends Modal
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
-		var observer = new MutationObserver(function ()
+		function resize()
 		{
-			var height = Math.max(iframe.contentWindow.document.body.scrollHeight,
-				body.offsetHeight) + "px";
+			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, body.offsetHeight);
 
-			if (iframe.style.height !== height)
+			if (iframe.height !== height)
 			{
-				iframe.style.height = "0px";
-				iframe.style.height = height;
+				iframe.height = 0;
+				iframe.height = height;
 			}
-		});
+		}
+
+		var observer = new MutationObserver(() => setTimeout(resize, 100));
 
 		iframe.addEventListener("load", () =>
 		{
@@ -5430,9 +5429,7 @@ class Dialog extends Modal
 
 			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 
-			iframe.style.height = "0px";
-			iframe.style.height = Math.max(iframe.contentWindow.document.body.scrollHeight,
-				body.offsetHeight) + "px";
+			setTimeout(resize, 100);
 		});
 
 		if (options && options.navigator)
@@ -5462,15 +5459,12 @@ class Dialog extends Modal
 				{
 					case "input":
 						this.arguments[i].value = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "textarea":
 						this.arguments[i].innerHTML = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "select":
 						this.arguments[i].value = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 				}
 		}
