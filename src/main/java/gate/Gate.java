@@ -184,7 +184,7 @@ public class Gate extends HttpServlet
 		} catch (DefaultPasswordException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			httpServletRequest.getRequestDispatcher(Password.JSP).forward(httpServletRequest, response);
+			httpServletRequest.getRequestDispatcher(SetupPassword.JSP).forward(httpServletRequest, response);
 		} catch (AuthenticatorException | AppError ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));

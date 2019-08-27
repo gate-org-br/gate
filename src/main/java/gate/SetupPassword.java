@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @MultipartConfig
-@WebServlet("/Password")
-public class Password extends HttpServlet
+@WebServlet("/SetupPassword")
+public class SetupPassword extends HttpServlet
 {
 
 	private static final long serialVersionUID = 1L;
@@ -23,7 +23,7 @@ public class Password extends HttpServlet
 	@Inject
 	private GateControl control;
 
-	static final String JSP = "/WEB-INF/views/Password.jsp";
+	static final String JSP = "/WEB-INF/views/SetupPassword.jsp";
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -57,8 +57,7 @@ public class Password extends HttpServlet
 				if (!user.getChange().equals(user.getRepeat()))
 					throw new AppException("Os campos de nova senha devem ser preenchidos exatamente como mesmo texto.");
 
-				if (!control.update(user))
-					throw new AppException("Usuário se senha inválidos.");
+				control.update(user);
 
 				request.setAttribute("messages", new String[]
 				{
@@ -73,6 +72,6 @@ public class Password extends HttpServlet
 			request.setAttribute("messages", e.getMessages());
 		}
 
-		request.getRequestDispatcher(Password.JSP).forward(request, response);
+		request.getRequestDispatcher(SetupPassword.JSP).forward(request, response);
 	}
 }
