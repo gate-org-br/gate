@@ -25,7 +25,7 @@
 							</li>
 							<li data-selected="true">
 								<a href='ResetPassword'>
-									Recuperar Senha<g:icon type="passwd"/>
+									Recuperar Senha<g:icon type="2023"/>
 								</a>
 							</li>
 							<li>
@@ -40,7 +40,7 @@
 								<div>
 									<p>
 										Entre com o seu login ou email na caixa de texto
-										abaixo e clique em concluir Uma nova senha alatória
+										abaixo e clique em concluir. Uma nova senha alatória
 										será criada e enviada para seu endereço de email. Você
 										poderá então permanecer com ela ou trocá-la por outra
 										de sua escolha.
