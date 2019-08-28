@@ -1,4 +1,4 @@
-package gate.lang.HTMLCleaner;
+package gate.lang.xml;
 
 import gate.error.TemplateException;
 import java.io.IOException;
@@ -9,12 +9,12 @@ import java.util.*;
 /**
  * Used to convert the HTML documents to plain text documents
  */
-public class HTMLCleaner
+public class XMLCleaner
 {
 
-	private final List<Evaluable> evaluables;
+	private final List<XMLEvaluable> evaluables;
 
-	HTMLCleaner(List<Evaluable> evaluables)
+	XMLCleaner(List<XMLEvaluable> evaluables)
 	{
 		this.evaluables = evaluables;
 	}
@@ -36,13 +36,16 @@ public class HTMLCleaner
 	 * Convert the specified HTML document to a plain text document
 	 *
 	 * @param document the HTML document to be converted
-	 * @return the same document in plain text format
+	 * @return the same document in plain text format or the document itself if it is not a valid HTML document
 	 */
-	public static String cleanup(String document) throws TemplateException
+	public static String cleanup(String document)
 	{
 		try (StringReader reader = new StringReader(document))
 		{
-			return new Parser().parse(reader).evaluate();
+			return new XMLCleaner(new XMLParser().parse(reader)).evaluate();
+		} catch (RuntimeException ex)
+		{
+			return document;
 		}
 	}
 
