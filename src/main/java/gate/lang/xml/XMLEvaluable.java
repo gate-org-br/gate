@@ -1,10 +1,17 @@
-package gate.lang.HTMLCleaner;
+package gate.lang.xml;
 
 import gate.error.EvaluableException;
 import java.io.Writer;
 
-interface Evaluable
+interface XMLEvaluable
 {
 
+	Type getType();
+
 	void evaluate(Writer writer) throws EvaluableException;
+
+	enum Type
+	{
+		TOKEN, ENTITY, CHAR, VOID
+	}
 }

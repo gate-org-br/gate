@@ -1,17 +1,28 @@
-package gate.lang.HTMLCleaner;
+package gate.lang.xml;
 
 import gate.error.TemplateException;
 import java.io.IOException;
 import java.io.Writer;
 
-class Char implements Evaluable
+class XMLChar implements XMLEvaluable
 {
 
 	private final char value;
 
-	Char(char value)
+	private XMLChar(char value)
 	{
 		this.value = value;
+	}
+
+	public static XMLChar of(char value)
+	{
+		return new XMLChar(value);
+	}
+
+	@Override
+	public Type getType()
+	{
+		return Type.CHAR;
 	}
 
 	@Override
@@ -22,7 +33,7 @@ class Char implements Evaluable
 			writer.write(value);
 		} catch (IOException ex)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate templete: %s.", ex.getMessage()));
+			throw new TemplateException(String.format("Error trying to evaluate template: %s.", ex.getMessage()));
 		}
 	}
 
