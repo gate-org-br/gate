@@ -25,7 +25,7 @@
 							</li>
 							<li>
 								<a href='ResetPassword'>
-									Recuperar Senha<g:icon type="passwd"/>
+									Recuperar Senha<g:icon type="2023"/>
 								</a>
 							</li>
 							<li>
