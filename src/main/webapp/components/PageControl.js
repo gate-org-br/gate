@@ -84,26 +84,30 @@ function PageControl(pageControl)
 			iframe.setAttribute("allowfullscreen", "true");
 			iframe.setAttribute("src", link.getAttribute('href'));
 
-			function resize()
+			iframe.g_resize = function ()
 			{
-				var height = iframe.contentWindow.document.body.scrollHeight;
-
+				var height = this.contentWindow.document.body.scrollHeight;
 				if (iframe.height !== height)
 				{
 					iframe.height = 0;
 					iframe.height = height;
-				}
-			}
 
-			var observer = new MutationObserver(() => setTimeout(resize, 100));
+					if (iframe.contentWindow
+						&& iframe.contentWindow.parent
+						&& iframe.contentWindow.parent.frameElement
+						&& iframe.contentWindow.parent.frameElement.g_resize)
+						iframe.contentWindow.parent.frameElement.g_resize();
+				}
+			};
+
+			var observer = new MutationObserver(() => frame.g_resize());
 
 			iframe.onload = function ()
 			{
-				setTimeout(resize, 100);
-
 				observer.disconnect();
-				Array.from(iframe.contentWindow.document.querySelectorAll("*"))
+				Array.from(this.contentWindow.document.querySelectorAll("*"))
 					.forEach(e => observer.observe(e, {attributes: true, childList: true, characterData: true}));
+				iframe.g_resize();
 			};
 
 			iframe.refresh = function ()
