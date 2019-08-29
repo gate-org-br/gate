@@ -16,6 +16,7 @@ import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
 import gate.sql.fetcher.ObjectListFetcher;
 import gate.sql.fetcher.PropertyEntityListFetcher;
+import gate.sql.fetcher.TempFileFetcher;
 import gate.sql.fetcher.TypedArrayFetcher;
 import gate.sql.fetcher.TypedArrayListFetcher;
 import gate.sql.fetcher.TypedDataGridFetcher;
@@ -24,6 +25,7 @@ import gate.sql.fetcher.TypedMapListFetcher;
 import gate.sql.fetcher.TypedObjectFetcher;
 import gate.sql.fetcher.TypedObjectListFetcher;
 import gate.type.DataGrid;
+import gate.type.TempFile;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -260,8 +262,8 @@ public interface Fetchable
 	/**
 	 * Fetches first row as a JSON object with it's properties set to their respective column values.
 	 *
-	 * @return an Optional describing the first row of the result as a JSON object with it's properties set to their respective column
-	 * values or an empty Optional if result is empty
+	 * @return an Optional describing the first row of the result as a JSON object with it's properties set to their respective column values or an empty
+	 * Optional if result is empty
 	 */
 	default Optional<JsonObject> fetchJsonObject()
 	{
@@ -276,6 +278,16 @@ public interface Fetchable
 	default JsonArray fetchJsonArray()
 	{
 		return fetch(new JsonArrayFetcher());
+	}
+
+	/**
+	 * Fetches all rows as a temporary zipped multipart file.
+	 *
+	 * @return all rows as a temporary zipped multipart file
+	 */
+	default TempFile fetchTempFile()
+	{
+		return fetch(new TempFileFetcher());
 	}
 
 	/**
