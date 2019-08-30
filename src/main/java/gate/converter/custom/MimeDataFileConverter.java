@@ -52,18 +52,21 @@ public class MimeDataFileConverter implements Converter
 		if (part == null)
 			return null;
 
-		try (InputStream is = part.getInputStream())
+		try
 		{
-			byte[] bytes = ByteArrayReader.getInstance().read(is);
-			String[] contentType = part.getContentType().split("/");
+			try (InputStream is = part.getInputStream())
+			{
+				byte[] bytes = ByteArrayReader.getInstance().read(is);
+				String[] contentType = part.getContentType().split("/");
 
-			if (bytes.length != 0)
-				if (contentType.length != 2)
-					return new MimeDataFile(bytes, part.getSubmittedFileName());
+				if (bytes.length != 0)
+					if (contentType.length != 2)
+						return new MimeDataFile(bytes, part.getSubmittedFileName());
+					else
+						return new MimeDataFile(contentType[0], contentType[1], bytes, part.getSubmittedFileName());
 				else
-					return new MimeDataFile(contentType[0], contentType[1], bytes, part.getSubmittedFileName());
-			else
-				return null;
+					return null;
+			}
 		} catch (IOException ex)
 		{
 			throw new ConversionException("Erro ao obter arquivo", ex);

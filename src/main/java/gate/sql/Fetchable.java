@@ -16,7 +16,6 @@ import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
 import gate.sql.fetcher.ObjectListFetcher;
 import gate.sql.fetcher.PropertyEntityListFetcher;
-import gate.sql.fetcher.TempFileFetcher;
 import gate.sql.fetcher.TypedArrayFetcher;
 import gate.sql.fetcher.TypedArrayListFetcher;
 import gate.sql.fetcher.TypedDataGridFetcher;
@@ -24,6 +23,7 @@ import gate.sql.fetcher.TypedMapFetcher;
 import gate.sql.fetcher.TypedMapListFetcher;
 import gate.sql.fetcher.TypedObjectFetcher;
 import gate.sql.fetcher.TypedObjectListFetcher;
+import gate.sql.fetcher.ZipPackageFetcher;
 import gate.type.DataGrid;
 import gate.type.TempFile;
 import java.util.List;
@@ -285,9 +285,9 @@ public interface Fetchable
 	 *
 	 * @return all rows as a temporary zipped multipart file
 	 */
-	default TempFile fetchTempFile()
+	default TempFile fetchZipPackage()
 	{
-		return fetch(new TempFileFetcher());
+		return fetch(ZipPackageFetcher.INSTANCE);
 	}
 
 	/**

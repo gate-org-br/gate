@@ -2,14 +2,14 @@ package gate.base;
 
 import gate.code.PackageName;
 import gate.converter.Converter;
-import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
-import gate.util.Reflection;
 import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
+import gate.util.Reflection;
 import gate.util.ScreenServletRequest;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
@@ -68,14 +68,17 @@ public abstract class Screen extends Base
 						Converter converter = property.getConverter();
 						Object value = getRequest().getParameterValue(name);
 						if (value instanceof Part)
-							value = converter.ofPart(property.getRawType(), (Part) value);
-						else if (value instanceof String)
+						{
+							Part part = (Part) value;
+							value = converter.ofPart(property.getRawType(), part);
+							part.delete();
+						} else if (value instanceof String)
 							value = converter.ofString(property.getRawType(), (String) value);
 						property.setValue(this, value);
 					}
-				} catch (ConversionException e)
+				} catch (IOException ex)
 				{
-					getMessages().add(e.getMessage());
+					getMessages().add(ex.getMessage());
 				}
 			}
 		});

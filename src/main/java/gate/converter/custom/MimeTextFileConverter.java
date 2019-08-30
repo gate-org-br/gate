@@ -52,21 +52,24 @@ public class MimeTextFileConverter implements Converter
 		if (part == null)
 			return null;
 
-		try (InputStream is = part.getInputStream())
+		try
 		{
-			String[] strings = part.getContentType().split("/");
-			byte[] bytes = ByteArrayReader.getInstance().read(is);
+			try (InputStream is = part.getInputStream())
+			{
+				String[] strings = part.getContentType().split("/");
+				byte[] bytes = ByteArrayReader.getInstance().read(is);
 
-			if (bytes.length > 0)
-				if (strings.length == 2)
-					return new MimeTextFile(strings[0], strings[1],
-						"utf-8",
-						bytes,
-						part.getSubmittedFileName());
+				if (bytes.length > 0)
+					if (strings.length == 2)
+						return new MimeTextFile(strings[0], strings[1],
+							"utf-8",
+							bytes,
+							part.getSubmittedFileName());
+					else
+						return new MimeTextFile(bytes, part.getSubmittedFileName());
 				else
-					return new MimeTextFile(bytes, part.getSubmittedFileName());
-			else
-				return null;
+					return null;
+			}
 		} catch (IOException ex)
 		{
 			throw new ConversionException("Erro ao obter arquivo", ex);

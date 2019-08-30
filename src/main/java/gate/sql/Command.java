@@ -4,6 +4,8 @@ import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
 import gate.error.DatabaseException;
 import gate.sql.fetcher.Fetcher;
+import gate.type.TempFile;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -12,6 +14,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Command implements AutoCloseable, Fetchable
 {
@@ -19,6 +23,7 @@ public class Command implements AutoCloseable, Fetchable
 	private int index = 1;
 	private final Link link;
 	private final PreparedStatement ps;
+	private final List<AutoCloseable> autoCloseableList = new ArrayList<>();
 
 	Command(Link link, java.sql.PreparedStatement ps)
 	{
@@ -155,9 +160,9 @@ public class Command implements AutoCloseable, Fetchable
 		try
 		{
 			return ps.isClosed();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 
@@ -167,9 +172,21 @@ public class Command implements AutoCloseable, Fetchable
 		try
 		{
 			ps.close();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new UnsupportedOperationException(ex);
+		} finally
+		{
+			autoCloseableList.forEach(e ->
+			{
+				try
+				{
+					e.close();
+				} catch (Exception ex)
+				{
+					Logger.getGlobal().log(Level.SEVERE, "Error trying to close resource", ex);
+				}
+			});
 		}
 	}
 
@@ -245,7 +262,7 @@ public class Command implements AutoCloseable, Fetchable
 		}
 	}
 
-	public int setFloatParameter(int index, float value)
+	public int setFloat(int index, float value)
 	{
 		try
 		{
@@ -257,7 +274,7 @@ public class Command implements AutoCloseable, Fetchable
 		}
 	}
 
-	public int setDoubleParameter(int index, double value)
+	public int setDouble(int index, double value)
 	{
 		try
 		{
@@ -285,8 +302,25 @@ public class Command implements AutoCloseable, Fetchable
 	{
 		try
 		{
-			return Converter.getConverter(type)
-				.writeToPreparedStatement(getPreparedStatement(), index, object);
+			if (object instanceof TempFile)
+			{
+				try
+				{
+					TempFile tempFile = (TempFile) object;
+					autoCloseableList.add(tempFile);
+
+					InputStream inputStream = tempFile.getInputStream();
+					autoCloseableList.add(inputStream);
+
+					ps.setBinaryStream(index, inputStream);
+					return index++;
+				} catch (SQLException ex)
+				{
+					throw new UnsupportedOperationException(ex);
+				}
+			} else
+				return Converter.getConverter(type)
+					.writeToPreparedStatement(getPreparedStatement(), index, object);
 		} catch (SQLException ex)
 		{
 			throw new UnsupportedOperationException(ex);

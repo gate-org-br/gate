@@ -10,7 +10,7 @@
 		<label>
 			${@property.getDisplayName()}:
 			<span>
-				<g:label property="${@property.getName()}"/>
+				<g:label property="form.${@property.getName()}"/>
 			</span>
 		</label>
 		</g:iterator>

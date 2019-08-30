@@ -11,7 +11,7 @@
 			<label>
 				${@property.getDisplayName()}:
 				<span>
-					<g:${@property.getInputType()} property="${@property.getName()}" tabindex="1"/>
+					<g:${@property.getInputType()} property="form.${@property.getName()}" tabindex="1"/>
 				</span>
 			</label>
 			</g:iterator>

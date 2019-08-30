@@ -1,7 +1,6 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.converter.Converter;
 import gate.type.PNG;
@@ -45,24 +44,28 @@ public class PNGConverter implements Converter
 	}
 
 	@Override
-	public Object ofPart(Class<?> type, Part part)
+	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
 		if (part == null
-				|| part.getSubmittedFileName().isEmpty())
+			|| part.getSubmittedFileName().isEmpty())
 			return null;
 
-		try (InputStream is = part.getInputStream())
+		try
 		{
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+			try (InputStream is = part.getInputStream())
 			{
-				for (int c = is.read(); c != -1; c = is.read())
-					baos.write(c);
-				return new PNG(baos.toByteArray());
+				try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
+				{
+					for (int c = is.read(); c != -1; c = is.read())
+						baos.write(c);
+					return new PNG(baos.toByteArray());
+				}
 			}
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new ConversionException("Erro ao obter arquivo", ex);
 		}
+
 	}
 
 	@Override
@@ -85,7 +88,7 @@ public class PNGConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-			throws SQLException
+		throws SQLException
 	{
 		byte[] bytes = rs.getBytes(fields);
 		if (rs.wasNull())

@@ -4,14 +4,14 @@
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
-				Pesquisar Usuário<g:icon type="search"/>
+				Pesquisar<g:icon type="search"/>
 			</legend>
 
 			<g:iterator source="${getProperties()}" target="property">
 			<label>
 				${@property.getDisplayName()}:
 				<span>
-					<g:${@property.getInputType()} property="${@property.getName()}" tabindex="1" required=""/>
+					<g:${@property.getInputType()} property="form.${@property.getName()}" tabindex="1" required=""/>
 				</span>
 			</label>
 			</g:iterator>
@@ -21,7 +21,7 @@
 			<g:link class="Action" method="post" module="#" screen="#" tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
-			<g:link data-target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
+			<g:link target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
 		</div>
 	</form>
 
@@ -39,7 +39,7 @@
 					<g:iterator source="${getProperties()}" target="property">
 					<td title="${@property.getDisplayName()}">\<g:print value="\${target.${@property.getName()}}"/></td>
 					</g:iterator>
-				<tr>
+				</tr>
 			\</g:iterator>
 		</tbody>
 	</table>
