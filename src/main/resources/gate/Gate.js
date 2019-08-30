@@ -2339,12 +2339,15 @@ class URL
 		return this;
 	}
 
-	get(callback)
+	get(callback, dwload)
 	{
 		var request =
 			window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject("Microsoft.XMLHTTP");
+
+		if (dwload)
+			request.addEventListener("progress", dwload, false);
 
 		if (this.contentType)
 			request.setRequestHeader('Content-type', contentType);
@@ -2387,12 +2390,17 @@ class URL
 		return this;
 	}
 
-	post(data, callback)
+	post(data, callback, upload, dwload)
 	{
 		var request =
 			window.XMLHttpRequest ?
 			new XMLHttpRequest() :
 			new ActiveXObject("Microsoft.XMLHTTP");
+
+		if (dwload)
+			request.addEventListener("progress", dwload, false);
+		if (upload)
+			request.upload.addEventListener("progress", upload, false);
 
 		if (this.contentType)
 			request.setRequestHeader('Content-type', contentType);
@@ -5286,7 +5294,7 @@ function PageControl(pageControl)
 				}
 			};
 
-			var observer = new MutationObserver(() => frame.g_resize());
+			var observer = new MutationObserver(() => iframe.g_resize());
 
 			iframe.onload = function ()
 			{
