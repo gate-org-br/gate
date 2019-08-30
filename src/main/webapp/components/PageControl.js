@@ -100,7 +100,7 @@ function PageControl(pageControl)
 				}
 			};
 
-			var observer = new MutationObserver(() => frame.g_resize());
+			var observer = new MutationObserver(() => iframe.g_resize());
 
 			iframe.onload = function ()
 			{

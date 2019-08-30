@@ -6,7 +6,6 @@ import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.type.mime.MimeText;
 import gate.util.Strings;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
@@ -52,20 +51,23 @@ public class MimeTextConverter implements Converter
 		if (part == null)
 			return null;
 
-		try (InputStream is = part.getInputStream())
+		try
 		{
-			String[] strings = part.getContentType().split("/");
-			byte[] bytes = ByteArrayReader.getInstance().read(is);
+			try (InputStream is = part.getInputStream())
+			{
+				String[] strings = part.getContentType().split("/");
+				byte[] bytes = ByteArrayReader.getInstance().read(is);
 
-			if (bytes.length != 0)
-				if (strings.length == 2)
-					return new MimeText(strings[0], strings[1],
-						"utf-8",
-						bytes);
+				if (bytes.length != 0)
+					if (strings.length == 2)
+						return new MimeText(strings[0], strings[1],
+							"utf-8",
+							bytes);
+					else
+						return new MimeText(bytes);
 				else
-					return new MimeText(bytes);
-			else
-				return null;
+					return null;
+			}
 		} catch (IOException ex)
 		{
 			throw new ConversionException("Erro ao obter arquivo", ex);

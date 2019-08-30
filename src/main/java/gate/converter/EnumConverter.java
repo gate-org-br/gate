@@ -45,7 +45,7 @@ public class EnumConverter implements Converter
 		for (Object obj : type.getEnumConstants())
 			if (((Enum) obj).name().equals(string))
 				return obj;
-		throw new ConversionException("Invalid enum constant");
+		throw new ConversionException("Invalid enum constant: " + string);
 	}
 
 	@Override

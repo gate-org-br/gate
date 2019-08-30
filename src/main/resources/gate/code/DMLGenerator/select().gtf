@@ -5,5 +5,3 @@ select
     </g:iterator>
 from
     ${getTableName()}
-where
-    ${getTableName()}.${id.getColumnName()} = ?
