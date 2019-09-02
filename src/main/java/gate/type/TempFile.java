@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.enterprise.inject.spi.CDI;
 import javax.servlet.http.Part;
 
 /**
@@ -24,10 +27,22 @@ public class TempFile implements AutoCloseable
 {
 
 	private final File file;
+	private InputStream inputStream;
+	private OutputStream outputStream;
 
-	TempFile(File file)
+	protected TempFile(File file)
 	{
 		this.file = file;
+	}
+
+	/**
+	 * Returns the name of the temporary file.
+	 *
+	 * @return the name of the temporary file
+	 */
+	public String getName()
+	{
+		return file.getName();
 	}
 
 	/**
@@ -39,7 +54,9 @@ public class TempFile implements AutoCloseable
 	{
 		try
 		{
-			return new FileInputStream(file);
+			if (inputStream == null)
+				inputStream = new FileInputStream(file);
+			return inputStream;
 		} catch (FileNotFoundException ex)
 		{
 			throw new UncheckedIOException(ex);
@@ -55,7 +72,9 @@ public class TempFile implements AutoCloseable
 	{
 		try
 		{
-			return new FileOutputStream(file);
+			if (outputStream == null)
+				outputStream = new FileOutputStream(file);
+			return outputStream;
 		} catch (FileNotFoundException ex)
 		{
 			throw new UncheckedIOException(ex);
@@ -101,15 +120,7 @@ public class TempFile implements AutoCloseable
 	 */
 	public static TempFile empty()
 	{
-		try
-		{
-			File file = File.createTempFile("Temp", ".tmp");
-			file.deleteOnExit();
-			return new TempFile(file);
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return CDI.current().select(TempFileManager.class).get().create();
 	}
 
 	/**
@@ -121,7 +132,8 @@ public class TempFile implements AutoCloseable
 	 */
 	public static TempFile of(Part part)
 	{
-		TempFile tempFile = TempFile.empty();
+		TempFile tempFile = TempFile.empty()
+			.named(part.getSubmittedFileName());
 
 		try (InputStream inputStream = part.getInputStream();
 			OutputStream outputStream = tempFile.getOutputStream())
@@ -162,6 +174,30 @@ public class TempFile implements AutoCloseable
 	@Override
 	public void close()
 	{
+		if (outputStream != null)
+			try
+			{
+				outputStream.close();
+			} catch (IOException ex)
+			{
+				Logger.getLogger(TempFile.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+		if (inputStream != null)
+			try
+			{
+				inputStream.close();
+			} catch (IOException ex)
+			{
+				Logger.getLogger(TempFile.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
 		file.delete();
+	}
+
+	@Override
+	public String toString()
+	{
+		return getName();
 	}
 }
