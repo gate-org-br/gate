@@ -1,12 +1,11 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.ID;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,9 +29,9 @@ public class IDConverter implements Converter
 				return null;
 
 			return new ID(string);
-		} catch (IllegalArgumentException e)
+		} catch (IllegalArgumentException ex)
 		{
-			throw new ConversionException(" ".concat(getDescription()));
+			throw new ConversionException(ex, string + " não é um número válido");
 		}
 	}
 
@@ -63,7 +62,7 @@ public class IDConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Campos de ID devem ser preenchidos com números inteiros positivos menores ou iguais a 2147483647.";
+		return "Campos de ID devem ser preenchidos com números inteiros positivos.";
 	}
 
 	@Override

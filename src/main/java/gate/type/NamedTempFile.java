@@ -27,6 +27,7 @@ public class NamedTempFile extends TempFile
 	 *
 	 * @return the name of the temporary file
 	 */
+	@Override
 	public String getName()
 	{
 		return name;

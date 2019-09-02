@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.Part;
@@ -32,6 +33,18 @@ public class TempFileConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object)
+	{
+		return object != null ? object.toString() : "";
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object, String format)
+	{
+		return object != null ? String.format(format, object.toString()) : "";
 	}
 
 	@Override
@@ -70,32 +83,23 @@ public class TempFileConverter implements Converter
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
-		throw new UnsupportedOperationException();
+		if (value == null)
+			ps.setNull(index, Types.VARBINARY);
+		else
+			ps.setBinaryStream(index, ((TempFile) value).getInputStream());
+		return ++index;
 	}
 
 	@Override
 	public String toString(Class<?> type, Object object
 	)
 	{
-		throw new UnsupportedOperationException("Temporary files can't be represented as text.");
+		throw new UnsupportedOperationException("Temporary files can't be represented as a string.");
 	}
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		throw new UnsupportedOperationException("Temporary files can't be represented as text.");
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object
-	)
-	{
-		throw new UnsupportedOperationException("Temporary files can't be represented as text.");
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object, String format)
-	{
-		throw new UnsupportedOperationException("Temporary files can't be represented as text.");
+		throw new UnsupportedOperationException("Temporary files can't be represented as string.");
 	}
 }

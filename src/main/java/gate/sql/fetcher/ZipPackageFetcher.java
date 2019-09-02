@@ -8,6 +8,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -35,7 +37,10 @@ public class ZipPackageFetcher implements Fetcher<NamedTempFile>
 	@Override
 	public NamedTempFile fetch(Cursor cursor)
 	{
+		List<String> names
+			= new ArrayList<>();
 		TempFile tempFile = TempFile.empty();
+
 		try
 		{
 			try (ZipOutputStream zipOutputStream = new ZipOutputStream(new BufferedOutputStream(tempFile.getOutputStream())))
@@ -44,18 +49,23 @@ public class ZipPackageFetcher implements Fetcher<NamedTempFile>
 				{
 					String name = cursor.getValue(String.class, "name");
 
-					try (BufferedInputStream bufferedInputStream
-						= new BufferedInputStream(cursor.getResultSet().getBinaryStream("data")))
+					if (!names.contains(name))
 					{
+						try (BufferedInputStream bufferedInputStream
+							= new BufferedInputStream(cursor.getResultSet().getBinaryStream("data")))
+						{
 
-						ZipEntry entry = new ZipEntry(name);
-						zipOutputStream.putNextEntry(entry);
-						IOStreamTransferer.transfer(bufferedInputStream, zipOutputStream);
-						zipOutputStream.closeEntry();
+							ZipEntry entry = new ZipEntry(name);
+							zipOutputStream.putNextEntry(entry);
+							IOStreamTransferer.transfer(bufferedInputStream, zipOutputStream);
+							zipOutputStream.closeEntry();
+						}
+						names.add(name);
 					}
 
 				}
 
+				zipOutputStream.finish();
 				zipOutputStream.flush();
 			}
 
