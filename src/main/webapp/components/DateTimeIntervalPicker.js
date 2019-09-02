@@ -31,21 +31,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new DateTimeIntervalPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new DateTimeIntervalPicker(dateTime =>
-				{
-					input.value = dateTime;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
