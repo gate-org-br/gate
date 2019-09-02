@@ -40,6 +40,9 @@ public class XMLCleaner
 	 */
 	public static String cleanup(String document)
 	{
+		if (document == null)
+			return null;
+
 		try (StringReader reader = new StringReader(document))
 		{
 			return new XMLCleaner(new XMLParser().parse(reader)).evaluate();
