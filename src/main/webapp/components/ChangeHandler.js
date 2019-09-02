@@ -1,6 +1,6 @@
-function ChangeHandler(e)
+window.addEventListener("load", function ()
 {
-	e.onchange = function ()
+	var change = function ()
 	{
 		switch (this.getAttribute("data-method") ?
 			this.getAttribute("data-method")
@@ -40,16 +40,11 @@ function ChangeHandler(e)
 				break;
 		}
 	};
-}
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target]')).forEach(function (element)
+	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target], select[data-method], select[data-action], select[data-target]')).forEach(element =>
 	{
-		new ChangeHandler(element);
-	});
-	Array.from(document.querySelectorAll('select[data-method], select[data-action], select[data-target]')).forEach(function (element)
-	{
-		new ChangeHandler(element);
+		element.addEventListener("change", change);
+		element.addEventListener("changed", change);
 	});
 });
+

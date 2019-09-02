@@ -3225,11 +3225,11 @@ function ActionHandler(element)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('*[data-action]')).forEach(element => new ActionHandler(element));
+	Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action]')).forEach(element => new ActionHandler(element));
 });
-function ChangeHandler(e)
+window.addEventListener("load", function ()
 {
-	e.onchange = function ()
+	var change = function ()
 	{
 		switch (this.getAttribute("data-method") ?
 			this.getAttribute("data-method")
@@ -3269,19 +3269,14 @@ function ChangeHandler(e)
 				break;
 		}
 	};
-}
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target]')).forEach(function (element)
+	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target], select[data-method], select[data-action], select[data-target]')).forEach(element =>
 	{
-		new ChangeHandler(element);
-	});
-	Array.from(document.querySelectorAll('select[data-method], select[data-action], select[data-target]')).forEach(function (element)
-	{
-		new ChangeHandler(element);
+		element.addEventListener("change", change);
+		element.addEventListener("changed", change);
 	});
 });
+
 
 class NavBar
 {
@@ -4003,21 +3998,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new DatePicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new DatePicker(time =>
-				{
-					input.value = time;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4056,21 +4043,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new TimePicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new TimePicker(time =>
-				{
-					input.value = time;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4109,21 +4088,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new MonthPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new MonthPicker(time =>
-				{
-					input.value = time;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4162,21 +4133,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new DateTimePicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new DateTimePicker(dateTime =>
-				{
-					input.value = dateTime;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4223,21 +4186,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new DateIntervalPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new DateIntervalPicker(selection =>
-				{
-					input.value = selection;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4275,21 +4230,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new TimeIntervalPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new TimeIntervalPicker(time =>
-				{
-					input.value = time;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4328,21 +4275,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new MonthIntervalPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new MonthIntervalPicker(time =>
-				{
-					input.value = time;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4380,21 +4319,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new DateTimeIntervalPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new DateTimeIntervalPicker(dateTime =>
-				{
-					input.value = dateTime;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -4728,21 +4659,13 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value) {
+			if (input.value)
 				input.value = '';
+			else
+				new IconPicker(value => input.value = value);
 
-				input.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-			} else
-				new IconPicker(code =>
-				{
-					input.value = code;
-					link.focus();
-
-					input.dispatchEvent(new CustomEvent('picked',
-						{detail: {source: this}}));
-				});
-
+			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			link.focus();
 			link.blur();
 		});
 	});
@@ -5478,12 +5401,15 @@ class Dialog extends Modal
 				{
 					case "input":
 						this.arguments[i].value = arguments[i];
+						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "textarea":
 						this.arguments[i].innerHTML = arguments[i];
+						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 					case "select":
 						this.arguments[i].value = arguments[i];
+						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
 						break;
 				}
 		}
