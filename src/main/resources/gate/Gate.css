@@ -3903,7 +3903,7 @@ ul.HMenu .full > a:only-of-type > i {
     font-size: 12px;
   }
 }
-@media only screen and (min-width: 1460ox) {
+@media only screen and (min-width: 1460px) {
   ul.HMenu > li:first-child:nth-last-child(9) > a:only-of-type,
   ul.HMenu > li:first-child:nth-last-child(9) ~ li > a:only-of-type {
     width: 160px;

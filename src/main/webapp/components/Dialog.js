@@ -1,4 +1,4 @@
-/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV */
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments */
 
 class Dialog extends Modal
 {
@@ -38,30 +38,8 @@ class Dialog extends Modal
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
-		iframe.g_resize = function ()
-		{
-			let height = Math.max(iframe.contentWindow.document
-				.body.scrollHeight,
-				body.offsetHeight);
-
-			if (iframe.height !== height)
-			{
-				iframe.height = 0;
-				iframe.height = height;
-
-				if (iframe.contentWindow
-					&& iframe.contentWindow.parent
-					&& iframe.contentWindow.parent.frameElement
-					&& iframe.contentWindow.parent.frameElement.g_resize)
-					iframe.contentWindow.parent.frameElement.g_resize();
-			}
-		};
-
-		var observer = new MutationObserver(() => iframe.g_resize());
-
 		iframe.addEventListener("load", () =>
 		{
-			observer.disconnect();
 			iframe.name = "_frame";
 			iframe.setAttribute("name", "_frame");
 
@@ -95,12 +73,24 @@ class Dialog extends Modal
 				}
 			});
 
-			observer.disconnect();
-			Array.from(iframe.contentWindow.document.querySelectorAll("*"))
-				.forEach(e => observer.observe(e, {attributes: true, childList: true, characterData: true}));
 
 			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-			iframe.g_resize();
+
+			var interval = setInterval(function ()
+			{
+				if (iframe.contentWindow)
+				{
+					let height = Math.max(iframe.contentWindow.document
+						.body.scrollHeight,
+						body.offsetHeight) + "px";
+					if (iframe.height !== height)
+					{
+						iframe.height = "0";
+						iframe.height = height;
+					}
+				} else
+					clearInterval(interval);
+			}, 250);
 		});
 
 		if (options && options.navigator)
@@ -190,7 +180,7 @@ window.addEventListener("load", function ()
 					.filter(e => e.value)
 					.forEach(e => e.value = "");
 				var dialog = new Dialog({target: url,
-					title: getter.getAttribute("title")})
+					title: getter.getAttribute("title")});
 				dialog.get.apply(dialog, parameters);
 			} else
 				parameters
