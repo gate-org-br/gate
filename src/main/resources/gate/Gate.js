@@ -5376,25 +5376,18 @@ class Dialog extends Modal
 
 	ret()
 	{
-		for (var i = 0; i < Math.min(arguments.length, this.arguments.length); i++)
-		{
+		let size = Math.min(arguments.length, this.arguments.length);
+		for (var i = 0; i < size; i++)
 			if (this.arguments[i])
-				switch (this.arguments[i].tagName.toLowerCase())
-				{
-					case "input":
-						this.arguments[i].value = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
-						break;
-					case "textarea":
-						this.arguments[i].innerHTML = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
-						break;
-					case "select":
-						this.arguments[i].value = arguments[i];
-						this.arguments[i].dispatchEvent(new CustomEvent('changed'));
-						break;
-				}
-		}
+				if (this.arguments[i].tagName.toLowerCase() === "textarea")
+					this.arguments[i].innerHTML = arguments[i];
+				else
+					this.arguments[i].value = arguments[i];
+
+		for (var i = 0; i < size; i++)
+			if (this.arguments[i])
+				this.arguments[i].dispatchEvent(new CustomEvent('changed'));
+
 		this.hide();
 	}
 
@@ -5406,24 +5399,22 @@ window.addEventListener("load", function ()
 	{
 		element.addEventListener("click", function (event)
 		{
+			event.preventDefault();
+			event.stopPropagation();
+
 			var parameters =
 				CSV.parse(this.getAttribute('data-get'))
 				.map(e => e.trim())
 				.map(e => e !== null ? document.getElementById(e) : null);
 			if (parameters.some(e => e && e.value))
 			{
-				parameters
-					.filter(e => e)
-					.filter(e => e.value)
-					.forEach(e => e.value = "");
+				parameters = parameters.filter(e => e && e.value);
+				parameters.forEach(e => e.value = "");
+				parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed')));
 			} else {
-				var dialog = new Dialog({target: this.href,
-					title: this.getAttribute("title")});
+				var dialog = new Dialog({target: this.href, title: this.getAttribute("title")});
 				dialog.get.apply(dialog, parameters);
 			}
-
-			event.preventDefault();
-			event.stopPropagation();
 		});
 	});
 	Array.from(document.querySelectorAll('input[data-getter]')).forEach(function (element)
