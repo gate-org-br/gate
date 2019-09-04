@@ -78,7 +78,10 @@ class Dialog extends Modal
 
 			var interval = setInterval(function ()
 			{
-				if (iframe.contentWindow)
+				if (iframe.contentWindow
+					&& iframe.contentWindow.document
+					&& iframe.contentWindow.document.body
+					&& iframe.contentWindow.document.body.scrollHeight)
 				{
 					let height = Math.max(iframe.contentWindow.document
 						.body.scrollHeight,

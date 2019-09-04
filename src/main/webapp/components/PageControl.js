@@ -87,7 +87,10 @@ function PageControl(pageControl)
 			{
 				var interval = setInterval(function ()
 				{
-					if (iframe.contentWindow)
+					if (iframe.contentWindow
+						&& iframe.contentWindow.document
+						&& iframe.contentWindow.document.body
+						&& iframe.contentWindow.document.body.scrollHeight)
 					{
 						var height = iframe.contentWindow.document.body.scrollHeight + "px";
 						if (iframe.height !== height)
