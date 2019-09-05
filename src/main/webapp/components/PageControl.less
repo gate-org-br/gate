@@ -173,9 +173,13 @@ div.LinkControl {
 		border-radius: 0px 0px 0px 0px;
 
 
-		iframe { width: 100%;
-			 border: none;
-			 overflow:  hidden}
+		> iframe { margin: 0;
+			   width: 100%;
+			   overflow:  hidden;
+			   background-image: @loading;
+			   background-position: center;
+			   background-repeat: no-repeat;
+			   background-position-y: center}
 	}
 }
 

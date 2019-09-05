@@ -83,24 +83,27 @@ function PageControl(pageControl)
 			iframe.scrolling = "no";
 			iframe.setAttribute("allowfullscreen", "true");
 
+			var resize = function ()
+			{
+				if (iframe.contentWindow
+					&& iframe.contentWindow.document
+					&& iframe.contentWindow.document.body
+					&& iframe.contentWindow.document.body.scrollHeight)
+				{
+					var height = iframe.contentWindow.document.body.scrollHeight + "px";
+					if (iframe.height !== height)
+					{
+						iframe.height = "0";
+						iframe.height = height;
+					}
+				}
+			};
+
 			iframe.onload = function ()
 			{
-				var interval = setInterval(function ()
-				{
-					if (iframe.contentWindow
-						&& iframe.contentWindow.document
-						&& iframe.contentWindow.document.body
-						&& iframe.contentWindow.document.body.scrollHeight)
-					{
-						var height = iframe.contentWindow.document.body.scrollHeight + "px";
-						if (iframe.height !== height)
-						{
-							iframe.height = "0";
-							iframe.height = height;
-						}
-					} else
-						clearInterval(interval);
-				}, 250);
+				resize();
+				window.addEventListener("refresh_size", resize);
+				iframe.backgroundImage = "none";
 			};
 
 			iframe.refresh = function ()

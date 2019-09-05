@@ -5,14 +5,12 @@ import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
+import gate.entity.App;
 import gate.entity.Auth;
 import gate.error.AppException;
-
+import gateconsole.contol.AuthControl;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import gate.entity.App;
-import gateconsole.contol.AuthControl;
 import javax.inject.Inject;
 
 @Icon("2002")

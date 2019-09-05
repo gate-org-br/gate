@@ -60,4 +60,6 @@ window.addEventListener("load", function ()
 			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
 		});
 	});
+
+	setInterval(() => window.dispatchEvent(new CustomEvent("refresh_size")), 500);
 });

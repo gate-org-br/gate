@@ -5,6 +5,8 @@ class ProgressWindow extends HTMLElement
 		super();
 		Array.from(document.body.children)
 			.forEach(e => e.style.display = "none");
+		if (window.frameElement)
+			window.frameElement.height = "0";
 		if (process)
 			this.setAttribute("process", process);
 	}

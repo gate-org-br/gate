@@ -1534,6 +1534,8 @@ window.addEventListener("load", function ()
 			Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
 		});
 	});
+
+	setInterval(() => window.dispatchEvent(new CustomEvent("refresh_size")), 500);
 });
 class Objects
 {
@@ -5200,24 +5202,27 @@ function PageControl(pageControl)
 			iframe.scrolling = "no";
 			iframe.setAttribute("allowfullscreen", "true");
 
+			var resize = function ()
+			{
+				if (iframe.contentWindow
+					&& iframe.contentWindow.document
+					&& iframe.contentWindow.document.body
+					&& iframe.contentWindow.document.body.scrollHeight)
+				{
+					var height = iframe.contentWindow.document.body.scrollHeight + "px";
+					if (iframe.height !== height)
+					{
+						iframe.height = "0";
+						iframe.height = height;
+					}
+				}
+			};
+
 			iframe.onload = function ()
 			{
-				var interval = setInterval(function ()
-				{
-					if (iframe.contentWindow
-						&& iframe.contentWindow.document
-						&& iframe.contentWindow.document.body
-						&& iframe.contentWindow.document.body.scrollHeight)
-					{
-						var height = iframe.contentWindow.document.body.scrollHeight + "px";
-						if (iframe.height !== height)
-						{
-							iframe.height = "0";
-							iframe.height = height;
-						}
-					} else
-						clearInterval(interval);
-				}, 250);
+				resize();
+				window.addEventListener("refresh_size", resize);
+				iframe.backgroundImage = "none";
 			};
 
 			iframe.refresh = function ()
@@ -5304,6 +5309,23 @@ class Dialog extends Modal
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
+		var resize = function ()
+		{
+			if (!iframe.contentWindow
+				|| !iframe.contentWindow.document
+				|| !iframe.contentWindow.document.body
+				|| !iframe.contentWindow.document.body.scrollHeight)
+				return false;
+
+			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, body.offsetHeight) + "px";
+			if (iframe.height !== height)
+			{
+				iframe.height = "0";
+				iframe.height = height;
+			}
+			return true;
+		};
+
 		iframe.addEventListener("load", () =>
 		{
 			iframe.name = "_frame";
@@ -5342,24 +5364,10 @@ class Dialog extends Modal
 
 			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 
-			var interval = setInterval(function ()
-			{
-				if (iframe.contentWindow
-					&& iframe.contentWindow.document
-					&& iframe.contentWindow.document.body
-					&& iframe.contentWindow.document.body.scrollHeight)
-				{
-					let height = Math.max(iframe.contentWindow.document
-						.body.scrollHeight,
-						body.offsetHeight) + "px";
-					if (iframe.height !== height)
-					{
-						iframe.height = "0";
-						iframe.height = height;
-					}
-				} else
-					clearInterval(interval);
-			}, 250);
+			resize();
+			window.addEventListener("refresh_size", resize);
+
+			iframe.backgroundImage = "none";
 		});
 
 		if (options && options.navigator)
@@ -6369,6 +6377,8 @@ class ProgressWindow extends HTMLElement
 		super();
 		Array.from(document.body.children)
 			.forEach(e => e.style.display = "none");
+		if (window.frameElement)
+			window.frameElement.height = "0";
 		if (process)
 			this.setAttribute("process", process);
 	}
