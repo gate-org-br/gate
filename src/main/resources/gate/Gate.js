@@ -3227,7 +3227,7 @@ function ActionHandler(element)
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action]')).forEach(element => new ActionHandler(element));
+	Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]')).forEach(element => new ActionHandler(element));
 });
 window.addEventListener("load", function ()
 {
