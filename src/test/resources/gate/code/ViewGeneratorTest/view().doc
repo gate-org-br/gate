@@ -4,91 +4,91 @@
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
-				Pesquisar Usuário<g:icon type="search"/>
+				Pesquisar<g:icon type="search"/>
 			</legend>
 
 			<label>
 				Ativo:
 				<span>
-					<g:select property="active" tabindex="1" required=""/>
+					<g:select property="form.active" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Login do Usuário:
 				<span>
-					<g:text property="userID" tabindex="1" required=""/>
+					<g:text property="form.userID" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Senha do Usuário:
 				<span>
-					<g:text property="passwd" tabindex="1" required=""/>
+					<g:text property="form.passwd" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Nome do Usuário:
 				<span>
-					<g:text property="name" tabindex="1" required=""/>
+					<g:text property="form.name" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				E-Mail do Usuário:
 				<span>
-					<g:text property="email" tabindex="1" required=""/>
+					<g:text property="form.email" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Perfil:
 				<span>
-					<g:text property="role.id" tabindex="1" required=""/>
+					<g:text property="form.role.id" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Comentários sobre o Usuário:
 				<span>
-					<g:text property="details" tabindex="1" required=""/>
+					<g:text property="form.details" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Telefone Celular do Usuário:
 				<span>
-					<g:text property="cellPhone" tabindex="1" required=""/>
+					<g:text property="form.cellPhone" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Telefone Fixo do Usuário:
 				<span>
-					<g:text property="phone" tabindex="1" required=""/>
+					<g:text property="form.phone" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Foto do Usuário:
 				<span>
-					<g:file property="photo" tabindex="1" required=""/>
+					<g:file property="form.photo" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Data de Nascimento:
 				<span>
-					<g:text property="birthdate" tabindex="1" required=""/>
+					<g:text property="form.birthdate" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				CPF:
 				<span>
-					<g:text property="CPF" tabindex="1" required=""/>
+					<g:text property="form.CPF" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Sexo:
 				<span>
-					<g:select property="sex" tabindex="1" required=""/>
+					<g:select property="form.sex" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
 				Data de Cadastro:
 				<span>
-					<g:text property="registration" tabindex="1" required=""/>
+					<g:text property="form.registration" tabindex="1" required=""/>
 				</span>
 			</label>
 		</fieldset>
@@ -97,7 +97,7 @@
 			<g:link class="Action" method="post" module="#" screen="#" tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
-			<g:link data-target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
+			<g:link target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
 		</div>
 	</form>
 
@@ -137,7 +137,7 @@
 					<td title="CPF"><g:print value="${target.CPF}"/></td>
 					<td title="Sexo"><g:print value="${target.sex}"/></td>
 					<td title="Data de Cadastro"><g:print value="${target.registration}"/></td>
-				<tr>
+				</tr>
 			</g:iterator>
 		</tbody>
 	</table>

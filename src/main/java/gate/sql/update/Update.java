@@ -3,6 +3,9 @@ package gate.sql.update;
 import gate.lang.property.Property;
 import gate.sql.GQN;
 import gate.sql.statement.Operation;
+import gate.util.Resources;
+import java.net.URL;
+import java.util.List;
 
 /**
  * SQL update sentence builder.
@@ -21,7 +24,57 @@ public interface Update
 	 */
 	static TableUpdate table(String name)
 	{
-		return new TableUpdate(name);
+		return new TableUpdate("update " + name);
+	}
+
+	/**
+	 * Creates a new SQL update from the specified sql.
+	 *
+	 * @param sql sql string from where to build the update
+	 *
+	 * @return the new update sentence builder created
+	 */
+	static TableUpdate of(String sql)
+	{
+		return new TableUpdate(sql);
+	}
+
+	/**
+	 * Creates a new SQL update from the specified sql compiled with the specified parameters.
+	 *
+	 * @param sql sql string from where to build the update
+	 * @param parameters list of parameters to be compiled with the update
+	 *
+	 * @return the new update sentence builder created
+	 */
+	static TableUpdate.Compiled of(String sql, List<Object> parameters)
+	{
+		return new TableUpdate(sql).new Compiled(parameters);
+	}
+
+	/**
+	 * Creates a new SQL update from the specified sql resource file.
+	 *
+	 * @param resource resource file form where to load the update sql statement
+	 *
+	 * @return the new update sentence builder created
+	 */
+	public static TableUpdate of(URL resource)
+	{
+		return of(Resources.getTextResource(resource));
+	}
+
+	/**
+	 * Creates a new SQL update from the specified sql resource file compiled with the specified parameters..
+	 *
+	 * @param resource resource file form where to load the update sql statement
+	 * @param parameters list of parameters to be compiled with the update
+	 *
+	 * @return the new update sentence builder created
+	 */
+	public static TableUpdate.Compiled of(URL resource, List<Object> parameters)
+	{
+		return of(Resources.getTextResource(resource), parameters);
 	}
 
 	/**

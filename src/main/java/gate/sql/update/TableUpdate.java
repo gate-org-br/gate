@@ -21,11 +21,11 @@ import java.util.stream.Stream;
 public class TableUpdate implements Update
 {
 
-	private final String table;
+	private final String string;
 
-	TableUpdate(String name)
+	TableUpdate(String string)
 	{
-		table = name;
+		this.string = string;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class TableUpdate implements Update
 	@Override
 	public String toString()
 	{
-		return "update " + table;
+		return string;
 	}
 
 	/**
@@ -269,11 +269,17 @@ public class TableUpdate implements Update
 	public class Compiled implements Sentence.Compiled.Builder
 	{
 
+		private final List<Object> values;
 		private final StringJoiner columns = new StringJoiner(", ");
-		private final List<Object> values = new ArrayList<>();
 
-		private Compiled()
+		Compiled()
 		{
+			this(new ArrayList<>());
+		}
+
+		Compiled(List<Object> values)
+		{
+			this.values = values;
 		}
 
 		/**
