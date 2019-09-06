@@ -1,7 +1,7 @@
 	public List<User> search(User filter)
 	{
 		return Select.of(getClass().getResource("UserDao/search(User).sql"))
-			.where(Condition.of("Uzer.id").eq(filter.getId())
+			.where(Condition.TRUE.and("Uzer.id").eq(filter.getId())
 				.and("Uzer.active").eq(filter.getActive())
 				.and("Uzer.userID").eq(filter.getUserID())
 				.and("Uzer.passwd").eq(filter.getPasswd())

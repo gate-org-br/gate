@@ -16,5 +16,3 @@ select
     Uzer.registration as 'registration'
 from
     Uzer
-where
-    Uzer.id = ?

@@ -10,85 +10,85 @@
 			<label>
 				Ativo:
 				<span>
-					<g:select property="active" tabindex="1"/>
+					<g:select property="form.active" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Login do Usuário:
 				<span>
-					<g:text property="userID" tabindex="1"/>
+					<g:text property="form.userID" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Senha do Usuário:
 				<span>
-					<g:text property="passwd" tabindex="1"/>
+					<g:text property="form.passwd" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Nome do Usuário:
 				<span>
-					<g:text property="name" tabindex="1"/>
+					<g:text property="form.name" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				E-Mail do Usuário:
 				<span>
-					<g:text property="email" tabindex="1"/>
+					<g:text property="form.email" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Perfil:
 				<span>
-					<g:text property="role.id" tabindex="1"/>
+					<g:text property="form.role.id" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Comentários sobre o Usuário:
 				<span>
-					<g:text property="details" tabindex="1"/>
+					<g:text property="form.details" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Telefone Celular do Usuário:
 				<span>
-					<g:text property="cellPhone" tabindex="1"/>
+					<g:text property="form.cellPhone" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Telefone Fixo do Usuário:
 				<span>
-					<g:text property="phone" tabindex="1"/>
+					<g:text property="form.phone" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Foto do Usuário:
 				<span>
-					<g:file property="photo" tabindex="1"/>
+					<g:file property="form.photo" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Data de Nascimento:
 				<span>
-					<g:text property="birthdate" tabindex="1"/>
+					<g:text property="form.birthdate" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				CPF:
 				<span>
-					<g:text property="CPF" tabindex="1"/>
+					<g:text property="form.CPF" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Sexo:
 				<span>
-					<g:select property="sex" tabindex="1"/>
+					<g:select property="form.sex" tabindex="1"/>
 				</span>
 			</label>
 			<label>
 				Data de Cadastro:
 				<span>
-					<g:text property="registration" tabindex="1"/>
+					<g:text property="form.registration" tabindex="1"/>
 				</span>
 			</label>
 		</fieldset>
