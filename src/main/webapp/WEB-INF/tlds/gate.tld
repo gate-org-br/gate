@@ -1817,4 +1817,16 @@
 			Converts the provided temporal value into a number.
 		</description>
 	</function>
+
+	<function>
+		<name>secure</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			boolean secure(java.lang.String, java.lang.String, java.lang.String)
+		</function-signature>
+		<description>
+			Converts the provided temporal value into a number.
+		</description>
+	</function>
+
 </taglib>
