@@ -3,7 +3,6 @@ package gate.tags;
 import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.servlet.jsp.JspException;
 
 public class StackTraceTag extends DynamicAttributeTag
 {
