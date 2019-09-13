@@ -3,6 +3,8 @@ package gate.tags.template;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -24,7 +26,7 @@ public class TemplateTag extends SimpleTagSupport
 	}
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void doTag()
 	{
 		try
 		{
@@ -32,10 +34,32 @@ public class TemplateTag extends SimpleTagSupport
 			getJspBody().invoke(writer);
 			getJspContext().setAttribute("body", writer.toString(), PageContext.REQUEST_SCOPE);
 			((PageContext) getJspContext()).include(filename);
-		} catch (ServletException ex)
+			super.doTag();
+		} catch (ServletException | JspException | IOException ex)
 		{
-			throw new JspException(ex);
+			try
+			{
+				getJspContext().getOut().print("<ul>");
+
+				for (Throwable error = ex;
+					error != null;
+					error = error.getCause())
+				{
+					getJspContext().getOut().println("<li>");
+					getJspContext().getOut().println("<strong>" + error.toString() + "</strong>");
+					getJspContext().getOut().print("<ul>");
+					for (StackTraceElement element : error.getStackTrace())
+						getJspContext().getOut().println("<li>" + element.toString() + "</li>");
+					getJspContext().getOut().print("</ul>");
+					getJspContext().getOut().println("</li>");
+				}
+
+				getJspContext().getOut().print("</ul>");
+
+			} catch (IOException ex1)
+			{
+				Logger.getLogger(TemplateTag.class.getName()).log(Level.SEVERE, null, ex1);
+			}
 		}
-		super.doTag();
 	}
 }
