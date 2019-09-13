@@ -3,6 +3,14 @@ package gate.sql;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.lang.property.Property;
+import gate.sql.extractor.ArrayExtractor;
+import gate.sql.extractor.EntityExtractor;
+import gate.sql.extractor.Extractor;
+import gate.sql.extractor.MapExtractor;
+import gate.sql.extractor.ObjectExtractor;
+import gate.sql.extractor.TypedArrayExtractor;
+import gate.sql.extractor.TypedMapExtractor;
+import gate.sql.extractor.TypedObjectExtractor;
 import gate.sql.fetcher.ArrayFetcher;
 import gate.sql.fetcher.ArrayListFetcher;
 import gate.sql.fetcher.DataGridFetcher;
@@ -29,6 +37,7 @@ import gate.type.TempFile;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * Object that can be fetched for data on different formats.
@@ -45,6 +54,38 @@ public interface Fetchable
 	 * @return the results fetched as a java object of the specified type
 	 */
 	<T> T fetch(Fetcher<T> fecher);
+
+	/**
+	 * Fetches results using the specified Extractor.
+	 *
+	 * @param <T> type of results to be fetched
+	 * @param extractor extractor to be used to fetch results
+	 *
+	 * @return the results fetched as a java object of the specified type
+	 */
+	<T> Stream<T> stream(Extractor<T> extractor);
+
+	/**
+	 * Fetches the first column of the each row as a stream of java objects.
+	 *
+	 * @return the first column of the each row as a stream of java objects
+	 */
+	default Stream<Object> objectStream()
+	{
+		return stream(new ObjectExtractor());
+	}
+
+	/**
+	 * Fetches the first column of the each row as a stream of java objects.
+	 *
+	 * @param <T> type of the object fetched
+	 * @param type type of the object to be fetched
+	 * @return the first column of the each row as a stream of java objects
+	 */
+	default <T> Stream<T> objectStream(Class<T> type)
+	{
+		return stream(new TypedObjectExtractor(type));
+	}
 
 	/**
 	 * Fetches the first column of the first row as a java object.
@@ -103,6 +144,28 @@ public interface Fetchable
 	}
 
 	/**
+	 * Fetches each row as a java Array.
+	 *
+	 * @return each row as a java Array
+	 */
+	default Stream<Object[]> arrayStream()
+	{
+		return stream(new ArrayExtractor());
+	}
+
+	/**
+	 * Fetches each row as a java Array of objects of the specified types.
+	 *
+	 * @param types types of objects to be fetched
+	 *
+	 * @return each row as a java Array of objects of the specified types
+	 */
+	default Stream<Object[]> arrayStream(Class<?>... types)
+	{
+		return stream(new TypedArrayExtractor(types));
+	}
+
+	/**
 	 * Fetches the first row as a java Array of objects of the specified types.
 	 *
 	 * @param types types of objects to be fetched
@@ -134,6 +197,27 @@ public interface Fetchable
 	default List<Object[]> fetchArrayList(Class<?>... types)
 	{
 		return fetch(new TypedArrayListFetcher(types));
+	}
+
+	/**
+	 * Fetches each row as stream of maps whose keys are the column names and values are the column values.
+	 *
+	 * @return each row as stream of maps whose keys are the column names and values are the column values
+	 */
+	default Stream<Map<String, Object>> mapStream()
+	{
+		return stream(new MapExtractor());
+	}
+
+	/**
+	 * Fetches each row as stream of maps whose keys are the column names and values are the column values as objects of the specified types.
+	 *
+	 * @param types types of the objects to be fetched
+	 * @return each row as stream of maps whose keys are the column names and values are the column values as objects of the specified types
+	 */
+	default Stream<Map<String, Object>> mapStream(Class[] types)
+	{
+		return stream(new TypedMapExtractor(types));
 	}
 
 	/**
@@ -180,6 +264,19 @@ public interface Fetchable
 	default List<Map<String, Object>> fetchMapList(Class<?>... types)
 	{
 		return fetch(new TypedMapListFetcher(types));
+	}
+
+	/**
+	 * Fetches each row as a a stream of java objects of the specified type with it's properties set to their respective column values.
+	 *
+	 * @param <T> type of the object fetched
+	 * @param type type of the object to be fetched
+	 *
+	 * @return each row as a a stream of java objects of the specified type with it's properties set to their respective column values
+	 */
+	default <T> Stream<T> entityStream(Class<T> type)
+	{
+		return stream(new EntityExtractor<>(type));
 	}
 
 	/**

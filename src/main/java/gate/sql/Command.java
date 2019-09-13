@@ -3,6 +3,7 @@ package gate.sql;
 import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
 import gate.error.DatabaseException;
+import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Command implements AutoCloseable, Fetchable
 {
@@ -329,6 +331,15 @@ public class Command implements AutoCloseable, Fetchable
 		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetch(fecher);
+		}
+	}
+
+	@Override
+	public <T> Stream<T> stream(Extractor<T> extractor)
+	{
+		try (Cursor cursor = getCursor())
+		{
+			return extractor.extract(cursor);
 		}
 	}
 

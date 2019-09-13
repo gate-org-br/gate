@@ -2,10 +2,12 @@ package gate.sql.statement;
 
 import gate.sql.Command;
 import gate.sql.Link;
+import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 class BasicQuery implements Query
 {
@@ -109,6 +111,15 @@ class BasicQuery implements Query
 				try (Command command = createCommand())
 				{
 					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public <T> Stream<T> stream(Extractor<T> extractor)
+			{
+				try (Command command = createCommand())
+				{
+					return command.stream(extractor);
 				}
 			}
 
@@ -262,6 +273,15 @@ class BasicQuery implements Query
 			}
 
 			@Override
+			public <T> Stream<T> stream(Extractor<T> extractor)
+			{
+				try (Command command = createCommand())
+				{
+					return command.stream(extractor);
+				}
+			}
+
+			@Override
 			public char fetchChar()
 			{
 				try (Command command = createCommand())
@@ -411,6 +431,15 @@ class BasicQuery implements Query
 			}
 
 			@Override
+			public <T> Stream<T> stream(Extractor<T> extractor)
+			{
+				try (Command command = createCommand())
+				{
+					return command.stream(extractor);
+				}
+			}
+
+			@Override
 			public char fetchChar()
 			{
 				try (Command command = createCommand())
@@ -522,6 +551,15 @@ class BasicQuery implements Query
 				try (Command command = createCommand())
 				{
 					return command.fetch(fetcher);
+				}
+			}
+
+			@Override
+			public <T> Stream<T> stream(Extractor<T> extractor)
+			{
+				try (Command command = createCommand())
+				{
+					return command.stream(extractor);
 				}
 			}
 

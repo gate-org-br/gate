@@ -250,7 +250,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 			return Optional.ofNullable(get(key))
 				.filter(e -> e instanceof JsonString)
 				.map(e -> (JsonString) e)
-				.map(e -> UncheckedConversionEception.wrap(()
+				.map(e -> UncheckedConversionEception.execute(()
 				-> gate.converter.Converter.fromString(type, e.toString())));
 		} catch (UncheckedConversionEception ex)
 		{

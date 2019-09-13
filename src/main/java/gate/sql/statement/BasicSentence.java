@@ -1,6 +1,7 @@
 package gate.sql.statement;
 
 import gate.error.ConstraintViolationException;
+import gate.error.UncheckedConstraintViolationException;
 import gate.sql.Command;
 import gate.sql.Link;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 class BasicSentence implements Sentence
 {
@@ -135,6 +137,28 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public void execute(Stream<? extends T> values) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute();
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
+					} catch (UncheckedConstraintViolationException ex)
+					{
+						throw ex.getCause();
+					}
+				}
+
+				@Override
 				public <K> void fetchGeneratedKey(List<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
@@ -144,6 +168,25 @@ class BasicSentence implements Sentence
 							extractors.forEach(e -> command.setParameter(e.apply(value)));
 							command.execute(type).ifPresent(e -> consumer.accept(value, e));
 						}
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKey(Stream<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type).ifPresent(e -> consumer.accept(value, e));
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
 					}
 				}
 
@@ -158,6 +201,27 @@ class BasicSentence implements Sentence
 							command.execute(type);
 							consumer.accept(value, command.getGeneratedKeys(type));
 						}
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeys(Stream<? extends T> values, Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+				{
+
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type);
+								consumer.accept(value, command.getGeneratedKeys(type));
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
 					}
 				}
 
@@ -209,6 +273,29 @@ class BasicSentence implements Sentence
 					}
 
 					@Override
+					public void execute(Stream<? extends T> values) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute();
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
+						} catch (UncheckedConstraintViolationException ex)
+						{
+							throw ex.getCause();
+						}
+					}
+
+					@Override
 					public <K> void fetchGeneratedKey(List<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
 					{
 						try (Command command = link.createCommand(sql))
@@ -219,6 +306,26 @@ class BasicSentence implements Sentence
 								command.execute(type).ifPresent(e -> consumer.accept(value, e));
 								observer.accept(value);
 							}
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKey(Stream<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute(type).ifPresent(e -> consumer.accept(value, e));
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
 						}
 					}
 
@@ -234,6 +341,28 @@ class BasicSentence implements Sentence
 								consumer.accept(value, command.getGeneratedKeys(type));
 								observer.accept(value);
 							}
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeys(Stream<? extends T> values, Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+					{
+
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute(type);
+									consumer.accept(value, command.getGeneratedKeys(type));
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
 						}
 					}
 
@@ -589,6 +718,28 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
+				public void execute(Stream<? extends T> values) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute();
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
+					} catch (UncheckedConstraintViolationException ex)
+					{
+						throw ex.getCause();
+					}
+				}
+
+				@Override
 				public <K> void fetchGeneratedKey(List<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
@@ -598,6 +749,25 @@ class BasicSentence implements Sentence
 							extractors.forEach(e -> command.setParameter(e.apply(value)));
 							command.execute(type).ifPresent(e -> consumer.accept(value, e));
 						}
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKey(Stream<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+				{
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type).ifPresent(e -> consumer.accept(value, e));
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
 					}
 				}
 
@@ -612,6 +782,27 @@ class BasicSentence implements Sentence
 							command.execute(type);
 							consumer.accept(value, command.getGeneratedKeys(type));
 						}
+					}
+				}
+
+				@Override
+				public <K> void fetchGeneratedKeys(Stream<? extends T> values, Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+				{
+
+					try (Command command = link.createCommand(sql))
+					{
+						values.forEach(value ->
+						{
+							try
+							{
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type);
+								consumer.accept(value, command.getGeneratedKeys(type));
+							} catch (ConstraintViolationException ex)
+							{
+								throw new UncheckedConstraintViolationException(ex);
+							}
+						});
 					}
 				}
 
@@ -663,6 +854,29 @@ class BasicSentence implements Sentence
 					}
 
 					@Override
+					public void execute(Stream<? extends T> values) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute();
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
+						} catch (UncheckedConstraintViolationException ex)
+						{
+							throw ex.getCause();
+						}
+					}
+
+					@Override
 					public <K> void fetchGeneratedKey(List<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
 					{
 						try (Command command = link.createCommand(sql))
@@ -673,6 +887,26 @@ class BasicSentence implements Sentence
 								command.execute(type).ifPresent(e -> consumer.accept(value, e));
 								observer.accept(value);
 							}
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKey(Stream<? extends T> values, Class<K> type, BiConsumer<T, K> consumer) throws ConstraintViolationException
+					{
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute(type).ifPresent(e -> consumer.accept(value, e));
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
 						}
 					}
 
@@ -688,6 +922,28 @@ class BasicSentence implements Sentence
 								consumer.accept(value, command.getGeneratedKeys(type));
 								observer.accept(value);
 							}
+						}
+					}
+
+					@Override
+					public <K> void fetchGeneratedKeys(Stream<? extends T> values, Class<K> type, BiConsumer<T, List<K>> consumer) throws ConstraintViolationException
+					{
+
+						try (Command command = link.createCommand(sql))
+						{
+							values.forEach(value ->
+							{
+								try
+								{
+									extractors.forEach(e -> command.setParameter(e.apply(value)));
+									command.execute(type);
+									consumer.accept(value, command.getGeneratedKeys(type));
+									observer.accept(value);
+								} catch (ConstraintViolationException ex)
+								{
+									throw new UncheckedConstraintViolationException(ex);
+								}
+							});
 						}
 					}
 
