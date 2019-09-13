@@ -18,21 +18,37 @@ public class UncheckedConversionEception extends UncheckedIOException
 		return (ConversionException) super.getCause();
 	}
 
-	public static <T> T wrap(UncheckedConversionEceptionWrapper<T> supplier)
+	public static void execute(UncheckedConversionEceptionExecutor executor)
 	{
 		try
 		{
-			return supplier.get();
+			executor.execute();
 		} catch (ConversionException ex)
 		{
 			throw new UncheckedConversionEception(ex);
 		}
 	}
 
-	public interface UncheckedConversionEceptionWrapper<T>
+	public static <T> T execute(UncheckedConversionEceptionSupplier<T> executor)
+	{
+		try
+		{
+			return executor.get();
+		} catch (ConversionException ex)
+		{
+			throw new UncheckedConversionEception(ex);
+		}
+	}
+
+	public interface UncheckedConversionEceptionExecutor
+	{
+
+		void execute() throws ConversionException;
+	}
+
+	public interface UncheckedConversionEceptionSupplier<T>
 	{
 
 		T get() throws ConversionException;
 	}
-
 }

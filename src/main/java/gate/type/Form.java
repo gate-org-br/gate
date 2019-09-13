@@ -53,7 +53,7 @@ public class Form implements Serializable
 			return new Form().setFields(JsonArray.parse(string)
 				.stream()
 				.map(e -> (JsonObject) e)
-				.map(e -> UncheckedConversionEception.wrap(() -> Field.parse(e)))
+				.map(e -> UncheckedConversionEception.execute(() -> Field.parse(e)))
 				.collect(Collectors.toList()));
 		} catch (UncheckedConversionEception ex)
 		{

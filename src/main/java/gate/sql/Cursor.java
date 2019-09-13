@@ -2,7 +2,10 @@ package gate.sql;
 
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.property.Property;
+import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -31,6 +34,12 @@ public class Cursor implements AutoCloseable, Fetchable
 	public <T> T fetch(Fetcher<T> fetcher)
 	{
 		return fetcher.fetch(this);
+	}
+
+	@Override
+	public <T> Stream<T> stream(Extractor<T> extractor)
+	{
+		return extractor.extract(this);
 	}
 
 	@Override
@@ -768,6 +777,60 @@ public class Cursor implements AutoCloseable, Fetchable
 		} catch (SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	public List<Property> getProperties(Class<?> type)
+	{
+		return Stream.of(getColumnNames())
+			.map(e -> e.contains(":") ? e.split(":")[0] : e)
+			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
+			.map(e -> Property.getProperty(type, e))
+			.distinct()
+			.collect(Collectors.toList());
+	}
+
+	/**
+	 * Reads the current row as a java object of the specified type with the specified properties set to their respective column values.
+	 *
+	 * @param <T> type of the entity to be read
+	 * @param type type of the entity to be read
+	 * @param properties entity properties to be read
+	 *
+	 * @return the current as a java object of the specified type with the specified properties set to their respective column values
+	 */
+	public <T> T getEntity(Class<T> type, List<Property> properties)
+	{
+		try
+		{
+			T result = type.getDeclaredConstructor().newInstance();
+			properties.forEach(property ->
+			{
+				Class<?> clazz = property.getRawType();
+				if (clazz == boolean.class)
+					property.setBoolean(result, getCurrentBooleanValue());
+				else if (clazz == char.class)
+					property.setChar(result, getCurrentCharValue());
+				else if (clazz == byte.class)
+					property.setByte(result, getCurrentByteValue());
+				else if (clazz == short.class)
+					property.setShort(result, getCurrentShortValue());
+				else if (clazz == int.class)
+					property.setInt(result, getCurrentIntValue());
+				else if (clazz == long.class)
+					property.setLong(result, getCurrentLongValue());
+				else if (clazz == float.class)
+					property.setFloat(result, getCurrentFloatValue());
+				else if (clazz == double.class)
+					property.setDouble(result, getCurrentDoubleValue());
+				else
+					property.setValue(result, getCurrentValue(clazz));
+			});
+			return result;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+			| InvocationTargetException | NoSuchMethodException | SecurityException ex)
+		{
+			throw new UnsupportedOperationException(ex);
 		}
 	}
 }
