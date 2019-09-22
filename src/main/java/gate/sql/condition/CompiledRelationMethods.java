@@ -8,6 +8,16 @@ interface CompiledRelationMethods extends Clause
 {
 
 	/**
+	 * Adds a new predicate with the specified expression and parameters to the current condition.
+	 *
+	 * @param expression the expression to be associated with the new predicate
+	 * @return the new predicate created, for chained invocations
+	 *
+	 * @see gate.sql.condition.Predicate
+	 */
+	CompiledPredicate expression(String expression, Object... parameters);
+
+	/**
 	 * Evaluates to the result of the specified sub condition.
 	 *
 	 * @param condition the sub condition to be evaluated

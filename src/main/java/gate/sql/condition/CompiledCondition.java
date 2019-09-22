@@ -61,9 +61,21 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
 	}
 
 	@Override
+	public CompiledPredicate and(String expression, Object... parameters)
+	{
+		return and().expression(expression, parameters);
+	}
+
+	@Override
 	public CompiledPredicate or(String expression)
 	{
 		return or().expression(expression);
+	}
+
+	@Override
+	public CompiledPredicate or(String expression, Object... parameters)
+	{
+		return or().expression(expression, parameters);
 	}
 
 	@Override
