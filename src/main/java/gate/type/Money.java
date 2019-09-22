@@ -61,8 +61,8 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 	public Percentage percentage(Money money)
 	{
 		return new Percentage(money.value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : getValue().divide(
-				money.getValue(), 4, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100), new MathContext(2,
-				RoundingMode.HALF_EVEN)));
+			money.getValue(), 4, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100), new MathContext(2,
+			RoundingMode.HALF_EVEN)));
 	}
 
 	public Money add(Tax tax)
@@ -138,7 +138,7 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 		return getFormat(locale).format(value);
 	}
 
-	public DecimalFormat getFormat(Locale locale)
+	private static DecimalFormat getFormat(Locale locale)
 	{
 		DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
 		format.setGroupingSize(3);
@@ -149,7 +149,7 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 		return format;
 	}
 
-	public DecimalFormat getFormat()
+	private static DecimalFormat getFormat()
 	{
 		return getFormat(Locale.getDefault());
 	}
@@ -244,5 +244,37 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 	public static Money sum(Stream<Money> values)
 	{
 		return new Money(values.filter(Objects::nonNull).map(Money::getValue).reduce(BigDecimal.ZERO, BigDecimal::add));
+	}
+
+	public static Money of(String string)
+	{
+		try
+		{
+			return new Money((BigDecimal) Money.getFormat().parse(string));
+		} catch (ParseException ex)
+		{
+			throw new IllegalArgumentException(string + " is not a valid monetary value");
+		}
+	}
+
+	public static Money of(long value)
+	{
+		return new Money(new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN));
+	}
+
+	public static Money of(BigDecimal value)
+	{
+		return new Money(value);
+	}
+
+	public static Money of(Locale locale, String string)
+	{
+		try
+		{
+			return new Money((BigDecimal) Money.getFormat(locale).parse(string));
+		} catch (ParseException ex)
+		{
+			throw new IllegalArgumentException(string + " is not a valid monetary value");
+		}
 	}
 }
