@@ -63,6 +63,12 @@ public class ConstantCondition extends Condition implements
 	}
 
 	@Override
+	public CompiledPredicate and(String expression, Object... parameters)
+	{
+		return and().expression(expression, parameters);
+	}
+
+	@Override
 	public GenericPredicate and(Query subquery)
 	{
 		return and().subquery(subquery);
@@ -84,6 +90,12 @@ public class ConstantCondition extends Condition implements
 	public ConstantPredicate or(String exp)
 	{
 		return or().expression(exp);
+	}
+
+	@Override
+	public CompiledPredicate or(String expression, Object... parameters)
+	{
+		return or().expression(expression, parameters);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package gate.sql.condition;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+import java.util.stream.Stream;
 
 /**
  * A relation between two predicates of a compiled condition
@@ -36,6 +37,29 @@ public class CompiledRelation extends Relation
 				if (!string.isEmpty())
 					string += " ";
 				return string + expression;
+			}
+		};
+	}
+
+	@Override
+	public CompiledPredicate expression(String expression, Object... parameters)
+	{
+		return new CompiledPredicate(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + expression;
+			}
+
+			@Override
+			public Stream<Object> getParameters()
+			{
+				return Stream.concat(getClause().getParameters(),
+					Stream.of(parameters));
 			}
 		};
 	}

@@ -6,6 +6,28 @@ interface CompiledConditionMethods
 {
 
 	/**
+	 * Adds the specified expression and the specified parameters to the condition associated by an AND relation.
+	 *
+	 * @param expression the expression to be associated with the condition
+	 * @param parameters the parameters to be associated with the condition
+	 * @return the current predicate, for chained invocations
+	 *
+	 * @see gate.sql.condition.Predicate
+	 */
+	CompiledPredicate and(String expression, Object... parameters);
+
+	/**
+	 * Adds the specified expression and the specified parameters to the condition associated by an OR relation.
+	 *
+	 * @param expression the expression to be associated with the condition
+	 * @param parameters the parameters to be associated with the condition
+	 * @return the current predicate, for chained invocations
+	 *
+	 * @see gate.sql.condition.Predicate
+	 */
+	CompiledPredicate or(String expression, Object... parameters);
+
+	/**
 	 * Adds a new sub condition to the current condition associated by an AND relation.
 	 *
 	 * @param condition the sub condition to be associated with the current condition
