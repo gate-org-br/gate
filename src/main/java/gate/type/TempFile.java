@@ -7,7 +7,6 @@ import gate.handler.TempFileHandler;
 import gate.io.IOStreamTransferer;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,10 +53,11 @@ public class TempFile implements AutoCloseable
 	{
 		try
 		{
-			if (inputStream == null)
-				inputStream = new FileInputStream(file);
+			if (inputStream != null)
+				inputStream.close();
+			inputStream = new FileInputStream(file);
 			return inputStream;
-		} catch (FileNotFoundException ex)
+		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
 		}
@@ -72,10 +72,11 @@ public class TempFile implements AutoCloseable
 	{
 		try
 		{
-			if (outputStream == null)
-				outputStream = new FileOutputStream(file);
+			if (outputStream != null)
+				outputStream.close();
+			outputStream = new FileOutputStream(file);
 			return outputStream;
-		} catch (FileNotFoundException ex)
+		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
 		}
