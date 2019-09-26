@@ -1,5 +1,6 @@
 package gate.converter;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -66,6 +67,7 @@ public class Converters
 		INSTANCES.put(byte[].class, new ByteArrayConverter());
 		INSTANCES.put(Month.class, new MonthConverter());
 		INSTANCES.put(DayOfWeek.class, new DayOfWeekConverter());
+		INSTANCES.put(File.class, new FileConverter());
 	}
 
 	public Converter get(Class<?> type)
