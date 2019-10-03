@@ -86,7 +86,7 @@ public class FileConverter implements Converter
 			}
 		} catch (IOException ex)
 		{
-			throw new ConversionException("Error when trying to read file from data base", ex);
+			throw new ConversionException("Error when trying to read file from database", ex);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class FileConverter implements Converter
 			}
 		} catch (IOException ex)
 		{
-			throw new ConversionException("Error when trying to read file from data base", ex);
+			throw new ConversionException("Error when trying to read file from database", ex);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class FileConverter implements Converter
 				ps.setBytes(index, outputStream.toByteArray());
 			} catch (IOException ex)
 			{
-				throw new SQLException("Error when trying to write file to data base", ex);
+				throw new SQLException("Error when trying to write file to database", ex);
 			}
 		} else
 			ps.setNull(index, Types.VARBINARY);
