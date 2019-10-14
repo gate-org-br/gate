@@ -7,7 +7,7 @@ import gate.error.ConversionException;
 import gate.error.UncheckedConversionEception;
 import gate.handler.JsonElementHandler;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 {
 
 	private final Map<String, JsonElement> values
-		= new HashMap<>();
+		= new LinkedHashMap<>();
 	private static final long serialVersionUID = 1L;
 
 	public JsonObject()
