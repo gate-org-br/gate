@@ -6,6 +6,7 @@ import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionEception;
 import gate.handler.JsonElementHandler;
+import gate.lang.property.Property;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -433,5 +434,28 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return new JsonObject()
 			.set("label", JsonString.of(label.apply(obj)))
 			.set("value", JsonElement.of(value.apply(obj)));
+	}
+
+	/**
+	 * Creates a JsonObject from the named non null properties of a java object.
+	 *
+	 * @param obj the object to be formatted
+	 * @return a JsonObject with all named non null properties of the specified object
+	 */
+	public static JsonObject format(Object obj)
+	{
+		JsonObject result = new JsonObject();
+		Property.getProperties(obj.getClass()).forEach((property) ->
+		{
+			String name = property.getDisplayName();
+			if (name != null)
+			{
+				Object value = property.getValue(obj);
+				if (value != null)
+					result.setString(name, gate.converter.Converter.toText(value));
+			}
+		});
+
+		return result;
 	}
 }

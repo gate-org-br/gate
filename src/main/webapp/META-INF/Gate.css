@@ -191,6 +191,25 @@ textarea {
   padding: 4px;
   margin: 0px;
 }
+dl {
+  display: inline-flex;
+  flex-wrap: wrap;
+  background-color: white;
+  padding: 4px;
+}
+dt {
+  margin: 0;
+  width: 50%;
+  text-align: left;
+  padding: 4px;
+}
+dd {
+  margin: 0;
+  width: 50%;
+  text-align: right;
+  font-weight: bold;
+  padding: 4px;
+}
 label[data-icon],
 span[data-icon] {
   margin: 4px;
@@ -4475,19 +4494,23 @@ div.ReportDialog > div:nth-child(3) > a:hover {
   border-color: #FFFACD;
   background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
 }
-dl {
-  margin: 0;
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 8px;
+g-map {
+  display: table;
+  width: 100%;
+  height: 100%;
 }
-dt {
-  margin: 0;
+g-entry {
+  display: table-row;
+}
+g-key {
+  display: table-cell;
   text-align: right;
+  vertical-align: middle;
   font-weight: bold;
 }
-dd {
-  margin: 0;
+g-value {
+  display: table-cell;
   text-align: left;
+  vertical-align: middle;
 }
 /*# sourceMappingURL=Gate.css.map */

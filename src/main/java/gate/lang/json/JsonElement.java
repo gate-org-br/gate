@@ -149,7 +149,7 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return a JsonElement representing the specified object
 	 */
-	static JsonElement format(Object obj)
+	static JsonElement toText(Object obj)
 	{
 		if (obj == null)
 			return UNDEFINED;

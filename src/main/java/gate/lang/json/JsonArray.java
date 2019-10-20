@@ -263,7 +263,7 @@ public class JsonArray implements List<JsonElement>, JsonElement
 
 	public static JsonArray format(Stream<?> stream)
 	{
-		return stream.map(JsonElement::format)
+		return stream.map(JsonElement::toText)
 			.collect(Collectors.toCollection(JsonArray::new));
 	}
 
