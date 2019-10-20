@@ -6666,19 +6666,19 @@ class Coolbar extends HTMLElement
 	}
 }
 
-customElements.define('gate-coolbar', Coolbar);
+customElements.define('g-coolbar', Coolbar);
 
-window.addEventListener("load", () => Array.from(document.querySelectorAll("gate-coolbar, div.Coolbar, div.COOLBAR"))
+window.addEventListener("load", () => Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true")));
 
 window.addEventListener("resize", () => {
-	Array.from(document.querySelectorAll("gate-coolbar, div.Coolbar, div.COOLBAR"))
+	Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
 		.filter(e => e.hasAttribute("data-overflow"))
 		.forEach(e => e.removeAttribute("data-overflow"));
 
-	Array.from(document.querySelectorAll("gate-coolbar, div.Coolbar, div.COOLBAR"))
+	Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
@@ -6687,4 +6687,17 @@ window.addEventListener("resize", () => {
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
+});
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("dl[data-entries]")).forEach(function (e)
+	{
+		entries = JSON.parse(e.getAttribute("data-entries"));
+
+		for (var key in entries)
+		{
+			e.appendChild(document.createElement("dt")).innerHTML = key;
+			e.appendChild(document.createElement("dd")).innerHTML = entries[key];
+		}
+	});
 });

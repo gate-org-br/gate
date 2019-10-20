@@ -39,7 +39,7 @@
 @tablet: 768px;
 @notebook: 992px;
 @desktop: 1200px;
-@widescreen: 1400px; 
+@widescreen: 1400px;
 
 body { margin: 0;
        padding: 0;
@@ -127,10 +127,6 @@ input[type='file'] { cursor: pointer }
 input:invalid, select:invalid, textarea:invalid { box-shadow: inset 0 0 1px 1px fade(red, 60%); }
 
 textarea { resize: none; padding: 4px; margin: 0px }
-
-dl { display: inline-flex; flex-wrap: wrap; background-color: white; padding: 4px}
-dt { margin: 0; width: 50%; text-align: left; padding: 4px }
-dd { margin: 0; width: 50%; text-align: right; font-weight: bold; padding: 4px }
 
 label[data-icon], span[data-icon]
 {
@@ -285,3 +281,5 @@ datalist { display: none }
 
 @import "ReportSelector.less";
 @import "ReportDialog.less";
+
+@import "DefinitionList.less";
