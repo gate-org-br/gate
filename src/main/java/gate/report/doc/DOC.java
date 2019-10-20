@@ -1,23 +1,22 @@
 package gate.report.doc;
 
-import gate.report.Doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
-import gate.report.Image;
 import gate.report.Column;
+import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Footer;
+import gate.report.Form;
 import gate.report.Grid;
 import gate.report.Header;
-import gate.report.Paragraph;
+import gate.report.Image;
 import gate.report.LineBreak;
 import gate.report.PageBreak;
-import gate.report.ReportElement;
-import gate.report.Form;
+import gate.report.Paragraph;
 import gate.report.Report;
+import gate.report.ReportElement;
 import gate.report.Style;
 import gate.report.Style.TextAlign;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -309,25 +308,24 @@ public class DOC extends Doc
 		{
 			Column<Object> column = grid.getColumns().get(i);
 			printCell(getXWPFTableCell(XWPFTableRow, i),
-				column,
 				column.getBody().apply(value),
 				column.getStyler().apply(value, column.style()));
 		}
 
 	}
 
-	private void printCell(XWPFTableCell XWPFTableCell, Column<?> column, Object value, Style style)
+	private void printCell(XWPFTableCell XWPFTableCell, Object value, Style style)
 	{
 		XWPFParagraph XWPFParagraph = XWPFTableCell.getParagraphs().get(0);
 
 		XWPFParagraph.setVerticalAlignment(TextAlignment.CENTER);
 
-		XWPFParagraph.setAlignment(getParagraphAlignment(column.style().getTextAlign()));
+		XWPFParagraph.setAlignment(getParagraphAlignment(style.getTextAlign()));
 
 		XWPFRun XWPFRun = XWPFParagraph.createRun();
-		XWPFRun.setBold(column.style().getFontWeight() == Style.FontWeight.BOLD);
-		XWPFRun.setFontSize(column.style().getFontSize());
-		XWPFRun.setColor(column.style().getColor().toString().substring(1));
+		XWPFRun.setBold(style.getFontWeight() == Style.FontWeight.BOLD);
+		XWPFRun.setFontSize(style.getFontSize());
+		XWPFRun.setColor(style.getColor().toString().substring(1));
 		XWPFRun.setText(Converter.toText(value));
 	}
 
