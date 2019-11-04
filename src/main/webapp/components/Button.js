@@ -68,22 +68,24 @@ function Button(button, creator)
 			switch (this.getAttribute("formtarget").toLowerCase())
 			{
 				case "_dialog":
-					if (event.ctrlKey)
+					if (this.form.checkValidity())
 					{
-						event.preventDefault();
-						event.stopPropagation();
-						event.stopImmediatePropagation();
-						this.setAttribute("formtarget", "_blank");
-						this.click();
-						this.setAttribute("formtarget", "_dialog");
-					} else if (this.form.getAttribute("target") !== "_dialog")
-					{
-						new Dialog({creator: creator || this,
-							title: this.getAttribute("title"),
-							blocked: Boolean(this.getAttribute("data-blocked"))})
-							.show();
+						if (event.ctrlKey)
+						{
+							event.preventDefault();
+							event.stopPropagation();
+							event.stopImmediatePropagation();
+							this.setAttribute("formtarget", "_blank");
+							this.click();
+							this.setAttribute("formtarget", "_dialog");
+						} else if (this.form.getAttribute("target") !== "_dialog")
+						{
+							new Dialog({creator: creator || this,
+								title: this.getAttribute("title"),
+								blocked: Boolean(this.getAttribute("data-blocked"))})
+								.show();
+						}
 					}
-
 					break;
 				case "_message":
 					event.preventDefault();

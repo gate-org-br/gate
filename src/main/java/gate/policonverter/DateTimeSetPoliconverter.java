@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.util.stream.Stream;
 import javax.servlet.http.Part;
 
-public class DateTimeSetPoliconverter extends Policonverter
+public class DateTimeSetPoliconverter implements Policonverter
 {
 
 	@Override

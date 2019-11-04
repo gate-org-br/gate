@@ -1,10 +1,9 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.type.collections.StringSet;
 import javax.servlet.http.Part;
 
-public class StringSetPoliconverter extends Policonverter
+public class StringSetPoliconverter implements Policonverter
 {
 
 	@Override

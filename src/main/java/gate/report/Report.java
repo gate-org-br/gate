@@ -132,7 +132,7 @@ public class Report
 	public final Paragraph addParagraph(Object value)
 	{
 		Paragraph paragraph = new Paragraph(value);
-		elements.add(new Paragraph(value));
+		elements.add(paragraph);
 		return paragraph;
 	}
 

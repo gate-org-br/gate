@@ -1,8 +1,6 @@
 package gate.sql.statement;
 
 import gate.error.ConstraintViolationException;
-import gate.error.FKViolationException;
-import gate.error.UKViolationException;
 import gate.sql.Link;
 import gate.sql.insert.Insert;
 import java.util.Collection;

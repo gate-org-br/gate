@@ -1,20 +1,19 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import java.util.Arrays;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.http.Part;
 
-public class SetPoliconverter extends Policonverter
+public class SetPoliconverter implements Policonverter
 {
 
 	@Override
 	public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
+		throws ConversionException
 	{
 		Set<Object> objects = new HashSet<>();
 		for (String string : value)

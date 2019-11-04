@@ -1,11 +1,10 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.type.collections.CharacterList;
 import java.util.stream.Stream;
 import javax.servlet.http.Part;
 
-public class CharacterListPoliconverter extends Policonverter
+public class CharacterListPoliconverter implements Policonverter
 {
 
 	@Override
