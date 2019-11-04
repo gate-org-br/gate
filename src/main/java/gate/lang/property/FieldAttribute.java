@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 
 class FieldAttribute implements JavaIdentifierAttribute
@@ -66,6 +67,10 @@ class FieldAttribute implements JavaIdentifierAttribute
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else if (List.class.isAssignableFrom(rawType)
+				&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType)
+					.getActualTypeArguments()[0];
+			else if (Set.class.isAssignableFrom(rawType)
 				&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType)
 					.getActualTypeArguments()[0];

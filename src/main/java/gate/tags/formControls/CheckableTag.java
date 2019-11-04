@@ -13,6 +13,8 @@ import javax.servlet.jsp.JspException;
 public abstract class CheckableTag extends SelectorTag
 {
 
+	private String style;
+
 	@Override
 	public void doTag() throws JspException, IOException
 	{
@@ -32,9 +34,14 @@ public abstract class CheckableTag extends SelectorTag
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
+		Attributes attributes = new Attributes();
+		if (style != null)
+			attributes.put("style", style);
+
+		getJspContext().getOut().print("<ul " + attributes + ">");
+
 		if (groups != null)
 		{
-			getJspContext().getOut().print("<ul>");
 
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
 				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
@@ -44,15 +51,14 @@ public abstract class CheckableTag extends SelectorTag
 				print(group.getValue());
 				getJspContext().getOut().print("</li>");
 			}
-
-			getJspContext().getOut().print("</ul>");
 		} else
 			print(options);
+
+		getJspContext().getOut().print("</ul>");
 	}
 
 	private void print(Iterable<?> options) throws IOException, JspException
 	{
-		getJspContext().getOut().print("<ul>");
 
 		for (Object option : options)
 		{
@@ -90,11 +96,19 @@ public abstract class CheckableTag extends SelectorTag
 			getJspContext().getOut().print("</label>");
 
 			if (children != null)
+			{
+				getJspContext().getOut().print("<ul>");
 				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)));
+				getJspContext().getOut().print("</ul>");
+			}
 
 			getJspContext().getOut().print("</li>");
 		}
-		getJspContext().getOut().print("</ul>");
+	}
+
+	public void setStyle(String style)
+	{
+		this.style = style;
 	}
 
 	protected abstract String getComponentType();

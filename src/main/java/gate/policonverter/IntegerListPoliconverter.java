@@ -1,12 +1,10 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.type.collections.IntegerList;
-
 import java.util.stream.Stream;
 import javax.servlet.http.Part;
 
-public class IntegerListPoliconverter extends Policonverter
+public class IntegerListPoliconverter implements Policonverter
 {
 
 	@Override

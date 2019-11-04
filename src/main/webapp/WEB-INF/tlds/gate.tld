@@ -1385,6 +1385,14 @@
 				select options.
 			</description>
 		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The css style of the generated list
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>selectn</name>
@@ -1457,6 +1465,15 @@
 			<description>
 				Optional lambda expression used to sort
 				select options.
+			</description>
+		</attribute>
+
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The css style of the generated list
 			</description>
 		</attribute>
 	</tag>

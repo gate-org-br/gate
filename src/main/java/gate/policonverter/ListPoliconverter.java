@@ -1,20 +1,19 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.converter.Converter;
-
+import gate.error.ConversionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.Part;
 
-public class ListPoliconverter extends Policonverter
+public class ListPoliconverter implements Policonverter
 {
 
 	@Override
 	public Object getObject(Class<?> type, String[] value)
-			throws ConversionException
+		throws ConversionException
 	{
 		List<Object> objects = new ArrayList<>();
 		for (String string : value)

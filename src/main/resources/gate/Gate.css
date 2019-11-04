@@ -934,6 +934,7 @@ fieldset > div > ul {
   margin: 4px;
   padding: 8px;
   flex-grow: 1;
+  overflow: auto;
   border-radius: 5px;
   list-style-type: none;
   background-color: white;
@@ -964,6 +965,7 @@ fieldset > div > ul li > label > input {
   order: -1;
   width: 18px;
   height: 18px;
+  cursor: inherit;
   margin-top: -1px;
 }
 div[data-caption] {

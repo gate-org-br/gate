@@ -1,12 +1,11 @@
 package gate.policonverter;
 
-import gate.error.ConversionException;
 import gate.converter.Converter;
-
+import gate.error.ConversionException;
 import java.lang.reflect.Array;
 import javax.servlet.http.Part;
 
-public class ArrayPoliconverter extends Policonverter
+public class ArrayPoliconverter implements Policonverter
 {
 
 	@Override

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import javax.servlet.http.Part;
 
-public class LocalDateTimeSetPoliconverter extends Policonverter
+public class LocalDateTimeSetPoliconverter implements Policonverter
 {
 
 	@Override
