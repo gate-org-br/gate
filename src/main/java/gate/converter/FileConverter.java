@@ -59,7 +59,7 @@ public class FileConverter implements Converter
 			if (part == null)
 				return null;
 
-			File file = File.createTempFile("File", "tmp");
+			File file = File.createTempFile(part.getSubmittedFileName() + ".", ".tmp");
 			try (InputStream inputStream = part.getInputStream();
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -77,7 +77,7 @@ public class FileConverter implements Converter
 	{
 		try
 		{
-			File file = File.createTempFile("File", "tmp");
+			File file = File.createTempFile("File", ".tmp");
 			try (InputStream inputStream = rs.getBinaryStream(index);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -95,7 +95,7 @@ public class FileConverter implements Converter
 	{
 		try
 		{
-			File file = File.createTempFile("File", "tmp");
+			File file = File.createTempFile("File", ".tmp");
 			try (InputStream inputStream = rs.getBinaryStream(fields);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -128,8 +128,7 @@ public class FileConverter implements Converter
 	}
 
 	@Override
-	public String toString(Class<?> type, Object object
-	)
+	public String toString(Class<?> type, Object object)
 	{
 		throw new UnsupportedOperationException("Files can't be represented as strings.");
 	}
