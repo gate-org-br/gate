@@ -48,11 +48,12 @@ public @interface Constraint
 				Constructor<? extends Constraint.Implementation> implementationConstructor = implementationClass.getConstructor(Object.class);
 				return implementationConstructor.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-					| IllegalArgumentException | InvocationTargetException | InstantiationException e)
+				| IllegalArgumentException | InvocationTargetException | InstantiationException e)
 			{
 				throw new AppError(e);
 			}
 		}
+
 	}
 
 }
