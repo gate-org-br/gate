@@ -20,10 +20,11 @@ import java.util.stream.StreamSupport;
 public class CSVParser implements AutoCloseable, Iterable<List<String>>
 {
 
-	private int c = Integer.MAX_VALUE;
 	private final Reader reader;
-	private final StringBuilder string
-			= new StringBuilder();
+	private int c = Integer.MAX_VALUE;
+	private final StringBuilder string = new StringBuilder();
+
+	private static final Optional EMPTY = Optional.of(List.of());
 
 	/**
 	 * Constructs a new CSVParser for the specified Reader.
@@ -38,72 +39,90 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	/**
 	 * Extracts the next line of the previously specified CSV formatted {@link java.io.Reader} as a String List.
 	 *
-	 * @return an Optional describing the row returned as a String List of an empty Optional if there are no more rows
-	 * to be read
+	 * @return an Optional describing the row returned as a String List of an empty Optional if there are no more rows to be read
 	 * @throws java.io.IOException If an I/O error occurs
 	 */
 	public Optional<List<String>> parseLine() throws IOException
 	{
-		return line();
-	}
-
-	private Optional<List<String>> line() throws IOException
-	{
 		if (c == -1)
 			return Optional.empty();
 
+		do
+			c = reader.read();
+		while (c == '\r');
+
+		if (c == -1 || c == '\n')
+			return EMPTY;
+
+		return Optional.of(line());
+	}
+
+	private List<String> line() throws IOException
+	{
 		List<String> line = new ArrayList<>();
 
-		if (c == '\r')
+		line.add(field());
+
+		while (c == ',' || c == ';')
+		{
 			c = reader.read();
-		c = reader.read();
+			line.add(field());
+		}
 
-		for (String field = field();
-				field != null;
-				field = field())
-			line.add(field);
-
-		return Optional.of(line);
+		return line;
 	}
 
 	private String field() throws IOException
 	{
-		if (c != -1 && c != '\r' && c != '\n')
+		while (c == ' ' || c == '\t' || c == '\r')
+			c = reader.read();
+
+		String field = parse();
+
+		while (c == ' ' || c == '\t' || c == '\r')
+			c = reader.read();
+
+		return field;
+	}
+
+	private String parse() throws IOException
+	{
+		switch (c)
 		{
-			string.setLength(0);
-			while (c != -1 && c != '\r' && c != '\n')
-				switch (c)
-				{
-					case '\'':
-						for (c = reader.read();
-								c != -1 && c != '\'';
-								c = reader.read())
-							string.append((char) (c == '\\' ? c = reader.read() : c));
-						c = reader.read();
-						break;
-					case '"':
-						for (c = reader.read();
-								c != -1 && c != '"';
-								c = reader.read())
-							string.append((char) (c == '\\' ? c = reader.read() : c));
-						c = reader.read();
-						break;
-					case '\\':
-						c = reader.read();
-						string.append((char) c);
-						c = reader.read();
-						break;
-					case ',':
-					case ';':
-						c = reader.read();
-						return string.toString().trim();
-					default:
-						string.append((char) c);
-						c = reader.read();
-				}
-			return string.toString().trim();
+			case '\'':
+				return quoted();
+			case '"':
+				return doubleQuoted();
+			default:
+				return unquoted();
+
 		}
-		return null;
+	}
+
+	public String quoted() throws IOException
+	{
+		string.setLength(0);
+		for (c = reader.read(); c != -1 && c != '\''; c = reader.read())
+			string.append((char) (c == '\\' ? c = reader.read() : c));
+		c = reader.read();
+		return string.toString().trim();
+	}
+
+	public String doubleQuoted() throws IOException
+	{
+		string.setLength(0);
+		for (c = reader.read(); c != -1 && c != '"'; c = reader.read())
+			string.append((char) (c == '\\' ? c = reader.read() : c));
+		c = reader.read();
+		return string.toString().trim();
+	}
+
+	public String unquoted() throws IOException
+	{
+		string.setLength(0);
+		for (; c != -1 && c != '\r' && c != '\n' && c != ',' && c != ';'; c = reader.read())
+			string.append((char) (c == '\\' ? c = reader.read() : c));
+		return string.toString().trim();
 	}
 
 	/**
