@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.junit.Assert;
-
 import org.junit.Test;
 
 public class CSVParserTest
@@ -20,7 +19,7 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(3, lines.size());
@@ -106,7 +105,7 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(13, lines.size());
@@ -175,7 +174,7 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(17, lines.size());
@@ -243,7 +242,7 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(20, lines.size());
@@ -315,7 +314,7 @@ public class CSVParserTest
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(6, lines.size());
@@ -336,13 +335,40 @@ public class CSVParserTest
 	}
 
 	@Test
+	public void testParseUsers5() throws IOException
+	{
+		try (CSVParser reader = new CSVParser(new InputStreamReader(getClass().getResourceAsStream("Users5.csv"))))
+		{
+			List<List<String>> lines = new ArrayList<>();
+			for (Optional<List<String>> line = reader.parseLine();
+				line.isPresent(); line = reader.parseLine())
+				lines.add(line.get());
+
+			Assert.assertEquals(6, lines.size());
+
+			Assert.assertEquals(3, lines.get(0).size());
+			Assert.assertEquals("Use'r 1", lines.get(0).get(0));
+			Assert.assertEquals("Role 1", lines.get(0).get(1));
+			Assert.assertEquals("", lines.get(0).get(2));
+
+			Assert.assertEquals(3, lines.get(1).size());
+			Assert.assertEquals("User 2", lines.get(1).get(0));
+			Assert.assertEquals("Role '2", lines.get(1).get(1));
+			Assert.assertEquals("", lines.get(0).get(2));
+
+			Assert.assertTrue(lines.get(5).isEmpty());
+
+		}
+	}
+
+	@Test
 	public void testParseNumbers() throws IOException
 	{
 		try (CSVParser reader = new CSVParser(new InputStreamReader(getClass().getResourceAsStream("Numbers.csv"))))
 		{
 			List<List<String>> lines = new ArrayList<>();
 			for (Optional<List<String>> line = reader.parseLine();
-					line.isPresent(); line = reader.parseLine())
+				line.isPresent(); line = reader.parseLine())
 				lines.add(line.get());
 
 			Assert.assertEquals(35, lines.size());
