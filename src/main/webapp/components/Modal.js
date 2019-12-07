@@ -15,6 +15,12 @@ class Modal
 		var creator = options ? options.creator : null;
 		this.creator = () => creator ? creator : element;
 
+		this.element().addEventListener("contextmenu", event =>
+		{
+			event.preventDefault();
+			this.hide();
+		});
+
 		if (!blocked)
 			element.addEventListener("click", event =>
 				(event.target === element || event.srcElement === element) && this.hide());

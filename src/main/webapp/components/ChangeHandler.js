@@ -7,36 +7,24 @@ window.addEventListener("load", function ()
 			.toLowerCase() : "get")
 		{
 			case "get":
-				var a = new Link(document.createElement("a"))
+				new Link(document.createElement("a"))
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.get();
-				document.body.appendChild(a);
-				a.click();
-				document.body.removeChild(a);
+					.execute();
 				break;
 			case "post":
-				var form = this.parentNode;
-				while (form
-					&& form.tagName.toLowerCase()
-					!== 'form')
-					form = form.parentNode;
-
-				var button = new Button(document.createElement("button"))
+				new Button(document.createElement("button"))
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.get();
-				form.appendChild(button);
-				button.click();
-				form.removeChild(button);
+					.execute();
 				break;
 		}
 	};

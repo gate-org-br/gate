@@ -1,0 +1,7 @@
+	public List<${className.getName()}> search(${className.getName()} filter)
+	{
+		try (${@dao.getName()} dao = new ${@dao.getName()}())
+		{
+			return dao.search(filter);
+		}
+	}

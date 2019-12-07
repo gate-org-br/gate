@@ -1,0 +1,1 @@
+select id, name, birthdate, contract$date1 as 'contract:date1', contract$date2 as 'contract:date2' from Person where id = ?

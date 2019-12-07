@@ -1,0 +1,24 @@
+	public void update(User value) throws AppException
+	{
+		Constraints.validate(value,
+			"id",
+			"active",
+			"userID",
+			"passwd",
+			"name",
+			"email",
+			"role.id",
+			"details",
+			"cellPhone",
+			"phone",
+			"photo",
+			"birthdate",
+			"CPF",
+			"sex",
+			"registration");
+
+		try (UserDao dao = new UserDao())
+		{
+			dao.update(value);
+		}
+	}

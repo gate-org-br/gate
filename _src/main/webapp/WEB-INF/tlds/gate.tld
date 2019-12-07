@@ -1,0 +1,1867 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/javaee">
+	<jsp-version>2.0</jsp-version>
+	<tlib-version>1.0</tlib-version>
+	<short-name>Gate Tab Lib</short-name>
+	<uri>http://www.gate.com.br/gate</uri>
+	<description>JSP Tags to be used to build applications using gate</description>
+	<tag>
+		<name>template</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.template.TemplateTag</tag-class>
+		<description>
+			Defines a JSP file to be used as template of another
+			one.
+		</description>
+		<attribute>
+			<name>filename</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The JSP file to be used as template.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>insert</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.template.InsertTag</tag-class>
+		<description>
+			Marks where the body content will be inserted
+			on a template JSP file.
+		</description>
+	</tag>
+	<tag>
+		<name>superuser</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.SuperUserTag</tag-class>
+		<description>
+			Process it's body only if the
+			current user is a superuser.
+		</description>
+	</tag>
+	<tag>
+		<name>secure</name>
+		<display-name>Secure</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.SecureTag</tag-class>
+		<description>
+			Process it's body only if the current user has access
+			to the specified resource.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed if the
+				current user has no access to the resource.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>denied</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.DeniedTag</tag-class>
+		<description>
+			Process it's body only if the current user has no access
+			to the specified resource.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed if the
+				current user has access to the resource.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>link</name>
+		<display-name>Link</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.LinkTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a link to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated link url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The HTML tag created will be a button if this
+				attribute is defined as post or a anchor if
+				it is not defined or is defined as get.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The target attribute of the html anchor or the
+				formtarget attribute of the html button to be
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed if the current
+				user has no access to the specified resource.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the link or
+				button to be created.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>shortcut</name>
+		<display-name>Shortcut</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.ShortcutTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a small icon linked to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the link to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated link url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The HTML tag created will be a button if this
+				attribute is defined as post or a anchor if
+				it is not defined or is defined as get.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The target attribute of the html anchor or the
+				formtarget attribute of the html button to be
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the link or
+				button to be created.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>menu</name>
+		<display-name>Menu</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.MenuTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a menu to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the menu to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the menu to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the menu to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated link url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The HTML tag created will be a button if this
+				attribute is defined as post or a anchor if
+				it is not defined or is defined as get.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The target attribute of the html anchor or the
+				formtarget attribute of the html button to be
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the menu link or
+				button to be created.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>menuitem</name>
+		<display-name>Menu Item</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.MenuItemTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a menu item to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the menu item to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the menu item to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the menu item to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated link url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The HTML tag created will be a button if this
+				attribute is defined as post or a anchor if
+				it is not defined or is defined as get.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The target attribute of the html anchor or the
+				formtarget attribute of the html button to be
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>fixed</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Defaults to false. If true, shows a disabled
+				menu item when the user has no access to the
+				specified resource.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the menu item link or
+				button to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>if</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.IfTag</tag-class>
+		<description>
+			Proccess it's body only if the specified condition
+			is true.
+		</description>
+		<attribute>
+			<name>condition</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed if the
+				specified condition is false.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>choose</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.choose.ChooseTag</tag-class>
+		<description>
+			Proccess the body of the first when child tag whose
+			provided condition is true. Process the body of the
+			otherwise child tag if no when child tag has a true
+			condition.
+		</description>
+	</tag>
+	<tag>
+		<name>when</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.choose.WhenTag</tag-class>
+		<description>
+			To be used inside a choose tag. Only the body of the
+			first true when condition of a choose tag is executed.
+		</description>
+		<attribute>
+			<name>condition</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>otherwise</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.choose.OtherwiseTag</tag-class>
+		<description>
+			To be used inside a choose tag. Executed only if there
+			is no true when condition on the parent choose tag.
+		</description>
+	</tag>
+	<tag>
+		<name>iterator</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.IteratorTag</tag-class>
+		<description>
+			Iterates over a collection of objects.
+		</description>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Collection with the elements
+				to be processed.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Lambda expression used to extract the descendant
+				list of each element.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the current item.
+				Defaults to target.
+			</description>
+		</attribute>
+		<attribute>
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the position of
+				the current item. Defaults to index.
+			</description>
+		</attribute>
+		<attribute>
+			<name>depth</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the depth of
+				the current item. Defaults to depth.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>parent</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.parent.ParentTag</tag-class>
+		<description>
+			Iterates a hierarchy of elements.
+		</description>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of elements to be interated over.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the current item.
+				Defaults to target.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>child</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.parent.ChildTag</tag-class>
+		<description>
+			Indicates where each element children must
+			be printed.
+		</description>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Lambda expression used to extract the children
+				of each element.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>values</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.ValuesTag</tag-class>
+		<description>
+			Iterates over the values of the specified
+			enum class name.
+		</description>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The class name of the enum to be iterated over.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the current item.
+				Defaults to target.
+			</description>
+		</attribute>
+		<attribute>
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the position of
+				the current item. Defaults to index.
+			</description>
+		</attribute>
+		<attribute>
+			<name>reverse</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Defines if the enum is to be iterated
+				in reverse order. Defaults fo false.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>with</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.WithTag</tag-class>
+		<dynamic-attributes>false</dynamic-attributes>
+		<description>
+			Stores information in request scope for use inside
+			the tag.
+		</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to store information.
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Information to save.
+			</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Class name of the object to be created and stored
+				if no value is provided.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>use</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.UseTag</tag-class>
+		<dynamic-attributes>false</dynamic-attributes>
+		<description>
+			Stores information in request scope for use inside
+			the page.
+		</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to store information.
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Information to save.
+			</description>
+		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Class name of the object to be created and stored
+				if no value is provided.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>print</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.PrintTag</tag-class>
+		<dynamic-attributes>false</dynamic-attributes>
+		<description>
+			Converts the provided value into a human readable
+			text and print it as HTML.
+		</description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be converted.
+			</description>
+		</attribute>
+		<attribute>
+			<name>format</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Type specific format string to be used when
+				making the conversion.
+			</description>
+		</attribute>
+		<attribute>
+			<name>empty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional text to be printed if value is null.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>print</name>
+		<function-class>gate.util.Toolkit</function-class>
+		<function-signature>
+			java.lang.String print(java.lang.Object)
+		</function-signature>
+		<description>
+			Converts the provided value into a human readable
+			text and print it as HTML.
+		</description>
+	</function>
+	<tag>
+		<name>write</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.WriteTag</tag-class>
+		<dynamic-attributes>false</dynamic-attributes>
+		<description>
+			Converts the provided value into string to be restored
+			later and prints it.
+		</description>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be converted.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>write</name>
+		<function-class>gate.util.Toolkit</function-class>
+		<function-signature>
+			java.lang.String write(java.lang.Object)
+		</function-signature>
+		<description>
+			Converts the provided value into string to be restored
+			later and prints it.
+		</description>
+	</function>
+	<tag>
+		<name>icons</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.IconsTag</tag-class>
+		<description>
+			Iterates over the icons
+			of the gate font icon set.
+		</description>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Name of the variable to expose the current icon.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>icon</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.IconTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the icon associated with the specified
+			name, code, object, class or class name.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The name, code, object, class or class name whose
+				icon is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>icon</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String icon(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the icon associated with the specified
+			name, code, object, class or class name.
+		</description>
+	</function>
+	<tag>
+		<name>name</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.NameTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the gate.annotation.Name value associated
+			with an element.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object, annotated or class name of the element
+				whose name is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>name</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String name(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the gate.annotation.Name value associated
+			with an element.
+		</description>
+	</function>
+	<tag>
+		<name>description</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.DescriptionTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the gate.annotation.Description value associated
+			with an element.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object, annotated or class name of the element
+				whose description is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>description</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String description(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the gate.annotation.Description value associated
+			with an element.
+		</description>
+	</function>
+	<tag>
+		<name>color</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.ColorTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the gate.annotation.Color value associated
+			with an element.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object, class or class name of the element
+				whose color is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>color</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String color(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the gate.annotation.Color value associated
+			with an element.
+		</description>
+	</function>
+	<tag>
+		<name>datalist</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.DatalistTag</tag-class>
+		<description>
+			Creates a html datalist with the specified options.
+		</description>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The options of the datalist to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option labels.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option values.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>label</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.LabelTag</tag-class>
+		<description>
+			Creates a HTML label with the provided property value
+			converted to human readable text if the specified condition
+			is true.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The property whose value is to be printed
+				on the label.
+			</description>
+		</attribute>
+		<attribute>
+			<name>format</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Type specific format string to be used when
+				making the conversion.
+			</description>
+		</attribute>
+		<attribute>
+			<name>empty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional text to be printed if the property
+				value is null.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>text</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.TextTag</tag-class>
+		<description>
+			Creates a html text input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated text input.
+			</description>
+		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The options of the text input to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option labels.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An optional lambda expression to be used to
+				extract option values.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>password</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.PasswordTag</tag-class>
+		<description>
+			Creates a html password input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated password input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>file</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.FileTag</tag-class>
+		<description>
+			Creates a html file input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated file input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>number</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.NumberTag</tag-class>
+		<description>
+			Creates a html number input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated number input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>range</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.RangeTag</tag-class>
+		<description>
+			Creates a html range input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated range input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>email</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.EMailTag</tag-class>
+		<description>
+			Creates a html email input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated email input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>url</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.URLTag</tag-class>
+		<description>
+			Creates a html url input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated url input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>textarea</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.TextAreaTag</tag-class>
+		<description>
+			Creates a html textarea bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated textarea.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>hidden</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.HiddenTag</tag-class>
+		<description>
+			Creates a html hidden input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated hidden input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>select</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.SelectTag</tag-class>
+		<description>
+			Creates a html select tag bound
+			to the current screen specified property
+			if the specified condition is true.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated select.
+			</description>
+		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of options to be displayed. Defaults
+				to enum elements and boolean values. Required
+				for non enum, non boolean properties.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				descendant list of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				value of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				label of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>groups</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to group
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>sortby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to sort
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>empty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional label to be displayed on the
+				empty option.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>select1</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.Select1Tag</tag-class>
+		<description>
+			Creates a group of radio buttons bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated radio buttons.
+			</description>
+		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of options to be displayed. Defaults
+				to enum elements and boolean values. Required
+				for non enum, non boolean properties.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				descendant list of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				value of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				label of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>groups</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to group
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>sortby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to sort
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The css style of the generated list
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>selectn</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.SelectNTag</tag-class>
+		<description>
+			Creates a group of checkboxes bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated checkboxes.
+			</description>
+		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of options to be displayed. Defaults
+				to enum elements and boolean values. Required
+				for non enum, non boolean properties.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				descendant list of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>values</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				value of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				label of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>groups</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to group
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>sortby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to sort
+				select options.
+			</description>
+		</attribute>
+
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The css style of the generated list
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>checkbox</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.CheckboxTag</tag-class>
+		<description>
+			Creates a checkbox bound to the current screen specified
+			property. The generated checkbox will be checked if it's
+			specified value corresponds it's property value.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated checkbox.
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be submited when the checkbox is on
+				checked state.
+			</description>
+		</attribute>
+		<attribute>
+			<name>checked</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Overrides the default checked state of the
+				generated checkbox.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>radio</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.RadioTag</tag-class>
+		<description>
+			Creates a radio button bound to the current screen specified
+			property. The generated radio button will be checked if it's
+			specified value corresponds it's property value.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated radio button
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be submited when the radio button is on
+				checked state.
+			</description>
+		</attribute>
+		<attribute>
+			<name>checked</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Overrides the default checked state of the
+				generated radio button
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>image</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.ImageTag</tag-class>
+		<description>
+			Creates an image button bound to the current screen specified
+			property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated image button
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be submited when the
+				image button is clicked.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>submit</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.SubmitTag</tag-class>
+		<description>
+			Creates a submit button bound to the current screen specified
+			property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated submit button
+			</description>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Value to be submited when the
+				image submit is clicked.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>stacktrace</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.StackTraceTag</tag-class>
+		<description>
+			Prints the stacktrace of the specified throwable
+			on a table.
+		</description>
+		<attribute>
+			<name>exception</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The throwable whose stacktrace is to be
+				printed.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>paginator</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.PaginatorTag</tag-class>
+		<description>
+			Creates a paginator for the specified
+			page.
+		</description>
+		<attribute>
+			<name>page</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The page to be paginated. Defaults
+				to the page property of the current
+				screen.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>login</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.LoginTag</tag-class>
+		<description>
+			Creates the gate login form.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the wellcome page.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the wellcome page.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the wellcome page.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ordenator</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.OrdenatorTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a link to toggle the sort criteria
+			of the current screen.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Property used as the sort criteria of
+				the dataset.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Request method to be used on the generated
+				link. Defaults to the current request method.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of optional arguments to be included
+				on the generated URL.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>properties</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.PropertiesTag</tag-class>
+		<description>
+			Generates a table with information about
+			the specified list of properties.
+		</description>
+		<attribute>
+			<name>source</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				List of properties whose information
+				are to be described.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>alert</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.AlertTag</tag-class>
+		<description>
+			Prints a list of messags as javascript alert boxes.
+		</description>
+		<attribute>
+			<name>messages</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				List of messages to be printed as javascript alert boxes.
+				Defaults to the current screen associated messages.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>form</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.FormTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Generate html form controls for the specified
+			gate.type.Form property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The gate.type.Form property whose controls
+				must be generated.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>list</name>
+		<body-content>scriptless</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.ListTag</tag-class>
+		<description>
+			Creates a list with the specified options.
+		</description>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The list of options to be displayed.
+			</description>
+		</attribute>
+		<attribute>
+			<name>children</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				descendant list of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>labels</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to extract the
+				label of each option.
+			</description>
+		</attribute>
+		<attribute>
+			<name>groups</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to group
+				select options.
+			</description>
+		</attribute>
+		<attribute>
+			<name>sortby</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Optional lambda expression used to sort
+				select options.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>number</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			long number(java.time.temporal.Temporal)
+		</function-signature>
+		<description>
+			Converts the provided temporal value into a number.
+		</description>
+	</function>
+
+	<function>
+		<name>secure</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			boolean secure(java.lang.String, java.lang.String, java.lang.String)
+		</function-signature>
+		<description>
+			Converts the provided temporal value into a number.
+		</description>
+	</function>
+
+	<tag>
+		<name>map</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.MapTag</tag-class>
+
+		<attribute>
+			<name>entries</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object to be displayed.
+			</description>
+		</attribute>
+
+		<description>
+			Display a map or java object as a HTML definition list
+		</description>
+	</tag>
+</taglib>

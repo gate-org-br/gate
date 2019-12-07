@@ -1,119 +1,111 @@
-/* global ENTER, HOME, END, DOWN, UP */
+/* global ENTER, HOME, END, DOWN, UP, Clipboard, ActionContextMenu */
 
-function ActionHandler(element)
+class ActionHandler
 {
-	element.setAttribute("tabindex", 1);
-	element.onmouseover = () => element.focus();
-
-	element.onkeydown = function (event)
+	static register(elements)
 	{
-		event = event ? event : window.event;
-		switch (event.keyCode)
+		Array.from(elements).forEach(element =>
 		{
-			case ENTER:
-				this.onclick(event);
-				return false;
+			element.setAttribute("tabindex", 1);
+			element.onmouseover = () => element.focus();
 
-			case HOME:
-				var siblings = Array.from(this.parentNode.childNodes)
-					.filter(node => node.tagName.toLowerCase() === "tr");
-				if (siblings.length !== 0
-					&& siblings[0].getAttribute("tabindex"))
-					siblings[0].focus();
-				return false;
-
-			case END:
-				var siblings = Array.from(this.parentNode.childNodes)
-					.filter(node => node.tagName.toLowerCase() === "tr");
-				if (siblings.length !== 0
-					&& siblings[siblings.length - 1].getAttribute("tabindex"))
-					siblings[siblings.length - 1].focus();
-				return false;
-
-			case UP:
-				if (this.previousElementSibling &&
-					this.previousElementSibling.getAttribute("tabindex"))
-					this.previousElementSibling.focus();
-				return false;
-
-			case DOWN:
-				if (this.nextElementSibling &&
-					this.nextElementSibling.getAttribute("tabindex"))
-					this.nextElementSibling.focus();
-				return false;
-
-			default:
-				return true;
-		}
-	};
-
-	if (!element.onclick)
-		element.onclick = function (event)
-		{
-			this.blur();
-			event = event || window.event;
-			for (var parent = event.target || event.srcElement;
-				parent !== this;
-				parent = parent.parentNode)
-				if (parent.onclick
-					|| parent.tagName.toLowerCase() === 'a'
-					|| parent.tagName.toLowerCase() === 'input'
-					|| parent.tagName.toLowerCase() === 'select'
-					|| parent.tagName.toLowerCase() === 'textarea'
-					|| parent.tagName.toLowerCase() === 'button')
-					return;
-			switch (this.getAttribute("data-method") ?
-				this.getAttribute("data-method")
-				.toLowerCase() : "get")
+			element.onkeydown = function (event)
 			{
-				case "get":
+				event = event ? event : window.event;
+				switch (event.keyCode)
+				{
+					case ENTER:
+						this.onclick(event);
+						return false;
 
-					if (!event.ctrlKey && this.getAttribute("data-target"))
-						var navigator = Array.from(this.parentNode.children)
-							.map(e => e.getAttribute("data-action"))
-							.filter(e => e);
+					case HOME:
+						var siblings = Array.from(this.parentNode.childNodes)
+							.filter(node => node.tagName.toLowerCase() === "tr");
+						if (siblings.length !== 0
+							&& siblings[0].getAttribute("tabindex"))
+							siblings[0].focus();
+						return false;
 
-					var link = new Link(document.createElement("a"), element)
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(navigator)
-						.get();
-					document.body.appendChild(link);
+					case END:
+						var siblings = Array.from(this.parentNode.childNodes)
+							.filter(node => node.tagName.toLowerCase() === "tr");
+						if (siblings.length !== 0
+							&& siblings[siblings.length - 1].getAttribute("tabindex"))
+							siblings[siblings.length - 1].focus();
+						return false;
 
-					link.click();
-					document.body.removeChild(link);
-					break;
-				case "post":
-					var form = this.parentNode;
-					while (form
-						&& form.tagName.toLowerCase()
-						!== 'form')
-						form = form.parentNode;
+					case UP:
+						if (this.previousElementSibling &&
+							this.previousElementSibling.getAttribute("tabindex"))
+							this.previousElementSibling.focus();
+						return false;
 
-					var button = new Button(document.createElement("button"), element)
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.get();
+					case DOWN:
+						if (this.nextElementSibling &&
+							this.nextElementSibling.getAttribute("tabindex"))
+							this.nextElementSibling.focus();
+						return false;
 
-					form.appendChild(button);
-					button.click();
-					form.removeChild(button);
-					break;
-			}
+					default:
+						return true;
+				}
+			};
 
-			return false;
-		};
+			if (!element.onclick)
+				element.onclick = function (event)
+				{
+					this.blur();
+					event = event || window.event;
+					for (var parent = event.target || event.srcElement;
+						parent !== this;
+						parent = parent.parentNode)
+						if (parent.onclick
+							|| parent.tagName.toLowerCase() === 'a'
+							|| parent.tagName.toLowerCase() === 'input'
+							|| parent.tagName.toLowerCase() === 'select'
+							|| parent.tagName.toLowerCase() === 'textarea'
+							|| parent.tagName.toLowerCase() === 'button')
+							return;
+					switch (this.getAttribute("data-method") ?
+						this.getAttribute("data-method")
+						.toLowerCase() : "get")
+					{
+						case "get":
+							new Link(document.createElement("a"), element)
+								.setAction(this.getAttribute("data-action"))
+								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+								.setTitle(this.getAttribute("title"))
+								.setBlock(this.getAttribute("data-block"))
+								.setAlert(this.getAttribute("data-alert"))
+								.setConfirm(this.getAttribute("data-confirm"))
+								.setNavigator(!event.ctrlKey && this.getAttribute("data-target")
+									? Array.from(this.parentNode.children)
+									.map(e => e.getAttribute("data-action"))
+									.filter(e => e) : null)
+								.execute();
+							break;
+						case "post":
+							new Button(document.createElement("button"), element)
+								.setAction(this.getAttribute("data-action"))
+								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+								.setTitle(this.getAttribute("title"))
+								.setBlock(this.getAttribute("data-block"))
+								.setAlert(this.getAttribute("data-alert"))
+								.setConfirm(this.getAttribute("data-confirm"))
+								.execute();
+							break;
+					}
+
+					return false;
+				};
+
+			ActionContextMenu.instance.register(element);
+		});
+	}
 }
+
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]')).forEach(element => new ActionHandler(element));
+	ActionHandler.register(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]'));
 });

@@ -1,0 +1,7 @@
+	public User select(ID id) throws NotFoundException
+	{
+		try (UserDao dao = new UserDao())
+		{
+			return dao.select(id);
+		}
+	}

@@ -1,0 +1,9 @@
+	public User select(ID id) throws NotFoundException
+	{
+		return Select.of(getClass().getResource("UserDao/select(ID).sql"))
+			.where(Condition.of("Uzer.id").eq(id))
+			.build()
+			.connect(getLink())
+			.fetchEntity(User.class)
+			.orElseThrow(NotFoundException::new);
+	}

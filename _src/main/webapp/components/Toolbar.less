@@ -1,0 +1,22 @@
+div.Toolbar, div.TOOLBAR
+{
+	.margin();
+	height: 48px;
+	display: flex;
+	border-radius: 5px;
+	align-items: stretch;
+	justify-content: center;
+	align-content: stretch;
+	background-image: linear-gradient(to bottom, #F2EFDF 0%, #ABA89D 100%);
+
+	> a { width: 48px;
+	      display: flex;
+	      align-items: center;
+	      justify-content: center;
+	      border: 1px solid transparent;  }
+
+	> a > i { font-size: 16px }
+	> a:hover > i { font-size: 24px }
+	> a:first-child { border-radius: 5px 0 0 5px }
+	> a:last-child { border-radius: 0 5px 5px 0 }
+}

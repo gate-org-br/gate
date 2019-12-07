@@ -1,0 +1,14 @@
+	@Icon("delete")
+	@Name("Remover")
+	public String callDelete()
+	{
+		try
+		{
+			control.delete(getForm());
+			getMessages().add("O registro foi removido com sucesso.");
+		} catch (AppException ex)
+		{
+			setMessages(ex.getMessages());
+		}
+		return "/WEB-INF/views/${@screen.getPackageName().getFolderName()}/${className.getName()}/ViewResult.jsp";
+	}

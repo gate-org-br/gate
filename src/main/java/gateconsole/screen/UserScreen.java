@@ -24,8 +24,6 @@ import gate.util.Page;
 import gateconsole.contol.FuncControl;
 import gateconsole.contol.UserControl;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 
 @Name("Usuários")
@@ -74,13 +72,6 @@ public class UserScreen extends Screen
 	@Name("Detalhes")
 	public String callSelect()
 	{
-		try
-		{
-			Thread.sleep(6000);
-		} catch (InterruptedException ex)
-		{
-			Logger.getLogger(AuthScreen.class.getName()).log(Level.SEVERE, null, ex);
-		}
 		try
 		{
 			form = control.select(getForm().getId());

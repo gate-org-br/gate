@@ -1,0 +1,11 @@
+	public void insert(${className.getName()} value) throws ConstraintViolationException
+	{
+		Insert.into("${tableName}")
+			<g:iterator source="${properties}" target="property">
+			.set("${@property.getColumnName()}", value.${@property.getGetter()})
+			</g:iterator>
+			.build()
+			.connect(getLink())
+			.fetchGeneratedKey(${id.getClassName().getName()}.class)
+			.ifPresent(value::${id.getSetter()});
+	}

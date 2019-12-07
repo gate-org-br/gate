@@ -1,0 +1,22 @@
+<html>
+	<body>
+		<g:if condition='${not empty roles}'>
+			<ul>
+				<g:iterator source='${roles}' target='role'>
+					<li>
+						${@role.name}
+						<g:if condition='${not empty @role.users}'>
+							<ul>
+								<g:iterator source='${@role.users}' target='user'>
+									<li>
+										${@user.name} (${@role.name})
+									</li>	
+								</g:iterator>
+							</ul>
+						</g:if>
+					</li>	
+				</g:iterator>
+			</ul>
+		</g:if>
+	</body>
+</html>
