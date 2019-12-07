@@ -1959,6 +1959,12 @@ class Modal
 		var creator = options ? options.creator : null;
 		this.creator = () => creator ? creator : element;
 
+		this.element().addEventListener("contextmenu", event =>
+		{
+			event.preventDefault();
+			this.hide();
+		});
+
 		if (!blocked)
 			element.addEventListener("click", event =>
 				(event.target === element || event.srcElement === element) && this.hide());
@@ -2473,314 +2479,297 @@ class URL
 }
 /* global Message, Block, ENTER, ESC */
 
-function Link(link, creator)
+class Link
 {
-	var navigator;
-
-	link.addEventListener("click", function (event)
+	constructor(link, creator)
 	{
-		if (this.hasAttribute("data-cancel"))
+		this.link = link;
+		this.creator = creator;
+
+
+		this.link.addEventListener("click", function (event)
 		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-
-			Message.error(this.getAttribute("data-cancel"), 2000);
-		}
-	});
-
-	link.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	link.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-confirm")
-			&& !confirm(this.getAttribute("data-confirm")))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	link.addEventListener("click", function ()
-	{
-		if (this.hasAttribute("data-alert"))
-			alert(this.getAttribute("data-alert"));
-	});
-
-	link.addEventListener("click", function (event)
-	{
-		if (this.href.match(/([@][{][^}]*[}])/g)
-			|| this.href.match(/([!][{][^}]*[}])/g)
-			|| this.href.match(/([?][{][^}]*[}])/g))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-
-			var resolved = resolve(this.href);
-			if (resolved !== null)
+			if (this.hasAttribute("data-cancel"))
 			{
-				var href = this.href;
-				this.href = resolved;
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				Message.error(this.getAttribute("data-cancel"), 2000);
+			}
+		});
+		this.link.addEventListener("click", function (event)
+		{
+			if (this.hasAttribute("data-disabled"))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+		});
+		this.link.addEventListener("click", function (event)
+		{
+			if (this.hasAttribute("data-confirm")
+				&& !confirm(this.getAttribute("data-confirm")))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+		});
+		this.link.addEventListener("click", function ()
+		{
+			if (this.hasAttribute("data-alert"))
+				alert(this.getAttribute("data-alert"));
+		});
+		this.link.addEventListener("click", function (event)
+		{
+			if (this.href.match(/([@][{][^}]*[}])/g)
+				|| this.href.match(/([!][{][^}]*[}])/g)
+				|| this.href.match(/([?][{][^}]*[}])/g))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				var resolved = resolve(this.href);
+				if (resolved !== null)
+				{
+					var href = this.href;
+					this.href = resolved;
+					this.click();
+					this.href = href;
+				}
+			}
+		});
+		this.link.addEventListener("click", function (event)
+		{
+			if (this.getAttribute("target"))
+			{
+				switch (this.getAttribute("target").toLowerCase())
+				{
+					case "_dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						if (event.ctrlKey)
+						{
+							this.setAttribute("target", "_blank");
+							this.click();
+							this.setAttribute("target", "_dialog");
+						} else
+						{
+							new Dialog({creator: this.creator || this,
+								title: this.getAttribute("title"),
+								target: this.getAttribute("href"),
+								blocked: Boolean(this.getAttribute("data-blocked")),
+								navigator: this.navigator})
+								.show();
+						}
+						break;
+					case "_message":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						link.setAttribute("data-cancel", "Processando");
+						new URL(this.href).get(function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								Message.show(status, 2000);
+							} finally
+							{
+								link.removeAttribute("data-cancel");
+							}
+						});
+						break;
+					case "_none":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						link.setAttribute("data-cancel", "Processando");
+						new URL(this.href).get(function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								if (status.type !== "SUCCESS")
+									Message.show(status, 2000);
+							} finally
+							{
+								link.removeAttribute("data-cancel");
+							}
+						});
+						break;
+					case "_this":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						link.setAttribute("data-cancel", "Processando");
+						new URL(this.href).get(function (status)
+						{
+							try
+							{
+								status = JSON.parse(status);
+								if (status.type === "SUCCESS")
+									this.innerHTML = status.value;
+								else
+									Message.show(status, 2000);
+							} finally
+							{
+								link.removeAttribute("data-cancel");
+							}
+						});
+						break;
+					case "_alert":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						link.setAttribute("data-cancel", "Processando");
+						new URL(this.href).get(function (status)
+						{
+							alert(status);
+							link.removeAttribute("data-cancel");
+						});
+						break;
+					case "_hide":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						if (window.frameElement
+							&& window.frameElement.dialog
+							&& window.frameElement.dialog.hide)
+							window.frameElement.dialog.hide();
+						else
+							window.close();
+						break;
+					case "_popup":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						Array.from(this.children)
+							.filter(e => e.tagName.toLowerCase() === "div")
+							.forEach(e => new Popup(e));
+						break;
+					case "_progress-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						new URL(this.href).get(function (process)
+						{
+							process = JSON.parse(process);
+							new ProgressDialog(process,
+								{title: this.link.getAttribute("title")}).show();
+						});
+						break;
+					case "_progress-window":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						new URL(this.href).get(function (process)
+						{
+							process = JSON.parse(process);
+							document.body.appendChild(new ProgressWindow(process));
+						});
+						break;
+					case "_report":
+					case "_report-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						new ReportDialog({method: "GET",
+							blocked: true,
+							url: this.link.href,
+							title: this.link.getAttribute("title")}).show();
+						break;
+				}
+			}
+		});
+		this.link.addEventListener("keydown", function (event)
+		{
+			if (event.keyCode === 32)
+			{
 				this.click();
-				this.href = href;
+				event.preventDefault();
+				event.stopImmediatePropagation();
 			}
-		}
-	});
+		});
+	}
 
-	link.addEventListener("click", function (event)
-	{
-		if (this.getAttribute("target"))
-		{
-			switch (this.getAttribute("target").toLowerCase())
-			{
-				case "_dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (event.ctrlKey)
-					{
-						this.setAttribute("target", "_blank");
-						this.click();
-						this.setAttribute("target", "_dialog");
-					} else
-					{
-						new Dialog({creator: creator || this,
-							title: this.getAttribute("title"),
-							target: this.getAttribute("href"),
-							blocked: Boolean(this.getAttribute("data-blocked")),
-							navigator: navigator})
-							.show();
-					}
-					break;
-				case "_message":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					link.setAttribute("data-cancel", "Processando");
-					new URL(this.href).get(function (status)
-					{
-						try
-						{
-							status = JSON.parse(status);
-							Message.show(status, 2000);
-						} finally
-						{
-							link.removeAttribute("data-cancel");
-						}
-					});
-
-					break;
-				case "_none":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					link.setAttribute("data-cancel", "Processando");
-					new URL(this.href).get(function (status)
-					{
-						try
-						{
-							status = JSON.parse(status);
-							if (status.type !== "SUCCESS")
-								Message.show(status, 2000);
-						} finally
-						{
-							link.removeAttribute("data-cancel");
-						}
-					});
-
-					break;
-				case "_this":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					link.setAttribute("data-cancel", "Processando");
-					new URL(this.href).get(function (status)
-					{
-						try
-						{
-							status = JSON.parse(status);
-							if (status.type === "SUCCESS")
-								this.innerHTML = status.value;
-							else
-								Message.show(status, 2000);
-						} finally
-						{
-							link.removeAttribute("data-cancel");
-						}
-					});
-					break;
-				case "_alert":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					link.setAttribute("data-cancel", "Processando");
-					new URL(this.href).get(function (status)
-					{
-						alert(status);
-						link.removeAttribute("data-cancel");
-					});
-
-					break;
-				case "_hide":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-					if (window.frameElement
-						&& window.frameElement.dialog
-						&& window.frameElement.dialog.hide)
-						window.frameElement.dialog.hide();
-					else
-						window.close();
-					break;
-
-				case "_popup":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-					Array.from(this.children)
-						.filter(e => e.tagName.toLowerCase() === "div")
-						.forEach(e => new Popup(e));
-					break;
-
-				case "_progress-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					new URL(this.href).get(function (process)
-					{
-						process = JSON.parse(process);
-						new ProgressDialog(process,
-							{title: link.getAttribute("title")}).show();
-					});
-
-					break;
-
-				case "_progress-window":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					new URL(this.href).get(function (process)
-					{
-						process = JSON.parse(process);
-						document.body.appendChild(new ProgressWindow(process));
-					});
-
-					break;
-
-				case "_report":
-				case "_report-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					new ReportDialog({method: "GET",
-						blocked: true,
-						url: link.href,
-						title: link.getAttribute("title")}).show();
-
-					break;
-			}
-		}
-	});
-
-	link.addEventListener("keydown", function (event)
-	{
-		if (event.keyCode === 32)
-		{
-			this.click();
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	this.setAlert = function (value)
+	setAlert(value)
 	{
 		if (value)
-			link.setAttribute("data-alert", value);
-		else if (link.getAttribute("data-alert"))
-			link.removeAttribute("data-alert");
+			this.link.setAttribute("data-alert", value);
+		else if (this.link.getAttribute("data-alert"))
+			this.link.removeAttribute("data-alert");
 		return this;
-	};
+	}
 
-	this.setConfirm = function (value)
+	setConfirm(value)
 	{
 		if (value)
-			link.setAttribute("data-confirm", value);
-		else if (link.getAttribute("data-confirm"))
-			link.removeAttribute("data-confirm");
+			this.link.setAttribute("data-confirm", value);
+		else if (this.link.getAttribute("data-confirm"))
+			this.link.removeAttribute("data-confirm");
 		return this;
-	};
+	}
 
-	this.setBlock = function (value)
+	setBlock(value)
 	{
 		if (value)
-			link.setAttribute("data-block", value);
-		else if (link.getAttribute("data-block"))
-			link.removeAttribute("data-block");
+			this.link.setAttribute("data-block", value);
+		else if (this.link.getAttribute("data-block"))
+			this.link.removeAttribute("data-block");
 		return this;
-	};
+	}
 
-	this.setAction = function (value)
+	setAction(value)
 	{
 		if (value)
-			link.setAttribute("href", value);
-		else if (link.getAttribute("href"))
-			link.removeAttribute("href");
+			this.link.setAttribute("href", value);
+		else if (this.link.getAttribute("href"))
+			this.link.removeAttribute("href");
 		return this;
-	};
-
-	this.setTarget = function (value)
+	}
+	setTarget(value)
 	{
 		if (value)
-			link.setAttribute("target", value);
-		else if (link.getAttribute("target"))
-			link.removeAttribute("target");
+			this.link.setAttribute("target", value);
+		else if (this.link.getAttribute("target"))
+			this.link.removeAttribute("target");
 		return this;
-	};
+	}
 
-	this.setTitle = function (value)
+	setTitle(value)
 	{
 		if (value)
-			link.setAttribute("title", value);
-		else if (link.getAttribute("title"))
-			link.removeAttribute("title");
+			this.link.setAttribute("title", value);
+		else if (this.link.getAttribute("title"))
+			this.link.removeAttribute("title");
 		return this;
-	};
+	}
 
-	this.setNavigator = function (value)
+	setNavigator(value)
 	{
-		navigator = value;
+		this.link.navigator = value;
 		return this;
-	};
+	}
 
-	this.get = function ()
+	get()
 	{
-		return link;
-	};
+		return this.link;
+	}
+
+	execute()
+	{
+		document.body.appendChild(this.link);
+		this.link.click();
+		document.body.removeChild(this.link);
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("a"))
-		.forEach(a => new Link(a));
-
+	Array.from(document.querySelectorAll("a")).forEach(a => new Link(a));
 	document.documentElement.addEventListener("keydown", function (event)
 	{
 		switch (event.keyCode)
@@ -2791,311 +2780,326 @@ window.addEventListener("load", function ()
 			case ESC:
 				Array.from(document.querySelectorAll("a.Cancel")).forEach(e => e.click());
 				break;
-
 		}
 	});
 });
 
 /* global Message, Block, ENTER, ESC */
 
-function Button(button, creator)
+class Button
 {
-	button.addEventListener("click", function (event)
+	constructor(button, creator)
 	{
-		if (this.hasAttribute("data-cancel"))
+		this.button = button;
+		this.creator = creator;
+
+		this.button.addEventListener("click", function (event)
 		{
-			Message.error(this.getAttribute("data-cancel"), 2000);
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-confirm")
-			&& !confirm(this.getAttribute("data-confirm")))
-		{
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function ()
-	{
-		if (this.hasAttribute("data-alert"))
-			alert(this.getAttribute("data-alert"));
-	});
-
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.getAttribute("formaction") &&
-			(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
-		{
-			var resolved = resolve(this.getAttribute("formaction"));
-
-			if (resolved !== null)
+			if (this.hasAttribute("data-cancel"))
 			{
-				var formaction = this.getAttribute("formaction");
-				this.setAttribute("formaction", resolved);
-				this.click();
-				this.setAttribute("formaction", formaction);
+				Message.error(this.getAttribute("data-cancel"), 2000);
+				event.preventDefault();
+				event.stopImmediatePropagation();
 			}
+		});
 
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.getAttribute("formtarget"))
+		this.button.addEventListener("click", function (event)
 		{
-			switch (this.getAttribute("formtarget").toLowerCase())
+			if (this.hasAttribute("data-disabled"))
 			{
-				case "_dialog":
-					if (this.form.checkValidity())
-					{
-						if (event.ctrlKey)
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.hasAttribute("data-confirm")
+				&& !confirm(this.getAttribute("data-confirm")))
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function ()
+		{
+			if (this.hasAttribute("data-alert"))
+				alert(this.getAttribute("data-alert"));
+		});
+
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.getAttribute("formaction") &&
+				(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+					|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+					|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
+			{
+				var resolved = resolve(this.getAttribute("formaction"));
+
+				if (resolved !== null)
+				{
+					var formaction = this.getAttribute("formaction");
+					this.setAttribute("formaction", resolved);
+					this.click();
+					this.setAttribute("formaction", formaction);
+				}
+
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.getAttribute("formtarget"))
+			{
+				switch (this.getAttribute("formtarget").toLowerCase())
+				{
+					case "_dialog":
+						if (this.form.checkValidity())
 						{
-							event.preventDefault();
-							event.stopPropagation();
-							event.stopImmediatePropagation();
-							this.setAttribute("formtarget", "_blank");
-							this.click();
-							this.setAttribute("formtarget", "_dialog");
-						} else if (this.form.getAttribute("target") !== "_dialog")
-						{
-							new Dialog({creator: creator || this,
-								title: this.getAttribute("title"),
-								blocked: Boolean(this.getAttribute("data-blocked"))})
-								.show();
+							if (event.ctrlKey)
+							{
+								event.preventDefault();
+								event.stopPropagation();
+								event.stopImmediatePropagation();
+								this.setAttribute("formtarget", "_blank");
+								this.click();
+								this.setAttribute("formtarget", "_dialog");
+							} else if (this.form.getAttribute("target") !== "_dialog")
+							{
+								new Dialog({creator: creator || this,
+									title: this.getAttribute("title"),
+									blocked: Boolean(this.getAttribute("data-blocked"))})
+									.show();
+							}
 						}
-					}
-					break;
-				case "_message":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
+						break;
+					case "_message":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_none":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type !== "SUCCESS")
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_this":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type === "SUCCESS")
-									button.innerHTML = status.value;
-								else
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_alert":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
 							.post(new FormData(this.form), function (status)
 							{
-								alert(status);
-								button.disabled = false;
+								try
+								{
+									status = JSON.parse(status);
+									Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
-					break;
-				case "_hide":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-					if (window.frameElement
-						&& window.frameElement.dialog
-						&& window.frameElement.dialog.hide)
-						window.frameElement.dialog.hide();
-					else
-						window.close();
-					break;
+						break;
+					case "_none":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-				case "_progress-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (process)
+							.post(new FormData(this.form), function (status)
 							{
-								process = JSON.parse(process);
-								new ProgressDialog(process,
-									{title: button.getAttribute("title")}).show();
-								button.disabled = false;
+								try
+								{
+									status = JSON.parse(status);
+									if (status.type !== "SUCCESS")
+										Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
+						break;
+					case "_this":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					break;
-
-				case "_progress-window":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
+						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (process)
+							.post(new FormData(this.form), function (status)
 							{
-								process = JSON.parse(process);
-								document.body.appendChild(new ProgressWindow(process));
+								try
+								{
+									status = JSON.parse(status);
+									if (status.type === "SUCCESS")
+										button.innerHTML = status.value;
+									else
+										Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
+						break;
+					case "_alert":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					break;
+						if (this.form.reportValidity())
+						{
+							this.disabled = true;
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (status)
+								{
+									alert(status);
+									button.disabled = false;
+								});
+						}
+						break;
+					case "_hide":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						if (window.frameElement
+							&& window.frameElement.dialog
+							&& window.frameElement.dialog.hide)
+							window.frameElement.dialog.hide();
+						else
+							window.close();
+						break;
 
-				case "_report":
-				case "_report-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
+					case "_progress-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					if (this.form.reportValidity())
-					{
-						new ReportDialog({method: "POST",
-							blocked: true,
-							url: button.getAttribute("formaction") || button.form.action,
-							title: button.getAttribute("title"),
-							data: new FormData(button.form)}).show();
-						button.disabled = false;
-					}
+						if (this.form.reportValidity())
+						{
+							this.disabled = true;
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (process)
+								{
+									process = JSON.parse(process);
+									new ProgressDialog(process,
+										{title: this.button.getAttribute("title")}).show();
+									button.disabled = false;
+								});
+						}
 
-					break;
+						break;
+
+					case "_progress-window":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+
+						if (this.form.reportValidity())
+						{
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (process)
+								{
+									process = JSON.parse(process);
+									document.body.appendChild(new ProgressWindow(process));
+								});
+						}
+
+						break;
+
+					case "_report":
+					case "_report-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+
+						if (this.form.reportValidity())
+						{
+							new ReportDialog({method: "POST",
+								blocked: true,
+								url: this.button.getAttribute("formaction") || this.button.form.action,
+								title: this.button.getAttribute("title"),
+								data: new FormData(this.button.form)}).show();
+							this.button.disabled = false;
+						}
+
+						break;
+				}
 			}
-		}
-	});
+		});
+	}
 
-	this.setAlert = function (value)
+	setAlert(value)
 	{
 		if (value)
-			button.setAttribute("data-alert", value);
-		else if (button.getAttribute("data-alert"))
-			button.removeAttribute("data-alert");
+			this.button.setAttribute("data-alert", value);
+		else if (this.button.getAttribute("data-alert"))
+			this.button.removeAttribute("data-alert");
 		return this;
-	};
+	}
 
-	this.setConfirm = function (value)
+	setConfirm(value)
 	{
 		if (value)
-			button.setAttribute("data-confirm", value);
-		else if (button.getAttribute("data-confirm"))
-			button.removeAttribute("data-confirm");
+			this.button.setAttribute("data-confirm", value);
+		else if (this.button.getAttribute("data-confirm"))
+			this.button.removeAttribute("data-confirm");
 		return this;
-	};
+	}
 
-	this.setBlock = function (value)
+	setBlock(value)
 	{
 		if (value)
-			button.setAttribute("data-block", value);
-		else if (button.getAttribute("data-block"))
-			button.removeAttribute("data-block");
+			this.button.setAttribute("data-block", value);
+		else if (this.button.getAttribute("data-block"))
+			this.button.removeAttribute("data-block");
 		return this;
-	};
+	}
 
-	this.setAction = function (value)
+	setAction(value)
 	{
 		if (value)
-			button.setAttribute("formaction", value);
-		else if (button.getAttribute("formaction"))
-			button.removeAttribute("formaction");
+			this.button.setAttribute("formaction", value);
+		else if (this.button.getAttribute("formaction"))
+			this.button.removeAttribute("formaction");
 		return this;
-	};
+	}
 
-	this.setTarget = function (value)
+	setTarget(value)
 	{
 		if (value)
-			button.setAttribute("formtarget", value);
-		else if (button.getAttribute("formtarget"))
-			button.removeAttribute("formtarget");
+			this.button.setAttribute("formtarget", value);
+		else if (this.button.getAttribute("formtarget"))
+			this.button.removeAttribute("formtarget");
 		return this;
-	};
+	}
 
-	this.setTitle = function (value)
+	setTitle(value)
 	{
 		if (value)
-			button.setAttribute("title", value);
-		else if (button.getAttribute("title"))
-			button.removeAttribute("title");
+			this.button.setAttribute("title", value);
+		else if (this.button.getAttribute("title"))
+			this.button.removeAttribute("title");
 		return this;
-	};
+	}
 
-	this.get = function ()
+	get()
 	{
-		return button;
-	};
+		return this.button;
+	}
+
+	execute()
+	{
+		var form = this.button.parentNode;
+		while (form && form.tagName.toLowerCase() !== 'form')
+			form = form.parentNode;
+
+		form.appendChild(this.button);
+		this.button.click();
+		form.removeChild(this.button);
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("button"))
-		.forEach(button => new Button(button));
+	Array.from(document.querySelectorAll("button")).forEach(button => new Button(button));
 
 	document.documentElement.addEventListener("keydown", function (event)
 	{
@@ -3112,124 +3116,326 @@ window.addEventListener("load", function ()
 	});
 });
 
-/* global ENTER, HOME, END, DOWN, UP */
+/* global Message */
 
-function ActionHandler(element)
+class Clipboard
 {
-	element.setAttribute("tabindex", 1);
-	element.onmouseover = () => element.focus();
-
-	element.onkeydown = function (event)
+	static copy(data, silent = false)
 	{
-		event = event ? event : window.event;
-		switch (event.keyCode)
-		{
-			case ENTER:
-				this.onclick(event);
-				return false;
-
-			case HOME:
-				var siblings = Array.from(this.parentNode.childNodes)
-					.filter(node => node.tagName.toLowerCase() === "tr");
-				if (siblings.length !== 0
-					&& siblings[0].getAttribute("tabindex"))
-					siblings[0].focus();
-				return false;
-
-			case END:
-				var siblings = Array.from(this.parentNode.childNodes)
-					.filter(node => node.tagName.toLowerCase() === "tr");
-				if (siblings.length !== 0
-					&& siblings[siblings.length - 1].getAttribute("tabindex"))
-					siblings[siblings.length - 1].focus();
-				return false;
-
-			case UP:
-				if (this.previousElementSibling &&
-					this.previousElementSibling.getAttribute("tabindex"))
-					this.previousElementSibling.focus();
-				return false;
-
-			case DOWN:
-				if (this.nextElementSibling &&
-					this.nextElementSibling.getAttribute("tabindex"))
-					this.nextElementSibling.focus();
-				return false;
-
-			default:
-				return true;
-		}
-	};
-
-	if (!element.onclick)
-		element.onclick = function (event)
-		{
-			this.blur();
-			event = event || window.event;
-			for (var parent = event.target || event.srcElement;
-				parent !== this;
-				parent = parent.parentNode)
-				if (parent.onclick
-					|| parent.tagName.toLowerCase() === 'a'
-					|| parent.tagName.toLowerCase() === 'input'
-					|| parent.tagName.toLowerCase() === 'select'
-					|| parent.tagName.toLowerCase() === 'textarea'
-					|| parent.tagName.toLowerCase() === 'button')
-					return;
-			switch (this.getAttribute("data-method") ?
-				this.getAttribute("data-method")
-				.toLowerCase() : "get")
-			{
-				case "get":
-
-					if (!event.ctrlKey && this.getAttribute("data-target"))
-						var navigator = Array.from(this.parentNode.children)
-							.map(e => e.getAttribute("data-action"))
-							.filter(e => e);
-
-					var link = new Link(document.createElement("a"), element)
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.setNavigator(navigator)
-						.get();
-					document.body.appendChild(link);
-
-					link.click();
-					document.body.removeChild(link);
-					break;
-				case "post":
-					var form = this.parentNode;
-					while (form
-						&& form.tagName.toLowerCase()
-						!== 'form')
-						form = form.parentNode;
-
-					var button = new Button(document.createElement("button"), element)
-						.setAction(this.getAttribute("data-action"))
-						.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-						.setTitle(this.getAttribute("title"))
-						.setBlock(this.getAttribute("data-block"))
-						.setAlert(this.getAttribute("data-alert"))
-						.setConfirm(this.getAttribute("data-confirm"))
-						.get();
-
-					form.appendChild(button);
-					button.click();
-					form.removeChild(button);
-					break;
-			}
-
-			return false;
-		};
+		const textarea = document.createElement('textarea');
+		textarea.value = data;
+		textarea.removeAttribute('readonly');
+		textarea.style.position = 'absolute';
+		textarea.style.left = '-9999px';
+		document.body.appendChild(textarea);
+		textarea.select();
+		document.execCommand('copy');
+		document.body.removeChild(textarea);
+		if (!silent)
+			Message.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]')).forEach(element => new ActionHandler(element));
+	Array.from(document.querySelectorAll("[data-copy-onclick]")).forEach(function (element)
+	{
+		element.addEventListener("click", () => Clipboard.copy(element.getAttribute("data-copy-onclick")));
+	});
+}
+);
+/* global NodeList, Clipboard, customElements */
+
+class ContextMenu extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.modal = new Modal();
+		this.items = Array.from(arguments);
+		this.modal.element().appendChild(this);
+	}
+
+	connectedCallback()
+	{
+		this.items.forEach(item => this.appendChild(item));
+	}
+
+	show(context, element, x, y)
+	{
+		this.context = context;
+		this.element = element;
+		this.style.top = y + "px";
+		this.style.left = x + "px";
+		this.modal.show();
+	}
+
+	hide()
+	{
+		this.modal.hide();
+	}
+
+	register(elements)
+	{
+		if (Array.isArray(elements))
+			elements.forEach(element => this.register(element));
+		else if (elements instanceof NodeList)
+			Array.from(elements).forEach(element => this.register(element));
+		else if (elements.addEventListener)
+			elements.addEventListener("contextmenu", event =>
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.show(elements, event.target, event.clientX, event.clientY);
+			});
+	}
+}
+
+customElements.define('g-context-menu', ContextMenu);
+/* global NodeList, Clipboard, customElements */
+
+class ContextMenuItem extends HTMLElement
+{
+	constructor(icon, name, action)
+	{
+		super();
+
+		this.setAttribute("icon", icon);
+		this.setAttribute("name", name);
+
+		switch (typeof action)
+		{
+			case 'function':
+				this.action = action;
+				break;
+			case 'string':
+				this.setAttribute("action", action);
+				break;
+			default:
+				throw "Ïnvalid menu item action";
+		}
+
+		this.addEventListener("click", () =>
+		{
+			switch (typeof this.action)
+			{
+				case 'function':
+					this.action({context: this.parentNode.context,
+						element: this.parentNode.element});
+					break;
+				case 'string':
+					window.dispatchEvent(new CustomEvent(this.action,
+						{detail: {context: this.parentNode.context,
+								element: this.parentNode.element}}));
+					break;
+				default:
+					throw "Ïnvalid menu item action";
+			}
+			this.parentNode.hide();
+		});
+	}
+
+	static get observedAttributes()
+	{
+		return ['icon', 'name', 'action'];
+	}
+
+	attributeChangedCallback(name)
+	{
+		switch (name)
+		{
+			case 'icon':
+				this.icon = this.getAttribute("icon");
+				break;
+			case 'name':
+				this.name = this.getAttribute("name");
+				break;
+			case 'action':
+				this.action = this.getAttribute("action");
+				break;
+		}
+	}
+}
+
+
+
+
+customElements.define('g-context-menu-item', ContextMenuItem);
+/* global CopyTextMenuItem, CopyLinkMenuItem, OpenLinkMenuItem, Clipboard */
+
+class ActionContextMenu
+{
+	static get instance()
+	{
+		if (!ActionContextMenu._instance)
+			ActionContextMenu._instance
+				= new ContextMenu(ActionContextMenu.CopyTextAction,
+					ActionContextMenu.CopyLinkAction,
+					ActionContextMenu.OpenLinkAction);
+		return ActionContextMenu._instance;
+	}
+
+	static get CopyLinkAction()
+	{
+		if (!ActionContextMenu._CopyLinkAction)
+			ActionContextMenu._CopyLinkAction = new ContextMenuItem("\u2159", "Copiar endereço",
+				e => Clipboard.copy(e.context.getAttribute("data-action"), true));
+		return ActionContextMenu._CopyLinkAction;
+	}
+
+	static get CopyTextAction()
+	{
+		if (!ActionContextMenu._CopyTextAction)
+			ActionContextMenu._CopyTextAction = new ContextMenuItem("\u2256", "Copiar texto",
+				e => Clipboard.copy(e.element.innerText, true));
+		return ActionContextMenu._CopyTextAction;
+	}
+
+	static get OpenLinkAction()
+	{
+		if (!ActionContextMenu._OpenLinkAction)
+			ActionContextMenu._OpenLinkAction = new ContextMenuItem("\u2217", "Abrir em nova aba",
+				e => {
+					switch (e.context.getAttribute("data-method")
+						? e.context.getAttribute("data-method").toLowerCase() : "get")
+					{
+						case "get":
+							new Link(document.createElement("a"), e.context)
+								.setTarget("_blank")
+								.setAction(e.context.getAttribute("data-action"))
+								.setTitle(e.context.getAttribute("title"))
+								.setBlock(e.context.getAttribute("data-block"))
+								.setAlert(e.context.getAttribute("data-alert"))
+								.setConfirm(e.context.getAttribute("data-confirm"))
+								.execute();
+							break;
+						case "post":
+							new Button(document.createElement("button"), e.context)
+								.setTarget("_blank")
+								.setAction(e.context.getAttribute("data-action"))
+								.setTitle(e.context.getAttribute("title"))
+								.setBlock(e.context.getAttribute("data-block"))
+								.setAlert(e.context.getAttribute("data-alert"))
+								.setConfirm(e.context.getAttribute("data-confirm"))
+								.execute();
+							break;
+					}
+				});
+		return ActionContextMenu._OpenLinkAction;
+	}
+}
+
+
+/* global ENTER, HOME, END, DOWN, UP, Clipboard, ActionContextMenu */
+
+class ActionHandler
+{
+	static register(elements)
+	{
+		Array.from(elements).forEach(element =>
+		{
+			element.setAttribute("tabindex", 1);
+			element.onmouseover = () => element.focus();
+
+			element.onkeydown = function (event)
+			{
+				event = event ? event : window.event;
+				switch (event.keyCode)
+				{
+					case ENTER:
+						this.onclick(event);
+						return false;
+
+					case HOME:
+						var siblings = Array.from(this.parentNode.childNodes)
+							.filter(node => node.tagName.toLowerCase() === "tr");
+						if (siblings.length !== 0
+							&& siblings[0].getAttribute("tabindex"))
+							siblings[0].focus();
+						return false;
+
+					case END:
+						var siblings = Array.from(this.parentNode.childNodes)
+							.filter(node => node.tagName.toLowerCase() === "tr");
+						if (siblings.length !== 0
+							&& siblings[siblings.length - 1].getAttribute("tabindex"))
+							siblings[siblings.length - 1].focus();
+						return false;
+
+					case UP:
+						if (this.previousElementSibling &&
+							this.previousElementSibling.getAttribute("tabindex"))
+							this.previousElementSibling.focus();
+						return false;
+
+					case DOWN:
+						if (this.nextElementSibling &&
+							this.nextElementSibling.getAttribute("tabindex"))
+							this.nextElementSibling.focus();
+						return false;
+
+					default:
+						return true;
+				}
+			};
+
+			if (!element.onclick)
+				element.onclick = function (event)
+				{
+					this.blur();
+					event = event || window.event;
+					for (var parent = event.target || event.srcElement;
+						parent !== this;
+						parent = parent.parentNode)
+						if (parent.onclick
+							|| parent.tagName.toLowerCase() === 'a'
+							|| parent.tagName.toLowerCase() === 'input'
+							|| parent.tagName.toLowerCase() === 'select'
+							|| parent.tagName.toLowerCase() === 'textarea'
+							|| parent.tagName.toLowerCase() === 'button')
+							return;
+					switch (this.getAttribute("data-method") ?
+						this.getAttribute("data-method")
+						.toLowerCase() : "get")
+					{
+						case "get":
+							new Link(document.createElement("a"), element)
+								.setAction(this.getAttribute("data-action"))
+								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+								.setTitle(this.getAttribute("title"))
+								.setBlock(this.getAttribute("data-block"))
+								.setAlert(this.getAttribute("data-alert"))
+								.setConfirm(this.getAttribute("data-confirm"))
+								.setNavigator(!event.ctrlKey && this.getAttribute("data-target")
+									? Array.from(this.parentNode.children)
+									.map(e => e.getAttribute("data-action"))
+									.filter(e => e) : null)
+								.execute();
+							break;
+						case "post":
+							new Button(document.createElement("button"), element)
+								.setAction(this.getAttribute("data-action"))
+								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
+								.setTitle(this.getAttribute("title"))
+								.setBlock(this.getAttribute("data-block"))
+								.setAlert(this.getAttribute("data-alert"))
+								.setConfirm(this.getAttribute("data-confirm"))
+								.execute();
+							break;
+					}
+
+					return false;
+				};
+
+			ActionContextMenu.instance.register(element);
+		});
+	}
+}
+
+
+window.addEventListener("load", function ()
+{
+	ActionHandler.register(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]'));
 });
 window.addEventListener("load", function ()
 {
@@ -3240,36 +3446,24 @@ window.addEventListener("load", function ()
 			.toLowerCase() : "get")
 		{
 			case "get":
-				var a = new Link(document.createElement("a"))
+				new Link(document.createElement("a"))
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.get();
-				document.body.appendChild(a);
-				a.click();
-				document.body.removeChild(a);
+					.execute();
 				break;
 			case "post":
-				var form = this.parentNode;
-				while (form
-					&& form.tagName.toLowerCase()
-					!== 'form')
-					form = form.parentNode;
-
-				var button = new Button(document.createElement("button"))
+				new Button(document.createElement("button"))
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
 					.setBlock(this.getAttribute("data-block"))
 					.setAlert(this.getAttribute("data-alert"))
 					.setConfirm(this.getAttribute("data-confirm"))
-					.get();
-				form.appendChild(button);
-				button.click();
-				form.removeChild(button);
+					.execute();
 				break;
 		}
 	};
@@ -6121,27 +6315,6 @@ window.addEventListener("load", function ()
 		};
 	});
 });
-function copy(data)
-{
-	const textarea = document.createElement('textarea');
-	textarea.value = data;
-	textarea.removeAttribute('readonly');
-	textarea.style.position = 'absolute';
-	textarea.style.left = '-9999px';
-	document.body.appendChild(textarea);
-	textarea.select();
-	document.execCommand('copy');
-	document.body.removeChild(textarea);
-	Message.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("[data-copy-onclick]")).forEach(function (element)
-	{
-		element.addEventListener("click", () => copy(element.getAttribute("data-copy-onclick")));
-	});
-});
 /* global Message */
 
 class ProgressStatus extends HTMLElement
@@ -6690,6 +6863,27 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
 });
+class DefinitionList
+{
+	static of(entries)
+	{
+		var dd = document.createElement("dd");
+		dd.style.display = "grid";
+		dd.style.gridTemplateColumns = "auto auto";
+		dd.style.gridGap = "8px";
+
+
+		for (var key in entries)
+		{
+			dd.appendChild(document.createElement("dt")).innerHTML = key;
+			dd.appendChild(document.createElement("dd")).innerHTML = entries[key];
+
+
+		}
+		return dd;
+	}
+}
+
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("dl[data-entries]")).forEach(function (e)

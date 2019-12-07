@@ -1,0 +1,44 @@
+package ${@dao.getPackageName()};
+
+import gate.base.Dao;
+import ${className};
+import gate.error.AppException;
+import gate.error.ConstraintViolationException;
+import gate.error.NotFoundException;
+import gate.sql.Link;
+import gate.sql.condition.Condition;
+import gate.sql.select.Select;
+import gate.sql.delete.Delete;
+import gate.sql.insert.Insert;
+import gate.sql.update.Update;
+import ${id.getClassName()};
+import java.util.List;
+
+public class ${@dao.getName()} extends Dao
+{
+
+	public ${@dao.getName()}()
+	{
+		super();
+	}
+
+	public ${@dao.getName()}(Link link)
+	{
+		super(link);
+	}
+
+
+	<g:import type="gate.code.DaoGenerator" resource="DaoGenerator/search().gtf"/>
+
+
+	<g:import type="gate.code.DaoGenerator" resource="DaoGenerator/select().gtf"/>
+
+
+	<g:import type="gate.code.DaoGenerator" resource="DaoGenerator/insert().gtf"/>
+
+
+	<g:import type="gate.code.DaoGenerator" resource="DaoGenerator/update().gtf"/>
+
+
+	<g:import type="gate.code.DaoGenerator" resource="DaoGenerator/delete().gtf"/>
+}

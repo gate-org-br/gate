@@ -1,0 +1,28 @@
+g-context-menu-item
+{
+	width: 280px;
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	flex-basis: 40px;
+	align-items: stretch;
+	border: 1px solid @base;
+	justify-content: flex-start;
+	background-color: @main_tinted;
+
+	&:hover { background-color: @acent_tinted; }
+
+	&::before {  display: flex;
+		     font-size: 16px;
+		     flex-basis: 40px;
+		     font-family: gate;
+		     content: attr(icon);
+		     align-items: center;
+		     justify-content: center; }
+
+	&::after {  flex-grow: 1;
+		    display: flex;
+		    content: attr(name);
+		    align-items: center;
+		    justify-content: flex-start; }
+}

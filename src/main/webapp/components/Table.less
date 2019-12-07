@@ -17,6 +17,7 @@ table { .margin();
 		  background-color: @base; }
 
 	     td { padding: 4px;
+		  color: black;
 		  text-align: left;
 		  word-break: normal;
 		  vertical-align: middle;
@@ -80,9 +81,9 @@ table { .margin();
 		}
 	}
 
-	> tfoot > tr 
+	> tfoot > tr
 	{
-		background-image: @base_gradient; 
+		background-image: @base_gradient;
 		> td:only-child { text-align: right }
 	}
 
@@ -132,7 +133,7 @@ table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20)
 		       justify-content: flex-start;
 
 
-		       > td{ 
+		       > td{
 			       &:not([title]) { display: none }
 
 			       &[title] { margin: 4px;

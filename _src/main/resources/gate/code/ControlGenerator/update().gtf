@@ -1,0 +1,13 @@
+	public void update(${className.getName()} value) throws AppException
+	{
+		Constraints.validate(value,
+			"${id.getName()}"
+		<g:iterator source="${properties}" target="property">,
+			"${@property.getName()}"
+		</g:iterator>);
+
+		try (${@dao.getName()} dao = new ${@dao.getName()}())
+		{
+			dao.update(value);
+		}
+	}

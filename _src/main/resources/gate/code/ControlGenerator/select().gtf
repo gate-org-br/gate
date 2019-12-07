@@ -1,0 +1,7 @@
+	public ${className.getName()} select(${id.getClassName().getName()} id) throws NotFoundException
+	{
+		try (${@dao.getName()} dao = new ${@dao.getName()}())
+		{
+			return dao.select(id);
+		}
+	}

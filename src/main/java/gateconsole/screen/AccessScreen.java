@@ -23,6 +23,9 @@ public class AccessScreen extends Screen
 	@Inject
 	private Messenger messenger;
 
+	@Inject
+	private UserControl control;
+
 	public String call()
 	{
 		return "/WEB-INF/views/gateconsole/Access/View.jsp";
@@ -32,7 +35,7 @@ public class AccessScreen extends Screen
 	{
 		try
 		{
-			setForm(new UserControl().select(getForm().getId()));
+			form = control.select(getForm().getId());
 			return "/WEB-INF/views/gateconsole/Access/ViewSelect.jsp";
 		} catch (AppException e)
 		{
@@ -45,10 +48,10 @@ public class AccessScreen extends Screen
 	{
 		try
 		{
-			new UserControl().accept(getForm(), getForm().getRole());
+			control.accept(getForm(), getForm().getRole());
 			if (getForm().getEmail() != null)
 				messenger.post(getUser().getEmail(), getForm().getEmail(), MimeMail.of("Cadastro acatado",
-						"Seu pedido de cadastro foi acatado."));
+					"Seu pedido de cadastro foi acatado."));
 			return "/WEB-INF/views/gateconsole/Access/ViewResult.jsp";
 		} catch (AppException e)
 		{
@@ -61,11 +64,11 @@ public class AccessScreen extends Screen
 	{
 		try
 		{
-			setForm(new UserControl().select(getForm().getId()));
+			form = control.select(getForm().getId());
 			if (getForm().getEmail() != null)
 				messenger.post(getUser().getEmail(), getForm().getEmail(), MimeMail.of("Cadastro recusado",
-						"Seu pedido de cadastro foi recusado."));
-			new UserControl().delete(getForm());
+					"Seu pedido de cadastro foi recusado."));
+			control.delete(getForm());
 			return "/WEB-INF/views/gateconsole/Access/ViewResult.jsp";
 		} catch (AppException e)
 		{

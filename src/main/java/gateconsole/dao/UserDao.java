@@ -1,7 +1,6 @@
 package gateconsole.dao;
 
 import gate.base.Dao;
-import gate.entity.Auth;
 import gate.entity.Func;
 import gate.entity.Role;
 import gate.entity.User;
@@ -59,18 +58,10 @@ public class UserDao extends Dao
 
 	public User select(ID id) throws AppException
 	{
-		User user = getLink()
-			.select(User.class)
-			.properties("=id", "active", "role.id", "role.name", "name", "userID",
-				"email", "details", "phone", "cellPhone", "photo", "CPF", "sex", "birthdate", "registration")
-			.parameters(id).orElseThrow(NotFoundException::new);
-
-		user.setAuths(getLink()
-			.search(Auth.class)
-			.properties("=user.id", "id", "+module", "+screen", "+action")
-			.parameters(id));
-
-		return user;
+		return getLink().from(getClass().getResource("UserDao/select(ID).sql"))
+			.parameters(id)
+			.fetchEntity(User.class)
+			.orElseThrow(NotFoundException::new);
 	}
 
 	public void insert(User value) throws AppException

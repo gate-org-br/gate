@@ -1,0 +1,7 @@
+	public void delete(User value) throws AppException
+	{
+		try (UserDao dao = new UserDao())
+		{
+			dao.delete(value);
+		}
+	}

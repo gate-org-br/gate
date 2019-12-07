@@ -1083,6 +1083,7 @@ table tr th {
 }
 table tr td {
   padding: 4px;
+  color: black;
   text-align: left;
   word-break: normal;
   vertical-align: middle;
@@ -4491,5 +4492,91 @@ dt {
 dd {
   margin: 0;
   text-align: left;
+}
+g-tooltip {
+  padding: 8px;
+  display: flex;
+  border-radius: 5px;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+g-tooltip > * {
+  color: white;
+  width: auto;
+}
+g-tooltip[position]::after {
+  content: " ";
+  border-width: 6px;
+  position: absolute;
+  border-style: solid;
+}
+g-tooltip[position="bottom"]::after {
+  left: 50%;
+  bottom: 100%;
+  margin-left: -6px;
+  border-color: transparent transparent black transparent;
+}
+g-tooltip[position="top"]::after {
+  top: 100%;
+  left: 50%;
+  margin-left: -6px;
+  border-color: black transparent transparent transparent;
+}
+g-tooltip[position="left"]::after {
+  top: 50%;
+  left: 100%;
+  margin-top: -6px;
+  border-color: transparent transparent transparent black;
+}
+g-tooltip[position="right"]::after {
+  top: 50%;
+  right: 100%;
+  margin-top: -6px;
+  border-color: transparent black transparent transparent;
+}
+g-context-menu {
+  margin: 0;
+  padding: 0;
+  width: 280px;
+  display: flex;
+  z-index: 1000;
+  cursor: pointer;
+  position: absolute;
+  align-items: stretch;
+  flex-direction: column;
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+g-context-menu-item {
+  width: 280px;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  flex-basis: 40px;
+  align-items: stretch;
+  border: 1px solid #b9c6cd;
+  justify-content: flex-start;
+  background-color: #e6e5dc;
+}
+g-context-menu-item:hover {
+  background-color: #d6d2df;
+}
+g-context-menu-item::before {
+  display: flex;
+  font-size: 16px;
+  flex-basis: 40px;
+  font-family: gate;
+  content: attr(icon);
+  align-items: center;
+  justify-content: center;
+}
+g-context-menu-item::after {
+  flex-grow: 1;
+  display: flex;
+  content: attr(name);
+  align-items: center;
+  justify-content: flex-start;
 }
 /*# sourceMappingURL=Gate.css.map */

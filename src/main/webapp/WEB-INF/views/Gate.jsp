@@ -4,6 +4,8 @@
 	<body>
 		<g:login module="gateconsole.screen">
 			<div class="Login">
+
+
 				<div>
 					<div>
 						<img src='Logo.svg'/>

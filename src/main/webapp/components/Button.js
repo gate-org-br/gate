@@ -1,303 +1,319 @@
 /* global Message, Block, ENTER, ESC */
 
-function Button(button, creator)
+class Button
 {
-	button.addEventListener("click", function (event)
+	constructor(button, creator)
 	{
-		if (this.hasAttribute("data-cancel"))
+		this.button = button;
+		this.creator = creator;
+
+		this.button.addEventListener("click", function (event)
 		{
-			Message.error(this.getAttribute("data-cancel"), 2000);
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-disabled"))
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.hasAttribute("data-confirm")
-			&& !confirm(this.getAttribute("data-confirm")))
-		{
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function ()
-	{
-		if (this.hasAttribute("data-alert"))
-			alert(this.getAttribute("data-alert"));
-	});
-
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.getAttribute("formaction") &&
-			(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
-				|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
-		{
-			var resolved = resolve(this.getAttribute("formaction"));
-
-			if (resolved !== null)
+			if (this.hasAttribute("data-cancel"))
 			{
-				var formaction = this.getAttribute("formaction");
-				this.setAttribute("formaction", resolved);
-				this.click();
-				this.setAttribute("formaction", formaction);
+				Message.error(this.getAttribute("data-cancel"), 2000);
+				event.preventDefault();
+				event.stopImmediatePropagation();
 			}
+		});
 
-			event.preventDefault();
-			event.stopImmediatePropagation();
-		}
-	});
-
-	button.addEventListener("click", function (event)
-	{
-		if (this.getAttribute("formtarget"))
+		this.button.addEventListener("click", function (event)
 		{
-			switch (this.getAttribute("formtarget").toLowerCase())
+			if (this.hasAttribute("data-disabled"))
 			{
-				case "_dialog":
-					if (this.form.checkValidity())
-					{
-						if (event.ctrlKey)
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.hasAttribute("data-confirm")
+				&& !confirm(this.getAttribute("data-confirm")))
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function ()
+		{
+			if (this.hasAttribute("data-alert"))
+				alert(this.getAttribute("data-alert"));
+		});
+
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.getAttribute("formaction") &&
+				(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+					|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+					|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
+			{
+				var resolved = resolve(this.getAttribute("formaction"));
+
+				if (resolved !== null)
+				{
+					var formaction = this.getAttribute("formaction");
+					this.setAttribute("formaction", resolved);
+					this.click();
+					this.setAttribute("formaction", formaction);
+				}
+
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
+
+		this.button.addEventListener("click", function (event)
+		{
+			if (this.getAttribute("formtarget"))
+			{
+				switch (this.getAttribute("formtarget").toLowerCase())
+				{
+					case "_dialog":
+						if (this.form.checkValidity())
 						{
-							event.preventDefault();
-							event.stopPropagation();
-							event.stopImmediatePropagation();
-							this.setAttribute("formtarget", "_blank");
-							this.click();
-							this.setAttribute("formtarget", "_dialog");
-						} else if (this.form.getAttribute("target") !== "_dialog")
-						{
-							new Dialog({creator: creator || this,
-								title: this.getAttribute("title"),
-								blocked: Boolean(this.getAttribute("data-blocked"))})
-								.show();
+							if (event.ctrlKey)
+							{
+								event.preventDefault();
+								event.stopPropagation();
+								event.stopImmediatePropagation();
+								this.setAttribute("formtarget", "_blank");
+								this.click();
+								this.setAttribute("formtarget", "_dialog");
+							} else if (this.form.getAttribute("target") !== "_dialog")
+							{
+								new Dialog({creator: creator || this,
+									title: this.getAttribute("title"),
+									blocked: Boolean(this.getAttribute("data-blocked"))})
+									.show();
+							}
 						}
-					}
-					break;
-				case "_message":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
+						break;
+					case "_message":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_none":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type !== "SUCCESS")
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_this":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					this.disabled = true;
-					new URL(this.getAttribute("formaction"))
-						.post(new FormData(this.form), function (status)
-						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type === "SUCCESS")
-									button.innerHTML = status.value;
-								else
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_alert":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
 							.post(new FormData(this.form), function (status)
 							{
-								alert(status);
-								button.disabled = false;
+								try
+								{
+									status = JSON.parse(status);
+									Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
-					break;
-				case "_hide":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-					if (window.frameElement
-						&& window.frameElement.dialog
-						&& window.frameElement.dialog.hide)
-						window.frameElement.dialog.hide();
-					else
-						window.close();
-					break;
+						break;
+					case "_none":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-				case "_progress-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (process)
+							.post(new FormData(this.form), function (status)
 							{
-								process = JSON.parse(process);
-								new ProgressDialog(process,
-									{title: button.getAttribute("title")}).show();
-								button.disabled = false;
+								try
+								{
+									status = JSON.parse(status);
+									if (status.type !== "SUCCESS")
+										Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
+						break;
+					case "_this":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					break;
-
-				case "_progress-window":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-
-					if (this.form.reportValidity())
-					{
+						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (process)
+							.post(new FormData(this.form), function (status)
 							{
-								process = JSON.parse(process);
-								document.body.appendChild(new ProgressWindow(process));
+								try
+								{
+									status = JSON.parse(status);
+									if (status.type === "SUCCESS")
+										button.innerHTML = status.value;
+									else
+										Message.show(status, 2000);
+								} finally
+								{
+									button.disabled = false;
+								}
 							});
-					}
+						break;
+					case "_alert":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					break;
+						if (this.form.reportValidity())
+						{
+							this.disabled = true;
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (status)
+								{
+									alert(status);
+									button.disabled = false;
+								});
+						}
+						break;
+					case "_hide":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+						if (window.frameElement
+							&& window.frameElement.dialog
+							&& window.frameElement.dialog.hide)
+							window.frameElement.dialog.hide();
+						else
+							window.close();
+						break;
 
-				case "_report":
-				case "_report-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
+					case "_progress-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
 
-					if (this.form.reportValidity())
-					{
-						new ReportDialog({method: "POST",
-							blocked: true,
-							url: button.getAttribute("formaction") || button.form.action,
-							title: button.getAttribute("title"),
-							data: new FormData(button.form)}).show();
-						button.disabled = false;
-					}
+						if (this.form.reportValidity())
+						{
+							this.disabled = true;
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (process)
+								{
+									process = JSON.parse(process);
+									new ProgressDialog(process,
+										{title: this.button.getAttribute("title")}).show();
+									button.disabled = false;
+								});
+						}
 
-					break;
+						break;
+
+					case "_progress-window":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+
+						if (this.form.reportValidity())
+						{
+							new URL(this.getAttribute("formaction"))
+								.post(new FormData(this.form), function (process)
+								{
+									process = JSON.parse(process);
+									document.body.appendChild(new ProgressWindow(process));
+								});
+						}
+
+						break;
+
+					case "_report":
+					case "_report-dialog":
+						event.preventDefault();
+						event.stopPropagation();
+						event.stopImmediatePropagation();
+
+						if (this.form.reportValidity())
+						{
+							new ReportDialog({method: "POST",
+								blocked: true,
+								url: this.button.getAttribute("formaction") || this.button.form.action,
+								title: this.button.getAttribute("title"),
+								data: new FormData(this.button.form)}).show();
+							this.button.disabled = false;
+						}
+
+						break;
+				}
 			}
-		}
-	});
+		});
+	}
 
-	this.setAlert = function (value)
+	setAlert(value)
 	{
 		if (value)
-			button.setAttribute("data-alert", value);
-		else if (button.getAttribute("data-alert"))
-			button.removeAttribute("data-alert");
+			this.button.setAttribute("data-alert", value);
+		else if (this.button.getAttribute("data-alert"))
+			this.button.removeAttribute("data-alert");
 		return this;
-	};
+	}
 
-	this.setConfirm = function (value)
+	setConfirm(value)
 	{
 		if (value)
-			button.setAttribute("data-confirm", value);
-		else if (button.getAttribute("data-confirm"))
-			button.removeAttribute("data-confirm");
+			this.button.setAttribute("data-confirm", value);
+		else if (this.button.getAttribute("data-confirm"))
+			this.button.removeAttribute("data-confirm");
 		return this;
-	};
+	}
 
-	this.setBlock = function (value)
+	setBlock(value)
 	{
 		if (value)
-			button.setAttribute("data-block", value);
-		else if (button.getAttribute("data-block"))
-			button.removeAttribute("data-block");
+			this.button.setAttribute("data-block", value);
+		else if (this.button.getAttribute("data-block"))
+			this.button.removeAttribute("data-block");
 		return this;
-	};
+	}
 
-	this.setAction = function (value)
+	setAction(value)
 	{
 		if (value)
-			button.setAttribute("formaction", value);
-		else if (button.getAttribute("formaction"))
-			button.removeAttribute("formaction");
+			this.button.setAttribute("formaction", value);
+		else if (this.button.getAttribute("formaction"))
+			this.button.removeAttribute("formaction");
 		return this;
-	};
+	}
 
-	this.setTarget = function (value)
+	setTarget(value)
 	{
 		if (value)
-			button.setAttribute("formtarget", value);
-		else if (button.getAttribute("formtarget"))
-			button.removeAttribute("formtarget");
+			this.button.setAttribute("formtarget", value);
+		else if (this.button.getAttribute("formtarget"))
+			this.button.removeAttribute("formtarget");
 		return this;
-	};
+	}
 
-	this.setTitle = function (value)
+	setTitle(value)
 	{
 		if (value)
-			button.setAttribute("title", value);
-		else if (button.getAttribute("title"))
-			button.removeAttribute("title");
+			this.button.setAttribute("title", value);
+		else if (this.button.getAttribute("title"))
+			this.button.removeAttribute("title");
 		return this;
-	};
+	}
 
-	this.get = function ()
+	get()
 	{
-		return button;
-	};
+		return this.button;
+	}
+
+	execute()
+	{
+		var form = this.button.parentNode;
+		while (form && form.tagName.toLowerCase() !== 'form')
+			form = form.parentNode;
+
+		form.appendChild(this.button);
+		this.button.click();
+		form.removeChild(this.button);
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("button"))
-		.forEach(button => new Button(button));
+	Array.from(document.querySelectorAll("button")).forEach(button => new Button(button));
 
 	document.documentElement.addEventListener("keydown", function (event)
 	{

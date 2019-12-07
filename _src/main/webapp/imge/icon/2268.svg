@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="32"
+   width="32"
+   id="svg14"
+   version="1.1"
+   y="0px"
+   x="0px"
+   viewBox="0 0 32 32"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="icon4.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     id="namedview9"
+     showgrid="false"
+     inkscape:zoom="4.9166667"
+     inkscape:cx="24.40678"
+     inkscape:cy="24"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14" />
+  <metadata
+     id="metadata20">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Artboard 45</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs18" />
+  <title
+     id="title2">Artboard 45</title>
+  <g
+     transform="matrix(0.44444323,0,0,0.44444323,-5.333275,-5.3336084)"
+     id="g8">
+    <path
+       id="path4"
+       d="m 33.877,13.1452 a 4.0022,4.0022 0 0 0 -5.6563,0.0547 C 26.9688,14.4772 16,26.2936 16,48.0006 16,69.7076 26.9688,81.5241 28.2207,82.8014 A 4.0004034,4.0004034 0 0 0 33.9336,77.2 C 33.5273,76.7858 24,66.8522 24,48.0006 24,29.149 33.5273,19.2155 33.9336,18.8014 A 4.0023,4.0023 0 0 0 33.877,13.1452 Z"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path6"
+       d="m 67.7793,13.2 a 4.0004384,4.0004384 0 0 0 -5.7129,5.6015 C 62.4727,19.2155 72,29.1491 72,48.0006 72,66.8521 62.4727,76.7858 62.0664,77.2 a 4.0004384,4.0004384 0 0 0 5.7129,5.6015 C 69.0313,81.5241 80,69.7077 80,48.0006 80,26.2935 69.0313,14.4772 67.7793,13.2 Z"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

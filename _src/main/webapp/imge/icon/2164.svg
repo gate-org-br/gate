@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="32"
+   height="32"
+   id="svg3251"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="2164.svg">
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     id="namedview7"
+     showgrid="false"
+     units="px"
+     width="32in"
+     inkscape:zoom="4"
+     inkscape:cx="-40.625"
+     inkscape:cy="15.5"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3251" />
+  <defs
+     id="defs3253" />
+  <metadata
+     id="metadata3256">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g4157">
+    <path
+       inkscape:connector-curvature="0"
+       id="path8"
+       d="m 31.182229,23.45866 c -2.877453,4.70149 -8.063232,7.84053 -13.980747,7.84053 -9.0459495,0 -16.37744617,-7.335032 -16.37744617,-16.380982 0,-6.0907271 3.32285767,-11.4002295 8.25411997,-14.22465859 C 8.9897819,1.4641696 8.9438275,2.2453947 8.9438275,3.0407595 c 0,11.3153905 9.1732085,20.4921345 20.4885995,20.4921345 0.590337,0 1.173605,-0.02474 1.749802,-0.07423 z" />
+    <polygon
+       transform="matrix(0.03534955,0,0,0.03534955,-2.095837,-2.1026)"
+       id="polygon16"
+       points="782.3,228 891.4,243.8 812.5,320.8 831.1,429.5 733.5,378.2 635.9,429.5 654.6,320.8 575.6,243.8 684.7,228 733.5,129.1 " />
+  </g>
+</svg>
