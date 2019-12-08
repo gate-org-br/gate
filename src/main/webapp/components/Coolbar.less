@@ -72,23 +72,45 @@ div.Coolbar { .margin();
 		     display: inline-block;
 		     border: 0px none transparent;
 		     background-color: transparent }
+}
 
+div.COOLBAR[data-overflow],
+div.Coolbar[data-overflow] {
 
+	height: auto;
 
-	      &[data-overflow]
-	      {
-		      height: auto;
+	> a, > button
+	{
+		> i { font-size: 16px;
+		      margin-left: 0px; }
+		width: 36px;
+		padding: 0px;
+		font-size: 0px;
+		min-width: 0px;
+		justify-content: center;
 
-		      > a, > button
-		      {
-			      > i { font-size: 16px;
-				    margin-left: 0px; }
-			      width: 36px;
-			      padding: 0px;
-			      font-size: 0px;
-			      min-width: 0px;
-			      justify-content: center;
+	}
+}
 
-		      }
-	      }
+g-coolbar[data-overflow]
+{
+	padding: 0;
+	display: flex;
+	font-size: 32px;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+
+	> button, > a { display: none; }
+
+	&::after
+	{
+		padding: 0;
+		display: flex;
+		content: "---";
+		align-items: center;
+		justify-content: center;
+	}
+
+	&:hover { background-image: @acent_gradient }
 }

@@ -35,8 +35,8 @@ module.exports = function (grunt)
 							"src/main/webapp/components/Button.js",
 
 							"src/main/webapp/components/Clipboard.js",
-							"src/main/webapp/components/ContextMenu.js",
 							"src/main/webapp/components/ContextMenuItem.js",
+							"src/main/webapp/components/ContextMenu.js",
 							"src/main/webapp/components/ActionContextMenu.js",
 
 							"src/main/webapp/components/ActionHandler.js",
@@ -85,6 +85,7 @@ module.exports = function (grunt)
 							"src/main/webapp/components/ReportSelector.js",
 							"src/main/webapp/components/ReportDialog.js",
 							"src/main/webapp/components/TableFilter.js",
+							"src/main/webapp/components/CoolbarDialog.js",
 							"src/main/webapp/components/Coolbar.js",
 							"src/main/webapp/components/Overflow.js",
 							"src/main/webapp/components/AutoClick.js",

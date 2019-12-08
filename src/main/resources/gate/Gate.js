@@ -2549,7 +2549,6 @@ class Link
 					case "_dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (event.ctrlKey)
 						{
 							this.setAttribute("target", "_blank");
@@ -2568,7 +2567,6 @@ class Link
 					case "_message":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -2585,7 +2583,6 @@ class Link
 					case "_none":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -2603,7 +2600,6 @@ class Link
 					case "_this":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -2623,7 +2619,6 @@ class Link
 					case "_alert":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -2634,7 +2629,6 @@ class Link
 					case "_hide":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (window.frameElement
 							&& window.frameElement.dialog
 							&& window.frameElement.dialog.hide)
@@ -2645,7 +2639,6 @@ class Link
 					case "_popup":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						Array.from(this.children)
 							.filter(e => e.tagName.toLowerCase() === "div")
 							.forEach(e => new Popup(e));
@@ -2653,18 +2646,16 @@ class Link
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new URL(this.href).get(function (process)
 						{
 							process = JSON.parse(process);
 							new ProgressDialog(process,
-								{title: this.link.getAttribute("title")}).show();
+								{title: this.getAttribute("title")}).show();
 						});
 						break;
 					case "_progress-window":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new URL(this.href).get(function (process)
 						{
 							process = JSON.parse(process);
@@ -2675,11 +2666,10 @@ class Link
 					case "_report-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new ReportDialog({method: "GET",
 							blocked: true,
-							url: this.link.href,
-							title: this.link.getAttribute("title")}).show();
+							url: this.href,
+							title: this.getAttribute("title")}).show();
 						break;
 				}
 			}
@@ -2865,7 +2855,6 @@ class Button
 							{
 								event.preventDefault();
 								event.stopPropagation();
-								event.stopImmediatePropagation();
 								this.setAttribute("formtarget", "_blank");
 								this.click();
 								this.setAttribute("formtarget", "_dialog");
@@ -2881,7 +2870,6 @@ class Button
 					case "_message":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -2900,7 +2888,6 @@ class Button
 					case "_none":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -2920,7 +2907,6 @@ class Button
 					case "_this":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -2942,7 +2928,6 @@ class Button
 					case "_alert":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -2958,7 +2943,6 @@ class Button
 					case "_hide":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (window.frameElement
 							&& window.frameElement.dialog
 							&& window.frameElement.dialog.hide)
@@ -2970,7 +2954,6 @@ class Button
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -2980,7 +2963,7 @@ class Button
 								{
 									process = JSON.parse(process);
 									new ProgressDialog(process,
-										{title: this.button.getAttribute("title")}).show();
+										{title: this.getAttribute("title")}).show();
 									button.disabled = false;
 								});
 						}
@@ -2990,7 +2973,6 @@ class Button
 					case "_progress-window":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -3008,16 +2990,15 @@ class Button
 					case "_report-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
 							new ReportDialog({method: "POST",
 								blocked: true,
-								url: this.button.getAttribute("formaction") || this.button.form.action,
-								title: this.button.getAttribute("title"),
-								data: new FormData(this.button.form)}).show();
-							this.button.disabled = false;
+								url: this.getAttribute("formaction") || this.form.action,
+								title: this.getAttribute("title"),
+								data: new FormData(this.form)}).show();
+							this.disabled = false;
 						}
 
 						break;
@@ -3146,121 +3127,59 @@ window.addEventListener("load", function ()
 );
 /* global NodeList, Clipboard, customElements */
 
-class ContextMenu extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this.modal = new Modal();
-		this.items = Array.from(arguments);
-		this.modal.element().appendChild(this);
-	}
-
-	connectedCallback()
-	{
-		this.items.forEach(item => this.appendChild(item));
-	}
-
-	show(context, element, x, y)
-	{
-		this.context = context;
-		this.element = element;
-		this.style.top = y + "px";
-		this.style.left = x + "px";
-		this.modal.show();
-	}
-
-	hide()
-	{
-		this.modal.hide();
-	}
-
-	register(elements)
-	{
-		if (Array.isArray(elements))
-			elements.forEach(element => this.register(element));
-		else if (elements instanceof NodeList)
-			Array.from(elements).forEach(element => this.register(element));
-		else if (elements.addEventListener)
-			elements.addEventListener("contextmenu", event =>
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				this.show(elements, event.target, event.clientX, event.clientY);
-
-				var rec = this.getBoundingClientRect();
-				if (rec.top + rec.height > window.innerHeight)
-					this.style.top = rec.top - rec.height + "px";
-				if (rec.left + rec.width > window.innerWidth)
-					this.style.left = rec.left - rec.width + "px";
-
-			});
-	}
-}
-
-customElements.define('g-context-menu', ContextMenu);
-/* global NodeList, Clipboard, customElements */
-
 class ContextMenuItem extends HTMLElement
 {
-	constructor(icon, name, action)
+	constructor(action)
 	{
 		super();
-
-		this.setAttribute("icon", icon);
-		this.setAttribute("name", name);
-
-		switch (typeof action)
-		{
-			case 'function':
-				this.action = action;
-				break;
-			case 'string':
-				this.setAttribute("action", action);
-				break;
-			default:
-				throw "Ïnvalid menu item action";
-		}
 
 		this.addEventListener("click", () =>
 		{
-			switch (typeof this.action)
+			if (action)
 			{
-				case 'function':
-					this.action({context: this.parentNode.context,
-						element: this.parentNode.element});
-					break;
-				case 'string':
-					window.dispatchEvent(new CustomEvent(this.action,
-						{detail: {context: this.parentNode.context,
-								element: this.parentNode.element}}));
-					break;
-				default:
-					throw "Ïnvalid menu item action";
-			}
+				action(this.parentNode.target);
+			} else if (this.action)
+			{
+				this.parentNode.dispatchEvent(new CustomEvent(this.action, {detail: this.parentNode.target}));
+			} else
+				throw "Invalid menu item action";
 			this.parentNode.hide();
 		});
+	}
+
+	get icon()
+	{
+		return this.getAttribute("icon");
+	}
+
+	set icon(icon)
+	{
+		this.setAttribute("icon", icon);
+	}
+
+	get name()
+	{
+		return this.getAttribute("name");
+	}
+
+	set name(name)
+	{
+		this.setAttribute("name", name);
+	}
+
+	get action()
+	{
+		return this.getAttribute("action");
+	}
+
+	set action(action)
+	{
+		this.setAttribute("action", "action");
 	}
 
 	static get observedAttributes()
 	{
 		return ['icon', 'name', 'action'];
-	}
-
-	attributeChangedCallback(name)
-	{
-		switch (name)
-		{
-			case 'icon':
-				this.icon = this.getAttribute("icon");
-				break;
-			case 'name':
-				this.name = this.getAttribute("name");
-				break;
-			case 'action':
-				this.action = this.getAttribute("action");
-				break;
-		}
 	}
 }
 
@@ -3268,6 +3187,75 @@ class ContextMenuItem extends HTMLElement
 
 
 customElements.define('g-context-menu-item', ContextMenuItem);
+/* global NodeList, Clipboard, customElements */
+
+class ContextMenu extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._modal = new Modal();
+		this._items = Array.from(arguments);
+	}
+
+	connectedCallback()
+	{
+		this._items.forEach(item => this.appendChild(item));
+	}
+
+	show(context, element, x, y)
+	{
+		this._target = {"context": context, "element": element};
+		this._modal.element().appendChild(this);
+		this._modal.show();
+
+		this.style.top = y + "px";
+		this.style.left = x + "px";
+
+		this.style.display = "flex";
+		var rec = this.getBoundingClientRect();
+		if (rec.top + rec.height > window.innerHeight)
+			this.style.top = rec.top - rec.height + "px";
+		if (rec.left + rec.width > window.innerWidth)
+			this.style.left = rec.left - rec.width + "px";
+	}
+
+	hide()
+	{
+		this.style.display = "none";
+		this._target = null;
+		this._modal.hide();
+	}
+
+	register(element)
+	{
+		if (Array.isArray(element))
+			element.forEach(element => this.register(element));
+		else if (element instanceof NodeList)
+			Array.from(element).forEach(element => this.register(element));
+		else if (element.addEventListener)
+			element.addEventListener("contextmenu", event =>
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.show(element, event.target,
+					event.clientX, event.clientY);
+			});
+	}
+
+	get target()
+	{
+		return this._target;
+	}
+}
+
+customElements.define('g-context-menu', ContextMenu);
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.getElementsByTagName("g-context-menu"))
+		.forEach(element => element.register(document.querySelectorAll("*[data-context-menu=" + element.id + "]")));
+});
 /* global CopyTextMenuItem, CopyLinkMenuItem, OpenLinkMenuItem, Clipboard */
 
 class ActionContextMenu
@@ -3285,49 +3273,59 @@ class ActionContextMenu
 	static get CopyLinkAction()
 	{
 		if (!ActionContextMenu._CopyLinkAction)
-			ActionContextMenu._CopyLinkAction = new ContextMenuItem("\u2159", "Copiar endereço",
-				e => Clipboard.copy(e.context.getAttribute("data-action"), true));
+		{
+			ActionContextMenu._CopyLinkAction = new ContextMenuItem(e => Clipboard.copy(e.context.getAttribute("data-action"), true));
+			ActionContextMenu._CopyLinkAction.icon = "\u2159";
+			ActionContextMenu._CopyLinkAction.name = "Copiar endereço";
+		}
 		return ActionContextMenu._CopyLinkAction;
 	}
 
 	static get CopyTextAction()
 	{
 		if (!ActionContextMenu._CopyTextAction)
-			ActionContextMenu._CopyTextAction = new ContextMenuItem("\u2256", "Copiar texto",
-				e => Clipboard.copy(e.element.innerText, true));
+		{
+			ActionContextMenu._CopyTextAction = new ContextMenuItem(e => Clipboard.copy(e.element.innerText, true));
+			ActionContextMenu._CopyTextAction.icon = "\u2256";
+			ActionContextMenu._CopyTextAction.name = "Copiar texto";
+		}
 		return ActionContextMenu._CopyTextAction;
 	}
 
 	static get OpenLinkAction()
 	{
 		if (!ActionContextMenu._OpenLinkAction)
-			ActionContextMenu._OpenLinkAction = new ContextMenuItem("\u2217", "Abrir em nova aba",
-				e => {
-					switch (e.context.getAttribute("data-method")
-						? e.context.getAttribute("data-method").toLowerCase() : "get")
-					{
-						case "get":
-							new Link(document.createElement("a"), e.context)
-								.setTarget("_blank")
-								.setAction(e.context.getAttribute("data-action"))
-								.setTitle(e.context.getAttribute("title"))
-								.setBlock(e.context.getAttribute("data-block"))
-								.setAlert(e.context.getAttribute("data-alert"))
-								.setConfirm(e.context.getAttribute("data-confirm"))
-								.execute();
-							break;
-						case "post":
-							new Button(document.createElement("button"), e.context)
-								.setTarget("_blank")
-								.setAction(e.context.getAttribute("data-action"))
-								.setTitle(e.context.getAttribute("title"))
-								.setBlock(e.context.getAttribute("data-block"))
-								.setAlert(e.context.getAttribute("data-alert"))
-								.setConfirm(e.context.getAttribute("data-confirm"))
-								.execute();
-							break;
-					}
-				});
+		{
+			ActionContextMenu._OpenLinkAction = new ContextMenuItem(e => {
+				switch (e.context.getAttribute("data-method")
+					? e.context.getAttribute("data-method").toLowerCase() : "get")
+				{
+					case "get":
+						new Link(document.createElement("a"), e.context)
+							.setTarget("_blank")
+							.setAction(e.context.getAttribute("data-action"))
+							.setTitle(e.context.getAttribute("title"))
+							.setBlock(e.context.getAttribute("data-block"))
+							.setAlert(e.context.getAttribute("data-alert"))
+							.setConfirm(e.context.getAttribute("data-confirm"))
+							.execute();
+						break;
+					case "post":
+						new Button(document.createElement("button"), e.context)
+							.setTarget("_blank")
+							.setAction(e.context.getAttribute("data-action"))
+							.setTitle(e.context.getAttribute("title"))
+							.setBlock(e.context.getAttribute("data-block"))
+							.setAlert(e.context.getAttribute("data-alert"))
+							.setConfirm(e.context.getAttribute("data-confirm"))
+							.execute();
+						break;
+				}
+			});
+
+			ActionContextMenu._OpenLinkAction.icon = "\u2217";
+			ActionContextMenu._OpenLinkAction.name = "Abrir em nova aba";
+		}
 		return ActionContextMenu._OpenLinkAction;
 	}
 }
@@ -6837,6 +6835,43 @@ window.addEventListener("load", function ()
 		Colorizer.colorize(table);
 	});
 });
+/* global customElements */
+
+class CoolbarDialog extends HTMLElement
+{
+	constructor(elements)
+	{
+		super();
+		this._elements = elements;
+		this.addEventListener("click", e =>
+		{
+			e.stopPropagation();
+			window.setTimeout(() => this.parentNode.removeChild(this), 0);
+		});
+	}
+
+	connectedCallback()
+	{
+		var elements = this.appendChild(document.createElement("div"));
+		this._elements.forEach(e =>
+		{
+			switch (e.tagName.toLowerCase())
+			{
+				case "a":
+					elements.appendChild(new Link(e.cloneNode(true)).get())
+						.addEventListener("click", () => this.click());
+					break;
+				case "button":
+					elements.appendChild(new Button(e.cloneNode(true)).get())
+						.addEventListener("click", () => this.click());
+					break;
+			}
+		});
+	}
+}
+
+
+customElements.define('g-coolbar-dialog', CoolbarDialog);
 
 /* global customElements */
 
@@ -6845,6 +6880,11 @@ class Coolbar extends HTMLElement
 	constructor()
 	{
 		super();
+		this.addEventListener("click", function ()
+		{
+			if (this.getAttribute("data-overflow"))
+				this.appendChild(new CoolbarDialog(Array.from(this.children)));
+		});
 	}
 }
 

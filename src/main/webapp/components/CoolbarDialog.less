@@ -1,0 +1,47 @@
+g-coolbar-dialog
+{
+	top: 0;
+	left: 0;
+	z-index: 1;
+	display: flex;
+	position: absolute;
+	align-items: center;
+	justify-content: center;
+	width: calc(100vw - 2px);
+	height: calc(100vh - 4px);
+
+	> div
+	{
+		width: 50%;
+		padding: 8px;
+		display: flex;
+		overflow-y: auto;
+		min-width: 300px;
+		align-items: stretch;
+		flex-direction: column;
+		justify-content: center;
+		max-height: calc(100vh - 20px);
+		background-image: @main_gradient;
+
+		> a ,
+		> button { padding: 8px;
+			   height: 40px;
+			   display: flex;
+			   align-items: center;
+			   justify-content: space-between;
+
+			   > i,
+			   > span { order: 1;
+				    display: flex;
+				    color: inherit;
+				    cursor: inherit;
+				    font-size: 12px;
+				    align-items: center;
+				    justify-content: center; }
+
+			   &:nth-child(even) { background-color: white; }
+			   &:nth-child(odd) { background-color: @base_tinted; }
+			   &:hover { background-color: @hovered; }
+		}
+	}
+}

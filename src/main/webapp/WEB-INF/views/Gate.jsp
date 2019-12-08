@@ -3,9 +3,8 @@
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
 		<g:login module="gateconsole.screen">
+
 			<div class="Login">
-
-
 				<div>
 					<div>
 						<img src='Logo.svg'/>
@@ -55,6 +54,7 @@
 							</fieldset>
 						</div>
 					</div>
+
 					<div class='COOLBAR'>
 						<button class="Commit" tabindex='2'>
 							Concluir<g:icon type="commit"/>

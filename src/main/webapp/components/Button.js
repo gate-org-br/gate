@@ -79,7 +79,6 @@ class Button
 							{
 								event.preventDefault();
 								event.stopPropagation();
-								event.stopImmediatePropagation();
 								this.setAttribute("formtarget", "_blank");
 								this.click();
 								this.setAttribute("formtarget", "_dialog");
@@ -95,7 +94,6 @@ class Button
 					case "_message":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -114,7 +112,6 @@ class Button
 					case "_none":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -134,7 +131,6 @@ class Button
 					case "_this":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						this.disabled = true;
 						new URL(this.getAttribute("formaction"))
@@ -156,7 +152,6 @@ class Button
 					case "_alert":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -172,7 +167,6 @@ class Button
 					case "_hide":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (window.frameElement
 							&& window.frameElement.dialog
 							&& window.frameElement.dialog.hide)
@@ -184,7 +178,6 @@ class Button
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -194,7 +187,7 @@ class Button
 								{
 									process = JSON.parse(process);
 									new ProgressDialog(process,
-										{title: this.button.getAttribute("title")}).show();
+										{title: this.getAttribute("title")}).show();
 									button.disabled = false;
 								});
 						}
@@ -204,7 +197,6 @@ class Button
 					case "_progress-window":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
@@ -222,16 +214,15 @@ class Button
 					case "_report-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 
 						if (this.form.reportValidity())
 						{
 							new ReportDialog({method: "POST",
 								blocked: true,
-								url: this.button.getAttribute("formaction") || this.button.form.action,
-								title: this.button.getAttribute("title"),
-								data: new FormData(this.button.form)}).show();
-							this.button.disabled = false;
+								url: this.getAttribute("formaction") || this.form.action,
+								title: this.getAttribute("title"),
+								data: new FormData(this.form)}).show();
+							this.disabled = false;
 						}
 
 						break;
