@@ -41,6 +41,13 @@ class ContextMenu extends HTMLElement
 				event.preventDefault();
 				event.stopPropagation();
 				this.show(elements, event.target, event.clientX, event.clientY);
+
+				var rec = this.getBoundingClientRect();
+				if (rec.top + rec.height > window.innerHeight)
+					this.style.top = rec.top - rec.height + "px";
+				if (rec.left + rec.width > window.innerWidth)
+					this.style.left = rec.left - rec.width + "px";
+
 			});
 	}
 }
