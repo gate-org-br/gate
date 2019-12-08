@@ -3297,15 +3297,12 @@ div.Coolbar > hr {
   border: 0px none transparent;
   background-color: transparent;
 }
-g-coolbar[data-overflow],
 div.COOLBAR[data-overflow],
 div.Coolbar[data-overflow] {
   height: auto;
 }
-g-coolbar[data-overflow] > a,
 div.COOLBAR[data-overflow] > a,
 div.Coolbar[data-overflow] > a,
-g-coolbar[data-overflow] > button,
 div.COOLBAR[data-overflow] > button,
 div.Coolbar[data-overflow] > button {
   width: 36px;
@@ -3314,14 +3311,89 @@ div.Coolbar[data-overflow] > button {
   min-width: 0px;
   justify-content: center;
 }
-g-coolbar[data-overflow] > a > i,
 div.COOLBAR[data-overflow] > a > i,
 div.Coolbar[data-overflow] > a > i,
-g-coolbar[data-overflow] > button > i,
 div.COOLBAR[data-overflow] > button > i,
 div.Coolbar[data-overflow] > button > i {
   font-size: 16px;
   margin-left: 0px;
+}
+g-coolbar[data-overflow] {
+  padding: 0;
+  display: flex;
+  font-size: 32px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar[data-overflow] > button,
+g-coolbar[data-overflow] > a {
+  display: none;
+}
+g-coolbar[data-overflow]::after {
+  padding: 0;
+  display: flex;
+  content: "---";
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar[data-overflow]:hover {
+  background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
+}
+g-coolbar-dialog {
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  width: calc(100vw - 2px);
+  height: calc(100vh - 4px);
+}
+g-coolbar-dialog > div {
+  width: 50%;
+  padding: 8px;
+  display: flex;
+  overflow-y: auto;
+  min-width: 300px;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: center;
+  max-height: calc(100vh - 20px);
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+}
+g-coolbar-dialog > div > a,
+g-coolbar-dialog > div > button {
+  padding: 8px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+g-coolbar-dialog > div > a > i,
+g-coolbar-dialog > div > button > i,
+g-coolbar-dialog > div > a > span,
+g-coolbar-dialog > div > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar-dialog > div > a:nth-child(even),
+g-coolbar-dialog > div > button:nth-child(even) {
+  background-color: white;
+}
+g-coolbar-dialog > div > a:nth-child(odd),
+g-coolbar-dialog > div > button:nth-child(odd) {
+  background-color: #f5f6f8;
+}
+g-coolbar-dialog > div > a:hover,
+g-coolbar-dialog > div > button:hover {
+  background-color: #FFFACD;
 }
 div.Toolbar,
 div.TOOLBAR {
@@ -4541,7 +4613,7 @@ g-context-menu {
   margin: 0;
   padding: 0;
   width: 280px;
-  display: flex;
+  display: none;
   z-index: 1000;
   cursor: pointer;
   position: absolute;

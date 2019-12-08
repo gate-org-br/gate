@@ -2,64 +2,57 @@
 
 class ContextMenuItem extends HTMLElement
 {
-	constructor(icon, name, action)
+	constructor(action)
 	{
 		super();
 
-		this.setAttribute("icon", icon);
-		this.setAttribute("name", name);
-
-		switch (typeof action)
-		{
-			case 'function':
-				this.action = action;
-				break;
-			case 'string':
-				this.setAttribute("action", action);
-				break;
-			default:
-				throw "Ïnvalid menu item action";
-		}
-
 		this.addEventListener("click", () =>
 		{
-			switch (typeof this.action)
+			if (action)
 			{
-				case 'function':
-					this.action({context: this.parentNode.context,
-						element: this.parentNode.element});
-					break;
-				case 'string':
-					window.dispatchEvent(new CustomEvent(this.action,
-						{detail: {context: this.parentNode.context,
-								element: this.parentNode.element}}));
-					break;
-				default:
-					throw "Ïnvalid menu item action";
-			}
+				action(this.parentNode.target);
+			} else if (this.action)
+			{
+				this.parentNode.dispatchEvent(new CustomEvent(this.action, {detail: this.parentNode.target}));
+			} else
+				throw "Invalid menu item action";
 			this.parentNode.hide();
 		});
+	}
+
+	get icon()
+	{
+		return this.getAttribute("icon");
+	}
+
+	set icon(icon)
+	{
+		this.setAttribute("icon", icon);
+	}
+
+	get name()
+	{
+		return this.getAttribute("name");
+	}
+
+	set name(name)
+	{
+		this.setAttribute("name", name);
+	}
+
+	get action()
+	{
+		return this.getAttribute("action");
+	}
+
+	set action(action)
+	{
+		this.setAttribute("action", "action");
 	}
 
 	static get observedAttributes()
 	{
 		return ['icon', 'name', 'action'];
-	}
-
-	attributeChangedCallback(name)
-	{
-		switch (name)
-		{
-			case 'icon':
-				this.icon = this.getAttribute("icon");
-				break;
-			case 'name':
-				this.name = this.getAttribute("name");
-				break;
-			case 'action':
-				this.action = this.getAttribute("action");
-				break;
-		}
 	}
 }
 

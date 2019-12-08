@@ -70,7 +70,6 @@ class Link
 					case "_dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (event.ctrlKey)
 						{
 							this.setAttribute("target", "_blank");
@@ -89,7 +88,6 @@ class Link
 					case "_message":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -106,7 +104,6 @@ class Link
 					case "_none":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -124,7 +121,6 @@ class Link
 					case "_this":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -144,7 +140,6 @@ class Link
 					case "_alert":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						link.setAttribute("data-cancel", "Processando");
 						new URL(this.href).get(function (status)
 						{
@@ -155,7 +150,6 @@ class Link
 					case "_hide":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						if (window.frameElement
 							&& window.frameElement.dialog
 							&& window.frameElement.dialog.hide)
@@ -166,7 +160,6 @@ class Link
 					case "_popup":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						Array.from(this.children)
 							.filter(e => e.tagName.toLowerCase() === "div")
 							.forEach(e => new Popup(e));
@@ -174,18 +167,16 @@ class Link
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new URL(this.href).get(function (process)
 						{
 							process = JSON.parse(process);
 							new ProgressDialog(process,
-								{title: this.link.getAttribute("title")}).show();
+								{title: this.getAttribute("title")}).show();
 						});
 						break;
 					case "_progress-window":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new URL(this.href).get(function (process)
 						{
 							process = JSON.parse(process);
@@ -196,11 +187,10 @@ class Link
 					case "_report-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						event.stopImmediatePropagation();
 						new ReportDialog({method: "GET",
 							blocked: true,
-							url: this.link.href,
-							title: this.link.getAttribute("title")}).show();
+							url: this.href,
+							title: this.getAttribute("title")}).show();
 						break;
 				}
 			}
