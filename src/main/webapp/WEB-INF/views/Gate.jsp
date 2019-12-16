@@ -3,9 +3,6 @@
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
 		<g:login module="gateconsole.screen">
-
-
-
 			<div class="Login">
 				<div>
 					<div>
