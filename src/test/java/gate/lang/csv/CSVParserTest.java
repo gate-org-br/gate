@@ -375,4 +375,27 @@ public class CSVParserTest
 
 		}
 	}
+
+	@Test
+	public void testCurrentLine()
+	{
+		try (CSVParser parser = new CSVParser(new InputStreamReader(getClass().getResourceAsStream("csv.csv"))))
+		{
+			parser.parseLine();
+			String line = parser.getCurrentLine();
+			Assert.assertEquals("Jonh Matheus,   Davis,              true", line);
+
+			parser.parseLine();
+			line = parser.getCurrentLine();
+			Assert.assertEquals("\"Paul\", \"Richard\\\"\", false", line);
+
+			parser.parseLine();
+			line = parser.getCurrentLine();
+			Assert.assertEquals("'Marie', 'Anderson', true", line);
+
+		} catch (Exception ex)
+		{
+			Assert.fail();
+		}
+	}
 }

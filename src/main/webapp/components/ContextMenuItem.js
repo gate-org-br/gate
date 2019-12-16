@@ -10,7 +10,7 @@ class ContextMenuItem extends HTMLElement
 		{
 			if (action)
 			{
-				action(this.parentNode.target);
+				action(this.parentNode._target);
 			} else if (this.action)
 			{
 				this.parentNode.dispatchEvent(new CustomEvent(this.action, {detail: this.parentNode.target}));

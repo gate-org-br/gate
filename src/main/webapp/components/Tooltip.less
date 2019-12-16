@@ -1,5 +1,6 @@
 g-tooltip { padding: 8px;
 	    display: flex;
+	    visibility: hidden;
 	    border-radius: 5px;
 	    position: absolute;
 	    align-items: center;
@@ -8,30 +9,30 @@ g-tooltip { padding: 8px;
 	    box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	    > * { color: white; width: auto }
 
-	    &[position]::after { content: " ";
-				 border-width: 6px;
-				 position: absolute;
-				 border-style: solid; }
+	    &[arrow]::after { content: " ";
+			      border-width: 6px;
+			      position: absolute;
+			      border-style: solid; }
 
-	    &[position="bottom"]::after { left: 50%;
-					  bottom: 100%;
-					  margin-left: -6px;
-					  border-color: transparent transparent black transparent; }
-
-	    &[position="top"]::after { top: 100%;
-				       left: 50%;
+	    &[arrow="bottom"]::after { left: 50%;
+				       bottom: 100%;
 				       margin-left: -6px;
-				       border-color: black transparent transparent transparent; }
+				       border-color: transparent transparent black transparent; }
 
-	    &[position="left"]::after { top: 50%;
-					left: 100%;
-					margin-top: -6px;
-					border-color: transparent transparent transparent black; }
+	    &[arrow="top"]::after { top: 100%;
+				    left: 50%;
+				    margin-left: -6px;
+				    border-color: black transparent transparent transparent; }
 
-	    &[position="right"]::after { top: 50%;
-					 right: 100%;
-					 margin-top: -6px;
-					 border-color: transparent black transparent transparent; }
+	    &[arrow="left"]::after { top: 50%;
+				     left: 100%;
+				     margin-top: -6px;
+				     border-color: transparent transparent transparent black; }
+
+	    &[arrow="right"]::after { top: 50%;
+				      right: 100%;
+				      margin-top: -6px;
+				      border-color: transparent black transparent transparent; }
 }
 
 

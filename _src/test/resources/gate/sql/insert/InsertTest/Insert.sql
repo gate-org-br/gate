@@ -1,1 +1,0 @@
-insert into Person (id, name, birthdate, contract$date1, contract$date2) values (?, ?, ?, ?, ?)

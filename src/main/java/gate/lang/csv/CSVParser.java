@@ -21,10 +21,11 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 {
 
 	private final Reader reader;
+	private long lineNumber = -1;
 	private int c = Integer.MAX_VALUE;
 	private final StringBuilder string = new StringBuilder();
-
 	private static final Optional EMPTY = Optional.of(List.of());
+	private final StringBuilder currentLine = new StringBuilder();
 
 	/**
 	 * Constructs a new CSVParser for the specified Reader.
@@ -44,17 +45,72 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	 */
 	public Optional<List<String>> parseLine() throws IOException
 	{
+		currentLine.setLength(0);
+
 		if (c == -1)
 			return Optional.empty();
 
 		do
-			c = reader.read();
+			read();
 		while (c == '\r');
 
 		if (c == -1 || c == '\n')
 			return EMPTY;
 
 		return Optional.of(line());
+	}
+
+	/**
+	 * Try to skip a number of lines from the previously specified CSV formatted {@link java.io.Reader}.
+	 *
+	 * @param lines the number of lines to be skipped
+	 *
+	 * @return the number of lines not skiped
+	 *
+	 * @throws java.io.IOException If an I/O error occurs
+	 */
+	public long skip(long lines) throws IOException
+	{
+		while (c != -1 && lines > 0)
+		{
+			lines--;
+			lineNumber++;
+
+			do
+			{
+				read();
+			} while (c != -1 && c != '\n');
+
+		}
+
+		return lines;
+	}
+
+	/**
+	 * Return the current line number.
+	 *
+	 * @return the current line number
+	 */
+	public long getLineNumber()
+	{
+		return lineNumber;
+	}
+
+	/**
+	 * Return the current line.
+	 *
+	 * @return the current line
+	 */
+	public String getCurrentLine()
+	{
+		return currentLine.toString();
+	}
+
+	public void read() throws IOException
+	{
+		c = reader.read();
+		if (c != '\n' && c != '\r' && c != -1)
+			currentLine.append((char) c);
 	}
 
 	private List<String> line() throws IOException
@@ -65,22 +121,23 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 
 		while (c == ',' || c == ';')
 		{
-			c = reader.read();
+			read();
 			line.add(field());
 		}
 
+		lineNumber++;
 		return line;
 	}
 
 	private String field() throws IOException
 	{
 		while (c == ' ' || c == '\t' || c == '\r')
-			c = reader.read();
+			read();
 
 		String field = parse();
 
 		while (c == ' ' || c == '\t' || c == '\r')
-			c = reader.read();
+			read();
 
 		return field;
 	}
@@ -102,26 +159,39 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	public String quoted() throws IOException
 	{
 		string.setLength(0);
-		for (c = reader.read(); c != -1 && c != '\''; c = reader.read())
-			string.append((char) (c == '\\' ? c = reader.read() : c));
-		c = reader.read();
+		for (read(); c != -1 && c != '\''; read())
+		{
+			if (c == '\\')
+				read();
+			string.append((char) c);
+		}
+
+		read();
 		return string.toString().trim();
 	}
 
 	public String doubleQuoted() throws IOException
 	{
 		string.setLength(0);
-		for (c = reader.read(); c != -1 && c != '"'; c = reader.read())
-			string.append((char) (c == '\\' ? c = reader.read() : c));
-		c = reader.read();
+		for (read(); c != -1 && c != '"'; read())
+		{
+			if (c == '\\')
+				read();
+			string.append((char) c);
+		}
+		read();
 		return string.toString().trim();
 	}
 
 	public String unquoted() throws IOException
 	{
 		string.setLength(0);
-		for (; c != -1 && c != '\r' && c != '\n' && c != ',' && c != ';'; c = reader.read())
-			string.append((char) (c == '\\' ? c = reader.read() : c));
+		for (; c != -1 && c != '\r' && c != '\n' && c != ',' && c != ';'; read())
+		{
+			if (c == '\\')
+				read();
+			string.append((char) c);
+		}
 		return string.toString().trim();
 	}
 

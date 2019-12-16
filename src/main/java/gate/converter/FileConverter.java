@@ -59,7 +59,7 @@ public class FileConverter implements Converter
 			if (part == null)
 				return null;
 
-			File file = File.createTempFile(part.getSubmittedFileName() + ".", ".tmp");
+			File file = File.createTempFile("File", "." + part.getSubmittedFileName());
 			try (InputStream inputStream = part.getInputStream();
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -77,7 +77,7 @@ public class FileConverter implements Converter
 	{
 		try
 		{
-			File file = File.createTempFile("File", ".tmp");
+			File file = File.createTempFile("File", "tmp");
 			try (InputStream inputStream = rs.getBinaryStream(index);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -86,7 +86,7 @@ public class FileConverter implements Converter
 			}
 		} catch (IOException ex)
 		{
-			throw new ConversionException("Error when trying to read file from database", ex);
+			throw new ConversionException("Error when trying to read file from data base", ex);
 		}
 	}
 
@@ -95,7 +95,7 @@ public class FileConverter implements Converter
 	{
 		try
 		{
-			File file = File.createTempFile("File", ".tmp");
+			File file = File.createTempFile("File", "tmp");
 			try (InputStream inputStream = rs.getBinaryStream(fields);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
@@ -104,7 +104,7 @@ public class FileConverter implements Converter
 			}
 		} catch (IOException ex)
 		{
-			throw new ConversionException("Error when trying to read file from database", ex);
+			throw new ConversionException("Error when trying to read file from data base", ex);
 		}
 	}
 
@@ -120,7 +120,7 @@ public class FileConverter implements Converter
 				ps.setBytes(index, outputStream.toByteArray());
 			} catch (IOException ex)
 			{
-				throw new SQLException("Error when trying to write file to database", ex);
+				throw new SQLException("Error when trying to write file to data base", ex);
 			}
 		} else
 			ps.setNull(index, Types.VARBINARY);
@@ -128,7 +128,8 @@ public class FileConverter implements Converter
 	}
 
 	@Override
-	public String toString(Class<?> type, Object object)
+	public String toString(Class<?> type, Object object
+	)
 	{
 		throw new UnsupportedOperationException("Files can't be represented as strings.");
 	}

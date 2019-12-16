@@ -35,6 +35,7 @@ public abstract class CheckableTag extends SelectorTag
 				.collect(Collectors.toList());
 
 		Attributes attributes = new Attributes();
+		attributes.put("class", "Checkable");
 		if (style != null)
 			attributes.put("style", style);
 

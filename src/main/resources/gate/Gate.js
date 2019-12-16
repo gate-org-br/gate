@@ -3137,7 +3137,7 @@ class ContextMenuItem extends HTMLElement
 		{
 			if (action)
 			{
-				action(this.parentNode.target);
+				action(this.parentNode._target);
 			} else if (this.action)
 			{
 				this.parentNode.dispatchEvent(new CustomEvent(this.action, {detail: this.parentNode.target}));
@@ -5490,6 +5490,7 @@ class Dialog extends Modal
 		head.setAttribute("tabindex", "1");
 		head.focus();
 
+
 		var caption = head.appendChild(window.top.document.createElement('label'));
 		if (options && options.title)
 			caption.innerHTML = options.title;
@@ -5525,6 +5526,19 @@ class Dialog extends Modal
 				iframe.height = height;
 			}
 			return true;
+		};
+
+		iframe._newCommand = function (icon, name, action)
+		{
+			var link = window.top.document.createElement("a");
+			link.title = name;
+			link.innerHTML = icon;
+			link.onclick = action;
+
+			if (close)
+				head.insertBefore(link, close);
+			else
+				head.appendChild(link);
 		};
 
 		iframe.addEventListener("load", () =>
@@ -5606,6 +5620,11 @@ class Dialog extends Modal
 		this.hide();
 	}
 
+	static command(icon, name, action)
+	{
+		if (window.frameElement && window.frameElement._newCommand)
+			window.frameElement._newCommand(icon, name, action);
+	}
 }
 
 window.addEventListener("load", function ()
@@ -5616,7 +5635,6 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 			event.stopPropagation();
-
 			var parameters =
 				CSV.parse(this.getAttribute('data-get'))
 				.map(e => e.trim())
@@ -5660,12 +5678,10 @@ window.addEventListener("load", function ()
 			event.stopPropagation();
 		});
 	});
-
 	Array.from(document.querySelectorAll('*[data-ret]')).forEach(function (element)
 	{
 		element.onmouseover = () => element.focus();
 		element.onmouseout = () => element.blur();
-
 		element.onclick = function ()
 		{
 			var ret = CSV.parse(this.getAttribute("data-ret")).map(e => e.trim());
@@ -5680,7 +5696,6 @@ window.addEventListener("load", function ()
 			return true;
 		};
 	});
-
 	Array.from(document.querySelectorAll('a.Hide')).forEach(function (element)
 	{
 		element.onclick = function ()
@@ -6971,3 +6986,127 @@ class AppEvents
 		}
 	}
 }
+/* global customElements, DefinitionList, Table */
+
+class Tooltip extends HTMLElement
+{
+	constructor(element, orientation, content)
+	{
+		super();
+		this._element = element;
+		this._orientation = orientation;
+
+		switch (typeof content)
+		{
+			case "string":
+				var label = document.createElement("label");
+				label.innerHTML = content;
+				this._content = label;
+				break;
+			case "object":
+				if (content instanceof HTMLElement)
+					this._content = content;
+				else
+					this._content = DefinitionList.of(content);
+				break;
+		}
+	}
+
+	connectedCallback()
+	{
+		this.appendChild(this._content);
+		var tooltip = this.getBoundingClientRect();
+		var element = this._element.getBoundingClientRect();
+		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
+
+		switch (this._orientation || "vertical")
+		{
+
+			case "vertical":
+				if (element.center.y >= (window.innerHeight / 2))
+					this.show(element.center.x - tooltip.width / 2, element.top - tooltip.height - 10, "top");
+				else
+					this.show(element.center.x - tooltip.width / 2, element.bottom + 10, "bottom");
+				break;
+			case "horizontal":
+				if (element.center.x >= (window.innerWidth / 2))
+					this.show(element.left - tooltip.width - 10, element.center.y - (tooltip.height / 2), "left");
+				else
+					this.show(element.x + element.width + 10, element.center.y - tooltip.height / 2, "right");
+				break;
+		}
+	}
+
+	show(x, y, arrow)
+	{
+		this.style.top = y + "px";
+		this.style.left = x + "px";
+		this.setAttribute("arrow", arrow);
+		this.style.visibility = "visible";
+	}
+
+	static show(element, orientation, content)
+	{
+		if (this.instance)
+			Tooltip.hide();
+		this.instance = new Tooltip(element, orientation, content);
+		document.body.appendChild(this.instance);
+	}
+
+	static hide()
+	{
+		if (this.instance)
+		{
+			this.instance.parentNode.removeChild(this.instance);
+			this.instance = null;
+		}
+	}
+}
+
+customElements.define('g-tooltip', Tooltip);
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("*[data-tooltip]")).forEach(e =>
+	{
+		e.addEventListener("mouseout", () => Tooltip.hide());
+		e.addEventListener("mouseover", () =>
+		{
+			var object = e.getAttribute("data-tooltip");
+			if (/ *[{"[].*[}"\]] */.test(object))
+				object = JSON.parse(object);
+			Tooltip.show(e, e.getAttribute("data-tooltip-orientation"), object)
+		});
+	});
+});
+/* global NodeList, Clipboard, customElements */
+
+class Checkable
+{
+	static get ContextMenu()
+	{
+		if (!Checkable._ContextMenu)
+		{
+			var selecionarTudo = new ContextMenuItem(e =>
+				Array.from(e.context.getElementsByTagName("input"))
+					.forEach(input => input.checked = true));
+			selecionarTudo.icon = "\u1011";
+			selecionarTudo.name = "Selecionar tudo";
+
+			var desmarcarSelecionados = new ContextMenuItem(e =>
+				Array.from(e.context.getElementsByTagName("input"))
+					.forEach(input => input.checked = false));
+			desmarcarSelecionados.icon = "\u1014";
+			desmarcarSelecionados.name = "Desmarcar selecionados";
+
+			Checkable._ContextMenu = new ContextMenu(selecionarTudo, desmarcarSelecionados);
+		}
+
+		return Checkable._ContextMenu;
+	}
+}
+
+window.addEventListener("load", function ()
+{
+	Checkable.ContextMenu.register(document.querySelectorAll("ul.Checkable"));
+});

@@ -298,6 +298,20 @@ class IconPicker extends Picker
 		icon("2281");
 		icon("2282");
 		icon("2283");
+		icon("2300");
+		icon("2301");
+		icon("2302");
+		icon("2303");
+		icon("2304");
+		icon("2305");
+		icon("2306");
+		icon("2307");
+		icon("2308");
+		icon("2309");
+		icon("2310");
+		icon("2311");
+		icon("2312");
+		icon("2313");
 
 		this.commit().addEventListener("click", () => alert("selecione um ícone"));
 

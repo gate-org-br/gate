@@ -930,7 +930,6 @@ fieldset > label > form > i {
 }
 fieldset > ul,
 fieldset > div > ul {
-  margin: 0;
   margin: 4px;
   padding: 8px;
   flex-grow: 1;
@@ -4568,6 +4567,7 @@ dd {
 g-tooltip {
   padding: 8px;
   display: flex;
+  visibility: hidden;
   border-radius: 5px;
   position: absolute;
   align-items: center;
@@ -4579,31 +4579,31 @@ g-tooltip > * {
   color: white;
   width: auto;
 }
-g-tooltip[position]::after {
+g-tooltip[arrow]::after {
   content: " ";
   border-width: 6px;
   position: absolute;
   border-style: solid;
 }
-g-tooltip[position="bottom"]::after {
+g-tooltip[arrow="bottom"]::after {
   left: 50%;
   bottom: 100%;
   margin-left: -6px;
   border-color: transparent transparent black transparent;
 }
-g-tooltip[position="top"]::after {
+g-tooltip[arrow="top"]::after {
   top: 100%;
   left: 50%;
   margin-left: -6px;
   border-color: black transparent transparent transparent;
 }
-g-tooltip[position="left"]::after {
+g-tooltip[arrow="left"]::after {
   top: 50%;
   left: 100%;
   margin-top: -6px;
   border-color: transparent transparent transparent black;
 }
-g-tooltip[position="right"]::after {
+g-tooltip[arrow="right"]::after {
   top: 50%;
   right: 100%;
   margin-top: -6px;

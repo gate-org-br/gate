@@ -18,6 +18,7 @@ class Dialog extends Modal
 		head.setAttribute("tabindex", "1");
 		head.focus();
 
+
 		var caption = head.appendChild(window.top.document.createElement('label'));
 		if (options && options.title)
 			caption.innerHTML = options.title;
@@ -53,6 +54,19 @@ class Dialog extends Modal
 				iframe.height = height;
 			}
 			return true;
+		};
+
+		iframe._newCommand = function (icon, name, action)
+		{
+			var link = window.top.document.createElement("a");
+			link.title = name;
+			link.innerHTML = icon;
+			link.onclick = action;
+
+			if (close)
+				head.insertBefore(link, close);
+			else
+				head.appendChild(link);
 		};
 
 		iframe.addEventListener("load", () =>
@@ -134,6 +148,11 @@ class Dialog extends Modal
 		this.hide();
 	}
 
+	static command(icon, name, action)
+	{
+		if (window.frameElement && window.frameElement._newCommand)
+			window.frameElement._newCommand(icon, name, action);
+	}
 }
 
 window.addEventListener("load", function ()
@@ -144,7 +163,6 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 			event.stopPropagation();
-
 			var parameters =
 				CSV.parse(this.getAttribute('data-get'))
 				.map(e => e.trim())
@@ -188,12 +206,10 @@ window.addEventListener("load", function ()
 			event.stopPropagation();
 		});
 	});
-
 	Array.from(document.querySelectorAll('*[data-ret]')).forEach(function (element)
 	{
 		element.onmouseover = () => element.focus();
 		element.onmouseout = () => element.blur();
-
 		element.onclick = function ()
 		{
 			var ret = CSV.parse(this.getAttribute("data-ret")).map(e => e.trim());
@@ -208,7 +224,6 @@ window.addEventListener("load", function ()
 			return true;
 		};
 	});
-
 	Array.from(document.querySelectorAll('a.Hide')).forEach(function (element)
 	{
 		element.onclick = function ()
