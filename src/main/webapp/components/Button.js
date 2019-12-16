@@ -292,13 +292,16 @@ class Button
 
 	execute()
 	{
-		var form = this.button.parentNode;
-		while (form && form.tagName.toLowerCase() !== 'form')
-			form = form.parentNode;
-
-		form.appendChild(this.button);
-		this.button.click();
-		form.removeChild(this.button);
+		if (!this.button.parentNode)
+		{
+			if (!this.creator)
+				throw "Attempt to trigger a button without a form";
+			var form = this.creator.closest("form");
+			form.appendChild(this.button);
+			this.button.click();
+			form.removeChild(this.button);
+		} else
+			this.button.click();
 	}
 }
 
