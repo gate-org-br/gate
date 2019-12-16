@@ -272,9 +272,13 @@ class Link
 
 	execute()
 	{
-		document.body.appendChild(this.link);
-		this.link.click();
-		document.body.removeChild(this.link);
+		if (!this.link.parentNode)
+		{
+			document.body.appendChild(this.link);
+			this.link.click();
+			document.body.removeChild(this.link);
+		} else
+			this.link.click();
 	}
 }
 

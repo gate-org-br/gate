@@ -1,13 +1,13 @@
 window.addEventListener("load", function ()
 {
-	var change = function ()
+	var change = function (event)
 	{
 		switch (this.getAttribute("data-method") ?
 			this.getAttribute("data-method")
 			.toLowerCase() : "get")
 		{
 			case "get":
-				new Link(document.createElement("a"))
+				new Link(document.createElement("a"), event.target)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
@@ -17,7 +17,7 @@ window.addEventListener("load", function ()
 					.execute();
 				break;
 			case "post":
-				new Button(document.createElement("button"))
+				new Button(document.createElement("button"), event.target)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))

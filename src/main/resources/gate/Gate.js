@@ -2751,9 +2751,13 @@ class Link
 
 	execute()
 	{
-		document.body.appendChild(this.link);
-		this.link.click();
-		document.body.removeChild(this.link);
+		if (!this.link.parentNode)
+		{
+			document.body.appendChild(this.link);
+			this.link.click();
+			document.body.removeChild(this.link);
+		} else
+			this.link.click();
 	}
 }
 
@@ -3068,13 +3072,16 @@ class Button
 
 	execute()
 	{
-		var form = this.button.parentNode;
-		while (form && form.tagName.toLowerCase() !== 'form')
-			form = form.parentNode;
-
-		form.appendChild(this.button);
-		this.button.click();
-		form.removeChild(this.button);
+		if (!this.button.parentNode)
+		{
+			if (!this.creator)
+				throw "Attempt to trigger a button without a form";
+			var form = this.creator.closest("form");
+			form.appendChild(this.button);
+			this.button.click();
+			form.removeChild(this.button);
+		} else
+			this.button.click();
 	}
 }
 
@@ -3444,14 +3451,14 @@ window.addEventListener("load", function ()
 });
 window.addEventListener("load", function ()
 {
-	var change = function ()
+	var change = function (event)
 	{
 		switch (this.getAttribute("data-method") ?
 			this.getAttribute("data-method")
 			.toLowerCase() : "get")
 		{
 			case "get":
-				new Link(document.createElement("a"))
+				new Link(document.createElement("a"), event.target)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
@@ -3461,7 +3468,7 @@ window.addEventListener("load", function ()
 					.execute();
 				break;
 			case "post":
-				new Button(document.createElement("button"))
+				new Button(document.createElement("button"), event.target)
 					.setAction(this.getAttribute("data-action"))
 					.setTarget(this.getAttribute("data-target"))
 					.setTitle(this.getAttribute("title"))
@@ -4833,6 +4840,20 @@ class IconPicker extends Picker
 		icon("2281");
 		icon("2282");
 		icon("2283");
+		icon("2300");
+		icon("2301");
+		icon("2302");
+		icon("2303");
+		icon("2304");
+		icon("2305");
+		icon("2306");
+		icon("2307");
+		icon("2308");
+		icon("2309");
+		icon("2310");
+		icon("2311");
+		icon("2312");
+		icon("2313");
 
 		this.commit().addEventListener("click", () => alert("selecione um ícone"));
 
