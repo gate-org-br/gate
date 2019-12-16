@@ -25,7 +25,6 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	private int c = Integer.MAX_VALUE;
 	private final StringBuilder string = new StringBuilder();
 	private static final Optional EMPTY = Optional.of(List.of());
-	private final StringBuilder currentLine = new StringBuilder();
 
 	/**
 	 * Constructs a new CSVParser for the specified Reader.
@@ -45,8 +44,6 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	 */
 	public Optional<List<String>> parseLine() throws IOException
 	{
-		currentLine.setLength(0);
-
 		if (c == -1)
 			return Optional.empty();
 
@@ -65,7 +62,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	 *
 	 * @param lines the number of lines to be skipped
 	 *
-	 * @return the number of lines not skiped
+	 * @return the number of lines not skipped
 	 *
 	 * @throws java.io.IOException If an I/O error occurs
 	 */
@@ -96,21 +93,9 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		return lineNumber;
 	}
 
-	/**
-	 * Return the current line.
-	 *
-	 * @return the current line
-	 */
-	public String getCurrentLine()
-	{
-		return currentLine.toString();
-	}
-
 	public void read() throws IOException
 	{
 		c = reader.read();
-		if (c != '\n' && c != '\r' && c != -1)
-			currentLine.append((char) c);
 	}
 
 	private List<String> line() throws IOException
