@@ -1,10 +1,10 @@
 package gate.util;
 
-import gate.lang.csv.CSVParser;
-import gate.lang.csv.CSVFormatter;
-import gate.error.ConversionException;
-import gate.lang.property.Property;
 import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.lang.csv.CSVFormatter;
+import gate.lang.csv.CSVParser;
+import gate.lang.property.Property;
 import gate.type.DataFile;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
@@ -59,7 +58,7 @@ public class Backup<T>
 		{
 			for (T obj : objs)
 				csv.writeLine(properties.stream().map(e -> e.getValue(obj))
-						.map(Converter::toString).collect(Collectors.toList()));
+					.map(Converter::toString).collect(Collectors.toList()));
 		}
 	}
 
@@ -86,8 +85,8 @@ public class Backup<T>
 		{
 			List<T> objs = new ArrayList<>();
 			for (Optional<List<String>> optional = CSV.parseLine();
-					optional.isPresent();
-					optional = CSV.parseLine())
+				optional.isPresent();
+				optional = CSV.parseLine())
 			{
 				List<String> values = optional.get();
 				if (!values.isEmpty())
@@ -107,7 +106,7 @@ public class Backup<T>
 			}
 			return objs;
 		} catch (NoSuchMethodException | SecurityException | InstantiationException | IOException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+			| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
 		{
 			throw new ConversionException("Erro ao interpretar CSV: " + ex.getMessage());
 		}
