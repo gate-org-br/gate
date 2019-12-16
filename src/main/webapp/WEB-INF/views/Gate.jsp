@@ -4,6 +4,8 @@
 	<body>
 		<g:login module="gateconsole.screen">
 
+
+
 			<div class="Login">
 				<div>
 					<div>
@@ -78,6 +80,7 @@
 					</g:iterator>
 				</script>
 			</g:if>
+
 		</g:login>
 	</body>
 </g:template>

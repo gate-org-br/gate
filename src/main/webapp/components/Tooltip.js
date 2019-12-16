@@ -2,61 +2,66 @@
 
 class Tooltip extends HTMLElement
 {
-	constructor(element, position, content)
+	constructor(element, orientation, content)
 	{
 		super();
-		this.element = element;
-		this.setAttribute("position", position);
+		this._element = element;
+		this._orientation = orientation;
 
 		switch (typeof content)
 		{
 			case "string":
 				var label = document.createElement("label");
 				label.innerHTML = content;
-				this.content = label;
+				this._content = label;
 				break;
 			case "object":
 				if (content instanceof HTMLElement)
-					this.content = content;
+					this._content = content;
 				else
-					this.content = DefinitionList.of(content);
+					this._content = DefinitionList.of(content);
 				break;
 		}
 	}
 
 	connectedCallback()
 	{
-		this.appendChild(this.content);
+		this.appendChild(this._content);
 		var tooltip = this.getBoundingClientRect();
-		var element = this.element.getBoundingClientRect();
+		var element = this._element.getBoundingClientRect();
+		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
 
-		switch (this.getAttribute("position"))
+		switch (this._orientation || "vertical")
 		{
-			case "top":
-				this.style.top = element.top - tooltip.height - 10 + "px";
-				this.style.left = element.x + element.width / 2 - tooltip.width / 2 + "px";
+
+			case "vertical":
+				if (element.center.y >= (window.innerHeight / 2))
+					this.show(element.center.x - tooltip.width / 2, element.top - tooltip.height - 10, "top");
+				else
+					this.show(element.center.x - tooltip.width / 2, element.bottom + 10, "bottom");
 				break;
-			case "bottom":
-				this.style.top = element.bottom + 10 + "px";
-				this.style.left = element.x + element.width / 2 - tooltip.width / 2 + "px";
-				break;
-			case "left":
-				this.style.top = element.y + element.height / 2 - (tooltip.height / 2) + "px";
-				this.style.left = element.left - tooltip.width - 10 + "px";
-				break;
-			case "right":
-				this.style.top = element.y + element.height / 2 - tooltip.height / 2 + "px";
-				this.style.left = element.x + element.width + 10 + "px";
+			case "horizontal":
+				if (element.center.x >= (window.innerWidth / 2))
+					this.show(element.left - tooltip.width - 10, element.center.y - (tooltip.height / 2), "left");
+				else
+					this.show(element.x + element.width + 10, element.center.y - tooltip.height / 2, "right");
 				break;
 		}
-
 	}
 
-	static show(element, position, content)
+	show(x, y, arrow)
+	{
+		this.style.top = y + "px";
+		this.style.left = x + "px";
+		this.setAttribute("arrow", arrow);
+		this.style.visibility = "visible";
+	}
+
+	static show(element, orientation, content)
 	{
 		if (this.instance)
 			Tooltip.hide();
-		this.instance = new Tooltip(element, position, content);
+		this.instance = new Tooltip(element, orientation, content);
 		document.body.appendChild(this.instance);
 	}
 
@@ -82,7 +87,7 @@ window.addEventListener("load", function ()
 			var object = e.getAttribute("data-tooltip");
 			if (/ *[{"[].*[}"\]] */.test(object))
 				object = JSON.parse(object);
-			Tooltip.show(e, e.getAttribute("data-tooltip-position") || "bottom", object)
+			Tooltip.show(e, e.getAttribute("data-tooltip-orientation"), object)
 		});
 	});
 });

@@ -91,6 +91,8 @@ module.exports = function (grunt)
 							"src/main/webapp/components/AutoClick.js",
 							"src/main/webapp/components/DefinitionList.js",
 							"src/main/webapp/components/AppEvents.js",
+							"src/main/webapp/components/Tooltip.js",
+							"src/main/webapp/components/Checkable.js"
 						],
 						dest: 'src/main/resources/gate/Gate.js'
 					}
