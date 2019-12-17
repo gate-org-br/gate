@@ -4854,6 +4854,7 @@ class IconPicker extends Picker
 		icon("3011");
 		icon("3012");
 		icon("3013");
+		icon("3014");
 
 		this.commit().addEventListener("click", () => alert("selecione um ícone"));
 
@@ -5516,6 +5517,8 @@ class Dialog extends Modal
 		if (options && options.title)
 			caption.innerHTML = options.title;
 
+		this.rename = c => caption.innerHTML = c;
+
 		if (!this.blocked())
 		{
 			var close = head.appendChild
@@ -5645,6 +5648,18 @@ class Dialog extends Modal
 	{
 		if (window.frameElement && window.frameElement._newCommand)
 			window.frameElement._newCommand(icon, name, action);
+	}
+
+	static rename(caption)
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			window.frameElement.dialog.rename(caption);
+	}
+
+	static hide()
+	{
+		if (window.frameElement && window.frameElement._newCommand)
+			window.frameElement.dialog.hide();
 	}
 }
 
