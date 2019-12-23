@@ -1,0 +1,30 @@
+g-command-dialog
+{
+	top: 0;
+	left: 0;
+	z-index: 1;
+	display: flex;
+	position: absolute;
+	align-items: center;
+	justify-content: center;
+	width: calc(100vw - 2px);
+	height: calc(100vh - 4px);
+	max-height: calc(100vh - 4px);
+
+	> div
+	{
+		width: 50%;
+		height: 50%;
+		padding: 8px;
+		display: flex;
+		overflow-y: auto;
+		min-width: 300px;
+		border-radius: 5px;
+		align-items: stretch;
+		flex-direction: column;
+		justify-content: flex-start;
+		border: 4px solid @base_shaded;
+		background-image: @main_gradient;
+		box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+	}
+}

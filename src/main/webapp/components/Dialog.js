@@ -1,4 +1,6 @@
-/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments */
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen */
+
+
 
 class Dialog extends Modal
 {
@@ -18,21 +20,34 @@ class Dialog extends Modal
 		head.setAttribute("tabindex", "1");
 		head.focus();
 
-
 		var caption = head.appendChild(window.top.document.createElement('label'));
 		if (options && options.title)
 			caption.innerHTML = options.title;
+
+
+		this.customCommands = head.appendChild(document.createElement("g-commands"));
+
+		if (options && options.navigator && options.navigator.length)
+		{
+			var navigator = head.appendChild(document.adoptNode(new NavBar(options.navigator)));
+			navigator.addEventListener("go", event => iframe.setAttribute('src', event.detail.target));
+
+		}
+
+		this.systemCommands = head.appendChild(document.createElement("g-commands"));
+		this.systemCommands.style.width = "90px";
+		this.systemCommands.style.minWidth = "90px";
+		this.systemCommands.style.maxWidth = "90px";
 
 		this.rename = c => caption.innerHTML = c;
 
 		if (!this.blocked())
 		{
-			var close = head.appendChild
-				(window.top.document.createElement("a"));
-			close.title = 'Fechar janela';
-			close.innerHTML = "&#x1011;";
-			close.onclick = () => this.hide();
+			this.systemCommands.add("&#x1011;", 'Fechar janela', () => this.hide());
+			this.systemCommands.add(FullScreen.status() ? "&#x3016;" : "&#x3015;", 'Tela cheia',
+				element => element.icon(FullScreen.switch(dialog) ? "&#x3016;" : "&#x3015;"));
 		}
+
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
@@ -56,19 +71,6 @@ class Dialog extends Modal
 				iframe.height = height;
 			}
 			return true;
-		};
-
-		iframe._newCommand = function (icon, name, action)
-		{
-			var link = window.top.document.createElement("a");
-			link.title = name;
-			link.innerHTML = icon;
-			link.onclick = action;
-
-			if (close)
-				head.insertBefore(link, close);
-			else
-				head.appendChild(link);
 		};
 
 		iframe.addEventListener("load", () =>
@@ -115,16 +117,11 @@ class Dialog extends Modal
 			iframe.backgroundImage = "none";
 		});
 
-		if (options && options.navigator)
-		{
-			var navigator = new NavBar(options.navigator);
-			head.appendChild(navigator.element());
-			navigator.element().addEventListener("go",
-				event => iframe.setAttribute('src', event.detail.target));
-			if (options.target)
+		if (options && options.target)
+			if (options.navigator)
 				navigator.go(options.target);
-		} else if (options && options.target)
-			iframe.setAttribute('src', options.target);
+			else
+				iframe.setAttribute('src', options.target);
 	}
 
 	get()
@@ -150,12 +147,6 @@ class Dialog extends Modal
 		this.hide();
 	}
 
-	static command(icon, name, action)
-	{
-		if (window.frameElement && window.frameElement._newCommand)
-			window.frameElement._newCommand(icon, name, action);
-	}
-
 	static rename(caption)
 	{
 		if (window.frameElement && window.frameElement.dialog)
@@ -164,7 +155,7 @@ class Dialog extends Modal
 
 	static hide()
 	{
-		if (window.frameElement && window.frameElement._newCommand)
+		if (window.frameElement && window.frameElement._command)
 			window.frameElement.dialog.hide();
 	}
 }

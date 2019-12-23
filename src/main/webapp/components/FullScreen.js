@@ -1,64 +1,39 @@
-window.addEventListener("load", function ()
+class FullScreen
 {
-	document.addEventListener("fullscreenchange", function ()
+	static status()
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.fullscreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		return false
+			|| document.fullscreenElement
+			|| document.mozFullScreenElement
+			|| document.webkitFullscreenElement;
+	}
 
-	document.addEventListener("mozfullscreenchange", function ()
+	static switch (element)
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.mozFullScreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		return FullScreen.status()
+			? FullScreen.exit()
+			: FullScreen.enter(element);
+	}
 
-	document.addEventListener("webkitfullscreenchange", function ()
+	static enter(element)
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.webkitIsFullScreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		if (element.requestFullscreen)
+			element.requestFullscreen();
+		else if (element.mozRequestFullScreen)
+			element.mozRequestFullScreen();
+		else if (element.webkitRequestFullScreen)
+			element.webkitRequestFullScreen();
+		return true;
+	}
 
-	document.addEventListener("msfullscreenchange", function ()
+	static exit()
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.msFullscreenElement ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
-
-	Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-	{
-		e.innerHTML =
-				!document.fullscreen && !document.mozFullScreen
-				&& !document.webkitIsFullScreen && !document.msFullscreenElement
-				? "<i >&#x2250;</i>" : "<i >&#x2251;</i>";
-
-		e.addEventListener("click", function ()
-		{
-			if (!document.fullscreen && !document.mozFullScreen
-					&& !document.webkitIsFullScreen && !document.msFullscreenElement)
-			{
-				if (document.documentElement.requestFullscreen)
-					document.documentElement.requestFullscreen();
-				else if (document.documentElement.mozRequestFullScreen)
-					document.documentElement.mozRequestFullScreen();
-				else if (document.documentElement.webkitRequestFullScreen)
-					document.documentElement.webkitRequestFullScreen();
-			} else
-			{
-				if (document.exitFullscreen)
-					document.exitFullscreen();
-				else if (document.webkitExitFullscreen)
-					document.webkitExitFullscreen();
-				else if (document.mozCancelFullScreen)
-					document.mozCancelFullScreen();
-			}
-		});
-	});
-});
+		if (document.exitFullscreen)
+			document.exitFullscreen();
+		else if (document.webkitExitFullscreen)
+			document.webkitExitFullscreen();
+		else if (document.mozCancelFullScreen)
+			document.mozCancelFullScreen();
+		return false;
+	}
+}

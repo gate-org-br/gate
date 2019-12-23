@@ -3,6 +3,9 @@ class Modal
 {
 	constructor(options)
 	{
+		this._private = {};
+		this._private.options = options;
+
 		this.preventBodyScroll = e => e.preventDefault();
 
 		var element = window.top.document.createElement('div');

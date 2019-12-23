@@ -2461,39 +2461,165 @@ button {
   font-weight: normal;
   text-decoration: none;
 }
-div.NavBar {
+g-command {
+  speak: none;
+  height: 24px;
+  display: flex;
+  cursor: pointer;
+  font-size: 20px;
+  font-style: normal;
+  font-family: 'gate';
+  font-weight: normal;
+  align-items: center;
+  font-variant: normal;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+g-commands > g-command {
+  width: 32px;
+  margin: 2px;
+  line-height: 1;
+  color: inherit;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+}
+g-commands > g-command:hover {
+  color: #FFFACD;
+  transform: scale(1.2);
+}
+g-command-dialog > div > g-command {
+  width: 100%;
+  color: black;
+  padding: 8px;
+  height: 40px;
+  min-height: 40px;
+  justify-content: flex-start;
+  transition: all 0.2s ease-in-out;
+}
+g-command-dialog > div > g-command:nth-child(even) {
+  background-color: white;
+}
+g-command-dialog > div > g-command:nth-child(odd) {
+  background-color: #f5f6f8;
+}
+g-command-dialog > div > g-command:hover {
+  background-color: #FFFACD;
+}
+g-command-dialog > div > g-command:after {
+  content: attr(title);
+  margin-left: 8px;
+}
+g-commands {
+  color: white;
+  height: 30px;
+  outline: none;
+  display: flex;
+  font-size: 20px;
+  flex-wrap: wrap;
+  overflow: hidden;
+  font-size: inherit;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+}
+g-commands > a {
+  width: 16px;
+  color: inherit;
+}
+g-commands > a:before {
   display: flex;
   color: inherit;
-  font-size: inherit;
-  align-items: stretch;
-  background-color: transparent;
-  justify-content: space-between;
-}
-@media only screen and (max-width: 640px) {
-  div.NavBar {
-    display: none;
-  }
-}
-div.NavBar > a {
-  width: 48px;
-  display: flex;
-  color: inherit;
-  font-size: inherit;
-  font-family: "gate";
+  font-size: 16px;
+  cursor: pointer;
+  content: "\3018";
+  font-weight: normal;
+  font-family: 'gate';
   align-items: center;
   justify-content: center;
 }
-div.NavBar > a[navbar-disabled="true"] {
+body > g-commands {
+  height: 40px;
+  padding: 4px;
+  min-height: 40px;
+  flex-basis: 40px;
+  font-weight: bold;
+  background-color: #788185;
+}
+g-command-dialog {
+  top: 0;
+  left: 0;
+  z-index: 1;
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  width: calc(100vw - 2px);
+  height: calc(100vh - 4px);
+  max-height: calc(100vh - 4px);
+}
+g-command-dialog > div {
+  width: 50%;
+  height: 50%;
+  padding: 8px;
+  display: flex;
+  overflow-y: auto;
+  min-width: 300px;
+  border-radius: 5px;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 4px solid #788185;
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+g-nav-bar {
+  width: 140px;
+  height: 24px;
+  display: flex;
+  color: inherit;
+  cursor: pointer;
+  font-size: 12px;
+  min-width: 140px;
+  max-width: 140px;
+  border-radius: 5px;
+  align-items: center;
+  background-color: transparent;
+  justify-content: space-between;
+  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+g-nav-bar:hover {
+  transform: scale(1.1);
+}
+g-nav-bar > a {
+  width: 20px;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  font-family: 'gate';
+  align-items: center;
+  text-decoration: none;
+  justify-content: center;
+}
+g-nav-bar > a[navbar-disabled="true"] {
   opacity: 0.2;
   cursor: not-allowed;
   pointer-events: none;
 }
-div.NavBar > label {
+g-nav-bar > label {
   display: flex;
   color: inherit;
-  font-size: inherit;
+  cursor: inherit;
+  font-size: 12px;
   align-items: center;
   justify-content: center;
+}
+@media only screen and (max-width: 640px) {
+  g-nav-bar {
+    display: none;
+  }
 }
 div.Modal {
   top: 0;
@@ -2574,34 +2700,30 @@ div.Dialog {
 }
 div.Dialog > div:first-child {
   color: white;
-  padding: 8px;
+  padding: 0px;
   outline: none;
   display: flex;
   font-size: 20px;
+  min-height: 40px;
   flex-basis: 40px;
   font-weight: bold;
-  align-items: stretch;
+  align-items: center;
   background-color: #788185;
   justify-content: space-between;
 }
+div.Dialog > div:first-child > * {
+  margin-left: 4px;
+  margin-right: 4px;
+}
 div.Dialog > div:first-child > label {
   flex-grow: 1;
+  height: 22px;
+  min-height: 22px;
   display: flex;
   color: inherit;
   font-size: inherit;
   align-items: center;
   justify-content: flex-start;
-}
-div.Dialog > div:first-child > a {
-  order: 1;
-  display: flex;
-  color: inherit;
-  cursor: pointer;
-  flex-basis: 48px;
-  font-family: gate;
-  font-size: inherit;
-  align-items: center;
-  justify-content: center;
 }
 div.Dialog > div:last-child {
   flex-grow: 1;
@@ -3126,7 +3248,6 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-weight: bold;
   text-align: center;
 }
-g-coolbar,
 div.COOLBAR,
 div.Coolbar {
   margin: 0;
@@ -3140,31 +3261,25 @@ div.Coolbar {
   border-radius: 5px;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
 }
-g-coolbar:first-child,
 div.COOLBAR:first-child,
 div.Coolbar:first-child {
   margin-top: 0px;
 }
-g-coolbar:last-child,
 div.COOLBAR:last-child,
 div.Coolbar:last-child {
   margin-bottom: 0px;
 }
-g-coolbar:only-child,
 div.COOLBAR:only-child,
 div.Coolbar:only-child {
   margin-bottom: 0px;
 }
-g-coolbar > *,
 div.COOLBAR > *,
 div.Coolbar > * {
   margin: 2px;
   height: 36px;
 }
-g-coolbar > a,
 div.COOLBAR > a,
 div.Coolbar > a,
-g-coolbar > button,
 div.COOLBAR > button,
 div.Coolbar > button {
   color: black;
@@ -3183,75 +3298,57 @@ div.Coolbar > button {
   justify-content: space-between;
   background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
-g-coolbar > a:hover,
 div.COOLBAR > a:hover,
 div.Coolbar > a:hover,
-g-coolbar > button:hover,
 div.COOLBAR > button:hover,
 div.Coolbar > button:hover {
   background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
 }
-g-coolbar > a:focus,
 div.COOLBAR > a:focus,
 div.Coolbar > a:focus,
-g-coolbar > button:focus,
 div.COOLBAR > button:focus,
 div.Coolbar > button:focus {
   outline: none;
   border: 2px solid #FFFACD;
 }
-g-coolbar > a.Delete,
 div.COOLBAR > a.Delete,
 div.Coolbar > a.Delete,
-g-coolbar > button.Delete,
 div.COOLBAR > button.Delete,
 div.Coolbar > button.Delete {
   color: #660000;
 }
-g-coolbar > a.Commit,
 div.COOLBAR > a.Commit,
 div.Coolbar > a.Commit,
-g-coolbar > button.Commit,
 div.COOLBAR > button.Commit,
 div.Coolbar > button.Commit {
   color: #006600;
 }
-g-coolbar > a.Action,
 div.COOLBAR > a.Action,
 div.Coolbar > a.Action,
-g-coolbar > button.Action,
 div.COOLBAR > button.Action,
 div.Coolbar > button.Action {
   color: #000066;
 }
-g-coolbar > a.Cancel,
 div.COOLBAR > a.Cancel,
 div.Coolbar > a.Cancel,
-g-coolbar > button.Cancel,
 div.COOLBAR > button.Cancel,
 div.Coolbar > button.Cancel {
   color: #660000;
   float: left;
 }
-g-coolbar > a.Return,
 div.COOLBAR > a.Return,
 div.Coolbar > a.Return,
-g-coolbar > button.Return,
 div.COOLBAR > button.Return,
 div.Coolbar > button.Return {
   color: #660000;
   float: left;
 }
-g-coolbar > a > i,
 div.COOLBAR > a > i,
 div.Coolbar > a > i,
-g-coolbar > button > i,
 div.COOLBAR > button > i,
 div.Coolbar > button > i,
-g-coolbar > a > span,
 div.COOLBAR > a > span,
 div.Coolbar > a > span,
-g-coolbar > button > span,
 div.COOLBAR > button > span,
 div.Coolbar > button > span {
   order: 1;
@@ -3263,20 +3360,16 @@ div.Coolbar > button > span {
   align-items: center;
   justify-content: center;
 }
-g-coolbar > a:only-child,
 div.COOLBAR > a:only-child,
 div.Coolbar > a:only-child,
-g-coolbar > button:only-child,
 div.COOLBAR > button:only-child,
 div.Coolbar > button:only-child {
   float: right;
 }
-g-coolbar > progress,
 div.COOLBAR > progress,
 div.Coolbar > progress {
   width: calc(100% - 4px);
 }
-g-coolbar > label,
 div.COOLBAR > label,
 div.Coolbar > label {
   float: left;
@@ -3286,7 +3379,6 @@ div.Coolbar > label {
   display: inline-flex;
   justify-content: flex-start;
 }
-g-coolbar > hr,
 div.COOLBAR > hr,
 div.Coolbar > hr {
   width: 12px;
@@ -3317,27 +3409,81 @@ div.Coolbar[data-overflow] > button > i {
   font-size: 16px;
   margin-left: 0px;
 }
-g-coolbar[data-overflow] {
-  padding: 0;
+g-coolbar {
+  width: 100%;
+  height: 48px;
   display: flex;
-  font-size: 32px;
+  overflow: hidden;
+  border-radius: 5px;
+  align-items: stretch;
+  justify-content: space-between;
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+}
+g-coolbar > div {
+  flex-grow: 1;
+  padding: 4px;
+  display: block;
+  overflow: auto;
+  background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+}
+g-coolbar > div > * {
+  margin: 2px;
+  height: 36px;
+}
+g-coolbar > div > a,
+g-coolbar > div > button {
+  color: black;
+  margin: 2px;
+  width: auto;
+  padding: 4px;
+  float: right;
+  display: flex;
+  font-size: 10px;
   cursor: pointer;
+  min-width: 90px;
+  font-weight: bold;
+  border-radius: 5px;
   align-items: center;
-  justify-content: center;
+  border: 1px solid #CCCCCC;
+  justify-content: space-between;
+  background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
-g-coolbar[data-overflow] > button,
-g-coolbar[data-overflow] > a {
-  display: none;
-}
-g-coolbar[data-overflow]::after {
-  padding: 0;
-  display: flex;
-  content: "---";
-  align-items: center;
-  justify-content: center;
-}
-g-coolbar[data-overflow]:hover {
+g-coolbar > div > a:hover,
+g-coolbar > div > button:hover {
   background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
+}
+g-coolbar > div > a:focus,
+g-coolbar > div > button:focus {
+  outline: none;
+  border: 2px solid #FFFACD;
+}
+g-coolbar > div > a > i,
+g-coolbar > div > button > i,
+g-coolbar > div > a > span,
+g-coolbar > div > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar > a {
+  display: none;
+  cursor: pointer;
+  flex-basis: 32px;
+  font-family: 'gate';
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
+}
+g-coolbar > a:hover {
+  background-image: linear-gradient(to bottom, #d9d5e1 0%, #9a94a4 100%);
+}
+g-coolbar > a > * {
+  display: none;
 }
 g-coolbar-dialog {
   top: 0;
@@ -3356,11 +3502,14 @@ g-coolbar-dialog > div {
   display: flex;
   overflow-y: auto;
   min-width: 300px;
+  border-radius: 5px;
   align-items: stretch;
   flex-direction: column;
   justify-content: center;
   max-height: calc(100vh - 20px);
+  border: 4px solid #788185;
   background-image: linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%);
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
 g-coolbar-dialog > div > a,
 g-coolbar-dialog > div > button {

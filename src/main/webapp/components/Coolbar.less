@@ -1,4 +1,3 @@
-g-coolbar,
 div.COOLBAR,
 div.Coolbar { .margin();
 	      width: 100%;
@@ -92,25 +91,75 @@ div.Coolbar[data-overflow] {
 	}
 }
 
-g-coolbar[data-overflow]
+
+g-coolbar
 {
-	padding: 0;
+	width: 100%;
+	height: 48px;
 	display: flex;
-	font-size: 32px;
-	cursor: pointer;
-	align-items: center;
-	justify-content: center;
+	overflow: hidden;
+	border-radius: 5px;
+	align-items: stretch;
+	justify-content: space-between;
+	background-image: @main_gradient;
 
-	> button, > a { display: none; }
-
-	&::after
+	> div
 	{
-		padding: 0;
-		display: flex;
-		content: "---";
-		align-items: center;
-		justify-content: center;
+
+		> * { margin: 2px;
+		      height: 36px; }
+
+		flex-grow: 1;
+		padding: 4px;
+		display:block;
+		overflow: auto;
+		background-image: @main_gradient;
+
+		> a ,
+		> button { color: black;
+			   margin: 2px;
+			   width: auto;
+			   padding: 4px;
+			   float: right;
+			   display: flex;
+			   font-size: 10px;
+			   cursor: pointer;
+			   min-width: 90px;
+			   font-weight: bold;
+			   border-radius: 5px;
+			   align-items: center;
+			   border: 1px solid #CCCCCC;
+			   justify-content: space-between;
+			   background-image: @neutral_gradient;
+
+
+			   &:hover { background-image: @acent_gradient }
+			   &:focus { outline: none; border: 2px solid @hovered; }
+
+			   > i,
+			   > span { order: 1;
+				    display: flex;
+				    color: inherit;
+				    cursor: inherit;
+				    font-size: 12px;
+				    margin-left: 4px;
+				    align-items: center;
+				    justify-content: center; }
+		}
 	}
 
-	&:hover { background-image: @acent_gradient }
+
+	> a
+	{
+		display: none;
+		cursor: pointer;
+		flex-basis: 32px;
+		font-family: 'gate';
+		align-items: center;
+		justify-content: center;
+		background-image: @neutral_gradient;
+		&:hover { background-image: @acent_gradient }
+
+		> * { display: none }
+	}
 }

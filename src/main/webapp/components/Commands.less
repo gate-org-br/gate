@@ -1,0 +1,39 @@
+g-commands
+{
+	color: white;
+	height: 30px;
+	outline: none;
+	display: flex;
+	font-size: 20px;
+	flex-wrap: wrap;
+	overflow: hidden;
+	font-size: inherit;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: row-reverse;
+
+	> a
+	{
+		width: 16px;
+		color: inherit;
+		&:before { display: flex;
+			   color: inherit;
+			   font-size: 16px;
+			   cursor: pointer;
+			   content: "\3018";
+			   font-weight: normal;
+			   font-family: 'gate';
+			   align-items: center;
+			   justify-content: center;}
+	}
+}
+
+body > g-commands
+{
+	height: 40px;
+	padding: 4px;
+	min-height: 40px;
+	flex-basis: 40px;
+	font-weight: bold;
+	background-color: @base_shaded;
+}
