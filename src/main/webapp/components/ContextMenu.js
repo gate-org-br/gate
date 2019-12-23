@@ -6,7 +6,8 @@ class ContextMenu extends HTMLElement
 	{
 		super();
 		this._modal = new Modal();
-		this._items = Array.from(arguments);
+		this._items = Array.isArray(arguments[0]) ? arguments[0] :
+			Array.from(arguments[0]);
 	}
 
 	connectedCallback()

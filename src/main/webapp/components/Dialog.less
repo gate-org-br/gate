@@ -20,33 +20,29 @@ div.Dialog
 	> div:first-child
 		{
 		color: white;
-		padding: 8px;
+		padding: 0px;
 		outline: none;
 		display: flex;
 		font-size: 20px;
+		min-height: 40px;
 		flex-basis: 40px;
 		font-weight: bold;
-		align-items: stretch;
+		align-items: center;
 		background-color: @base_shaded;
 		justify-content: space-between;
 
+		> * { margin-left:4px;
+		      margin-right: 4px; }
 
 		> label { flex-grow: 1;
+			  height: 22px;
+			  min-height: 22px;
 			  display: flex;
 			  color: inherit;
 			  font-size: inherit;
 			  align-items: center;
 			  justify-content: flex-start; }
 
-		> a { order: 1;
-		      display: flex;
-		      color: inherit;
-		      cursor: pointer;
-		      flex-basis: 48px;
-		      font-family: gate;
-		      font-size: inherit;
-		      align-items: center;
-		      justify-content: center; }
 	}
 
 	> div:last-child { flex-grow: 1;

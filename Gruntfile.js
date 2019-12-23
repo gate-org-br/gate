@@ -34,6 +34,10 @@ module.exports = function (grunt)
 							"src/main/webapp/components/Link.js",
 							"src/main/webapp/components/Button.js",
 
+							"src/main/webapp/components/CommandDialog.js",
+							"src/main/webapp/components/Command.js",
+							"src/main/webapp/components/Commands.js",
+
 							"src/main/webapp/components/Clipboard.js",
 							"src/main/webapp/components/ContextMenuItem.js",
 							"src/main/webapp/components/ContextMenu.js",

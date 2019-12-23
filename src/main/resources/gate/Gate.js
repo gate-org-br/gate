@@ -1947,6 +1947,9 @@ class Modal
 {
 	constructor(options)
 	{
+		this._private = {};
+		this._private.options = options;
+
 		this.preventBodyScroll = e => e.preventDefault();
 
 		var element = window.top.document.createElement('div');
@@ -3104,6 +3107,153 @@ window.addEventListener("load", function ()
 	});
 });
 
+/* global customElements */
+
+class CommandDialog extends HTMLElement
+{
+	constructor(elements)
+	{
+		super();
+		this._elements = elements;
+		this.addEventListener("click", e =>
+		{
+			e.stopPropagation();
+			window.setTimeout(() => this.parentNode.removeChild(this), 0);
+		});
+	}
+
+	connectedCallback()
+	{
+		var elements = this.appendChild(document.createElement("div"));
+		this._elements.forEach(e =>
+		{
+			var clone = e.cloneNode(true);
+			clone.addEventListener("click", () => e.click());
+			clone.addEventListener("click", () => this.click());
+			elements.appendChild(clone);
+		});
+	}
+}
+
+customElements.define('g-command-dialog', CommandDialog);
+/* global customElements */
+
+class Command extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.enabled = true;
+		this._private.visible = true;
+	}
+
+	enabled()
+	{
+		if (!arguments.length)
+			return this._private.enabled;
+
+		this._private.enabled = arguments[0];
+		this.style.opacity = this._private.enabled ? "1.0" : "0.2";
+		this.style.pointerEvents = this._private.enabled ? "all" : "none";
+		return this;
+	}
+
+	visible()
+	{
+		if (!arguments.length)
+			return this._private.visible;
+
+		this._private.visible = arguments[0];
+		this.style.display = this._private.visible ? "" : "none";
+		return this;
+	}
+
+	icon()
+	{
+		if (!arguments.length)
+			return this.innerHTML;
+
+		this.innerHTML = arguments[0];
+		return this;
+	}
+
+	action()
+	{
+		if (!arguments.length)
+			return this.onclick;
+
+		this.onclick = () => arguments[0](this);
+		return this;
+	}
+
+	name()
+	{
+		if (!arguments.length)
+			return this.title;
+
+		this.title = arguments[0];
+		return this;
+	}
+}
+
+customElements.define('g-command', Command);
+/* global customElements */
+
+class Commands extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	add(icon, name, action)
+	{
+		if (!this.children.length)
+			this.appendChild(document.createElement("a")).onclick = () =>
+			{
+				this.appendChild(new CommandDialog(Array.from(this.getElementsByTagName("g-command"))));
+			};
+
+		return this.appendChild(window.top.document.createElement("g-command"))
+			.icon(icon)
+			.name(name)
+			.action(action);
+	}
+
+	clear()
+	{
+		Array.from(this.getElementsByTagName("g-command"))
+			.forEach(e => this.removeChild(e));
+	}
+
+	static get instance()
+	{
+		if (window.frameElement
+			&& window.frameElement.dialog
+			&& window.frameElement.dialog.customCommands)
+			return window.frameElement.dialog.customCommands;
+
+		if (!Commands._instance)
+			Commands._instance =
+				document.body.insertBefore(new Commands(),
+					document.body.firstChild);
+
+		return Commands._instance;
+	}
+
+	static clear()
+	{
+		Commands.instance.clear();
+	}
+
+	static add(icon, name, action)
+	{
+		return Commands.instance.add(icon, name, action);
+	}
+}
+
+customElements.define('g-commands', Commands);
 /* global Message */
 
 class Clipboard
@@ -3202,7 +3352,8 @@ class ContextMenu extends HTMLElement
 	{
 		super();
 		this._modal = new Modal();
-		this._items = Array.from(arguments);
+		this._items = Array.isArray(arguments[0]) ? arguments[0] :
+			Array.from(arguments[0]);
 	}
 
 	connectedCallback()
@@ -3488,51 +3639,71 @@ window.addEventListener("load", function ()
 });
 
 
-class NavBar
+/* global customElements */
+
+class NavBar extends HTMLElement
 {
-	constructor(links, element)
+	constructor(links)
 	{
-		var index = 0;
+		super();
+		this._private = {};
+		this._private.index = 0;
+		this._private.links = links;
+		this._private.frst = document.createElement("a");
+		this._private.prev = document.createElement("a");
+		this._private.text = document.createElement("label");
+		this._private.next = document.createElement("a");
+		this._private.last = document.createElement("a");
+		this._private.frst.setAttribute("href", "#");
+		this._private.prev.setAttribute("href", "#");
+		this._private.next.setAttribute("href", "#");
+		this._private.last.setAttribute("href", "#");
 
-		if (!element)
-			element = document.createElement("div");
-		element.className = "NavBar";
-		this.element = () => element;
+		this._private.frst.innerHTML = "&#x2277;";
+		this._private.prev.innerHTML = "&#x2273;";
+		this._private.next.innerHTML = "&#x2275;";
+		this._private.last.innerHTML = "&#x2279;";
 
-		var frst = element.appendChild(document.createElement("a"));
-		var prev = element.appendChild(document.createElement("a"));
-		var text = element.appendChild(document.createElement("label"));
-		var next = element.appendChild(document.createElement("a"));
-		var last = element.appendChild(document.createElement("a"));
+		this._private.frst.addEventListener("click", () => this.go(this._private.links[0]));
+		this._private.prev.addEventListener("click", () => this.go(this._private.links[this._private.index - 1]));
+		this._private.text.addEventListener("click", () => this.go(this._private.links[this._private.index]));
+		this._private.next.addEventListener("click", () => this.go(this._private.links[this._private.index + 1]));
+		this._private.last.addEventListener("click", () => this.go(this._private.links[this._private.links.length - 1]));
+	}
 
-		frst.setAttribute("href", "#");
-		prev.setAttribute("href", "#");
-		next.setAttribute("href", "#");
-		last.setAttribute("href", "#");
+	connectedCallback()
+	{
+		this.appendChild(this._private.frst);
+		this.appendChild(this._private.prev);
+		this.appendChild(this._private.text);
+		this.appendChild(this._private.next);
+		this.appendChild(this._private.last);
+	}
 
-		frst.innerHTML = "&#x2213;";
-		prev.innerHTML = "&#x2212;";
-		next.innerHTML = "&#x2211;";
-		last.innerHTML = "&#x2216;";
+	disconnectedCallback()
+	{
+		this.removeChild(this._private.frst);
+		this.removeChild(this._private.prev);
+		this.removeChild(this._private.text);
+		this.removeChild(this._private.next);
+		this.removeChild(this._private.last);
+	}
 
-		frst.addEventListener("click", () => this.go(links[0]));
-		prev.addEventListener("click", () => this.go(links[index - 1]));
-		next.addEventListener("click", () => this.go(links[index + 1]));
-		last.addEventListener("click", () => this.go(links[links.length - 1]));
-
-		this.go = function (url)
+	go(url)
+	{
+		if (this.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
 		{
-			if (element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
-				index = Math.max(links.indexOf(url), 0);
-
-			frst.setAttribute("navbar-disabled", String(index === 0));
-			prev.setAttribute("navbar-disabled", String(index === 0));
-			next.setAttribute("navbar-disabled", String(index === links.length - 1));
-			last.setAttribute("navbar-disabled", String(index === links.length - 1));
-			text.innerHTML = "" + (index + 1) + " de " + links.length;
-		};
+			this._private.index = Math.max(this._private.links.indexOf(url), 0);
+			this._private.frst.setAttribute("navbar-disabled", String(this._private.index === 0));
+			this._private.prev.setAttribute("navbar-disabled", String(this._private.index === 0));
+			this._private.text.innerHTML = "" + (this._private.index + 1) + " de " + this._private.links.length;
+			this._private.next.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+			this._private.last.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+		}
 	}
 }
+
+customElements.define('g-nav-bar', NavBar);
 function Slider(element, value, next, prev, format)
 {
 	element.classList.add("Slider");
@@ -4855,6 +5026,10 @@ class IconPicker extends Picker
 		icon("3012");
 		icon("3013");
 		icon("3014");
+		icon("3015");
+		icon("3016");
+		icon("3017");
+		icon("3018");
 
 		this.commit().addEventListener("click", () => alert("selecione um ícone"));
 
@@ -5492,7 +5667,9 @@ window.addEventListener("load", function ()
 		new LinkControl(e);
 	});
 });
-/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments */
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen */
+
+
 
 class Dialog extends Modal
 {
@@ -5512,21 +5689,34 @@ class Dialog extends Modal
 		head.setAttribute("tabindex", "1");
 		head.focus();
 
-
 		var caption = head.appendChild(window.top.document.createElement('label'));
 		if (options && options.title)
 			caption.innerHTML = options.title;
+
+
+		this.customCommands = head.appendChild(document.createElement("g-commands"));
+
+		if (options && options.navigator && options.navigator.length)
+		{
+			var navigator = head.appendChild(document.adoptNode(new NavBar(options.navigator)));
+			navigator.addEventListener("go", event => iframe.setAttribute('src', event.detail.target));
+
+		}
+
+		this.systemCommands = head.appendChild(document.createElement("g-commands"));
+		this.systemCommands.style.width = "90px";
+		this.systemCommands.style.minWidth = "90px";
+		this.systemCommands.style.maxWidth = "90px";
 
 		this.rename = c => caption.innerHTML = c;
 
 		if (!this.blocked())
 		{
-			var close = head.appendChild
-				(window.top.document.createElement("a"));
-			close.title = 'Fechar janela';
-			close.innerHTML = "&#x1011;";
-			close.onclick = () => this.hide();
+			this.systemCommands.add("&#x1011;", 'Fechar janela', () => this.hide());
+			this.systemCommands.add(FullScreen.status() ? "&#x3016;" : "&#x3015;", 'Tela cheia',
+				element => element.icon(FullScreen.switch(dialog) ? "&#x3016;" : "&#x3015;"));
 		}
+
 		var body = dialog.appendChild(window.top.document.createElement('div'));
 
 		var iframe = body.appendChild(window.top.document.createElement('iframe'));
@@ -5550,19 +5740,6 @@ class Dialog extends Modal
 				iframe.height = height;
 			}
 			return true;
-		};
-
-		iframe._newCommand = function (icon, name, action)
-		{
-			var link = window.top.document.createElement("a");
-			link.title = name;
-			link.innerHTML = icon;
-			link.onclick = action;
-
-			if (close)
-				head.insertBefore(link, close);
-			else
-				head.appendChild(link);
 		};
 
 		iframe.addEventListener("load", () =>
@@ -5609,16 +5786,11 @@ class Dialog extends Modal
 			iframe.backgroundImage = "none";
 		});
 
-		if (options && options.navigator)
-		{
-			var navigator = new NavBar(options.navigator);
-			head.appendChild(navigator.element());
-			navigator.element().addEventListener("go",
-				event => iframe.setAttribute('src', event.detail.target));
-			if (options.target)
+		if (options && options.target)
+			if (options.navigator)
 				navigator.go(options.target);
-		} else if (options && options.target)
-			iframe.setAttribute('src', options.target);
+			else
+				iframe.setAttribute('src', options.target);
 	}
 
 	get()
@@ -5644,12 +5816,6 @@ class Dialog extends Modal
 		this.hide();
 	}
 
-	static command(icon, name, action)
-	{
-		if (window.frameElement && window.frameElement._newCommand)
-			window.frameElement._newCommand(icon, name, action);
-	}
-
 	static rename(caption)
 	{
 		if (window.frameElement && window.frameElement.dialog)
@@ -5658,7 +5824,7 @@ class Dialog extends Modal
 
 	static hide()
 	{
-		if (window.frameElement && window.frameElement._newCommand)
+		if (window.frameElement && window.frameElement._command)
 			window.frameElement.dialog.hide();
 	}
 }
@@ -6057,71 +6223,45 @@ window.addEventListener("load", function ()
 	}, 500);
 });
 
-window.addEventListener("load", function ()
+class FullScreen
 {
-	document.addEventListener("fullscreenchange", function ()
+	static status()
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.fullscreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		return false
+			|| document.fullscreenElement
+			|| document.mozFullScreenElement
+			|| document.webkitFullscreenElement;
+	}
 
-	document.addEventListener("mozfullscreenchange", function ()
+	static switch (element)
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.mozFullScreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		return FullScreen.status()
+			? FullScreen.exit()
+			: FullScreen.enter(element);
+	}
 
-	document.addEventListener("webkitfullscreenchange", function ()
+	static enter(element)
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.webkitIsFullScreen ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
+		if (element.requestFullscreen)
+			element.requestFullscreen();
+		else if (element.mozRequestFullScreen)
+			element.mozRequestFullScreen();
+		else if (element.webkitRequestFullScreen)
+			element.webkitRequestFullScreen();
+		return true;
+	}
 
-	document.addEventListener("msfullscreenchange", function ()
+	static exit()
 	{
-		Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-		{
-			e.innerHTML = document.msFullscreenElement ? "<i >&#x2251;</i>" : "<i >&#x2250;</i>";
-		});
-	}, false);
-
-	Array.from(document.querySelectorAll("a.FullScreen")).forEach(function (e)
-	{
-		e.innerHTML =
-				!document.fullscreen && !document.mozFullScreen
-				&& !document.webkitIsFullScreen && !document.msFullscreenElement
-				? "<i >&#x2250;</i>" : "<i >&#x2251;</i>";
-
-		e.addEventListener("click", function ()
-		{
-			if (!document.fullscreen && !document.mozFullScreen
-					&& !document.webkitIsFullScreen && !document.msFullscreenElement)
-			{
-				if (document.documentElement.requestFullscreen)
-					document.documentElement.requestFullscreen();
-				else if (document.documentElement.mozRequestFullScreen)
-					document.documentElement.mozRequestFullScreen();
-				else if (document.documentElement.webkitRequestFullScreen)
-					document.documentElement.webkitRequestFullScreen();
-			} else
-			{
-				if (document.exitFullscreen)
-					document.exitFullscreen();
-				else if (document.webkitExitFullscreen)
-					document.webkitExitFullscreen();
-				else if (document.mozCancelFullScreen)
-					document.mozCancelFullScreen();
-			}
-		});
-	});
-});
-
+		if (document.exitFullscreen)
+			document.exitFullscreen();
+		else if (document.webkitExitFullscreen)
+			document.webkitExitFullscreen();
+		else if (document.mozCancelFullScreen)
+			document.mozCancelFullScreen();
+		return false;
+	}
+}
 /* global ENTER, ESC, Message */
 
 window.addEventListener("load", function ()
@@ -6931,27 +7071,54 @@ class Coolbar extends HTMLElement
 	constructor()
 	{
 		super();
-		this.addEventListener("click", function ()
+
+	}
+
+	distribute()
+	{
+		this.lastElementChild.style.display = "none";
+		Array.from(this.lastElementChild.children)
+			.forEach(e => this.firstElementChild.appendChild(e));
+		while (this.firstElementChild.lastElementChild
+			&& (this.firstElementChild.scrollWidth > this.firstElementChild.clientWidth
+				|| this.firstElementChild.scrollHeight > this.firstElementChild.clientHeight))
 		{
-			if (this.getAttribute("data-overflow"))
-				this.appendChild(new CoolbarDialog(Array.from(this.children)));
-		});
+			this.lastElementChild.appendChild(this.firstElementChild.lastElementChild);
+			this.lastElementChild.style.display = "flex";
+		}
+
+
+	}
+
+	connectedCallback()
+	{
+		var children = Array.from(this.children);
+		var links = this.appendChild(document.createElement("div"));
+		children.forEach(e => links.appendChild(e));
+
+		var link = this.appendChild(document.createElement("a"));
+		link.innerHTML = "&#X3018;"
+
+		link.addEventListener("click", () => this.appendChild(new CoolbarDialog(Array.from(link.children))));
+
+		window.addEventListener("load", () => this.distribute());
+		window.addEventListener("resize", () => this.distribute());
 	}
 }
 
 customElements.define('g-coolbar', Coolbar);
 
-window.addEventListener("load", () => Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
+window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true")));
 
 window.addEventListener("resize", () => {
-	Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.hasAttribute("data-overflow"))
 		.forEach(e => e.removeAttribute("data-overflow"));
 
-	Array.from(document.querySelectorAll("g-coolbar, div.Coolbar, div.COOLBAR"))
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));

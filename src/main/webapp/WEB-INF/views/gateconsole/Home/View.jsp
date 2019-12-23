@@ -15,9 +15,9 @@
 			</label>
 		</fieldset>
 
-		<div class='COOLBAR'>
+		<g-coolbar>
 			<g:link method="post" module='#' screen="#" action="#" tabindex='2'/>
-		</div>
+		</g-coolbar>
 	</form>
 
 

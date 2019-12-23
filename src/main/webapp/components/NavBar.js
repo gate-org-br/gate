@@ -1,45 +1,65 @@
-class NavBar
+/* global customElements */
+
+class NavBar extends HTMLElement
 {
-	constructor(links, element)
+	constructor(links)
 	{
-		var index = 0;
+		super();
+		this._private = {};
+		this._private.index = 0;
+		this._private.links = links;
+		this._private.frst = document.createElement("a");
+		this._private.prev = document.createElement("a");
+		this._private.text = document.createElement("label");
+		this._private.next = document.createElement("a");
+		this._private.last = document.createElement("a");
+		this._private.frst.setAttribute("href", "#");
+		this._private.prev.setAttribute("href", "#");
+		this._private.next.setAttribute("href", "#");
+		this._private.last.setAttribute("href", "#");
 
-		if (!element)
-			element = document.createElement("div");
-		element.className = "NavBar";
-		this.element = () => element;
+		this._private.frst.innerHTML = "&#x2277;";
+		this._private.prev.innerHTML = "&#x2273;";
+		this._private.next.innerHTML = "&#x2275;";
+		this._private.last.innerHTML = "&#x2279;";
 
-		var frst = element.appendChild(document.createElement("a"));
-		var prev = element.appendChild(document.createElement("a"));
-		var text = element.appendChild(document.createElement("label"));
-		var next = element.appendChild(document.createElement("a"));
-		var last = element.appendChild(document.createElement("a"));
+		this._private.frst.addEventListener("click", () => this.go(this._private.links[0]));
+		this._private.prev.addEventListener("click", () => this.go(this._private.links[this._private.index - 1]));
+		this._private.text.addEventListener("click", () => this.go(this._private.links[this._private.index]));
+		this._private.next.addEventListener("click", () => this.go(this._private.links[this._private.index + 1]));
+		this._private.last.addEventListener("click", () => this.go(this._private.links[this._private.links.length - 1]));
+	}
 
-		frst.setAttribute("href", "#");
-		prev.setAttribute("href", "#");
-		next.setAttribute("href", "#");
-		last.setAttribute("href", "#");
+	connectedCallback()
+	{
+		this.appendChild(this._private.frst);
+		this.appendChild(this._private.prev);
+		this.appendChild(this._private.text);
+		this.appendChild(this._private.next);
+		this.appendChild(this._private.last);
+	}
 
-		frst.innerHTML = "&#x2213;";
-		prev.innerHTML = "&#x2212;";
-		next.innerHTML = "&#x2211;";
-		last.innerHTML = "&#x2216;";
+	disconnectedCallback()
+	{
+		this.removeChild(this._private.frst);
+		this.removeChild(this._private.prev);
+		this.removeChild(this._private.text);
+		this.removeChild(this._private.next);
+		this.removeChild(this._private.last);
+	}
 
-		frst.addEventListener("click", () => this.go(links[0]));
-		prev.addEventListener("click", () => this.go(links[index - 1]));
-		next.addEventListener("click", () => this.go(links[index + 1]));
-		last.addEventListener("click", () => this.go(links[links.length - 1]));
-
-		this.go = function (url)
+	go(url)
+	{
+		if (this.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
 		{
-			if (element.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
-				index = Math.max(links.indexOf(url), 0);
-
-			frst.setAttribute("navbar-disabled", String(index === 0));
-			prev.setAttribute("navbar-disabled", String(index === 0));
-			next.setAttribute("navbar-disabled", String(index === links.length - 1));
-			last.setAttribute("navbar-disabled", String(index === links.length - 1));
-			text.innerHTML = "" + (index + 1) + " de " + links.length;
-		};
+			this._private.index = Math.max(this._private.links.indexOf(url), 0);
+			this._private.frst.setAttribute("navbar-disabled", String(this._private.index === 0));
+			this._private.prev.setAttribute("navbar-disabled", String(this._private.index === 0));
+			this._private.text.innerHTML = "" + (this._private.index + 1) + " de " + this._private.links.length;
+			this._private.next.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+			this._private.last.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+		}
 	}
 }
+
+customElements.define('g-nav-bar', NavBar);
