@@ -45,7 +45,7 @@ public @interface Icon
 				{
 					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Icon.class))
-						Optional.of(annotatedElement.getAnnotation(Icon.class).value());
+						return extract(annotatedElement.getAnnotation(Icon.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyIcon.class))
 						return extract(annotatedElement.getAnnotation(CopyIcon.class).value());
 					if (annotatedElement.isAnnotationPresent(Copy.class))

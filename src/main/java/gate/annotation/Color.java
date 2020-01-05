@@ -49,7 +49,7 @@ public @interface Color
 				{
 					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Color.class))
-						Optional.of(annotatedElement.getAnnotation(Color.class).value());
+						return Optional.of(annotatedElement.getAnnotation(Color.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyColor.class))
 						return extract(annotatedElement.getAnnotation(CopyColor.class).value());
 					if (annotatedElement.isAnnotationPresent(Copy.class))

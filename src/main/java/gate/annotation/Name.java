@@ -31,7 +31,7 @@ public @interface Name
 				{
 					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Name.class))
-						Optional.of(annotatedElement.getAnnotation(Name.class).value());
+						return Optional.of(annotatedElement.getAnnotation(Name.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyName.class))
 						return extract(annotatedElement.getAnnotation(CopyName.class).value());
 					if (annotatedElement.isAnnotationPresent(Copy.class))

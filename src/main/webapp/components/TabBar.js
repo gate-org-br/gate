@@ -10,8 +10,9 @@ class TabBar extends HTMLElement
 	connectedCallback()
 	{
 		this.parentNode.style.overflow = "hidden";
-		this.appendChild(document.createElement("g-overflow"))
-			.innerHTML = "Mais<i>&#X3017;</i>";
+		if (!this.getElementsByTagName("g-overflow").length)
+			this.appendChild(document.createElement("g-overflow"))
+				.innerHTML = "Mais<i>&#X3017;</i>";
 	}
 
 	disconnectedCallback()
