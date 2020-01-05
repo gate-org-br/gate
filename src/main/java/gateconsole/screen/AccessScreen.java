@@ -1,5 +1,6 @@
 package gateconsole.screen;
 
+import gate.annotation.Color;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
@@ -14,7 +15,8 @@ import java.util.Collection;
 import javax.inject.Inject;
 
 @Icon("1007")
-@Name("Pedidos de acesso")
+@Color("#660000")
+@Name("Pendências")
 public class AccessScreen extends Screen
 {
 

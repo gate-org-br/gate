@@ -3,6 +3,9 @@ package gate.tags;
 import gate.annotation.Color;
 import gate.annotation.Description;
 import gate.annotation.Name;
+import gate.annotation.Tooltip;
+import gate.type.Attributes;
+import gate.util.Toolkit;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -23,16 +26,29 @@ public class LinkTag extends AnchorTag
 		super.doTag();
 		PageContext pageContext = (PageContext) getJspContext();
 
-		if (getCondition() && checkAccess())
+		if (Toolkit.isEmpty(getModule())
+			&& Toolkit.isEmpty(getScreen())
+			&& Toolkit.isEmpty(getAction()))
 		{
-			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Description.class))
-				getAttributes().put("title", getJavaMethod().getAnnotation(Description.class).value());
 
-			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Name.class))
-				getAttributes().put("title", getJavaMethod().getAnnotation(Name.class).value());
+			Attributes atrributes = new Attributes();
+			atrributes.put("href", "Gate");
+			pageContext.getOut().print("<a " + atrributes + ">");
+			pageContext.getOut().print("Sair<i>&#X2007;</i>");
+			pageContext.getOut().print("</a>");
+		} else if (getCondition() && checkAccess())
+		{
+			if (!getAttributes().containsKey("title"))
+				Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
 
-			if (!getAttributes().containsKey("style") && getJavaMethod().isAnnotationPresent(Color.class))
-				getAttributes().put("style", String.format("color: %s", getJavaMethod().getAnnotation(Color.class).value()));
+			if (!getAttributes().containsKey("title"))
+				Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
+
+			if (!getAttributes().containsKey("tooltip"))
+				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+
+			if (!getAttributes().containsKey("style"))
+				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
 
 			if (getTabindex() != null)
 				getAttributes().put("tabindex", getTabindex());

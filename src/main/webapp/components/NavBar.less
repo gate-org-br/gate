@@ -1,27 +1,35 @@
-g-nav-bar
-{
-	width: 140px;
+g-nav-bar {
+	left: 50%;
+	bottom: 8px;
+	color: white;
 	height: 24px;
 	display: flex;
-	color: inherit;
 	cursor: pointer;
 	font-size: 12px;
-	min-width: 140px;
 	max-width: 140px;
+	min-width: 140px;
+	margin-left: -70px;
 	border-radius: 5px;
+	position: absolute;
 	align-items: center;
-	background-color: transparent;
-	justify-content: space-between;
-	transition: all .2s ease-in-out;
-	&:hover { transform: scale(1.1);}
-	border: 1px solid rgba(256,256,256,0.2);
+	justify-content: center;
+	border: 1px solid @base_shaded;
+	background-image: @base_shaded_gradient;
+	box-shadow: 2px 4px 4px 0px rgba(0,0,0,0.75);
 
+	> label { display: flex;
+		  color: inherit;
+		  cursor: inherit;
+		  font-size: inherit;
+		  align-items: center;
+		  justify-content: center;
+	}
 
 	> a { width: 20px;
 	      display: flex;
 	      color: inherit;
 	      cursor: inherit;
-	      font-size: 12px;
+	      font-size: inherit;
 	      font-family: 'gate';
 	      align-items: center;
 	      text-decoration: none;
@@ -29,14 +37,7 @@ g-nav-bar
 
 	      &[navbar-disabled="true"] { opacity: 0.2;
 					  cursor: not-allowed;
-					  pointer-events: none; } }
-
-	> label { display: flex;
-		  color: inherit;
-		  cursor: inherit;
-		  font-size: 12px;
-		  align-items: center;
-		  justify-content: center; }
-
-	@media only screen and (max-width: 640px) { display: none; }
+					  pointer-events: none;
+	      }
+	}
 }

@@ -1,62 +1,36 @@
-/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen */
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-
-
-class Dialog extends Modal
+class Dialog extends Window
 {
 	constructor(options)
 	{
 		super(options);
+		this.head.focus();
+		this.head.tabindex = 1;
+		this.classList.add("g-dialog");
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.className = "Dialog";
-		if (options && options.size && options.size.w)
-			dialog.style.width = options.size.w;
-		if (options && options.size && options.size.h)
-			dialog.style.height = options.size.h;
+		let overflow = this.commands.add(document.createElement("g-overflow"));
+		overflow.innerHTML = "<i>&#X3018;</i>";
 
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.onmouseenter = () => head.focus();
-		head.setAttribute("tabindex", "1");
-		head.focus();
+		let close = this.commands.add(document.createElement("g-command"));
+		close.action(() => this.hide());
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 
-		var caption = head.appendChild(window.top.document.createElement('label'));
-		if (options && options.title)
-			caption.innerHTML = options.title;
-
-
-		this.customCommands = head.appendChild(document.createElement("g-commands"));
+		let fullScreen = this.commands.add(document.createElement("g-command"));
+		fullScreen.innerHTML = "Tela cheia" + (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.action(element => element.innerHTML = "Tela cheia" + (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>"));
 
 		if (options && options.navigator && options.navigator.length)
-		{
-			var navigator = head.appendChild(document.adoptNode(new NavBar(options.navigator)));
-			navigator.addEventListener("go", event => iframe.setAttribute('src', event.detail.target));
+			this.main.appendChild(new NavBar(options.navigator, options.target))
+				.addEventListener("update", event => iframe.setAttribute('src', event.detail.target));
 
-		}
-
-		this.systemCommands = head.appendChild(document.createElement("g-commands"));
-		this.systemCommands.style.width = "90px";
-		this.systemCommands.style.minWidth = "90px";
-		this.systemCommands.style.maxWidth = "90px";
-
-		this.rename = c => caption.innerHTML = c;
-
-		if (!this.blocked())
-		{
-			this.systemCommands.add("&#x1011;", 'Fechar janela', () => this.hide());
-			this.systemCommands.add(FullScreen.status() ? "&#x3016;" : "&#x3015;", 'Tela cheia',
-				element => element.icon(FullScreen.switch(dialog) ? "&#x3016;" : "&#x3015;"));
-		}
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-
-		var iframe = body.appendChild(window.top.document.createElement('iframe'));
+		var iframe = this.body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
 		iframe.scrolling = "no";
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
-		var resize = function ()
+		var resize = () =>
 		{
 			if (!iframe.contentWindow
 				|| !iframe.contentWindow.document
@@ -64,7 +38,7 @@ class Dialog extends Modal
 				|| !iframe.contentWindow.document.body.scrollHeight)
 				return false;
 
-			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, body.offsetHeight) + "px";
+			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
 			if (iframe.height !== height)
 			{
 				iframe.height = "0";
@@ -78,8 +52,8 @@ class Dialog extends Modal
 			iframe.name = "_frame";
 			iframe.setAttribute("name", "_frame");
 
-			head.onkeydown = undefined;
-			head.addEventListener("keydown", event =>
+			this.head.onkeydown = undefined;
+			this.head.addEventListener("keydown", event =>
 			{
 				event = event ? event : window.event;
 				switch (event.keyCode)
@@ -117,11 +91,7 @@ class Dialog extends Modal
 			iframe.backgroundImage = "none";
 		});
 
-		if (options && options.target)
-			if (options.navigator)
-				navigator.go(options.target);
-			else
-				iframe.setAttribute('src', options.target);
+		iframe.setAttribute('src', options.target);
 	}
 
 	get()
@@ -155,7 +125,7 @@ class Dialog extends Modal
 
 	static hide()
 	{
-		if (window.frameElement && window.frameElement._command)
+		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
 	}
 }
@@ -242,3 +212,5 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+
+customElements.define('g-dialog', Dialog);

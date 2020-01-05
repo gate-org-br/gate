@@ -1,11 +1,12 @@
 ul.HMenu
 {
-	margin: 0;
 	padding: 0;
+	margin: 4px;
 	width: 100%;
 	color: black;
 	display: flex;
 	flex-basis: 100%;
+
 
 	ul { margin: 0;
 	     padding: 0;
@@ -16,7 +17,7 @@ ul.HMenu
 	     align-items: stretch;
 	     flex-direction: column; }
 
-	li 
+	li
 	{
 		height: 40px;
 		color: black;
@@ -26,7 +27,7 @@ ul.HMenu
 		justify-content: center;
 		&:hover > ul { display: flex }
 
-		> a 
+		> a
 		{
 			display: flex;
 			color: inherit;
@@ -61,7 +62,7 @@ ul.HMenu
 	       > ul { left: 0;
 		      top: 100%;
 
-		      li  { 			      
+		      li  {
 			      &:empty { flex-basis: 4px;
 					border: 2px solid @base; }
 
@@ -93,7 +94,7 @@ ul.HMenu
 
 	ul > li:not(:first-of-type) > a { border-top: none; }
 
-	.full 
+	.full
 	{
 		> a:only-of-type
 			{
@@ -203,7 +204,7 @@ ul.HMenu
 			.full();
 		}
 	}
-	
+
 	@media only screen and (min-width: 1940px)
 		{
 

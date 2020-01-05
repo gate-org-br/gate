@@ -1,0 +1,73 @@
+g-side-menu,
+.g-side-menu
+{
+	display: flex;
+	align-items: stretch;
+
+	> div
+	{
+		width: 0;
+		padding: 0px;
+		display: flex;
+		max-width: 80%;
+		transition: 0.5s;
+		overflow-y: auto;
+		align-items: stretch;
+		flex-direction: column;
+		justify-content: flex-start;
+
+		> a, > button, > g-command
+		{
+			width: 100%;
+			color: black;
+			padding: 8px;
+			height: 40px;
+			display: flex;
+			font-size: 16px;
+			min-height: 40px;
+			overflow: hidden;
+			font-weight: bold;
+			align-items: center;
+			justify-content: flex-start;
+
+			> i { font-size: inherit }
+
+			&:hover { background-color: @hovered; }
+		}
+
+		> g-command:after { margin-left: 8px;
+				    content: attr(title); }
+
+		> a, > button
+		{
+
+			> i {  order: -1;
+			       margin-right: 8px }
+		}
+
+		> hr { border: none;
+		       flex-grow: 1; }
+
+		> br { height: 16px;}
+	}
+
+	&.L
+	{
+		justify-content: flex-start;
+
+		> div { width: 280px;
+			padding: 8px;
+			background-image: linear-gradient(to right, shade(@main, 20%) 0%, tint(@main, 20%) 100%);
+		}
+	}
+
+	&.R
+	{
+		justify-content: flex-end;
+
+		> div { width: 280px;
+			padding: 8px;
+			background-image: linear-gradient(to left, shade(@main, 20%) 0%, tint(@main, 20%) 100%);
+		}
+	}
+}

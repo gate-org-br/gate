@@ -7,50 +7,51 @@ class Commands extends HTMLElement
 		super();
 	}
 
-	add(icon, name, action)
+	add(command)
 	{
-		if (!this.children.length)
-			this.appendChild(document.createElement("a")).onclick = () =>
-			{
-				this.appendChild(new CommandDialog(Array.from(this.getElementsByTagName("g-command"))));
-			};
-
-		return this.appendChild(window.top.document.createElement("g-command"))
-			.icon(icon)
-			.name(name)
-			.action(action);
-	}
-
-	clear()
-	{
-		Array.from(this.getElementsByTagName("g-command"))
-			.forEach(e => this.removeChild(e));
+		if (!this.parentNode)
+			document.body.insertBefore(this, document.body.firstChild);
+		return this.appendChild(command);
 	}
 
 	static get instance()
 	{
 		if (window.frameElement
 			&& window.frameElement.dialog
-			&& window.frameElement.dialog.customCommands)
-			return window.frameElement.dialog.customCommands;
+			&& window.frameElement.dialog.commands)
+			return window.frameElement.dialog.commands;
 
-		if (!Commands._instance)
-			Commands._instance =
-				document.body.insertBefore(new Commands(),
-					document.body.firstChild);
+		if (!Commands._private)
+			Commands._private = {};
+		if (!Commands._private.instance)
+			Commands._private.instance =
+				new Commands(),
+				document.body.firstChild;
 
-		return Commands._instance;
+		return Commands._private.instance;
 	}
 
-	static clear()
+	static add(command)
 	{
-		Commands.instance.clear();
-	}
-
-	static add(icon, name, action)
-	{
-		return Commands.instance.add(icon, name, action);
+		return Commands.instance.add(command);
 	}
 }
 
 customElements.define('g-commands', Commands);
+
+window.addEventListener("load", () =>
+	{
+		Array.from(Commands.instance.querySelectorAll("a, button"))
+			.forEach(e => e.parentNode.removeChild(e));
+		Array.from(document.querySelectorAll("a.Command, button.Command"))
+			.map(element =>
+			{
+				var clone = element.cloneNode(true);
+				clone.onclick = event =>
+				{
+					element.click();
+					event.preventDefault();
+				}
+				return clone;
+			}).forEach(clone => Commands.add(clone));
+	});

@@ -42,7 +42,7 @@ div.Login
 					   justify-content: flex-end; }
 		}
 
-		> div:nth-child(2) > ul > li { 
+		> div:nth-child(2) > ul > li {
 			flex-basis: 50%;
 			@media only screen and (min-width: @tablet) { flex-basis: 25% }
 		}
@@ -50,7 +50,7 @@ div.Login
 }
 
 div.Main { width: 100%;
-	   padding: 8px;
+	   padding: 4px;
 	   display: grid;
 	   grid-template-rows: 56px 50px 1fr;
 
@@ -75,7 +75,7 @@ div.Main { width: 100%;
 						   font-size: 0px;
 						   align-items: center;
 						   grid-row: 1 / span 2;
-						   justify-content: flex-start; 
+						   justify-content: flex-start;
 
 						   @media only screen and (min-width: @phone) { font-size: 18px; }
 						   @media only screen and (min-width: @tablet) { font-size: 22px; }
@@ -92,18 +92,20 @@ div.Main { width: 100%;
 						   justify-content: flex-end;  }
 	   }
 
-	   > div:nth-child(2) { width: 100%;
-				padding: 4px;
+	   > div:nth-child(2) { top: 0;
+				z-index: 1;
+				width: 100%;
 				display: flex;
+				position: sticky;
 				align-items: center;
 				justify-content: center;
+				position: -webkit-sticky;
 				background-color: @main_shaded2; }
 
 	   > div:nth-child(3) { margin: 0;
 				border: none;
 				padding: 10px;
-				overflow: auto;
+
 				background-color: @main;
-				border-radius: 0 0 5px 5px;
-				max-height: calc(100vh - 122px); }
+				border-radius: 0 0 5px 5px; }
 }

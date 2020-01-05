@@ -142,20 +142,12 @@ public class AnchorTag extends DynamicAttributeTag
 
 	public Icons.Icon getIcon()
 	{
-		Icons.Icon icon = Icon.Extractor.extract(javaMethod).orElse(Icons.UNKNOWN);
-		if (icon == Icons.UNKNOWN)
-			icon = Icon.Extractor.extract(javaClass).orElse(Icons.UNKNOWN);
-		return icon;
+		return Icon.Extractor.extract(javaMethod).or(() -> Icon.Extractor.extract(javaClass)).orElse(Icons.UNKNOWN);
 	}
 
 	public String getName()
 	{
-		String name = "unnamed";
-		if (javaMethod.isAnnotationPresent(Name.class))
-			name = javaMethod.getAnnotation(Name.class).value();
-		else if (javaClass.isAnnotationPresent(Name.class))
-			name = javaClass.getAnnotation(Name.class).value();
-		return name;
+		return Name.Extractor.extract(javaMethod).or(() -> Name.Extractor.extract(javaClass)).orElse("unnamed");
 	}
 
 	@Override

@@ -1,13 +1,15 @@
-div.Calendar
+g-calendar
 {
 	display: flex;
 	font-size: 16px;
+	min-width: 240px;
 	align-items: center;
 	align-content: center;
 	flex-direction: column;
 	justify-content: center;
 	border: 2px solid #CCCCCC;
 	background-color: #CCCCCC;
+	&:hover { border-color: @hovered; }
 
 	> div { flex-grow: 1;
 		width:  100%;
@@ -69,4 +71,3 @@ div.Calendar
 	}
 }
 
-div.Calendar:hover { border-color: @hovered; }

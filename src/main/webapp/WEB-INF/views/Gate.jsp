@@ -78,6 +78,7 @@
 				</script>
 			</g:if>
 
+
 		</g:login>
 	</body>
 </g:template>

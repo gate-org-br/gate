@@ -1,0 +1,43 @@
+g-tabbar
+{
+	height: 48px;
+	flex-grow: 1;
+	padding: 4px;
+	display: flex;
+	overflow: hidden;
+	align-items: center;
+	justify-content: flex-start;
+	background-color: @main_tinted;
+	background-image:  linear-gradient(to bottom, shade(@main, 05%) 0%, @main 50%, shade(@main, 05%) 100% );
+
+	> a,
+	> button,
+	> g-command,
+	> .g-command
+	{
+		height: 40px;
+		flex-grow: 1;
+		display: flex;
+		flex-shrink: 1;
+		min-width: 80px;
+		max-width: 120px;
+
+		color: inherit;
+		align-items: center;
+		flex-direction: column;
+		justify-content: space-around;
+		border: 2px solid transparent;
+
+		&[aria-selected] { color: #000066;
+				   border-left-color: #000066;
+				   border-right-color: #000066;
+
+		}
+
+		> i { order: -1;
+		      font-size: 16px;}
+	}
+}
+
+
+

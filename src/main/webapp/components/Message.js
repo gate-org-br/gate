@@ -1,29 +1,16 @@
-class Message extends Modal
+/* global customElements, Modal */
+
+class Message extends Window
 {
 	constructor(options)
 	{
 		super();
+		this.classList.add("g-message");
+		this.classList.add(options.type);
+		this.caption = options.title || "";
+		this.commands.add(new Command().action(() => this.hide())).innerHTML = "<i>&#x1011</i>Fechar janela";
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.classList.add("Message");
-		dialog.classList.add(options.type);
-
-		var icon = dialog.appendChild(window.top.document.createElement('label'));
-		switch (options.type)
-		{
-			case "SUCCESS":
-				icon.innerHTML = "&#X1000;";
-				break;
-			case "WARNING":
-				icon.innerHTML = "&#X1007;";
-				break;
-			case "ERROR":
-				icon.innerHTML = "&#X1001;";
-				break;
-		}
-
-		var message = dialog.appendChild(window.top.document.createElement('label'));
-		message.innerHTML = options.message;
+		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
 
 		if (options.timeout)
 			window.top.setTimeout(() => this.hide(), options.timeout);
@@ -32,19 +19,21 @@ class Message extends Modal
 	}
 }
 
+customElements.define('g-message', Message);
+
 Message.success = function (message, timeout)
 {
-	new Message({type: "SUCCESS", message: message, timeout: timeout});
+	new Message({type: "SUCCESS", title: "Sucesso", message: message, timeout: timeout});
 };
 
 Message.warning = function (message, timeout)
 {
-	new Message({type: "WARNING", message: message, timeout: timeout});
+	new Message({type: "WARNING", title: "Alerta", message: message, timeout: timeout});
 };
 
 Message.error = function (message, timeout)
 {
-	new Message({type: "ERROR", message: message, timeout: timeout});
+	new Message({type: "ERROR", title: "Erro", message: message, timeout: timeout});
 };
 
 Message.show = function (status, timeout)

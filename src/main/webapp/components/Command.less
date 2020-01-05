@@ -1,44 +1,7 @@
-g-command
+g-command,
+.g-command
 {
-	speak: none;
-	height: 24px;
-	display: flex;
 	cursor: pointer;
-	font-size: 20px;
-	font-style: normal;
-	font-family: 'gate';
-	font-weight: normal;
-	align-items: center;
-	font-variant: normal;
-	text-transform: none;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-}
 
-
-g-commands > g-command
-{
-	width: 32px;
-	margin: 2px;
-	line-height: 1;
-	color: inherit;
-	justify-content: center;
-	transition: all .2s ease-in-out;
-	&:hover { color: @hovered;transform: scale(1.2);}
-}
-
-
-g-command-dialog > div > g-command
-{
-	width: 100%;
-	color: black;
-	padding: 8px;
-	height: 40px;
-	min-height: 40px;
-	justify-content: flex-start;
-	transition: all .2s ease-in-out;
-	&:nth-child(even) { background-color: white; }
-	&:nth-child(odd) { background-color: @base_tinted; }
-	&:hover { background-color: @hovered; }
-	&:after { content: attr(title); margin-left: 8px  }
+	> * { cursor: inherit; }
 }

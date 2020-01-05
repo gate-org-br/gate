@@ -1,6 +1,7 @@
 package gate.tags;
 
 import gate.annotation.Color;
+import gate.annotation.Tooltip;
 import gate.util.Toolkit;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -42,8 +43,11 @@ public class ShortcutTag extends AnchorTag
 			if (!getAttributes().containsKey("title"))
 				getAttributes().put("title", getName());
 
-			if (!getAttributes().containsKey("style") && getJavaMethod().isAnnotationPresent(Color.class))
-				getAttributes().put("style", String.format("color: %s", getJavaMethod().getAnnotation(Color.class).value()));
+			if (!getAttributes().containsKey("tooltip"))
+				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+
+			if (!getAttributes().containsKey("style"))
+				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
 
 			if ("POST".equalsIgnoreCase(this.getMethod()))
 			{

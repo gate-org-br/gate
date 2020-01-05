@@ -4,6 +4,7 @@ import gate.annotation.Color;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.annotation.Tooltip;
 import gate.entity.User;
 import gate.producer.UserProducer;
 import gate.util.Icons;
@@ -24,6 +25,16 @@ public class TagLib
 	public static String name(Object obj)
 	{
 		return Name.Extractor.extract(obj).orElse("Unnamed");
+	}
+
+	public static String tooltip(Object obj)
+	{
+		return Tooltip.Extractor.extract(obj).orElse("");
+	}
+
+	public static String code(Object obj)
+	{
+		return Tooltip.Extractor.extract(obj).orElse("");
 	}
 
 	public static String color(Object obj)

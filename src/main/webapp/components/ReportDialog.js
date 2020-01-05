@@ -1,36 +1,32 @@
-class ReportDialog extends Modal
+/* global customElements */
+
+class ReportDialog extends Window
 {
 	constructor(options)
 	{
 		super(options);
+		this.classList.add("g-report-dialog");
 		var downloadStatus = new DownloadStatus();
 		addEventListener("hide", () => downloadStatus.abort());
 
-		var main = this.element().appendChild(document.createElement("div"));
-		main.className = "ReportDialog";
+		this.head.innerHTML = (options && options.title) || "Imprimir";
 
-		var head = main.appendChild(document.createElement("div"));
-		if (options && options.title)
-			head.innerHTML = options.title || "Imprimir";
-
-		var body = main.appendChild(document.createElement("div"));
-
-		var selector = body.appendChild(new ReportSelector());
+		var selector = this.body.appendChild(new ReportSelector());
 		selector.addEventListener("selected", event =>
 		{
-			body.removeChild(selector);
-			body.appendChild(downloadStatus);
+			this.body.removeChild(selector);
+			this.body.appendChild(downloadStatus);
 			var url = new URL(options.url).setParameter("type", event.detail).toString();
 			downloadStatus.download(options.method, url, options.data);
 			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
-		var foot = main.appendChild(document.createElement("div"));
-
-		var action = foot.appendChild(document.createElement("a"));
-		action.appendChild(document.createTextNode("Cancelar"));
-		action.addEventListener("click", () => this.hide());
-		action.style.color = "#660000";
-		action.href = "#";
+		let close = this.commands.add(document.createElement("g-command"));
+		close.action(() => this.hide());
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 	}
 }
+
+
+
+customElements.define('g-report-dialog', ReportDialog);

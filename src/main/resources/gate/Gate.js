@@ -1428,6 +1428,125 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 //# sourceMappingURL=webcomponents-ce.js.map
 
+class Proxy
+{
+	static create(element)
+	{
+		let clone = element.cloneNode(true);
+		clone.onclick = event =>
+		{
+			element.click();
+			event.preventDefault();
+		};
+		return clone;
+	}
+}
+/* global customElements */
+
+class Command extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.enabled = true;
+		this._private.visible = true;
+	}
+
+	enabled()
+	{
+		if (!arguments.length)
+			return this._private.enabled;
+
+		this._private.enabled = arguments[0];
+		this.style.opacity = this._private.enabled ? "1.0" : "0.2";
+		this.style.pointerEvents = this._private.enabled ? "all" : "none";
+		return this;
+	}
+
+	visible()
+	{
+		if (!arguments.length)
+			return this._private.visible;
+
+		this._private.visible = arguments[0];
+		this.style.display = this._private.visible ? "" : "none";
+		return this;
+	}
+
+	action()
+	{
+		if (!arguments.length)
+			return this.onclick;
+
+		this.onclick = () => arguments[0](this);
+		return this;
+	}
+
+	connectedCallback()
+	{
+		this.classList.add("g-command");
+	}
+}
+
+customElements.define('g-command', Command);
+/* global customElements */
+
+class Commands extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	add(command)
+	{
+		if (!this.parentNode)
+			document.body.insertBefore(this, document.body.firstChild);
+		return this.appendChild(command);
+	}
+
+	static get instance()
+	{
+		if (window.frameElement
+			&& window.frameElement.dialog
+			&& window.frameElement.dialog.commands)
+			return window.frameElement.dialog.commands;
+
+		if (!Commands._private)
+			Commands._private = {};
+		if (!Commands._private.instance)
+			Commands._private.instance =
+				new Commands(),
+				document.body.firstChild;
+
+		return Commands._private.instance;
+	}
+
+	static add(command)
+	{
+		return Commands.instance.add(command);
+	}
+}
+
+customElements.define('g-commands', Commands);
+
+window.addEventListener("load", () =>
+	{
+		Array.from(Commands.instance.querySelectorAll("a, button"))
+			.forEach(e => e.parentNode.removeChild(e));
+		Array.from(document.querySelectorAll("a.Command, button.Command"))
+			.map(element =>
+			{
+				var clone = element.cloneNode(true);
+				clone.onclick = event =>
+				{
+					element.click();
+					event.preventDefault();
+				}
+				return clone;
+			}).forEach(clone => Commands.add(clone));
+	});
 class DigitalClock extends HTMLElement
 {
 	constructor()
@@ -1943,44 +2062,49 @@ window.addEventListener("load", function ()
 		.forEach(element => new Mask(element));
 });
 
-class Modal
+/* global customElements */
+
+class Modal extends HTMLElement
 {
-	constructor(options)
+	constructor(options = {})
 	{
+		super();
 		this._private = {};
+		this.classList.add("g-modal");
 		this._private.options = options;
+		this._private.preventBodyScroll = e => e.preventDefault();
 
-		this.preventBodyScroll = e => e.preventDefault();
-
-		var element = window.top.document.createElement('div');
-		element.className = "Modal";
-		this.element = () => element;
-
-		var blocked = options ? options.blocked : null;
-		this.blocked = () => blocked;
-
-		var creator = options ? options.creator : null;
-		this.creator = () => creator ? creator : element;
-
-		this.element().addEventListener("contextmenu", event =>
+		this.addEventListener("contextmenu", event =>
 		{
 			event.preventDefault();
 			this.hide();
 		});
 
-		if (!blocked)
-			element.addEventListener("click", event =>
-				(event.target === element || event.srcElement === element) && this.hide());
+		if (!this.blocked)
+			this.addEventListener("click", event =>
+				(event.target === this || event.srcElement === this)
+					&& this.hide());
+	}
+
+	get blocked()
+	{
+		return this._private.options.blocked;
+	}
+
+	get creator()
+	{
+		return this._private.options.creator || this;
 	}
 
 	show()
 	{
-		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.body.style.overflow = "hidden";
-			window.top.document.body.appendChild(this.element());
-			window.top.document.body.addEventListener("touchmove", this.preventBodyScroll, false);
-			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+			window.top.document.documentElement.style.overflow = "hidden";
+			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
+
+			window.top.document.documentElement.appendChild(this);
+			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
 		return this;
@@ -1988,19 +2112,90 @@ class Modal
 
 	hide()
 	{
-		if (this.element().parentNode
-			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		if (this.parentNode
+			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.body.style.overflow = "";
-			window.top.document.body.removeEventListener("touchmove", this.preventBodyScroll, false);
-			this.element().parentNode.removeChild(this.element());
+			window.top.document.documentElement.style.overflow = "";
+			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
+			this.parentNode.removeChild(this);
 		}
 
 		return this;
 	}
 }
 
+customElements.define('g-modal', Modal);
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
+class Window extends Modal
+{
+	constructor(options)
+	{
+		super(options);
+		this.classList.add("g-window");
+
+		if (this._private.options.title)
+			this.caption = this._private.options.title;
+	}
+
+	get main()
+	{
+		if (!this._private.main)
+			this._private.main = this
+				.appendChild(document.createElement("main"));
+		return this._private.main;
+	}
+
+	get head()
+	{
+		if (!this._private.head)
+			this._private.head = this.main
+				.appendChild(document.createElement("header"));
+		return this._private.head;
+	}
+
+	get caption()
+	{
+		if (!this._private.caption)
+			this._private.caption = this.head
+				.appendChild(document.createElement("label"));
+		return this._private.caption.innerText;
+	}
+
+	set caption(caption)
+	{
+		if (!this._private.caption)
+			this._private.caption = this.head
+				.appendChild(document.createElement("label"));
+		this._private.caption.innerText = caption;
+	}
+
+	get commands()
+	{
+		if (!this._private.commands)
+			this._private.commands = this.head
+				.appendChild(document.createElement("g-commands"));
+		return this._private.commands;
+	}
+
+	get body()
+	{
+		if (!this._private.body)
+			this._private.body = this.main
+				.appendChild(document.createElement("section"));
+		return this._private.body;
+	}
+
+	get foot()
+	{
+		if (!this._private.foot)
+			this._private.foot = this.main
+				.appendChild(document.createElement("footer"));
+		return this._private.foot;
+	}
+}
+
+customElements.define('g-window', Window);
 class Block extends Modal
 {
 	constructor(text)
@@ -2480,7 +2675,7 @@ class URL
 		return this;
 	}
 }
-/* global Message, Block, ENTER, ESC */
+/* global Message, Block, ENTER, ESC, Commands */
 
 class Link
 {
@@ -2781,7 +2976,7 @@ window.addEventListener("load", function ()
 	});
 });
 
-/* global Message, Block, ENTER, ESC */
+/* global Message, Block, ENTER, ESC, Commands, link */
 
 class Button
 {
@@ -3109,151 +3304,31 @@ window.addEventListener("load", function ()
 
 /* global customElements */
 
-class CommandDialog extends HTMLElement
+class SideMenu extends Modal
 {
 	constructor(elements)
 	{
 		super();
-		this._elements = elements;
-		this.addEventListener("click", e =>
-		{
-			e.stopPropagation();
-			window.setTimeout(() => this.parentNode.removeChild(this), 0);
-		});
+		this.classList.add("g-side-menu");
+		var menu = this.appendChild(document.createElement("div"));
+		elements.forEach(e => menu.appendChild(e));
+		this.addEventListener("click", e => e.stopPropagation() | this.hide());
 	}
 
-	connectedCallback()
+	showL()
 	{
-		var elements = this.appendChild(document.createElement("div"));
-		this._elements.forEach(e =>
-		{
-			var clone = e.cloneNode(true);
-			clone.addEventListener("click", () => e.click());
-			clone.addEventListener("click", () => this.click());
-			elements.appendChild(clone);
-		});
+		setTimeout(() => this.classList.remove("R"), 100);
+		setTimeout(() => this.classList.add("L"), 100);
+	}
+
+	showR()
+	{
+		setTimeout(() => this.classList.remove("L"), 100);
+		setTimeout(() => this.classList.add("R"), 100);
 	}
 }
 
-customElements.define('g-command-dialog', CommandDialog);
-/* global customElements */
-
-class Command extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this._private = {};
-		this._private.enabled = true;
-		this._private.visible = true;
-	}
-
-	enabled()
-	{
-		if (!arguments.length)
-			return this._private.enabled;
-
-		this._private.enabled = arguments[0];
-		this.style.opacity = this._private.enabled ? "1.0" : "0.2";
-		this.style.pointerEvents = this._private.enabled ? "all" : "none";
-		return this;
-	}
-
-	visible()
-	{
-		if (!arguments.length)
-			return this._private.visible;
-
-		this._private.visible = arguments[0];
-		this.style.display = this._private.visible ? "" : "none";
-		return this;
-	}
-
-	icon()
-	{
-		if (!arguments.length)
-			return this.innerHTML;
-
-		this.innerHTML = arguments[0];
-		return this;
-	}
-
-	action()
-	{
-		if (!arguments.length)
-			return this.onclick;
-
-		this.onclick = () => arguments[0](this);
-		return this;
-	}
-
-	name()
-	{
-		if (!arguments.length)
-			return this.title;
-
-		this.title = arguments[0];
-		return this;
-	}
-}
-
-customElements.define('g-command', Command);
-/* global customElements */
-
-class Commands extends HTMLElement
-{
-	constructor()
-	{
-		super();
-	}
-
-	add(icon, name, action)
-	{
-		if (!this.children.length)
-			this.appendChild(document.createElement("a")).onclick = () =>
-			{
-				this.appendChild(new CommandDialog(Array.from(this.getElementsByTagName("g-command"))));
-			};
-
-		return this.appendChild(window.top.document.createElement("g-command"))
-			.icon(icon)
-			.name(name)
-			.action(action);
-	}
-
-	clear()
-	{
-		Array.from(this.getElementsByTagName("g-command"))
-			.forEach(e => this.removeChild(e));
-	}
-
-	static get instance()
-	{
-		if (window.frameElement
-			&& window.frameElement.dialog
-			&& window.frameElement.dialog.customCommands)
-			return window.frameElement.dialog.customCommands;
-
-		if (!Commands._instance)
-			Commands._instance =
-				document.body.insertBefore(new Commands(),
-					document.body.firstChild);
-
-		return Commands._instance;
-	}
-
-	static clear()
-	{
-		Commands.instance.clear();
-	}
-
-	static add(icon, name, action)
-	{
-		return Commands.instance.add(icon, name, action);
-	}
-}
-
-customElements.define('g-commands', Commands);
+customElements.define('g-side-menu', SideMenu);
 /* global Message */
 
 class Clipboard
@@ -3332,11 +3407,6 @@ class ContextMenuItem extends HTMLElement
 	set action(action)
 	{
 		this.setAttribute("action", "action");
-	}
-
-	static get observedAttributes()
-	{
-		return ['icon', 'name', 'action'];
 	}
 }
 
@@ -3643,32 +3713,37 @@ window.addEventListener("load", function ()
 
 class NavBar extends HTMLElement
 {
-	constructor(links)
+	constructor(links, url)
 	{
 		super();
 		this._private = {};
 		this._private.index = 0;
 		this._private.links = links;
-		this._private.frst = document.createElement("a");
-		this._private.prev = document.createElement("a");
+
 		this._private.text = document.createElement("label");
-		this._private.next = document.createElement("a");
-		this._private.last = document.createElement("a");
-		this._private.frst.setAttribute("href", "#");
-		this._private.prev.setAttribute("href", "#");
-		this._private.next.setAttribute("href", "#");
-		this._private.last.setAttribute("href", "#");
+		this._private.text.addEventListener("click", () => this.update(this._private.links[this._private.index]));
 
+		this._private.frst = document.createElement("a");
 		this._private.frst.innerHTML = "&#x2277;";
-		this._private.prev.innerHTML = "&#x2273;";
-		this._private.next.innerHTML = "&#x2275;";
-		this._private.last.innerHTML = "&#x2279;";
+		this._private.frst.setAttribute("href", "#");
+		this._private.frst.addEventListener("click", () => this.update(this._private.links[0]));
 
-		this._private.frst.addEventListener("click", () => this.go(this._private.links[0]));
-		this._private.prev.addEventListener("click", () => this.go(this._private.links[this._private.index - 1]));
-		this._private.text.addEventListener("click", () => this.go(this._private.links[this._private.index]));
-		this._private.next.addEventListener("click", () => this.go(this._private.links[this._private.index + 1]));
-		this._private.last.addEventListener("click", () => this.go(this._private.links[this._private.links.length - 1]));
+		this._private.prev = document.createElement("a");
+		this._private.prev.innerHTML = "&#x2273;";
+		this._private.prev.setAttribute("href", "#");
+		this._private.prev.addEventListener("click", () => this.update(this._private.links[this._private.index - 1]));
+
+		this._private.next = document.createElement("a");
+		this._private.next.innerHTML = "&#x2275;";
+		this._private.next.setAttribute("href", "#");
+		this._private.next.addEventListener("click", () => this.update(this._private.links[this._private.index + 1]));
+		this._private.last = document.createElement("a");
+
+		this._private.last.innerHTML = "&#x2279;";
+		this._private.last.setAttribute("href", "#");
+		this._private.last.addEventListener("click", () => this.update(this._private.links[this._private.links.length - 1]));
+
+		this.update(url);
 	}
 
 	connectedCallback()
@@ -3689,293 +3764,228 @@ class NavBar extends HTMLElement
 		this.removeChild(this._private.last);
 	}
 
-	go(url)
+	update(url)
 	{
-		if (this.dispatchEvent(new CustomEvent('go', {cancelable: true, detail: {navbar: this, target: url}})))
-		{
-			this._private.index = Math.max(this._private.links.indexOf(url), 0);
-			this._private.frst.setAttribute("navbar-disabled", String(this._private.index === 0));
-			this._private.prev.setAttribute("navbar-disabled", String(this._private.index === 0));
-			this._private.text.innerHTML = "" + (this._private.index + 1) + " de " + this._private.links.length;
-			this._private.next.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
-			this._private.last.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
-		}
+		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail: {navbar: this, target: url}})))
+			return this;
+
+		this._private.index = Math.max(this._private.links.indexOf(url), 0);
+		this._private.frst.setAttribute("navbar-disabled", String(this._private.index === 0));
+		this._private.prev.setAttribute("navbar-disabled", String(this._private.index === 0));
+		this._private.text.innerHTML = "" + (this._private.index + 1) + " de " + this._private.links.length;
+		this._private.next.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+		this._private.last.setAttribute("navbar-disabled", String(this._private.index === this._private.links.length - 1));
+		return this;
 	}
 }
 
 customElements.define('g-nav-bar', NavBar);
-function Slider(element, value, next, prev, format)
+class Slider extends HTMLElement
 {
-	element.classList.add("Slider");
-	element.setAttribute('tabindex', 0);
-	element.addEventListener("mouseover", () => element.focus());
-	element.addEventListener("mouseoust", () => element.blur());
-
-	if (!format)
-		format = e => e;
-
-	element.addEventListener((/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel", function (event)
+	constructor(value, next, prev, format, size = 5)
 	{
-		event.preventDefault();
+		super();
+		this.classList.add("Slider");
+		this.addEventListener("mouseover", () => this.focus());
+		this.addEventListener("mouseoust", () => this.blur());
 
-		if (event.detail)
-			if (event.detail > 0)
-				gonext.click();
-			else
-				goprev.click();
-		else if (event.wheelDelta)
-			if (event.wheelDelta > 0)
-				gonext.click();
-			else
-				goprev.click();
-	});
-
-
-	element.addEventListener("keydown", function (event)
-	{
-		switch (event.keyCode)
+		if (!format)
+			format = e => e;
+		this.addEventListener((/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel", function (event)
 		{
-			case 38:
-				goprev.click();
-				break;
-			case 40:
-				gonext.click();
-				break;
-		}
-		event.preventDefault();
-	});
-
-	var goprev = element.appendChild(document.createElement("a"));
-	goprev.href = "#";
-	goprev.appendChild(document.createElement("i")).innerHTML = "&#X2278;";
-	goprev.addEventListener("click", () => update(prev(value)));
-
-	var prev5 = element.appendChild(document.createElement("label"));
-	prev5.onclick = () => update(prev(prev(prev(prev(prev(value))))));
-
-	var prev4 = element.appendChild(document.createElement("label"));
-	prev4.onclick = () => update(prev(prev(prev(prev(value)))));
-
-	var prev3 = element.appendChild(document.createElement("label"));
-	prev3.onclick = () => update(prev(prev(prev(value))));
-
-	var prev2 = element.appendChild(document.createElement("label"));
-	prev2.onclick = () => update(prev(prev(value)));
-
-	var prev1 = element.appendChild(document.createElement("label"));
-	prev1.onclick = () => update(prev(value));
-
-	var main = element.appendChild(document.createElement("label"));
-
-	var next1 = element.appendChild(document.createElement("label"));
-	next1.onclick = () => update(next(value));
-
-	var next2 = element.appendChild(document.createElement("label"));
-	next2.onclick = () => update(next(next(value)));
-
-	var next3 = element.appendChild(document.createElement("label"));
-	next3.onclick = () => update(next(next(next(value))));
-
-	var next4 = element.appendChild(document.createElement("label"));
-	next4.onclick = () => update(next(next(next(next(value)))));
-
-	var next5 = element.appendChild(document.createElement("label"));
-	next5.onclick = () => update(next(next(next(next(next(value))))));
-
-	var gonext = element.appendChild(document.createElement("a"));
-	gonext.href = "#";
-	gonext.appendChild(document.createElement("i")).innerHTML = "&#X2276;";
-	gonext.addEventListener("click", () => update(next(value)));
-
-	this.value = () => value;
-
-	var update = function (val)
-	{
-		if (val !== null)
+			event.preventDefault();
+			if (event.detail)
+				if (event.detail > 0)
+					gonext.click();
+				else
+					goprev.click();
+			else if (event.wheelDelta)
+				if (event.wheelDelta > 0)
+					gonext.click();
+				else
+					goprev.click();
+		});
+		this.addEventListener("keydown", function (event)
 		{
-			if (!element.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {slider: this, value: val}})))
-				return false;
-
-			value = val;
-
-			prev1.innerHTML = '-';
-			prev2.innerHTML = '-';
-			prev3.innerHTML = '-';
-			prev4.innerHTML = '-';
-			prev5.innerHTML = '-';
-			main.innerHTML = format(value);
-			next1.innerHTML = '-';
-			next2.innerHTML = '-';
-			next3.innerHTML = '-';
-			next4.innerHTML = '-';
-			next5.innerHTML = '-';
-
-			var data = prev(value);
-			if (data !== null)
+			switch (event.keyCode)
 			{
-				prev1.innerHTML = format(data);
-				var data = prev(data);
-				if (data !== null)
-				{
-					prev2.innerHTML = format(data);
-					var data = prev(data);
-					if (data !== null)
-					{
-						prev3.innerHTML = format(data);
-
-						var data = prev(data);
-						if (data !== null)
-						{
-							prev4.innerHTML = format(data);
-
-							var data = prev(data);
-							if (data !== null)
-								prev5.innerHTML = format(data);
-						}
-					}
-				}
+				case 38:
+					goprev.click();
+					break;
+				case 40:
+					gonext.click();
+					break;
 			}
-
-			var data = next(value);
-			if (data !== null)
-			{
-				next1.innerHTML = format(data);
-				var data = next(data);
-				if (data !== null)
-				{
-					next2.innerHTML = format(data);
-
-					var data = next(data);
-					if (data !== null)
-					{
-						next3.innerHTML = format(data);
-
-						var data = next(data);
-						if (data !== null)
-						{
-							next4.innerHTML = format(data);
-
-							var data = next(data);
-							if (data !== null)
-								next5.innerHTML = format(data);
-						}
-					}
-				}
-			}
-
-			element.dispatchEvent(new CustomEvent('update', {detail: {slider: this}}));
-		}
-	};
-
-	this.element = () => element;
-	update(value);
-}
-/* global DateFormat */
-
-var calendars = {};
-function Calendar(element, init)
-{
-	var selection = [];
-
-	var max = undefined;
-	if (init && init.max)
-		max = init.max;
-
-	var month = new Date();
-	if (init && init.month)
-		month = init.month;
-	month.setHours(0, 0, 0, 0);
-
-	element.className = "Calendar";
-	this.element = () => element;
-
-	var update = () =>
-	{
-		while (element.firstChild)
-			element.removeChild(element.firstChild);
-
-		var body = element.appendChild(document.createElement("div"));
-		["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
-			.forEach(e => body.appendChild(document.createElement("label"))
-					.appendChild(document.createTextNode(e)));
-
-		var dates = [];
-		var ini = new Date(month);
-		ini.setDate(1);
-		while (ini.getDay() !== 0)
-			ini.setDate(ini.getDate() - 1);
-		var end = new Date(month);
-		end.setMonth(end.getMonth() + 1);
-		end.setDate(0);
-		while (end.getDay() !== 6)
-			end.setDate(end.getDate() + 1);
-		for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
-			dates.push(new Date(date));
-		while (dates.length < 42)
-		{
-			dates.push(new Date(date));
-			date.setDate(date.getDate() + 1);
-		}
-
-		var now = new Date();
-		now.setHours(0, 0, 0, 0);
-		dates.forEach(date =>
-		{
-			var link = body.appendChild(createLink(date.getDate(), () => this.action(date)));
-			if (date.getTime() === now.getTime())
-				link.classList.add("current");
-			if (date.getMonth() !== month.getMonth())
-				link.classList.add("disabled");
-			if (selection.some(e => e.getTime() === date.getTime()))
-				link.classList.add("selected");
+			event.preventDefault();
 		});
 
-		var head = body.appendChild(document.createElement("div"));
-		head.appendChild(createLink("<<", prevYear));
-		head.appendChild(createLink("<", prevMonth));
-		head.appendChild(document.createElement("label")).appendChild(document.createTextNode(DateFormat.MONTH.format(month)));
-		head.appendChild(createLink(">", nextMonth));
-		head.appendChild(createLink(">>", nextYear));
+		var goprev = this.appendChild(document.createElement("a"));
+		goprev.href = "#";
+		goprev.appendChild(document.createElement("i")).innerHTML = "&#X2278;";
+		goprev.addEventListener("click", () => update(prev(value)));
 
-		function createLink(text, callback)
+		function execute(val, func, count)
 		{
-			var link = document.createElement("a");
-			link.setAttribute("href", "#");
-			link.appendChild(document.createTextNode(text));
-			link.addEventListener("click", callback);
-			return link;
+			for (let i = 0; i < count; i++)
+				val = func(val);
+			return val;
 		}
-	};
 
-	var prevYear = function ()
+
+		var prevs = [];
+		for (let i = size - 1; i >= 0; i--)
+		{
+			prevs[i] = this.appendChild(document.createElement("label"));
+			prevs[i].onclick = () => update(execute(value, prev, i + 1));
+		}
+
+		var main = this.appendChild(document.createElement("label"));
+		main.style.fontWeight = "bold";
+
+		var nexts = []
+		for (let i = 0; i < size; i++)
+		{
+			nexts[i] = this.appendChild(document.createElement("label"));
+			nexts[i].onclick = () => update(execute(value, next, i + 1));
+		}
+
+		var gonext = this.appendChild(document.createElement("a"));
+		gonext.href = "#";
+		gonext.appendChild(document.createElement("i")).innerHTML = "&#X2276;";
+		gonext.addEventListener("click", () => update(next(value)));
+		this.value = () => value;
+		var update = val =>
+		{
+			if (val !== null)
+			{
+				if (!this.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {slider: this, value: val}})))
+					return false;
+				value = val;
+				prevs[0].innerHTML = '-';
+				prevs[1].innerHTML = '-';
+				prevs[2].innerHTML = '-';
+				prevs[3].innerHTML = '-';
+				prevs[4].innerHTML = '-';
+				main.innerHTML = format(value);
+				nexts[0].innerHTML = '-';
+				nexts[1].innerHTML = '-';
+				nexts[2].innerHTML = '-';
+				nexts[1].innerHTML = '-';
+				nexts[0].innerHTML = '-';
+
+
+				for (let i = 0; i < prevs.length; i++)
+					prevs[i].innerHTML = format(execute(val, prev, i + 1));
+
+				for (let i = 0; i < nexts.length; i++)
+					nexts[i].innerHTML = format(execute(val, next, i + 1));
+				this.dispatchEvent(new CustomEvent('update', {detail: {slider: this}}));
+			}
+		};
+
+		update(value);
+	}
+}
+
+
+
+customElements.define('g-slider', Slider);
+/* global DateFormat, customElements */
+
+var calendars = {};
+class Calendar extends HTMLElement
+{
+	constructor(init)
 	{
-		month.setFullYear(month.getFullYear() - 1);
-		update();
-	};
+		super();
 
-	var prevMonth = function ()
-	{
-		month.setMonth(month.getMonth() - 1);
-		update();
-	};
+		var selection = [];
 
-	var nextMonth = function ()
-	{
-		month.setMonth(month.getMonth() + 1);
-		update();
-	};
+		var max = undefined;
+		if (init && init.max)
+			max = init.max;
+
+		var month = new Date();
+		if (init && init.month)
+			month = init.month;
+		month.setHours(0, 0, 0, 0);
 
 
-	var nextYear = function ()
-	{
-		month.setFullYear(month.getFullYear() + 1);
-		update();
-	};
+		var update = () =>
+		{
+			while (this.firstChild)
+				this.removeChild(this.firstChild);
 
+			var body = this.appendChild(document.createElement("div"));
+			body.appendChild(document.createElement("label")).innerText = "Dom";
+			body.appendChild(document.createElement("label")).innerText = "Seg";
+			body.appendChild(document.createElement("label")).innerText = "Ter";
+			body.appendChild(document.createElement("label")).innerText = "Qua";
+			body.appendChild(document.createElement("label")).innerText = "Qui";
+			body.appendChild(document.createElement("label")).innerText = "Sex";
+			body.appendChild(document.createElement("label")).innerText = "Sab";
 
-	element.addEventListener((/Firefox/i.test(navigator.userAgent))
-		? "DOMMouseScroll" : "mousewheel",
-		function (event)
+			var dates = [];
+			var ini = new Date(month);
+			ini.setDate(1);
+			while (ini.getDay() !== 0)
+				ini.setDate(ini.getDate() - 1);
+			var end = new Date(month);
+			end.setMonth(end.getMonth() + 1);
+			end.setDate(0);
+			while (end.getDay() !== 6)
+				end.setDate(end.getDate() + 1);
+			for (var date = ini; date <= end; date.setDate(date.getDate() + 1))
+				dates.push(new Date(date));
+			while (dates.length < 42)
+			{
+				dates.push(new Date(date));
+				date.setDate(date.getDate() + 1);
+			}
+
+			var now = new Date();
+			now.setHours(0, 0, 0, 0);
+			dates.forEach(date =>
+			{
+				var link = body.appendChild(document.createElement("a"));
+				link.setAttribute("href", "#");
+				link.innerText = date.getDate();
+				link.onclick = () => this.action(date);
+
+				if (date.getTime() === now.getTime())
+					link.classList.add("current");
+				if (date.getMonth() !== month.getMonth())
+					link.classList.add("disabled");
+				if (selection.some(e => e.getTime() === date.getTime()))
+					link.classList.add("selected");
+			});
+
+			var foot = body.appendChild(document.createElement("div"));
+
+			var prevYear = foot.appendChild(document.createElement("a"));
+			prevYear.setAttribute("href", "#");
+			prevYear.innerText = "<<";
+			prevYear.onclick = () => month.setFullYear(month.getFullYear() - 1) | update();
+
+			var prevMonth = foot.appendChild(document.createElement("a"));
+			prevMonth.setAttribute("href", "#");
+			prevMonth.innerText = "<";
+			prevMonth.onclick = () => month.setMonth(month.getMonth() - 1) | update();
+
+			foot.appendChild(document.createElement("label")).innerText = DateFormat.MONTH.format(month);
+
+			var nextMonth = foot.appendChild(document.createElement("a"));
+			nextMonth.setAttribute("href", "#");
+			nextMonth.innerText = ">";
+			nextMonth.onclick = () => month.setMonth(month.getMonth() + 1) | update();
+
+			var nextYear = foot.appendChild(document.createElement("a"));
+			nextYear.setAttribute("href", "#");
+			nextYear.innerText = ">>";
+			nextYear.onclick = () => month.setFullYear(month.getFullYear() + 1) | update();
+		};
+
+		this.addEventListener((/Firefox/i.test(navigator.userAgent)) ? "DOMMouseScroll" : "mousewheel", event =>
 		{
 			event.preventDefault();
 
@@ -3983,385 +3993,681 @@ function Calendar(element, init)
 			{
 				if (event.detail)
 					if (event.detail > 0)
-						nextYear();
+						month.setFullYear(month.getFullYear() + 1);
 					else
-						prevYear();
+						month.setFullYear(month.getFullYear() - 1);
 				else if (event.wheelDelta)
 					if (event.wheelDelta > 0)
-						nextYear();
+						month.setFullYear(month.getFullYear() + 1);
 					else
-						prevYear();
+						month.setFullYear(month.getFullYear() - 1);
 			} else {
 				if (event.detail)
 					if (event.detail > 0)
-						nextMonth();
+						month.setMonth(month.getMonth() + 1);
 					else
-						prevMonth();
+						month.setMonth(month.getMonth() - 1);
 				else if (event.wheelDelta)
 					if (event.wheelDelta > 0)
-						nextMonth();
+						month.setMonth(month.getMonth() + 1);
 					else
-						prevMonth();
+						month.setMonth(month.getMonth() - 1);
 			}
+
+			update();
 		});
 
 
-	this.clear = () =>
-	{
-		if (!element.dispatchEvent(new CustomEvent('clear', {cancelable: true, detail: {calendar: this}})))
-			return false;
+		this.clear = () =>
+		{
+			if (!this.dispatchEvent(new CustomEvent('clear', {cancelable: true, detail: {calendar: this}})))
+				return false;
 
-		selection = [];
+			selection = [];
 
+			update();
+
+			this.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+			return true;
+		};
+
+
+		this.select = (date) =>
+		{
+			date = new Date(date);
+			date.setHours(0, 0, 0, 0);
+
+			if (selection.some(e => e.getTime() === date.getTime()))
+				return false;
+
+			if (!this.dispatchEvent(new CustomEvent('select', {cancelable: true, detail: {calendar: this, date: date}})))
+				return false;
+
+			if (max !== undefined
+				&& max <= selection.length)
+				selection.shift();
+
+			selection.push(date);
+
+			update();
+
+			this.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+			return true;
+		};
+
+		this.remove = (date) =>
+		{
+			date = new Date(date);
+			date.setHours(0, 0, 0, 0);
+
+			if (!selection.some(e => e.getTime() === date.getTime()))
+				return false;
+
+			if (!this.dispatchEvent(new CustomEvent('remove', {cancelable: true, detail: {calendar: this, date: date}})))
+				return false;
+
+			selection = selection.filter(e => e.getTime() !== date.getTime());
+			update();
+
+			this.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
+			return true;
+		};
+
+		this.action = (date) =>
+		{
+			date = new Date(date);
+			date.setHours(0, 0, 0, 0);
+
+			if (!this.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {calendar: this, date: date}})))
+				return false;
+
+			return selection.some(e => e.getTime() === date.getTime()) ?
+				this.remove(date) : this.select(date);
+		};
+
+		this.length = () => selection.length;
+		this.selection = () => Array.from(selection);
 		update();
-
-		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
-		return true;
-	};
-
-
-	this.select = (date) =>
-	{
-		date = new Date(date);
-		date.setHours(0, 0, 0, 0);
-
-		if (selection.some(e => e.getTime() === date.getTime()))
-			return false;
-
-		if (!element.dispatchEvent(new CustomEvent('select', {cancelable: true, detail: {calendar: this, date: date}})))
-			return false;
-
-		if (max !== undefined
-			&& max <= selection.length)
-			selection.shift();
-
-		selection.push(date);
-
-		update();
-
-		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
-		return true;
-	};
-
-	this.remove = (date) =>
-	{
-		date = new Date(date);
-		date.setHours(0, 0, 0, 0);
-
-		if (!selection.some(e => e.getTime() === date.getTime()))
-			return false;
-
-		if (!element.dispatchEvent(new CustomEvent('remove', {cancelable: true, detail: {calendar: this, date: date}})))
-			return false;
-
-		selection = selection.filter(e => e.getTime() !== date.getTime());
-		update();
-
-		element.dispatchEvent(new CustomEvent('update', {detail: {calendar: this}}));
-		return true;
-	};
-
-	this.action = (date) =>
-	{
-		date = new Date(date);
-		date.setHours(0, 0, 0, 0);
-
-		if (!element.dispatchEvent(new CustomEvent('action', {cancelable: true, detail: {calendar: this, date: date}})))
-			return false;
-
-		return selection.some(e => e.getTime() === date.getTime()) ?
-			this.remove(date) : this.select(date);
-	};
-
-	this.length = () => selection.length;
-	this.selection = () => Array.from(selection);
-	this.element = () => element;
-	update();
+	}
 }
 
-Object.defineProperty(Calendar, "of", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: (id, init) => calendars[id] = new Calendar(document.getElementById(id), init)
-});
-Object.defineProperty(Calendar, "get", {
-	writable: false,
-	enumerable: false,
-	configurable: false,
-	value: id => calendars[id]
-});
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.Calendar"))
-		.forEach(element => Calendar.of(element.id, new Date()));
-});
-/* global DateFormat */
+customElements.define('g-calendar', Calendar);
+/* global DateFormat, customElements */
 
-function DateSelector(element)
-{
-	element.classList.add("DateSelector");
-
-	var date = new Date();
-	var calendar = new Calendar(element.appendChild(document.createElement("div")), {month: new Date(), max: 1});
-	calendar.select(date);
-
-	calendar.element().addEventListener("remove", event => event.preventDefault());
-	calendar.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () => new Date(calendar.selection()[0]);
-
-	this.element = () => element;
-
-	this.toString = () => DateFormat.DATE.format(this.selection());
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.DateSelector"))
-		.forEach(element => new DateSelector(element));
-});
-function TimeSelector(element)
-{
-	var date = new Date();
-	element.classList.add("TimeSelector");
-	var h = new Slider(element.appendChild(document.createElement("div")), date.getHours(), e => e > 0 ? e - 1 : 23, e => e < 23 ? e + 1 : 0, e => "00".concat(String(e)).slice(-2));
-	var m = new Slider(element.appendChild(document.createElement("div")), date.getMinutes(), e => e > 0 ? e - 1 : 59, e => e < 59 ? e + 1 : 0, e => "00".concat(String(e)).slice(-2));
-
-	h.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	m.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		return {h: h.value(), m: m.value()};
-	};
-
-	this.element = () => element;
-
-	this.toString = () => "00".concat(String(h.value())).slice(-2) + ":" + "00".concat(String(m.value())).slice(-2);
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.TimeSelector"))
-		.forEach(e => new TimeSelector(e));
-});
-function MonthSelector(element)
-{
-	var date = new Date();
-	element.classList.add("MonthSelector");
-	var months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-	var m = new Slider(element.appendChild(document.createElement("div")), date.getMonth(), e => e > 0 ? e - 1 : 11, e => e < 11 ? e + 1 : 0, e => months[e]);
-	var y = new Slider(element.appendChild(document.createElement("div")), date.getFullYear(), e => e - 1, e => e + 1, e => "0000".concat(String(e)).slice(-4));
-
-	m.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	y.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		return {m: m.value() + 1, y: y.value()};
-	};
-
-	this.element = () => element;
-
-	this.toString = () => "00".concat(String(m.value() + 1)).slice(-2) + "/" + "0000".concat(String(y.value())).slice(-4);
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.MonthSelector"))
-		.forEach(e => new MonthSelector(e));
-});
-/* global DateFormat */
-
-function DateTimeSelector(element)
-{
-	element.classList.add("DateTimeSelector");
-
-	var dateSelector = new DateSelector(element.appendChild(document.createElement("div")));
-	var timeSelector = new TimeSelector(element.appendChild(document.createElement("div")));
-
-	dateSelector.element().addEventListener("remove", event => event.preventDefault());
-	dateSelector.element().addEventListener("select", event => event.detail.calendar.clear());
-	dateSelector.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	timeSelector.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		var date = dateSelector.selection();
-		if (!date)
-			return undefined;
-
-		var time = timeSelector.selection();
-		date.setHours(time.h, time.m, 0, 0);
-		return date;
-	};
-
-	this.element = () => element;
-
-	this.toString = () => DateFormat.DATETIME.format(this.selection());
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.DateTimeSelector"))
-		.forEach(element => new DateTimeSelector(element));
-});
-/* global DateFormat */
-
-function DateIntervalSelector(element)
-{
-	element.classList.add("DateIntervalSelector");
-
-	var date1 = new DateSelector(element.appendChild(document.createElement("div")));
-	var date2 = new DateSelector(element.appendChild(document.createElement("div")));
-
-	date1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	date2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.element = () => element;
-
-	this.selection = () =>
-	{
-		return {date1: date1.selection(), date2: date2.selection()};
-	};
-
-	this.toString = () => DateFormat.DATE.format(date1.selection()) + " - "
-			+ DateFormat.DATE.format(date2.selection());
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.DateIntervalSelector"))
-		.forEach(element => new DateIntervalSelector(element));
-});
-function TimeIntervalSelector(element)
-{
-	element.classList.add("TimeIntervalSelector");
-
-	var time1 = new TimeSelector(element.appendChild(document.createElement("div")));
-	var time2 = new TimeSelector(element.appendChild(document.createElement("div")));
-
-	time1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	time2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		return {time1: time1.selection(), time2: time2.selection()};
-	};
-
-	this.element = () => element;
-
-	this.toString = () => time1.toString() + " - " + time2.toString();
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.TimeIntervalSelector"))
-		.forEach(e => new TimeIntervalSelector(e));
-});
-function MonthIntervalSelector(element)
-{
-	element.classList.add("MonthIntervalSelector");
-
-	var time1 = new MonthSelector(element.appendChild(document.createElement("div")));
-	var time2 = new MonthSelector(element.appendChild(document.createElement("div")));
-
-	time1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	time2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		return {time1: time1.selection(), time2: time2.selection()};
-	};
-
-	this.element = () => element;
-
-	this.toString = () => time1.toString() + " - " + time2.toString();
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.MonthIntervalSelector"))
-		.forEach(e => new MonthIntervalSelector(e));
-});
-function DateTimeIntervalSelector(element)
-{
-	element.classList.add("DateTimeIntervalSelector");
-
-	var dateTime1 = new DateTimeSelector(element.appendChild(document.createElement("div")));
-	var dateTime2 = new DateTimeSelector(element.appendChild(document.createElement("div")));
-
-	dateTime1.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-	dateTime2.element().addEventListener("update", () => element.dispatchEvent(new CustomEvent('update', {detail: {selector: this}})));
-
-	this.selection = () =>
-	{
-		return {dateTime1: dateTime1.selection(), dateTime2: dateTime2.selection()};
-	};
-
-	this.element = () => element;
-
-	this.toString = () => dateTime1.toString() + " - " + dateTime2.toString();
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("div.DateTimeIntervalSelector"))
-		.forEach(e => new TimeIntervalSelector(e));
-});
-class Picker extends Modal
+class DateSelector extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		var main = this.element().appendChild(document.createElement("div"));
-		main.className = "Picker";
-		this.main = () => main;
+		this._private = {};
 
-		var head = main.appendChild(document.createElement("div"));
-		this.head = () => head;
+		var date = new Date();
+		this._private.calendar = this.appendChild(new Calendar({month: new Date(), max: 1}));
+		this._private.calendar.select(date);
+		this._private.calendar.addEventListener("remove", event => event.preventDefault());
+		this._private.calendar.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected',
+				{detail: this.selection})));
+	}
 
-		var body = main.appendChild(document.createElement("div"));
-		this.body = () => body;
-
-		var foot = main.appendChild(document.createElement("div"));
-		this.foot = () => foot;
-
-		var cancel = foot.appendChild(document.createElement("a"));
-		cancel.addEventListener("click", () => this.hide());
-		cancel.appendChild(document.createTextNode("Cancelar"));
-		cancel.href = "#";
-		this.cancel = () => cancel;
-
-		var commit = foot.appendChild(document.createElement("a"));
-		commit.appendChild(document.createTextNode("Concluir"));
-		commit.href = "#";
-		this.commit = () => commit;
+	get selection()
+	{
+		return DateFormat.DATE.format(this._private.calendar.selection()[0]);
 	}
 }
-/* global DateFormat */
+
+
+customElements.define('g-date-selector', DateSelector);
+/* global customElements */
+
+class TimeSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+
+		this._private.h = this.appendChild(new Slider(0, e => (e + 23) % 24, e => (e + 1) % 24, e => "00".concat(String(e)).slice(-2), 5));
+		this._private.h.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+
+		this._private.m = this.appendChild(new Slider(0, e => (e + 50) % 60, e => (e + 10) % 60, e => "00".concat(String(e)).slice(-2), 5));
+		this._private.m.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return "00".concat(String(this._private.h.value())).slice(-2) + ":" + "00".concat(String(this._private.m.value())).slice(-2);
+	}
+}
+
+customElements.define('g-time-selector', TimeSelector);
+/* global customElements */
+
+class MonthSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+
+		var date = new Date();
+		var months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+		this._private.m = this.appendChild(new Slider(date.getMonth(), e => e > 0 ? e - 1 : 11, e => e < 11 ? e + 1 : 0, e => months[e]));
+		this._private.m.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+
+		this._private.y = this.appendChild(new Slider(date.getFullYear(), e => e - 1, e => e + 1, e => "0000".concat(String(e)).slice(-4)));
+		this._private.y.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return "00".concat(String(this._private.m.value() + 1)).slice(-2) + "/" + "0000".concat(String(this._private.y.value())).slice(-4);
+	}
+}
+
+customElements.define('g-month-selector', MonthSelector);
+/* global DateFormat, customElements */
+
+class DateTimeSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.date = this.appendChild(new DateSelector());
+		this._private.time = this.appendChild(new TimeSelector());
+		this._private.date.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+		this._private.time.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return this._private.date.selection + " " + this._private.time.selection;
+	}
+}
+
+
+customElements.define('g-datetime-selector', DateTimeSelector);
+/* global customElements */
+
+class DateIntervalSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.min = this.appendChild(new DateSelector());
+		this._private.max = this.appendChild(new DateSelector());
+		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return this._private.min.selection + " - " + this._private.max.selection;
+	}
+}
+
+
+customElements.define('g-date-interval-selector', DateIntervalSelector);
+/* global customElements */
+
+class TimeIntervalSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.min = this.appendChild(new TimeSelector());
+		this._private.max = this.appendChild(new TimeSelector());
+		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return this._private.min.selection + " - " + this._private.max.selection;
+	}
+}
+
+
+customElements.define('g-time-interval-selector', TimeIntervalSelector);
+/* global customElements */
+
+class MonthIntervalSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.min = this.appendChild(new MonthSelector());
+		this._private.max = this.appendChild(new MonthSelector());
+		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return this._private.min.selection + " - " + this._private.max.selection;
+	}
+}
+
+
+customElements.define('g-month-interval-selector', MonthIntervalSelector);
+/* global customElements */
+
+class DateTimeIntervalSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.min = this.appendChild(new DateTimeSelector());
+		this._private.max = this.appendChild(new DateTimeSelector());
+		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
+	}
+
+	get selection()
+	{
+		return this._private.min.selection + " - " + this._private.max.selection;
+	}
+}
+
+
+customElements.define('g-datetime-interval-selector', DateTimeIntervalSelector);
+/* global DateFormat, customElements */
+
+class IconSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	connectedCallback()
+	{
+		this.add("1000");
+		this.add("1001");
+		this.add("1002");
+		this.add("1003");
+		this.add("1006");
+		this.add("1007");
+		this.add("1010");
+		this.add("1011");
+		this.add("1012");
+		this.add("1013");
+		this.add("1014");
+		this.add("1020");
+		this.add("1021");
+		this.add("1022");
+		this.add("1023");
+		this.add("1024");
+		this.add("2000");
+		this.add("2001");
+		this.add("2002");
+		this.add("2003");
+		this.add("2004");
+		this.add("2005");
+		this.add("2006");
+		this.add("2007");
+		this.add("2008");
+		this.add("2009");
+		this.add("200A");
+		this.add("2010");
+		this.add("2011");
+		this.add("2012");
+		this.add("2013");
+		this.add("2014");
+		this.add("2015");
+		this.add("2016");
+		this.add("2017");
+		this.add("2018");
+		this.add("2019");
+		this.add("2020");
+		this.add("2021");
+		this.add("2022");
+		this.add("2023");
+		this.add("2024");
+		this.add("2025");
+		this.add("2026");
+		this.add("2027");
+		this.add("2030");
+		this.add("2031");
+		this.add("2032");
+		this.add("2033");
+		this.add("2034");
+		this.add("2035");
+		this.add("2036");
+		this.add("2037");
+		this.add("2038");
+		this.add("2039");
+		this.add("2040");
+		this.add("2041");
+		this.add("2042");
+		this.add("2043");
+		this.add("2044");
+		this.add("2045");
+		this.add("2046");
+		this.add("2047");
+		this.add("2048");
+		this.add("2049");
+		this.add("2050");
+		this.add("2051");
+		this.add("2052");
+		this.add("2053");
+		this.add("2054");
+		this.add("2055");
+		this.add("2056");
+		this.add("2057");
+		this.add("2058");
+		this.add("2059");
+		this.add("2070");
+		this.add("2071");
+		this.add("2072");
+		this.add("2073");
+		this.add("2074");
+		this.add("2075");
+		this.add("2076");
+		this.add("2077");
+		this.add("2078");
+		this.add("2079");
+		this.add("2080");
+		this.add("2081");
+		this.add("2082");
+		this.add("2083");
+		this.add("2084");
+		this.add("2085");
+		this.add("2086");
+		this.add("2087");
+		this.add("2088");
+		this.add("2089");
+		this.add("2090");
+		this.add("2091");
+		this.add("2092");
+		this.add("2093");
+		this.add("2094");
+		this.add("2095");
+		this.add("2096");
+		this.add("2097");
+		this.add("2098");
+		this.add("2099");
+		this.add("2100");
+		this.add("2101");
+		this.add("2102");
+		this.add("2103");
+		this.add("2104");
+		this.add("2105");
+		this.add("2106");
+		this.add("2107");
+		this.add("2108");
+		this.add("2109");
+		this.add("2110");
+		this.add("2111");
+		this.add("2112");
+		this.add("2113");
+		this.add("2114");
+		this.add("2115");
+		this.add("2116");
+		this.add("2117");
+		this.add("2118");
+		this.add("2119");
+		this.add("2120");
+		this.add("2121");
+		this.add("2122");
+		this.add("2123");
+		this.add("2124");
+		this.add("2125");
+		this.add("2126");
+		this.add("2127");
+		this.add("2128");
+		this.add("2129");
+		this.add("2130");
+		this.add("2131");
+		this.add("2132");
+		this.add("2133");
+		this.add("2134");
+		this.add("2135");
+		this.add("2136");
+		this.add("2137");
+		this.add("2138");
+		this.add("2139");
+		this.add("2140");
+		this.add("2141");
+		this.add("2142");
+		this.add("2143");
+		this.add("2144");
+		this.add("2145");
+		this.add("2146");
+		this.add("2147");
+		this.add("2148");
+		this.add("2149");
+		this.add("2150");
+		this.add("2151");
+		this.add("2152");
+		this.add("2153");
+		this.add("2154");
+		this.add("2155");
+		this.add("2156");
+		this.add("2157");
+		this.add("2158");
+		this.add("2159");
+		this.add("2160");
+		this.add("2161");
+		this.add("2162");
+		this.add("2163");
+		this.add("2164");
+		this.add("2165");
+		this.add("2166");
+		this.add("2167");
+		this.add("2168");
+		this.add("2169");
+		this.add("2170");
+		this.add("2171");
+		this.add("2172");
+		this.add("2173");
+		this.add("2174");
+		this.add("2175");
+		this.add("2176");
+		this.add("2177");
+		this.add("2178");
+		this.add("2179");
+		this.add("2180");
+		this.add("2181");
+		this.add("2182");
+		this.add("2183");
+		this.add("2187");
+		this.add("2188");
+		this.add("2189");
+		this.add("2190");
+		this.add("2191");
+		this.add("2192");
+		this.add("2193");
+		this.add("2194");
+		this.add("2195");
+		this.add("2196");
+		this.add("2197");
+		this.add("2198");
+		this.add("2199");
+		this.add("2200");
+		this.add("2201");
+		this.add("2202");
+		this.add("2203");
+		this.add("2204");
+		this.add("2205");
+		this.add("2206");
+		this.add("2207");
+		this.add("2208");
+		this.add("2209");
+		this.add("2210");
+		this.add("2211");
+		this.add("2212");
+		this.add("2213");
+		this.add("2214");
+		this.add("2215");
+		this.add("2216");
+		this.add("2217");
+		this.add("2218");
+		this.add("2219");
+		this.add("2220");
+		this.add("2221");
+		this.add("2222");
+		this.add("2223");
+		this.add("2224");
+		this.add("2225");
+		this.add("2226");
+		this.add("2227");
+		this.add("2228");
+		this.add("2229");
+		this.add("2230");
+		this.add("2231");
+		this.add("2232");
+		this.add("2233");
+		this.add("2234");
+		this.add("2235");
+		this.add("2236");
+		this.add("2237");
+		this.add("2238");
+		this.add("2239");
+		this.add("2240");
+		this.add("2241");
+		this.add("2242");
+		this.add("2243");
+		this.add("2244");
+		this.add("2245");
+		this.add("2246");
+		this.add("2247");
+		this.add("2248");
+		this.add("2249");
+		this.add("2250");
+		this.add("2251");
+		this.add("2252");
+		this.add("2253");
+		this.add("2254");
+		this.add("2255");
+		this.add("2256");
+		this.add("2257");
+		this.add("2258");
+		this.add("2259");
+		this.add("2260");
+		this.add("2261");
+		this.add("2262");
+		this.add("2263");
+		this.add("2264");
+		this.add("2265");
+		this.add("2266");
+		this.add("2267");
+		this.add("2268");
+		this.add("2269");
+		this.add("2270");
+		this.add("2271");
+		this.add("2272");
+		this.add("2273");
+		this.add("2274");
+		this.add("2275");
+		this.add("2276");
+		this.add("2277");
+		this.add("2278");
+		this.add("2279");
+		this.add("2280");
+		this.add("2281");
+		this.add("2282");
+		this.add("2283");
+		this.add("3000");
+		this.add("3001");
+		this.add("3002");
+		this.add("3003");
+		this.add("3004");
+		this.add("3005");
+		this.add("3006");
+		this.add("3007");
+		this.add("3008");
+		this.add("3009");
+		this.add("3010");
+		this.add("3011");
+		this.add("3012");
+		this.add("3013");
+		this.add("3014");
+		this.add("3015");
+		this.add("3016");
+		this.add("3017");
+		this.add("3018");
+	}
+
+	add(code)
+	{
+		let icon = this.appendChild(document.createElement("a"));
+		icon.innerHTML = "&#X" + code + ";";
+		icon.href = "#";
+		icon.addEventListener("click", () =>
+			this.dispatchEvent(new CustomEvent('selected',
+				{detail: {selector: this, icon: code}})));
+	}
+}
+
+customElements.define('g-icon-selector', IconSelector);
+/* global customElements */
+
+class ReportSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+
+	connectedCallback()
+	{
+		this.add("PDF", "&#x2218;");
+		this.add("XLS", "&#x2221;");
+		this.add("DOC", "&#x2220;");
+		this.add("CSV", "&#x2222;");
+	}
+
+	add(type, icon)
+	{
+		var link = this.appendChild(document.createElement("a"));
+		link.appendChild(document.createTextNode(type));
+		link.appendChild(document.createElement("i")).innerHTML = icon;
+		link.addEventListener("click", () => this.dispatchEvent(new CustomEvent('selected', {cancelable: false, detail: type})));
+		return link;
+	}
+}
+
+window.addEventListener("load", () => customElements.define('g-report-selector', ReportSelector));
+/* global customElements */
+
+class Picker extends Window
+{
+	constructor()
+	{
+		super();
+		this.classList.add("g-picker");
+		this.commands.add(document.createElement("g-command").action(() => this.hide())).innerHTML = 'Fechar janela<i>&#X1011;</i>';
+	}
+
+	get commit()
+	{
+		if (!this._private.commit)
+		{
+			this._private.commit = this.foot.appendChild(document.createElement("a"));
+			this._private.commit.innerText = "Concluir";
+			this._private.commit.href = "#";
+		}
+		return this._private.commit;
+	}
+}
+
+customElements.define('g-picker', Picker);
+/* global DateFormat, customElements */
 
 class DatePicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-
-		this.main().classList.add("DatePicker");
-		this.head().appendChild(document.createTextNode("Selecione uma data"));
-
-		var selector = new Calendar(this.body().appendChild(document.createElement("div"), {max: 1}));
-
-		selector.element().addEventListener("update", () =>
-		{
-			if (selector.selection().length === 1)
-				callback(DateFormat.DATE.format(selector.selection()[0]));
-			this.hide();
-		});
-
-		this.commit().addEventListener("click", () => alert("selecione uma data"));
-
+		this.classList.add("g-date-picker");
+		this.caption = "Selecione uma data";
+		this._private.date = this.body.appendChild(new DateSelector());
+		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 		this.show();
 	}
 }
@@ -4379,10 +4685,16 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new DatePicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new DatePicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4390,26 +4702,28 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+
+customElements.define('g-date-picker', DatePicker);
+/* global customElements */
+
 class TimePicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-
-		this.main().classList.add("TimePicker");
-
-		var selector = new TimeSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.classList.add("g-time-picker");
+		this.caption = "Selecione uma hora";
+		var selector = this.body.appendChild(new TimeSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+
+customElements.define('g-time-picker', TimePicker);
 
 window.addEventListener("load", function ()
 {
@@ -4425,36 +4739,43 @@ window.addEventListener("load", function ()
 			event.preventDefault();
 
 			if (input.value)
+			{
 				input.value = '';
-			else
-				new TimePicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new TimePicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+
 			link.focus();
 			link.blur();
 		});
 	});
 });
+
+/* global customElements */
+
 class MonthPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-
-		this.main().classList.add("MonthPicker");
-
-		var selector = new MonthSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.classList.add("g-month-picker");
+		this.caption = "Selecione uma hora";
+		var selector = this.body.appendChild(new MonthSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+
+customElements.define('g-month-picker', MonthPicker);
 
 window.addEventListener("load", function ()
 {
@@ -4463,43 +4784,48 @@ window.addEventListener("load", function ()
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
 
 		link.addEventListener("click", function (event)
 		{
 			event.preventDefault();
 
 			if (input.value)
+			{
 				input.value = '';
-			else
-				new MonthPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new MonthPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+
 			link.focus();
 			link.blur();
 		});
 	});
 });
+
+/* global customElements */
+
 class DateTimePicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-
-		this.main().classList.add("DateTimePicker");
-
-		var selector = new DateTimeSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.caption = "Selecione uma data e hora";
+		var selector = this.body.appendChild(new DateTimeSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+customElements.define('g-datetime-picker', DateTimePicker);
 
 window.addEventListener("load", function ()
 {
@@ -4514,10 +4840,16 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new DateTimePicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new DateTimePicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4525,34 +4857,24 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-/* global DateFormat */
+/* global customElements */
 
 class DateIntervalPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-		this.main().classList.add("DateIntervalPicker");
-
-		var selector = new DateIntervalSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () =>
-		{
-			if (selector.selection())
-			{
-				callback(selector.toString());
-				this.hide();
-			}
-		});
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.caption = "Selecione um período";
+		var selector = this.body.appendChild(new DateIntervalSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+customElements.define('g-date-interval-picker', DateIntervalPicker);
 
 window.addEventListener("load", function ()
 {
@@ -4567,10 +4889,16 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new DateIntervalPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new DateIntervalPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4578,25 +4906,25 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+/* global customElements */
+
 class TimeIntervalPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-		this.main().classList.add("TimeIntervalPicker");
-
-		var selector = new TimeIntervalSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.caption = "Selecione um período";
+		this.classList.add("g-time-interval-picker");
+		var selector = this.body.appendChild(new TimeIntervalSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+customElements.define('g-time-interval-picker', TimeIntervalPicker);
 
 window.addEventListener("load", function ()
 {
@@ -4605,16 +4933,22 @@ window.addEventListener("load", function ()
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2167;";
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new TimeIntervalPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new TimeIntervalPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4622,26 +4956,24 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+/* global customElements */
+
 class MonthIntervalPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-
-		this.main().classList.add("MonthIntervalPicker");
-
-		var selector = new MonthIntervalSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.caption = "Selecione um período";
+		var selector = this.body.appendChild(new MonthIntervalSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+customElements.define('g-month-interval-picker', MonthIntervalPicker);
 
 window.addEventListener("load", function ()
 {
@@ -4656,10 +4988,16 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new MonthIntervalPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new MonthIntervalPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4667,25 +5005,24 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+/* global customElements */
+
 class DateTimeIntervalPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
-		this.main().classList.add("DateTimeIntervalPicker");
-
-		var selector = new DateTimeIntervalSelector(this.body().appendChild(document.createElement("div")));
-		selector.element().addEventListener("update", () => this.head().innerHTML = selector.toString());
-
-		this.head().appendChild(document.createTextNode(selector.toString()));
-
-		this.commit().addEventListener("click", () => callback(selector.toString()) | this.hide());
-
-		this.element().addEventListener("show", () => this.commit().focus());
-
+		this.caption = "Selecione um período";
+		var selector = this.body.appendChild(new DateTimeIntervalSelector());
+		this.commit.innerText = selector.selection;
+		this.addEventListener("show", () => this.commit.focus());
+		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
+		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
 		this.show();
 	}
 }
+
+customElements.define('g-datetime-interval-picker', DateTimeIntervalPicker);
 
 window.addEventListener("load", function ()
 {
@@ -4700,10 +5037,16 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new DateTimeIntervalPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new DateTimeIntervalPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
+
 
 			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
 			link.focus();
@@ -4711,340 +5054,23 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-/* global DateFormat */
+/* global DateFormat, customElements */
 
 class IconPicker extends Picker
 {
-	constructor(callback)
+	constructor()
 	{
 		super();
 
-		this.main().classList.add("IconPicker");
-		this.head().appendChild(document.createTextNode("Selecione um ícone"));
-
-		var selector = this.body()
-			.appendChild(document.createElement("div"));
-
-		icon("1000");
-		icon("1001");
-		icon("1002");
-		icon("1003");
-		icon("1006");
-		icon("1007");
-		icon("1010");
-		icon("1011");
-		icon("1012");
-		icon("1013");
-		icon("1014");
-		icon("1020");
-		icon("1021");
-		icon("1022");
-		icon("1023");
-		icon("1024");
-		icon("2000");
-		icon("2001");
-		icon("2002");
-		icon("2003");
-		icon("2004");
-		icon("2005");
-		icon("2006");
-		icon("2007");
-		icon("2008");
-		icon("2009");
-		icon("200A");
-		icon("2010");
-		icon("2011");
-		icon("2012");
-		icon("2013");
-		icon("2014");
-		icon("2015");
-		icon("2016");
-		icon("2017");
-		icon("2018");
-		icon("2019");
-		icon("2020");
-		icon("2021");
-		icon("2022");
-		icon("2023");
-		icon("2024");
-		icon("2025");
-		icon("2026");
-		icon("2027");
-		icon("2030");
-		icon("2031");
-		icon("2032");
-		icon("2033");
-		icon("2034");
-		icon("2035");
-		icon("2036");
-		icon("2037");
-		icon("2038");
-		icon("2039");
-		icon("2040");
-		icon("2041");
-		icon("2042");
-		icon("2043");
-		icon("2044");
-		icon("2045");
-		icon("2046");
-		icon("2047");
-		icon("2048");
-		icon("2049");
-		icon("2050");
-		icon("2051");
-		icon("2052");
-		icon("2053");
-		icon("2054");
-		icon("2055");
-		icon("2056");
-		icon("2057");
-		icon("2058");
-		icon("2059");
-		icon("2070");
-		icon("2071");
-		icon("2072");
-		icon("2073");
-		icon("2074");
-		icon("2075");
-		icon("2076");
-		icon("2077");
-		icon("2078");
-		icon("2079");
-		icon("2080");
-		icon("2081");
-		icon("2082");
-		icon("2083");
-		icon("2084");
-		icon("2085");
-		icon("2086");
-		icon("2087");
-		icon("2088");
-		icon("2089");
-		icon("2090");
-		icon("2091");
-		icon("2092");
-		icon("2093");
-		icon("2094");
-		icon("2095");
-		icon("2096");
-		icon("2097");
-		icon("2098");
-		icon("2099");
-		icon("2100");
-		icon("2101");
-		icon("2102");
-		icon("2103");
-		icon("2104");
-		icon("2105");
-		icon("2106");
-		icon("2107");
-		icon("2108");
-		icon("2109");
-		icon("2110");
-		icon("2111");
-		icon("2112");
-		icon("2113");
-		icon("2114");
-		icon("2115");
-		icon("2116");
-		icon("2117");
-		icon("2118");
-		icon("2119");
-		icon("2120");
-		icon("2121");
-		icon("2122");
-		icon("2123");
-		icon("2124");
-		icon("2125");
-		icon("2126");
-		icon("2127");
-		icon("2128");
-		icon("2129");
-		icon("2130");
-		icon("2131");
-		icon("2132");
-		icon("2133");
-		icon("2134");
-		icon("2135");
-		icon("2136");
-		icon("2137");
-		icon("2138");
-		icon("2139");
-		icon("2140");
-		icon("2141");
-		icon("2142");
-		icon("2143");
-		icon("2144");
-		icon("2145");
-		icon("2146");
-		icon("2147");
-		icon("2148");
-		icon("2149");
-		icon("2150");
-		icon("2151");
-		icon("2152");
-		icon("2153");
-		icon("2154");
-		icon("2155");
-		icon("2156");
-		icon("2157");
-		icon("2158");
-		icon("2159");
-		icon("2160");
-		icon("2161");
-		icon("2162");
-		icon("2163");
-		icon("2164");
-		icon("2165");
-		icon("2166");
-		icon("2167");
-		icon("2168");
-		icon("2169");
-		icon("2170");
-		icon("2171");
-		icon("2172");
-		icon("2173");
-		icon("2174");
-		icon("2175");
-		icon("2176");
-		icon("2177");
-		icon("2178");
-		icon("2179");
-		icon("2180");
-		icon("2181");
-		icon("2182");
-		icon("2183");
-		icon("2187");
-		icon("2188");
-		icon("2189");
-		icon("2190");
-		icon("2191");
-		icon("2192");
-		icon("2193");
-		icon("2194");
-		icon("2195");
-		icon("2196");
-		icon("2197");
-		icon("2198");
-		icon("2199");
-		icon("2200");
-		icon("2201");
-		icon("2202");
-		icon("2203");
-		icon("2204");
-		icon("2205");
-		icon("2206");
-		icon("2207");
-		icon("2208");
-		icon("2209");
-		icon("2210");
-		icon("2211");
-		icon("2212");
-		icon("2213");
-		icon("2214");
-		icon("2215");
-		icon("2216");
-		icon("2217");
-		icon("2218");
-		icon("2219");
-		icon("2220");
-		icon("2221");
-		icon("2222");
-		icon("2223");
-		icon("2224");
-		icon("2225");
-		icon("2226");
-		icon("2227");
-		icon("2228");
-		icon("2229");
-		icon("2230");
-		icon("2231");
-		icon("2232");
-		icon("2233");
-		icon("2234");
-		icon("2235");
-		icon("2236");
-		icon("2237");
-		icon("2238");
-		icon("2239");
-		icon("2240");
-		icon("2241");
-		icon("2242");
-		icon("2243");
-		icon("2244");
-		icon("2245");
-		icon("2246");
-		icon("2247");
-		icon("2248");
-		icon("2249");
-		icon("2250");
-		icon("2251");
-		icon("2252");
-		icon("2253");
-		icon("2254");
-		icon("2255");
-		icon("2256");
-		icon("2257");
-		icon("2258");
-		icon("2259");
-		icon("2260");
-		icon("2261");
-		icon("2262");
-		icon("2263");
-		icon("2264");
-		icon("2265");
-		icon("2266");
-		icon("2267");
-		icon("2268");
-		icon("2269");
-		icon("2270");
-		icon("2271");
-		icon("2272");
-		icon("2273");
-		icon("2274");
-		icon("2275");
-		icon("2276");
-		icon("2277");
-		icon("2278");
-		icon("2279");
-		icon("2280");
-		icon("2281");
-		icon("2282");
-		icon("2283");
-		icon("3000");
-		icon("3001");
-		icon("3002");
-		icon("3003");
-		icon("3004");
-		icon("3005");
-		icon("3006");
-		icon("3007");
-		icon("3008");
-		icon("3009");
-		icon("3010");
-		icon("3011");
-		icon("3012");
-		icon("3013");
-		icon("3014");
-		icon("3015");
-		icon("3016");
-		icon("3017");
-		icon("3018");
-
-		this.commit().addEventListener("click", () => alert("selecione um ícone"));
-
+		this.classList.add("g-picker");
+		this.head.appendChild(document.createTextNode("Selecione um ícone"));
+		var selector = this.body.appendChild(document.createElement("g-icon-selector"));
+		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail.icon})) | this.hide());
 		this.show();
-
-		var element = this;
-		function icon(code)
-		{
-			var icon = selector.appendChild(document.createElement("a"));
-			icon.innerHTML = "&#X" + code + ";";
-			icon.href = "#";
-			icon.addEventListener("click", () => callback(code) | element.hide());
-		}
 	}
 }
+
+customElements.define('g-icon-picker', IconPicker);
 
 window.addEventListener("load", function ()
 {
@@ -5059,12 +5085,17 @@ window.addEventListener("load", function ()
 		{
 			event.preventDefault();
 
-			if (input.value)
+			if (input.value) {
 				input.value = '';
-			else
-				new IconPicker(value => input.value = value);
+				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			} else
+				new IconPicker().addEventListener("picked", e =>
+				{
+					input.value = e.detail;
+					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				});
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+
 			link.focus();
 			link.blur();
 		});
@@ -5667,65 +5698,39 @@ window.addEventListener("load", function ()
 		new LinkControl(e);
 	});
 });
-/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen */
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-
-
-class Dialog extends Modal
+class Dialog extends Window
 {
 	constructor(options)
 	{
 		super(options);
+		this.head.focus();
+		this.head.tabindex = 1;
+		this.classList.add("g-dialog");
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.className = "Dialog";
-		if (options && options.size && options.size.w)
-			dialog.style.width = options.size.w;
-		if (options && options.size && options.size.h)
-			dialog.style.height = options.size.h;
+		let overflow = this.commands.add(document.createElement("g-overflow"));
+		overflow.innerHTML = "<i>&#X3018;</i>";
 
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.onmouseenter = () => head.focus();
-		head.setAttribute("tabindex", "1");
-		head.focus();
+		let close = this.commands.add(document.createElement("g-command"));
+		close.action(() => this.hide());
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 
-		var caption = head.appendChild(window.top.document.createElement('label'));
-		if (options && options.title)
-			caption.innerHTML = options.title;
-
-
-		this.customCommands = head.appendChild(document.createElement("g-commands"));
+		let fullScreen = this.commands.add(document.createElement("g-command"));
+		fullScreen.innerHTML = "Tela cheia" + (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.action(element => element.innerHTML = "Tela cheia" + (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>"));
 
 		if (options && options.navigator && options.navigator.length)
-		{
-			var navigator = head.appendChild(document.adoptNode(new NavBar(options.navigator)));
-			navigator.addEventListener("go", event => iframe.setAttribute('src', event.detail.target));
+			this.main.appendChild(new NavBar(options.navigator, options.target))
+				.addEventListener("update", event => iframe.setAttribute('src', event.detail.target));
 
-		}
-
-		this.systemCommands = head.appendChild(document.createElement("g-commands"));
-		this.systemCommands.style.width = "90px";
-		this.systemCommands.style.minWidth = "90px";
-		this.systemCommands.style.maxWidth = "90px";
-
-		this.rename = c => caption.innerHTML = c;
-
-		if (!this.blocked())
-		{
-			this.systemCommands.add("&#x1011;", 'Fechar janela', () => this.hide());
-			this.systemCommands.add(FullScreen.status() ? "&#x3016;" : "&#x3015;", 'Tela cheia',
-				element => element.icon(FullScreen.switch(dialog) ? "&#x3016;" : "&#x3015;"));
-		}
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-
-		var iframe = body.appendChild(window.top.document.createElement('iframe'));
+		var iframe = this.body.appendChild(window.top.document.createElement('iframe'));
 		iframe.dialog = this;
 		iframe.scrolling = "no";
 		iframe.setAttribute('name', '_dialog');
 		iframe.onmouseenter = () => iframe.focus();
 
-		var resize = function ()
+		var resize = () =>
 		{
 			if (!iframe.contentWindow
 				|| !iframe.contentWindow.document
@@ -5733,7 +5738,7 @@ class Dialog extends Modal
 				|| !iframe.contentWindow.document.body.scrollHeight)
 				return false;
 
-			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, body.offsetHeight) + "px";
+			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
 			if (iframe.height !== height)
 			{
 				iframe.height = "0";
@@ -5747,8 +5752,8 @@ class Dialog extends Modal
 			iframe.name = "_frame";
 			iframe.setAttribute("name", "_frame");
 
-			head.onkeydown = undefined;
-			head.addEventListener("keydown", event =>
+			this.head.onkeydown = undefined;
+			this.head.addEventListener("keydown", event =>
 			{
 				event = event ? event : window.event;
 				switch (event.keyCode)
@@ -5786,11 +5791,7 @@ class Dialog extends Modal
 			iframe.backgroundImage = "none";
 		});
 
-		if (options && options.target)
-			if (options.navigator)
-				navigator.go(options.target);
-			else
-				iframe.setAttribute('src', options.target);
+		iframe.setAttribute('src', options.target);
 	}
 
 	get()
@@ -5824,7 +5825,7 @@ class Dialog extends Modal
 
 	static hide()
 	{
-		if (window.frameElement && window.frameElement._command)
+		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
 	}
 }
@@ -5911,6 +5912,8 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+
+customElements.define('g-dialog', Dialog);
 class Popup extends Modal
 {
 	constructor(element)
@@ -6435,32 +6438,19 @@ window.addEventListener("load", function ()
 });
 
 
-class Message extends Modal
+/* global customElements, Modal */
+
+class Message extends Window
 {
 	constructor(options)
 	{
 		super();
+		this.classList.add("g-message");
+		this.classList.add(options.type);
+		this.caption = options.title || "";
+		this.commands.add(new Command().action(() => this.hide())).innerHTML = "<i>&#x1011</i>Fechar janela";
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.classList.add("Message");
-		dialog.classList.add(options.type);
-
-		var icon = dialog.appendChild(window.top.document.createElement('label'));
-		switch (options.type)
-		{
-			case "SUCCESS":
-				icon.innerHTML = "&#X1000;";
-				break;
-			case "WARNING":
-				icon.innerHTML = "&#X1007;";
-				break;
-			case "ERROR":
-				icon.innerHTML = "&#X1001;";
-				break;
-		}
-
-		var message = dialog.appendChild(window.top.document.createElement('label'));
-		message.innerHTML = options.message;
+		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
 
 		if (options.timeout)
 			window.top.setTimeout(() => this.hide(), options.timeout);
@@ -6469,19 +6459,21 @@ class Message extends Modal
 	}
 }
 
+customElements.define('g-message', Message);
+
 Message.success = function (message, timeout)
 {
-	new Message({type: "SUCCESS", message: message, timeout: timeout});
+	new Message({type: "SUCCESS", title: "Sucesso", message: message, timeout: timeout});
 };
 
 Message.warning = function (message, timeout)
 {
-	new Message({type: "WARNING", message: message, timeout: timeout});
+	new Message({type: "WARNING", title: "Alerta", message: message, timeout: timeout});
 };
 
 Message.error = function (message, timeout)
 {
-	new Message({type: "ERROR", message: message, timeout: timeout});
+	new Message({type: "ERROR", title: "Erro", message: message, timeout: timeout});
 };
 
 Message.show = function (status, timeout)
@@ -6934,70 +6926,38 @@ class DownloadStatus extends HTMLElement
 }
 
 customElements.define('download-status', DownloadStatus);
-class ReportSelector extends HTMLElement
-{
-	constructor()
-	{
-		super();
-	}
+/* global customElements */
 
-	connectedCallback()
-	{
-		var selector = this;
-
-		this.appendChild(createLink("PDF", "&#x2218;"));
-		this.appendChild(createLink("XLS", "&#x2221;"));
-		this.appendChild(createLink("DOC", "&#x2220;"));
-		this.appendChild(createLink("CSV", "&#x2222;"));
-
-		function createLink(type, icon)
-		{
-			var link = selector.appendChild(document.createElement("a"));
-			link.innerHTML = icon;
-			link.setAttribute("data-type", type);
-			link.addEventListener("click", () => selector.dispatchEvent(new CustomEvent('selected', {cancelable: false, detail: type})));
-			return link;
-		}
-	}
-}
-
-window.addEventListener("load", () => customElements.define('report-selector', ReportSelector));
-class ReportDialog extends Modal
+class ReportDialog extends Window
 {
 	constructor(options)
 	{
 		super(options);
+		this.classList.add("g-report-dialog");
 		var downloadStatus = new DownloadStatus();
 		addEventListener("hide", () => downloadStatus.abort());
 
-		var main = this.element().appendChild(document.createElement("div"));
-		main.className = "ReportDialog";
+		this.head.innerHTML = (options && options.title) || "Imprimir";
 
-		var head = main.appendChild(document.createElement("div"));
-		if (options && options.title)
-			head.innerHTML = options.title || "Imprimir";
-
-		var body = main.appendChild(document.createElement("div"));
-
-		var selector = body.appendChild(new ReportSelector());
+		var selector = this.body.appendChild(new ReportSelector());
 		selector.addEventListener("selected", event =>
 		{
-			body.removeChild(selector);
-			body.appendChild(downloadStatus);
+			this.body.removeChild(selector);
+			this.body.appendChild(downloadStatus);
 			var url = new URL(options.url).setParameter("type", event.detail).toString();
 			downloadStatus.download(options.method, url, options.data);
 			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
-		var foot = main.appendChild(document.createElement("div"));
-
-		var action = foot.appendChild(document.createElement("a"));
-		action.appendChild(document.createTextNode("Cancelar"));
-		action.addEventListener("click", () => this.hide());
-		action.style.color = "#660000";
-		action.href = "#";
+		let close = this.commands.add(document.createElement("g-command"));
+		close.action(() => this.hide());
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 	}
 }
+
+
+
+customElements.define('g-report-dialog', ReportDialog);
 /* global Colorizer */
 
 window.addEventListener("load", function ()
@@ -7026,43 +6986,6 @@ window.addEventListener("load", function ()
 		Colorizer.colorize(table);
 	});
 });
-/* global customElements */
-
-class CoolbarDialog extends HTMLElement
-{
-	constructor(elements)
-	{
-		super();
-		this._elements = elements;
-		this.addEventListener("click", e =>
-		{
-			e.stopPropagation();
-			window.setTimeout(() => this.parentNode.removeChild(this), 0);
-		});
-	}
-
-	connectedCallback()
-	{
-		var elements = this.appendChild(document.createElement("div"));
-		this._elements.forEach(e =>
-		{
-			switch (e.tagName.toLowerCase())
-			{
-				case "a":
-					elements.appendChild(new Link(e.cloneNode(true)).get())
-						.addEventListener("click", () => this.click());
-					break;
-				case "button":
-					elements.appendChild(new Button(e.cloneNode(true)).get())
-						.addEventListener("click", () => this.click());
-					break;
-			}
-		});
-	}
-}
-
-
-customElements.define('g-coolbar-dialog', CoolbarDialog);
 
 /* global customElements */
 
@@ -7071,42 +6994,87 @@ class Coolbar extends HTMLElement
 	constructor()
 	{
 		super();
-
-	}
-
-	distribute()
-	{
-		this.lastElementChild.style.display = "none";
-		Array.from(this.lastElementChild.children)
-			.forEach(e => this.firstElementChild.appendChild(e));
-		while (this.firstElementChild.lastElementChild
-			&& (this.firstElementChild.scrollWidth > this.firstElementChild.clientWidth
-				|| this.firstElementChild.scrollHeight > this.firstElementChild.clientHeight))
-		{
-			this.lastElementChild.appendChild(this.firstElementChild.lastElementChild);
-			this.lastElementChild.style.display = "flex";
-		}
-
-
 	}
 
 	connectedCallback()
 	{
-		var children = Array.from(this.children);
-		var links = this.appendChild(document.createElement("div"));
-		children.forEach(e => links.appendChild(e));
-
-		var link = this.appendChild(document.createElement("a"));
-		link.innerHTML = "&#X3018;"
-
-		link.addEventListener("click", () => this.appendChild(new CoolbarDialog(Array.from(link.children))));
-
-		window.addEventListener("load", () => this.distribute());
-		window.addEventListener("resize", () => this.distribute());
+		this.appendChild(document.createElement("g-overflow"))
+			.innerHTML = "<i>&#X3018;</i>";
 	}
 }
 
 customElements.define('g-coolbar', Coolbar);
+/* global customElements, Proxy */
+
+class Overflow extends Command
+{
+	constructor()
+	{
+		super();
+
+		this.addEventListener("click", () =>
+		{
+			var elements = Array.from(this.parentNode.children)
+				.filter(element => element.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+
+			var menu = this.appendChild(new SideMenu(elements));
+			var center = this.getBoundingClientRect();
+			center = center.left + (center.width / 2);
+
+			if (center <= window.innerWidth / 2)
+				menu.showL();
+			else
+				menu.showR();
+		});
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		window.addEventListener("load", () => this.update());
+		window.addEventListener("resize", () => this.update());
+	}
+
+	update()
+	{
+		this.style.display = "none";
+
+		Array.from(this.parentNode.children)
+			.filter(e => e !== this)
+			.forEach(e => e.style.display = "");
+
+		if (Overflow.isOverflowed(this.parentNode))
+			this.style.display = "flex";
+
+		for (var element = this.previousElementSibling;
+			element;
+			element = element.previousElementSibling)
+			if (Overflow.isOverflowed(this.parentNode))
+				if (!element.hasAttribute("aria-selected"))
+					element.style.display = "none";
+
+
+		for (var element = this.nextElementSibling;
+			element;
+			element = element.nextElementSibling)
+			if (Overflow.isOverflowed(this.parentNode))
+				if (!element.hasAttribute("aria-selected"))
+					element.style.display = "none";
+	}
+
+	static isOverflowed(element)
+	{
+		return element.scrollWidth > element.clientWidth
+			|| element.scrollHeight > element.clientHeight;
+	}
+}
+
+
+customElements.define('g-overflow', Overflow);
+
+
 
 window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
@@ -7122,6 +7090,19 @@ window.addEventListener("resize", () => {
 		.filter(e => e.scrollWidth > e.clientWidth
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
+});
+
+
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("a"))
+		.filter(e => window.location.href.endsWith(e.href))
+		.forEach(e => e.setAttribute("aria-selected", "true"));
+
+	Array.from(document.querySelectorAll("button"))
+		.filter(e => window.location.href.endsWith(e.formaction))
+		.forEach(e => e.setAttribute("aria-selected", "true"));
 });
 
 window.addEventListener("load", function ()
@@ -7313,3 +7294,26 @@ window.addEventListener("load", function ()
 {
 	Checkable.ContextMenu.register(document.querySelectorAll("ul.Checkable"));
 });
+/* global customElements */
+
+class TabBar extends HTMLElement
+{
+	constructor(element)
+	{
+		super(element);
+	}
+
+	connectedCallback()
+	{
+		this.parentNode.style.overflow = "hidden";
+		this.appendChild(document.createElement("g-overflow"))
+			.innerHTML = "Mais<i>&#X3017;</i>";
+	}
+
+	disconnectedCallback()
+	{
+		this.parentNode.style.overflow = "";
+	}
+}
+
+customElements.define('g-tabbar', TabBar);

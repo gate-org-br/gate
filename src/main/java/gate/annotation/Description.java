@@ -1,6 +1,5 @@
 package gate.annotation;
 
-import gate.util.Reflection;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,27 +25,26 @@ public @interface Description
 		{
 			try
 			{
-				if (element instanceof String)
-				{
-					String string = (String) element;
-					Optional<? extends AnnotatedElement> optional = Reflection.find(string);
-					return optional.isPresent() ? extract(optional.get()) : Optional.of(string);
-				}
-
 				if (element instanceof AnnotatedElement)
-					return ((AnnotatedElement) element).isAnnotationPresent(Description.class)
-						? extract(((AnnotatedElement) element).getAnnotation(Description.class).value())
-						: Optional.empty();
+				{
+					AnnotatedElement annotatedElement = (AnnotatedElement) element;
+					if (annotatedElement.isAnnotationPresent(Description.class))
+						Optional.of(annotatedElement.getAnnotation(Description.class).value());
+					if (annotatedElement.isAnnotationPresent(CopyDescription.class))
+						return extract(annotatedElement.getAnnotation(CopyDescription.class).value());
+					if (annotatedElement.isAnnotationPresent(Copy.class))
+						return extract(annotatedElement.getAnnotation(Copy.class).value());
+					return Optional.empty();
+				}
 
 				if (element instanceof Enum<?>)
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
-
 				if (element != null)
 					return extract(element.getClass());
 
 				return Optional.empty();
 
-			} catch (ClassNotFoundException | NoSuchFieldException ex)
+			} catch (NoSuchFieldException ex)
 			{
 				return Optional.empty();
 			}

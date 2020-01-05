@@ -1,8 +1,8 @@
-div.Slider
+g-slider
 {
 	display:flex;
 	outline: none;
-	overflow:auto;
+	overflow:hidden;
 	font-size: 20px;
 	align-items: stretch;
 	flex-direction: column;
@@ -15,18 +15,17 @@ div.Slider
 	> * { flex-grow: 1;
 	      display: flex;
 	      color: #666666;
-	      flex-shrink: 0;
+	      flex-shrink: 1;
 	      font-size: inherit;
 	      align-items:  center;
 	      justify-content: center;
 	      background-color: transparent;}
 
-	label:not(:nth-of-type(6)) { cursor: pointer }
-	label:not(:nth-of-type(6)):hover { text-decoration: underline }
+	label { cursor: pointer }
+	label:hover { text-decoration: underline }
 
 	> a:nth-of-type(1) { cursor: n-resize }
-	> label:nth-of-type(6) { color: black;
-				 font-weight: bold;  }
+	> span { color: black; font-weight: bold;  }
 	> a:nth-of-type(2) { cursor: s-resize }
 
 	&:hover {
