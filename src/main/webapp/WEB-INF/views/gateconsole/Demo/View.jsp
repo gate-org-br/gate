@@ -229,14 +229,14 @@
 							<div>
 								<pre>&lt;g-coolbar>
 	&lt;a href='#' data-tooltip='This is a tooltip'>
-		Hover here
+		Hover here&lt;i>&amp;#X2015;&lt;/i>
 	&lt;/a>
 &lt/g-coolbar></pre>
 							</div>
 							<div>
 								<g-coolbar>
 									<a href="#" data-tooltip='This is a tooltip'>
-										Hover here
+										Hover here<g:icon type="2015"/>
 									</a>
 								</g-coolbar>
 							</div>
@@ -247,7 +247,7 @@
 	&lt;a href='#' data-tooltip='{"Name": "Tooltip",
 	"Type": "Attribute",
 	"Description": "This is a tooltip"}'>
-		Hover here
+		Hover here&lt;i>&amp;#X2015;&lt;/i>
 	&lt;/a>
 &lt/g-coolbar></pre>
 							</div>
@@ -255,7 +255,7 @@
 								<g-coolbar>
 									<a href="#" data-tooltip='{"Name": "Tooltip", "Type": "Attribute",
 									   "Description": "This is a tooltip"}'>
-										Hover here
+										Hover here<g:icon type="2015"/>
 									</a>
 								</g-coolbar>
 							</div>

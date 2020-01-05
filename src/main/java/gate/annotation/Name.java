@@ -8,6 +8,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import javax.enterprise.util.Nonbinding;
 
+@Info
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
 	{
@@ -33,9 +34,9 @@ public @interface Name
 					if (annotatedElement.isAnnotationPresent(Name.class))
 						return Optional.of(annotatedElement.getAnnotation(Name.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyName.class))
-						return extract(annotatedElement.getAnnotation(CopyName.class).value());
-					if (annotatedElement.isAnnotationPresent(Copy.class))
-						return extract(annotatedElement.getAnnotation(Copy.class).value());
+						return extract(CopyName.Extractor.extract(annotatedElement));
+					if (annotatedElement.isAnnotationPresent(CopyInfo.class))
+						return extract(CopyInfo.Extractor.extract(annotatedElement));
 					return Optional.empty();
 				}
 

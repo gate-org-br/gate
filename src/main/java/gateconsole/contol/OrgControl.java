@@ -1,9 +1,9 @@
 package gateconsole.contol;
 
 import gate.base.Control;
+import gate.constraint.Constraints;
 import gate.entity.Org;
 import gate.error.AppException;
-import gate.constraint.Constraints;
 import gate.error.NotFoundException;
 import gateconsole.dao.OrgDao;
 import javax.enterprise.context.Dependent;

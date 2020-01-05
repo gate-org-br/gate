@@ -12,7 +12,7 @@ import java.lang.reflect.AnnotatedElement;
 		ElementType.TYPE, ElementType.FIELD,
 		ElementType.METHOD, ElementType.PARAMETER
 	})
-public @interface CopyCode
+public @interface CopyInfo
 {
 
 	Class<?> value();
@@ -25,13 +25,13 @@ public @interface CopyCode
 		public static AnnotatedElement extract(AnnotatedElement element)
 			throws NoSuchFieldException
 		{
-			CopyCode copyCode
-				= element.getAnnotation(CopyCode.class);
+			CopyInfo copyInformation
+				= element.getAnnotation(CopyInfo.class);
 
-			Class<?> type = copyCode.value();
+			Class<?> type = copyInformation.value();
 
-			if (!copyCode.field().isEmpty())
-				return type.getField(copyCode.field());
+			if (!copyInformation.field().isEmpty())
+				return type.getField(copyInformation.field());
 
 			return type;
 		}
