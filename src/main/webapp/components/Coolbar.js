@@ -1,4 +1,3 @@
-
 /* global customElements */
 
 class Coolbar extends HTMLElement
@@ -10,8 +9,9 @@ class Coolbar extends HTMLElement
 
 	connectedCallback()
 	{
-		this.appendChild(document.createElement("g-overflow"))
-			.innerHTML = "<i>&#X3018;</i>";
+		if (!this.getElementsByTagName("g-overflow").length)
+			this.appendChild(document.createElement("g-overflow"))
+				.innerHTML = "<i>&#X3018;</i>";
 	}
 }
 

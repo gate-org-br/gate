@@ -5,7 +5,8 @@ class Tooltip extends HTMLElement
 	constructor(element, orientation, content)
 	{
 		super();
-		this._element = element;
+		this._private = {};
+		this._private.element = element;
 		this._orientation = orientation;
 
 		switch (typeof content)
@@ -28,7 +29,7 @@ class Tooltip extends HTMLElement
 	{
 		this.appendChild(this._content);
 		var tooltip = this.getBoundingClientRect();
-		var element = this._element.getBoundingClientRect();
+		var element = this._private.element.getBoundingClientRect();
 		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
 
 		switch (this._orientation || "vertical")

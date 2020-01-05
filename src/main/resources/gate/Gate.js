@@ -6986,7 +6986,6 @@ window.addEventListener("load", function ()
 		Colorizer.colorize(table);
 	});
 });
-
 /* global customElements */
 
 class Coolbar extends HTMLElement
@@ -6998,8 +6997,9 @@ class Coolbar extends HTMLElement
 
 	connectedCallback()
 	{
-		this.appendChild(document.createElement("g-overflow"))
-			.innerHTML = "<i>&#X3018;</i>";
+		if (!this.getElementsByTagName("g-overflow").length)
+			this.appendChild(document.createElement("g-overflow"))
+				.innerHTML = "<i>&#X3018;</i>";
 	}
 }
 
@@ -7177,7 +7177,8 @@ class Tooltip extends HTMLElement
 	constructor(element, orientation, content)
 	{
 		super();
-		this._element = element;
+		this._private = {};
+		this._private.element = element;
 		this._orientation = orientation;
 
 		switch (typeof content)
@@ -7200,7 +7201,7 @@ class Tooltip extends HTMLElement
 	{
 		this.appendChild(this._content);
 		var tooltip = this.getBoundingClientRect();
-		var element = this._element.getBoundingClientRect();
+		var element = this._private.element.getBoundingClientRect();
 		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
 
 		switch (this._orientation || "vertical")
@@ -7306,8 +7307,9 @@ class TabBar extends HTMLElement
 	connectedCallback()
 	{
 		this.parentNode.style.overflow = "hidden";
-		this.appendChild(document.createElement("g-overflow"))
-			.innerHTML = "Mais<i>&#X3017;</i>";
+		if (!this.getElementsByTagName("g-overflow").length)
+			this.appendChild(document.createElement("g-overflow"))
+				.innerHTML = "Mais<i>&#X3017;</i>";
 	}
 
 	disconnectedCallback()
