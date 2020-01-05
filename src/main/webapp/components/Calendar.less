@@ -9,7 +9,7 @@ g-calendar
 	justify-content: center;
 	border: 2px solid #CCCCCC;
 	background-color: #CCCCCC;
-	&:hover { border-color: @hovered; }
+	&:hover { border-color: var(--hovered); }
 
 	> div { flex-grow: 1;
 		width:  100%;
@@ -25,7 +25,7 @@ g-calendar
 			  font-size: 16px;
 			  align-items: center;
 			  justify-content: center;
-			  background-color: @base; }
+			  background-color: var(--base); }
 
 		> a { flex-grow: 1;
 		      display: flex;
@@ -38,9 +38,9 @@ g-calendar
 
 		> a.current { font-weight: bold; text-decoration: underline }
 		> a.disabled {color: #AAAAAA;}
-		> a.selected {background-color: @acent;}
+		> a.selected {background-color: var(--acent);}
 
-		> a:hover { background-color: @hovered }
+		> a:hover { background-color: var(--hovered) }
 
 		div:last-child {
 			display: flex;
@@ -52,7 +52,7 @@ g-calendar
 			align-items:  center;
 			align-content: space-around;
 			justify-content: space-around;
-			background-image: @base_gradient;
+			background-image: linear-gradient(to bottom, var(--base-tinted40) 0%, var(--base-shaded20) 100% );
 
 			> a { display: flex;
 			      flex-basis: 48px;

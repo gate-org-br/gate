@@ -4,7 +4,7 @@ div.LinkControl {
 	margin-top: 16px;
 	margin-bottom: 4px;
 	border-radius: 8px 8px 0 0;
-	background-color: @main_shaded2;
+	background-color: var(--main-shaded10);
 	&:first-child { margin-top: 4px }
 
 	> ul { border: none;
@@ -23,13 +23,13 @@ div.LinkControl {
 		      border: 1px solid transparent;
 		      border-bottom: 0px solid transparent;
 
-		      &[data-selected=true] { border-color: @main_shaded1;
-					      background-color: @main_shaded1;
+		      &[data-selected=true] { border-color: var(--main-shaded05);
+					      background-color: var(--main-shaded05);
 
 					      > a,
 					      > button { color: inherit;
 							 font-weight: bold;
-							 background-color: @main_shaded1; }
+							 background-color: var(--main-shaded05); }
 		      }
 
 		      > a,
@@ -44,7 +44,7 @@ div.LinkControl {
 				 text-decoration: none;
 				 border-radius: 8px 8px 0 0;
 				 justify-content: space-between;
-				 background-color: @main_tinted;
+				 background-color: var(--main-tinted50);
 
 				 > i,
 				 > span {order: 1;
@@ -168,18 +168,18 @@ div.LinkControl {
 
 	> div { clear: both;
 		padding: 10px;
-		border-color: @main_shaded1;
-		background-color: @main_shaded1;
+		border-color: var(--main-shaded05);
+		background-color: var(--main-shaded05);
 		border-radius: 0px 0px 0px 0px;
 
 
 		> iframe { margin: 0;
 			   width: 100%;
 			   overflow:  hidden;
-			   background-image: @loading;
 			   background-position: center;
 			   background-repeat: no-repeat;
-			   background-position-y: center}
+			   background-position-y: center;
+			   background-image: var(--loading);}
 	}
 }
 

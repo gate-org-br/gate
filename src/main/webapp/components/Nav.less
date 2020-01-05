@@ -16,13 +16,13 @@ nav
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background-color: @main_tinted;
+		background-color: var(--main-tinted50);
 
 		> i { font-size: 16px }
 		&:hover > i { font-size: 18px }
 		&:last-of-type { border-radius: 0 5px 5px 0 }
 		&:first-of-type { border-radius: 5px 0 0 5px }
 		&:only-of-type { border-radius: 5px 5px 5px 5px }
-		&:hover { background-image: @main_gradient; }
+		&:hover { background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%); }
 	}
 }
