@@ -10,32 +10,25 @@
 				<label>${screen.user.name}</label>
 			</div>
 
+
 			<div>
-				<ul class='HMenu'>
-					<g:menuitem module="gateconsole.screen" screen="Home"/>
-					<g:menuitem module="gateconsole.screen" screen="Role"/>
-					<g:menuitem module="gateconsole.screen" screen="User"/>
-					<g:menuitem module="gateconsole.screen" screen="Func"/>
-					<g:menuitem module="gateconsole.screen" screen="Org"/>
-					<g:menuitem module="gateconsole.screen" screen="App"/>
-					<g:menuitem module="gateconsole.screen" screen="Mail"/>
-					<g:menuitem module="gateconsole.screen" screen="Icon"/>
-					<li></li>
-						<g:menuitem/>
-				</ul>
+				<g-tabbar>
+					<g:link module="gateconsole.screen" screen="Home"/>
+					<g:link module="gateconsole.screen" screen="Role"/>
+					<g:link module="gateconsole.screen" screen="User"/>
+					<g:link module="gateconsole.screen" screen="Func"/>
+					<g:link module="gateconsole.screen" screen="Org"/>
+					<g:link module="gateconsole.screen" screen="App"/>
+					<g:link module="gateconsole.screen" screen="Mail"/>
+					<g:link module="gateconsole.screen" screen="Icon"/>
+					<g:link module="gateconsole.screen" screen="Demo"/>
+					<g:link condition="${not empty subscriptions}"
+						module="gateconsole.screen" screen="Access"/>
+					<g:link/>
+				</g-tabbar>
 			</div>
 
 			<div>
-				<g:if condition="${not empty subscriptions}">
-					<div class="TEXT">
-						<g:link module="gateconsole.screen" screen="Access">
-							<h1>
-								Verificar pendências de cadastro
-							</h1>
-						</g:link>
-					</div>
-				</g:if>
-
 				<g:insert/>
 				<g:alert/>
 			</div>

@@ -19,11 +19,11 @@ g-commands
 		color: inherit;
 		font-size: 0px;
 		transition: all .2s ease-in-out;
-		&:hover { color: @hovered; transform: scale(1.2);}
+		&:hover { color: var(--hovered); transform: scale(1.2);}
 
 		> i { color: white;
 		      font-size: 20px;
-		      &:hover { color: @hovered; }
+		      &:hover { color: var(--hovered); }
 		}
 	}
 }
@@ -37,6 +37,6 @@ body
 		min-height: 40px;
 		flex-basis: 40px;
 		font-weight: bold;
-		background-color: @base_shaded;
+		background-color: var(--base-shaded35);
 	}
 }

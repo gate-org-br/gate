@@ -32,10 +32,10 @@ ul.HMenu
 			display: flex;
 			color: inherit;
 			align-items: center;
-			border: 1px solid @base;
-			background-color: @main_tinted;
+			border: 1px solid var(--base);
+			background-color: var(--main-tinted50);
 
-			&:hover { background-color: @acent_tinted; }
+			&:hover { background-color: var(--acent-tinted35); }
 
 			> i { order: 1; color: inherit; }
 		}
@@ -64,7 +64,7 @@ ul.HMenu
 
 		      li  {
 			      &:empty { flex-basis: 4px;
-					border: 2px solid @base; }
+					border: 2px solid var(--base); }
 
 
 			      flex-grow: 1;

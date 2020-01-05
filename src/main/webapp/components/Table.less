@@ -14,7 +14,7 @@ table { .margin();
 		  padding: 4px;
 		  text-align: left;
 		  vertical-align: middle;
-		  background-color: @base; }
+		  background-color: var(--base); }
 
 	     td { padding: 4px;
 		  color: black;
@@ -65,25 +65,25 @@ table { .margin();
 		    text-align: center;
 		    vertical-align: middle;
 		    border-radius: 5px 5px 0px 0px;
-		    background-color: @base_shaded;
+		    background-color: var(--base-shaded35);
 	}
 
-	> thead > tr { background-color: @main_tinted }
+	> thead > tr { background-color: var(--main-tinted50) }
 
 	> tbody {
 		> tr:nth-child(even) { background-color: white; }
-		> tr:nth-child(odd) { background-color: @base_tinted; }
+		> tr:nth-child(odd) { background-color: var(--base-tinted85); }
 		> tr.even { background-color: white}
-		> tr.odd  { background-color: @base_tinted }
+		> tr.odd  { background-color: var(--base-tinted85) }
 
 		> tr[data-action], > tr[data-value], > tr[data-ret] { cursor: pointer;
-								      &:focus { 	background-color: @hovered; }
+								      &:focus { 	background-color: var(--hovered); }
 		}
 	}
 
 	> tfoot > tr
 	{
-		background-image: @base_gradient;
+		background-image: linear-gradient(to bottom, var(--base-tinted40) 0%, var(--base-shaded20) 100% );
 		> td:only-child { text-align: right }
 	}
 

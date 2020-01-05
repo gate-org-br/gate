@@ -30,15 +30,15 @@ g-message, .g-message {
 	}
 
 
-	&.ERROR { color: @R;
+	&.ERROR { color: var(--r);
 		  > main > section::before { content: "\1001" }
 	}
 
-	&.SUCCESS { color: @G;
+	&.SUCCESS { color: var(--g);
 		    > main > section::before { content: "\1000" }
 	}
 
-	&.WARNING { color: @Y;
+	&.WARNING { color: var(--y);
 		    > main > section::before { content: "\1007" }
 	}
 }

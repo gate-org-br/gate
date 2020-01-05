@@ -32,7 +32,7 @@ g-side-menu,
 
 			> i { font-size: inherit }
 
-			&:hover { background-color: @hovered; }
+			&:hover { background-color: var(--hovered); }
 		}
 
 		> g-command:after { margin-left: 8px;
@@ -57,7 +57,7 @@ g-side-menu,
 
 		> div { width: 280px;
 			padding: 8px;
-			background-image: linear-gradient(to right, shade(@main, 20%) 0%, tint(@main, 20%) 100%);
+			background-image: linear-gradient(to right, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
 		}
 	}
 
@@ -67,7 +67,7 @@ g-side-menu,
 
 		> div { width: 280px;
 			padding: 8px;
-			background-image: linear-gradient(to left, shade(@main, 20%) 0%, tint(@main, 20%) 100%);
+			background-image: linear-gradient(to left, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
 		}
 	}
 }
