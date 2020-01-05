@@ -10,6 +10,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Info
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
 	{
@@ -51,9 +52,9 @@ public @interface Color
 					if (annotatedElement.isAnnotationPresent(Color.class))
 						return Optional.of(annotatedElement.getAnnotation(Color.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyColor.class))
-						return extract(annotatedElement.getAnnotation(CopyColor.class).value());
-					if (annotatedElement.isAnnotationPresent(Copy.class))
-						return extract(annotatedElement.getAnnotation(Copy.class).value());
+						return extract(CopyColor.Extractor.extract(annotatedElement));
+					if (annotatedElement.isAnnotationPresent(CopyInfo.class))
+						return extract(CopyInfo.Extractor.extract(annotatedElement));
 					return Optional.empty();
 				}
 

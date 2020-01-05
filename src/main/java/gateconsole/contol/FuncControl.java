@@ -10,8 +10,10 @@ import gate.type.ID;
 import gateconsole.dao.FuncDao;
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import gate.annotation.CopyInfo;
 
 @Dependent
+@CopyInfo(User.class)
 public class FuncControl extends Control
 {
 

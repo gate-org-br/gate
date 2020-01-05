@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 
+@Info
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
 	{
@@ -47,9 +48,9 @@ public @interface Icon
 					if (annotatedElement.isAnnotationPresent(Icon.class))
 						return extract(annotatedElement.getAnnotation(Icon.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyIcon.class))
-						return extract(annotatedElement.getAnnotation(CopyIcon.class).value());
-					if (annotatedElement.isAnnotationPresent(Copy.class))
-						return extract(annotatedElement.getAnnotation(Copy.class).value());
+						return extract(CopyIcon.Extractor.extract(annotatedElement));
+					if (annotatedElement.isAnnotationPresent(CopyInfo.class))
+						return extract(CopyInfo.Extractor.extract(annotatedElement));
 					return Optional.empty();
 				}
 
