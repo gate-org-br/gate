@@ -1,33 +1,47 @@
-div.Message { width:800px;
-	      height:280px;
-	      display:flex;
-	      border-radius:5px;
-	      align-items:stretch;
-	      background-color: white;
-	      border:4px solid @base_shaded;
-	      box-shadow:3px 10px 5px 0px rgba(0,0,0,0.75);
+g-message, .g-message {
 
-	      &.SUCCESS { color: @G; }
-	      &.WARNING { color: @Y; }
-	      &.ERROR { color: @R; }
+	> main { width: 80%;
+		 height:280px;
+		 min-width:320px;
+		 max-width:800px;
 
-	      > label:first-child {  display: flex;
+		 > section {
+
+			 &::before { display: flex;
 				     color: inherit;
-				     font-size: 120px;
-				     font-family: gate;
-				     flex-basis: 240px;
+				     flex-shrink: 0;
+				     font-size: 80px;
+				     flex-basis: 160px;
 				     align-items: center;
+				     font-family: 'gate';
 				     justify-content: center;
-				     background: @main_gradient; }
+				     background-color: white; }
 
-	      > label:last-child  { flex-grow: 1;
-				    padding: 8px;
-				    display: flex;
-				    color: inherit;
-				    font-size: 20px;
-				    text-indent: 40px;
-				    align-items: center;
-				    background-color: transparent; }
+			 > label { flex-grow: 1;
+				   padding: 8px;
+				   display: flex;
+				   color: inherit;
+				   font-size: 20px;
+				   align-items: center;
+				   background-color: white;
+				   &::first-line  { text-indent: 40px; }
+			 }
+		 }
+	}
+
+
+	&.ERROR { color: @R;
+		  > main > section::before { content: "\1001" }
+	}
+
+	&.SUCCESS { color: @G;
+		    > main > section::before { content: "\1000" }
+	}
+
+	&.WARNING { color: @Y;
+		    > main > section::before { content: "\1007" }
+	}
 }
+
 
 

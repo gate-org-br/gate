@@ -45,7 +45,7 @@ public class AuthScreen extends Screen
 	}
 
 	@Icon("1002")
-	@Name("Novo")
+	@Name("Acicionar")
 	public String callInsert() throws AppException
 	{
 		try

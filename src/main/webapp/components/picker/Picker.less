@@ -1,0 +1,31 @@
+g-picker > main,
+.g-picker > main
+{
+	height: auto;
+	min-width: 320px;
+	max-width: 600px;
+	width: calc(100% - 40px);
+	flex-basis: calc(100% - 20px);
+
+	> footer{
+		padding: 0;
+		flex-basis: 40px;
+
+		> a { height: 100%;
+		      flex-grow: 1;
+		      display: flex;
+		      font-size: 16px;
+		      font-weight: bold;
+		      align-items: center;
+		      justify-content: center;
+		      border: 2px solid #CCCCCC;
+		      background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%); }
+	}
+
+	> footer > a:first-child { color: @R }
+	> footer > a:last-child { color: @G }
+
+	> footer > a:hover { font-weight: bold;
+			     border-color: @hovered;
+			     background-image:  linear-gradient(to bottom, #E3E0D0 0%, #858279 100%); }
+}

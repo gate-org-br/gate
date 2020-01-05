@@ -20,7 +20,6 @@ import gate.type.DataFile;
 import gate.type.DateTime;
 import gate.type.mime.MimeData;
 import gate.util.Backup;
-import gate.util.Page;
 import gateconsole.contol.FuncControl;
 import gateconsole.contol.UserControl;
 import java.util.List;
@@ -252,7 +251,7 @@ public class UserScreen extends Screen
 
 		private Func func;
 		private User user;
-		private Page<Func> page;
+		private List<Func> page;
 
 		@Inject
 		private FuncControl funcControl;
@@ -265,12 +264,12 @@ public class UserScreen extends Screen
 		public String call()
 		{
 
-			page = paginate(ordenate(control.search(user)));
+			page = control.search(user);
 			return "/WEB-INF/views/gateconsole/User/Func/View.jsp";
 		}
 
 		@Icon("insert")
-		@Name("Adcionar")
+		@Name("Adicionar")
 		public String callInsert()
 		{
 
@@ -316,7 +315,7 @@ public class UserScreen extends Screen
 			return func;
 		}
 
-		public Page<Func> getPage()
+		public List<Func> getPage()
 		{
 			return page;
 		}

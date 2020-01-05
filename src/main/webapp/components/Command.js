@@ -31,15 +31,6 @@ class Command extends HTMLElement
 		return this;
 	}
 
-	icon()
-	{
-		if (!arguments.length)
-			return this.innerHTML;
-
-		this.innerHTML = arguments[0];
-		return this;
-	}
-
 	action()
 	{
 		if (!arguments.length)
@@ -49,13 +40,9 @@ class Command extends HTMLElement
 		return this;
 	}
 
-	name()
+	connectedCallback()
 	{
-		if (!arguments.length)
-			return this.title;
-
-		this.title = arguments[0];
-		return this;
+		this.classList.add("g-command");
 	}
 }
 

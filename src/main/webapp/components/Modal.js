@@ -1,42 +1,47 @@
 
-class Modal
+/* global customElements */
+
+class Modal extends HTMLElement
 {
-	constructor(options)
+	constructor(options = {})
 	{
+		super();
 		this._private = {};
+		this.classList.add("g-modal");
 		this._private.options = options;
+		this._private.preventBodyScroll = e => e.preventDefault();
 
-		this.preventBodyScroll = e => e.preventDefault();
-
-		var element = window.top.document.createElement('div');
-		element.className = "Modal";
-		this.element = () => element;
-
-		var blocked = options ? options.blocked : null;
-		this.blocked = () => blocked;
-
-		var creator = options ? options.creator : null;
-		this.creator = () => creator ? creator : element;
-
-		this.element().addEventListener("contextmenu", event =>
+		this.addEventListener("contextmenu", event =>
 		{
 			event.preventDefault();
 			this.hide();
 		});
 
-		if (!blocked)
-			element.addEventListener("click", event =>
-				(event.target === element || event.srcElement === element) && this.hide());
+		if (!this.blocked)
+			this.addEventListener("click", event =>
+				(event.target === this || event.srcElement === this)
+					&& this.hide());
+	}
+
+	get blocked()
+	{
+		return this._private.options.blocked;
+	}
+
+	get creator()
+	{
+		return this._private.options.creator || this;
 	}
 
 	show()
 	{
-		if (this.creator().dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.body.style.overflow = "hidden";
-			window.top.document.body.appendChild(this.element());
-			window.top.document.body.addEventListener("touchmove", this.preventBodyScroll, false);
-			this.element().dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
+			window.top.document.documentElement.style.overflow = "hidden";
+			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
+
+			window.top.document.documentElement.appendChild(this);
+			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
 		return this;
@@ -44,15 +49,16 @@ class Modal
 
 	hide()
 	{
-		if (this.element().parentNode
-			&& this.creator().dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		if (this.parentNode
+			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.body.style.overflow = "";
-			window.top.document.body.removeEventListener("touchmove", this.preventBodyScroll, false);
-			this.element().parentNode.removeChild(this.element());
+			window.top.document.documentElement.style.overflow = "";
+			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
+			this.parentNode.removeChild(this);
 		}
 
 		return this;
 	}
 }
 
+customElements.define('g-modal', Modal);

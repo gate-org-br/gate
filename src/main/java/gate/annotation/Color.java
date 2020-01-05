@@ -46,9 +46,16 @@ public @interface Color
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
 
 				if (element instanceof AnnotatedElement)
-					return ((AnnotatedElement) element).isAnnotationPresent(Color.class)
-						? extract(((AnnotatedElement) element).getAnnotation(Color.class).value())
-						: Optional.empty();
+				{
+					AnnotatedElement annotatedElement = (AnnotatedElement) element;
+					if (annotatedElement.isAnnotationPresent(Color.class))
+						Optional.of(annotatedElement.getAnnotation(Color.class).value());
+					if (annotatedElement.isAnnotationPresent(CopyColor.class))
+						return extract(annotatedElement.getAnnotation(CopyColor.class).value());
+					if (annotatedElement.isAnnotationPresent(Copy.class))
+						return extract(annotatedElement.getAnnotation(Copy.class).value());
+					return Optional.empty();
+				}
 
 				if (element != null)
 					return extract(element.getClass());

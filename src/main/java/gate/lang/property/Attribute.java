@@ -1,8 +1,8 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.error.PropertyError;
 import gate.util.Icons;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -178,6 +178,16 @@ public interface Attribute
 	}
 
 	default Icons.Icon getIcon()
+	{
+		return null;
+	}
+
+	default String getCode()
+	{
+		return null;
+	}
+
+	default String getTooltip()
 	{
 		return null;
 	}

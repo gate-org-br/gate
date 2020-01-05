@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.annotation.Code;
 import gate.annotation.Color;
 import gate.annotation.Column;
 import gate.annotation.Description;
@@ -9,6 +10,7 @@ import gate.annotation.Icon;
 import gate.annotation.Mask;
 import gate.annotation.Name;
 import gate.annotation.Placeholder;
+import gate.annotation.Tooltip;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.util.Icons;
@@ -42,6 +44,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 	private final Type elementType;
 	private final String columnName;
 	private final String description;
+	private final String tooltip;
+	private final String code;
 	private final String placeholder;
 	private final boolean isEntityId;
 	private final Converter converter;
@@ -96,7 +100,9 @@ class FieldAttribute implements JavaIdentifierAttribute
 
 			name = Name.Extractor.extract(field).orElse(null);
 			icon = Icon.Extractor.extract(field).orElse(null);
+			code = Code.Extractor.extract(field).orElse(null);
 			color = Color.Extractor.extract(field).orElse(null);
+			tooltip = Tooltip.Extractor.extract(field).orElse(null);
 			description = Description.Extractor.extract(field).orElse(converter.getDescription());
 
 			mask = field.isAnnotationPresent(Mask.class)
@@ -175,6 +181,18 @@ class FieldAttribute implements JavaIdentifierAttribute
 	public String getMask()
 	{
 		return mask;
+	}
+
+	@Override
+	public String getCode()
+	{
+		return code;
+	}
+
+	@Override
+	public String getTooltip()
+	{
+		return tooltip;
 	}
 
 	@Override

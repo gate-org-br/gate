@@ -22,6 +22,8 @@
 @hovered_gradient: linear-gradient(to bottom, tint(@hovered, 30%) 0%, shade(@hovered, 30%) 100% );
 @neutral_gradient: linear-gradient(to bottom, tint(@main, 20%) 0%, shade(@main, 35%) 100%);
 
+@base_shaded_gradient: linear-gradient(to bottom, shade(@base, 35%) 0%, shade(@base, 30%) 50%, shade(@base, 35%) 100% );
+
 @main_tinted: tint(@main, 50%);
 @main_shaded1: shade(@main, 05%);
 @main_shaded2: shade(@main, 10%);
@@ -30,9 +32,11 @@
 @base_shaded: shade(@base, 35%);
 @acent_tinted: tint(@acent, 35%);
 
+@acent_shaded: shade(@acent, 35%);
+
 @G: #006600;
 @R: #660000;
-@Y: #aaaa00;
+@Y: #444400;
 @B: #000066;
 
 @phone: 576px;
@@ -209,6 +213,9 @@ datalist { display: none }
 
 @import "../polyfill/dialog-polyfill.less";
 
+@import "Modal.less";
+@import "Window.less";
+
 @import "DeskMenu.less";
 @import "DeskPane.less";
 
@@ -224,11 +231,9 @@ datalist { display: none }
 
 @import "Command.less";
 @import "Commands.less";
-@import "CommandDialog.less";
 
 @import "NavBar.less";
 
-@import "Modal.less";
 @import "Block.less";
 @import "Dialog.less";
 @import "Message.less";
@@ -236,30 +241,31 @@ datalist { display: none }
 @import "Slider.less";
 @import "Calendar.less";
 
-@import "DateSelector.less";
-@import "TimeSelector.less";
-@import "MonthSelector.less";
-@import "DateTimeSelector.less";
-@import "DateIntervalSelector.less";
-@import "TimeIntervalSelector.less";
-@import "MonthIntervalSelector.less";
-@import "DateTimeIntervalSelector.less";
+@import "selector/IconSelector.less";
+@import "selector/ReportSelector.less";
+@import "selector/DateSelector.less";
+@import "selector/TimeSelector.less";
+@import "selector/MonthSelector.less";
+@import "selector/DateTimeSelector.less";
+@import "selector/DateIntervalSelector.less";
+@import "selector/TimeIntervalSelector.less";
+@import "selector/MonthIntervalSelector.less";
+@import "selector/DateTimeIntervalSelector.less";
 
-@import "Picker.less";
-@import "DatePicker.less";
-@import "TimePicker.less";
-@import "MonthPicker.less";
-@import "DateTimePicker.less";
-@import "DateIntervalPicker.less";
-@import "TimeIntervalPicker.less";
-@import "MonthIntervalPicker.less";
-@import "DateTimeIntervalPicker.less";
-@import "IconPicker.less";
+@import "picker/Picker.less";
+@import "picker/IconPicker.less";
+@import "picker/DatePicker.less";
+@import "picker/TimePicker.less";
+@import "picker/MonthPicker.less";
+@import "picker/DateTimePicker.less";
+@import "picker/DateIntervalPicker.less";
+@import "picker/TimeIntervalPicker.less";
+@import "picker/MonthIntervalPicker.less";
+@import "picker/DateTimeIntervalPicker.less";
 
 @import "TreeView.less";
 
 @import "Coolbar.less";
-@import "CoolbarDialog.less";
 @import "Toolbar.less";
 @import "PageControl.less";
 
@@ -285,7 +291,6 @@ datalist { display: none }
 
 @import "DownloadStatus.less";
 
-@import "ReportSelector.less";
 @import "ReportDialog.less";
 
 @import "DefinitionList.less";
@@ -293,3 +298,9 @@ datalist { display: none }
 @import "Tooltip.less";
 @import "ContextMenu.less";
 @import "ContextMenuItem.less";
+
+@import "SideMenu.less";
+
+@import "TabBar.less";
+
+@import "Overflow.less";

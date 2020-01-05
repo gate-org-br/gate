@@ -12,28 +12,31 @@ g-commands
 	justify-content: flex-start;
 	flex-direction: row-reverse;
 
-	> a
+	> g-command, > a, > button
 	{
-		width: 16px;
+		width: 32px;
+		margin: 2px;
 		color: inherit;
-		&:before { display: flex;
-			   color: inherit;
-			   font-size: 16px;
-			   cursor: pointer;
-			   content: "\3018";
-			   font-weight: normal;
-			   font-family: 'gate';
-			   align-items: center;
-			   justify-content: center;}
+		font-size: 0px;
+		transition: all .2s ease-in-out;
+		&:hover { color: @hovered; transform: scale(1.2);}
+
+		> i { color: white;
+		      font-size: 20px;
+		      &:hover { color: @hovered; }
+		}
 	}
 }
 
-body > g-commands
+body
 {
-	height: 40px;
-	padding: 4px;
-	min-height: 40px;
-	flex-basis: 40px;
-	font-weight: bold;
-	background-color: @base_shaded;
+	> g-command, > a, > button
+	{
+		height: 40px;
+		padding: 4px;
+		min-height: 40px;
+		flex-basis: 40px;
+		font-weight: bold;
+		background-color: @base_shaded;
+	}
 }

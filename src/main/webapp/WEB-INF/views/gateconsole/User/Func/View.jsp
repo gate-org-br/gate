@@ -4,8 +4,10 @@
 <g:template filename="/WEB-INF/views/PAGE.jsp">
 	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
-			<label style='width: 100%'>
+			<label>
+				Função:
 				<span>
+					<g:hidden property="user.id"/>
 					<g:text property='func.name'
 						options="${screen.funcs}"
 						labels="${e -> e.name}"
@@ -13,20 +15,13 @@
 						tabindex='1'
 						placeholder="Incluir"/>
 					<g:hidden id='func.id' property='func.id'/>
-					<g:shortcut method="post" module="#" screen="#" action="Insert" tabindex="1"/>
 				</span>
 			</label>
 		</fieldset>
 
-		<g:hidden property="user.id"/>
-
-		<script>
-			document.getElementById("func.id")
-				.addEventListener("populated", function ()
-				{
-					this.form.submit();
-				});
-		</script>
+		<g-coolbar>
+			<g:link method="post" module="#" screen="#" action="Insert" tabindex="1"/>
+		</g-coolbar>
 	</form>
 
 	<g:choose>
@@ -38,40 +33,28 @@
 			</div>
 		</g:when>
 		<g:otherwise>
-			<table>
-				<colgroup>
-					<col/>
-					<col style="width: 48px"/>
-				</colgroup>
-
+			<table class="c2">
 				<caption>
-					FUNÇÕES ENCONTRADAS: ${screen.page.paginator.dataSize}
+					FUNÇÕES ENCONTRADAS: ${screen.page.size()}
 				</caption>
 				<thead>
 					<tr>
 						<th>
 							Nome
 						</th>
-						<th style="text-align: center">
+						<th style="width: 48px">
 							<g:icon type="delete"/>
 						</th>
 					</tr>
 				</thead>
-				<tfoot>
-					<tr>
-						<td colspan='2' style='text-align: right'>
-							<g:paginator/>
-						</td>
-					</tr>
-				</tfoot>
 				<tbody>
 					<g:iterator source="${screen.page}" target="target">
 						<tr>
 							<td>
 								<g:print value="${target.name}"/>
 							</td>
-							<td style="text-align: center">
-								<g:shortcut module="#" screen="#" action="Delete" style="color: #660000"
+							<td>
+								<g:shortcut module="#" screen="#" action="Delete"
 									    arguments="user.id=${screen.user.id}&func.id=${target.id}"/>
 							</td>
 						</tr>

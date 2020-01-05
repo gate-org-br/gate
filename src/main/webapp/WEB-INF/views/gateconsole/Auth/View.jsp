@@ -3,20 +3,8 @@
 <g:template filename="/WEB-INF/views/PAGE.jsp">
 	<form method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
-			<legend>
-				Inserir Acesso<g:icon type="insert"/>
-			</legend>
-			<g:hidden property="form.user.id" required=''/>
-			<g:hidden property="form.role.id" required=''/>
-			<g:hidden property="form.func.id" required=''/>
 			<label data-size='2'>
-				Modo:
-				<span>
-					<g:select property="form.mode" tabindex='1'/>
-				</span>
-			</label>
-			<label data-size='2'>
-				Tipo:
+				Escopo:
 				<span>
 					<g:choose>
 						<g:when condition="${not empty screen.form.role.id}">
@@ -30,6 +18,12 @@
 							<g:icon type="gate.entity.Auth$Type:PRIVATE"/>Privado
 						</g:otherwise>
 					</g:choose>
+				</span>
+			</label>
+			<label data-size='2'>
+				Tipo:
+				<span>
+					<g:select property="form.mode" tabindex='1'/>
 				</span>
 			</label>
 			<label data-size='4'>
@@ -54,80 +48,81 @@
 				</span>
 			</label>
 		</fieldset>
-		<div class='Coolbar'>
-			<g:link method="post" module="#" screen="#" action="Insert" tabindex="2">
-				Inserir<g:icon type="insert"/>
-			</g:link>
-		</div>
 
-		<g:choose>
-			<g:when condition="${empty screen.page}">
-				<div class='TEXT'>
-					<h1>
-						N&atilde;o h&aacute; nenhum acesso cadastrado para este registro
-					</h1>
-				</div>
-			</g:when>
-			<g:otherwise>
-				<table data-collapse="Phone" class="c1 c2 c3 c4 c5 c6">
-					<caption>
-						ACESSOS
-					</caption>
+		<g-coolbar>
+			<g:link method="post" module="#" screen="#" action="Insert" tabindex="2"/>
+		</g-coolbar>
 
-					<thead>
-						<tr>
-							<th>
-								Modo
-							</th>
-							<th>
-								Tipo
-							</th>
-							<th>
-								Module
-							</th>
-							<th>
-								Screen
-							</th>
-							<th>
-								Action
-							</th>
-							<th style="width: 64px">
-								<g:icon type="delete"/>
-							</th>
-						</tr>
-					</thead>
-
-					<tfoot></tfoot>
-
-					<tbody>
-						<g:iterator source="${screen.page}" target="item" index="indx">
-							<tr>
-								<td title="Modo">
-									<g:icon type="${item.mode}"/>&nbsp;<g:print value="${item.mode}"/>
-								</td>
-								<td title="Tipo">
-									<g:icon type="${item.type}"/>&nbsp;<g:print value="${item.type}"/>
-								</td>
-								<td title="Module">
-									<g:print value="${item.module}" empty="*"/>
-								</td>
-								<td title="Screen">
-									<g:print value="${item.screen}" empty="*"/>
-								</td>
-								<td title="Action">
-									<g:print value="${item.action}" empty="*"/>
-								</td>
-								<td title="Remover">
-									<g:link module="#" screen="#" action="Delete" arguments="form.id=${item.id}&form.role.id=${screen.form.role.id}&form.user.id=${screen.form.user.id}&form.func.id=${screen.form.func.id}">
-										<g:icon type="delete"/>
-									</g:link>
-								</td>
-							</tr>
-						</g:iterator>
-					</tbody>
-				</table>
-			</g:otherwise>
-		</g:choose>
+		<g:hidden property="form.user.id" required=''/>
+		<g:hidden property="form.role.id" required=''/>
+		<g:hidden property="form.func.id" required=''/>
 	</form>
+
+	<g:choose>
+		<g:when condition="${empty screen.page}">
+			<div class='TEXT'>
+				<h1>
+					N&atilde;o h&aacute; nenhum acesso cadastrado para este registro
+				</h1>
+			</div>
+		</g:when>
+		<g:otherwise>
+			<table data-collapse="Phone" class="c1 c2 c3 c4 c5 c6">
+				<caption>
+					ACESSOS
+				</caption>
+
+				<thead>
+					<tr>
+						<th style="width: 12.5%">
+							Escopo
+						</th>
+						<th style="width: 12.5%">
+							Tipo
+						</th>
+						<th style="width: 25%">
+							Module
+						</th>
+						<th style="width: 25%">
+							Screen
+						</th>
+						<th style="width: 25%">
+							Action
+						</th>
+						<th style="width: 64px">
+							<g:icon type="delete"/>
+						</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<g:iterator source="${screen.page}" target="item" index="indx">
+						<tr>
+							<td title="Modo">
+								<g:icon type="${item.mode}"/>&nbsp;<g:print value="${item.mode}"/>
+							</td>
+							<td title="Tipo">
+								<g:icon type="${item.type}"/>&nbsp;<g:print value="${item.type}"/>
+							</td>
+							<td title="Module">
+								<g:print value="${item.module}" empty="*"/>
+							</td>
+							<td title="Screen">
+								<g:print value="${item.screen}" empty="*"/>
+							</td>
+							<td title="Action">
+								<g:print value="${item.action}" empty="*"/>
+							</td>
+							<td title="Remover">
+								<g:link module="#" screen="#" action="Delete" arguments="form.id=${item.id}&form.role.id=${screen.form.role.id}&form.user.id=${screen.form.user.id}&form.func.id=${screen.form.func.id}">
+									<g:icon type="delete"/>
+								</g:link>
+							</td>
+						</tr>
+					</g:iterator>
+				</tbody>
+			</table>
+		</g:otherwise>
+	</g:choose>
 </g:template>
 

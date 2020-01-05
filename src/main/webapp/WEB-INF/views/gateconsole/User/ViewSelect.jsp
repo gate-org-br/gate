@@ -1,11 +1,11 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/DIAG.jsp">
-	<div style='display: flex'>
-		<fieldset style="flex-grow: 1; margin: 4px">
-			<legend>
-				Usu&aacute;rio<g:icon type="gate.entity.User"/>
-			</legend>
+	<fieldset>
+		<legend>
+			Usuário<g:icon type="gate.entity.User"/>
+		</legend>
+		<fieldset style="width: calc(100% - 220px)">
 			<label data-size='2'>
 				Ativo:
 				<span>
@@ -96,11 +96,9 @@
 				</span>
 			</label>
 		</fieldset>
-		<fieldset class="Foto">
-			<legend>
-				Foto<g:icon type="gate.entity.User"/>
-			</legend>
-			<div style="height: calc(100% - 26px); display: flex;
+		<fieldset style="width: 220px">
+			<div style="height: 210px;
+			     display: flex;
 			     align-items: center;
 			     justify-content: center">
 				<g:with name="photo" value="${screen.photo}">
@@ -125,8 +123,8 @@
 		<a href='#' class='Hide Cancel'>
 			Fechar<g:icon type="cancel"/>
 		</a>
-		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
-		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
+		<g:link class="Command" module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
+		<g:link class="Command" module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>
 	</div>
 
@@ -136,19 +134,4 @@
 			<g:menuitem module="#" screen="UserScreen$Func" arguments="user.id=${screen.form.id}"/>
 		</ul>
 	</div>
-
-	<style>
-		fieldset.Foto
-		{
-			margin: 4px;
-			display: none;
-			flex-shrink: 0;
-			flex-basis: 250px;
-		}
-
-		@media only screen and (min-width: 576px)
-		{
-			fieldset.Foto { display: flex }
-		}
-	</style>
 </g:template>

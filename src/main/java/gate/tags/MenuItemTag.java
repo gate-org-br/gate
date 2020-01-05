@@ -3,6 +3,7 @@ package gate.tags;
 import gate.annotation.Color;
 import gate.annotation.Description;
 import gate.annotation.Name;
+import gate.annotation.Tooltip;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -48,14 +49,17 @@ public class MenuItemTag extends AnchorTag
 		} else
 		{
 
-			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Description.class))
-				getAttributes().put("title", getJavaMethod().getAnnotation(Description.class).value());
+			if (!getAttributes().containsKey("title"))
+				Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
 
-			if (!getAttributes().containsKey("title") && getJavaMethod().isAnnotationPresent(Name.class))
-				getAttributes().put("title", getJavaMethod().getAnnotation(Name.class).value());
+			if (!getAttributes().containsKey("title"))
+				Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
 
-			if (!getAttributes().containsKey("style") && getJavaMethod().isAnnotationPresent(Color.class))
-				getAttributes().put("style", String.format("color: %s", getJavaMethod().getAnnotation(Color.class).value()));
+			if (!getAttributes().containsKey("tooltip"))
+				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+
+			if (!getAttributes().containsKey("style"))
+				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
 
 			if (checkAccess())
 			{

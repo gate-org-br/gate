@@ -49,11 +49,6 @@ class ContextMenuItem extends HTMLElement
 	{
 		this.setAttribute("action", "action");
 	}
-
-	static get observedAttributes()
-	{
-		return ['icon', 'name', 'action'];
-	}
 }
 
 

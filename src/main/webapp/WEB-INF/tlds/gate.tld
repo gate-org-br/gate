@@ -958,6 +958,69 @@
 			with an element.
 		</description>
 	</function>
+
+	<tag>
+		<name>code</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.CodeTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the gate.annotation.Code value associated
+			with an element.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object, class or class name of the element
+				whose code is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>code</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String code(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the gate.annotation.Code value associated
+			with an element.
+		</description>
+	</function>
+
+	<tag>
+		<name>tooltip</name>
+		<body-content>empty</body-content>
+		<tag-class>gate.tags.TooltipTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Prints the gate.annotation.Tooltip value associated
+			with an element.
+		</description>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The object, class or class name of the element
+				whose tooltip is to be printed.
+			</description>
+		</attribute>
+	</tag>
+	<function>
+		<name>tooltip</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String tooltip(java.lang.Object)
+		</function-signature>
+		<description>
+			Prints the gate.annotation.Tooltip value associated
+			with an element.
+		</description>
+	</function>
+
 	<tag>
 		<name>datalist</name>
 		<body-content>scriptless</body-content>

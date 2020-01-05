@@ -96,70 +96,66 @@ g-coolbar
 {
 	width: 100%;
 	height: 48px;
+	padding: 2px;
 	display: flex;
+	flex-wrap: wrap;
 	overflow: hidden;
 	border-radius: 5px;
-	align-items: stretch;
-	justify-content: space-between;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: row-reverse;
 	background-image: @main_gradient;
 
-	> div
-	{
+	> hr { border: none;
+	       flex-grow: 1; }
 
-		> * { margin: 2px;
-		      height: 36px; }
-
-		flex-grow: 1;
-		padding: 4px;
-		display:block;
-		overflow: auto;
-		background-image: @main_gradient;
-
-		> a ,
-		> button { color: black;
-			   margin: 2px;
-			   width: auto;
-			   padding: 4px;
-			   float: right;
-			   display: flex;
-			   font-size: 10px;
-			   cursor: pointer;
-			   min-width: 90px;
-			   font-weight: bold;
-			   border-radius: 5px;
-			   align-items: center;
-			   border: 1px solid #CCCCCC;
-			   justify-content: space-between;
-			   background-image: @neutral_gradient;
+	> a ,
+	> button { color: black;
+		   margin: 2px;
+		   height: 40px;
+		   padding: 4px;
+		   float: right;
+		   display: flex;
+		   flex-grow: 1;
+		   flex-shrink: 1;
+		   min-width: 100px;
+		   max-width: 120px;
+		   flex-basis: 100px;
+		   font-size: 12px;
+		   cursor: pointer;
+		   font-weight: bold;
+		   border-radius: 5px;
+		   align-items: center;
+		   border: 1px solid #CCCCCC;
+		   justify-content: space-between;
+		   background-image: @neutral_gradient;
 
 
-			   &:hover { background-image: @acent_gradient }
-			   &:focus { outline: none; border: 2px solid @hovered; }
+		   &:hover { background-image: @acent_gradient }
+		   &:focus { outline: none; border: 2px solid @hovered; }
 
-			   > i,
-			   > span { order: 1;
-				    display: flex;
-				    color: inherit;
-				    cursor: inherit;
-				    font-size: 12px;
-				    margin-left: 4px;
-				    align-items: center;
-				    justify-content: center; }
-		}
+		   > i,
+		   > span { order: 1;
+			    display: flex;
+			    color: inherit;
+			    cursor: inherit;
+			    font-size: 12px;
+			    margin-left: 4px;
+			    align-items: center;
+			    justify-content: center; }
 	}
 
-
-	> a
+	> g-overflow
 	{
-		display: none;
-		cursor: pointer;
-		flex-basis: 32px;
-		font-family: 'gate';
+		width: 32px;
+		height: 40px;
+		display: flex;
+		color: #000099;
+		margin-right: auto;
 		align-items: center;
 		justify-content: center;
-		background-image: @neutral_gradient;
-		&:hover { background-image: @acent_gradient }
 
-		> * { display: none }
+		> i { font-size: 16px }
 	}
+
 }

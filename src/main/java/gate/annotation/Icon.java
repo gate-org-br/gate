@@ -42,9 +42,16 @@ public @interface Icon
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
 
 				if (element instanceof AnnotatedElement)
-					return ((AnnotatedElement) element).isAnnotationPresent(Icon.class)
-						? extract(((AnnotatedElement) element).getAnnotation(Icon.class).value())
-						: Optional.empty();
+				{
+					AnnotatedElement annotatedElement = (AnnotatedElement) element;
+					if (annotatedElement.isAnnotationPresent(Icon.class))
+						Optional.of(annotatedElement.getAnnotation(Icon.class).value());
+					if (annotatedElement.isAnnotationPresent(CopyIcon.class))
+						return extract(annotatedElement.getAnnotation(CopyIcon.class).value());
+					if (annotatedElement.isAnnotationPresent(Copy.class))
+						return extract(annotatedElement.getAnnotation(Copy.class).value());
+					return Optional.empty();
+				}
 
 				if (element != null)
 					return extract(element.getClass());
