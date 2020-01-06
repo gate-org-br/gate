@@ -167,7 +167,7 @@ class Link
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						new URL(this.href).get(function (process)
+						new URL(this.href).get(process =>
 						{
 							process = JSON.parse(process);
 							new ProgressDialog(process,

@@ -1,9 +1,12 @@
+/* global customElements */
+
 class DigitalClock extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.listener = () =>
+		this._private = {}
+		this._private.listener = () =>
 		{
 			if (!this.hasAttribute("paused"))
 			{
@@ -27,18 +30,18 @@ class DigitalClock extends HTMLElement
 
 	connectedCallback()
 	{
-		window.addEventListener("ClockTick", this.listener);
+		window.addEventListener("ClockTick", this._private.listener);
 	}
 
 	disconnectedCallback()
 	{
-		window.removeEventListener("ClockTick", this.listener);
+		window.removeEventListener("ClockTick", this._private.listener);
 	}
 }
 
 customElements.define('digital-clock', DigitalClock);
 
-window.addEventListener("load", function ()
+window.addEventListener("load", () =>
 {
 	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
 });

@@ -3,7 +3,7 @@
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<style>
 		div.demo { display: flex; flex-wrap: wrap }
-		div.demo > div { display: flex; flex-direction: column; margin: 4px; width: calc(25% - 8px); border-left: 4px solid #006600; min-width: 300px; flex-grow: 1; }
+		div.demo > div { display: flex; flex-direction: column; margin: 4px; width: calc(50% - 8px); border-left: 4px solid #006600; min-width: 300px; }
 		div.demo > div > div { display: flex; align-items: center; padding: 8px; flex-grow: 1; min-height: 100px }
 		div.demo > div > div > * { flex-grow: 1; margin: 0 }
 		div.demo > div > div:first-child { background-color: #FFFFFF; }
@@ -20,14 +20,7 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Date:
-		&lt;span>
-			&lt;input class="Date"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/Date.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -42,14 +35,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Time:
-		&lt;span>
-			&lt;input class="Time"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/Time.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -64,14 +50,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Month:
-		&lt;span>
-			&lt;input class="Month"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/Month.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -86,14 +65,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Date Time:
-		&lt;span>
-			&lt;input class="DateTime"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/DateTime.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -108,14 +80,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Date Interval:
-		&lt;span>
-			&lt;input class="DateInterval"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/DateInterval.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -130,14 +95,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Time Interval:
-		&lt;span>
-			&lt;input class="TimeInterval"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/TimeInterval.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -152,14 +110,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Month Interval:
-		&lt;span>
-			&lt;input class="MonthInterval"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/MonthInterval.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -174,14 +125,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Date Time Interval:
-		&lt;span>
-			&lt;input class="DateTimeInterval"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/DateTimeInterval.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -197,14 +141,7 @@
 
 						<div>
 							<div>
-								<pre>&lt;fieldset>
-	&lt;label>
-		Icon:
-		&lt;span>
-			&lt;input class="Icon"/>
-		&lt;/span>
-	&lt;/lael>
-&lt;/fieldset></pre>
+								<img src="imge/demo/Icon.png" style="width: 100%"/>
 							</div>
 							<div>
 								<fieldset>
@@ -227,11 +164,7 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href='#' data-tooltip='This is a tooltip'>
-		Hover here&lt;i>&amp;#X2015;&lt;/i>
-	&lt;/a>
-&lt/g-coolbar></pre>
+								<img src="imge/demo/SimpleTooltip.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
@@ -243,18 +176,11 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href='#' data-tooltip='{"Name": "Tooltip",
-	"Type": "Attribute",
-	"Description": "This is a tooltip"}'>
-		Hover here&lt;i>&amp;#X2015;&lt;/i>
-	&lt;/a>
-&lt/g-coolbar></pre>
+								<img src="imge/demo/ComplexTooltip.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
-									<a href="#" data-tooltip='{"Name": "Tooltip", "Type": "Attribute",
-									   "Description": "This is a tooltip"}'>
+									<a href="#" data-tooltip='{"Name": "Tooltip", "Type": "Attribute", "Description": "This is a tooltip"}'>
 										Hover here<g:icon type="2015"/>
 									</a>
 								</g-coolbar>
@@ -271,13 +197,7 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href="#"
-		onclick="Message.success('Sucesso')"
-		style="color: #006600">
-		&lt;i>&amp;#X1000;&lt;/i> Sucesso
-	&lt;/a>
-&lt;/g-coolbar></pre>
+								<img src="imge/demo/Success.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
@@ -289,13 +209,7 @@
 						</div>
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href="#"
-		onclick="Message.warning('Alerta')"
-		style="color: #444400">
-		&lt;i>&amp;#X1007;&lt;/i> Alerta
-	&lt;/a>
-&lt;/g-coolbar></pre>
+								<img src="imge/demo/Warning.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
@@ -308,13 +222,7 @@
 
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href="#"
-		onclick="Message.error('Erro')"
-		style="color: #660000">
-		&lt;i>&amp;#X1001;&lt;/i> Erro
-	&lt;/a>
-&lt;/g-coolbar></pre>
+								<img src="imge/demo/Error.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
@@ -335,17 +243,41 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<pre>&lt;g-coolbar>
-	&lt;a href="#" target='_report'>
-		&lt;i>&amp;#X2021;&lt;/i> Imprimir
-	&lt;/a>
-&lt;/g-coolbar></pre>
+								<img src="imge/demo/Report.png" style="width: 100%"/>
 							</div>
 							<div>
 								<g-coolbar>
-									<a href="#" target='_report'>
-										<g:icon type="report"/>Imprimir
-									</a>
+									<g:link target="_report"
+										module="#"
+										screen="#"
+										action="Report"/>
+								</g-coolbar>
+							</div>
+						</div>
+						<div>
+							<div>
+								<img src="imge/demo/Progress.png" style="width: 100%"/>
+							</div>
+							<div>
+								<g-coolbar>
+									<g:link target="_dialog"
+										module="#"
+										screen="#"
+										action="Progress"/>
+								</g-coolbar>
+							</div>
+						</div>
+
+						<div>
+							<div>
+								<img src="imge/demo/Block.png" style="width: 100%"/>
+							</div>
+							<div>
+								<g-coolbar>
+									<g:link module="#"
+										screen="#"
+										action="Block"
+										data-block="Aguarde"/>
 								</g-coolbar>
 							</div>
 						</div>
@@ -354,6 +286,4 @@
 			</li>
 		</ul>
 	</div>
-
-
 </g:template>

@@ -504,13 +504,13 @@ g-window > main > footer,
   outline: none;
   display: flex;
   font-size: 20px;
-  min-height: 32px;
-  flex-basis: 32px;
+  min-height: 48px;
+  flex-basis: 48px;
   padding-top: 4px;
   font-weight: bold;
   align-items: stretch;
   justify-content: center;
-  background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100%);
+  background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
 }
 ul.DeskMenu {
   margin: 0;
@@ -2694,13 +2694,11 @@ g-commands > button {
   margin: 2px;
   color: inherit;
   font-size: 0px;
-  transition: all 0.2s ease-in-out;
 }
 g-commands > g-command:hover,
 g-commands > a:hover,
 g-commands > button:hover {
   color: var(--hovered);
-  transform: scale(1.2);
 }
 g-commands > g-command > i,
 g-commands > a > i,
@@ -2765,54 +2763,6 @@ g-nav-bar > a[navbar-disabled="true"] {
   opacity: 0.2;
   cursor: not-allowed;
   pointer-events: none;
-}
-div.Block {
-  width: 50%;
-  display: flex;
-  height: 200px;
-  border-radius: 5px;
-  align-items: stretch;
-  flex-direction: column;
-  justify-content: center;
-  border: 4px solid var(--base-shaded35);
-  background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
-}
-div.Block > div:nth-child(1) {
-  flex-basis: 40px;
-  background-color: var(--base-shaded35);
-}
-div.Block > div:nth-child(1) > label {
-  float: left;
-  color: white;
-  padding: 10px;
-  font-size: 18px;
-}
-div.Block > div:nth-child(2) {
-  padding: 8px;
-  flex-grow: 1;
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-  flex-direction: column;
-}
-div.Block > div:nth-child(2) > label {
-  flex-grow: 1;
-  display: flex;
-  font-size: 20px;
-  align-items: center;
-  justify-content: center;
-}
-div.Block > div:nth-child(2) > progress {
-  flex-grow: 1;
-  width: 100%;
-}
-div.Block > digital-clock {
-  padding: 8px;
-  display: flex;
-  font-size: 16px;
-  flex-basis: 40px;
-  align-items: center;
-  justify-content: flex-end;
 }
 g-dialog > main,
 .g-dialog > main {
@@ -3313,6 +3263,34 @@ input.DateTimeInterval {
 }
 input.DateTimeInterval + a {
   width: 32px;
+}
+g-block > main,
+.g-block > main {
+  width: 800px;
+  height: 160px;
+  max-width: 80%;
+}
+g-block > main > section,
+.g-block > main > section {
+  flex-grow: 1;
+  align-items: stretch;
+  justify-content: center;
+  flex-direction: column;
+}
+g-block > main > section > progress,
+.g-block > main > section > progress {
+  flex-grow: 1;
+  width: 100%;
+}
+g-block > main > footer > digital-clock,
+.g-block > main > footer > digital-clock {
+  padding: 8px;
+  color: black;
+  display: flex;
+  font-size: 16px;
+  flex-basis: 100%;
+  align-items: center;
+  justify-content: flex-end;
 }
 table.TreeView > tbody > tr,
 table.TREEVIEW > tbody > tr {
@@ -4542,62 +4520,6 @@ progress-status {
   justify-content: center;
   background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
 }
-div.ProgressDialog {
-  display: flex;
-  flex-basis: 50%;
-  border-radius: 5px;
-  align-items: stretch;
-  flex-direction: column;
-  justify-content: center;
-  background-color: var(--main);
-  background-image: var(--noise);
-  border: 4px solid var(--base-shaded35);
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
-}
-div.ProgressDialog > div:nth-child(1) {
-  display: flex;
-  color: white;
-  font-size: 16px;
-  flex-basis: 40px;
-  font-weight: bold;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--base-shaded35);
-}
-div.ProgressDialog > div:nth-child(2) {
-  flex-grow: 1;
-  display: flex;
-  align-items: stretch;
-  align-content: stretch;
-  justify-content: center;
-  background-color: var(--main);
-  background-image: var(--noise);
-}
-div.ProgressDialog > div:nth-child(3) {
-  display: flex;
-  color: white;
-  font-size: 16px;
-  flex-basis: 40px;
-  font-weight: bold;
-  align-items: stretch;
-  justify-content: center;
-  background-color: var(--main);
-}
-div.ProgressDialog > div:nth-child(3) > a {
-  flex-grow: 1;
-  color: black;
-  display: flex;
-  flex-basis: 50%;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #CCCCCC;
-  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
-}
-div.ProgressDialog > div:nth-child(3) > a:hover {
-  font-weight: bold;
-  border-color: var(--hovered);
-  background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
-}
 progress-window {
   display: flex;
   align-items: center;
@@ -4608,6 +4530,12 @@ progress-window > div {
   display: flex;
   flex-basis: 50%;
   flex-direction: column;
+}
+g-progress-dialog > main,
+.g-progress-dialog > main {
+  width: 800px;
+  height: 320px;
+  max-width: 80%;
 }
 download-status {
   width: 100%;
@@ -4651,7 +4579,7 @@ g-tooltip {
   visibility: hidden;
   align-items: center;
   justify-content: center;
-  background-color: var(--main);
+  background-color: white;
   box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
 g-tooltip > * {
@@ -4668,25 +4596,25 @@ g-tooltip[arrow="bottom"]::after {
   left: 50%;
   bottom: 100%;
   margin-left: -6px;
-  border-color: transparent transparent var(--main) transparent;
+  border-color: transparent transparent white transparent;
 }
 g-tooltip[arrow="top"]::after {
   top: 100%;
   left: 50%;
   margin-left: -6px;
-  border-color: var(--main) transparent transparent transparent;
+  border-color: white transparent transparent transparent;
 }
 g-tooltip[arrow="left"]::after {
   top: 50%;
   left: 100%;
   margin-top: -6px;
-  border-color: transparent transparent transparent var(--main);
+  border-color: transparent transparent transparent white;
 }
 g-tooltip[arrow="right"]::after {
   top: 50%;
   right: 100%;
   margin-top: -6px;
-  border-color: transparent var(--main) transparent transparent;
+  border-color: transparent white transparent transparent;
 }
 g-context-menu {
   margin: 0;

@@ -15,7 +15,6 @@ module.exports = function (grunt)
 							"src/main/webapp/polyfill/dialog-polyfill.js",
 							"src/main/webapp/polyfill/fetch-polyfill.js",
 							"src/main/webapp/polyfill/webcomponents-ce.js",
-
 							"src/main/webapp/components/Proxy.js",
 
 							"src/main/webapp/components/Command.js",
@@ -33,7 +32,6 @@ module.exports = function (grunt)
 							"src/main/webapp/components/Modal.js",
 							"src/main/webapp/components/Window.js",
 
-							"src/main/webapp/components/Block.js",
 							"src/main/webapp/components/CSV.js",
 							"src/main/webapp/components/Populator.js",
 							"src/main/webapp/components/Duration.js",
@@ -77,6 +75,8 @@ module.exports = function (grunt)
 							"src/main/webapp/components/picker/MonthIntervalPicker.js",
 							"src/main/webapp/components/picker/DateTimeIntervalPicker.js",
 							"src/main/webapp/components/picker/IconPicker.js",
+
+							"src/main/webapp/components/Block.js",
 
 							"src/main/webapp/components/Chart.js",
 							"src/main/webapp/components/ChartDialog.js",

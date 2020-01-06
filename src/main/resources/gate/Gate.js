@@ -1547,12 +1547,15 @@ window.addEventListener("load", () =>
 				return clone;
 			}).forEach(clone => Commands.add(clone));
 	});
+/* global customElements */
+
 class DigitalClock extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.listener = () =>
+		this._private = {}
+		this._private.listener = () =>
 		{
 			if (!this.hasAttribute("paused"))
 			{
@@ -1576,18 +1579,18 @@ class DigitalClock extends HTMLElement
 
 	connectedCallback()
 	{
-		window.addEventListener("ClockTick", this.listener);
+		window.addEventListener("ClockTick", this._private.listener);
 	}
 
 	disconnectedCallback()
 	{
-		window.removeEventListener("ClockTick", this.listener);
+		window.removeEventListener("ClockTick", this._private.listener);
 	}
 }
 
 customElements.define('digital-clock', DigitalClock);
 
-window.addEventListener("load", function ()
+window.addEventListener("load", () =>
 {
 	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
 });
@@ -2196,89 +2199,6 @@ class Window extends Modal
 }
 
 customElements.define('g-window', Window);
-class Block extends Modal
-{
-	constructor(text)
-	{
-		super({blocked: true});
-
-		var dialog = this.element()
-			.appendChild(window.top.document.createElement('div'));
-		dialog.className = "Block";
-
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.setAttribute("tabindex", "1");
-		head.focus();
-
-		head.appendChild(window.top.document.createElement('label'))
-			.innerHTML = "Aguarde";
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-
-		body.appendChild(window.top.document.createElement('label'))
-			.innerHTML = text;
-
-		body.appendChild(window.top.document.createElement('progress'));
-
-		dialog.appendChild(window.top.document.createElement('digital-clock'));
-
-		this.show();
-	}
-}
-
-Block.show = function (text)
-{
-	if (!window.top.GateBlockDialog)
-		window.top.GateBlockDialog = new Block(text);
-};
-
-Block.hide = function ()
-{
-	if (window.top.GateBlockDialog)
-	{
-		window.top.GateBlockDialog.hide();
-		window.top.GateBlockDialog = null;
-	}
-};
-
-window.addEventListener("load", function ()
-{
-	Block.hide();
-
-	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
-	{
-		element.addEventListener("submit", function ()
-		{
-			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
-		});
-	});
-
-	Array.from(document.querySelectorAll("a")).forEach(function (element)
-	{
-		element.addEventListener("click", function ()
-		{
-			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
-		});
-	});
-
-	Array.from(document.querySelectorAll("button")).forEach(function (button)
-	{
-		button.addEventListener("click", function ()
-		{
-			if (button.getAttribute("data-block"))
-				if (button.form)
-					button.form.addEventListener("submit", function (event)
-					{
-						Block.show(button.getAttribute("data-block"));
-						event.target.removeEventListener(event.type, arguments.callee);
-					});
-				else
-					Block.show(this.getAttribute("data-block"));
-		});
-	});
-});
 var CSV =
 	{
 		parse: function (text)
@@ -2844,7 +2764,7 @@ class Link
 					case "_progress-dialog":
 						event.preventDefault();
 						event.stopPropagation();
-						new URL(this.href).get(function (process)
+						new URL(this.href).get(process =>
 						{
 							process = JSON.parse(process);
 							new ProgressDialog(process,
@@ -3161,7 +3081,7 @@ class Button
 						{
 							this.disabled = true;
 							new URL(this.getAttribute("formaction"))
-								.post(new FormData(this.form), function (process)
+								.post(new FormData(this.form), process =>
 								{
 									process = JSON.parse(process);
 									new ProgressDialog(process,
@@ -5101,6 +5021,83 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+/* global Modal, customElements */
+
+class Block extends Window
+{
+	constructor(text)
+	{
+		super({blocked: true});
+		this.classList.add("g-block");
+
+		this.caption = text || "Aguarde";
+
+		this.body.appendChild(window.top.document.createElement('progress'));
+
+		this.foot.appendChild(window.top.document.createElement('digital-clock'));
+
+		this.show();
+	}
+}
+
+customElements.define('g-block', Block);
+
+Block.show = function (text)
+{
+	if (!window.top.GateBlockDialog)
+		window.top.GateBlockDialog = new Block(text);
+};
+
+Block.hide = function ()
+{
+	if (window.top.GateBlockDialog)
+	{
+		window.top.GateBlockDialog.hide();
+		window.top.GateBlockDialog = null;
+	}
+};
+
+window.addEventListener("load", function ()
+{
+	Block.hide();
+
+	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
+	{
+		element.addEventListener("submit", function ()
+		{
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("a")).forEach(function (element)
+	{
+		element.addEventListener("click", function ()
+		{
+			if (this.getAttribute("data-block"))
+				Block.show(this.getAttribute("data-block"));
+		});
+	});
+
+	Array.from(document.querySelectorAll("button")).forEach(function (button)
+	{
+		button.addEventListener("click", function ()
+		{
+			if (button.getAttribute("data-block"))
+				if (button.form)
+					button.form.addEventListener("submit", function (event)
+					{
+						Block.show(button.getAttribute("data-block"));
+						event.target.removeEventListener(event.type, arguments.callee);
+					});
+				else
+					Block.show(this.getAttribute("data-block"));
+		});
+	});
+});
+
+
+
 function Chart(data, title)
 {
 	this.categories = new Array();
@@ -6672,54 +6669,46 @@ customElements.define('progress-status', ProgressStatus);
 
 
 
-class ProgressDialog extends Modal
+/* global customElements */
+
+class ProgressDialog extends Picker
 {
 	constructor(process, options)
 	{
-		super();
+		super(options);
 
 		var status = "Pending";
+		this.classList.add("g-progress-dialog");
 
-		var main = this.element().appendChild(document.createElement("div"));
-		main.className = "ProgressDialog";
-		this.main = () => main;
+		this.caption = options && options.title ? options.title : "Progresso";
 
-		var head = main.appendChild(document.createElement("div"));
-		if (options && options.title)
-			head.innerHTML = options.title;
-
-		var body = main.appendChild(document.createElement("div"));
-
-		var progress = body.appendChild(document.createElement("progress-status"));
+		var progress = this.body.appendChild(document.createElement("progress-status"));
 		progress.setAttribute("process", process);
 
-		var foot = main.appendChild(document.createElement("div"));
+		this.commit.innerText = "Processando";
+		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b')
 
-		var action = foot.appendChild(document.createElement("a"));
-		action.appendChild(document.createTextNode("Processando"));
-		action.href = "#";
-
-		this.creator().addEventListener("hide", function (event)
+		this.creator.addEventListener("hide", function (event)
 		{
 			if (status === "Pending"
 				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
 				event.preventDefault();
 		});
 
-		action.onclick = () => this.hide();
+		this.commit.onclick = () => this.hide();
 
 		progress.addEventListener("commited", () =>
 		{
-			status = "Canceled";
-			action.innerHTML = "OK";
-			action.style.color = "#006600";
+			status = "Commited";
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
 		});
 
 		progress.addEventListener("canceled", () =>
 		{
-			status = "Commited";
-			action.innerHTML = "OK";
-			action.style.color = "#660000";
+			status = "Canceled";
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
 		});
 
 		progress.addEventListener("redirected", url =>
@@ -6733,6 +6722,8 @@ class ProgressDialog extends Modal
 		});
 	}
 }
+
+customElements.define('g-progress-dialog', ProgressDialog);
 class ProgressWindow extends HTMLElement
 {
 	constructor(process)
