@@ -1,32 +1,23 @@
-class Block extends Modal
+/* global Modal, customElements */
+
+class Block extends Window
 {
 	constructor(text)
 	{
 		super({blocked: true});
+		this.classList.add("g-block");
 
-		var dialog = this.element()
-			.appendChild(window.top.document.createElement('div'));
-		dialog.className = "Block";
+		this.caption = text || "Aguarde";
 
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.setAttribute("tabindex", "1");
-		head.focus();
+		this.body.appendChild(window.top.document.createElement('progress'));
 
-		head.appendChild(window.top.document.createElement('label'))
-			.innerHTML = "Aguarde";
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-
-		body.appendChild(window.top.document.createElement('label'))
-			.innerHTML = text;
-
-		body.appendChild(window.top.document.createElement('progress'));
-
-		dialog.appendChild(window.top.document.createElement('digital-clock'));
+		this.foot.appendChild(window.top.document.createElement('digital-clock'));
 
 		this.show();
 	}
 }
+
+customElements.define('g-block', Block);
 
 Block.show = function (text)
 {
@@ -81,3 +72,5 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+
+

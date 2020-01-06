@@ -183,7 +183,7 @@ class Button
 						{
 							this.disabled = true;
 							new URL(this.getAttribute("formaction"))
-								.post(new FormData(this.form), function (process)
+								.post(new FormData(this.form), process =>
 								{
 									process = JSON.parse(process);
 									new ProgressDialog(process,

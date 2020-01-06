@@ -1,7 +1,7 @@
 package gate.handler;
 
 import gate.error.AppError;
-import gate.type.Status;
+import gate.type.Result;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -16,7 +16,7 @@ public class ResultHandler implements Handler
 		HttpServletResponse response,
 		Object value) throws AppError
 	{
-		String string = ((Status) value).toString();
+		String string = ((Result) value).toString();
 		response.setContentType("application/json");
 
 		try (Writer writer = response.getWriter())

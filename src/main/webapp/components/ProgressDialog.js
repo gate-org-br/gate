@@ -1,51 +1,43 @@
-class ProgressDialog extends Modal
+/* global customElements */
+
+class ProgressDialog extends Picker
 {
 	constructor(process, options)
 	{
-		super();
+		super(options);
 
 		var status = "Pending";
+		this.classList.add("g-progress-dialog");
 
-		var main = this.element().appendChild(document.createElement("div"));
-		main.className = "ProgressDialog";
-		this.main = () => main;
+		this.caption = options && options.title ? options.title : "Progresso";
 
-		var head = main.appendChild(document.createElement("div"));
-		if (options && options.title)
-			head.innerHTML = options.title;
-
-		var body = main.appendChild(document.createElement("div"));
-
-		var progress = body.appendChild(document.createElement("progress-status"));
+		var progress = this.body.appendChild(document.createElement("progress-status"));
 		progress.setAttribute("process", process);
 
-		var foot = main.appendChild(document.createElement("div"));
+		this.commit.innerText = "Processando";
+		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b')
 
-		var action = foot.appendChild(document.createElement("a"));
-		action.appendChild(document.createTextNode("Processando"));
-		action.href = "#";
-
-		this.creator().addEventListener("hide", function (event)
+		this.creator.addEventListener("hide", function (event)
 		{
 			if (status === "Pending"
 				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
 				event.preventDefault();
 		});
 
-		action.onclick = () => this.hide();
+		this.commit.onclick = () => this.hide();
 
 		progress.addEventListener("commited", () =>
 		{
-			status = "Canceled";
-			action.innerHTML = "OK";
-			action.style.color = "#006600";
+			status = "Commited";
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
 		});
 
 		progress.addEventListener("canceled", () =>
 		{
-			status = "Commited";
-			action.innerHTML = "OK";
-			action.style.color = "#660000";
+			status = "Canceled";
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
 		});
 
 		progress.addEventListener("redirected", url =>
@@ -59,3 +51,5 @@ class ProgressDialog extends Modal
 		});
 	}
 }
+
+customElements.define('g-progress-dialog', ProgressDialog);

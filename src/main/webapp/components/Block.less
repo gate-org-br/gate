@@ -1,46 +1,16 @@
-div.Block
+g-block > main,
+.g-block > main
 {
-	width: 50%;
-	display: flex;
-	height: 200px;
-	border-radius: 5px;
-	align-items: stretch;
-	flex-direction: column;
-	justify-content: center;
-	border: 4px solid var(--base-shaded35);
-	background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+	width: 800px;
+	height: 160px;
+	max-width: 80%;
 
-	> div:nth-child(1)
-		{
-		flex-basis: 40px;
-		background-color: var(--base-shaded35);
-
-		> label
-		{
-			float: left;
-			color: white;
-			padding: 10px;
-			font-size: 18px;
-		}
-	}
-
-	> div:nth-child(2)
-		{
-		padding: 8px;
+	> section
+	{
 		flex-grow: 1;
-		display: flex;
 		align-items: stretch;
 		justify-content: center;
 		flex-direction:  column;
-
-		> label
-		{
-			flex-grow: 1;
-			display:flex;
-			font-size:20px;
-			align-items:center;
-			justify-content:center;
-		}
 
 		> progress
 		{
@@ -49,12 +19,13 @@ div.Block
 		}
 	}
 
-	> digital-clock
+	> footer > digital-clock
 	{
 		padding: 8px;
+		color: black;
 		display: flex;
 		font-size: 16px;
-		flex-basis: 40px;
+		flex-basis: 100%;
 		align-items: center;
 		justify-content: flex-end;
 	}
