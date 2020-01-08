@@ -1,3 +1,5 @@
+/* global echarts */
+
 function Chart(data, title)
 {
 	this.categories = new Array();
@@ -15,12 +17,12 @@ function Chart(data, title)
 	function cc()
 	{
 		return '#'
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10));
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10));
 	}
 
 	function f1(params)
@@ -150,11 +152,11 @@ function Chart(data, title)
 			case 'pchart':
 
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)
@@ -185,11 +187,11 @@ function Chart(data, title)
 			case 'dchart':
 
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)
@@ -219,11 +221,11 @@ function Chart(data, title)
 				break;
 			case 'rchart':
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)

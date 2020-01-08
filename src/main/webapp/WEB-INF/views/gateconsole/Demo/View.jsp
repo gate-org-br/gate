@@ -1,13 +1,27 @@
-<%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
+<%@ taglib uri="http://www.gate.com.br/gate" prefix="G"%>
 
-<g:template filename="/WEB-INF/views/FULL.jsp">
+<G:template filename="/WEB-INF/views/FULL.jsp">
 	<style>
-		div.demo { display: flex; flex-wrap: wrap }
-		div.demo > div { display: flex; flex-direction: column; margin: 4px; width: calc(50% - 8px); border-left: 4px solid #006600; min-width: 300px; }
-		div.demo > div > div { display: flex; align-items: center; padding: 8px; flex-grow: 1; min-height: 100px }
-		div.demo > div > div > * { flex-grow: 1; margin: 0 }
-		div.demo > div > div:first-child { background-color: #FFFFFF; }
-		div.demo > div > div:last-child { background-color: #EFEFEF; }
+		div.demo { display: flex;
+			   flex-wrap: wrap }
+
+		div.demo > div { width: 50%;
+				 flex-grow: 1;
+				 display: flex;
+				 min-width: 300px;
+				 flex-direction: column;
+				 border: 8px solid transparent }
+
+		div.demo > div > div { margin: 0;
+				       padding: 0;
+				       flex-grow: 1;
+				       display: flex;
+				       min-height: 100px;
+				       align-items: center;}
+
+		div.demo > div > div:last-child { background-color: #F5F2F0 }
+
+		div.demo > div > div > * { margin: 0; flex-grow: 1; }
 	</style>
 
 	<div class="PageControl">
@@ -20,9 +34,6 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<img src="imge/demo/Date.png" style="width: 100%"/>
-							</div>
-							<div>
 								<fieldset>
 									<label>
 										Date:
@@ -32,11 +43,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Date:
+											<span>
+												<input class="Date"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/Time.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -47,11 +67,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Time:
+											<span>
+												<input class="Time"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/Month.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -62,11 +91,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Month:
+											<span>
+												<input class="Month"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/DateTime.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -77,11 +115,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Date Time
+											<span>
+												<input class="DateTime"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/DateInterval.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -92,11 +139,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Date Interval:
+											<span>
+												<input class="DateInterval"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/TimeInterval.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -107,11 +163,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Time Interval:
+											<span>
+												<input class="TimeInterval"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/MonthInterval.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -122,11 +187,20 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Month Interval:
+											<span>
+												<input class="MonthInterval"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
-							<div>
-								<img src="imge/demo/DateTimeInterval.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -137,12 +211,21 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Date Time Interval:
+											<span>
+												<input class="DateTimeInterval"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 
 						<div>
-							<div>
-								<img src="imge/demo/Icon.png" style="width: 100%"/>
-							</div>
 							<div>
 								<fieldset>
 									<label>
@@ -153,8 +236,21 @@
 									</label>
 								</fieldset>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<fieldset>
+										<label>
+											Icon:
+											<span>
+												<input class="Icon"/>
+											</span>
+										</label>
+									</fieldset>
+								</G:source-code>
+							</div>
 						</div>
 					</div>
+				</div>
 			</li>
 			<li>
 				<a href="#">
@@ -164,26 +260,40 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<img src="imge/demo/SimpleTooltip.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
 									<a href="#" data-tooltip='This is a tooltip'>
-										Hover here<g:icon type="2015"/>
+										Hover here<G:icon type="2015"/>
 									</a>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href="#" data-tooltip='This is a tooltip'>
+											Hover here<G:icon type="2015"/>
+										</a>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 						<div>
 							<div>
-								<img src="imge/demo/ComplexTooltip.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
 									<a href="#" data-tooltip='{"Name": "Tooltip", "Type": "Attribute", "Description": "This is a tooltip"}'>
-										Hover here<g:icon type="2015"/>
+										Hover here<G:icon type="2015"/>
 									</a>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href="#" data-tooltip='{"Name": "Tooltip",
+										   "Type": "Attribute",
+										   "Description": "This is a tooltip"}'>
+											Hover here<G:icon type="2015"/>
+										</a>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 					</div>
@@ -197,39 +307,118 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<img src="imge/demo/Success.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<a href="#" onclick="Message.success('Sucesso')" style="color: #006600">
-										<g:icon type="1000"/>Sucesso
+									<a href="#"
+									   style="color: #006600"
+									   onclick="Message.success('Sucesso')">
+										<G:icon type="1000"/>Sucesso
 									</a>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href="#"
+										   style="color: #006600"
+										   onclick="Message.success('Sucesso')">
+											<G:icon type="1000"/>Sucesso
+										</a>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 						<div>
 							<div>
-								<img src="imge/demo/Warning.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<a href="#" onclick="Message.warning('Alerta')" style="color: #444400">
-										<g:icon type="1007"/>Alerta
+									<a href="#"
+									   style="color: #444400"
+									   onclick="Message.warning('Alerta')" >
+										<G:icon type="1007"/>Alerta
 									</a>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href="#"
+										   style="color: #444400"
+										   onclick="Message.warning('Alerta')" >
+											<G:icon type="1007"/>Alerta
+										</a>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 
 						<div>
 							<div>
-								<img src="imge/demo/Error.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<a href="#" onclick="Message.error('Erro')" style="color: #660000">
-										<g:icon type="1001"/>Erro
+									<a href="#"
+									   style="color: #660000"
+									   onclick="Message.error('Erro')">
+										<G:icon type="1001"/>Erro
 									</a>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href="#"
+										   style="color: #660000"
+										   onclick="Message.error('Erro')">
+											<G:icon type="1001"/>Erro
+										</a>
+									</g-coolbar>
+								</G:source-code>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<a href="#">
+					Charts
+				</a>
+				<div>
+					<div class='demo'>
+						<div>
+							<div>
+								<g-coolbar>
+									<a href='#'
+									   data-chart='pchart'
+									   title='Programadores por Linguagem'
+									   data-series='[
+									   ["Linguagem", "Programadores"],
+									   ["Java",10000],
+									   ["Javascript",8000],
+									   ["Phyton",6000],
+									   ["C++",6000],
+									   ["C#",5000],
+									   ["Ruby",2500],
+									   ["Indefinida",80]]'>
+										Gráfico<G:icon type="pchart"/>
+									</a>
+								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<a href='#'
+										   data-chart='pchart'
+										   title='Programadores por Linguagem'
+										   data-series='[
+										   ["Linguagem", "Programadores"],
+										   ["Java",10000],
+										   ["Javascript",8000],
+										   ["Phyton",6000],
+										   ["C++",6000],
+										   ["C#",5000],
+										   ["Ruby",2500],
+										   ["Indefinida",80]]'>
+											Gráfico<g:icon type="pchart"/>
+										</a>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 					</div>
@@ -243,42 +432,63 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<img src="imge/demo/Report.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<g:link target="_report"
+									<G:link target="_report"
 										module="#"
 										screen="#"
 										action="Report"/>
 								</g-coolbar>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<g:link target="_report"
+											module="#"
+											screen="#"
+											action="Report"/>
+									</g-coolbar>
+								</G:source-code>
+							</div>
 						</div>
 						<div>
 							<div>
-								<img src="imge/demo/Progress.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<g:link target="_dialog"
+									<G:link target="_dialog"
 										module="#"
 										screen="#"
 										action="Progress"/>
 								</g-coolbar>
 							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<g:link target="_dialog"
+											module="#"
+											screen="#"
+											action="Progress"/>
+									</g-coolbar>
+								</G:source-code>
+							</div>
 						</div>
 
 						<div>
 							<div>
-								<img src="imge/demo/Block.png" style="width: 100%"/>
-							</div>
-							<div>
 								<g-coolbar>
-									<g:link module="#"
+									<G:link module="#"
 										screen="#"
 										action="Block"
 										data-block="Aguarde"/>
 								</g-coolbar>
+							</div>
+							<div>
+								<G:source-code language="html">
+									<g-coolbar>
+										<g:link module="#"
+											screen="#"
+											action="Block"
+											data-block="Aguarde"/>
+									</g-coolbar>
+								</G:source-code>
 							</div>
 						</div>
 					</div>
@@ -286,4 +496,4 @@
 			</li>
 		</ul>
 	</div>
-</g:template>
+</G:template>

@@ -5098,6 +5098,8 @@ window.addEventListener("load", function ()
 
 
 
+/* global echarts */
+
 function Chart(data, title)
 {
 	this.categories = new Array();
@@ -5115,12 +5117,12 @@ function Chart(data, title)
 	function cc()
 	{
 		return '#'
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10));
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+			+ '0123456789'.charAt(Math.floor(Math.random() * 10));
 	}
 
 	function f1(params)
@@ -5250,11 +5252,11 @@ function Chart(data, title)
 			case 'pchart':
 
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)
@@ -5285,11 +5287,11 @@ function Chart(data, title)
 			case 'dchart':
 
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)
@@ -5319,11 +5321,11 @@ function Chart(data, title)
 				break;
 			case 'rchart':
 				var options =
-						{calculable: true, tooltip: {show: true, formatter: f1},
-							legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-							toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-							series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
-									center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
+					{calculable: true, tooltip: {show: true, formatter: f1},
+						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
+						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
+						series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
+								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
 				if (title)
 					options.title = {x: 'center', text: title};
 				if (this.groups.length > 1)
@@ -5356,80 +5358,77 @@ function Chart(data, title)
 	};
 }
 
-class ChartDialog extends Modal
+/* global customElements */
+
+class ChartDialog extends Window
 {
 	constructor(options)
 	{
 		super(options);
+		this.classList.add("g-chart-dialog");
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.classList.add("ChartDialog");
-
-		var head = dialog.appendChild(document.createElement("div"));
-		head.setAttribute("tabindex", "1");
-
-		var body = dialog.appendChild(document.createElement("div"));
-		body.style.backgroundColor = "white";
-
-		var canvas = body.appendChild(document.createElement("div"));
+		var canvas = this.body.appendChild(document.createElement("div"));
 		canvas.setAttribute("id", 'Chart');
 		canvas.setAttribute("tabindex", "1");
 
 		canvas.onmouseenter = () => canvas.focus();
-		head.onmouseenter = () => head.focus();
+		this.head.onmouseenter = () => this.head.focus();
 
 		var chart = new Chart(options.data, options.title ? options.title : "");
 
-		var cchart = head.appendChild(document.createElement('a'));
-		cchart.dialog = this;
-		cchart.title = "Coluna";
-		cchart.innerHTML = "&#x2033;";
-		cchart.onclick = () => chart.draw('Chart', 'cchart');
+		let overflow = this.commands.add(document.createElement("g-overflow"));
+		overflow.innerHTML = "<i>&#X3018;</i>";
 
-		var bchart = head.appendChild(document.createElement('a'));
-		bchart.dialog = this;
-		bchart.title = "Barra";
-		bchart.innerHTML = "&#x2246;";
-		bchart.onclick = () => chart.draw('Chart', 'bchart');
-
-		var lchart = head.appendChild(document.createElement('a'));
-		lchart.dialog = this;
-		lchart.title = "Linha";
-		lchart.innerHTML = "&#x2032;";
-		lchart.onclick = () => chart.draw('Chart', 'lchart');
-
-		var achart = head.appendChild(document.createElement('a'));
-		achart.dialog = this;
-		achart.title = "Area";
-		achart.innerHTML = "&#x2244;";
-		achart.onclick = () => chart.draw('Chart', 'achart');
-
-		var pchart = head.appendChild(document.createElement('a'));
-		pchart.dialog = this;
-		pchart.title = "Pizza";
-		pchart.innerHTML = "&#x2031;";
-		pchart.onclick = () => chart.draw('Chart', 'pchart');
-
-		var dchart = head.appendChild(document.createElement('a'));
-		dchart.dialog = this;
-		dchart.title = "Donut";
-		dchart.innerHTML = "&#x2245;";
-		dchart.onclick = () => chart.draw('Chart', 'dchart');
-
-		var rchart = head.appendChild(document.createElement('a'));
-		rchart.dialog = this;
-		rchart.title = "Rose";
-		rchart.innerHTML = "&#x2247;";
-		rchart.onclick = () => chart.draw('Chart', 'rchart');
-
-		head.appendChild(window.top.document.createElement('span'));
-
-		var close = head.appendChild(document.createElement('a'));
+		var close = this.commands.appendChild(document.createElement('a'));
 		close.dialog = this;
 		close.title = "Fechar";
-		close.innerHTML = "&#x1011;";
+		close.innerHTML = "<i>&#x1011;</i>";
 		close.style.marginLeft = '16px';
 		close.onclick = () => this.hide();
+
+		var cchart = this.commands.appendChild(document.createElement('a'));
+		cchart.dialog = this;
+		cchart.title = "Coluna";
+		cchart.innerHTML = "<i>&#x2033;</i>";
+		cchart.onclick = () => chart.draw('Chart', 'cchart');
+
+		var bchart = this.commands.appendChild(document.createElement('a'));
+		bchart.dialog = this;
+		bchart.title = "Barra";
+		bchart.innerHTML = "<i>&#x2246;</i>";
+		bchart.onclick = () => chart.draw('Chart', 'bchart');
+
+		var lchart = this.commands.appendChild(document.createElement('a'));
+		lchart.dialog = this;
+		lchart.title = "Linha";
+		lchart.innerHTML = "<i>&#x2032;</i>";
+		lchart.onclick = () => chart.draw('Chart', 'lchart');
+
+		var achart = this.commands.appendChild(document.createElement('a'));
+		achart.dialog = this;
+		achart.title = "Area";
+		achart.innerHTML = "<i>&#x2244;</i>";
+		achart.onclick = () => chart.draw('Chart', 'achart');
+
+		var pchart = this.commands.appendChild(document.createElement('a'));
+		pchart.dialog = this;
+		pchart.title = "Pizza";
+		pchart.innerHTML = "<i>&#x2031;</i>";
+		pchart.onclick = () => chart.draw('Chart', 'pchart');
+
+		var dchart = this.commands.appendChild(document.createElement('a'));
+		dchart.dialog = this;
+		dchart.title = "Donut";
+		dchart.innerHTML = "<i>&#x2245;</i>";
+		dchart.onclick = () => chart.draw('Chart', 'dchart');
+
+		var rchart = this.commands.appendChild(document.createElement('a'));
+		rchart.dialog = this;
+		rchart.title = "Rose";
+		rchart.innerHTML = "<i>&#x2247;</i>";
+		rchart.onclick = () => chart.draw('Chart', 'rchart');
+
+
 
 		this.show();
 
@@ -5438,7 +5437,7 @@ class ChartDialog extends Modal
 		chart.draw('Chart', options.type);
 
 
-		head.focus();
+		this.head.focus();
 	}
 }
 
@@ -5448,6 +5447,8 @@ ChartDialog.show = function (chart, series, action, title)
 		series = new URL(action).get();
 	new ChartDialog({data: JSON.parse(series), type: chart, title: title});
 };
+
+customElements.define('g-chart-dialog', ChartDialog);
 
 window.addEventListener("load", function ()
 {
