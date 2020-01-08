@@ -1927,4 +1927,23 @@
 			Display a map or java object as a HTML definition list
 		</description>
 	</tag>
+
+	<tag>
+		<name>source-code</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.SourceCodeTag</tag-class>
+
+		<attribute>
+			<name>language</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The language to be displayed.
+			</description>
+		</attribute>
+
+		<description>
+			Display computer language code
+		</description>
+	</tag>
 </taglib>

@@ -10,6 +10,8 @@
 		<link rel='stylesheet' type='text/css' href='app/resources/Gate.css?version=${version}'/>
 		<script type='text/javascript' src='app/resources/echarts.min.js?version=${version}' charset=\"utf-8\"></script>
 		<script type='text/javascript' src='app/resources/Gate.js?version=${version}' charset=\"utf-8\"></script>
+		<link rel='stylesheet' type='text/css' href='prism.css?version=${version}'/>
+		<script type='text/javascript' src='prism.js?version=${version}' charset=\"utf-8\"></script>
 	</head>
 	<g:insert/>
 </html>

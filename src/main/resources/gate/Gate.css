@@ -2694,6 +2694,7 @@ g-commands > button {
   margin: 2px;
   color: inherit;
   font-size: 0px;
+  cursor: pointer;
 }
 g-commands > g-command:hover,
 g-commands > a:hover,
@@ -4169,6 +4170,20 @@ ul.HMenu .full > a:only-of-type > i {
     font-size: 12px;
   }
 }
+@media only screen and (min-width: 640px) {
+  g-chart-dialog > main,
+  .g-chart-dialog > main {
+    border-radius: 5px;
+    width: calc(100% - 80px);
+    height: calc(100% - 80px);
+  }
+}
+g-chart-dialog > main > section > div,
+.g-chart-dialog > main > section > div {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
 tr.RChart,
 td.RChart,
 tr.DChart,
@@ -4194,53 +4209,6 @@ td.BChart:hover,
 td.CChart:hover {
   color: #000066;
   font-weight: bold;
-}
-div.ChartDialog {
-  display: flex;
-  position: fixed;
-  border-radius: 5px;
-  flex-direction: column;
-  width: calc(100% - 80px);
-  height: calc(100% - 80px);
-  border: 4px solid var(--base-shaded35);
-  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
-}
-div.ChartDialog > div:first-child {
-  color: white;
-  height: 40px;
-  padding: 8px;
-  outline: none;
-  display: flex;
-  font-size: 20px;
-  font-weight: bold;
-  align-items: stretch;
-  justify-content: flex-start;
-  background-color: var(--base-shaded35);
-}
-div.ChartDialog > div:first-child > span {
-  flex-grow: 1;
-}
-div.ChartDialog > div:first-child > a {
-  display: flex;
-  color: inherit;
-  cursor: pointer;
-  flex-basis: 48px;
-  font-family: gate;
-  font-size: inherit;
-  align-items: center;
-  justify-content: center;
-}
-div.ChartDialog > div:last-child {
-  display: flex;
-  align-items: stretch;
-  background-color: white;
-  height: calc(100% - 40px);
-}
-div.ChartDialog > div:last-child > div {
-  margin: 0px;
-  border: none;
-  flex-grow: 1;
-  padding: 0px;
 }
 th[data-sortable] {
   cursor: pointer;
@@ -4571,6 +4539,7 @@ dd {
   text-align: left;
 }
 g-tooltip {
+  --color: #feffcd;
   padding: 8px;
   display: flex;
   z-index: 1000;
@@ -4579,7 +4548,7 @@ g-tooltip {
   visibility: hidden;
   align-items: center;
   justify-content: center;
-  background-color: white;
+  background-color: var(--color);
   box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
 g-tooltip > * {
@@ -4596,25 +4565,25 @@ g-tooltip[arrow="bottom"]::after {
   left: 50%;
   bottom: 100%;
   margin-left: -6px;
-  border-color: transparent transparent white transparent;
+  border-color: transparent transparent var(--color) transparent;
 }
 g-tooltip[arrow="top"]::after {
   top: 100%;
   left: 50%;
   margin-left: -6px;
-  border-color: white transparent transparent transparent;
+  border-color: var(--color) transparent transparent transparent;
 }
 g-tooltip[arrow="left"]::after {
   top: 50%;
   left: 100%;
   margin-top: -6px;
-  border-color: transparent transparent transparent white;
+  border-color: transparent transparent transparent var(--color);
 }
 g-tooltip[arrow="right"]::after {
   top: 50%;
   right: 100%;
   margin-top: -6px;
-  border-color: transparent white transparent transparent;
+  border-color: transparent var(--color) transparent transparent;
 }
 g-context-menu {
   margin: 0;
