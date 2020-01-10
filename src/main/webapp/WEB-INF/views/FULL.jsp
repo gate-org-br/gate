@@ -2,16 +2,16 @@
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<body>
-		<div class="Main">
-			<div>
+		<main>
+			<header>
 				<img src='Logo.svg'/>
 				<label>${app.id} - ${app.name}</label>
 				<label>Versão ${version}</label>
 				<label>${screen.user.name}</label>
-			</div>
+			</header>
 
 
-			<div>
+			<nav>
 				<g-tabbar>
 					<g:link module="gateconsole.screen" screen="Home"/>
 					<g:link module="gateconsole.screen" screen="Role"/>
@@ -26,12 +26,12 @@
 						module="gateconsole.screen" screen="Access"/>
 					<g:link/>
 				</g-tabbar>
-			</div>
+			</nav>
 
-			<div>
+			<main>
 				<g:insert/>
 				<g:alert/>
-			</div>
-		</div>
+			</main>
+		</main>
 	</body>
 </g:template>
