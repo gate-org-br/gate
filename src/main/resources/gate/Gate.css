@@ -4375,13 +4375,13 @@ div.Login > div > div:nth-child(2) > ul > li {
     flex-basis: 25%;
   }
 }
-div.Main {
+body > main {
   width: 100%;
   padding: 4px;
   display: grid;
   grid-template-rows: 56px 50px 1fr;
 }
-div.Main > div:nth-child(1) {
+body > main > header {
   width: 100%;
   padding: 4px;
   display: grid;
@@ -4391,7 +4391,7 @@ div.Main > div:nth-child(1) {
   background-color: var(--base-tinted85);
   grid-template-columns: 48px 1fr 200px;
 }
-div.Main > div:nth-child(1) > *:nth-child(1) {
+body > main > header > *:nth-child(1) {
   width: 48px;
   height: 48px;
   display: flex;
@@ -4400,7 +4400,7 @@ div.Main > div:nth-child(1) > *:nth-child(1) {
   grid-row: 1 / span 2;
   justify-content: center;
 }
-div.Main > div:nth-child(1) > *:nth-child(2) {
+body > main > header > *:nth-child(2) {
   display: flex;
   font-size: 0px;
   align-items: center;
@@ -4408,30 +4408,32 @@ div.Main > div:nth-child(1) > *:nth-child(2) {
   justify-content: flex-start;
 }
 @media only screen and (min-width: 576px) {
-  div.Main > div:nth-child(1) > *:nth-child(2) {
+  body > main > header > *:nth-child(2) {
     font-size: 18px;
   }
 }
 @media only screen and (min-width: 768px) {
-  div.Main > div:nth-child(1) > *:nth-child(2) {
+  body > main > header > *:nth-child(2) {
     font-size: 22px;
   }
 }
-div.Main > div:nth-child(1) > *:nth-child(3) {
+body > main > header > *:nth-child(3) {
   display: flex;
   grid-row: 1 / span 1;
   align-items: flex-start;
   justify-content: flex-end;
 }
-div.Main > div:nth-child(1) > *:nth-child(4) {
+body > main > header > *:nth-child(4) {
   display: flex;
   grid-row: 2 / span 1;
   align-items: flex-end;
   justify-content: flex-end;
 }
-div.Main > div:nth-child(2) {
+body > main > nav {
   top: 0;
+  margin: 0;
   z-index: 1;
+  padding: 0;
   width: 100%;
   display: flex;
   position: sticky;
@@ -4440,7 +4442,7 @@ div.Main > div:nth-child(2) {
   position: -webkit-sticky;
   background-color: var(--main-shaded10);
 }
-div.Main > div:nth-child(3) {
+body > main > main {
   margin: 0;
   border: none;
   padding: 10px;

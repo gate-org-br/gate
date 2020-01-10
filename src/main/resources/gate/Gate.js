@@ -7089,7 +7089,7 @@ window.addEventListener("resize", () => {
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("a"))
-		.filter(e => window.location.href.endsWith(e.href))
+		.filter(e => e.href.startsWith(window.location.href))
 		.forEach(e => e.setAttribute("aria-selected", "true"));
 
 	Array.from(document.querySelectorAll("button"))
