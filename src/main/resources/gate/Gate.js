@@ -2594,6 +2594,26 @@ class URL
 		});
 		return this;
 	}
+
+	static parse_query_string(query)
+	{
+		var query_string = {};
+		if (query.includes('?'))
+			query = query.split('?')[1];
+		var vars = query.split("&");
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			var key = decodeURIComponent(pair[0]);
+			var value = decodeURIComponent(pair[1]);
+			if (typeof query_string[key] === "undefined")
+				query_string[key] = decodeURIComponent(value);
+			else if (typeof query_string[key] === "string")
+				query_string[key] = [query_string[key], decodeURIComponent(value)];
+			else
+				query_string[key].push(decodeURIComponent(value));
+		}
+		return query_string;
+	}
 }
 /* global Message, Block, ENTER, ESC, Commands */
 
@@ -7083,20 +7103,6 @@ window.addEventListener("resize", () => {
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
-
-
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("a"))
-		.filter(e => e.href.startsWith(window.location.href))
-		.forEach(e => e.setAttribute("aria-selected", "true"));
-
-	Array.from(document.querySelectorAll("button"))
-		.filter(e => window.location.href.endsWith(e.formaction))
-		.forEach(e => e.setAttribute("aria-selected", "true"));
-});
-
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
@@ -7309,5 +7315,43 @@ class TabBar extends HTMLElement
 		this.parentNode.style.overflow = "";
 	}
 }
+
+window.addEventListener("load", function ()
+{
+	var parameters = URL.parse_query_string(window.location.href);
+	var elements = Array.from(document.querySelectorAll("a, button"))
+		.filter(e => (e.href && e.href.includes('?'))
+				|| (e.formaction && e.formaction.includes('?')));
+
+	var q = elements.filter(e =>
+	{
+		var arguments = URL.parse_query_string(e.href || e.formaction);
+		return arguments.MODULE === parameters.MODULE
+			&& arguments.SCREEN === parameters.SCREEN
+			&& arguments.ACTION === parameters.ACTION;
+	});
+
+	if (q.length === 0)
+	{
+		var q = elements.filter(e =>
+		{
+			var arguments = URL.parse_query_string(e.href || e.formaction);
+			return arguments.MODULE === parameters.MODULE
+				&& arguments.SCREEN === parameters.SCREEN;
+		});
+
+		if (q.length === 0)
+		{
+			var q = elements.filter(e =>
+			{
+				var arguments = URL.parse_query_string(e.href || e.formaction);
+				return arguments.MODULE === parameters.MODULE;
+			});
+		}
+	}
+
+	if (q.length !== 0)
+		q[0].setAttribute("aria-selected", "true");
+});
 
 customElements.define('g-tabbar', TabBar);

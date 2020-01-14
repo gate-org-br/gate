@@ -5,6 +5,7 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
 import gate.lang.csv.CSVParser;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -47,7 +48,7 @@ public class StringMatrixConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-					Class<?> type) throws SQLException, ConversionException
+		Class<?> type) throws SQLException, ConversionException
 	{
 		return ofString(type, rs.getString(fields));
 	}
@@ -89,7 +90,7 @@ public class StringMatrixConverter implements Converter
 		if (string.isEmpty())
 			return null;
 
-		try (CSVParser reader = new CSVParser(new StringReader(string)))
+		try (CSVParser reader = new CSVParser(new BufferedReader(new StringReader(string))))
 		{
 			return reader.stream()
 				.map(e -> e.toArray(new String[0]))
@@ -112,7 +113,7 @@ public class StringMatrixConverter implements Converter
 	@Override
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
-		try (CSVParser reader = new CSVParser(new InputStreamReader(part.getInputStream())))
+		try (CSVParser reader = new CSVParser(new BufferedReader(new InputStreamReader(part.getInputStream()))))
 		{
 			return reader.stream()
 				.map(e -> e.toArray(new String[0]))

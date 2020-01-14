@@ -85,16 +85,3 @@ window.addEventListener("resize", () => {
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
-
-
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("a"))
-		.filter(e => e.href.startsWith(window.location.href))
-		.forEach(e => e.setAttribute("aria-selected", "true"));
-
-	Array.from(document.querySelectorAll("button"))
-		.filter(e => window.location.href.endsWith(e.formaction))
-		.forEach(e => e.setAttribute("aria-selected", "true"));
-});
