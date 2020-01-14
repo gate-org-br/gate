@@ -168,4 +168,24 @@ class URL
 		});
 		return this;
 	}
+
+	static parse_query_string(query)
+	{
+		var query_string = {};
+		if (query.includes('?'))
+			query = query.split('?')[1];
+		var vars = query.split("&");
+		for (var i = 0; i < vars.length; i++) {
+			var pair = vars[i].split("=");
+			var key = decodeURIComponent(pair[0]);
+			var value = decodeURIComponent(pair[1]);
+			if (typeof query_string[key] === "undefined")
+				query_string[key] = decodeURIComponent(value);
+			else if (typeof query_string[key] === "string")
+				query_string[key] = [query_string[key], decodeURIComponent(value)];
+			else
+				query_string[key].push(decodeURIComponent(value));
+		}
+		return query_string;
+	}
 }

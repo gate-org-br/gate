@@ -6,6 +6,7 @@ import gate.lang.csv.CSVFormatter;
 import gate.lang.csv.CSVParser;
 import gate.lang.property.Property;
 import gate.type.DataFile;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -81,7 +82,7 @@ public class Backup<T>
 
 	public List<T> load(Reader reader) throws ConversionException
 	{
-		try (CSVParser CSV = new CSVParser(reader))
+		try (CSVParser CSV = new CSVParser(new BufferedReader(reader)))
 		{
 			List<T> objs = new ArrayList<>();
 			for (Optional<List<String>> optional = CSV.parseLine();

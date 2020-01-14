@@ -1,8 +1,8 @@
 package gate.lang.csv;
 
 import gate.error.AppError;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,26 +14,39 @@ import java.util.stream.StreamSupport;
 
 /**
  * Extracts Lists of strings from a CSV formatted {@link java.io.Reader}.
- * <p>
- * CSV columns can be unquoted, single quoted or double quoted and can be separated by commas or semicolons
  */
 public class CSVParser implements AutoCloseable, Iterable<List<String>>
 {
 
-	private final Reader reader;
 	private long lineNumber = -1;
 	private int c = Integer.MAX_VALUE;
+	private final BufferedReader reader;
+	private final int separator, delimiter;
 	private final StringBuilder string = new StringBuilder();
 	private static final Optional EMPTY = Optional.of(List.of());
+
+	/**
+	 * Constructs a new CSVParser for the specified Reader using semicollonss as separators and double quotes as delimiters.
+	 *
+	 * @param reader the reader from where the CSV rows will be extracted
+	 */
+	public CSVParser(BufferedReader reader)
+	{
+		this(reader, ';', '\"');
+	}
 
 	/**
 	 * Constructs a new CSVParser for the specified Reader.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
+	 * @param separator the caracter used as field separator
+	 * @param delimiter the caracter used as field delimiter
 	 */
-	public CSVParser(Reader reader)
+	public CSVParser(BufferedReader reader, char separator, char delimiter)
 	{
 		this.reader = reader;
+		this.delimiter = delimiter;
+		this.separator = separator;
 	}
 
 	/**
@@ -98,13 +111,28 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		c = reader.read();
 	}
 
+	public boolean isDelimiter() throws IOException
+	{
+		if (c == -1)
+			return true;
+		if (c != delimiter)
+			return false;
+
+		reader.mark(1);
+		if (reader.read() == delimiter)
+			return false;
+
+		reader.reset();
+		return true;
+	}
+
 	private List<String> line() throws IOException
 	{
 		List<String> line = new ArrayList<>();
 
 		line.add(field());
 
-		while (c == ',' || c == ';')
+		while (c == separator)
 		{
 			read();
 			line.add(field());
@@ -119,64 +147,30 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		while (c == ' ' || c == '\t' || c == '\r')
 			read();
 
-		String field = parse();
+		String field = c == delimiter
+			? delimited() : normal();
 
 		while (c == ' ' || c == '\t' || c == '\r')
 			read();
-
 		return field;
 	}
 
-	private String parse() throws IOException
-	{
-		switch (c)
-		{
-			case '\'':
-				return quoted();
-			case '"':
-				return doubleQuoted();
-			default:
-				return unquoted();
-
-		}
-	}
-
-	public String quoted() throws IOException
+	public String normal() throws IOException
 	{
 		string.setLength(0);
-		for (read(); c != -1 && c != '\''; read())
-		{
-			if (c == '\\')
-				read();
+		for (; c != -1
+			&& c != '\n'
+			&& c != separator; read())
 			string.append((char) c);
-		}
-
-		read();
 		return string.toString().trim();
 	}
 
-	public String doubleQuoted() throws IOException
+	public String delimited() throws IOException
 	{
 		string.setLength(0);
-		for (read(); c != -1 && c != '"'; read())
-		{
-			if (c == '\\')
-				read();
+		for (read(); !isDelimiter(); read())
 			string.append((char) c);
-		}
 		read();
-		return string.toString().trim();
-	}
-
-	public String unquoted() throws IOException
-	{
-		string.setLength(0);
-		for (; c != -1 && c != '\r' && c != '\n' && c != ',' && c != ';'; read())
-		{
-			if (c == '\\')
-				read();
-			string.append((char) c);
-		}
 		return string.toString().trim();
 	}
 
