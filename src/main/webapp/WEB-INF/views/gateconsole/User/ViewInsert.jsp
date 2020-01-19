@@ -105,10 +105,10 @@
 		</fieldset>
 
 		<div class='COOLBAR'>
-			<g:link class="Command Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
-			<a class='Command Cancel Hide' tabindex='2'>
+			<a class='Cancel Hide' tabindex='2'>
 				Desistir<g:icon type='cancel'/>
 			</a>
 		</div>

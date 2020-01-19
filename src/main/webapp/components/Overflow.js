@@ -63,6 +63,18 @@ class Overflow extends Command
 		return element.scrollWidth > element.clientWidth
 			|| element.scrollHeight > element.clientHeight;
 	}
+
+	static disable(element)
+	{
+		element.style.overflow = "hidden";
+		Array.from(element.children).forEach(e => Overflow.disable(e));
+	}
+
+	static enable(element)
+	{
+		element.style.overflow = "";
+		Array.from(element.children).forEach(e => Overflow.enable(e));
+	}
 }
 
 

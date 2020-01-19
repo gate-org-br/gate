@@ -958,7 +958,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>code</name>
 		<body-content>empty</body-content>
@@ -989,7 +988,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>tooltip</name>
 		<body-content>empty</body-content>
@@ -1020,7 +1018,6 @@
 			with an element.
 		</description>
 	</function>
-
 	<tag>
 		<name>datalist</name>
 		<body-content>scriptless</body-content>
@@ -1530,7 +1527,6 @@
 				select options.
 			</description>
 		</attribute>
-
 		<attribute>
 			<name>style</name>
 			<required>false</required>
@@ -1897,7 +1893,6 @@
 			Converts the provided temporal value into a number.
 		</description>
 	</function>
-
 	<function>
 		<name>secure</name>
 		<function-class>gate.tags.TagLib</function-class>
@@ -1908,12 +1903,10 @@
 			Converts the provided temporal value into a number.
 		</description>
 	</function>
-
 	<tag>
 		<name>map</name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.MapTag</tag-class>
-
 		<attribute>
 			<name>entries</name>
 			<required>true</required>
@@ -1922,28 +1915,8 @@
 				The object to be displayed.
 			</description>
 		</attribute>
-
 		<description>
 			Display a map or java object as a HTML definition list
-		</description>
-	</tag>
-
-	<tag>
-		<name>source-code</name>
-		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.SourceCodeTag</tag-class>
-
-		<attribute>
-			<name>language</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The language to be displayed.
-			</description>
-		</attribute>
-
-		<description>
-			Display computer language code
 		</description>
 	</tag>
 </taglib>

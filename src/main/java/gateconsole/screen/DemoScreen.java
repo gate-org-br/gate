@@ -9,6 +9,8 @@ import gate.annotation.Public;
 import gate.base.Screen;
 import gate.report.Doc;
 import gate.report.Report;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,6 +22,7 @@ public class DemoScreen extends Screen
 {
 
 	private Doc.Type type;
+	private List<Doc.Type> types = new ArrayList<>();
 
 	public String call()
 	{
@@ -76,4 +79,20 @@ public class DemoScreen extends Screen
 	{
 		this.type = type;
 	}
+
+	public List<Doc.Type> getTypes()
+	{
+		return types;
+	}
+
+	public void setTypes(List<Doc.Type> types)
+	{
+		this.types = types;
+	}
+
+	public List<Doc.Type> getOptions()
+	{
+		return List.of(Doc.Type.PDF, Doc.Type.DOC, Doc.Type.XLS, Doc.Type.CSV);
+	}
+
 }

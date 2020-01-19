@@ -88,11 +88,10 @@ public abstract class CheckableTag extends SelectorTag
 				getJspContext().removeAttribute("option");
 			} else if (labels != null)
 				getJspContext().getOut()
-					.print(getConverter().toText(getType(),
-						labels.invoke(EL_CONTEXT, option)));
+					.print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
 			else
 				getJspContext().getOut()
-					.print(getConverter().toText(getType(), option));
+					.print(Converter.toText(option));
 
 			getJspContext().getOut().print("</label>");
 

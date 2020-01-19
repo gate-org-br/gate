@@ -85,9 +85,9 @@
 			<g:link method="post" module='#' screen='#' tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
+			<g:link target="_report" method="post" module='#' screen='#' action="Report" tabindex='2'/>
 			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3' title='Novo Usuário'/>
 			<g:link target='_dialog' module='#' screen='#' action='Upload' tabindex='3' title='Importar Usuários'/>
-			<g:link target="_report" method="post" module='#' screen='#' action="Report" tabindex='2'/>
 		</g-coolbar>
 
 		<g:choose>

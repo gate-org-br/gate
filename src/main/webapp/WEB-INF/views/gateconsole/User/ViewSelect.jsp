@@ -117,14 +117,14 @@
 				</g:with>
 			</div>
 		</fieldset>
-	</div>
+	</fieldset>
 
 	<div class='COOLBAR'>
 		<a href='#' class='Hide Cancel'>
 			Fechar<g:icon type="cancel"/>
 		</a>
-		<g:link class="Command" module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
-		<g:link class="Command" module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
+		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
+		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>
 	</div>
 
