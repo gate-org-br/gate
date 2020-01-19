@@ -44,7 +44,6 @@ module.exports = function (grunt)
 							"src/main/webapp/components/SideMenu.js",
 
 							"src/main/webapp/components/Clipboard.js",
-							"src/main/webapp/components/ContextMenuItem.js",
 							"src/main/webapp/components/ContextMenu.js",
 							"src/main/webapp/components/ActionContextMenu.js",
 

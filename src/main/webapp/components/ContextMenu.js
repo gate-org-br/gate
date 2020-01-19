@@ -5,21 +5,17 @@ class ContextMenu extends HTMLElement
 	constructor()
 	{
 		super();
-		this._modal = new Modal();
-		this._items = Array.isArray(arguments[0]) ? arguments[0] :
-			Array.from(arguments[0]);
+		this._private = {};
+		this.addEventListener("click", () => this.hide());
 	}
 
-	connectedCallback()
+	show(context, target, x, y)
 	{
-		this._items.forEach(item => this.appendChild(item));
-	}
-
-	show(context, element, x, y)
-	{
-		this._target = {"context": context, "element": element};
-		this._modal.element().appendChild(this);
-		this._modal.show();
+		this._private.target = target;
+		this._private.context = context;
+		this._private.dialog = new Modal();
+		this._private.dialog.appendChild(this);
+		this._private.dialog.show();
 
 		this.style.top = y + "px";
 		this.style.left = x + "px";
@@ -35,8 +31,10 @@ class ContextMenu extends HTMLElement
 	hide()
 	{
 		this.style.display = "none";
-		this._target = null;
-		this._modal.hide();
+		this._private.target = null;
+		this._private.context = null;
+		this._private.dialog.hide();
+		this._private.dialog = null;
 	}
 
 	register(element)
@@ -55,9 +53,14 @@ class ContextMenu extends HTMLElement
 			});
 	}
 
+	get context()
+	{
+		return this._private.context;
+	}
+
 	get target()
 	{
-		return this._target;
+		return this._private.target;
 	}
 }
 

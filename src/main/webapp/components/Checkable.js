@@ -6,19 +6,19 @@ class Checkable
 	{
 		if (!Checkable._ContextMenu)
 		{
-			var selecionarTudo = new ContextMenuItem(e =>
-				Array.from(e.context.getElementsByTagName("input"))
-					.forEach(input => input.checked = true));
-			selecionarTudo.icon = "\u1011";
-			selecionarTudo.name = "Selecionar tudo";
+			Checkable._ContextMenu = new ContextMenu();
 
-			var desmarcarSelecionados = new ContextMenuItem(e =>
-				Array.from(e.context.getElementsByTagName("input"))
-					.forEach(input => input.checked = false));
-			desmarcarSelecionados.icon = "\u1014";
-			desmarcarSelecionados.name = "Desmarcar selecionados";
+			var inverterSelecao = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			inverterSelecao.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
+			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
 
-			Checkable._ContextMenu = new ContextMenu(selecionarTudo, desmarcarSelecionados);
+			var selecionarTudo = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			selecionarTudo.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true));
+			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
+
+			var desmarcarSelecionados = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			desmarcarSelecionados.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false));
+			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
 		}
 
 		return Checkable._ContextMenu;

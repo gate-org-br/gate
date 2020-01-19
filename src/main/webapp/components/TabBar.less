@@ -1,24 +1,22 @@
 g-tabbar
 {
-	height: 48px;
+	border: none;
+	height: 50px;
 	flex-grow: 1;
-	padding: 4px;
 	display: flex;
 	overflow: hidden;
-	align-items: center;
+	align-items: stretch;
 	justify-content: flex-start;
 	color: var(--g-tabbar-color);
-	background-image:  linear-gradient(to bottom,
-		var(--g-tabbar-background-color1) 0%,
-		var(--g-tabbar-background-color2) 50%,
-		var(--g-tabbar-background-color1) 100% );
+	background-color:  var(--g-tabbar-background-color);
+	background-image:  var(--g-tabbar-background-image);
 
 	> a,
 	> button,
 	> g-command,
 	> .g-command
 	{
-		height: 40px;
+		margin: 4px;
 		flex-grow: 1;
 		display: flex;
 		color: inherit;
@@ -29,17 +27,20 @@ g-tabbar
 		align-items: center;
 		flex-direction: column;
 		justify-content: space-around;
-		border: 1px solid transparent;
 
 		&:focus { outline: none }
 
+		&:hover {
+			color: var(--g-tabbar-hovered-color);
+			background-color:  var(--g-tabbar-hovered-background-color);
+			background-image:  var(--g-tabbar-hovered-background-image);
+		}
+
+
 		&[aria-selected] {
 			color: var(--g-tabbar-selected-color);
-			background-image:  linear-gradient(to bottom,
-				var(--g-tabbar-selected-background-color1) 0%,
-				var(--g-tabbar-selected-background-color2) 50%,
-				var(--g-tabbar-selected-background-color1) 100% );
-			border: 1px solid var(--g-tabbar-selected-background-color1);
+			background-color:  var(--g-tabbar-selected-background-color);
+			background-image:  var(--g-tabbar-selected-background-image);
 		}
 
 		> i { order: -1;

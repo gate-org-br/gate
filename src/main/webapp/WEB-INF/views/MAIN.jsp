@@ -13,5 +13,7 @@
 		<link rel='stylesheet' type='text/css' href='prism.css?version=${version}'/>
 		<script type='text/javascript' src='prism.js?version=${version}' charset=\"utf-8\"></script>
 	</head>
-	<g:insert/>
+	<body>
+		<g:insert/>
+	</body>
 </html>

@@ -2065,7 +2065,7 @@ window.addEventListener("load", function ()
 		.forEach(element => new Mask(element));
 });
 
-/* global customElements */
+/* global customElements, Overflow */
 
 class Modal extends HTMLElement
 {
@@ -2103,7 +2103,8 @@ class Modal extends HTMLElement
 	{
 		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.documentElement.style.overflow = "hidden";
+			Overflow.disable(window.top.document.documentElement);
+
 			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
 
 			window.top.document.documentElement.appendChild(this);
@@ -2118,7 +2119,7 @@ class Modal extends HTMLElement
 		if (this.parentNode
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.documentElement.style.overflow = "";
+			Overflow.enable(window.top.document.documentElement);
 			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
 			this.parentNode.removeChild(this);
 		}
@@ -3299,83 +3300,22 @@ window.addEventListener("load", function ()
 );
 /* global NodeList, Clipboard, customElements */
 
-class ContextMenuItem extends HTMLElement
-{
-	constructor(action)
-	{
-		super();
-
-		this.addEventListener("click", () =>
-		{
-			if (action)
-			{
-				action(this.parentNode._target);
-			} else if (this.action)
-			{
-				this.parentNode.dispatchEvent(new CustomEvent(this.action, {detail: this.parentNode.target}));
-			} else
-				throw "Invalid menu item action";
-			this.parentNode.hide();
-		});
-	}
-
-	get icon()
-	{
-		return this.getAttribute("icon");
-	}
-
-	set icon(icon)
-	{
-		this.setAttribute("icon", icon);
-	}
-
-	get name()
-	{
-		return this.getAttribute("name");
-	}
-
-	set name(name)
-	{
-		this.setAttribute("name", name);
-	}
-
-	get action()
-	{
-		return this.getAttribute("action");
-	}
-
-	set action(action)
-	{
-		this.setAttribute("action", "action");
-	}
-}
-
-
-
-
-customElements.define('g-context-menu-item', ContextMenuItem);
-/* global NodeList, Clipboard, customElements */
-
 class ContextMenu extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this._modal = new Modal();
-		this._items = Array.isArray(arguments[0]) ? arguments[0] :
-			Array.from(arguments[0]);
+		this._private = {};
+		this.addEventListener("click", () => this.hide());
 	}
 
-	connectedCallback()
+	show(context, target, x, y)
 	{
-		this._items.forEach(item => this.appendChild(item));
-	}
-
-	show(context, element, x, y)
-	{
-		this._target = {"context": context, "element": element};
-		this._modal.element().appendChild(this);
-		this._modal.show();
+		this._private.target = target;
+		this._private.context = context;
+		this._private.dialog = new Modal();
+		this._private.dialog.appendChild(this);
+		this._private.dialog.show();
 
 		this.style.top = y + "px";
 		this.style.left = x + "px";
@@ -3391,8 +3331,10 @@ class ContextMenu extends HTMLElement
 	hide()
 	{
 		this.style.display = "none";
-		this._target = null;
-		this._modal.hide();
+		this._private.target = null;
+		this._private.context = null;
+		this._private.dialog.hide();
+		this._private.dialog = null;
 	}
 
 	register(element)
@@ -3411,9 +3353,14 @@ class ContextMenu extends HTMLElement
 			});
 	}
 
+	get context()
+	{
+		return this._private.context;
+	}
+
 	get target()
 	{
-		return this._target;
+		return this._private.target;
 	}
 }
 
@@ -3431,10 +3378,12 @@ class ActionContextMenu
 	static get instance()
 	{
 		if (!ActionContextMenu._instance)
-			ActionContextMenu._instance
-				= new ContextMenu(ActionContextMenu.CopyTextAction,
-					ActionContextMenu.CopyLinkAction,
-					ActionContextMenu.OpenLinkAction);
+		{
+			ActionContextMenu._instance = new ContextMenu();
+			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyTextAction);
+			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyLinkAction);
+			ActionContextMenu._instance.appendChild(ActionContextMenu.OpenLinkAction);
+		}
 		return ActionContextMenu._instance;
 	}
 
@@ -3442,9 +3391,9 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyLinkAction)
 		{
-			ActionContextMenu._CopyLinkAction = new ContextMenuItem(e => Clipboard.copy(e.context.getAttribute("data-action"), true));
-			ActionContextMenu._CopyLinkAction.icon = "\u2159";
-			ActionContextMenu._CopyLinkAction.name = "Copiar endereço";
+			ActionContextMenu._CopyLinkAction = new Command();
+			ActionContextMenu._CopyLinkAction.action(e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true));
+			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
 		}
 		return ActionContextMenu._CopyLinkAction;
 	}
@@ -3453,9 +3402,9 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyTextAction)
 		{
-			ActionContextMenu._CopyTextAction = new ContextMenuItem(e => Clipboard.copy(e.element.innerText, true));
-			ActionContextMenu._CopyTextAction.icon = "\u2256";
-			ActionContextMenu._CopyTextAction.name = "Copiar texto";
+			ActionContextMenu._CopyTextAction = new Command();
+			ActionContextMenu._CopyTextAction.action(e => Clipboard.copy(e.parentNode.target.innerText, true));
+			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
 		}
 		return ActionContextMenu._CopyTextAction;
 	}
@@ -3464,35 +3413,36 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._OpenLinkAction)
 		{
-			ActionContextMenu._OpenLinkAction = new ContextMenuItem(e => {
-				switch (e.context.getAttribute("data-method")
-					? e.context.getAttribute("data-method").toLowerCase() : "get")
+			ActionContextMenu._OpenLinkAction = new Command();
+			ActionContextMenu._OpenLinkAction.action(e =>
+			{
+				var context = e.parentNode.context;
+				switch (context.getAttribute("data-method")
+					? context.getAttribute("data-method").toLowerCase() : "get")
 				{
 					case "get":
-						new Link(document.createElement("a"), e.context)
+						new Link(document.createElement("a"), context)
 							.setTarget("_blank")
-							.setAction(e.context.getAttribute("data-action"))
-							.setTitle(e.context.getAttribute("title"))
-							.setBlock(e.context.getAttribute("data-block"))
-							.setAlert(e.context.getAttribute("data-alert"))
-							.setConfirm(e.context.getAttribute("data-confirm"))
+							.setAction(context.getAttribute("data-action"))
+							.setTitle(context.getAttribute("title"))
+							.setBlock(context.getAttribute("data-block"))
+							.setAlert(context.getAttribute("data-alert"))
+							.setConfirm(context.getAttribute("data-confirm"))
 							.execute();
 						break;
 					case "post":
-						new Button(document.createElement("button"), e.context)
+						new Button(document.createElement("button"), context)
 							.setTarget("_blank")
-							.setAction(e.context.getAttribute("data-action"))
-							.setTitle(e.context.getAttribute("title"))
-							.setBlock(e.context.getAttribute("data-block"))
-							.setAlert(e.context.getAttribute("data-alert"))
-							.setConfirm(e.context.getAttribute("data-confirm"))
+							.setAction(context.getAttribute("data-action"))
+							.setTitle(context.getAttribute("title"))
+							.setBlock(context.getAttribute("data-block"))
+							.setAlert(context.getAttribute("data-alert"))
+							.setConfirm(context.getAttribute("data-confirm"))
 							.execute();
 						break;
 				}
 			});
-
-			ActionContextMenu._OpenLinkAction.icon = "\u2217";
-			ActionContextMenu._OpenLinkAction.name = "Abrir em nova aba";
+			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
 		}
 		return ActionContextMenu._OpenLinkAction;
 	}
@@ -7081,6 +7031,18 @@ class Overflow extends Command
 		return element.scrollWidth > element.clientWidth
 			|| element.scrollHeight > element.clientHeight;
 	}
+
+	static disable(element)
+	{
+		element.style.overflow = "hidden";
+		Array.from(element.children).forEach(e => Overflow.disable(e));
+	}
+
+	static enable(element)
+	{
+		element.style.overflow = "";
+		Array.from(element.children).forEach(e => Overflow.enable(e));
+	}
 }
 
 
@@ -7270,19 +7232,19 @@ class Checkable
 	{
 		if (!Checkable._ContextMenu)
 		{
-			var selecionarTudo = new ContextMenuItem(e =>
-				Array.from(e.context.getElementsByTagName("input"))
-					.forEach(input => input.checked = true));
-			selecionarTudo.icon = "\u1011";
-			selecionarTudo.name = "Selecionar tudo";
+			Checkable._ContextMenu = new ContextMenu();
 
-			var desmarcarSelecionados = new ContextMenuItem(e =>
-				Array.from(e.context.getElementsByTagName("input"))
-					.forEach(input => input.checked = false));
-			desmarcarSelecionados.icon = "\u1014";
-			desmarcarSelecionados.name = "Desmarcar selecionados";
+			var inverterSelecao = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			inverterSelecao.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
+			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
 
-			Checkable._ContextMenu = new ContextMenu(selecionarTudo, desmarcarSelecionados);
+			var selecionarTudo = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			selecionarTudo.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true));
+			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
+
+			var desmarcarSelecionados = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
+			desmarcarSelecionados.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false));
+			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
 		}
 
 		return Checkable._ContextMenu;

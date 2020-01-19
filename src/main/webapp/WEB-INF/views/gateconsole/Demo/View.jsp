@@ -44,7 +44,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Date:
@@ -53,7 +53,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -68,7 +68,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Time:
@@ -77,7 +77,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -92,7 +92,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Month:
@@ -101,7 +101,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -116,7 +116,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Date Time
@@ -125,7 +125,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -140,7 +140,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Date Interval:
@@ -149,7 +149,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -164,7 +164,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Time Interval:
@@ -173,7 +173,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -188,7 +188,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Month Interval:
@@ -197,7 +197,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -212,7 +212,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Date Time Interval:
@@ -221,7 +221,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 
@@ -237,7 +237,7 @@
 								</fieldset>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<fieldset>
 										<label>
 											Icon:
@@ -246,7 +246,7 @@
 											</span>
 										</label>
 									</fieldset>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 					</div>
@@ -267,13 +267,13 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href="#" data-tooltip='This is a tooltip'>
 											Hover here<G:icon type="2015"/>
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -285,7 +285,7 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href="#" data-tooltip='{"Name": "Tooltip",
 										   "Type": "Attribute",
@@ -293,7 +293,7 @@
 											Hover here<G:icon type="2015"/>
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 					</div>
@@ -316,15 +316,15 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href="#"
 										   style="color: #006600"
 										   onclick="Message.success('Sucesso')">
-											<G:icon type="1000"/>Sucesso
+										<G:icon type="1000"/>Sucesso
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -338,15 +338,15 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href="#"
 										   style="color: #444400"
 										   onclick="Message.warning('Alerta')" >
-											<G:icon type="1007"/>Alerta
+										<G:icon type="1007"/>Alerta
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 
@@ -361,15 +361,15 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href="#"
 										   style="color: #660000"
 										   onclick="Message.error('Erro')">
-											<G:icon type="1001"/>Erro
+										<G:icon type="1001"/>Erro
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 					</div>
@@ -401,7 +401,7 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<a href='#'
 										   data-chart='pchart'
@@ -418,12 +418,113 @@
 											Gráfico<g:icon type="pchart"/>
 										</a>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 					</div>
 				</div>
 			</li>
+
+			<li>
+				<a href="#">
+					Context Menu
+				</a>
+				<div>
+					<div class='demo'>
+						<div>
+							<div>
+								<g-context-menu id="contextmenu">
+									<G:link module="#" screen="Icon"/>
+									<button id="action1" href="#">
+										Action 1<i>&#X2003;</i>
+									</button>
+								</g-context-menu>
+
+								<g-coolbar>
+									<a href="#" data-context-menu="contextmenu">
+										Botão direito
+									</a>
+								</g-coolbar>
+
+								<script>
+									window.addEventListener("load", function ()
+									{
+										document.getElementById("action1")
+											.addEventListener("click",
+												e => alert(e.target.parentNode.context.innerText));
+
+										document.getElementById("contextmenu")
+											.appendChild(document.createElement("g-command"))
+											.action(e => alert(e.parentNode.context.innerText))
+											.innerHTML = "Action 2<i>&#X2003;</i>";
+
+									});
+								</script>
+							</div>
+							<div>
+								<pre class="language-markup"><code><!--
+									<g-context-menu id="contextmenu">
+										<g:link module="#" screen="Icon"/>
+										<button id="action1" href="#">
+											Action 1<i>&#X2003;</i>
+										</button>
+									</g-context-menu>
+
+									<g-coolbar>
+										<a href="#" data-context-menu="contextmenu">
+											Botão direito
+										</a>
+									</g-coolbar>
+								--></code></pre>
+							</div>
+							<div>
+								<pre class="language-javascript"><code><!--
+									window.addEventListener("load", function ()
+									{
+										document.getElementById("action1")
+										.addEventListener("click",
+											e => alert(e.target.parentNode
+											.context.innerText));
+
+										document.getElementById("contextmenu")
+										.appendChild(document
+											.createElement("g-command"))
+											.action(e => alert(e.parentNode
+											.context.innerText))
+											.innerHTML = "Action 2<i>&#X2003;</i>";
+									});
+								--></code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li>
+				<a href="#">
+					Select
+				</a>
+				<div>
+					<div class='demo'>
+						<div>
+							<div style="margin-bottom: 10px">
+								<fieldset>
+									<G:selectn property="types"
+										   options="${screen.getOptions()}"/>
+								</fieldset>
+							</div>
+							<div>
+								<pre class="language-markup"><code><!--
+									<fieldset>
+										<g:selectn property="types"
+											   options="${screen.getOptions()}"/>
+									</fieldset>
+								--></code></pre>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+
 			<li>
 				<a href="#">
 					Outros
@@ -440,14 +541,14 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<g:link target="_report"
 											module="#"
 											screen="#"
 											action="Report"/>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 						<div>
@@ -460,14 +561,14 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<g:link target="_dialog"
 											module="#"
 											screen="#"
 											action="Progress"/>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 
@@ -481,14 +582,14 @@
 								</g-coolbar>
 							</div>
 							<div>
-								<G:source-code language="html">
+								<pre class="language-markup"><code><!--
 									<g-coolbar>
 										<g:link module="#"
 											screen="#"
 											action="Block"
 											data-block="Aguarde"/>
 									</g-coolbar>
-								</G:source-code>
+								--></code></pre>
 							</div>
 						</div>
 					</div>

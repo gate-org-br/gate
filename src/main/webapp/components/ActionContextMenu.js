@@ -5,10 +5,12 @@ class ActionContextMenu
 	static get instance()
 	{
 		if (!ActionContextMenu._instance)
-			ActionContextMenu._instance
-				= new ContextMenu(ActionContextMenu.CopyTextAction,
-					ActionContextMenu.CopyLinkAction,
-					ActionContextMenu.OpenLinkAction);
+		{
+			ActionContextMenu._instance = new ContextMenu();
+			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyTextAction);
+			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyLinkAction);
+			ActionContextMenu._instance.appendChild(ActionContextMenu.OpenLinkAction);
+		}
 		return ActionContextMenu._instance;
 	}
 
@@ -16,9 +18,9 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyLinkAction)
 		{
-			ActionContextMenu._CopyLinkAction = new ContextMenuItem(e => Clipboard.copy(e.context.getAttribute("data-action"), true));
-			ActionContextMenu._CopyLinkAction.icon = "\u2159";
-			ActionContextMenu._CopyLinkAction.name = "Copiar endereço";
+			ActionContextMenu._CopyLinkAction = new Command();
+			ActionContextMenu._CopyLinkAction.action(e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true));
+			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
 		}
 		return ActionContextMenu._CopyLinkAction;
 	}
@@ -27,9 +29,9 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyTextAction)
 		{
-			ActionContextMenu._CopyTextAction = new ContextMenuItem(e => Clipboard.copy(e.element.innerText, true));
-			ActionContextMenu._CopyTextAction.icon = "\u2256";
-			ActionContextMenu._CopyTextAction.name = "Copiar texto";
+			ActionContextMenu._CopyTextAction = new Command();
+			ActionContextMenu._CopyTextAction.action(e => Clipboard.copy(e.parentNode.target.innerText, true));
+			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
 		}
 		return ActionContextMenu._CopyTextAction;
 	}
@@ -38,35 +40,36 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._OpenLinkAction)
 		{
-			ActionContextMenu._OpenLinkAction = new ContextMenuItem(e => {
-				switch (e.context.getAttribute("data-method")
-					? e.context.getAttribute("data-method").toLowerCase() : "get")
+			ActionContextMenu._OpenLinkAction = new Command();
+			ActionContextMenu._OpenLinkAction.action(e =>
+			{
+				var context = e.parentNode.context;
+				switch (context.getAttribute("data-method")
+					? context.getAttribute("data-method").toLowerCase() : "get")
 				{
 					case "get":
-						new Link(document.createElement("a"), e.context)
+						new Link(document.createElement("a"), context)
 							.setTarget("_blank")
-							.setAction(e.context.getAttribute("data-action"))
-							.setTitle(e.context.getAttribute("title"))
-							.setBlock(e.context.getAttribute("data-block"))
-							.setAlert(e.context.getAttribute("data-alert"))
-							.setConfirm(e.context.getAttribute("data-confirm"))
+							.setAction(context.getAttribute("data-action"))
+							.setTitle(context.getAttribute("title"))
+							.setBlock(context.getAttribute("data-block"))
+							.setAlert(context.getAttribute("data-alert"))
+							.setConfirm(context.getAttribute("data-confirm"))
 							.execute();
 						break;
 					case "post":
-						new Button(document.createElement("button"), e.context)
+						new Button(document.createElement("button"), context)
 							.setTarget("_blank")
-							.setAction(e.context.getAttribute("data-action"))
-							.setTitle(e.context.getAttribute("title"))
-							.setBlock(e.context.getAttribute("data-block"))
-							.setAlert(e.context.getAttribute("data-alert"))
-							.setConfirm(e.context.getAttribute("data-confirm"))
+							.setAction(context.getAttribute("data-action"))
+							.setTitle(context.getAttribute("title"))
+							.setBlock(context.getAttribute("data-block"))
+							.setAlert(context.getAttribute("data-alert"))
+							.setConfirm(context.getAttribute("data-confirm"))
 							.execute();
 						break;
 				}
 			});
-
-			ActionContextMenu._OpenLinkAction.icon = "\u2217";
-			ActionContextMenu._OpenLinkAction.name = "Abrir em nova aba";
+			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
 		}
 		return ActionContextMenu._OpenLinkAction;
 	}

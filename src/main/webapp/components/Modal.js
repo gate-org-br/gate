@@ -1,5 +1,5 @@
 
-/* global customElements */
+/* global customElements, Overflow */
 
 class Modal extends HTMLElement
 {
@@ -37,7 +37,8 @@ class Modal extends HTMLElement
 	{
 		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.documentElement.style.overflow = "hidden";
+			Overflow.disable(window.top.document.documentElement);
+
 			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
 
 			window.top.document.documentElement.appendChild(this);
@@ -52,7 +53,7 @@ class Modal extends HTMLElement
 		if (this.parentNode
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			window.top.document.documentElement.style.overflow = "";
+			Overflow.enable(window.top.document.documentElement);
 			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
 			this.parentNode.removeChild(this);
 		}

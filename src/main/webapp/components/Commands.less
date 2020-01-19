@@ -14,12 +14,16 @@ g-commands
 
 	> g-command, > a, > button
 	{
+		padding: 0;
 		width: 32px;
 		margin: 2px;
 		color: inherit;
 		font-size: 0px;
 		cursor: pointer;
 		&:hover { color: var(--hovered); }
+		display: flex;
+		align-items: center;
+		justify-content: center;
 
 		> i { color: white;
 		      font-size: 20px;
