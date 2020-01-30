@@ -35,4 +35,12 @@ public class OrgControl extends Control
 			dao.getLink().commit();
 		}
 	}
+
+	public Object dwload()
+	{
+		try (OrgDao dao = new OrgDao())
+		{
+			return dao.dwload();
+		}
+	}
 }

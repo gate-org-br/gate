@@ -1,11 +1,15 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
 <g:template filename="/WEB-INF/views/DIAG.jsp">
-	<fieldset>
-		<legend>
-			Usuário<g:icon type="gate.entity.User"/>
-		</legend>
-		<fieldset style="width: calc(100% - 220px)">
+	<figure>
+		<g:with name="photo" value="${screen.photo}">
+			<g:if condition="${not empty photo}">
+				<div>
+					<img src='${photo}'/>
+				</div>
+			</g:if>
+		</g:with>
+		<fieldset style="margin: 0">
 			<label data-size='2'>
 				Ativo:
 				<span>
@@ -96,37 +100,14 @@
 				</span>
 			</label>
 		</fieldset>
-		<fieldset style="width: 220px">
-			<div style="height: 210px;
-			     display: flex;
-			     align-items: center;
-			     justify-content: center">
-				<g:with name="photo" value="${screen.photo}">
-					<g:choose>
-						<g:when condition="${not empty photo}">
-							<img src='${photo}'
-							     style="max-width: 200px;
-							     max-height: 200px; padding: 0"/>
-						</g:when>
-						<g:otherwise>
-							<h1>
-								Sem Foto
-							</h1>
-						</g:otherwise>
-					</g:choose>
-				</g:with>
-			</div>
-		</fieldset>
-	</fieldset>
+	</figure>
 
-	<div class='COOLBAR'>
-		<a href='#' class='Hide Cancel'>
-			Fechar<g:icon type="cancel"/>
-		</a>
+	<g-coolbar>
+		<g:link target='_dialog' module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
 		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
 		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>
-	</div>
+	</g-coolbar>
 
 	<div class='PageControl'>
 		<ul>

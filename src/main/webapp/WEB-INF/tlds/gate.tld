@@ -216,6 +216,15 @@
 				button to be created.
 			</description>
 		</attribute>
+		<attribute>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				text to show only text, icon to show only the icon
+				and full to show text and icon. defaults to full.
+			</description>
+		</attribute>
 	</tag>
 	<tag>
 		<name>shortcut</name>

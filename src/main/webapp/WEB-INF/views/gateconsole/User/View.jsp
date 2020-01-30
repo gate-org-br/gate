@@ -82,12 +82,14 @@
 		</fieldset>
 
 		<g-coolbar>
-			<g:link method="post" module='#' screen='#' tabindex='2'>
+			<g:link class="Action"
+				method="post" module='#' screen='#' tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
 			<g:link target="_report" method="post" module='#' screen='#' action="Report" tabindex='2'/>
-			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3' title='Novo Usuário'/>
+			<hr/>
 			<g:link target='_dialog' module='#' screen='#' action='Upload' tabindex='3' title='Importar Usuários'/>
+			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3' title='Novo Usuário'/>
 		</g-coolbar>
 
 		<g:choose>
@@ -148,7 +150,7 @@
 					</tfoot>
 					<tbody>
 						<g:iterator source="${screen.page}" target="target">
-							<tr data-target='_dialog' title='Usuário'
+							<tr data-target='_dialog' title='${target.name}'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 								<td title="Ativo"><g:print value="${target.active}"/></td>
 								<td title="Nome"><g:print value="${target.name}"/></td>
@@ -162,8 +164,6 @@
 			</g:otherwise>
 		</g:choose>
 	</form>
-
-
 
 	<script>
 		window.addEventListener("load", function ()

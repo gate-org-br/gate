@@ -25,13 +25,13 @@
 			</g-tabbar>
 		</nav>
 
-		<main>
+		<section>
 			<g:insert/>
-			<g:alert/>
-		</main>
+		</section>
 
 		<g:if condition="${not empty screen.user.id}">
 			<footer>
+				<g:alert/>
 				<label>${screen.user.role.name}</label>
 				<label>${screen.user.name}</label>
 			</footer>

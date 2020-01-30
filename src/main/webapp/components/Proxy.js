@@ -10,4 +10,15 @@ class Proxy
 		};
 		return clone;
 	}
+
+	static	copyStyle(source, target)
+	{
+		target = target.style;
+		source = getComputedStyle(source);
+		for (var i = source.length; i-- > 0; ) {
+			var name = source[i];
+			alert(name);
+			target.setProperty(name, source.getPropertyValue(name));
+		}
+	}
 }

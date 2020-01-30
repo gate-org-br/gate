@@ -68,4 +68,4 @@ class NavBar extends HTMLElement
 	}
 }
 
-customElements.define('g-nav-bar', NavBar);
+customElements.define('g-navbar', NavBar);

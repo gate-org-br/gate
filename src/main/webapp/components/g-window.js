@@ -2,13 +2,12 @@
 
 class Window extends Modal
 {
-	constructor(options)
+	constructor()
 	{
-		super(options);
+		super();
 		this.classList.add("g-window");
-
-		if (this._private.options.title)
-			this.caption = this._private.options.title;
+		this.main.addEventListener("click", e => e.stopPropagation());
+		this.main.addEventListener("contextmenu", e => e.stopPropagation());
 	}
 
 	get main()
@@ -43,14 +42,6 @@ class Window extends Modal
 		this._private.caption.innerText = caption;
 	}
 
-	get commands()
-	{
-		if (!this._private.commands)
-			this._private.commands = this.head
-				.appendChild(document.createElement("g-commands"));
-		return this._private.commands;
-	}
-
 	get body()
 	{
 		if (!this._private.body)
@@ -65,6 +56,21 @@ class Window extends Modal
 			this._private.foot = this.main
 				.appendChild(document.createElement("footer"));
 		return this._private.foot;
+	}
+
+	get commands()
+	{
+		if (!this._private.commands)
+			this._private.commands =
+				this.head.appendChild(new Commands());
+		return this._private.commands;
+	}
+
+	set commands(commands)
+	{
+		if (this._private.commands)
+			this.head.removeChild(this._private.commands);
+		this.head.appendChild(this._private.commands = commands);
 	}
 }
 

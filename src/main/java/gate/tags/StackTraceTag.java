@@ -17,7 +17,7 @@ public class StackTraceTag extends DynamicAttributeTag
 	@Override
 	public void doTag() throws IOException
 	{
-		getJspContext().getOut().print("<div " + getAttributes().toString() + ">");
+		getJspContext().getOut().print("<template data-popup " + getAttributes().toString() + ">");
 		getJspContext().getOut().print("<table><tbody>");
 		for (Throwable error = this.exception;
 			error != null;
@@ -32,7 +32,7 @@ public class StackTraceTag extends DynamicAttributeTag
 			getJspContext().getOut().print("</td></tr>");
 		}
 		getJspContext().getOut().print("</tbody></table>");
-		getJspContext().getOut().print("</div>");
+		getJspContext().getOut().print("</template>");
 	}
 
 	public static String escapeHTML(String s)

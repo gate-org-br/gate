@@ -21,9 +21,10 @@ class ReportDialog extends Window
 			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
-		let close = this.commands.add(document.createElement("g-command"));
-		close.action(() => this.hide());
-		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
+		let close = new Command();
+		close.action = () => this.hide();
+		close.innerHTML = "<i>&#x1011</i>";
+		this.head.appendChild(close);
 	}
 }
 

@@ -6,7 +6,6 @@ import gate.base.Screen;
 import gate.entity.Org;
 import gate.error.AppException;
 import gate.error.NotFoundException;
-
 import gateconsole.contol.OrgControl;
 import javax.inject.Inject;
 
@@ -53,6 +52,11 @@ public class OrgScreen extends Screen
 			setMessages(ex.getMessages());
 		}
 		return "/WEB-INF/views/gateconsole/Org/ViewUpdate.jsp";
+	}
+
+	public Object callDwload()
+	{
+		return control.dwload();
 	}
 
 	public Org getForm()

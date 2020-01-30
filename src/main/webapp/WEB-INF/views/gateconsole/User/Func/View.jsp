@@ -2,10 +2,9 @@
 
 
 <g:template filename="/WEB-INF/views/PAGE.jsp">
-	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
+	<form method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
 			<label>
-				Função:
 				<span>
 					<g:hidden property="user.id"/>
 					<g:text property='func.name'
@@ -14,14 +13,11 @@
 						values="${e -> e.id}"
 						tabindex='1'
 						placeholder="Incluir"/>
-					<g:hidden id='func.id' property='func.id'/>
+					<g:hidden id='func.id' property='func.id'
+						  data-method="post"/>
 				</span>
 			</label>
 		</fieldset>
-
-		<g-coolbar>
-			<g:link method="post" module="#" screen="#" action="Insert" tabindex="1"/>
-		</g-coolbar>
 	</form>
 
 	<g:choose>
