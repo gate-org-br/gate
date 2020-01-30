@@ -2,9 +2,9 @@
 
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<main>
-		<main>
+		<section>
 			<g:insert/>
 			<g:alert/>
-		</main>
+		</section>
 	</main>
 </g:template>

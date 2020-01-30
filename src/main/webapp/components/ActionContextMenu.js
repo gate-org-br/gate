@@ -19,8 +19,8 @@ class ActionContextMenu
 		if (!ActionContextMenu._CopyLinkAction)
 		{
 			ActionContextMenu._CopyLinkAction = new Command();
-			ActionContextMenu._CopyLinkAction.action(e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true));
 			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
+			ActionContextMenu._CopyLinkAction.action = e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true);
 		}
 		return ActionContextMenu._CopyLinkAction;
 	}
@@ -30,8 +30,8 @@ class ActionContextMenu
 		if (!ActionContextMenu._CopyTextAction)
 		{
 			ActionContextMenu._CopyTextAction = new Command();
-			ActionContextMenu._CopyTextAction.action(e => Clipboard.copy(e.parentNode.target.innerText, true));
 			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
+			ActionContextMenu._CopyTextAction.action = e => Clipboard.copy(e.parentNode.target.innerText, true);
 		}
 		return ActionContextMenu._CopyTextAction;
 	}
@@ -41,7 +41,9 @@ class ActionContextMenu
 		if (!ActionContextMenu._OpenLinkAction)
 		{
 			ActionContextMenu._OpenLinkAction = new Command();
-			ActionContextMenu._OpenLinkAction.action(e =>
+			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
+
+			ActionContextMenu._OpenLinkAction.action = e =>
 			{
 				var context = e.parentNode.context;
 				switch (context.getAttribute("data-method")
@@ -68,8 +70,8 @@ class ActionContextMenu
 							.execute();
 						break;
 				}
-			});
-			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
+			};
+
 		}
 		return ActionContextMenu._OpenLinkAction;
 	}

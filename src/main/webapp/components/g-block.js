@@ -1,31 +1,30 @@
 /* global Modal, customElements */
 
-class Block extends Window
+class GBlock extends Window
 {
-	constructor(text)
+	constructor()
 	{
-		super({blocked: true});
+		super();
+		this.blocked = true;
 		this.classList.add("g-block");
-
-		this.caption = text || "Aguarde";
-
 		this.body.appendChild(window.top.document.createElement('progress'));
-
 		this.foot.appendChild(window.top.document.createElement('digital-clock'));
-
-		this.show();
 	}
 }
 
-customElements.define('g-block', Block);
+customElements.define('g-block', GBlock);
 
-Block.show = function (text)
+GBlock.show = function (text)
 {
 	if (!window.top.GateBlockDialog)
-		window.top.GateBlockDialog = new Block(text);
+	{
+		window.top.GateBlockDialog = new GBlock(text);
+		window.top.GateBlockDialog.caption = text || "Aguarde";
+		window.top.GateBlockDialog.show();
+	}
 };
 
-Block.hide = function ()
+GBlock.hide = function ()
 {
 	if (window.top.GateBlockDialog)
 	{
@@ -36,14 +35,14 @@ Block.hide = function ()
 
 window.addEventListener("load", function ()
 {
-	Block.hide();
+	GBlock.hide();
 
 	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
 	{
 		element.addEventListener("submit", function ()
 		{
 			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
+				GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 
@@ -52,7 +51,7 @@ window.addEventListener("load", function ()
 		element.addEventListener("click", function ()
 		{
 			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
+				GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 
@@ -64,11 +63,11 @@ window.addEventListener("load", function ()
 				if (button.form)
 					button.form.addEventListener("submit", function (event)
 					{
-						Block.show(button.getAttribute("data-block"));
+						GBlock.show(button.getAttribute("data-block"));
 						event.target.removeEventListener(event.type, arguments.callee);
 					});
 				else
-					Block.show(this.getAttribute("data-block"));
+					GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 });

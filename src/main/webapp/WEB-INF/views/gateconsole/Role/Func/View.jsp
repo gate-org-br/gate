@@ -2,10 +2,9 @@
 
 
 <g:template filename="/WEB-INF/views/PAGE.jsp">
-	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
-
+	<form method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
-			<label style='width: 100%'>
+			<label>
 				<span>
 					<g:text property='func.name'
 						options="${screen.funcs}"
@@ -13,18 +12,11 @@
 						values="${e -> e.id}"
 						tabindex='1'
 						placeholder="Incluir"/>
-					<g:hidden id="func.id" property='func.id'/>
-					<g:shortcut method="post" module="#" screen="#" action="Insert" tabindex="1"/>
+					<g:hidden id="func.id" property='func.id'
+						  data-method="post"/>
 				</span>
 			</label>
 		</fieldset>
-
-		<script>
-			document.getElementById("func.id").addEventListener("populated", function ()
-			{
-				this.form.submit();
-			});
-		</script>
 
 		<g:hidden property="role.id"/>
 	</form>

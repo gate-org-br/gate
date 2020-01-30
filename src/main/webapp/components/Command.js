@@ -6,38 +6,18 @@ class Command extends HTMLElement
 	{
 		super();
 		this._private = {};
-		this._private.enabled = true;
-		this._private.visible = true;
 	}
 
-	enabled()
+	get action()
 	{
-		if (!arguments.length)
-			return this._private.enabled;
-
-		this._private.enabled = arguments[0];
-		this.style.opacity = this._private.enabled ? "1.0" : "0.2";
-		this.style.pointerEvents = this._private.enabled ? "all" : "none";
-		return this;
+		return this._private.action;
 	}
 
-	visible()
+	set action(action)
 	{
-		if (!arguments.length)
-			return this._private.visible;
-
-		this._private.visible = arguments[0];
-		this.style.display = this._private.visible ? "" : "none";
-		return this;
-	}
-
-	action()
-	{
-		if (!arguments.length)
-			return this.onclick;
-
-		this.onclick = () => arguments[0](this);
-		return this;
+		this._private.action = action;
+		if (action)
+			this.onclick = () => this._private.action(this);
 	}
 
 	connectedCallback()

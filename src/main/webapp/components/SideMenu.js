@@ -22,6 +22,16 @@ class SideMenu extends Modal
 		setTimeout(() => this.classList.remove("L"), 100);
 		setTimeout(() => this.classList.add("R"), 100);
 	}
+
+	show(element)
+	{
+		var center = element.getBoundingClientRect();
+		center = center.left + (center.width / 2);
+		if (center <= window.innerWidth / 2)
+			this.showL();
+		else
+			this.showR();
+	}
 }
 
 customElements.define('g-side-menu', SideMenu);

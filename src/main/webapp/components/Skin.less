@@ -145,8 +145,11 @@
 	// Layout
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	--body-background-color: var(--main-shaded20);
-	--body-background-image: var(--noise);
+	--body-background-color: var(--main-shaded05);
+	--body-background-image: none;
+
+	--main-background-color: var(--main-shaded20);
+	--main-background-image: var(--noise);
 
 	--header-color: black;
 	--header-background-color: white;
@@ -155,15 +158,15 @@
 	--nav-background-color: var(--main-shaded10);
 	--nav-background-image: none;
 
-	--main-background-color: var(--main);
-	--main-background-image: none;
+	--section-background-color: var(--main-shaded05);
+	--section-background-image: none;
 
 	--footer-color: black;
 	--footer-background-color: var(--main-tinted20);
 	--footer-background-image: none;
 
 	//////////////////////////////////////////////////////////////////////////////////////
-	// Tabbar
+	// g-tabbar
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	--g-tabbar-color: black;
@@ -186,7 +189,7 @@
 
 
 	//////////////////////////////////////////////////////////////////////////////////////
-	// Table
+	// table
 	//////////////////////////////////////////////////////////////////////////////////////
 
 	--table-caption-background-color: var(--base-shaded35);
@@ -203,4 +206,48 @@
 		var(--base-shaded10) 0%,
 		var(--base) 50%,
 		var(--base-shaded10) 100% );
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	// figure
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	--figure-border-color: var(--base);
+	--figure-background-color: var(--main-shaded10);
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	// g-navbar
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	--g-navbar-color: white;
+	--g-navbar-border-color: none;
+	--g-navbar-background-color: transparent;
+	--g-navbar-background-image: none;
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	// g-window
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	--g-window-border-color: var(--base-shaded35);
+
+	--g-window-header-color: white;
+	--g-window-header-background-color: var(--base-shaded35);
+	--g-window-header-background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100% );
+
+	--g-window-section-background-color: var(--main-shaded10);
+	--g-window-section-background-image: var(--noise);
+
+	--g-window-footer-background-color: var(--base-shaded35);
+	--g-window-footer-background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100% );
+
+	//////////////////////////////////////////////////////////////////////////////////////
+	// g-window-list
+	//////////////////////////////////////////////////////////////////////////////////////
+
+	--g-window-list-color: var(--g-window-header-color);
+	--g-window-list-background-color: var(--g-window-header-background-color);
+	--g-window-list-background-image: var(--g-window-header-background-image);
+
+	--g-window-list-hovered-color: #FFFACD;
+	--g-window-list-hovered-background-color: var(--g-window-header-background-color);
+	--g-window-list-hovered-background-image: var(--g-window-header-background-image);
 }

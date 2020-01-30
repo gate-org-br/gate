@@ -84,10 +84,11 @@ class Button
 								this.setAttribute("formtarget", "_dialog");
 							} else if (this.form.getAttribute("target") !== "_dialog")
 							{
-								new Dialog({creator: creator || this,
-									title: this.getAttribute("title"),
-									blocked: Boolean(this.getAttribute("data-blocked"))})
-									.show();
+								let dialog = GDialog.create();
+								dialog.creator = creator || this;
+								dialog.caption = this.getAttribute("title");
+								dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+								dialog.show();
 							}
 						}
 						break;

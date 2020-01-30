@@ -1,15 +1,13 @@
 
-/* global customElements, Overflow */
+/* global customElements, Overflow, WindowList */
 
 class Modal extends HTMLElement
 {
-	constructor(options = {})
+	constructor()
 	{
 		super();
 		this._private = {};
 		this.classList.add("g-modal");
-		this._private.options = options;
-		this._private.preventBodyScroll = e => e.preventDefault();
 
 		this.addEventListener("contextmenu", event =>
 		{
@@ -17,20 +15,29 @@ class Modal extends HTMLElement
 			this.hide();
 		});
 
-		if (!this.blocked)
-			this.addEventListener("click", event =>
-				(event.target === this || event.srcElement === this)
-					&& this.hide());
+		this.addEventListener("click", event => !this.blocked
+				&& (event.target === this || event.srcElement === this)
+				&& this.hide());
+	}
+
+	set creator(creator)
+	{
+		this._private.creator = creator;
 	}
 
 	get blocked()
 	{
-		return this._private.options.blocked;
+		return this._private.blocked || false;
+	}
+
+	set blocked(blocked)
+	{
+		this._private.blocked = blocked;
 	}
 
 	get creator()
 	{
-		return this._private.options.creator || this;
+		return this._private.creator || this;
 	}
 
 	show()
@@ -39,9 +46,8 @@ class Modal extends HTMLElement
 		{
 			Overflow.disable(window.top.document.documentElement);
 
-			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
-
 			window.top.document.documentElement.appendChild(this);
+
 			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
@@ -54,11 +60,30 @@ class Modal extends HTMLElement
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			Overflow.enable(window.top.document.documentElement);
-			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
 			this.parentNode.removeChild(this);
 		}
 
 		return this;
+	}
+
+	minimize()
+	{
+		if (!this.parentNode)
+			return;
+
+		this.style.display = "none";
+		Overflow.enable(window.top.document.documentElement);
+
+		var link = WindowList.instance.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.innerHTML = this.caption || "Janela";
+
+		link.addEventListener("click", () =>
+		{
+			this.style.display = "";
+			link.parentNode.removeChild(link);
+			Overflow.enable(window.top.document.documentElement);
+		});
 	}
 }
 

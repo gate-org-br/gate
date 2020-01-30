@@ -76,8 +76,8 @@ public class RoleScreen extends Screen
 		}
 	}
 
+	@Name("Novo")
 	@Icon("insert")
-	@Name("Inserir")
 	public String callInsert()
 	{
 		if (isPOST() && getMessages().isEmpty())

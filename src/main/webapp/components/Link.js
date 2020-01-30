@@ -1,4 +1,4 @@
-/* global Message, Block, ENTER, ESC, Commands */
+/* global Message, Block, ENTER, ESC, Commands, GDialog */
 
 class Link
 {
@@ -77,12 +77,13 @@ class Link
 							this.setAttribute("target", "_dialog");
 						} else
 						{
-							new Dialog({creator: this.creator || this,
-								title: this.getAttribute("title"),
-								target: this.getAttribute("href"),
-								blocked: Boolean(this.getAttribute("data-blocked")),
-								navigator: this.navigator})
-								.show();
+							let dialog = GDialog.create();
+							dialog.navigator = this.navigator;
+							dialog.creator = this.creator || this;
+							dialog.target = this.getAttribute("href");
+							dialog.caption = this.getAttribute("title");
+							dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+							dialog.show();
 						}
 						break;
 					case "_message":

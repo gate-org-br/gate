@@ -3,7 +3,7 @@
 <g:template filename="/WEB-INF/views/PAGE.jsp">
 	<form id='form' method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
-			<label style='width: 100%'>
+			<label>
 				<span>
 					<g:text property='user.name'
 						options="${screen.users}"
@@ -11,20 +11,10 @@
 						values="${e -> e.id}"
 						tabindex='1'
 						placeholder="Incluir"/>
-					<g:hidden id="user.id" property='user.id'/>
-					<g:shortcut method="post" module="#" screen="#" action="Insert" tabindex="1"/>
+					<g:hidden id="user.id" property='user.id' data-method="post"/>
 				</span>
 			</label>
 		</fieldset>
-
-
-		<script>
-			document.getElementById("user.id")
-				.addEventListener("populated", function ()
-				{
-					this.form.submit();
-				});
-		</script>
 
 		<g:hidden property="func.id"/>
 	</form>

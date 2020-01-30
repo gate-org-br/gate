@@ -1370,64 +1370,6 @@ if (!Array.prototype.flatMap)
 	}
 	self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
-/**
-@license @nocompile
-Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
-(function(){'use strict';var aa=new Set("annotation-xml color-profile font-face font-face-src font-face-uri font-face-format font-face-name missing-glyph".split(" "));function g(b){var a=aa.has(b);b=/^[a-z][.0-9_a-z]*-[\-.0-9_a-z]*$/.test(b);return!a&&b}function l(b){var a=b.isConnected;if(void 0!==a)return a;for(;b&&!(b.__CE_isImportDocument||b instanceof Document);)b=b.parentNode||(window.ShadowRoot&&b instanceof ShadowRoot?b.host:void 0);return!(!b||!(b.__CE_isImportDocument||b instanceof Document))}
-function p(b,a){for(;a&&a!==b&&!a.nextSibling;)a=a.parentNode;return a&&a!==b?a.nextSibling:null}
-function q(b,a,d){d=void 0===d?new Set:d;for(var c=b;c;){if(c.nodeType===Node.ELEMENT_NODE){var e=c;a(e);var f=e.localName;if("link"===f&&"import"===e.getAttribute("rel")){c=e.import;if(c instanceof Node&&!d.has(c))for(d.add(c),c=c.firstChild;c;c=c.nextSibling)q(c,a,d);c=p(b,e);continue}else if("template"===f){c=p(b,e);continue}if(e=e.__CE_shadowRoot)for(e=e.firstChild;e;e=e.nextSibling)q(e,a,d)}c=c.firstChild?c.firstChild:p(b,c)}}function t(b,a,d){b[a]=d};function u(){this.a=new Map;this.f=new Map;this.c=[];this.b=!1}function ba(b,a,d){b.a.set(a,d);b.f.set(d.constructorFunction,d)}function v(b,a){b.b=!0;b.c.push(a)}function w(b,a){b.b&&q(a,function(a){return x(b,a)})}function x(b,a){if(b.b&&!a.__CE_patched){a.__CE_patched=!0;for(var d=0;d<b.c.length;d++)b.c[d](a)}}function y(b,a){var d=[];q(a,function(a){return d.push(a)});for(a=0;a<d.length;a++){var c=d[a];1===c.__CE_state?b.connectedCallback(c):z(b,c)}}
-function A(b,a){var d=[];q(a,function(a){return d.push(a)});for(a=0;a<d.length;a++){var c=d[a];1===c.__CE_state&&b.disconnectedCallback(c)}}
-function B(b,a,d){d=void 0===d?{}:d;var c=d.u||new Set,e=d.h||function(a){return z(b,a)},f=[];q(a,function(a){if("link"===a.localName&&"import"===a.getAttribute("rel")){var d=a.import;d instanceof Node&&(d.__CE_isImportDocument=!0,d.__CE_hasRegistry=!0);d&&"complete"===d.readyState?d.__CE_documentLoadHandled=!0:a.addEventListener("load",function(){var d=a.import;if(!d.__CE_documentLoadHandled){d.__CE_documentLoadHandled=!0;var f=new Set(c);f.delete(d);B(b,d,{u:f,h:e})}})}else f.push(a)},c);if(b.b)for(a=
-0;a<f.length;a++)x(b,f[a]);for(a=0;a<f.length;a++)e(f[a])}
-function z(b,a){if(void 0===a.__CE_state){var d=a.ownerDocument;if(d.defaultView||d.__CE_isImportDocument&&d.__CE_hasRegistry)if(d=b.a.get(a.localName)){d.constructionStack.push(a);var c=d.constructorFunction;try{try{if(new c!==a)throw Error("The custom element constructor did not produce the element being upgraded.");}finally{d.constructionStack.pop()}}catch(m){throw a.__CE_state=2,m;}a.__CE_state=1;a.__CE_definition=d;if(d.attributeChangedCallback)for(d=d.observedAttributes,c=0;c<d.length;c++){var e=
-d[c],f=a.getAttribute(e);null!==f&&b.attributeChangedCallback(a,e,null,f,null)}l(a)&&b.connectedCallback(a)}}}u.prototype.connectedCallback=function(b){var a=b.__CE_definition;a.connectedCallback&&a.connectedCallback.call(b)};u.prototype.disconnectedCallback=function(b){var a=b.__CE_definition;a.disconnectedCallback&&a.disconnectedCallback.call(b)};
-u.prototype.attributeChangedCallback=function(b,a,d,c,e){var f=b.__CE_definition;f.attributeChangedCallback&&-1<f.observedAttributes.indexOf(a)&&f.attributeChangedCallback.call(b,a,d,c,e)};function C(b){var a=document;this.c=b;this.a=a;this.b=void 0;B(this.c,this.a);"loading"===this.a.readyState&&(this.b=new MutationObserver(this.f.bind(this)),this.b.observe(this.a,{childList:!0,subtree:!0}))}function D(b){b.b&&b.b.disconnect()}C.prototype.f=function(b){var a=this.a.readyState;"interactive"!==a&&"complete"!==a||D(this);for(a=0;a<b.length;a++)for(var d=b[a].addedNodes,c=0;c<d.length;c++)B(this.c,d[c])};function ca(){var b=this;this.b=this.a=void 0;this.c=new Promise(function(a){b.b=a;b.a&&a(b.a)})}function E(b){if(b.a)throw Error("Already resolved.");b.a=void 0;b.b&&b.b(void 0)};function F(b){this.c=!1;this.a=b;this.j=new Map;this.f=function(a){return a()};this.b=!1;this.i=[];this.o=new C(b)}
-F.prototype.l=function(b,a){var d=this;if(!(a instanceof Function))throw new TypeError("Custom element constructors must be functions.");if(!g(b))throw new SyntaxError("The element name '"+b+"' is not valid.");if(this.a.a.get(b))throw Error("A custom element with name '"+b+"' has already been defined.");if(this.c)throw Error("A custom element is already being defined.");this.c=!0;try{var c=function(a){var b=e[a];if(void 0!==b&&!(b instanceof Function))throw Error("The '"+a+"' callback must be a function.");
-return b},e=a.prototype;if(!(e instanceof Object))throw new TypeError("The custom element constructor's prototype is not an object.");var f=c("connectedCallback");var m=c("disconnectedCallback");var k=c("adoptedCallback");var h=c("attributeChangedCallback");var n=a.observedAttributes||[]}catch(r){return}finally{this.c=!1}a={localName:b,constructorFunction:a,connectedCallback:f,disconnectedCallback:m,adoptedCallback:k,attributeChangedCallback:h,observedAttributes:n,constructionStack:[]};ba(this.a,
-b,a);this.i.push(a);this.b||(this.b=!0,this.f(function(){return da(d)}))};F.prototype.h=function(b){B(this.a,b)};
-function da(b){if(!1!==b.b){b.b=!1;for(var a=b.i,d=[],c=new Map,e=0;e<a.length;e++)c.set(a[e].localName,[]);B(b.a,document,{h:function(a){if(void 0===a.__CE_state){var e=a.localName,f=c.get(e);f?f.push(a):b.a.a.get(e)&&d.push(a)}}});for(e=0;e<d.length;e++)z(b.a,d[e]);for(;0<a.length;){var f=a.shift();e=f.localName;f=c.get(f.localName);for(var m=0;m<f.length;m++)z(b.a,f[m]);(e=b.j.get(e))&&E(e)}}}F.prototype.get=function(b){if(b=this.a.a.get(b))return b.constructorFunction};
-F.prototype.m=function(b){if(!g(b))return Promise.reject(new SyntaxError("'"+b+"' is not a valid custom element name."));var a=this.j.get(b);if(a)return a.c;a=new ca;this.j.set(b,a);this.a.a.get(b)&&!this.i.some(function(a){return a.localName===b})&&E(a);return a.c};F.prototype.s=function(b){D(this.o);var a=this.f;this.f=function(d){return b(function(){return a(d)})}};window.CustomElementRegistry=F;F.prototype.define=F.prototype.l;F.prototype.upgrade=F.prototype.h;F.prototype.get=F.prototype.get;
-F.prototype.whenDefined=F.prototype.m;F.prototype.polyfillWrapFlushCallback=F.prototype.s;var G=window.Document.prototype.createElement,H=window.Document.prototype.createElementNS,ea=window.Document.prototype.importNode,fa=window.Document.prototype.prepend,ha=window.Document.prototype.append,ia=window.DocumentFragment.prototype.prepend,ja=window.DocumentFragment.prototype.append,I=window.Node.prototype.cloneNode,J=window.Node.prototype.appendChild,K=window.Node.prototype.insertBefore,L=window.Node.prototype.removeChild,M=window.Node.prototype.replaceChild,N=Object.getOwnPropertyDescriptor(window.Node.prototype,
-"textContent"),O=window.Element.prototype.attachShadow,P=Object.getOwnPropertyDescriptor(window.Element.prototype,"innerHTML"),Q=window.Element.prototype.getAttribute,R=window.Element.prototype.setAttribute,S=window.Element.prototype.removeAttribute,T=window.Element.prototype.getAttributeNS,U=window.Element.prototype.setAttributeNS,ka=window.Element.prototype.removeAttributeNS,la=window.Element.prototype.insertAdjacentElement,ma=window.Element.prototype.insertAdjacentHTML,na=window.Element.prototype.prepend,
-oa=window.Element.prototype.append,V=window.Element.prototype.before,pa=window.Element.prototype.after,qa=window.Element.prototype.replaceWith,ra=window.Element.prototype.remove,sa=window.HTMLElement,W=Object.getOwnPropertyDescriptor(window.HTMLElement.prototype,"innerHTML"),ta=window.HTMLElement.prototype.insertAdjacentElement,ua=window.HTMLElement.prototype.insertAdjacentHTML;var va=new function(){};function wa(){var b=X;window.HTMLElement=function(){function a(){var a=this.constructor,c=b.f.get(a);if(!c)throw Error("The custom element being constructed was not registered with `customElements`.");var e=c.constructionStack;if(0===e.length)return e=G.call(document,c.localName),Object.setPrototypeOf(e,a.prototype),e.__CE_state=1,e.__CE_definition=c,x(b,e),e;c=e.length-1;var f=e[c];if(f===va)throw Error("The HTMLElement constructor was either called reentrantly for this constructor or called multiple times.");
-e[c]=va;Object.setPrototypeOf(f,a.prototype);x(b,f);return f}a.prototype=sa.prototype;Object.defineProperty(a.prototype,"constructor",{writable:!0,configurable:!0,enumerable:!1,value:a});return a}()};function Y(b,a,d){function c(a){return function(d){for(var e=[],c=0;c<arguments.length;++c)e[c]=arguments[c];c=[];for(var f=[],n=0;n<e.length;n++){var r=e[n];r instanceof Element&&l(r)&&f.push(r);if(r instanceof DocumentFragment)for(r=r.firstChild;r;r=r.nextSibling)c.push(r);else c.push(r)}a.apply(this,e);for(e=0;e<f.length;e++)A(b,f[e]);if(l(this))for(e=0;e<c.length;e++)f=c[e],f instanceof Element&&y(b,f)}}void 0!==d.g&&(a.prepend=c(d.g));void 0!==d.append&&(a.append=c(d.append))};function xa(){var b=X;t(Document.prototype,"createElement",function(a){if(this.__CE_hasRegistry){var d=b.a.get(a);if(d)return new d.constructorFunction}a=G.call(this,a);x(b,a);return a});t(Document.prototype,"importNode",function(a,d){a=ea.call(this,a,!!d);this.__CE_hasRegistry?B(b,a):w(b,a);return a});t(Document.prototype,"createElementNS",function(a,d){if(this.__CE_hasRegistry&&(null===a||"http://www.w3.org/1999/xhtml"===a)){var c=b.a.get(d);if(c)return new c.constructorFunction}a=H.call(this,a,
-d);x(b,a);return a});Y(b,Document.prototype,{g:fa,append:ha})};function ya(){function b(b,c){Object.defineProperty(b,"textContent",{enumerable:c.enumerable,configurable:!0,get:c.get,set:function(b){if(this.nodeType===Node.TEXT_NODE)c.set.call(this,b);else{var d=void 0;if(this.firstChild){var e=this.childNodes,k=e.length;if(0<k&&l(this)){d=Array(k);for(var h=0;h<k;h++)d[h]=e[h]}}c.set.call(this,b);if(d)for(b=0;b<d.length;b++)A(a,d[b])}}})}var a=X;t(Node.prototype,"insertBefore",function(b,c){if(b instanceof DocumentFragment){var e=Array.prototype.slice.apply(b.childNodes);
-b=K.call(this,b,c);if(l(this))for(c=0;c<e.length;c++)y(a,e[c]);return b}e=l(b);c=K.call(this,b,c);e&&A(a,b);l(this)&&y(a,b);return c});t(Node.prototype,"appendChild",function(b){if(b instanceof DocumentFragment){var c=Array.prototype.slice.apply(b.childNodes);b=J.call(this,b);if(l(this))for(var e=0;e<c.length;e++)y(a,c[e]);return b}c=l(b);e=J.call(this,b);c&&A(a,b);l(this)&&y(a,b);return e});t(Node.prototype,"cloneNode",function(b){b=I.call(this,!!b);this.ownerDocument.__CE_hasRegistry?B(a,b):w(a,
-b);return b});t(Node.prototype,"removeChild",function(b){var c=l(b),e=L.call(this,b);c&&A(a,b);return e});t(Node.prototype,"replaceChild",function(b,c){if(b instanceof DocumentFragment){var e=Array.prototype.slice.apply(b.childNodes);b=M.call(this,b,c);if(l(this))for(A(a,c),c=0;c<e.length;c++)y(a,e[c]);return b}e=l(b);var f=M.call(this,b,c),d=l(this);d&&A(a,c);e&&A(a,b);d&&y(a,b);return f});N&&N.get?b(Node.prototype,N):v(a,function(a){b(a,{enumerable:!0,configurable:!0,get:function(){for(var b=[],
-a=0;a<this.childNodes.length;a++)b.push(this.childNodes[a].textContent);return b.join("")},set:function(b){for(;this.firstChild;)L.call(this,this.firstChild);J.call(this,document.createTextNode(b))}})})};function za(b){function a(a){return function(e){for(var c=[],d=0;d<arguments.length;++d)c[d]=arguments[d];d=[];for(var k=[],h=0;h<c.length;h++){var n=c[h];n instanceof Element&&l(n)&&k.push(n);if(n instanceof DocumentFragment)for(n=n.firstChild;n;n=n.nextSibling)d.push(n);else d.push(n)}a.apply(this,c);for(c=0;c<k.length;c++)A(b,k[c]);if(l(this))for(c=0;c<d.length;c++)k=d[c],k instanceof Element&&y(b,k)}}var d=Element.prototype;void 0!==V&&(d.before=a(V));void 0!==V&&(d.after=a(pa));void 0!==qa&&
-t(d,"replaceWith",function(a){for(var c=[],d=0;d<arguments.length;++d)c[d]=arguments[d];d=[];for(var m=[],k=0;k<c.length;k++){var h=c[k];h instanceof Element&&l(h)&&m.push(h);if(h instanceof DocumentFragment)for(h=h.firstChild;h;h=h.nextSibling)d.push(h);else d.push(h)}k=l(this);qa.apply(this,c);for(c=0;c<m.length;c++)A(b,m[c]);if(k)for(A(b,this),c=0;c<d.length;c++)m=d[c],m instanceof Element&&y(b,m)});void 0!==ra&&t(d,"remove",function(){var a=l(this);ra.call(this);a&&A(b,this)})};function Aa(){function b(a,b){Object.defineProperty(a,"innerHTML",{enumerable:b.enumerable,configurable:!0,get:b.get,set:function(a){var d=this,e=void 0;l(this)&&(e=[],q(this,function(a){a!==d&&e.push(a)}));b.set.call(this,a);if(e)for(var f=0;f<e.length;f++){var m=e[f];1===m.__CE_state&&c.disconnectedCallback(m)}this.ownerDocument.__CE_hasRegistry?B(c,this):w(c,this);return a}})}function a(a,b){t(a,"insertAdjacentElement",function(a,d){var e=l(d);a=b.call(this,a,d);e&&A(c,d);l(a)&&y(c,d);return a})}
-function d(a,b){function d(a,b){for(var d=[];a!==b;a=a.nextSibling)d.push(a);for(b=0;b<d.length;b++)B(c,d[b])}t(a,"insertAdjacentHTML",function(a,c){a=a.toLowerCase();if("beforebegin"===a){var e=this.previousSibling;b.call(this,a,c);d(e||this.parentNode.firstChild,this)}else if("afterbegin"===a)e=this.firstChild,b.call(this,a,c),d(this.firstChild,e);else if("beforeend"===a)e=this.lastChild,b.call(this,a,c),d(e||this.firstChild,null);else if("afterend"===a)e=this.nextSibling,b.call(this,a,c),d(this.nextSibling,
-e);else throw new SyntaxError("The value provided ("+String(a)+") is not one of 'beforebegin', 'afterbegin', 'beforeend', or 'afterend'.");})}var c=X;O&&t(Element.prototype,"attachShadow",function(a){return this.__CE_shadowRoot=a=O.call(this,a)});P&&P.get?b(Element.prototype,P):W&&W.get?b(HTMLElement.prototype,W):v(c,function(a){b(a,{enumerable:!0,configurable:!0,get:function(){return I.call(this,!0).innerHTML},set:function(a){var b="template"===this.localName,c=b?this.content:this,d=H.call(document,
-this.namespaceURI,this.localName);for(d.innerHTML=a;0<c.childNodes.length;)L.call(c,c.childNodes[0]);for(a=b?d.content:d;0<a.childNodes.length;)J.call(c,a.childNodes[0])}})});t(Element.prototype,"setAttribute",function(a,b){if(1!==this.__CE_state)return R.call(this,a,b);var d=Q.call(this,a);R.call(this,a,b);b=Q.call(this,a);c.attributeChangedCallback(this,a,d,b,null)});t(Element.prototype,"setAttributeNS",function(a,b,d){if(1!==this.__CE_state)return U.call(this,a,b,d);var e=T.call(this,a,b);U.call(this,
-a,b,d);d=T.call(this,a,b);c.attributeChangedCallback(this,b,e,d,a)});t(Element.prototype,"removeAttribute",function(a){if(1!==this.__CE_state)return S.call(this,a);var b=Q.call(this,a);S.call(this,a);null!==b&&c.attributeChangedCallback(this,a,b,null,null)});t(Element.prototype,"removeAttributeNS",function(a,b){if(1!==this.__CE_state)return ka.call(this,a,b);var d=T.call(this,a,b);ka.call(this,a,b);var e=T.call(this,a,b);d!==e&&c.attributeChangedCallback(this,b,d,e,a)});ta?a(HTMLElement.prototype,
-ta):la?a(Element.prototype,la):console.warn("Custom Elements: `Element#insertAdjacentElement` was not patched.");ua?d(HTMLElement.prototype,ua):ma?d(Element.prototype,ma):console.warn("Custom Elements: `Element#insertAdjacentHTML` was not patched.");Y(c,Element.prototype,{g:na,append:oa});za(c)};/*
-
- Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
- This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
- The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
- The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
- Code distributed by Google as part of the polymer project is also
- subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
-var Z=window.customElements;if(!Z||Z.forcePolyfill||"function"!=typeof Z.define||"function"!=typeof Z.get){var X=new u;wa();xa();Y(X,DocumentFragment.prototype,{g:ia,append:ja});ya();Aa();document.__CE_hasRegistry=!0;var customElements=new F(X);Object.defineProperty(window,"customElements",{configurable:!0,enumerable:!0,value:customElements})};/*
-
-Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
-}).call(this);
-
-//# sourceMappingURL=webcomponents-ce.js.map
-
 class Proxy
 {
 	static create(element)
@@ -1440,7 +1382,42 @@ class Proxy
 		};
 		return clone;
 	}
+
+	static	copyStyle(source, target)
+	{
+		target = target.style;
+		source = getComputedStyle(source);
+		for (var i = source.length; i-- > 0; ) {
+			var name = source[i];
+			alert(name);
+			target.setProperty(name, source.getPropertyValue(name));
+		}
+	}
 }
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
+
+class WindowList extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this._private.windows = [];
+	}
+
+	static get instance()
+	{
+		if (!WindowList._private)
+			WindowList._private = {};
+		if (!WindowList._private.instance)
+			WindowList._private.instance =
+				window.top.document.documentElement
+				.appendChild(new WindowList());
+		return WindowList._private.instance;
+	}
+}
+
+customElements.define('g-window-list', WindowList);
 /* global customElements */
 
 class Command extends HTMLElement
@@ -1449,38 +1426,18 @@ class Command extends HTMLElement
 	{
 		super();
 		this._private = {};
-		this._private.enabled = true;
-		this._private.visible = true;
 	}
 
-	enabled()
+	get action()
 	{
-		if (!arguments.length)
-			return this._private.enabled;
-
-		this._private.enabled = arguments[0];
-		this.style.opacity = this._private.enabled ? "1.0" : "0.2";
-		this.style.pointerEvents = this._private.enabled ? "all" : "none";
-		return this;
+		return this._private.action;
 	}
 
-	visible()
+	set action(action)
 	{
-		if (!arguments.length)
-			return this._private.visible;
-
-		this._private.visible = arguments[0];
-		this.style.display = this._private.visible ? "" : "none";
-		return this;
-	}
-
-	action()
-	{
-		if (!arguments.length)
-			return this.onclick;
-
-		this.onclick = () => arguments[0](this);
-		return this;
+		this._private.action = action;
+		if (action)
+			this.onclick = () => this._private.action(this);
 	}
 
 	connectedCallback()
@@ -1490,7 +1447,7 @@ class Command extends HTMLElement
 }
 
 customElements.define('g-command', Command);
-/* global customElements */
+/* global customElements, Overflow, Proxy */
 
 class Commands extends HTMLElement
 {
@@ -1499,54 +1456,48 @@ class Commands extends HTMLElement
 		super();
 	}
 
-	add(command)
+	connectedCallback()
 	{
-		if (!this.parentNode)
-			document.body.insertBefore(this, document.body.firstChild);
-		return this.appendChild(command);
-	}
+		let overflow = new Command();
+		overflow.innerHTML = "<i>&#X3018;</i>";
 
-	static get instance()
-	{
-		if (window.frameElement
-			&& window.frameElement.dialog
-			&& window.frameElement.dialog.commands)
-			return window.frameElement.dialog.commands;
+		overflow.addEventListener("click", () =>
+		{
+			var elements = Array.from(this.children)
+				.filter(e => e !== overflow)
+				.filter(e => e.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+			document.documentElement.appendChild(new SideMenu(elements))
+				.show(overflow);
+		});
 
-		if (!Commands._private)
-			Commands._private = {};
-		if (!Commands._private.instance)
-			Commands._private.instance =
-				new Commands(),
-				document.body.firstChild;
+		overflow.update = () =>
+		{
+			Array.from(this.children).forEach(e => e.style.display = "flex");
 
-		return Commands._private.instance;
-	}
+			overflow.style.display = "none";
+			if (Overflow.isOverflowed(this))
+				overflow.style.display = "flex";
 
-	static add(command)
-	{
-		return Commands.instance.add(command);
+			for (let element = overflow.previousElementSibling;
+				element;
+				element = element.previousElementSibling)
+				if (Overflow.isOverflowed(this))
+					if (!element.hasAttribute("aria-selected"))
+						element.style.display = "none";
+		};
+
+		this.parentNode.style.overflow = "hidden";
+		this.appendChild(overflow);
+		overflow.update();
+
+		window.top.addEventListener("load", () => overflow.update());
+		window.top.addEventListener("resize", () => overflow.update());
 	}
 }
 
 customElements.define('g-commands', Commands);
-
-window.addEventListener("load", () =>
-	{
-		Array.from(Commands.instance.querySelectorAll("a, button"))
-			.forEach(e => e.parentNode.removeChild(e));
-		Array.from(document.querySelectorAll("a.Command, button.Command"))
-			.map(element =>
-			{
-				var clone = element.cloneNode(true);
-				clone.onclick = event =>
-				{
-					element.click();
-					event.preventDefault();
-				}
-				return clone;
-			}).forEach(clone => Commands.add(clone));
-	});
 /* global customElements */
 
 class DigitalClock extends HTMLElement
@@ -2065,17 +2016,15 @@ window.addEventListener("load", function ()
 		.forEach(element => new Mask(element));
 });
 
-/* global customElements, Overflow */
+/* global customElements, Overflow, WindowList */
 
 class Modal extends HTMLElement
 {
-	constructor(options = {})
+	constructor()
 	{
 		super();
 		this._private = {};
 		this.classList.add("g-modal");
-		this._private.options = options;
-		this._private.preventBodyScroll = e => e.preventDefault();
 
 		this.addEventListener("contextmenu", event =>
 		{
@@ -2083,20 +2032,29 @@ class Modal extends HTMLElement
 			this.hide();
 		});
 
-		if (!this.blocked)
-			this.addEventListener("click", event =>
-				(event.target === this || event.srcElement === this)
-					&& this.hide());
+		this.addEventListener("click", event => !this.blocked
+				&& (event.target === this || event.srcElement === this)
+				&& this.hide());
+	}
+
+	set creator(creator)
+	{
+		this._private.creator = creator;
 	}
 
 	get blocked()
 	{
-		return this._private.options.blocked;
+		return this._private.blocked || false;
+	}
+
+	set blocked(blocked)
+	{
+		this._private.blocked = blocked;
 	}
 
 	get creator()
 	{
-		return this._private.options.creator || this;
+		return this._private.creator || this;
 	}
 
 	show()
@@ -2105,9 +2063,8 @@ class Modal extends HTMLElement
 		{
 			Overflow.disable(window.top.document.documentElement);
 
-			window.top.document.documentElement.addEventListener("touchmove", this._private.preventBodyScroll, false);
-
 			window.top.document.documentElement.appendChild(this);
+
 			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
@@ -2120,11 +2077,30 @@ class Modal extends HTMLElement
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			Overflow.enable(window.top.document.documentElement);
-			window.top.document.documentElement.removeEventListener("touchmove", this._private.preventBodyScroll, false);
 			this.parentNode.removeChild(this);
 		}
 
 		return this;
+	}
+
+	minimize()
+	{
+		if (!this.parentNode)
+			return;
+
+		this.style.display = "none";
+		Overflow.enable(window.top.document.documentElement);
+
+		var link = WindowList.instance.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.innerHTML = this.caption || "Janela";
+
+		link.addEventListener("click", () =>
+		{
+			this.style.display = "";
+			link.parentNode.removeChild(link);
+			Overflow.enable(window.top.document.documentElement);
+		});
 	}
 }
 
@@ -2133,13 +2109,12 @@ customElements.define('g-modal', Modal);
 
 class Window extends Modal
 {
-	constructor(options)
+	constructor()
 	{
-		super(options);
+		super();
 		this.classList.add("g-window");
-
-		if (this._private.options.title)
-			this.caption = this._private.options.title;
+		this.main.addEventListener("click", e => e.stopPropagation());
+		this.main.addEventListener("contextmenu", e => e.stopPropagation());
 	}
 
 	get main()
@@ -2174,14 +2149,6 @@ class Window extends Modal
 		this._private.caption.innerText = caption;
 	}
 
-	get commands()
-	{
-		if (!this._private.commands)
-			this._private.commands = this.head
-				.appendChild(document.createElement("g-commands"));
-		return this._private.commands;
-	}
-
 	get body()
 	{
 		if (!this._private.body)
@@ -2196,6 +2163,21 @@ class Window extends Modal
 			this._private.foot = this.main
 				.appendChild(document.createElement("footer"));
 		return this._private.foot;
+	}
+
+	get commands()
+	{
+		if (!this._private.commands)
+			this._private.commands =
+				this.head.appendChild(new Commands());
+		return this._private.commands;
+	}
+
+	set commands(commands)
+	{
+		if (this._private.commands)
+			this.head.removeChild(this._private.commands);
+		this.head.appendChild(this._private.commands = commands);
 	}
 }
 
@@ -2616,7 +2598,7 @@ class URL
 		return query_string;
 	}
 }
-/* global Message, Block, ENTER, ESC, Commands */
+/* global Message, Block, ENTER, ESC, Commands, GDialog */
 
 class Link
 {
@@ -2695,12 +2677,13 @@ class Link
 							this.setAttribute("target", "_dialog");
 						} else
 						{
-							new Dialog({creator: this.creator || this,
-								title: this.getAttribute("title"),
-								target: this.getAttribute("href"),
-								blocked: Boolean(this.getAttribute("data-blocked")),
-								navigator: this.navigator})
-								.show();
+							let dialog = GDialog.create();
+							dialog.navigator = this.navigator;
+							dialog.creator = this.creator || this;
+							dialog.target = this.getAttribute("href");
+							dialog.caption = this.getAttribute("title");
+							dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+							dialog.show();
 						}
 						break;
 					case "_message":
@@ -3003,10 +2986,11 @@ class Button
 								this.setAttribute("formtarget", "_dialog");
 							} else if (this.form.getAttribute("target") !== "_dialog")
 							{
-								new Dialog({creator: creator || this,
-									title: this.getAttribute("title"),
-									blocked: Boolean(this.getAttribute("data-blocked"))})
-									.show();
+								let dialog = GDialog.create();
+								dialog.creator = creator || this;
+								dialog.caption = this.getAttribute("title");
+								dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+								dialog.show();
 							}
 						}
 						break;
@@ -3267,6 +3251,16 @@ class SideMenu extends Modal
 		setTimeout(() => this.classList.remove("L"), 100);
 		setTimeout(() => this.classList.add("R"), 100);
 	}
+
+	show(element)
+	{
+		var center = element.getBoundingClientRect();
+		center = center.left + (center.width / 2);
+		if (center <= window.innerWidth / 2)
+			this.showL();
+		else
+			this.showR();
+	}
 }
 
 customElements.define('g-side-menu', SideMenu);
@@ -3392,8 +3386,8 @@ class ActionContextMenu
 		if (!ActionContextMenu._CopyLinkAction)
 		{
 			ActionContextMenu._CopyLinkAction = new Command();
-			ActionContextMenu._CopyLinkAction.action(e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true));
 			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
+			ActionContextMenu._CopyLinkAction.action = e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true);
 		}
 		return ActionContextMenu._CopyLinkAction;
 	}
@@ -3403,8 +3397,8 @@ class ActionContextMenu
 		if (!ActionContextMenu._CopyTextAction)
 		{
 			ActionContextMenu._CopyTextAction = new Command();
-			ActionContextMenu._CopyTextAction.action(e => Clipboard.copy(e.parentNode.target.innerText, true));
 			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
+			ActionContextMenu._CopyTextAction.action = e => Clipboard.copy(e.parentNode.target.innerText, true);
 		}
 		return ActionContextMenu._CopyTextAction;
 	}
@@ -3414,7 +3408,9 @@ class ActionContextMenu
 		if (!ActionContextMenu._OpenLinkAction)
 		{
 			ActionContextMenu._OpenLinkAction = new Command();
-			ActionContextMenu._OpenLinkAction.action(e =>
+			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
+
+			ActionContextMenu._OpenLinkAction.action = e =>
 			{
 				var context = e.parentNode.context;
 				switch (context.getAttribute("data-method")
@@ -3441,8 +3437,8 @@ class ActionContextMenu
 							.execute();
 						break;
 				}
-			});
-			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
+			};
+
 		}
 		return ActionContextMenu._OpenLinkAction;
 	}
@@ -3669,7 +3665,7 @@ class NavBar extends HTMLElement
 	}
 }
 
-customElements.define('g-nav-bar', NavBar);
+customElements.define('g-navbar', NavBar);
 class Slider extends HTMLElement
 {
 	constructor(value, next, prev, format, size = 5)
@@ -4481,6 +4477,7 @@ class IconSelector extends HTMLElement
 		this.add("3016");
 		this.add("3017");
 		this.add("3018");
+		this.add("3019");
 	}
 
 	add(code)
@@ -4531,7 +4528,10 @@ class Picker extends Window
 	{
 		super();
 		this.classList.add("g-picker");
-		this.commands.add(document.createElement("g-command").action(() => this.hide())).innerHTML = 'Fechar janela<i>&#X1011;</i>';
+		let close = new Command();
+		close.action = () => this.hide();
+		close.innerHTML = "<i>&#x1011</i>";
+		this.head.appendChild(close);
 	}
 
 	get commit()
@@ -4993,32 +4993,31 @@ window.addEventListener("load", function ()
 });
 /* global Modal, customElements */
 
-class Block extends Window
+class GBlock extends Window
 {
-	constructor(text)
+	constructor()
 	{
-		super({blocked: true});
+		super();
+		this.blocked = true;
 		this.classList.add("g-block");
-
-		this.caption = text || "Aguarde";
-
 		this.body.appendChild(window.top.document.createElement('progress'));
-
 		this.foot.appendChild(window.top.document.createElement('digital-clock'));
-
-		this.show();
 	}
 }
 
-customElements.define('g-block', Block);
+customElements.define('g-block', GBlock);
 
-Block.show = function (text)
+GBlock.show = function (text)
 {
 	if (!window.top.GateBlockDialog)
-		window.top.GateBlockDialog = new Block(text);
+	{
+		window.top.GateBlockDialog = new GBlock(text);
+		window.top.GateBlockDialog.caption = text || "Aguarde";
+		window.top.GateBlockDialog.show();
+	}
 };
 
-Block.hide = function ()
+GBlock.hide = function ()
 {
 	if (window.top.GateBlockDialog)
 	{
@@ -5029,14 +5028,14 @@ Block.hide = function ()
 
 window.addEventListener("load", function ()
 {
-	Block.hide();
+	GBlock.hide();
 
 	Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
 	{
 		element.addEventListener("submit", function ()
 		{
 			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
+				GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 
@@ -5045,7 +5044,7 @@ window.addEventListener("load", function ()
 		element.addEventListener("click", function ()
 		{
 			if (this.getAttribute("data-block"))
-				Block.show(this.getAttribute("data-block"));
+				GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 
@@ -5057,368 +5056,439 @@ window.addEventListener("load", function ()
 				if (button.form)
 					button.form.addEventListener("submit", function (event)
 					{
-						Block.show(button.getAttribute("data-block"));
+						GBlock.show(button.getAttribute("data-block"));
 						event.target.removeEventListener(event.type, arguments.callee);
 					});
 				else
-					Block.show(this.getAttribute("data-block"));
+					GBlock.show(this.getAttribute("data-block"));
 		});
 	});
 });
 
 
 
-/* global echarts */
+/* global echarts, customElements */
 
-function Chart(data, title)
+class GChart extends HTMLElement
 {
-	this.categories = new Array();
-	for (var i = 1; i < data.length; i++)
-		this.categories.push(data[i][0]);
-	this.groups = new Array();
-	for (var j = 1; j < data[0].length; j++)
+	constructor()
 	{
-		var group = {'label': data[0][j], 'values': new Array()};
+		super();
+		this._private = {};
+	}
+
+	set data(data)
+	{
+		this.setAttribute("data", data);
+	}
+
+	get data()
+	{
+		return this.getAttribute("data");
+	}
+
+	set type(type)
+	{
+		this.setAttribute("type", type);
+	}
+
+	get type()
+	{
+		return this.getAttribute("type");
+	}
+
+	set title(title)
+	{
+		this.setAttribute("title", title);
+	}
+
+	get title()
+	{
+		return this.getAttribute("title");
+	}
+
+	attributeChangedCallback()
+	{
+		if (!this.data
+			|| !this.type
+			|| !this.title)
+			return;
+
+		var data = JSON.parse(this.data);
+
+		let categories = new Array();
 		for (var i = 1; i < data.length; i++)
-			group.values.push(data[i][j]);
-		this.groups.push(group);
-	}
+			categories.push(data[i][0]);
 
-	function cc()
-	{
-		return '#'
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-			+ '0123456789'.charAt(Math.floor(Math.random() * 10));
-	}
+		let groups = new Array();
+		for (var j = 1; j < data[0].length; j++)
+		{
+			var group = {'label': data[0][j], 'values': new Array()};
+			for (var i = 1; i < data.length; i++)
+				group.values.push(data[i][j]);
+			groups.push(group);
+		}
 
-	function f1(params)
-	{
-		return params.name + ': ' + params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-	}
 
-	function f2(value)
-	{
-		return value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-	}
+		let color = () => '#'
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
+				+ '0123456789'.charAt(Math.floor(Math.random() * 10));
+		let tooltipFormater = params => params.name + ': ' + params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		let axisLabelFormater = value => value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		let itemStyleFormater = params => params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-	function f3(params)
-	{
-		return params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-	}
-
-	this.draw = function (id, type)
-	{
-		switch (type.toLowerCase())
+		switch (this.type)
 		{
 			case 'cchart':
-				var options = {calculable: true, tooltip: {show: true, formatter: f1}, xAxis: {type: 'category', data: this.categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: f2}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (this.categories.length > 0 ? Math.ceil((this.categories.length / 8)) : 1)},
+				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
+						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
+					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
 					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 					series: []};
-				if (title)
-					options.title = {x: 'center', text: title};
-				for (var i = 0; i < this.groups.length; i++)
+
+				options.title = {x: 'center', text: this.title};
+
+				for (var i = 0; i < groups.length; i++)
 				{
-					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'top', formatter: f3}}}, data: this.groups[i].values});
-					options.series[options.series.length - 1].name = this.groups[i].label;
-					if (this.groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = this.groups[i].color;
-					if (this.groups.length > 1)
+					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'top', formatter: itemStyleFormater}}}, data: groups[i].values});
+					options.series[options.series.length - 1].name = groups[i].label;
+					if (groups[i].color)
+						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
+					if (groups.length > 1)
 					{
 						if (!options.legend)
 							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 					} else
-						options.series[options.series.length - 1].itemStyle.normal.color = cc;
+						options.series[options.series.length - 1].itemStyle.normal.color = color;
 				}
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'bchart':
 
-				var options = {calculable: true, tooltip: {show: true, formatter: f1}, yAxis: {type: 'category', data: this.categories,
-						axisLabel: {rotate: -70}}, xAxis: {type: 'value', axisLabel: {formatter: f2}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (this.categories.length > 0 ? Math.ceil((this.categories.length / 8)) : 1)},
+				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, yAxis: {type: 'category', data: categories,
+						axisLabel: {rotate: -70}}, xAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
+					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
 					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 					series: []};
-				if (title)
-					options.title = {x: 'center', text: title};
-				for (var i = 0; i < this.groups.length; i++)
+
+				options.title = {x: 'center', text: this.title};
+
+				for (var i = 0; i < groups.length; i++)
 				{
-					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'right', formatter: f3}}}, data: this.groups[i].values});
-					options.series[options.series.length - 1].name = this.groups[i].label;
-					if (this.groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = this.groups[i].color;
-					if (this.groups.length > 1)
+					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'right', formatter: itemStyleFormater}}}, data: groups[i].values});
+					options.series[options.series.length - 1].name = groups[i].label;
+					if (groups[i].color)
+						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
+					if (groups.length > 1)
 					{
 						if (!options.legend)
 							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 					} else
-						options.series[options.series.length - 1].itemStyle.normal.color = cc;
+						options.series[options.series.length - 1].itemStyle.normal.color = color;
 				}
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'lchart':
 
-				var options = {calculable: true, tooltip: {show: true, formatter: f1}, xAxis: {type: 'category', data: this.categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: f2}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (this.categories.length > 0 ? Math.ceil((this.categories.length / 8)) : 1)},
+				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
+						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
+					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
 					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 					series: []};
-				if (title)
-					options.title = {x: 'center', text: title};
-				for (var i = 0; i < this.groups.length; i++)
+
+				options.title = {x: 'center', text: this.title};
+
+				for (var i = 0; i < groups.length; i++)
 				{
-					options.series.push({type: "line", itemStyle: {normal: {}}, data: this.groups[i].values});
-					options.series[options.series.length - 1].name = this.groups[i].label;
-					if (this.groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = this.groups[i].color;
-					if (this.groups.length > 1)
+					options.series.push({type: "line", itemStyle: {normal: {}}, data: groups[i].values});
+					options.series[options.series.length - 1].name = groups[i].label;
+					if (groups[i].color)
+						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
+					if (groups.length > 1)
 					{
 						if (!options.legend)
 							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 					}
 				}
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'achart':
 
-				var options = {calculable: true, tooltip: {show: true, formatter: f1}, xAxis: {type: 'category', data: this.categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: f2}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (this.categories.length > 0 ? Math.ceil((this.categories.length / 8)) : 1)},
+				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
+						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
+					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
 					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 					series: []};
-				if (title)
-					options.title = {x: 'center', text: title};
-				for (var i = 0; i < this.groups.length; i++)
+
+				options.title = {x: 'center', text: this.title};
+
+				for (var i = 0; i < groups.length; i++)
 				{
-					options.series.push({type: "line", itemStyle: {normal: {areaStyle: {type: 'default'}}}, data: this.groups[i].values});
-					options.series[options.series.length - 1].name = this.groups[i].label;
-					if (this.groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = this.groups[i].color;
-					if (this.groups.length > 1)
+					options.series.push({type: "line", itemStyle: {normal: {areaStyle: {type: 'default'}}}, data: groups[i].values});
+					options.series[options.series.length - 1].name = groups[i].label;
+					if (groups[i].color)
+						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
+					if (groups.length > 1)
 					{
 						if (!options.legend)
 							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 					}
 				}
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'pchart':
 
 				var options =
-					{calculable: true, tooltip: {show: true, formatter: f1},
+					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
 						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
 						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 						series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
 								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-				if (title)
-					options.title = {x: 'center', text: title};
-				if (this.groups.length > 1)
+
+				options.title = {x: 'center', text: this.title};
+
+				if (groups.length > 1)
 				{
-					for (var i = 0; i < this.groups.length; i++)
+					for (var i = 0; i < groups.length; i++)
 					{
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 						var sum = 0;
-						for (var j = 0; j < this.groups[i].values.length; j++)
-							sum = sum + this.groups[i].values[j];
-						options.series[0].data.push({name: this.groups[i].label, value: sum});
-						if (this.groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: this.groups[i].color}};
+						for (var j = 0; j < groups[i].values.length; j++)
+							sum = sum + groups[i].values[j];
+						options.series[0].data.push({name: groups[i].label, value: sum});
+						if (groups[i].color)
+							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
 					}
 				} else
 				{
-					for (var i = 0; i < this.categories.length; i++)
+					for (var i = 0; i < categories.length; i++)
 					{
-						options.legend.data.push(this.categories[i]);
-						options.series[0].data.push({name: this.categories[i], value: this.groups[0].values[i]});
+						options.legend.data.push(categories[i]);
+						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
 					}
 				}
 
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'dchart':
 
 				var options =
-					{calculable: true, tooltip: {show: true, formatter: f1},
+					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
 						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
 						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 						series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
 								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-				if (title)
-					options.title = {x: 'center', text: title};
-				if (this.groups.length > 1)
+
+				options.title = {x: 'center', text: this.title};
+
+				if (groups.length > 1)
 				{
-					for (var i = 0; i < this.groups.length; i++)
+					for (var i = 0; i < groups.length; i++)
 					{
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 						var sum = 0;
-						for (var j = 0; j < this.groups[i].values.length; j++)
-							sum = sum + this.groups[i].values[j];
-						options.series[0].data.push({name: this.groups[i].label, value: sum});
-						if (this.groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: this.groups[i].color}};
+						for (var j = 0; j < groups[i].values.length; j++)
+							sum = sum + groups[i].values[j];
+						options.series[0].data.push({name: groups[i].label, value: sum});
+						if (groups[i].color)
+							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
 					}
 				} else
 				{
-					for (var i = 0; i < this.categories.length; i++)
+					for (var i = 0; i < categories.length; i++)
 					{
-						options.legend.data.push(this.categories[i]);
-						options.series[0].data.push({name: this.categories[i], value: this.groups[0].values[i]});
+						options.legend.data.push(categories[i]);
+						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
 					}
 				}
 
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 			case 'rchart':
 				var options =
-					{calculable: true, tooltip: {show: true, formatter: f1},
+					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
 						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
 						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
 						series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
 								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-				if (title)
-					options.title = {x: 'center', text: title};
-				if (this.groups.length > 1)
+
+				options.title = {x: 'center', text: this.title};
+
+				if (groups.length > 1)
 				{
-					for (var i = 0; i < this.groups.length; i++)
+					for (var i = 0; i < groups.length; i++)
 					{
-						options.legend.data.push(this.groups[i].label);
+						options.legend.data.push(groups[i].label);
 						var sum = 0;
-						for (var j = 0; j < this.groups[i].values.length; j++)
-							sum = sum + this.groups[i].values[j];
-						options.series[0].data.push({name: this.groups[i].label, value: sum});
-						if (this.groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: this.groups[i].color}};
+						for (var j = 0; j < groups[i].values.length; j++)
+							sum = sum + groups[i].values[j];
+						options.series[0].data.push({name: groups[i].label, value: sum});
+						if (groups[i].color)
+							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
 					}
 				} else
 				{
-					for (var i = 0; i < this.categories.length; i++)
+					for (var i = 0; i < categories.length; i++)
 					{
-						options.legend.data.push(this.categories[i]);
-						options.series[0].data.push({name: this.categories[i], value: this.groups[0].values[i]});
+						options.legend.data.push(categories[i]);
+						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
 					}
 				}
 
-				var chart = echarts.init(document.getElementById(id));
+				var chart = echarts.init(this);
 				chart.clear();
 				chart.setOption(options);
 				break;
 		}
-		return this;
-	};
-}
+	}
 
-/* global customElements */
-
-class ChartDialog extends Window
-{
-	constructor(options)
-	{
-		super(options);
-		this.classList.add("g-chart-dialog");
-
-		var canvas = this.body.appendChild(document.createElement("div"));
-		canvas.setAttribute("id", 'Chart');
-		canvas.setAttribute("tabindex", "1");
-
-		canvas.onmouseenter = () => canvas.focus();
-		this.head.onmouseenter = () => this.head.focus();
-
-		var chart = new Chart(options.data, options.title ? options.title : "");
-
-		let overflow = this.commands.add(document.createElement("g-overflow"));
-		overflow.innerHTML = "<i>&#X3018;</i>";
-
-		var close = this.commands.appendChild(document.createElement('a'));
-		close.dialog = this;
-		close.title = "Fechar";
-		close.innerHTML = "<i>&#x1011;</i>";
-		close.style.marginLeft = '16px';
-		close.onclick = () => this.hide();
-
-		var cchart = this.commands.appendChild(document.createElement('a'));
-		cchart.dialog = this;
-		cchart.title = "Coluna";
-		cchart.innerHTML = "<i>&#x2033;</i>";
-		cchart.onclick = () => chart.draw('Chart', 'cchart');
-
-		var bchart = this.commands.appendChild(document.createElement('a'));
-		bchart.dialog = this;
-		bchart.title = "Barra";
-		bchart.innerHTML = "<i>&#x2246;</i>";
-		bchart.onclick = () => chart.draw('Chart', 'bchart');
-
-		var lchart = this.commands.appendChild(document.createElement('a'));
-		lchart.dialog = this;
-		lchart.title = "Linha";
-		lchart.innerHTML = "<i>&#x2032;</i>";
-		lchart.onclick = () => chart.draw('Chart', 'lchart');
-
-		var achart = this.commands.appendChild(document.createElement('a'));
-		achart.dialog = this;
-		achart.title = "Area";
-		achart.innerHTML = "<i>&#x2244;</i>";
-		achart.onclick = () => chart.draw('Chart', 'achart');
-
-		var pchart = this.commands.appendChild(document.createElement('a'));
-		pchart.dialog = this;
-		pchart.title = "Pizza";
-		pchart.innerHTML = "<i>&#x2031;</i>";
-		pchart.onclick = () => chart.draw('Chart', 'pchart');
-
-		var dchart = this.commands.appendChild(document.createElement('a'));
-		dchart.dialog = this;
-		dchart.title = "Donut";
-		dchart.innerHTML = "<i>&#x2245;</i>";
-		dchart.onclick = () => chart.draw('Chart', 'dchart');
-
-		var rchart = this.commands.appendChild(document.createElement('a'));
-		rchart.dialog = this;
-		rchart.title = "Rose";
-		rchart.innerHTML = "<i>&#x2247;</i>";
-		rchart.onclick = () => chart.draw('Chart', 'rchart');
-
-
-
-		this.show();
-
-		if (!options.type)
-			options.type = 'cchart';
-		chart.draw('Chart', options.type);
-
-
-		this.head.focus();
+	static get observedAttributes() {
+		return ['type', 'data', 'title'];
 	}
 }
 
-ChartDialog.show = function (chart, series, action, title)
+customElements.define('g-chart', GChart);
+
+
+
+
+/* global customElements */
+
+class GChartDialog extends Window
 {
-	if (!series)
-		series = new URL(action).get();
-	new ChartDialog({data: JSON.parse(series), type: chart, title: title});
+	constructor()
+	{
+		super();
+		this.caption = "Chart";
+		this.classList.add("g-chart-dialog");
+
+		this.body.appendChild(new GChart());
+
+		var close = this.head.appendChild(new Command());
+		close.dialog = this;
+		close.title = "Fechar";
+		close.innerHTML = "<i>&#x1011;</i>";
+		close.onclick = () => this.hide();
+
+		let commands = new Commands();
+		var cchart = commands.appendChild(document.createElement('a'));
+		cchart.dialog = this;
+		cchart.title = "Coluna";
+		cchart.innerHTML = "Coluna<i>&#x2033;</i>";
+		cchart.onclick = () => this.type = 'cchart';
+
+		var bchart = commands.appendChild(document.createElement('a'));
+		bchart.dialog = this;
+		bchart.title = "Barra";
+		bchart.innerHTML = "Barra<i>&#x2246;</i>";
+		bchart.onclick = () => this.type = 'bchart';
+
+		var lchart = commands.appendChild(document.createElement('a'));
+		lchart.dialog = this;
+		lchart.title = "Linha";
+		lchart.innerHTML = "Linha<i>&#x2032;</i>";
+		lchart.onclick = () => this.type = 'lchart';
+
+		var achart = commands.appendChild(document.createElement('a'));
+		achart.dialog = this;
+		achart.title = "Área";
+		achart.innerHTML = "Área<i>&#x2244;</i>";
+		achart.onclick = () => this.type = 'achart';
+
+		var pchart = commands.appendChild(document.createElement('a'));
+		pchart.dialog = this;
+		pchart.title = "Pizza";
+		pchart.innerHTML = "Pizza<i>&#x2031;</i>";
+		pchart.onclick = () => this.type = 'pchart';
+
+		var dchart = commands.appendChild(document.createElement('a'));
+		dchart.dialog = this;
+		dchart.title = "Donut";
+		dchart.innerHTML = "Donut<i>&#x2245;</i>";
+		dchart.onclick = () => this.type = 'dchart';
+
+		var rchart = commands.appendChild(document.createElement('a'));
+		rchart.dialog = this;
+		rchart.title = "Rose";
+		rchart.innerHTML = "Rose<i>&#x2247;</i>";
+		rchart.onclick = () => this.type = 'rchart';
+
+		this.commands = commands;
+
+		this.head.focus();
+	}
+
+	set type(type)
+	{
+		this.body.children[0].type = type;
+		switch (type)
+		{
+			case 'cchart':
+				this.caption = 'Coluna';
+				break;
+			case 'bchart':
+				this.caption = 'Barra';
+				break;
+			case 'pchart':
+				this.caption = 'Pizza';
+				break;
+			case 'dchart':
+				this.caption = 'Donnut';
+				break;
+			case 'achart':
+				this.caption = 'Área';
+				break;
+			case 'rchart':
+				this.caption = 'Rose';
+				break;
+			case 'lchart':
+				this.caption = 'Linha';
+				break;
+		}
+	}
+
+	set title(title)
+	{
+		this.body.children[0].title = title;
+	}
+
+	set data(data)
+	{
+		this.body.children[0].data = data;
+	}
+}
+
+GChartDialog.show = function (chart, series, title)
+{
+	let dialog = new GChartDialog();
+	dialog.show();
+
+	dialog.type = chart;
+	dialog.title = title;
+	dialog.data = series;
 };
 
-customElements.define('g-chart-dialog', ChartDialog);
+customElements.define('g-chart-dialog', GChartDialog);
 
 window.addEventListener("load", function ()
 {
@@ -5426,9 +5496,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("rchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("rchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5437,9 +5506,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("dchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("dchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5448,9 +5516,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("pchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("pchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5459,9 +5526,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("achart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("achart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5471,9 +5537,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("lchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("lchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5482,9 +5547,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("bchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("bchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5493,9 +5557,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show("cchart",
-				this.getAttribute('data-series'),
-				this.getAttribute('data-action'),
+			GChartDialog.show("cchart",
+				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
 				this.getAttribute("title"));
 		};
 	});
@@ -5504,9 +5567,8 @@ window.addEventListener("load", function ()
 	{
 		e.onclick = function ()
 		{
-			ChartDialog.show(this.getAttribute('data-chart'),
-				this.getAttribute('data-series'),
-				this.getAttribute('href'),
+			GChartDialog.show(this.getAttribute('data-chart'),
+				this.getAttribute('data-series') || new URL(this.getAttribute('href')).get(),
 				this.getAttribute("title"));
 			return false;
 		};
@@ -5668,98 +5730,118 @@ window.addEventListener("load", function ()
 });
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-class Dialog extends Window
+class GDialog extends Window
 {
-	constructor(options)
+	constructor()
 	{
-		super(options);
+		super();
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let overflow = this.commands.add(document.createElement("g-overflow"));
-		overflow.innerHTML = "<i>&#X3018;</i>";
+		let fullScreen = new Command();
+		this.head.appendChild(fullScreen);
+		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
-		let close = this.commands.add(document.createElement("g-command"));
-		close.action(() => this.hide());
-		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
+		let minimize = new Command();
+		this.head.appendChild(minimize);
+		minimize.innerHTML = "<i>&#x3019;<i/>";
+		minimize.action = () => this.minimize();
 
-		let fullScreen = this.commands.add(document.createElement("g-command"));
-		fullScreen.innerHTML = "Tela cheia" + (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.action(element => element.innerHTML = "Tela cheia" + (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>"));
+		let close = new Command();
+		this.head.appendChild(close);
+		close.action = () => this.hide();
+		close.innerHTML = "<i>&#x1011;<i/>";
 
-		if (options && options.navigator && options.navigator.length)
-			this.main.appendChild(new NavBar(options.navigator, options.target))
-				.addEventListener("update", event => iframe.setAttribute('src', event.detail.target));
-
-		var iframe = this.body.appendChild(window.top.document.createElement('iframe'));
-		iframe.dialog = this;
-		iframe.scrolling = "no";
-		iframe.setAttribute('name', '_dialog');
-		iframe.onmouseenter = () => iframe.focus();
-
-		var resize = () =>
+		this.head.addEventListener("keydown", event =>
 		{
-			if (!iframe.contentWindow
-				|| !iframe.contentWindow.document
-				|| !iframe.contentWindow.document.body
-				|| !iframe.contentWindow.document.body.scrollHeight)
-				return false;
-
-			let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
-			if (iframe.height !== height)
+			event = event ? event : window.event;
+			switch (event.keyCode)
 			{
-				iframe.height = "0";
-				iframe.height = height;
+				case ESC:
+					if (!this.blocked())
+						this.hide();
+					break;
+				case ENTER:
+					this.focus();
+					break;
 			}
-			return true;
-		};
 
-		iframe.addEventListener("load", () =>
+			event.preventDefault();
+			event.stopPropagation();
+		});
+	}
+
+	get iframe()
+	{
+		if (!this._private.iframe)
 		{
-			iframe.name = "_frame";
-			iframe.setAttribute("name", "_frame");
+			let iframe = this._private.iframe
+				= this.body.appendChild(window.top.document.createElement('iframe'));
 
-			this.head.onkeydown = undefined;
-			this.head.addEventListener("keydown", event =>
-			{
-				event = event ? event : window.event;
-				switch (event.keyCode)
-				{
-					case ESC:
-						if (!this.blocked())
-							this.hide();
-						break;
-					case ENTER:
-						iframe.focus();
-						break;
-				}
-
-				event.preventDefault();
-				event.stopPropagation();
-			});
+			iframe.dialog = this;
+			iframe.scrolling = "no";
+			iframe.setAttribute('name', '_dialog');
+			iframe.onmouseenter = () => this._private.iframe.focus();
 
 			iframe.addEventListener("keydown", event =>
 			{
 				event = event ? event : window.event;
 				if (event.keyCode === ESC)
 				{
-					head.focus();
+					this.head.focus();
 					event.preventDefault();
 					event.stopPropagation();
 				}
 			});
 
+			iframe.addEventListener("load", () =>
+			{
+				iframe.name = "_frame";
+				iframe.setAttribute("name", "_frame");
+				iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 
-			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+				var resize = () =>
+				{
+					if (!iframe.contentWindow
+						|| !iframe.contentWindow.document
+						|| !iframe.contentWindow.document.body
+						|| !iframe.contentWindow.document.body.scrollHeight)
+						return false;
 
-			resize();
-			window.addEventListener("refresh_size", resize);
+					let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
+					if (iframe.height !== height)
+					{
+						iframe.height = "0";
+						iframe.height = height;
+					}
+					return true;
+				};
 
-			iframe.backgroundImage = "none";
-		});
+				resize();
+				window.addEventListener("refresh_size", resize);
+				iframe.backgroundImage = "none";
+			});
+		}
 
-		iframe.setAttribute('src', options.target);
+		return this._private.iframe;
+	}
+
+	set navigator(navigator)
+	{
+		if (navigator && navigator.length > 1)
+		{
+			let navbar = new NavBar(navigator, navigator.target);
+			navbar.addEventListener("update", event => this._private.iframe.setAttribute('src', event.detail.target));
+			this.foot.appendChild(navbar);
+		}
+
+	}
+
+	set target(target)
+	{
+		this.iframe.setAttribute('src', target);
 	}
 
 	get()
@@ -5785,10 +5867,10 @@ class Dialog extends Window
 		this.hide();
 	}
 
-	static rename(caption)
+	static set caption(caption)
 	{
 		if (window.frameElement && window.frameElement.dialog)
-			window.frameElement.dialog.rename(caption);
+			window.frameElement.dialog.caption = caption;
 	}
 
 	static hide()
@@ -5796,7 +5878,15 @@ class Dialog extends Window
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
 	}
+
+	static create()
+	{
+		return 	document === window.top.document ? new GDialog()
+			: window.top.document.importNode(new GDialog());
+	}
 }
+
+customElements.define('g-dialog', GDialog);
 
 window.addEventListener("load", function ()
 {
@@ -5816,7 +5906,9 @@ window.addEventListener("load", function ()
 				parameters.forEach(e => e.value = "");
 				parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed')));
 			} else {
-				var dialog = new Dialog({target: this.href, title: this.getAttribute("title")});
+				let dialog = GDialog.create();
+				dialog.target = this.href;
+				dialog.caption = this.getAttribute("title");
 				dialog.get.apply(dialog, parameters);
 			}
 		});
@@ -5837,8 +5929,12 @@ window.addEventListener("load", function ()
 					.filter(e => e)
 					.filter(e => e.value)
 					.forEach(e => e.value = "");
-				var dialog = new Dialog({target: url,
-					title: getter.getAttribute("title")});
+
+				let dialog = GDialog.create();
+				dialog.target = url;
+				dialog.caption = getter.getAttribute("title");
+				dialog.get.apply(dialog, parameters);
+
 				dialog.get.apply(dialog, parameters);
 			} else
 				parameters
@@ -5880,45 +5976,33 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+/* global customElements */
 
-customElements.define('g-dialog', Dialog);
-class Popup extends Modal
+class Popup extends Window
 {
 	constructor(element)
 	{
-		super(false);
-		var parent = element.parentNode;
+		super();
+		this.head.focus();
+		this.head.tabindex = 1;
+		this.classList.add("g-popup");
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.classList.add("Popup");
+		this.caption = "Erro de sistema";
+		let close = new Command();
 
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.setAttribute("tabindex", "1");
-		head.focus();
+		this.commands.add(close);
+		close.action = () => this.hide();
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 
-		var caption = head.appendChild(window.top.document.createElement('label'));
-		if (element.hasAttribute("title"))
-			caption.innerHTML = element.getAttribute("title");
-
-		var close = head.appendChild(window.top.document.createElement("a"));
-		close.title = 'Fechar janela';
-		close.innerHTML = "&#x1011;";
-		close.onclick = () => this.hide();
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-		body.appendChild(element);
-
-		if (parent)
-			this.creator().addEventListener("hide", () => parent.appendChild(element));
-
-		this.show();
+		this.body.appendChild(element);
 	}
 }
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("*[popup]")).forEach(element => new Popup(element));
-});
+window.addEventListener("load", () => Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => new Popup(element.content.cloneNode(true)).show()));
+
+
+customElements.define('g-popup', Popup);
 /* global Colorizer */
 
 function registerTreeView(table)
@@ -6233,7 +6317,7 @@ class FullScreen
 		return false;
 	}
 }
-/* global ENTER, ESC, Message */
+/* global ENTER, ESC, Message, GDialog */
 
 window.addEventListener("load", function ()
 {
@@ -6253,13 +6337,13 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				var dialog = new Dialog({creator: creator || this,
-					title: this.getAttribute("title"),
-					blocked: Boolean(this.getAttribute("data-blocked"))})
-					.show();
-
-				dialog.element().addEventListener("show", event => this.dispatchEvent(event));
-				dialog.element().addEventListener("hide", event => this.dispatchEvent(event));
+				let dialog = GDialog.create();
+				dialog.creator = this;
+				dialog.caption = this.getAttribute("title");
+				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+				dialog.addEventListener("show", event => this.dispatchEvent(event));
+				dialog.addEventListener("hide", event => this.dispatchEvent(event));
+				dialog.show();
 			}
 		});
 
@@ -6416,7 +6500,11 @@ class Message extends Window
 		this.classList.add("g-message");
 		this.classList.add(options.type);
 		this.caption = options.title || "";
-		this.commands.add(new Command().action(() => this.hide())).innerHTML = "<i>&#x1011</i>Fechar janela";
+
+		let close = new Command();
+		close.action = () => this.hide();
+		close.innerHTML = "<i>&#x1011</i>Fechar janela";
+		this.commands.add(close);
 
 		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
 
@@ -6911,9 +6999,10 @@ class ReportDialog extends Window
 			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
-		let close = this.commands.add(document.createElement("g-command"));
-		close.action(() => this.hide());
-		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
+		let close = new Command();
+		close.action = () => this.hide();
+		close.innerHTML = "<i>&#x1011</i>";
+		this.head.appendChild(close);
 	}
 }
 
@@ -6973,7 +7062,8 @@ class Overflow extends Command
 	constructor()
 	{
 		super();
-
+		window.addEventListener("load", () => this.update());
+		window.addEventListener("resize", () => this.update());
 		this.addEventListener("click", () =>
 		{
 			var elements = Array.from(this.parentNode.children)
@@ -6990,13 +7080,6 @@ class Overflow extends Command
 			else
 				menu.showR();
 		});
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		window.addEventListener("load", () => this.update());
-		window.addEventListener("resize", () => this.update());
 	}
 
 	update()
@@ -7036,19 +7119,44 @@ class Overflow extends Command
 	{
 		element.style.overflow = "hidden";
 		Array.from(element.children).forEach(e => Overflow.disable(e));
+		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}
 
 	static enable(element)
 	{
 		element.style.overflow = "";
 		Array.from(element.children).forEach(e => Overflow.enable(e));
+		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
+	}
+
+	static determineOverflow(container)
+	{
+		if (!container.firstElementChild)
+			return "none";
+
+		var containerMetrics = container.getBoundingClientRect();
+		var containerMetricsRight = Math.floor(containerMetrics.right);
+		var containerMetricsLeft = Math.floor(containerMetrics.left);
+
+		var left = Math.floor(container.firstElementChild.getBoundingClientRect().left);
+		var right = Math.floor(container.lastElementChild.getBoundingClientRect().right);
+
+
+		if (containerMetricsLeft > left
+			&& containerMetricsRight < right)
+			return "both";
+		else if (left < containerMetricsLeft)
+			return "left";
+		else if (right > containerMetricsRight)
+			return "right";
+		else
+			return "none";
 	}
 }
 
-
 customElements.define('g-overflow', Overflow);
 
-
+Overflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
 
 window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
@@ -7234,17 +7342,22 @@ class Checkable
 		{
 			Checkable._ContextMenu = new ContextMenu();
 
-			var inverterSelecao = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
-			inverterSelecao.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
+			var inverterSelecao = new Command();
+			Checkable._ContextMenu.appendChild(inverterSelecao);
 			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
+			inverterSelecao.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked);
 
-			var selecionarTudo = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
-			selecionarTudo.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true));
+
+			var selecionarTudo = new Command();
+			Checkable._ContextMenu.appendChild(selecionarTudo);
 			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
+			selecionarTudo.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true);
 
-			var desmarcarSelecionados = Checkable._ContextMenu.appendChild(document.createElement("g-command"));
-			desmarcarSelecionados.action(e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false));
+			var desmarcarSelecionados = new Command();
+			Checkable._ContextMenu.appendChild(desmarcarSelecionados);
 			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
+			desmarcarSelecionados.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false);
+
 		}
 
 		return Checkable._ContextMenu;
@@ -7255,65 +7368,186 @@ window.addEventListener("load", function ()
 {
 	Checkable.ContextMenu.register(document.querySelectorAll("ul.Checkable"));
 });
-/* global customElements */
+/* global customElements, Overflow, Proxy */
 
-class TabBar extends HTMLElement
+customElements.define('g-tabbar', class extends HTMLElement
 {
-	constructor(element)
+	constructor()
 	{
-		super(element);
+		super();
+
+		let overflow = new Command();
+		overflow.innerText = "Mais";
+		overflow.addEventListener("click", () =>
+		{
+			var elements = Array.from(this.children)
+				.filter(e => e !== overflow)
+				.filter(e => e.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+			document.documentElement.appendChild(new SideMenu(elements))
+				.show(overflow);
+		});
+
+		overflow.update = () =>
+		{
+			Array.from(this.children).forEach(e => e.style.display = "flex");
+
+			overflow.style.display = "none";
+			if (Overflow.isOverflowed(this))
+				overflow.style.display = "flex";
+
+			for (let element = overflow.previousElementSibling;
+				element;
+				element = element.previousElementSibling)
+				if (Overflow.isOverflowed(this))
+					if (!element.hasAttribute("aria-selected"))
+						element.style.display = "none";
+		};
+
+		window.addEventListener("load", () =>
+		{
+			this.parentNode.style.overflow = "hidden";
+
+			var parameters = URL.parse_query_string(window.location.href);
+			var elements = Array.from(this.children).filter(e => (e.href && e.href.includes('?'))
+					|| (e.formaction && e.formaction.includes('?')));
+
+			var q = elements.filter(e =>
+			{
+				var args = URL.parse_query_string(e.href || e.formaction);
+				return args.MODULE === parameters.MODULE
+					&& args.SCREEN === parameters.SCREEN
+					&& args.ACTION === parameters.ACTION;
+			});
+
+			if (q.length === 0)
+			{
+				var q = elements.filter(e =>
+				{
+					var args = URL.parse_query_string(e.href || e.formaction);
+					return args.MODULE === parameters.MODULE
+						&& args.SCREEN === parameters.SCREEN;
+				});
+
+				if (q.length === 0)
+				{
+					var q = elements.filter(e =>
+					{
+						var args = URL.parse_query_string(e.href || e.formaction);
+						return args.MODULE === parameters.MODULE;
+					});
+				}
+			}
+
+			if (q.length !== 0)
+				q[0].setAttribute("aria-selected", "true");
+
+			if (this.querySelector("* > i"))
+				overflow
+					.appendChild(document.createElement("i"))
+					.innerHTML = "&#X3017;";
+			this.appendChild(overflow);
+			overflow.update();
+		});
+
+		window.top.addEventListener("resize", () => overflow.update());
+	}
+});
+/* global customElements, Overflow */
+
+class GScrollTabBar extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.addEventListener("mouseenter", () => this.style.overflowX = "auto");
+		this.addEventListener("mouseleave", () => this.style.overflowX = "hidden");
+		this.addEventListener("touchstart", () => this.style.overflowX = "auto");
+		this.addEventListener("touchend", () => this.style.overflowX = "hidden");
+		this.addEventListener("touchmove", e => this.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
+
+		this.addEventListener("scroll", () => this.setAttribute("data-overflowing",
+				Overflow.determineOverflow(this)));
 	}
 
 	connectedCallback()
 	{
-		this.parentNode.style.overflow = "hidden";
-		if (!this.getElementsByTagName("g-overflow").length)
-			this.appendChild(document.createElement("g-overflow"))
-				.innerHTML = "Mais<i>&#X3017;</i>";
-	}
-
-	disconnectedCallback()
-	{
-		this.parentNode.style.overflow = "";
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	var parameters = URL.parse_query_string(window.location.href);
-	var elements = Array.from(document.querySelectorAll("a, button"))
-		.filter(e => (e.href && e.href.includes('?'))
+		var parameters = URL.parse_query_string(window.location.href);
+		var elements = Array.from(this.children).filter(e => (e.href && e.href.includes('?'))
 				|| (e.formaction && e.formaction.includes('?')));
 
-	var q = elements.filter(e =>
-	{
-		var arguments = URL.parse_query_string(e.href || e.formaction);
-		return arguments.MODULE === parameters.MODULE
-			&& arguments.SCREEN === parameters.SCREEN
-			&& arguments.ACTION === parameters.ACTION;
-	});
-
-	if (q.length === 0)
-	{
 		var q = elements.filter(e =>
 		{
-			var arguments = URL.parse_query_string(e.href || e.formaction);
-			return arguments.MODULE === parameters.MODULE
-				&& arguments.SCREEN === parameters.SCREEN;
+			var args = URL.parse_query_string(e.href || e.formaction);
+			return args.MODULE === parameters.MODULE
+				&& args.SCREEN === parameters.SCREEN
+				&& args.ACTION === parameters.ACTION;
 		});
 
 		if (q.length === 0)
 		{
 			var q = elements.filter(e =>
 			{
-				var arguments = URL.parse_query_string(e.href || e.formaction);
-				return arguments.MODULE === parameters.MODULE;
+				var args = URL.parse_query_string(e.href || e.formaction);
+				return args.MODULE === parameters.MODULE
+					&& args.SCREEN === parameters.SCREEN;
 			});
+
+			if (q.length === 0)
+			{
+				var q = elements.filter(e =>
+				{
+					var args = URL.parse_query_string(e.href || e.formaction);
+					return args.MODULE === parameters.MODULE;
+				});
+			}
 		}
+
+		if (q.length !== 0)
+			q[0].setAttribute("aria-selected", "true");
+
+		window.addEventListener("load", () =>
+		{
+			this.setAttribute("data-overflowing", Overflow.determineOverflow(this));
+			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
+				.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
+		});
+	}
+}
+
+customElements.define("g-scroll-tabbar", GScrollTabBar);
+/* global customElements, Overflow, Proxy, Commands, Dialog */
+
+customElements.define('g-dialog-config', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: 'open'});
+		this.shadowRoot.innerHTML = "<slot></slot>";
 	}
 
-	if (q.length !== 0)
-		q[0].setAttribute("aria-selected", "true");
-});
+	connectedCallback()
+	{
+		this.style.display = "none";
+		if (window.frameElement && window.frameElement.dialog)
+			window.addEventListener("load", () =>
+			{
+				let commands = new Commands();
+				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
+				commands.update();
+				window.frameElement.dialog.commands = commands;
+			});
+	}
 
-customElements.define('g-tabbar', TabBar);
+	static get observedAttributes()
+	{
+		return ['caption'];
+	}
+
+	attributeChangedCallback()
+	{
+		GDialog.caption = this.getAttribute("caption");
+	}
+});

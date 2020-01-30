@@ -161,8 +161,10 @@ datalist { display: none }
 
 @import "../polyfill/dialog-polyfill.less";
 
-@import "Modal.less";
-@import "Window.less";
+@import "g-window-list.less";
+
+@import "g-modal.less";
+@import "g-window.less";
 
 @import "DeskMenu.less";
 @import "DeskPane.less";
@@ -178,11 +180,11 @@ datalist { display: none }
 @import "Button.less";
 
 @import "Command.less";
-@import "Commands.less";
+@import "g-commands/g-commands.less";
 
 @import "NavBar.less";
 
-@import "Dialog.less";
+@import "g-dialog.less";
 @import "Message.less";
 
 @import "Slider.less";
@@ -210,7 +212,7 @@ datalist { display: none }
 @import "picker/MonthIntervalPicker.less";
 @import "picker/DateTimeIntervalPicker.less";
 
-@import "Block.less";
+@import "g-block.less";
 
 @import "TreeView.less";
 
@@ -221,7 +223,7 @@ datalist { display: none }
 @import "HMenu.less";
 
 
-@import "ChartDialog.less";
+@import "g-chart-dialog/g-chart-dialog.less";
 
 @import "Sortable.less";
 
@@ -249,6 +251,10 @@ datalist { display: none }
 
 @import "SideMenu.less";
 
-@import "TabBar.less";
-
 @import "Overflow.less";
+
+
+@import "g-tabbar/g-tabbar.less";
+@import "g-scroll-tabbar.less";
+
+@import "figure.less";

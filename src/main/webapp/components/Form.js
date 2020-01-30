@@ -1,4 +1,4 @@
-/* global ENTER, ESC, Message */
+/* global ENTER, ESC, Message, GDialog */
 
 window.addEventListener("load", function ()
 {
@@ -18,13 +18,13 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				var dialog = new Dialog({creator: creator || this,
-					title: this.getAttribute("title"),
-					blocked: Boolean(this.getAttribute("data-blocked"))})
-					.show();
-
-				dialog.element().addEventListener("show", event => this.dispatchEvent(event));
-				dialog.element().addEventListener("hide", event => this.dispatchEvent(event));
+				let dialog = GDialog.create();
+				dialog.creator = this;
+				dialog.caption = this.getAttribute("title");
+				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+				dialog.addEventListener("show", event => this.dispatchEvent(event));
+				dialog.addEventListener("hide", event => this.dispatchEvent(event));
+				dialog.show();
 			}
 		});
 

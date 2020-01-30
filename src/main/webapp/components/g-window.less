@@ -5,36 +5,45 @@ g-window > main,
 		   position: fixed;
 		   border-radius: 5px;
 		   flex-direction: column;
-		   border: 4px solid var(--base-shaded35);
 		   box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-		   -moz-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-		   -webkit-box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-
+		   border: 4px solid var(--g-window-border-color);
 
 		   > header{ order: 1;
-			     color: white;
-			     padding: 0px;
+			     flex-grow: 0;
+			     padding: 4px;
 			     outline: none;
 			     display: flex;
+			     flex-shrink: 0;
 			     font-size: 20px;
-			     min-height: 40px;
 			     flex-basis: 40px;
+			     max-height: 40px;
 			     font-weight: bold;
 			     align-items: center;
 			     justify-content: space-between;
-			     background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100% );
+
+			     color: var(--g-window-header-color);
+			     background-color: var(--g-window-header-background-color);
+			     background-image: var(--g-window-header-background-image);
 
 			     > label { order: 1;
 				       flex-grow: 1;
-				       height: 22px;
 				       display: flex;
 				       color: inherit;
-				       min-height: 22px;
 				       font-size: inherit;
 				       align-items: center;
 				       justify-content: flex-start; }
 
-			     > g-commands { order: 2 }
+			     > g-commands { order: 2;}
+
+			     > g-command, > a, > button { order: 3;
+							  padding: 2px;
+							  display: flex;
+							  align-items: center;
+							  justify-content: center;
+
+							  >i { color: white;
+							       font-size: 16px}
+			     }
 
 			     > * { margin-left:4px;
 				   margin-right: 4px; }
@@ -46,23 +55,23 @@ g-window > main,
 			       overflow: auto;
 			       align-items: stretch;
 			       justify-content: center;
-			       background-image: var(--noise);
-			       background-color: var(--main-shaded10);
 			       -webkit-overflow-scrolling: touch;
+
+			       background-image: var(--g-window-section-background-image);
+			       background-color: var(--g-window-section-background-color);
 		   }
 
 		   > footer { order: 3;
-			      color: white;
+			      margin: 0;
+			      padding: 0;
+			      border: none;
+			      height: auto;
 			      outline: none;
 			      display: flex;
-			      font-size: 20px;
-			      min-height: 48px;;
-			      flex-basis: 48px;
 			      padding-top: 4px;
-			      font-weight: bold;
-			      align-items: stretch;
+			      align-items: center;
 			      justify-content: center;
-			      background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+			      background-color: var(--g-window-footer-background-color);
+			      background-image: var(--g-window-footer-background-image);
 		   }
-
 }

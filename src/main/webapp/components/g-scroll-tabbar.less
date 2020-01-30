@@ -1,12 +1,11 @@
-g-tabbar
+g-scroll-tabbar
 {
+	width: 100%;
+	height: auto;
 	border: none;
-	height: 50px;
-	flex-grow: 1;
 	display: flex;
-	overflow: hidden;
-	align-items: stretch;
-	justify-content: flex-start;
+	overflow-x: hidden;
+	white-space: nowrap;
 	color: var(--g-tabbar-color);
 	background-color:  var(--g-tabbar-background-color);
 	background-image:  var(--g-tabbar-background-image);
@@ -17,13 +16,14 @@ g-tabbar
 	> .g-command
 	{
 		margin: 4px;
-		flex-grow: 1;
+		padding: 4px;
+		height: auto;
 		display: flex;
 		color: inherit;
-		flex-shrink: 1;
-		min-width: 80px;
-		max-width: 120px;
+		max-width: 160px;
+		width: fit-content;
 		border-radius: 5px;
+		white-space: nowrap;
 		align-items: center;
 		flex-direction: column;
 		justify-content: space-around;
@@ -44,9 +44,29 @@ g-tabbar
 		}
 
 		> i { order: -1;
-		      font-size: 16px;}
+		      display: flex;
+		      min-width: 80px;
+		      font-size: 16px;
+		      margin-bottom: 4px;
+		      align-items: center;
+		      justify-content: center;}
+	}
+
+	&[data-overflowing=right]
+	{
+		border-left: 4px ridge #222222;
+		border-right: 4px dotted #222222;
+	}
+
+	&[data-overflowing=left]
+	{
+		border-left: 4px dotted #222222;
+		border-right: 4px ridge #222222;
+	}
+
+	&[data-overflowing=both]
+	{
+		border-left: 4px dotted #222222;
+		border-right: 4px dotted #222222;
 	}
 }
-
-
-

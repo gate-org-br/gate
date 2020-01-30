@@ -1,37 +1,27 @@
-class Popup extends Modal
+/* global customElements */
+
+class Popup extends Window
 {
 	constructor(element)
 	{
-		super(false);
-		var parent = element.parentNode;
+		super();
+		this.head.focus();
+		this.head.tabindex = 1;
+		this.classList.add("g-popup");
 
-		var dialog = this.element().appendChild(window.top.document.createElement('div'));
-		dialog.classList.add("Popup");
+		this.caption = "Erro de sistema";
+		let close = new Command();
 
-		var head = dialog.appendChild(window.top.document.createElement('div'));
-		head.setAttribute("tabindex", "1");
-		head.focus();
+		this.commands.add(close);
+		close.action = () => this.hide();
+		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
 
-		var caption = head.appendChild(window.top.document.createElement('label'));
-		if (element.hasAttribute("title"))
-			caption.innerHTML = element.getAttribute("title");
-
-		var close = head.appendChild(window.top.document.createElement("a"));
-		close.title = 'Fechar janela';
-		close.innerHTML = "&#x1011;";
-		close.onclick = () => this.hide();
-
-		var body = dialog.appendChild(window.top.document.createElement('div'));
-		body.appendChild(element);
-
-		if (parent)
-			this.creator().addEventListener("hide", () => parent.appendChild(element));
-
-		this.show();
+		this.body.appendChild(element);
 	}
 }
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("*[popup]")).forEach(element => new Popup(element));
-});
+window.addEventListener("load", () => Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => new Popup(element.content.cloneNode(true)).show()));
+
+
+customElements.define('g-popup', Popup);

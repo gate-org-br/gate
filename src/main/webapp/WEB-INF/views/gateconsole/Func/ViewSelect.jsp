@@ -3,9 +3,10 @@
 <g:template filename="/WEB-INF/views/DIAG.jsp">
 	<fieldset>
 		<legend>
-			Função<g:icon type="gate.entity.Func"/>
+			<g:name type="${action}"/>
+			<g:icon type="${action}"/>
 		</legend>
-		<label style='width: 100%'>
+		<label>
 			Nome:
 			<span>
 				<g:label property='form.name'/>
@@ -13,10 +14,7 @@
 		</label>
 	</fieldset>
 
-	<div class='COOLBAR'>
-		<a href='#' class='Cancel Hide'>
-			Fechar<g:icon type="cancel"/>
-		</a>
+	<g-coolbar>
 		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}">
 			Alterar<g:icon type="update"/>
 		</g:link>
@@ -24,7 +22,11 @@
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?">
 			Remover<g:icon type="delete"/>
 		</g:link>
-	</div>
+		<hr/>
+		<a class="Cancel Hide" href="#">
+			Fechar<g:icon type="cancel"/>
+		</a>
+	</g-coolbar>
 
 	<div class='PageControl'>
 		<ul>

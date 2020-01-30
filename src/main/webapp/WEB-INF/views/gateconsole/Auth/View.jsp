@@ -4,6 +4,12 @@
 	<form method='POST' action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Insert'>
 		<fieldset>
 			<label data-size='2'>
+				Tipo:
+				<span>
+					<g:select property="form.mode" tabindex='1'/>
+				</span>
+			</label>
+			<label data-size='2'>
 				Escopo:
 				<span>
 					<g:choose>
@@ -18,12 +24,6 @@
 							<g:icon type="gate.entity.Auth$Type:PRIVATE"/>Privado
 						</g:otherwise>
 					</g:choose>
-				</span>
-			</label>
-			<label data-size='2'>
-				Tipo:
-				<span>
-					<g:select property="form.mode" tabindex='1'/>
 				</span>
 			</label>
 			<label data-size='4'>
@@ -62,7 +62,7 @@
 		<g:when condition="${empty screen.page}">
 			<div class='TEXT'>
 				<h1>
-					N&atilde;o h&aacute; nenhum acesso cadastrado para este registro
+					Não há nenhum acesso cadastrado para este registro
 				</h1>
 			</div>
 		</g:when>
@@ -75,10 +75,10 @@
 				<thead>
 					<tr>
 						<th style="width: 12.5%">
-							Escopo
+							Tipo
 						</th>
 						<th style="width: 12.5%">
-							Tipo
+							Escopo
 						</th>
 						<th style="width: 25%">
 							Module
@@ -98,10 +98,10 @@
 				<tbody>
 					<g:iterator source="${screen.page}" target="item" index="indx">
 						<tr>
-							<td title="Modo">
+							<td title="Tipo">
 								<g:icon type="${item.mode}"/>&nbsp;<g:print value="${item.mode}"/>
 							</td>
-							<td title="Tipo">
+							<td title="Escopo">
 								<g:icon type="${item.type}"/>&nbsp;<g:print value="${item.type}"/>
 							</td>
 							<td title="Module">

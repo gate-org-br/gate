@@ -1,6 +1,5 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 <g:template filename="/WEB-INF/views/FULL.jsp">
-
 	<form method="post" action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Post">
 		<fieldset>
 			<legend>
@@ -18,59 +17,60 @@
 
 	<g:choose>
 		<g:when condition="${not empty screen.messages}">
-			<div class='TEXT'>
-				<table class="c1 c2">
-					<col style="width: 25%">
-					<col style="width: 25%">
-					<col style="width: 50%">
-					<caption>
-						RECURSOS A CONFIGURAR NO CONTAINER
-					</caption>
-					<thead>
-						<tr>
-							<th>
-								Tipo
-							</th>
-							<th>
-								Nome
-							</th>
-							<th>
-								JNDI
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>
-								Queue
-							</td>
-							<td>
-								MailBox
-							</td>
-							<td>
-								java:/jms/queue/MailBox
-							</td>
-						</tr>
-						<tr>
-							<td>
-								Mail Session
-							</td>
-							<td>
-								MailSession
-							</td>
-							<td>
-								java:/comp/env/MailSession
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+
+			<table class="c1 c2">
+				<col style="width: 25%">
+				<col style="width: 25%">
+				<col style="width: 50%">
+				<caption>
+					RECURSOS A CONFIGURAR NO CONTAINER
+				</caption>
+				<thead>
+					<tr>
+						<th>
+							Tipo
+						</th>
+						<th>
+							Nome
+						</th>
+						<th>
+							JNDI
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							Queue
+						</td>
+						<td>
+							MailBox
+						</td>
+						<td>
+							java:/jms/queue/MailBox
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Mail Session
+						</td>
+						<td>
+							MailSession
+						</td>
+						<td>
+							java:/comp/env/MailSession
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</g:when>
+
 		<g:when condition="${empty screen.page}">
 			<div class='TEXT'>
 				<h2>N&atilde;o h&aacute; nenhuma mensagem pendente de envio</h2>
 			</div>
 		</g:when>
+
 		<g:otherwise>
 			<table class="c1 c2">
 				<col style='width: 80px'/>

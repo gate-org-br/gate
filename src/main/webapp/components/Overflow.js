@@ -5,7 +5,8 @@ class Overflow extends Command
 	constructor()
 	{
 		super();
-
+		window.addEventListener("load", () => this.update());
+		window.addEventListener("resize", () => this.update());
 		this.addEventListener("click", () =>
 		{
 			var elements = Array.from(this.parentNode.children)
@@ -22,13 +23,6 @@ class Overflow extends Command
 			else
 				menu.showR();
 		});
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		window.addEventListener("load", () => this.update());
-		window.addEventListener("resize", () => this.update());
 	}
 
 	update()
@@ -68,19 +62,44 @@ class Overflow extends Command
 	{
 		element.style.overflow = "hidden";
 		Array.from(element.children).forEach(e => Overflow.disable(e));
+		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}
 
 	static enable(element)
 	{
 		element.style.overflow = "";
 		Array.from(element.children).forEach(e => Overflow.enable(e));
+		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
+	}
+
+	static determineOverflow(container)
+	{
+		if (!container.firstElementChild)
+			return "none";
+
+		var containerMetrics = container.getBoundingClientRect();
+		var containerMetricsRight = Math.floor(containerMetrics.right);
+		var containerMetricsLeft = Math.floor(containerMetrics.left);
+
+		var left = Math.floor(container.firstElementChild.getBoundingClientRect().left);
+		var right = Math.floor(container.lastElementChild.getBoundingClientRect().right);
+
+
+		if (containerMetricsLeft > left
+			&& containerMetricsRight < right)
+			return "both";
+		else if (left < containerMetricsLeft)
+			return "left";
+		else if (right > containerMetricsRight)
+			return "right";
+		else
+			return "none";
 	}
 }
 
-
 customElements.define('g-overflow', Overflow);
 
-
+Overflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
 
 window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
 		.filter(e => e.scrollWidth > e.clientWidth
