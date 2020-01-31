@@ -60,14 +60,14 @@ class Overflow extends Command
 
 	static disable(element)
 	{
-		element.style.overflow = "hidden";
+		element.setAttribute("data-scroll-disabled", "data-scroll-disabled");
 		Array.from(element.children).forEach(e => Overflow.disable(e));
-		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
+		window.top.document.documentElement.addEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}
 
 	static enable(element)
 	{
-		element.style.overflow = "";
+		element.removeAttribute("data-scroll-disabled");
 		Array.from(element.children).forEach(e => Overflow.enable(e));
 		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}

@@ -74,8 +74,7 @@ customElements.define('g-tabbar', class extends HTMLElement
 				q[0].setAttribute("aria-selected", "true");
 
 			if (this.querySelector("* > i"))
-				overflow
-					.appendChild(document.createElement("i"))
+				overflow.appendChild(document.createElement("i"))
 					.innerHTML = "&#X3017;";
 			this.appendChild(overflow);
 			overflow.update();

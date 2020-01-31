@@ -103,7 +103,6 @@
 	</figure>
 
 	<g-coolbar>
-		<g:link target='_dialog' module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
 		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
 		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>

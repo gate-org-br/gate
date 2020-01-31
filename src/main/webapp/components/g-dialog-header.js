@@ -1,6 +1,6 @@
 /* global customElements, Overflow, Proxy, Commands, Dialog */
 
-customElements.define('g-dialog-config', class extends HTMLElement
+customElements.define('g-dialog-header', class extends HTMLElement
 {
 	constructor()
 	{
@@ -17,7 +17,6 @@ customElements.define('g-dialog-config', class extends HTMLElement
 			{
 				let commands = new Commands();
 				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
-				commands.update();
 				window.frameElement.dialog.commands = commands;
 			});
 	}
