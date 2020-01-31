@@ -161,10 +161,10 @@ datalist { display: none }
 
 @import "../polyfill/dialog-polyfill.less";
 
-@import "g-window-list.less";
+@import "g-window-list/g-window-list.less";
 
-@import "g-modal.less";
-@import "g-window.less";
+@import "g-modal/g-modal.less";
+@import "g-window/g-window.less";
 
 @import "DeskMenu.less";
 @import "DeskPane.less";
@@ -184,8 +184,8 @@ datalist { display: none }
 
 @import "NavBar.less";
 
-@import "g-dialog.less";
-@import "Message.less";
+@import "g-dialog/g-dialog.less";
+@import "g-message/g-message.less";
 
 @import "Slider.less";
 @import "Calendar.less";
@@ -255,6 +255,10 @@ datalist { display: none }
 
 
 @import "g-tabbar/g-tabbar.less";
-@import "g-scroll-tabbar.less";
+@import "g-scroll-tabbar/g-scroll-tabbar.less";
 
 @import "figure.less";
+
+
+
+body[data-scroll-disabled] * { overflow: hidden }

@@ -9,15 +9,15 @@ class GDialog extends Window
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let fullScreen = new Command();
-		this.head.appendChild(fullScreen);
-		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-
 		let minimize = new Command();
 		this.head.appendChild(minimize);
 		minimize.innerHTML = "<i>&#x3019;<i/>";
 		minimize.action = () => this.minimize();
+
+		let fullScreen = new Command();
+		this.head.appendChild(fullScreen);
+		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
 		let close = new Command();
 		this.head.appendChild(close);

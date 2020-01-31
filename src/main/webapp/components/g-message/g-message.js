@@ -11,8 +11,8 @@ class Message extends Window
 
 		let close = new Command();
 		close.action = () => this.hide();
-		close.innerHTML = "<i>&#x1011</i>Fechar janela";
-		this.commands.add(close);
+		close.innerHTML = "<i>&#x1011</i>";
+		this.head.appendChild(close);
 
 		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
 
@@ -40,6 +40,11 @@ Message.error = function (message, timeout)
 	new Message({type: "ERROR", title: "Erro", message: message, timeout: timeout});
 };
 
+Message.info = function (message, timeout)
+{
+	new Message({type: "INFO", title: "Informação", message: message, timeout: timeout});
+};
+
 Message.show = function (status, timeout)
 {
 	switch (status.type)
@@ -52,6 +57,9 @@ Message.show = function (status, timeout)
 			break;
 		case "ERROR":
 			Message.error(status.message, timeout);
+			break;
+		case "INFO":
+			Message.info(status.message, timeout);
 			break;
 	}
 

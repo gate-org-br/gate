@@ -47,7 +47,7 @@
 									<a href="#">Link de texto 09</a>
 									<a href="#">Link de texto 11</a>
 									<a href="#">Link de texto 12</a>
-									<a href="#" aria-selected="true">Link de texto 13</a>
+									<a href="#">Link de texto 13</a>
 									<a href="#">Link de texto 14</a>
 									<a href="#">Link de texto 15</a>
 									<a href="#">Link de texto 16</a>
@@ -70,9 +70,7 @@
 										<a href="#">Link de texto 09</a>
 										<a href="#">Link de texto 11</a>
 										<a href="#">Link de texto 12</a>
-										<a href="#" aria-selected="true">
-											Link de texto 13
-										</a>
+										<a href="#">Link de texto 13</a>
 										<a href="#">Link de texto 14</a>
 										<a href="#">Link de texto 15</a>
 										<a href="#">Link de texto 16</a>
@@ -145,7 +143,7 @@
 									<a href="#">Link 09<i>&#X2011;</i></a>
 									<a href="#">Link 11<i>&#X2012;</i></a>
 									<a href="#">Link 12<i>&#X2013;</i></a>
-									<a href="#" aria-selected="true">Link 13<i>&#X2014;</i></a>
+									<a href="#">Link 13<i>&#X2014;</i></a>
 									<a href="#">Link 14<i>&#X2015;</i></a>
 									<a href="#">Link 15<i>&#X2016;</i></a>
 									<a href="#">Link 16<i>&#X2017;</i></a>
@@ -168,9 +166,7 @@
 										<a href="#">Link 09<i>&#X2011;</i></a>
 										<a href="#">Link 11<i>&#X2012;</i></a>
 										<a href="#">Link 12<i>&#X2013;</i></a>
-										<a href="#" aria-selected="true">
-											Link 13<i>&#X2014;</i>
-										</a>
+										<a href="#">Link 13<i>&#X2014;</i></a>
 										<a href="#">Link 14<i>&#X2015;</i></a>
 										<a href="#">Link 15<i>&#X2016;</i></a>
 										<a href="#">Link 16<i>&#X2017;</i></a>
@@ -515,6 +511,28 @@
 							<div>
 								<g-coolbar>
 									<a href="#"
+									   style="color: #000000"
+									   onclick="Message.info('Informação')">
+										<G:icon type="2015"/>Informação
+									</a>
+								</g-coolbar>
+							</div>
+							<div>
+								<pre class="language-markup"><code><!--
+									<g-coolbar>
+										<a href="#"
+										   style="color: #000000"
+										   onclick="Message.info('Informação')">
+										<G:icon type="2015"/>Informação
+										</a>
+									</g-coolbar>
+								--></code></pre>
+							</div>
+						</div>
+						<div>
+							<div>
+								<g-coolbar>
+									<a href="#"
 									   style="color: #006600"
 									   onclick="Message.success('Sucesso')">
 										<G:icon type="1000"/>Sucesso
@@ -639,48 +657,44 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<g-context-menu id="contextmenu">
-									<G:link module="#" screen="Icon"/>
-									<button id="action1" href="#">
-										Action 1<i>&#X2003;</i>
-									</button>
-								</g-context-menu>
+								<div class="TEXT">
+									<h1>
+										Clique aqui com o botão direito
+									</h1>
 
-								<g-coolbar>
-									<a href="#" data-context-menu="contextmenu">
-										Botão direito
-									</a>
-								</g-coolbar>
+									<g-context-menu>
+										<G:link module="#" screen="Icon"/>
+										<button id="action1" href="#">
+											Action 1<i>&#X2003;</i>
+										</button>
+									</g-context-menu>
+								</div>
 
 								<script>
 									window.addEventListener("load", function ()
 									{
 										document.getElementById("action1")
 											.addEventListener("click",
-												e => alert(e.target.parentNode.context.innerText));
-
-										let command = new Command();
-										command.innerHTML = "Action 2<i>&#X2003;</i>";
-										command.action = e => alert(e.parentNode.context.innerText);
-										document.getElementById("contextmenu").appendChild(command);
+												e => alert(e.target.parentNode
+														.context.innerText));
 
 									});
 								</script>
 							</div>
 							<div>
 								<pre class="language-markup"><code><!--
-									<g-context-menu id="contextmenu">
-										<g:link module="#" screen="Icon"/>
-										<button id="action1" href="#">
-											Action 1<i>&#X2003;</i>
-										</button>
-									</g-context-menu>
+									<div class="TEXT">
+										<h1>
+											Clique aqui com o botão direito
+										</h1>
 
-									<g-coolbar>
-										<a href="#" data-context-menu="contextmenu">
-											Botão direito
-										</a>
-									</g-coolbar>
+										<g-context-menu>
+											<g:link module="#" screen="Icon"/>
+											<button id="action1" href="#">
+												Action 1<i>&#X2003;</i>
+											</button>
+										</g-context-menu>
+									</div>
 								--></code></pre>
 							</div>
 							<div>
@@ -688,17 +702,10 @@
 									window.addEventListener("load", function ()
 									{
 										document.getElementById("action1")
-										.addEventListener("click",
-											e => alert(e.target.parentNode
-											.context.innerText));
+											.addEventListener("click",
+												e => alert(e.target.parentNode
+														.context.innerText));
 
-										let command = new Command();
-										command.innerHTML =
-											"Action 2<i>&#X2003;</i>";
-										command.action = e =>
-										alert(e.parentNode.context.innerText);
-										document.getElementById("contextmenu")
-											.appendChild(command);
 									});
 								--></code></pre>
 							</div>

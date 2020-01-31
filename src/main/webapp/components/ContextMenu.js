@@ -69,5 +69,6 @@ customElements.define('g-context-menu', ContextMenu);
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("g-context-menu"))
-		.forEach(element => element.register(document.querySelectorAll("*[data-context-menu=" + element.id + "]")));
+		.forEach(element => element.register(element.id ?
+				document.querySelectorAll("*[data-context-menu=" + element.id + "]") : element.parentNode));
 });

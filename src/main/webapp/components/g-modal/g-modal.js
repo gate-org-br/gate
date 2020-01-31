@@ -82,7 +82,7 @@ class Modal extends HTMLElement
 		{
 			this.style.display = "";
 			link.parentNode.removeChild(link);
-			Overflow.enable(window.top.document.documentElement);
+			Overflow.disable(window.top.document.documentElement);
 		});
 	}
 }

@@ -2957,6 +2957,14 @@ g-message > main > section > label::first-line,
 .g-message > main > section > label::first-line {
   text-indent: 40px;
 }
+g-message.INFO,
+.g-message.INFO {
+  color: black;
+}
+g-message.INFO > main > section::before,
+.g-message.INFO > main > section::before {
+  content: "\2015";
+}
 g-message.ERROR,
 .g-message.ERROR {
   color: var(--r);
@@ -4974,6 +4982,9 @@ g-overflow,
 .g-overflow {
   display: none;
 }
+*[data-scroll-disabled] {
+  overflow: hidden;
+}
 g-tabbar {
   border: none;
   height: auto;
@@ -5183,5 +5194,8 @@ figure > fieldset:only-child {
   figure fieldset {
     grid-column: 2;
   }
+}
+body[data-scroll-disabled] * {
+  overflow: hidden;
 }
 /*# sourceMappingURL=Gate.css.map */

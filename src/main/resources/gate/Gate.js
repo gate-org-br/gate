@@ -2099,7 +2099,7 @@ class Modal extends HTMLElement
 		{
 			this.style.display = "";
 			link.parentNode.removeChild(link);
-			Overflow.enable(window.top.document.documentElement);
+			Overflow.disable(window.top.document.documentElement);
 		});
 	}
 }
@@ -3363,7 +3363,8 @@ customElements.define('g-context-menu', ContextMenu);
 window.addEventListener("load", function ()
 {
 	Array.from(document.getElementsByTagName("g-context-menu"))
-		.forEach(element => element.register(document.querySelectorAll("*[data-context-menu=" + element.id + "]")));
+		.forEach(element => element.register(element.id ?
+				document.querySelectorAll("*[data-context-menu=" + element.id + "]") : element.parentNode));
 });
 /* global CopyTextMenuItem, CopyLinkMenuItem, OpenLinkMenuItem, Clipboard */
 
@@ -5739,15 +5740,15 @@ class GDialog extends Window
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let fullScreen = new Command();
-		this.head.appendChild(fullScreen);
-		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-
 		let minimize = new Command();
 		this.head.appendChild(minimize);
 		minimize.innerHTML = "<i>&#x3019;<i/>";
 		minimize.action = () => this.minimize();
+
+		let fullScreen = new Command();
+		this.head.appendChild(fullScreen);
+		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
 		let close = new Command();
 		this.head.appendChild(close);
@@ -6503,8 +6504,8 @@ class Message extends Window
 
 		let close = new Command();
 		close.action = () => this.hide();
-		close.innerHTML = "<i>&#x1011</i>Fechar janela";
-		this.commands.add(close);
+		close.innerHTML = "<i>&#x1011</i>";
+		this.head.appendChild(close);
 
 		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
 
@@ -6532,6 +6533,11 @@ Message.error = function (message, timeout)
 	new Message({type: "ERROR", title: "Erro", message: message, timeout: timeout});
 };
 
+Message.info = function (message, timeout)
+{
+	new Message({type: "INFO", title: "Informação", message: message, timeout: timeout});
+};
+
 Message.show = function (status, timeout)
 {
 	switch (status.type)
@@ -6544,6 +6550,9 @@ Message.show = function (status, timeout)
 			break;
 		case "ERROR":
 			Message.error(status.message, timeout);
+			break;
+		case "INFO":
+			Message.info(status.message, timeout);
 			break;
 	}
 
@@ -7117,14 +7126,14 @@ class Overflow extends Command
 
 	static disable(element)
 	{
-		element.style.overflow = "hidden";
+		element.setAttribute("data-scroll-disabled", "data-scroll-disabled");
 		Array.from(element.children).forEach(e => Overflow.disable(e));
-		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
+		window.top.document.documentElement.addEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}
 
 	static enable(element)
 	{
-		element.style.overflow = "";
+		element.removeAttribute("data-scroll-disabled");
 		Array.from(element.children).forEach(e => Overflow.enable(e));
 		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
 	}
@@ -7444,8 +7453,7 @@ customElements.define('g-tabbar', class extends HTMLElement
 				q[0].setAttribute("aria-selected", "true");
 
 			if (this.querySelector("* > i"))
-				overflow
-					.appendChild(document.createElement("i"))
+				overflow.appendChild(document.createElement("i"))
 					.innerHTML = "&#X3017;";
 			this.appendChild(overflow);
 			overflow.update();
@@ -7519,7 +7527,7 @@ class GScrollTabBar extends HTMLElement
 customElements.define("g-scroll-tabbar", GScrollTabBar);
 /* global customElements, Overflow, Proxy, Commands, Dialog */
 
-customElements.define('g-dialog-config', class extends HTMLElement
+customElements.define('g-dialog-header', class extends HTMLElement
 {
 	constructor()
 	{
@@ -7536,7 +7544,6 @@ customElements.define('g-dialog-config', class extends HTMLElement
 			{
 				let commands = new Commands();
 				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
-				commands.update();
 				window.frameElement.dialog.commands = commands;
 			});
 	}
