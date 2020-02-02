@@ -10,13 +10,13 @@ class GChartDialog extends Window
 
 		this.body.appendChild(new GChart());
 
-		var close = this.head.appendChild(new Command());
+		var close = this.head.appendChild(new GCommand());
 		close.dialog = this;
 		close.title = "Fechar";
 		close.innerHTML = "<i>&#x1011;</i>";
 		close.onclick = () => this.hide();
 
-		let commands = new Commands();
+		let commands = new GCommands();
 		var cchart = commands.appendChild(document.createElement('a'));
 		cchart.dialog = this;
 		cchart.title = "Coluna";

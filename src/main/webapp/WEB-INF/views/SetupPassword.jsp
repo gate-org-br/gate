@@ -67,14 +67,15 @@
 							</fieldset>
 						</div>
 					</div>
-					<div class='COOLBAR'>
-						<a class="Cancel" href="Gate" tabindex='3'>
-							Desistir<g:icon type="cancel"/>
-						</a>
+					<g-coolbar>
 						<button class="Commit" tabindex='2'>
 							Concluir<g:icon type="commit"/>
 						</button>
-					</div>
+						<hr/>
+						<a class="Cancel" href="Gate" tabindex='3'>
+							Desistir<g:icon type="cancel"/>
+						</a>
+					</g-coolbar>
 				</div>
 			</div>
 

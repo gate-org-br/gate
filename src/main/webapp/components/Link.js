@@ -1,4 +1,4 @@
-/* global Message, Block, ENTER, ESC, Commands, GDialog */
+/* global Message, Block, ENTER, ESC, GCommands, GDialog */
 
 class Link
 {

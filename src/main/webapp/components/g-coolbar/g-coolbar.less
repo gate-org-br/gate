@@ -1,29 +1,30 @@
-g-coolbar
+g-coolbar,
+.g-coolbar
 {
 	.margin();
 	width: 100%;
 	height: 48px;
+	flex-grow: 1;
 	padding: 2px;
 	display: flex;
-	flex-wrap: wrap;
 	overflow: hidden;
 	border-radius: 5px;
-	align-items: center;
-	justify-content: flex-start;
-	flex-direction: row-reverse;
-	background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+	align-items: stretch;
+	color: var(--g-coolbar--color);
+	background-color: var(--g-coolbar-background-color);
+	background-image: var(--g-coolbar-background-image);
 
 	> hr { border: none;
 	       flex-grow: 1; }
 
 	> a ,
 	> button { margin: 2px;
-		   color: black;
 		   height: 40px;
 		   padding: 4px;
 		   float: right;
 		   flex-grow: 1;
 		   display: flex;
+		   color: inherit;
 		   flex-shrink: 1;
 		   font-size: 12px;
 		   cursor: pointer;
@@ -33,11 +34,17 @@ g-coolbar
 		   font-weight: bold;
 		   border-radius: 5px;
 		   align-items: center;
-		   border: 1px solid #CCCCCC;
 		   justify-content: space-between;
-		   background-image: linear-gradient(to bottom, var(--main-tinted20) 0%, var(--main-shaded35) 100%);
 
-		   &:hover { background-image: linear-gradient(to bottom, var(--acent-tinted40) 0%, var(--acent-shaded20) 100% ) }
+		   border: 1px solid var(--g-coolbar-button-border-color);
+		   background-color: var(--g-coolbar-button-background-color);
+		   background-image: var(--g-coolbar-button-background-image);
+
+		   &:hover {  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+			      background-color: var(--g-coolbar-hovered-button-background-color);
+			      background-image: var(--g-coolbar-hovered-button-background-image);
+		   }
+
 		   &:focus { outline: none; border: 2px solid var(--hovered); }
 
 		   > i,
@@ -61,7 +68,7 @@ g-coolbar
 		   &.Return { color: var(--r); }
 	}
 
-	> g-overflow
+	> g-more
 	{
 		width: 32px;
 		height: 40px;
@@ -84,18 +91,20 @@ div.Coolbar { .margin();
 	      display: block;
 	      overflow: hidden;
 	      border-radius: 5px;
-	      background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+	      color: var(--g-coolbar--color);
+	      background-color: var(--g-coolbar-background-color);
+	      background-image: var(--g-coolbar-background-image);
 
 	      > * { margin: 2px;
 		    height: 36px; }
 
 	      > a ,
-	      > button { color: black;
-			 margin: 2px;
+	      > button { margin: 2px;
 			 width: auto;
 			 padding: 4px;
 			 float: right;
 			 display: flex;
+			 color: inherit;
 			 font-size: 10px;
 			 cursor: pointer;
 			 min-width: 90px;
@@ -104,10 +113,14 @@ div.Coolbar { .margin();
 			 align-items: center;
 			 border: 1px solid #CCCCCC;
 			 justify-content: space-between;
-			 background-image: linear-gradient(to bottom, var(--main-tinted20) 0%, var(--main-shaded35) 100%);
 
+			 border: 1px solid var(--g-coolbar-button-border-color);
+			 background-color: var(--g-coolbar-button-background-color);
+			 background-image: var(--g-coolbar-button-background-image);
 
-			 &:hover { background-image: linear-gradient(to bottom, var(--acent-tinted40) 0%, var(--acent-shaded20) 100% ) }
+			 &:hover { border: 1px solid var(--g-coolbar-hovered-button-border-color);
+				   background-color: var(--g-coolbar-hovered-button-background-color);
+				   background-image: var(--g-coolbar-hovered-button-background-image); }
 			 &:focus { outline: none; border: 2px solid var(--hovered); }
 
 

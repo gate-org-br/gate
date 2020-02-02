@@ -4,7 +4,6 @@ g-commands
 	color: white;
 	outline: none;
 	display: flex;
-	flex-wrap: wrap;
 	overflow: hidden;
 	border-radius: 5px;
 	font-size: inherit;
@@ -14,12 +13,14 @@ g-commands
 
 	&:empty { display: none }
 
-	> g-command, > a, > button
+	> g-command,
+	> g-more,
+	> a,
+	> button
 	{
 		padding: 0;
 		width: 32px;
 		height: 24px;
-		display: none;
 		color: inherit;
 		font-size: 0px;
 		cursor: pointer;
@@ -31,18 +32,5 @@ g-commands
 		      font-size: 16px;
 		      &:hover { color: var(--hovered); }
 		}
-	}
-}
-
-body
-{
-	> g-command, > a, > button
-	{
-		height: 40px;
-		padding: 4px;
-		min-height: 40px;
-		flex-basis: 40px;
-		font-weight: bold;
-		background-color: var(--base-shaded35);
 	}
 }

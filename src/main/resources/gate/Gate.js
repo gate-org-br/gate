@@ -1370,6 +1370,48 @@ if (!Array.prototype.flatMap)
 	}
 	self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
+/* global */
+
+class GSelection
+{
+	static getSelectedLink(nodes)
+	{
+		let parameters = URL.parse_query_string(window.location.href);
+		let elements = Array.from(nodes)
+			.filter(e => (e.href && e.href.includes('?'))
+					|| (e.formaction && e.formaction.includes('?')));
+
+		var q = elements.filter(e =>
+		{
+			let args = URL.parse_query_string(e.href || e.formaction);
+			return args.MODULE === parameters.MODULE
+				&& args.SCREEN === parameters.SCREEN
+				&& args.ACTION === parameters.ACTION;
+		});
+
+		if (q.length === 0)
+		{
+			var q = elements.filter(e =>
+			{
+				var args = URL.parse_query_string(e.href || e.formaction);
+				return args.MODULE === parameters.MODULE
+					&& args.SCREEN === parameters.SCREEN;
+			});
+
+			if (q.length === 0)
+			{
+				q = elements.filter(e =>
+				{
+					var args = URL.parse_query_string(e.href || e.formaction);
+					return args.MODULE === parameters.MODULE;
+				});
+			}
+		}
+
+		if (q.length !== 0)
+			return q[0];
+	}
+}
 class Proxy
 {
 	static create(element)
@@ -1420,7 +1462,7 @@ class WindowList extends HTMLElement
 customElements.define('g-window-list', WindowList);
 /* global customElements */
 
-class Command extends HTMLElement
+class GCommand extends HTMLElement
 {
 	constructor()
 	{
@@ -1446,58 +1488,166 @@ class Command extends HTMLElement
 	}
 }
 
-customElements.define('g-command', Command);
-/* global customElements, Overflow, Proxy */
+customElements.define('g-command', GCommand);
+/* global GOverflow, Proxy, customElements */
 
-class Commands extends HTMLElement
+class GMore extends GCommand
 {
 	constructor()
 	{
 		super();
+
+		window.top.addEventListener("resize", () => this.update());
+
+		this.addEventListener("click", () =>
+		{
+			let elements = Array.from(this.parentNode.children)
+				.filter(e => e !== this)
+				.filter(e => e.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+			document.documentElement.appendChild(new SideMenu(elements)).show(this);
+		});
+	}
+
+	update()
+	{
+		Array.from(this.parentNode.children)
+			.forEach(e => e.style.display = "flex");
+
+		this.style.display = "none";
+		if (this.parentNode.container.clientWidth > this.parentNode.clientWidth)
+			this.style.display = "flex";
+
+		for (let element = this.previousElementSibling;
+			element;
+			element = element.previousElementSibling)
+			if (this.parentNode.container.clientWidth > this.parentNode.clientWidth)
+				if (!element.hasAttribute("aria-selected"))
+					element.style.display = "none";
 	}
 
 	connectedCallback()
 	{
-		let overflow = new Command();
-		overflow.innerHTML = "<i>&#X3018;</i>";
-
-		overflow.addEventListener("click", () =>
-		{
-			var elements = Array.from(this.children)
-				.filter(e => e !== overflow)
-				.filter(e => e.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-			document.documentElement.appendChild(new SideMenu(elements))
-				.show(overflow);
-		});
-
-		overflow.update = () =>
-		{
-			Array.from(this.children).forEach(e => e.style.display = "flex");
-
-			overflow.style.display = "none";
-			if (Overflow.isOverflowed(this))
-				overflow.style.display = "flex";
-
-			for (let element = overflow.previousElementSibling;
-				element;
-				element = element.previousElementSibling)
-				if (Overflow.isOverflowed(this))
-					if (!element.hasAttribute("aria-selected"))
-						element.style.display = "none";
-		};
-
-		this.parentNode.style.overflow = "hidden";
-		this.appendChild(overflow);
-		overflow.update();
-
-		window.top.addEventListener("load", () => overflow.update());
-		window.top.addEventListener("resize", () => overflow.update());
+		super.connectedCallback();
+		this.update();
 	}
 }
 
-customElements.define('g-commands', Commands);
+
+customElements.define('g-more', GMore);
+/* global customElements, Proxy, GSelection */
+
+class GOverflow extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {more: new GMore(),
+			container: document.createElement("div")};
+
+		this.attachShadow({mode: 'open'});
+		this.container.style.width = "auto";
+		this.container.style.flexGrow = "1";
+		this.container.style.display = "flex";
+		this.container.style.whiteSpace = "nowrap";
+		this.shadowRoot.appendChild(this.container);
+		this.container.appendChild(document.createElement("slot"));
+	}
+
+	get more()
+	{
+		return this._private.more;
+	}
+
+	get container()
+	{
+		return this._private.container;
+	}
+
+	connectedCallback()
+	{
+		window.addEventListener("load", () => this.appendChild(this.more));
+	}
+
+	static isOverflowed(element)
+	{
+		return element.scrollWidth > element.clientWidth
+			|| element.scrollHeight > element.clientHeight;
+	}
+
+	static disable(element)
+	{
+		element.setAttribute("data-scroll-disabled", "data-scroll-disabled");
+		Array.from(element.children).forEach(e => GOverflow.disable(e));
+		window.top.document.documentElement.addEventListener("touchmove", GOverflow.PREVENT_BODY_SCROLL, false);
+	}
+
+	static enable(element)
+	{
+		element.removeAttribute("data-scroll-disabled");
+		Array.from(element.children).forEach(e => GOverflow.enable(e));
+		window.top.document.documentElement.removeEventListener("touchmove", GOverflow.PREVENT_BODY_SCROLL, false);
+	}
+
+	static determineOverflow(component, container)
+	{
+		container = container || component;
+
+		if (!component.firstElementChild)
+			return "none";
+
+		var containerMetrics = container.getBoundingClientRect();
+		var containerMetricsRight = Math.floor(containerMetrics.right);
+		var containerMetricsLeft = Math.floor(containerMetrics.left);
+
+		var left = Math.floor(component.firstElementChild.getBoundingClientRect().left);
+		var right = Math.floor(component.lastElementChild.getBoundingClientRect().right);
+
+		if (containerMetricsLeft > left
+			&& containerMetricsRight < right)
+			return "both";
+		else if (left < containerMetricsLeft)
+			return "left";
+		else if (right > containerMetricsRight)
+			return "right";
+		else
+			return "none";
+	}
+}
+
+customElements.define('g-overflow', GOverflow);
+
+GOverflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true")));
+
+window.addEventListener("resize", () => {
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.hasAttribute("data-overflow"))
+		.forEach(e => e.removeAttribute("data-overflow"));
+
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true"));
+});
+/* global customElements, GOverflow, Proxy */
+
+class GCommands extends GOverflow
+{
+	constructor()
+	{
+		super();
+		this.more.innerHTML = "<i>&#X3018;</i>";
+		this.container.style.flexDirection = "row-reverse";
+	}
+}
+
+customElements.define('g-commands', GCommands);
 /* global customElements */
 
 class DigitalClock extends HTMLElement
@@ -2016,7 +2166,7 @@ window.addEventListener("load", function ()
 		.forEach(element => new Mask(element));
 });
 
-/* global customElements, Overflow, WindowList */
+/* global customElements, GOverflow, WindowList */
 
 class Modal extends HTMLElement
 {
@@ -2061,7 +2211,7 @@ class Modal extends HTMLElement
 	{
 		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			Overflow.disable(window.top.document.documentElement);
+			GOverflow.disable(window.top.document.documentElement);
 
 			window.top.document.documentElement.appendChild(this);
 
@@ -2076,7 +2226,7 @@ class Modal extends HTMLElement
 		if (this.parentNode
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			Overflow.enable(window.top.document.documentElement);
+			GOverflow.enable(window.top.document.documentElement);
 			this.parentNode.removeChild(this);
 		}
 
@@ -2089,7 +2239,7 @@ class Modal extends HTMLElement
 			return;
 
 		this.style.display = "none";
-		Overflow.enable(window.top.document.documentElement);
+		GOverflow.enable(window.top.document.documentElement);
 
 		var link = WindowList.instance.appendChild(document.createElement("a"));
 		link.href = "#";
@@ -2099,7 +2249,7 @@ class Modal extends HTMLElement
 		{
 			this.style.display = "";
 			link.parentNode.removeChild(link);
-			Overflow.disable(window.top.document.documentElement);
+			GOverflow.disable(window.top.document.documentElement);
 		});
 	}
 }
@@ -2169,7 +2319,7 @@ class Window extends Modal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new Commands());
+				this.head.appendChild(new GCommands());
 		return this._private.commands;
 	}
 
@@ -2598,7 +2748,7 @@ class URL
 		return query_string;
 	}
 }
-/* global Message, Block, ENTER, ESC, Commands, GDialog */
+/* global Message, Block, ENTER, ESC, GCommands, GDialog */
 
 class Link
 {
@@ -2900,7 +3050,7 @@ window.addEventListener("load", function ()
 	});
 });
 
-/* global Message, Block, ENTER, ESC, Commands, link */
+/* global Message, Block, ENTER, ESC, GCommands, link */
 
 class Button
 {
@@ -3386,7 +3536,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyLinkAction)
 		{
-			ActionContextMenu._CopyLinkAction = new Command();
+			ActionContextMenu._CopyLinkAction = new GCommand();
 			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
 			ActionContextMenu._CopyLinkAction.action = e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true);
 		}
@@ -3397,7 +3547,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyTextAction)
 		{
-			ActionContextMenu._CopyTextAction = new Command();
+			ActionContextMenu._CopyTextAction = new GCommand();
 			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
 			ActionContextMenu._CopyTextAction.action = e => Clipboard.copy(e.parentNode.target.innerText, true);
 		}
@@ -3408,7 +3558,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._OpenLinkAction)
 		{
-			ActionContextMenu._OpenLinkAction = new Command();
+			ActionContextMenu._OpenLinkAction = new GCommand();
 			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
 
 			ActionContextMenu._OpenLinkAction.action = e =>
@@ -4529,7 +4679,7 @@ class Picker extends Window
 	{
 		super();
 		this.classList.add("g-picker");
-		let close = new Command();
+		let close = new GCommand();
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
@@ -5385,13 +5535,13 @@ class GChartDialog extends Window
 
 		this.body.appendChild(new GChart());
 
-		var close = this.head.appendChild(new Command());
+		var close = this.head.appendChild(new GCommand());
 		close.dialog = this;
 		close.title = "Fechar";
 		close.innerHTML = "<i>&#x1011;</i>";
 		close.onclick = () => this.hide();
 
-		let commands = new Commands();
+		let commands = new GCommands();
 		var cchart = commands.appendChild(document.createElement('a'));
 		cchart.dialog = this;
 		cchart.title = "Coluna";
@@ -5740,17 +5890,17 @@ class GDialog extends Window
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let minimize = new Command();
+		let minimize = new GCommand();
 		this.head.appendChild(minimize);
 		minimize.innerHTML = "<i>&#x3019;<i/>";
 		minimize.action = () => this.minimize();
 
-		let fullScreen = new Command();
+		let fullScreen = new GCommand();
 		this.head.appendChild(fullScreen);
 		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
-		let close = new Command();
+		let close = new GCommand();
 		this.head.appendChild(close);
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
@@ -5989,7 +6139,7 @@ class Popup extends Window
 		this.classList.add("g-popup");
 
 		this.caption = "Erro de sistema";
-		let close = new Command();
+		let close = new GCommand();
 
 		this.commands.add(close);
 		close.action = () => this.hide();
@@ -6502,7 +6652,7 @@ class Message extends Window
 		this.classList.add(options.type);
 		this.caption = options.title || "";
 
-		let close = new Command();
+		let close = new GCommand();
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
@@ -7008,7 +7158,7 @@ class ReportDialog extends Window
 			downloadStatus.addEventListener("done", () => this.hide());
 		});
 
-		let close = new Command();
+		let close = new GCommand();
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
@@ -7048,139 +7198,14 @@ window.addEventListener("load", function ()
 });
 /* global customElements */
 
-class Coolbar extends HTMLElement
+customElements.define('g-coolbar', class extends GOverflow
 {
 	constructor()
 	{
 		super();
+		this.more.innerHTML = "<i>&#X3018;</i>";
+		this.container.style.flexDirection = "row-reverse";
 	}
-
-	connectedCallback()
-	{
-		if (!this.getElementsByTagName("g-overflow").length)
-			this.appendChild(document.createElement("g-overflow"))
-				.innerHTML = "<i>&#X3018;</i>";
-	}
-}
-
-customElements.define('g-coolbar', Coolbar);
-/* global customElements, Proxy */
-
-class Overflow extends Command
-{
-	constructor()
-	{
-		super();
-		window.addEventListener("load", () => this.update());
-		window.addEventListener("resize", () => this.update());
-		this.addEventListener("click", () =>
-		{
-			var elements = Array.from(this.parentNode.children)
-				.filter(element => element.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-
-			var menu = this.appendChild(new SideMenu(elements));
-			var center = this.getBoundingClientRect();
-			center = center.left + (center.width / 2);
-
-			if (center <= window.innerWidth / 2)
-				menu.showL();
-			else
-				menu.showR();
-		});
-	}
-
-	update()
-	{
-		this.style.display = "none";
-
-		Array.from(this.parentNode.children)
-			.filter(e => e !== this)
-			.forEach(e => e.style.display = "");
-
-		if (Overflow.isOverflowed(this.parentNode))
-			this.style.display = "flex";
-
-		for (var element = this.previousElementSibling;
-			element;
-			element = element.previousElementSibling)
-			if (Overflow.isOverflowed(this.parentNode))
-				if (!element.hasAttribute("aria-selected"))
-					element.style.display = "none";
-
-
-		for (var element = this.nextElementSibling;
-			element;
-			element = element.nextElementSibling)
-			if (Overflow.isOverflowed(this.parentNode))
-				if (!element.hasAttribute("aria-selected"))
-					element.style.display = "none";
-	}
-
-	static isOverflowed(element)
-	{
-		return element.scrollWidth > element.clientWidth
-			|| element.scrollHeight > element.clientHeight;
-	}
-
-	static disable(element)
-	{
-		element.setAttribute("data-scroll-disabled", "data-scroll-disabled");
-		Array.from(element.children).forEach(e => Overflow.disable(e));
-		window.top.document.documentElement.addEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
-	}
-
-	static enable(element)
-	{
-		element.removeAttribute("data-scroll-disabled");
-		Array.from(element.children).forEach(e => Overflow.enable(e));
-		window.top.document.documentElement.removeEventListener("touchmove", Overflow.PREVENT_BODY_SCROLL, false);
-	}
-
-	static determineOverflow(container)
-	{
-		if (!container.firstElementChild)
-			return "none";
-
-		var containerMetrics = container.getBoundingClientRect();
-		var containerMetricsRight = Math.floor(containerMetrics.right);
-		var containerMetricsLeft = Math.floor(containerMetrics.left);
-
-		var left = Math.floor(container.firstElementChild.getBoundingClientRect().left);
-		var right = Math.floor(container.lastElementChild.getBoundingClientRect().right);
-
-
-		if (containerMetricsLeft > left
-			&& containerMetricsRight < right)
-			return "both";
-		else if (left < containerMetricsLeft)
-			return "left";
-		else if (right > containerMetricsRight)
-			return "right";
-		else
-			return "none";
-	}
-}
-
-customElements.define('g-overflow', Overflow);
-
-Overflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
-
-window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
-		.filter(e => e.scrollWidth > e.clientWidth
-				|| e.scrollHeight > e.clientHeight)
-		.forEach(e => e.setAttribute("data-overflow", "true")));
-
-window.addEventListener("resize", () => {
-	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
-		.filter(e => e.hasAttribute("data-overflow"))
-		.forEach(e => e.removeAttribute("data-overflow"));
-
-	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
-		.filter(e => e.scrollWidth > e.clientWidth
-				|| e.scrollHeight > e.clientHeight)
-		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
 window.addEventListener("load", function ()
 {
@@ -7351,18 +7376,18 @@ class Checkable
 		{
 			Checkable._ContextMenu = new ContextMenu();
 
-			var inverterSelecao = new Command();
+			var inverterSelecao = new GCommand();
 			Checkable._ContextMenu.appendChild(inverterSelecao);
 			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
 			inverterSelecao.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked);
 
 
-			var selecionarTudo = new Command();
+			var selecionarTudo = new GCommand();
 			Checkable._ContextMenu.appendChild(selecionarTudo);
 			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
 			selecionarTudo.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true);
 
-			var desmarcarSelecionados = new Command();
+			var desmarcarSelecionados = new GCommand();
 			Checkable._ContextMenu.appendChild(desmarcarSelecionados);
 			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
 			desmarcarSelecionados.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false);
@@ -7377,147 +7402,60 @@ window.addEventListener("load", function ()
 {
 	Checkable.ContextMenu.register(document.querySelectorAll("ul.Checkable"));
 });
-/* global customElements, Overflow, Proxy */
+/* global customElements, GOverflow, Proxy */
 
-customElements.define('g-tabbar', class extends HTMLElement
+customElements.define('g-tabbar', class extends GOverflow
 {
 	constructor()
 	{
 		super();
+		window.addEventListener("load", () => this.more.innerHTML
+				= this.querySelector("i") ? "Mais<i>&#X3017;</i>" : "Mais");
+	}
 
-		let overflow = new Command();
-		overflow.innerText = "Mais";
-		overflow.addEventListener("click", () =>
-		{
-			var elements = Array.from(this.children)
-				.filter(e => e !== overflow)
-				.filter(e => e.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-			document.documentElement.appendChild(new SideMenu(elements))
-				.show(overflow);
-		});
-
-		overflow.update = () =>
-		{
-			Array.from(this.children).forEach(e => e.style.display = "flex");
-
-			overflow.style.display = "none";
-			if (Overflow.isOverflowed(this))
-				overflow.style.display = "flex";
-
-			for (let element = overflow.previousElementSibling;
-				element;
-				element = element.previousElementSibling)
-				if (Overflow.isOverflowed(this))
-					if (!element.hasAttribute("aria-selected"))
-						element.style.display = "none";
-		};
-
-		window.addEventListener("load", () =>
-		{
-			this.parentNode.style.overflow = "hidden";
-
-			var parameters = URL.parse_query_string(window.location.href);
-			var elements = Array.from(this.children).filter(e => (e.href && e.href.includes('?'))
-					|| (e.formaction && e.formaction.includes('?')));
-
-			var q = elements.filter(e =>
-			{
-				var args = URL.parse_query_string(e.href || e.formaction);
-				return args.MODULE === parameters.MODULE
-					&& args.SCREEN === parameters.SCREEN
-					&& args.ACTION === parameters.ACTION;
-			});
-
-			if (q.length === 0)
-			{
-				var q = elements.filter(e =>
-				{
-					var args = URL.parse_query_string(e.href || e.formaction);
-					return args.MODULE === parameters.MODULE
-						&& args.SCREEN === parameters.SCREEN;
-				});
-
-				if (q.length === 0)
-				{
-					var q = elements.filter(e =>
-					{
-						var args = URL.parse_query_string(e.href || e.formaction);
-						return args.MODULE === parameters.MODULE;
-					});
-				}
-			}
-
-			if (q.length !== 0)
-				q[0].setAttribute("aria-selected", "true");
-
-			if (this.querySelector("* > i"))
-				overflow.appendChild(document.createElement("i"))
-					.innerHTML = "&#X3017;";
-			this.appendChild(overflow);
-			overflow.update();
-		});
-
-		window.top.addEventListener("resize", () => overflow.update());
+	connectedCallback()
+	{
+		super.connectedCallback();
+		let selected = GSelection.getSelectedLink(this.children);
+		if (selected)
+			selected.setAttribute("aria-selected", "true");
 	}
 });
-/* global customElements, Overflow */
+/* global customElements, GOverflow, GSelection */
 
 class GScrollTabBar extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.addEventListener("mouseenter", () => this.style.overflowX = "auto");
-		this.addEventListener("mouseleave", () => this.style.overflowX = "hidden");
-		this.addEventListener("touchstart", () => this.style.overflowX = "auto");
-		this.addEventListener("touchend", () => this.style.overflowX = "hidden");
-		this.addEventListener("touchmove", e => this.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
+		this.attachShadow({mode: 'open'});
 
-		this.addEventListener("scroll", () => this.setAttribute("data-overflowing",
-				Overflow.determineOverflow(this)));
-	}
+		var div = this.shadowRoot.appendChild(document.createElement("div"));
+		div.style.width = "100%";
+		div.style.height = "auto";
+		div.style.border = "none";
+		div.style.display = "flex";
+		div.style.overflowX = "hidden";
+		div.style.whiteSpace = "nowrap";
 
-	connectedCallback()
-	{
-		var parameters = URL.parse_query_string(window.location.href);
-		var elements = Array.from(this.children).filter(e => (e.href && e.href.includes('?'))
-				|| (e.formaction && e.formaction.includes('?')));
+		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
+		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
+		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
+		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
+		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
+		div.appendChild(document.createElement("slot"));
 
-		var q = elements.filter(e =>
-		{
-			var args = URL.parse_query_string(e.href || e.formaction);
-			return args.MODULE === parameters.MODULE
-				&& args.SCREEN === parameters.SCREEN
-				&& args.ACTION === parameters.ACTION;
-		});
-
-		if (q.length === 0)
-		{
-			var q = elements.filter(e =>
-			{
-				var args = URL.parse_query_string(e.href || e.formaction);
-				return args.MODULE === parameters.MODULE
-					&& args.SCREEN === parameters.SCREEN;
-			});
-
-			if (q.length === 0)
-			{
-				var q = elements.filter(e =>
-				{
-					var args = URL.parse_query_string(e.href || e.formaction);
-					return args.MODULE === parameters.MODULE;
-				});
-			}
-		}
-
-		if (q.length !== 0)
-			q[0].setAttribute("aria-selected", "true");
+		div.addEventListener("scroll", () => this.setAttribute("data-overflowing",
+				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild)));
 
 		window.addEventListener("load", () =>
 		{
-			this.setAttribute("data-overflowing", Overflow.determineOverflow(this));
+			let selected = GSelection.getSelectedLink(this.children);
+			if (selected)
+				selected.setAttribute("aria-selected", "true");
+
+			this.setAttribute("data-overflowing",
+				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
 			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
 				.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
 		});
@@ -7525,7 +7463,7 @@ class GScrollTabBar extends HTMLElement
 }
 
 customElements.define("g-scroll-tabbar", GScrollTabBar);
-/* global customElements, Overflow, Proxy, Commands, Dialog */
+/* global customElements, GOverflow, Proxy, GCommands, Dialog */
 
 customElements.define('g-dialog-header', class extends HTMLElement
 {
@@ -7542,8 +7480,10 @@ customElements.define('g-dialog-header', class extends HTMLElement
 		if (window.frameElement && window.frameElement.dialog)
 			window.addEventListener("load", () =>
 			{
-				let commands = new Commands();
+				let commands = window.top.document.createElement("g-commands");
 				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
+				let more = commands.appendChild(window.top.document.createElement("g-more"));
+				more.innerHTML = "<i>&#X3018;</i>"
 				window.frameElement.dialog.commands = commands;
 			});
 	}

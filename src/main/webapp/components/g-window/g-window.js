@@ -62,7 +62,7 @@ class Window extends Modal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new Commands());
+				this.head.appendChild(new GCommands());
 		return this._private.commands;
 	}
 

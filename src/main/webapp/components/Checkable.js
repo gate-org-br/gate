@@ -8,18 +8,18 @@ class Checkable
 		{
 			Checkable._ContextMenu = new ContextMenu();
 
-			var inverterSelecao = new Command();
+			var inverterSelecao = new GCommand();
 			Checkable._ContextMenu.appendChild(inverterSelecao);
 			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
 			inverterSelecao.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked);
 
 
-			var selecionarTudo = new Command();
+			var selecionarTudo = new GCommand();
 			Checkable._ContextMenu.appendChild(selecionarTudo);
 			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
 			selecionarTudo.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true);
 
-			var desmarcarSelecionados = new Command();
+			var desmarcarSelecionados = new GCommand();
 			Checkable._ContextMenu.appendChild(desmarcarSelecionados);
 			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
 			desmarcarSelecionados.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false);

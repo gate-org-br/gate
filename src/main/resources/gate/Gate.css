@@ -174,6 +174,15 @@
   --g-window-list-hovered-color: #FFFACD;
   --g-window-list-hovered-background-color: var(--g-window-header-background-color);
   --g-window-list-hovered-background-image: var(--g-window-header-background-image);
+  --g-coolbar-color: black;
+  --g-coolbar-background-color: var(--main-tinted45);
+  --g-coolbar-background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+  --g-coolbar-button-border-color: #CCCCCC;
+  --g-coolbar-button-background-color: var(--main-tinted20);
+  --g-coolbar-button-background-image: linear-gradient(to bottom, var(--main-tinted20) 0%, var(--main-shaded35) 100%);
+  --g-coolbar-hovered-button-border-color: #CCCCCC;
+  --g-coolbar-hovered-button-background-color: var(--acent-tinted40);
+  --g-coolbar-hovered-button-background-image: linear-gradient(to bottom, var(--acent-tinted40) 0%, var(--acent-shaded20) 100%);
 }
 iframe {
   border: none;
@@ -2787,12 +2796,14 @@ g-command > *,
 .g-command > * {
   cursor: inherit;
 }
+*[data-scroll-disabled] {
+  overflow: hidden;
+}
 g-commands {
   height: 24px;
   color: white;
   outline: none;
   display: flex;
-  flex-wrap: wrap;
   overflow: hidden;
   border-radius: 5px;
   font-size: inherit;
@@ -2804,12 +2815,12 @@ g-commands:empty {
   display: none;
 }
 g-commands > g-command,
+g-commands > g-more,
 g-commands > a,
 g-commands > button {
   padding: 0;
   width: 32px;
   height: 24px;
-  display: none;
   color: inherit;
   font-size: 0px;
   cursor: pointer;
@@ -2817,30 +2828,404 @@ g-commands > button {
   justify-content: center;
 }
 g-commands > g-command:hover,
+g-commands > g-more:hover,
 g-commands > a:hover,
 g-commands > button:hover {
   color: var(--hovered);
 }
 g-commands > g-command > i,
+g-commands > g-more > i,
 g-commands > a > i,
 g-commands > button > i {
   color: inherit;
   font-size: 16px;
 }
 g-commands > g-command > i:hover,
+g-commands > g-more > i:hover,
 g-commands > a > i:hover,
 g-commands > button > i:hover {
   color: var(--hovered);
 }
-body > g-command,
-body > a,
-body > button {
+g-tabbar {
+  border: none;
+  height: auto;
+  flex-grow: 1;
+  display: flex;
+  overflow: hidden;
+  align-items: stretch;
+  justify-content: flex-start;
+  color: var(--g-tabbar-color);
+  background-color: var(--g-tabbar-background-color);
+  background-image: var(--g-tabbar-background-image);
+}
+g-tabbar hr {
+  border: none;
+  flex-grow: 1;
+  background-color: transparent;
+}
+g-tabbar > a,
+g-tabbar > button,
+g-tabbar > g-command,
+g-tabbar > .g-command,
+g-tabbar > g-more,
+g-tabbar > .g-more {
+  margin: 4px;
+  padding: 4px;
+  height: auto;
+  flex-grow: 1;
+  display: flex;
+  color: inherit;
+  flex-shrink: 1;
+  max-width: 160px;
+  border-radius: 5px;
+  white-space: nowrap;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+}
+g-tabbar > a:focus,
+g-tabbar > button:focus,
+g-tabbar > g-command:focus,
+g-tabbar > .g-command:focus,
+g-tabbar > g-more:focus,
+g-tabbar > .g-more:focus {
+  outline: none;
+}
+g-tabbar > a:hover,
+g-tabbar > button:hover,
+g-tabbar > g-command:hover,
+g-tabbar > .g-command:hover,
+g-tabbar > g-more:hover,
+g-tabbar > .g-more:hover {
+  color: var(--g-tabbar-hovered-color);
+  background-color: var(--g-tabbar-hovered-background-color);
+  background-image: var(--g-tabbar-hovered-background-image);
+}
+g-tabbar > a[aria-selected],
+g-tabbar > button[aria-selected],
+g-tabbar > g-command[aria-selected],
+g-tabbar > .g-command[aria-selected],
+g-tabbar > g-more[aria-selected],
+g-tabbar > .g-more[aria-selected] {
+  color: var(--g-tabbar-selected-color);
+  background-color: var(--g-tabbar-selected-background-color);
+  background-image: var(--g-tabbar-selected-background-image);
+}
+g-tabbar > a > i,
+g-tabbar > button > i,
+g-tabbar > g-command > i,
+g-tabbar > .g-command > i,
+g-tabbar > g-more > i,
+g-tabbar > .g-more > i {
+  order: -1;
+  display: flex;
+  min-width: 60px;
+  font-size: 16px;
+  margin-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar,
+.g-coolbar {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 48px;
+  flex-grow: 1;
+  padding: 2px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 5px;
+  align-items: stretch;
+  color: var(--g-coolbar--color);
+  background-color: var(--g-coolbar-background-color);
+  background-image: var(--g-coolbar-background-image);
+}
+g-coolbar:first-child,
+.g-coolbar:first-child {
+  margin-top: 0px;
+}
+g-coolbar:last-child,
+.g-coolbar:last-child {
+  margin-bottom: 0px;
+}
+g-coolbar:only-child,
+.g-coolbar:only-child {
+  margin-bottom: 0px;
+}
+g-coolbar > hr,
+.g-coolbar > hr {
+  border: none;
+  flex-grow: 1;
+}
+g-coolbar > a,
+.g-coolbar > a,
+g-coolbar > button,
+.g-coolbar > button {
+  margin: 2px;
   height: 40px;
   padding: 4px;
-  min-height: 40px;
-  flex-basis: 40px;
+  float: right;
+  flex-grow: 1;
+  display: flex;
+  color: inherit;
+  flex-shrink: 1;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 100px;
+  max-width: 120px;
+  flex-basis: 100px;
   font-weight: bold;
-  background-color: var(--base-shaded35);
+  border-radius: 5px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--g-coolbar-button-border-color);
+  background-color: var(--g-coolbar-button-background-color);
+  background-image: var(--g-coolbar-button-background-image);
+}
+g-coolbar > a:hover,
+.g-coolbar > a:hover,
+g-coolbar > button:hover,
+.g-coolbar > button:hover {
+  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+  background-color: var(--g-coolbar-hovered-button-background-color);
+  background-image: var(--g-coolbar-hovered-button-background-image);
+}
+g-coolbar > a:focus,
+.g-coolbar > a:focus,
+g-coolbar > button:focus,
+.g-coolbar > button:focus {
+  outline: none;
+  border: 2px solid var(--hovered);
+}
+g-coolbar > a > i,
+.g-coolbar > a > i,
+g-coolbar > button > i,
+.g-coolbar > button > i,
+g-coolbar > a > span,
+.g-coolbar > a > span,
+g-coolbar > button > span,
+.g-coolbar > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar > a.Delete,
+.g-coolbar > a.Delete,
+g-coolbar > button.Delete,
+.g-coolbar > button.Delete {
+  color: var(--r);
+}
+g-coolbar > a.Commit,
+.g-coolbar > a.Commit,
+g-coolbar > button.Commit,
+.g-coolbar > button.Commit {
+  color: var(--g);
+}
+g-coolbar > a.Action,
+.g-coolbar > a.Action,
+g-coolbar > button.Action,
+.g-coolbar > button.Action {
+  color: var(--b);
+}
+g-coolbar > a.Cancel,
+.g-coolbar > a.Cancel,
+g-coolbar > button.Cancel,
+.g-coolbar > button.Cancel {
+  color: var(--r);
+}
+g-coolbar > a.Return,
+.g-coolbar > a.Return,
+g-coolbar > button.Return,
+.g-coolbar > button.Return {
+  color: var(--r);
+}
+g-coolbar > g-more,
+.g-coolbar > g-more {
+  width: 32px;
+  height: 40px;
+  display: flex;
+  color: #000099;
+  margin-right: auto;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar > g-more > i,
+.g-coolbar > g-more > i {
+  font-size: 16px;
+}
+div.COOLBAR,
+div.Coolbar {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 48px;
+  padding: 4px;
+  display: block;
+  overflow: hidden;
+  border-radius: 5px;
+  color: var(--g-coolbar--color);
+  background-color: var(--g-coolbar-background-color);
+  background-image: var(--g-coolbar-background-image);
+}
+div.COOLBAR:first-child,
+div.Coolbar:first-child {
+  margin-top: 0px;
+}
+div.COOLBAR:last-child,
+div.Coolbar:last-child {
+  margin-bottom: 0px;
+}
+div.COOLBAR:only-child,
+div.Coolbar:only-child {
+  margin-bottom: 0px;
+}
+div.COOLBAR > *,
+div.Coolbar > * {
+  margin: 2px;
+  height: 36px;
+}
+div.COOLBAR > a,
+div.Coolbar > a,
+div.COOLBAR > button,
+div.Coolbar > button {
+  margin: 2px;
+  width: auto;
+  padding: 4px;
+  float: right;
+  display: flex;
+  color: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  min-width: 90px;
+  font-weight: bold;
+  border-radius: 5px;
+  align-items: center;
+  border: 1px solid #CCCCCC;
+  justify-content: space-between;
+  border: 1px solid var(--g-coolbar-button-border-color);
+  background-color: var(--g-coolbar-button-background-color);
+  background-image: var(--g-coolbar-button-background-image);
+}
+div.COOLBAR > a:hover,
+div.Coolbar > a:hover,
+div.COOLBAR > button:hover,
+div.Coolbar > button:hover {
+  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+  background-color: var(--g-coolbar-hovered-button-background-color);
+  background-image: var(--g-coolbar-hovered-button-background-image);
+}
+div.COOLBAR > a:focus,
+div.Coolbar > a:focus,
+div.COOLBAR > button:focus,
+div.Coolbar > button:focus {
+  outline: none;
+  border: 2px solid var(--hovered);
+}
+div.COOLBAR > a.Delete,
+div.Coolbar > a.Delete,
+div.COOLBAR > button.Delete,
+div.Coolbar > button.Delete {
+  color: var(--r);
+}
+div.COOLBAR > a.Commit,
+div.Coolbar > a.Commit,
+div.COOLBAR > button.Commit,
+div.Coolbar > button.Commit {
+  color: var(--g);
+}
+div.COOLBAR > a.Action,
+div.Coolbar > a.Action,
+div.COOLBAR > button.Action,
+div.Coolbar > button.Action {
+  color: var(--b);
+}
+div.COOLBAR > a.Cancel,
+div.Coolbar > a.Cancel,
+div.COOLBAR > button.Cancel,
+div.Coolbar > button.Cancel {
+  color: var(--r);
+  float: left;
+}
+div.COOLBAR > a.Return,
+div.Coolbar > a.Return,
+div.COOLBAR > button.Return,
+div.Coolbar > button.Return {
+  color: var(--r);
+  float: left;
+}
+div.COOLBAR > a > i,
+div.Coolbar > a > i,
+div.COOLBAR > button > i,
+div.Coolbar > button > i,
+div.COOLBAR > a > span,
+div.Coolbar > a > span,
+div.COOLBAR > button > span,
+div.Coolbar > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+}
+div.COOLBAR > a:only-child,
+div.Coolbar > a:only-child,
+div.COOLBAR > button:only-child,
+div.Coolbar > button:only-child {
+  float: right;
+}
+div.COOLBAR > progress,
+div.Coolbar > progress {
+  width: calc(100% - 4px);
+}
+div.COOLBAR > label,
+div.Coolbar > label {
+  float: left;
+  padding: 4px;
+  font-size: 16px;
+  align-items: center;
+  display: inline-flex;
+  justify-content: flex-start;
+}
+div.COOLBAR > hr,
+div.Coolbar > hr {
+  width: 12px;
+  float: right;
+  max-width: 12px;
+  display: inline-block;
+  border: 0px none transparent;
+  background-color: transparent;
+}
+div.COOLBAR[data-overflow],
+div.Coolbar[data-overflow] {
+  height: auto;
+}
+div.COOLBAR[data-overflow] > a,
+div.Coolbar[data-overflow] > a,
+div.COOLBAR[data-overflow] > button,
+div.Coolbar[data-overflow] > button {
+  width: 36px;
+  padding: 0px;
+  font-size: 0px;
+  min-width: 0px;
+  justify-content: center;
+}
+div.COOLBAR[data-overflow] > a > i,
+div.Coolbar[data-overflow] > a > i,
+div.COOLBAR[data-overflow] > button > i,
+div.Coolbar[data-overflow] > button > i {
+  font-size: 16px;
+  margin-left: 0px;
 }
 g-navbar {
   width: auto;
@@ -3439,272 +3824,6 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-size: 12px;
   font-weight: bold;
   text-align: center;
-}
-g-coolbar {
-  margin: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 100%;
-  height: 48px;
-  padding: 2px;
-  display: flex;
-  flex-wrap: wrap;
-  overflow: hidden;
-  border-radius: 5px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row-reverse;
-  background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
-}
-g-coolbar:first-child {
-  margin-top: 0px;
-}
-g-coolbar:last-child {
-  margin-bottom: 0px;
-}
-g-coolbar:only-child {
-  margin-bottom: 0px;
-}
-g-coolbar > hr {
-  border: none;
-  flex-grow: 1;
-}
-g-coolbar > a,
-g-coolbar > button {
-  margin: 2px;
-  color: black;
-  height: 40px;
-  padding: 4px;
-  float: right;
-  flex-grow: 1;
-  display: flex;
-  flex-shrink: 1;
-  font-size: 12px;
-  cursor: pointer;
-  min-width: 100px;
-  max-width: 120px;
-  flex-basis: 100px;
-  font-weight: bold;
-  border-radius: 5px;
-  align-items: center;
-  border: 1px solid #CCCCCC;
-  justify-content: space-between;
-  background-image: linear-gradient(to bottom, var(--main-tinted20) 0%, var(--main-shaded35) 100%);
-}
-g-coolbar > a:hover,
-g-coolbar > button:hover {
-  background-image: linear-gradient(to bottom, var(--acent-tinted40) 0%, var(--acent-shaded20) 100%);
-}
-g-coolbar > a:focus,
-g-coolbar > button:focus {
-  outline: none;
-  border: 2px solid var(--hovered);
-}
-g-coolbar > a > i,
-g-coolbar > button > i,
-g-coolbar > a > span,
-g-coolbar > button > span {
-  order: 1;
-  display: flex;
-  color: inherit;
-  cursor: inherit;
-  font-size: 12px;
-  margin-left: 4px;
-  align-items: center;
-  justify-content: center;
-}
-g-coolbar > a.Delete,
-g-coolbar > button.Delete {
-  color: var(--r);
-}
-g-coolbar > a.Commit,
-g-coolbar > button.Commit {
-  color: var(--g);
-}
-g-coolbar > a.Action,
-g-coolbar > button.Action {
-  color: var(--b);
-}
-g-coolbar > a.Cancel,
-g-coolbar > button.Cancel {
-  color: var(--r);
-}
-g-coolbar > a.Return,
-g-coolbar > button.Return {
-  color: var(--r);
-}
-g-coolbar > g-overflow {
-  width: 32px;
-  height: 40px;
-  display: flex;
-  color: #000099;
-  margin-right: auto;
-  align-items: center;
-  justify-content: center;
-}
-g-coolbar > g-overflow > i {
-  font-size: 16px;
-}
-div.COOLBAR,
-div.Coolbar {
-  margin: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  width: 100%;
-  height: 48px;
-  padding: 4px;
-  display: block;
-  overflow: hidden;
-  border-radius: 5px;
-  background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
-}
-div.COOLBAR:first-child,
-div.Coolbar:first-child {
-  margin-top: 0px;
-}
-div.COOLBAR:last-child,
-div.Coolbar:last-child {
-  margin-bottom: 0px;
-}
-div.COOLBAR:only-child,
-div.Coolbar:only-child {
-  margin-bottom: 0px;
-}
-div.COOLBAR > *,
-div.Coolbar > * {
-  margin: 2px;
-  height: 36px;
-}
-div.COOLBAR > a,
-div.Coolbar > a,
-div.COOLBAR > button,
-div.Coolbar > button {
-  color: black;
-  margin: 2px;
-  width: auto;
-  padding: 4px;
-  float: right;
-  display: flex;
-  font-size: 10px;
-  cursor: pointer;
-  min-width: 90px;
-  font-weight: bold;
-  border-radius: 5px;
-  align-items: center;
-  border: 1px solid #CCCCCC;
-  justify-content: space-between;
-  background-image: linear-gradient(to bottom, var(--main-tinted20) 0%, var(--main-shaded35) 100%);
-}
-div.COOLBAR > a:hover,
-div.Coolbar > a:hover,
-div.COOLBAR > button:hover,
-div.Coolbar > button:hover {
-  background-image: linear-gradient(to bottom, var(--acent-tinted40) 0%, var(--acent-shaded20) 100%);
-}
-div.COOLBAR > a:focus,
-div.Coolbar > a:focus,
-div.COOLBAR > button:focus,
-div.Coolbar > button:focus {
-  outline: none;
-  border: 2px solid var(--hovered);
-}
-div.COOLBAR > a.Delete,
-div.Coolbar > a.Delete,
-div.COOLBAR > button.Delete,
-div.Coolbar > button.Delete {
-  color: var(--r);
-}
-div.COOLBAR > a.Commit,
-div.Coolbar > a.Commit,
-div.COOLBAR > button.Commit,
-div.Coolbar > button.Commit {
-  color: var(--g);
-}
-div.COOLBAR > a.Action,
-div.Coolbar > a.Action,
-div.COOLBAR > button.Action,
-div.Coolbar > button.Action {
-  color: var(--b);
-}
-div.COOLBAR > a.Cancel,
-div.Coolbar > a.Cancel,
-div.COOLBAR > button.Cancel,
-div.Coolbar > button.Cancel {
-  color: var(--r);
-  float: left;
-}
-div.COOLBAR > a.Return,
-div.Coolbar > a.Return,
-div.COOLBAR > button.Return,
-div.Coolbar > button.Return {
-  color: var(--r);
-  float: left;
-}
-div.COOLBAR > a > i,
-div.Coolbar > a > i,
-div.COOLBAR > button > i,
-div.Coolbar > button > i,
-div.COOLBAR > a > span,
-div.Coolbar > a > span,
-div.COOLBAR > button > span,
-div.Coolbar > button > span {
-  order: 1;
-  display: flex;
-  color: inherit;
-  cursor: inherit;
-  font-size: 12px;
-  margin-left: 4px;
-  align-items: center;
-  justify-content: center;
-}
-div.COOLBAR > a:only-child,
-div.Coolbar > a:only-child,
-div.COOLBAR > button:only-child,
-div.Coolbar > button:only-child {
-  float: right;
-}
-div.COOLBAR > progress,
-div.Coolbar > progress {
-  width: calc(100% - 4px);
-}
-div.COOLBAR > label,
-div.Coolbar > label {
-  float: left;
-  padding: 4px;
-  font-size: 16px;
-  align-items: center;
-  display: inline-flex;
-  justify-content: flex-start;
-}
-div.COOLBAR > hr,
-div.Coolbar > hr {
-  width: 12px;
-  float: right;
-  max-width: 12px;
-  display: inline-block;
-  border: 0px none transparent;
-  background-color: transparent;
-}
-div.COOLBAR[data-overflow],
-div.Coolbar[data-overflow] {
-  height: auto;
-}
-div.COOLBAR[data-overflow] > a,
-div.Coolbar[data-overflow] > a,
-div.COOLBAR[data-overflow] > button,
-div.Coolbar[data-overflow] > button {
-  width: 36px;
-  padding: 0px;
-  font-size: 0px;
-  min-width: 0px;
-  justify-content: center;
-}
-div.COOLBAR[data-overflow] > a > i,
-div.Coolbar[data-overflow] > a > i,
-div.COOLBAR[data-overflow] > button > i,
-div.Coolbar[data-overflow] > button > i {
-  font-size: 16px;
-  margin-left: 0px;
 }
 div.Toolbar,
 div.TOOLBAR {
@@ -4523,6 +4642,7 @@ body main > nav {
   border: none;
   padding: 8px;
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
   background-color: var(--nav-background-color);
@@ -4978,89 +5098,9 @@ g-side-menu.R > div,
   padding: 8px;
   background-image: linear-gradient(to left, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
 }
-g-overflow,
-.g-overflow {
-  display: none;
-}
-*[data-scroll-disabled] {
-  overflow: hidden;
-}
-g-tabbar {
-  border: none;
-  height: auto;
-  flex-grow: 1;
-  display: flex;
-  overflow: hidden;
-  align-items: stretch;
-  justify-content: flex-start;
-  color: var(--g-tabbar-color);
-  background-color: var(--g-tabbar-background-color);
-  background-image: var(--g-tabbar-background-image);
-}
-g-tabbar hr {
-  border: none;
-  flex-grow: 1;
-  background-color: transparent;
-}
-g-tabbar > a,
-g-tabbar > button,
-g-tabbar > g-command,
-g-tabbar > .g-command {
-  margin: 4px;
-  padding: 4px;
-  height: auto;
-  flex-grow: 1;
-  display: flex;
-  color: inherit;
-  flex-shrink: 1;
-  max-width: 160px;
-  border-radius: 5px;
-  white-space: nowrap;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-around;
-}
-g-tabbar > a:focus,
-g-tabbar > button:focus,
-g-tabbar > g-command:focus,
-g-tabbar > .g-command:focus {
-  outline: none;
-}
-g-tabbar > a:hover,
-g-tabbar > button:hover,
-g-tabbar > g-command:hover,
-g-tabbar > .g-command:hover {
-  color: var(--g-tabbar-hovered-color);
-  background-color: var(--g-tabbar-hovered-background-color);
-  background-image: var(--g-tabbar-hovered-background-image);
-}
-g-tabbar > a[aria-selected],
-g-tabbar > button[aria-selected],
-g-tabbar > g-command[aria-selected],
-g-tabbar > .g-command[aria-selected] {
-  color: var(--g-tabbar-selected-color);
-  background-color: var(--g-tabbar-selected-background-color);
-  background-image: var(--g-tabbar-selected-background-image);
-}
-g-tabbar > a > i,
-g-tabbar > button > i,
-g-tabbar > g-command > i,
-g-tabbar > .g-command > i {
-  order: -1;
-  display: flex;
-  min-width: 60px;
-  font-size: 16px;
-  margin-bottom: 4px;
-  align-items: center;
-  justify-content: center;
-}
 g-scroll-tabbar {
-  width: 100%;
-  height: auto;
-  border: none;
   display: flex;
-  overflow-x: hidden;
-  white-space: nowrap;
+  overflow: hidden;
   color: var(--g-tabbar-color);
   background-color: var(--g-tabbar-background-color);
   background-image: var(--g-tabbar-background-image);
@@ -5116,17 +5156,28 @@ g-scroll-tabbar > .g-command > i {
   align-items: center;
   justify-content: center;
 }
-g-scroll-tabbar[data-overflowing=right] {
-  border-left: 4px ridge #222222;
-  border-right: 4px dotted #222222;
+g-scroll-tabbar[data-overflowing=left]::before,
+g-scroll-tabbar[data-overflowing=left]::after,
+g-scroll-tabbar[data-overflowing=right]::before,
+g-scroll-tabbar[data-overflowing=right]::after,
+g-scroll-tabbar[data-overflowing=both]::before,
+g-scroll-tabbar[data-overflowing=both]::after {
+  display: flex;
+  content: " ";
+  color: #999999;
+  font-size: 16px;
+  flex-basis: 32px;
+  font-family: "gate";
+  align-items: center;
+  justify-content: center;
 }
-g-scroll-tabbar[data-overflowing=left] {
-  border-left: 4px dotted #222222;
-  border-right: 4px ridge #222222;
+g-scroll-tabbar[data-overflowing=left]::before,
+g-scroll-tabbar[data-overflowing=both]::before {
+  content: "\2277";
 }
-g-scroll-tabbar[data-overflowing=both] {
-  border-left: 4px dotted #222222;
-  border-right: 4px dotted #222222;
+g-scroll-tabbar[data-overflowing=right]::after,
+g-scroll-tabbar[data-overflowing=both]::after {
+  content: "\2279";
 }
 figure {
   margin: 0;

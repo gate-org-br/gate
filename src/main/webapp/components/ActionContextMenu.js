@@ -18,7 +18,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyLinkAction)
 		{
-			ActionContextMenu._CopyLinkAction = new Command();
+			ActionContextMenu._CopyLinkAction = new GCommand();
 			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
 			ActionContextMenu._CopyLinkAction.action = e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true);
 		}
@@ -29,7 +29,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._CopyTextAction)
 		{
-			ActionContextMenu._CopyTextAction = new Command();
+			ActionContextMenu._CopyTextAction = new GCommand();
 			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
 			ActionContextMenu._CopyTextAction.action = e => Clipboard.copy(e.parentNode.target.innerText, true);
 		}
@@ -40,7 +40,7 @@ class ActionContextMenu
 	{
 		if (!ActionContextMenu._OpenLinkAction)
 		{
-			ActionContextMenu._OpenLinkAction = new Command();
+			ActionContextMenu._OpenLinkAction = new GCommand();
 			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
 
 			ActionContextMenu._OpenLinkAction.action = e =>
