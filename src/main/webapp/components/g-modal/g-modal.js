@@ -1,5 +1,5 @@
 
-/* global customElements, Overflow, WindowList */
+/* global customElements, GOverflow, WindowList */
 
 class Modal extends HTMLElement
 {
@@ -44,7 +44,7 @@ class Modal extends HTMLElement
 	{
 		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
-			Overflow.disable(window.top.document.documentElement);
+			GOverflow.disable(window.top.document.documentElement);
 
 			window.top.document.documentElement.appendChild(this);
 
@@ -59,7 +59,7 @@ class Modal extends HTMLElement
 		if (this.parentNode
 			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
-			Overflow.enable(window.top.document.documentElement);
+			GOverflow.enable(window.top.document.documentElement);
 			this.parentNode.removeChild(this);
 		}
 
@@ -72,7 +72,7 @@ class Modal extends HTMLElement
 			return;
 
 		this.style.display = "none";
-		Overflow.enable(window.top.document.documentElement);
+		GOverflow.enable(window.top.document.documentElement);
 
 		var link = WindowList.instance.appendChild(document.createElement("a"));
 		link.href = "#";
@@ -82,7 +82,7 @@ class Modal extends HTMLElement
 		{
 			this.style.display = "";
 			link.parentNode.removeChild(link);
-			Overflow.disable(window.top.document.documentElement);
+			GOverflow.disable(window.top.document.documentElement);
 		});
 	}
 }

@@ -9,7 +9,7 @@ class Message extends Window
 		this.classList.add(options.type);
 		this.caption = options.title || "";
 
-		let close = new Command();
+		let close = new GCommand();
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);

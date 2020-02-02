@@ -1,59 +1,38 @@
-/* global customElements, Overflow */
+/* global customElements, GOverflow, GSelection */
 
 class GScrollTabBar extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.addEventListener("mouseenter", () => this.style.overflowX = "auto");
-		this.addEventListener("mouseleave", () => this.style.overflowX = "hidden");
-		this.addEventListener("touchstart", () => this.style.overflowX = "auto");
-		this.addEventListener("touchend", () => this.style.overflowX = "hidden");
-		this.addEventListener("touchmove", e => this.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
+		this.attachShadow({mode: 'open'});
 
-		this.addEventListener("scroll", () => this.setAttribute("data-overflowing",
-				Overflow.determineOverflow(this)));
-	}
+		var div = this.shadowRoot.appendChild(document.createElement("div"));
+		div.style.width = "100%";
+		div.style.height = "auto";
+		div.style.border = "none";
+		div.style.display = "flex";
+		div.style.overflowX = "hidden";
+		div.style.whiteSpace = "nowrap";
 
-	connectedCallback()
-	{
-		var parameters = URL.parse_query_string(window.location.href);
-		var elements = Array.from(this.children).filter(e => (e.href && e.href.includes('?'))
-				|| (e.formaction && e.formaction.includes('?')));
+		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
+		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
+		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
+		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
+		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
+		div.appendChild(document.createElement("slot"));
 
-		var q = elements.filter(e =>
-		{
-			var args = URL.parse_query_string(e.href || e.formaction);
-			return args.MODULE === parameters.MODULE
-				&& args.SCREEN === parameters.SCREEN
-				&& args.ACTION === parameters.ACTION;
-		});
-
-		if (q.length === 0)
-		{
-			var q = elements.filter(e =>
-			{
-				var args = URL.parse_query_string(e.href || e.formaction);
-				return args.MODULE === parameters.MODULE
-					&& args.SCREEN === parameters.SCREEN;
-			});
-
-			if (q.length === 0)
-			{
-				var q = elements.filter(e =>
-				{
-					var args = URL.parse_query_string(e.href || e.formaction);
-					return args.MODULE === parameters.MODULE;
-				});
-			}
-		}
-
-		if (q.length !== 0)
-			q[0].setAttribute("aria-selected", "true");
+		div.addEventListener("scroll", () => this.setAttribute("data-overflowing",
+				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild)));
 
 		window.addEventListener("load", () =>
 		{
-			this.setAttribute("data-overflowing", Overflow.determineOverflow(this));
+			let selected = GSelection.getSelectedLink(this.children);
+			if (selected)
+				selected.setAttribute("aria-selected", "true");
+
+			this.setAttribute("data-overflowing",
+				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
 			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
 				.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
 		});

@@ -53,11 +53,11 @@
 					</div>
 				</div>
 
-				<div class='COOLBAR'>
+				<g-coolbar>
 					<button class="Commit" tabindex='2'>
 						Concluir<g:icon type="commit"/>
 					</button>
-				</div>
+				</g-coolbar>
 			</div>
 		</div>
 

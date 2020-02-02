@@ -1,4 +1,4 @@
-/* global Message, Block, ENTER, ESC, Commands, link */
+/* global Message, Block, ENTER, ESC, GCommands, link */
 
 class Button
 {

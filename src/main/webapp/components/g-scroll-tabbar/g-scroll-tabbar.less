@@ -1,11 +1,7 @@
 g-scroll-tabbar
 {
-	width: 100%;
-	height: auto;
-	border: none;
 	display: flex;
-	overflow-x: hidden;
-	white-space: nowrap;
+	overflow: hidden;
 	color: var(--g-tabbar-color);
 	background-color:  var(--g-tabbar-background-color);
 	background-image:  var(--g-tabbar-background-image);
@@ -52,21 +48,33 @@ g-scroll-tabbar
 		      justify-content: center;}
 	}
 
-	&[data-overflowing=right]
+	&[data-overflowing=left]::before,
+	&[data-overflowing=left]::after,
+	&[data-overflowing=right]::before,
+	&[data-overflowing=right]::after,
+	&[data-overflowing=both]::before,
+	&[data-overflowing=both]::after
 	{
-		border-left: 4px ridge #222222;
-		border-right: 4px dotted #222222;
+		display: flex;
+		content: " ";
+		color: #999999;
+		font-size: 16px;
+		flex-basis: 32px;
+		font-family: "gate";
+		align-items: center;
+		justify-content: center;
 	}
 
-	&[data-overflowing=left]
+	&[data-overflowing=left]::before,
+	&[data-overflowing=both]::before
 	{
-		border-left: 4px dotted #222222;
-		border-right: 4px ridge #222222;
+		content: "\2277";
+
 	}
 
-	&[data-overflowing=both]
+	&[data-overflowing=right]::after,
+	&[data-overflowing=both]::after
 	{
-		border-left: 4px dotted #222222;
-		border-right: 4px dotted #222222;
+		content: "\2279";
 	}
 }

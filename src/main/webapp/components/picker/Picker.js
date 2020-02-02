@@ -6,7 +6,7 @@ class Picker extends Window
 	{
 		super();
 		this.classList.add("g-picker");
-		let close = new Command();
+		let close = new GCommand();
 		close.action = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);

@@ -1,4 +1,4 @@
-/* global customElements, Overflow, Proxy, Commands, Dialog */
+/* global customElements, GOverflow, Proxy, GCommands, Dialog */
 
 customElements.define('g-dialog-header', class extends HTMLElement
 {
@@ -15,8 +15,10 @@ customElements.define('g-dialog-header', class extends HTMLElement
 		if (window.frameElement && window.frameElement.dialog)
 			window.addEventListener("load", () =>
 			{
-				let commands = new Commands();
+				let commands = window.top.document.createElement("g-commands");
 				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
+				let more = commands.appendChild(window.top.document.createElement("g-more"));
+				more.innerHTML = "<i>&#X3018;</i>"
 				window.frameElement.dialog.commands = commands;
 			});
 	}

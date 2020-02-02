@@ -1,6 +1,6 @@
 /* global customElements */
 
-class Command extends HTMLElement
+class GCommand extends HTMLElement
 {
 	constructor()
 	{
@@ -26,4 +26,4 @@ class Command extends HTMLElement
 	}
 }
 
-customElements.define('g-command', Command);
+customElements.define('g-command', GCommand);

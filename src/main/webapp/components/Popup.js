@@ -10,7 +10,7 @@ class Popup extends Window
 		this.classList.add("g-popup");
 
 		this.caption = "Erro de sistema";
-		let close = new Command();
+		let close = new GCommand();
 
 		this.commands.add(close);
 		close.action = () => this.hide();
