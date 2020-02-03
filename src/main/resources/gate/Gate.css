@@ -2819,10 +2819,11 @@ g-commands > g-more,
 g-commands > a,
 g-commands > button {
   padding: 0;
-  width: 32px;
+  width: 24px;
+  font-size: 0;
   height: 24px;
+  display: flex;
   color: inherit;
-  font-size: 0px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
