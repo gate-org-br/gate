@@ -17,8 +17,8 @@ customElements.define('g-dialog-header', class extends HTMLElement
 			{
 				let commands = window.top.document.createElement("g-commands");
 				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
-				let more = commands.appendChild(window.top.document.createElement("g-more"));
-				more.innerHTML = "<i>&#X3018;</i>"
+				//let more = commands.appendChild(window.top.document.createElement("g-more"));
+				//more.innerHTML = "<i>&#X3018;</i>"
 				window.frameElement.dialog.commands = commands;
 			});
 	}

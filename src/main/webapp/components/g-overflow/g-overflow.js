@@ -5,31 +5,72 @@ class GOverflow extends HTMLElement
 	constructor()
 	{
 		super();
-		this._private = {more: new GMore(),
-			container: document.createElement("div")};
-
 		this.attachShadow({mode: 'open'});
-		this.container.style.width = "auto";
-		this.container.style.flexGrow = "1";
-		this.container.style.display = "flex";
-		this.container.style.whiteSpace = "nowrap";
-		this.shadowRoot.appendChild(this.container);
-		this.container.appendChild(document.createElement("slot"));
-	}
+		var container = document.createElement("div");
+		container.style.width = "auto";
+		container.style.flex = "1 1 0px";
+		container.style.display = "flex";
 
-	get more()
-	{
-		return this._private.more;
-	}
+		container.style.whiteSpace = "nowrap";
+		container.style.flexDirection = "row-reverse";
+		this.shadowRoot.appendChild(container);
+		container.appendChild(document.createElement("slot"));
 
-	get container()
-	{
-		return this._private.container;
+		var more = new GCommand();
+		more.innerHTML = "&#X3018;";
+
+		more.style.padding = "0";
+		more.style.width = "32px";
+		more.style.flexGrow = "0";
+		more.style.height = "100%";
+		more.style.display = "flex";
+		more.style.flexShrink = "0";
+		more.style.fontSize = "20px";
+		more.style.color = "inherit";
+		more.style.cursor = "pointer";
+		more.style.fontFamily = "gate";
+		more.style.marginRight = "auto";
+		more.style.alignItems = "center";
+		more.style.justifyContent = "center";
+
+		container.appendChild(more);
+
+		more.addEventListener("click", () =>
+		{
+			let elements = Array.from(this.children)
+				.filter(e => e.tagName !== "HR")
+				.filter(e => e.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+			document.documentElement.appendChild(new SideMenu(elements)).show(more);
+		});
+
+		this._private = {more: more, container: container,
+			update: () =>
+			{
+				Array.from(this.children).forEach(e => e.style.display = "flex");
+
+				more.style.display = "none";
+				if (container.clientWidth > this.clientWidth)
+					more.style.display = "flex";
+
+				for (let e = this.lastElementChild; e; e = e.previousElementSibling)
+					if (container.clientWidth > this.clientWidth)
+						e.style.display = "none";
+			}};
 	}
 
 	connectedCallback()
 	{
-		window.addEventListener("load", () => this.appendChild(this.more));
+		setTimeout(() => this._private.update(), 0);
+		window.addEventListener("load", this._private.update);
+		window.addEventListener("resize", this._private.update);
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("load", this._private.update);
+		window.removeEventListener("resize", this._private.update);
 	}
 
 	static isOverflowed(element)
