@@ -1,5 +1,5 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
-<g:template filename="/WEB-INF/views/MAIN.jsp">
+<g:template filename="/WEB-INF/views/PAGE.jsp">
 	<g:choose>
 		<g:when condition="${empty screen.page}">
 			<div class='TEXT'>
@@ -44,8 +44,8 @@
 								<td><g:print value="${target.active}"/></td>
 							</tr>
 						</g:iterator>
-					</tbody>	
-				</table>			
+					</tbody>
+				</table>
 			</div>
 		</g:otherwise>
 	</g:choose>

@@ -1,15 +1,20 @@
 /* global customElements */
 
-class Picker extends Window
+class Picker extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.classList.add("g-picker");
-		let close = new GCommand();
-		close.action = () => this.hide();
+		let close = document.createElement("a");
+		close.href = "#";
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
+	}
+
+	connectedCallback()
+	{
+		this.classList.add("g-picker");
 	}
 
 	get commit()

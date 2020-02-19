@@ -1,38 +1,84 @@
-window.addEventListener("load", function ()
-{
-	var change = function (event)
+/////////////////////////////////////////////////////////////////////////////
+// ChangeHandler.js
+/////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener("change", event =>
 	{
-		switch (this.getAttribute("data-method") ?
-			this.getAttribute("data-method")
-			.toLowerCase() : "get")
+		let action = event.target || event.srcElement;
+
+		if ((!action.tagName === "INPUT"
+			&& !action.tagName === "SELECT")
+			|| (!action.hasAttribute("data-method")
+				&& !action.hasAttribute("data-action")
+				&& !action.hasAttribute("data-target")))
+			return;
+
+		action.blur();
+
+		switch (action.getAttribute("data-method") ? action.getAttribute("data-method").toLowerCase() : "get")
 		{
 			case "get":
-				new Link(document.createElement("a"), event.target)
-					.setAction(this.getAttribute("data-action"))
-					.setTarget(this.getAttribute("data-target"))
-					.setTitle(this.getAttribute("title"))
-					.setBlock(this.getAttribute("data-block"))
-					.setAlert(this.getAttribute("data-alert"))
-					.setConfirm(this.getAttribute("data-confirm"))
-					.execute();
+
+				let link = document.createElement("a");
+
+				if (action.hasAttribute("data-target"))
+					link.setAttribute("target", action.getAttribute("data-target"));
+
+				if (action.hasAttribute("data-action"))
+					link.setAttribute("href", action.getAttribute("data-action"));
+
+				if (action.hasAttribute("data-reload-on-hide"))
+					link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+				if (action.hasAttribute("data-submit-on-hide"))
+					link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+				if (action.hasAttribute("title"))
+					link.setAttribute("title", action.getAttribute("title"));
+
+				if (action.hasAttribute("data-block"))
+					link.setAttribute("data-block", action.getAttribute("data-block"));
+
+				if (action.hasAttribute("data-alert"))
+					link.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+				if (action.hasAttribute("data-confirm"))
+					link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
 				break;
 			case "post":
-				new Button(document.createElement("button"), event.target)
-					.setAction(this.getAttribute("data-action"))
-					.setTarget(this.getAttribute("data-target"))
-					.setTitle(this.getAttribute("title"))
-					.setBlock(this.getAttribute("data-block"))
-					.setAlert(this.getAttribute("data-alert"))
-					.setConfirm(this.getAttribute("data-confirm"))
-					.execute();
+				let button = document.createElement("button");
+
+				if (action.hasAttribute("data-target"))
+					button.setAttribute("target", action.getAttribute("data-target"));
+
+				if (action.hasAttribute("data-action"))
+					button.setAttribute("formaction", action.getAttribute("formaction"));
+
+				if (action.hasAttribute("data-reload-on-hide"))
+					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+				if (action.hasAttribute("data-submit-on-hide"))
+					button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+				if (action.hasAttribute("title"))
+					button.setAttribute("title", action.getAttribute("title"));
+
+				if (action.hasAttribute("data-block"))
+					button.setAttribute("data-block", action.getAttribute("data-block"));
+
+				if (action.hasAttribute("data-alert"))
+					button.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+				if (action.hasAttribute("data-confirm"))
+					button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+
+				var form = action.closest("form");
+				form.appendChild(button);
+				button.click();
+				form.removeChild(button);
 				break;
 		}
-	};
-
-	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target], select[data-method], select[data-action], select[data-target]')).forEach(element =>
-	{
-		element.addEventListener("change", change);
-		element.addEventListener("changed", change);
 	});
-});
-

@@ -3,6 +3,7 @@ package gate.producer;
 import gate.Session;
 import gate.annotation.Current;
 import gate.entity.User;
+import gate.error.InvalidCredentialsException;
 import gate.io.Credentials;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -25,7 +26,13 @@ public class UserProducer
 	@Named(value = "user")
 	public User getUser()
 	{
-		return Credentials.of(request)
-			.orElseGet(() -> session.getUser());
+		try
+		{
+			return Credentials.of(request)
+				.orElseGet(() -> session.getUser());
+		} catch (InvalidCredentialsException ex)
+		{
+			return null;
+		}
 	}
 }

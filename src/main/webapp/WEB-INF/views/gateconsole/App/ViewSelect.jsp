@@ -1,22 +1,22 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<fieldset>
-		<label style='width: 100%'>
+		<label>
 			Nome:
 			<span>
 				<g:label property='form.name'/>
 			</span>
 		</label>
-		<label style='width: 100%'>
-			Descri&ccedil;&atilde;o:
-			<span style='height: 60px'>
+		<label>
+			Descrição:
+			<span style='flex-basis: 60px'>
 				<g:label property='form.description'/>
 			</span>
 		</label>
 
-		<fieldset style="width: 100%; overflow: auto">
-			<table class="TREEVIEW">
+		<fieldset overflow: auto">
+			  <table class="TREEVIEW">
 				<caption>
 					ACESSOS
 				</caption>
@@ -85,9 +85,10 @@
 			</table>
 		</fieldset>
 	</fieldset>
-	<div class='COOLBAR'>
-		<g:link class='Hide' module="#" screen="#" style='float: left'>
-			Fechar<g:icon type="cancel"/>
+	<g-coolbar>
+		<hr/>
+		<g:link module="#" screen="#" target="_hide">
+			Retornar<g:icon type="cancel"/>
 		</g:link>
-	</div>
+	</g-coolbar>
 </g:template>

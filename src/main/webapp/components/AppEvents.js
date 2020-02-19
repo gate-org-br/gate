@@ -2,7 +2,7 @@ class AppEvents
 {
 	static listen()
 	{
-		var url = "ws://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
+		var url = "wss://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
 
 		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
 		{

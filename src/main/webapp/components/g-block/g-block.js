@@ -1,6 +1,6 @@
-/* global Modal, customElements */
+/* global customElements */
 
-class GBlock extends Window
+class GBlock extends GWindow
 {
 	constructor()
 	{

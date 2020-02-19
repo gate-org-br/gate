@@ -29,7 +29,7 @@
 					</thead>
 					<tbody>
 						<g:iterator source="${screen.page}" target="item" index="indx">
-							<tr data-target='_dialog'
+							<tr data-target='_stack'
 							    title='${item.id}'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&id=${item.id}'>
 								<td style='text-align: center'>

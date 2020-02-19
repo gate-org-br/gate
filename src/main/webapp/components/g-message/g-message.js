@@ -1,6 +1,6 @@
-/* global customElements, Modal */
+/* global customElements */
 
-class Message extends Window
+class Message extends GWindow
 {
 	constructor(options)
 	{
@@ -9,8 +9,9 @@ class Message extends Window
 		this.classList.add(options.type);
 		this.caption = options.title || "";
 
-		let close = new GCommand();
-		close.action = () => this.hide();
+		let close = document.createElement("a");
+		close.href = "#";
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
 

@@ -30,7 +30,7 @@ public @interface Description
 				{
 					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Description.class))
-						Optional.of(annotatedElement.getAnnotation(Description.class).value());
+						return Optional.of(annotatedElement.getAnnotation(Description.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyDescription.class))
 						return extract(CopyDescription.Extractor.extract(annotatedElement));
 					if (annotatedElement.isAnnotationPresent(CopyInfo.class))

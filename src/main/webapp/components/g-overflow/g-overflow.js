@@ -14,16 +14,19 @@ class GOverflow extends HTMLElement
 		container.style.whiteSpace = "nowrap";
 		container.style.flexDirection = "row-reverse";
 		this.shadowRoot.appendChild(container);
-		container.appendChild(document.createElement("slot"));
+		let slot = container.appendChild(document.createElement("slot"));
+		slot.addEventListener("slotchange", () => this._private.update());
 
-		var more = new GCommand();
+		var more = document.createElement("a");
+		more.href = "#";
 		more.innerHTML = "&#X3018;";
 
 		more.style.padding = "0";
 		more.style.width = "32px";
 		more.style.flexGrow = "0";
 		more.style.height = "100%";
-		more.style.display = "flex";
+		more.style.outline = "none";
+		more.style.display = "none";
 		more.style.flexShrink = "0";
 		more.style.fontSize = "20px";
 		more.style.color = "inherit";
@@ -31,6 +34,7 @@ class GOverflow extends HTMLElement
 		more.style.fontFamily = "gate";
 		more.style.marginRight = "auto";
 		more.style.alignItems = "center";
+		more.style.textDecoration = "none";
 		more.style.justifyContent = "center";
 
 		container.appendChild(more);
@@ -42,12 +46,15 @@ class GOverflow extends HTMLElement
 				.filter(e => e.style.display === "none")
 				.map(element => Proxy.create(element));
 			elements.forEach(e => e.style.display = "");
-			document.documentElement.appendChild(new SideMenu(elements)).show(more);
+			document.documentElement.appendChild(new GSideMenu(elements)).show(more);
 		});
 
-		this._private = {more: more, container: container,
-			update: () =>
+		this._private = {more: more, container: container, update: () =>
 			{
+				let selected = GSelection.getSelectedLink(this.children);
+				if (selected)
+					selected.setAttribute("aria-selected", "true");
+
 				Array.from(this.children).forEach(e => e.style.display = "flex");
 
 				more.style.display = "none";
@@ -56,20 +63,20 @@ class GOverflow extends HTMLElement
 
 				for (let e = this.lastElementChild; e; e = e.previousElementSibling)
 					if (container.clientWidth > this.clientWidth)
-						e.style.display = "none";
+						if (!e.hasAttribute("aria-selected"))
+							e.style.display = "none";
 			}};
+
+		window.addEventListener("load", this._private.update);
 	}
 
 	connectedCallback()
 	{
-		setTimeout(() => this._private.update(), 0);
-		window.addEventListener("load", this._private.update);
 		window.addEventListener("resize", this._private.update);
 	}
 
 	disconnectedCallback()
 	{
-		window.removeEventListener("load", this._private.update);
 		window.removeEventListener("resize", this._private.update);
 	}
 

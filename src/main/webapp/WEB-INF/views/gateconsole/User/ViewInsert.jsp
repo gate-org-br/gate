@@ -1,10 +1,11 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method='POST' action='#' enctype='multipart/form-data'>
 		<fieldset>
 			<legend>
-				Novo Usu&aacute;rio<g:icon type="update"/>
+				<g:name type="${action}"/>
+				<g:icon type="${action}"/>
 			</legend>
 			<g:hidden property='form'/>
 
@@ -104,13 +105,14 @@
 			</label>
 		</fieldset>
 
-		<div class='COOLBAR'>
+		<g-coolbar>
 			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
+			<hr/>
 			<a class='Cancel Hide' tabindex='2'>
 				Desistir<g:icon type='cancel'/>
 			</a>
-		</div>
+		</g-coolbar>
 	</form>
 </g:template>

@@ -7,9 +7,7 @@ g-scroll-tabbar
 	background-image:  var(--g-tabbar-background-image);
 
 	> a,
-	> button,
-	> g-command,
-	> .g-command
+	> button
 	{
 		margin: 4px;
 		padding: 4px;
@@ -68,13 +66,13 @@ g-scroll-tabbar
 	&[data-overflowing=left]::before,
 	&[data-overflowing=both]::before
 	{
-		content: "\2277";
+		content: "\3017";
 
 	}
 
 	&[data-overflowing=right]::after,
 	&[data-overflowing=both]::after
 	{
-		content: "\2279";
+		content: "\3017";
 	}
 }

@@ -1,6 +1,6 @@
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-class GDialog extends Window
+class GDialog extends GWindow
 {
 	constructor()
 	{
@@ -9,19 +9,22 @@ class GDialog extends Window
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let minimize = new GCommand();
+		let minimize = document.createElement("a");
+		minimize.href = "#";
 		this.head.appendChild(minimize);
 		minimize.innerHTML = "<i>&#x3019;<i/>";
-		minimize.action = () => this.minimize();
+		minimize.onclick = () => this.minimize();
 
-		let fullScreen = new GCommand();
+		let fullScreen = document.createElement("a");
+		fullScreen.href = "#";
 		this.head.appendChild(fullScreen);
 		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.onclick = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
-		let close = new GCommand();
+		let close = document.createElement("a");
+		close.href = "#";
 		this.head.appendChild(close);
-		close.action = () => this.hide();
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
 
 		this.head.addEventListener("keydown", event =>
@@ -41,60 +44,48 @@ class GDialog extends Window
 			event.preventDefault();
 			event.stopPropagation();
 		});
+
+
+		this._private.iframe = this.body.appendChild(window.top.document.createElement('iframe'));
+
+		this.iframe.dialog = this;
+		this.iframe.scrolling = "no";
+		this.iframe.setAttribute('name', '_dialog');
+		this.iframe.onmouseenter = () => this.iframe.focus();
+
+		this.iframe.addEventListener("load", () =>
+		{
+			this.iframe.name = "_frame";
+			this.iframe.setAttribute("name", "_frame");
+			this.iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+
+			var resize = () =>
+			{
+				if (!this.iframe.contentWindow
+					|| !this.iframe.contentWindow.document
+					|| !this.iframe.contentWindow.document.body
+					|| !this.iframe.contentWindow.document.body.scrollHeight)
+					return false;
+
+				let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
+					this.body.offsetHeight) + "px";
+				if (this.iframe.height !== height)
+				{
+					this.iframe.height = "0";
+					this.iframe.height = height;
+				}
+				return true;
+			};
+
+			resize();
+			window.addEventListener("refresh_size", resize);
+			this.iframe.backgroundImage = "none";
+		});
+
 	}
 
 	get iframe()
 	{
-		if (!this._private.iframe)
-		{
-			let iframe = this._private.iframe
-				= this.body.appendChild(window.top.document.createElement('iframe'));
-
-			iframe.dialog = this;
-			iframe.scrolling = "no";
-			iframe.setAttribute('name', '_dialog');
-			iframe.onmouseenter = () => this._private.iframe.focus();
-
-			iframe.addEventListener("keydown", event =>
-			{
-				event = event ? event : window.event;
-				if (event.keyCode === ESC)
-				{
-					this.head.focus();
-					event.preventDefault();
-					event.stopPropagation();
-				}
-			});
-
-			iframe.addEventListener("load", () =>
-			{
-				iframe.name = "_frame";
-				iframe.setAttribute("name", "_frame");
-				iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-
-				var resize = () =>
-				{
-					if (!iframe.contentWindow
-						|| !iframe.contentWindow.document
-						|| !iframe.contentWindow.document.body
-						|| !iframe.contentWindow.document.body.scrollHeight)
-						return false;
-
-					let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
-					if (iframe.height !== height)
-					{
-						iframe.height = "0";
-						iframe.height = height;
-					}
-					return true;
-				};
-
-				resize();
-				window.addEventListener("refresh_size", resize);
-				iframe.backgroundImage = "none";
-			});
-		}
-
 		return this._private.iframe;
 	}
 
@@ -102,7 +93,7 @@ class GDialog extends Window
 	{
 		if (navigator && navigator.length > 1)
 		{
-			let navbar = new NavBar(navigator, navigator.target);
+			let navbar = new GNavBar(navigator, navigator.target);
 			navbar.addEventListener("update", event => this._private.iframe.setAttribute('src', event.detail.target));
 			this.foot.appendChild(navbar);
 		}
@@ -132,9 +123,15 @@ class GDialog extends Window
 
 		for (var i = 0; i < size; i++)
 			if (this.arguments[i])
-				this.arguments[i].dispatchEvent(new CustomEvent('changed'));
+				this.arguments[i].dispatchEvent(new Event('change', {bubbles: true}));
 
 		this.hide();
+	}
+
+	static hide()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			window.frameElement.dialog.hide();
 	}
 
 	static set caption(caption)
@@ -143,10 +140,22 @@ class GDialog extends Window
 			window.frameElement.dialog.caption = caption;
 	}
 
-	static hide()
+	static set commands(commands)
 	{
 		if (window.frameElement && window.frameElement.dialog)
-			window.frameElement.dialog.hide();
+			window.frameElement.dialog.commands = commands;
+	}
+
+	static get caption()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			return window.frameElement.dialog.caption;
+	}
+
+	static get commands()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			return window.frameElement.dialog.commands;
 	}
 
 	static create()
@@ -174,7 +183,7 @@ window.addEventListener("load", function ()
 			{
 				parameters = parameters.filter(e => e && e.value);
 				parameters.forEach(e => e.value = "");
-				parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed')));
+				parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
 			} else {
 				let dialog = GDialog.create();
 				dialog.target = this.href;

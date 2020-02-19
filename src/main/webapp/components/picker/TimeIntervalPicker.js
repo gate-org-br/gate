@@ -33,16 +33,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new TimeIntervalPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});

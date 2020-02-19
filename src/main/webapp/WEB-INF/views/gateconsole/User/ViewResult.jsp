@@ -10,9 +10,9 @@
 			</g:iterator>
 		</div>
 	</g:if>
-	<div class='COOLBAR'>
-		<a href='#' class='Hide' style='float: right'>
-			Fechar<g:icon type="cancel"/>
+	<g-coolbar>
+		<a class="Commit" href='#' target="_hide">
+			OK<g:icon type="commit"/>
 		</a>
-	</div>
-</g:template>	
+	</g-coolbar>
+</g:template>

@@ -4,7 +4,10 @@ class GSelection
 {
 	static getSelectedLink(nodes)
 	{
-		let parameters = URL.parse_query_string(window.location.href);
+		let href = window.location.href;
+		if (href[href.length - 1] === '#')
+			href = href.slice(0, -1);
+		let parameters = URL.parse_query_string(href);
 		let elements = Array.from(nodes)
 			.filter(e => (e.href && e.href.includes('?'))
 					|| (e.formaction && e.formaction.includes('?')));

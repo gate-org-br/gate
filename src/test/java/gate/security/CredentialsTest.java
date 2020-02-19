@@ -1,8 +1,9 @@
 package gate.security;
 
-import gate.io.Credentials;
 import gate.entity.Auth;
 import gate.entity.User;
+import gate.error.InvalidCredentialsException;
+import gate.io.Credentials;
 import gate.type.ID;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class CredentialsTest
 {
 
 	@Test
-	public void test1()
+	public void test1() throws InvalidCredentialsException
 	{
 		User user = new User();
 		user.setId(new ID(1));
@@ -19,7 +20,9 @@ public class CredentialsTest
 		user.getRole().setId(new ID(1));
 		user.getRole().setName("Role 1");
 		user.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW).setType(Auth.Type.PUBLIC).setModule("gateconsole.screen"));
+			.setMode(Auth.Mode.ALLOW).setType(Auth.Type.PUBLIC)
+			.setModule("gateconsole.screen"));
+
 		String credentials = Credentials.create(user);
 		Assert.assertEquals(user, Credentials.of(credentials));
 

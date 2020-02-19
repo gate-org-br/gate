@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<fieldset>
 		<legend>
 			<g:name type="${action}"/>
@@ -23,16 +23,14 @@
 			Remover<g:icon type="delete"/>
 		</g:link>
 		<hr/>
-		<a class="Cancel Hide" href="#">
-			Fechar<g:icon type="cancel"/>
+		<a href="#" target="_hide">
+			Retornar<g:icon type="return"/>
 		</a>
 	</g-coolbar>
 
-	<div class='PageControl'>
-		<ul>
-			<g:menuitem module="#" screen="Auth" arguments="form.func.id=${screen.form.id}"/>
-			<g:menuitem module="#" screen="FuncScreen$User" arguments="func.id=${screen.form.id}"/>
-			<g:menuitem module="#" screen="FuncScreen$Role" arguments="func.id=${screen.form.id}"/>
-		</ul>
-	</div>
+	<g-tab-control>
+		<g:link module="#" screen="Auth" arguments="form.func.id=${screen.form.id}"/>
+		<g:link module="#" screen="FuncScreen$User" arguments="func.id=${screen.form.id}"/>
+		<g:link module="#" screen="FuncScreen$Role" arguments="func.id=${screen.form.id}"/>
+	</g-tab-control>
 </g:template>

@@ -58,10 +58,7 @@ window.addEventListener("load", function ()
 			if (hidden && hidden.value)
 			{
 				hidden.value = "";
-				hidden.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-				hidden.dispatchEvent(new CustomEvent('changed',
-					{detail: {source: this}}));
+				hidden.dispatchEvent(new Event('change', {bubbles: true}));
 			}
 
 			if (this.value && this.value.length > 0)
@@ -77,10 +74,7 @@ window.addEventListener("load", function ()
 					if (hidden)
 					{
 						hidden.value = option.getAttribute("data-value");
-						hidden.dispatchEvent(new CustomEvent('populated',
-							{detail: {source: this}}));
-						hidden.dispatchEvent(new CustomEvent('changed',
-							{detail: {source: this}}));
+						hidden.dispatchEvent(new Event('change', {bubbles: true}));
 					}
 				} else
 					this.setCustomValidity("Entre com um dos valores da lista");

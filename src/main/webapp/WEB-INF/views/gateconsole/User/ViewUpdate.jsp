@@ -1,11 +1,11 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method='POST' action='#' enctype='multipart/form-data'>
 		<fieldset>
 			<legend>
-				<g:hidden property='form'/>
-				Alterar Usu&aacute;rio<g:icon type="update"/>
+				<g:name type="${action}"/>
+				<g:icon type="${action}"/>
 			</legend>
 			<label data-size='2'>
 				Ativo:
@@ -113,5 +113,6 @@
 				Desistir<g:icon type='cancel'/>
 			</g:link>
 		</g-coolbar>
+		<g:hidden property='form'/>
 	</form>
 </g:template>

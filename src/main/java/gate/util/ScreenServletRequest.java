@@ -1,14 +1,14 @@
 package gate.util;
 
-import gate.error.AppError;
-import gate.error.ConversionException;
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.policonverter.Policonverter;
+import gate.error.AppError;
+import gate.error.ConversionException;
+import gate.error.InvalidCredentialsException;
 import gate.io.Credentials;
+import gate.policonverter.Policonverter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.Part;
@@ -63,7 +62,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	}
 
 	public Object getParameterValues(Class<?> type,
-					 Class<?> elementType, String name)
+		Class<?> elementType, String name)
 	{
 		try
 		{
@@ -128,6 +127,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	}
 
 	public Optional<User> getUser()
+		throws InvalidCredentialsException
 	{
 		return Credentials.of(this);
 	}

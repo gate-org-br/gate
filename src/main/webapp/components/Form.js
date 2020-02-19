@@ -19,7 +19,6 @@ window.addEventListener("load", function ()
 			} else if (this.target === "_dialog")
 			{
 				let dialog = GDialog.create();
-				dialog.creator = this;
 				dialog.caption = this.getAttribute("title");
 				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
 				dialog.addEventListener("show", event => this.dispatchEvent(event));

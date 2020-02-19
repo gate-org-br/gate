@@ -1,7 +1,7 @@
 
 /* global customElements, GOverflow, WindowList */
 
-class Modal extends HTMLElement
+class GModal extends HTMLElement
 {
 	constructor()
 	{
@@ -20,11 +20,6 @@ class Modal extends HTMLElement
 				&& this.hide());
 	}
 
-	set creator(creator)
-	{
-		this._private.creator = creator;
-	}
-
 	get blocked()
 	{
 		return this._private.blocked || false;
@@ -35,14 +30,11 @@ class Modal extends HTMLElement
 		this._private.blocked = blocked;
 	}
 
-	get creator()
-	{
-		return this._private.creator || this;
-	}
-
 	show()
 	{
-		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+
+		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}}))
+			&& this.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
 			GOverflow.disable(window.top.document.documentElement);
 
@@ -57,7 +49,8 @@ class Modal extends HTMLElement
 	hide()
 	{
 		if (this.parentNode
-			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+			&& window.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}}))
+			&& this.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			GOverflow.enable(window.top.document.documentElement);
 			this.parentNode.removeChild(this);
@@ -87,4 +80,4 @@ class Modal extends HTMLElement
 	}
 }
 
-customElements.define('g-modal', Modal);
+customElements.define('g-modal', GModal);

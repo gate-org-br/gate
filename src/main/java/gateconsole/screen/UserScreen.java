@@ -84,18 +84,18 @@ public class UserScreen extends Screen
 
 	@Name("Novo")
 	@Icon("insert")
+	@Description("Novo Usuário")
 	public String callInsert()
 	{
-		if (isPOST()
-			&& getMessages().isEmpty())
+		if (isPOST() && getMessages().isEmpty())
 		{
 			try
 			{
 				control.insert(getForm());
 				return callSelect();
-			} catch (AppException e)
+			} catch (AppException ex)
 			{
-				setMessages(e.getMessages());
+				setMessages(ex.getMessages());
 			}
 		} else
 			getForm().setActive(true);
@@ -156,6 +156,7 @@ public class UserScreen extends Screen
 
 	@Icon("upload")
 	@Name("Importar")
+	@Description("Importar Usuários")
 	public String callUpload()
 	{
 		return "/WEB-INF/views/gateconsole/User/ViewUpload.jsp";
