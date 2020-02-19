@@ -1376,7 +1376,10 @@ class GSelection
 {
 	static getSelectedLink(nodes)
 	{
-		let parameters = URL.parse_query_string(window.location.href);
+		let href = window.location.href;
+		if (href[href.length - 1] === '#')
+			href = href.slice(0, -1);
+		let parameters = URL.parse_query_string(href);
 		let elements = Array.from(nodes)
 			.filter(e => (e.href && e.href.includes('?'))
 					|| (e.formaction && e.formaction.includes('?')));
@@ -1460,82 +1463,6 @@ class WindowList extends HTMLElement
 }
 
 customElements.define('g-window-list', WindowList);
-/* global customElements */
-
-class GCommand extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this._private = {};
-	}
-
-	get action()
-	{
-		return this._private.action;
-	}
-
-	set action(action)
-	{
-		this._private.action = action;
-		if (action)
-			this.onclick = () => this._private.action(this);
-	}
-
-	connectedCallback()
-	{
-		this.classList.add("g-command");
-	}
-}
-
-customElements.define('g-command', GCommand);
-/* global GOverflow, Proxy, customElements */
-
-class GMore extends GCommand
-{
-	constructor()
-	{
-		super();
-
-		window.top.addEventListener("resize", () => this.update());
-
-		this.addEventListener("click", () =>
-		{
-			let elements = Array.from(this.parentNode.children)
-				.filter(e => e !== this)
-				.filter(e => e.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-			document.documentElement.appendChild(new SideMenu(elements)).show(this);
-		});
-	}
-
-	update()
-	{
-		Array.from(this.parentNode.children)
-			.forEach(e => e.style.display = "flex");
-
-		this.style.display = "none";
-		if (this.parentNode.container.clientWidth > this.parentNode.clientWidth)
-			this.style.display = "flex";
-
-		for (let element = this.previousElementSibling;
-			element;
-			element = element.previousElementSibling)
-			if (this.parentNode.container.clientWidth > this.parentNode.clientWidth)
-				if (!element.hasAttribute("aria-selected"))
-					element.style.display = "none";
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.update();
-	}
-}
-
-
-customElements.define('g-more', GMore);
 /* global customElements, Proxy, GSelection */
 
 class GOverflow extends HTMLElement
@@ -1552,16 +1479,19 @@ class GOverflow extends HTMLElement
 		container.style.whiteSpace = "nowrap";
 		container.style.flexDirection = "row-reverse";
 		this.shadowRoot.appendChild(container);
-		container.appendChild(document.createElement("slot"));
+		let slot = container.appendChild(document.createElement("slot"));
+		slot.addEventListener("slotchange", () => this._private.update());
 
-		var more = new GCommand();
+		var more = document.createElement("a");
+		more.href = "#";
 		more.innerHTML = "&#X3018;";
 
 		more.style.padding = "0";
 		more.style.width = "32px";
 		more.style.flexGrow = "0";
 		more.style.height = "100%";
-		more.style.display = "flex";
+		more.style.outline = "none";
+		more.style.display = "none";
 		more.style.flexShrink = "0";
 		more.style.fontSize = "20px";
 		more.style.color = "inherit";
@@ -1569,6 +1499,7 @@ class GOverflow extends HTMLElement
 		more.style.fontFamily = "gate";
 		more.style.marginRight = "auto";
 		more.style.alignItems = "center";
+		more.style.textDecoration = "none";
 		more.style.justifyContent = "center";
 
 		container.appendChild(more);
@@ -1580,12 +1511,15 @@ class GOverflow extends HTMLElement
 				.filter(e => e.style.display === "none")
 				.map(element => Proxy.create(element));
 			elements.forEach(e => e.style.display = "");
-			document.documentElement.appendChild(new SideMenu(elements)).show(more);
+			document.documentElement.appendChild(new GSideMenu(elements)).show(more);
 		});
 
-		this._private = {more: more, container: container,
-			update: () =>
+		this._private = {more: more, container: container, update: () =>
 			{
+				let selected = GSelection.getSelectedLink(this.children);
+				if (selected)
+					selected.setAttribute("aria-selected", "true");
+
 				Array.from(this.children).forEach(e => e.style.display = "flex");
 
 				more.style.display = "none";
@@ -1594,20 +1528,20 @@ class GOverflow extends HTMLElement
 
 				for (let e = this.lastElementChild; e; e = e.previousElementSibling)
 					if (container.clientWidth > this.clientWidth)
-						e.style.display = "none";
+						if (!e.hasAttribute("aria-selected"))
+							e.style.display = "none";
 			}};
+
+		window.addEventListener("load", this._private.update);
 	}
 
 	connectedCallback()
 	{
-		setTimeout(() => this._private.update(), 0);
-		window.addEventListener("load", this._private.update);
 		window.addEventListener("resize", this._private.update);
 	}
 
 	disconnectedCallback()
 	{
-		window.removeEventListener("load", this._private.update);
 		window.removeEventListener("resize", this._private.update);
 	}
 
@@ -1676,13 +1610,19 @@ window.addEventListener("resize", () => {
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
-/* global customElements, GOverflow, Proxy */
+/* global customElements, GOverflow, Proxy, GDialog */
 
-class GCommands extends GOverflow
+class GDialogCommands extends GOverflow
 {
+	constructor()
+	{
+		super();
+		window.addEventListener("load", () =>
+			GDialog.commands = this);
+	}
 }
 
-customElements.define('g-commands', GCommands);
+customElements.define('g-dialog-commands', GDialogCommands);
 /* global customElements */
 
 class DigitalClock extends HTMLElement
@@ -2203,7 +2143,7 @@ window.addEventListener("load", function ()
 
 /* global customElements, GOverflow, WindowList */
 
-class Modal extends HTMLElement
+class GModal extends HTMLElement
 {
 	constructor()
 	{
@@ -2222,11 +2162,6 @@ class Modal extends HTMLElement
 				&& this.hide());
 	}
 
-	set creator(creator)
-	{
-		this._private.creator = creator;
-	}
-
 	get blocked()
 	{
 		return this._private.blocked || false;
@@ -2237,14 +2172,11 @@ class Modal extends HTMLElement
 		this._private.blocked = blocked;
 	}
 
-	get creator()
-	{
-		return this._private.creator || this;
-	}
-
 	show()
 	{
-		if (this.creator.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+
+		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}}))
+			&& this.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
 			GOverflow.disable(window.top.document.documentElement);
 
@@ -2259,7 +2191,8 @@ class Modal extends HTMLElement
 	hide()
 	{
 		if (this.parentNode
-			&& this.creator.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+			&& window.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}}))
+			&& this.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			GOverflow.enable(window.top.document.documentElement);
 			this.parentNode.removeChild(this);
@@ -2289,10 +2222,10 @@ class Modal extends HTMLElement
 	}
 }
 
-customElements.define('g-modal', Modal);
+customElements.define('g-modal', GModal);
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-class Window extends Modal
+class GWindow extends GModal
 {
 	constructor()
 	{
@@ -2354,7 +2287,7 @@ class Window extends Modal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new GCommands());
+				this.head.appendChild(new GDialogCommands());
 		return this._private.commands;
 	}
 
@@ -2366,7 +2299,7 @@ class Window extends Modal
 	}
 }
 
-customElements.define('g-window', Window);
+customElements.define('g-window', GWindow);
 var CSV =
 	{
 		parse: function (text)
@@ -2550,10 +2483,7 @@ window.addEventListener("load", function ()
 			if (hidden && hidden.value)
 			{
 				hidden.value = "";
-				hidden.dispatchEvent(new CustomEvent('cleared',
-					{detail: {source: this}}));
-				hidden.dispatchEvent(new CustomEvent('changed',
-					{detail: {source: this}}));
+				hidden.dispatchEvent(new Event('change', {bubbles: true}));
 			}
 
 			if (this.value && this.value.length > 0)
@@ -2569,10 +2499,7 @@ window.addEventListener("load", function ()
 					if (hidden)
 					{
 						hidden.value = option.getAttribute("data-value");
-						hidden.dispatchEvent(new CustomEvent('populated',
-							{detail: {source: this}}));
-						hidden.dispatchEvent(new CustomEvent('changed',
-							{detail: {source: this}}));
+						hidden.dispatchEvent(new Event('change', {bubbles: true}));
 					}
 				} else
 					this.setCustomValidity("Entre com um dos valores da lista");
@@ -2783,99 +2710,350 @@ class URL
 		return query_string;
 	}
 }
-/* global Message, Block, ENTER, ESC, GCommands, GDialog */
+/* global Message, Block, ENTER, ESC, GDialog, GStackFrame */
 
-class Link
+window.addEventListener("click", function (event)
 {
-	constructor(link, creator)
+	if (event.button !== 0)
+		return;
+	let link = event.target;
+	if (link.tagName !== 'A')
+		return;
+	if (link.hasAttribute("data-cancel"))
 	{
-		this.link = link;
-		this.creator = creator;
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		Message.error(link.getAttribute("data-cancel"), 2000);
+		return;
+	}
 
+	if (link.hasAttribute("data-disabled"))
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		return;
+	}
 
-		this.link.addEventListener("click", function (event)
+	if (link.hasAttribute("data-confirm")
+		&& !confirm(link.getAttribute("data-confirm")))
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		return;
+	}
+
+	if (link.hasAttribute("data-alert"))
+		alert(link.getAttribute("data-alert"));
+	else if (link.href.match(/([@][{][^}]*[}])/g)
+		|| link.href.match(/([!][{][^}]*[}])/g)
+		|| link.href.match(/([?][{][^}]*[}])/g))
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		var resolved = resolve(link.href);
+		if (resolved !== null)
 		{
-			if (this.hasAttribute("data-cancel"))
-			{
+			var href = link.href;
+			link.href = resolved;
+			link.click();
+			link.href = href;
+		}
+		return;
+	}
+
+	if (link.getAttribute("target"))
+	{
+		switch (link.getAttribute("target").toLowerCase())
+		{
+			case "_dialog":
 				event.preventDefault();
 				event.stopPropagation();
-				event.stopImmediatePropagation();
-				Message.error(this.getAttribute("data-cancel"), 2000);
-			}
-		});
-		this.link.addEventListener("click", function (event)
-		{
-			if (this.hasAttribute("data-disabled"))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-			}
-		});
-		this.link.addEventListener("click", function (event)
-		{
-			if (this.hasAttribute("data-confirm")
-				&& !confirm(this.getAttribute("data-confirm")))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-			}
-		});
-		this.link.addEventListener("click", function ()
-		{
-			if (this.hasAttribute("data-alert"))
-				alert(this.getAttribute("data-alert"));
-		});
-		this.link.addEventListener("click", function (event)
-		{
-			if (this.href.match(/([@][{][^}]*[}])/g)
-				|| this.href.match(/([!][{][^}]*[}])/g)
-				|| this.href.match(/([?][{][^}]*[}])/g))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-				var resolved = resolve(this.href);
-				if (resolved !== null)
+				if (event.ctrlKey)
 				{
-					var href = this.href;
-					this.href = resolved;
-					this.click();
-					this.href = href;
+					link.setAttribute("target", "_blank");
+					link.click();
+					link.setAttribute("target", "_dialog");
+				} else
+				{
+					let dialog = GDialog.create();
+					dialog.navigator = link.navigator;
+					dialog.target = link.getAttribute("href");
+					dialog.caption = link.getAttribute("title");
+					dialog.blocked = Boolean(link.getAttribute("data-blocked"));
+
+
+					if (link.hasAttribute("data-reload-on-hide"))
+						dialog.addEventListener("hide", () => window.location = window.location.href);
+					else if (link.hasAttribute("data-submit-on-hide"))
+						dialog.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+
+					dialog.show();
 				}
-			}
-		});
-		this.link.addEventListener("click", function (event)
-		{
-			if (this.getAttribute("target"))
-			{
-				switch (this.getAttribute("target").toLowerCase())
+				break;
+			case "_stack":
+				event.preventDefault();
+				event.stopPropagation();
+				if (event.ctrlKey)
 				{
-					case "_dialog":
-						event.preventDefault();
-						event.stopPropagation();
+					link.setAttribute("target", "_blank");
+					link.click();
+					link.setAttribute("target", "_dialog");
+				} else
+				{
+					let stackFrame = GStackFrame.create();
+					stackFrame.target = link.getAttribute("href");
+
+					if (link.hasAttribute("data-reload-on-hide"))
+						stackFrame.addEventListener("hide", () => window.location = window.location.href);
+					else if (link.hasAttribute("data-submit-on-hide"))
+						stackFrame.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+
+					stackFrame.show();
+				}
+				break;
+			case "_message":
+				event.preventDefault();
+				event.stopPropagation();
+				link.setAttribute("data-cancel", "Processando");
+				new URL(link.href).get(function (status)
+				{
+					try
+					{
+						status = JSON.parse(status);
+						Message.show(status, 2000);
+					} finally
+					{
+						link.removeAttribute("data-cancel");
+					}
+				});
+				break;
+			case "_none":
+				event.preventDefault();
+				event.stopPropagation();
+				link.setAttribute("data-cancel", "Processando");
+				new URL(link.href).get(function (status)
+				{
+					try
+					{
+						status = JSON.parse(status);
+						if (status.type !== "SUCCESS")
+							Message.show(status, 2000);
+					} finally
+					{
+						link.removeAttribute("data-cancel");
+					}
+				});
+				break;
+			case "_this":
+				event.preventDefault();
+				event.stopPropagation();
+				link.setAttribute("data-cancel", "Processando");
+				new URL(link.href).get(function (status)
+				{
+					try
+					{
+						status = JSON.parse(status);
+						if (status.type === "SUCCESS")
+							link.innerHTML = status.value;
+						else
+							Message.show(status, 2000);
+					} finally
+					{
+						link.removeAttribute("data-cancel");
+					}
+				});
+				break;
+			case "_alert":
+				event.preventDefault();
+				event.stopPropagation();
+				link.setAttribute("data-cancel", "Processando");
+				new URL(link.href).get(function (status)
+				{
+					alert(status);
+					link.removeAttribute("data-cancel");
+				});
+				break;
+			case "_hide":
+				event.preventDefault();
+				event.stopPropagation();
+				if (window.frameElement
+					&& window.frameElement.dialog
+					&& window.frameElement.dialog.hide)
+					window.frameElement.dialog.hide();
+				else
+					window.close();
+				break;
+			case "_popup":
+				event.preventDefault();
+				event.stopPropagation();
+				Array.from(link.children)
+					.filter(e => e.tagName.toLowerCase() === "div")
+					.forEach(e => new GPopup(e));
+				break;
+			case "_progress-dialog":
+				event.preventDefault();
+				event.stopPropagation();
+				new URL(link.href).get(process =>
+				{
+					process = JSON.parse(process);
+					new GProgressDialog(process,
+						{title: link.getAttribute("title")}).show();
+				});
+				break;
+			case "_progress-window":
+				event.preventDefault();
+				event.stopPropagation();
+				new URL(link.href).get(function (process)
+				{
+					process = JSON.parse(process);
+					document.body.appendChild(new GProgressWindow(process));
+				});
+				break;
+			case "_report":
+			case "_report-dialog":
+				event.preventDefault();
+				event.stopPropagation();
+				let dialog = new GReportDialog();
+				dialog.blocked = true;
+				dialog.caption = link.getAttribute("title") || "Imprimir";
+				dialog.get(link.href);
+				break;
+		}
+	}
+});
+window.addEventListener("keydown", function (event)
+{
+	let link = event.target;
+	if (link.tagName === 'A' && event.keyCode === 32)
+	{
+		event.target.click();
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+	}
+});
+/* global Message, Block, ENTER, ESC, link, GDialog, GStackFrame */
+
+window.addEventListener("click", function (event)
+{
+	if (event.button !== 0)
+		return;
+
+	let button = event.target;
+	if (button.tagName === 'BUTTON')
+	{
+		if (button.hasAttribute("data-cancel"))
+		{
+			Message.error(event.target.getAttribute("data-cancel"), 2000);
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			return;
+		}
+
+
+		if (button.hasAttribute("data-disabled"))
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			return;
+		}
+
+		if (button.hasAttribute("data-confirm")
+			&& !confirm(button.getAttribute("data-confirm")))
+		{
+			event.preventDefault();
+			event.stopImmediatePropagation();
+			return;
+		}
+
+		if (button.hasAttribute("data-alert"))
+			alert(button.getAttribute("data-alert"));
+
+
+		if (button.getAttribute("formaction") &&
+			(button.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+				|| button.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+				|| button.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
+		{
+			let resolved = resolve(button.getAttribute("formaction"));
+			if (resolved !== null)
+			{
+				var formaction = button.getAttribute("formaction");
+				button.setAttribute("formaction", resolved);
+				button.click();
+				button.setAttribute("formaction", formaction);
+			}
+
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			return;
+		}
+
+		if (button.getAttribute("formtarget"))
+		{
+			switch (button.getAttribute("formtarget").toLowerCase())
+			{
+				case "_dialog":
+					if (button.form.checkValidity())
+					{
 						if (event.ctrlKey)
 						{
-							this.setAttribute("target", "_blank");
-							this.click();
-							this.setAttribute("target", "_dialog");
-						} else
+							event.preventDefault();
+							event.stopPropagation();
+							button.setAttribute("formtarget", "_blank");
+							button.click();
+							button.setAttribute("formtarget", "_dialog");
+						} else if (event.target.form.getAttribute("target") !== "_dialog")
 						{
 							let dialog = GDialog.create();
-							dialog.navigator = this.navigator;
-							dialog.creator = this.creator || this;
-							dialog.target = this.getAttribute("href");
-							dialog.caption = this.getAttribute("title");
-							dialog.blocked = Boolean(this.getAttribute("data-blocked"));
+							dialog.caption = event.target.getAttribute("title");
+							dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
+
+							if (button.hasAttribute("data-reload-on-hide"))
+								dialog.addEventListener(() => window.location = window.location.href);
+							else if (button.hasAttribute("data-submit-on-hide"))
+								dialog.addEventListener(() => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+
 							dialog.show();
 						}
-						break;
-					case "_message":
-						event.preventDefault();
-						event.stopPropagation();
-						link.setAttribute("data-cancel", "Processando");
-						new URL(this.href).get(function (status)
+					}
+					break;
+				case "_stack":
+					if (button.form.checkValidity())
+					{
+						if (event.ctrlKey)
+						{
+							event.preventDefault();
+							event.stopPropagation();
+							button.setAttribute("formtarget", "_blank");
+							button.click();
+							button.setAttribute("formtarget", "_dialog");
+						} else if (event.target.form.getAttribute("target") !== "_dialog")
+						{
+							let stackFrame = GStackFrame.create();
+
+							if (button.hasAttribute("data-reload-on-hide"))
+								stackFrame.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.hasAttribute("data-submit-on-hide"))
+								stackFrame.addEventListener("hide", () => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+
+							stackFrame.show();
+						}
+					}
+					break;
+				case "_message":
+					event.preventDefault();
+					event.stopPropagation();
+
+					button.disabled = true;
+					new URL(button.getAttribute("formaction"))
+						.post(new FormData(button.form), function (status)
 						{
 							try
 							{
@@ -2883,15 +3061,17 @@ class Link
 								Message.show(status, 2000);
 							} finally
 							{
-								link.removeAttribute("data-cancel");
+								button.disabled = false;
 							}
 						});
-						break;
-					case "_none":
-						event.preventDefault();
-						event.stopPropagation();
-						link.setAttribute("data-cancel", "Processando");
-						new URL(this.href).get(function (status)
+					break;
+				case "_none":
+					event.preventDefault();
+					event.stopPropagation();
+
+					button.disabled = true;
+					new URL(button.getAttribute("formaction"))
+						.post(new FormData(button.form), function (status)
 						{
 							try
 							{
@@ -2900,521 +3080,130 @@ class Link
 									Message.show(status, 2000);
 							} finally
 							{
-								link.removeAttribute("data-cancel");
+								button.disabled = false;
 							}
 						});
-						break;
-					case "_this":
-						event.preventDefault();
-						event.stopPropagation();
-						link.setAttribute("data-cancel", "Processando");
-						new URL(this.href).get(function (status)
+					break;
+				case "_this":
+					event.preventDefault();
+					event.stopPropagation();
+
+					button.disabled = true;
+					new URL(button.getAttribute("formaction"))
+						.post(new FormData(button.form), function (status)
 						{
 							try
 							{
 								status = JSON.parse(status);
 								if (status.type === "SUCCESS")
-									this.innerHTML = status.value;
+									button.innerHTML = status.value;
 								else
 									Message.show(status, 2000);
 							} finally
 							{
-								link.removeAttribute("data-cancel");
+								button.disabled = false;
 							}
 						});
-						break;
-					case "_alert":
-						event.preventDefault();
-						event.stopPropagation();
-						link.setAttribute("data-cancel", "Processando");
-						new URL(this.href).get(function (status)
-						{
-							alert(status);
-							link.removeAttribute("data-cancel");
-						});
-						break;
-					case "_hide":
-						event.preventDefault();
-						event.stopPropagation();
-						if (window.frameElement
-							&& window.frameElement.dialog
-							&& window.frameElement.dialog.hide)
-							window.frameElement.dialog.hide();
-						else
-							window.close();
-						break;
-					case "_popup":
-						event.preventDefault();
-						event.stopPropagation();
-						Array.from(this.children)
-							.filter(e => e.tagName.toLowerCase() === "div")
-							.forEach(e => new Popup(e));
-						break;
-					case "_progress-dialog":
-						event.preventDefault();
-						event.stopPropagation();
-						new URL(this.href).get(process =>
-						{
-							process = JSON.parse(process);
-							new ProgressDialog(process,
-								{title: this.getAttribute("title")}).show();
-						});
-						break;
-					case "_progress-window":
-						event.preventDefault();
-						event.stopPropagation();
-						new URL(this.href).get(function (process)
-						{
-							process = JSON.parse(process);
-							document.body.appendChild(new ProgressWindow(process));
-						});
-						break;
-					case "_report":
-					case "_report-dialog":
-						event.preventDefault();
-						event.stopPropagation();
-						new ReportDialog({method: "GET",
-							blocked: true,
-							url: this.href,
-							title: this.getAttribute("title")}).show();
-						break;
-				}
+					break;
+				case "_alert":
+					event.preventDefault();
+					event.stopPropagation();
+
+					if (button.form.reportValidity())
+					{
+						button.disabled = true;
+						new URL(button.getAttribute("formaction"))
+							.post(new FormData(button.form), function (status)
+							{
+								alert(status);
+								button.disabled = false;
+							});
+					}
+					break;
+				case "_hide":
+					event.preventDefault();
+					event.stopPropagation();
+					if (window.frameElement
+						&& window.frameElement.dialog
+						&& window.frameElement.dialog.hide)
+						window.frameElement.dialog.hide();
+					else
+						window.close();
+					break;
+
+				case "_progress-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+
+					if (button.form.reportValidity())
+					{
+						button.disabled = true;
+						new URL(button.getAttribute("formaction"))
+							.post(new FormData(button.form), process =>
+							{
+								process = JSON.parse(process);
+								new GProgressDialog(process,
+									{title: button.getAttribute("title")}).show();
+								button.disabled = false;
+							});
+					}
+
+					break;
+
+				case "_progress-window":
+					event.preventDefault();
+					event.stopPropagation();
+
+					if (button.form.reportValidity())
+					{
+						new URL(button.getAttribute("formaction"))
+							.post(new FormData(button.form), function (process)
+							{
+								process = JSON.parse(process);
+								document.body.appendChild(new GProgressWindow(process));
+							});
+					}
+
+					break;
+
+				case "_report":
+				case "_report-dialog":
+					event.preventDefault();
+					event.stopPropagation();
+
+					if (button.form.reportValidity())
+					{
+						let dialog = new GReportDialog();
+						dialog.blocked = true;
+						dialog.caption = button.getAttribute("title") || "Imprimir";
+						dialog.post(button.getAttribute("formaction") || button.form.action,
+							new FormData(button.form));
+						button.disabled = false;
+					}
+
+					break;
 			}
-		});
-		this.link.addEventListener("keydown", function (event)
-		{
-			if (event.keyCode === 32)
-			{
-				this.click();
-				event.preventDefault();
-				event.stopImmediatePropagation();
-			}
-		});
-	}
 
-	setAlert(value)
-	{
-		if (value)
-			this.link.setAttribute("data-alert", value);
-		else if (this.link.getAttribute("data-alert"))
-			this.link.removeAttribute("data-alert");
-		return this;
-	}
-
-	setConfirm(value)
-	{
-		if (value)
-			this.link.setAttribute("data-confirm", value);
-		else if (this.link.getAttribute("data-confirm"))
-			this.link.removeAttribute("data-confirm");
-		return this;
-	}
-
-	setBlock(value)
-	{
-		if (value)
-			this.link.setAttribute("data-block", value);
-		else if (this.link.getAttribute("data-block"))
-			this.link.removeAttribute("data-block");
-		return this;
-	}
-
-	setAction(value)
-	{
-		if (value)
-			this.link.setAttribute("href", value);
-		else if (this.link.getAttribute("href"))
-			this.link.removeAttribute("href");
-		return this;
-	}
-	setTarget(value)
-	{
-		if (value)
-			this.link.setAttribute("target", value);
-		else if (this.link.getAttribute("target"))
-			this.link.removeAttribute("target");
-		return this;
-	}
-
-	setTitle(value)
-	{
-		if (value)
-			this.link.setAttribute("title", value);
-		else if (this.link.getAttribute("title"))
-			this.link.removeAttribute("title");
-		return this;
-	}
-
-	setNavigator(value)
-	{
-		this.link.navigator = value;
-		return this;
-	}
-
-	get()
-	{
-		return this.link;
-	}
-
-	execute()
-	{
-		if (!this.link.parentNode)
-		{
-			document.body.appendChild(this.link);
-			this.link.click();
-			document.body.removeChild(this.link);
-		} else
-			this.link.click();
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("a")).forEach(a => new Link(a));
-	document.documentElement.addEventListener("keydown", function (event)
-	{
-		switch (event.keyCode)
-		{
-			case ENTER:
-				Array.from(document.querySelectorAll("a.Action")).forEach(e => e.click());
-				break;
-			case ESC:
-				Array.from(document.querySelectorAll("a.Cancel")).forEach(e => e.click());
-				break;
+			return;
 		}
-	});
+	}
 });
 
-/* global Message, Block, ENTER, ESC, GCommands, link */
 
-class Button
+window.addEventListener("keydown", function (event)
 {
-	constructor(button, creator)
+	let link = event.target;
+	if (link.tagName === 'BUTTON' && event.keyCode === 32)
 	{
-		this.button = button;
-		this.creator = creator;
-
-		this.button.addEventListener("click", function (event)
-		{
-			if (this.hasAttribute("data-cancel"))
-			{
-				Message.error(this.getAttribute("data-cancel"), 2000);
-				event.preventDefault();
-				event.stopImmediatePropagation();
-			}
-		});
-
-		this.button.addEventListener("click", function (event)
-		{
-			if (this.hasAttribute("data-disabled"))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-			}
-		});
-
-		this.button.addEventListener("click", function (event)
-		{
-			if (this.hasAttribute("data-confirm")
-				&& !confirm(this.getAttribute("data-confirm")))
-			{
-				event.preventDefault();
-				event.stopImmediatePropagation();
-			}
-		});
-
-		this.button.addEventListener("click", function ()
-		{
-			if (this.hasAttribute("data-alert"))
-				alert(this.getAttribute("data-alert"));
-		});
-
-
-		this.button.addEventListener("click", function (event)
-		{
-			if (this.getAttribute("formaction") &&
-				(this.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
-					|| this.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
-					|| this.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
-			{
-				var resolved = resolve(this.getAttribute("formaction"));
-
-				if (resolved !== null)
-				{
-					var formaction = this.getAttribute("formaction");
-					this.setAttribute("formaction", resolved);
-					this.click();
-					this.setAttribute("formaction", formaction);
-				}
-
-				event.preventDefault();
-				event.stopImmediatePropagation();
-			}
-		});
-
-		this.button.addEventListener("click", function (event)
-		{
-			if (this.getAttribute("formtarget"))
-			{
-				switch (this.getAttribute("formtarget").toLowerCase())
-				{
-					case "_dialog":
-						if (this.form.checkValidity())
-						{
-							if (event.ctrlKey)
-							{
-								event.preventDefault();
-								event.stopPropagation();
-								this.setAttribute("formtarget", "_blank");
-								this.click();
-								this.setAttribute("formtarget", "_dialog");
-							} else if (this.form.getAttribute("target") !== "_dialog")
-							{
-								let dialog = GDialog.create();
-								dialog.creator = creator || this;
-								dialog.caption = this.getAttribute("title");
-								dialog.blocked = Boolean(this.getAttribute("data-blocked"));
-								dialog.show();
-							}
-						}
-						break;
-					case "_message":
-						event.preventDefault();
-						event.stopPropagation();
-
-						this.disabled = true;
-						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (status)
-							{
-								try
-								{
-									status = JSON.parse(status);
-									Message.show(status, 2000);
-								} finally
-								{
-									button.disabled = false;
-								}
-							});
-						break;
-					case "_none":
-						event.preventDefault();
-						event.stopPropagation();
-
-						this.disabled = true;
-						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (status)
-							{
-								try
-								{
-									status = JSON.parse(status);
-									if (status.type !== "SUCCESS")
-										Message.show(status, 2000);
-								} finally
-								{
-									button.disabled = false;
-								}
-							});
-						break;
-					case "_this":
-						event.preventDefault();
-						event.stopPropagation();
-
-						this.disabled = true;
-						new URL(this.getAttribute("formaction"))
-							.post(new FormData(this.form), function (status)
-							{
-								try
-								{
-									status = JSON.parse(status);
-									if (status.type === "SUCCESS")
-										button.innerHTML = status.value;
-									else
-										Message.show(status, 2000);
-								} finally
-								{
-									button.disabled = false;
-								}
-							});
-						break;
-					case "_alert":
-						event.preventDefault();
-						event.stopPropagation();
-
-						if (this.form.reportValidity())
-						{
-							this.disabled = true;
-							new URL(this.getAttribute("formaction"))
-								.post(new FormData(this.form), function (status)
-								{
-									alert(status);
-									button.disabled = false;
-								});
-						}
-						break;
-					case "_hide":
-						event.preventDefault();
-						event.stopPropagation();
-						if (window.frameElement
-							&& window.frameElement.dialog
-							&& window.frameElement.dialog.hide)
-							window.frameElement.dialog.hide();
-						else
-							window.close();
-						break;
-
-					case "_progress-dialog":
-						event.preventDefault();
-						event.stopPropagation();
-
-						if (this.form.reportValidity())
-						{
-							this.disabled = true;
-							new URL(this.getAttribute("formaction"))
-								.post(new FormData(this.form), process =>
-								{
-									process = JSON.parse(process);
-									new ProgressDialog(process,
-										{title: this.getAttribute("title")}).show();
-									button.disabled = false;
-								});
-						}
-
-						break;
-
-					case "_progress-window":
-						event.preventDefault();
-						event.stopPropagation();
-
-						if (this.form.reportValidity())
-						{
-							new URL(this.getAttribute("formaction"))
-								.post(new FormData(this.form), function (process)
-								{
-									process = JSON.parse(process);
-									document.body.appendChild(new ProgressWindow(process));
-								});
-						}
-
-						break;
-
-					case "_report":
-					case "_report-dialog":
-						event.preventDefault();
-						event.stopPropagation();
-
-						if (this.form.reportValidity())
-						{
-							new ReportDialog({method: "POST",
-								blocked: true,
-								url: this.getAttribute("formaction") || this.form.action,
-								title: this.getAttribute("title"),
-								data: new FormData(this.form)}).show();
-							this.disabled = false;
-						}
-
-						break;
-				}
-			}
-		});
+		event.target.click();
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
 	}
-
-	setAlert(value)
-	{
-		if (value)
-			this.button.setAttribute("data-alert", value);
-		else if (this.button.getAttribute("data-alert"))
-			this.button.removeAttribute("data-alert");
-		return this;
-	}
-
-	setConfirm(value)
-	{
-		if (value)
-			this.button.setAttribute("data-confirm", value);
-		else if (this.button.getAttribute("data-confirm"))
-			this.button.removeAttribute("data-confirm");
-		return this;
-	}
-
-	setBlock(value)
-	{
-		if (value)
-			this.button.setAttribute("data-block", value);
-		else if (this.button.getAttribute("data-block"))
-			this.button.removeAttribute("data-block");
-		return this;
-	}
-
-	setAction(value)
-	{
-		if (value)
-			this.button.setAttribute("formaction", value);
-		else if (this.button.getAttribute("formaction"))
-			this.button.removeAttribute("formaction");
-		return this;
-	}
-
-	setTarget(value)
-	{
-		if (value)
-			this.button.setAttribute("formtarget", value);
-		else if (this.button.getAttribute("formtarget"))
-			this.button.removeAttribute("formtarget");
-		return this;
-	}
-
-	setTitle(value)
-	{
-		if (value)
-			this.button.setAttribute("title", value);
-		else if (this.button.getAttribute("title"))
-			this.button.removeAttribute("title");
-		return this;
-	}
-
-	get()
-	{
-		return this.button;
-	}
-
-	execute()
-	{
-		if (!this.button.parentNode)
-		{
-			if (!this.creator)
-				throw "Attempt to trigger a button without a form";
-			var form = this.creator.closest("form");
-			form.appendChild(this.button);
-			this.button.click();
-			form.removeChild(this.button);
-		} else
-			this.button.click();
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("button")).forEach(button => new Button(button));
-
-	document.documentElement.addEventListener("keydown", function (event)
-	{
-		switch (event.keyCode)
-		{
-			case ENTER:
-				Array.from(document.querySelectorAll("button.Action")).forEach(e => e.click());
-				break;
-			case ESC:
-				Array.from(document.querySelectorAll("button.Cancel")).forEach(e => e.click());
-				break;
-
-		}
-	});
 });
-
 /* global customElements */
 
-class SideMenu extends Modal
+class GSideMenu extends GModal
 {
 	constructor(elements)
 	{
@@ -3448,7 +3237,7 @@ class SideMenu extends Modal
 	}
 }
 
-customElements.define('g-side-menu', SideMenu);
+customElements.define('g-side-menu', GSideMenu);
 /* global Message */
 
 class Clipboard
@@ -3479,57 +3268,55 @@ window.addEventListener("load", function ()
 );
 /* global NodeList, Clipboard, customElements */
 
-class ContextMenu extends HTMLElement
+class GContextMenu extends HTMLElement
 {
 	constructor()
 	{
 		super();
 		this._private = {};
 		this.addEventListener("click", () => this.hide());
+		this._private.mousedown = e => !this.contains(e.target) && this.hide();
 	}
 
 	show(context, target, x, y)
 	{
 		this._private.target = target;
 		this._private.context = context;
-		this._private.dialog = new Modal();
-		this._private.dialog.appendChild(this);
-		this._private.dialog.show();
+		this.style.display = "flex";
+
+		if (x + this.clientWidth > window.innerWidth)
+			x = x >= this.clientWidth
+				? x - this.clientWidth
+				: x = window.innerWidth / 2 - this.clientWidth / 2;
+
+		if (y + this.clientHeight > window.innerHeight)
+			y = y >= this.clientHeight
+				? y - this.clientHeight
+				: y = window.innerHeight / 2 - this.clientHeight / 2;
+
 
 		this.style.top = y + "px";
 		this.style.left = x + "px";
-
-		this.style.display = "flex";
-		var rec = this.getBoundingClientRect();
-		if (rec.top + rec.height > window.innerHeight)
-			this.style.top = rec.top - rec.height + "px";
-		if (rec.left + rec.width > window.innerWidth)
-			this.style.left = rec.left - rec.width + "px";
+		this.style.visibility = "visible";
 	}
 
 	hide()
 	{
-		this.style.display = "none";
 		this._private.target = null;
 		this._private.context = null;
-		this._private.dialog.hide();
-		this._private.dialog = null;
+		this.style.display = "none";
+		this.style.visibility = "hidden";
 	}
 
-	register(element)
+	connectedCallback()
 	{
-		if (Array.isArray(element))
-			element.forEach(element => this.register(element));
-		else if (element instanceof NodeList)
-			Array.from(element).forEach(element => this.register(element));
-		else if (element.addEventListener)
-			element.addEventListener("contextmenu", event =>
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				this.show(element, event.target,
-					event.clientX, event.clientY);
-			});
+		this.classList.add('g-context-menu');
+		window.addEventListener("mousedown", this._private.mousedown);
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("mousedown", this._private.mousedown);
 	}
 
 	get context()
@@ -3543,247 +3330,370 @@ class ContextMenu extends HTMLElement
 	}
 }
 
-customElements.define('g-context-menu', ContextMenu);
+customElements.define('g-context-menu', GContextMenu);
 
-window.addEventListener("load", function ()
+window.addEventListener("contextmenu", event =>
 {
-	Array.from(document.getElementsByTagName("g-context-menu"))
-		.forEach(element => element.register(element.id ?
-				document.querySelectorAll("*[data-context-menu=" + element.id + "]") : element.parentNode));
-});
-/* global CopyTextMenuItem, CopyLinkMenuItem, OpenLinkMenuItem, Clipboard */
+	event = event || window.event;
+	let action = event.target || event.srcElement;
 
-class ActionContextMenu
+	action = action.closest("[data-context-menu]");
+	if (action)
+	{
+		document.getElementById(action.getAttribute("data-context-menu"))
+			.show(action, event.target, event.clientX, event.clientY);
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+	}
+}, true);
+/* global CopyTextMenuItem, CopyLinkMenuItem, OpenLinkMenuItem, Clipboard, customElements */
+
+class GActionContextMenu extends GContextMenu
 {
-	static get instance()
+	connectedCallback()
 	{
-		if (!ActionContextMenu._instance)
+		super.connectedCallback();
+
+		let copyText = this.appendChild(document.createElement("a"));
+		copyText.innerHTML = "Copiar texto <i>&#X2217;</i>";
+		copyText.addEventListener("click", () => Clipboard.copy(this.target.innerText, true));
+
+		let copyLink = this.appendChild(document.createElement("a"));
+		copyLink.innerHTML = "Copiar endereço <i>&#X2159;</i>";
+		copyLink.addEventListener("click", () => Clipboard.copy(this.context.getAttribute("data-action"), true));
+
+		let openLink = this.appendChild(document.createElement("a"));
+		openLink.innerHTML = "Abrir em nova aba <i>&#X2256;</i>";
+		openLink.addEventListener("click", () =>
 		{
-			ActionContextMenu._instance = new ContextMenu();
-			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyTextAction);
-			ActionContextMenu._instance.appendChild(ActionContextMenu.CopyLinkAction);
-			ActionContextMenu._instance.appendChild(ActionContextMenu.OpenLinkAction);
-		}
-		return ActionContextMenu._instance;
-	}
-
-	static get CopyLinkAction()
-	{
-		if (!ActionContextMenu._CopyLinkAction)
-		{
-			ActionContextMenu._CopyLinkAction = new GCommand();
-			ActionContextMenu._CopyLinkAction.innerHTML = "Copiar endereço <i>&#X2159;</i>";
-			ActionContextMenu._CopyLinkAction.action = e => Clipboard.copy(e.parentNode.context.getAttribute("data-action"), true);
-		}
-		return ActionContextMenu._CopyLinkAction;
-	}
-
-	static get CopyTextAction()
-	{
-		if (!ActionContextMenu._CopyTextAction)
-		{
-			ActionContextMenu._CopyTextAction = new GCommand();
-			ActionContextMenu._CopyTextAction.innerHTML = "Copiar texto <i>&#X2217;</i>";
-			ActionContextMenu._CopyTextAction.action = e => Clipboard.copy(e.parentNode.target.innerText, true);
-		}
-		return ActionContextMenu._CopyTextAction;
-	}
-
-	static get OpenLinkAction()
-	{
-		if (!ActionContextMenu._OpenLinkAction)
-		{
-			ActionContextMenu._OpenLinkAction = new GCommand();
-			ActionContextMenu._OpenLinkAction.innerHTML = "Abrir em nova aba<i>&#X2256;</i>";
-
-			ActionContextMenu._OpenLinkAction.action = e =>
-			{
-				var context = e.parentNode.context;
-				switch (context.getAttribute("data-method")
-					? context.getAttribute("data-method").toLowerCase() : "get")
-				{
-					case "get":
-						new Link(document.createElement("a"), context)
-							.setTarget("_blank")
-							.setAction(context.getAttribute("data-action"))
-							.setTitle(context.getAttribute("title"))
-							.setBlock(context.getAttribute("data-block"))
-							.setAlert(context.getAttribute("data-alert"))
-							.setConfirm(context.getAttribute("data-confirm"))
-							.execute();
-						break;
-					case "post":
-						new Button(document.createElement("button"), context)
-							.setTarget("_blank")
-							.setAction(context.getAttribute("data-action"))
-							.setTitle(context.getAttribute("title"))
-							.setBlock(context.getAttribute("data-block"))
-							.setAlert(context.getAttribute("data-alert"))
-							.setConfirm(context.getAttribute("data-confirm"))
-							.execute();
-						break;
-				}
-			};
-
-		}
-		return ActionContextMenu._OpenLinkAction;
-	}
-}
-
-
-/* global ENTER, HOME, END, DOWN, UP, Clipboard, ActionContextMenu */
-
-class ActionHandler
-{
-	static register(elements)
-	{
-		Array.from(elements).forEach(element =>
-		{
-			element.setAttribute("tabindex", 1);
-			element.onmouseover = () => element.focus();
-
-			element.onkeydown = function (event)
-			{
-				event = event ? event : window.event;
-				switch (event.keyCode)
-				{
-					case ENTER:
-						this.onclick(event);
-						return false;
-
-					case HOME:
-						var siblings = Array.from(this.parentNode.childNodes)
-							.filter(node => node.tagName.toLowerCase() === "tr");
-						if (siblings.length !== 0
-							&& siblings[0].getAttribute("tabindex"))
-							siblings[0].focus();
-						return false;
-
-					case END:
-						var siblings = Array.from(this.parentNode.childNodes)
-							.filter(node => node.tagName.toLowerCase() === "tr");
-						if (siblings.length !== 0
-							&& siblings[siblings.length - 1].getAttribute("tabindex"))
-							siblings[siblings.length - 1].focus();
-						return false;
-
-					case UP:
-						if (this.previousElementSibling &&
-							this.previousElementSibling.getAttribute("tabindex"))
-							this.previousElementSibling.focus();
-						return false;
-
-					case DOWN:
-						if (this.nextElementSibling &&
-							this.nextElementSibling.getAttribute("tabindex"))
-							this.nextElementSibling.focus();
-						return false;
-
-					default:
-						return true;
-				}
-			};
-
-			if (!element.onclick)
-				element.onclick = function (event)
-				{
-					this.blur();
-					event = event || window.event;
-					for (var parent = event.target || event.srcElement;
-						parent !== this;
-						parent = parent.parentNode)
-						if (parent.onclick
-							|| parent.tagName.toLowerCase() === 'a'
-							|| parent.tagName.toLowerCase() === 'input'
-							|| parent.tagName.toLowerCase() === 'select'
-							|| parent.tagName.toLowerCase() === 'textarea'
-							|| parent.tagName.toLowerCase() === 'button')
-							return;
-					switch (this.getAttribute("data-method") ?
-						this.getAttribute("data-method")
-						.toLowerCase() : "get")
-					{
-						case "get":
-							new Link(document.createElement("a"), element)
-								.setAction(this.getAttribute("data-action"))
-								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-								.setTitle(this.getAttribute("title"))
-								.setBlock(this.getAttribute("data-block"))
-								.setAlert(this.getAttribute("data-alert"))
-								.setConfirm(this.getAttribute("data-confirm"))
-								.setNavigator(!event.ctrlKey && this.getAttribute("data-target")
-									? Array.from(this.parentNode.children)
-									.map(e => e.getAttribute("data-action"))
-									.filter(e => e) : null)
-								.execute();
-							break;
-						case "post":
-							new Button(document.createElement("button"), element)
-								.setAction(this.getAttribute("data-action"))
-								.setTarget(event.ctrlKey ? "_blank" : this.getAttribute("data-target"))
-								.setTitle(this.getAttribute("title"))
-								.setBlock(this.getAttribute("data-block"))
-								.setAlert(this.getAttribute("data-alert"))
-								.setConfirm(this.getAttribute("data-confirm"))
-								.execute();
-							break;
-					}
-
-					return false;
-				};
-
-			ActionContextMenu.instance.register(element);
+			let context = this.context;
+			let target = this.context.getAttribute("data-target");
+			this.context.setAttribute("data-target", "_blank");
+			this.context.click();
+			this.context.setAttribute("data-target", target);
 		});
 	}
 }
 
+customElements.define('g-action-context-menu', GActionContextMenu);
 
-window.addEventListener("load", function ()
-{
-	ActionHandler.register(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]'));
-});
-window.addEventListener("load", function ()
-{
-	var change = function (event)
-	{
-		switch (this.getAttribute("data-method") ?
-			this.getAttribute("data-method")
-			.toLowerCase() : "get")
-		{
-			case "get":
-				new Link(document.createElement("a"), event.target)
-					.setAction(this.getAttribute("data-action"))
-					.setTarget(this.getAttribute("data-target"))
-					.setTitle(this.getAttribute("title"))
-					.setBlock(this.getAttribute("data-block"))
-					.setAlert(this.getAttribute("data-alert"))
-					.setConfirm(this.getAttribute("data-confirm"))
-					.execute();
-				break;
-			case "post":
-				new Button(document.createElement("button"), event.target)
-					.setAction(this.getAttribute("data-action"))
-					.setTarget(this.getAttribute("data-target"))
-					.setTitle(this.getAttribute("title"))
-					.setBlock(this.getAttribute("data-block"))
-					.setAlert(this.getAttribute("data-alert"))
-					.setConfirm(this.getAttribute("data-confirm"))
-					.execute();
-				break;
-		}
-	};
 
-	Array.from(document.querySelectorAll('input[data-method], input[data-action], input[data-target], select[data-method], select[data-action], select[data-target]')).forEach(element =>
-	{
-		element.addEventListener("change", change);
-		element.addEventListener("changed", change);
-	});
+window.addEventListener("contextmenu", event => {
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-action]");
+	if (!action)
+		return;
+
+	let menu = document.querySelector("g-action-context-menu")
+		|| document.body.appendChild(new GActionContextMenu());
+	menu.show(action, event.target, event.clientX, event.clientY);
+
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
 });
 
 
 /* global customElements */
 
-class NavBar extends HTMLElement
+class GCheckableContextMenu extends GContextMenu
+{
+	connectedCallback()
+	{
+		super.connectedCallback();
+
+		let inverterSelecao = this.appendChild(document.createElement("a"));
+		inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
+		inverterSelecao.addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
+
+		let selecionarTudo = this.appendChild(document.createElement("a"));
+		selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
+		selecionarTudo.addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = true));
+
+		let desmarcarSelecionados = this.appendChild(document.createElement("a"));
+		desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
+		desmarcarSelecionados.addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = false));
+	}
+}
+
+customElements.define('g-checkable-context-menu', GCheckableContextMenu);
+
+
+window.addEventListener("contextmenu", event => {
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("ul.Checkable");
+	if (!action)
+		return;
+
+	let menu = document.querySelector("g-checkable-context-menu")
+		|| document.body.appendChild(new GCheckableContextMenu());
+	menu.show(action, event.target, event.clientX, event.clientY);
+
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
+});
+/* global ENTER, HOME, END, DOWN, UP, Clipboard, ActionContextMenu */
+
+window.addEventListener("click", event => {
+	event = event || window.event;
+
+	if (event.button !== 0)
+		return;
+
+	let action = event.target || event.srcElement;
+	action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
+	if (!action)
+		return;
+
+	action.blur();
+
+	switch (action.getAttribute("data-method") ?
+		action.getAttribute("data-method").toLowerCase() : "get")
+	{
+		case "get":
+
+			let link = document.createElement("a");
+
+			if (event.ctrlKey)
+				link.setAttribute("target", "_blank");
+			else if (action.hasAttribute("data-target"))
+				link.setAttribute("target", action.getAttribute("data-target"));
+
+			if (action.hasAttribute("data-action"))
+				link.setAttribute("href", action.getAttribute("data-action"));
+
+			if (action.hasAttribute("data-reload-on-hide"))
+				link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+			if (action.hasAttribute("data-submit-on-hide"))
+				link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+			if (action.hasAttribute("title"))
+				link.setAttribute("title", action.getAttribute("title"));
+
+			if (action.hasAttribute("data-block"))
+				link.setAttribute("data-block", action.getAttribute("data-block"));
+
+			if (action.hasAttribute("data-alert"))
+				link.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+			if (action.hasAttribute("data-confirm"))
+				link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+			if (!event.ctrlKey && action.getAttribute("data-target") === "_dialog")
+				link.navigator = Array.from(action.parentNode.children)
+					.map(e => e.getAttribute("data-action"))
+					.filter(e => e);
+
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			break;
+		case "post":
+
+			let button = document.createElement("button");
+
+			if (event.ctrlKey)
+				button.setAttribute("target", "_blank");
+			else if (action.hasAttribute("data-target"))
+				button.setAttribute("target", action.getAttribute("data-target"));
+
+			if (action.hasAttribute("data-action"))
+				button.setAttribute("formaction", action.getAttribute("formaction"));
+
+			if (action.hasAttribute("data-reload-on-hide"))
+				button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+			if (action.hasAttribute("data-submit-on-hide"))
+				button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+			if (action.hasAttribute("title"))
+				button.setAttribute("title", action.getAttribute("title"));
+
+			if (action.hasAttribute("data-block"))
+				button.setAttribute("data-block", action.getAttribute("data-block"));
+
+			if (action.hasAttribute("data-alert"))
+				button.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+			if (action.hasAttribute("data-confirm"))
+				button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+			var form = action.closest("form");
+			form.appendChild(button);
+			button.click();
+			form.removeChild(button);
+			break;
+	}
+
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
+});
+
+window.addEventListener("keydown", event => {
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-action]");
+	if (!action)
+		return;
+
+	switch (event.keyCode)
+	{
+		case ENTER:
+			action.click();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			break;
+
+		case HOME:
+			var siblings = Array.from(action.parentNode.childNodes)
+				.filter(node => node.tagName.toLowerCase() === "tr");
+			if (siblings.length !== 0
+				&& siblings[0].getAttribute("tabindex"))
+				siblings[0].focus();
+
+
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			break;
+		case END:
+			var siblings = Array.from(action.parentNode.childNodes)
+				.filter(node => node.tagName.toLowerCase() === "tr");
+			if (siblings.length !== 0
+				&& siblings[siblings.length - 1].getAttribute("tabindex"))
+				siblings[siblings.length - 1].focus();
+
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			break;
+		case UP:
+			if (action.previousElementSibling &&
+				action.previousElementSibling.getAttribute("tabindex"))
+				action.previousElementSibling.focus();
+
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			break;
+		case DOWN:
+			if (action.nextElementSibling &&
+				action.nextElementSibling.getAttribute("tabindex"))
+				action.nextElementSibling.focus();
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+			break;
+	}
+});
+
+window.addEventListener("mouseover", event => {
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-action]");
+	if (!action)
+		return;
+
+	action.focus();
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
+});
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]'))
+		.forEach(action => action.setAttribute("tabindex", "1")));
+/////////////////////////////////////////////////////////////////////////////
+// ChangeHandler.js
+/////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener("change", event =>
+	{
+		let action = event.target || event.srcElement;
+
+		if ((!action.tagName === "INPUT"
+			&& !action.tagName === "SELECT")
+			|| (!action.hasAttribute("data-method")
+				&& !action.hasAttribute("data-action")
+				&& !action.hasAttribute("data-target")))
+			return;
+
+		action.blur();
+
+		switch (action.getAttribute("data-method") ? action.getAttribute("data-method").toLowerCase() : "get")
+		{
+			case "get":
+
+				let link = document.createElement("a");
+
+				if (action.hasAttribute("data-target"))
+					link.setAttribute("target", action.getAttribute("data-target"));
+
+				if (action.hasAttribute("data-action"))
+					link.setAttribute("href", action.getAttribute("data-action"));
+
+				if (action.hasAttribute("data-reload-on-hide"))
+					link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+				if (action.hasAttribute("data-submit-on-hide"))
+					link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+				if (action.hasAttribute("title"))
+					link.setAttribute("title", action.getAttribute("title"));
+
+				if (action.hasAttribute("data-block"))
+					link.setAttribute("data-block", action.getAttribute("data-block"));
+
+				if (action.hasAttribute("data-alert"))
+					link.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+				if (action.hasAttribute("data-confirm"))
+					link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				break;
+			case "post":
+				let button = document.createElement("button");
+
+				if (action.hasAttribute("data-target"))
+					button.setAttribute("target", action.getAttribute("data-target"));
+
+				if (action.hasAttribute("data-action"))
+					button.setAttribute("formaction", action.getAttribute("formaction"));
+
+				if (action.hasAttribute("data-reload-on-hide"))
+					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
+				if (action.hasAttribute("data-submit-on-hide"))
+					button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+
+				if (action.hasAttribute("title"))
+					button.setAttribute("title", action.getAttribute("title"));
+
+				if (action.hasAttribute("data-block"))
+					button.setAttribute("data-block", action.getAttribute("data-block"));
+
+				if (action.hasAttribute("data-alert"))
+					button.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+				if (action.hasAttribute("data-confirm"))
+					button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+
+				var form = action.closest("form");
+				form.appendChild(button);
+				button.click();
+				form.removeChild(button);
+				break;
+		}
+	});
+/* global customElements */
+
+class GNavBar extends HTMLElement
 {
 	constructor(links, url)
 	{
@@ -3851,13 +3761,15 @@ class NavBar extends HTMLElement
 	}
 }
 
-customElements.define('g-navbar', NavBar);
-class Slider extends HTMLElement
+customElements.define('g-navbar', GNavBar);
+/* global customElements */
+
+class GSlider extends HTMLElement
 {
 	constructor(value, next, prev, format, size = 5)
 	{
 		super();
-		this.classList.add("Slider");
+		this.classList.add("g-slider");
 		this.addEventListener("mouseover", () => this.focus());
 		this.addEventListener("mouseoust", () => this.blur());
 
@@ -3961,11 +3873,11 @@ class Slider extends HTMLElement
 
 
 
-customElements.define('g-slider', Slider);
+customElements.define('g-slider', GSlider);
 /* global DateFormat, customElements */
 
 var calendars = {};
-class Calendar extends HTMLElement
+class GCalendar extends HTMLElement
 {
 	constructor(init)
 	{
@@ -4163,7 +4075,7 @@ class Calendar extends HTMLElement
 	}
 }
 
-customElements.define('g-calendar', Calendar);
+customElements.define('g-calendar', GCalendar);
 /* global DateFormat, customElements */
 
 class DateSelector extends HTMLElement
@@ -4174,7 +4086,7 @@ class DateSelector extends HTMLElement
 		this._private = {};
 
 		var date = new Date();
-		this._private.calendar = this.appendChild(new Calendar({month: new Date(), max: 1}));
+		this._private.calendar = this.appendChild(new GCalendar({month: new Date(), max: 1}));
 		this._private.calendar.select(date);
 		this._private.calendar.addEventListener("remove", event => event.preventDefault());
 		this._private.calendar.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected',
@@ -4198,10 +4110,10 @@ class TimeSelector extends HTMLElement
 		super();
 		this._private = {};
 
-		this._private.h = this.appendChild(new Slider(0, e => (e + 23) % 24, e => (e + 1) % 24, e => "00".concat(String(e)).slice(-2), 5));
+		this._private.h = this.appendChild(new GSlider(0, e => (e + 23) % 24, e => (e + 1) % 24, e => "00".concat(String(e)).slice(-2), 5));
 		this._private.h.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 
-		this._private.m = this.appendChild(new Slider(0, e => (e + 50) % 60, e => (e + 10) % 60, e => "00".concat(String(e)).slice(-2), 5));
+		this._private.m = this.appendChild(new GSlider(0, e => (e + 50) % 60, e => (e + 10) % 60, e => "00".concat(String(e)).slice(-2), 5));
 		this._private.m.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
 
@@ -4223,10 +4135,10 @@ class MonthSelector extends HTMLElement
 
 		var date = new Date();
 		var months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-		this._private.m = this.appendChild(new Slider(date.getMonth(), e => e > 0 ? e - 1 : 11, e => e < 11 ? e + 1 : 0, e => months[e]));
+		this._private.m = this.appendChild(new GSlider(date.getMonth(), e => e > 0 ? e - 1 : 11, e => e < 11 ? e + 1 : 0, e => months[e]));
 		this._private.m.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 
-		this._private.y = this.appendChild(new Slider(date.getFullYear(), e => e - 1, e => e + 1, e => "0000".concat(String(e)).slice(-4)));
+		this._private.y = this.appendChild(new GSlider(date.getFullYear(), e => e - 1, e => e + 1, e => "0000".concat(String(e)).slice(-4)));
 		this._private.y.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
 
@@ -4708,16 +4620,21 @@ class ReportSelector extends HTMLElement
 window.addEventListener("load", () => customElements.define('g-report-selector', ReportSelector));
 /* global customElements */
 
-class Picker extends Window
+class Picker extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.classList.add("g-picker");
-		let close = new GCommand();
-		close.action = () => this.hide();
+		let close = document.createElement("a");
+		close.href = "#";
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
+	}
+
+	connectedCallback()
+	{
+		this.classList.add("g-picker");
 	}
 
 	get commit()
@@ -4763,16 +4680,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new DatePicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -4817,12 +4734,12 @@ window.addEventListener("load", function ()
 			if (input.value)
 			{
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new TimePicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
@@ -4869,12 +4786,12 @@ window.addEventListener("load", function ()
 			if (input.value)
 			{
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new MonthPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
@@ -4918,16 +4835,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new DateTimePicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -4967,16 +4884,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new DateIntervalPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -5017,16 +4934,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new TimeIntervalPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -5066,16 +4983,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new MonthIntervalPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -5115,16 +5032,16 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new DateTimeIntervalPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
-			input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 			link.focus();
 			link.blur();
 		});
@@ -5163,12 +5080,12 @@ window.addEventListener("load", function ()
 
 			if (input.value) {
 				input.value = '';
-				input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
 				new IconPicker().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
-					input.dispatchEvent(new CustomEvent('changed', {detail: {source: this}}));
+					input.dispatchEvent(new Event('change', {bubbles: true}));
 				});
 
 
@@ -5177,9 +5094,9 @@ window.addEventListener("load", function ()
 		});
 	});
 });
-/* global Modal, customElements */
+/* global customElements */
 
-class GBlock extends Window
+class GBlock extends GWindow
 {
 	constructor()
 	{
@@ -5560,7 +5477,7 @@ customElements.define('g-chart', GChart);
 
 /* global customElements */
 
-class GChartDialog extends Window
+class GChartDialog extends GWindow
 {
 	constructor()
 	{
@@ -5570,50 +5487,58 @@ class GChartDialog extends Window
 
 		this.body.appendChild(new GChart());
 
-		var close = this.head.appendChild(new GCommand());
+		var close = this.head.appendChild(document.createElement('a'));
+		close.href = "#";
 		close.dialog = this;
 		close.title = "Fechar";
 		close.innerHTML = "<i>&#x1011;</i>";
 		close.onclick = () => this.hide();
 
-		let commands = new GCommands();
+		let commands = new GDialogCommands();
 		var cchart = commands.appendChild(document.createElement('a'));
+		cchart.href = "#";
 		cchart.dialog = this;
 		cchart.title = "Coluna";
 		cchart.innerHTML = "Coluna<i>&#x2033;</i>";
 		cchart.onclick = () => this.type = 'cchart';
 
 		var bchart = commands.appendChild(document.createElement('a'));
+		bchart.href = "#";
 		bchart.dialog = this;
 		bchart.title = "Barra";
 		bchart.innerHTML = "Barra<i>&#x2246;</i>";
 		bchart.onclick = () => this.type = 'bchart';
 
 		var lchart = commands.appendChild(document.createElement('a'));
+		lchart.href = "#";
 		lchart.dialog = this;
 		lchart.title = "Linha";
 		lchart.innerHTML = "Linha<i>&#x2032;</i>";
 		lchart.onclick = () => this.type = 'lchart';
 
 		var achart = commands.appendChild(document.createElement('a'));
+		achart.href = "#";
 		achart.dialog = this;
 		achart.title = "Área";
 		achart.innerHTML = "Área<i>&#x2244;</i>";
 		achart.onclick = () => this.type = 'achart';
 
 		var pchart = commands.appendChild(document.createElement('a'));
+		pchart.href = "#";
 		pchart.dialog = this;
 		pchart.title = "Pizza";
 		pchart.innerHTML = "Pizza<i>&#x2031;</i>";
 		pchart.onclick = () => this.type = 'pchart';
 
 		var dchart = commands.appendChild(document.createElement('a'));
+		dchart.href = "#";
 		dchart.dialog = this;
 		dchart.title = "Donut";
 		dchart.innerHTML = "Donut<i>&#x2245;</i>";
 		dchart.onclick = () => this.type = 'dchart';
 
 		var rchart = commands.appendChild(document.createElement('a'));
+		rchart.href = "#";
 		rchart.dialog = this;
 		rchart.title = "Rose";
 		rchart.innerHTML = "Rose<i>&#x2247;</i>";
@@ -5762,133 +5687,6 @@ window.addEventListener("load", function ()
 });
 
 
-function PageControl(pageControl)
-{
-	if (!pageControl.getAttribute("data-type"))
-		pageControl.setAttribute("data-type", "Frame");
-
-	var pages = Array.from(pageControl.children)
-		.filter(e => e.tagName.toLowerCase() === "ul")
-		.flatMap(e => Array.from(e.children));
-
-	if (pages.length > 0
-		&& pages.every(e => !e.getAttribute("data-selected")
-				|| e.getAttribute("data-selected").toLowerCase() !== "true"))
-		pages[0].setAttribute("data-selected", "true");
-
-	for (var i = 0; i < pages.length
-		&& i < pages.length; i++)
-		new Page(pages[i]);
-
-	function reset()
-	{
-		for (var i = 0; i < pages.length; i++)
-			pages[i].setAttribute("data-selected", "false");
-
-		for (var i = 0; i < pageControl.children.length; i++)
-			if (pageControl.children[i].tagName.toLowerCase() === 'div')
-				pageControl.children[i].style.display = "";
-	}
-
-	function Page(page)
-	{
-		if (!page.getAttribute("data-type"))
-			page.setAttribute("data-type",
-				pageControl.getAttribute("data-type"));
-
-		var link;
-		for (var i = 0; i < page.children.length; i++)
-			if (page.children[i].tagName.toLowerCase() === 'a')
-				link = page.children[i];
-
-		var body;
-		for (var i = 0; i < page.children.length; i++)
-			if (page.children[i].tagName.toLowerCase() === 'div')
-				body = page.children[i];
-
-		if (!body)
-			body = document.createElement("div");
-		pageControl.appendChild(body);
-
-		link.onclick = function ()
-		{
-			reset();
-			body.style.display = "block";
-			page.setAttribute("data-selected", "true");
-
-			if (!body.innerHTML.replace(/^\s+|\s+$/g, ''))
-				switch (page.getAttribute("data-type"))
-				{
-					case 'Fetch':
-						fetch();
-						break;
-					case 'Frame':
-						frame();
-						break;
-				}
-
-			return false;
-		};
-
-
-		if (page.getAttribute("data-selected") &&
-			page.getAttribute("data-selected").toLowerCase() === "true")
-			link.onclick();
-
-
-		function fetch()
-		{
-			new URL(link.getAttribute('href')).get(text => body.innerHTML = text);
-		}
-
-		function frame()
-		{
-			var iframe = body.appendChild(document.createElement("iframe"));
-			iframe.scrolling = "no";
-			iframe.setAttribute("allowfullscreen", "true");
-
-			var resize = function ()
-			{
-				if (iframe.contentWindow
-					&& iframe.contentWindow.document
-					&& iframe.contentWindow.document.body
-					&& iframe.contentWindow.document.body.scrollHeight)
-				{
-					var height = iframe.contentWindow.document.body.scrollHeight + "px";
-					if (iframe.height !== height)
-					{
-						iframe.height = "0";
-						iframe.height = height;
-					}
-				}
-			};
-
-			iframe.onload = function ()
-			{
-				resize();
-				window.addEventListener("refresh_size", resize);
-				iframe.backgroundImage = "none";
-			};
-
-			iframe.refresh = function ()
-			{
-				var divs = Array.from(this.parentNode.parentNode.children).filter(e => e.tagName.toLowerCase() === "div");
-				for (i = 0; i < divs.length; i++)
-					if (divs[i].childNodes[0] !== this)
-						if (divs[i] !== this.parenNode)
-							divs[i].innerHTML = '';
-			};
-
-			iframe.setAttribute("src", link.getAttribute('href'));
-		}
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('div.PageControl'))
-		.forEach(element => new PageControl(element));
-});
 function LinkControl(linkControl)
 {
 	var links = [];
@@ -5916,7 +5714,7 @@ window.addEventListener("load", function ()
 });
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-class GDialog extends Window
+class GDialog extends GWindow
 {
 	constructor()
 	{
@@ -5925,19 +5723,22 @@ class GDialog extends Window
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
 
-		let minimize = new GCommand();
+		let minimize = document.createElement("a");
+		minimize.href = "#";
 		this.head.appendChild(minimize);
 		minimize.innerHTML = "<i>&#x3019;<i/>";
-		minimize.action = () => this.minimize();
+		minimize.onclick = () => this.minimize();
 
-		let fullScreen = new GCommand();
+		let fullScreen = document.createElement("a");
+		fullScreen.href = "#";
 		this.head.appendChild(fullScreen);
 		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.action = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+		fullScreen.onclick = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
 
-		let close = new GCommand();
+		let close = document.createElement("a");
+		close.href = "#";
 		this.head.appendChild(close);
-		close.action = () => this.hide();
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
 
 		this.head.addEventListener("keydown", event =>
@@ -5957,60 +5758,48 @@ class GDialog extends Window
 			event.preventDefault();
 			event.stopPropagation();
 		});
+
+
+		this._private.iframe = this.body.appendChild(window.top.document.createElement('iframe'));
+
+		this.iframe.dialog = this;
+		this.iframe.scrolling = "no";
+		this.iframe.setAttribute('name', '_dialog');
+		this.iframe.onmouseenter = () => this.iframe.focus();
+
+		this.iframe.addEventListener("load", () =>
+		{
+			this.iframe.name = "_frame";
+			this.iframe.setAttribute("name", "_frame");
+			this.iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+
+			var resize = () =>
+			{
+				if (!this.iframe.contentWindow
+					|| !this.iframe.contentWindow.document
+					|| !this.iframe.contentWindow.document.body
+					|| !this.iframe.contentWindow.document.body.scrollHeight)
+					return false;
+
+				let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
+					this.body.offsetHeight) + "px";
+				if (this.iframe.height !== height)
+				{
+					this.iframe.height = "0";
+					this.iframe.height = height;
+				}
+				return true;
+			};
+
+			resize();
+			window.addEventListener("refresh_size", resize);
+			this.iframe.backgroundImage = "none";
+		});
+
 	}
 
 	get iframe()
 	{
-		if (!this._private.iframe)
-		{
-			let iframe = this._private.iframe
-				= this.body.appendChild(window.top.document.createElement('iframe'));
-
-			iframe.dialog = this;
-			iframe.scrolling = "no";
-			iframe.setAttribute('name', '_dialog');
-			iframe.onmouseenter = () => this._private.iframe.focus();
-
-			iframe.addEventListener("keydown", event =>
-			{
-				event = event ? event : window.event;
-				if (event.keyCode === ESC)
-				{
-					this.head.focus();
-					event.preventDefault();
-					event.stopPropagation();
-				}
-			});
-
-			iframe.addEventListener("load", () =>
-			{
-				iframe.name = "_frame";
-				iframe.setAttribute("name", "_frame");
-				iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-
-				var resize = () =>
-				{
-					if (!iframe.contentWindow
-						|| !iframe.contentWindow.document
-						|| !iframe.contentWindow.document.body
-						|| !iframe.contentWindow.document.body.scrollHeight)
-						return false;
-
-					let height = Math.max(iframe.contentWindow.document.body.scrollHeight, this.body.offsetHeight) + "px";
-					if (iframe.height !== height)
-					{
-						iframe.height = "0";
-						iframe.height = height;
-					}
-					return true;
-				};
-
-				resize();
-				window.addEventListener("refresh_size", resize);
-				iframe.backgroundImage = "none";
-			});
-		}
-
 		return this._private.iframe;
 	}
 
@@ -6018,7 +5807,7 @@ class GDialog extends Window
 	{
 		if (navigator && navigator.length > 1)
 		{
-			let navbar = new NavBar(navigator, navigator.target);
+			let navbar = new GNavBar(navigator, navigator.target);
 			navbar.addEventListener("update", event => this._private.iframe.setAttribute('src', event.detail.target));
 			this.foot.appendChild(navbar);
 		}
@@ -6048,9 +5837,15 @@ class GDialog extends Window
 
 		for (var i = 0; i < size; i++)
 			if (this.arguments[i])
-				this.arguments[i].dispatchEvent(new CustomEvent('changed'));
+				this.arguments[i].dispatchEvent(new Event('change', {bubbles: true}));
 
 		this.hide();
+	}
+
+	static hide()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			window.frameElement.dialog.hide();
 	}
 
 	static set caption(caption)
@@ -6059,10 +5854,22 @@ class GDialog extends Window
 			window.frameElement.dialog.caption = caption;
 	}
 
-	static hide()
+	static set commands(commands)
 	{
 		if (window.frameElement && window.frameElement.dialog)
-			window.frameElement.dialog.hide();
+			window.frameElement.dialog.commands = commands;
+	}
+
+	static get caption()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			return window.frameElement.dialog.caption;
+	}
+
+	static get commands()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			return window.frameElement.dialog.commands;
 	}
 
 	static create()
@@ -6090,7 +5897,7 @@ window.addEventListener("load", function ()
 			{
 				parameters = parameters.filter(e => e && e.value);
 				parameters.forEach(e => e.value = "");
-				parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed')));
+				parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
 			} else {
 				let dialog = GDialog.create();
 				dialog.target = this.href;
@@ -6162,9 +5969,58 @@ window.addEventListener("load", function ()
 		};
 	});
 });
+/* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
+
+class GStackFrame extends GModal
+{
+	constructor()
+	{
+		super();
+
+		this._private.iframe = this.appendChild(window.top.document.createElement('iframe'));
+
+		this.iframe.dialog = this;
+		this.iframe.scrolling = "no";
+		this.iframe.setAttribute('name', '_dialog');
+		this.iframe.onmouseenter = () => this.iframe.focus();
+
+		this.iframe.addEventListener("load", () =>
+		{
+			this.iframe.name = "_frame";
+			this.iframe.setAttribute("name", "_frame");
+			this.iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+			this.iframe.backgroundImage = "none";
+		});
+
+	}
+
+	get iframe()
+	{
+		return this._private.iframe;
+	}
+
+	set target(target)
+	{
+		this.iframe.setAttribute('src', target);
+	}
+
+	static hide()
+	{
+		if (window.frameElement && window.frameElement.dialog)
+			window.frameElement.dialog.hide();
+	}
+
+	static create()
+	{
+		return 	document === window.top.document ? new GStackFrame()
+			: window.top.document.importNode(new GStackFrame());
+	}
+}
+
+customElements.define('g-stack-frame', GStackFrame);
 /* global customElements */
 
-class Popup extends Window
+class GPopup extends GWindow
 {
 	constructor(element)
 	{
@@ -6174,21 +6030,23 @@ class Popup extends Window
 		this.classList.add("g-popup");
 
 		this.caption = "Erro de sistema";
-		let close = new GCommand();
 
-		this.commands.add(close);
-		close.action = () => this.hide();
-		close.innerHTML = "Fechar janela<i>&#x1011;<i/>";
+		let close = document.createElement("a");
+		close.href = "#";
+		close.onclick = () => this.hide();
+		close.innerHTML = "<i>&#x1011;<i/>";
+		this.head.appendChild(close);
 
 		this.body.appendChild(element);
 	}
 }
 
-window.addEventListener("load", () => Array.from(document.querySelectorAll('template[data-popup]'))
-		.forEach(element => new Popup(element.content.cloneNode(true)).show()));
+window.addEventListener("load",
+	() => Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => new GPopup(element.content.cloneNode(true)).show()));
 
 
-customElements.define('g-popup', Popup);
+customElements.define('g-popup', GPopup);
 /* global Colorizer */
 
 function registerTreeView(table)
@@ -6524,7 +6382,6 @@ window.addEventListener("load", function ()
 			} else if (this.target === "_dialog")
 			{
 				let dialog = GDialog.create();
-				dialog.creator = this;
 				dialog.caption = this.getAttribute("title");
 				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
 				dialog.addEventListener("show", event => this.dispatchEvent(event));
@@ -6584,19 +6441,11 @@ function autofocus(d)
 	if (elements.length !== 0)
 		return elements[0].focus();
 
-	var elements = Array.from(d.querySelectorAll('[tabindex]'))
-		.filter(function (e)
-		{
-			return Number(e.getAttribute("tabindex")) > 0;
-		});
-
+	var elements = Array.from(d.querySelectorAll('[tabindex]')).filter(e => Number(e.getAttribute("tabindex")) > 0);
 	if (elements.length === 0)
 		return -1;
 
-	var element = elements.reverse().reduce(function (a, b)
-	{
-		return  Number(a.getAttribute("tabindex")) < Number(b.getAttribute("tabindex")) ? a : b;
-	});
+	var element = elements.reverse().reduce((a, b) => Number(a.getAttribute("tabindex")) < Number(b.getAttribute("tabindex")) ? a : b);
 
 	if (element)
 	{
@@ -6606,10 +6455,7 @@ function autofocus(d)
 	}
 }
 
-window.addEventListener("load", function ()
-{
-	autofocus(document);
-});
+window.addEventListener("load", () => autofocus(document));
 /* global Colorizer, Objects */
 
 window.addEventListener("load", function ()
@@ -6676,9 +6522,9 @@ window.addEventListener("load", function ()
 });
 
 
-/* global customElements, Modal */
+/* global customElements */
 
-class Message extends Window
+class Message extends GWindow
 {
 	constructor(options)
 	{
@@ -6687,8 +6533,9 @@ class Message extends Window
 		this.classList.add(options.type);
 		this.caption = options.title || "";
 
-		let close = new GCommand();
-		close.action = () => this.hide();
+		let close = document.createElement("a");
+		close.href = "#";
+		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
 
@@ -6743,19 +6590,9 @@ Message.show = function (status, timeout)
 
 };
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("a.Return")).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			window.history.go(-1);
-		};
-	});
-});
-/* global Message */
+/* global Message, customElements */
 
-class ProgressStatus extends HTMLElement
+class GProgressStatus extends HTMLElement
 {
 	constructor(process)
 	{
@@ -6918,13 +6755,13 @@ class ProgressStatus extends HTMLElement
 	}
 }
 
-customElements.define('progress-status', ProgressStatus);
+customElements.define('g-progress-status', GProgressStatus);
 
 
 
 /* global customElements */
 
-class ProgressDialog extends Picker
+class GProgressDialog extends Picker
 {
 	constructor(process, options)
 	{
@@ -6935,13 +6772,13 @@ class ProgressDialog extends Picker
 
 		this.caption = options && options.title ? options.title : "Progresso";
 
-		var progress = this.body.appendChild(document.createElement("progress-status"));
+		var progress = this.body.appendChild(document.createElement("g-progress-status"));
 		progress.setAttribute("process", process);
 
 		this.commit.innerText = "Processando";
 		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b')
 
-		this.creator.addEventListener("hide", function (event)
+		this.addEventListener("hide", function (event)
 		{
 			if (status === "Pending"
 				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
@@ -6966,7 +6803,7 @@ class ProgressDialog extends Picker
 
 		progress.addEventListener("redirected", url =>
 		{
-			this.creator().addEventListener("hide", event =>
+			this.addEventListener("hide", event =>
 			{
 				this.hide();
 				event.preventDefault();
@@ -6976,8 +6813,10 @@ class ProgressDialog extends Picker
 	}
 }
 
-customElements.define('g-progress-dialog', ProgressDialog);
-class ProgressWindow extends HTMLElement
+customElements.define('g-progress-dialog', GProgressDialog);
+/* global customElements */
+
+class GProgressWindow extends HTMLElement
 {
 	constructor(process)
 	{
@@ -6994,7 +6833,7 @@ class ProgressWindow extends HTMLElement
 	{
 		var body = this.appendChild(document.createElement("div"));
 
-		var progress = body.appendChild(new ProgressStatus(this.getAttribute("process")));
+		var progress = body.appendChild(new GProgressStatus(this.getAttribute("process")));
 
 		var coolbar = body.appendChild(document.createElement("div"));
 		coolbar.className = "Coolbar";
@@ -7032,10 +6871,10 @@ class ProgressWindow extends HTMLElement
 }
 
 window.addEventListener("load", () =>
-	customElements.define('progress-window', ProgressWindow));
-/* global Message, DataFormat */
+	customElements.define('g-progress-window', GProgressWindow));
+/* global Message, DataFormat, customElements */
 
-class DownloadStatus extends HTMLElement
+class GDownloadStatus extends HTMLElement
 {
 	constructor()
 	{
@@ -7169,40 +7008,57 @@ class DownloadStatus extends HTMLElement
 	}
 }
 
-customElements.define('download-status', DownloadStatus);
+customElements.define('g-download-status', GDownloadStatus);
 /* global customElements */
 
-class ReportDialog extends Window
+class GReportDialog extends GWindow
 {
-	constructor(options)
+	constructor()
 	{
-		super(options);
+		super();
 		this.classList.add("g-report-dialog");
-		var downloadStatus = new DownloadStatus();
-		addEventListener("hide", () => downloadStatus.abort());
+		this._private.downloadStatus = new GDownloadStatus();
+		this._private.selector = this.body.appendChild(new ReportSelector());
 
-		this.head.innerHTML = (options && options.title) || "Imprimir";
+		addEventListener("hide", () => this._private.downloadStatus.abort());
 
-		var selector = this.body.appendChild(new ReportSelector());
-		selector.addEventListener("selected", event =>
-		{
-			this.body.removeChild(selector);
-			this.body.appendChild(downloadStatus);
-			var url = new URL(options.url).setParameter("type", event.detail).toString();
-			downloadStatus.download(options.method, url, options.data);
-			downloadStatus.addEventListener("done", () => this.hide());
-		});
-
-		let close = new GCommand();
-		close.action = () => this.hide();
+		let close = document.createElement("a");
+		close.href = "#";
+		close.addEventListener("click", () => this.hide());
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
+	}
+
+	get(url)
+	{
+		this._private.selector.addEventListener("selected", event =>
+		{
+			this.body.removeChild(this._private.selector);
+			this.body.appendChild(this._private.downloadStatus);
+			url = new URL(url).setParameter("type", event.detail).toString();
+			this._private.downloadStatus.download("get", url, null);
+			this._private.downloadStatus.addEventListener("done", () => this.hide());
+		});
+		this.show();
+	}
+
+	post(url, data)
+	{
+		this._private.selector.addEventListener("selected", event =>
+		{
+			this.body.removeChild(this._private.selector);
+			this.body.appendChild(this._private.downloadStatus);
+			url = new URL(url).setParameter("type", event.detail).toString();
+			this._private.downloadStatus.download("post", url, data);
+			this._private.downloadStatus.addEventListener("done", () => this.hide());
+		});
+		this.show();
 	}
 }
 
 
 
-customElements.define('g-report-dialog', ReportDialog);
+customElements.define('g-report-dialog', GReportDialog);
 /* global Colorizer */
 
 window.addEventListener("load", function ()
@@ -7278,7 +7134,7 @@ class AppEvents
 {
 	static listen()
 	{
-		var url = "ws://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
+		var url = "wss://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
 
 		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
 		{
@@ -7301,9 +7157,9 @@ class AppEvents
 		}
 	}
 }
-/* global customElements, DefinitionList, Table */
+/* global customElements, DefinitionList, Table, HTMLElement */
 
-class Tooltip extends HTMLElement
+class GTooltip extends HTMLElement
 {
 	constructor(element, orientation, content)
 	{
@@ -7331,8 +7187,8 @@ class Tooltip extends HTMLElement
 	connectedCallback()
 	{
 		this.appendChild(this._content);
-		var tooltip = this.getBoundingClientRect();
-		var element = this._private.element.getBoundingClientRect();
+		let tooltip = this.getBoundingClientRect();
+		let element = this._private.element.getBoundingClientRect();
 		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
 
 		switch (this._orientation || "vertical")
@@ -7363,73 +7219,40 @@ class Tooltip extends HTMLElement
 
 	static show(element, orientation, content)
 	{
-		if (this.instance)
-			Tooltip.hide();
-		this.instance = new Tooltip(element, orientation, content);
-		document.body.appendChild(this.instance);
+		if (!this._private)
+			this._private = {};
+
+		GTooltip.hide();
+		this._private.instance = document.body
+			.appendChild(new GTooltip(element, orientation, content));
 	}
 
 	static hide()
 	{
-		if (this.instance)
+		if (this._private && this._private.instance)
 		{
-			this.instance.parentNode.removeChild(this.instance);
-			this.instance = null;
+			this._private.instance.parentNode
+				.removeChild(this._private.instance);
+			this._private.instance = null;
 		}
 	}
 }
 
-customElements.define('g-tooltip', Tooltip);
+customElements.define('g-tooltip', GTooltip);
 
-window.addEventListener("load", function ()
+
+window.addEventListener("mouseover", e =>
 {
-	Array.from(document.querySelectorAll("*[data-tooltip]")).forEach(e =>
+	e = e.target;
+	e = e.closest("*[data-tooltip]");
+	if (e)
 	{
-		e.addEventListener("mouseout", () => Tooltip.hide());
-		e.addEventListener("mouseover", () =>
-		{
-			var object = e.getAttribute("data-tooltip");
-			if (/ *[{"[].*[}"\]] */.test(object))
-				object = JSON.parse(object);
-			Tooltip.show(e, e.getAttribute("data-tooltip-orientation"), object)
-		});
-	});
-});
-/* global NodeList, Clipboard, customElements */
-
-class Checkable
-{
-	static get ContextMenu()
-	{
-		if (!Checkable._ContextMenu)
-		{
-			Checkable._ContextMenu = new ContextMenu();
-
-			var inverterSelecao = new GCommand();
-			Checkable._ContextMenu.appendChild(inverterSelecao);
-			inverterSelecao.innerHTML = "Inverter seleção<i>&#X2205;</i>";
-			inverterSelecao.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked);
-
-
-			var selecionarTudo = new GCommand();
-			Checkable._ContextMenu.appendChild(selecionarTudo);
-			selecionarTudo.innerHTML = "Selecionar tudo<i>&#X1011;</i>";
-			selecionarTudo.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = true);
-
-			var desmarcarSelecionados = new GCommand();
-			Checkable._ContextMenu.appendChild(desmarcarSelecionados);
-			desmarcarSelecionados.innerHTML = "Desmarcar tudo<i>&#X1014;</i>";
-			desmarcarSelecionados.action = e => Array.from(e.parentNode.context.getElementsByTagName("input")).forEach(input => input.checked = false);
-
-		}
-
-		return Checkable._ContextMenu;
-	}
-}
-
-window.addEventListener("load", function ()
-{
-	Checkable.ContextMenu.register(document.querySelectorAll("ul.Checkable"));
+		var object = e.getAttribute("data-tooltip");
+		if (/ *[{"[].*[}"\]] */.test(object))
+			object = JSON.parse(object);
+		GTooltip.show(e, e.getAttribute("data-tooltip-orientation"), object);
+	} else
+		GTooltip.hide();
 });
 /* global customElements, GOverflow, Proxy */
 
@@ -7439,14 +7262,6 @@ customElements.define('g-tabbar', class extends GOverflow
 	{
 		super();
 		this._private.container.style.flexDirection = "row";
-	}
-
-	connectedCallback()
-	{
-		let selected = GSelection.getSelectedLink(this.children);
-		if (selected)
-			selected.setAttribute("aria-selected", "true");
-		super.connectedCallback();
 	}
 });
 /* global customElements, GOverflow, GSelection */
@@ -7478,10 +7293,6 @@ class GScrollTabBar extends HTMLElement
 
 		window.addEventListener("load", () =>
 		{
-			let selected = GSelection.getSelectedLink(this.children);
-			if (selected)
-				selected.setAttribute("aria-selected", "true");
-
 			this.setAttribute("data-overflowing",
 				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
 			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
@@ -7491,38 +7302,287 @@ class GScrollTabBar extends HTMLElement
 }
 
 customElements.define("g-scroll-tabbar", GScrollTabBar);
-/* global customElements, GOverflow, Proxy, GCommands, Dialog */
+/* global customElements, GOverflow, Proxy, Dialog */
 
-customElements.define('g-dialog-header', class extends HTMLElement
+customElements.define('g-dialog-caption', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		window.addEventListener("load", () =>
+			GDialog.caption = this.innerText);
+	}
+});
+
+/* global customElements */
+
+class GTabControl extends HTMLElement
 {
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		this.shadowRoot.innerHTML = "<slot></slot>";
+		let head = this.shadowRoot.appendChild(document.createElement("div"));
+		head.style = "display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap";
+
+		head.appendChild(document.createElement("slot"));
+
+		this.shadowRoot.appendChild(document.createElement("div"))
+			.appendChild(document.createElement("slot")).name = "body";
+	}
+
+	get type()
+	{
+		return this.getAttribute("type") || "frame";
+	}
+
+	set type(type)
+	{
+		this.setAttribute("type", type);
 	}
 
 	connectedCallback()
 	{
-		this.style.display = "none";
-		if (window.frameElement && window.frameElement.dialog)
-			window.addEventListener("load", () =>
+		window.setTimeout(() =>
+		{
+			let slot = this.shadowRoot.firstChild.firstChild;
+
+			Array.from(slot.assignedElements())
+				.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
+				.forEach(link =>
+				{
+					let tab = document.createElement("div");
+					tab.setAttribute("slot", "body");
+					this.appendChild(tab);
+					tab.style = "display: none; padding : 10px; overflow: hidden";
+					let type = link.getAttribute("data-type") || this.type;
+
+					link.addEventListener("click", event =>
+					{
+						event.preventDefault();
+						event.stopPropagation();
+						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
+						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
+						tab.style.display = "block";
+						link.setAttribute("data-selected", "true");
+
+						if (!tab.childNodes.length)
+						{
+							switch (type)
+							{
+								case "frame":
+
+									let iframe = tab.appendChild(document.createElement("iframe"));
+									iframe.scrolling = "no";
+									iframe.setAttribute("allowfullscreen", "true");
+									iframe.style = "margin: 0; width : 100%; border: none; overflow: hiddden";
+
+									iframe.onload = () =>
+									{
+										if (iframe.contentWindow
+											&& iframe.contentWindow.document
+											&& iframe.contentWindow.document.body
+											&& iframe.contentWindow.document.body.scrollHeight)
+										{
+											var height = iframe.contentWindow
+												.document.body.scrollHeight + "px";
+											if (iframe.height !== height)
+											{
+												iframe.height = "0";
+												iframe.height = height;
+											}
+										}
+
+										iframe.style.backgroundImage = "none";
+									};
+
+									iframe.src = link.href || link.getAttribute("formaction");
+									break;
+								case "fetch":
+									if (!link.form)
+										new URL(link.getAttribute('href'))
+											.get(text => tab.innerHTML = text);
+									else if (link.form.checkValidity())
+										new URL(link.getAttribute('href'))
+											.post(new FormData(link.form),
+												text => tab.innerHTML = text);
+									break;
+							}
+
+						} else
+							event.preventDefault();
+					});
+
+					if (link.getAttribute("data-selected") &&
+						link.getAttribute("data-selected").toLowerCase() === "true")
+						link.click();
+				});
+
+
+			Array.from(slot.assignedElements())
+				.filter(e => e.tagName === "DIV")
+				.forEach(tab =>
+				{
+					let link = this.appendChild(document.createElement("a"));
+					link.innerText = tab.getAttribute("data-name");
+					if (tab.hasAttribute("data-icon"))
+						link.appendChild(document.createElement("i")).innerHTML = "&#X" + tab.getAttribute("data-icon") + ";";
+					tab.setAttribute("slot", "body");
+					tab.style = "display: none; padding : 10px; overflow: hidden";
+					let type = link.getAttribute("data-type") || this.type;
+
+					link.addEventListener("click", event =>
+					{
+						event.stopPropagation();
+						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
+						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
+						tab.style.display = "block";
+						link.setAttribute("data-selected", "true");
+					});
+
+					if (link.getAttribute("data-selected") &&
+						link.getAttribute("data-selected").toLowerCase() === "true")
+						link.click();
+				});
+
+			if (slot.assignedElements().length
+				&& Array.from(slot.assignedElements())
+				.every(e => !e.hasAttribute("data-selected") ||
+						e.getAttribute("data-selected")
+						.toLowerCase() === "false"))
+				slot.assignedElements()[0].click();
+		}, 0);
+	}
+}
+
+customElements.define('g-tab-control', GTabControl);
+
+
+function PageControl(pageControl)
+{
+	if (!pageControl.getAttribute("data-type"))
+		pageControl.setAttribute("data-type", "Frame");
+
+	var pages = Array.from(pageControl.children)
+		.filter(e => e.tagName.toLowerCase() === "ul")
+		.flatMap(e => Array.from(e.children));
+
+	if (pages.length > 0
+		&& pages.every(e => !e.getAttribute("data-selected")
+				|| e.getAttribute("data-selected").toLowerCase() !== "true"))
+		pages[0].setAttribute("data-selected", "true");
+
+	for (var i = 0; i < pages.length
+		&& i < pages.length; i++)
+		new Page(pages[i]);
+
+	function reset()
+	{
+		for (var i = 0; i < pages.length; i++)
+			pages[i].setAttribute("data-selected", "false");
+
+		for (var i = 0; i < pageControl.children.length; i++)
+			if (pageControl.children[i].tagName.toLowerCase() === 'div')
+				pageControl.children[i].style.display = "";
+	}
+
+	function Page(page)
+	{
+		if (!page.getAttribute("data-type"))
+			page.setAttribute("data-type",
+				pageControl.getAttribute("data-type"));
+
+		var link;
+		for (var i = 0; i < page.children.length; i++)
+			if (page.children[i].tagName.toLowerCase() === 'a')
+				link = page.children[i];
+
+		var body;
+		for (var i = 0; i < page.children.length; i++)
+			if (page.children[i].tagName.toLowerCase() === 'div')
+				body = page.children[i];
+
+		if (!body)
+			body = document.createElement("div");
+		pageControl.appendChild(body);
+
+		link.onclick = function ()
+		{
+			reset();
+			body.style.display = "block";
+			page.setAttribute("data-selected", "true");
+
+			if (!body.innerHTML.replace(/^\s+|\s+$/g, ''))
+				switch (page.getAttribute("data-type"))
+				{
+					case 'Fetch':
+						fetch();
+						break;
+					case 'Frame':
+						frame();
+						break;
+				}
+
+			return false;
+		};
+
+
+		if (page.getAttribute("data-selected") &&
+			page.getAttribute("data-selected").toLowerCase() === "true")
+			link.onclick();
+
+
+		function fetch()
+		{
+			new URL(link.getAttribute('href')).get(text => body.innerHTML = text);
+		}
+
+		function frame()
+		{
+			var iframe = body.appendChild(document.createElement("iframe"));
+			iframe.scrolling = "no";
+			iframe.setAttribute("allowfullscreen", "true");
+
+			var resize = function ()
 			{
-				let commands = window.top.document.createElement("g-commands");
-				Array.from(this.children).forEach(e => commands.appendChild(Proxy.create(e)));
-				//let more = commands.appendChild(window.top.document.createElement("g-more"));
-				//more.innerHTML = "<i>&#X3018;</i>"
-				window.frameElement.dialog.commands = commands;
-			});
-	}
+				if (iframe.contentWindow
+					&& iframe.contentWindow.document
+					&& iframe.contentWindow.document.body
+					&& iframe.contentWindow.document.body.scrollHeight)
+				{
+					var height = iframe.contentWindow.document.body.scrollHeight + "px";
+					if (iframe.height !== height)
+					{
+						iframe.height = "0";
+						iframe.height = height;
+					}
+				}
+			};
 
-	static get observedAttributes()
-	{
-		return ['caption'];
-	}
+			iframe.onload = function ()
+			{
+				resize();
+				window.addEventListener("refresh_size", resize);
+				iframe.backgroundImage = "none";
+			};
 
-	attributeChangedCallback()
-	{
-		GDialog.caption = this.getAttribute("caption");
+			iframe.refresh = function ()
+			{
+				var divs = Array.from(this.parentNode.parentNode.children).filter(e => e.tagName.toLowerCase() === "div");
+				for (i = 0; i < divs.length; i++)
+					if (divs[i].childNodes[0] !== this)
+						if (divs[i] !== this.parenNode)
+							divs[i].innerHTML = '';
+			};
+
+			iframe.setAttribute("src", link.getAttribute('href'));
+		}
 	}
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll('div.PageControl'))
+		.forEach(element => new PageControl(element));
 });
+

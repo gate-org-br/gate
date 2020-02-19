@@ -44,46 +44,48 @@
 						<legend>
 							<g:icon type="2003"/>Expediente
 						</legend>
-						<label style='width: 15%'>
-							Dom:
-							<span style='text-align: center'>
-								<g:print value="${screen.form.sun}" empty="N/A"/>
-							</span>
-						</label>
-						<label style='width: 14%'>
+						<label data-size="2">
 							Seg:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.mon}" empty="N/A"/>
 							</span>
 						</label>
-						<label style='width: 14%'>
+						<label data-size="2">
 							Ter:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.tue}" empty="N/A"/>
 							</span>
 						</label>
-						<label style='width: 14%'>
+						<label data-size="2">
 							Qua:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.wed}" empty="N/A"/>
 							</span>
 						</label>
-						<label style='width: 14%'>
+						<label data-size="2">
 							Qui:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.thu}" empty="N/A"/>
 							</span>
 						</label>
-						<label style='width: 14%'>
+						<label data-size="2">
 							Sex:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.fri}" empty="N/A"/>
 							</span>
 						</label>
-						<label style='width: 15%'>
+						<label data-size="2">
+						</label>
+						<label data-size="2">
 							Sab:
-							<span style='text-align: center'>
+							<span>
 								<g:print value="${screen.form.sat}" empty="N/A"/>
+							</span>
+						</label>
+						<label data-size="2">
+							Dom:
+							<span>
+								<g:print value="${screen.form.sun}" empty="N/A"/>
 							</span>
 						</label>
 					</fieldset>

@@ -17,6 +17,7 @@ import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.DuplicateException;
 import gate.error.InvalidCircularRelationException;
+import gate.error.InvalidCredentialsException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidRequestException;
 import gate.error.InvalidServiceException;
@@ -24,6 +25,7 @@ import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.handler.Handler;
 import gate.io.Credentials;
+import gate.type.Result;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -107,9 +109,11 @@ public class Gate extends HttpServlet
 				String username = request.getParameter("$userid");
 				String password = request.getParameter("$passwd");
 
-				if (!Toolkit.isEmpty(username)
-					&& !Toolkit.isEmpty(password))
+				if (!Toolkit.isEmpty(username) && !Toolkit.isEmpty(password))
 					session.setUser(user = control.select(org, username, password));
+				else if (httpServletRequest.getUserPrincipal() != null
+					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
+					session.setUser(user = control.select(httpServletRequest.getUserPrincipal().getName()));
 
 				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
 				Method method = Screen.getAction(clazz, ACTION).orElseThrow(InvalidRequestException::new);
@@ -216,6 +220,11 @@ public class Gate extends HttpServlet
 				Logger.getGlobal().log(Level.SEVERE, ex.getTargetException().getMessage(), ex.getTargetException());
 				httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 			}
+		} catch (InvalidCredentialsException ex)
+		{
+			Handler.getHandler(Result.class)
+				.handle(httpServletRequest, response, Result.error(ex.getMessage()));
+
 		}
 	}
 

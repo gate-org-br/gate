@@ -1,6 +1,6 @@
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
-class Window extends Modal
+class GWindow extends GModal
 {
 	constructor()
 	{
@@ -62,7 +62,7 @@ class Window extends Modal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new GCommands());
+				this.head.appendChild(new GDialogCommands());
 		return this._private.commands;
 	}
 
@@ -74,4 +74,4 @@ class Window extends Modal
 	}
 }
 
-customElements.define('g-window', Window);
+customElements.define('g-window', GWindow);

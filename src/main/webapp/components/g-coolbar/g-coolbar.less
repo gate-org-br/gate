@@ -18,69 +18,56 @@ g-coolbar,
 	       flex-grow: 1; }
 
 	> a ,
-	> button { margin: 2px;
-		   height: 40px;
-		   padding: 4px;
-		   float: right;
-		   flex-grow: 1;
-		   display: flex;
-		   color: inherit;
-		   flex-shrink: 1;
-		   font-size: 12px;
-		   cursor: pointer;
-		   min-width: 100px;
-		   max-width: 120px;
-		   flex-basis: 100px;
-		   font-weight: bold;
-		   border-radius: 5px;
-		   align-items: center;
-		   justify-content: space-between;
+	> button,
+	> .g-command { margin: 2px;
+		       height: 40px;
+		       padding: 4px;
+		       float: right;
+		       flex-grow: 1;
+		       display: flex;
+		       color: inherit;
+		       flex-shrink: 1;
+		       font-size: 12px;
+		       cursor: pointer;
+		       min-width: 100px;
+		       max-width: 120px;
+		       flex-basis: 100px;
+		       font-weight: bold;
+		       border-radius: 5px;
+		       align-items: center;
+		       justify-content: space-between;
 
-		   border: 1px solid var(--g-coolbar-button-border-color);
-		   background-color: var(--g-coolbar-button-background-color);
-		   background-image: var(--g-coolbar-button-background-image);
+		       border: 1px solid var(--g-coolbar-button-border-color);
+		       background-color: var(--g-coolbar-button-background-color);
+		       background-image: var(--g-coolbar-button-background-image);
 
-		   &:hover {  border: 1px solid var(--g-coolbar-hovered-button-border-color);
-			      background-color: var(--g-coolbar-hovered-button-background-color);
-			      background-image: var(--g-coolbar-hovered-button-background-image);
-		   }
+		       &:hover {  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+				  background-color: var(--g-coolbar-hovered-button-background-color);
+				  background-image: var(--g-coolbar-hovered-button-background-image);
+		       }
 
-		   &:focus { outline: none; border: 2px solid var(--hovered); }
+		       &:focus { outline: none; border: 2px solid var(--hovered); }
 
-		   > i,
-		   > span { order: 1;
-			    display: flex;
-			    color: inherit;
-			    cursor: inherit;
-			    font-size: 12px;
-			    margin-left: 4px;
-			    align-items: center;
-			    justify-content: center; }
+		       > i,
+		       > span { order: 1;
+				display: flex;
+				color: inherit;
+				cursor: inherit;
+				font-size: 12px;
+				margin-left: 4px;
+				align-items: center;
+				justify-content: center; }
 
-		   &.Delete { color: var(--r) }
+		       &.Delete { color: var(--r) }
 
-		   &.Commit { color: var(--g) }
+		       &.Commit { color: var(--g) }
 
-		   &.Action { color: var(--b); }
+		       &.Action { color: var(--b); }
 
-		   &.Cancel { color: var(--r); }
+		       &.Cancel { color: var(--r); }
 
-		   &.Return { color: var(--r); }
+		       &.Return { color: var(--r); }
 	}
-
-	> g-more
-	{
-		width: 32px;
-		height: 40px;
-		display: flex;
-		color: #000099;
-		margin-right: auto;
-		align-items: center;
-		justify-content: center;
-
-		> i { font-size: 16px }
-	}
-
 }
 
 div.COOLBAR,

@@ -2,10 +2,12 @@ package gate;
 
 import gate.entity.User;
 import gate.error.AppException;
+import gate.error.InvalidUsernameException;
 import gate.messaging.Messenger;
 import gate.type.mime.MimeMail;
 import gate.util.PasswordGenerator;
 import java.io.IOException;
+import java.util.Collections;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -59,6 +61,9 @@ public class ResetPassword extends HttpServlet
 		} catch (AppException ex)
 		{
 			request.setAttribute("messages", ex.getMessages());
+		} catch (InvalidUsernameException ex)
+		{
+			request.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 		}
 
 		request.getRequestDispatcher(ResetPassword.JSP).forward(request, response);

@@ -3,8 +3,8 @@
 <g:template filename="/WEB-INF/views/MAIN.jsp">
 	<main>
 		<section>
-			<g:insert/>
 			<g:alert/>
+			<g:insert/>
 		</section>
 	</main>
 </g:template>

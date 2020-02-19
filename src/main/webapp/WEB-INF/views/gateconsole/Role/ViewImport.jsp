@@ -1,18 +1,16 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/MAIN.jsp">
+<g:template filename="/WEB-INF/views/PAGE.jsp">
 	<g:choose>
 		<g:when condition="${empty screen.page}">
 			<div class='TEXT'>
 				<h1>
-					Este registro n&atilde;o possui nenhum usu&aacute;rio associado
+					Este registro não possui nenhum usuário associado
 				</h1>
 			</div>
 		</g:when>
 		<g:otherwise>
 			<table>
-				<col style="width: 100%"/>
-
 				<caption>
 					PERFIS
 				</caption>

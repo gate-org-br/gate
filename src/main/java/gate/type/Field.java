@@ -1,18 +1,17 @@
 package gate.type;
 
-import gate.error.AppException;
-import gate.type.collections.StringList;
 import gate.annotation.Converter;
-import gate.converter.custom.FieldConverter;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
+import gate.converter.custom.FieldConverter;
+import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.lang.json.JsonObject;
-
+import gate.type.collections.StringList;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -272,13 +271,15 @@ public class Field implements Serializable
 			throw new AppException(String.format("O tamanho máximo do campo %s é %s",
 				getName(), getMaxlength()));
 
-		if (getPattern() != null
-			&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-			throw new AppException(String.format("Formato inválido para o campo %s", getName()));
+		if (getPattern() != null)
+		{
+			if (getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
+				throw new AppException(String.format("Formato inválido para o campo %s", getName()));
 
-		if (!getOptions().isEmpty()
-			&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-			throw new AppException(String.format("%s is not a valid option para o campo campo %s", value, getName()));
+			if (!getOptions().isEmpty()
+				&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
+				throw new AppException(String.format("%s is not a valid option para o campo campo %s", value, getName()));
+		}
 	}
 
 	public enum Size

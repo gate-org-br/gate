@@ -10,18 +10,19 @@
 
 		<nav>
 			<g-tabbar>
-				<g:link module="gateconsole.screen" screen="Home"/>
-				<g:link module="gateconsole.screen" screen="Role"/>
-				<g:link module="gateconsole.screen" screen="User"/>
-				<g:link module="gateconsole.screen" screen="Func"/>
-				<g:link module="gateconsole.screen" screen="Org"/>
-				<g:link module="gateconsole.screen" screen="App"/>
-				<g:link module="gateconsole.screen" screen="Mail"/>
-				<g:link module="gateconsole.screen" screen="Icon"/>
-				<g:link module="gateconsole.screen" screen="Demo"/>
-				<g:link condition="${not empty subscriptions}"
+				<g:link target="_top" module="gateconsole.screen" screen="Home"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Role"/>
+				<g:link target="_top" module="gateconsole.screen" screen="User"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Func"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Org"/>
+				<g:link target="_top" module="gateconsole.screen" screen="App"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Mail"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Icon"/>
+				<g:link target="_top" module="gateconsole.screen" screen="Demo"/>
+				<g:link target="_top" condition="${not empty subscriptions}"
 					module="gateconsole.screen" screen="Access"/>
-				<g:link/>
+				<hr/>
+				<g:link target="_top"/>
 			</g-tabbar>
 		</nav>
 

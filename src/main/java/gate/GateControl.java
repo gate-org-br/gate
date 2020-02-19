@@ -22,19 +22,45 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 
 @Dependent
-class GateControl extends gate.base.Control
+public class GateControl extends gate.base.Control
 {
 
 	private static final LDAPAuthenticator AUTHENTICATOR = new LDAPAuthenticator();
 
-	public User select(String username) throws AppException
+	public User select(String username) throws InvalidUsernameException, DuplicateException,
+		InvalidCircularRelationException, NotFoundException
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
-			throw new AppException("O campo login é obrigatório e deve conter no máximo 64 caracteres.");
+			throw new InvalidUsernameException();
 		try (GateDao dao = new GateDao())
 		{
-			return dao.select(username)
-				.orElseThrow(NotFoundException::new);
+			User user = dao.select(username)
+				.orElseThrow(InvalidUsernameException::new);
+
+			if (user.isDisabled())
+				throw new InvalidUsernameException();
+			if (user.getRole().getId() == null)
+				throw new InvalidUsernameException();
+
+			List<Role> roles = dao.getRoles();
+			Hierarchy.setup(roles);
+
+			List<gate.entity.Auth> auths = dao.getAuths();
+			List<Bond> funcs = dao.getBonds();
+
+			funcs.forEach(func -> func.getFunc().setAuths(auths.stream().filter(auth -> func.getFunc().equals(auth.getFunc())).collect(Collectors.toList())));
+
+			user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList()));
+			user.setFuncs(funcs.stream().filter(func -> user.equals(func.getUser())).map(Bond::getFunc).collect(Collectors.toList()));
+
+			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
+			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
+
+			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(NotFoundException::new));
+
+			if (user.getRole().isDisabled())
+				throw new InvalidUsernameException();
+			return user;
 		}
 	}
 

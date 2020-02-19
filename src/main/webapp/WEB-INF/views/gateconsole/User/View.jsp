@@ -5,7 +5,7 @@
 	<form id='form' method='POST' action='#'>
 		<fieldset>
 			<legend>
-				<g:icon type="search"/>Pesquisar Usu&aacute;rios
+				<g:icon type="search"/>Pesquisar Usuários
 			</legend>
 
 			<label data-size='4'>
@@ -24,11 +24,9 @@
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
-					<g:text id='form.role.name' property='form.role.name' readonly='readonly' required=''
-						style='width: calc(100% - 32px)'/>
-					<g:link module="#" screen="Role" action="Search"
-						data-get='form.role.id, form.role.name'
-						tabindex='1' style='width: 32px' title='Selecionar Perfil'>
+					<g:text id='form.role.name' property='form.role.name' readonly='readonly' required=''/>
+					<g:link module="#" screen="Role" action="Search" data-get='form.role.id, form.role.name'
+						tabindex='1' title='Selecionar Perfil'>
 						<g:icon type="search"/>
 					</g:link>
 				</span>
@@ -82,14 +80,12 @@
 		</fieldset>
 
 		<g-coolbar>
-			<g:link class="Action"
-				method="post" module='#' screen='#' tabindex='2'>
+			<g:link class="Action" method="post" module='#' screen='#' tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
 			<g:link target="_report" method="post" module='#' screen='#' action="Report" tabindex='2'/>
-			<hr/>
-			<g:link target='_dialog' module='#' screen='#' action='Upload' tabindex='3' title='Importar Usuários'/>
-			<g:link target='_dialog' module='#' screen='#' action='Insert' tabindex='3' title='Novo Usuário'/>
+			<g:link target='_stack' data-submit-on-hide='form' module='#' screen='#' action='Upload' tabindex='3'/>
+			<g:link target='_stack' data-submit-on-hide='form' module='#' screen='#' action='Insert' tabindex='3'/>
 		</g-coolbar>
 
 		<g:choose>
@@ -150,7 +146,7 @@
 					</tfoot>
 					<tbody>
 						<g:iterator source="${screen.page}" target="target">
-							<tr data-target='_dialog' title='${target.name}'
+							<tr data-target='_stack' data-submit-on-hide='form' title='${target.name}' autofocus
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 								<td title="Ativo"><g:print value="${target.active}"/></td>
 								<td title="Nome"><g:print value="${target.name}"/></td>
@@ -164,15 +160,5 @@
 			</g:otherwise>
 		</g:choose>
 	</form>
-
-	<script>
-		window.addEventListener("load", function ()
-		{
-			Array.from(document.querySelectorAll("tr[data-target=_dialog]")).forEach(function (element)
-			{
-				element.addEventListener("hide", () => document.getElementById("form").submit());
-			});
-		});
-	</script>
 </g:template>
 

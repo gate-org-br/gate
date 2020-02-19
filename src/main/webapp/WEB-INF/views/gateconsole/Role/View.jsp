@@ -27,7 +27,7 @@
 
 					<tbody>
 						<g:iterator source="${screen.page}" target="role" children="${e -> e.children}">
-							<tr data-depth='${depth}' data-target='_dialog' title='Perfil'
+							<tr data-depth='${depth}' data-target='_stack' title='Perfil'
 							    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${role.id}'>
 								<td></td>
 								<td style='padding-left: ${depth*40}px; font-weight: ${role.isMaster() ? "bold" : "normal"}'>
@@ -47,7 +47,7 @@
 									</td>
 								</tr>
 								<g:iterator source="${role.funcs}" target="_func">
-									<tr data-depth='${depth+1}' data-target='_dialog'
+									<tr data-depth='${depth+1}' data-target='_stack'
 									    data-action='Gate?MODULE=${MODULE}&SCREEN=Func&ACTION=Select&form.id=${_func.id}'>
 										<td></td>
 										<td style='padding-left: ${(depth+1)*40}px;'>
@@ -95,7 +95,7 @@
 									</td>
 								</tr>
 								<g:iterator source="${role.users}" target="_user">
-									<tr data-depth='${depth+1}' data-target='_dialog'
+									<tr data-depth='${depth+1}' data-target='_stack'
 									    data-action='Gate?MODULE=${MODULE}&SCREEN=User&ACTION=Select&form.id=${_user.id}'>
 										<td></td>
 										<td style='padding-left: ${(depth+1)*40}px;'>
@@ -104,7 +104,7 @@
 										</td>
 									</tr>
 									<g:iterator source="${_user.funcs}" target="_func">
-										<tr data-depth='${depth+1}' data-target='_dialog'
+										<tr data-depth='${depth+1}' data-target='_stack'
 										    data-action='Gate?MODULE=${MODULE}&SCREEN=Func&ACTION=Select&form.id=${_func.id}'>
 											<td></td>
 											<td style='padding-left: ${(depth+1)*40}px; color: black; font-weight: bold'>
@@ -146,7 +146,7 @@
 
 		<footer>
 			<g-coolbar>
-				<g:link target="_dialog" module='#' screen='#' action='Insert' tabindex='1'/>
+				<g:link target="_stack" module='#' screen='#' action='Insert' tabindex='1'/>
 			</g-coolbar>
 		</footer>
 	</article>

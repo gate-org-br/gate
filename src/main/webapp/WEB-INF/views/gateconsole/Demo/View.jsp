@@ -657,18 +657,18 @@
 					<div class='demo'>
 						<div>
 							<div>
-								<div class="TEXT">
+								<div class="TEXT" data-context-menu="g-context-menu">
 									<h1>
 										Clique aqui com o botão direito
 									</h1>
-
-									<g-context-menu>
-										<G:link module="#" screen="Icon"/>
-										<button id="action1" href="#">
-											Action 1<i>&#X2003;</i>
-										</button>
-									</g-context-menu>
 								</div>
+
+								<g-context-menu id="g-context-menu">
+									<G:link module="#" screen="Icon"/>
+									<button id="action1" href="#">
+										Action 1<i>&#X2003;</i>
+									</button>
+								</g-context-menu>
 
 								<script>
 									window.addEventListener("load", function ()

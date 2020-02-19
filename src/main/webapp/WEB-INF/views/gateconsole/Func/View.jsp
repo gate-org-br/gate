@@ -31,7 +31,7 @@
 						</thead>
 						<tbody>
 							<g:iterator source="${screen.page}" target="target">
-								<tr data-target='_dialog' title='Função'
+								<tr data-target='_stack' data-reload-on-hide title='Função'
 								    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 									<td>
 										<g:print value="${target.name}"/>
@@ -46,20 +46,11 @@
 
 		<footer>
 			<g-coolbar>
-				<g:link class="Action" target='_dialog'
+				<g:link class="Action" target='_stack'
+					data-reload-on-hide="data-reload-on-hide"
 					title="Função"
 					module='#' screen='#' action='Insert' tabindex='3'/>
 			</g-coolbar>
 		</footer>
 	</article>
-
-	<script>
-		window.addEventListener("load", function ()
-		{
-			Array.from(document.querySelectorAll("tr[data-target=_dialog]")).forEach(function (element)
-			{
-				element.addEventListener("hide", () => document.getElementById("form").submit());
-			});
-		});
-	</script>
 </g:template>

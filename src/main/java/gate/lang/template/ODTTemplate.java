@@ -1,6 +1,5 @@
 package gate.lang.template;
 
-import gate.error.AppException;
 import gate.error.TemplateException;
 import gate.io.ByteArrayReader;
 import java.io.ByteArrayInputStream;

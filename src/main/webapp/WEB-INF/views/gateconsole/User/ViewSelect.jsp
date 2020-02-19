@@ -1,6 +1,6 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<figure>
 		<g:with name="photo" value="${screen.photo}">
 			<g:if condition="${not empty photo}">
@@ -10,6 +10,10 @@
 			</g:if>
 		</g:with>
 		<fieldset style="margin: 0">
+			<legend>
+				<g:name type="${action}"/>
+				<g:icon type="${action}"/>
+			</legend>
 			<label data-size='2'>
 				Ativo:
 				<span>
@@ -106,12 +110,14 @@
 		<g:link module='#' screen='#' action='Update' arguments="form.id=${screen.form.id}"/>
 		<g:link module='#' screen='#' action="Delete" arguments="form.id=${screen.form.id}"
 			style='color: #660000' data-confirm="Tem certeza de que deseja remover este registro?"/>
+		<hr/>
+		<a href="#" target="_hide">
+			Retornar<g:icon type="return"/>
+		</a>
 	</g-coolbar>
 
-	<div class='PageControl'>
-		<ul>
-			<g:menuitem module="#" screen="Auth" arguments="form.user.id=${screen.form.id}"/>
-			<g:menuitem module="#" screen="UserScreen$Func" arguments="user.id=${screen.form.id}"/>
-		</ul>
-	</div>
+	<g-tab-control>
+		<g:link module="#" screen="Auth" arguments="form.user.id=${screen.form.id}"/>
+		<g:link module="#" screen="UserScreen$Func" arguments="user.id=${screen.form.id}"/>
+	</g-tab-control>
 </g:template>

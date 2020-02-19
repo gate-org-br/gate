@@ -86,7 +86,7 @@ public class SelectTag extends SelectorTag
 				Object label = option;
 				if (labels != null)
 					label = labels.invoke(EL_CONTEXT, option);
-				getJspContext().getOut().print(getConverter().toText(getType(), label));
+				getJspContext().getOut().print(Converter.toText(label));
 			}
 
 			getJspContext().getOut().print("</option>");

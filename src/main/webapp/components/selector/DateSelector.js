@@ -8,7 +8,7 @@ class DateSelector extends HTMLElement
 		this._private = {};
 
 		var date = new Date();
-		this._private.calendar = this.appendChild(new Calendar({month: new Date(), max: 1}));
+		this._private.calendar = this.appendChild(new GCalendar({month: new Date(), max: 1}));
 		this._private.calendar.select(date);
 		this._private.calendar.addEventListener("remove", event => event.preventDefault());
 		this._private.calendar.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected',

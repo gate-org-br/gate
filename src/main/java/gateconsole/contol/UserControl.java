@@ -54,7 +54,8 @@ public class UserControl extends Control
 		try (UserDao dao = new UserDao())
 		{
 			User user = dao.select(id);
-			user.setRole(getUser().getRole().getRoot().select(user.getRole().getId()));
+			if (user.getRole().getId() != null)
+				user.setRole(getUser().getRole().getRoot().select(user.getRole().getId()));
 			return user;
 		}
 	}

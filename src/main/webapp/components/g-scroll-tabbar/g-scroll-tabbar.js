@@ -27,10 +27,6 @@ class GScrollTabBar extends HTMLElement
 
 		window.addEventListener("load", () =>
 		{
-			let selected = GSelection.getSelectedLink(this.children);
-			if (selected)
-				selected.setAttribute("aria-selected", "true");
-
 			this.setAttribute("data-overflowing",
 				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
 			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
