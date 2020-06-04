@@ -2,7 +2,8 @@ class AppEvents
 {
 	static listen()
 	{
-		var url = "ws://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var url = protocol + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
 
 		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
 		{

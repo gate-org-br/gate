@@ -6448,8 +6448,8 @@ class ProgressStatus extends HTMLElement
 			log.style.alignItems = "center";
 		}
 
-		var ws = new WebSocket("ws://" + window.location.host + "/" +
-			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var ws = new WebSocket(protocol + location.host + "/" + location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
 
 		ws.onerror = e => log(e.data);
 
@@ -6999,7 +6999,8 @@ class AppEvents
 {
 	static listen()
 	{
-		var url = "ws://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var url = protocol + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
 
 		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
 		{
