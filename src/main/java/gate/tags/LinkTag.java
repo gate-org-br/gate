@@ -67,8 +67,11 @@ public class LinkTag extends AnchorTag
 			if (!getAttributes().containsKey("title"))
 				Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
 
-			if (!getAttributes().containsKey("tooltip"))
+			if (!getAttributes().containsKey("data-tooltip"))
 				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+
+			if (!getAttributes().containsKey("data-tooltip"))
+				Tooltip.Extractor.extract(getJavaClass()).ifPresent(e -> getAttributes().put("data-tooltip", e));
 
 			if (!getAttributes().containsKey("style"))
 				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));

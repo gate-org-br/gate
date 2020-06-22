@@ -10,7 +10,7 @@ class GStackFrame extends GModal
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
-		this.iframe.setAttribute('name', '_dialog');
+		this.iframe.setAttribute('name', '_stack');
 		this.iframe.onmouseenter = () => this.iframe.focus();
 
 		this.iframe.addEventListener("load", () =>

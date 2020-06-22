@@ -5,17 +5,23 @@ import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.annotation.Tooltip;
+import gate.converter.Converter;
 import gate.entity.User;
+import gate.error.ConversionException;
+import gate.error.UncheckedConversionEception;
 import gate.producer.UserProducer;
 import gate.util.Icons;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.Temporal;
+import java.util.regex.Pattern;
 import javax.enterprise.inject.spi.CDI;
 
 public class TagLib
 {
+
+	private static final Pattern DATE = Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$");
+	private static final Pattern DATE_TIME = Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4} [0-9]{2}:[0-9]{2}$");
 
 	public static String icon(Object type)
 	{
@@ -47,8 +53,20 @@ public class TagLib
 		return Description.Extractor.extract(obj).orElse("Undescribed");
 	}
 
-	public static long number(Temporal temporal)
+	public static long number(Object temporal)
 	{
+		try
+		{
+			if (temporal instanceof String)
+				if (DATE.matcher((String) temporal).matches())
+					temporal = Converter.fromString(LocalDate.class, (String) temporal);
+				else if (DATE_TIME.matcher((String) temporal).matches())
+					temporal = Converter.fromString(LocalDateTime.class, (String) temporal);
+		} catch (ConversionException ex)
+		{
+			throw new UncheckedConversionEception(ex);
+		}
+
 		if (temporal instanceof LocalDateTime)
 			return ((LocalDateTime) temporal)
 				.atZone(ZoneId.of("UTC")).toEpochSecond();
@@ -56,7 +74,6 @@ public class TagLib
 			return ((LocalDate) temporal).atStartOfDay()
 				.atZone(ZoneId.of("UTC")).toEpochSecond();
 		return 0;
-
 	}
 
 	public static boolean secure(String module, String screen, String action)

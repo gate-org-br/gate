@@ -16,7 +16,7 @@ public class StringReader implements Reader<String>
 
 	private static final StringReader INSTANCE = new StringReader();
 	private static final ConcurrentMap<String, StringReader> INSTANCES
-			= new ConcurrentHashMap<String, StringReader>();
+		= new ConcurrentHashMap<String, StringReader>();
 
 	private final String charset;
 
@@ -44,7 +44,7 @@ public class StringReader implements Reader<String>
 	public String read(InputStream is) throws IOException
 	{
 		BufferedReader reader
-				= new BufferedReader(new InputStreamReader(is, charset));
+			= new BufferedReader(new InputStreamReader(is, charset));
 		try (StringWriter writer = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())

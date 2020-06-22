@@ -14,8 +14,7 @@ class GOverflow extends HTMLElement
 		container.style.whiteSpace = "nowrap";
 		container.style.flexDirection = "row-reverse";
 		this.shadowRoot.appendChild(container);
-		let slot = container.appendChild(document.createElement("slot"));
-		slot.addEventListener("slotchange", () => this._private.update());
+		container.appendChild(document.createElement("slot"));
 
 		var more = document.createElement("a");
 		more.href = "#";
@@ -72,6 +71,7 @@ class GOverflow extends HTMLElement
 
 	connectedCallback()
 	{
+		window.setTimeout(this._private.update, 250);
 		window.addEventListener("resize", this._private.update);
 	}
 

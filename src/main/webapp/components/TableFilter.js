@@ -1,28 +1,25 @@
 /* global Colorizer */
 
-window.addEventListener("load", function ()
+class GDataFilter
 {
-	Array.from(document.querySelectorAll("input[data-filter]")).forEach(element =>
+	static filter(input)
 	{
-		var table = element.getAttribute("data-filter") ?
-			document.getElementById(element.getAttribute("data-filter"))
-			: element.closest("TABLE");
-
-		element.addEventListener("input", function ()
-		{
-			Array.from(table.children)
-				.filter(e => e.tagName.toUpperCase() === "TBODY")
-				.flatMap(e => Array.from(e.children)).forEach(row =>
-				row.style.display = !this.value || row.innerHTML.toUpperCase()
-					.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
-			Colorizer.colorize(table);
-		});
-
+		let table = input.getAttribute("data-filter")
+			? document.getElementById(event.target.getAttribute("data-filter"))
+			: event.target.closest("TABLE");
 		Array.from(table.children)
-			.filter(e => e.tagName.toUpperCase() === "TBODY")
-			.flatMap(e => Array.from(e.children)).forEach(row =>
-			row.style.display = !this.value || row.innerHTML.toUpperCase()
-				.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
+			.filter(e => e.tagName === "TBODY")
+			.flatMap(e => Array.from(e.children))
+			.forEach(row => row.style.display = !input.value || row.innerHTML.toUpperCase().indexOf(input.value.toUpperCase()) !== -1 ? "" : "none");
 		Colorizer.colorize(table);
-	});
+	}
+}
+
+window.addEventListener("input", function (event)
+{
+	if (event.target.tagName === "INPUT"
+		&& event.target.hasAttribute("data-filter"))
+		GDataFilter.filter(event.target);
 });
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => GDataFilter.filter(e)));

@@ -15,6 +15,9 @@ class GModal extends HTMLElement
 			this.hide();
 		});
 
+		this.addEventListener("keypress", event => event.stopPropagation());
+		this.addEventListener("keydown", event => event.stopPropagation());
+
 		this.addEventListener("click", event => !this.blocked
 				&& (event.target === this || event.srcElement === this)
 				&& this.hide());

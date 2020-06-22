@@ -1479,8 +1479,7 @@ class GOverflow extends HTMLElement
 		container.style.whiteSpace = "nowrap";
 		container.style.flexDirection = "row-reverse";
 		this.shadowRoot.appendChild(container);
-		let slot = container.appendChild(document.createElement("slot"));
-		slot.addEventListener("slotchange", () => this._private.update());
+		container.appendChild(document.createElement("slot"));
 
 		var more = document.createElement("a");
 		more.href = "#";
@@ -1537,6 +1536,7 @@ class GOverflow extends HTMLElement
 
 	connectedCallback()
 	{
+		window.setTimeout(this._private.update, 250);
 		window.addEventListener("resize", this._private.update);
 	}
 
@@ -1794,122 +1794,98 @@ class DataFormat
 
 	}
 }
-function DeskMenu(deskMenu)
-{
-	Array.from(deskMenu.getElementsByTagName("a"))
-		.forEach(element => new DeskMenuIcon(element));
-
-	function DeskMenuIcon(deskMenuIcon)
-	{
-		var icons = Array.from(deskMenuIcon.parentNode.children)
-			.filter(e => e.tagName.toLowerCase() === "ul")
-			.flatMap(e => Array.from(e.children));
-
-		if (icons.length > 0)
-		{
-			deskMenuIcon.addEventListener("click", function (event)
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				var children = Array.from(deskMenu.children);
-				children.forEach(e => deskMenu.removeChild(e));
-				icons.forEach(e => deskMenu.appendChild(e));
-				deskMenu.appendChild(new Reset(children));
-			});
-		}
-
-		function Reset(icons)
-		{
-			var li = document.createElement("li");
-			li.className = "Reset";
-
-			var a = li.appendChild(document.createElement("a"));
-			a.setAttribute("href", "#");
-			a.innerHTML = "Retornar";
-
-			a.appendChild(document.createElement("i"))
-				.innerHTML = "&#X2232";
-
-			a.addEventListener("click", function (event)
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				Array.from(deskMenu.children).forEach(e => deskMenu.removeChild(e));
-				icons.forEach(e => deskMenu.appendChild(e));
-			});
-			return li;
-		}
-	}
-}
-
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("ul.DeskMenu"))
-		.forEach(element => new DeskMenu(element));
-});
-function DeskPane(deskPane)
-{
-	Array.from(deskPane.getElementsByTagName("a"))
-		.forEach(element => new DeskPaneIcon(element));
-
-	function DeskPaneIcon(deskPaneIcon)
+	Array.from(document.querySelectorAll("ul.DeskMenu")).forEach(component =>
 	{
-		var icons = Array.from(deskPaneIcon.parentNode.children)
-			.filter(e => e.tagName.toLowerCase() === "ul")
-			.flatMap(e => Array.from(e.children));
-
-		if (icons.length > 0)
+		var root = document.createElement("a");
+		root.icons = Array.from(component.children);
+		root.onclick = function ()
 		{
-			deskPaneIcon.addEventListener("click", function (event)
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
+			reset.style.display = "none";
+			links.forEach(e => e.parentNode.style.display = "none");
+			this.icons.forEach(e => e.style.display = "");
+			component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+		};
 
-				var children = Array.from(deskPane.children);
-				children.forEach(e => deskPane.removeChild(e));
-				icons.forEach(e => deskPane.appendChild(e));
-				deskPane.appendChild(new Reset(children));
-			});
-		}
+		let reset = document.createElement("li");
+		reset.className = "Reset";
+		reset.style.display = "none";
+		reset.appendChild(document.createElement("a"));
+		reset.firstChild.innerHTML = "Retornar";
+		reset.firstChild.setAttribute("href", "#");
+		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
 
-		function Reset(icons)
+		let links = Array.from(component.getElementsByTagName("a"));
+		links.forEach(link =>
 		{
-			var li = document.createElement("li");
-			li.className = "Reset";
+			link.icons = Array.from(link.parentNode.children)
+				.filter(e => e.tagName === "UL")
+				.flatMap(e => Array.from(e.children));
+			link.icons.forEach(e => e.link = link);
+			link.icons.forEach(e => e.style.display = "none");
 
-			var a = li.appendChild(document.createElement("a"));
-			a.setAttribute("href", "#");
-			a.innerHTML = "Retornar";
+			if (link.icons.length)
+				link.onclick = function ()
+				{
+					links.forEach(e => e.parentNode.style.display = "none");
+					this.icons.forEach(e => e.style.display = "");
+					reset.style.display = "";
+					reset.firstChild.onclick = () => (this.parentNode.link || root).onclick();
+					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+				};
+		});
 
-			a.appendChild(document.createElement("i"))
-				.innerHTML = "&#X2232";
-
-			a.addEventListener("click", function (event)
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				Array.from(deskPane.children).forEach(e => deskPane.removeChild(e));
-				icons.forEach(e => deskPane.appendChild(e));
-			});
-			return li;
-		}
-	}
-}
-
+		component.appendChild(reset);
+		links.map(e => e.parentNode).forEach(e => component.appendChild(e));
+	});
+});
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll("ul.DeskPane"))
-		.forEach(element => new DeskPane(element));
+	Array.from(document.querySelectorAll("ul.DeskPane")).forEach(component =>
+	{
+		var root = document.createElement("a");
+		root.icons = Array.from(component.children);
+		root.onclick = function ()
+		{
+			reset.style.display = "none";
+			links.forEach(e => e.parentNode.style.display = "none");
+			this.icons.forEach(e => e.style.display = "");
+			component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+		};
+
+		let links = Array.from(component.getElementsByTagName("a"));
+		links.forEach(link =>
+		{
+			link.icons = Array.from(link.parentNode.children)
+				.filter(e => e.tagName === "UL")
+				.flatMap(e => Array.from(e.children));
+			link.icons.forEach(e => e.link = link);
+			link.icons.forEach(e => e.style.display = "none");
+
+			if (link.icons.length)
+				link.onclick = function ()
+				{
+					links.forEach(e => e.parentNode.style.display = "none");
+					this.icons.forEach(e => e.style.display = "");
+					reset.style.display = "";
+					reset.firstChild.onclick = () => (this.parentNode.link || root).onclick();
+					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+				};
+		});
+
+		links.map(e => e.parentNode).forEach(e => component.appendChild(e));
+
+
+		let reset = component.appendChild(document.createElement("li"));
+		reset.className = "Reset";
+		reset.style.display = "none";
+		reset.appendChild(document.createElement("a"));
+		reset.firstChild.innerHTML = "Retornar";
+		reset.firstChild.setAttribute("href", "#");
+		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
+	});
 });
-
-
 function Mask(element)
 {
 	var changed = false;
@@ -2156,6 +2132,9 @@ class GModal extends HTMLElement
 			event.preventDefault();
 			this.hide();
 		});
+
+		this.addEventListener("keypress", event => event.stopPropagation());
+		this.addEventListener("keydown", event => event.stopPropagation());
 
 		this.addEventListener("click", event => !this.blocked
 				&& (event.target === this || event.srcElement === this)
@@ -2716,9 +2695,11 @@ window.addEventListener("click", function (event)
 {
 	if (event.button !== 0)
 		return;
-	let link = event.target;
-	if (link.tagName !== 'A')
+	let link = event.target
+		.closest("a");
+	if (!link)
 		return;
+
 	if (link.hasAttribute("data-cancel"))
 	{
 		event.preventDefault();
@@ -2765,9 +2746,11 @@ window.addEventListener("click", function (event)
 		return;
 	}
 
+	let target = link.getAttribute("target");
 	if (link.getAttribute("target"))
 	{
-		switch (link.getAttribute("target").toLowerCase())
+		target = target.toLowerCase();
+		switch (target)
 		{
 			case "_dialog":
 				event.preventDefault();
@@ -2785,6 +2768,8 @@ window.addEventListener("click", function (event)
 					dialog.caption = link.getAttribute("title");
 					dialog.blocked = Boolean(link.getAttribute("data-blocked"));
 
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 					if (link.hasAttribute("data-reload-on-hide"))
 						dialog.addEventListener("hide", () => window.location = window.location.href);
@@ -2807,6 +2792,9 @@ window.addEventListener("click", function (event)
 					let stackFrame = GStackFrame.create();
 					stackFrame.target = link.getAttribute("href");
 
+					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
+					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+
 					if (link.hasAttribute("data-reload-on-hide"))
 						stackFrame.addEventListener("hide", () => window.location = window.location.href);
 					else if (link.hasAttribute("data-submit-on-hide"))
@@ -2818,7 +2806,7 @@ window.addEventListener("click", function (event)
 			case "_message":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
@@ -2827,14 +2815,14 @@ window.addEventListener("click", function (event)
 						Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
 			case "_none":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
@@ -2844,37 +2832,38 @@ window.addEventListener("click", function (event)
 							Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
 			case "_this":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
 					{
 						status = JSON.parse(status);
 						if (status.type === "SUCCESS")
-							link.innerHTML = status.value;
+							link.innerHTML = status.message;
 						else
 							Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
+
 			case "_alert":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					alert(status);
-					link.removeAttribute("data-cancel");
+					link.style.pointerEvents = "";
 				});
 				break;
 			case "_hide":
@@ -2892,7 +2881,12 @@ window.addEventListener("click", function (event)
 				event.stopPropagation();
 				Array.from(link.children)
 					.filter(e => e.tagName.toLowerCase() === "div")
-					.forEach(e => new GPopup(e));
+					.forEach(e =>
+					{
+						var popup = new GPopup(e);
+						popup.addEventListener("hide", () => link.appendChild(e));
+						popup.show();
+					});
 				break;
 			case "_progress-dialog":
 				event.preventDefault();
@@ -2922,6 +2916,29 @@ window.addEventListener("click", function (event)
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);
 				break;
+
+			default:
+				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					link.style.pointerEvents = "none";
+					new URL(link.href).get(function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type === "SUCCESS")
+								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
+									.innerHTML = status.message;
+							else
+								Message.show(status, 2000);
+						} finally
+						{
+							link.style.pointerEvents = "";
+						}
+					});
+				}
 		}
 	}
 });
@@ -2943,249 +2960,281 @@ window.addEventListener("click", function (event)
 	if (event.button !== 0)
 		return;
 
-	let button = event.target;
-	if (button.tagName === 'BUTTON')
+	let button = event.target
+		.closest("button");
+	if (!button)
+		return;
+
+	if (button.hasAttribute("data-cancel"))
 	{
-		if (button.hasAttribute("data-cancel"))
+		Message.error(event.target.getAttribute("data-cancel"), 2000);
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		return;
+	}
+
+
+	if (button.hasAttribute("data-disabled"))
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		return;
+	}
+
+	if (button.hasAttribute("data-confirm")
+		&& !confirm(button.getAttribute("data-confirm")))
+	{
+		event.preventDefault();
+		event.stopImmediatePropagation();
+		return;
+	}
+
+	if (button.hasAttribute("data-alert"))
+		alert(button.getAttribute("data-alert"));
+
+
+	if (button.getAttribute("formaction") &&
+		(button.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
+			|| button.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
+			|| button.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
+	{
+		let resolved = resolve(button.getAttribute("formaction"));
+		if (resolved !== null)
 		{
-			Message.error(event.target.getAttribute("data-cancel"), 2000);
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			return;
+			var formaction = button.getAttribute("formaction");
+			button.setAttribute("formaction", resolved);
+			button.click();
+			button.setAttribute("formaction", formaction);
 		}
 
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+		return;
+	}
 
-		if (button.hasAttribute("data-disabled"))
+	let target = button.getAttribute("formtarget");
+	if (target)
+	{
+		target = target.toLowerCase();
+		switch (target)
 		{
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-			return;
-		}
-
-		if (button.hasAttribute("data-confirm")
-			&& !confirm(button.getAttribute("data-confirm")))
-		{
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			return;
-		}
-
-		if (button.hasAttribute("data-alert"))
-			alert(button.getAttribute("data-alert"));
-
-
-		if (button.getAttribute("formaction") &&
-			(button.getAttribute("formaction").match(/([@][{][^}]*[}])/g)
-				|| button.getAttribute("formaction").match(/([!][{][^}]*[}])/g)
-				|| button.getAttribute("formaction").match(/([?][{][^}]*[}])/g)))
-		{
-			let resolved = resolve(button.getAttribute("formaction"));
-			if (resolved !== null)
-			{
-				var formaction = button.getAttribute("formaction");
-				button.setAttribute("formaction", resolved);
-				button.click();
-				button.setAttribute("formaction", formaction);
-			}
-
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-			return;
-		}
-
-		if (button.getAttribute("formtarget"))
-		{
-			switch (button.getAttribute("formtarget").toLowerCase())
-			{
-				case "_dialog":
-					if (button.form.checkValidity())
+			case "_dialog":
+				if (button.form.checkValidity())
+				{
+					if (event.ctrlKey)
 					{
-						if (event.ctrlKey)
-						{
-							event.preventDefault();
-							event.stopPropagation();
-							button.setAttribute("formtarget", "_blank");
-							button.click();
-							button.setAttribute("formtarget", "_dialog");
-						} else if (event.target.form.getAttribute("target") !== "_dialog")
-						{
-							let dialog = GDialog.create();
-							dialog.caption = event.target.getAttribute("title");
-							dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
-
-							if (button.hasAttribute("data-reload-on-hide"))
-								dialog.addEventListener(() => window.location = window.location.href);
-							else if (button.hasAttribute("data-submit-on-hide"))
-								dialog.addEventListener(() => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
-
-							dialog.show();
-						}
-					}
-					break;
-				case "_stack":
-					if (button.form.checkValidity())
+						event.preventDefault();
+						event.stopPropagation();
+						button.setAttribute("formtarget", "_blank");
+						button.click();
+						button.setAttribute("formtarget", "_dialog");
+					} else if (event.target.form.getAttribute("target") !== "_dialog")
 					{
-						if (event.ctrlKey)
-						{
-							event.preventDefault();
-							event.stopPropagation();
-							button.setAttribute("formtarget", "_blank");
-							button.click();
-							button.setAttribute("formtarget", "_dialog");
-						} else if (event.target.form.getAttribute("target") !== "_dialog")
-						{
-							let stackFrame = GStackFrame.create();
+						let dialog = GDialog.create();
+						dialog.caption = event.target.getAttribute("title");
+						dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
 
-							if (button.hasAttribute("data-reload-on-hide"))
-								stackFrame.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.hasAttribute("data-submit-on-hide"))
-								stackFrame.addEventListener("hide", () => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
-							stackFrame.show();
-						}
+						if (button.hasAttribute("data-reload-on-hide"))
+							dialog.addEventListener(() => window.location = window.location.href);
+						else if (button.hasAttribute("data-submit-on-hide"))
+							dialog.addEventListener(() => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+
+						dialog.show();
 					}
-					break;
-				case "_message":
-					event.preventDefault();
-					event.stopPropagation();
+				}
+				break;
+			case "_stack":
+				if (button.form.checkValidity())
+				{
+					if (event.ctrlKey)
+					{
+						event.preventDefault();
+						event.stopPropagation();
+						button.setAttribute("formtarget", "_blank");
+						button.click();
+						button.setAttribute("formtarget", "_stack");
+					} else if (event.target.form.getAttribute("target") !== "_stack")
+					{
+						let stackFrame = GStackFrame.create();
 
-					button.disabled = true;
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), function (status)
+						stackFrame.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
+						stackFrame.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+
+						if (button.hasAttribute("data-reload-on-hide"))
+							stackFrame.addEventListener("hide", () => window.location = window.location.href);
+						else if (button.hasAttribute("data-submit-on-hide"))
+							stackFrame.addEventListener("hide", () => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+
+						stackFrame.show();
+					}
+				}
+				break;
+			case "_message":
+				event.preventDefault();
+				event.stopPropagation();
+
+				button.disabled = true;
+				new URL(button.getAttribute("formaction"))
+					.post(new FormData(button.form), function (status)
+					{
+						try
 						{
-							try
-							{
-								status = JSON.parse(status);
+							status = JSON.parse(status);
+							Message.show(status, 2000);
+						} finally
+						{
+							button.disabled = false;
+						}
+					});
+				break;
+			case "_none":
+				event.preventDefault();
+				event.stopPropagation();
+
+				button.disabled = true;
+				new URL(button.getAttribute("formaction"))
+					.post(new FormData(button.form), function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type !== "SUCCESS")
 								Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
-						});
-					break;
-				case "_none":
-					event.preventDefault();
-					event.stopPropagation();
+						} finally
+						{
+							button.disabled = false;
+						}
+					});
+				break;
+			case "_this":
+				event.preventDefault();
+				event.stopPropagation();
 
+				button.disabled = true;
+				new URL(button.getAttribute("formaction"))
+					.post(new FormData(button.form), function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type === "SUCCESS")
+								button.innerHTML = status.value;
+							else
+								Message.show(status, 2000);
+						} finally
+						{
+							button.disabled = false;
+						}
+					});
+				break;
+			case "_alert":
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (button.form.reportValidity())
+				{
 					button.disabled = true;
 					new URL(button.getAttribute("formaction"))
 						.post(new FormData(button.form), function (status)
 						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type !== "SUCCESS")
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
+							alert(status);
+							button.disabled = false;
 						});
-					break;
-				case "_this":
-					event.preventDefault();
-					event.stopPropagation();
+				}
+				break;
+			case "_hide":
+				event.preventDefault();
+				event.stopPropagation();
+				if (window.frameElement
+					&& window.frameElement.dialog
+					&& window.frameElement.dialog.hide)
+					window.frameElement.dialog.hide();
+				else
+					window.close();
+				break;
 
+			case "_progress-dialog":
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (button.form.reportValidity())
+				{
 					button.disabled = true;
 					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), function (status)
+						.post(new FormData(button.form), process =>
 						{
-							try
-							{
-								status = JSON.parse(status);
-								if (status.type === "SUCCESS")
-									button.innerHTML = status.value;
-								else
-									Message.show(status, 2000);
-							} finally
-							{
-								button.disabled = false;
-							}
+							process = JSON.parse(process);
+							new GProgressDialog(process,
+								{title: button.getAttribute("title")}).show();
+							button.disabled = false;
 						});
-					break;
-				case "_alert":
+				}
+
+				break;
+
+			case "_progress-window":
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (button.form.reportValidity())
+				{
+					new URL(button.getAttribute("formaction"))
+						.post(new FormData(button.form), function (process)
+						{
+							process = JSON.parse(process);
+							document.body.appendChild(new GProgressWindow(process));
+						});
+				}
+
+				break;
+
+			case "_report":
+			case "_report-dialog":
+				event.preventDefault();
+				event.stopPropagation();
+
+				if (button.form.reportValidity())
+				{
+					let dialog = new GReportDialog();
+					dialog.blocked = true;
+					dialog.caption = button.getAttribute("title") || "Imprimir";
+					dialog.post(button.getAttribute("formaction") || button.form.action,
+						new FormData(button.form));
+					button.disabled = false;
+				}
+
+				break;
+
+			default:
+				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				{
 					event.preventDefault();
 					event.stopPropagation();
-
-					if (button.form.reportValidity())
+					button.style.pointerEvents = "none";
+					new URL(button.getAttribute("formaction") || button.form.action).get(function (status)
 					{
-						button.disabled = true;
-						new URL(button.getAttribute("formaction"))
-							.post(new FormData(button.form), function (status)
-							{
-								alert(status);
-								button.disabled = false;
-							});
-					}
-					break;
-				case "_hide":
-					event.preventDefault();
-					event.stopPropagation();
-					if (window.frameElement
-						&& window.frameElement.dialog
-						&& window.frameElement.dialog.hide)
-						window.frameElement.dialog.hide();
-					else
-						window.close();
-					break;
-
-				case "_progress-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-
-					if (button.form.reportValidity())
-					{
-						button.disabled = true;
-						new URL(button.getAttribute("formaction"))
-							.post(new FormData(button.form), process =>
-							{
-								process = JSON.parse(process);
-								new GProgressDialog(process,
-									{title: button.getAttribute("title")}).show();
-								button.disabled = false;
-							});
-					}
-
-					break;
-
-				case "_progress-window":
-					event.preventDefault();
-					event.stopPropagation();
-
-					if (button.form.reportValidity())
-					{
-						new URL(button.getAttribute("formaction"))
-							.post(new FormData(button.form), function (process)
-							{
-								process = JSON.parse(process);
-								document.body.appendChild(new GProgressWindow(process));
-							});
-					}
-
-					break;
-
-				case "_report":
-				case "_report-dialog":
-					event.preventDefault();
-					event.stopPropagation();
-
-					if (button.form.reportValidity())
-					{
-						let dialog = new GReportDialog();
-						dialog.blocked = true;
-						dialog.caption = button.getAttribute("title") || "Imprimir";
-						dialog.post(button.getAttribute("formaction") || button.form.action,
-							new FormData(button.form));
-						button.disabled = false;
-					}
-
-					break;
-			}
-
-			return;
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type === "SUCCESS")
+								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
+									.innerHTML = status.message;
+							else
+								Message.show(status, 2000);
+						} finally
+						{
+							button.style.pointerEvents = "";
+						}
+					});
+				}
 		}
+
+		return;
 	}
 });
 
@@ -3488,6 +3537,9 @@ window.addEventListener("click", event => {
 					.map(e => e.getAttribute("data-action"))
 					.filter(e => e);
 
+			link.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+			link.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
+
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
@@ -3520,6 +3572,9 @@ window.addEventListener("click", event => {
 
 			if (action.hasAttribute("data-confirm"))
 				button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+			button.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+			button.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
 
 			var form = action.closest("form");
 			form.appendChild(button);
@@ -4618,6 +4673,34 @@ class ReportSelector extends HTMLElement
 }
 
 window.addEventListener("load", () => customElements.define('g-report-selector', ReportSelector));
+/* global DateFormat, customElements */
+
+class ActionSelector extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {actions: document.createElement("tbody")};
+	}
+
+	connectedCallback()
+	{
+		if (!this.firstChild)
+			this.appendChild(document.createElement("div"))
+				.appendChild(document.createElement("table"))
+				.appendChild(this._private.actions);
+	}
+
+	add(action)
+	{
+		let link = this._private.actions.appendChild(document.createElement("tr"));
+		link.appendChild(document.createElement("td")).innerHTML = "&#X" + action.icon + ";";
+		link.appendChild(document.createElement("td")).innerHTML = action.text;
+		link.addEventListener("click", () => this.dispatchEvent(new CustomEvent('selected', {detail: action})));
+	}
+}
+
+customElements.define('g-action-selector', ActionSelector);
 /* global customElements */
 
 class Picker extends GWindow
@@ -4625,6 +4708,7 @@ class Picker extends GWindow
 	constructor()
 	{
 		super();
+		this.classList.add("g-picker");
 		let close = document.createElement("a");
 		close.href = "#";
 		close.onclick = () => this.hide();
@@ -5094,6 +5178,35 @@ window.addEventListener("load", function ()
 		});
 	});
 });
+/* global DateFormat, customElements */
+
+class ActionPicker extends Picker
+{
+	constructor()
+	{
+		super();
+		this.classList.add("g-picker");
+	}
+
+	get selector()
+	{
+		if (!this._private.selector)
+		{
+			this._private.selector = this.body.appendChild(new ActionSelector());
+			this._private.selector.addEventListener("selected",
+				e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})));
+
+		}
+		return this._private.selector;
+	}
+
+	add(action)
+	{
+		this.selector.add(action);
+	}
+}
+
+customElements.define('g-action-picker', ActionPicker);
 /* global customElements */
 
 class GBlock extends GWindow
@@ -5687,31 +5800,6 @@ window.addEventListener("load", function ()
 });
 
 
-function LinkControl(linkControl)
-{
-	var links = [];
-	Array.from(linkControl.children).forEach(function (ul)
-	{
-		if (ul.tagName.toLowerCase() === "ul")
-			Array.from(ul.children).forEach(function (li)
-			{
-				if (li.tagName.toLowerCase() === "li")
-					links.push(li);
-			});
-	});
-
-	if (links.length > 0 && links.every(e => !e.getAttribute("data-selected")
-			|| e.getAttribute("data-selected").toLowerCase() !== "true"))
-		links[0].setAttribute("data-selected", "true");
-}
-
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('div.LinkControl')).forEach(function (e)
-	{
-		new LinkControl(e);
-	});
-});
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
 class GDialog extends GWindow
@@ -5771,7 +5859,7 @@ class GDialog extends GWindow
 		{
 			this.iframe.name = "_frame";
 			this.iframe.setAttribute("name", "_frame");
-			this.iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+			this.iframe.addEventListener("focus", () => autofocus(this.iframe.contentWindow.document));
 
 			var resize = () =>
 			{
@@ -5981,7 +6069,7 @@ class GStackFrame extends GModal
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
-		this.iframe.setAttribute('name', '_dialog');
+		this.iframe.setAttribute('name', '_stack');
 		this.iframe.onmouseenter = () => this.iframe.focus();
 
 		this.iframe.addEventListener("load", () =>
@@ -6667,8 +6755,8 @@ class GProgressStatus extends HTMLElement
 			log.style.alignItems = "center";
 		}
 
-		var ws = new WebSocket("ws://" + window.location.host + "/" +
-			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var ws = new WebSocket(protocol + location.host + "/" + location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
 
 		ws.onerror = e => log(e.data);
 
@@ -7061,32 +7149,29 @@ class GReportDialog extends GWindow
 customElements.define('g-report-dialog', GReportDialog);
 /* global Colorizer */
 
-window.addEventListener("load", function ()
+class GDataFilter
 {
-	Array.from(document.querySelectorAll("input[data-filter]")).forEach(element =>
+	static filter(input)
 	{
-		var table = element.getAttribute("data-filter") ?
-			document.getElementById(element.getAttribute("data-filter"))
-			: element.closest("TABLE");
-
-		element.addEventListener("input", function ()
-		{
-			Array.from(table.children)
-				.filter(e => e.tagName.toUpperCase() === "TBODY")
-				.flatMap(e => Array.from(e.children)).forEach(row =>
-				row.style.display = !this.value || row.innerHTML.toUpperCase()
-					.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
-			Colorizer.colorize(table);
-		});
-
+		let table = input.getAttribute("data-filter")
+			? document.getElementById(event.target.getAttribute("data-filter"))
+			: event.target.closest("TABLE");
 		Array.from(table.children)
-			.filter(e => e.tagName.toUpperCase() === "TBODY")
-			.flatMap(e => Array.from(e.children)).forEach(row =>
-			row.style.display = !this.value || row.innerHTML.toUpperCase()
-				.indexOf(this.value.toUpperCase()) !== -1 ? "" : "none");
+			.filter(e => e.tagName === "TBODY")
+			.flatMap(e => Array.from(e.children))
+			.forEach(row => row.style.display = !input.value || row.innerHTML.toUpperCase().indexOf(input.value.toUpperCase()) !== -1 ? "" : "none");
 		Colorizer.colorize(table);
-	});
+	}
+}
+
+window.addEventListener("input", function (event)
+{
+	if (event.target.tagName === "INPUT"
+		&& event.target.hasAttribute("data-filter"))
+		GDataFilter.filter(event.target);
 });
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => GDataFilter.filter(e)));
 /* global customElements */
 
 customElements.define('g-coolbar', class extends GOverflow
@@ -7134,7 +7219,8 @@ class AppEvents
 {
 	static listen()
 	{
-		var url = "wss://" + /.*:\/\/(.*\/.*)\//.exec(window.location.href)[1] + "/AppEvents";
+		let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
+		var url = protocol + /.*:\/\/(.*\/.*)\//.exec(location.href)[1] + "/AppEvents";
 
 		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
 		{
@@ -7291,13 +7377,27 @@ class GScrollTabBar extends HTMLElement
 		div.addEventListener("scroll", () => this.setAttribute("data-overflowing",
 				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild)));
 
-		window.addEventListener("load", () =>
-		{
-			this.setAttribute("data-overflowing",
-				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
-			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
-				.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
-		});
+		this._private =
+			{
+				update: () =>
+				{
+					this.setAttribute("data-overflowing",
+						GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
+					Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
+						.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
+				}
+			};
+	}
+
+	connectedCallback()
+	{
+		window.setTimeout(this._private.update, 0);
+		window.addEventListener("resize", this._private.update);
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("resize", this._private.update);
 	}
 }
 
@@ -7322,13 +7422,13 @@ class GTabControl extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: 'open'});
+
 		let head = this.shadowRoot.appendChild(document.createElement("div"));
 		head.style = "display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap";
+		head.appendChild(document.createElement("slot")).name = "head";
 
-		head.appendChild(document.createElement("slot"));
-
-		this.shadowRoot.appendChild(document.createElement("div"))
-			.appendChild(document.createElement("slot")).name = "body";
+		let body = this.shadowRoot.appendChild(document.createElement("div"));
+		body.appendChild(document.createElement("slot")).name = "body";
 	}
 
 	get type()
@@ -7345,37 +7445,43 @@ class GTabControl extends HTMLElement
 	{
 		window.setTimeout(() =>
 		{
-			let slot = this.shadowRoot.firstChild.firstChild;
+			if (this.type !== "dummy")
+			{
+				var links = Array.from(this.children).filter(e => e.tagName === "A");
 
-			Array.from(slot.assignedElements())
-				.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
-				.forEach(link =>
+				links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
+					.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
+
+				var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
+				pages.forEach(e => e.setAttribute("slot", "body"));
+
+				links.forEach(link =>
 				{
-					let tab = document.createElement("div");
-					tab.setAttribute("slot", "body");
-					this.appendChild(tab);
-					tab.style = "display: none; padding : 10px; overflow: hidden";
+					links.forEach(e => e.setAttribute("slot", "head"));
 					let type = link.getAttribute("data-type") || this.type;
 
 					link.addEventListener("click", event =>
 					{
 						event.preventDefault();
 						event.stopPropagation();
-						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
-						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
-						tab.style.display = "block";
+						pages.forEach(e => e.style.display = "none");
+						links.forEach(e => e.setAttribute("data-selected", "false"));
+						link.nextElementSibling.style.display = "block";
 						link.setAttribute("data-selected", "true");
 
-						if (!tab.childNodes.length)
+						if (!link.nextElementSibling.childNodes.length)
 						{
 							switch (type)
 							{
+								case "fetch":
+									new URL(link.getAttribute('href'))
+										.get(text => link.nextElementSibling.innerHTML = text);
+									break;
 								case "frame":
 
-									let iframe = tab.appendChild(document.createElement("iframe"));
+									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
 									iframe.scrolling = "no";
 									iframe.setAttribute("allowfullscreen", "true");
-									iframe.style = "margin: 0; width : 100%; border: none; overflow: hiddden";
 
 									iframe.onload = () =>
 									{
@@ -7396,21 +7502,11 @@ class GTabControl extends HTMLElement
 										iframe.style.backgroundImage = "none";
 									};
 
-									iframe.src = link.href || link.getAttribute("formaction");
-									break;
-								case "fetch":
-									if (!link.form)
-										new URL(link.getAttribute('href'))
-											.get(text => tab.innerHTML = text);
-									else if (link.form.checkValidity())
-										new URL(link.getAttribute('href'))
-											.post(new FormData(link.form),
-												text => tab.innerHTML = text);
+									iframe.src = link.href;
 									break;
 							}
 
-						} else
-							event.preventDefault();
+						}
 					});
 
 					if (link.getAttribute("data-selected") &&
@@ -7419,38 +7515,14 @@ class GTabControl extends HTMLElement
 				});
 
 
-			Array.from(slot.assignedElements())
-				.filter(e => e.tagName === "DIV")
-				.forEach(tab =>
-				{
-					let link = this.appendChild(document.createElement("a"));
-					link.innerText = tab.getAttribute("data-name");
-					if (tab.hasAttribute("data-icon"))
-						link.appendChild(document.createElement("i")).innerHTML = "&#X" + tab.getAttribute("data-icon") + ";";
-					tab.setAttribute("slot", "body");
-					tab.style = "display: none; padding : 10px; overflow: hidden";
-					let type = link.getAttribute("data-type") || this.type;
 
-					link.addEventListener("click", event =>
-					{
-						event.stopPropagation();
-						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
-						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
-						tab.style.display = "block";
-						link.setAttribute("data-selected", "true");
-					});
-
-					if (link.getAttribute("data-selected") &&
-						link.getAttribute("data-selected").toLowerCase() === "true")
-						link.click();
-				});
-
-			if (slot.assignedElements().length
-				&& Array.from(slot.assignedElements())
-				.every(e => !e.hasAttribute("data-selected") ||
-						e.getAttribute("data-selected")
-						.toLowerCase() === "false"))
-				slot.assignedElements()[0].click();
+				if (links.length && links.every(e => !e.hasAttribute("data-selected")
+						|| e.getAttribute("data-selected").toLowerCase() === "false"))
+					links[0].click();
+			} else {
+				Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
+				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+			}
 		}, 0);
 	}
 }
@@ -7584,5 +7656,32 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll('div.PageControl'))
 		.forEach(element => new PageControl(element));
+});
+
+
+function LinkControl(linkControl)
+{
+	var links = [];
+	Array.from(linkControl.children).forEach(function (ul)
+	{
+		if (ul.tagName.toLowerCase() === "ul")
+			Array.from(ul.children).forEach(function (li)
+			{
+				if (li.tagName.toLowerCase() === "li")
+					links.push(li);
+			});
+	});
+
+	if (links.length > 0 && links.every(e => !e.getAttribute("data-selected")
+			|| e.getAttribute("data-selected").toLowerCase() !== "true"))
+		links[0].setAttribute("data-selected", "true");
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll('div.LinkControl')).forEach(function (e)
+	{
+		new LinkControl(e);
+	});
 });
 

@@ -75,8 +75,8 @@ class GProgressStatus extends HTMLElement
 			log.style.alignItems = "center";
 		}
 
-		var ws = new WebSocket("ws://" + window.location.host + "/" +
-			window.location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		var ws = new WebSocket(protocol + location.host + "/" + location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
 
 		ws.onerror = e => log(e.data);
 

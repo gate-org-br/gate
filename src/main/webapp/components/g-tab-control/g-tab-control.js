@@ -6,13 +6,13 @@ class GTabControl extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: 'open'});
+
 		let head = this.shadowRoot.appendChild(document.createElement("div"));
 		head.style = "display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap";
+		head.appendChild(document.createElement("slot")).name = "head";
 
-		head.appendChild(document.createElement("slot"));
-
-		this.shadowRoot.appendChild(document.createElement("div"))
-			.appendChild(document.createElement("slot")).name = "body";
+		let body = this.shadowRoot.appendChild(document.createElement("div"));
+		body.appendChild(document.createElement("slot")).name = "body";
 	}
 
 	get type()
@@ -29,37 +29,43 @@ class GTabControl extends HTMLElement
 	{
 		window.setTimeout(() =>
 		{
-			let slot = this.shadowRoot.firstChild.firstChild;
+			if (this.type !== "dummy")
+			{
+				var links = Array.from(this.children).filter(e => e.tagName === "A");
 
-			Array.from(slot.assignedElements())
-				.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
-				.forEach(link =>
+				links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
+					.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
+
+				var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
+				pages.forEach(e => e.setAttribute("slot", "body"));
+
+				links.forEach(link =>
 				{
-					let tab = document.createElement("div");
-					tab.setAttribute("slot", "body");
-					this.appendChild(tab);
-					tab.style = "display: none; padding : 10px; overflow: hidden";
+					links.forEach(e => e.setAttribute("slot", "head"));
 					let type = link.getAttribute("data-type") || this.type;
 
 					link.addEventListener("click", event =>
 					{
 						event.preventDefault();
 						event.stopPropagation();
-						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
-						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
-						tab.style.display = "block";
+						pages.forEach(e => e.style.display = "none");
+						links.forEach(e => e.setAttribute("data-selected", "false"));
+						link.nextElementSibling.style.display = "block";
 						link.setAttribute("data-selected", "true");
 
-						if (!tab.childNodes.length)
+						if (!link.nextElementSibling.childNodes.length)
 						{
 							switch (type)
 							{
+								case "fetch":
+									new URL(link.getAttribute('href'))
+										.get(text => link.nextElementSibling.innerHTML = text);
+									break;
 								case "frame":
 
-									let iframe = tab.appendChild(document.createElement("iframe"));
+									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
 									iframe.scrolling = "no";
 									iframe.setAttribute("allowfullscreen", "true");
-									iframe.style = "margin: 0; width : 100%; border: none; overflow: hiddden";
 
 									iframe.onload = () =>
 									{
@@ -80,21 +86,11 @@ class GTabControl extends HTMLElement
 										iframe.style.backgroundImage = "none";
 									};
 
-									iframe.src = link.href || link.getAttribute("formaction");
-									break;
-								case "fetch":
-									if (!link.form)
-										new URL(link.getAttribute('href'))
-											.get(text => tab.innerHTML = text);
-									else if (link.form.checkValidity())
-										new URL(link.getAttribute('href'))
-											.post(new FormData(link.form),
-												text => tab.innerHTML = text);
+									iframe.src = link.href;
 									break;
 							}
 
-						} else
-							event.preventDefault();
+						}
 					});
 
 					if (link.getAttribute("data-selected") &&
@@ -103,38 +99,14 @@ class GTabControl extends HTMLElement
 				});
 
 
-			Array.from(slot.assignedElements())
-				.filter(e => e.tagName === "DIV")
-				.forEach(tab =>
-				{
-					let link = this.appendChild(document.createElement("a"));
-					link.innerText = tab.getAttribute("data-name");
-					if (tab.hasAttribute("data-icon"))
-						link.appendChild(document.createElement("i")).innerHTML = "&#X" + tab.getAttribute("data-icon") + ";";
-					tab.setAttribute("slot", "body");
-					tab.style = "display: none; padding : 10px; overflow: hidden";
-					let type = link.getAttribute("data-type") || this.type;
 
-					link.addEventListener("click", event =>
-					{
-						event.stopPropagation();
-						Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.style.display = "none");
-						Array.from(this.children).filter(e => e.tagName !== "DIV").forEach(e => e.setAttribute("data-selected", "false"));
-						tab.style.display = "block";
-						link.setAttribute("data-selected", "true");
-					});
-
-					if (link.getAttribute("data-selected") &&
-						link.getAttribute("data-selected").toLowerCase() === "true")
-						link.click();
-				});
-
-			if (slot.assignedElements().length
-				&& Array.from(slot.assignedElements())
-				.every(e => !e.hasAttribute("data-selected") ||
-						e.getAttribute("data-selected")
-						.toLowerCase() === "false"))
-				slot.assignedElements()[0].click();
+				if (links.length && links.every(e => !e.hasAttribute("data-selected")
+						|| e.getAttribute("data-selected").toLowerCase() === "false"))
+					links[0].click();
+			} else {
+				Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
+				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+			}
 		}, 0);
 	}
 }
@@ -268,4 +240,31 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll('div.PageControl'))
 		.forEach(element => new PageControl(element));
+});
+
+
+function LinkControl(linkControl)
+{
+	var links = [];
+	Array.from(linkControl.children).forEach(function (ul)
+	{
+		if (ul.tagName.toLowerCase() === "ul")
+			Array.from(ul.children).forEach(function (li)
+			{
+				if (li.tagName.toLowerCase() === "li")
+					links.push(li);
+			});
+	});
+
+	if (links.length > 0 && links.every(e => !e.getAttribute("data-selected")
+			|| e.getAttribute("data-selected").toLowerCase() !== "true"))
+		links[0].setAttribute("data-selected", "true");
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll('div.LinkControl')).forEach(function (e)
+	{
+		new LinkControl(e);
+	});
 });

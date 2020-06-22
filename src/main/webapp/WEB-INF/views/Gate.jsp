@@ -75,8 +75,6 @@
 				</g:iterator>
 			</script>
 		</g:if>
-
-
 	</g:login>
 </g:template>
 

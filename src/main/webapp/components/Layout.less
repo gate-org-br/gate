@@ -71,6 +71,7 @@ body {
 			    grid-row: 3;
 			    padding: 10px;
 			    overflow: auto;
+			    overflow-x: hidden;
 			    position: relative;
 			    background-color: var(--section-background-color);
 			    background-image: var(--section-background-image);
@@ -84,8 +85,12 @@ body {
 
 					> header { grid-row: 1 }
 					> nav { grid-row: 2 }
-					> section, > article { grid-row: 3; overflow: auto }
-					> footer { grid-row: 4 }
+					> section, > article { grid-row: 3;
+							       overflow: auto;
+							       overflow-x: hidden; }
+					> footer { grid-row: 4;
+						   overflow: auto;
+						   overflow-x: hidden;}
 
 					> * { margin-top: 10px; }
 					> *:first-child { margin-top: 0px; }
@@ -99,6 +104,7 @@ body {
 			   padding: 4px;
 			   display: flex;
 			   font-size: 12px;
+			   overflow-x: hidden;
 			   align-items: center;
 			   justify-content: space-between;
 

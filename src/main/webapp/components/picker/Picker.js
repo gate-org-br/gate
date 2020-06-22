@@ -5,6 +5,7 @@ class Picker extends GWindow
 	constructor()
 	{
 		super();
+		this.classList.add("g-picker");
 		let close = document.createElement("a");
 		close.href = "#";
 		close.onclick = () => this.hide();
