@@ -60,7 +60,7 @@ public class JsonString implements JsonElement
 	}
 
 	/**
-	 * Parses a JSON formatted string into a JsonString object.
+	 * Parses a JSON formatted string into a JsonString objecZt.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonString object
 	 *

@@ -25,13 +25,27 @@ class GScrollTabBar extends HTMLElement
 		div.addEventListener("scroll", () => this.setAttribute("data-overflowing",
 				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild)));
 
-		window.addEventListener("load", () =>
-		{
-			this.setAttribute("data-overflowing",
-				GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
-			Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
-				.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
-		});
+		this._private =
+			{
+				update: () =>
+				{
+					this.setAttribute("data-overflowing",
+						GOverflow.determineOverflow(this, this.shadowRoot.firstElementChild));
+					Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
+						.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
+				}
+			};
+	}
+
+	connectedCallback()
+	{
+		window.setTimeout(this._private.update, 0);
+		window.addEventListener("resize", this._private.update);
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("resize", this._private.update);
 	}
 }
 

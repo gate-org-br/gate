@@ -57,7 +57,7 @@ class GDialog extends GWindow
 		{
 			this.iframe.name = "_frame";
 			this.iframe.setAttribute("name", "_frame");
-			this.iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
+			this.iframe.addEventListener("focus", () => autofocus(this.iframe.contentWindow.document));
 
 			var resize = () =>
 			{

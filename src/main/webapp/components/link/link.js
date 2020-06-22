@@ -4,9 +4,11 @@ window.addEventListener("click", function (event)
 {
 	if (event.button !== 0)
 		return;
-	let link = event.target;
-	if (link.tagName !== 'A')
+	let link = event.target
+		.closest("a");
+	if (!link)
 		return;
+
 	if (link.hasAttribute("data-cancel"))
 	{
 		event.preventDefault();
@@ -53,9 +55,11 @@ window.addEventListener("click", function (event)
 		return;
 	}
 
+	let target = link.getAttribute("target");
 	if (link.getAttribute("target"))
 	{
-		switch (link.getAttribute("target").toLowerCase())
+		target = target.toLowerCase();
+		switch (target)
 		{
 			case "_dialog":
 				event.preventDefault();
@@ -73,6 +77,8 @@ window.addEventListener("click", function (event)
 					dialog.caption = link.getAttribute("title");
 					dialog.blocked = Boolean(link.getAttribute("data-blocked"));
 
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 					if (link.hasAttribute("data-reload-on-hide"))
 						dialog.addEventListener("hide", () => window.location = window.location.href);
@@ -95,6 +101,9 @@ window.addEventListener("click", function (event)
 					let stackFrame = GStackFrame.create();
 					stackFrame.target = link.getAttribute("href");
 
+					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
+					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+
 					if (link.hasAttribute("data-reload-on-hide"))
 						stackFrame.addEventListener("hide", () => window.location = window.location.href);
 					else if (link.hasAttribute("data-submit-on-hide"))
@@ -106,7 +115,7 @@ window.addEventListener("click", function (event)
 			case "_message":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
@@ -115,14 +124,14 @@ window.addEventListener("click", function (event)
 						Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
 			case "_none":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
@@ -132,37 +141,38 @@ window.addEventListener("click", function (event)
 							Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
 			case "_this":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					try
 					{
 						status = JSON.parse(status);
 						if (status.type === "SUCCESS")
-							link.innerHTML = status.value;
+							link.innerHTML = status.message;
 						else
 							Message.show(status, 2000);
 					} finally
 					{
-						link.removeAttribute("data-cancel");
+						link.style.pointerEvents = "";
 					}
 				});
 				break;
+
 			case "_alert":
 				event.preventDefault();
 				event.stopPropagation();
-				link.setAttribute("data-cancel", "Processando");
+				link.style.pointerEvents = "none";
 				new URL(link.href).get(function (status)
 				{
 					alert(status);
-					link.removeAttribute("data-cancel");
+					link.style.pointerEvents = "";
 				});
 				break;
 			case "_hide":
@@ -180,7 +190,12 @@ window.addEventListener("click", function (event)
 				event.stopPropagation();
 				Array.from(link.children)
 					.filter(e => e.tagName.toLowerCase() === "div")
-					.forEach(e => new GPopup(e));
+					.forEach(e =>
+					{
+						var popup = new GPopup(e);
+						popup.addEventListener("hide", () => link.appendChild(e));
+						popup.show();
+					});
 				break;
 			case "_progress-dialog":
 				event.preventDefault();
@@ -210,6 +225,29 @@ window.addEventListener("click", function (event)
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);
 				break;
+
+			default:
+				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					link.style.pointerEvents = "none";
+					new URL(link.href).get(function (status)
+					{
+						try
+						{
+							status = JSON.parse(status);
+							if (status.type === "SUCCESS")
+								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
+									.innerHTML = status.message;
+							else
+								Message.show(status, 2000);
+						} finally
+						{
+							link.style.pointerEvents = "";
+						}
+					});
+				}
 		}
 	}
 });

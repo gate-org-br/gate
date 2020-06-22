@@ -100,6 +100,13 @@ abstract class PropertyTag extends DynamicAttributeTag
 				getAttributes().put("title", description);
 		}
 
+		if (!getAttributes().containsKey("data-tooltip"))
+		{
+			String tooltip = p.getTooltip();
+			if (tooltip != null && !tooltip.isEmpty())
+				getAttributes().put("data-tooltip", tooltip);
+		}
+
 		if (!getAttributes().containsKey("placeholder"))
 		{
 			String placeholder = p.getPlaceholder();

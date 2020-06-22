@@ -1,0 +1,38 @@
+g-action-selector
+{
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	background-color: var(--main);
+
+	> div
+	{
+		flex-grow: 1;
+		overflow: auto;
+		max-height: 400px;
+
+		> table
+		{
+			> tbody
+			{
+				> tr
+				{
+					cursor: pointer;
+					font-size: 16px;
+
+					&:hover { background-color: var(--hovered);}
+
+					> td:first-child
+						{
+						width: 32px;
+						speak: none;
+						text-align: center;
+						font-family: 'gate';
+						font-variant: normal;
+						text-transform: none;
+					}
+				}
+			}
+		}
+	}
+}

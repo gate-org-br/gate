@@ -30,6 +30,11 @@ public @interface Color
 		{
 			try
 			{
+				if (Boolean.TRUE.equals(element))
+					return Optional.of("#006600");
+				else if (Boolean.FALSE.equals(element))
+					return Optional.of("#660000");
+
 				if (element instanceof String)
 				{
 					String string = (String) element;

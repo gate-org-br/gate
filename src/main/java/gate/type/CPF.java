@@ -27,24 +27,55 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>
 	 */
 	public CPF(String value)
 	{
-		value = value.replaceAll("[^0123456789]", "");
-		if (value.length() != 11)
-			throw new IllegalArgumentException("value");
+		if (!CPF.validate(value))
+			throw new IllegalArgumentException(value + " is not a valid Brazilian CPF");
+
+		this.value = value.codePoints().filter(e -> Character.isDigit(e))
+			.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+			.toString();
+	}
+
+	/**
+	 * Creates a new CPF with the String specified.
+	 *
+	 * @param value CPF as a String
+	 * @return the new CPF created
+	 *
+	 * @throws IllegalArgumentException if the specified String is not a
+	 * valid Brazilian CPF
+	 */
+	public static CPF of(String value)
+	{
+		return new CPF(value);
+	}
+
+	/**
+	 * Checks if the specified value is a valid Brazilian CPF
+	 *
+	 * @param value the value to be checked
+	 * @return true, only if the specified value is a valid Brazilian CPF
+	 */
+	public static boolean validate(String value)
+	{
+		if (value == null)
+			return false;
+
+		int[] chars = value.codePoints().filter(e -> Character.isDigit(e)).toArray();
+		if (chars.length != 11)
+			return false;
 
 		int digito1 = 0;
 		for (int i = 0; i < 9; i++)
-			digito1 += Character.digit(value.charAt(i), 10) * (10 - i);
+			digito1 += Character.digit(chars[i], 10) * (10 - i);
 		digito1 = (11 - (digito1 % 11)) % 11 % 10;
 
 		int digito2 = digito1 * 2;
 		for (int i = 0; i < 9; i++)
-			digito2 += Character.digit(value.charAt(i), 10) * (11 - i);
+			digito2 += Character.digit(chars[i], 10) * (11 - i);
 		digito2 = (11 - (digito2 % 11)) % 11 % 10;
-		if (Integer.parseInt(String.valueOf(value.charAt(9))) != digito1
-			|| Integer.parseInt(String.valueOf(value.charAt(10))) != digito2)
-			throw new IllegalArgumentException("value");
 
-		this.value = value;
+		return Character.digit(chars[9], 10) == digito1
+			&& Character.digit(chars[10], 10) == digito2;
 	}
 
 	/**
@@ -59,15 +90,14 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>
 
 	/**
 	 * Returns the CPF as a ###.###.###-## formated String.
+	 *
+	 * @return the CPF as a ###.###.###-## formated String.
 	 */
 	@Override
 	public String toString()
 	{
-		return String.format("%c%c%c.%c%c%c.%c%c%c-%c%c", value.charAt(0),
-			value.charAt(1), value.charAt(2), value.charAt(3),
-			value.charAt(4), value.charAt(5), value.charAt(6),
-			value.charAt(7), value.charAt(8), value.charAt(9),
-			value.charAt(10));
+		return value.substring(0, 3) + "." + value.substring(3, 6)
+			+ "." + value.substring(6, 9) + "-" + value.substring(9);
 	}
 
 	@Override
@@ -79,7 +109,7 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>
 	@Override
 	public int hashCode()
 	{
-		return Integer.parseInt(value.replaceAll("[^0123456789]", ""));
+		return Integer.parseInt(value);
 	}
 
 	@Override

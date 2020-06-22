@@ -76,9 +76,9 @@
 		</g:iterator>
 	</table>
 
-	<div class='COOLBAR'>
-		<a class='Hide' href="#">
+	<g-coolbar>
+		<a href="#" target="_hide">
 			Fechar<g:icon type="cancel"/>
 		</a>
-	</div>
+	</g-coolbar>
 </g:template>

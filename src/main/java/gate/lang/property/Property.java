@@ -35,8 +35,7 @@ public class Property
 	 * @param type java class whose property is to be selected
 	 * @param name name of the property to be selected
 	 *
-	 * @return the requested property object or null if there is no property
-	 * with the specified name on the specified type
+	 * @return the requested property object or null if there is no property with the specified name on the specified type
 	 */
 	public static Property parse(Class<?> type, String name)
 	{
@@ -53,8 +52,7 @@ public class Property
 	 *
 	 * @return the requested property object
 	 *
-	 * @throws NoSuchPropertyError if there is no property with the
-	 * specified name on the specified type
+	 * @throws NoSuchPropertyError if there is no property with the specified name on the specified type
 	 */
 	public static Property getProperty(Class<?> type, String name)
 	{
@@ -95,8 +93,7 @@ public class Property
 	 *
 	 * @return the requested properties
 	 *
-	 * @throws NoSuchPropertyError if there is no property with any of the
-	 * specified names on the specified java class
+	 * @throws NoSuchPropertyError if there is no property with any of the specified names on the specified java class
 	 */
 	public static List<Property> getProperties(Class<?> type, String... names)
 	{
@@ -111,8 +108,7 @@ public class Property
 	 *
 	 * @return the requested properties
 	 *
-	 * @throws NoSuchPropertyError if there is no property with any of the
-	 * specified names on the specified java class
+	 * @throws NoSuchPropertyError if there is no property with any of the specified names on the specified java class
 	 */
 	public static List<Property> getProperties(Class<?> type, List<String> names)
 	{
@@ -156,8 +152,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a boolean value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a boolean value
 	 */
 	public boolean getBoolean(Object object)
 	{
@@ -172,8 +167,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a boolean value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a boolean value
 	 */
 	public void setBoolean(Object object, boolean value)
 	{
@@ -189,8 +183,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a char value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a char value
 	 */
 	public char getChar(Object object)
 	{
@@ -205,8 +198,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a char value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a char value
 	 */
 	public void setChar(Object object, char value)
 	{
@@ -222,8 +214,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a byte value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a byte value
 	 */
 	public byte getByte(Object object)
 	{
@@ -238,8 +229,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a byte value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a byte value
 	 */
 	public void setByte(Object object, byte value)
 	{
@@ -255,8 +245,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a short value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a short value
 	 */
 	public short getShort(Object object)
 	{
@@ -271,8 +260,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a short value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a short value
 	 */
 	public void setShort(Object object, short value)
 	{
@@ -288,8 +276,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with an int value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with an int value
 	 */
 	public int getInt(Object object)
 	{
@@ -304,8 +291,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with an int value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with an int value
 	 */
 	public void setInt(Object object, int value)
 	{
@@ -321,8 +307,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a long value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a long value
 	 */
 	public long getLong(Object object)
 	{
@@ -337,8 +322,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a long value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a long value
 	 */
 	public void setLong(Object object, long value)
 	{
@@ -354,8 +338,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a float value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a float value
 	 */
 	public float getFloat(Object object)
 	{
@@ -370,8 +353,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a float value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a float value
 	 */
 	public void setFloat(Object object, float value)
 	{
@@ -387,8 +369,7 @@ public class Property
 	 *
 	 * @return the requested value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a double value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a double value
 	 */
 	public double getDouble(Object object)
 	{
@@ -403,8 +384,7 @@ public class Property
 	 * @param object object whose value is to be updated
 	 * @param value the new value
 	 *
-	 * @throws java.lang.UnsupportedOperationException if the property is
-	 * not compatible with a double value
+	 * @throws java.lang.UnsupportedOperationException if the property is not compatible with a double value
 	 */
 	public void setDouble(Object object, double value)
 	{
@@ -454,6 +434,11 @@ public class Property
 	public String getDescription()
 	{
 		return lastAttribute.getDescription();
+	}
+
+	public String getTooltip()
+	{
+		return lastAttribute.getTooltip();
 	}
 
 	public String getPlaceholder()

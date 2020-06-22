@@ -7,7 +7,7 @@
 			<legend>
 				Pesquisar<g:icon type="search"/>
 			</legend>
-			<label style='width: 100%'>
+			<label>
 				Nome/Login/Sigla:
 				<span>
 					<g:text property='form' tabindex='1'/>
@@ -37,24 +37,20 @@
 			</div>
 		</g:when>
 		<g:otherwise>
-			<table>
-				<col style='width: 06%'/>
-				<col style='width: 24%'/>
-				<col style='width: 70%'/>
-
+			<table class="c1 c2">
 				<caption>
 					REGISTROS ENCONTRADOS: ${screen.page.size()}
 				</caption>
 
 				<thead>
 					<tr>
-						<th style='text-align: center'>
+						<th style='width: 64px'>
 							Tipo
 						</th>
-						<th style='text-align: center'>
+						<th style='width: 256px'>
 							Login/Sigla
 						</th>
-						<th style='text-align: left'>
+						<th>
 							Nome
 						</th>
 					</tr>
@@ -66,27 +62,27 @@
 					<g:iterator source="${screen.page}" index="indx" target="item">
 						<g:choose>
 							<g:when condition="${item.class.name eq 'gate.entity.User'}">
-								<tr data-target='_dialog' data-action='Gate?MODULE=${MODULE}&SCREEN=User&ACTION=Select&form.id=${item.id}' tabindex='3'>
-									<td  style='text-align: center'>
+								<tr data-target='_stack' data-action='Gate?MODULE=${MODULE}&SCREEN=User&ACTION=Select&form.id=${item.id}' tabindex='3'>
+									<td>
 										<g:icon type="${item}"/>
 									</td>
-									<td  style='text-align: center'>
+									<td>
 										<g:print value="${item.userID}"/>
 									</td>
-									<td style='text-align: left'>
+									<td>
 										<g:print value="${item.name}"/>
 									</td>
 								</tr>
 							</g:when>
 							<g:when condition="${item.class.name eq 'gate.entity.Role'}">
-								<tr data-target='_dialog' data-action='Gate?MODULE=${MODULE}&SCREEN=Role&ACTION=Select&form.id=${item.id}' tabindex='3'>
-									<td  style='text-align: center'>
+								<tr data-target='_stack' data-action='Gate?MODULE=${MODULE}&SCREEN=Role&ACTION=Select&form.id=${item.id}' tabindex='3'>
+									<td>
 										<g:icon type="${item}"/>
 									</td>
-									<td  style='text-align: center'>
+									<td>
 										<g:print value="${item.roleID}"/>
 									</td>
-									<td style='text-align: left'>
+									<td>
 										<g:print value="${item.name}"/>
 									</td>
 								</tr>
@@ -96,16 +92,14 @@
 				</tbody>
 			</table>
 
-			<g:if condition="${screen.page.size() == 1}">
-				<script>
-					<g:with name="target" value="${screen.page[0]}">
-					var dialog = new GDialog();
-					dialog.show();
-					dialog.caption = "Pesquisa";
-					dialog.target = "Gate?MODULE=${MODULE}&SCREEN=${target.class.simpleName}&ACTION=Select&form.id=${target.id}";
-					</g:with>
-				</script>
-			</g:if>
+			<script>
+				window.addEventListener("load", function ()
+				{
+					let actions = Array.from(document.querySelectorAll("tr[data-target]"));
+					if (actions.length === 1)
+						actions[0].click();
+				});
+			</script>
 		</g:otherwise>
 	</g:choose>
 </g:template>

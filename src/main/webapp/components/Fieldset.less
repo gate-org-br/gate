@@ -192,7 +192,6 @@ fieldset
 						   flex-grow: 0;
 						   flex-shrink: 0;
 						   flex-basis: 16px }
-
 			> a,
 			> button
 			{
@@ -233,7 +232,7 @@ fieldset
 	> div > ul
 	{
 		margin: 4px;
-		padding: 8px;
+		padding: 6px;
 		flex-grow: 1;
 		overflow: auto;
 		border-radius: 5px;
@@ -244,21 +243,19 @@ fieldset
 
 		li
 		{
-			&[data-ret] { cursor: pointer }
+			cursor: pointer;
 
 			> label
 			{
-				height: 36px;
+				height: 24px;
 				display: flex;
-				font-size: 16px;
+				font-size: 12px;
 				cursor: inherit;
 				align-items: center;
 				justify-content: flex-start;
 				&:hover { background-color: var(--hovered) }
 
 				> input { order: -1;
-					  width: 18px;
-					  height: 18px;
 					  cursor: inherit;
 					  margin-top: -1px}
 			}

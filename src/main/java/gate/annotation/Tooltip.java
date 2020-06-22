@@ -1,5 +1,6 @@
 package gate.annotation;
 
+import gate.util.Reflection;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,11 +29,16 @@ public @interface Tooltip
 		{
 			try
 			{
+				if (element instanceof String)
+				{
+					Optional<? extends AnnotatedElement> optional = Reflection.find((String) element);
+					return optional.isPresent() ? extract(optional.get()) : Optional.of((String) element);
+				}
 				if (element instanceof AnnotatedElement)
 				{
 					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Tooltip.class))
-						Optional.of(annotatedElement.getAnnotation(Tooltip.class).value());
+						return Optional.of(annotatedElement.getAnnotation(Tooltip.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyTooltip.class))
 						return extract(CopyTooltip.Extractor.extract(annotatedElement));
 					if (annotatedElement.isAnnotationPresent(CopyInfo.class))
@@ -47,7 +53,7 @@ public @interface Tooltip
 
 				return Optional.empty();
 
-			} catch (NoSuchFieldException ex)
+			} catch (NoSuchFieldException | ClassNotFoundException ex)
 			{
 				return Optional.empty();
 			}

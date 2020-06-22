@@ -50,6 +50,9 @@ window.addEventListener("click", event => {
 					.map(e => e.getAttribute("data-action"))
 					.filter(e => e);
 
+			link.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+			link.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
+
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
@@ -82,6 +85,9 @@ window.addEventListener("click", event => {
 
 			if (action.hasAttribute("data-confirm"))
 				button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+			button.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+			button.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
 
 			var form = action.closest("form");
 			form.appendChild(button);
