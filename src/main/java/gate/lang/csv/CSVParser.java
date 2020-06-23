@@ -147,7 +147,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		while (c == ' ' || c == '\t' || c == '\r')
 			read();
 
-		String field = c == delimiter
+		String field = isDelimiter()
 			? delimited() : normal();
 
 		while (c == ' ' || c == '\t' || c == '\r')
