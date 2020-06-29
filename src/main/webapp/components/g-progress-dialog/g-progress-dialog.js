@@ -2,52 +2,84 @@
 
 class GProgressDialog extends Picker
 {
-	constructor(process, options)
+	constructor()
 	{
-		super(options);
+		super();
+	}
 
-		var status = "Pending";
+	set target(target)
+	{
+		this.setAttribute("target", target);
+	}
+
+	get target()
+	{
+		return this.getAttribute("target") || "_self";
+	}
+
+	set process(process)
+	{
+		this.setAttribute("process", process);
+	}
+
+	get process()
+	{
+		return JSON.parse(this.getAttribute("process"));
+	}
+
+	connectedCallback()
+	{
 		this.classList.add("g-progress-dialog");
 
-		this.caption = options && options.title ? options.title : "Progresso";
+		this.caption = this.caption || "Progresso";
 
-		var progress = this.body.appendChild(document.createElement("g-progress-status"));
-		progress.setAttribute("process", process);
+		let progress = new GProgressStatus();
+		progress.process = this.process;
+		this.body.appendChild(progress);
 
 		this.commit.innerText = "Processando";
-		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b')
+		this.commit.setAttribute("target", this.target);
+		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b');
 
-		this.addEventListener("hide", function (event)
+		this.commit.onclick = event =>
 		{
-			if (status === "Pending"
-				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
-				event.preventDefault();
-		});
-
-		this.commit.onclick = () => this.hide();
-
-		progress.addEventListener("commited", () =>
-		{
-			status = "Commited";
-			this.commit.innerHTML = "OK";
-			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
-		});
-
-		progress.addEventListener("canceled", () =>
-		{
-			status = "Canceled";
-			this.commit.innerHTML = "OK";
-			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
-		});
-
-		progress.addEventListener("redirected", url =>
-		{
-			this.addEventListener("hide", event =>
-			{
+			event.preventDefault();
+			event.stopPropagation();
+			if (confirm("Tem certeza de que deseja fechar o progresso?"))
 				this.hide();
-				event.preventDefault();
-				window.location.href = url.detail;
-			});
+		};
+
+		window.addEventListener("ProcessCommited", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+
+			this.commit.innerHTML = "Ok";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
+			this.commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+		});
+
+		window.addEventListener("ProcessCanceled", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = "#660000";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
+			this.commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+		});
+
+		window.addEventListener("ProcessRedirect", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+			this.commit.onclick = null;
+			this.commit.innerHTML = "Exibir";
+			this.commit.href = event.detail.url;
+			this.commit.addEventListener("click", () => this.hide());
 		});
 	}
 }

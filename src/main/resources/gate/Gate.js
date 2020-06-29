@@ -1370,6 +1370,77 @@ if (!Array.prototype.flatMap)
 	}
 	self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
+class GProcess
+{
+	constructor(id)
+	{
+		this._private = {id: id};
+		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		let ws = new WebSocket(protocol + location.host + "/" +
+			location.pathname.split("/")[1] + "/Progress/" + id);
+
+		ws.onerror = e => window.dispatchEvent(new CustomEvent('ProcessError',
+				{detail: {process: id, text: e.data | "Conexão perdida com o servidor"}}));
+
+		ws.onclose = e =>
+		{
+			if (e.code !== 1000)
+				window.dispatchEvent(new CustomEvent('ProcessError',
+					{detail: {process: id, text: e.reason | "Conexão perdida com o servidor"}}));
+		};
+
+		ws.onmessage = (event) =>
+		{
+			event = JSON.parse(event.data);
+
+			event.toString = function ()
+			{
+				if (this.done && this.done !== -1)
+					if (this.todo && this.todo !== -1)
+						return this.done + "/" + this.todo;
+					else
+						return this.done.toString();
+				else
+					return "...";
+			};
+
+			switch (event.event)
+			{
+				case "Progress":
+					switch (event.status)
+					{
+						case "CREATED":
+							window.dispatchEvent(new CustomEvent('ProcessPending',
+								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
+							break;
+						case "PENDING":
+							window.dispatchEvent(new CustomEvent('ProcessPending',
+								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
+							break;
+						case "COMMITED":
+							window.dispatchEvent(new CustomEvent('ProcessCommited',
+								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
+							break;
+						case "CANCELED":
+							window.dispatchEvent(new CustomEvent('ProcessCanceled',
+								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
+							break;
+					}
+					break;
+
+				case "Redirect":
+					window.dispatchEvent(new CustomEvent('ProcessRedirect',
+						{detail: {process: id, url: event.url}}));
+					break;
+			}
+		};
+	}
+
+	get id()
+	{
+		return this._private.id;
+	}
+}
 /* global */
 
 class GSelection
@@ -2893,18 +2964,26 @@ window.addEventListener("click", function (event)
 				event.stopPropagation();
 				new URL(link.href).get(process =>
 				{
-					process = JSON.parse(process);
-					new GProgressDialog(process,
-						{title: link.getAttribute("title")}).show();
+					link.setAttribute("data-process", process);
+					process = new GProcess(JSON.parse(process));
+					let status = new GProgressDialog();
+					status.process = process.id;
+					status.caption = link.getAttribute("title") || "Progresso";
+					status.target = link.getAttribute("data-redirect") || "_self";
+					status.show();
 				});
 				break;
 			case "_progress-window":
 				event.preventDefault();
 				event.stopPropagation();
-				new URL(link.href).get(function (process)
+				new URL(link.href).get(process =>
 				{
-					process = JSON.parse(process);
-					document.body.appendChild(new GProgressWindow(process));
+					link.setAttribute("data-process", process);
+					process = new GProcess(JSON.parse(process));
+					let status = new GProgressWindow();
+					status.process = process.id;
+					status.target = link.getAttribute("data-redirect") || "_self";
+					status.show();
 				});
 				break;
 			case "_report":
@@ -3165,14 +3244,19 @@ window.addEventListener("click", function (event)
 				if (button.form.reportValidity())
 				{
 					button.disabled = true;
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), process =>
-						{
-							process = JSON.parse(process);
-							new GProgressDialog(process,
-								{title: button.getAttribute("title")}).show();
-							button.disabled = false;
-						});
+
+					new URL(button.getAttribute("formaction")).post(new FormData(button.form), process =>
+					{
+						button.setAttribute("data-process", process);
+						process = new GProcess(JSON.parse(process));
+						let status = new GProgressDialog();
+						status.process = process.id;
+						status.caption = button.getAttribute("title") || "Progresso";
+						status.target = button.getAttribute("data-redirect") || "_self";
+						status.show();
+
+						button.disabled = false;
+					});
 				}
 
 				break;
@@ -3183,14 +3267,20 @@ window.addEventListener("click", function (event)
 
 				if (button.form.reportValidity())
 				{
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), function (process)
-						{
-							process = JSON.parse(process);
-							document.body.appendChild(new GProgressWindow(process));
-						});
-				}
+					button.disabled = true;
 
+					new URL(button.getAttribute("formaction")).post(new FormData(button.form), process =>
+					{
+						button.setAttribute("data-process", process);
+						process = new GProcess(JSON.parse(process));
+						let status = new GProgressWindow();
+						status.process = process.id;
+						status.target = button.getAttribute("data-redirect") || "_self";
+						status.show();
+
+						button.disabled = false;
+					});
+				}
 				break;
 
 			case "_report":
@@ -4709,16 +4799,18 @@ class Picker extends GWindow
 	{
 		super();
 		this.classList.add("g-picker");
-		let close = document.createElement("a");
-		close.href = "#";
-		close.onclick = () => this.hide();
-		close.innerHTML = "<i>&#x1011</i>";
-		this.head.appendChild(close);
 	}
 
-	connectedCallback()
+	get close()
 	{
-		this.classList.add("g-picker");
+		if (!this._private.close)
+		{
+			this._private.close = this.head.appendChild(document.createElement("a"));
+			this._private.close.href = "#";
+			this._private.close.onclick = () => this.hide();
+			this._private.close.innerHTML = "<i>&#x1011</i>";
+		}
+		return this._private.close;
 	}
 
 	get commit()
@@ -4741,6 +4833,7 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-date-picker");
 		this.caption = "Selecione uma data";
 		this._private.date = this.body.appendChild(new DateSelector());
@@ -4788,6 +4881,7 @@ class TimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-time-picker");
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new TimeSelector());
@@ -4840,6 +4934,7 @@ class MonthPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-month-picker");
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new MonthSelector());
@@ -4892,6 +4987,7 @@ class DateTimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione uma data e hora";
 		var selector = this.body.appendChild(new DateTimeSelector());
 		this.commit.innerText = selector.selection;
@@ -4941,6 +5037,7 @@ class DateIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateIntervalSelector());
 		this.commit.innerText = selector.selection;
@@ -4990,6 +5087,7 @@ class TimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		this.classList.add("g-time-interval-picker");
 		var selector = this.body.appendChild(new TimeIntervalSelector());
@@ -5040,6 +5138,7 @@ class MonthIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new MonthIntervalSelector());
 		this.commit.innerText = selector.selection;
@@ -5089,6 +5188,7 @@ class DateTimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateTimeIntervalSelector());
 		this.commit.innerText = selector.selection;
@@ -5138,7 +5238,7 @@ class IconPicker extends Picker
 	constructor()
 	{
 		super();
-
+		this.close;
 		this.classList.add("g-picker");
 		this.head.appendChild(document.createTextNode("Selecione um ícone"));
 		var selector = this.body.appendChild(document.createElement("g-icon-selector"));
@@ -5185,6 +5285,7 @@ class ActionPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-picker");
 	}
 
@@ -6546,69 +6647,68 @@ function autofocus(d)
 window.addEventListener("load", () => autofocus(document));
 /* global Colorizer, Objects */
 
-window.addEventListener("load", function ()
+class TableSorter
 {
-	Array.from(document.getElementsByTagName("tbody")).forEach(function (element)
+	static sort(parent, index, mode)
 	{
-		element.sort = function (index, mode)
+		var children = Array.from(parent.children);
+		children.sort(function (e1, e2)
 		{
-			var children = Array.from(this.children);
-			children.sort(function (e1, e2)
-			{
-				e1 = e1.children[index];
-				var s1 = e1.innerHTML.trim();
-				if (e1.hasAttribute("data-value"))
-					s1 = e1.getAttribute("data-value").trim() ?
-						Number(e1.getAttribute("data-value")) : null;
+			e1 = e1.children[index];
+			var s1 = e1.innerHTML.trim();
+			if (e1.hasAttribute("data-value"))
+				s1 = e1.getAttribute("data-value").trim() ?
+					Number(e1.getAttribute("data-value")) : null;
 
-				e2 = e2.children[index];
-				var s2 = e2.innerHTML.trim();
-				if (e2.hasAttribute("data-value"))
-					s2 = e2.getAttribute("data-value").trim() ?
-						Number(e2.getAttribute("data-value")) : null;
+			e2 = e2.children[index];
+			var s2 = e2.innerHTML.trim();
+			if (e2.hasAttribute("data-value"))
+				s2 = e2.getAttribute("data-value").trim() ?
+					Number(e2.getAttribute("data-value")) : null;
 
-				if (mode === "U")
-					return Objects.compare(s1, s2);
-				else if (mode === "D")
-					return Objects.compare(s2, s1);
-			});
-			for (var i = 0; i < children.length; i++)
-				this.appendChild(children[i]);
-		};
-	});
-
-	Array.from(document.querySelectorAll("th[data-sortable]")).forEach(function (link)
-	{
-		link.setAttribute("data-sortable", "N");
-		link.addEventListener("click", function ()
-		{
-			switch (this.getAttribute("data-sortable"))
-			{
-				case "N":
-					Array.from(this.parentNode.children)
-						.filter(e => e.hasAttribute("data-sortable"))
-						.forEach(e => e.setAttribute("data-sortable", "N"));
-					this.setAttribute("data-sortable", "U");
-					break;
-				case "U":
-					this.setAttribute("data-sortable", "D");
-					break;
-				case "D":
-					this.setAttribute("data-sortable", "U");
-					break;
-			}
-
-			var table = this.closest("TABLE");
-			Array.from(table.children)
-				.filter(e => e.tagName.toUpperCase() === "TBODY")
-				.forEach(e => e.sort(Array.prototype.indexOf
-						.call(this.parentNode.children, this),
-						this.getAttribute("data-sortable")));
-			Colorizer.colorize(table);
+			if (mode === "U")
+				return Objects.compare(s1, s2);
+			else if (mode === "D")
+				return Objects.compare(s2, s1);
 		});
-	});
-});
+		for (var i = 0; i < children.length; i++)
+			parent.appendChild(children[i]);
+	}
+}
 
+window.addEventListener("click", function (event)
+{
+	let link = event.target.closest("th");
+	if (link && link.hasAttribute("data-sortable"))
+	{
+		if (!link.getAttribute("data-sortable"))
+			link.setAttribute("data-sortable", "N");
+
+		switch (link.getAttribute("data-sortable"))
+		{
+			case "N":
+				Array.from(link.parentNode.children)
+					.filter(e => e.hasAttribute("data-sortable"))
+					.forEach(e => e.setAttribute("data-sortable", "N"));
+				link.setAttribute("data-sortable", "U");
+				break;
+			case "U":
+				link.setAttribute("data-sortable", "D");
+				break;
+			case "D":
+				link.setAttribute("data-sortable", "U");
+				break;
+		}
+
+		var table = link.closest("TABLE");
+		Array.from(table.children)
+			.filter(e => e.tagName.toUpperCase() === "TBODY")
+			.forEach(e => TableSorter.sort(e, Array.prototype.indexOf
+					.call(link.parentNode.children, link),
+					link.getAttribute("data-sortable")));
+		Colorizer.colorize(table);
+	}
+});
 
 /* global customElements */
 
@@ -6682,21 +6782,23 @@ Message.show = function (status, timeout)
 
 class GProgressStatus extends HTMLElement
 {
-	constructor(process)
+	constructor()
 	{
 		super();
-		if (process)
-			this.setAttribute("process", process);
+	}
+
+	set process(process)
+	{
+		this.setAttribute("process", process);
+	}
+
+	get process()
+	{
+		return JSON.parse(this.getAttribute("process"));
 	}
 
 	connectedCallback()
 	{
-		var colors = new Object();
-		colors["PENDING"] = '#000000';
-		colors["COMMITED"] = '#006600';
-		colors["CANCELED"] = '#660000';
-		colors["CLOSED"] = '#666666';
-
 		var title = this.appendChild(document.createElement("label"));
 		title.style.fontSize = "20px";
 		title.style.flexBasis = "40px";
@@ -6743,103 +6845,94 @@ class GProgressStatus extends HTMLElement
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
 
-		function log(message)
+		function log(event)
 		{
-			var log = logger.firstElementChild ?
-				logger.insertBefore(document.createElement("li"),
-					logger.firstElementChild)
-				: logger.appendChild(document.createElement("li"));
-			log.innerHTML = message;
-			log.style.height = "16px";
-			log.style.display = "flex";
-			log.style.alignItems = "center";
+			if (event.detail.progress)
+				counter.innerHTML = event.detail.progress;
+
+			if (event.detail.text !== title.innerHTML)
+			{
+				var log = logger.firstElementChild ?
+					logger.insertBefore(document.createElement("li"),
+						logger.firstElementChild)
+					: logger.appendChild(document.createElement("li"));
+
+				log.style.height = "16px";
+				log.style.display = "flex";
+				log.style.alignItems = "center";
+				log.innerHTML = event.detail.text;
+
+				title.innerHTML = event.detail.text;
+			}
+
+			if (event.todo !== -1)
+			{
+				progress.max = event.detail.todo;
+				if (event.done !== -1)
+					progress.value = event.detail.done;
+			}
 		}
 
-		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
-		var ws = new WebSocket(protocol + location.host + "/" + location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
-
-		ws.onerror = e => log(e.data);
-
-		ws.onclose = e =>
+		window.addEventListener("ProcessPending", event =>
 		{
-			if (e.code !== 1000)
-			{
-				title.style.color = colors["CLOSED"];
-				clock.style.color = colors["CLOSED"];
-				counter.style.color = colors["CLOSED"];
-				log(e.reason ? e.reason : "Conexão perdida com o servidor");
-			}
-		};
+			if (event.detail.process !== this.process)
+				return;
 
-		ws.onmessage = (event) =>
+			log(event);
+			title.style.color = '#000000';
+			clock.style.color = '#000000';
+			counter.style.color = '#000000';
+		});
+
+
+		window.addEventListener("ProcessCommited", event =>
 		{
-			event = JSON.parse(event.data);
+			if (event.detail.process !== this.process)
+				return;
 
-			event.toString = function ()
-			{
-				if (this.done && this.done !== -1)
-					if (this.todo && this.todo !== -1)
-						return this.done + "/" + this.todo;
-					else
-						return this.done.toString();
-				else
-					return "...";
-			};
+			log(event);
 
-			switch (event.event)
-			{
-				case "Progress":
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 100;
 
-					if (event.text !== title.innerHTML)
-					{
-						log(event.text);
-						title.innerHTML = event.text;
-					}
+			title.style.color = '#006600';
+			clock.style.color = '#006600';
+			counter.style.color = '#006600';
 
-					counter.innerHTML = event.toString();
+			clock.setAttribute("paused", "paused");
+		});
 
-					title.style.color = colors[event.status];
-					clock.style.color = colors[event.status];
-					counter.style.color = colors[event.status];
+		window.addEventListener("ProcessCanceled", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
 
-					switch (event.status)
-					{
-						case "COMMITED":
-							if (!progress.max)
-								progress.max = 100;
-							if (!progress.value)
-								progress.value = 100;
+			log(event);
 
-							this.dispatchEvent(new CustomEvent('commited'));
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 0;
 
-							clock.setAttribute("paused", "paused");
-							break;
-						case "CANCELED":
-							if (!progress.max)
-								progress.max = 100;
-							if (!progress.value)
-								progress.value = 0;
+			title.style.color = '#660000';
+			clock.style.color = '#660000';
+			counter.style.color = '#660000';
 
-							this.dispatchEvent(new CustomEvent('canceled'));
+			clock.setAttribute("paused", "paused");
+		});
 
-							clock.setAttribute("paused", "paused");
-							break;
-					}
+		window.addEventListener("ProcessError", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
 
-					if (event.todo !== -1)
-					{
-						progress.max = event.todo;
-						if (event.done !== -1)
-							progress.value = event.done;
-					}
-
-					break;
-
-				case "Redirect":
-					this.dispatchEvent(new CustomEvent('redirected', {detail: event.url}));
-					break;
-			}
-		};
+			log(event);
+			title.style.color = '#666666';
+			clock.style.color = '#666666';
+			counter.style.color = '#666666';
+		});
 	}
 }
 
@@ -6851,52 +6944,84 @@ customElements.define('g-progress-status', GProgressStatus);
 
 class GProgressDialog extends Picker
 {
-	constructor(process, options)
+	constructor()
 	{
-		super(options);
+		super();
+	}
 
-		var status = "Pending";
+	set target(target)
+	{
+		this.setAttribute("target", target);
+	}
+
+	get target()
+	{
+		return this.getAttribute("target") || "_self";
+	}
+
+	set process(process)
+	{
+		this.setAttribute("process", process);
+	}
+
+	get process()
+	{
+		return JSON.parse(this.getAttribute("process"));
+	}
+
+	connectedCallback()
+	{
 		this.classList.add("g-progress-dialog");
 
-		this.caption = options && options.title ? options.title : "Progresso";
+		this.caption = this.caption || "Progresso";
 
-		var progress = this.body.appendChild(document.createElement("g-progress-status"));
-		progress.setAttribute("process", process);
+		let progress = new GProgressStatus();
+		progress.process = this.process;
+		this.body.appendChild(progress);
 
 		this.commit.innerText = "Processando";
-		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b')
+		this.commit.setAttribute("target", this.target);
+		this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b');
 
-		this.addEventListener("hide", function (event)
+		this.commit.onclick = event =>
 		{
-			if (status === "Pending"
-				&& !confirm("Tem certeza de que deseja fechar o progresso?"))
-				event.preventDefault();
-		});
-
-		this.commit.onclick = () => this.hide();
-
-		progress.addEventListener("commited", () =>
-		{
-			status = "Commited";
-			this.commit.innerHTML = "OK";
-			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
-		});
-
-		progress.addEventListener("canceled", () =>
-		{
-			status = "Canceled";
-			this.commit.innerHTML = "OK";
-			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
-		});
-
-		progress.addEventListener("redirected", url =>
-		{
-			this.addEventListener("hide", event =>
-			{
+			event.preventDefault();
+			event.stopPropagation();
+			if (confirm("Tem certeza de que deseja fechar o progresso?"))
 				this.hide();
-				event.preventDefault();
-				window.location.href = url.detail;
-			});
+		};
+
+		window.addEventListener("ProcessCommited", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+
+			this.commit.innerHTML = "Ok";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
+			this.commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+		});
+
+		window.addEventListener("ProcessCanceled", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+			this.commit.innerHTML = "OK";
+			this.commit.style.color = "#660000";
+			this.commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
+			this.commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+		});
+
+		window.addEventListener("ProcessRedirect", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+			this.commit.onclick = null;
+			this.commit.innerHTML = "Exibir";
+			this.commit.href = event.detail.url;
+			this.commit.addEventListener("click", () => this.hide());
 		});
 	}
 }
@@ -6906,60 +7031,101 @@ customElements.define('g-progress-dialog', GProgressDialog);
 
 class GProgressWindow extends HTMLElement
 {
-	constructor(process)
+	hide()
 	{
-		super();
-		Array.from(document.body.children)
-			.forEach(e => e.style.display = "none");
+		Array.from(document.body.children).forEach(e => e.style.display = "");
+		document.body.removeChild(this);
+	}
+
+	show()
+	{
+		if (!this.process)
+			throw new Error("Process not defined");
+		Array.from(document.body.children).forEach(e => e.style.display = "none");
 		if (window.frameElement)
 			window.frameElement.height = "0";
-		if (process)
-			this.setAttribute("process", process);
+		document.body.appendChild(this);
+	}
+
+	set target(target)
+	{
+		this.setAttribute("target", target);
+	}
+
+	get target()
+	{
+		return this.getAttribute("target") || "_self";
+	}
+
+	set process(process)
+	{
+		this.setAttribute("process", process);
+	}
+
+	get process()
+	{
+		return JSON.parse(this.getAttribute("process"));
 	}
 
 	connectedCallback()
 	{
-		var body = this.appendChild(document.createElement("div"));
+		let body = this.appendChild(document.createElement("div"));
 
-		var progress = body.appendChild(new GProgressStatus(this.getAttribute("process")));
+		let progress = new GProgressStatus();
+		progress.process = this.process;
+		body.appendChild(progress);
 
-		var coolbar = body.appendChild(document.createElement("div"));
+		let coolbar = body.appendChild(document.createElement("div"));
 		coolbar.className = "Coolbar";
 
-		var action = coolbar.appendChild(document.createElement("a"));
+		let action = coolbar.appendChild(document.createElement("a"));
 		action.appendChild(document.createTextNode("Processando"));
+		action.setAttribute("target", this.target);
 		action.innerHTML = "Processando<i>&#X2017;</i>";
 		action.href = "#";
 
-		action.onclick = () =>
+		action.onclick = event =>
 		{
+			event.preventDefault();
+			event.stopPropagation();
 			if (confirm("Tem certeza de que deseja fechar o progresso?"))
-			{
-				Array.from(document.body.children)
-					.forEach(e => e.style.display = "");
-				document.body.removeChild(this);
-			}
+				this.hide();
 		};
 
-		progress.addEventListener("commited", () =>
+		window.addEventListener("ProcessCommited", event =>
 		{
-			action.innerHTML = "Ok<i>&#X1000;</i>";
+			if (event.detail.process !== this.process)
+				return;
+
 			action.style.color = "#006600";
+			action.innerHTML = "Ok<i>&#X1000;</i>";
+			action.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
-		progress.addEventListener("canceled", () =>
+		window.addEventListener("ProcessCanceled", event =>
 		{
+			if (event.detail.process !== this.process)
+				return;
+
 			action.innerHTML = "OK";
 			action.style.color = "#660000";
+			action.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
-		progress.addEventListener("redirected", url =>
-			action.onclick = () => window.location.href = url.detail);
+		window.addEventListener("ProcessRedirect", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+
+			action.onclick = null;
+			action.href = event.detail.url;
+			action.innerHTML = "Exibir<i>&#X1000;</i>";
+			action.addEventListener("click", () => this.hide());
+		});
 	}
 }
 
-window.addEventListener("load", () =>
-	customElements.define('g-progress-window', GProgressWindow));
+customElements.define('g-progress-window', GProgressWindow);
 /* global Message, DataFormat, customElements */
 
 class GDownloadStatus extends HTMLElement
@@ -7154,8 +7320,8 @@ class GDataFilter
 	static filter(input)
 	{
 		let table = input.getAttribute("data-filter")
-			? document.getElementById(event.target.getAttribute("data-filter"))
-			: event.target.closest("TABLE");
+			? document.getElementById(input.getAttribute("data-filter"))
+			: input.closest("TABLE");
 		Array.from(table.children)
 			.filter(e => e.tagName === "TBODY")
 			.flatMap(e => Array.from(e.children))

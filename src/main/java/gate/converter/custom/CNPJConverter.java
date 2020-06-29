@@ -65,7 +65,7 @@ public class CNPJConverter implements Converter
 			{
 				try
 				{
-					return new CNPJ(string);
+					return CNPJ.of(string);
 				} catch (Exception e)
 				{
 					throw new ConversionException(string.concat(" não é um CNPJ válido."));
@@ -79,14 +79,14 @@ public class CNPJConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : new CNPJ(value);
+		return rs.wasNull() ? null : CNPJ.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : new CNPJ(value);
+		return rs.wasNull() ? null : CNPJ.of(value);
 	}
 
 	@Override

@@ -1,8 +1,6 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import gate.error.ConversionException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +10,18 @@ import java.util.List;
 public class ObjectListFetcher implements Fetcher<List<Object>>
 {
 
+	private final List<Object> result = new ArrayList<>();
+
 	@Override
-	public List<Object> fetch(Cursor rs)
+	public List<Object> fetch(Cursor cursor)
 	{
-		List<Object> results = new ArrayList<>();
-		while (rs.next())
-			results.add(rs.getValue(1));
-		return results;
+		while (cursor.next())
+			result.add(cursor.getValue(1));
+		return result;
+	}
+
+	public List<Object> getResult()
+	{
+		return result;
 	}
 }

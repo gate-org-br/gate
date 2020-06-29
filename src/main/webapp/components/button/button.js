@@ -210,14 +210,19 @@ window.addEventListener("click", function (event)
 				if (button.form.reportValidity())
 				{
 					button.disabled = true;
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), process =>
-						{
-							process = JSON.parse(process);
-							new GProgressDialog(process,
-								{title: button.getAttribute("title")}).show();
-							button.disabled = false;
-						});
+
+					new URL(button.getAttribute("formaction")).post(new FormData(button.form), process =>
+					{
+						button.setAttribute("data-process", process);
+						process = new GProcess(JSON.parse(process));
+						let status = new GProgressDialog();
+						status.process = process.id;
+						status.caption = button.getAttribute("title") || "Progresso";
+						status.target = button.getAttribute("data-redirect") || "_self";
+						status.show();
+
+						button.disabled = false;
+					});
 				}
 
 				break;
@@ -228,14 +233,20 @@ window.addEventListener("click", function (event)
 
 				if (button.form.reportValidity())
 				{
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), function (process)
-						{
-							process = JSON.parse(process);
-							document.body.appendChild(new GProgressWindow(process));
-						});
-				}
+					button.disabled = true;
 
+					new URL(button.getAttribute("formaction")).post(new FormData(button.form), process =>
+					{
+						button.setAttribute("data-process", process);
+						process = new GProcess(JSON.parse(process));
+						let status = new GProgressWindow();
+						status.process = process.id;
+						status.target = button.getAttribute("data-redirect") || "_self";
+						status.show();
+
+						button.disabled = false;
+					});
+				}
 				break;
 
 			case "_report":

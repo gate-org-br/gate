@@ -5,6 +5,7 @@ class TimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-time-picker");
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new TimeSelector());

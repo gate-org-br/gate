@@ -5,6 +5,7 @@ class ActionPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-picker");
 	}
 

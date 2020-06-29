@@ -5,6 +5,7 @@ class MonthPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-month-picker");
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new MonthSelector());

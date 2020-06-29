@@ -5,6 +5,7 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.classList.add("g-date-picker");
 		this.caption = "Selecione uma data";
 		this._private.date = this.body.appendChild(new DateSelector());

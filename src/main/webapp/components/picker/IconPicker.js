@@ -5,7 +5,7 @@ class IconPicker extends Picker
 	constructor()
 	{
 		super();
-
+		this.close;
 		this.classList.add("g-picker");
 		this.head.appendChild(document.createTextNode("Selecione um ícone"));
 		var selector = this.body.appendChild(document.createElement("g-icon-selector"));

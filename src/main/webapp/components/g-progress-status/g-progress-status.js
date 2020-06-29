@@ -2,21 +2,23 @@
 
 class GProgressStatus extends HTMLElement
 {
-	constructor(process)
+	constructor()
 	{
 		super();
-		if (process)
-			this.setAttribute("process", process);
+	}
+
+	set process(process)
+	{
+		this.setAttribute("process", process);
+	}
+
+	get process()
+	{
+		return JSON.parse(this.getAttribute("process"));
 	}
 
 	connectedCallback()
 	{
-		var colors = new Object();
-		colors["PENDING"] = '#000000';
-		colors["COMMITED"] = '#006600';
-		colors["CANCELED"] = '#660000';
-		colors["CLOSED"] = '#666666';
-
 		var title = this.appendChild(document.createElement("label"));
 		title.style.fontSize = "20px";
 		title.style.flexBasis = "40px";
@@ -63,103 +65,94 @@ class GProgressStatus extends HTMLElement
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
 
-		function log(message)
+		function log(event)
 		{
-			var log = logger.firstElementChild ?
-				logger.insertBefore(document.createElement("li"),
-					logger.firstElementChild)
-				: logger.appendChild(document.createElement("li"));
-			log.innerHTML = message;
-			log.style.height = "16px";
-			log.style.display = "flex";
-			log.style.alignItems = "center";
+			if (event.detail.progress)
+				counter.innerHTML = event.detail.progress;
+
+			if (event.detail.text !== title.innerHTML)
+			{
+				var log = logger.firstElementChild ?
+					logger.insertBefore(document.createElement("li"),
+						logger.firstElementChild)
+					: logger.appendChild(document.createElement("li"));
+
+				log.style.height = "16px";
+				log.style.display = "flex";
+				log.style.alignItems = "center";
+				log.innerHTML = event.detail.text;
+
+				title.innerHTML = event.detail.text;
+			}
+
+			if (event.todo !== -1)
+			{
+				progress.max = event.detail.todo;
+				if (event.done !== -1)
+					progress.value = event.detail.done;
+			}
 		}
 
-		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
-		var ws = new WebSocket(protocol + location.host + "/" + location.pathname.split("/")[1] + "/Progress/" + this.getAttribute('process'));
-
-		ws.onerror = e => log(e.data);
-
-		ws.onclose = e =>
+		window.addEventListener("ProcessPending", event =>
 		{
-			if (e.code !== 1000)
-			{
-				title.style.color = colors["CLOSED"];
-				clock.style.color = colors["CLOSED"];
-				counter.style.color = colors["CLOSED"];
-				log(e.reason ? e.reason : "Conexão perdida com o servidor");
-			}
-		};
+			if (event.detail.process !== this.process)
+				return;
 
-		ws.onmessage = (event) =>
+			log(event);
+			title.style.color = '#000000';
+			clock.style.color = '#000000';
+			counter.style.color = '#000000';
+		});
+
+
+		window.addEventListener("ProcessCommited", event =>
 		{
-			event = JSON.parse(event.data);
+			if (event.detail.process !== this.process)
+				return;
 
-			event.toString = function ()
-			{
-				if (this.done && this.done !== -1)
-					if (this.todo && this.todo !== -1)
-						return this.done + "/" + this.todo;
-					else
-						return this.done.toString();
-				else
-					return "...";
-			};
+			log(event);
 
-			switch (event.event)
-			{
-				case "Progress":
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 100;
 
-					if (event.text !== title.innerHTML)
-					{
-						log(event.text);
-						title.innerHTML = event.text;
-					}
+			title.style.color = '#006600';
+			clock.style.color = '#006600';
+			counter.style.color = '#006600';
 
-					counter.innerHTML = event.toString();
+			clock.setAttribute("paused", "paused");
+		});
 
-					title.style.color = colors[event.status];
-					clock.style.color = colors[event.status];
-					counter.style.color = colors[event.status];
+		window.addEventListener("ProcessCanceled", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
 
-					switch (event.status)
-					{
-						case "COMMITED":
-							if (!progress.max)
-								progress.max = 100;
-							if (!progress.value)
-								progress.value = 100;
+			log(event);
 
-							this.dispatchEvent(new CustomEvent('commited'));
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 0;
 
-							clock.setAttribute("paused", "paused");
-							break;
-						case "CANCELED":
-							if (!progress.max)
-								progress.max = 100;
-							if (!progress.value)
-								progress.value = 0;
+			title.style.color = '#660000';
+			clock.style.color = '#660000';
+			counter.style.color = '#660000';
 
-							this.dispatchEvent(new CustomEvent('canceled'));
+			clock.setAttribute("paused", "paused");
+		});
 
-							clock.setAttribute("paused", "paused");
-							break;
-					}
+		window.addEventListener("ProcessError", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
 
-					if (event.todo !== -1)
-					{
-						progress.max = event.todo;
-						if (event.done !== -1)
-							progress.value = event.done;
-					}
-
-					break;
-
-				case "Redirect":
-					this.dispatchEvent(new CustomEvent('redirected', {detail: event.url}));
-					break;
-			}
-		};
+			log(event);
+			title.style.color = '#666666';
+			clock.style.color = '#666666';
+			counter.style.color = '#666666';
+		});
 	}
 }
 

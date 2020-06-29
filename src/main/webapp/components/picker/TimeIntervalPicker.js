@@ -5,6 +5,7 @@ class TimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		this.classList.add("g-time-interval-picker");
 		var selector = this.body.appendChild(new TimeIntervalSelector());

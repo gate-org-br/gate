@@ -3,6 +3,7 @@ package gate;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
+import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,7 @@ public class Progress
 	static final ConcurrentMap<Integer, Progress> INSTANCES = new ConcurrentHashMap<>();
 
 	private String url;
+	private JsonElement data;
 	private int todo = UNKNOWN;
 	private int done = UNKNOWN;
 	private String text = "Aguarde";
@@ -69,12 +71,19 @@ public class Progress
 		sessions.remove(session);
 	}
 
-	public void update(Status status, int todo, int done, String text)
+	public void update(Status status, int todo,
+		int done, String text, JsonElement data)
 	{
 		this.todo = todo;
 		this.done = done;
 		this.text = text;
 		this.status = status;
+		this.data = data;
+	}
+
+	public void update(Status status, int todo, int done, String text)
+	{
+		update(status, todo, done, text, null);
 	}
 
 	public void dispatch(String event)
@@ -91,7 +100,9 @@ public class Progress
 			.setString("text", text)
 			.setInt("process", process)
 			.setString("event", "Progress")
-			.setString("status", status.name()).toString();
+			.setString("status", status.name())
+			.set("data", data)
+			.toString();
 	}
 
 	static void bind(Progress progress)
@@ -178,7 +189,8 @@ public class Progress
 	/**
 	 * Increments the progress of the current task.
 	 *
-	 * @param step number of records to be processed before each notification
+	 * @param step number of records to be processed before each
+	 * notification
 	 */
 	public static void updateForEach(int step)
 	{
@@ -275,6 +287,25 @@ public class Progress
 			if (!Status.PENDING.equals(progress.status))
 				throw new IllegalStateException("Attempt to commit non pending task");
 			progress.update(Status.COMMITED, progress.todo, progress.done, text);
+			progress.dispatch(progress.toString());
+		}
+	}
+
+	/**
+	 * Conclude the task being executed
+	 *
+	 * @param text message indicating success
+	 * @param data result of the operation
+	 */
+	public static void commit(String text, JsonElement data)
+	{
+		Objects.requireNonNull(text);
+		Progress progress = CURRENT.get();
+		if (progress != null)
+		{
+			if (!Status.PENDING.equals(progress.status))
+				throw new IllegalStateException("Attempt to commit non pending task");
+			progress.update(Status.COMMITED, progress.todo, progress.done, text, data);
 			progress.dispatch(progress.toString());
 		}
 	}

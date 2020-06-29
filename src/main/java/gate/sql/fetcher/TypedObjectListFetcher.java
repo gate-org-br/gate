@@ -8,6 +8,7 @@ public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 {
 
 	private final Class<T> type;
+	private final List<T> result = new ArrayList<>();
 
 	public TypedObjectListFetcher(Class<T> type)
 	{
@@ -15,11 +16,15 @@ public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	@Override
-	public List<T> fetch(Cursor rs)
+	public List<T> fetch(Cursor cursor)
 	{
-		List<T> result = new ArrayList<>();
-		while (rs.next())
-			result.add(rs.getValue(type, 1));
+		while (cursor.next())
+			result.add(cursor.getValue(type, 1));
+		return result;
+	}
+
+	public List<T> getResult()
+	{
 		return result;
 	}
 }
