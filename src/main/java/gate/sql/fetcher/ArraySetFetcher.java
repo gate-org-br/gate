@@ -1,26 +1,26 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
- * Fetches a cursor as a list of java arrays.
+ * Fetches a cursor as a set of java arrays.
  */
-public class ArrayListFetcher implements Fetcher<List<Object[]>>
+public class ArraySetFetcher implements Fetcher<Set<Object[]>>
 {
 
-	private final List<Object[]> result = new ArrayList<>();
+	private final Set<Object[]> result = new LinkedHashSet<>();
 
 	/**
-	 * Fetches each row as a list of java arrays of Objects.
+	 * Fetches each row as a set of java arrays of Objects.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return each row fetched as a list of java arrays of Objects
+	 * @return each row fetched as a set of java arrays of Objects
 	 */
 	@Override
-	public List<Object[]> fetch(Cursor cursor)
+	public Set<Object[]> fetch(Cursor cursor)
 	{
 		Class[] types = cursor.getColumnTypes();
 		while (cursor.next())
@@ -38,7 +38,7 @@ public class ArrayListFetcher implements Fetcher<List<Object[]>>
 	 *
 	 * @return the accumulated result of fetch operations
 	 */
-	public List<Object[]> getResult()
+	public Set<Object[]> getResult()
 	{
 		return result;
 	}

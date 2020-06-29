@@ -4,30 +4,31 @@ import gate.error.AppError;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
-public class PropertyEntityListFetcher<T> implements Fetcher<List<T>>
+public class PropertyEntitySetFetcher<T> implements Fetcher<Set<T>>
 {
 
 	private final Class<T> type;
 	private final List<Property> properties;
-	private final List<T> result = new ArrayList<>();
+	private final Set<T> result = new LinkedHashSet<>();
 
-	public PropertyEntityListFetcher(Class<T> type, List<Property> properties)
+	public PropertyEntitySetFetcher(Class<T> type, List<Property> properties)
 	{
 		this.type = type;
 		this.properties = properties;
 	}
 
-	public PropertyEntityListFetcher(Class<T> type, String[] properties)
+	public PropertyEntitySetFetcher(Class<T> type, String[] properties)
 	{
 		this.type = type;
 		this.properties = Property.getProperties(type, properties);
 	}
 
 	@Override
-	public List<T> fetch(Cursor rs)
+	public Set<T> fetch(Cursor rs)
 	{
 		try
 		{
@@ -46,10 +47,8 @@ public class PropertyEntityListFetcher<T> implements Fetcher<List<T>>
 		}
 	}
 
-	public List<T> getResult()
+	public Set<T> getResult()
 	{
 		return result;
 	}
-	
-	
 }

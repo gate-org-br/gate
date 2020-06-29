@@ -3,33 +3,34 @@ package gate.sql.fetcher;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Fetches a cursor as a list of java objects of the specified type with it's
+ * Fetches a cursor as a set of java objects of the specified type with it's
  * properties set to their respective column values.
  *
  * @param <T> type returned by the Fetcher
  */
-public class EntityListFetcher<T> implements Fetcher<List<T>>
+public class EntitySetFetcher<T> implements Fetcher<Set<T>>
 {
 
 	private final Class<T> type;
-	private final List<T> result = new ArrayList<>();
+	private final Set<T> result = new LinkedHashSet<>();
 
 	/**
 	 * Creates a new EntityListFetcher for the specified java type.
 	 *
 	 * @param type the java type to be fetched
 	 */
-	public EntityListFetcher(Class<T> type)
+	public EntitySetFetcher(Class<T> type)
 	{
 		this.type = type;
 	}
 
 	/**
-	 * Fetches each row from the specified Cursor as a list of java objects
+	 * Fetches each row from the specified Cursor as a set of java objects
 	 * of the specified type with it's properties set to their respective
 	 * column values.
 	 *
@@ -40,7 +41,7 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	 * column values
 	 */
 	@Override
-	public List<T> fetch(Cursor cursor)
+	public Set<T> fetch(Cursor cursor)
 	{
 		try
 		{
@@ -88,7 +89,7 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	 *
 	 * @return the accumulated result of fetch operations
 	 */
-	public List<T> getResult()
+	public Set<T> getResult()
 	{
 		return result;
 	}

@@ -1,17 +1,17 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
- * Fetches a Cursor as a list of java arrays or the specified types.
+ * Fetches a Cursor as a set of java arrays or the specified types.
  */
-public class TypedArrayListFetcher implements Fetcher<List<Object[]>>
+public class TypedArraySetFetcher implements Fetcher<Set<Object[]>>
 {
 
 	private final Class[] types;
-	private final List<Object[]> result = new ArrayList<>();
+	private final Set<Object[]> result = new LinkedHashSet<>();
 
 	/**
 	 * Creates a new TypedArrayListFetcher with the specified types.
@@ -19,22 +19,22 @@ public class TypedArrayListFetcher implements Fetcher<List<Object[]>>
 	 * @param types an array specifying the types of the objects to be
 	 * fetched
 	 */
-	public TypedArrayListFetcher(Class[] types)
+	public TypedArraySetFetcher(Class[] types)
 	{
 		this.types = types;
 	}
 
 	/**
-	 * Fetches each row as a list of java arrays of Objects of the specified
+	 * Fetches each row as a set of java arrays of Objects of the specified
 	 * types.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return each row fetched as a list of java arrays of Objects of the
+	 * @return each row fetched as a set of java arrays of Objects of the
 	 * specified types
 	 */
 	@Override
-	public List<Object[]> fetch(Cursor cursor)
+	public Set<Object[]> fetch(Cursor cursor)
 	{
 		while (cursor.next())
 		{
@@ -51,7 +51,7 @@ public class TypedArrayListFetcher implements Fetcher<List<Object[]>>
 	 *
 	 * @return the accumulated result of fetch operations
 	 */
-	public List<Object[]> getResult()
+	public Set<Object[]> getResult()
 	{
 		return result;
 	}
