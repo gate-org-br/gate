@@ -1,6 +1,7 @@
 @import "../polyfill/array-polyfill.js"
 @import "../polyfill/dialog-polyfill.js"
 @import "../polyfill/fetch-polyfill.js"
+@import "GProcess.js"
 @import "GSelection.js"
 @import "Proxy.js"
 @import "g-window-list/g-window-list.js"

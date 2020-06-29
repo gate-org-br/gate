@@ -5,6 +5,7 @@ class DateIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateIntervalSelector());
 		this.commit.innerText = selector.selection;

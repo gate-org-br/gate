@@ -5,6 +5,7 @@ class DateTimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.close;
 		this.caption = "Selecione uma data e hora";
 		var selector = this.body.appendChild(new DateTimeSelector());
 		this.commit.innerText = selector.selection;

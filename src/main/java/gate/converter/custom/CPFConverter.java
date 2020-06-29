@@ -59,35 +59,34 @@ public class CPFConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string != null)
+		if (string == null)
+			return null;
+
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
+		try
 		{
-			string = string.trim();
-			if (!string.isEmpty())
-			{
-				try
-				{
-					return new CPF(string);
-				} catch (Exception e)
-				{
-					throw new ConversionException(string.concat(" não é um CPF válido."));
-				}
-			}
+			return CPF.of(string);
+		} catch (Exception e)
+		{
+			throw new ConversionException(string.concat(" não é um CPF válido."));
 		}
-		return null;
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : new CPF(value);
+		return rs.wasNull() ? null : CPF.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : new CPF(value);
+		return rs.wasNull() ? null : CPF.of(value);
 	}
 
 	@Override

@@ -767,7 +767,24 @@
 								--></code></pre>
 					</div>
 				</div>
-
+				<div>
+					<div>
+						<g-coolbar>
+							<G:link module="#"
+								screen="#"
+								action="Progress"/>
+						</g-coolbar>
+					</div>
+					<div>
+						<pre class="language-markup"><code><!--
+									<g-coolbar>
+										<g:link module="#"
+											screen="#"
+											action="Progress"/>
+									</g-coolbar>
+								--></code></pre>
+					</div>
+				</div>
 				<div>
 					<div>
 						<g-coolbar>

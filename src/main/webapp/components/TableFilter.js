@@ -5,8 +5,8 @@ class GDataFilter
 	static filter(input)
 	{
 		let table = input.getAttribute("data-filter")
-			? document.getElementById(event.target.getAttribute("data-filter"))
-			: event.target.closest("TABLE");
+			? document.getElementById(input.getAttribute("data-filter"))
+			: input.closest("TABLE");
 		Array.from(table.children)
 			.filter(e => e.tagName === "TBODY")
 			.flatMap(e => Array.from(e.children))

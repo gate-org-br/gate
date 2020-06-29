@@ -202,18 +202,26 @@ window.addEventListener("click", function (event)
 				event.stopPropagation();
 				new URL(link.href).get(process =>
 				{
-					process = JSON.parse(process);
-					new GProgressDialog(process,
-						{title: link.getAttribute("title")}).show();
+					link.setAttribute("data-process", process);
+					process = new GProcess(JSON.parse(process));
+					let status = new GProgressDialog();
+					status.process = process.id;
+					status.caption = link.getAttribute("title") || "Progresso";
+					status.target = link.getAttribute("data-redirect") || "_self";
+					status.show();
 				});
 				break;
 			case "_progress-window":
 				event.preventDefault();
 				event.stopPropagation();
-				new URL(link.href).get(function (process)
+				new URL(link.href).get(process =>
 				{
-					process = JSON.parse(process);
-					document.body.appendChild(new GProgressWindow(process));
+					link.setAttribute("data-process", process);
+					process = new GProcess(JSON.parse(process));
+					let status = new GProgressWindow();
+					status.process = process.id;
+					status.target = link.getAttribute("data-redirect") || "_self";
+					status.show();
 				});
 				break;
 			case "_report":
