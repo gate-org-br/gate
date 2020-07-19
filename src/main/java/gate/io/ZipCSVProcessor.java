@@ -24,7 +24,7 @@ public class ZipCSVProcessor extends AbstractProcessor<List<String>>
 	}
 
 	@Override
-	public void process(InputStream is) throws IOException
+	public long process(InputStream is) throws IOException
 	{
 		try (ZipInputStream stream = new ZipInputStream(is);
 			CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset()))))
@@ -32,8 +32,13 @@ public class ZipCSVProcessor extends AbstractProcessor<List<String>>
 			for (ZipEntry entry = stream.getNextEntry();
 				entry != null;
 				entry = stream.getNextEntry())
+			{
 				if (!entry.isDirectory())
 					parser.forEach(consumer);
+			}
+
+			return (int) parser.getLineNumber() + 1;
 		}
+
 	}
 }

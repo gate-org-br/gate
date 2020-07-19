@@ -197,7 +197,7 @@ public class SSH implements AutoCloseable
 		}
 
 		@Override
-		public <T> void process(Processor<T> processor) throws IOException
+		public <T> long process(Processor<T> processor) throws IOException
 		{
 			Session session = connection.openSession();
 			try
@@ -210,7 +210,7 @@ public class SSH implements AutoCloseable
 				{
 					try (InputStream stream = new StreamGobbler(session.getStdout()))
 					{
-						processor.process(stream);
+						return processor.process(stream);
 					}
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{

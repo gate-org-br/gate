@@ -5,6 +5,6 @@ import java.io.IOException;
 public interface Processable
 {
 
-	<T> void process(Processor<T> processor) throws IOException;
+	<T> long process(Processor<T> processor) throws IOException;
 
 }

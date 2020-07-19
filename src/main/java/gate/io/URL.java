@@ -303,11 +303,11 @@ public class URL
 		}
 
 		@Override
-		public <T> void process(Processor<T> processor) throws IOException
+		public <T> long process(Processor<T> processor) throws IOException
 		{
 			try (InputStream stream = connection.getInputStream())
 			{
-				processor.process(stream);
+				return processor.process(stream);
 			}
 		}
 	}

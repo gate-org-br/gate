@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.util.Counter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,16 +23,23 @@ public class ZipLineProcessor extends AbstractProcessor<String>
 	}
 
 	@Override
-	public void process(InputStream is) throws IOException
+	public long process(InputStream is) throws IOException
 	{
 		try (ZipInputStream stream = new ZipInputStream(is);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset)))
 		{
+			Counter counter = new Counter();
 			for (ZipEntry entry = stream.getNextEntry();
 				entry != null;
 				entry = stream.getNextEntry())
 				if (!entry.isDirectory())
-					reader.lines().forEach(consumer);
+					reader.lines().forEach(e ->
+					{
+						consumer.accept(e);
+						counter.inc();
+					});
+			return counter.value();
 		}
+
 	}
 }

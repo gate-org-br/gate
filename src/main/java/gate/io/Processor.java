@@ -6,7 +6,7 @@ import java.io.InputStream;
 public interface Processor<T>
 {
 
-	void process(InputStream is) throws IOException;
+	long process(InputStream is) throws IOException;
 
 	String getCharset();
 
