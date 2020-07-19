@@ -27,10 +27,13 @@ public class CSVProcessor implements Processor<List<String>>
 	}
 
 	@Override
-	public void process(InputStream is) throws IOException
+	public long process(InputStream is) throws IOException
 	{
-		new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset())))
-			.forEach(consumer);
+		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset()))))
+		{
+			parser.forEach(consumer);
+			return (int) parser.getLineNumber() + 1;
+		}
 	}
 
 	@Override
