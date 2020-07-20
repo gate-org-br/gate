@@ -8,7 +8,6 @@ import gate.error.ConversionException;
 import gate.handler.DataFileHandler;
 import gate.io.GateInputStream;
 import gate.io.Processor;
-import gate.io.Reader;
 import gate.lang.dataurl.DataURL;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -31,6 +30,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import gate.io.Reader;
 
 @Handler(DataFileHandler.class)
 @Converter(DataFileConverter.class)
