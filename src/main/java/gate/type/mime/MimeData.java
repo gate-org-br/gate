@@ -6,7 +6,6 @@ import gate.converter.custom.MimeDataConverter;
 import gate.error.ConversionException;
 import gate.handler.MimeDataHandler;
 import gate.io.Processor;
-import gate.io.Reader;
 import gate.lang.dataurl.DataURL;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.text.ParseException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
+import gate.io.Reader;
 
 @Handler(MimeDataHandler.class)
 @Converter(MimeDataConverter.class)
