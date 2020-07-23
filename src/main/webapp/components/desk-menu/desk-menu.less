@@ -39,7 +39,7 @@ ul.DeskMenu
 			  align-items: center;
 			  flex-direction: column;
 			  justify-content: space-between;
- 			  > i
+			  > i
 			  {
 				  order: -1;
 				  margin: 8px;
@@ -57,10 +57,14 @@ ul.DeskMenu
 	       nav { margin: 4px;
 		     height: 32px; 
 		     flex-grow: 1;
-		     visibility: hidden;
 		     border-radius: 5px;
 		     width: calc(100% - 8px);
-		     background-color: var(--g-coolbar-background-color)}
+		     background-color: var(--g-coolbar-background-color);
+
+		     &:last-child { border-radius: 5px }
+	       }
+
+
 	}
 
 
