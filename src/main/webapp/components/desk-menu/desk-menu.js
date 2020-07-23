@@ -20,7 +20,8 @@ window.addEventListener("load", function ()
 		reset.firstChild.setAttribute("href", "#");
 		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
 
-		let links = Array.from(component.getElementsByTagName("a"));
+		let links = Array.from(component.getElementsByTagName("a"))
+			.filter(e => e.parentNode.tagName !== "NAV");
 		links.forEach(link =>
 		{
 			link.icons = Array.from(link.parentNode.children)

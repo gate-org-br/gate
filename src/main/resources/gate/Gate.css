@@ -733,10 +733,12 @@ ul.DeskMenu > li nav {
   margin: 4px;
   height: 32px;
   flex-grow: 1;
-  visibility: hidden;
   border-radius: 5px;
   width: calc(100% - 8px);
   background-color: var(--g-coolbar-background-color);
+}
+ul.DeskMenu > li nav:last-child {
+  border-radius: 5px;
 }
 ul.DeskMenu > li > * {
   width: 100%;
