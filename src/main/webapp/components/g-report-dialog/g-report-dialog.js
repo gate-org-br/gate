@@ -5,11 +5,18 @@ class GReportDialog extends GWindow
 	constructor()
 	{
 		super();
-		this.classList.add("g-report-dialog");
+		this._private.selector = new ReportSelector();
 		this._private.downloadStatus = new GDownloadStatus();
-		this._private.selector = this.body.appendChild(new ReportSelector());
-
 		addEventListener("hide", () => this._private.downloadStatus.abort());
+
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-report-dialog");
+
+		this.body.appendChild(this._private.selector);
 
 		let close = document.createElement("a");
 		close.href = "#";

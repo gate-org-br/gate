@@ -11,6 +11,11 @@ class GSideMenu extends GModal
 		this.addEventListener("click", e => e.stopPropagation() | this.hide());
 	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
+	}
+
 	showL()
 	{
 		setTimeout(() => this.classList.remove("R"), 100);

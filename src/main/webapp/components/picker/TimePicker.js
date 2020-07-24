@@ -5,6 +5,12 @@ class TimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+	
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-time-picker");
 		this.caption = "Selecione uma hora";
@@ -13,7 +19,6 @@ class TimePicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 

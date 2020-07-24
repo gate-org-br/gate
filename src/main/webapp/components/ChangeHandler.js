@@ -55,7 +55,7 @@ window.addEventListener("change", event =>
 					button.setAttribute("target", action.getAttribute("data-target"));
 
 				if (action.hasAttribute("data-action"))
-					button.setAttribute("formaction", action.getAttribute("formaction"));
+					button.setAttribute("formaction", action.getAttribute("data-action"));
 
 				if (action.hasAttribute("data-reload-on-hide"))
 					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));

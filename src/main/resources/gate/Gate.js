@@ -2197,7 +2197,6 @@ class GModal extends HTMLElement
 	{
 		super();
 		this._private = {};
-		this.classList.add("g-modal");
 
 		this.addEventListener("contextmenu", event =>
 		{
@@ -2211,6 +2210,11 @@ class GModal extends HTMLElement
 		this.addEventListener("click", event => !this.blocked
 				&& (event.target === this || event.srcElement === this)
 				&& this.hide());
+	}
+
+	connectedCallback()
+	{
+		this.classList.add("g-modal");
 	}
 
 	get blocked()
@@ -2281,6 +2285,11 @@ class GWindow extends GModal
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-window");
 		this.main.addEventListener("click", e => e.stopPropagation());
 		this.main.addEventListener("contextmenu", e => e.stopPropagation());
@@ -3354,6 +3363,11 @@ class GSideMenu extends GModal
 		this.addEventListener("click", e => e.stopPropagation() | this.hide());
 	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
+	}
+
 	showL()
 	{
 		setTimeout(() => this.classList.remove("R"), 100);
@@ -3623,7 +3637,9 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-confirm"))
 				link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
 
-			if (!event.ctrlKey && action.getAttribute("data-target") === "_dialog")
+			if (!event.ctrlKey
+				&& action.getAttribute("data-target") === "_dialog"
+				&& (action.getAttribute("data-navigate") || action.parentNode.getAttribute("data-navigate")))
 				link.navigator = Array.from(action.parentNode.children)
 					.map(e => e.getAttribute("data-action"))
 					.filter(e => e);
@@ -3645,7 +3661,7 @@ window.addEventListener("click", event => {
 				button.setAttribute("target", action.getAttribute("data-target"));
 
 			if (action.hasAttribute("data-action"))
-				button.setAttribute("formaction", action.getAttribute("formaction"));
+				button.setAttribute("formaction", action.getAttribute("data-action"));
 
 			if (action.hasAttribute("data-reload-on-hide"))
 				button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
@@ -3810,7 +3826,7 @@ window.addEventListener("change", event =>
 					button.setAttribute("target", action.getAttribute("data-target"));
 
 				if (action.hasAttribute("data-action"))
-					button.setAttribute("formaction", action.getAttribute("formaction"));
+					button.setAttribute("formaction", action.getAttribute("data-action"));
 
 				if (action.hasAttribute("data-reload-on-hide"))
 					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
@@ -4799,6 +4815,11 @@ class Picker extends GWindow
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-picker");
 	}
 
@@ -4834,12 +4855,17 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-date-picker");
 		this.caption = "Selecione uma data";
 		this._private.date = this.body.appendChild(new DateSelector());
 		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
-		this.show();
 	}
 }
 
@@ -4882,6 +4908,12 @@ class TimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+	
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-time-picker");
 		this.caption = "Selecione uma hora";
@@ -4890,7 +4922,6 @@ class TimePicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -4935,6 +4966,12 @@ class MonthPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-month-picker");
 		this.caption = "Selecione uma hora";
@@ -4943,7 +4980,6 @@ class MonthPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -4988,6 +5024,12 @@ class DateTimePicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione uma data e hora";
 		var selector = this.body.appendChild(new DateTimeSelector());
@@ -4995,7 +5037,6 @@ class DateTimePicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5038,6 +5079,12 @@ class DateIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateIntervalSelector());
@@ -5045,7 +5092,6 @@ class DateIntervalPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5088,6 +5134,12 @@ class TimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione um período";
 		this.classList.add("g-time-interval-picker");
@@ -5096,7 +5148,6 @@ class TimeIntervalPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5139,6 +5190,12 @@ class MonthIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new MonthIntervalSelector());
@@ -5146,7 +5203,6 @@ class MonthIntervalPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5189,6 +5245,12 @@ class DateTimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateTimeIntervalSelector());
@@ -5196,7 +5258,6 @@ class DateTimeIntervalPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5239,12 +5300,17 @@ class IconPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+	
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-picker");
 		this.head.appendChild(document.createTextNode("Selecione um ícone"));
 		var selector = this.body.appendChild(document.createElement("g-icon-selector"));
 		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail.icon})) | this.hide());
-		this.show();
 	}
 }
 
@@ -5286,6 +5352,11 @@ class ActionPicker extends Picker
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-picker");
 	}
@@ -5317,6 +5388,11 @@ class GBlock extends GWindow
 	{
 		super();
 		this.blocked = true;
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-block");
 		this.body.appendChild(window.top.document.createElement('progress'));
 		this.foot.appendChild(window.top.document.createElement('digital-clock'));
@@ -5697,6 +5773,12 @@ class GChartDialog extends GWindow
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+
 		this.caption = "Chart";
 		this.classList.add("g-chart-dialog");
 
@@ -5909,6 +5991,7 @@ class GDialog extends GWindow
 	constructor()
 	{
 		super();
+
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
@@ -5985,7 +6068,11 @@ class GDialog extends GWindow
 			window.addEventListener("refresh_size", resize);
 			this.iframe.backgroundImage = "none";
 		});
+	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
 	}
 
 	get iframe()
@@ -6184,6 +6271,11 @@ class GStackFrame extends GModal
 
 	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
+	}
+
 	get iframe()
 	{
 		return this._private.iframe;
@@ -6228,6 +6320,11 @@ class GPopup extends GWindow
 		this.head.appendChild(close);
 
 		this.body.appendChild(element);
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 	}
 }
 
@@ -6715,12 +6812,16 @@ window.addEventListener("click", function (event)
 
 class Message extends GWindow
 {
-	constructor(options)
+	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+
 		this.classList.add("g-message");
-		this.classList.add(options.type);
-		this.caption = options.title || "";
 
 		let close = document.createElement("a");
 		close.href = "#";
@@ -6728,35 +6829,106 @@ class Message extends GWindow
 		close.innerHTML = "<i>&#x1011</i>";
 		this.head.appendChild(close);
 
-		this.body.appendChild(window.top.document.createElement('label')).innerHTML = options.message;
+		this.caption = this.title || "";
+		this.body.appendChild(window.top.document.createElement("label")).innerHTML = this.text;
+	}
 
-		if (options.timeout)
-			window.top.setTimeout(() => this.hide(), options.timeout);
+	set type(type)
+	{
+		this.setAttribute("type", type);
+	}
 
-		this.show();
+	get type()
+	{
+		return this.getAttribute("type");
+	}
+
+	set text(text)
+	{
+		this.setAttribute("text", text);
+	}
+
+	get text()
+	{
+		return this.getAttribute("text");
+	}
+
+	get title()
+	{
+		return this.getAttribute("title");
+	}
+
+	set title(title)
+	{
+		return this.setAttribute("title", title);
+	}
+
+	attributeChangedCallback()
+	{
+		if (this.parentNode)
+		{
+			this.caption = this.title || "";
+			this.body.firstChild.innerHTML = this.text;
+		}
+	}
+
+	static get observedAttributes() {
+		return ['type', 'text', "timeout", "title"];
 	}
 }
 
 customElements.define('g-message', Message);
 
-Message.success = function (message, timeout)
+Message.success = function (text, timeout)
 {
-	new Message({type: "SUCCESS", title: "Sucesso", message: message, timeout: timeout});
+	var message = window.top.document.createElement("g-message");
+	message.type = "SUCCESS";
+	message.text = text;
+	message.title = "Sucesso";
+	message.timeout = timeout;
+	message.show();
+
+	if (timeout)
+		window.top.setTimeout(() => message.hide(), timeout);
 };
 
-Message.warning = function (message, timeout)
+Message.warning = function (text, timeout)
 {
-	new Message({type: "WARNING", title: "Alerta", message: message, timeout: timeout});
+	var message = window.top.document.createElement("g-message");
+	message.type = "WARNING";
+	message.text = text;
+	message.title = "Alerta";
+	message.timeout = timeout;
+	message.show();
+
+	if (timeout)
+		window.top.setTimeout(() => message.hide(), timeout);
 };
 
-Message.error = function (message, timeout)
+Message.error = function (text, timeout)
 {
-	new Message({type: "ERROR", title: "Erro", message: message, timeout: timeout});
+	var message = window.top.document.createElement("g-message");
+	message.type = "ERROR";
+	message.text = text;
+	message.title = "Erro";
+	message.timeout = timeout;
+	message.show();
+
+	if (timeout)
+		window.top.setTimeout(() => message.hide(), timeout);
 };
 
-Message.info = function (message, timeout)
+Message.info = function (text, timeout)
 {
-	new Message({type: "INFO", title: "Informação", message: message, timeout: timeout});
+	var message = window.top.document.createElement("g-message");
+	message.type = "INFO";
+	message.text = text;
+	message.title = "Informação";
+	message.timeout = timeout;
+	message.show();
+
+	if (timeout)
+		window.top.setTimeout(() => message.hide(), timeout);
 };
 
 Message.show = function (status, timeout)
@@ -6776,7 +6948,6 @@ Message.show = function (status, timeout)
 			Message.info(status.message, timeout);
 			break;
 	}
-
 };
 
 /* global Message, customElements */
@@ -6972,6 +7143,8 @@ class GProgressDialog extends Picker
 
 	connectedCallback()
 	{
+		super.connectedCallback();
+
 		this.classList.add("g-progress-dialog");
 
 		this.caption = this.caption || "Progresso";
@@ -7271,11 +7444,18 @@ class GReportDialog extends GWindow
 	constructor()
 	{
 		super();
-		this.classList.add("g-report-dialog");
+		this._private.selector = new ReportSelector();
 		this._private.downloadStatus = new GDownloadStatus();
-		this._private.selector = this.body.appendChild(new ReportSelector());
-
 		addEventListener("hide", () => this._private.downloadStatus.abort());
+
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-report-dialog");
+
+		this.body.appendChild(this._private.selector);
 
 		let close = document.createElement("a");
 		close.href = "#";

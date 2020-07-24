@@ -3426,36 +3426,36 @@ g-message > main > section > label::first-line,
 .g-message > main > section > label::first-line {
   text-indent: 40px;
 }
-g-message.INFO,
-.g-message.INFO {
+g-message[type="INFO"],
+.g-message[type="INFO"] {
   color: black;
 }
-g-message.INFO > main > section::before,
-.g-message.INFO > main > section::before {
+g-message[type="INFO"] > main > section::before,
+.g-message[type="INFO"] > main > section::before {
   content: "\2015";
 }
-g-message.ERROR,
-.g-message.ERROR {
+g-message[type="ERROR"],
+.g-message[type="ERROR"] {
   color: var(--r);
 }
-g-message.ERROR > main > section::before,
-.g-message.ERROR > main > section::before {
+g-message[type="ERROR"] > main > section::before,
+.g-message[type="ERROR"] > main > section::before {
   content: "\1001";
 }
-g-message.SUCCESS,
-.g-message.SUCCESS {
+g-message[type="SUCCESS"],
+.g-message[type="SUCCESS"] {
   color: var(--g);
 }
-g-message.SUCCESS > main > section::before,
-.g-message.SUCCESS > main > section::before {
+g-message[type="SUCCESS"] > main > section::before,
+.g-message[type="SUCCESS"] > main > section::before {
   content: "\1000";
 }
-g-message.WARNING,
-.g-message.WARNING {
+g-message[type="WARNING"],
+.g-message[type="WARNING"] {
   color: var(--y);
 }
-g-message.WARNING > main > section::before,
-.g-message.WARNING > main > section::before {
+g-message[type="WARNING"] > main > section::before,
+.g-message[type="WARNING"] > main > section::before {
   content: "\1007";
 }
 g-slider,

@@ -6,6 +6,11 @@ class GBlock extends GWindow
 	{
 		super();
 		this.blocked = true;
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-block");
 		this.body.appendChild(window.top.document.createElement('progress'));
 		this.foot.appendChild(window.top.document.createElement('digital-clock'));

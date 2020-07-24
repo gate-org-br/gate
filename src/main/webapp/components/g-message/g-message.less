@@ -29,20 +29,20 @@ g-message, .g-message {
 		 }
 	}
 
-	&.INFO { color: black;
-		 > main > section::before { content: "\2015" }
+	&[type="INFO"] { color: black;
+			 > main > section::before { content: "\2015" }
 	}
 
-	&.ERROR { color: var(--r);
-		  > main > section::before { content: "\1001" }
+	&[type="ERROR"] { color: var(--r);
+			  > main > section::before { content: "\1001" }
 	}
 
-	&.SUCCESS { color: var(--g);
-		    > main > section::before { content: "\1000" }
+	&[type="SUCCESS"] { color: var(--g);
+			    > main > section::before { content: "\1000" }
 	}
 
-	&.WARNING { color: var(--y);
-		    > main > section::before { content: "\1007" }
+	&[type="WARNING"] { color: var(--y);
+			    > main > section::before { content: "\1007" }
 	}
 }
 

@@ -19,6 +19,11 @@ class GPopup extends GWindow
 
 		this.body.appendChild(element);
 	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+	}
 }
 
 window.addEventListener("load",

@@ -23,6 +23,11 @@ class GStackFrame extends GModal
 
 	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
+	}
+
 	get iframe()
 	{
 		return this._private.iframe;
