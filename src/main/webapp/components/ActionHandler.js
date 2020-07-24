@@ -45,7 +45,9 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-confirm"))
 				link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
 
-			if (!event.ctrlKey && action.getAttribute("data-target") === "_dialog")
+			if (!event.ctrlKey
+				&& action.getAttribute("data-target") === "_dialog"
+				&& (action.getAttribute("data-navigate") || action.parentNode.getAttribute("data-navigate")))
 				link.navigator = Array.from(action.parentNode.children)
 					.map(e => e.getAttribute("data-action"))
 					.filter(e => e);
@@ -67,7 +69,7 @@ window.addEventListener("click", event => {
 				button.setAttribute("target", action.getAttribute("data-target"));
 
 			if (action.hasAttribute("data-action"))
-				button.setAttribute("formaction", action.getAttribute("formaction"));
+				button.setAttribute("formaction", action.getAttribute("data-action"));
 
 			if (action.hasAttribute("data-reload-on-hide"))
 				button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));

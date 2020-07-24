@@ -5,6 +5,11 @@ class GWindow extends GModal
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-window");
 		this.main.addEventListener("click", e => e.stopPropagation());
 		this.main.addEventListener("contextmenu", e => e.stopPropagation());

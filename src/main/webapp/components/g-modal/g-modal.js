@@ -7,7 +7,6 @@ class GModal extends HTMLElement
 	{
 		super();
 		this._private = {};
-		this.classList.add("g-modal");
 
 		this.addEventListener("contextmenu", event =>
 		{
@@ -21,6 +20,11 @@ class GModal extends HTMLElement
 		this.addEventListener("click", event => !this.blocked
 				&& (event.target === this || event.srcElement === this)
 				&& this.hide());
+	}
+
+	connectedCallback()
+	{
+		this.classList.add("g-modal");
 	}
 
 	get blocked()

@@ -5,6 +5,12 @@ class GChartDialog extends GWindow
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+
 		this.caption = "Chart";
 		this.classList.add("g-chart-dialog");
 

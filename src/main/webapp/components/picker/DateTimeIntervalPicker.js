@@ -5,6 +5,12 @@ class DateTimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateTimeIntervalSelector());
@@ -12,7 +18,6 @@ class DateTimeIntervalPicker extends Picker
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-		this.show();
 	}
 }
 

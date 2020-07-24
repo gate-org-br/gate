@@ -5,6 +5,11 @@ class Picker extends GWindow
 	constructor()
 	{
 		super();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.classList.add("g-picker");
 	}
 

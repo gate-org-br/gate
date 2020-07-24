@@ -5,12 +5,17 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
+		this.show();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
 		this.close;
 		this.classList.add("g-date-picker");
 		this.caption = "Selecione uma data";
 		this._private.date = this.body.appendChild(new DateSelector());
 		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
-		this.show();
 	}
 }
 

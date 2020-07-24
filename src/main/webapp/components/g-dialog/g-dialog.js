@@ -5,6 +5,7 @@ class GDialog extends GWindow
 	constructor()
 	{
 		super();
+
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-dialog");
@@ -81,7 +82,11 @@ class GDialog extends GWindow
 			window.addEventListener("refresh_size", resize);
 			this.iframe.backgroundImage = "none";
 		});
+	}
 
+	connectedCallback()
+	{
+		super.connectedCallback();
 	}
 
 	get iframe()
