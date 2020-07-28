@@ -27,10 +27,8 @@ window.addEventListener("change", event =>
 				if (action.hasAttribute("data-action"))
 					link.setAttribute("href", action.getAttribute("data-action"));
 
-				if (action.hasAttribute("data-reload-on-hide"))
-					link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-				if (action.hasAttribute("data-submit-on-hide"))
-					link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 				if (action.hasAttribute("title"))
 					link.setAttribute("title", action.getAttribute("title"));
@@ -57,10 +55,10 @@ window.addEventListener("change", event =>
 				if (action.hasAttribute("data-action"))
 					button.setAttribute("formaction", action.getAttribute("data-action"));
 
-				if (action.hasAttribute("data-reload-on-hide"))
-					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-				if (action.hasAttribute("data-submit-on-hide"))
-					button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 				if (action.hasAttribute("title"))
 					button.setAttribute("title", action.getAttribute("title"));

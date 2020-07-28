@@ -78,7 +78,7 @@ public class MenuItemTag extends AnchorTag
 					if (getJspBody() != null)
 						getJspBody().invoke(null);
 					else
-						pageContext.getOut().print(String.format("%s<i>&#X%s;</i>", getName(), getIcon().getCode()));
+						pageContext.getOut().print(createBody());
 
 					pageContext.getOut().print("</button>");
 				} else
@@ -95,7 +95,7 @@ public class MenuItemTag extends AnchorTag
 					if (getJspBody() != null)
 						getJspBody().invoke(null);
 					else
-						pageContext.getOut().print(String.format("%s<i>&#X%s;</i>", getName(), getIcon().getCode()));
+						pageContext.getOut().print(createBody());
 
 					pageContext.getOut().print("</a>");
 				}
@@ -114,7 +114,7 @@ public class MenuItemTag extends AnchorTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					pageContext.getOut().print(String.format("%s<i>&#X%s;</i>", getName(), getIcon().getCode()));
+					pageContext.getOut().print(createBody());
 
 				pageContext.getOut().print("</a>");
 				pageContext.getOut().print("</li>");

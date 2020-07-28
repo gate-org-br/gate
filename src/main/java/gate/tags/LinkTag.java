@@ -13,22 +13,11 @@ import javax.servlet.jsp.PageContext;
 public class LinkTag extends AnchorTag
 {
 
-	private String type;
 	private String otherwise;
 
 	public void setOtherwise(String otherwise)
 	{
 		this.otherwise = otherwise;
-	}
-
-	public String getType()
-	{
-		return type;
-	}
-
-	public void setType(String type)
-	{
-		this.type = type;
 	}
 
 	@Override
@@ -45,19 +34,7 @@ public class LinkTag extends AnchorTag
 			Attributes atrributes = new Attributes();
 			atrributes.put("href", "Gate");
 			pageContext.getOut().print("<a " + atrributes + ">");
-
-			switch (type != null ? type.trim().toLowerCase() : "full")
-			{
-				case "text":
-					pageContext.getOut().print("Sair");
-					break;
-				case "icon":
-					pageContext.getOut().print("<i>&#X2007;</i>");
-					break;
-				case "full":
-					pageContext.getOut().print("Sair<i>&#X2007;</i>");
-					break;
-			}
+			pageContext.getOut().print("Sair<i>&#X2007;</i>");
 			pageContext.getOut().print("</a>");
 		} else if (getCondition() && checkAccess())
 		{
@@ -90,18 +67,7 @@ public class LinkTag extends AnchorTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					switch (type != null ? type.trim().toLowerCase() : "full")
-					{
-						case "text":
-							pageContext.getOut().print(getName());
-							break;
-						case "icon":
-							pageContext.getOut().print("<i>&#X" + getIcon().getCode() + ";</i>");
-							break;
-						case "full":
-							pageContext.getOut().print(getName() + "<i>&#X" + getIcon().getCode() + ";</i>");
-							break;
-					}
+					pageContext.getOut().print(createBody());
 
 				pageContext.getOut().print("</button>");
 			} else
@@ -115,18 +81,7 @@ public class LinkTag extends AnchorTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					switch (type != null ? type.trim().toLowerCase() : "full")
-					{
-						case "text":
-							pageContext.getOut().print(getName());
-							break;
-						case "icon":
-							pageContext.getOut().print("<i>&#X" + getIcon().getCode() + ";</i>");
-							break;
-						case "full":
-							pageContext.getOut().print(getName() + "<i>&#X" + getIcon().getCode() + ";</i>");
-							break;
-					}
+					pageContext.getOut().print(createBody());
 
 				pageContext.getOut().print("</a>");
 			}

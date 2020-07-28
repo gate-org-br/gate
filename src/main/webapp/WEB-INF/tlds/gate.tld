@@ -216,15 +216,6 @@
 				button to be created.
 			</description>
 		</attribute>
-		<attribute>
-			<name>type</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				text to show only text, icon to show only the icon
-				and full to show text and icon. defaults to full.
-			</description>
-		</attribute>
 	</tag>
 	<tag>
 		<name>shortcut</name>
@@ -308,6 +299,170 @@
 			</description>
 		</attribute>
 	</tag>
+
+
+	<tag>
+		<name>table-row</name>
+		<display-name>Table Row</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.TableRowTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a table row to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the table row to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the table row to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the table row to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated table row url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The data-method attribute of the html table row
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The data-target attribute of the html table row
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the table row or
+				button to be created.
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>table-data</name>
+		<display-name>Table Data</display-name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.TableDataTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a table data to the specified resource
+			if the specified condition is true and
+			if the current user has access to it.
+		</description>
+		<attribute>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The module of the table data to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>screen</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The screen of the table data to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>action</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The action of the table data to be created.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of aditional parameters to be included
+				on the generated table data url query string.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The data-method attribute of the html table data
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>target</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The data-target attribute of the html table data
+				generated.
+			</description>
+		</attribute>
+		<attribute>
+			<name>condition</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked. Defaults to true.
+			</description>
+		</attribute>
+		<attribute>
+			<name>tabindex</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Tabindex attribute of the table data or
+				button to be created.
+			</description>
+		</attribute>
+	</tag>
+
 	<tag>
 		<name>menu</name>
 		<display-name>Menu</display-name>

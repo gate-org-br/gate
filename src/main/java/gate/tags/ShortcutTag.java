@@ -2,6 +2,7 @@ package gate.tags;
 
 import gate.annotation.Color;
 import gate.annotation.Tooltip;
+import gate.util.Icons;
 import gate.util.Toolkit;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -41,7 +42,7 @@ public class ShortcutTag extends AnchorTag
 		} else if (checkAccess())
 		{
 			if (!getAttributes().containsKey("title"))
-				getAttributes().put("title", getName());
+				getName().ifPresent(e -> getAttributes().put("title", e));
 
 			if (!getAttributes().containsKey("tooltip"))
 				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
@@ -61,7 +62,7 @@ public class ShortcutTag extends AnchorTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().getCode()));
+					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 				pageContext.getOut().print("</button>");
 			} else
@@ -75,7 +76,7 @@ public class ShortcutTag extends AnchorTag
 				if (getJspBody() != null)
 					getJspBody().invoke(null);
 				else
-					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().getCode()));
+					pageContext.getOut().print(String.format("<i>&#X%s;</i>", getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 				pageContext.getOut().print("</a>");
 			}

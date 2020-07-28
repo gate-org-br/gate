@@ -80,10 +80,14 @@ window.addEventListener("click", function (event)
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
-					if (link.hasAttribute("data-reload-on-hide"))
-						dialog.addEventListener("hide", () => window.location = window.location.href);
-					else if (link.hasAttribute("data-submit-on-hide"))
-						dialog.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
 					dialog.show();
 				}
@@ -104,10 +108,14 @@ window.addEventListener("click", function (event)
 					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
 					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
 
-					if (link.hasAttribute("data-reload-on-hide"))
-						stackFrame.addEventListener("hide", () => window.location = window.location.href);
-					else if (link.hasAttribute("data-submit-on-hide"))
-						stackFrame.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
 					stackFrame.show();
 				}

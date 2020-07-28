@@ -216,7 +216,7 @@ function Mask(element)
 			this.value = '';
 
 		if (changed)
-			this.dispatchEvent(new Event('change'));
+			this.dispatchEvent(new CustomEvent('change', {bubbles: true}));
 		changed = false;
 	};
 

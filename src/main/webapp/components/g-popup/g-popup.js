@@ -2,15 +2,9 @@
 
 class GPopup extends GWindow
 {
-	constructor()
+	constructor(element)
 	{
 		super();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-popup");
@@ -22,25 +16,19 @@ class GPopup extends GWindow
 		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
 		this.head.appendChild(close);
+
+		this.body.appendChild(element);
 	}
 
-	set root(element)
+	connectedCallback()
 	{
-		if (this.body.firstChild)
-			this.body.removeChild(this.body.firstChild);
-		this.body.appendChild(element);
+		super.connectedCallback();
 	}
 }
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('template[data-popup]')).forEach(element =>
-	{
-		var popup = window.top.document.createElement("g-popup");
-		popup.root = element.content.cloneNode(true);
-		popup.show();
-	});
-});
+window.addEventListener("load",
+	() => Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => new GPopup(element.content.cloneNode(true)).show()));
 
 
 customElements.define('g-popup', GPopup);
