@@ -7,6 +7,10 @@ window.addEventListener("click", event => {
 		return;
 
 	let action = event.target || event.srcElement;
+
+	if (action.onclick || action.tagName === "A" || action.tagName === "BUTTON")
+		return;
+
 	action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
 	if (!action)
 		return;
@@ -28,10 +32,8 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-action"))
 				link.setAttribute("href", action.getAttribute("data-action"));
 
-			if (action.hasAttribute("data-reload-on-hide"))
-				link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-			if (action.hasAttribute("data-submit-on-hide"))
-				link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+			if (action.hasAttribute("data-on-hide"))
+				link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 			if (action.hasAttribute("title"))
 				link.setAttribute("title", action.getAttribute("title"));
@@ -71,10 +73,8 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-action"))
 				button.setAttribute("formaction", action.getAttribute("data-action"));
 
-			if (action.hasAttribute("data-reload-on-hide"))
-				button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-			if (action.hasAttribute("data-submit-on-hide"))
-				button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+			if (action.hasAttribute("data-on-hide"))
+				button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 			if (action.hasAttribute("title"))
 				button.setAttribute("title", action.getAttribute("title"));

@@ -12,6 +12,8 @@ import gate.util.Icons;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.StringJoiner;
 import javax.inject.Inject;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -140,14 +142,24 @@ public class AnchorTag extends DynamicAttributeTag
 		return URL.toString(module, screen, action, arguments);
 	}
 
-	public Icons.Icon getIcon()
+	public Optional<Icons.Icon> getIcon()
 	{
-		return Icon.Extractor.extract(javaMethod).or(() -> Icon.Extractor.extract(javaClass)).orElse(Icons.UNKNOWN);
+		return Icon.Extractor.extract(javaMethod).or(() -> Icon.Extractor.extract(javaClass));
 	}
 
-	public String getName()
+	public Optional<String> getName()
 	{
-		return Name.Extractor.extract(javaMethod).or(() -> Name.Extractor.extract(javaClass)).orElse("unnamed");
+		return Name.Extractor.extract(javaMethod).or(() -> Name.Extractor.extract(javaClass));
+	}
+
+	public String createBody()
+	{
+		StringJoiner string
+			= new StringJoiner("")
+				.setEmptyValue("unamed");
+		getName().ifPresent(string::add);
+		getIcon().ifPresent(e -> string.add("<i>&#X" + e.getCode() + ";</i>"));
+		return string.toString();
 	}
 
 	@Override

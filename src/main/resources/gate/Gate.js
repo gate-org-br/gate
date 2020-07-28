@@ -2176,7 +2176,7 @@ function Mask(element)
 			this.value = '';
 
 		if (changed)
-			this.dispatchEvent(new Event('change'));
+			this.dispatchEvent(new CustomEvent('change', {bubbles: true}));
 		changed = false;
 	};
 
@@ -2852,10 +2852,14 @@ window.addEventListener("click", function (event)
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
-					if (link.hasAttribute("data-reload-on-hide"))
-						dialog.addEventListener("hide", () => window.location = window.location.href);
-					else if (link.hasAttribute("data-submit-on-hide"))
-						dialog.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
 					dialog.show();
 				}
@@ -2876,10 +2880,14 @@ window.addEventListener("click", function (event)
 					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
 					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
 
-					if (link.hasAttribute("data-reload-on-hide"))
-						stackFrame.addEventListener("hide", () => window.location = window.location.href);
-					else if (link.hasAttribute("data-submit-on-hide"))
-						stackFrame.addEventListener("hide", () => document.getElementById(link.getAttribute("data-submit-on-hide")).submit());
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
 					stackFrame.show();
 				}
@@ -3128,10 +3136,14 @@ window.addEventListener("click", function (event)
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
-						if (button.hasAttribute("data-reload-on-hide"))
-							dialog.addEventListener(() => window.location = window.location.href);
-						else if (button.hasAttribute("data-submit-on-hide"))
-							dialog.addEventListener(() => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						dialog.show();
 					}
@@ -3154,10 +3166,14 @@ window.addEventListener("click", function (event)
 						stackFrame.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
 						stackFrame.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
 
-						if (button.hasAttribute("data-reload-on-hide"))
-							stackFrame.addEventListener("hide", () => window.location = window.location.href);
-						else if (button.hasAttribute("data-submit-on-hide"))
-							stackFrame.addEventListener("hide", () => document.getElementById(button.getAttribute("data-submit-on-hide")).submit());
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						stackFrame.show();
 					}
@@ -3599,6 +3615,10 @@ window.addEventListener("click", event => {
 		return;
 
 	let action = event.target || event.srcElement;
+
+	if (action.onclick || action.tagName === "A" || action.tagName === "BUTTON")
+		return;
+
 	action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
 	if (!action)
 		return;
@@ -3620,10 +3640,8 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-action"))
 				link.setAttribute("href", action.getAttribute("data-action"));
 
-			if (action.hasAttribute("data-reload-on-hide"))
-				link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-			if (action.hasAttribute("data-submit-on-hide"))
-				link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+			if (action.hasAttribute("data-on-hide"))
+				link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 			if (action.hasAttribute("title"))
 				link.setAttribute("title", action.getAttribute("title"));
@@ -3663,10 +3681,8 @@ window.addEventListener("click", event => {
 			if (action.hasAttribute("data-action"))
 				button.setAttribute("formaction", action.getAttribute("data-action"));
 
-			if (action.hasAttribute("data-reload-on-hide"))
-				button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-			if (action.hasAttribute("data-submit-on-hide"))
-				button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+			if (action.hasAttribute("data-on-hide"))
+				button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 			if (action.hasAttribute("title"))
 				button.setAttribute("title", action.getAttribute("title"));
@@ -3798,10 +3814,8 @@ window.addEventListener("change", event =>
 				if (action.hasAttribute("data-action"))
 					link.setAttribute("href", action.getAttribute("data-action"));
 
-				if (action.hasAttribute("data-reload-on-hide"))
-					link.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-				if (action.hasAttribute("data-submit-on-hide"))
-					link.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 				if (action.hasAttribute("title"))
 					link.setAttribute("title", action.getAttribute("title"));
@@ -3828,10 +3842,10 @@ window.addEventListener("change", event =>
 				if (action.hasAttribute("data-action"))
 					button.setAttribute("formaction", action.getAttribute("data-action"));
 
-				if (action.hasAttribute("data-reload-on-hide"))
-					button.setAttribute("data-reload-on-hide", action.getAttribute("data-reload-on-hide"));
-				if (action.hasAttribute("data-submit-on-hide"))
-					button.setAttribute("data-submit-on-hide", action.getAttribute("data-submit-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
+				if (action.hasAttribute("data-on-hide"))
+					button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
 				if (action.hasAttribute("title"))
 					button.setAttribute("title", action.getAttribute("title"));
@@ -6114,7 +6128,7 @@ class GDialog extends GWindow
 
 		for (var i = 0; i < size; i++)
 			if (this.arguments[i])
-				this.arguments[i].dispatchEvent(new Event('change', {bubbles: true}));
+				this.arguments[i].dispatchEvent(new CustomEvent('changed', {bubbles: true}));
 
 		this.hide();
 	}
@@ -6158,93 +6172,122 @@ class GDialog extends GWindow
 
 customElements.define('g-dialog', GDialog);
 
-window.addEventListener("load", function ()
+window.addEventListener("click", function (event)
 {
-	Array.from(document.querySelectorAll('a[data-get]')).forEach(function (element)
-	{
-		element.addEventListener("click", function (event)
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			var parameters =
-				CSV.parse(this.getAttribute('data-get'))
-				.map(e => e.trim())
-				.map(e => e !== null ? document.getElementById(e) : null);
-			if (parameters.some(e => e && e.value))
-			{
-				parameters = parameters.filter(e => e && e.value);
-				parameters.forEach(e => e.value = "");
-				parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
-			} else {
-				let dialog = GDialog.create();
-				dialog.target = this.href;
-				dialog.caption = this.getAttribute("title");
-				dialog.get.apply(dialog, parameters);
-			}
-		});
-	});
-	Array.from(document.querySelectorAll('input[data-getter]')).forEach(function (element)
-	{
-		element.addEventListener("change", function ()
-		{
-			var getter = document.getElementById(this.getAttribute("data-getter"));
-			var url = resolve(getter.href);
-			var parameters =
-				CSV.parse(getter.getAttribute('data-get'))
-				.map(id => id.trim())
-				.map(id => id !== null ? document.getElementById(id) : null);
-			if (this.value)
-			{
-				parameters
-					.filter(e => e)
-					.filter(e => e.value)
-					.forEach(e => e.value = "");
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-get]");
 
-				let dialog = GDialog.create();
-				dialog.target = url;
-				dialog.caption = getter.getAttribute("title");
-				dialog.get.apply(dialog, parameters);
+	if (action)
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		var parameters = CSV.parse(action.getAttribute('data-get')).map(e => e.trim())
+			.map(e => e !== null ? document.getElementById(e) : null);
+		if (parameters.some(e => e && e.value))
+		{
+			parameters = parameters.filter(e => e && e.value);
+			parameters.forEach(e => e.value = "");
+			parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
+		} else {
+			let dialog = GDialog.create();
+			dialog.target = action.href;
+			dialog.caption = action.getAttribute("title");
+			dialog.get.apply(dialog, parameters);
+		}
+	}
+});
 
-				dialog.get.apply(dialog, parameters);
-			} else
-				parameters
-					.filter(e => e)
-					.filter(e => e.value)
-					.forEach(e => e.value = "");
-			event.preventDefault();
-			event.stopPropagation();
-		});
-	});
-	Array.from(document.querySelectorAll('*[data-ret]')).forEach(function (element)
+
+window.addEventListener("click", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-ret]");
+
+	if (action)
 	{
-		element.onmouseover = () => element.focus();
-		element.onmouseout = () => element.blur();
-		element.onclick = function ()
-		{
-			var ret = CSV.parse(this.getAttribute("data-ret")).map(e => e.trim());
-			window.frameElement.dialog.ret.apply(window.frameElement.dialog, ret);
-			return false;
-		};
-		element.onkeydown = function (e)
-		{
-			e = e ? e : window.event;
-			if (e.keyCode === 13)
-				this.onclick();
-			return true;
-		};
-	});
-	Array.from(document.querySelectorAll('a.Hide')).forEach(function (element)
+		event.preventDefault();
+		event.stopPropagation();
+		var ret = CSV.parse(action.getAttribute("data-ret")).map(e => e.trim());
+		window.frameElement.dialog.ret.apply(window.frameElement.dialog, ret);
+	}
+});
+
+window.addEventListener("mouseover", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-ret]");
+
+	if (action)
+		action.focus();
+});
+
+window.addEventListener("mouseout", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-ret]");
+
+	if (action)
+		action.blur();
+});
+
+window.addEventListener("keydown", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("[data-ret]");
+
+	if (action && event.keyCode === 13)
+		action.click();
+});
+
+window.addEventListener("change", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+
+	if (action.tagName === "INPUT" && action.hasAttribute("data-getter"))
 	{
-		element.onclick = function ()
+		event.preventDefault();
+		event.stopPropagation();
+
+		var getter = document.getElementById(action.getAttribute("data-getter"));
+		var url = resolve(getter.href);
+		var parameters = CSV.parse(getter.getAttribute('data-get')).map(id => id.trim())
+			.map(id => id !== null ? document.getElementById(id) : null);
+		if (action.value)
 		{
-			if (window.frameElement
-				&& window.frameElement.dialog
-				&& window.frameElement.dialog.hide)
-				window.frameElement.dialog.hide();
-			else
-				window.close();
-		};
-	});
+			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
+			let dialog = GDialog.create();
+			dialog.target = url;
+			dialog.caption = getter.getAttribute("title");
+			dialog.get.apply(dialog, parameters);
+			dialog.get.apply(dialog, parameters);
+		} else
+			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
+	}
+});
+
+window.addEventListener("click", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("a.Hide");
+
+	if (action)
+	{
+		event.preventDefault();
+		event.stopPropagation();
+		if (window.frameElement
+			&& window.frameElement.dialog
+			&& window.frameElement.dialog.hide)
+			window.frameElement.dialog.hide();
+		else
+			window.close();
+	}
 });
 /* global END, HOME, UP, LEFT, DOWN, RIGHT, ESC, ENTER, CSV, arguments, FullScreen, customElements */
 
@@ -6304,15 +6347,9 @@ customElements.define('g-stack-frame', GStackFrame);
 
 class GPopup extends GWindow
 {
-	constructor()
+	constructor(element)
 	{
 		super();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-popup");
@@ -6324,25 +6361,19 @@ class GPopup extends GWindow
 		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
 		this.head.appendChild(close);
+
+		this.body.appendChild(element);
 	}
 
-	set root(element)
+	connectedCallback()
 	{
-		if (this.body.firstChild)
-			this.body.removeChild(this.body.firstChild);
-		this.body.appendChild(element);
+		super.connectedCallback();
 	}
 }
 
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll('template[data-popup]')).forEach(element =>
-	{
-		var popup = window.top.document.createElement("g-popup");
-		popup.root = element.content.cloneNode(true);
-		popup.show();
-	});
-});
+window.addEventListener("load",
+	() => Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => new GPopup(element.content.cloneNode(true)).show()));
 
 
 customElements.define('g-popup', GPopup);

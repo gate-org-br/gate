@@ -18,8 +18,6 @@ public class MenuTag extends AnchorTag
 
 		PageContext pageContext = (PageContext) getJspContext();
 
-		String body = String.format("%s<i>&#X%s;</i>", getName(), getIcon().getCode());
-
 		pageContext.getOut().print("<li " + getAttributes() + ">");
 
 		Attributes attributes = new Attributes();
@@ -32,7 +30,7 @@ public class MenuTag extends AnchorTag
 				attributes.put("formtarget", getTarget());
 
 			pageContext.getOut().print("<button " + attributes + ">");
-			pageContext.getOut().print(body);
+			pageContext.getOut().print(createBody());
 			pageContext.getOut().print("</button>");
 		} else
 		{
@@ -41,7 +39,7 @@ public class MenuTag extends AnchorTag
 				attributes.put("target", getTarget());
 
 			pageContext.getOut().print("<a " + attributes + ">");
-			pageContext.getOut().print(body);
+			pageContext.getOut().print(createBody());
 			pageContext.getOut().print("</a>");
 		}
 

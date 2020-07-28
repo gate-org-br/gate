@@ -24,8 +24,9 @@
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
-					<g:text id='form.role.name' property='form.role.name' readonly='readonly' required=''/>
-					<g:link module="#" screen="Role" action="Search" data-get='form.role.id, form.role.name'
+					<g:text id='form.role.name' property='form.role.name' required='' data-getter="adsfasdf"/>
+					<g:link id="adsfasdf" module="#" screen="Role" action="Search" data-get='form.role.id, form.role.name'
+						arguments="form.name=@{form.role.name}"
 						tabindex='1' title='Selecionar Perfil'>
 						<g:icon type="search"/>
 					</g:link>
