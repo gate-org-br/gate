@@ -475,6 +475,24 @@
 				<div>
 					<div>
 						<g-coolbar>
+							<a href="#" data-tooltip='["Item 1", "Item 2", "Item 3"]'>
+								Hover here<G:icon type="2015"/>
+							</a>
+						</g-coolbar>
+					</div>
+					<div>
+						<pre class="language-markup"><code><!--
+									<g-coolbar>
+										<a href="#" data-tooltip='["Item 1", "Item 2", "Item 3"]'>
+											Hover here<G:icon type="2015"/>
+										</a>
+									</g-coolbar>
+								--></code></pre>
+					</div>
+				</div>
+				<div>
+					<div>
+						<g-coolbar>
 							<a href="#" data-tooltip='{"Name": "Tooltip", "Type": "Attribute", "Description": "This is a tooltip"}'>
 								Hover here<G:icon type="2015"/>
 							</a>

@@ -7667,6 +7667,25 @@ window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
 });
+class GList
+{
+	static of(entries)
+	{
+		var ul = document.createElement("ul");
+		ul.classList.add("unordered-list");
+		entries.forEach(e => ul.appendChild(document.createElement("li")).innerHTML = e);
+		return ul;
+	}
+}
+
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll("ul[data-entries]")).forEach(function (ul)
+	{
+		entries = JSON.parse(ul.getAttribute("data-entries"));
+		entries.forEach(entry => ul.appendChild(document.createElement("li")).innerHTML = entry);
+	});
+});
 class DefinitionList
 {
 	static of(entries)
@@ -7729,7 +7748,7 @@ class AppEvents
 		}
 	}
 }
-/* global customElements, DefinitionList, Table, HTMLElement */
+/* global customElements, DefinitionList, Table, HTMLElement, GList */
 
 class GTooltip extends HTMLElement
 {
@@ -7748,7 +7767,9 @@ class GTooltip extends HTMLElement
 				this._content = label;
 				break;
 			case "object":
-				if (content instanceof HTMLElement)
+				if (Array.isArray(content))
+					this._content = GList.of(content);
+				else if (content instanceof HTMLElement)
 					this._content = content;
 				else
 					this._content = DefinitionList.of(content);
