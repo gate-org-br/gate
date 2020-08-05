@@ -4678,6 +4678,16 @@ g-report-dialog > main,
   width: calc(100% - 40px);
   flex-basis: calc(100% - 20px);
 }
+.unordered-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: disc;
+  list-style-position: inside;
+}
+.unordered-list > li {
+  margin: 0;
+  padding: 0;
+}
 dl {
   margin: 0;
   display: grid;

@@ -79,6 +79,7 @@
 @import "TableFilter.js"
 @import "g-coolbar/g-coolbar.js"
 @import "AutoClick.js"
+@import "unordered-list/unordered-list.js"
 @import "definition-list/definition-list.js"
 @import "AppEvents.js"
 @import "g-tooltip/g-tooltip.js"

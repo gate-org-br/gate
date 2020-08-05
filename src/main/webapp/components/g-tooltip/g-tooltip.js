@@ -1,4 +1,4 @@
-/* global customElements, DefinitionList, Table, HTMLElement */
+/* global customElements, DefinitionList, Table, HTMLElement, GList */
 
 class GTooltip extends HTMLElement
 {
@@ -17,7 +17,9 @@ class GTooltip extends HTMLElement
 				this._content = label;
 				break;
 			case "object":
-				if (content instanceof HTMLElement)
+				if (Array.isArray(content))
+					this._content = GList.of(content);
+				else if (content instanceof HTMLElement)
 					this._content = content;
 				else
 					this._content = DefinitionList.of(content);
