@@ -8,25 +8,10 @@ class GDialog extends GWindow
 
 		this.head.focus();
 		this.head.tabindex = 1;
-		this.classList.add("g-dialog");
 
-		let minimize = document.createElement("a");
-		minimize.href = "#";
-		this.head.appendChild(minimize);
-		minimize.innerHTML = "<i>&#x3019;<i/>";
-		minimize.onclick = () => this.minimize();
-
-		let fullScreen = document.createElement("a");
-		fullScreen.href = "#";
-		this.head.appendChild(fullScreen);
-		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.onclick = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-
-		let close = document.createElement("a");
-		close.href = "#";
-		this.head.appendChild(close);
-		close.onclick = () => this.hide();
-		close.innerHTML = "<i>&#x1011;<i/>";
+		this.minimizeButton;
+		this.fullScreenButton;
+		this.hideButton;
 
 		this.head.addEventListener("keydown", event =>
 		{
@@ -87,6 +72,7 @@ class GDialog extends GWindow
 	connectedCallback()
 	{
 		super.connectedCallback();
+		this.classList.add("g-dialog");
 	}
 
 	get iframe()

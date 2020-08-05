@@ -13,18 +13,6 @@ class Picker extends GWindow
 		this.classList.add("g-picker");
 	}
 
-	get close()
-	{
-		if (!this._private.close)
-		{
-			this._private.close = this.head.appendChild(document.createElement("a"));
-			this._private.close.href = "#";
-			this._private.close.onclick = () => this.hide();
-			this._private.close.innerHTML = "<i>&#x1011</i>";
-		}
-		return this._private.close;
-	}
-
 	get commit()
 	{
 		if (!this._private.commit)

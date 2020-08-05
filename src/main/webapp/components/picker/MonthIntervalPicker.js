@@ -5,19 +5,19 @@ class MonthIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new MonthIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-month-interval-picker");
 	}
 }
 
@@ -40,7 +40,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new MonthIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-month-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));

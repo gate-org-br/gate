@@ -5,6 +5,8 @@ class GPopup extends GWindow
 	constructor()
 	{
 		super();
+		this.hideButton;
+		this.caption = "Erro de sistema";
 	}
 
 	set element(element)
@@ -22,18 +24,7 @@ class GPopup extends GWindow
 	connectedCallback()
 	{
 		super.connectedCallback();
-
-		this.head.focus();
-		this.head.tabindex = 1;
 		this.classList.add("g-popup");
-
-		this.caption = "Erro de sistema";
-
-		let close = document.createElement("a");
-		close.href = "#";
-		close.onclick = () => this.hide();
-		close.innerHTML = "<i>&#x1011;<i/>";
-		this.head.appendChild(close);
 	}
 }
 

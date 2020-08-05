@@ -5,20 +5,20 @@ class TimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
 
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
-		this.classList.add("g-time-interval-picker");
 		var selector = this.body.appendChild(new TimeIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-time-interval-picker");
 	}
 }
 
@@ -41,7 +41,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new TimeIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-time-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
