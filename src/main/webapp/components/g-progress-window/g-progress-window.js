@@ -6,6 +6,7 @@ class GProgressWindow extends HTMLElement
 	{
 		Array.from(document.body.children).forEach(e => e.style.display = "");
 		document.body.removeChild(this);
+		return this;
 	}
 
 	show()
@@ -16,6 +17,7 @@ class GProgressWindow extends HTMLElement
 		if (window.frameElement)
 			window.frameElement.height = "0";
 		document.body.appendChild(this);
+		return this;
 	}
 
 	set target(target)

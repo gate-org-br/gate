@@ -5,17 +5,16 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
+		this.hideButton;
+		this.caption = "Selecione uma data";
+		this._private.date = this.body.appendChild(new DateSelector());
+		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 	}
 
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this.close;
 		this.classList.add("g-date-picker");
-		this.caption = "Selecione uma data";
-		this._private.date = this.body.appendChild(new DateSelector());
-		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 	}
 }
 
@@ -36,7 +35,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new DatePicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-date-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));

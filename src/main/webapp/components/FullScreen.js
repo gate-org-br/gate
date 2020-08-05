@@ -10,9 +10,11 @@ class FullScreen
 
 	static switch (element)
 	{
-		return FullScreen.status()
-			? FullScreen.exit()
-			: FullScreen.enter(element);
+		if (FullScreen.status())
+			FullScreen.exit();
+		else
+			FullScreen.enter(element);
+		return FullScreen.status();
 	}
 
 	static enter(element)
@@ -23,7 +25,6 @@ class FullScreen
 			element.mozRequestFullScreen();
 		else if (element.webkitRequestFullScreen)
 			element.webkitRequestFullScreen();
-		return true;
 	}
 
 	static exit()
@@ -34,6 +35,5 @@ class FullScreen
 			document.webkitExitFullscreen();
 		else if (document.mozCancelFullScreen)
 			document.mozCancelFullScreen();
-		return false;
 	}
 }

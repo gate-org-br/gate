@@ -2356,6 +2356,45 @@ class GWindow extends GModal
 			this.head.removeChild(this._private.commands);
 		this.head.appendChild(this._private.commands = commands);
 	}
+
+	get minimizeButton()
+	{
+		if (!this._private.minimizeButton)
+		{
+			this._private.minimizeButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.minimizeButton.href = "#";
+			this._private.minimizeButton.innerHTML = "<i>&#x3019;<i/>";
+			this._private.minimizeButton.onclick = () => this.minimize();
+		}
+
+		return this._private.minimizeButton;
+	}
+
+	get fullScreenButton()
+	{
+		if (!this._private.fullScreenButton)
+		{
+			this._private.fullScreenButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.fullScreenButton.href = "#";
+			this._private.fullScreenButton.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+			this._private.fullScreenButton.onclick = () => this._private.fullScreenButton.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3015;</i>" : "<i>&#x3016;</i>");
+		}
+
+		return this._private.fullScreenButton;
+	}
+
+	get hideButton()
+	{
+		if (!this._private.hideButton)
+		{
+			this._private.hideButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.hideButton.href = "#";
+			this._private.hideButton.innerHTML = "<i>&#x1011;<i/>";
+			this._private.hideButton.onclick = () => this.hide();
+		}
+
+		return this._private.hideButton;
+	}
 }
 
 customElements.define('g-window', GWindow);
@@ -4901,18 +4940,6 @@ class Picker extends GWindow
 		this.classList.add("g-picker");
 	}
 
-	get close()
-	{
-		if (!this._private.close)
-		{
-			this._private.close = this.head.appendChild(document.createElement("a"));
-			this._private.close.href = "#";
-			this._private.close.onclick = () => this.hide();
-			this._private.close.innerHTML = "<i>&#x1011</i>";
-		}
-		return this._private.close;
-	}
-
 	get commit()
 	{
 		if (!this._private.commit)
@@ -4933,17 +4960,16 @@ class DatePicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
+		this.hideButton;
+		this.caption = "Selecione uma data";
+		this._private.date = this.body.appendChild(new DateSelector());
+		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 	}
 
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this.close;
 		this.classList.add("g-date-picker");
-		this.caption = "Selecione uma data";
-		this._private.date = this.body.appendChild(new DateSelector());
-		this._private.date.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 	}
 }
 
@@ -4964,7 +4990,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new DatePicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-date-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -4986,20 +5013,20 @@ class TimePicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-	
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
-		this.classList.add("g-time-picker");
+
+		this.hideButton;
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new TimeSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-time-picker");
 	}
 }
 
@@ -5024,7 +5051,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new TimePicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-time-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5044,20 +5072,19 @@ class MonthPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
-		this.classList.add("g-month-picker");
+		this.hideButton;
 		this.caption = "Selecione uma hora";
 		var selector = this.body.appendChild(new MonthSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-month-picker");
 	}
 }
 
@@ -5082,7 +5109,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new MonthPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-month-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5102,19 +5130,19 @@ class DateTimePicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione uma data e hora";
 		var selector = this.body.appendChild(new DateTimeSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-datetime-picker");
 	}
 }
 
@@ -5137,7 +5165,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new DateTimePicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-datetime-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5157,19 +5186,19 @@ class DateIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-date-interval-picker");
 	}
 }
 
@@ -5192,7 +5221,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new DateIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-date-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5212,20 +5242,20 @@ class TimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
 
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
-		this.classList.add("g-time-interval-picker");
 		var selector = this.body.appendChild(new TimeIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-time-interval-picker");
 	}
 }
 
@@ -5248,7 +5278,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new TimeIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-time-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5268,19 +5299,19 @@ class MonthIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new MonthIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-month-interval-picker");
 	}
 }
 
@@ -5303,7 +5334,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new MonthIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-month-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5323,19 +5355,19 @@ class DateTimeIntervalPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
+		this.hideButton;
 		this.caption = "Selecione um período";
 		var selector = this.body.appendChild(new DateTimeIntervalSelector());
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-datetime-interval-picker");
 	}
 }
 
@@ -5358,7 +5390,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new DateTimeIntervalPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-datetime-interval-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5378,17 +5411,16 @@ class IconPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-	
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
-		this.classList.add("g-picker");
+		this.hideButton;
 		this.head.appendChild(document.createTextNode("Selecione um ícone"));
 		var selector = this.body.appendChild(document.createElement("g-icon-selector"));
 		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail.icon})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-icon-picker");
 	}
 }
 
@@ -5411,7 +5443,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new IconPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-icon-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
@@ -5430,12 +5463,12 @@ class ActionPicker extends Picker
 	constructor()
 	{
 		super();
+		this.hideButtton;
 	}
 
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this.close;
 		this.classList.add("g-picker");
 	}
 
@@ -6072,25 +6105,10 @@ class GDialog extends GWindow
 
 		this.head.focus();
 		this.head.tabindex = 1;
-		this.classList.add("g-dialog");
 
-		let minimize = document.createElement("a");
-		minimize.href = "#";
-		this.head.appendChild(minimize);
-		minimize.innerHTML = "<i>&#x3019;<i/>";
-		minimize.onclick = () => this.minimize();
-
-		let fullScreen = document.createElement("a");
-		fullScreen.href = "#";
-		this.head.appendChild(fullScreen);
-		fullScreen.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-		fullScreen.onclick = element => element.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-
-		let close = document.createElement("a");
-		close.href = "#";
-		this.head.appendChild(close);
-		close.onclick = () => this.hide();
-		close.innerHTML = "<i>&#x1011;<i/>";
+		this.minimizeButton;
+		this.fullScreenButton;
+		this.hideButton;
 
 		this.head.addEventListener("keydown", event =>
 		{
@@ -6151,6 +6169,7 @@ class GDialog extends GWindow
 	connectedCallback()
 	{
 		super.connectedCallback();
+		this.classList.add("g-dialog");
 	}
 
 	get iframe()
@@ -6414,6 +6433,8 @@ class GPopup extends GWindow
 	constructor()
 	{
 		super();
+		this.hideButton;
+		this.caption = "Erro de sistema";
 	}
 
 	set element(element)
@@ -6431,18 +6452,7 @@ class GPopup extends GWindow
 	connectedCallback()
 	{
 		super.connectedCallback();
-
-		this.head.focus();
-		this.head.tabindex = 1;
 		this.classList.add("g-popup");
-
-		this.caption = "Erro de sistema";
-
-		let close = document.createElement("a");
-		close.href = "#";
-		close.onclick = () => this.hide();
-		close.innerHTML = "<i>&#x1011;<i/>";
-		this.head.appendChild(close);
 	}
 }
 
@@ -6745,9 +6755,11 @@ class FullScreen
 
 	static switch (element)
 	{
-		return FullScreen.status()
-			? FullScreen.exit()
-			: FullScreen.enter(element);
+		if (FullScreen.status())
+			FullScreen.exit();
+		else
+			FullScreen.enter(element);
+		return FullScreen.status();
 	}
 
 	static enter(element)
@@ -6758,7 +6770,6 @@ class FullScreen
 			element.mozRequestFullScreen();
 		else if (element.webkitRequestFullScreen)
 			element.webkitRequestFullScreen();
-		return true;
 	}
 
 	static exit()
@@ -6769,7 +6780,6 @@ class FullScreen
 			document.webkitExitFullscreen();
 		else if (document.mozCancelFullScreen)
 			document.mozCancelFullScreen();
-		return false;
 	}
 }
 /* global ENTER, ESC, Message, GDialog */
@@ -7268,7 +7278,6 @@ class GProgressDialog extends Picker
 	connectedCallback()
 	{
 		super.connectedCallback();
-
 		this.classList.add("g-progress-dialog");
 
 		this.caption = this.caption || "Progresso";
@@ -7335,6 +7344,7 @@ class GProgressWindow extends HTMLElement
 	{
 		Array.from(document.body.children).forEach(e => e.style.display = "");
 		document.body.removeChild(this);
+		return this;
 	}
 
 	show()
@@ -7345,6 +7355,7 @@ class GProgressWindow extends HTMLElement
 		if (window.frameElement)
 			window.frameElement.height = "0";
 		document.body.appendChild(this);
+		return this;
 	}
 
 	set target(target)

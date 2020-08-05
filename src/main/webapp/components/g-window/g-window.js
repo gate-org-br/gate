@@ -76,6 +76,45 @@ class GWindow extends GModal
 			this.head.removeChild(this._private.commands);
 		this.head.appendChild(this._private.commands = commands);
 	}
+
+	get minimizeButton()
+	{
+		if (!this._private.minimizeButton)
+		{
+			this._private.minimizeButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.minimizeButton.href = "#";
+			this._private.minimizeButton.innerHTML = "<i>&#x3019;<i/>";
+			this._private.minimizeButton.onclick = () => this.minimize();
+		}
+
+		return this._private.minimizeButton;
+	}
+
+	get fullScreenButton()
+	{
+		if (!this._private.fullScreenButton)
+		{
+			this._private.fullScreenButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.fullScreenButton.href = "#";
+			this._private.fullScreenButton.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
+			this._private.fullScreenButton.onclick = () => this._private.fullScreenButton.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3015;</i>" : "<i>&#x3016;</i>");
+		}
+
+		return this._private.fullScreenButton;
+	}
+
+	get hideButton()
+	{
+		if (!this._private.hideButton)
+		{
+			this._private.hideButton = this.head.appendChild(window.top.document.createElement("a"));
+			this._private.hideButton.href = "#";
+			this._private.hideButton.innerHTML = "<i>&#x1011;<i/>";
+			this._private.hideButton.onclick = () => this.hide();
+		}
+
+		return this._private.hideButton;
+	}
 }
 
 customElements.define('g-window', GWindow);

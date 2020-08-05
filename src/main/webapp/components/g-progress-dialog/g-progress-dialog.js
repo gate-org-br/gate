@@ -30,7 +30,6 @@ class GProgressDialog extends Picker
 	connectedCallback()
 	{
 		super.connectedCallback();
-
 		this.classList.add("g-progress-dialog");
 
 		this.caption = this.caption || "Progresso";

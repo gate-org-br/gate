@@ -5,17 +5,16 @@ class IconPicker extends Picker
 	constructor()
 	{
 		super();
-		this.show();
-	}
-	
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.close;
-		this.classList.add("g-picker");
+		this.hideButton;
 		this.head.appendChild(document.createTextNode("Selecione um ícone"));
 		var selector = this.body.appendChild(document.createElement("g-icon-selector"));
 		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail.icon})) | this.hide());
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.classList.add("g-icon-picker");
 	}
 }
 
@@ -38,7 +37,8 @@ window.addEventListener("load", function ()
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				new IconPicker().addEventListener("picked", e =>
+				window.top.document.createElement("g-icon-picker")
+					.show().addEventListener("picked", e =>
 				{
 					input.value = e.detail;
 					input.dispatchEvent(new Event('change', {bubbles: true}));
