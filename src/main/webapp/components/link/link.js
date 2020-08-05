@@ -102,11 +102,11 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let stackFrame = GStackFrame.create();
-					stackFrame.target = link.getAttribute("href");
+					let dialog = GStackFrame.create();
+					dialog.target = link.getAttribute("href");
 
-					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
-					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 					if (link.getAttribute("data-on-hide"))
 						if (link.getAttribute("data-on-hide") === "reload")
@@ -117,7 +117,7 @@ window.addEventListener("click", function (event)
 							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
 									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
-					stackFrame.show();
+					dialog.show();
 				}
 				break;
 			case "_message":
@@ -200,7 +200,8 @@ window.addEventListener("click", function (event)
 					.filter(e => e.tagName.toLowerCase() === "div")
 					.forEach(e =>
 					{
-						var popup = new GPopup(e);
+						var popup = window.top.document.createElement("g-popup");
+						popup.element = e;
 						popup.addEventListener("hide", () => link.appendChild(e));
 						popup.show();
 					});
@@ -212,11 +213,28 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new GProcess(JSON.parse(process));
-					let status = new GProgressDialog();
-					status.process = process.id;
-					status.caption = link.getAttribute("title") || "Progresso";
-					status.target = link.getAttribute("data-redirect") || "_self";
-					status.show();
+
+					let dialog = window.top.document.createElement("g-progress-dialog");
+					dialog.process = process.id;
+					dialog.caption = link.getAttribute("title") || "Progresso";
+					dialog.target = link.getAttribute("data-redirect") || "_self";
+
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
+
+
+					dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+					dialog.show();
 				});
 				break;
 			case "_progress-window":
@@ -226,17 +244,34 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new GProcess(JSON.parse(process));
-					let status = new GProgressWindow();
-					status.process = process.id;
-					status.target = link.getAttribute("data-redirect") || "_self";
-					status.show();
+
+					let dialog = window.top.document.createElement("g-progress-window");
+					dialog.process = process.id;
+					dialog.target = link.getAttribute("data-redirect") || "_self";
+
+
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
+
+					dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+					dialog.show();
 				});
 				break;
 			case "_report":
 			case "_report-dialog":
 				event.preventDefault();
 				event.stopPropagation();
-				let dialog = new GReportDialog();
+				let dialog = document.top.createElement("g-report-dialog");
 				dialog.blocked = true;
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);

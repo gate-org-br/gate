@@ -60,7 +60,6 @@
 				</g-coolbar>
 			</div>
 		</div>
-
 		<g:superuser>
 			<g:if condition="${not empty exception}">
 				<g:stacktrace title="Erro de sistema"

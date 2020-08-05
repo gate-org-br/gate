@@ -109,10 +109,10 @@ window.addEventListener("click", function (event)
 						button.setAttribute("formtarget", "_stack");
 					} else if (event.target.form.getAttribute("target") !== "_stack")
 					{
-						let stackFrame = GStackFrame.create();
+						let dialog = GStackFrame.create();
 
-						stackFrame.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
-						stackFrame.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 						if (button.getAttribute("data-on-hide"))
 							if (button.getAttribute("data-on-hide") === "reload")
@@ -123,7 +123,7 @@ window.addEventListener("click", function (event)
 								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
-						stackFrame.show();
+						dialog.show();
 					}
 				}
 				break;
@@ -223,11 +223,26 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = new GProgressDialog();
-						status.process = process.id;
-						status.caption = button.getAttribute("title") || "Progresso";
-						status.target = button.getAttribute("data-redirect") || "_self";
-						status.show();
+						let dialog = window.top.document.createElement("g-progress-dialog");
+						dialog.process = process.id;
+						dialog.caption = button.getAttribute("title") || "Progresso";
+						dialog.target = button.getAttribute("data-redirect") || "_self";
+
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+						dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+						dialog.show();
 
 						button.disabled = false;
 					});
@@ -247,9 +262,24 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = new GProgressWindow();
+						let status = window.top.document.createElement("g-progress-window");
 						status.process = process.id;
 						status.target = button.getAttribute("data-redirect") || "_self";
+
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+						dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
 						status.show();
 
 						button.disabled = false;

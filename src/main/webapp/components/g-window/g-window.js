@@ -5,21 +5,20 @@ class GWindow extends GModal
 	constructor()
 	{
 		super();
+		this._private.main = window.top.document.createElement("main");
 	}
 
 	connectedCallback()
 	{
 		super.connectedCallback();
 		this.classList.add("g-window");
+		this.appendChild(this._private.main);
 		this.main.addEventListener("click", e => e.stopPropagation());
 		this.main.addEventListener("contextmenu", e => e.stopPropagation());
 	}
 
 	get main()
 	{
-		if (!this._private.main)
-			this._private.main = this
-				.appendChild(document.createElement("main"));
 		return this._private.main;
 	}
 
@@ -27,7 +26,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.head)
 			this._private.head = this.main
-				.appendChild(document.createElement("header"));
+				.appendChild(window.top.document.createElement("header"));
 		return this._private.head;
 	}
 
@@ -35,7 +34,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.caption)
 			this._private.caption = this.head
-				.appendChild(document.createElement("label"));
+				.appendChild(window.top.document.createElement("label"));
 		return this._private.caption.innerText;
 	}
 
@@ -43,7 +42,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.caption)
 			this._private.caption = this.head
-				.appendChild(document.createElement("label"));
+				.appendChild(window.top.document.createElement("label"));
 		this._private.caption.innerText = caption;
 	}
 
@@ -51,7 +50,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.body)
 			this._private.body = this.main
-				.appendChild(document.createElement("section"));
+				.appendChild(window.top.document.createElement("section"));
 		return this._private.body;
 	}
 
@@ -59,7 +58,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.foot)
 			this._private.foot = this.main
-				.appendChild(document.createElement("footer"));
+				.appendChild(window.top.document.createElement("footer"));
 		return this._private.foot;
 	}
 
