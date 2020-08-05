@@ -35,7 +35,7 @@ class GProgressDialog extends Picker
 
 		this.caption = this.caption || "Progresso";
 
-		let progress = new GProgressStatus();
+		let progress = document.createElement("g-progress-status");
 		progress.process = this.process;
 		this.body.appendChild(progress);
 
@@ -78,10 +78,12 @@ class GProgressDialog extends Picker
 			if (event.detail.process !== this.process)
 				return;
 
-			this.commit.onclick = null;
 			this.commit.innerHTML = "Exibir";
-			this.commit.href = event.detail.url;
-			this.commit.addEventListener("click", () => this.hide());
+			this.commit.onclick = (event) =>
+			{
+				this.hide();
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+			};
 		});
 	}
 }

@@ -88,10 +88,12 @@ class GProgressWindow extends HTMLElement
 			if (event.detail.process !== this.process)
 				return;
 
-			action.onclick = null;
-			action.href = event.detail.url;
 			action.innerHTML = "Exibir<i>&#X1000;</i>";
-			action.addEventListener("click", () => this.hide());
+			this.commit.onclick = (event) =>
+			{
+				this.hide();
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+			};
 		});
 	}
 }

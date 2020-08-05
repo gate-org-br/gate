@@ -1379,13 +1379,13 @@ class GProcess
 		let ws = new WebSocket(protocol + location.host + "/" +
 			location.pathname.split("/")[1] + "/Progress/" + id);
 
-		ws.onerror = e => window.dispatchEvent(new CustomEvent('ProcessError',
+		ws.onerror = e => window.top.dispatchEvent(new CustomEvent('ProcessError',
 				{detail: {process: id, text: e.data | "Conexão perdida com o servidor"}}));
 
 		ws.onclose = e =>
 		{
 			if (e.code !== 1000)
-				window.dispatchEvent(new CustomEvent('ProcessError',
+				window.top.dispatchEvent(new CustomEvent('ProcessError',
 					{detail: {process: id, text: e.reason | "Conexão perdida com o servidor"}}));
 		};
 
@@ -1410,26 +1410,26 @@ class GProcess
 					switch (event.status)
 					{
 						case "CREATED":
-							window.dispatchEvent(new CustomEvent('ProcessPending',
+							window.top.dispatchEvent(new CustomEvent('ProcessPending',
 								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
 							break;
 						case "PENDING":
-							window.dispatchEvent(new CustomEvent('ProcessPending',
+							window.top.dispatchEvent(new CustomEvent('ProcessPending',
 								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
 							break;
 						case "COMMITED":
-							window.dispatchEvent(new CustomEvent('ProcessCommited',
+							window.top.dispatchEvent(new CustomEvent('ProcessCommited',
 								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
 							break;
 						case "CANCELED":
-							window.dispatchEvent(new CustomEvent('ProcessCanceled',
+							window.top.dispatchEvent(new CustomEvent('ProcessCanceled',
 								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
 							break;
 					}
 					break;
 
 				case "Redirect":
-					window.dispatchEvent(new CustomEvent('ProcessRedirect',
+					window.top.dispatchEvent(new CustomEvent('ProcessRedirect',
 						{detail: {process: id, url: event.url}}));
 					break;
 			}
@@ -2285,21 +2285,20 @@ class GWindow extends GModal
 	constructor()
 	{
 		super();
+		this._private.main = window.top.document.createElement("main");
 	}
 
 	connectedCallback()
 	{
 		super.connectedCallback();
 		this.classList.add("g-window");
+		this.appendChild(this._private.main);
 		this.main.addEventListener("click", e => e.stopPropagation());
 		this.main.addEventListener("contextmenu", e => e.stopPropagation());
 	}
 
 	get main()
 	{
-		if (!this._private.main)
-			this._private.main = this
-				.appendChild(document.createElement("main"));
 		return this._private.main;
 	}
 
@@ -2307,7 +2306,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.head)
 			this._private.head = this.main
-				.appendChild(document.createElement("header"));
+				.appendChild(window.top.document.createElement("header"));
 		return this._private.head;
 	}
 
@@ -2315,7 +2314,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.caption)
 			this._private.caption = this.head
-				.appendChild(document.createElement("label"));
+				.appendChild(window.top.document.createElement("label"));
 		return this._private.caption.innerText;
 	}
 
@@ -2323,7 +2322,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.caption)
 			this._private.caption = this.head
-				.appendChild(document.createElement("label"));
+				.appendChild(window.top.document.createElement("label"));
 		this._private.caption.innerText = caption;
 	}
 
@@ -2331,7 +2330,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.body)
 			this._private.body = this.main
-				.appendChild(document.createElement("section"));
+				.appendChild(window.top.document.createElement("section"));
 		return this._private.body;
 	}
 
@@ -2339,7 +2338,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.foot)
 			this._private.foot = this.main
-				.appendChild(document.createElement("footer"));
+				.appendChild(window.top.document.createElement("footer"));
 		return this._private.foot;
 	}
 
@@ -2874,11 +2873,11 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let stackFrame = GStackFrame.create();
-					stackFrame.target = link.getAttribute("href");
+					let dialog = GStackFrame.create();
+					dialog.target = link.getAttribute("href");
 
-					stackFrame.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
-					stackFrame.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 					if (link.getAttribute("data-on-hide"))
 						if (link.getAttribute("data-on-hide") === "reload")
@@ -2889,7 +2888,7 @@ window.addEventListener("click", function (event)
 							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
 									.exec(link.getAttribute("data-on-hide"))[1]).submit());
 
-					stackFrame.show();
+					dialog.show();
 				}
 				break;
 			case "_message":
@@ -2972,7 +2971,8 @@ window.addEventListener("click", function (event)
 					.filter(e => e.tagName.toLowerCase() === "div")
 					.forEach(e =>
 					{
-						var popup = new GPopup(e);
+						var popup = window.top.document.createElement("g-popup");
+						popup.element = e;
 						popup.addEventListener("hide", () => link.appendChild(e));
 						popup.show();
 					});
@@ -2984,11 +2984,28 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new GProcess(JSON.parse(process));
-					let status = new GProgressDialog();
-					status.process = process.id;
-					status.caption = link.getAttribute("title") || "Progresso";
-					status.target = link.getAttribute("data-redirect") || "_self";
-					status.show();
+
+					let dialog = window.top.document.createElement("g-progress-dialog");
+					dialog.process = process.id;
+					dialog.caption = link.getAttribute("title") || "Progresso";
+					dialog.target = link.getAttribute("data-redirect") || "_self";
+
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
+
+
+					dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+					dialog.show();
 				});
 				break;
 			case "_progress-window":
@@ -2998,17 +3015,34 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new GProcess(JSON.parse(process));
-					let status = new GProgressWindow();
-					status.process = process.id;
-					status.target = link.getAttribute("data-redirect") || "_self";
-					status.show();
+
+					let dialog = window.top.document.createElement("g-progress-window");
+					dialog.process = process.id;
+					dialog.target = link.getAttribute("data-redirect") || "_self";
+
+
+					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+					if (link.getAttribute("data-on-hide"))
+						if (link.getAttribute("data-on-hide") === "reload")
+							dialog.addEventListener("hide", () => window.location = window.location.href);
+						else if (link.getAttribute("data-on-hide") === "submit")
+							dialog.addEventListener("hide", () => link.closest("form").submit());
+						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+									.exec(link.getAttribute("data-on-hide"))[1]).submit());
+
+					dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+					dialog.show();
 				});
 				break;
 			case "_report":
 			case "_report-dialog":
 				event.preventDefault();
 				event.stopPropagation();
-				let dialog = new GReportDialog();
+				let dialog = document.top.createElement("g-report-dialog");
 				dialog.blocked = true;
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);
@@ -3161,10 +3195,10 @@ window.addEventListener("click", function (event)
 						button.setAttribute("formtarget", "_stack");
 					} else if (event.target.form.getAttribute("target") !== "_stack")
 					{
-						let stackFrame = GStackFrame.create();
+						let dialog = GStackFrame.create();
 
-						stackFrame.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: stackFrame}})));
-						stackFrame.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: stackFrame}})));
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 						if (button.getAttribute("data-on-hide"))
 							if (button.getAttribute("data-on-hide") === "reload")
@@ -3175,7 +3209,7 @@ window.addEventListener("click", function (event)
 								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
-						stackFrame.show();
+						dialog.show();
 					}
 				}
 				break;
@@ -3275,11 +3309,26 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = new GProgressDialog();
-						status.process = process.id;
-						status.caption = button.getAttribute("title") || "Progresso";
-						status.target = button.getAttribute("data-redirect") || "_self";
-						status.show();
+						let dialog = window.top.document.createElement("g-progress-dialog");
+						dialog.process = process.id;
+						dialog.caption = button.getAttribute("title") || "Progresso";
+						dialog.target = button.getAttribute("data-redirect") || "_self";
+
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+						dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
+						dialog.show();
 
 						button.disabled = false;
 					});
@@ -3299,9 +3348,24 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = new GProgressWindow();
+						let status = window.top.document.createElement("g-progress-window");
 						status.process = process.id;
 						status.target = button.getAttribute("data-redirect") || "_self";
+
+						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+						if (button.getAttribute("data-on-hide"))
+							if (button.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (button.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => button.closest("form").submit());
+							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+						dialog.addEventListener("redirect", event => window.location.href = event.detail);
+
 						status.show();
 
 						button.disabled = false;
@@ -6347,9 +6411,27 @@ customElements.define('g-stack-frame', GStackFrame);
 
 class GPopup extends GWindow
 {
-	constructor(element)
+	constructor()
 	{
 		super();
+	}
+
+	set element(element)
+	{
+		if (this.body.firstChild)
+			this.body.removeChild(this.body.firstChild);
+		this.body.appendChild(element);
+	}
+
+	get element()
+	{
+		return this.main.firstChild();
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+
 		this.head.focus();
 		this.head.tabindex = 1;
 		this.classList.add("g-popup");
@@ -6361,19 +6443,18 @@ class GPopup extends GWindow
 		close.onclick = () => this.hide();
 		close.innerHTML = "<i>&#x1011;<i/>";
 		this.head.appendChild(close);
-
-		this.body.appendChild(element);
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
 	}
 }
 
-window.addEventListener("load",
-	() => Array.from(document.querySelectorAll('template[data-popup]'))
-		.forEach(element => new GPopup(element.content.cloneNode(true)).show()));
+window.addEventListener("load", function ()
+{
+	Array.from(document.querySelectorAll('template[data-popup]')).forEach(element =>
+	{
+		var popup = window.top.document.createElement("g-popup");
+		popup.element = element.content.cloneNode(true);
+		popup.show();
+	});
+});
 
 
 customElements.define('g-popup', GPopup);
@@ -7192,7 +7273,7 @@ class GProgressDialog extends Picker
 
 		this.caption = this.caption || "Progresso";
 
-		let progress = new GProgressStatus();
+		let progress = document.createElement("g-progress-status");
 		progress.process = this.process;
 		this.body.appendChild(progress);
 
@@ -7235,10 +7316,12 @@ class GProgressDialog extends Picker
 			if (event.detail.process !== this.process)
 				return;
 
-			this.commit.onclick = null;
 			this.commit.innerHTML = "Exibir";
-			this.commit.href = event.detail.url;
-			this.commit.addEventListener("click", () => this.hide());
+			this.commit.onclick = (event) =>
+			{
+				this.hide();
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+			};
 		});
 	}
 }
@@ -7334,10 +7417,12 @@ class GProgressWindow extends HTMLElement
 			if (event.detail.process !== this.process)
 				return;
 
-			action.onclick = null;
-			action.href = event.detail.url;
 			action.innerHTML = "Exibir<i>&#X1000;</i>";
-			action.addEventListener("click", () => this.hide());
+			this.commit.onclick = (event) =>
+			{
+				this.hide();
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+			};
 		});
 	}
 }
