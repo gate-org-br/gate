@@ -1,7 +1,7 @@
 create database gatetest;
 use gatetest;
 
-CREATE USER 'gatetest'@'localhost' IDENTIFIED BY 'gatetest';
+CREATE USER 'gatetest'@'localhost' IDENTIFIED WITH mysql_native_password BY 'gatetest';
 
 GRANT ALL PRIVILEGES ON gatetest.* TO 'gatetest'@'localhost';
 

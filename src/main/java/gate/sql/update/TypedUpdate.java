@@ -200,9 +200,11 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		public ConstantWhere where(ConstantCondition condition)
 		{
 			/**
-			 * Creates the SQL sentence with the properties and conditions specified.
+			 * Creates the SQL sentence with the properties and
+			 * conditions specified.
 			 *
-			 * @return the SQL statement with the properties and conditions specified
+			 * @return the SQL statement with the properties and
+			 * conditions specified
 			 */
 			return new ConstantWhere(condition);
 		}
@@ -220,9 +222,11 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		}
 
 		/**
-		 * Creates an update sentence for the specified properties matching the id.
+		 * Creates an update sentence for the specified properties
+		 * matching the id.
 		 *
-		 * @return an update sentence for the specified properties matching the id
+		 * @return an update sentence for the specified properties
+		 * matching the id
 		 */
 		@Override
 		public Operation<T> build()
@@ -237,6 +241,41 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			return TypedUpdate.this + " set " + columns;
 		}
 
+		public LimittedGeneric limit(int limit)
+		{
+			return new LimittedGeneric(limit);
+		}
+
+		public class LimittedGeneric implements Operation.Builder<T>
+		{
+
+			private final int limit;
+
+			private LimittedGeneric(int limit)
+			{
+				this.limit = limit;
+			}
+
+			/**
+			 * Creates an update sentence for the specified
+			 * properties, conditions and limit.
+			 *
+			 * @return an update sentence for the properties and
+			 * conditions specified
+			 */
+			@Override
+			public Operation<T> build()
+			{
+				return Operation.of(type, properties, toString());
+			}
+
+			@Override
+			public String toString()
+			{
+				return Generic.this + " limit " + limit;
+			}
+		}
+
 		public class ConstantWhere implements Operation.Builder<T>
 		{
 
@@ -248,9 +287,11 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			}
 
 			/**
-			 * Creates an update sentence for the properties and conditions specified.
+			 * Creates an update sentence for the properties and
+			 * conditions specified.
 			 *
-			 * @return an update sentence for the properties and conditions specified
+			 * @return an update sentence for the properties and
+			 * conditions specified
 			 */
 			@Override
 			public Operation<T> build()
@@ -262,6 +303,41 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			public String toString()
 			{
 				return Generic.this + " where " + condition;
+			}
+
+			public LimittedConstantWhere limit(int limit)
+			{
+				return new LimittedConstantWhere(limit);
+			}
+
+			public class LimittedConstantWhere implements Operation.Builder<T>
+			{
+
+				private final int limit;
+
+				private LimittedConstantWhere(int limit)
+				{
+					this.limit = limit;
+				}
+
+				/**
+				 * Creates an update sentence for the specified
+				 * properties, conditions and limit.
+				 *
+				 * @return an update sentence for the properties
+				 * and conditions specified
+				 */
+				@Override
+				public Operation<T> build()
+				{
+					return Operation.of(type, properties, toString());
+				}
+
+				@Override
+				public String toString()
+				{
+					return ConstantWhere.this + " limit " + limit;
+				}
 			}
 		}
 
@@ -276,9 +352,11 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			}
 
 			/**
-			 * Creates an update sentence for the properties and conditions specified.
+			 * Creates an update sentence for the properties and
+			 * conditions specified.
 			 *
-			 * @return an update sentence for the properties and conditions specified
+			 * @return an update sentence for the properties and
+			 * conditions specified
 			 */
 			@Override
 			public Operation<T> build()
@@ -294,6 +372,41 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			public String toString()
 			{
 				return Generic.this + " where " + condition;
+			}
+
+			public LimittedGenericWhere limit(int limit)
+			{
+				return new LimittedGenericWhere(limit);
+			}
+
+			public class LimittedGenericWhere implements Operation.Builder<T>
+			{
+
+				private final int limit;
+
+				private LimittedGenericWhere(int limit)
+				{
+					this.limit = limit;
+				}
+
+				/**
+				 * Creates an update sentence for the specified
+				 * properties, conditions and limit.
+				 *
+				 * @return an update sentence for the properties
+				 * and conditions specified
+				 */
+				@Override
+				public Operation<T> build()
+				{
+					return Operation.of(type, properties, toString());
+				}
+
+				@Override
+				public String toString()
+				{
+					return GenericWhere.this + " limit " + limit;
+				}
 			}
 		}
 	}
