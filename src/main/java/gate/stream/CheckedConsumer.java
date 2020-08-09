@@ -1,7 +1,5 @@
 package gate.stream;
 
-import java.util.function.Consumer;
-
 @FunctionalInterface
 public interface CheckedConsumer<T>
 {

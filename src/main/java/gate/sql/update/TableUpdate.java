@@ -2,6 +2,7 @@ package gate.sql.update;
 
 import gate.converter.Converter;
 import gate.sql.condition.CompiledCondition;
+import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.ExtractorCondition;
 import gate.sql.condition.GenericCondition;
@@ -31,7 +32,8 @@ public class TableUpdate implements Update
 	/**
 	 * Binds the update statement to a list of entities.
 	 *
-	 * @param <T> type of entities to be associated with the update statement
+	 * @param <T> type of entities to be associated with the update
+	 * statement
 	 * @param type of the entities from where the values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
@@ -96,7 +98,8 @@ public class TableUpdate implements Update
 	}
 
 	/**
-	 * Adds the next column to the builder if previous specified condition is true.
+	 * Adds the next column to the builder if previous specified condition
+	 * is true.
 	 *
 	 * @param assertion the condition to be checked
 	 *
@@ -114,7 +117,8 @@ public class TableUpdate implements Update
 	}
 
 	/**
-	 * Represents a an update statement bound to a table name and column names.
+	 * Represents a an update statement bound to a table name and column
+	 * names.
 	 */
 	public class Generic implements Sentence.Builder
 	{
@@ -160,10 +164,9 @@ public class TableUpdate implements Update
 		 *
 		 * @return the same builder with the added condition
 		 */
-		public Sentence.Compiled.Builder where(ConstantCondition condition)
+		public GenericWhere where(ConstantCondition condition)
 		{
-			return () -> Sentence.of(Generic.this + " where " + condition)
-				.parameters(Collections.singletonList(Collections.emptyList()));
+			return new GenericWhere(condition);
 		}
 
 		/**
@@ -173,15 +176,17 @@ public class TableUpdate implements Update
 		 *
 		 * @return the same builder with the added condition
 		 */
-		public Sentence.Builder where(GenericCondition condition)
+		public GenericWhere where(GenericCondition condition)
 		{
-			return () -> Sentence.of(Generic.this + " where " + condition);
+			return new GenericWhere(condition);
 		}
 
 		/**
-		 * Creates a sentence with the specified columns and no condition associated.
+		 * Creates a sentence with the specified columns and no
+		 * condition associated.
 		 *
-		 * @return a sentence with the specified columns and no condition associated
+		 * @return a sentence with the specified columns and no
+		 * condition associated
 		 */
 		@Override
 		public Sentence build()
@@ -195,6 +200,62 @@ public class TableUpdate implements Update
 			return TableUpdate.this + " set " + columns;
 		}
 
+		public class GenericWhere implements Sentence.Builder
+		{
+
+			private final Condition condition;
+
+			public GenericWhere(ConstantCondition condition)
+			{
+				this.condition = condition;
+			}
+
+			public GenericWhere(GenericCondition condition)
+			{
+				this.condition = condition;
+			}
+
+			@Override
+			public Sentence build()
+			{
+				return Sentence.of(toString());
+			}
+
+			@Override
+			public String toString()
+			{
+				return Generic.this + " where " + condition;
+			}
+
+			public LimitedGenericWhere limit(int limit)
+			{
+				return new LimitedGenericWhere(limit);
+			}
+
+			public class LimitedGenericWhere implements Sentence.Builder
+			{
+
+				private final int limit;
+
+				public LimitedGenericWhere(int limit)
+				{
+					this.limit = limit;
+				}
+
+				@Override
+				public String toString()
+				{
+					return GenericWhere.this + " limit " + limit;
+				}
+
+				@Override
+				public Sentence build()
+				{
+					return Sentence.of(toString());
+				}
+			}
+		}
+
 		public class When
 		{
 
@@ -203,7 +264,8 @@ public class TableUpdate implements Update
 			 *
 			 * @param column the column to be updated
 			 *
-			 * @return the same update sentence builder with the added column
+			 * @return the same update sentence builder with the
+			 * added column
 			 */
 			public Generic set(String column)
 			{
@@ -217,7 +279,8 @@ public class TableUpdate implements Update
 			 * @param type type of the column to be updated
 			 * @param column the column to be updated
 			 *
-			 * @return the same update sentence builder with the added column
+			 * @return the same update sentence builder with the
+			 * added column
 			 */
 			public <T> Generic set(Class<T> type, String column)
 			{
@@ -225,7 +288,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds the next column to the builder if previous specified condition is true.
+			 * Adds the next column to the builder if previous
+			 * specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
 			 *
@@ -327,9 +391,9 @@ public class TableUpdate implements Update
 		 *
 		 * @return A SQLBuilder with the conditions specified
 		 */
-		public Sentence.Compiled.Builder where(ConstantCondition condition)
+		public CompiledWhere where(ConstantCondition condition)
 		{
-			return () -> Sentence.of(Compiled.this + " where " + condition).parameters(values);
+			return new CompiledWhere(condition);
 		}
 
 		/**
@@ -339,16 +403,17 @@ public class TableUpdate implements Update
 		 *
 		 * @return the same builder with the added condition
 		 */
-		public Sentence.Compiled.Builder where(CompiledCondition condition)
+		public CompiledWhere where(CompiledCondition condition)
 		{
-			return () -> Sentence.of(Compiled.this + " where " + condition)
-				.parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
+			return new CompiledWhere(condition);
 		}
 
 		/**
-		 * Creates a sentence with the specified columns, values and no condition associated.
+		 * Creates a sentence with the specified columns, values and no
+		 * condition associated.
 		 *
-		 * @return a sentence with the specified columns, values and no condition associated
+		 * @return a sentence with the specified columns, values and no
+		 * condition associated
 		 */
 		@Override
 		public Sentence.Compiled build()
@@ -357,7 +422,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds the next column to the builder if previous specified condition is true.
+		 * Adds the next column to the builder if previous specified
+		 * condition is true.
 		 *
 		 * @param assertion the condition to be checked
 		 *
@@ -374,11 +440,70 @@ public class TableUpdate implements Update
 			return TableUpdate.this + " set " + columns;
 		}
 
+		public class CompiledWhere implements Sentence.Compiled.Builder
+		{
+
+			private final Condition condition;
+
+			public CompiledWhere(ConstantCondition condition)
+			{
+				this.condition = condition;
+			}
+
+			public CompiledWhere(CompiledCondition condition)
+			{
+				this.condition = condition;
+			}
+
+			@Override
+			public Sentence.Compiled build()
+			{
+				return Sentence.of(toString()).parameters(Stream.concat(values.stream(),
+					condition.getParameters()).collect(Collectors.toList()));
+			}
+
+			@Override
+			public String toString()
+			{
+				return Compiled.this + " where " + condition;
+			}
+
+			public LimitedCompiledWhere limit(int limit)
+			{
+				return new LimitedCompiledWhere(limit);
+			}
+
+			public class LimitedCompiledWhere implements Sentence.Compiled.Builder
+			{
+
+				private final int limit;
+
+				public LimitedCompiledWhere(int limit)
+				{
+					this.limit = limit;
+				}
+
+				@Override
+				public String toString()
+				{
+					return CompiledWhere.this + " limit " + limit;
+				}
+
+				@Override
+				public Sentence.Compiled build()
+				{
+					return Sentence.of(toString()).parameters(Stream.concat(values.stream(),
+						condition.getParameters()).collect(Collectors.toList()));
+				}
+			}
+		}
+
 		public class When
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -391,7 +516,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -404,7 +530,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param <T> type of the column added
 			 * @param column the column to be added
@@ -419,7 +546,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param <T> type of the column added
 			 * @param column the column to be added
@@ -434,7 +562,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds the next column to the builder if previous specified condition is true.
+			 * Adds the next column to the builder if previous
+			 * specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
 			 *
@@ -488,7 +617,8 @@ public class TableUpdate implements Update
 	}
 
 	/**
-	 * SQL insert sentence builder for a table with values specified and ready for execution.
+	 * SQL insert sentence builder for a table with values specified and
+	 * ready for execution.
 	 *
 	 * @param <E> type of the entities to be inserted on database
 	 */
@@ -584,7 +714,8 @@ public class TableUpdate implements Update
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param extractor the extractor associated
@@ -597,7 +728,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the
+			 * builder if the previous specified condition was true.
 			 *
 			 * @param <T> type of the column added
 			 * @param column the column to be added
@@ -612,7 +744,8 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds the next column to the builder if previous specified condition is true.
+			 * Adds the next column to the builder if previous
+			 * specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
 			 *
@@ -661,7 +794,8 @@ public class TableUpdate implements Update
 		 *
 		 * @param column the column to be updated
 		 *
-		 * @return the same update sentence builder with the added column
+		 * @return the same update sentence builder with the added
+		 * column
 		 */
 		public Generic set(String column)
 		{
@@ -675,7 +809,8 @@ public class TableUpdate implements Update
 		 * @param type type of the column to be updated
 		 * @param column the column to be updated
 		 *
-		 * @return the same update sentence builder with the added column
+		 * @return the same update sentence builder with the added
+		 * column
 		 */
 		public <T> Generic set(Class<T> type, String column)
 		{
@@ -683,7 +818,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column and it's associated value to the builder if
+		 * the previous specified condition was true.
 		 *
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -696,7 +832,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column and it's associated value to the builder if
+		 * the previous specified condition was true.
 		 *
 		 * @param column the column to be added
 		 * @param supplier the supplier of the value associated
@@ -709,7 +846,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column and it's associated value to the builder if
+		 * the previous specified condition was true.
 		 *
 		 * @param <T> type of the column added
 		 * @param column the column to be added
@@ -724,7 +862,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column and it's associated value to the builder if
+		 * the previous specified condition was true.
 		 *
 		 * @param <T> type of the column added
 		 * @param column the column to be added
@@ -739,7 +878,8 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds the next column to the builder if previous specified condition is true.
+		 * Adds the next column to the builder if previous specified
+		 * condition is true.
 		 *
 		 * @param assertion the condition to be checked
 		 *
