@@ -8,6 +8,8 @@ import gate.error.AppException;
 import gateconsole.contol.SearchControl;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
+import org.slf4j.Logger;
 
 @Icon("2008")
 @Name("Home")
@@ -26,12 +28,12 @@ public class HomeScreen extends Screen
 	{
 		if (isPOST())
 			try
-			{
-				setPage(new SearchControl().search(getForm()));
-			} catch (AppException e)
-			{
-				setMessages(e.getMessages());
-			}
+		{
+			setPage(new SearchControl().search(getForm()));
+		} catch (AppException e)
+		{
+			setMessages(e.getMessages());
+		}
 
 		return "/WEB-INF/views/gateconsole/Home/View.jsp";
 	}
