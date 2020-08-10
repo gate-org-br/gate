@@ -10,8 +10,6 @@ import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -21,7 +19,7 @@ public class DeleteTest
 {
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
 	}
@@ -64,7 +62,7 @@ public class DeleteTest
 	}
 
 	@Test
-	public void test4()
+	public void test4() throws ConstraintViolationException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -82,9 +80,6 @@ public class DeleteTest
 			{
 				Assert.fail();
 			}
-		} catch (SQLException | ConstraintViolationException ex)
-		{
-			Logger.getLogger(DeleteTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

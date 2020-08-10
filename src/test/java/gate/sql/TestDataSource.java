@@ -10,7 +10,6 @@ import gate.Contact;
 import gate.Person;
 import gate.error.ConstraintViolationException;
 import gate.sql.insert.Insert;
-import gate.sql.insert.InsertTest;
 import gate.type.Date;
 import gate.type.DateInterval;
 import gate.type.ID;
@@ -18,8 +17,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.junit.Assert;
 
@@ -37,11 +34,11 @@ public class TestDataSource
 		TestDataSource testDataSource = TestDataSource.instance;
 		if (testDataSource == null)
 			synchronized (TestDataSource.class)
-			{
-				testDataSource = TestDataSource.instance;
-				if (testDataSource == null)
-					TestDataSource.instance = testDataSource = new TestDataSource();
-			}
+		{
+			testDataSource = TestDataSource.instance;
+			if (testDataSource == null)
+				TestDataSource.instance = testDataSource = new TestDataSource();
+		}
 		return testDataSource;
 	}
 
@@ -59,7 +56,7 @@ public class TestDataSource
 		return new Link(DATA_SOURCE.getConnection("gatetest", "gatetest"));
 	}
 
-	public void setUp()
+	public void setUp() throws ConstraintViolationException, SQLException
 	{
 		try (Link link = getLink())
 		{
@@ -96,14 +93,6 @@ public class TestDataSource
 				.values(persons.stream().flatMap(e -> e.getContacts().stream()).collect(Collectors.toList()))
 				.execute();
 
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(InsertTest.class.getName())
-				.log(Level.SEVERE, null, ex);
-		} catch (ConstraintViolationException ex)
-		{
-			Logger.getLogger(TestDataSource.class.getName())
-				.log(Level.SEVERE, null, ex);
 		}
 	}
 

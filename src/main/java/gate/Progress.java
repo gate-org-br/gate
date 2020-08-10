@@ -12,10 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.websocket.CloseReason;
 import javax.websocket.Session;
+import org.slf4j.LoggerFactory;
 
 public class Progress
 {
@@ -393,7 +392,7 @@ public class Progress
 						"Tarefa inexistente"));
 				} catch (IOException ex)
 				{
-					Logger.getLogger(Progress.class.getName()).log(Level.SEVERE, null, ex);
+					LoggerFactory.getLogger(Progress.class).error(ex.getMessage(), ex);
 				}
 			});
 

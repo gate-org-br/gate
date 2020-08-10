@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.slf4j.LoggerFactory;
 
 public class Converters
 {
@@ -88,8 +88,7 @@ public class Converters
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{
-				Logger.getLogger(getClass().getName())
-					.severe(ex.getMessage());
+				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 
 			return INSTANCES.get(Object.class);

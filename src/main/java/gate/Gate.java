@@ -33,8 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.inject.spi.CDI;
@@ -45,6 +43,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
 
 @MultipartConfig
 @WebServlet("/Gate")
@@ -69,6 +68,9 @@ public class Gate extends HttpServlet
 
 	@Resource
 	private ManagedThreadFactory managedThreadFactory;
+
+	@Inject
+	private Logger logger;
 
 	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
 
@@ -152,7 +154,7 @@ public class Gate extends HttpServlet
 								Progress.cancel(ex.getMessage());
 							else
 								Progress.message(ex.getMessage());
-							Logger.getLogger(Gate.class.getName()).log(Level.SEVERE, null, ex);
+							logger.error(ex.getMessage(), ex);
 						} finally
 						{
 							try
@@ -193,19 +195,19 @@ public class Gate extends HttpServlet
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.setAttribute("exception", ex.getCause());
-			Logger.getGlobal().log(Level.SEVERE, ex.getCause().getMessage(), ex.getCause());
+			logger.error(ex.getCause().getMessage(), ex.getCause());
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Banco de dados inconsistente"));
 			httpServletRequest.setAttribute("exception", ex);
-			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
+			logger.error(ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (IOException | IllegalAccessException | ServletException | RuntimeException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 			httpServletRequest.setAttribute("exception", ex);
-			Logger.getGlobal().log(Level.SEVERE, ex.getMessage(), ex);
+			logger.error(ex.getMessage(), ex);
 			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		} catch (InvocationTargetException ex)
 		{
@@ -217,7 +219,7 @@ public class Gate extends HttpServlet
 			{
 				httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 				httpServletRequest.setAttribute("exception", ex.getTargetException());
-				Logger.getGlobal().log(Level.SEVERE, ex.getTargetException().getMessage(), ex.getTargetException());
+				logger.error(ex.getCause().getMessage(), ex.getCause());
 				httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 			}
 		} catch (InvalidCredentialsException ex)

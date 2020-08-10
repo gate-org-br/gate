@@ -3,12 +3,11 @@ package gate.tags.template;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import org.slf4j.LoggerFactory;
 
 public class TemplateTag extends SimpleTagSupport
 {
@@ -58,7 +57,7 @@ public class TemplateTag extends SimpleTagSupport
 
 			} catch (IOException ex1)
 			{
-				Logger.getLogger(TemplateTag.class.getName()).log(Level.SEVERE, null, ex1);
+				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 		}
 	}

@@ -2,6 +2,7 @@ package gate.sql.select;
 
 import gate.Contact;
 import gate.Person;
+import gate.error.ConstraintViolationException;
 import gate.error.NotFoundException;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
@@ -16,8 +17,6 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -30,7 +29,7 @@ public class SelectTest
 {
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
 	}
@@ -380,7 +379,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromString() throws NotFoundException
+	public void testFetchEntityFromString() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -393,14 +392,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromResource() throws NotFoundException
+	public void testFetchEntityFromResource() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -413,14 +409,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityListFiltering() throws NotFoundException
+	public void testFetchEntityListFiltering() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -432,14 +425,11 @@ public class SelectTest
 						.and("name").lk("1")))
 				.fetchEntityList(Person.class);
 			Assert.assertEquals(13, persons.size());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException
+	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -458,14 +448,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException
+	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -485,14 +472,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromTypedBuilder() throws NotFoundException
+	public void testFetchEntityFromTypedBuilder() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -507,14 +491,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException
+	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -528,14 +509,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromGQNWithParameter() throws NotFoundException
+	public void testFetchEntityFromGQNWithParameter() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -549,14 +527,11 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				person.getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException
+	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -573,9 +548,6 @@ public class SelectTest
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), contact.getPerson().getBirthdate());
 			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
 				contact.getPerson().getContract());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

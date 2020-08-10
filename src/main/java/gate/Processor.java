@@ -1,11 +1,10 @@
 package gate;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Startup;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
@@ -13,6 +12,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import org.slf4j.Logger;
 
 @Startup
 @Singleton
@@ -20,6 +20,9 @@ import javax.websocket.server.ServerEndpoint;
 @TransactionManagement(TransactionManagementType.BEAN)
 public class Processor
 {
+
+	@Inject
+	private Logger logger;
 
 	@OnOpen
 	public void open(@PathParam("process") int id, Session session)
@@ -31,10 +34,10 @@ public class Processor
 				progress.add(session);
 			else
 				session.close(new CloseReason(CloseReason.CloseCodes.CANNOT_ACCEPT,
-						"Tarefa inexistente"));
+					"Tarefa inexistente"));
 		} catch (IOException | RuntimeException ex)
 		{
-			Logger.getLogger(Processor.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+			logger.error(ex.getMessage(), ex);
 		}
 	}
 
