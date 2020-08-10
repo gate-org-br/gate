@@ -14,8 +14,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -26,13 +24,13 @@ public class UpdateTest
 {
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
 	}
 
 	@Test
-	public void testString()
+	public void testString() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -58,17 +56,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testResourceFile()
+	public void testResourceFile() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -96,17 +88,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testCompiledTableBuilder()
+	public void testCompiledTableBuilder() throws ConstraintViolationException, SQLException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -138,17 +124,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testGenericTableBuilder()
+	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -181,17 +161,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testTypedBuilder()
+	public void testTypedBuilder() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -227,17 +201,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFullTypedBuilder()
+	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -272,17 +240,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testGQN()
+	public void testGQN() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -316,17 +278,11 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException | RuntimeException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void testFullGQN()
+	public void testFullGQN() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -359,13 +315,7 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} catch (ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(UpdateTest.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		} 
 	}
 
 	@Test

@@ -5,11 +5,8 @@ import gate.entity.User;
 import gate.error.ConstraintViolationException;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
-import gate.sql.select.SelectTest;
 import gate.type.ID;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -23,7 +20,7 @@ public class GQNTest
 	}
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
 	}
@@ -39,7 +36,7 @@ public class GQNTest
 	}
 
 	@Test
-	public void test02()
+	public void test02() throws SQLException, ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -54,14 +51,11 @@ public class GQNTest
 				.fetchObject(Integer.class)
 				.get();
 			Assert.assertEquals(30, result);
-		} catch (SQLException | ConstraintViolationException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void test03()
+	public void test03() throws SQLException, ConstraintViolationException
 	{
 		try (Link connection = TestDataSource.getInstance().getLink())
 		{
@@ -72,14 +66,11 @@ public class GQNTest
 			int result = Select.expression("count(*)").from("Person").build()
 				.connect(connection).fetchObject(Integer.class).get();
 			Assert.assertEquals(28, result);
-		} catch (SQLException | ConstraintViolationException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void test04()
+	public void test04() throws SQLException, ConstraintViolationException
 	{
 		try (Link connection = TestDataSource.getInstance().getLink())
 		{
@@ -93,14 +84,11 @@ public class GQNTest
 				.connect(connection).fetchObject(String.class).get();
 			Assert.assertEquals("Nome Modificado da Pessoa 4", result);
 
-		} catch (SQLException | ConstraintViolationException | RuntimeException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
 	@Test
-	public void test05()
+	public void test05() throws SQLException, ConstraintViolationException
 	{
 		try (Link connection = TestDataSource.getInstance().getLink())
 		{
@@ -118,9 +106,6 @@ public class GQNTest
 				.connect(connection).fetchObject(String.class).get();
 			Assert.assertEquals("Nome Modificado da Pessoa 6", result2);
 
-		} catch (SQLException | ConstraintViolationException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

@@ -6,19 +6,22 @@ import gate.type.Phone;
 import gate.util.ScreenServletRequest;
 import gateconsole.contol.UserControl;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
 
 @MultipartConfig
 @WebServlet("/CreateAccount")
 public class CreateAccount extends HttpServlet
 {
+
+	@Inject
+	private Logger logger;
 
 	static final String JSP = "/WEB-INF/views/CreateAccount.jsp";
 	private static final long serialVersionUID = 1L;
@@ -74,7 +77,7 @@ public class CreateAccount extends HttpServlet
 				request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
 			} catch (ConversionException ex)
 			{
-				Logger.getLogger(CreateAccount.class.getName()).log(Level.SEVERE, null, ex);
+				logger.error(ex.getMessage(), ex);
 			}
 		}
 

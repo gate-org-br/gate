@@ -1,12 +1,10 @@
 package gate.sql;
 
 import gate.Person;
+import gate.error.ConstraintViolationException;
 import gate.error.NotFoundException;
-import gate.sql.select.SelectTest;
 import gate.type.ID;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,14 +22,14 @@ public class LinkTest
 	}
 
 	@BeforeClass
-	public static void setUp()
+	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
 
 	}
 
 	@Test
-	public void testSelectByGQN()
+	public void testSelectByGQN() throws SQLException, NotFoundException
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
@@ -42,12 +40,6 @@ public class LinkTest
 				.orElseThrow(NotFoundException::new);
 
 			Assert.assertEquals("Person 1", person.getName());
-		} catch (NotFoundException e)
-		{
-			Assert.fail(e.getMessage());
-		} catch (SQLException ex)
-		{
-			Logger.getLogger(SelectTest.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 

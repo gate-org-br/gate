@@ -1,12 +1,12 @@
 package gate.handler;
 
+import com.itextpdf.text.log.LoggerFactory;
 import gate.error.AppError;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 public class Handlers
 {
@@ -62,8 +62,7 @@ public class Handlers
 							.value().getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ex)
 			{
-				Logger.getLogger(getClass().getName())
-					.severe(ex.getMessage());
+				LoggerFactory.getLogger(Handlers.class).error(ex.getMessage(), ex);
 			}
 
 			return INSTANCES.get(Object.class);

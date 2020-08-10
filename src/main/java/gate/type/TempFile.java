@@ -12,10 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.http.Part;
+import org.slf4j.LoggerFactory;
 
 /**
  * A temporary file to be removed after processing.
@@ -181,7 +180,7 @@ public class TempFile implements AutoCloseable
 				outputStream.close();
 			} catch (IOException ex)
 			{
-				Logger.getLogger(TempFile.class.getName()).log(Level.SEVERE, null, ex);
+				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 
 		if (inputStream != null)
@@ -190,7 +189,7 @@ public class TempFile implements AutoCloseable
 				inputStream.close();
 			} catch (IOException ex)
 			{
-				Logger.getLogger(TempFile.class.getName()).log(Level.SEVERE, null, ex);
+				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 
 		file.delete();
