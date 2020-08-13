@@ -28,7 +28,8 @@ public final class JsonScanner implements AutoCloseable
 	 *
 	 * @param string the string to be scanned for JSON tokens
 	 *
-	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
+	 * @throws gate.error.ConversionException if any Exception occurs while
+	 * parsing the string
 	 */
 	public JsonScanner(String string) throws ConversionException
 	{
@@ -50,7 +51,8 @@ public final class JsonScanner implements AutoCloseable
 	 *
 	 * @return the next JSON token scanned
 	 *
-	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
+	 * @throws gate.error.ConversionException if any Exception occurs while
+	 * parsing the string
 	 */
 	public JsonToken scan() throws ConversionException
 	{
@@ -117,13 +119,16 @@ public final class JsonScanner implements AutoCloseable
 				case '7':
 				case '8':
 				case '9':
+				case '+':
+				case '-':
 
 					string.setLength(0);
-					while (Character.isDigit(c))
+
+					do
 					{
 						string.append((char) c);
 						c = reader.read();
-					}
+					} while (Character.isDigit(c));
 
 					if (c == '.')
 					{
@@ -143,6 +148,27 @@ public final class JsonScanner implements AutoCloseable
 							string.append((char) c);
 							c = reader.read();
 						}
+					}
+
+					if (c == 'e' || c == 'E')
+					{
+						string.append((char) 'e');
+						c = reader.read();
+
+						if (c == '+' || c == '-')
+						{
+							string.append((char) c);
+							c = reader.read();
+						}
+
+						if (!Character.isDigit(c))
+							throw new ConversionException("Expected digit and found " + (char) c);
+
+						do
+						{
+							string.append((char) c);
+							c = reader.read();
+						} while (Character.isDigit(c));
 					}
 
 					return current = new JsonToken(JsonToken.Type.NUMBER, string.toString());
