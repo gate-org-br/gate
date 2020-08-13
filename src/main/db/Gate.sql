@@ -168,3 +168,40 @@ INSERT INTO `gate`.`Role` (`active`, `master`, `name`, `roleID`) VALUES ('1', '1
 INSERT INTO `gate`.`Uzer` (active, Role$id, userID, passwd, name, registration) VALUES(1, 1, 'gate', MD5('password'), 'Superuser', now());
 INSERT INTO `gate`.`UzerFunc` (`Uzer$id`, `Func$id`) VALUES ('1', '1');
 INSERT INTO `gate`.`Auth` (`Func$id`, `type`, `mode`) VALUES ('1', '1', '0');
+
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `isparent`(parameter integer, child INTEGER) RETURNS int
+    READS SQL DATA
+    DETERMINISTIC
+BEGIN
+	declare parent integer;
+	set parent = child;
+	REPEAT
+		IF parent = parameter THEN 
+			return true;
+		END IF;
+		SELECT Role$id INTO parent FROM Role WHERE  id = parent;
+	UNTIL parent is null
+	END REPEAT;
+	return false;
+END
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `ismaster`(parameter integer, child INTEGER) RETURNS int
+    READS SQL DATA
+    DETERMINISTIC
+BEGIN
+	declare parent integer;
+	declare master integer;
+
+	set parent = child;
+	SELECT Role.master INTO master FROM Role WHERE  id = parent;
+
+	REPEAT
+		IF master = 1 and parent = parameter THEN 
+			return true;
+		END IF;
+		SELECT Role.Role$id, Role.master INTO parent, master FROM Role WHERE  id = parent;
+	UNTIL parent is null
+	END REPEAT;
+	return false;
+END
