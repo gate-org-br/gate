@@ -30,6 +30,7 @@ public class Result implements Serializable
 
 		this.type = Objects.requireNonNull(type);
 		this.message = Objects.requireNonNull(message);
+		this.data = Objects.requireNonNull(data);
 	}
 
 	public static Result success(String message)
