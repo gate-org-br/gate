@@ -332,6 +332,7 @@ public class Icons
 		models.add(new Icon("3017", "??????"));
 		models.add(new Icon("3018", "??????"));
 		models.add(new Icon("3019", "??????"));
+		models.add(new Icon("3020", "save"));
 		this.icons = Collections.unmodifiableList(models);
 	}
 
