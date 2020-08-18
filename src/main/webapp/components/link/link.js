@@ -271,7 +271,7 @@ window.addEventListener("click", function (event)
 			case "_report-dialog":
 				event.preventDefault();
 				event.stopPropagation();
-				let dialog = document.top.createElement("g-report-dialog");
+				let dialog = window.top.document.createElement("g-report-dialog");
 				dialog.blocked = true;
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);

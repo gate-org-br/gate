@@ -1,38 +1,47 @@
 package gate.io;
 
 import gate.lang.csv.CSVParser;
-import java.io.BufferedReader;
+import gate.stream.CheckedPredicate;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class CSVProcessor implements Processor<List<String>>
 {
 
 	private final String charset;
-	private final Consumer<List<String>> consumer;
+	private final CheckedPredicate<List<String>> action;
 
-	public CSVProcessor(String charset, Consumer<List<String>> consumer)
+	public CSVProcessor(String charset, CheckedPredicate<List<String>> action)
 	{
 		this.charset = charset;
-		this.consumer = consumer;
+		this.action = action;
 	}
 
-	public CSVProcessor(Consumer<List<String>> consumer)
+	public CSVProcessor(CheckedPredicate<List<String>> action)
 	{
-		this(Charset.defaultCharset().name(), consumer);
+		this(Charset.defaultCharset().name(), action);
 	}
 
 	@Override
-	public long process(InputStream is) throws IOException
+	public long process(InputStream is) throws IOException, InvocationTargetException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset()))))
+		try (CSVParser parser = new CSVParser(is, Charset.forName(getCharset())))
 		{
-			parser.forEach(consumer);
-			return (int) parser.getLineNumber() + 1;
+			for (List<String> line : parser)
+			{
+				try
+				{
+					if (!action.test(line))
+						return parser.getLineNumber() + 1;
+				} catch (Exception ex)
+				{
+					throw new InvocationTargetException(ex);
+				}
+			}
+			return parser.getLineNumber() + 1;
 		}
 	}
 

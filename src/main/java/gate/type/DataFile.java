@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
@@ -31,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import gate.io.Reader;
+import java.lang.reflect.InvocationTargetException;
 
 @Handler(DataFileHandler.class)
 @Converter(DataFileConverter.class)
@@ -109,7 +109,7 @@ public class DataFile implements Serializable
 	public List<String> getInflatedLines(String charset)
 	{
 		try (GateInputStream<ByteArrayInputStream> g
-				= new GateInputStream<>(new ByteArrayInputStream(getData())))
+			= new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			return g.getInflatedLines(charset);
 		} catch (IOException e)
@@ -143,20 +143,19 @@ public class DataFile implements Serializable
 	{
 		if (name.toLowerCase().endsWith(".zip"))
 			try
+		{
+			ZipEntry entry;
+			try (GateInputStream<ZipInputStream> stream
+				= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
 			{
-				ZipEntry entry;
-				try (GateInputStream<ZipInputStream> stream
-						= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
-				{
-					while ((entry = stream.getInputStream().getNextEntry()) != null)
-						if (!entry.isDirectory())
-							c.accept(new DataFile(stream.getBytes(), entry.getName()));
-				}
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
+				while ((entry = stream.getInputStream().getNextEntry()) != null)
+					if (!entry.isDirectory())
+						c.accept(new DataFile(stream.getBytes(), entry.getName()));
 			}
-		else
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		} else
 			c.accept(this);
 	}
 
@@ -168,10 +167,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(File file)
-			throws IOException
+		throws IOException
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(new FileInputStream(file)))
+			= new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -184,10 +183,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(URL url)
-			throws IOException
+		throws IOException
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(url.openStream()))
+			= new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -205,7 +204,7 @@ public class DataFile implements Serializable
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
 		return new DataURL("application", "octet-stream", true, map,
-				Base64.getEncoder().encodeToString(getData())).toString();
+			Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
 	public static DataFile parse(String string) throws ConversionException
@@ -230,7 +229,7 @@ public class DataFile implements Serializable
 		}
 	}
 
-	public <T> void process(Processor<T> processor) throws IOException
+	public <T> void process(Processor<T> processor) throws IOException, InvocationTargetException
 	{
 		try (ByteArrayInputStream stream = new ByteArrayInputStream(getData()))
 		{

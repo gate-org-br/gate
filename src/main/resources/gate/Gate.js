@@ -3081,7 +3081,7 @@ window.addEventListener("click", function (event)
 			case "_report-dialog":
 				event.preventDefault();
 				event.stopPropagation();
-				let dialog = document.top.createElement("g-report-dialog");
+				let dialog = window.top.document.createElement("g-report-dialog");
 				dialog.blocked = true;
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);
@@ -3711,108 +3711,109 @@ window.addEventListener("contextmenu", event => {
 });
 /* global ENTER, HOME, END, DOWN, UP, Clipboard, ActionContextMenu */
 
-window.addEventListener("click", event => {
-	event = event || window.event;
-
-	if (event.button !== 0)
-		return;
-
-	let action = event.target || event.srcElement;
-
-	if (action.onclick || action.tagName === "A" || action.tagName === "BUTTON")
-		return;
-
-	action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
-	if (!action)
-		return;
-
-	action.blur();
-
-	switch (action.getAttribute("data-method") ?
-		action.getAttribute("data-method").toLowerCase() : "get")
+window.addEventListener("click", event =>
 	{
-		case "get":
+		event = event || window.event;
 
-			let link = document.createElement("a");
+		if (event.button !== 0)
+			return;
 
-			if (event.ctrlKey)
-				link.setAttribute("target", "_blank");
-			else if (action.hasAttribute("data-target"))
-				link.setAttribute("target", action.getAttribute("data-target"));
+		let action = event.target || event.srcElement;
 
-			if (action.hasAttribute("data-action"))
-				link.setAttribute("href", action.getAttribute("data-action"));
+		if (action.onclick || action.closest("a, button"))
+			return;
 
-			if (action.hasAttribute("data-on-hide"))
-				link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
+		action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
+		if (!action)
+			return;
 
-			if (action.hasAttribute("title"))
-				link.setAttribute("title", action.getAttribute("title"));
+		action.blur();
 
-			if (action.hasAttribute("data-block"))
-				link.setAttribute("data-block", action.getAttribute("data-block"));
+		switch (action.getAttribute("data-method") ?
+			action.getAttribute("data-method").toLowerCase() : "get")
+		{
+			case "get":
 
-			if (action.hasAttribute("data-alert"))
-				link.setAttribute("data-alert", action.getAttribute("data-alert"));
+				let link = document.createElement("a");
 
-			if (action.hasAttribute("data-confirm"))
-				link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+				if (event.ctrlKey)
+					link.setAttribute("target", "_blank");
+				else if (action.hasAttribute("data-target"))
+					link.setAttribute("target", action.getAttribute("data-target"));
 
-			if (!event.ctrlKey
-				&& action.getAttribute("data-target") === "_dialog"
-				&& (action.getAttribute("data-navigate") || action.parentNode.getAttribute("data-navigate")))
-				link.navigator = Array.from(action.parentNode.children)
-					.map(e => e.getAttribute("data-action"))
-					.filter(e => e);
+				if (action.hasAttribute("data-action"))
+					link.setAttribute("href", action.getAttribute("data-action"));
 
-			link.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
-			link.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
+				if (action.hasAttribute("data-on-hide"))
+					link.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-			break;
-		case "post":
+				if (action.hasAttribute("title"))
+					link.setAttribute("title", action.getAttribute("title"));
 
-			let button = document.createElement("button");
+				if (action.hasAttribute("data-block"))
+					link.setAttribute("data-block", action.getAttribute("data-block"));
 
-			if (event.ctrlKey)
-				button.setAttribute("target", "_blank");
-			else if (action.hasAttribute("data-target"))
-				button.setAttribute("target", action.getAttribute("data-target"));
+				if (action.hasAttribute("data-alert"))
+					link.setAttribute("data-alert", action.getAttribute("data-alert"));
 
-			if (action.hasAttribute("data-action"))
-				button.setAttribute("formaction", action.getAttribute("data-action"));
+				if (action.hasAttribute("data-confirm"))
+					link.setAttribute("data-confirm", action.getAttribute("data-confirm"));
 
-			if (action.hasAttribute("data-on-hide"))
-				button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
+				if (!event.ctrlKey
+					&& action.getAttribute("data-target") === "_dialog"
+					&& (action.getAttribute("data-navigate") || action.parentNode.getAttribute("data-navigate")))
+					link.navigator = Array.from(action.parentNode.children)
+						.map(e => e.getAttribute("data-action"))
+						.filter(e => e);
 
-			if (action.hasAttribute("title"))
-				button.setAttribute("title", action.getAttribute("title"));
+				link.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+				link.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
 
-			if (action.hasAttribute("data-block"))
-				button.setAttribute("data-block", action.getAttribute("data-block"));
+				document.body.appendChild(link);
+				link.click();
+				document.body.removeChild(link);
+				break;
+			case "post":
 
-			if (action.hasAttribute("data-alert"))
-				button.setAttribute("data-alert", action.getAttribute("data-alert"));
+				let button = document.createElement("button");
 
-			if (action.hasAttribute("data-confirm"))
-				button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+				if (event.ctrlKey)
+					button.setAttribute("target", "_blank");
+				else if (action.hasAttribute("data-target"))
+					button.setAttribute("target", action.getAttribute("data-target"));
 
-			button.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
-			button.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
+				if (action.hasAttribute("data-action"))
+					button.setAttribute("formaction", action.getAttribute("data-action"));
 
-			var form = action.closest("form");
-			form.appendChild(button);
-			button.click();
-			form.removeChild(button);
-			break;
-	}
+				if (action.hasAttribute("data-on-hide"))
+					button.setAttribute("data-on-hide", action.getAttribute("data-on-hide"));
 
-	event.preventDefault();
-	event.stopPropagation();
-	event.stopImmediatePropagation();
-});
+				if (action.hasAttribute("title"))
+					button.setAttribute("title", action.getAttribute("title"));
+
+				if (action.hasAttribute("data-block"))
+					button.setAttribute("data-block", action.getAttribute("data-block"));
+
+				if (action.hasAttribute("data-alert"))
+					button.setAttribute("data-alert", action.getAttribute("data-alert"));
+
+				if (action.hasAttribute("data-confirm"))
+					button.setAttribute("data-confirm", action.getAttribute("data-confirm"));
+
+				button.addEventListener("show", e => action.dispatchEvent(new CustomEvent('show', {detail: {modal: e.detail.modal}})));
+				button.addEventListener("hide", e => action.dispatchEvent(new CustomEvent('hide', {detail: {modal: e.detail.modal}})));
+
+				var form = action.closest("form");
+				form.appendChild(button);
+				button.click();
+				form.removeChild(button);
+				break;
+		}
+
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+	});
 
 window.addEventListener("keydown", event => {
 	event = event || window.event;

@@ -1,22 +1,22 @@
 package gate.io;
 
-import java.util.function.Consumer;
+import gate.stream.CheckedPredicate;
 
 public abstract class AbstractProcessor<T> implements Processor<T>
 {
 
 	protected final String charset;
-	protected final Consumer<T> consumer;
+	protected final CheckedPredicate<T> action;
 
-	public AbstractProcessor(String charset, Consumer<T> consumer)
+	public AbstractProcessor(String charset, CheckedPredicate<T> action)
 	{
 		this.charset = charset;
-		this.consumer = consumer;
+		this.action = action;
 	}
 
-	public AbstractProcessor(Consumer<T> consumer)
+	public AbstractProcessor(CheckedPredicate<T> action)
 	{
-		this("utf-8", consumer);
+		this("utf-8", action);
 	}
 
 	@Override
