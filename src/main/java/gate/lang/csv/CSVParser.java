@@ -3,6 +3,9 @@ package gate.lang.csv;
 import gate.error.AppError;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +29,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	private static final Optional EMPTY = Optional.of(List.of());
 
 	/**
-	 * Constructs a new CSVParser for the specified Reader using semicollonss as separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified Reader using semicolons as separators and double quotes as delimiters.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
 	 */
@@ -36,15 +39,65 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	}
 
 	/**
+	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters.
+	 *
+	 * @param inputStream inputStream InputStream from where the CSV rows will be extracted
+	 */
+	public CSVParser(InputStream inputStream)
+	{
+		this(inputStream, ';', '\"');
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters and encoding.
+	 *
+	 * @param inputStream inputStream InputStream from where the CSV rows will be extracted
+	 * @param charset the character encoding of the specified input stream
+	 */
+	public CSVParser(InputStream inputStream, Charset charset)
+	{
+		this(inputStream, ';', '\"', charset);
+	}
+
+	/**
 	 * Constructs a new CSVParser for the specified Reader.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
-	 * @param separator the caracter used as field separator
-	 * @param delimiter the caracter used as field delimiter
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
 	 */
 	public CSVParser(BufferedReader reader, char separator, char delimiter)
 	{
 		this.reader = reader;
+		this.delimiter = delimiter;
+		this.separator = separator;
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified InputStream.
+	 *
+	 * @param inputStream the inputStream from where the CSV rows will be extracted
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 */
+	public CSVParser(InputStream inputStream, char separator, char delimiter)
+	{
+		this.reader = new BufferedReader(new InputStreamReader(inputStream));
+		this.delimiter = delimiter;
+		this.separator = separator;
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified InputStream.
+	 *
+	 * @param inputStream the inputStream from where the CSV rows will be extracted
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character encoding of the specified input stream
+	 */
+	public CSVParser(InputStream inputStream, char separator, char delimiter, Charset charset)
+	{
+		this.reader = new BufferedReader(new InputStreamReader(inputStream, charset));
 		this.delimiter = delimiter;
 		this.separator = separator;
 	}
@@ -207,12 +260,12 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	{
 		while (c != -1)
 			try
-			{
-				parseLine().ifPresent(action);
-			} catch (IOException ex)
-			{
-				throw new AppError(ex);
-			}
+		{
+			parseLine().ifPresent(action);
+		} catch (IOException ex)
+		{
+			throw new AppError(ex);
+		}
 	}
 
 	@Override
@@ -244,12 +297,12 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		{
 			while (c != -1)
 				try
-				{
-					parseLine().ifPresent(action);
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+			{
+				parseLine().ifPresent(action);
+			} catch (IOException ex)
+			{
+				throw new AppError(ex);
+			}
 		}
 
 		@Override
@@ -285,12 +338,12 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		{
 			while (c != -1)
 				try
-				{
-					parseLine().ifPresent(action);
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+			{
+				parseLine().ifPresent(action);
+			} catch (IOException ex)
+			{
+				throw new AppError(ex);
+			}
 		}
 
 		@Override

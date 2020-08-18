@@ -6,14 +6,15 @@ import gate.converter.custom.MimeDataConverter;
 import gate.error.ConversionException;
 import gate.handler.MimeDataHandler;
 import gate.io.Processor;
+import gate.io.Reader;
 import gate.lang.dataurl.DataURL;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Objects;
-import gate.io.Reader;
 
 @Handler(MimeDataHandler.class)
 @Converter(MimeDataConverter.class)
@@ -39,7 +40,7 @@ public class MimeData implements Mime
 	public MimeData(byte[] data)
 	{
 		this("application",
-				"octet-stream", data);
+			"octet-stream", data);
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class MimeData implements Mime
 	public String toString()
 	{
 		return new DataURL(type, subtype, true, Collections.emptyMap(),
-				Base64.getEncoder().encodeToString(data)).toString();
+			Base64.getEncoder().encodeToString(data)).toString();
 	}
 
 	public static MimeData parse(String string) throws ConversionException
@@ -79,8 +80,8 @@ public class MimeData implements Mime
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return new MimeData(dataURL.getType(),
-					dataURL.getSubtype(),
-					Base64.getDecoder().decode(dataURL.getData()));
+				dataURL.getSubtype(),
+				Base64.getDecoder().decode(dataURL.getData()));
 
 		} catch (ParseException ex)
 		{
@@ -96,7 +97,7 @@ public class MimeData implements Mime
 		}
 	}
 
-	public <T> void process(Processor<T> processor) throws IOException
+	public <T> void process(Processor<T> processor) throws IOException, InvocationTargetException
 	{
 		try (ByteArrayInputStream stream = new ByteArrayInputStream(getData()))
 		{

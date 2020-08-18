@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.net.URLEncoder;
@@ -20,7 +21,11 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Spliterator;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -152,7 +157,7 @@ public class URL
 		return string.toString().getBytes("UTF-8");
 	}
 
-	public Result get() throws IOException
+	public URLResult get() throws IOException
 	{
 		java.net.URL url = new java.net.URL(toString());
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -182,10 +187,10 @@ public class URL
 			}
 		}
 
-		return new Result(connection);
+		return new URLResult(connection);
 	}
 
-	public Result post(List<Parameter> parameters) throws IOException
+	public URLResult post(List<Parameter> parameters) throws IOException
 	{
 		byte[] bytes = getBytes(parameters);
 
@@ -227,7 +232,7 @@ public class URL
 			}
 		}
 
-		return new Result(connection);
+		return new URLResult(connection);
 	}
 
 	private void skipCertificatedValidation(HttpsURLConnection connection) throws IOException
@@ -244,7 +249,7 @@ public class URL
 		}
 	}
 
-	public Result post(Parameter... parameters) throws IOException
+	public URLResult post(Parameter... parameters) throws IOException
 	{
 		return post(Arrays.asList(parameters));
 	}
@@ -278,12 +283,12 @@ public class URL
 		return "Gate?" + string.toString();
 	}
 
-	public static class Result implements Readable, Processable
+	public static class URLResult implements IOResult
 	{
 
 		private final URLConnection connection;
 
-		private Result(URLConnection connection)
+		private URLResult(URLConnection connection)
 		{
 			this.connection = connection;
 		}
@@ -303,11 +308,34 @@ public class URL
 		}
 
 		@Override
-		public <T> long process(Processor<T> processor) throws IOException
+		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
 			try (InputStream stream = connection.getInputStream())
 			{
 				return processor.process(stream);
+			}
+		}
+
+		@Override
+		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
+		{
+
+			try
+			{
+				InputStream stream = connection.getInputStream();
+				return StreamSupport.stream(spliterator.apply(stream), false).onClose(() ->
+				{
+					try
+					{
+						stream.close();
+					} catch (IOException ex)
+					{
+						throw new UncheckedIOException(ex);
+					}
+				});
+			} catch (UncheckedIOException ex)
+			{
+				throw ex.getCause();
 			}
 		}
 	}
