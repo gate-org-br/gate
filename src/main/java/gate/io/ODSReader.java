@@ -1,53 +1,87 @@
 package gate.io;
 
-import gate.lang.csv.CSVParser;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-public class CSVReader extends AbstractReader<List<List<String>>>
+public class ODSReader extends AbstractReader<List<List<String>>>
 {
 
-	private CSVReader()
+	private ODSReader()
 	{
-	}
-
-	private CSVReader(String charset)
-	{
-		super(charset);
 	}
 
 	@Override
 	public List<List<String>> read(InputStream is) throws IOException
 	{
-		return new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset())))
-				.stream().collect(Collectors.toList());
+		try
+		{
+			String string = null;
+			try (ZipInputStream istream = new ZipInputStream(is);)
+			{
+				for (ZipEntry entry = istream.getNextEntry();
+					entry != null; entry = istream.getNextEntry())
+					if (entry.getName().toLowerCase().equals("content.xml"))
+					{
+						string = StringReader.getInstance().read(istream);
+						break;
+					}
+			}
+
+			if (string == null)
+				throw new IOException("Invalid ods file");
+
+			Document document
+				= DocumentBuilderFactory.newInstance().newDocumentBuilder()
+					.parse(new ByteArrayInputStream(string.getBytes()));
+
+			List<List<String>> result = new ArrayList<>();
+			NodeList rows = document.getElementsByTagName("table:table-row");
+			for (int i = 0; i < rows.getLength(); i++)
+			{
+				Node row = rows.item(i);
+				NodeList cells = row.getChildNodes();
+				List<String> line = new ArrayList<>();
+				for (int j = 0; j < cells.getLength(); j++)
+				{
+					Node cell = cells.item(j);
+					line.add(cell.getTextContent());
+				}
+				result.add(line);
+			}
+
+			return result;
+
+		} catch (ParserConfigurationException | SAXException ex)
+		{
+			throw new IOException(ex.getMessage(), ex);
+		}
+
 	}
 
-	public static CSVReader getInstance()
+	public static ODSReader getInstance()
 	{
 		return Instance.VALUE;
-	}
-
-	public static CSVReader getInstance(String charset)
-	{
-		return Instance.VALUES.computeIfAbsent(charset, CSVReader::new);
 	}
 
 	public static List<List<String>> load(byte[] bytes) throws IOException
 	{
 		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
-			return CSVReader.getInstance().read(is);
+			return ODSReader.getInstance().read(is);
 		}
 	}
 
@@ -55,23 +89,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	{
 		try (FileInputStream is = new FileInputStream(file))
 		{
-			return CSVReader.getInstance().read(is);
-		}
-	}
-
-	public static List<List<String>> load(String charset, byte[] bytes) throws IOException
-	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
-		{
-			return CSVReader.getInstance(charset).read(is);
-		}
-	}
-
-	public static List<List<String>> load(String charset, File file) throws IOException
-	{
-		try (FileInputStream is = new FileInputStream(file))
-		{
-			return CSVReader.getInstance(charset).read(is);
+			return ODSReader.getInstance().read(is);
 		}
 	}
 
@@ -79,15 +97,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	{
 		try (InputStream is = url.openStream())
 		{
-			return CSVReader.getInstance().read(is);
-		}
-	}
-
-	public static List<List<String>> load(String charset, URL url) throws IOException
-	{
-		try (InputStream is = url.openStream())
-		{
-			return CSVReader.getInstance(charset).read(is);
+			return ODSReader.getInstance().read(is);
 		}
 	}
 
@@ -95,23 +105,13 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	{
 		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
-			return CSVReader.getInstance().read(is);
-		}
-	}
-
-	public static List<List<String>> load(String charset, String string) throws IOException
-	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
-		{
-			return CSVReader.getInstance(charset).read(is);
+			return ODSReader.getInstance().read(is);
 		}
 	}
 
 	private static class Instance
 	{
 
-		public static final CSVReader VALUE = new CSVReader();
-		private static final ConcurrentMap<String, CSVReader> VALUES = new ConcurrentHashMap<String, CSVReader>();
+		public static final ODSReader VALUE = new ODSReader();
 	}
-
 }
