@@ -9,7 +9,7 @@ window.addEventListener("click", event =>
 
 		let action = event.target || event.srcElement;
 
-		if (action.onclick || action.closest("a, button"))
+		if (action.onclick || action.closest("a, button, input, select, textarea"))
 			return;
 
 		action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
