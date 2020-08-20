@@ -49,4 +49,14 @@ public interface Readable
 	{
 		return read(CSVReader.getInstance());
 	}
+
+	default List<List<String>> readXLS() throws IOException
+	{
+		return read(XLSReader.getInstance());
+	}
+
+	default List<List<String>> readODS() throws IOException
+	{
+		return read(ODSReader.getInstance());
+	}
 }
