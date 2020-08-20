@@ -3382,6 +3382,7 @@ g-dialog > main > section > iframe,
 }
 g-stack-frame,
 .g-stack-frame {
+  overflow: auto;
   position: fixed;
   border-radius: 0;
   background-color: var(--g-stack-frame-background-color);
