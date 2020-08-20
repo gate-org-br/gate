@@ -43,6 +43,7 @@ class GTabControl extends HTMLElement
 				{
 					links.forEach(e => e.setAttribute("slot", "head"));
 					let type = link.getAttribute("data-type") || this.type;
+					let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
 
 					link.addEventListener("click", event =>
 					{
@@ -52,6 +53,10 @@ class GTabControl extends HTMLElement
 						links.forEach(e => e.setAttribute("data-selected", "false"));
 						link.nextElementSibling.style.display = "block";
 						link.setAttribute("data-selected", "true");
+
+						if (reload === "always")
+							while (link.nextElementSibling.firstChild)
+								link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
 
 						if (!link.nextElementSibling.childNodes.length)
 						{
@@ -89,7 +94,6 @@ class GTabControl extends HTMLElement
 									iframe.src = link.href;
 									break;
 							}
-
 						}
 					});
 
