@@ -3,21 +3,14 @@
 var calendars = {};
 class GCalendar extends HTMLElement
 {
-	constructor(init)
+	constructor()
 	{
 		super();
 
 		var selection = [];
-
-		var max = undefined;
-		if (init && init.max)
-			max = init.max;
-
+		this._private = {};
 		var month = new Date();
-		if (init && init.month)
-			month = init.month;
 		month.setHours(0, 0, 0, 0);
-
 
 		var update = () =>
 		{
@@ -151,8 +144,7 @@ class GCalendar extends HTMLElement
 			if (!this.dispatchEvent(new CustomEvent('select', {cancelable: true, detail: {calendar: this, date: date}})))
 				return false;
 
-			if (max !== undefined
-				&& max <= selection.length)
+			if (this.max && this.max <= selection.length)
 				selection.shift();
 
 			selection.push(date);
@@ -196,6 +188,16 @@ class GCalendar extends HTMLElement
 		this.length = () => selection.length;
 		this.selection = () => Array.from(selection);
 		update();
+	}
+
+	set max(max)
+	{
+		this.setAttribute("max", max);
+	}
+
+	get max()
+	{
+		return Number(this.getAttribute("max"));
 	}
 }
 

@@ -6,8 +6,14 @@ class DateTimeIntervalSelector extends HTMLElement
 	{
 		super();
 		this._private = {};
+
 		this._private.min = this.appendChild(new DateTimeSelector());
 		this._private.max = this.appendChild(new DateTimeSelector());
+
+		let date = new Date();
+		this._private.min.date = date;
+		this._private.max.date = date;
+
 		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}

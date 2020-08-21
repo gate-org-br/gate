@@ -7,7 +7,10 @@ class DateTimePicker extends Picker
 		super();
 		this.hideButton;
 		this.caption = "Selecione uma data e hora";
+		
 		var selector = this.body.appendChild(new DateTimeSelector());
+		selector.date = new Date();
+		
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);

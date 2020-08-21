@@ -7,7 +7,12 @@ class DateIntervalPicker extends Picker
 		super();
 		this.hideButton;
 		this.caption = "Selecione um período";
-		var selector = this.body.appendChild(new DateIntervalSelector());
+
+		let selector = this.body.appendChild(new DateIntervalSelector());
+		let date = new Date();
+		selector.min = date;
+		selector.max = date;
+
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);

@@ -3720,7 +3720,7 @@ window.addEventListener("click", event =>
 
 		let action = event.target || event.srcElement;
 
-		if (action.onclick || action.closest("a, button"))
+		if (action.onclick || action.closest("a, button, input, select, textarea"))
 			return;
 
 		action = action.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
@@ -4159,21 +4159,14 @@ customElements.define('g-slider', GSlider);
 var calendars = {};
 class GCalendar extends HTMLElement
 {
-	constructor(init)
+	constructor()
 	{
 		super();
 
 		var selection = [];
-
-		var max = undefined;
-		if (init && init.max)
-			max = init.max;
-
+		this._private = {};
 		var month = new Date();
-		if (init && init.month)
-			month = init.month;
 		month.setHours(0, 0, 0, 0);
-
 
 		var update = () =>
 		{
@@ -4307,8 +4300,7 @@ class GCalendar extends HTMLElement
 			if (!this.dispatchEvent(new CustomEvent('select', {cancelable: true, detail: {calendar: this, date: date}})))
 				return false;
 
-			if (max !== undefined
-				&& max <= selection.length)
+			if (this.max && this.max <= selection.length)
 				selection.shift();
 
 			selection.push(date);
@@ -4353,6 +4345,16 @@ class GCalendar extends HTMLElement
 		this.selection = () => Array.from(selection);
 		update();
 	}
+
+	set max(max)
+	{
+		this.setAttribute("max", max);
+	}
+
+	get max()
+	{
+		return Number(this.getAttribute("max"));
+	}
 }
 
 customElements.define('g-calendar', GCalendar);
@@ -4364,18 +4366,29 @@ class DateSelector extends HTMLElement
 	{
 		super();
 		this._private = {};
-
-		var date = new Date();
-		this._private.calendar = this.appendChild(new GCalendar({month: new Date(), max: 1}));
-		this._private.calendar.select(date);
+		this._private.calendar = this.appendChild(new GCalendar());
+		this._private.calendar.max = 1;
 		this._private.calendar.addEventListener("remove", event => event.preventDefault());
 		this._private.calendar.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected',
 				{detail: this.selection})));
 	}
 
+	set date(date)
+	{
+		this._private.calendar.clear();
+		this._private.calendar.select(date);
+	}
+
+	get date()
+	{
+		let selection = this._private.calendar.selection();
+		return selection.length ? selection[0] : null;
+	}
+
 	get selection()
 	{
-		return DateFormat.DATE.format(this._private.calendar.selection()[0]);
+		let date = this.date;
+		return date ? DateFormat.DATE.format(date) : null;
 	}
 }
 
@@ -4443,9 +4456,21 @@ class DateTimeSelector extends HTMLElement
 		this._private.time.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
 
+	set date(date)
+	{
+		this._private.date.date = date;
+	}
+
+	get date()
+	{
+		return this._private.date.date;
+	}
+
 	get selection()
 	{
-		return this._private.date.selection + " " + this._private.time.selection;
+		let date = this._private.date.selection;
+		let time = this._private.time.selection;
+		return date && time ? date + " " + time : null;
 	}
 }
 
@@ -4465,9 +4490,31 @@ class DateIntervalSelector extends HTMLElement
 		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
 
+	set min(date)
+	{
+		this._private.min.date = date;
+	}
+
+	get min()
+	{
+		return this._private.min.date;
+	}
+
+	set max(date)
+	{
+		this._private.max.date = date;
+	}
+
+	get max()
+	{
+		return this._private.max.date;
+	}
+
 	get selection()
 	{
-		return this._private.min.selection + " - " + this._private.max.selection;
+		let min = this._private.min.selection;
+		let max = this._private.max.selection;
+		return min && max ? min + " - " + max : null;
 	}
 }
 
@@ -4525,8 +4572,14 @@ class DateTimeIntervalSelector extends HTMLElement
 	{
 		super();
 		this._private = {};
+
 		this._private.min = this.appendChild(new DateTimeSelector());
 		this._private.max = this.appendChild(new DateTimeSelector());
+
+		let date = new Date();
+		this._private.min.date = date;
+		this._private.max.date = date;
+
 		this._private.min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
@@ -5134,7 +5187,10 @@ class DateTimePicker extends Picker
 		super();
 		this.hideButton;
 		this.caption = "Selecione uma data e hora";
+		
 		var selector = this.body.appendChild(new DateTimeSelector());
+		selector.date = new Date();
+		
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
@@ -5190,7 +5246,12 @@ class DateIntervalPicker extends Picker
 		super();
 		this.hideButton;
 		this.caption = "Selecione um período";
-		var selector = this.body.appendChild(new DateIntervalSelector());
+
+		let selector = this.body.appendChild(new DateIntervalSelector());
+		let date = new Date();
+		selector.min = date;
+		selector.max = date;
+
 		this.commit.innerText = selector.selection;
 		this.addEventListener("show", () => this.commit.focus());
 		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
@@ -6273,7 +6334,7 @@ window.addEventListener("click", function (event)
 		{
 			parameters = parameters.filter(e => e && e.value);
 			parameters.forEach(e => e.value = "");
-			parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
+			parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed', {bubbles: true})));
 		} else {
 			let dialog = GDialog.create();
 			dialog.target = action.href;
