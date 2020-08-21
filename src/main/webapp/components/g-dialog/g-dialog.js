@@ -174,7 +174,7 @@ window.addEventListener("click", function (event)
 		{
 			parameters = parameters.filter(e => e && e.value);
 			parameters.forEach(e => e.value = "");
-			parameters.forEach(e => e.dispatchEvent(new Event('change', {bubbles: true})));
+			parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed', {bubbles: true})));
 		} else {
 			let dialog = GDialog.create();
 			dialog.target = action.href;
