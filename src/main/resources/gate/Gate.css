@@ -1265,6 +1265,7 @@ fieldset > label > form > button {
   display: flex;
   text-indent: 0;
   flex-shrink: 0;
+  min-width: 32px;
   flex-basis: 32px;
   align-items: stretch;
   justify-content: center;
@@ -4412,9 +4413,11 @@ body main > nav {
   grid-row: 2;
   border: none;
   padding: 8px;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
+  justify-items: stretch;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr;
   background-color: var(--nav-background-color);
   background-image: var(--nav-background-image);
 }
