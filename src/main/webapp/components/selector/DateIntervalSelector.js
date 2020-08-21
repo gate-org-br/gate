@@ -12,9 +12,31 @@ class DateIntervalSelector extends HTMLElement
 		this._private.max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}
 
+	set min(date)
+	{
+		this._private.min.date = date;
+	}
+
+	get min()
+	{
+		return this._private.min.date;
+	}
+
+	set max(date)
+	{
+		this._private.max.date = date;
+	}
+
+	get max()
+	{
+		return this._private.max.date;
+	}
+
 	get selection()
 	{
-		return this._private.min.selection + " - " + this._private.max.selection;
+		let min = this._private.min.selection;
+		let max = this._private.max.selection;
+		return min && max ? min + " - " + max : null;
 	}
 }
 
