@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,11 +33,44 @@ public class XLSReader extends AbstractReader<List<List<String>>>
 			{
 				List<String> line = new ArrayList<>();
 				for (Cell cell : row)
-					line.add(cell.getStringCellValue());
+					line.add(getValue(cell));
+
 				result.add(line);
 			}
 
 		return result;
+	}
+
+	private String getValue(Cell cell)
+	{
+		switch (cell.getCellType())
+		{
+			case STRING:
+				return cell.getStringCellValue();
+			case NUMERIC:
+				return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
+			case BOOLEAN:
+				return String.valueOf(cell.getBooleanCellValue());
+			case BLANK:
+				return "";
+			case ERROR:
+				return String.valueOf(cell.getErrorCellValue());
+			case FORMULA:
+				switch (cell.getCachedFormulaResultType())
+				{
+					case STRING:
+						return cell.getStringCellValue();
+					case NUMERIC:
+						return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
+					case BOOLEAN:
+						return String.valueOf(cell.getBooleanCellValue());
+					case BLANK:
+						return "";
+					case ERROR:
+						return String.valueOf(cell.getErrorCellValue());
+				}
+		}
+		return "";
 	}
 
 	public static XLSReader getInstance()

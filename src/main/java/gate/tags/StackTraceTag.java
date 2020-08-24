@@ -17,7 +17,7 @@ public class StackTraceTag extends DynamicAttributeTag
 	@Override
 	public void doTag() throws IOException
 	{
-		getJspContext().getOut().print("<template data-popup " + getAttributes().toString() + ">");
+		getJspContext().getOut().print("<template title='Erro de sistema' data-popup " + getAttributes().toString() + ">");
 		getJspContext().getOut().print("<table><tbody>");
 		for (Throwable error = this.exception;
 			error != null;

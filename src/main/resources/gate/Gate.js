@@ -2398,27 +2398,43 @@ class GWindow extends GModal
 }
 
 customElements.define('g-window', GWindow);
-var CSV =
+class CSV
+{
+	static parse(text)
 	{
-		parse: function (text)
-		{
-			var a = [];
-			text.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,
-				function (g0, g1, g2, g3)
-				{
-					if (g1 !== undefined)
-						a.push(g1.replace(/\\'/g, "'"));
-					else if (g2 !== undefined)
-						a.push(g2.replace(/\\"/g, '"'));
-					else if (g3 !== undefined)
-						a.push(g3);
-					return '';
-				});
-			if (/,\s*$/.test(text))
-				a.push('');
-			return a;
-		}
-	};
+		var a = [];
+		text.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,
+			function (g0, g1, g2, g3)
+			{
+				if (g1 !== undefined)
+					a.push(g1.replace(/\\'/g, "'"));
+				else if (g2 !== undefined)
+					a.push(g2.replace(/\\"/g, '"'));
+				else if (g3 !== undefined)
+					a.push(g3);
+				return '';
+			});
+		if (/,\s*$/.test(text))
+			a.push('');
+		return a;
+	}
+
+	static print(rows, name)
+	{
+		let url = "data:text/csv;charset=utf-8,"
+			+ rows
+			.map(r => r.map(c => "\"" + c + "\""))
+			.map(r => r.join(",")).join("\n");
+		url = encodeURI(url);
+
+		let link = document.createElement("a");
+		link.setAttribute("href", url);
+		link.setAttribute("download", name || "print.csv");
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
+}
 function Populator(options)
 {
 	this.populate = function (element)
@@ -2808,7 +2824,7 @@ class URL
 		return query_string;
 	}
 }
-/* global Message, Block, ENTER, ESC, GDialog, GStackFrame */
+/* global Message, Block, ENTER, ESC, GDialog, GStackFrame, GPopup */
 
 window.addEventListener("click", function (event)
 {
@@ -2868,7 +2884,6 @@ window.addEventListener("click", function (event)
 	let target = link.getAttribute("target");
 	if (link.getAttribute("target"))
 	{
-		target = target.toLowerCase();
 		switch (target)
 		{
 			case "_dialog":
@@ -3007,14 +3022,8 @@ window.addEventListener("click", function (event)
 				event.preventDefault();
 				event.stopPropagation();
 				Array.from(link.children)
-					.filter(e => e.tagName.toLowerCase() === "div")
-					.forEach(e =>
-					{
-						var popup = window.top.document.createElement("g-popup");
-						popup.element = e;
-						popup.addEventListener("hide", () => link.appendChild(e));
-						popup.show();
-					});
+					.filter(e => e.tagName.toLowerCase() === "template")
+					.forEach(e => GPopup.show(e, link.getAttribute("title")));
 				break;
 			case "_progress-dialog":
 				event.preventDefault();
@@ -3108,6 +3117,12 @@ window.addEventListener("click", function (event)
 							link.style.pointerEvents = "";
 						}
 					});
+				} else if (/^_popup\(([a-zA-Z0-9]+)\)$/g.test(target))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					GPopup.show(document.getElementById(/_popup\(([^)]+)\)/.exec(target)[1]),
+						link.getAttribute("title"));
 				}
 		}
 	}
@@ -3187,7 +3202,6 @@ window.addEventListener("click", function (event)
 	let target = button.getAttribute("formtarget");
 	if (target)
 	{
-		target = target.toLowerCase();
 		switch (target)
 		{
 			case "_dialog":
@@ -6497,7 +6511,6 @@ class GPopup extends GWindow
 	{
 		super();
 		this.hideButton;
-		this.caption = "Erro de sistema";
 	}
 
 	set element(element)
@@ -6509,7 +6522,7 @@ class GPopup extends GWindow
 
 	get element()
 	{
-		return this.main.firstChild();
+		return this.body.firstChild;
 	}
 
 	connectedCallback()
@@ -6517,16 +6530,20 @@ class GPopup extends GWindow
 		super.connectedCallback();
 		this.classList.add("g-popup");
 	}
+
+	static show(template, caption)
+	{
+		var popup = window.top.document.createElement("g-popup");
+		popup.caption = caption || template.getAttribute("title") || "";
+		popup.element = template.content.cloneNode(true);
+		popup.show();
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('template[data-popup]')).forEach(element =>
-	{
-		var popup = window.top.document.createElement("g-popup");
-		popup.element = element.content.cloneNode(true);
-		popup.show();
-	});
+	Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => GPopup.show(element));
 });
 
 
@@ -7147,7 +7164,7 @@ Message.show = function (status, timeout)
 	}
 };
 
-/* global Message, customElements */
+/* global Message, customElements, CSV */
 
 class GProgressStatus extends HTMLElement
 {
@@ -7209,12 +7226,14 @@ class GProgressStatus extends HTMLElement
 		div.style.backgroundColor = "white";
 
 		var logger = div.appendChild(document.createElement("ul"));
+		logger.setAttribute("title", "Clique para gerar CSV");
 		logger.style.flexGrow = "1";
 		logger.style.margin = "0";
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
+		logger.addEventListener("click", () => CSV.print(Array.from(logger.children).map(e => [e.innerText]), "log.txt"));
 
-		function log(event)
+		let log = event =>
 		{
 			if (event.detail.progress)
 				counter.innerHTML = event.detail.progress;

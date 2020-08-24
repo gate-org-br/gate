@@ -49,19 +49,11 @@ public class ODSReader extends AbstractReader<List<List<String>>>
 					.parse(new ByteArrayInputStream(string.getBytes()));
 
 			List<List<String>> result = new ArrayList<>();
+
 			NodeList rows = document.getElementsByTagName("table:table-row");
+
 			for (int i = 0; i < rows.getLength(); i++)
-			{
-				Node row = rows.item(i);
-				NodeList cells = row.getChildNodes();
-				List<String> line = new ArrayList<>();
-				for (int j = 0; j < cells.getLength(); j++)
-				{
-					Node cell = cells.item(j);
-					line.add(cell.getTextContent());
-				}
-				result.add(line);
-			}
+				result.add(parseRow(rows.item(i)));
 
 			return result;
 
@@ -70,6 +62,26 @@ public class ODSReader extends AbstractReader<List<List<String>>>
 			throw new IOException(ex.getMessage(), ex);
 		}
 
+	}
+
+	private List<String> parseRow(Node row)
+	{
+		NodeList cells = row.getChildNodes();
+		List<String> result = new ArrayList<>();
+		for (int i = 0; i < cells.getLength(); i++)
+		{
+			Node cell = cells.item(i);
+
+			Node attribute = cell.getAttributes()
+				.getNamedItem("table:number-columns-repeated");
+
+			int repeat = attribute != null
+				? Integer.parseInt(attribute.getNodeValue()) : 1;
+
+			for (int j = 0; j < repeat; j++)
+				result.add(cell.getTextContent());
+		}
+		return result;
 	}
 
 	public static ODSReader getInstance()
