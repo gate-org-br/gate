@@ -1,4 +1,4 @@
-/* global Message, Block, ENTER, ESC, GDialog, GStackFrame */
+/* global Message, Block, ENTER, ESC, GDialog, GStackFrame, GPopup */
 
 window.addEventListener("click", function (event)
 {
@@ -58,7 +58,6 @@ window.addEventListener("click", function (event)
 	let target = link.getAttribute("target");
 	if (link.getAttribute("target"))
 	{
-		target = target.toLowerCase();
 		switch (target)
 		{
 			case "_dialog":
@@ -197,14 +196,8 @@ window.addEventListener("click", function (event)
 				event.preventDefault();
 				event.stopPropagation();
 				Array.from(link.children)
-					.filter(e => e.tagName.toLowerCase() === "div")
-					.forEach(e =>
-					{
-						var popup = window.top.document.createElement("g-popup");
-						popup.element = e;
-						popup.addEventListener("hide", () => link.appendChild(e));
-						popup.show();
-					});
+					.filter(e => e.tagName.toLowerCase() === "template")
+					.forEach(e => GPopup.show(e, link.getAttribute("title")));
 				break;
 			case "_progress-dialog":
 				event.preventDefault();
@@ -298,6 +291,12 @@ window.addEventListener("click", function (event)
 							link.style.pointerEvents = "";
 						}
 					});
+				} else if (/^_popup\(([a-zA-Z0-9]+)\)$/g.test(target))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					GPopup.show(document.getElementById(/_popup\(([^)]+)\)/.exec(target)[1]),
+						link.getAttribute("title"));
 				}
 		}
 	}

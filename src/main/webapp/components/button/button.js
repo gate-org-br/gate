@@ -62,7 +62,6 @@ window.addEventListener("click", function (event)
 	let target = button.getAttribute("formtarget");
 	if (target)
 	{
-		target = target.toLowerCase();
 		switch (target)
 		{
 			case "_dialog":

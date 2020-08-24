@@ -6,7 +6,6 @@ class GPopup extends GWindow
 	{
 		super();
 		this.hideButton;
-		this.caption = "Erro de sistema";
 	}
 
 	set element(element)
@@ -18,7 +17,7 @@ class GPopup extends GWindow
 
 	get element()
 	{
-		return this.main.firstChild();
+		return this.body.firstChild;
 	}
 
 	connectedCallback()
@@ -26,16 +25,20 @@ class GPopup extends GWindow
 		super.connectedCallback();
 		this.classList.add("g-popup");
 	}
+
+	static show(template, caption)
+	{
+		var popup = window.top.document.createElement("g-popup");
+		popup.caption = caption || template.getAttribute("title") || "";
+		popup.element = template.content.cloneNode(true);
+		popup.show();
+	}
 }
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('template[data-popup]')).forEach(element =>
-	{
-		var popup = window.top.document.createElement("g-popup");
-		popup.element = element.content.cloneNode(true);
-		popup.show();
-	});
+	Array.from(document.querySelectorAll('template[data-popup]'))
+		.forEach(element => GPopup.show(element));
 });
 
 

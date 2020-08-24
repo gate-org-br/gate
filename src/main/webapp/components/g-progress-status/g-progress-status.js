@@ -1,4 +1,4 @@
-/* global Message, customElements */
+/* global Message, customElements, CSV */
 
 class GProgressStatus extends HTMLElement
 {
@@ -60,12 +60,14 @@ class GProgressStatus extends HTMLElement
 		div.style.backgroundColor = "white";
 
 		var logger = div.appendChild(document.createElement("ul"));
+		logger.setAttribute("title", "Clique para gerar CSV");
 		logger.style.flexGrow = "1";
 		logger.style.margin = "0";
 		logger.style.padding = "0";
 		logger.style.listStyleType = "none";
+		logger.addEventListener("click", () => CSV.print(Array.from(logger.children).map(e => [e.innerText]), "log.txt"));
 
-		function log(event)
+		let log = event =>
 		{
 			if (event.detail.progress)
 				counter.innerHTML = event.detail.progress;
