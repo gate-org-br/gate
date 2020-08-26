@@ -23,7 +23,7 @@ GBlock.show = function (text)
 {
 	if (!window.top.GateBlockDialog)
 	{
-		window.top.GateBlockDialog = new GBlock(text);
+		window.top.GateBlockDialog = window.top.document.createElement("g-block");
 		window.top.GateBlockDialog.caption = text || "Aguarde";
 		window.top.GateBlockDialog.show();
 	}

@@ -4471,7 +4471,7 @@ body main > section > article > *:only-child {
 body main > footer {
   bottom: 0;
   grid-row: 4;
-  height: 20px;
+  height: 22px;
   padding: 4px;
   display: flex;
   font-size: 12px;
