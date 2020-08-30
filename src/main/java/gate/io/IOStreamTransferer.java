@@ -6,6 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+/**
+ * Used to transfer data from one io stream to another
+ * 
+ * @deprecated use {@link java.io.InputStream#transferTo(java.io.OutputStream)}
+ * instead
+ */
+@Deprecated(forRemoval = true)
 public class IOStreamTransferer
 {
 
