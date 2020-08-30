@@ -8,7 +8,6 @@ import gate.sql.condition.ExtractorCondition;
 import gate.sql.condition.GenericCondition;
 import gate.sql.statement.Sentence;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Function;
@@ -108,6 +107,16 @@ public class TableUpdate implements Update
 	public When when(boolean assertion)
 	{
 		return assertion ? new When() : new DisabledWhen();
+	}
+
+	/**
+	 * Compiles this update builder
+	 *
+	 * @return the created compiled builder
+	 */
+	public Compiled compiled()
+	{
+		return new Compiled();
 	}
 
 	@Override
