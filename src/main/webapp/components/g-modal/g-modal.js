@@ -40,8 +40,7 @@ class GModal extends HTMLElement
 	show()
 	{
 
-		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}}))
-			&& this.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
+		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
 			GOverflow.disable(window.top.document.documentElement);
 
