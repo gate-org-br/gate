@@ -68,7 +68,7 @@ public class RoleControl extends Control
 
 	public void update(Role role) throws AppException
 	{
-		Constraints.validate(role, "role.id", "master", "active",
+		Constraints.validate(role, "master", "active",
 			"name", "email", "description", "roleID");
 
 		try (RoleDao dao = new RoleDao())
