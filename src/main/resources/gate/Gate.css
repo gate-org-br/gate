@@ -917,6 +917,9 @@ nav > a:only-of-type {
 nav > a:hover {
   background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
 }
+legend + fieldset {
+  margin: 0;
+}
 fieldset {
   margin: 0;
   margin-top: 10px;
@@ -1001,6 +1004,9 @@ fieldset fieldset fieldset fieldset {
 fieldset fieldset fieldset fieldset fieldset {
   border: 4px solid var(--main-shaded05);
   background-color: var(--main-shaded10);
+}
+fieldset fieldset:only-child {
+  margin: 0;
 }
 fieldset > div {
   width: 100%;
@@ -4278,26 +4284,33 @@ th[data-sortable="U"]::before {
 th[data-sortable="D"]::before {
   content: "\2193 ";
 }
-span[navigator] {
+g-path,
+.g-path {
   display: flex;
   padding-left: 4px;
   padding-right: 4px;
   align-items: center;
   justify-content: flex-start;
 }
-span[navigator][iconless] > a > i,
-span[navigator][iconless] > label > i {
+g-path[iconless] > a > i,
+.g-path[iconless] > a > i,
+g-path[iconless] > label > i,
+.g-path[iconless] > label > i {
   display: none;
 }
-span[navigator] > a,
-span[navigator] > label {
+g-path > a,
+.g-path > a,
+g-path > label,
+.g-path > label {
   display: flex;
   font-size: inherit;
   align-items: center;
   justify-content: space-between;
 }
-span[navigator] > a > i,
-span[navigator] > label > i {
+g-path > a > i,
+.g-path > a > i,
+g-path > label > i,
+.g-path > label > i {
   order: -1;
   display: flex;
   margin-right: 4px;
@@ -4305,8 +4318,10 @@ span[navigator] > label > i {
   align-items: center;
   justify-content: center;
 }
-span[navigator] > a:not(:last-child):after,
-span[navigator] > label:not(:last-child):after {
+g-path > a:not(:last-child):after,
+.g-path > a:not(:last-child):after,
+g-path > label:not(:last-child):after,
+.g-path > label:not(:last-child):after {
   display: flex;
   color: #999999;
   content: "\2275";

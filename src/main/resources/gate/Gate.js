@@ -7023,6 +7023,17 @@ window.addEventListener("click", function (event)
 
 /* global customElements */
 
+class GPath extends HTMLElement
+{
+	constructor()
+	{
+		super();
+	}
+}
+
+customElements.define('g-path', GPath);
+/* global customElements */
+
 class Message extends GWindow
 {
 	constructor()
