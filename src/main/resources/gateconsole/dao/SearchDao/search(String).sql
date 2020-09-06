@@ -3,10 +3,10 @@ SELECT
 FROM
     Uzer
 WHERE
-    userID = ? OR name LIKE ?
+    userID = ? OR email = ? OR name LIKE ?
 UNION SELECT 
     2 AS tipo, id, roleID AS entityID, name
 FROM
     Role
 WHERE
-    roleID = ? OR name LIKE ?
+    roleID = ? OR email = ? OR name LIKE ?
