@@ -1,10 +1,10 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
-				Nova Função<g:icon type="update"/>
+				<g:path/>
 			</legend>
 
 			<label>

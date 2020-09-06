@@ -3,7 +3,7 @@
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<fieldset>
 		<legend>
-			Perfil<g:icon type="select"/>
+			<g:path/>
 		</legend>
 		<label data-size='8'>
 			Nome:

@@ -1,18 +1,23 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method="post" action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Post">
+
 		<fieldset>
 			<legend>
-				<g:icon type="gateconsole.screen.MailScreen:callPost()"/>
-				Destino
+				<g:path/>
 			</legend>
-			<label style="width: 100%">
-				<g:email property="destination" tabindex="1"/>
+
+			<label>
+				Destino:
+				<span>
+					<g:email property="destination" tabindex="1"/>	
+				</span>
 			</label>
 		</fieldset>
-		<div class="Coolbar">
+
+		<g-coolbar>
 			<g:link method="post" module="#" screen="#" action="Post"/>
-		</div>
+		</g-coolbar>
 	</form>
 
 	<g:choose>

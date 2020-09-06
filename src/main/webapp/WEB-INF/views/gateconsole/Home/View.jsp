@@ -5,18 +5,20 @@
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>
-				Pesquisar<g:icon type="search"/>
+				<g:path/>
 			</legend>
 			<label>
-				Nome/Login/Sigla:
+				Pesquisar:
 				<span>
-					<g:text property='form' tabindex='1'/>
+					<g:text property='form' tabindex='1' placeholder="Pesquisar usuários (nome, email ou login) ou perfis (nome, email ou sigla)"/>
 				</span>
 			</label>
 		</fieldset>
 
 		<g-coolbar>
-			<g:link method="post" module='#' screen="#" action="#" tabindex='2'/>
+			<g:link method="post" module='#' screen="#" action="#" tabindex='2'>
+				Pesquisar<g:icon type="search"/>
+			</g:link>
 		</g-coolbar>
 	</form>
 

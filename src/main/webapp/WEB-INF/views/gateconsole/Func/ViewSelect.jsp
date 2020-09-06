@@ -3,8 +3,7 @@
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<fieldset>
 		<legend>
-			<g:name type="${action}"/>
-			<g:icon type="${action}"/>
+			<g:path/>
 		</legend>
 		<label>
 			Nome:

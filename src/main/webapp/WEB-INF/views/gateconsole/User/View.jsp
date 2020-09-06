@@ -5,7 +5,7 @@
 	<form id='form' method='POST' action='#'>
 		<fieldset>
 			<legend>
-				<g:icon type="search"/>Pesquisar Usuários
+				<g:path/>
 			</legend>
 
 			<label data-size='4'>

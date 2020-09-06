@@ -6,6 +6,7 @@ import gate.base.Screen;
 import gate.entity.Org;
 import gate.error.AppException;
 import gate.error.NotFoundException;
+import gate.io.URL;
 import gateconsole.contol.OrgControl;
 import javax.inject.Inject;
 
@@ -19,7 +20,7 @@ public class OrgScreen extends Screen
 	@Inject
 	private OrgControl control;
 
-	public String call()
+	public Object call()
 	{
 		try
 		{
@@ -27,7 +28,10 @@ public class OrgScreen extends Screen
 			return "/WEB-INF/views/gateconsole/Org/View.jsp";
 		} catch (NotFoundException ex)
 		{
-			return "/WEB-INF/views/gateconsole/Org/ViewUpdate.jsp";
+			return new URL("Gate")
+				.setModule(getModule())
+				.setScreen(getScreen())
+				.setAction("Update");
 		}
 	}
 
@@ -35,25 +39,36 @@ public class OrgScreen extends Screen
 	@Name("Alterar")
 	public String callUpdate()
 	{
-		try
-		{
-			if (isGET())
-			{
-				form = control.select();
-			} else if (isPOST() && getMessages().isEmpty())
-			{
-				new OrgControl().update(getForm());
-				getRequest().getSession().getServletContext()
-					.setAttribute("org", new OrgControl().select());
-				return call();
-			}
-		} catch (AppException ex)
-		{
-			setMessages(ex.getMessages());
-		}
 		return "/WEB-INF/views/gateconsole/Org/ViewUpdate.jsp";
 	}
 
+	@Icon("commit")
+	@Name("Concluir")
+	public Object callCommit()
+	{
+		try
+		{
+			if (!getMessages().isEmpty())
+				throw new AppException(getMessages());
+
+			control.update(getForm());
+			getRequest().getSession().getServletContext()
+				.setAttribute("org", new OrgControl().select());
+
+			return new URL("Gate")
+				.setModule(getModule())
+				.setScreen(getScreen());
+		} catch (AppException ex)
+		{
+			return new URL("Gate")
+				.setModule(getModule())
+				.setScreen(getScreen())
+				.setAction("Update")
+				.setMessages(ex.getMessages());
+		}
+	}
+
+	@Icon("dwload")
 	public Object callDwload()
 	{
 		return control.dwload();

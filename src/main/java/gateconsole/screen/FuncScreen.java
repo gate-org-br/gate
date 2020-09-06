@@ -32,7 +32,7 @@ public class FuncScreen extends Screen
 	}
 
 	@Icon("select")
-	@Name("Detalhes")
+	@Name("Detalhe")
 	public String callSelect()
 	{
 		try
@@ -53,13 +53,13 @@ public class FuncScreen extends Screen
 		if (isPOST()
 			&& getMessages().isEmpty())
 			try
-			{
-				control.insert(getForm());
-				return callSelect();
-			} catch (AppException e)
-			{
-				setMessages(e.getMessages());
-			}
+		{
+			control.insert(getForm());
+			return callSelect();
+		} catch (AppException e)
+		{
+			setMessages(e.getMessages());
+		}
 		return "/WEB-INF/views/gateconsole/Func/ViewInsert.jsp";
 	}
 

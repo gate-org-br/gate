@@ -1,6 +1,7 @@
 package gateconsole.screen;
 
 import gate.annotation.Asynchronous;
+import gate.annotation.CopyIcon;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
@@ -46,6 +47,8 @@ public class UserScreen extends Screen
 	@Inject
 	private UserControl control;
 
+	@Icon("search")
+	@Name("Pesquisar")
 	public String call()
 	{
 		if (isPOST() && getMessages().isEmpty())
@@ -247,6 +250,8 @@ public class UserScreen extends Screen
 		return control.getPhoto(getForm().getId());
 	}
 
+	@Name("Funções")
+	@CopyIcon(Func.class)
 	public static class FuncScreen extends Screen
 	{
 
@@ -260,8 +265,6 @@ public class UserScreen extends Screen
 		@Inject
 		private FuncControl.UserControl control;
 
-		@Name("Funções")
-		@Icon("gate.entity.Func")
 		public String call()
 		{
 
