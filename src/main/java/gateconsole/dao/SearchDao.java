@@ -1,13 +1,12 @@
 package gateconsole.dao;
 
 import gate.base.Dao;
-import gate.sql.Link;
-import gate.sql.Command;
-import gate.sql.Cursor;
 import gate.entity.Role;
 import gate.entity.User;
+import gate.sql.Command;
+import gate.sql.Cursor;
+import gate.sql.Link;
 import gate.type.ID;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +26,14 @@ public class SearchDao extends Dao
 	public List<Object> search(String text)
 	{
 		try (Command command = getLink()
-				.from(getClass().getResource("SearchDao/search(String).sql"))
-				.parameters(text,
-						String.format("%%%s%%", text),
-						text,
-						String.format("%%%s%%", text))
-				.createCommand())
+			.from(getClass().getResource("SearchDao/search(String).sql"))
+			.parameters(text,
+				text,
+				String.format("%%%s%%", text),
+				text,
+				text,
+				String.format("%%%s%%", text))
+			.createCommand())
 		{
 			List<Object> objects = new ArrayList<>();
 			try (Cursor cursor = command.getCursor())
