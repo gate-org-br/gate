@@ -70,6 +70,7 @@
 @import "Form.js"
 @import "Focus.js"
 @import "sortable/sortable.js"
+@import "g-path/g-path.js";
 @import "g-message/g-message.js"
 @import "g-progress-status/g-progress-status.js"
 @import "g-progress-dialog/g-progress-dialog.js"

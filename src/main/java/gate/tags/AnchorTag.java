@@ -144,19 +144,17 @@ public class AnchorTag extends DynamicAttributeTag
 
 	public Optional<Icons.Icon> getIcon()
 	{
-		return Icon.Extractor.extract(javaMethod).or(() -> Icon.Extractor.extract(javaClass));
+		return Icon.Extractor.extract(action != null ? javaMethod : javaClass);
 	}
 
 	public Optional<String> getName()
 	{
-		return Name.Extractor.extract(javaMethod).or(() -> Name.Extractor.extract(javaClass));
+		return Name.Extractor.extract(action != null ? javaMethod : javaClass);
 	}
 
 	public String createBody()
 	{
-		StringJoiner string
-			= new StringJoiner("")
-				.setEmptyValue("unamed");
+		StringJoiner string = new StringJoiner("").setEmptyValue("unamed");
 		getName().ifPresent(string::add);
 		getIcon().ifPresent(e -> string.add("<i>&#X" + e.getCode() + ";</i>"));
 		return string.toString();
