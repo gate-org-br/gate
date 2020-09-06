@@ -2,6 +2,9 @@
 
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<fieldset>
+		<legend>
+			<g:path/>
+		</legend>
 		<label>
 			Nome:
 			<span>
@@ -16,7 +19,7 @@
 		</label>
 
 		<fieldset overflow: auto">
-			  <table class="TREEVIEW">
+			<table class="TREEVIEW">
 				<caption>
 					ACESSOS
 				</caption>

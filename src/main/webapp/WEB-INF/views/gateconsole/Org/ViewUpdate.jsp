@@ -3,9 +3,13 @@
 <g:template filename="/WEB-INF/views/FULL.jsp">
 	<article>
 		<section>
-			<form method='POST' action='#' enctype='multipart/form-data'
+			<form id="form" method='POST' action='#' enctype='multipart/form-data'
 			      style="height: 100%">
-				<fieldset style="height: 100%">
+				<fieldset>
+					<legend>
+						<g:path/>
+					</legend>
+
 					<label data-size="4">
 						Sigla:
 						<span>
@@ -90,11 +94,11 @@
 		</section>
 		<footer>
 			<g-coolbar>
-				<g:link method="post" module="#" screen="#" action="#" style='color: #006600' tabindex='2'>
+				<g:link form="form" method="post" module="#" screen="#" action="Commit" class="Commit" tabindex='2'>
 					Concluir<g:icon type='commit'/>
 				</g:link>
 				<hr/>
-				<g:link module="#" screen="#" style='float: left; color: #660000' tabindex='2'>
+				<g:link module="#" screen="#" class="Cancel" tabindex='2'>
 					Desistir<g:icon type='cancel'/>
 				</g:link>
 			</g-coolbar>

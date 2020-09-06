@@ -11,8 +11,7 @@
 		</g:with>
 		<fieldset style="margin: 0">
 			<legend>
-				<g:name type="${action}"/>
-				<g:icon type="${action}"/>
+				<g:path/>
 			</legend>
 			<label data-size='2'>
 				Ativo:

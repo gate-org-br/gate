@@ -4,8 +4,7 @@
 	<form method='POST' action='#' enctype='multipart/form-data'>
 		<fieldset>
 			<legend>
-				<g:name type="${action}"/>
-				<g:icon type="${action}"/>
+				<g:path/>
 			</legend>
 			<g:hidden property='form'/>
 

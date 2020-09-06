@@ -62,7 +62,7 @@ public class RoleScreen extends Screen
 	}
 
 	@Icon("select")
-	@Name("Detalhes")
+	@Name("Detalhe")
 	public String callSelect()
 	{
 		try

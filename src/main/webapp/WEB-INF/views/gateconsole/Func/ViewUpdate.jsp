@@ -1,11 +1,10 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method='POST' action='#' enctype='multipart/form-data'>
 		<fieldset>
 			<legend>
-				<g:name type="${action}"/>
-				<g:icon type="${action}"/>
+				<g:path/>
 			</legend>
 			<label>
 				Nome:
