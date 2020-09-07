@@ -4923,6 +4923,10 @@ class IconSelector extends HTMLElement
 		this.add("3018");
 		this.add("3019");
 		this.add("3020");
+		this.add("3021");
+		this.add("3022");
+		this.add("3023");
+		this.add("3024");
 	}
 
 	add(code)
