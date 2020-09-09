@@ -33,9 +33,16 @@ public class PathTag extends DynamicAttributeTag
 
 		StringJoiner string = new StringJoiner("");
 
-		Screen.getScreen(module, null).flatMap(PathTag::getLabel).ifPresent(string::add);
-		Screen.getScreen(module, screen).flatMap(PathTag::getLabel).ifPresent(string::add);
-		Screen.getAction(module, screen, action).flatMap(PathTag::getLabel).ifPresent(string::add);
+		if (module != null)
+		{
+			Screen.getScreen(module, null).flatMap(PathTag::getLabel).ifPresent(string::add);
+			if (screen != null)
+			{
+				Screen.getScreen(module, screen).flatMap(PathTag::getLabel).ifPresent(string::add);
+				if (action != null)
+					Screen.getAction(module, screen, action).flatMap(PathTag::getLabel).ifPresent(string::add);
+			}
+		}
 
 		pageContext.getOut().print("<g-path " + getAttributes() + ">");
 		pageContext.getOut().print(string.toString());
