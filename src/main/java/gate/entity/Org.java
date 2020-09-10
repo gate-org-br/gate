@@ -8,7 +8,6 @@ import gate.constraint.Required;
 import gate.type.TimeInterval;
 import gate.type.collections.StringList;
 import gate.type.mime.MimeData;
-import gate.type.mime.MimeDataFile;
 import java.io.Serializable;
 
 @Icon("2006")
@@ -34,7 +33,7 @@ public class Org implements Serializable
 
 	@Required
 	@Description("Entre com o logo da organização")
-	private MimeDataFile icon;
+	private MimeData icon;
 
 	@Description("Entre com a lista de servidores LDAP que serão utilizados para autenticação")
 	private StringList authenticators;
@@ -97,7 +96,7 @@ public class Org implements Serializable
 		return icon;
 	}
 
-	public Org setIcon(MimeDataFile icon)
+	public Org setIcon(MimeData icon)
 	{
 		this.icon = icon;
 		return this;
