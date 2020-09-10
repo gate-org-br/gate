@@ -2,7 +2,6 @@ package gate.producer;
 
 import gate.annotation.Current;
 import gate.entity.Org;
-import gate.error.AppException;
 import gateconsole.contol.OrgControl;
 import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
@@ -22,6 +21,8 @@ public class OrgProducer implements Serializable
 {
 
 	private static final long serialVersionUID = 1L;
+	private static final Org DEFAULT = new Org().setOrgID("ORG")
+		.setName("Organização");
 
 	private Org org;
 
@@ -33,17 +34,9 @@ public class OrgProducer implements Serializable
 	@Named(value = "org")
 	public Org produce()
 	{
-		try
-		{
-			if (org == null)
-				org = control.select();
-			return org;
-		} catch (AppException ex)
-		{
-			return new Org()
-					.setOrgID("ORG")
-					.setName("Organização");
-		}
+		if (org == null)
+			org = control.select().orElseThrow(null);
+		return org != null ? org : DEFAULT;
 	}
 
 }

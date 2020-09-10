@@ -4,19 +4,19 @@ import gate.base.Control;
 import gate.constraint.Constraints;
 import gate.entity.Org;
 import gate.error.AppException;
-import gate.error.NotFoundException;
 import gateconsole.dao.OrgDao;
+import java.util.Optional;
 import javax.enterprise.context.Dependent;
 
 @Dependent
 public class OrgControl extends Control
 {
 
-	public Org select() throws NotFoundException
+	public Optional<Org> select()
 	{
 		try (OrgDao dao = new OrgDao())
 		{
-			return dao.select().orElseThrow(NotFoundException::new);
+			return dao.select();
 		}
 	}
 

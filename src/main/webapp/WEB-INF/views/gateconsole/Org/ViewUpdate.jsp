@@ -5,7 +5,7 @@
 		<section>
 			<form id="form" method='POST' action='#' enctype='multipart/form-data'
 			      style="height: 100%">
-				<fieldset>
+				<fieldset style="height: 100%">
 					<legend>
 						<g:path/>
 					</legend>

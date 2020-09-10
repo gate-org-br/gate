@@ -7,26 +7,16 @@
 				<legend>
 					<g:path/>
 				</legend>
-				<label data-size="4">
+				<label data-size="8">
 					Sigla:
 					<span>
 						<g:print value='${screen.form.orgID}'/>
 					</span>
 				</label>
-				<label data-size="4">
+				<label data-size="8">
 					Nome:
 					<span>
 						<g:print value='${screen.form.name}'/>
-					</span>
-				</label>
-				<label data-size="8">
-					Logo:
-					<span>
-						<label>
-							Baixar
-						</label>
-						<g:shortcut type="icon"
-							    module="#" screen="#" action="Dwload"/>
 					</span>
 				</label>
 				<label style="height: calc(50% - 80px)">
