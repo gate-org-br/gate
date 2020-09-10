@@ -2,6 +2,8 @@ package gate.lang.csv;
 
 import gate.error.AppError;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
@@ -58,6 +60,12 @@ public class CSVFormatter implements AutoCloseable
 	 */
 	public void writeLine(List<String> values) throws IOException
 	{
+		write(values);
+		writer.write(System.lineSeparator());
+	}
+
+	private void write(List<String> values) throws IOException
+	{
 		Objects.requireNonNull(values);
 		boolean firstVal = true;
 		for (String val : values)
@@ -76,7 +84,6 @@ public class CSVFormatter implements AutoCloseable
 			writer.write(delimiter);
 			firstVal = false;
 		}
-		writer.write(System.lineSeparator());
 	}
 
 	/**
@@ -106,4 +113,29 @@ public class CSVFormatter implements AutoCloseable
 		}
 	}
 
+	public static String format(List<String> line)
+	{
+		try (StringWriter writer = new StringWriter();
+			CSVFormatter formatter = new CSVFormatter(writer))
+		{
+			formatter.write(line);
+			return writer.toString();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	public static String format(List<String> line, String separator, String delimiter)
+	{
+		try (StringWriter writer = new StringWriter();
+			CSVFormatter formatter = new CSVFormatter(writer, separator, delimiter))
+		{
+			formatter.write(line);
+			return writer.toString();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
 }
