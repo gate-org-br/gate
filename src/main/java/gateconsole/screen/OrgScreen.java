@@ -24,7 +24,7 @@ public class OrgScreen extends Screen
 	{
 		try
 		{
-			form = control.select();
+			form = control.select().orElseThrow(NotFoundException::new);
 			return "/WEB-INF/views/gateconsole/Org/View.jsp";
 		} catch (NotFoundException ex)
 		{
@@ -39,6 +39,7 @@ public class OrgScreen extends Screen
 	@Name("Alterar")
 	public String callUpdate()
 	{
+		form = control.select().orElse(new Org());
 		return "/WEB-INF/views/gateconsole/Org/ViewUpdate.jsp";
 	}
 
@@ -53,7 +54,7 @@ public class OrgScreen extends Screen
 
 			control.update(getForm());
 			getRequest().getSession().getServletContext()
-				.setAttribute("org", new OrgControl().select());
+				.setAttribute("org", control.select().orElseThrow(NotFoundException::new));
 
 			return new URL("Gate")
 				.setModule(getModule())
