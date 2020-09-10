@@ -1,7 +1,6 @@
 package gate.lang.csv;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -11,9 +10,9 @@ public class CSVParserTest
 {
 
 	@Test
-	public void testUsers1()
+	public void testUsers1() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Users1.csv")))))
+		try (CSVParser parser = new CSVParser(getClass().getResource("Users1.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -31,9 +30,9 @@ public class CSVParserTest
 	}
 
 	@Test
-	public void testUsers2()
+	public void testUsers2() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Users2.csv")))))
+		try (CSVParser parser = new CSVParser(getClass().getResource("Users2.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -61,9 +60,9 @@ public class CSVParserTest
 	}
 
 	@Test
-	public void testUsers3()
+	public void testUsers3() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Users3.csv")))))
+		try (CSVParser parser = new CSVParser(getClass().getResource("Users3.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -94,9 +93,9 @@ public class CSVParserTest
 	}
 
 	@Test
-	public void testUsers4()
+	public void testUsers4() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("Users4.csv"))), ',', '\''))
+		try (CSVParser parser = new CSVParser(getClass().getResource("Users4.csv"), ',', '\''))
 		{
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
 			Assert.assertEquals(6, lines.size());
@@ -112,9 +111,9 @@ public class CSVParserTest
 	}
 
 	@Test
-	public void testCsv()
+	public void testCsv() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("csv.csv")))))
+		try (CSVParser parser = new CSVParser(getClass().getResource("csv.csv")))
 		{
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
 			Assert.assertEquals(3, lines.size());

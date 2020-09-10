@@ -1,10 +1,12 @@
 package gate.lang.csv;
 
-import gate.error.AppError;
+import gate.lang.SVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +20,7 @@ import java.util.stream.StreamSupport;
 /**
  * Extracts Lists of strings from a CSV formatted {@link java.io.Reader}.
  */
-public class CSVParser implements AutoCloseable, Iterable<List<String>>
+public class CSVParser implements SVParser
 {
 
 	private long lineNumber = -1;
@@ -29,7 +31,8 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	private static final Optional EMPTY = Optional.of(List.of());
 
 	/**
-	 * Constructs a new CSVParser for the specified Reader using semicolons as separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified Reader using semicolons
+	 * as separators and double quotes as delimiters.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
 	 */
@@ -39,9 +42,11 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified InputStream using
+	 * semicolons as separators and double quotes as delimiters.
 	 *
-	 * @param inputStream inputStream InputStream from where the CSV rows will be extracted
+	 * @param inputStream InputStream from where the CSV rows will be
+	 * extracted
 	 */
 	public CSVParser(InputStream inputStream)
 	{
@@ -49,9 +54,39 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters and encoding.
+	 * Constructs a new CSVParser for the specified URL using semicolons as
+	 * separators and double quotes as delimiters.
 	 *
-	 * @param inputStream inputStream InputStream from where the CSV rows will be extracted
+	 * @param resource URL from where the CSV rows will be extracted
+	 *
+	 * @throws java.io.IOException If an I/O error occurs
+	 */
+	public CSVParser(URL resource) throws IOException
+	{
+		this(new BufferedReader(new InputStreamReader(resource.openStream())));
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified URL
+	 *
+	 * @param resource URL from where the CSV rows will be extracted
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @throws java.io.IOException If an I/O error occurs
+	 */
+	public CSVParser(URL resource, char separator, char delimiter) throws IOException
+	{
+		this(new BufferedReader(new InputStreamReader(resource.openStream())), separator, delimiter);
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified InputStream using
+	 * semicolons as separators and double quotes as delimiters and
+	 * encoding.
+	 *
+	 * @param inputStream inputStream InputStream from where the CSV rows
+	 * will be extracted
 	 * @param charset the character encoding of the specified input stream
 	 */
 	public CSVParser(InputStream inputStream, Charset charset)
@@ -76,7 +111,8 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	/**
 	 * Constructs a new CSVParser for the specified InputStream.
 	 *
-	 * @param inputStream the inputStream from where the CSV rows will be extracted
+	 * @param inputStream the inputStream from where the CSV rows will be
+	 * extracted
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 */
@@ -90,7 +126,8 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 	/**
 	 * Constructs a new CSVParser for the specified InputStream.
 	 *
-	 * @param inputStream the inputStream from where the CSV rows will be extracted
+	 * @param inputStream the inputStream from where the CSV rows will be
+	 * extracted
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 * @param charset the character encoding of the specified input stream
@@ -102,12 +139,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		this.separator = separator;
 	}
 
-	/**
-	 * Extracts the next line of the previously specified CSV formatted {@link java.io.Reader} as a String List.
-	 *
-	 * @return an Optional describing the row returned as a String List of an empty Optional if there are no more rows to be read
-	 * @throws java.io.IOException If an I/O error occurs
-	 */
+	@Override
 	public Optional<List<String>> parseLine() throws IOException
 	{
 		if (c == -1)
@@ -123,15 +155,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		return Optional.of(line());
 	}
 
-	/**
-	 * Try to skip a number of lines from the previously specified CSV formatted {@link java.io.Reader}.
-	 *
-	 * @param lines the number of lines to be skipped
-	 *
-	 * @return the number of lines not skipped
-	 *
-	 * @throws java.io.IOException If an I/O error occurs
-	 */
+	@Override
 	public long skip(long lines) throws IOException
 	{
 		while (c != -1 && lines > 0)
@@ -149,11 +173,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		return lines;
 	}
 
-	/**
-	 * Return the current line number.
-	 *
-	 * @return the current line number
-	 */
+	@Override
 	public long getLineNumber()
 	{
 		return lineNumber;
@@ -227,11 +247,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		return string.toString().trim();
 	}
 
-	/**
-	 * Returns a sequential Stream with this parser as its source.
-	 *
-	 * @return a sequential Stream over the elements in this parser
-	 */
+	@Override
 	public Stream<List<String>> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
@@ -243,9 +259,9 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 		try
 		{
 			reader.close();
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -264,7 +280,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 			parseLine().ifPresent(action);
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -288,7 +304,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 				return true;
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
 
@@ -301,7 +317,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 				parseLine().ifPresent(action);
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
 
@@ -342,7 +358,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 				parseLine().ifPresent(action);
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
 
@@ -354,7 +370,7 @@ public class CSVParser implements AutoCloseable, Iterable<List<String>>
 				return parseLine().get();
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
 	}
