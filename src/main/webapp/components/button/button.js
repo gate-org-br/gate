@@ -293,7 +293,7 @@ window.addEventListener("click", function (event)
 
 				if (button.form.reportValidity())
 				{
-					let dialog = new GReportDialog();
+					let dialog = window.top.document.createElement("g-report-dialog");
 					dialog.blocked = true;
 					dialog.caption = button.getAttribute("title") || "Imprimir";
 					dialog.post(button.getAttribute("formaction") || button.form.action,
