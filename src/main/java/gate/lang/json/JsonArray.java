@@ -5,6 +5,7 @@ import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -66,11 +67,14 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	/**
 	 * Parses a JSON formatted string into a JsonArray object.
 	 *
-	 * @param json the JSON formatted string to be parsed into a JsonArray object
+	 * @param json the JSON formatted string to be parsed into a JsonArray
+	 * object
 	 *
-	 * @return a JsonArray object representing the JSON formatted string specified
+	 * @return a JsonArray object representing the JSON formatted string
+	 * specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse
+	 * the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonArray parse(String json) throws ConversionException
@@ -86,9 +90,11 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonArray into a JSON formatted string.
 	 * <p>
-	 * The elements of the specified JsonArray will be formatted recursively as their respective elements on JSON notation.
+	 * The elements of the specified JsonArray will be formatted recursively
+	 * as their respective elements on JSON notation.
 	 *
-	 * @param jsonArray the JsonArray object to be formatted on JSON notation
+	 * @param jsonArray the JsonArray object to be formatted on JSON
+	 * notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonArray
 	 *
@@ -236,6 +242,111 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	public List<JsonElement> subList(int fromIndex, int toIndex)
 	{
 		return values.subList(fromIndex, toIndex);
+	}
+
+	public JsonArray addString(String value)
+	{
+		add(value != null ? JsonString.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addByte(byte value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addByte(Byte value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addShort(short value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addShort(Short value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addInt(int value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addInt(Integer value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addLong(long value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addLong(Long value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addFloat(float value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addFloat(Float value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addDouble(double value)
+	{
+		add(JsonNumber.of(value));
+		return this;
+	}
+
+	public JsonArray addDouble(Double value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addBigDecimal(BigDecimal value)
+	{
+		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addBoolean(boolean value)
+	{
+		add(JsonBoolean.of(value));
+		return this;
+	}
+
+	public JsonArray addBoolean(Boolean value)
+	{
+		add(value != null ? JsonBoolean.of(value) : JsonNull.INSTANCE);
+		return this;
+	}
+
+	public JsonArray addObject(Object value)
+	{
+		if (value == null)
+			add(JsonNull.INSTANCE);
+		else
+			add(JsonString.of(gate.converter.Converter.toString(value)));
+		return this;
 	}
 
 	public static JsonArray of(Stream<?> stream)
