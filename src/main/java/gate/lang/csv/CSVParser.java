@@ -1,7 +1,6 @@
 package gate.lang.csv;
 
 import gate.error.AppError;
-import gate.lang.SVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +9,7 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -22,7 +19,7 @@ import java.util.stream.StreamSupport;
 /**
  * Extracts Lists of strings from a CSV formatted {@link java.io.Reader}.
  */
-public class CSVParser implements SVParser
+public class CSVParser implements Parser
 {
 
 	private int indx;
@@ -142,7 +139,7 @@ public class CSVParser implements SVParser
 	}
 
 	@Override
-	public Optional<List<String>> parseLine() throws IOException
+	public Optional<Row> parseLine() throws IOException
 	{
 		return Optional.ofNullable(parse());
 	}
@@ -160,18 +157,6 @@ public class CSVParser implements SVParser
 		return lines;
 	}
 
-	@Override
-	public long getLineNumber()
-	{
-		return lineNumber;
-	}
-
-	@Override
-	public String getParsedLine()
-	{
-		return line;
-	}
-
 	public boolean isDoubleDelimiter() throws IOException
 	{
 		return !isEOL()
@@ -180,14 +165,14 @@ public class CSVParser implements SVParser
 			&& line.charAt(indx + 1) != delimiter;
 	}
 
-	private List<String> parse() throws IOException
+	private Row parse() throws IOException
 	{
 		indx = 0;
 		line = reader.readLine();
 		if (line == null)
 			return null;
 
-		List<String> result = new ArrayList<>();
+		Row result = new Row(++lineNumber, line);
 
 		if (!isEOL())
 		{
@@ -199,7 +184,6 @@ public class CSVParser implements SVParser
 			}
 		}
 
-		lineNumber++;
 		return result;
 	}
 
@@ -263,17 +247,17 @@ public class CSVParser implements SVParser
 	}
 
 	@Override
-	public Stream<List<String>> stream()
+	public Stream<Row> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
 	}
 
 	@Override
-	public void forEach(Consumer<? super List<String>> action)
+	public void forEach(Consumer<? super Row> action)
 	{
 		try
 		{
-			for (List<String> line = parse(); line != null; line = parse())
+			for (Row line = parse(); line != null; line = parse())
 				action.accept(line);
 		} catch (IOException ex)
 		{
@@ -294,9 +278,9 @@ public class CSVParser implements SVParser
 	}
 
 	@Override
-	public Iterator<List<String>> iterator()
+	public Iterator<Row> iterator()
 	{
-		return new Iterator<List<String>>()
+		return new Iterator<Row>()
 		{
 
 			@Override
@@ -315,11 +299,11 @@ public class CSVParser implements SVParser
 			}
 
 			@Override
-			public void forEachRemaining(Consumer<? super List<String>> action)
+			public void forEachRemaining(Consumer<? super Row> action)
 			{
 				try
 				{
-					for (List<String> line = parse(); line != null; line = parse())
+					for (Row line = parse(); line != null; line = parse())
 						action.accept(line);
 				} catch (IOException ex)
 				{
@@ -328,7 +312,7 @@ public class CSVParser implements SVParser
 			}
 
 			@Override
-			public List<String> next()
+			public Row next()
 			{
 				try
 				{
@@ -342,17 +326,17 @@ public class CSVParser implements SVParser
 	}
 
 	@Override
-	public Spliterator<List<String>> spliterator()
+	public Spliterator<Row> spliterator()
 	{
-		return new Spliterator<List<String>>()
+		return new Spliterator<Row>()
 		{
 
 			@Override
-			public boolean tryAdvance(Consumer<? super List<String>> action)
+			public boolean tryAdvance(Consumer<? super Row> action)
 			{
 				try
 				{
-					List<String> line = parse();
+					Row line = parse();
 					if (line == null)
 						return false;
 					action.accept(line);
@@ -364,11 +348,11 @@ public class CSVParser implements SVParser
 			}
 
 			@Override
-			public void forEachRemaining(Consumer<? super List<String>> action)
+			public void forEachRemaining(Consumer<? super Row> action)
 			{
 				try
 				{
-					for (List<String> line = parse(); line != null; line = parse())
+					for (Row line = parse(); line != null; line = parse())
 						action.accept(line);
 				} catch (IOException ex)
 				{
@@ -377,7 +361,7 @@ public class CSVParser implements SVParser
 			}
 
 			@Override
-			public Spliterator<List<String>> trySplit()
+			public Spliterator<Row> trySplit()
 			{
 				return null;
 			}
@@ -402,7 +386,7 @@ public class CSVParser implements SVParser
 	 * @param string the string to be parsed
 	 * @return a List with all the columns contained in the specified string
 	 */
-	public static List<String> parseLine(String string)
+	public static Row parseLine(String string)
 	{
 		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string))))
 		{
@@ -422,7 +406,7 @@ public class CSVParser implements SVParser
 	 *
 	 * @return a List with all the columns contained in the specified string
 	 */
-	public static List<String> parseLine(String string, char separator, char delimiter)
+	public static Row parseLine(String string, char separator, char delimiter)
 	{
 		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
 		{
