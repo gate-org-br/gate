@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class CSVSpliterator implements Spliterator<List<String>>
 	{
 		try
 		{
-			Optional<List<String>> line = parser.parseLine();
+			Optional<Row> line = parser.parseLine();
 			if (line.isEmpty())
 				return false;
 			action.accept(line.orElseThrow());

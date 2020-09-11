@@ -1,7 +1,6 @@
-package gate.lang.psv;
+package gate.lang.csv;
 
 import gate.error.AppError;
-import gate.lang.SVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,9 +8,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -22,7 +19,7 @@ import java.util.stream.StreamSupport;
  * Extracts Lists of strings from a position based formatted
  * {@link java.io.Reader}.
  */
-public class PSVParser implements SVParser
+public class PSVParser implements Parser
 {
 
 	private String line;
@@ -51,20 +48,18 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
-	public Optional<List<String>> parseLine() throws IOException
+	public Optional<Row> parseLine() throws IOException
 	{
 		return Optional.ofNullable(parse());
 	}
 
-	private List<String> parse() throws IOException
+	private Row parse() throws IOException
 	{
 		line = reader.readLine();
 		if (line == null)
 			return null;
 
-		lineNumber++;
-
-		List<String> result = new ArrayList<>();
+		Row result = new Row(++lineNumber, line);
 
 		for (int i = 0; i < positions.length; i++)
 		{
@@ -95,19 +90,7 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
-	public long getLineNumber()
-	{
-		return lineNumber;
-	}
-
-	@Override
-	public String getParsedLine()
-	{
-		return line;
-	}
-
-	@Override
-	public Stream<List<String>> stream()
+	public Stream<Row> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
 	}
@@ -125,9 +108,9 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
-	public Iterator<List<String>> iterator()
+	public Iterator<Row> iterator()
 	{
-		return new Iterator<List<String>>()
+		return new Iterator<Row>()
 		{
 
 			@Override
@@ -146,11 +129,11 @@ public class PSVParser implements SVParser
 			}
 
 			@Override
-			public void forEachRemaining(Consumer<? super List<String>> action)
+			public void forEachRemaining(Consumer<? super Row> action)
 			{
 				try
 				{
-					for (List<String> line = parse(); line != null; line = parse())
+					for (Row line = parse(); line != null; line = parse())
 						action.accept(line);
 				} catch (IOException ex)
 				{
@@ -159,7 +142,7 @@ public class PSVParser implements SVParser
 			}
 
 			@Override
-			public List<String> next()
+			public Row next()
 			{
 				try
 				{
@@ -173,11 +156,11 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
-	public void forEach(Consumer<? super List<String>> action)
+	public void forEach(Consumer<? super Row> action)
 	{
 		try
 		{
-			for (List<String> line = parse(); line != null; line = parse())
+			for (Row line = parse(); line != null; line = parse())
 				action.accept(line);
 		} catch (IOException ex)
 		{
@@ -186,17 +169,17 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
-	public Spliterator<List<String>> spliterator()
+	public Spliterator<Row> spliterator()
 	{
-		return new Spliterator<List<String>>()
+		return new Spliterator<Row>()
 		{
 
 			@Override
-			public boolean tryAdvance(Consumer<? super List<String>> action)
+			public boolean tryAdvance(Consumer<? super Row> action)
 			{
 				try
 				{
-					List<String> line = parse();
+					Row line = parse();
 					if (line == null)
 						return false;
 					action.accept(line);
@@ -208,11 +191,11 @@ public class PSVParser implements SVParser
 			}
 
 			@Override
-			public void forEachRemaining(Consumer<? super List<String>> action)
+			public void forEachRemaining(Consumer<? super Row> action)
 			{
 				try
 				{
-					for (List<String> line = parse(); line != null; line = parse())
+					for (Row line = parse(); line != null; line = parse())
 						action.accept(line);
 				} catch (IOException ex)
 				{
@@ -221,7 +204,7 @@ public class PSVParser implements SVParser
 			}
 
 			@Override
-			public Spliterator<List<String>> trySplit()
+			public Spliterator<Row> trySplit()
 			{
 				return null;
 			}
@@ -247,7 +230,7 @@ public class PSVParser implements SVParser
 	 * @param columns a list with the index of each column
 	 * @return a List with all the columns contained in the specified string
 	 */
-	public static List<String> parseLine(String string, int... columns)
+	public static Row parseLine(String string, int... columns)
 	{
 		try (PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
 		{

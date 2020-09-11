@@ -3,6 +3,7 @@ package gate.util;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
+import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
 import gate.lang.property.Property;
 import gate.type.DataFile;
@@ -85,7 +86,7 @@ public class Backup<T>
 		try (CSVParser CSV = new CSVParser(new BufferedReader(reader)))
 		{
 			List<T> objs = new ArrayList<>();
-			for (Optional<List<String>> optional = CSV.parseLine();
+			for (Optional<Row> optional = CSV.parseLine();
 				optional.isPresent();
 				optional = CSV.parseLine())
 			{

@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
 import gate.stream.CheckedPredicate;
 import java.io.BufferedReader;
@@ -30,17 +31,19 @@ public class ZipCSVProcessor extends AbstractProcessor<List<String>>
 		try (ZipInputStream stream = new ZipInputStream(is);
 			CSVParser parser = new CSVParser(new BufferedReader(new InputStreamReader(is, getCharset()))))
 		{
+			long count = 0;
 			for (ZipEntry entry = stream.getNextEntry();
 				entry != null;
 				entry = stream.getNextEntry())
 			{
 				if (!entry.isDirectory())
-					for (List<String> line : parser)
+					for (Row line : parser)
 					{
 						try
 						{
+							count++;
 							if (!action.test(line))
-								return parser.getLineNumber() + 1;
+								return line.getIndex() + 1;
 						} catch (Exception ex)
 						{
 							throw new InvocationTargetException(ex);
@@ -48,7 +51,7 @@ public class ZipCSVProcessor extends AbstractProcessor<List<String>>
 					}
 			}
 
-			return (int) parser.getLineNumber() + 1;
+			return count;
 		}
 
 	}

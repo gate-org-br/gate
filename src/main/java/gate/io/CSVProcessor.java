@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
 import gate.stream.CheckedPredicate;
 import java.io.IOException;
@@ -28,20 +29,22 @@ public class CSVProcessor implements Processor<List<String>>
 	@Override
 	public long process(InputStream is) throws IOException, InvocationTargetException
 	{
+		long count = 0;
 		try (CSVParser parser = new CSVParser(is, Charset.forName(getCharset())))
 		{
-			for (List<String> line : parser)
+			for (Row line : parser)
 			{
 				try
 				{
+					count++;
 					if (!action.test(line))
-						return parser.getLineNumber() + 1;
+						return line.getIndex() + 1;
 				} catch (Exception ex)
 				{
 					throw new InvocationTargetException(ex);
 				}
 			}
-			return parser.getLineNumber() + 1;
+			return count;
 		}
 	}
 
