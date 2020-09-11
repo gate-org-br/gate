@@ -35,4 +35,11 @@ public interface Parser extends AutoCloseable, Iterable<Row>
 	 * @return a sequential Stream over the elements in this parser
 	 */
 	public Stream<Row> stream();
+	
+	/**
+	 * Returns the number of processed lines.
+	 *
+	 * @return the number of processed lines
+	 */
+	public long processed();
 }
