@@ -215,6 +215,12 @@ public class CSVParser implements Parser
 		return string.toString().trim();
 	}
 
+	@Override
+	public long processed()
+	{
+		return lineNumber + 1;
+	}
+
 	public String delimited() throws IOException
 	{
 		indx++;

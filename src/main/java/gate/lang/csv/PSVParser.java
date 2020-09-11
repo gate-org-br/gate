@@ -90,6 +90,12 @@ public class PSVParser implements Parser
 	}
 
 	@Override
+	public long processed()
+	{
+		return lineNumber + 1;
+	}
+
+	@Override
 	public Stream<Row> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
