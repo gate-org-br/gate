@@ -36,6 +36,13 @@ public interface SVParser extends AutoCloseable, Iterable<List<String>>
 	 * @return the current line number
 	 */
 	public long getLineNumber();
+	
+	/**
+	 * Return the current line.
+	 *
+	 * @return the current line
+	 */
+	public String getParsedLine();
 
 	/**
 	 * Returns a sequential Stream with this parser as its source.

@@ -2,7 +2,6 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
-import gate.io.IOStreamTransferer;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +62,7 @@ public class FileConverter implements Converter
 			try (InputStream inputStream = part.getInputStream();
 				OutputStream outputStream = new FileOutputStream(file))
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 				return file;
 			}
 		} catch (IOException ex)
@@ -81,7 +80,7 @@ public class FileConverter implements Converter
 			try (InputStream inputStream = rs.getBinaryStream(index);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 				return file;
 			}
 		} catch (IOException ex)
@@ -99,7 +98,7 @@ public class FileConverter implements Converter
 			try (InputStream inputStream = rs.getBinaryStream(fields);
 				OutputStream outputStream = new FileOutputStream(file))
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 				return file;
 			}
 		} catch (IOException ex)
@@ -116,7 +115,7 @@ public class FileConverter implements Converter
 			try (InputStream inputStream = new FileInputStream((File) value);
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream())
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 				ps.setBytes(index, outputStream.toByteArray());
 			} catch (IOException ex)
 			{
