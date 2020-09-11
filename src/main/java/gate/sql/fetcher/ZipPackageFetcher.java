@@ -1,6 +1,5 @@
 package gate.sql.fetcher;
 
-import gate.io.IOStreamTransferer;
 import gate.sql.Cursor;
 import gate.type.NamedTempFile;
 import gate.type.TempFile;
@@ -30,7 +29,8 @@ public class ZipPackageFetcher implements Fetcher<NamedTempFile>
 	 * Fetches the cursor as a temporary zipped multipart temporary file.
 	 *
 	 * <p>
-	 * Each row must contain a name column with the correspondent file name and a data column with the correspondent file data
+	 * Each row must contain a name column with the correspondent file name
+	 * and a data column with the correspondent file data
 	 *
 	 * @return The cursor as a temporary zipped multipart temporary file
 	 */
@@ -57,7 +57,7 @@ public class ZipPackageFetcher implements Fetcher<NamedTempFile>
 
 							ZipEntry entry = new ZipEntry(name);
 							zipOutputStream.putNextEntry(entry);
-							IOStreamTransferer.transfer(bufferedInputStream, zipOutputStream);
+							bufferedInputStream.transferTo(zipOutputStream);
 							zipOutputStream.closeEntry();
 						}
 						names.add(name);

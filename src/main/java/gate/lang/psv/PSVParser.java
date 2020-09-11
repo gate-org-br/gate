@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import java.util.stream.StreamSupport;
 public class PSVParser implements SVParser
 {
 
+	private String line;
 	private long lineNumber = -1;
 	private final int[] positions;
 	private final BufferedReader reader;
@@ -42,7 +44,7 @@ public class PSVParser implements SVParser
 	{
 		this(new BufferedReader(new InputStreamReader(resource.openStream())), positions);
 	}
-	
+
 	public PSVParser(InputStream inputStream, int... positions) throws IOException
 	{
 		this(new BufferedReader(new InputStreamReader(inputStream)), positions);
@@ -56,7 +58,7 @@ public class PSVParser implements SVParser
 
 	private List<String> parse() throws IOException
 	{
-		String line = reader.readLine();
+		line = reader.readLine();
 		if (line == null)
 			return null;
 
@@ -99,6 +101,12 @@ public class PSVParser implements SVParser
 	}
 
 	@Override
+	public String getParsedLine()
+	{
+		return line;
+	}
+
+	@Override
 	public Stream<List<String>> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
@@ -119,7 +127,49 @@ public class PSVParser implements SVParser
 	@Override
 	public Iterator<List<String>> iterator()
 	{
-		return new PositionParserIterator();
+		return new Iterator<List<String>>()
+		{
+
+			@Override
+			public boolean hasNext()
+			{
+				try
+				{
+					reader.mark(1);
+					boolean result = reader.read() != -1;
+					reader.reset();
+					return result;
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					for (List<String> line = parse(); line != null; line = parse())
+						action.accept(line);
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public List<String> next()
+			{
+				try
+				{
+					return parse();
+				} catch (IOException ex)
+				{
+					throw new AppError(ex);
+				}
+			}
+		};
 	}
 
 	@Override
@@ -138,101 +188,73 @@ public class PSVParser implements SVParser
 	@Override
 	public Spliterator<List<String>> spliterator()
 	{
-		return new PositionParserSpliterator();
+		return new Spliterator<List<String>>()
+		{
+
+			@Override
+			public boolean tryAdvance(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					List<String> line = parse();
+					if (line == null)
+						return false;
+					action.accept(line);
+					return true;
+				} catch (IOException ex)
+				{
+					throw new AppError(ex);
+				}
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					for (List<String> line = parse(); line != null; line = parse())
+						action.accept(line);
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public Spliterator<List<String>> trySplit()
+			{
+				return null;
+			}
+
+			@Override
+			public long estimateSize()
+			{
+				return Long.MAX_VALUE;
+			}
+
+			@Override
+			public int characteristics()
+			{
+				return Spliterator.ORDERED | Spliterator.NONNULL;
+			}
+		};
 	}
 
-	private class PositionParserSpliterator implements Spliterator<List<String>>
+	/**
+	 * Parses a PSV string
+	 *
+	 * @param string the string to be parsed
+	 * @param columns a list with the index of each column
+	 * @return a List with all the columns contained in the specified string
+	 */
+	public static List<String> parseLine(String string, int... columns)
 	{
-
-		@Override
-		public boolean tryAdvance(Consumer<? super List<String>> action)
+		try (PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
 		{
-			try
-			{
-				List<String> line = parse();
-				if (line == null)
-					return false;
-				action.accept(line);
-				return true;
-			} catch (IOException ex)
-			{
-				throw new AppError(ex);
-			}
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super List<String>> action)
+			return parser.parse();
+		} catch (IOException ex)
 		{
-			try
-			{
-				for (List<String> line = parse(); line != null; line = parse())
-					action.accept(line);
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public Spliterator<List<String>> trySplit()
-		{
-			return null;
-		}
-
-		@Override
-		public long estimateSize()
-		{
-			return Long.MAX_VALUE;
-		}
-
-		@Override
-		public int characteristics()
-		{
-			return Spliterator.ORDERED | Spliterator.NONNULL;
-		}
-	}
-
-	private class PositionParserIterator implements Iterator<List<String>>
-	{
-
-		@Override
-		public boolean hasNext()
-		{
-			try
-			{
-				reader.mark(1);
-				boolean result = reader.read() != -1;
-				reader.reset();
-				return result;
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super List<String>> action)
-		{
-			try
-			{
-				for (List<String> line = parse(); line != null; line = parse())
-					action.accept(line);
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public List<String> next()
-		{
-			try
-			{
-				return parse();
-			} catch (IOException ex)
-			{
-				throw new AppError(ex);
-			}
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

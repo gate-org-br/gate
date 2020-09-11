@@ -1,10 +1,12 @@
 package gate.lang.csv;
 
+import gate.error.AppError;
 import gate.lang.SVParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -23,12 +25,12 @@ import java.util.stream.StreamSupport;
 public class CSVParser implements SVParser
 {
 
+	private int indx;
+	private String line;
 	private long lineNumber = -1;
-	private int c = Integer.MAX_VALUE;
 	private final BufferedReader reader;
 	private final int separator, delimiter;
 	private final StringBuilder string = new StringBuilder();
-	private static final Optional EMPTY = Optional.of(List.of());
 
 	/**
 	 * Constructs a new CSVParser for the specified Reader using semicolons
@@ -142,32 +144,17 @@ public class CSVParser implements SVParser
 	@Override
 	public Optional<List<String>> parseLine() throws IOException
 	{
-		if (c == -1)
-			return Optional.empty();
-
-		do
-			read();
-		while (c == '\r');
-
-		if (c == -1 || c == '\n')
-			return EMPTY;
-
-		return Optional.of(line());
+		return Optional.ofNullable(parse());
 	}
 
 	@Override
 	public long skip(long lines) throws IOException
 	{
-		while (c != -1 && lines > 0)
+		while (line != null && lines > 0)
 		{
+			line = reader.readLine();
 			lines--;
 			lineNumber++;
-
-			do
-			{
-				read();
-			} while (c != -1 && c != '\n');
-
 		}
 
 		return lines;
@@ -179,78 +166,119 @@ public class CSVParser implements SVParser
 		return lineNumber;
 	}
 
-	public void read() throws IOException
+	@Override
+	public String getParsedLine()
 	{
-		c = reader.read();
+		return line;
 	}
 
-	public boolean isDelimiter() throws IOException
+	public boolean isDoubleDelimiter() throws IOException
 	{
-		if (c == -1)
-			return true;
-		if (c != delimiter)
-			return false;
-
-		reader.mark(1);
-		if (reader.read() == delimiter)
-			return false;
-
-		reader.reset();
-		return true;
+		return !isEOL()
+			& line.charAt(indx) == delimiter
+			&& indx + 1 < line.length()
+			&& line.charAt(indx + 1) != delimiter;
 	}
 
-	private List<String> line() throws IOException
+	private List<String> parse() throws IOException
 	{
-		List<String> line = new ArrayList<>();
+		indx = 0;
+		line = reader.readLine();
+		if (line == null)
+			return null;
 
-		line.add(field());
+		List<String> result = new ArrayList<>();
 
-		while (c == separator)
+		if (!isEOL())
 		{
-			read();
-			line.add(field());
+			result.add(field());
+			while (!isEOL() && line.charAt(indx) == separator)
+			{
+				indx++;
+				result.add(field());
+			}
 		}
 
 		lineNumber++;
-		return line;
+		return result;
+	}
+
+	private void skipSpaces() throws IOException
+	{
+		while (!isEOL() && Character.isWhitespace(line.charAt(indx)))
+			indx++;
 	}
 
 	private String field() throws IOException
 	{
-		while (c == ' ' || c == '\t' || c == '\r')
-			read();
+		skipSpaces();
 
-		String field = c == delimiter
-			? delimited() : normal();
+		if (isEOL())
+			return "";
 
-		while (c == ' ' || c == '\t' || c == '\r')
-			read();
+		String field = line.charAt(indx) == delimiter ? delimited() : normal();
+
+		skipSpaces();
+
 		return field;
 	}
 
 	public String normal() throws IOException
 	{
 		string.setLength(0);
-		for (; c != -1
-			&& c != '\n'
-			&& c != separator; read())
-			string.append((char) c);
+		while (!isEOL() && line.charAt(indx) != separator)
+			string.append(line.charAt(indx++));
 		return string.toString().trim();
 	}
 
 	public String delimited() throws IOException
 	{
+		indx++;
 		string.setLength(0);
-		for (read(); !isDelimiter(); read())
-			string.append((char) c);
-		read();
+		while (!isEOL())
+		{
+			if (line.charAt(indx) == delimiter)
+			{
+				if (indx + 1 == line.length()
+					|| line.charAt(indx + 1) != delimiter)
+					break;
+
+				indx++;
+			}
+
+			string.append(line.charAt(indx++));
+		}
+
+		indx++;
+
+		while (!isEOL() && line.charAt(indx) != separator)
+			indx++;
+
 		return string.toString().trim();
+	}
+
+	private boolean isEOL() throws IOException
+	{
+		return indx == line.length();
 	}
 
 	@Override
 	public Stream<List<String>> stream()
 	{
 		return StreamSupport.stream(spliterator(), false);
+	}
+
+	@Override
+	public void forEach(Consumer<? super List<String>> action)
+	{
+		try
+		{
+			for (List<String> line = parse(); line != null; line = parse())
+				action.accept(line);
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	@Override
@@ -268,110 +296,140 @@ public class CSVParser implements SVParser
 	@Override
 	public Iterator<List<String>> iterator()
 	{
-		return new CSVParserIterator();
+		return new Iterator<List<String>>()
+		{
+
+			@Override
+			public boolean hasNext()
+			{
+				try
+				{
+					reader.mark(1);
+					boolean result = reader.read() != -1;
+					reader.reset();
+					return result;
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					for (List<String> line = parse(); line != null; line = parse())
+						action.accept(line);
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public List<String> next()
+			{
+				try
+				{
+					return parse();
+				} catch (IOException ex)
+				{
+					throw new AppError(ex);
+				}
+			}
+		};
 	}
 
 	@Override
-	public void forEach(Consumer<? super List<String>> action)
+	public Spliterator<List<String>> spliterator()
 	{
-		while (c != -1)
-			try
+		return new Spliterator<List<String>>()
 		{
-			parseLine().ifPresent(action);
+
+			@Override
+			public boolean tryAdvance(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					List<String> line = parse();
+					if (line == null)
+						return false;
+					action.accept(line);
+					return true;
+				} catch (IOException ex)
+				{
+					throw new AppError(ex);
+				}
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super List<String>> action)
+			{
+				try
+				{
+					for (List<String> line = parse(); line != null; line = parse())
+						action.accept(line);
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			public Spliterator<List<String>> trySplit()
+			{
+				return null;
+			}
+
+			@Override
+			public long estimateSize()
+			{
+				return Long.MAX_VALUE;
+			}
+
+			@Override
+			public int characteristics()
+			{
+				return Spliterator.ORDERED | Spliterator.NONNULL;
+			}
+		};
+	}
+
+	/**
+	 * Parses a CSV string
+	 *
+	 * @param string the string to be parsed
+	 * @return a List with all the columns contained in the specified string
+	 */
+	public static List<String> parseLine(String string)
+	{
+		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string))))
+		{
+			return parser.parse();
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
 		}
 	}
 
-	@Override
-	public Spliterator<List<String>> spliterator()
+	/**
+	 * Parses a CSV string using the specified separator and delimiter
+	 *
+	 * @param string the string to be parsed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @return a List with all the columns contained in the specified string
+	 */
+	public static List<String> parseLine(String string, char separator, char delimiter)
 	{
-		return new CSVParserSpliterator();
-	}
-
-	private class CSVParserSpliterator implements Spliterator<List<String>>
-	{
-
-		@Override
-		public boolean tryAdvance(Consumer<? super List<String>> action)
+		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
 		{
-			try
-			{
-				if (c == -1)
-					return false;
-				parseLine().ifPresent(action);
-				return true;
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super List<String>> action)
+			return parser.parse();
+		} catch (IOException ex)
 		{
-			while (c != -1)
-				try
-			{
-				parseLine().ifPresent(action);
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public Spliterator<List<String>> trySplit()
-		{
-			return null;
-		}
-
-		@Override
-		public long estimateSize()
-		{
-			return Long.MAX_VALUE;
-		}
-
-		@Override
-		public int characteristics()
-		{
-			return Spliterator.ORDERED | Spliterator.NONNULL;
-		}
-	}
-
-	private class CSVParserIterator implements Iterator<List<String>>
-	{
-
-		@Override
-		public boolean hasNext()
-		{
-			return c != -1;
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super List<String>> action)
-		{
-			while (c != -1)
-				try
-			{
-				parseLine().ifPresent(action);
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
-
-		@Override
-		public List<String> next()
-		{
-			try
-			{
-				return parseLine().get();
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

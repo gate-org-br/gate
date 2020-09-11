@@ -4,7 +4,6 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.TempFileConverter;
 import gate.handler.TempFileHandler;
-import gate.io.IOStreamTransferer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -106,7 +105,8 @@ public class TempFile implements AutoCloseable
 	 *
 	 * @param name the name to be applied to the temporary file
 	 *
-	 * @return a NamedTempFile describing this temporary file and the given name
+	 * @return a NamedTempFile describing this temporary file and the given
+	 * name
 	 */
 	public NamedTempFile named(String name)
 	{
@@ -138,7 +138,7 @@ public class TempFile implements AutoCloseable
 		try (InputStream inputStream = part.getInputStream();
 			OutputStream outputStream = tempFile.getOutputStream())
 		{
-			IOStreamTransferer.transfer(inputStream, outputStream);
+			inputStream.transferTo(outputStream);
 			return tempFile;
 		} catch (IOException ex)
 		{
@@ -147,9 +147,11 @@ public class TempFile implements AutoCloseable
 	}
 
 	/**
-	 * Creates a new temporary file with the contents of the specified InputStream.
+	 * Creates a new temporary file with the contents of the specified
+	 * InputStream.
 	 *
-	 * @param inputStream the InputStream object from where to get the temporary file data
+	 * @param inputStream the InputStream object from where to get the
+	 * temporary file data
 	 *
 	 * @return the temporary file created
 	 */
@@ -159,7 +161,7 @@ public class TempFile implements AutoCloseable
 
 		try (OutputStream outputStream = tempFile.getOutputStream())
 		{
-			IOStreamTransferer.transfer(inputStream, outputStream);
+			inputStream.transferTo(outputStream);
 			return tempFile;
 		} catch (IOException ex)
 		{
@@ -176,21 +178,21 @@ public class TempFile implements AutoCloseable
 	{
 		if (outputStream != null)
 			try
-			{
-				outputStream.close();
-			} catch (IOException ex)
-			{
-				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
-			}
+		{
+			outputStream.close();
+		} catch (IOException ex)
+		{
+			LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+		}
 
 		if (inputStream != null)
 			try
-			{
-				inputStream.close();
-			} catch (IOException ex)
-			{
-				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
-			}
+		{
+			inputStream.close();
+		} catch (IOException ex)
+		{
+			LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+		}
 
 		file.delete();
 	}

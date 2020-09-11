@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.io.IOStreamTransferer;
 import gate.type.TempFile;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +25,7 @@ public class TempFileHandler implements Handler
 			try (InputStream inputStream = tempFile.getInputStream();
 				OutputStream outputStream = response.getOutputStream())
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 			}
 		} catch (IOException ex)
 		{

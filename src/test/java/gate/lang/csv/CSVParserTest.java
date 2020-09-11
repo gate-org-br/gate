@@ -16,7 +16,7 @@ public class CSVParserTest
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
-			Assert.assertEquals(8, lines.size());
+			Assert.assertEquals(7, lines.size());
 
 			int index = 0;
 			Assert.assertEquals(List.of("User 1", "Role 1", "", "", "", "", "Name 1"), lines.get(index++));
@@ -66,7 +66,7 @@ public class CSVParserTest
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
-			Assert.assertEquals(20, lines.size());
+			Assert.assertEquals(19, lines.size());
 
 			int index = 0;
 			Assert.assertEquals(List.of("User 1", "Role 1", "", "", "", "", "Name 1"), lines.get(index++));
@@ -74,7 +74,6 @@ public class CSVParserTest
 			Assert.assertEquals(List.of("User 3", "Role 3", "", "", "", "", "Name 3"), lines.get(index++));
 			Assert.assertEquals(List.of("User 4", "Role 4", "", "", "", "", "Name 4"), lines.get(index++));
 			Assert.assertEquals(List.of("User 5", "Role 5", "", "", "", "", "Name 5"), lines.get(index++));
-			Assert.assertTrue(lines.get(index++).isEmpty());
 			Assert.assertTrue(lines.get(index++).isEmpty());
 			Assert.assertTrue(lines.get(index++).isEmpty());
 			Assert.assertTrue(lines.get(index++).isEmpty());
@@ -98,7 +97,7 @@ public class CSVParserTest
 		try (CSVParser parser = new CSVParser(getClass().getResource("Users4.csv"), ',', '\''))
 		{
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
-			Assert.assertEquals(6, lines.size());
+			Assert.assertEquals(5, lines.size());
 
 			int index = 0;
 			Assert.assertEquals(List.of("User 1", "Role 1", ""), lines.get(index++));
@@ -106,7 +105,6 @@ public class CSVParserTest
 			Assert.assertEquals(List.of("User 3", "Role 3", ""), lines.get(index++));
 			Assert.assertEquals(List.of("User 4", "Role 4", ""), lines.get(index++));
 			Assert.assertEquals(List.of("User 5", "Role 5", ""), lines.get(index++));
-			Assert.assertTrue(lines.get(index++).isEmpty());
 		}
 	}
 

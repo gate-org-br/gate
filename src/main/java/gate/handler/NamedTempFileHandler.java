@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.io.IOStreamTransferer;
 import gate.type.NamedTempFile;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +28,7 @@ public class NamedTempFileHandler implements Handler
 			try (InputStream inputStream = namedTempFile.getInputStream();
 				OutputStream outputStream = response.getOutputStream())
 			{
-				IOStreamTransferer.transfer(inputStream, outputStream);
+				inputStream.transferTo(outputStream);
 			}
 		} catch (IOException ex)
 		{
