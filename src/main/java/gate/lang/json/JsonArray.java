@@ -244,6 +244,12 @@ public class JsonArray implements List<JsonElement>, JsonElement
 		return values.subList(fromIndex, toIndex);
 	}
 
+	public JsonArray addJsonElement(JsonElement value)
+	{
+		add(value != null ? JsonNull.INSTANCE : value);
+		return this;
+	}
+
 	public JsonArray addString(String value)
 	{
 		add(value != null ? JsonString.of(value) : JsonNull.INSTANCE);
@@ -370,6 +376,13 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value))
 			.collect(Collectors.toCollection(JsonArray::new));
+	}
+
+	public static JsonArray of(JsonElement... values)
+	{
+		return Stream.of(values)
+			.map(e -> e != null ? e : JsonNull.INSTANCE)
+			.collect(Collectors.toCollection(() -> new JsonArray()));
 	}
 
 	public static JsonArray format(Stream<?> stream)
