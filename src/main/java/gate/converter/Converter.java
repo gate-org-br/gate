@@ -37,21 +37,24 @@ public interface Converter
 	/**
 	 * Gets a string to be used as a mask for the converter java type.
 	 *
-	 * @return the mask for the converter java type or null if there is no mask defined for it
+	 * @return the mask for the converter java type or null if there is no
+	 * mask defined for it
 	 */
 	String getMask();
 
 	/**
 	 * Gets a description for the converter java type.
 	 *
-	 * @return a description for the converter java type or null if there is no description defined for it
+	 * @return a description for the converter java type or null if there is
+	 * no description defined for it
 	 */
 	String getDescription();
 
 	/**
 	 * Gets a placeholder for the converter java type.
 	 *
-	 * @return a placeholder for the converter java type or null if there is no placeholder defined for it
+	 * @return a placeholder for the converter java type or null if there is
+	 * no placeholder defined for it
 	 */
 	default String getPlaceholder()
 	{
@@ -61,21 +64,27 @@ public interface Converter
 	/**
 	 * Gets the constraints associated with the converter java type.
 	 *
-	 * @return a list with all the constraints associated with the converter java type
+	 * @return a list with all the constraints associated with the converter
+	 * java type
 	 */
 	List<Constraint.Implementation<?>> getConstraints();
 
 	/**
-	 * Retrieves a java object of the converter associated type from a JDBC ResultSet.
+	 * Retrieves a java object of the converter associated type from a JDBC
+	 * ResultSet.
 	 *
-	 * @param rs the JDBC ResultSet from where the java object must be retrieved
-	 * @param index the start index of the columns associated with the java object to be retrieved
+	 * @param rs the JDBC ResultSet from where the java object must be
+	 * retrieved
+	 * @param index the start index of the columns associated with the java
+	 * object to be retrieved
 	 * @param type the type for the java object to be retrieved
 	 *
 	 * @return the java object retrieved from the specified JDBC ResultSet
 	 *
-	 * @throws java.sql.SQLException if a SQLException exception is thrown while retrieving the object from the JDBC ResultSet
-	 * @throws gate.error.ConversionException if the specified type can't be retrieved from a JDBC ResultSet
+	 * @throws java.sql.SQLException if a SQLException exception is thrown
+	 * while retrieving the object from the JDBC ResultSet
+	 * @throws gate.error.ConversionException if the specified type can't be
+	 * retrieved from a JDBC ResultSet
 	 *
 	 * @see gate.converter.Converter#writeToPreparedStatement
 	 */
@@ -85,14 +94,18 @@ public interface Converter
 	/**
 	 * Retrieves a java object from a JDBC ResultSet.
 	 *
-	 * @param rs the JDBC ResultSet from where the java object must be retrieved
-	 * @param fields the name of the columns associated with the java object to be retrieved
+	 * @param rs the JDBC ResultSet from where the java object must be
+	 * retrieved
+	 * @param fields the name of the columns associated with the java object
+	 * to be retrieved
 	 * @param type the type for the java object to be retrieved
 	 *
 	 * @return the java object retrieved from the specified JDBC ResultSet
 	 *
-	 * @throws java.sql.SQLException if a SQLException exception is thrown while retrieving the object from the JDBC ResultSet
-	 * @throws gate.error.ConversionException if the specified type can't be retrieved from a JDBC ResultSet
+	 * @throws java.sql.SQLException if a SQLException exception is thrown
+	 * while retrieving the object from the JDBC ResultSet
+	 * @throws gate.error.ConversionException if the specified type can't be
+	 * retrieved from a JDBC ResultSet
 	 *
 	 * @see gate.converter.Converter#writeToPreparedStatement
 	 */
@@ -100,15 +113,19 @@ public interface Converter
 		ConversionException;
 
 	/**
-	 * Passes the specified object as parameters to a JDBC PreparedStatement.
+	 * Passes the specified object as parameters to a JDBC
+	 * PreparedStatement.
 	 *
-	 * @param ps the JDBC PreparedStatement to receive the specified object as parameters
+	 * @param ps the JDBC PreparedStatement to receive the specified object
+	 * as parameters
 	 * @param index the starting index of the parameters to be passed
-	 * @param value the object to be passed as parameters to the JDBC PreparedStatement
+	 * @param value the object to be passed as parameters to the JDBC
+	 * PreparedStatement
 	 *
 	 * @return the index to be used on the next call to this method
 	 *
-	 * @throws java.sql.SQLException if a SQLException exception is thrown while setting the parameters
+	 * @throws java.sql.SQLException if a SQLException exception is thrown
+	 * while setting the parameters
 	 */
 	int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException;
 
@@ -129,9 +146,11 @@ public interface Converter
 	/**
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The object to be converted must be of the converter associated java type.
+	 * The object to be converted must be of the converter associated java
+	 * type.
 	 * <p>
-	 * The string generated by this method must have all information necessary for it to be converted back to the original object.
+	 * The string generated by this method must have all information
+	 * necessary for it to be converted back to the original object.
 	 *
 	 * @param type type of the object to be converted to a string
 	 * @param object object to be converted to a string
@@ -146,11 +165,14 @@ public interface Converter
 	 * Converts the specified string back to the it's original java object.
 	 *
 	 * @param type type of the object that originated the specified string
-	 * @param string the string to be converted back to it's original java object
+	 * @param string the string to be converted back to it's original java
+	 * object
 	 *
-	 * @return the object that was previously converted to the specified string
+	 * @return the object that was previously converted to the specified
+	 * string
 	 *
-	 * @throws gate.error.ConversionException if the specified string can't be converted to it's original java object
+	 * @throws gate.error.ConversionException if the specified string can't
+	 * be converted to it's original java object
 	 *
 	 * @see gate.converter.Converter#toString
 	 */
@@ -160,10 +182,12 @@ public interface Converter
 	 * <p>
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The object to be converted must be of the converter associated java type.
+	 * The object to be converted must be of the converter associated java
+	 * type.
 	 * <p>
-	 * The string generated by this method is intended to be read by humans and there is no need for it to have enough information to restore the original
-	 * object.
+	 * The string generated by this method is intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
 	 *
 	 * @param type type of the object to be converted to a string
 	 * @param object object to be converted to a string
@@ -175,10 +199,12 @@ public interface Converter
 	/**
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The object to be converted must be of the converter associated java type.
+	 * The object to be converted must be of the converter associated java
+	 * type.
 	 * <p>
-	 * The string generated by this method is intended to be read by humans and there is no need for it to have enough information to restore the original
-	 * object.
+	 * The string generated by this method is intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
 	 *
 	 * @param type type of the object to be converted to a string
 	 * @param object object to be converted to a string
@@ -196,7 +222,8 @@ public interface Converter
 	 *
 	 * @return a java object describing the specified part
 	 *
-	 * @throws gate.error.ConversionException if the specified part can't be converted to a java object
+	 * @throws gate.error.ConversionException if the specified part can't be
+	 * converted to a java object
 	 */
 	default Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
@@ -204,16 +231,20 @@ public interface Converter
 	}
 
 	/**
-	 * Reads an object of the converter associated type from the specified {@link gate.lang.json.JsonScanner}.
+	 * Reads an object of the converter associated type from the specified
+	 * {@link gate.lang.json.JsonScanner}.
 	 *
 	 * @param jsonScanner scanner from where the JSON object must be read
 	 * @param type type of the enumeration or collection element to be read
-	 * @param elementType type of the element of the object if the object is a collection or null if not
+	 * @param elementType type of the element of the object if the object is
+	 * a collection or null if not
 	 *
-	 * @return the JSON object read as a java object of the converter associated type
+	 * @return the JSON object read as a java object of the converter
+	 * associated type
 	 *
-	 * @throws gate.error.ConversionException if the next element of the specified JSONReader cannot be converted to a java object of the converter
-	 * associated type.
+	 * @throws gate.error.ConversionException if the next element of the
+	 * specified JSONReader cannot be converted to a java object of the
+	 * converter associated type.
 	 */
 	default Object ofJson(JsonScanner jsonScanner, Type type, Type elementType)
 		throws ConversionException
@@ -236,18 +267,43 @@ public interface Converter
 
 	/**
 	 * Serializes the specified object on JSON notation.
+	 * <p>
+	 * The string generated by this method have all information necessary
+	 * for it to be converted back to the original object.
 	 *
 	 * @param <T> type of the java object to be serialized
 	 * @param writer JsonWriter responsible for serializing the object
 	 * @param type type of the java object to be serialized
 	 * @param object object to be serialized
 	 *
-	 * @throws ConversionException if the specified object cannot be serialized on JSON notation
+	 * @throws ConversionException if the specified object cannot be
+	 * serialized on JSON notation
 	 */
 	default <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		if (object != null)
 			writer.write(JsonToken.Type.STRING, toString(object));
+	}
+
+	/**
+	 * Serializes the specified object on JSON notation.
+	 * <p>
+	 * The string generated by this method are intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
+	 *
+	 * @param <T> type of the java object to be serialized
+	 * @param writer JsonWriter responsible for serializing the object
+	 * @param type type of the java object to be serialized
+	 * @param object object to be serialized
+	 *
+	 * @throws ConversionException if the specified object cannot be
+	 * serialized on JSON notation
+	 */
+	default <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	{
+		if (object != null)
+			writer.write(JsonToken.Type.STRING, toText(object));
 	}
 
 	/**
@@ -265,7 +321,8 @@ public interface Converter
 	/**
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The string generated by this method have all information necessary for it to be converted back to the original object.
+	 * The string generated by this method have all information necessary
+	 * for it to be converted back to the original object.
 	 *
 	 * @param object object to be converted to a string
 	 *
@@ -284,8 +341,9 @@ public interface Converter
 	/**
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The string generated by this method is intended to be read by humans and there is no need for it to have enough information to restore the original
-	 * object.
+	 * The string generated by this method is intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
 	 *
 	 * @param object object to be converted to a string
 	 *
@@ -302,8 +360,9 @@ public interface Converter
 	/**
 	 * Converts the specified java object to a string.
 	 * <p>
-	 * The string generated by this method is intended to be read by humans and there is no need for it to have enough information to restore the original
-	 * object.
+	 * The string generated by this method is intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
 	 *
 	 * @param object object to be converted to a string
 	 * @param format an string to be used to format the specified object
@@ -326,12 +385,17 @@ public interface Converter
 	/**
 	 * Serializes the specified java object on JSON notation.
 	 * <p>
-	 * The specified object will be serialized as described on the specified java type associated {@link gate.converter.Converter}.
+	 * The specified object will be serialized as described on the specified
+	 * java type associated {@link gate.converter.Converter}.
+	 * <p>
+	 * The string generated by this method have all information necessary
+	 * for it to be converted back to the original object.
 	 *
 	 * @param object the java object to be serialized
 	 *
 	 * @return the specified java object serialized using JSON notation
-	 * @throws ConversionException if the specified object can't be serialized on JSON notation
+	 * @throws ConversionException if the specified object can't be
+	 * serialized on JSON notation
 	 *
 	 * @see gate.converter.BooleanConverter#toJson
 	 * @see gate.converter.NumberConverter#toJson
@@ -359,6 +423,47 @@ public interface Converter
 	}
 
 	/**
+	 * Serializes the specified java object on JSON notation
+	 * <p>
+	 * The specified object will be serialized as described on the specified
+	 * java type associated {@link gate.converter.Converter}.
+	 * <p>
+	 * The string generated by this method are intended to be read by humans
+	 * and there is no need for it to have enough information to restore the
+	 * original object.
+	 *
+	 * @param object the java object to be serialized
+	 *
+	 * @return the specified java object serialized using JSON notation
+	 * @throws ConversionException if the specified object can't be
+	 * serialized on JSON notation
+	 *
+	 * @see gate.converter.BooleanConverter#toJson
+	 * @see gate.converter.NumberConverter#toJson
+	 * @see gate.converter.StringConverter#toJson
+	 * @see gate.converter.CollectionConverter#toJson
+	 * @see gate.converter.ObjectConverter#toJson
+	 */
+	static String toJsonText(Object object)
+		throws ConversionException
+	{
+		if (object == null)
+			return "";
+
+		try (StringWriter stringWriter = new StringWriter();
+			JsonWriter writer = new JsonWriter(stringWriter))
+		{
+			Class type = object.getClass();
+			Converter converter = Converter.getConverter(type);
+			converter.toJsonText(writer, type, object);
+			return stringWriter.toString();
+		} catch (IOException ex)
+		{
+			throw new ConversionException(ex.getMessage());
+		}
+	}
+
+	/**
 	 * Converts the specified java object to a {@link java.math.Number}.
 	 *
 	 * @param object object to be converted to a Number
@@ -373,18 +478,23 @@ public interface Converter
 	}
 
 	/**
-	 * Parses the specified JSON formatted string into a java object of the specified type.
+	 * Parses the specified JSON formatted string into a java object of the
+	 * specified type.
 	 * <p>
-	 * The JSON formatted string will be parsed as described on the specified java type associated {@link gate.converter.Converter}.
+	 * The JSON formatted string will be parsed as described on the
+	 * specified java type associated {@link gate.converter.Converter}.
 	 *
 	 * @param <T> type of the java object to be created
 	 * @param type type of the java object to be created
-	 * @param elementType type of the element of the specified object if it is a collection or null if otherwise
+	 * @param elementType type of the element of the specified object if it
+	 * is a collection or null if otherwise
 	 * @param string JSON formatted string to be parsed
 	 *
-	 * @return a java object of the specified type representing the specified JSON formatted string
+	 * @return a java object of the specified type representing the
+	 * specified JSON formatted string
 	 *
-	 * @throws ConversionException if the specified JSON string cannot be parsed into a object of the specified java type
+	 * @throws ConversionException if the specified JSON string cannot be
+	 * parsed into a object of the specified java type
 	 *
 	 * @see gate.converter.BooleanConverter#ofJson
 	 * @see gate.converter.NumberConverter#ofJson
@@ -409,17 +519,21 @@ public interface Converter
 	}
 
 	/**
-	 * Parses the specified JSON formatted string into a java object of the specified type.
+	 * Parses the specified JSON formatted string into a java object of the
+	 * specified type.
 	 * <p>
-	 * The JSON formatted string will be parsed as described on the specified java type associated {@link gate.converter.Converter}.
+	 * The JSON formatted string will be parsed as described on the
+	 * specified java type associated {@link gate.converter.Converter}.
 	 *
 	 * @param <T> type of the java object to be created
 	 * @param type type of the java object to be created
 	 * @param string JSON formatted string to be parsed
 	 *
-	 * @return a java object of the specified type representing the specified JSON formatted string
+	 * @return a java object of the specified type representing the
+	 * specified JSON formatted string
 	 *
-	 * @throws ConversionException if the specified JSON string cannot be parsed into a object of the specified java type
+	 * @throws ConversionException if the specified JSON string cannot be
+	 * parsed into a object of the specified java type
 	 *
 	 * @see gate.converter.BooleanConverter#ofJson
 	 * @see gate.converter.NumberConverter#ofJson
@@ -437,11 +551,14 @@ public interface Converter
 	 *
 	 * @param <T> type of the object that originated the specified string
 	 * @param type type of the object that originated the specified string
-	 * @param string the string to be converted back to it's original java object
+	 * @param string the string to be converted back to it's original java
+	 * object
 	 *
-	 * @return the object that was previously converted to the specified string
+	 * @return the object that was previously converted to the specified
+	 * string
 	 *
-	 * @throws gate.error.ConversionException if the specified string can't be converted to it's original java object
+	 * @throws gate.error.ConversionException if the specified string can't
+	 * be converted to it's original java object
 	 *
 	 * @see gate.converter.Converter#toString
 	 */
@@ -466,7 +583,8 @@ public interface Converter
 	 *
 	 * @return a java object describing the specified part
 	 *
-	 * @throws gate.error.ConversionException if the specified part can't be converted to a java object
+	 * @throws gate.error.ConversionException if the specified part can't be
+	 * converted to a java object
 	 */
 	static <T> T fromPart(Class<T> type, Part part) throws ConversionException
 	{

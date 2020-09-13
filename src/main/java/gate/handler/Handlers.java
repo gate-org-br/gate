@@ -75,14 +75,7 @@ public class Handlers
 		{
 			try
 			{
-				if (e.isAnnotationPresent(gate.annotation.Handler.class))
-					return e.getAnnotation(gate.annotation.Handler.class)
-						.value().getDeclaredConstructor().newInstance();
-
-				Class<?> supertype = e.getSuperclass();
-				if (supertype == null)
-					supertype = Object.class;
-				return get(supertype);
+				return e.getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{

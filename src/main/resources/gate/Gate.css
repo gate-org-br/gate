@@ -5422,6 +5422,89 @@ div.PageControl > div {
 div.PageControl > ul > li > div {
   display: none;
 }
+g-grid > table {
+  table-layout: auto;
+}
+g-grid.c1 > table > * > tr > *:nth-child(1),
+g-grid table[data-c1] > * > tr > *:nth-child(1) {
+  text-align: center;
+}
+g-grid.c2 > table > * > tr > *:nth-child(2),
+g-grid table[data-c1] > * > tr > *:nth-child(2) {
+  text-align: center;
+}
+g-grid.c3 > table > * > tr > *:nth-child(3),
+g-grid table[data-c1] > * > tr > *:nth-child(3) {
+  text-align: center;
+}
+g-grid.c4 > table > * > tr > *:nth-child(4),
+g-grid table[data-c1] > * > tr > *:nth-child(4) {
+  text-align: center;
+}
+g-grid.c5 > table > * > tr > *:nth-child(5),
+g-grid table[data-c1] > * > tr > *:nth-child(5) {
+  text-align: center;
+}
+g-grid.c6 > table > * > tr > *:nth-child(6),
+g-grid table[data-c1] > * > tr > *:nth-child(6) {
+  text-align: center;
+}
+g-grid.c7 > table > * > tr > *:nth-child(7),
+g-grid table[data-c1] > * > tr > *:nth-child(7) {
+  text-align: center;
+}
+g-grid.c8 > table > * > tr > *:nth-child(8),
+g-grid table[data-c1] > * > tr > *:nth-child(8) {
+  text-align: center;
+}
+g-grid.c9 > table > * > tr > *:nth-child(9),
+g-grid table[data-c1] > * > tr > *:nth-child(9) {
+  text-align: center;
+}
+g-grid.c10 > table > * > tr > *:nth-child(10),
+g-grid table[data-c1] > * > tr > *:nth-child(10) {
+  text-align: center;
+}
+g-grid.c11 > table > * > tr > *:nth-child(11),
+g-grid table[data-c1] > * > tr > *:nth-child(11) {
+  text-align: center;
+}
+g-grid.c12 > table > * > tr > *:nth-child(12),
+g-grid table[data-c1] > * > tr > *:nth-child(12) {
+  text-align: center;
+}
+g-grid.c13 > table > * > tr > *:nth-child(13),
+g-grid table[data-c1] > * > tr > *:nth-child(13) {
+  text-align: center;
+}
+g-grid.c14 > table > * > tr > *:nth-child(14),
+g-grid table[data-c1] > * > tr > *:nth-child(14) {
+  text-align: center;
+}
+g-grid.c15 > table > * > tr > *:nth-child(15),
+g-grid table[data-c1] > * > tr > *:nth-child(15) {
+  text-align: center;
+}
+g-grid.c16 > table > * > tr > *:nth-child(16),
+g-grid table[data-c1] > * > tr > *:nth-child(16) {
+  text-align: center;
+}
+g-grid.c17 > table > * > tr > *:nth-child(17),
+g-grid table[data-c1] > * > tr > *:nth-child(17) {
+  text-align: center;
+}
+g-grid.c18 > table > * > tr > *:nth-child(18),
+g-grid table[data-c1] > * > tr > *:nth-child(18) {
+  text-align: center;
+}
+g-grid.c19 > table > * > tr > *:nth-child(19),
+g-grid table[data-c1] > * > tr > *:nth-child(19) {
+  text-align: center;
+}
+g-grid.c20 > table > * > tr > *:nth-child(20),
+g-grid table[data-c1] > * > tr > *:nth-child(20) {
+  text-align: center;
+}
 body[data-scroll-disabled] * {
   overflow: hidden;
 }
