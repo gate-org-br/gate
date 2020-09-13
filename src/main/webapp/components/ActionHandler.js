@@ -170,11 +170,11 @@ window.addEventListener("mouseover", event => {
 	if (!action)
 		return;
 
+	if (!action.hasAttribute("tabindex"))
+		action.setAttribute("tabindex", 1000);
+
 	action.focus();
 	event.preventDefault();
 	event.stopPropagation();
 	event.stopImmediatePropagation();
 });
-
-window.addEventListener("load", () => Array.from(document.querySelectorAll('tr[data-action], td[data-action], li[data-action], div[data-action]'))
-		.forEach(action => action.setAttribute("tabindex", "1")));

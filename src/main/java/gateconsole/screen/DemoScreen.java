@@ -3,10 +3,13 @@ package gateconsole.screen;
 import gate.Progress;
 import gate.annotation.Asynchronous;
 import gate.annotation.Description;
+import gate.annotation.Handler;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.annotation.Public;
 import gate.base.Screen;
+import gate.error.ConversionException;
+import gate.handler.JsonTextHandler;
 import gate.report.Doc;
 import gate.report.Report;
 import java.util.ArrayList;
@@ -26,7 +29,67 @@ public class DemoScreen extends Screen
 
 	public String call()
 	{
-		return "/WEB-INF/views/gateconsole/Demo/View.jsp";
+		return callTabBar();
+	}
+
+	@Name("Tab Bar")
+	public String callTabBar()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewTabBar.jsp";
+	}
+
+	@Name("Pickers")
+	public String callPickers()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewPickers.jsp";
+	}
+
+	@Name("Tooltip")
+	public String callTooltip()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewTooltip.jsp";
+	}
+
+	@Name("Mensagens")
+	public String callMessage()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewMessage.jsp";
+	}
+
+	@Name("Chart")
+	public String callChart()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewChart.jsp";
+	}
+
+	@Name("Context Menu")
+	public String callContextMenu()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewContextMenu.jsp";
+	}
+
+	@Name("Select")
+	public String callSelect()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewSelect.jsp";
+	}
+
+	@Name("Grid 1")
+	public String callGrid1()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewGrid1.jsp";
+	}
+
+	@Name("Grid 2")
+	public String callGrid2()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewGrid2.jsp";
+	}
+
+	@Name("Other")
+	public String callOther()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/ViewOther.jsp";
 	}
 
 	@Icon("report")
@@ -75,6 +138,14 @@ public class DemoScreen extends Screen
 		}
 	}
 
+	@Handler(JsonTextHandler.class)
+	public List<List<Object>> callData() throws ConversionException
+	{
+
+		int size = getRequest().getParameter(Integer.class, "size");
+		return TestData.INSTANCE.stream().skip(size).limit(10).collect(Collectors.toList());
+	}
+
 	public void setType(Doc.Type type)
 	{
 		this.type = type;
@@ -95,4 +166,22 @@ public class DemoScreen extends Screen
 		return List.of(Doc.Type.PDF, Doc.Type.DOC, Doc.Type.XLS, Doc.Type.CSV);
 	}
 
+	private static class TestData extends ArrayList<List<Object>>
+	{
+
+		private static final TestData INSTANCE = new TestData();
+
+		private TestData()
+		{
+			int index = 0;
+
+			List<String> nomes = List.of("Paulo", "Pedro", "Carlos", "Silvio", "José", "Sandro", "Camila", "Davi", "Patrícia", "Renata");
+			List<String> sobrenomes = List.of("Carvalho", "Nunes", "Silva", "Gusmão", "Cunha", "Ferreira", "Barbosa", "Barnabé", "Santos", "Azevedo");
+
+			for (String nome : nomes)
+				for (String sobrenome : sobrenomes)
+					add(List.of(index++, nome + " " + sobrenome, nome.toLowerCase() + sobrenome.toLowerCase() + "@br.com", true));
+
+		}
+	}
 }

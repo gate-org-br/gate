@@ -6,7 +6,6 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import java.lang.reflect.Type;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -105,10 +104,12 @@ public class BooleanConverter implements Converter
 	/**
 	 * Serializes the specified {@link java.lang.Boolean} on JSON notation.
 	 * <p>
-	 * A non null java Boolean will be formatted as their respective true or false JSON boolean. A null reference
-	 * will be formatted as a JSON Null.
+	 * A non null java Boolean will be formatted as their respective true or
+	 * false JSON boolean. A null reference will be formatted as a JSON
+	 * Null.
 	 *
-	 * @throws gate.error.ConversionException if the specified object is not a boolean
+	 * @throws gate.error.ConversionException if the specified object is not
+	 * a boolean
 	 */
 	@Override
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
@@ -122,5 +123,4 @@ public class BooleanConverter implements Converter
 		else
 			throw new ConversionException(object.getClass().getName() + " is not a boolean");
 	}
-
 }
