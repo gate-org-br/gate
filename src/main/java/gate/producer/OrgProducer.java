@@ -35,7 +35,7 @@ public class OrgProducer implements Serializable
 	public Org produce()
 	{
 		if (org == null)
-			org = control.select().orElseThrow(null);
+			org = control.select().orElse(null);
 		return org != null ? org : DEFAULT;
 	}
 
