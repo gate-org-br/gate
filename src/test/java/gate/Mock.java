@@ -27,7 +27,7 @@ public class Mock
 
 	@Min(2)
 	@Max(10)
-	@Step(2)
+	@Step("2")
 	@Required
 	private Integer age;
 
