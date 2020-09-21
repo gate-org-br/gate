@@ -7,6 +7,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.math.BigDecimal;
 
 @Constraint
 @Target(ElementType.FIELD)
@@ -15,28 +16,34 @@ import java.lang.annotation.Target;
 public @interface Step
 {
 
-	double value();
+	String value();
 
-	class Implementation extends Constraint.Implementation<Number>
+	class Implementation extends Constraint.Implementation<BigDecimal>
 	{
 
 		private static final long serialVersionUID = 1L;
 
 		public Implementation(Object value)
 		{
-			super((Double) value);
+			super(new BigDecimal((String) value));
 		}
 
 		@Override
 		public void validate(Object entity, Property property) throws AppException
 		{
 			Object object = property.getValue(entity);
-			if (object != null && Converter.toNumber(object).doubleValue() % getValue().doubleValue() != 0)
+
+			if (object != null)
 			{
-				String name = property.getDisplayName();
-				if (name == null)
-					name = property.toString();
-				throw new AppException("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue()));
+				BigDecimal value = new BigDecimal(Converter.toNumber(object).toString());
+
+				if (value.remainder(getValue()).compareTo(BigDecimal.ZERO) != 0)
+				{
+					String name = property.getDisplayName();
+					if (name == null)
+						name = property.toString();
+					throw new AppException("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue()));
+				}
 			}
 		}
 
