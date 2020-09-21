@@ -18,7 +18,7 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				let dialog = GDialog.create();
+				let dialog = window.top.document.createElement("g-dialog");
 				dialog.caption = this.getAttribute("title");
 				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
 				dialog.addEventListener("show", event => this.dispatchEvent(event));

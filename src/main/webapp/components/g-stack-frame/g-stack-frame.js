@@ -6,7 +6,7 @@ class GStackFrame extends GModal
 	{
 		super();
 
-		this._private.iframe = this.appendChild(window.top.document.createElement('iframe'));
+		this._private.iframe = window.top.document.createElement('iframe');
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
@@ -26,6 +26,7 @@ class GStackFrame extends GModal
 	connectedCallback()
 	{
 		super.connectedCallback();
+		this.appendChild(this._private.iframe);
 	}
 
 	get iframe()
@@ -42,12 +43,6 @@ class GStackFrame extends GModal
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
-	}
-
-	static create()
-	{
-		return 	document === window.top.document ? new GStackFrame()
-			: window.top.document.importNode(new GStackFrame());
 	}
 }
 

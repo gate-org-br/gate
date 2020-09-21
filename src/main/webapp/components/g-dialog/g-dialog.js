@@ -36,37 +36,32 @@ class GDialog extends GWindow
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
-		this.iframe.setAttribute('name', '_dialog');
 		this.iframe.onmouseenter = () => this.iframe.focus();
 
 		this.iframe.addEventListener("load", () =>
 		{
-			this.iframe.name = "_frame";
-			this.iframe.setAttribute("name", "_frame");
 			this.iframe.addEventListener("focus", () => autofocus(this.iframe.contentWindow.document));
-
-			var resize = () =>
-			{
-				if (!this.iframe.contentWindow
-					|| !this.iframe.contentWindow.document
-					|| !this.iframe.contentWindow.document.body
-					|| !this.iframe.contentWindow.document.body.scrollHeight)
-					return false;
-
-				let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
-					this.body.offsetHeight) + "px";
-				if (this.iframe.height !== height)
-				{
-					this.iframe.height = "0";
-					this.iframe.height = height;
-				}
-				return true;
-			};
-
-			resize();
-			window.addEventListener("refresh_size", resize);
+			this.resize();
+			window.addEventListener("refresh_size", () => this.resize());
 			this.iframe.backgroundImage = "none";
 		});
+	}
+
+	resize()
+	{
+		if (this.iframe.contentWindow
+			&& !this.iframe.contentWindow.document
+			&& this.iframe.contentWindow.document.body
+			&& this.iframe.contentWindow.document.body.scrollHeight)
+		{
+			let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
+				this.body.offsetHeight) + "px";
+			if (this.iframe.height !== height)
+			{
+				this.iframe.height = "0";
+				this.iframe.height = height;
+			}
+		}
 	}
 
 	connectedCallback()
@@ -148,12 +143,6 @@ class GDialog extends GWindow
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.commands;
 	}
-
-	static create()
-	{
-		return 	document === window.top.document ? new GDialog()
-			: window.top.document.importNode(new GDialog());
-	}
 }
 
 customElements.define('g-dialog', GDialog);
@@ -176,7 +165,7 @@ window.addEventListener("click", function (event)
 			parameters.forEach(e => e.value = "");
 			parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed', {bubbles: true})));
 		} else {
-			let dialog = GDialog.create();
+			let dialog = window.top.document.createElement("g-dialog");
 			dialog.target = action.href;
 			dialog.caption = action.getAttribute("title");
 			dialog.get.apply(dialog, parameters);
@@ -247,7 +236,7 @@ window.addEventListener("change", function (event)
 		if (action.value)
 		{
 			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
-			let dialog = GDialog.create();
+			let dialog = window.top.document.createElement("g-dialog");
 			dialog.target = url;
 			dialog.caption = getter.getAttribute("title");
 			dialog.get.apply(dialog, parameters);
