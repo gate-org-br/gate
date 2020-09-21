@@ -16,7 +16,7 @@ SELECT
     Uzer.registration AS registration
 FROM
     Uzer
-        JOIN
+       LEFT JOIN
     Role ON Uzer.Role$id = Role.id
 WHERE
     Uzer.id = ?
