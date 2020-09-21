@@ -70,7 +70,7 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let dialog = GDialog.create();
+					let dialog = window.top.document.createElement("g-dialog");
 					dialog.navigator = link.navigator;
 					dialog.target = link.getAttribute("href");
 					dialog.caption = link.getAttribute("title");
@@ -101,7 +101,7 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let dialog = GStackFrame.create();
+					let dialog = window.top.document.createElement("g-stack-frame");
 					dialog.target = link.getAttribute("href");
 
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));

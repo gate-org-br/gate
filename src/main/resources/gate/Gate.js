@@ -2895,7 +2895,7 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let dialog = GDialog.create();
+					let dialog = window.top.document.createElement("g-dialog");
 					dialog.navigator = link.navigator;
 					dialog.target = link.getAttribute("href");
 					dialog.caption = link.getAttribute("title");
@@ -2926,7 +2926,7 @@ window.addEventListener("click", function (event)
 					link.setAttribute("target", "_dialog");
 				} else
 				{
-					let dialog = GStackFrame.create();
+					let dialog = window.top.document.createElement("g-stack-frame");
 					dialog.target = link.getAttribute("href");
 
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
@@ -3210,12 +3210,18 @@ window.addEventListener("click", function (event)
 					{
 						event.preventDefault();
 						event.stopPropagation();
+
+						event.preventDefault();
+						event.stopPropagation();
 						button.setAttribute("formtarget", "_blank");
 						button.click();
 						button.setAttribute("formtarget", "_dialog");
 					} else if (event.target.form.getAttribute("target") !== "_dialog")
 					{
-						let dialog = GDialog.create();
+						event.preventDefault();
+						event.stopPropagation();
+
+						let dialog = window.top.document.createElement("g-dialog");
 						dialog.caption = event.target.getAttribute("title");
 						dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
 
@@ -3232,6 +3238,11 @@ window.addEventListener("click", function (event)
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						dialog.show();
+
+						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+							.then(e => e.text())
+							.then(e => dialog.iframe.setAttribute("srcdoc", e));
 					}
 				}
 				break;
@@ -3242,12 +3253,16 @@ window.addEventListener("click", function (event)
 					{
 						event.preventDefault();
 						event.stopPropagation();
+
 						button.setAttribute("formtarget", "_blank");
 						button.click();
 						button.setAttribute("formtarget", "_stack");
 					} else if (event.target.form.getAttribute("target") !== "_stack")
 					{
-						let dialog = GStackFrame.create();
+						event.preventDefault();
+						event.stopPropagation();
+
+						let dialog = window.top.document.createElement("g-stack-frame");
 
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
@@ -3262,6 +3277,11 @@ window.addEventListener("click", function (event)
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						dialog.show();
+
+						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+							.then(e => e.text())
+							.then(e => dialog.iframe.setAttribute("srcdoc", e));
 					}
 				}
 				break;
@@ -6213,37 +6233,32 @@ class GDialog extends GWindow
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
-		this.iframe.setAttribute('name', '_dialog');
 		this.iframe.onmouseenter = () => this.iframe.focus();
 
 		this.iframe.addEventListener("load", () =>
 		{
-			this.iframe.name = "_frame";
-			this.iframe.setAttribute("name", "_frame");
 			this.iframe.addEventListener("focus", () => autofocus(this.iframe.contentWindow.document));
-
-			var resize = () =>
-			{
-				if (!this.iframe.contentWindow
-					|| !this.iframe.contentWindow.document
-					|| !this.iframe.contentWindow.document.body
-					|| !this.iframe.contentWindow.document.body.scrollHeight)
-					return false;
-
-				let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
-					this.body.offsetHeight) + "px";
-				if (this.iframe.height !== height)
-				{
-					this.iframe.height = "0";
-					this.iframe.height = height;
-				}
-				return true;
-			};
-
-			resize();
-			window.addEventListener("refresh_size", resize);
+			this.resize();
+			window.addEventListener("refresh_size", () => this.resize());
 			this.iframe.backgroundImage = "none";
 		});
+	}
+
+	resize()
+	{
+		if (this.iframe.contentWindow
+			&& !this.iframe.contentWindow.document
+			&& this.iframe.contentWindow.document.body
+			&& this.iframe.contentWindow.document.body.scrollHeight)
+		{
+			let height = Math.max(this.iframe.contentWindow.document.body.scrollHeight,
+				this.body.offsetHeight) + "px";
+			if (this.iframe.height !== height)
+			{
+				this.iframe.height = "0";
+				this.iframe.height = height;
+			}
+		}
 	}
 
 	connectedCallback()
@@ -6325,12 +6340,6 @@ class GDialog extends GWindow
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.commands;
 	}
-
-	static create()
-	{
-		return 	document === window.top.document ? new GDialog()
-			: window.top.document.importNode(new GDialog());
-	}
 }
 
 customElements.define('g-dialog', GDialog);
@@ -6353,7 +6362,7 @@ window.addEventListener("click", function (event)
 			parameters.forEach(e => e.value = "");
 			parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed', {bubbles: true})));
 		} else {
-			let dialog = GDialog.create();
+			let dialog = window.top.document.createElement("g-dialog");
 			dialog.target = action.href;
 			dialog.caption = action.getAttribute("title");
 			dialog.get.apply(dialog, parameters);
@@ -6424,7 +6433,7 @@ window.addEventListener("change", function (event)
 		if (action.value)
 		{
 			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
-			let dialog = GDialog.create();
+			let dialog = window.top.document.createElement("g-dialog");
 			dialog.target = url;
 			dialog.caption = getter.getAttribute("title");
 			dialog.get.apply(dialog, parameters);
@@ -6460,7 +6469,7 @@ class GStackFrame extends GModal
 	{
 		super();
 
-		this._private.iframe = this.appendChild(window.top.document.createElement('iframe'));
+		this._private.iframe = window.top.document.createElement('iframe');
 
 		this.iframe.dialog = this;
 		this.iframe.scrolling = "no";
@@ -6480,6 +6489,7 @@ class GStackFrame extends GModal
 	connectedCallback()
 	{
 		super.connectedCallback();
+		this.appendChild(this._private.iframe);
 	}
 
 	get iframe()
@@ -6496,12 +6506,6 @@ class GStackFrame extends GModal
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
-	}
-
-	static create()
-	{
-		return 	document === window.top.document ? new GStackFrame()
-			: window.top.document.importNode(new GStackFrame());
 	}
 }
 
@@ -6885,7 +6889,7 @@ window.addEventListener("load", function ()
 				e.stopImmediatePropagation();
 			} else if (this.target === "_dialog")
 			{
-				let dialog = GDialog.create();
+				let dialog = window.top.document.createElement("g-dialog");
 				dialog.caption = this.getAttribute("title");
 				dialog.blocked = Boolean(this.getAttribute("data-blocked"));
 				dialog.addEventListener("show", event => this.dispatchEvent(event));
@@ -7816,34 +7820,50 @@ window.addEventListener("load", function ()
 		}
 	});
 });
-class AppEvents
+/* global customElements */
+
+class AppEvents extends HTMLElement
 {
+	constructor()
+	{
+		super();
+	}
+	
 	static listen()
 	{
+		AppEvents.register(window);
+	}
+
+	static register(listener)
+	{
+		if (AppEvents.connection)
+			throw new Error("Attempt to redefine an app event listener");
+
 		let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
 		var url = protocol + /.*:\/\/(.*\/.*)\//.exec(location.href)[1] + "/AppEvents";
 
-		if (!AppEvents.connection || AppEvents.connection.readyState === 3)
+		AppEvents.connection = new WebSocket(url);
+
+		AppEvents.connection.onmessage = event =>
 		{
-			AppEvents.connection = new WebSocket(url);
+			event = JSON.parse(event.data);
+			listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail}));
+		};
 
-			AppEvents.connection.onmessage = function (event)
-			{
-				event = JSON.parse(event.data);
-				window.dispatchEvent(new CustomEvent(event.type, {detail: event.detail}));
-			};
-
-			AppEvents.connection.onopen = function ()
-			{
-			};
-
-			AppEvents.connection.onclose = function ()
-			{
-				AppEvents.connection = new WebSocket(url);
-			};
-		}
+		AppEvents.connection.onopen = () => console.log("listening to app events");
+		AppEvents.connection.onclose = () => AppEvents.connection = new WebSocket(url);
 	}
-}
+
+	connectedCallback()
+	{
+		AppEvents.register(this);
+	}
+};
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("[data-event-source]"))
+		.forEach(listener => AppEvents.register(listener)));
+
+customElements.define('g-event-source', AppEvents);
 /* global customElements, DefinitionList, Table, HTMLElement, GList */
 
 class GTooltip extends HTMLElement
@@ -8045,91 +8065,91 @@ class GTabControl extends HTMLElement
 
 	connectedCallback()
 	{
-		window.setTimeout(() =>
+		if (!this.children.length)
+			return window.setTimeout(() => this.connectedCallback(), 100);
+
+		if (this.type !== "dummy")
 		{
-			if (this.type !== "dummy")
+			var links = Array.from(this.children).filter(e => e.tagName === "A");
+
+			links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
+				.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
+
+			var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
+			pages.forEach(e => e.setAttribute("slot", "body"));
+
+			links.forEach(link =>
 			{
-				var links = Array.from(this.children).filter(e => e.tagName === "A");
+				links.forEach(e => e.setAttribute("slot", "head"));
+				let type = link.getAttribute("data-type") || this.type;
+				let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
 
-				links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
-					.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
-
-				var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
-				pages.forEach(e => e.setAttribute("slot", "body"));
-
-				links.forEach(link =>
+				link.addEventListener("click", event =>
 				{
-					links.forEach(e => e.setAttribute("slot", "head"));
-					let type = link.getAttribute("data-type") || this.type;
-					let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
+					event.preventDefault();
+					event.stopPropagation();
+					pages.forEach(e => e.style.display = "none");
+					links.forEach(e => e.setAttribute("data-selected", "false"));
+					link.nextElementSibling.style.display = "block";
+					link.setAttribute("data-selected", "true");
 
-					link.addEventListener("click", event =>
+					if (reload === "always")
+						while (link.nextElementSibling.firstChild)
+							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
+
+					if (!link.nextElementSibling.childNodes.length)
 					{
-						event.preventDefault();
-						event.stopPropagation();
-						pages.forEach(e => e.style.display = "none");
-						links.forEach(e => e.setAttribute("data-selected", "false"));
-						link.nextElementSibling.style.display = "block";
-						link.setAttribute("data-selected", "true");
-
-						if (reload === "always")
-							while (link.nextElementSibling.firstChild)
-								link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
-
-						if (!link.nextElementSibling.childNodes.length)
+						switch (type)
 						{
-							switch (type)
-							{
-								case "fetch":
-									new URL(link.getAttribute('href'))
-										.get(text => link.nextElementSibling.innerHTML = text);
-									break;
-								case "frame":
+							case "fetch":
+								new URL(link.getAttribute('href'))
+									.get(text => link.nextElementSibling.innerHTML = text);
+								break;
+							case "frame":
 
-									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
-									iframe.scrolling = "no";
-									iframe.setAttribute("allowfullscreen", "true");
+								let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
+								iframe.scrolling = "no";
+								iframe.setAttribute("allowfullscreen", "true");
 
-									iframe.onload = () =>
+								iframe.onload = () =>
+								{
+									if (iframe.contentWindow
+										&& iframe.contentWindow.document
+										&& iframe.contentWindow.document.body
+										&& iframe.contentWindow.document.body.scrollHeight)
 									{
-										if (iframe.contentWindow
-											&& iframe.contentWindow.document
-											&& iframe.contentWindow.document.body
-											&& iframe.contentWindow.document.body.scrollHeight)
+										var height = iframe.contentWindow
+											.document.body.scrollHeight + "px";
+										if (iframe.height !== height)
 										{
-											var height = iframe.contentWindow
-												.document.body.scrollHeight + "px";
-											if (iframe.height !== height)
-											{
-												iframe.height = "0";
-												iframe.height = height;
-											}
+											iframe.height = "0";
+											iframe.height = height;
 										}
+									}
 
-										iframe.style.backgroundImage = "none";
-									};
+									iframe.style.backgroundImage = "none";
+								};
 
-									iframe.src = link.href;
-									break;
-							}
+								iframe.src = link.href;
+								break;
 						}
-					});
-
-					if (link.getAttribute("data-selected") &&
-						link.getAttribute("data-selected").toLowerCase() === "true")
-						link.click();
+					}
 				});
 
+				if (link.getAttribute("data-selected") &&
+					link.getAttribute("data-selected").toLowerCase() === "true")
+					link.click();
+			});
 
 
-				if (links.length && links.every(e => !e.hasAttribute("data-selected")
-						|| e.getAttribute("data-selected").toLowerCase() === "false"))
-					links[0].click();
-			} else {
-				Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
-				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
-			}
-		}, 0);
+
+			if (links.length && links.every(e => !e.hasAttribute("data-selected")
+					|| e.getAttribute("data-selected").toLowerCase() === "false"))
+				links[0].click();
+		} else {
+			Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
+			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+		}
 	}
 }
 

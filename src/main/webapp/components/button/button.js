@@ -71,12 +71,18 @@ window.addEventListener("click", function (event)
 					{
 						event.preventDefault();
 						event.stopPropagation();
+
+						event.preventDefault();
+						event.stopPropagation();
 						button.setAttribute("formtarget", "_blank");
 						button.click();
 						button.setAttribute("formtarget", "_dialog");
 					} else if (event.target.form.getAttribute("target") !== "_dialog")
 					{
-						let dialog = GDialog.create();
+						event.preventDefault();
+						event.stopPropagation();
+
+						let dialog = window.top.document.createElement("g-dialog");
 						dialog.caption = event.target.getAttribute("title");
 						dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
 
@@ -93,6 +99,11 @@ window.addEventListener("click", function (event)
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						dialog.show();
+
+						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+							.then(e => e.text())
+							.then(e => dialog.iframe.setAttribute("srcdoc", e));
 					}
 				}
 				break;
@@ -103,12 +114,16 @@ window.addEventListener("click", function (event)
 					{
 						event.preventDefault();
 						event.stopPropagation();
+
 						button.setAttribute("formtarget", "_blank");
 						button.click();
 						button.setAttribute("formtarget", "_stack");
 					} else if (event.target.form.getAttribute("target") !== "_stack")
 					{
-						let dialog = GStackFrame.create();
+						event.preventDefault();
+						event.stopPropagation();
+
+						let dialog = window.top.document.createElement("g-stack-frame");
 
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
@@ -123,6 +138,11 @@ window.addEventListener("click", function (event)
 										.exec(button.getAttribute("data-on-hide"))[1]).submit());
 
 						dialog.show();
+
+						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+							.then(e => e.text())
+							.then(e => dialog.iframe.setAttribute("srcdoc", e));
 					}
 				}
 				break;

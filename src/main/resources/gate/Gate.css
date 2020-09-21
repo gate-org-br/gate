@@ -5505,6 +5505,9 @@ g-grid.c20 > table > * > tr > *:nth-child(20),
 g-grid table[data-c1] > * > tr > *:nth-child(20) {
   text-align: center;
 }
+table > thead > tr > td > input[data-filter] {
+  width: 100%;
+}
 body[data-scroll-disabled] * {
   overflow: hidden;
 }
