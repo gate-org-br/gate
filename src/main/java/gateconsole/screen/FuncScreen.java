@@ -1,5 +1,6 @@
 package gateconsole.screen;
 
+import gate.annotation.CopyIcon;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
@@ -118,6 +119,8 @@ public class FuncScreen extends Screen
 		return page;
 	}
 
+	@Name("Usuários")
+	@CopyIcon(User.class)
 	public static class UserScreen extends Screen
 	{
 
@@ -131,8 +134,6 @@ public class FuncScreen extends Screen
 		@Inject
 		private UserControl.FuncControl control;
 
-		@Name("Usuários")
-		@Icon("gate.entity.User")
 		public String call()
 		{
 
@@ -198,6 +199,8 @@ public class FuncScreen extends Screen
 		}
 	}
 
+	@Name("Perfis")
+	@CopyIcon(Role.class)
 	public static class RoleScreen extends Screen
 	{
 
@@ -211,8 +214,6 @@ public class FuncScreen extends Screen
 		@Inject
 		private RoleControl.FuncControl control;
 
-		@Name("Perfis")
-		@Icon("gate.entity.Role")
 		public String call()
 		{
 
