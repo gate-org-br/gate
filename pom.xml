@@ -186,7 +186,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<failOnMissingWebXml>true</failOnMissingWebXml>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 
 					<archive>
