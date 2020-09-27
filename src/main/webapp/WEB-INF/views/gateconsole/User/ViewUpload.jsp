@@ -1,14 +1,13 @@
 <%@ taglib uri="http://www.gate.com.br/gate" prefix="g"%>
 
-<g:template filename="/WEB-INF/views/DIAG.jsp">
+<g:template filename="/WEB-INF/views/FULL.jsp">
 	<form method='POST' action='#'
 	      enctype='multipart/form-data'>
 		<fieldset>
 			<legend>
-				<g:icon type="upload" />
-				Importar Usu&aacute;rios
+				<g:path/>
 			</legend>
-			<label data-size='4'>
+			<label data-size='8'>
 				Perfil
 				<span>
 					<g:hidden id='form.role.id' property="form.role.id" required=''/>
@@ -21,21 +20,22 @@
 					</g:link>
 				</span>
 			</label>				
-			<label data-size='4'>
+			<label data-size='8'>
 				Arquivo:
 				<span>
 					<g:file property="file"/>
 				</span>
 			</label>
 		</fieldset>
-		<div class='Coolbar'>
+		<g-coolbar>
 			<g:link class="Commit" method='post' module="#" screen="#" action="Commit" tabindex='2'>
 				Concluir<g:icon type="upload"/>
 			</g:link>
-			<a class="Cancel Hide" href="#" tabindex='3'>
+			<hr/>
+			<a target="_hide" href="#" tabindex='3'>
 				Desistir<g:icon type='cancel'/>
 			</a>    
-		</div>
+		</g-coolbar>
 	</form>
 
 	<div class='TEXT'>
