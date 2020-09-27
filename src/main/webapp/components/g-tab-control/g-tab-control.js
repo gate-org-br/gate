@@ -27,91 +27,91 @@ class GTabControl extends HTMLElement
 
 	connectedCallback()
 	{
-		if (!this.children.length)
-			return window.setTimeout(() => this.connectedCallback(), 100);
-
-		if (this.type !== "dummy")
+		window.setTimeout(() =>
 		{
-			var links = Array.from(this.children).filter(e => e.tagName === "A");
-
-			links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
-				.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
-
-			var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
-			pages.forEach(e => e.setAttribute("slot", "body"));
-
-			links.forEach(link =>
+			if (this.type !== "dummy")
 			{
-				links.forEach(e => e.setAttribute("slot", "head"));
-				let type = link.getAttribute("data-type") || this.type;
-				let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
+				var links = Array.from(this.children).filter(e => e.tagName === "A");
 
-				link.addEventListener("click", event =>
+				links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
+					.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
+
+				var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
+				pages.forEach(e => e.setAttribute("slot", "body"));
+
+				links.forEach(link =>
 				{
-					event.preventDefault();
-					event.stopPropagation();
-					pages.forEach(e => e.style.display = "none");
-					links.forEach(e => e.setAttribute("data-selected", "false"));
-					link.nextElementSibling.style.display = "block";
-					link.setAttribute("data-selected", "true");
+					links.forEach(e => e.setAttribute("slot", "head"));
+					let type = link.getAttribute("data-type") || this.type;
+					let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
 
-					if (reload === "always")
-						while (link.nextElementSibling.firstChild)
-							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
-
-					if (!link.nextElementSibling.childNodes.length)
+					link.addEventListener("click", event =>
 					{
-						switch (type)
+						event.preventDefault();
+						event.stopPropagation();
+						pages.forEach(e => e.style.display = "none");
+						links.forEach(e => e.setAttribute("data-selected", "false"));
+						link.nextElementSibling.style.display = "block";
+						link.setAttribute("data-selected", "true");
+
+						if (reload === "always")
+							while (link.nextElementSibling.firstChild)
+								link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
+
+						if (!link.nextElementSibling.childNodes.length)
 						{
-							case "fetch":
-								new URL(link.getAttribute('href'))
-									.get(text => link.nextElementSibling.innerHTML = text);
-								break;
-							case "frame":
+							switch (type)
+							{
+								case "fetch":
+									new URL(link.getAttribute('href'))
+										.get(text => link.nextElementSibling.innerHTML = text);
+									break;
+								case "frame":
 
-								let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
-								iframe.scrolling = "no";
-								iframe.setAttribute("allowfullscreen", "true");
+									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
+									iframe.scrolling = "no";
+									iframe.setAttribute("allowfullscreen", "true");
 
-								iframe.onload = () =>
-								{
-									if (iframe.contentWindow
-										&& iframe.contentWindow.document
-										&& iframe.contentWindow.document.body
-										&& iframe.contentWindow.document.body.scrollHeight)
+									iframe.onload = () =>
 									{
-										var height = iframe.contentWindow
-											.document.body.scrollHeight + "px";
-										if (iframe.height !== height)
+										if (iframe.contentWindow
+											&& iframe.contentWindow.document
+											&& iframe.contentWindow.document.body
+											&& iframe.contentWindow.document.body.scrollHeight)
 										{
-											iframe.height = "0";
-											iframe.height = height;
+											var height = iframe.contentWindow
+												.document.body.scrollHeight + "px";
+											if (iframe.height !== height)
+											{
+												iframe.height = "0";
+												iframe.height = height;
+											}
 										}
-									}
 
-									iframe.style.backgroundImage = "none";
-								};
+										iframe.style.backgroundImage = "none";
+									};
 
-								iframe.src = link.href;
-								break;
+									iframe.src = link.href;
+									break;
+							}
 						}
-					}
+					});
+
+					if (link.getAttribute("data-selected") &&
+						link.getAttribute("data-selected").toLowerCase() === "true")
+						link.click();
 				});
 
-				if (link.getAttribute("data-selected") &&
-					link.getAttribute("data-selected").toLowerCase() === "true")
-					link.click();
-			});
 
 
-
-			if (links.length && links.every(e => !e.hasAttribute("data-selected")
-					|| e.getAttribute("data-selected").toLowerCase() === "false"))
-				links[0].click();
-		} else {
-			Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
-			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
-		}
+				if (links.length && links.every(e => !e.hasAttribute("data-selected")
+						|| e.getAttribute("data-selected").toLowerCase() === "false"))
+					links[0].click();
+			} else {
+				Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
+				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+			}
+		}, 100);
 	}
 }
 
@@ -237,6 +237,7 @@ function PageControl(pageControl)
 
 			iframe.setAttribute("src", link.getAttribute('href'));
 		}
+
 	}
 }
 

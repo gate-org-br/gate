@@ -30,6 +30,7 @@
 							<tbody>
 								<g:iterator source="${screen.page}" target="role" children="${e -> e.children}">
 									<tr data-depth='${depth}' data-target='_stack' title='Perfil'
+									    data-on-hide="reload" 
 									    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${role.id}'>
 										<td></td>
 										<td style='padding-left: ${depth*40}px; font-weight: ${role.isMaster() ? "bold" : "normal"}'>
@@ -150,7 +151,8 @@
 
 		<footer>
 			<g-coolbar>
-				<g:link target="_stack" module='#' screen='#' action='Insert' tabindex='1'/>
+				<g:link target="_stack" data-on-hide="reload" 
+					module='#' screen='#' action='Insert' tabindex='1'/>
 			</g-coolbar>
 		</footer>
 	</article>

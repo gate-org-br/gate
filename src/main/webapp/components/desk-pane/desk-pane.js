@@ -22,14 +22,17 @@ window.addEventListener("load", function ()
 			link.icons.forEach(e => e.style.display = "none");
 
 			if (link.icons.length)
-				link.onclick = function ()
+				link.addEventListener("click", function(event)
 				{
 					links.forEach(e => e.parentNode.style.display = "none");
 					this.icons.forEach(e => e.style.display = "");
 					reset.style.display = "";
 					reset.firstChild.onclick = () => (this.parentNode.link || root).onclick();
 					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
-				};
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+				});
 		});
 
 		links.map(e => e.parentNode).forEach(e => component.appendChild(e));

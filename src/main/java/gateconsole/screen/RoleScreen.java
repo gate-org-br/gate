@@ -1,5 +1,6 @@
 package gateconsole.screen;
 
+import gate.annotation.CopyIcon;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
@@ -16,7 +17,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 @Name("Perfis")
-@Icon("gate.entity.Role")
+@CopyIcon(Role.class)
 public class RoleScreen extends Screen
 {
 
@@ -40,7 +41,7 @@ public class RoleScreen extends Screen
 	}
 
 	@Name("Sub Perfis")
-	@Icon("gate.entity.Role")
+	@CopyIcon(Role.class)
 	public String callImport()
 	{
 		setPage(control.getChildRoles(getForm().getRole()));
@@ -134,9 +135,9 @@ public class RoleScreen extends Screen
 			control.delete(getForm());
 			getMessages().add("O perfil foi removido com sucesso.");
 			return "/WEB-INF/views/gateconsole/Role/ViewResult.jsp";
-		} catch (AppException e)
+		} catch (AppException ex)
 		{
-			setMessages(e.getMessages());
+			setMessages(ex.getMessages());
 			return callSelect();
 		}
 	}
@@ -168,6 +169,8 @@ public class RoleScreen extends Screen
 		return new UserControl().search(new User().setRole(getForm()));
 	}
 
+	@Name("Funções")
+	@CopyIcon(Func.class)
 	public static class FuncScreen extends Screen
 	{
 
@@ -181,8 +184,6 @@ public class RoleScreen extends Screen
 		@Inject
 		private FuncControl.RoleControl control;
 
-		@Name("Funções")
-		@Icon("gate.entity.Func")
 		public String call()
 		{
 

@@ -36,7 +36,7 @@
 								</thead>
 								<tbody>
 									<g:iterator source="${screen.page}" target="target">
-										<tr data-target='_stack' data-reload-on-hide title='Função'
+										<tr data-target='_stack' data-on-hide="reload" title='Função'
 										    data-action='Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}'>
 											<td>
 												<g:print value="${target.name}"/>
@@ -54,7 +54,7 @@
 		<footer>
 			<g-coolbar>
 				<g:link class="Action" target='_stack'
-					data-reload-on-hide="data-reload-on-hide"
+					data-on-hide="reload" 
 					title="Função"
 					module='#' screen='#' action='Insert' tabindex='3'/>
 			</g-coolbar>

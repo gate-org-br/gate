@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Base64;
@@ -28,9 +29,9 @@ public class MimeDataFile extends MimeData implements MimeFile
 	private final String name;
 
 	public MimeDataFile(String type,
-			String subtype,
-			byte[] data,
-			String name)
+		String subtype,
+		byte[] data,
+		String name)
 	{
 		super(type, subtype, data);
 
@@ -51,34 +52,48 @@ public class MimeDataFile extends MimeData implements MimeFile
 	}
 
 	public static MimeDataFile of(File file)
-			throws IOException
+	{
+		return of(file, file.getName());
+	}
+
+	public static MimeDataFile of(File file, String name)
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(new FileInputStream(file)))
+			= new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
 				for (int c = stream.read(); c != -1; c = stream.read())
 					bytes.write(c);
 				bytes.flush();
-				return new MimeDataFile(bytes.toByteArray(), file.getName());
+				return new MimeDataFile(bytes.toByteArray(), name);
 			}
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
 		}
 	}
 
 	public static MimeDataFile of(URL url)
-			throws IOException
+	{
+		return of(url, url.getFile());
+	}
+
+	public static MimeDataFile of(URL url, String name)
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(url.openStream()))
+			= new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
 				for (int c = stream.read(); c != -1; c = stream.read())
 					bytes.write(c);
 				bytes.flush();
-				return new MimeDataFile(bytes.toByteArray(), url.getFile());
+				return new MimeDataFile(bytes.toByteArray(), name);
 			}
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -88,11 +103,11 @@ public class MimeDataFile extends MimeData implements MimeFile
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
 		return new DataURL(getType(), getSubType(), true, map,
-				Base64.getEncoder().encodeToString(getData())).toString();
+			Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
 	public static MimeDataFile parse(String string)
-			throws ConversionException
+		throws ConversionException
 	{
 		try
 		{
@@ -100,9 +115,9 @@ public class MimeDataFile extends MimeData implements MimeFile
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return new MimeDataFile(dataURL.getType(),
-					dataURL.getSubtype(),
-					Base64.getDecoder().decode(dataURL.getData()),
-					dataURL.getParameters().get("filename"));
+				dataURL.getSubtype(),
+				Base64.getDecoder().decode(dataURL.getData()),
+				dataURL.getParameters().get("filename"));
 		} catch (ParseException ex)
 		{
 			throw new ConversionException("invalid data url: " + string);
