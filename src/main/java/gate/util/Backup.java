@@ -3,8 +3,8 @@ package gate.util;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
-import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
+import gate.lang.csv.Row;
 import gate.lang.property.Property;
 import gate.type.DataFile;
 import java.io.BufferedReader;
@@ -83,7 +83,7 @@ public class Backup<T>
 
 	public List<T> load(Reader reader) throws ConversionException
 	{
-		try (CSVParser CSV = new CSVParser(new BufferedReader(reader)))
+		try (CSVParser CSV = CSVParser.of(new BufferedReader(reader)))
 		{
 			List<T> objs = new ArrayList<>();
 			for (Optional<Row> optional = CSV.parseLine();

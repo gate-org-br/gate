@@ -1,6 +1,5 @@
-package gate.lang.psv;
+package gate.lang.csv;
 
-import gate.lang.csv.PSVParser;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,7 +12,7 @@ public class PSVParserTest
 	@Test
 	public void testUsers1() throws IOException
 	{
-		try (PSVParser parser = new PSVParser(getClass().getResource("Users1.dat"), 0, 6, 12, 12, 12, 12, 12))
+		try (PSVParser parser = PSVParser.of(getClass().getResource("PSVParserTest/Users1.dat"), 0, 6, 12, 12, 12, 12, 12))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());

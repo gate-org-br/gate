@@ -1,6 +1,7 @@
 package gate.lang.csv;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -12,7 +13,7 @@ public class CSVParserTest
 	@Test
 	public void testUsers1() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(getClass().getResource("Users1.csv")))
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/Users1.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -32,7 +33,7 @@ public class CSVParserTest
 	@Test
 	public void testUsers2() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(getClass().getResource("Users2.csv")))
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/Users2.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -62,7 +63,7 @@ public class CSVParserTest
 	@Test
 	public void testUsers3() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(getClass().getResource("Users3.csv")))
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/Users3.csv")))
 		{
 
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
@@ -94,7 +95,7 @@ public class CSVParserTest
 	@Test
 	public void testUsers4() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(getClass().getResource("Users4.csv"), ',', '\''))
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/Users4.csv"), ',', '\''))
 		{
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
 			Assert.assertEquals(5, lines.size());
@@ -111,9 +112,28 @@ public class CSVParserTest
 	@Test
 	public void testCsv() throws IOException
 	{
-		try (CSVParser parser = new CSVParser(getClass().getResource("csv.csv")))
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/csv.csv")))
 		{
 			List<List<String>> lines = parser.stream().collect(Collectors.toList());
+			Assert.assertEquals(3, lines.size());
+
+			int index = 0;
+			Assert.assertEquals(List.of("Jonh Matheus", "Davis", "true"), lines.get(index++));
+			Assert.assertEquals(List.of("Paul", "Richard\"", "false"), lines.get(index++));
+			Assert.assertEquals(List.of("Marie", "Anderson", "true"), lines.get(index++));
+		}
+	}
+
+	@Test
+	public void testCSVIterator() throws IOException
+	{
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/csv.csv")))
+		{
+			List<List<String>> lines
+				= new ArrayList<>();
+			for (List<String> line : parser)
+				lines.add(line);
+
 			Assert.assertEquals(3, lines.size());
 
 			int index = 0;
