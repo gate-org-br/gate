@@ -12,6 +12,7 @@
 		<g:link module="#" screen="#" action="Other"  data-selected="${ACTION eq 'Other'}"/>
 		<g:link module="#" screen="#" action="Grid1"  data-selected="${ACTION eq 'Grid1'}"/>
 		<g:link module="#" screen="#" action="Grid2"  data-selected="${ACTION eq 'Grid2'}"/>
+		<g:link module="#" screen="#" action="TextEditor"  data-selected="${ACTION eq 'TextEditor'}"/>
 		<div>
 			<div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 10px;">
 				<g:insert/>

@@ -89,4 +89,5 @@
 @import "g-dialog-caption/g-dialog-caption.js"
 @import "g-tab-control/g-tab-control.js"
 @import "g-grid/g-grid.js"
+@import "g-text-editor/g-text-editor.js"
 

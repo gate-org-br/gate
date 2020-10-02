@@ -320,6 +320,27 @@ class IconSelector extends HTMLElement
 		this.add("3022");
 		this.add("3023");
 		this.add("3024");
+		this.add("3024");
+		this.add("3025");
+		this.add("3026");
+		this.add("3027");
+		this.add("3028");
+		this.add("3029");
+		this.add("3030");
+		this.add("3031");
+		this.add("3032");
+		this.add("3033");
+		this.add("3034");
+		this.add("3035");
+		this.add("3036");
+		this.add("3037");
+		this.add("3038");
+		this.add("3039");
+		this.add("3040");
+		this.add("3041");
+		this.add("3042");
+		this.add("3043");
+		this.add("3044");
 	}
 
 	add(code)

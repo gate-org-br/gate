@@ -85,6 +85,12 @@ public class DemoScreen extends Screen
 	{
 		return "/WEB-INF/views/gateconsole/Demo/ViewGrid2.jsp";
 	}
+	
+	@Name("Text Editor")
+	public String callTextEditor()
+	{
+		return "/WEB-INF/views/gateconsole/Demo/TextEditor.jsp";
+	}
 
 	@Name("Other")
 	public String callOther()

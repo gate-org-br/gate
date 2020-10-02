@@ -45,7 +45,13 @@ class GChart extends HTMLElement
 			|| !this.title)
 			return;
 
-		var data = JSON.parse(this.data);
+		let data = this.data;
+
+		try {
+			data = JSON.parse(this.data);
+		} catch (ex) {
+			data = JSON.parse(new URL(data).get());
+		}
 
 		let categories = new Array();
 		for (var i = 1; i < data.length; i++)
