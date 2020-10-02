@@ -157,8 +157,8 @@
   --figure-border-color: var(--base);
   --figure-background-color: var(--main-shaded10);
   --g-navbar-color: white;
-  --g-navbar-border-color: none;
-  --g-navbar-background-color: transparent;
+  --g-navbar-border-color: var(--base-shaded25);
+  --g-navbar-background-color: var(--base-shaded30);
   --g-navbar-background-image: none;
   --g-window-border-color: var(--base-shaded35);
   --g-window-header-color: white;
@@ -616,15 +616,19 @@ g-window > main > header > label,
   align-items: center;
   justify-content: flex-start;
 }
+g-window > main > header > g-navbar,
+.g-window > main > header > g-navbar {
+  order: 2;
+}
 g-window > main > header > g-dialog-commands,
 .g-window > main > header > g-dialog-commands {
-  order: 2;
+  order: 3;
 }
 g-window > main > header > a,
 .g-window > main > header > a,
 g-window > main > header > button,
 .g-window > main > header > button {
-  order: 3;
+  order: 4;
   padding: 2px;
   display: flex;
   align-items: center;
@@ -4242,29 +4246,12 @@ g-chart-dialog > main > section > g-chart,
   height: 100%;
   background-color: white;
 }
-tr.RChart,
-td.RChart,
-tr.DChart,
-td.DChart,
-tr.PChart,
-td.PChart,
-tr.AChart,
-td.AChart,
-tr.LChart,
-td.LChart,
-tr.BChart,
-td.BChart,
-tr.CChart,
-td.CChart {
+tr[data-chart],
+td[data-chart] {
   cursor: pointer;
 }
-td.RChart:hover,
-td.DChart:hover,
-td.PChart:hover,
-td.AChart:hover,
-td.LChart:hover,
-td.BChart:hover,
-td.CChart:hover {
+tr[data-chart]:hover,
+td[data-chart]:hover {
   color: #000066;
   font-weight: bold;
 }
@@ -5508,7 +5495,66 @@ g-grid table[data-c1] > * > tr > *:nth-child(20) {
 table > thead > tr > td > input[data-filter] {
   width: 100%;
 }
+g-text-editor {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+g-text-editor > div {
+  height: 100%;
+  grid-gap: 4px;
+  display: grid;
+  align-items: stretch;
+  justify-items: stretch;
+  align-content: stretch;
+  grid-template-rows: auto 1fr;
+}
+g-text-editor > div > div:first-child {
+  padding: 4px;
+  display: flex;
+  overflow: auto;
+  align-items: center;
+  background-color: #CCCCCC;
+  justify-content: flex-start;
+}
+g-text-editor > div > div:first-child > button {
+  margin: 2px;
+  color: black;
+  height: 30px;
+  display: flex;
+  flex: 0 0 30px;
+  font-size: 18px;
+  background: none;
+  border-radius: 5px;
+  align-items: center;
+  font-family: "gate";
+  justify-content: center;
+  border: 1px solid #DDDDDD;
+  background-color: #EEEEEE;
+}
+g-text-editor > div > div:first-child > button:hover {
+  background-color: #FFFFFF;
+}
+g-text-editor > div > div:first-child > span {
+  margin: 2px;
+  height: 30px;
+  border: none;
+  flex: 0 0 4px;
+}
+g-text-editor > div > div[contentEditable] {
+  flex-grow: 1;
+  padding: 8px;
+  overflow: auto;
+  line-height: 18px;
+  background-color: white;
+}
 body[data-scroll-disabled] * {
   overflow: hidden;
+}
+big {
+  font-size: 1.2em;
+}
+small {
+  font-size: 0.8em;
 }
 /*# sourceMappingURL=Gate.css.map */

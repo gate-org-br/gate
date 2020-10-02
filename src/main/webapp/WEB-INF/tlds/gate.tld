@@ -1434,6 +1434,25 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>text-editor</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.formControls.TextEditorTag</tag-class>
+		<description>
+			Creates a html text editor bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated textarea.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
 		<name>hidden</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>

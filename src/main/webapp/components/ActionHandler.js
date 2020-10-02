@@ -50,7 +50,7 @@ window.addEventListener("click", event =>
 
 				if (!event.ctrlKey
 					&& action.getAttribute("data-target") === "_dialog"
-					&& (action.getAttribute("data-navigate") || action.parentNode.getAttribute("data-navigate")))
+					&& (action.hasAttribute("data-navigate") || action.parentNode.hasAttribute("data-navigate")))
 					link.navigator = Array.from(action.parentNode.children)
 						.map(e => e.getAttribute("data-action"))
 						.filter(e => e);

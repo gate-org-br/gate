@@ -130,88 +130,17 @@ GChartDialog.show = function (chart, series, title)
 
 customElements.define('g-chart-dialog', GChartDialog);
 
-window.addEventListener("load", function ()
+window.addEventListener("click", function (event)
 {
-	Array.from(document.querySelectorAll('tr.RChart, td.RChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("rchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
+	event = event || window.event;
+	let action = event.target || event.srcElement;
 
-	Array.from(document.querySelectorAll('tr.DChart, td.DChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("dchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
+	action = action.closest("*[data-chart]");
+	if (!action)
+		return;
 
-	Array.from(document.querySelectorAll('tr.PChart, td.PChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("pchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
-
-	Array.from(document.querySelectorAll('tr.AChart, td.AChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("achart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
-
-
-	Array.from(document.querySelectorAll('tr.LChart, td.LChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("lchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
-
-	Array.from(document.querySelectorAll('tr.BChart, td.BChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("bchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
-
-	Array.from(document.querySelectorAll('tr.CChart, td.CChart')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show("cchart",
-				this.getAttribute('data-series') || new URL(this.getAttribute('data-action')).get(),
-				this.getAttribute("title"));
-		};
-	});
-
-	Array.from(document.querySelectorAll('a[data-chart]')).forEach(function (e)
-	{
-		e.onclick = function ()
-		{
-			GChartDialog.show(this.getAttribute('data-chart'),
-				this.getAttribute('data-series') || new URL(this.getAttribute('href')).get(),
-				this.getAttribute("title"));
-			return false;
-		};
-	});
+	GChartDialog.show(action.getAttribute('data-chart'),
+		action.getAttribute('data-series') || action.getAttribute('href'),
+		action.getAttribute("title"));
 });
 

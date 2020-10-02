@@ -81,7 +81,7 @@ class GDialog extends GWindow
 		{
 			let navbar = new GNavBar(navigator, navigator.target);
 			navbar.addEventListener("update", event => this._private.iframe.setAttribute('src', event.detail.target));
-			this.foot.appendChild(navbar);
+			this.head.appendChild(navbar);
 		}
 
 	}
