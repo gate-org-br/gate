@@ -1,6 +1,5 @@
 package gate.lang.csv;
 
-import gate.error.AppError;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,15 +28,39 @@ public class CSVParser implements Parser
 	private final int separator, delimiter;
 	private final StringBuilder string = new StringBuilder();
 
+	private CSVParser(BufferedReader reader, char separator, char delimiter)
+	{
+		this.reader = reader;
+		this.delimiter = delimiter;
+		this.separator = separator;
+		readLine();
+	}
+
+	/**
+	 * Constructs a new CSVParser for the specified Reader.
+	 *
+	 * @param reader the reader from where the CSV rows will be extracted
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @return the new CSVParser created
+	 */
+	public static CSVParser of(BufferedReader reader, char separator, char delimiter)
+	{
+		return new CSVParser(reader, separator, delimiter);
+	}
+
 	/**
 	 * Constructs a new CSVParser for the specified Reader using semicolons
 	 * as separators and double quotes as delimiters.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
+	 *
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(BufferedReader reader)
+	public static CSVParser of(BufferedReader reader)
 	{
-		this(reader, ';', '\"');
+		return new CSVParser(reader, ';', '\"');
 	}
 
 	/**
@@ -46,10 +69,12 @@ public class CSVParser implements Parser
 	 *
 	 * @param inputStream InputStream from where the CSV rows will be
 	 * extracted
+	 *
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(InputStream inputStream)
+	public static CSVParser of(InputStream inputStream)
 	{
-		this(inputStream, ';', '\"');
+		return new CSVParser(new BufferedReader(new InputStreamReader(inputStream)), ';', '\"');
 	}
 
 	/**
@@ -58,11 +83,17 @@ public class CSVParser implements Parser
 	 *
 	 * @param resource URL from where the CSV rows will be extracted
 	 *
-	 * @throws java.io.IOException If an I/O error occurs
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(URL resource) throws IOException
+	public static CSVParser of(URL resource)
 	{
-		this(new BufferedReader(new InputStreamReader(resource.openStream())));
+		try
+		{
+			return new CSVParser(new BufferedReader(new InputStreamReader(resource.openStream())), ';', '\"');
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	/**
@@ -72,11 +103,17 @@ public class CSVParser implements Parser
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 *
-	 * @throws java.io.IOException If an I/O error occurs
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(URL resource, char separator, char delimiter) throws IOException
+	public static CSVParser of(URL resource, char separator, char delimiter)
 	{
-		this(new BufferedReader(new InputStreamReader(resource.openStream())), separator, delimiter);
+		try
+		{
+			return new CSVParser(new BufferedReader(new InputStreamReader(resource.openStream())), separator, delimiter);
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	/**
@@ -87,24 +124,12 @@ public class CSVParser implements Parser
 	 * @param inputStream inputStream InputStream from where the CSV rows
 	 * will be extracted
 	 * @param charset the character encoding of the specified input stream
-	 */
-	public CSVParser(InputStream inputStream, Charset charset)
-	{
-		this(inputStream, ';', '\"', charset);
-	}
-
-	/**
-	 * Constructs a new CSVParser for the specified Reader.
 	 *
-	 * @param reader the reader from where the CSV rows will be extracted
-	 * @param separator the character used as field separator
-	 * @param delimiter the character used as field delimiter
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(BufferedReader reader, char separator, char delimiter)
+	public static CSVParser of(InputStream inputStream, Charset charset)
 	{
-		this.reader = reader;
-		this.delimiter = delimiter;
-		this.separator = separator;
+		return new CSVParser(new BufferedReader(new InputStreamReader(inputStream, charset)), ';', '\"');
 	}
 
 	/**
@@ -114,12 +139,12 @@ public class CSVParser implements Parser
 	 * extracted
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
+	 *
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(InputStream inputStream, char separator, char delimiter)
+	public static CSVParser of(InputStream inputStream, char separator, char delimiter)
 	{
-		this.reader = new BufferedReader(new InputStreamReader(inputStream));
-		this.delimiter = delimiter;
-		this.separator = separator;
+		return new CSVParser(new BufferedReader(new InputStreamReader(inputStream)), separator, delimiter);
 	}
 
 	/**
@@ -130,26 +155,37 @@ public class CSVParser implements Parser
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 * @param charset the character encoding of the specified input stream
+	 *
+	 * @return the new CSVParser created
 	 */
-	public CSVParser(InputStream inputStream, char separator, char delimiter, Charset charset)
+	public static CSVParser of(InputStream inputStream, char separator, char delimiter, Charset charset)
 	{
-		this.reader = new BufferedReader(new InputStreamReader(inputStream, charset));
-		this.delimiter = delimiter;
-		this.separator = separator;
+		return new CSVParser(new BufferedReader(new InputStreamReader(inputStream, charset)), separator, delimiter);
+	}
+
+	private void readLine()
+	{
+		try
+		{
+			line = reader.readLine();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	@Override
-	public Optional<Row> parseLine() throws IOException
+	public Optional<Row> parseLine()
 	{
 		return Optional.ofNullable(parse());
 	}
 
 	@Override
-	public long skip(long lines) throws IOException
+	public long skip(long lines)
 	{
 		while (line != null && lines > 0)
 		{
-			line = reader.readLine();
+			readLine();
 			lines--;
 			lineNumber++;
 		}
@@ -157,7 +193,7 @@ public class CSVParser implements Parser
 		return lines;
 	}
 
-	public boolean isDoubleDelimiter() throws IOException
+	public boolean isDoubleDelimiter()
 	{
 		return !isEOL()
 			& line.charAt(indx) == delimiter
@@ -165,12 +201,12 @@ public class CSVParser implements Parser
 			&& line.charAt(indx + 1) != delimiter;
 	}
 
-	private Row parse() throws IOException
+	private Row parse()
 	{
-		indx = 0;
-		line = reader.readLine();
 		if (line == null)
 			return null;
+
+		indx = 0;
 
 		Row result = new Row(++lineNumber, line);
 
@@ -184,16 +220,17 @@ public class CSVParser implements Parser
 			}
 		}
 
+		readLine();
 		return result;
 	}
 
-	private void skipSpaces() throws IOException
+	private void skipSpaces()
 	{
 		while (!isEOL() && Character.isWhitespace(line.charAt(indx)))
 			indx++;
 	}
 
-	private String field() throws IOException
+	private String field()
 	{
 		skipSpaces();
 
@@ -207,7 +244,7 @@ public class CSVParser implements Parser
 		return field;
 	}
 
-	public String normal() throws IOException
+	public String normal()
 	{
 		string.setLength(0);
 		while (!isEOL() && line.charAt(indx) != separator)
@@ -221,7 +258,7 @@ public class CSVParser implements Parser
 		return lineNumber + 1;
 	}
 
-	public String delimited() throws IOException
+	public String delimited()
 	{
 		indx++;
 		string.setLength(0);
@@ -247,7 +284,7 @@ public class CSVParser implements Parser
 		return string.toString().trim();
 	}
 
-	private boolean isEOL() throws IOException
+	private boolean isEOL()
 	{
 		return indx == line.length();
 	}
@@ -261,14 +298,8 @@ public class CSVParser implements Parser
 	@Override
 	public void forEach(Consumer<? super Row> action)
 	{
-		try
-		{
-			for (Row line = parse(); line != null; line = parse())
-				action.accept(line);
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		for (Row row = parse(); row != null; row = parse())
+			action.accept(row);
 	}
 
 	@Override
@@ -292,41 +323,20 @@ public class CSVParser implements Parser
 			@Override
 			public boolean hasNext()
 			{
-				try
-				{
-					reader.mark(1);
-					boolean result = reader.read() != -1;
-					reader.reset();
-					return result;
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				return line != null;
 			}
 
 			@Override
 			public void forEachRemaining(Consumer<? super Row> action)
 			{
-				try
-				{
-					for (Row line = parse(); line != null; line = parse())
-						action.accept(line);
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				for (Row line = parse(); line != null; line = parse())
+					action.accept(line);
 			}
 
 			@Override
 			public Row next()
 			{
-				try
-				{
-					return parse();
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+				return parse();
 			}
 		};
 	}
@@ -340,30 +350,18 @@ public class CSVParser implements Parser
 			@Override
 			public boolean tryAdvance(Consumer<? super Row> action)
 			{
-				try
-				{
-					Row line = parse();
-					if (line == null)
-						return false;
-					action.accept(line);
-					return true;
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+				Row line = parse();
+				if (line == null)
+					return false;
+				action.accept(line);
+				return true;
 			}
 
 			@Override
 			public void forEachRemaining(Consumer<? super Row> action)
 			{
-				try
-				{
-					for (Row line = parse(); line != null; line = parse())
-						action.accept(line);
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				for (Row line = parse(); line != null; line = parse())
+					action.accept(line);
 			}
 
 			@Override
@@ -394,12 +392,9 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string)
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string))))
+		try ( CSVParser parser = CSVParser.of(new BufferedReader(new StringReader(string))))
 		{
 			return parser.parse();
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -414,12 +409,9 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string, char separator, char delimiter)
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
+		try ( CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
 		{
 			return parser.parse();
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
 		}
 	}
 }

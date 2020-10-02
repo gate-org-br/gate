@@ -1,7 +1,7 @@
 package gate.io;
 
-import gate.lang.csv.Row;
 import gate.lang.csv.CSVParser;
+import gate.lang.csv.Row;
 import gate.stream.CheckedPredicate;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class CSVProcessor implements Processor<List<String>>
 	public long process(InputStream is) throws IOException, InvocationTargetException
 	{
 		long count = 0;
-		try (CSVParser parser = new CSVParser(is, Charset.forName(getCharset())))
+		try (CSVParser parser = CSVParser.of(is, Charset.forName(getCharset())))
 		{
 			for (Row line : parser)
 			{

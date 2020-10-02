@@ -90,7 +90,7 @@ public class StringMatrixConverter implements Converter
 		if (string.isEmpty())
 			return null;
 
-		try (CSVParser reader = new CSVParser(new BufferedReader(new StringReader(string))))
+		try (CSVParser reader = CSVParser.of(new BufferedReader(new StringReader(string))))
 		{
 			return reader.stream()
 				.map(e -> e.toArray(new String[0]))
@@ -113,7 +113,7 @@ public class StringMatrixConverter implements Converter
 	@Override
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
-		try (CSVParser reader = new CSVParser(new BufferedReader(new InputStreamReader(part.getInputStream()))))
+		try (CSVParser reader = CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
 		{
 			return reader.stream()
 				.map(e -> e.toArray(new String[0]))

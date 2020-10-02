@@ -35,27 +35,43 @@ public class PSVParser implements Parser
 
 		this.reader = reader;
 		this.positions = positions.clone();
+		readLine();
 	}
 
-	public PSVParser(URL resource, int... positions) throws IOException
+	public static PSVParser of(BufferedReader reader, int... positions) throws IOException
 	{
-		this(new BufferedReader(new InputStreamReader(resource.openStream())), positions);
+		return new PSVParser(reader, positions);
 	}
 
-	public PSVParser(InputStream inputStream, int... positions) throws IOException
+	public static PSVParser of(URL resource, int... positions) throws IOException
 	{
-		this(new BufferedReader(new InputStreamReader(inputStream)), positions);
+		return new PSVParser(new BufferedReader(new InputStreamReader(resource.openStream())), positions);
+	}
+
+	public static PSVParser of(InputStream inputStream, int... positions) throws IOException
+	{
+		return new PSVParser(new BufferedReader(new InputStreamReader(inputStream)), positions);
+	}
+
+	private void readLine()
+	{
+		try
+		{
+			line = reader.readLine();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	@Override
-	public Optional<Row> parseLine() throws IOException
+	public Optional<Row> parseLine()
 	{
 		return Optional.ofNullable(parse());
 	}
 
-	private Row parse() throws IOException
+	private Row parse()
 	{
-		line = reader.readLine();
 		if (line == null)
 			return null;
 
@@ -72,16 +88,16 @@ public class PSVParser implements Parser
 				result.add(line.substring(positions[i]));
 		}
 
+		readLine();
 		return result;
 	}
 
 	@Override
-	public long skip(long lines) throws IOException
+	public long skip(long lines)
 	{
-		while (lines > 0)
+		while (line != null & lines > 0)
 		{
-			if (reader.readLine() == null)
-				break;
+			readLine();
 			lines--;
 			lineNumber++;
 		}
@@ -122,41 +138,20 @@ public class PSVParser implements Parser
 			@Override
 			public boolean hasNext()
 			{
-				try
-				{
-					reader.mark(1);
-					boolean result = reader.read() != -1;
-					reader.reset();
-					return result;
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				return line != null;
 			}
 
 			@Override
 			public void forEachRemaining(Consumer<? super Row> action)
 			{
-				try
-				{
-					for (Row line = parse(); line != null; line = parse())
-						action.accept(line);
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				for (Row line = parse(); line != null; line = parse())
+					action.accept(line);
 			}
 
 			@Override
 			public Row next()
 			{
-				try
-				{
-					return parse();
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+				return parse();
 			}
 		};
 	}
@@ -164,14 +159,8 @@ public class PSVParser implements Parser
 	@Override
 	public void forEach(Consumer<? super Row> action)
 	{
-		try
-		{
-			for (Row line = parse(); line != null; line = parse())
-				action.accept(line);
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		for (Row row = parse(); row != null; row = parse())
+			action.accept(row);
 	}
 
 	@Override
@@ -183,30 +172,18 @@ public class PSVParser implements Parser
 			@Override
 			public boolean tryAdvance(Consumer<? super Row> action)
 			{
-				try
-				{
-					Row line = parse();
-					if (line == null)
-						return false;
-					action.accept(line);
-					return true;
-				} catch (IOException ex)
-				{
-					throw new AppError(ex);
-				}
+				Row line = parse();
+				if (line == null)
+					return false;
+				action.accept(line);
+				return true;
 			}
 
 			@Override
 			public void forEachRemaining(Consumer<? super Row> action)
 			{
-				try
-				{
-					for (Row line = parse(); line != null; line = parse())
-						action.accept(line);
-				} catch (IOException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				for (Row line = parse(); line != null; line = parse())
+					action.accept(line);
 			}
 
 			@Override
@@ -238,12 +215,9 @@ public class PSVParser implements Parser
 	 */
 	public static Row parseLine(String string, int... columns)
 	{
-		try (PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
+		try ( PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
 		{
 			return parser.parse();
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
 		}
 	}
 }

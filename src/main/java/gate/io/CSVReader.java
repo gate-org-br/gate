@@ -31,7 +31,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 	@Override
 	public List<List<String>> read(InputStream is) throws IOException
 	{
-		return new CSVParser(is, separator, delimiter, Charset.forName(CHARSET))
+		return CSVParser.of(is, separator, delimiter, Charset.forName(CHARSET))
 			.stream().collect(Collectors.toList());
 	}
 
@@ -57,7 +57,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(byte[] bytes) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
 			return CSVReader.getInstance().read(is);
 		}
@@ -65,7 +65,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(String charset, byte[] bytes) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
 			return CSVReader.getInstance(charset).read(is);
 		}
@@ -73,7 +73,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, byte[] bytes) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
 			return CSVReader.getInstance(separator, delimiter).read(is);
 		}
@@ -81,7 +81,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, String charset, byte[] bytes) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
 			return CSVReader.getInstance(separator, delimiter, charset).read(is);
 		}
@@ -89,7 +89,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return CSVReader.getInstance().read(is);
 		}
@@ -97,7 +97,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(String charset, File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return CSVReader.getInstance(charset).read(is);
 		}
@@ -105,7 +105,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return CSVReader.getInstance(separator, delimiter).read(is);
 		}
@@ -113,7 +113,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, String charset, File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return CSVReader.getInstance(separator, delimiter, charset).read(is);
 		}
@@ -121,7 +121,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return CSVReader.getInstance().read(is);
 		}
@@ -129,7 +129,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(String charset, URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return CSVReader.getInstance(charset).read(is);
 		}
@@ -137,7 +137,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return CSVReader.getInstance(separator, delimiter).read(is);
 		}
@@ -145,7 +145,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, String charset, URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return CSVReader.getInstance(separator, delimiter, charset).read(is);
 		}
@@ -153,7 +153,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(String string) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
 			return CSVReader.getInstance().read(is);
 		}
@@ -161,7 +161,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(String charset, String string) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
 			return CSVReader.getInstance(charset).read(is);
 		}
@@ -169,7 +169,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, String string) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
 			return CSVReader.getInstance(separator, delimiter).read(is);
 		}
@@ -177,7 +177,7 @@ public class CSVReader extends AbstractReader<List<List<String>>>
 
 	public static List<List<String>> load(char separator, char delimiter, String charset, String string) throws IOException
 	{
-		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		try ( ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
 			return CSVReader.getInstance(separator, delimiter, charset).read(is);
 		}
