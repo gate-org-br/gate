@@ -27,7 +27,7 @@ public class PSVParser implements Parser
 	private final int[] positions;
 	private final BufferedReader reader;
 
-	public PSVParser(BufferedReader reader, int... positions)
+	private PSVParser(BufferedReader reader, int... positions)
 	{
 		for (int i = 1; i < positions.length; i++)
 			if (positions[i] < positions[i - 1])
