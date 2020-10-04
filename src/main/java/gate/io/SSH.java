@@ -66,6 +66,17 @@ public class SSH implements AutoCloseable
 		return connection.authenticateWithPublicKey(username, key, password);
 	}
 
+	public boolean authenticate(String username, Function<String, String> response) throws IOException
+	{
+		return connection.authenticateWithKeyboardInteractive(username,
+			(String name,
+				String instruction,
+				int numPompts,
+				String[] prompts,
+				boolean[] echo)
+			-> Stream.of(prompts).map(e -> response.apply(e)).toArray(String[]::new));
+	}
+
 	public boolean execute(String command, Object... parameters) throws IOException
 	{
 		return execute(String.format(command, parameters));
@@ -114,7 +125,7 @@ public class SSH implements AutoCloseable
 
 	public byte[] get(String filename) throws IOException
 	{
-		try (InputStream is = new SCPClient(connection).get(filename))
+		try ( InputStream is = new SCPClient(connection).get(filename))
 		{
 			return new ByteArrayReader().read(is);
 		}
@@ -122,7 +133,7 @@ public class SSH implements AutoCloseable
 
 	public void put(String directory, String filename, byte[] data) throws IOException
 	{
-		try (SCPOutputStream os = new SCPClient(connection).put(filename, data.length, directory, "0600"))
+		try ( SCPOutputStream os = new SCPClient(connection).put(filename, data.length, directory, "0600"))
 		{
 			os.write(data);
 		}
@@ -167,22 +178,21 @@ public class SSH implements AutoCloseable
 
 				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
 				{
-					try (InputStream stream = new StreamGobbler(session.getStdout()))
+					try ( InputStream stream = new StreamGobbler(session.getStdout()))
 					{
 						return loader.read(stream);
 					}
 				} else if ((condition & ChannelCondition.EOF) != 0)
 				{
-					try (InputStream stream = new ByteArrayInputStream(new byte[0]))
+					try ( InputStream stream = new ByteArrayInputStream(new byte[0]))
 					{
 						return loader.read(stream);
 					}
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{
-					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
+					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
 						.getStdout()),
-						Charset.forName("UTF-8")));
-						StringWriter writer = new StringWriter())
+						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
 					{
 						for (int c = reader.read(); c != -1; c = reader.read())
 							writer.write((char) c);
@@ -213,16 +223,15 @@ public class SSH implements AutoCloseable
 
 				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
 				{
-					try (InputStream stream = new StreamGobbler(session.getStdout()))
+					try ( InputStream stream = new StreamGobbler(session.getStdout()))
 					{
 						return processor.process(stream);
 					}
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{
-					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
+					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
 						.getStdout()),
-						Charset.forName("UTF-8")));
-						StringWriter writer = new StringWriter())
+						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
 					{
 						for (int c = reader.read(); c != -1; c = reader.read())
 							writer.write((char) c);
@@ -259,9 +268,8 @@ public class SSH implements AutoCloseable
 						.onClose(() -> session.close());
 				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
 				{
-					try (BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStdout()),
-						Charset.forName("UTF-8")));
-						StringWriter writer = new StringWriter())
+					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStdout()),
+						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
 					{
 						for (int c = reader.read(); c != -1; c = reader.read())
 							writer.write((char) c);
