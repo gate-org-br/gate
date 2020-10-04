@@ -266,3 +266,9 @@ BEGIN
 	return false;
 END ;;
 DELIMITER ;
+
+INSERT INTO gate.Role (id, active, master, name) values (1, 1, 1, 'Gate');
+INSERT INTO gate.Uzer (id, active, Role$id, userID, passwd, name, registration) values (1, 1, 1, 'gate', MD5('gate'), 'Gate', now());
+insert into gate.Func (id, name) values (1, 'Gate');
+INSERT INTO gate.RoleFunc (Role$id, Func$id) VALUES (1, 1);
+INSERT INTO gate.Auth (id, Func$id, type, mode) values (1, 1, 0, 1);
