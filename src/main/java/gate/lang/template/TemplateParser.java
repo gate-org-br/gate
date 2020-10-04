@@ -145,7 +145,7 @@ class TemplateParser
 
 		token = scanner.next();
 
-		return new Expression(string.toString());
+		return Expression.of(string.toString());
 	}
 
 	public Expression encolosedExpression(TemplateScanner scanner) throws TemplateException
