@@ -5,11 +5,13 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import gate.type.DataFile;
+import gate.util.Toolkit;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Spliterator;
 import java.util.function.Function;
@@ -69,6 +71,8 @@ public class SSH implements AutoCloseable
 			{
 				channel.connect();
 				while (is.read() != -1);
+				while (!channel.isEOF())
+					Toolkit.sleep(500);
 				channel.disconnect();
 			}
 
@@ -240,6 +244,8 @@ public class SSH implements AutoCloseable
 				{
 					channel.connect();
 					T result = loader.read(is);
+					while (!channel.isEOF())
+						Toolkit.sleep(500);
 					channel.disconnect();
 					if (channel.getExitStatus() != 0)
 						throw new IOException(new String(error.toByteArray()));
@@ -273,6 +279,8 @@ public class SSH implements AutoCloseable
 				{
 					channel.connect();
 					long result = processor.process(is);
+					while (!channel.isEOF())
+						Toolkit.sleep(500);
 					channel.disconnect();
 					if (channel.getExitStatus() != 0)
 						throw new IOException(new String(error.toByteArray()));
@@ -306,13 +314,26 @@ public class SSH implements AutoCloseable
 				{
 					channel.connect();
 					ChannelExec c = channel;
-					Stream stream = StreamSupport.stream(spliterator.apply(channel.getInputStream()), false)
-						.onClose(() -> c.disconnect());
-					if (channel.getExitStatus() != 0)
-						throw new IOException(new String(error.toByteArray()));
-					return stream;
-				}
+					try
+					{
+						Stream stream = StreamSupport.stream(spliterator.apply(channel.getInputStream()), false)
+							.onClose(() ->
+							{
+								while (!c.isEOF())
+									Toolkit.sleep(500);
 
+								c.disconnect();
+
+								if (c.getExitStatus() != 0)
+									throw new UncheckedIOException(new IOException(new String(error.toByteArray())));
+							});
+
+						return stream;
+					} catch (UncheckedIOException ex)
+					{
+						throw ex.getCause();
+					}
+				}
 			} catch (JSchException | RuntimeException ex)
 			{
 				if (channel != null && channel.isConnected())

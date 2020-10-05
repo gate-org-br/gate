@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class Toolkit
@@ -120,5 +122,17 @@ public class Toolkit
 	public static Object coalesce(Object obj, Supplier<Object> supplier)
 	{
 		return obj != null ? obj : supplier.get();
+	}
+
+	public static void sleep(int value)
+	{
+		try
+		{
+			Thread.sleep(value);
+		} catch (InterruptedException ex)
+		{
+			Logger.getLogger(Toolkit.class.getName())
+				.log(Level.SEVERE, null, ex);
+		}
 	}
 }
