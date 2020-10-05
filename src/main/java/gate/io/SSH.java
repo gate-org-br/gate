@@ -1,11 +1,7 @@
 package gate.io;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 import gate.type.DataFile;
-import gate.util.Toolkit;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -13,208 +9,327 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.Spliterator;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.userauth.method.AuthKeyboardInteractive;
+import net.schmizz.sshj.userauth.method.AuthPassword;
+import net.schmizz.sshj.userauth.method.PasswordResponseProvider;
+import net.schmizz.sshj.userauth.password.PasswordFinder;
+import net.schmizz.sshj.userauth.password.Resource;
+import net.schmizz.sshj.xfer.InMemoryDestFile;
+import net.schmizz.sshj.xfer.InMemorySourceFile;
 
+/**
+ * Used to execute remote commands on remote hosts via SSH.
+ */
 public class SSH implements AutoCloseable
 {
 
-	private String folder;
-	private final Session session;
-	private static final byte LINE_FEED = 0x0a;
-	private static final Pattern RESPONSE = Pattern.compile("^C[0-9]+ ([0-9]+) .+$");
+	private String directory = ".";
+	private final SSHClient client;
 
-	private SSH(Session session)
+	private SSH(SSHClient client)
 	{
-		this.session = session;
+		this.client = client;
 	}
 
-	public static SSH connect(String ip, int port, String username, String password) throws IOException
+	/**
+	 * Create a new SSH connection to the specified host on port 22
+	 *
+	 * @param host address of name of the host where to connect
+	 *
+	 * @return this, for chained invocations
+	 *
+	 * @throws IOException in case of failure during connection
+	 */
+	public static SSH connect(String host) throws IOException
 	{
-		try
+		return connect(host, 22);
+	}
+
+	/**
+	 * Create a new SSH connection to the specified host on the specified
+	 * port
+	 *
+	 * @param host address of name of the host where to connect
+	 * @param port the port to be used when connecting
+	 *
+	 * @return this, for chained invocations
+	 *
+	 * @throws IOException in case of failure during connection
+	 */
+	public static SSH connect(String host, int port) throws IOException
+	{
+		SSHClient client = new SSHClient();
+		client.addHostKeyVerifier(new PromiscuousVerifier());
+		client.connect(host, port);
+		return new SSH(client);
+	}
+
+	/**
+	 * Authenticate {@code username} using the {@code "publickey"}
+	 * authentication method, with keys from some common locations on the
+	 * file system. This method relies on {@code ~/.ssh/id_rsa} and
+	 * {@code ~/.ssh/id_dsa}.
+	 * <p>
+	 * This method does not provide a way to specify a passphrase.
+	 *
+	 * @param username user to authenticate
+	 *
+	 * @return this, for chained invocations
+	 *
+	 * @throws IOException in case of failure during authentication
+	 */
+	public SSH authenticate(String username) throws IOException
+	{
+		client.authPublickey(username);
+		return this;
+	}
+
+	/**
+	 * Authenticate {@code username} using the {@code "publickey"}
+	 * authentication method, with keys from one or more {@code locations}
+	 * in the file system.
+	 * <p>
+	 * In case multiple {@code locations} are specified; authentication is
+	 * attempted in order as long as the {@code
+	 * "publickey"} authentication method is available. If there is an error
+	 * loading keys from any of them (e.g. file could not be read, file
+	 * format not recognized) that key file it is ignored.
+	 * <p>
+	 * This method does not provide a way to specify a passphrase.
+	 *
+	 * @param username user to authenticate
+	 * @param locations one or more locations in the file system containing
+	 * the private key
+	 *
+	 * @return this, for chained invocations
+	 *
+	 * @throws IOException in case of failure during authentication
+	 */
+	public SSH authenticate(String username, Path... locations) throws IOException
+	{
+		client.authPublickey(username, Stream.of(locations)
+			.map(e -> e.toAbsolutePath().toString())
+			.toArray(String[]::new));
+		return this;
+	}
+
+	/**
+	 * Authenticate {@code username} using the {@code "password"}
+	 * authentication method and as a fallback basic challenge-response
+	 * authentication.
+	 *
+	 * @param username user to authenticate
+	 * @param password the password to use for authentication
+	 *
+	 * @return this, for chained invocations
+	 *
+	 * @throws IOException in case of failure during authentication
+	 */
+	public SSH authenticate(String username, String password) throws IOException
+	{
+		PasswordFinder passwordFinder = new PasswordFinder()
 		{
-			Session session = new JSch().getSession(username, ip, port);
-			session.setConfig("StrictHostKeyChecking", "no");
-			session.setPassword(password);
-			session.setServerAliveInterval(1000);
-			session.connect();
-			return new SSH(session);
-		} catch (JSchException ex)
-		{
-			throw new IOException(ex.getMessage(), ex);
-		}
-	}
-
-	public boolean execute(String command, Object... parameters) throws IOException
-	{
-		return execute(String.format(command, parameters));
-	}
-
-	public void setWorkDirectory(String folder)
-	{
-		this.folder = folder;
-	}
-
-	public boolean execute(String command) throws IOException
-	{
-		ChannelExec channel = null;
-		try
-		{
-			channel = (ChannelExec) session.openChannel("exec");
-			channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
-
-			try ( InputStream is = channel.getInputStream())
+			@Override
+			public char[] reqPassword(Resource<?> rsrc)
 			{
-				channel.connect();
-				while (is.read() != -1);
-				while (!channel.isEOF())
-					Toolkit.sleep(500);
-				channel.disconnect();
+				return password.toCharArray();
 			}
 
-			return channel.getExitStatus() == 0;
+			@Override
+			public boolean shouldRetry(Resource<?> rsrc)
+			{
+				return false;
+			}
+		};
 
-		} catch (JSchException ex)
+		client.auth(username, new AuthPassword(passwordFinder),
+			new AuthKeyboardInteractive(new PasswordResponseProvider(passwordFinder)));
+		return this;
+	}
+
+	/**
+	 * Change the working directory
+	 *
+	 * @param directory the new directory
+	 */
+	public void setWorkDirectory(String directory)
+	{
+		this.directory = directory != null ? directory : ".";
+
+	}
+
+	/**
+	 * Execute the specified command on the remote host
+	 *
+	 * @param command command to execute
+	 *
+	 * @return true if the command was successful, false otherwise
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
+	public boolean execute(String command) throws IOException
+	{
+		try ( Session session = client.startSession())
 		{
-			throw new IOException(ex.getMessage(), ex);
-		} finally
-		{
-			if (channel != null && channel.isConnected())
-				channel.disconnect();
+			try ( Session.Command sessionCommand = session.exec("cd " + directory + " && " + command))
+			{
+				try ( InputStream stream = sessionCommand.getInputStream())
+				{
+					for (int c = stream.read(); c != -1; c = stream.read())
+						OutputStream.nullOutputStream().write(c);
+				}
+
+				try ( InputStream stream = sessionCommand.getErrorStream())
+				{
+					for (int c = stream.read(); c != -1; c = stream.read())
+						OutputStream.nullOutputStream().write(c);
+				}
+
+				sessionCommand.close();
+				return sessionCommand.getExitStatus() == 0;
+
+			}
 		}
 	}
 
+	/**
+	 * Execute the specified command on the remote host and read result
+	 *
+	 * @param command command to execute
+	 *
+	 * @return The command result as a SSHResult object
+	 */
 	public SSHResult call(String command)
 	{
-		return new SSHResult(command);
+		return new SSHResult("cd " + directory + " && " + command);
 	}
 
+	/**
+	 * Execute the specified command with the specified parameters on the
+	 * remote host and read result
+	 *
+	 * @param command command to execute
+	 * @param parameters
+	 *
+	 * @return The command result as a SSHResult object
+	 */
 	public SSHResult call(String command, Object... parameters)
 	{
 		return call(String.format(command, parameters));
 	}
 
+	/**
+	 * Downloads the specified file from the remote host via SCP
+	 *
+	 * @param filename the file to be downloaded
+	 *
+	 * @return The contents of the downloaded file as a byte array
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
 	public byte[] get(String filename) throws IOException
 	{
-		try
+		try ( ByteArrayOutputStream stream = new ByteArrayOutputStream())
 		{
-			ChannelExec channel = (ChannelExec) session.openChannel("exec");
-			channel.setCommand("scp -f " + filename);
-
-			try ( OutputStream out = channel.getOutputStream();
-				 InputStream in = channel.getInputStream();
-				 ByteArrayOutputStream stream = new ByteArrayOutputStream())
+			client.newSCPFileTransfer().download(filename, new InMemoryDestFile()
 			{
-				channel.connect();
-
-				out.write(0);
-				out.flush();
-
-				for (int read = in.read(); read != LINE_FEED; read = in.read())
+				@Override
+				public OutputStream getOutputStream() throws IOException
 				{
-					if (read < 0)
-						throw new IOException("Unexpected end of stream");
-					stream.write(read);
+					return stream;
 				}
+			});
 
-				String response = stream.toString("UTF-8");
-				Matcher matcher = RESPONSE.matcher(response);
-				if (!matcher.matches())
-					throw new IOException(response.substring(1));
-				long filesize = Long.parseLong(matcher.group(1));
-
-				out.write(0);
-				out.flush();
-
-				stream.reset();
-				for (int i = 0; i < filesize; i++)
-				{
-					int c = in.read();
-					if (c < 0)
-						throw new IOException("Unexpected end of stream");
-					stream.write(c);
-				}
-				stream.flush();
-
-				int b = in.read();
-				if (b == -1)
-					throw new IOException("Unexpected end of stream");
-
-				if (b != 0)
-				{
-					StringBuilder sb = new StringBuilder();
-					for (int c = in.read(); c > 0 && c != '\n'; c = in.read())
-						sb.append((char) c);
-					throw new IOException(sb.toString());
-				}
-
-				out.write(0);
-				out.flush();
-
-				return stream.toByteArray();
-			}
-		} catch (JSchException ex)
-		{
-			throw new IOException(ex.getMessage(), ex);
+			stream.flush();
+			return stream.toByteArray();
 		}
+
 	}
 
+	/**
+	 * Uploads a file to the remote host
+	 *
+	 * @param directory the directory where to put file
+	 * @param filename the name of the file to be uploaded
+	 * @param data the contents of the file to be uploaded
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
 	public void put(String directory, String filename, byte[] data) throws IOException
 	{
-		try
+		try ( ByteArrayInputStream stream = new ByteArrayInputStream(data))
 		{
-
-			ChannelExec channel = (ChannelExec) session.openChannel("exec");
-			channel.setCommand("cd " + folder + " && " + "scp -p -t " + filename);
-
-			try ( OutputStream out = channel.getOutputStream();
-				 InputStream in = channel.getInputStream();
-				 ByteArrayOutputStream error = new ByteArrayOutputStream())
+			client.newSCPFileTransfer().upload(new InMemorySourceFile()
 			{
-				channel.setErrStream(error);
-				channel.connect();
+				@Override
+				public InputStream getInputStream() throws IOException
+				{
+					return stream;
+				}
 
-				String command = "C0644 " + data.length + " " + filename + "\n";
-				out.write(command.getBytes());
-				out.flush();
+				@Override
+				public long getLength()
+				{
+					return data.length;
+				}
 
-				for (int i = 0; i < data.length; i++)
-					out.write(data[i]);
-				out.flush();
+				@Override
+				public String getName()
+				{
+					return filename;
+				}
 
-				out.close();
-
-				while (in.read() != -1);
-				channel.disconnect();
-
-				if (channel.getExitStatus() != 0)
-					throw new IOException(new String(error.toByteArray()));
-			}
-		} catch (JSchException ex)
-		{
-			throw new IOException(ex.getMessage(), ex);
+			}, directory + "/" + filename);
 		}
 	}
 
+	/**
+	 * Uploads a file to the remote host
+	 *
+	 * @param filename the name of the file to be uploaded
+	 * @param data the contents of the file to be uploaded
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
 	public void put(String filename, byte[] data) throws IOException
 	{
-		put(folder, filename, data);
+		put(directory, filename, data);
 	}
 
+	/**
+	 * Downloads the specified file from the remote host via SCP
+	 *
+	 * @param filename the file to be downloaded
+	 *
+	 * @return The contents of the downloaded file as a DataFile
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
 	public DataFile download(String filename) throws IOException
 	{
-		return new DataFile(get(filename), new File(filename).getName());
+		return new DataFile(get(filename),
+			new File(filename).getName());
 	}
 
 	@Override
-	public void close()
+	public void close() throws IOException
 	{
-		if (session != null && session.isConnected())
-			session.disconnect();
+		try
+		{
+			client.disconnect();
+		} finally
+		{
+			client.close();
+		}
 	}
 
 	public class SSHResult implements IOResult
@@ -230,116 +345,106 @@ public class SSH implements AutoCloseable
 		@Override
 		public <T> T read(Reader<T> loader) throws IOException
 		{
-			ChannelExec channel = null;
-			try
+			try ( Session session = client.startSession())
 			{
-				ByteArrayOutputStream error = new ByteArrayOutputStream();
-				channel = (ChannelExec) session.openChannel("exec");
-				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
-
-				channel.setErrStream(error);
-				channel.setInputStream(null);
-
-				try ( InputStream is = channel.getInputStream())
+				try ( Session.Command command = session.exec(this.command))
 				{
-					channel.connect();
-					T result = loader.read(is);
-					while (!channel.isEOF())
-						Toolkit.sleep(500);
-					channel.disconnect();
-					if (channel.getExitStatus() != 0)
-						throw new IOException(new String(error.toByteArray()));
-					return result;
-				}
+					T result;
+					try ( InputStream stream = command.getInputStream())
+					{
+						result = loader.read(stream);
+					}
 
-			} catch (JSchException ex)
-			{
-				throw new IOException(ex.getMessage(), ex);
-			} finally
-			{
-				if (channel != null && channel.isConnected())
-					channel.disconnect();
+					String error;
+					try ( InputStream stream = command.getErrorStream();
+						 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					{
+						error = new String(baos.toByteArray());
+					}
+
+					command.close();
+
+					if (command.getExitStatus() != 0)
+						throw new IOException(error);
+					return result;
+
+				}
 			}
 		}
 
 		@Override
 		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
-			ChannelExec channel = null;
-			try
+			try ( Session session = client.startSession())
 			{
-				ByteArrayOutputStream error = new ByteArrayOutputStream();
-				channel = (ChannelExec) session.openChannel("exec");
-				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
-
-				channel.setErrStream(error);
-				channel.setInputStream(null);
-
-				try ( InputStream is = channel.getInputStream())
+				try ( Session.Command command = session.exec(this.command))
 				{
-					channel.connect();
-					long result = processor.process(is);
-					while (!channel.isEOF())
-						Toolkit.sleep(500);
-					channel.disconnect();
-					if (channel.getExitStatus() != 0)
-						throw new IOException(new String(error.toByteArray()));
-					return result;
-				}
 
-			} catch (JSchException ex)
-			{
-				throw new IOException(ex.getMessage(), ex);
-			} finally
-			{
-				if (channel != null && channel.isConnected())
-					channel.disconnect();
+					long result;
+					try ( InputStream stream = command.getInputStream())
+					{
+						result = processor.process(stream);
+					}
+
+					String error;
+					try ( InputStream stream = command.getErrorStream();
+						 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					{
+						error = new String(baos.toByteArray());
+					}
+
+					command.close();
+
+					if (command.getExitStatus() != 0)
+						throw new IOException(error);
+					return result;
+
+				}
 			}
 		}
 
 		@Override
 		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
 		{
-			ChannelExec channel = null;
+			Session session = null;
+			Session.Command command = null;
+			InputStream inputStream = null;
+
 			try
 			{
-				ByteArrayOutputStream error = new ByteArrayOutputStream();
-				channel = (ChannelExec) session.openChannel("exec");
-				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
+				Session _session = session = client.startSession();
+				Session.Command _command = command = session.exec(this.command);
+				InputStream _inputStream = inputStream = command.getInputStream();
 
-				channel.setErrStream(error);
-				channel.setInputStream(null);
-
-				try ( InputStream is = channel.getInputStream())
+				return StreamSupport.stream(spliterator.apply(inputStream), false).onClose(() ->
 				{
-					channel.connect();
-					ChannelExec c = channel;
 					try
 					{
-						Stream stream = StreamSupport.stream(spliterator.apply(channel.getInputStream()), false)
-							.onClose(() ->
-							{
-								while (!c.isEOF())
-									Toolkit.sleep(500);
+						String error;
+						try ( InputStream stream = _command.getErrorStream();
+							 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+						{
+							error = new String(baos.toByteArray());
+						}
 
-								c.disconnect();
+						_command.close();
 
-								if (c.getExitStatus() != 0)
-									throw new UncheckedIOException(new IOException(new String(error.toByteArray())));
-							});
-
-						return stream;
-					} catch (UncheckedIOException ex)
+						if (_command.getExitStatus() != 0)
+							throw new IOException(error);
+					} catch (IOException ex)
 					{
-						throw ex.getCause();
+						throw new UncheckedIOException(ex);
+					} finally
+					{
+						IOUtils.closeQuietly(_inputStream, _command, _session);
 					}
-				}
-			} catch (JSchException | RuntimeException ex)
+				});
+			} catch (IOException | RuntimeException ex)
 			{
-				if (channel != null && channel.isConnected())
-					channel.disconnect();
-				throw new IOException(ex.getMessage(), ex);
+				IOUtils.closeQuietly(inputStream, command, session);
+				throw ex;
 			}
 		}
 	}
+
 }
