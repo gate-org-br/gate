@@ -2,6 +2,7 @@ package gate.io;
 
 import gate.lang.csv.CSVParser;
 import gate.lang.csv.Row;
+import gate.stream.CheckedConsumer;
 import gate.stream.CheckedPredicate;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,28 +10,34 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.List;
 
-public class CSVProcessor implements Processor<List<String>>
+public class CSVProcessor extends AbstractProcessor<List<String>>
 {
 
-	private final String charset;
-	private final CheckedPredicate<List<String>> action;
+	public CSVProcessor(CheckedConsumer<List<String>> action)
+	{
+		super(action);
+	}
+
+	public CSVProcessor(String charset, CheckedConsumer<List<String>> action)
+	{
+		super(charset, action);
+	}
 
 	public CSVProcessor(String charset, CheckedPredicate<List<String>> action)
 	{
-		this.charset = charset;
-		this.action = action;
+		super(charset, action);
 	}
 
 	public CSVProcessor(CheckedPredicate<List<String>> action)
 	{
-		this(Charset.defaultCharset().name(), action);
+		super(action);
 	}
 
 	@Override
 	public long process(InputStream is) throws IOException, InvocationTargetException
 	{
 		long count = 0;
-		try (CSVParser parser = CSVParser.of(is, Charset.forName(getCharset())))
+		try ( CSVParser parser = CSVParser.of(is, Charset.forName(getCharset())))
 		{
 			for (Row line : parser)
 			{
