@@ -1,23 +1,20 @@
 package gate.io;
 
-import ch.ethz.ssh2.ChannelCondition;
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.SCPClient;
-import ch.ethz.ssh2.SCPOutputStream;
-import ch.ethz.ssh2.Session;
-import ch.ethz.ssh2.StreamGobbler;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
 import gate.type.DataFile;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.Charset;
 import java.util.Spliterator;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -25,56 +22,29 @@ public class SSH implements AutoCloseable
 {
 
 	private String folder;
-	private final Connection connection;
+	private final Session session;
+	private static final byte LINE_FEED = 0x0a;
+	private static final Pattern RESPONSE = Pattern.compile("^C[0-9]+ ([0-9]+) .+$");
 
-	private SSH(Connection connection)
+	private SSH(Session session)
 	{
-		this.connection = connection;
+		this.session = session;
 	}
 
-	public static SSH connect(String ip, int port) throws IOException
+	public static SSH connect(String ip, int port, String username, String password) throws IOException
 	{
-		Connection connection = new Connection(ip, port);
 		try
 		{
-			connection.connect(null, 10000, 10000);
-			return new SSH(connection);
-		} catch (IOException ex)
+			Session session = new JSch().getSession(username, ip, port);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.setPassword(password);
+			session.setServerAliveInterval(1000);
+			session.connect();
+			return new SSH(session);
+		} catch (JSchException ex)
 		{
-			connection.close();
-			throw ex;
+			throw new IOException(ex.getMessage(), ex);
 		}
-	}
-
-	public boolean authenticate(String username) throws IOException
-	{
-		return connection.authenticateWithNone(username);
-	}
-
-	public boolean authenticate(String username, String password) throws IOException
-	{
-		return connection.authenticateWithPassword(username, password);
-	}
-
-	public boolean authenticate(String username, File key, String password) throws IOException
-	{
-		return connection.authenticateWithPublicKey(username, key, password);
-	}
-
-	public boolean authenticate(String username, char[] key, String password) throws IOException
-	{
-		return connection.authenticateWithPublicKey(username, key, password);
-	}
-
-	public boolean authenticate(String username, Function<String, String> response) throws IOException
-	{
-		return connection.authenticateWithKeyboardInteractive(username,
-			(String name,
-				String instruction,
-				int numPompts,
-				String[] prompts,
-				boolean[] echo)
-			-> Stream.of(prompts).map(e -> response.apply(e)).toArray(String[]::new));
 	}
 
 	public boolean execute(String command, Object... parameters) throws IOException
@@ -89,27 +59,28 @@ public class SSH implements AutoCloseable
 
 	public boolean execute(String command) throws IOException
 	{
-
-		Session session = connection.openSession();
+		ChannelExec channel = null;
 		try
 		{
-			session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
-			int condition = session
-				.waitForCondition(ChannelCondition.STDOUT_DATA
-					| ChannelCondition.STDERR_DATA
-					| ChannelCondition.EXIT_STATUS, 0);
+			channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
 
-			if ((condition & ChannelCondition.STDOUT_DATA) != 0)
-				return true;
-			if ((condition & ChannelCondition.STDERR_DATA) != 0)
-				return false;
-			if ((condition & ChannelCondition.EXIT_STATUS) != 0)
-				return session.getExitStatus() == 0;
+			try ( InputStream is = channel.getInputStream())
+			{
+				channel.connect();
+				while (is.read() != -1);
+				channel.disconnect();
+			}
 
-			return false;
+			return channel.getExitStatus() == 0;
+
+		} catch (JSchException ex)
+		{
+			throw new IOException(ex.getMessage(), ex);
 		} finally
 		{
-			session.close();
+			if (channel != null && channel.isConnected())
+				channel.disconnect();
 		}
 	}
 
@@ -125,17 +96,103 @@ public class SSH implements AutoCloseable
 
 	public byte[] get(String filename) throws IOException
 	{
-		try ( InputStream is = new SCPClient(connection).get(filename))
+		try
 		{
-			return new ByteArrayReader().read(is);
+			ChannelExec channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand("scp -f " + filename);
+
+			try ( OutputStream out = channel.getOutputStream();
+				 InputStream in = channel.getInputStream();
+				 ByteArrayOutputStream stream = new ByteArrayOutputStream())
+			{
+				channel.connect();
+
+				out.write(0);
+				out.flush();
+
+				for (int read = in.read(); read != LINE_FEED; read = in.read())
+				{
+					if (read < 0)
+						throw new IOException("Unexpected end of stream");
+					stream.write(read);
+				}
+
+				String response = stream.toString("UTF-8");
+				Matcher matcher = RESPONSE.matcher(response);
+				if (!matcher.matches())
+					throw new IOException(response.substring(1));
+				long filesize = Long.parseLong(matcher.group(1));
+
+				out.write(0);
+				out.flush();
+
+				stream.reset();
+				for (int i = 0; i < filesize; i++)
+				{
+					int c = in.read();
+					if (c < 0)
+						throw new IOException("Unexpected end of stream");
+					stream.write(c);
+				}
+				stream.flush();
+
+				int b = in.read();
+				if (b == -1)
+					throw new IOException("Unexpected end of stream");
+
+				if (b != 0)
+				{
+					StringBuilder sb = new StringBuilder();
+					for (int c = in.read(); c > 0 && c != '\n'; c = in.read())
+						sb.append((char) c);
+					throw new IOException(sb.toString());
+				}
+
+				out.write(0);
+				out.flush();
+
+				return stream.toByteArray();
+			}
+		} catch (JSchException ex)
+		{
+			throw new IOException(ex.getMessage(), ex);
 		}
 	}
 
 	public void put(String directory, String filename, byte[] data) throws IOException
 	{
-		try ( SCPOutputStream os = new SCPClient(connection).put(filename, data.length, directory, "0600"))
+		try
 		{
-			os.write(data);
+
+			ChannelExec channel = (ChannelExec) session.openChannel("exec");
+			channel.setCommand("cd " + folder + " && " + "scp -p -t " + filename);
+
+			try ( OutputStream out = channel.getOutputStream();
+				 InputStream in = channel.getInputStream();
+				 ByteArrayOutputStream error = new ByteArrayOutputStream())
+			{
+				channel.setErrStream(error);
+				channel.connect();
+
+				String command = "C0644 " + data.length + " " + filename + "\n";
+				out.write(command.getBytes());
+				out.flush();
+
+				for (int i = 0; i < data.length; i++)
+					out.write(data[i]);
+				out.flush();
+
+				out.close();
+
+				while (in.read() != -1);
+				channel.disconnect();
+
+				if (channel.getExitStatus() != 0)
+					throw new IOException(new String(error.toByteArray()));
+			}
+		} catch (JSchException ex)
+		{
+			throw new IOException(ex.getMessage(), ex);
 		}
 	}
 
@@ -152,8 +209,8 @@ public class SSH implements AutoCloseable
 	@Override
 	public void close()
 	{
-		if (connection != null)
-			connection.close();
+		if (session != null && session.isConnected())
+			session.disconnect();
 	}
 
 	public class SSHResult implements IOResult
@@ -169,123 +226,98 @@ public class SSH implements AutoCloseable
 		@Override
 		public <T> T read(Reader<T> loader) throws IOException
 		{
-			Session session = connection.openSession();
+			ChannelExec channel = null;
 			try
 			{
-				session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
-				int condition = session.waitForCondition(ChannelCondition.STDOUT_DATA
-					| ChannelCondition.STDERR_DATA, 0);
+				ByteArrayOutputStream error = new ByteArrayOutputStream();
+				channel = (ChannelExec) session.openChannel("exec");
+				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
 
-				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
+				channel.setErrStream(error);
+				channel.setInputStream(null);
+
+				try ( InputStream is = channel.getInputStream())
 				{
-					try ( InputStream stream = new StreamGobbler(session.getStdout()))
-					{
-						return loader.read(stream);
-					}
-				} else if ((condition & ChannelCondition.EOF) != 0)
-				{
-					try ( InputStream stream = new ByteArrayInputStream(new byte[0]))
-					{
-						return loader.read(stream);
-					}
-				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
-				{
-					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
-						.getStdout()),
-						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
-					{
-						for (int c = reader.read(); c != -1; c = reader.read())
-							writer.write((char) c);
-						writer.flush();
-						throw new IOException(writer.toString());
-					}
-				} else if ((condition & ChannelCondition.CLOSED) != 0)
-					throw new IOException("Closed SSH Connection");
-				else if ((condition & ChannelCondition.TIMEOUT) != 0)
-					throw new IOException("Timeout exceeded");
-				else
-					throw new IOException("SSH error");
+					channel.connect();
+					T result = loader.read(is);
+					channel.disconnect();
+					if (channel.getExitStatus() != 0)
+						throw new IOException(new String(error.toByteArray()));
+					return result;
+				}
+
+			} catch (JSchException ex)
+			{
+				throw new IOException(ex.getMessage(), ex);
 			} finally
 			{
-				session.close();
+				if (channel != null && channel.isConnected())
+					channel.disconnect();
 			}
 		}
 
 		@Override
 		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
-			Session session = connection.openSession();
+			ChannelExec channel = null;
 			try
 			{
-				session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
-				int condition = session.waitForCondition(ChannelCondition.STDOUT_DATA
-					| ChannelCondition.STDERR_DATA, 0);
+				ByteArrayOutputStream error = new ByteArrayOutputStream();
+				channel = (ChannelExec) session.openChannel("exec");
+				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
 
-				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
+				channel.setErrStream(error);
+				channel.setInputStream(null);
+
+				try ( InputStream is = channel.getInputStream())
 				{
-					try ( InputStream stream = new StreamGobbler(session.getStdout()))
-					{
-						return processor.process(stream);
-					}
-				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
-				{
-					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session
-						.getStdout()),
-						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
-					{
-						for (int c = reader.read(); c != -1; c = reader.read())
-							writer.write((char) c);
-						writer.flush();
-						throw new IOException(writer.toString());
-					}
-				} else if ((condition & ChannelCondition.CLOSED) != 0)
-					throw new IOException("Closed SSH Connection");
-				else if ((condition & ChannelCondition.TIMEOUT) != 0)
-					throw new IOException("Timeout exceeded");
-				else
-					throw new IOException("SSH error");
+					channel.connect();
+					long result = processor.process(is);
+					channel.disconnect();
+					if (channel.getExitStatus() != 0)
+						throw new IOException(new String(error.toByteArray()));
+					return result;
+				}
+
+			} catch (JSchException ex)
+			{
+				throw new IOException(ex.getMessage(), ex);
 			} finally
 			{
-				session.close();
+				if (channel != null && channel.isConnected())
+					channel.disconnect();
 			}
-
 		}
 
 		@Override
 		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
 		{
-			Session session = connection.openSession();
+			ChannelExec channel = null;
 			try
 			{
-				session.execCommand(folder != null ? "cd " + folder + " && " + command : command);
-				int condition = session.waitForCondition(ChannelCondition.STDOUT_DATA
-					| ChannelCondition.STDERR_DATA, 0);
+				ByteArrayOutputStream error = new ByteArrayOutputStream();
+				channel = (ChannelExec) session.openChannel("exec");
+				channel.setCommand(folder != null ? "cd " + folder + " && " + command : command);
 
-				if ((condition & ChannelCondition.STDOUT_DATA) != 0)
+				channel.setErrStream(error);
+				channel.setInputStream(null);
+
+				try ( InputStream is = channel.getInputStream())
 				{
-					InputStream stream = new StreamGobbler(session.getStdout());
-					return StreamSupport.stream(spliterator.apply(stream), false)
-						.onClose(() -> session.close());
-				} else if ((condition & ChannelCondition.STDERR_DATA) != 0)
-				{
-					try ( BufferedReader reader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStdout()),
-						Charset.forName("UTF-8")));  StringWriter writer = new StringWriter())
-					{
-						for (int c = reader.read(); c != -1; c = reader.read())
-							writer.write((char) c);
-						writer.flush();
-						throw new IOException(writer.toString());
-					}
-				} else if ((condition & ChannelCondition.CLOSED) != 0)
-					throw new IOException("Closed SSH Connection");
-				else if ((condition & ChannelCondition.TIMEOUT) != 0)
-					throw new IOException("Timeout exceeded");
-				else
-					throw new IOException("SSH error");
-			} catch (IOException | RuntimeException ex)
+					channel.connect();
+					ChannelExec c = channel;
+					Stream stream = StreamSupport.stream(spliterator.apply(channel.getInputStream()), false)
+						.onClose(() -> c.disconnect());
+					if (channel.getExitStatus() != 0)
+						throw new IOException(new String(error.toByteArray()));
+					return stream;
+				}
+
+			} catch (JSchException | RuntimeException ex)
 			{
-				session.close();
-				throw ex;
+				if (channel != null && channel.isConnected())
+					channel.disconnect();
+				throw new IOException(ex.getMessage(), ex);
 			}
 		}
 	}
