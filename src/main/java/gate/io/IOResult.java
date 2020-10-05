@@ -1,6 +1,7 @@
 package gate.io;
 
 import gate.lang.json.JsonElement;
+import gate.stream.CheckedConsumer;
 import gate.stream.CheckedPredicate;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,11 @@ public interface IOResult
 		return process(new LineProcessor(action));
 	}
 
+	default long processLines(CheckedConsumer<String> action) throws IOException, InvocationTargetException
+	{
+		return process(new LineProcessor(action));
+	}
+
 	public default Stream<String> lineStream() throws IOException
 	{
 		return stream(inputStream -> new LineSpliterator(inputStream));
@@ -46,6 +52,11 @@ public interface IOResult
 	}
 
 	default long processCSV(CheckedPredicate<List<String>> action) throws IOException, InvocationTargetException
+	{
+		return process(new CSVProcessor(action));
+	}
+	
+	default long processCSV(CheckedConsumer<List<String>> action) throws IOException, InvocationTargetException
 	{
 		return process(new CSVProcessor(action));
 	}
