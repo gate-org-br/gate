@@ -202,6 +202,22 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
+	 * Execute the specified command on the remote host
+	 *
+	 * @param command formatting string of the command to execute
+	 * @param parameters parameters to be used when formatting the command
+	 * to be executed
+	 *
+	 * @return true if the command was successful, false otherwise
+	 *
+	 * @throws IOException in case of failure during command execution
+	 */
+	public boolean execute(String command, Object... parameters) throws IOException
+	{
+		return execute(String.format(command, parameters));
+	}
+
+	/**
 	 * Execute the specified command on the remote host and read result
 	 *
 	 * @param command command to execute
