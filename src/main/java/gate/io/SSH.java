@@ -17,12 +17,9 @@ import java.util.stream.StreamSupport;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
-import net.schmizz.sshj.userauth.method.AuthKeyboardInteractive;
-import net.schmizz.sshj.userauth.method.AuthPassword;
-import net.schmizz.sshj.userauth.method.PasswordResponseProvider;
-import net.schmizz.sshj.userauth.password.PasswordFinder;
-import net.schmizz.sshj.userauth.password.Resource;
+import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.xfer.InMemoryDestFile;
 import net.schmizz.sshj.xfer.InMemorySourceFile;
 
@@ -83,14 +80,23 @@ public class SSH implements AutoCloseable
 	 *
 	 * @param username user to authenticate
 	 *
-	 * @return this, for chained invocations
+	 * @return true if successful, false otherwise
 	 *
 	 * @throws IOException in case of failure during authentication
 	 */
-	public SSH authenticate(String username) throws IOException
+	public boolean authenticate(String username) throws IOException
 	{
-		client.authPublickey(username);
-		return this;
+		try
+		{
+			client.authPublickey(username);
+			return true;
+		} catch (UserAuthException ex)
+		{
+			return false;
+		} catch (TransportException ex)
+		{
+			throw ex;
+		}
 	}
 
 	/**
@@ -110,16 +116,25 @@ public class SSH implements AutoCloseable
 	 * @param locations one or more locations in the file system containing
 	 * the private key
 	 *
-	 * @return this, for chained invocations
+	 * @return true if successful, false otherwise
 	 *
 	 * @throws IOException in case of failure during authentication
 	 */
-	public SSH authenticate(String username, Path... locations) throws IOException
+	public boolean authenticate(String username, Path... locations) throws IOException
 	{
-		client.authPublickey(username, Stream.of(locations)
-			.map(e -> e.toAbsolutePath().toString())
-			.toArray(String[]::new));
-		return this;
+		try
+		{
+			client.authPublickey(username, Stream.of(locations)
+				.map(e -> e.toAbsolutePath().toString())
+				.toArray(String[]::new));
+			return true;
+		} catch (UserAuthException ex)
+		{
+			return false;
+		} catch (TransportException ex)
+		{
+			throw ex;
+		}
 	}
 
 	/**
@@ -130,30 +145,23 @@ public class SSH implements AutoCloseable
 	 * @param username user to authenticate
 	 * @param password the password to use for authentication
 	 *
-	 * @return this, for chained invocations
+	 * @return true if successful, false otherwise
 	 *
 	 * @throws IOException in case of failure during authentication
 	 */
-	public SSH authenticate(String username, String password) throws IOException
+	public boolean authenticate(String username, String password) throws IOException
 	{
-		PasswordFinder passwordFinder = new PasswordFinder()
+		try
 		{
-			@Override
-			public char[] reqPassword(Resource<?> rsrc)
-			{
-				return password.toCharArray();
-			}
-
-			@Override
-			public boolean shouldRetry(Resource<?> rsrc)
-			{
-				return false;
-			}
-		};
-
-		client.auth(username, new AuthPassword(passwordFinder),
-			new AuthKeyboardInteractive(new PasswordResponseProvider(passwordFinder)));
-		return this;
+			client.authPassword(username, password);
+			return true;
+		} catch (UserAuthException ex)
+		{
+			return false;
+		} catch (TransportException ex)
+		{
+			throw ex;
+		}
 	}
 
 	/**
