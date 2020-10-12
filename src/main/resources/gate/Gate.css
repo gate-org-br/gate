@@ -1439,9 +1439,12 @@ table {
   margin-bottom: 10px;
   width: 100%;
   border: none;
+  color: black;
+  font-weight: normal;
   table-layout: fixed;
-  background-color: #EEEEEE;
   border-spacing: 1px;
+  text-decoration: none;
+  background-color: #EEEEEE;
 }
 table:first-child {
   margin-top: 0px;
@@ -1452,6 +1455,15 @@ table:last-child {
 table:only-child {
   margin-bottom: 0px;
 }
+table thead,
+table tbody,
+table tfoot,
+table tr,
+table td {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: inherit;
+}
 table > * > tr > * > fieldset {
   padding: 0;
 }
@@ -1459,8 +1471,6 @@ table tr {
   height: 32px;
 }
 table tr th {
-  color: black;
-  height: 28px;
   padding: 4px;
   text-align: left;
   vertical-align: middle;
@@ -1469,7 +1479,6 @@ table tr th {
 }
 table tr td {
   padding: 4px;
-  color: black;
   text-align: left;
   word-break: normal;
   vertical-align: middle;
