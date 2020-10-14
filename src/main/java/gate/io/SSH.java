@@ -186,17 +186,17 @@ public class SSH implements AutoCloseable
 	 */
 	public boolean execute(String command) throws IOException
 	{
-		try ( Session session = client.startSession())
+		try (Session session = client.startSession())
 		{
-			try ( Session.Command sessionCommand = session.exec("cd " + directory + " && " + command))
+			try (Session.Command sessionCommand = session.exec("cd " + directory + " && " + command))
 			{
-				try ( InputStream stream = sessionCommand.getInputStream())
+				try (InputStream stream = sessionCommand.getInputStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
 						OutputStream.nullOutputStream().write(c);
 				}
 
-				try ( InputStream stream = sessionCommand.getErrorStream())
+				try (InputStream stream = sessionCommand.getErrorStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
 						OutputStream.nullOutputStream().write(c);
@@ -262,7 +262,7 @@ public class SSH implements AutoCloseable
 	 */
 	public byte[] get(String filename) throws IOException
 	{
-		try ( ByteArrayOutputStream stream = new ByteArrayOutputStream())
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())
 		{
 			client.newSCPFileTransfer().download(filename, new InMemoryDestFile()
 			{
@@ -290,7 +290,7 @@ public class SSH implements AutoCloseable
 	 */
 	public void put(String directory, String filename, byte[] data) throws IOException
 	{
-		try ( ByteArrayInputStream stream = new ByteArrayInputStream(data))
+		try (ByteArrayInputStream stream = new ByteArrayInputStream(data))
 		{
 			client.newSCPFileTransfer().upload(new InMemorySourceFile()
 			{
@@ -369,19 +369,19 @@ public class SSH implements AutoCloseable
 		@Override
 		public <T> T read(Reader<T> loader) throws IOException
 		{
-			try ( Session session = client.startSession())
+			try (Session session = client.startSession())
 			{
-				try ( Session.Command command = session.exec(this.command))
+				try (Session.Command command = session.exec(this.command))
 				{
 					T result;
-					try ( InputStream stream = command.getInputStream())
+					try (InputStream stream = command.getInputStream())
 					{
 						result = loader.read(stream);
 					}
 
 					String error;
-					try ( InputStream stream = command.getErrorStream();
-						 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					try (InputStream stream = command.getErrorStream();
+						ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
 						error = new String(baos.toByteArray());
 					}
@@ -389,7 +389,7 @@ public class SSH implements AutoCloseable
 					command.close();
 
 					if (command.getExitStatus() != 0)
-						throw new IOException(error);
+						throw new IOException(error.isBlank() ? "Error Status: " + command.getExitStatus() : error);
 					return result;
 
 				}
@@ -399,20 +399,20 @@ public class SSH implements AutoCloseable
 		@Override
 		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
-			try ( Session session = client.startSession())
+			try (Session session = client.startSession())
 			{
-				try ( Session.Command command = session.exec(this.command))
+				try (Session.Command command = session.exec(this.command))
 				{
 
 					long result;
-					try ( InputStream stream = command.getInputStream())
+					try (InputStream stream = command.getInputStream())
 					{
 						result = processor.process(stream);
 					}
 
 					String error;
-					try ( InputStream stream = command.getErrorStream();
-						 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					try (InputStream stream = command.getErrorStream();
+						ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
 						error = new String(baos.toByteArray());
 					}
@@ -420,7 +420,7 @@ public class SSH implements AutoCloseable
 					command.close();
 
 					if (command.getExitStatus() != 0)
-						throw new IOException(error);
+						throw new IOException(error.isBlank() ? "Error Status: " + command.getExitStatus() : error);
 					return result;
 
 				}
@@ -445,8 +445,8 @@ public class SSH implements AutoCloseable
 					try
 					{
 						String error;
-						try ( InputStream stream = _command.getErrorStream();
-							 ByteArrayOutputStream baos = IOUtils.readFully(stream))
+						try (InputStream stream = _command.getErrorStream();
+							ByteArrayOutputStream baos = IOUtils.readFully(stream))
 						{
 							error = new String(baos.toByteArray());
 						}
