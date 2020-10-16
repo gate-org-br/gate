@@ -3,13 +3,16 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.TimeIntervalConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated use {@link gate.type.LocalTimeInterval} instead.
+ */
+@Deprecated
 @Icon("2167")
 @Converter(TimeIntervalConverter.class)
 public class TimeInterval implements Serializable, Comparable<TimeInterval>

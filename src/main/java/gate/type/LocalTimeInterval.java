@@ -3,13 +3,10 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.LocalTimeIntervalConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -52,15 +49,11 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	}
 
 	@Override
-	public boolean contains(LocalTime date)
-	{
-		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
-	}
-
-	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof LocalTimeInterval && ((LocalTimeInterval) obj).min.equals(min) && ((LocalTimeInterval) obj).min.equals(min));
+		return (obj instanceof LocalTimeInterval
+			&& ((LocalTimeInterval) obj).min.equals(min)
+			&& ((LocalTimeInterval) obj).min.equals(min));
 	}
 
 	@Override
@@ -123,7 +116,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 			}
 		};
 	}
-	
+
 	public static class Mutable
 	{
 
