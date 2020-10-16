@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @deprecated use {@link java.time.YearMonth} instead.
+ */
+@Deprecated
 @Icon("2003")
 @Converter(MonthConverter.class)
 public final class Month implements Comparable<Month>, Serializable

@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DateTimeConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +11,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @deprecated use {@link java.time.DateInterval} instead.
+ */
+@Deprecated
 @Icon("2003")
 @Converter(DateTimeConverter.class)
 public final class DateTime implements Comparable<DateTime>, Serializable

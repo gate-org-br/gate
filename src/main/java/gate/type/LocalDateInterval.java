@@ -105,15 +105,11 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	}
 
 	@Override
-	public boolean contains(LocalDate date)
-	{
-		return min.compareTo(date) <= 0 && max.compareTo(date) >= 0;
-	}
-
-	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof LocalDateInterval && ((LocalDateInterval) obj).min.equals(min) && ((LocalDateInterval) obj).min.equals(min));
+		return (obj instanceof LocalDateInterval
+			&& ((LocalDateInterval) obj).min.equals(min)
+			&& ((LocalDateInterval) obj).min.equals(min));
 	}
 
 	@Override

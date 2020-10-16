@@ -11,6 +11,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @deprecated use {@link java.time.LocalDate} instead.
+ */
+@Deprecated
 @Icon("2003")
 @Converter(DateConverter.class)
 public final class Date implements Comparable<Date>, Serializable

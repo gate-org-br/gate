@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Brazilian CPF
+ * Brazilian CPF.
  */
 @Converter(CPFConverter.class)
 public class CPF implements Serializable, Cloneable, Comparable<CPF>

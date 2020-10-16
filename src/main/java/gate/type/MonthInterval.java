@@ -9,6 +9,10 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated use {@link gate.type.YearMonthInterval} instead.
+ */
+@Deprecated
 @Icon("2003")
 @Converter(MonthIntervalConverter.class)
 public final class MonthInterval implements Serializable, Comparable<MonthInterval>, Interval<Month>

@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.TimeConverter;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +11,10 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @deprecated use {@link java.time.LocalTime} instead.
+ */
+@Deprecated
 @Icon("2167")
 @Converter(TimeConverter.class)
 public final class Time implements Comparable<Time>, Serializable

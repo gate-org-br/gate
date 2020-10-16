@@ -109,7 +109,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 			}
 		};
 	}
-	
+
 	public static class Mutable
 	{
 
