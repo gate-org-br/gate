@@ -281,9 +281,9 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = window.top.document.createElement("g-progress-window");
-						status.process = process.id;
-						status.target = button.getAttribute("data-redirect") || "_self";
+						let dialog = window.top.document.createElement("g-progress-window");
+						dialog.process = process.id;
+						dialog.target = button.getAttribute("data-redirect") || "_self";
 
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
@@ -299,7 +299,7 @@ window.addEventListener("click", function (event)
 
 						dialog.addEventListener("redirect", event => window.location.href = event.detail);
 
-						status.show();
+						dialog.show();
 
 						button.disabled = false;
 					});

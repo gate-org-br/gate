@@ -3426,9 +3426,9 @@ window.addEventListener("click", function (event)
 					{
 						button.setAttribute("data-process", process);
 						process = new GProcess(JSON.parse(process));
-						let status = window.top.document.createElement("g-progress-window");
-						status.process = process.id;
-						status.target = button.getAttribute("data-redirect") || "_self";
+						let dialog = window.top.document.createElement("g-progress-window");
+						dialog.process = process.id;
+						dialog.target = button.getAttribute("data-redirect") || "_self";
 
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
@@ -3444,7 +3444,7 @@ window.addEventListener("click", function (event)
 
 						dialog.addEventListener("redirect", event => window.location.href = event.detail);
 
-						status.show();
+						dialog.show();
 
 						button.disabled = false;
 					});
@@ -7401,24 +7401,11 @@ class GProgressDialog extends Picker
 customElements.define('g-progress-dialog', GProgressDialog);
 /* global customElements */
 
-class GProgressWindow extends HTMLElement
+class GProgressWindow extends GModal
 {
-	hide()
+	constructor()
 	{
-		Array.from(document.body.children).forEach(e => e.style.display = "");
-		document.body.removeChild(this);
-		return this;
-	}
-
-	show()
-	{
-		if (!this.process)
-			throw new Error("Process not defined");
-		Array.from(document.body.children).forEach(e => e.style.display = "none");
-		if (window.frameElement)
-			window.frameElement.height = "0";
-		document.body.appendChild(this);
-		return this;
+		super();
 	}
 
 	set target(target)
@@ -7443,14 +7430,15 @@ class GProgressWindow extends HTMLElement
 
 	connectedCallback()
 	{
+		super.connectedCallback();
+
 		let body = this.appendChild(document.createElement("div"));
 
 		let progress = new GProgressStatus();
 		progress.process = this.process;
 		body.appendChild(progress);
 
-		let coolbar = body.appendChild(document.createElement("div"));
-		coolbar.className = "Coolbar";
+		let coolbar = body.appendChild(document.createElement("g-coolbar"));
 
 		let action = coolbar.appendChild(document.createElement("a"));
 		action.appendChild(document.createTextNode("Processando"));
@@ -7481,8 +7469,8 @@ class GProgressWindow extends HTMLElement
 			if (event.detail.process !== this.process)
 				return;
 
-			action.innerHTML = "OK";
 			action.style.color = "#660000";
+			action.innerHTML = "Ok<i>&#X1000;</i>";
 			action.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
