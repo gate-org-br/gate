@@ -3432,6 +3432,7 @@ window.addEventListener("click", function (event)
 
 						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => button.disabled = false);
 
 						if (button.getAttribute("data-on-hide"))
 							if (button.getAttribute("data-on-hide") === "reload")
@@ -3445,8 +3446,6 @@ window.addEventListener("click", function (event)
 						dialog.addEventListener("redirect", event => window.location.href = event.detail);
 
 						dialog.show();
-
-						button.disabled = false;
 					});
 				}
 				break;
