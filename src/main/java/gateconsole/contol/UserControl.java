@@ -96,7 +96,7 @@ public class UserControl extends Control
 
 				dao.insert(value);
 
-				Progress.update(1, value.getName() + " inserido com sucesso");
+				Progress.update(value.getName() + " inserido com sucesso");
 			}
 			dao.getLink().commit();
 			Progress.commit("Todos os usuários foram inseridos com sucesso");

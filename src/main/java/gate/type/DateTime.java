@@ -11,10 +11,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * @deprecated use {@link java.time.DateInterval} instead.
- */
-@Deprecated
 @Icon("2003")
 @Converter(DateTimeConverter.class)
 public final class DateTime implements Comparable<DateTime>, Serializable

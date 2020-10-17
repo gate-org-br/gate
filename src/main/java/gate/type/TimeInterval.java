@@ -9,10 +9,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @deprecated use {@link gate.type.LocalTimeInterval} instead.
- */
-@Deprecated
 @Icon("2167")
 @Converter(TimeIntervalConverter.class)
 public class TimeInterval implements Serializable, Comparable<TimeInterval>

@@ -11,10 +11,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * @deprecated use {@link java.time.LocalTime} instead.
- */
-@Deprecated
 @Icon("2167")
 @Converter(TimeConverter.class)
 public final class Time implements Comparable<Time>, Serializable

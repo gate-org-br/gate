@@ -12,10 +12,10 @@ import gate.sql.condition.Condition;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
 import gate.sql.update.Update;
-import gate.type.DateTime;
 import gate.type.ID;
 import gate.type.MD5;
 import gate.type.mime.MimeData;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class UserDao extends Dao
@@ -81,7 +81,7 @@ public class UserDao extends Dao
 				.set("cellPhone", value.getCellPhone())
 				.set("email", value.getEmail())
 				.set("details", value.getDetails())
-				.set("registration", DateTime.now())
+				.set("registration", LocalDateTime.now())
 				.set("photo", value.getPhoto()))
 			.fetchGeneratedKeys(ID.class)
 			.forEach(value::setId);

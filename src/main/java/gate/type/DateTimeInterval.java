@@ -9,10 +9,6 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @deprecated use {@link gate.type.LocalDateTimeInterval} instead.
- */
-@Deprecated
 @Icon("2003")
 @Converter(DateTimeIntervalConverter.class)
 public class DateTimeInterval implements Serializable, Comparable<DateTimeInterval>, Interval<DateTime>

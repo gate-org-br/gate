@@ -1,10 +1,10 @@
 package gate.sql;
 
-import gate.type.Date;
-import gate.type.DateTime;
-import gate.type.Time;
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 class SQLTypeConverter
 {
@@ -34,11 +34,11 @@ class SQLTypeConverter
 			case Types.LONGVARBINARY:
 				return byte[].class;
 			case Types.DATE:
-				return Date.class;
+				return LocalDate.class;
 			case Types.TIME:
-				return Time.class;
+				return LocalTime.class;
 			case Types.TIMESTAMP:
-				return DateTime.class;
+				return LocalDateTime.class;
 			default:
 				return Object.class;
 		}
