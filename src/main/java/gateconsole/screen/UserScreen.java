@@ -18,11 +18,11 @@ import gate.report.Form;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.type.DataFile;
-import gate.type.DateTime;
 import gate.type.mime.MimeData;
 import gate.util.Backup;
 import gateconsole.contol.FuncControl;
 import gateconsole.contol.UserControl;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -180,7 +180,7 @@ public class UserScreen extends Screen
 		Report report = new Report();
 
 		report.addImage(getOrg().getIcon());
-		report.addHeader(DateTime.now());
+		report.addHeader(LocalDateTime.now());
 		report.addHeader("Relatórios de Usuários");
 		report.addHeader(getApp().getId() + " - " + getApp().getName());
 

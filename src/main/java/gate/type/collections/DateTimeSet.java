@@ -1,17 +1,16 @@
 package gate.type.collections;
 
 import gate.annotation.Converter;
-import gate.converter.collections.DateTimeSetConverter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
+import gate.converter.collections.DateTimeSetConverter;
 import gate.policonverter.DateTimeSetPoliconverter;
 import gate.type.DateTime;
 import java.text.ParseException;
-
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 @ElementType(DateTime.class)
 @Converter(DateTimeSetConverter.class)
