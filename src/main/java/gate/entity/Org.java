@@ -5,7 +5,7 @@ import gate.annotation.Entity;
 import gate.annotation.Icon;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
-import gate.type.LocalTimeInterval;
+import gate.type.TimeInterval;
 import gate.type.collections.StringList;
 import gate.type.mime.MimeData;
 import java.io.Serializable;
@@ -39,25 +39,25 @@ public class Org implements Serializable
 	private StringList authenticators;
 
 	@Description("Expediente da organização nos domingos")
-	private LocalTimeInterval sun;
+	private TimeInterval sun;
 
 	@Description("Expediente da organização nas segundas")
-	private LocalTimeInterval mon;
+	private TimeInterval mon;
 
 	@Description("Expediente da organização nas terças")
-	private LocalTimeInterval tue;
+	private TimeInterval tue;
 
 	@Description("Expediente da organização nas quartas")
-	private LocalTimeInterval wed;
+	private TimeInterval wed;
 
 	@Description("Expediente da organização nas quintas")
-	private LocalTimeInterval thu;
+	private TimeInterval thu;
 
 	@Description("Expediente da organização nas sextas")
-	private LocalTimeInterval fri;
+	private TimeInterval fri;
 
 	@Description("Expediente da organização nas sábados")
-	private LocalTimeInterval sat;
+	private TimeInterval sat;
 
 	public String getDescription()
 	{
@@ -114,72 +114,72 @@ public class Org implements Serializable
 		this.authenticators = authenticators;
 	}
 
-	public LocalTimeInterval getSun()
+	public TimeInterval getSun()
 	{
 		return sun;
 	}
 
-	public void setSun(LocalTimeInterval sun)
+	public void setSun(TimeInterval sun)
 	{
 		this.sun = sun;
 	}
 
-	public LocalTimeInterval getMon()
+	public TimeInterval getMon()
 	{
 		return mon;
 	}
 
-	public void setMon(LocalTimeInterval mon)
+	public void setMon(TimeInterval mon)
 	{
 		this.mon = mon;
 	}
 
-	public LocalTimeInterval getTue()
+	public TimeInterval getTue()
 	{
 		return tue;
 	}
 
-	public void setTue(LocalTimeInterval tue)
+	public void setTue(TimeInterval tue)
 	{
 		this.tue = tue;
 	}
 
-	public LocalTimeInterval getWed()
+	public TimeInterval getWed()
 	{
 		return wed;
 	}
 
-	public void setWed(LocalTimeInterval wed)
+	public void setWed(TimeInterval wed)
 	{
 		this.wed = wed;
 	}
 
-	public LocalTimeInterval getThu()
+	public TimeInterval getThu()
 	{
 		return thu;
 	}
 
-	public void setThu(LocalTimeInterval thu)
+	public void setThu(TimeInterval thu)
 	{
 		this.thu = thu;
 	}
 
-	public LocalTimeInterval getFri()
+	public TimeInterval getFri()
 	{
 		return fri;
 	}
 
-	public void setFri(LocalTimeInterval fri)
+	public void setFri(TimeInterval fri)
 	{
 		this.fri = fri;
 	}
 
-	public LocalTimeInterval getSat()
+	public TimeInterval getSat()
 	{
 		return sat;
 	}
 
-	public void setSat(LocalTimeInterval sat)
+	public void setSat(TimeInterval sat)
 	{
 		this.sat = sat;
 	}
