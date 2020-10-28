@@ -12,7 +12,7 @@ public class EMail implements Serializable
 
 	private final String value;
 	private static final long serialVersionUID = 1L;
-	public static final String REGEX = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+([.]([a-zA-Z])+)+$";
+	public static final String REGEX = "^[^@ ]+@[^@ ]+$";
 
 	public EMail(String value)
 	{
