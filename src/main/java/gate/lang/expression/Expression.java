@@ -15,24 +15,24 @@ public class Expression implements Evaluable
 	private Object current;
 	private List<Object> context;
 	private Parameters parameters;
-	
+
 	private int index = 0;
 	private final String value;
 	private final List<Object> tokens;
-	
+
 	private Expression(String value, List<Object> tokens)
 	{
 		this.value = value;
 		this.tokens = tokens;
 	}
-	
+
 	public static Expression of(String value)
 	{
 		List<Object> tokens = new ArrayList<>();
 		try (ExpressionScanner scanner = new ExpressionScanner(value))
 		{
-			for (Object token = scanner.next(); 
-				token != ExpressionToken.EOF; 
+			for (Object token = scanner.next();
+				token != ExpressionToken.EOF;
 				token = scanner.next())
 				tokens.add(token);
 			tokens.add(ExpressionToken.EOF);
@@ -42,7 +42,7 @@ public class Expression implements Evaluable
 			throw new ExpressionException("Error trying to evaluate expression", ex.getMessage());
 		}
 	}
-	
+
 	private void next()
 	{
 		current = tokens.get(index++);
@@ -70,7 +70,7 @@ public class Expression implements Evaluable
 		index = 0;
 		this.context = context;
 		this.parameters = parameters;
-		
+
 		next();
 		Object result = expression();
 		if (current != ExpressionToken.EOF)
@@ -428,7 +428,7 @@ public class Expression implements Evaluable
 		Object value = expression();
 		if (value instanceof String)
 			string.append("'").append(current.toString()).append("'");
-		else
+		else if (value != null)
 			string.append(value.toString());
 
 		if (ExpressionToken.COMMA.equals(current))
@@ -446,4 +446,16 @@ public class Expression implements Evaluable
 		return value;
 	}
 
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof Expression
+			&& value.equals(((Expression) obj).value);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return value.hashCode();
+	}
 }
