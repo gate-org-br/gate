@@ -7,6 +7,7 @@ import gate.entity.Func;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
+import gate.error.ConstraintViolationException;
 import gate.type.ID;
 import gate.type.mime.MimeData;
 import gateconsole.dao.UserDao;
@@ -94,7 +95,16 @@ public class UserControl extends Control
 				if (value.getPasswd() == null)
 					value.setPasswd(value.getUserID());
 
-				dao.insert(value);
+				try
+				{
+					dao.insert(value);
+				} catch (ConstraintViolationException ex)
+				{
+					if (value.getEmail() == null)
+						throw new AppException(ex, "%s: %s", ex.getMessage(), value.getUserID());
+					else
+						throw new AppException(ex, "%s: %s (%s)", ex.getMessage(), value.getUserID(), value.getEmail());
+				}
 
 				Progress.update(value.getName() + " inserido com sucesso");
 			}

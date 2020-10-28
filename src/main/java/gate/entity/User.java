@@ -10,6 +10,7 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.CPF;
+import gate.type.EMail;
 import gate.type.ID;
 import gate.type.Phone;
 import gate.type.Sex;
@@ -77,8 +78,8 @@ public class User implements Serializable
 	private String name;
 
 	@Maxlength(64)
+	@Pattern(EMail.REGEX)
 	@Name("E-Mail do Usuário")
-	@Pattern("^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$")
 	@Description("O campo EMail deve ser preenchido com um email válido com no máximo 64 caracteres.")
 	private String email;
 
