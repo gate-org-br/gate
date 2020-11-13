@@ -267,6 +267,126 @@ BEGIN
 END ;;
 DELIMITER ;
 
+CREATE DEFINER=`davins`@`%` FUNCTION `secure`(user integer, module varchar(64), screen varchar(32), action varchar(32)) RETURNS int(11)
+    READS SQL DATA
+BEGIN
+declare role integer;
+declare parent integer;
+
+        if module is not null
+and screen is not null
+            and action is not null
+        then
+            if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
+and (Auth.module is null or Auth.module = module)
+                and (Auth.screen is null or Auth.screen = screen)
+                and (Auth.action is null or Auth.action = action))
+                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
+and (Auth.module is null or Auth.module = module)
+                and (Auth.screen is null or Auth.screen = screen)
+                and (Auth.action is null or Auth.action = action))))
+            then
+                return true;
+            end if;
+           
+            set parent = (select Role$id from Uzer where id = user);
+           
+            REPEAT
+
+SELECT
+Role.id, Role.Role$id
+FROM
+Role
+WHERE
+Role.id = parent INTO role , parent;
+
+if (select exists(select Auth.id from Auth where Auth.Role$id = role
+and (Auth.module is null or Auth.module = module)
+and (Auth.screen is null or Auth.screen = screen)
+and (Auth.action is null or Auth.action = action))
+or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
+and (Auth.module is null or Auth.module = module)
+and (Auth.screen is null or Auth.screen = screen)
+and (Auth.action is null or Auth.action = action))))
+then
+return true;
+end if;
+
+until parent is null
+END REPEAT;    
+           
+        elseif module is not null
+and screen is not null
+        then
+           if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
+and (Auth.module is null or Auth.module = module)
+                and (Auth.screen is null or Auth.screen = screen))
+                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
+and (Auth.module is null or Auth.module = module)
+                and (Auth.screen is null or Auth.screen = screen))))
+            then
+                return true;
+            end if;
+           
+            set parent = (select Role$id from Uzer where id = user);
+           
+REPEAT
+
+SELECT
+Role.id, Role.Role$id
+FROM
+Role
+WHERE
+Role.id = parent INTO role , parent;
+
+if (select exists(select Auth.id from Auth where Auth.Role$id = role
+and (Auth.module is null or Auth.module = module)
+and (Auth.screen is null or Auth.screen = screen))
+or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
+and (Auth.module is null or Auth.module = module)
+and (Auth.screen is null or Auth.screen = screen))))
+then
+return true;
+end if;
+
+until parent is null
+END REPEAT;    
+           
+         elseif module is not null
+         then
+           if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
+and (Auth.module is null or Auth.module = module))
+                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
+and (Auth.module is null or Auth.module = module))))
+            then
+                return true;
+            end if;
+           
+            set parent = (select Role$id from Uzer where id = user);
+           
+            REPEAT
+
+SELECT
+Role.id, Role.Role$id
+FROM
+Role
+WHERE
+Role.id = parent INTO role , parent;
+
+if (select exists(select Auth.id from Auth where Auth.Role$id = role
+and (Auth.module is null or Auth.module = module))
+or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
+and (Auth.module is null or Auth.module = module))))
+then
+return true;
+end if;
+
+until parent is null
+END REPEAT;
+        end if;
+return false;
+END
+
 INSERT INTO gate.Role (id, active, master, name) values (1, 1, 1, 'Gate');
 INSERT INTO gate.Uzer (id, active, Role$id, userID, passwd, name, registration) values (1, 1, 1, 'gate', MD5('gate'), 'Gate', now());
 insert into gate.Func (id, name) values (1, 'Gate');
