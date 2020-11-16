@@ -182,6 +182,8 @@ final class ExpressionScanner extends BufferedReader
 							return ExpressionToken.LE;
 						case "lt":
 							return ExpressionToken.LT;
+						case "rx":
+							return ExpressionToken.RX;
 						case "or":
 							return ExpressionToken.OR;
 						case "and":

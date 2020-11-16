@@ -8,6 +8,7 @@ enum ExpressionToken
 	GT("Greater Than"),
 	GE("Not Less Than"),
 	LE("Not Greater Than"),
+	RX("Equals"),
 	OPEN_PARENTHESES("Open Parentheses"),
 	CLOSE_PARENTHESES("Close Parentheses"),
 	NOT("Negation"),
