@@ -92,10 +92,10 @@ public class Expression implements Evaluable
 
 			if (!(result instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-					current, v);
+					result, value);
 			if (!(v instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-					current, v);
+					result, value);
 
 			switch (operator)
 			{
@@ -140,11 +140,11 @@ public class Expression implements Evaluable
 						result = ((String) result).matches((String) v);
 					else
 						throw new ExpressionException("Expected \"pattern string\" and found \"%s\" on expression \"%s\".",
-							current, v);
+							v, value);
 				default:
 					if (!(result instanceof Comparable))
 						throw new ExpressionException("Expected \"Comparable\" and found \"%s\" on expression \"%s\".",
-							current, v);
+							result, value);
 
 					switch (operator)
 					{
@@ -222,7 +222,7 @@ public class Expression implements Evaluable
 			next();
 			Object v = not();
 			if (!(v instanceof Boolean))
-				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".", current, v);
+				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".", v, value);
 			return !(Boolean) v;
 		}
 		return unary();
@@ -245,8 +245,7 @@ public class Expression implements Evaluable
 				return ((Map<?, ?>) v).isEmpty();
 			else
 				throw new ExpressionException(
-					"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", current,
-					v);
+					"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", v, value);
 		} else if (ExpressionToken.SIZE.equals(current))
 		{
 			next();
@@ -261,8 +260,7 @@ public class Expression implements Evaluable
 				return ((Map<?, ?>) v).size();
 			else
 				throw new ExpressionException(
-					"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", current,
-					v);
+					"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", v, value);
 		}
 
 		return signed();

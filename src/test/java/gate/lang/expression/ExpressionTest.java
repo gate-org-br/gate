@@ -115,6 +115,14 @@ public class ExpressionTest
 			Expression.of("this rx '^[0-9]{3}$'")
 				.evaluate("123"));
 	}
+	
+	@Test(expected = ExpressionException.class)
+	public void testRxError() throws ExpressionException
+	{
+		Assert.assertEquals(Boolean.TRUE,
+			Expression.of("this rx 123")
+				.evaluate("123"));
+	}
 
 	public static class Person
 	{
