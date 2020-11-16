@@ -119,7 +119,8 @@ public class Expression implements Evaluable
 			|| ExpressionToken.GE.equals(current)
 			|| ExpressionToken.GT.equals(current)
 			|| ExpressionToken.LE.equals(current)
-			|| ExpressionToken.LT.equals(current))
+			|| ExpressionToken.LT.equals(current)
+			|| ExpressionToken.RX.equals(current))
 		{
 
 			ExpressionToken operator = (ExpressionToken) current;
@@ -134,6 +135,12 @@ public class Expression implements Evaluable
 				case NE:
 					result = !Objects.equals(result, v);
 					break;
+				case RX:
+					if (result instanceof String && v instanceof String)
+						result = ((String) result).matches((String) v);
+					else
+						throw new ExpressionException("Expected \"pattern string\" and found \"%s\" on expression \"%s\".",
+							current, v);
 				default:
 					if (!(result instanceof Comparable))
 						throw new ExpressionException("Expected \"Comparable\" and found \"%s\" on expression \"%s\".",

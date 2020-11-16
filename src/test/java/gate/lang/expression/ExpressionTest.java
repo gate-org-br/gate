@@ -64,19 +64,19 @@ public class ExpressionTest
 	@Test
 	public void test5() throws ExpressionException
 	{
-		Assert.assertEquals(2, Expression.of("size children").evaluate(person));
+		Assert.assertEquals(2, (int) Expression.of("size children").evaluate(person));
 	}
 
 	@Test
 	public void test6() throws ExpressionException
 	{
-		Assert.assertEquals(60, Expression.of("children[0].age + children[1].age").evaluate(person));
+		Assert.assertEquals(60, (int) Expression.of("children[0].age + children[1].age").evaluate(person));
 	}
 
 	@Test
 	public void test7() throws ExpressionException
 	{
-		Assert.assertEquals(60, Expression.of("(age + relationships.wife.age) / 2").evaluate(person));
+		Assert.assertEquals(60, (int) Expression.of("(age + relationships.wife.age) / 2").evaluate(person));
 	}
 
 	@Test
@@ -90,21 +90,30 @@ public class ExpressionTest
 	@Test
 	public void test9() throws ExpressionException
 	{
-		Assert.assertEquals(1, Expression.of("@idade").evaluate(context, parameters));
+		Assert.assertEquals(1, (int) Expression.of("@idade").evaluate(context, parameters));
 	}
 
 	@Test
 	public void test11() throws ExpressionException
 	{
 		Object result = Expression.of("multiply(getAge() + 1)").evaluate(context, parameters);
-		Assert.assertEquals(130, result);
+		Assert.assertEquals(130, (int) result);
 	}
 
 	@Test
 	public void test12() throws ExpressionException
 	{
-		Object result = Expression.of("(size children + 5) * 2").evaluate(context, parameters);
-		Assert.assertEquals(14, result);
+		Object result = Expression.of("(size children + 5) * 2")
+			.evaluate(context, parameters);
+		Assert.assertEquals(14, (int) result);
+	}
+
+	@Test
+	public void testRx() throws ExpressionException
+	{
+		Assert.assertEquals(Boolean.TRUE,
+			Expression.of("this rx '^[0-9]{3}$'")
+				.evaluate("123"));
 	}
 
 	public static class Person
