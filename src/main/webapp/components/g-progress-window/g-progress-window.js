@@ -78,11 +78,11 @@ class GProgressWindow extends GModal
 			if (event.detail.process !== this.process)
 				return;
 
-			action.innerHTML = "Exibir<i>&#X1000;</i>";
-			this.commit.onclick = (event) =>
+			action.innerHTML = "Ok<i>&#X1000;</i>";
+			action.onclick = () =>
 			{
 				this.hide();
-				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
 			};
 		});
 	}

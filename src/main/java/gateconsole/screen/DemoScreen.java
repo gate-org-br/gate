@@ -10,6 +10,7 @@ import gate.annotation.Public;
 import gate.base.Screen;
 import gate.error.ConversionException;
 import gate.handler.JsonTextHandler;
+import gate.io.URL;
 import gate.report.Doc;
 import gate.report.Report;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class DemoScreen extends Screen
 	{
 		return "/WEB-INF/views/gateconsole/Demo/ViewGrid2.jsp";
 	}
-	
+
 	@Name("Text Editor")
 	public String callTextEditor()
 	{
@@ -111,9 +112,10 @@ public class DemoScreen extends Screen
 		return Doc.create(type, report);
 	}
 
+	@Icon("2264")
 	@Asynchronous
 	@Name("Progress")
-	public void callProgress()
+	public URL callProgress()
 	{
 		Progress.startup(100, "Starting");
 		for (int i = 0; i < 100; i++)
@@ -129,8 +131,12 @@ public class DemoScreen extends Screen
 
 		}
 		Progress.commit("Success");
+		return new URL("Gate")
+			.setModule(getModule())
+			.setScreen("Icon");
 	}
 
+	@Icon("3046")
 	@Name("Block")
 	public String callBlock()
 	{

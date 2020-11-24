@@ -12,7 +12,6 @@ import gate.base.Screen;
 @Description("Biblioteca de ícones do Gate")
 public class IconScreen extends Screen
 {
-
 	public String call()
 	{
 		return "/WEB-INF/views/gateconsole/Icon/View.jsp";

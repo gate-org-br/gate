@@ -13,8 +13,8 @@
    height="32px"
    id="svg2985"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="2139.svg">
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="2140.svg">
   <defs
      id="defs2987" />
   <sodipodi:namedview
@@ -25,14 +25,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.197802"
-     inkscape:cx="5.6854758"
+     inkscape:cx="-9.853288"
      inkscape:cy="16"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:grid-bbox="true"
      inkscape:document-units="px"
-     inkscape:window-width="1600"
-     inkscape:window-height="848"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1" />
@@ -44,7 +44,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -52,9 +52,16 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
-    <path
-       d="m 2.0318414,-1.9326786e-4 c -0.700687,0 -1.27538999,0.56862999786 -1.27538999,1.27440996786 l 0,19.4550203 c 0,0.6998 0.57470299,1.2754 1.27538999,1.2754 l 27.9355286,0 c 0.705781,0 1.27539,-0.5756 1.27539,-1.2754 l 0,-19.4550203 c 0,-0.70577997 -0.569609,-1.27440996786 -1.27539,-1.27440996786 l -27.9355286,0 z M 3.3062544,2.5496067 l 25.3857256,0 0,16.9052303 -25.3857256,0 0,-16.9052303 z m 1.298827,21.2861303 c -1.666061,0 -3.394068,1.3183 -3.82909899,2.9355 l -0.623046,2.2784 c -0.429906,1.6134 0.57532,2.9355 2.25097499,2.9355 l 27.2148256,0.015 c 1.673406,0.01 2.672553,-1.3079 2.217772,-2.915 l -0.656249,-2.3232 c -0.458937,-1.6068 -2.192506,-2.9258 -3.868162,-2.9258 l -22.7070166,0 z"
-       id="path257"
-       inkscape:connector-curvature="0" />
+    <g
+       style="opacity:1"
+       id="g6"
+       transform="matrix(0.0625,0,0,0.0625,0,3.125e-5)">
+      <path
+         class="st0"
+         d="M 472,22.654 H 40 c -22.09,0 -40,17.91 -40,40 v 304 c 0,22.094 17.91,40 40,40 h 178.582 v 31.102 c 0,13.875 -10.657,25.426 -24.485,26.543 l -74.766,6.038 c -2.074,0.168 -3.676,1.902 -3.676,3.985 v 11.027 c 0,2.207 1.79,3.996 3.996,3.996 h 272.696 c 2.21,0 4,-1.789 4,-3.996 v -11.027 c 0,-2.082 -1.602,-3.817 -3.676,-3.985 l -74.766,-6.038 C 304.077,463.181 293.42,451.631 293.42,437.756 V 406.654 H 472 c 22.094,0 40,-17.906 40,-40 v -304 c 0,-22.089 -17.906,-40 -40,-40 z m -432,344 v -304 h 432 v 304 H 41.16 Z"
+         id="path4"
+         inkscape:connector-curvature="0"
+         style="fill:#374149" />
+    </g>
   </g>
 </svg>

@@ -4973,6 +4973,7 @@ class IconSelector extends HTMLElement
 		this.add("3042");
 		this.add("3043");
 		this.add("3044");
+		this.add("3046");
 	}
 
 	add(code)
@@ -7387,11 +7388,11 @@ class GProgressDialog extends Picker
 			if (event.detail.process !== this.process)
 				return;
 
-			this.commit.innerHTML = "Exibir";
-			this.commit.onclick = (event) =>
+			this.commit.innerHTML = "Ok";
+			this.commit.onclick = () =>
 			{
 				this.hide();
-				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
 			};
 		});
 	}
@@ -7478,11 +7479,11 @@ class GProgressWindow extends GModal
 			if (event.detail.process !== this.process)
 				return;
 
-			action.innerHTML = "Exibir<i>&#X1000;</i>";
-			this.commit.onclick = (event) =>
+			action.innerHTML = "Ok<i>&#X1000;</i>";
+			action.onclick = () =>
 			{
 				this.hide();
-				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
 			};
 		});
 	}
@@ -8868,4 +8869,62 @@ class GTextEditor extends HTMLElement
 }
 
 customElements.define('g-text-editor', GTextEditor);
+/* global customElements, GOverflow, GSelection */
+
+class GSelect extends HTMLElement
+{
+	constructor()
+	{
+		super();
+
+		this.attachShadow({mode: 'open'});
+		var main = this.shadowRoot.appendChild(document.createElement("div"));
+		main.style = "display: flex; flex-direction: column";
+
+		var select = main.appendChild(document.createElement("div"));
+		select.style = "display: flex; justify-content: space-between";
+
+		var label = select.appendChild(document.createElement("label"));
+		label.style = "flex-grow: 1; cursor: pointer";
+		label.innerText = "0 selecionados";
+
+		var link = select.appendChild(document.createElement("a"));
+		link.style = "font-family: gate; flex-basis: 32px; cursor: pointer";
+		link.innerHTML = "&#X2276;";
+
+		var popup = main.appendChild(document.createElement("div"));
+		popup.style = "display: none; flex-direction: column; position: fixed; margin-top: 32px; background-color: var(--main-tinted50); z-index: 10000";
+		popup.appendChild(document.createElement("slot"));
+
+		select.addEventListener("click", e =>
+		{
+			e.preventDefault();
+			e.stopPropagation();
+			popup.style.width = select.clientWidth + "px";
+			popup.style.display = popup.style.display === "flex" ? "none" : "flex";
+			link.innerHTML = popup.style.display === "flex" ? "&#X2278;" : "&#X2276;";
+		});
+
+		this.addEventListener("change", () =>
+		{
+			let checked = Array.from(this.querySelectorAll("input")).filter(e => e.checked);
+			label.innerText = checked.length + " selecionados";
+		});
+
+		window.addEventListener("load", () =>
+		{
+			let checked = Array.from(this.querySelectorAll("input")).filter(e => e.checked);
+			label.innerText = checked.length + " selecionados";
+			Array.from(this.querySelectorAll("input")).forEach(e => e.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change"))));
+		});
+
+		window.addEventListener("resize", () =>
+		{
+			link.innerHTML = "&#X2276;";
+			popup.style.display = "none";
+		});
+	}
+}
+
+customElements.define("g-select", GSelect);
 
