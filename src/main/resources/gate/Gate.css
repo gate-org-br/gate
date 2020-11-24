@@ -5558,6 +5558,19 @@ g-text-editor > div > div[contentEditable] {
   line-height: 18px;
   background-color: white;
 }
+g-select {
+  width: 100%;
+  background-color: white;
+}
+g-select > label {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: left;
+}
+g-select > label > input {
+  order: -1;
+}
 body[data-scroll-disabled] * {
   overflow: hidden;
 }

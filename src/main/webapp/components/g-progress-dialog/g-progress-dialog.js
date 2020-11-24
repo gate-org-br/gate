@@ -77,11 +77,11 @@ class GProgressDialog extends Picker
 			if (event.detail.process !== this.process)
 				return;
 
-			this.commit.innerHTML = "Exibir";
-			this.commit.onclick = (event) =>
+			this.commit.innerHTML = "Ok";
+			this.commit.onclick = () =>
 			{
 				this.hide();
-				this.dispatchEvent(new CustomEvent('redirect', {detail: event.url}));
+				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
 			};
 		});
 	}

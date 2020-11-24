@@ -5,15 +5,24 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
+import javax.el.ELContext;
+import javax.el.ExpressionFactory;
+import javax.el.LambdaExpression;
+import javax.el.StandardELContext;
 import javax.servlet.jsp.JspException;
 
-public abstract class CheckableTag extends SelectorTag
+public class SelectXTag extends PropertyTag
 {
 
-	private String style;
+	private Iterable<?> options;
+
+	private LambdaExpression values;
+	private LambdaExpression labels;
+	private LambdaExpression sortby;
+
+	protected final ELContext EL_CONTEXT
+		= new StandardELContext(ExpressionFactory.newInstance());
 
 	@Override
 	public void doTag() throws JspException, IOException
@@ -38,32 +47,7 @@ public abstract class CheckableTag extends SelectorTag
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
-		Attributes attributes = new Attributes();
-		attributes.put("class", "Checkable");
-		if (style != null)
-			attributes.put("style", style);
-
-		getJspContext().getOut().print("<ul " + attributes + ">");
-
-		if (groups != null)
-		{
-
-			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
-				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
-			{
-				getJspContext().getOut().print("<li>");
-				getJspContext().getOut().print(Converter.toText(group.getKey()));
-				print(group.getValue());
-				getJspContext().getOut().print("</li>");
-			}
-		} else
-			print(options);
-
-		getJspContext().getOut().print("</ul>");
-	}
-
-	private void print(Iterable<?> options) throws IOException, JspException
-	{
+		getJspContext().getOut().print("<g-select " + getAttributes() + " >");
 
 		for (Object option : options)
 		{
@@ -73,7 +57,7 @@ public abstract class CheckableTag extends SelectorTag
 
 			Attributes attributes = new Attributes();
 			attributes.putAll(getAttributes());
-			attributes.put("type", getComponentType());
+			attributes.put("type", "checkbox");
 			attributes.put("name", getName());
 
 			if (Toolkit.collection(getValue()).contains(value))
@@ -81,7 +65,6 @@ public abstract class CheckableTag extends SelectorTag
 
 			attributes.put("value", Converter.toString(value));
 
-			getJspContext().getOut().print("<li>");
 			getJspContext().getOut().print("<label>");
 			getJspContext().getOut().print(String.format("<input %s/>", attributes.toString()));
 
@@ -91,29 +74,34 @@ public abstract class CheckableTag extends SelectorTag
 				getJspBody().invoke(null);
 				getJspContext().removeAttribute("option");
 			} else if (labels != null)
-				getJspContext().getOut()
-					.print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
+				getJspContext().getOut().print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
 			else
-				getJspContext().getOut()
-					.print(Converter.toText(option));
+				getJspContext().getOut().print(Converter.toText(option));
 
 			getJspContext().getOut().print("</label>");
-
-			if (children != null)
-			{
-				getJspContext().getOut().print("<ul>");
-				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)));
-				getJspContext().getOut().print("</ul>");
-			}
-
-			getJspContext().getOut().print("</li>");
 		}
+
+		getJspContext().getOut().print("</g-select>");
 	}
 
-	public void setStyle(String style)
+	public void setOptions(Object options)
 	{
-		this.style = style;
+		this.options = Toolkit.iterable(options);
 	}
 
-	protected abstract String getComponentType();
+	public void setLabels(LambdaExpression labels)
+	{
+		this.labels = labels;
+	}
+
+	public void setValues(LambdaExpression values)
+	{
+		this.values = values;
+	}
+
+	public void setSortby(LambdaExpression sortby)
+	{
+		this.sortby = sortby;
+	}
+
 }

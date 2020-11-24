@@ -13,7 +13,7 @@
    width="32"
    height="32"
    id="svg3251"
-   sodipodi:docname="3023.svg"
+   sodipodi:docname="3045.svg"
    inkscape:version="0.92.3 (2405546, 2018-03-11)">
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -28,9 +28,9 @@
      inkscape:window-height="1015"
      id="namedview7"
      showgrid="false"
-     inkscape:zoom="3.6875"
-     inkscape:cx="-131.63876"
-     inkscape:cy="-33.491525"
+     inkscape:zoom="7.375"
+     inkscape:cx="-7.5932203"
+     inkscape:cy="16"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -45,14 +45,13 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <path
-     style="fill:#000000;fill-rule:nonzero;stroke-width:10.6733427;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+     d="m 26.077205,17.267357 a 3.0333909,3.0333909 0 0 0 -2.185128,1.082384 l -1.357221,1.638846 V 5.1100417 a 2.2122716,2.2122716 0 1 0 -4.410972,0 v 9.2358953 a 0.33930547,0.33930547 0 0 1 -0.356271,0.339305 0.33930547,0.33930547 0 0 1 -0.339305,-0.339305 V 2.3854192 a 2.2122716,2.2122716 0 1 0 -4.41097,0 V 14.345937 a 0.33930547,0.33930547 0 0 1 -0.356272,0.339305 0.33930547,0.33930547 0 0 1 -0.339305,-0.339305 V 4.428038 a 2.2122716,2.2122716 0 0 0 -4.4109709,0 v 9.911112 a 0.33930547,0.33930547 0 0 1 -0.09501,0.230728 0.33930547,0.33930547 0 0 1 -0.227335,0.09501 h -0.06107 A 0.33930547,0.33930547 0 0 1 7.1880671,14.325582 V 7.8312762 a 2.2122716,2.2122716 0 1 0 -4.410972,0 V 23.856673 a 8.1433312,8.1433312 0 0 0 8.1433309,8.143331 h 5.601934 a 8.1433312,8.1433312 0 0 0 6.229648,-2.901062 l 5.768193,-6.860756 a 3.0266048,3.0266048 0 0 0 -2.449785,-4.970825 z"
+     id="path4"
      inkscape:connector-curvature="0"
-     id="path6"
-     d="M 0.760542,9.5084746 H 31.239458 C 31.664707,9.5084746 32,10.093549 32,10.803994 v 10.392012 c 0,0.710448 -0.335293,1.295519 -0.760542,1.295519 H 0.760542 C 0.34347,22.491525 0,21.906454 0,21.196006 V 10.803994 C 0,10.093549 0.34347,9.5084746 0.760542,9.5084746 Z m 7.768975,2.5910384 v 7.787043 h 21.949399 v -7.787043 z"
-     class="fil0" />
+     style="stroke-width:0.33930546" />
 </svg>
