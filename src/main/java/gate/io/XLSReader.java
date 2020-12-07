@@ -32,9 +32,8 @@ public class XLSReader extends AbstractReader<List<List<String>>>
 			for (Row row : sheet)
 			{
 				List<String> line = new ArrayList<>();
-				for (Cell cell : row)
-					line.add(getValue(cell));
-
+				for (int i = 0; i < row.getLastCellNum(); i++)
+					line.add(getValue(row.getCell(i)));
 				result.add(line);
 			}
 
@@ -43,33 +42,34 @@ public class XLSReader extends AbstractReader<List<List<String>>>
 
 	private String getValue(Cell cell)
 	{
-		switch (cell.getCellType())
-		{
-			case STRING:
-				return cell.getStringCellValue();
-			case NUMERIC:
-				return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
-			case BOOLEAN:
-				return String.valueOf(cell.getBooleanCellValue());
-			case BLANK:
-				return "";
-			case ERROR:
-				return String.valueOf(cell.getErrorCellValue());
-			case FORMULA:
-				switch (cell.getCachedFormulaResultType())
-				{
-					case STRING:
-						return cell.getStringCellValue();
-					case NUMERIC:
-						return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
-					case BOOLEAN:
-						return String.valueOf(cell.getBooleanCellValue());
-					case BLANK:
-						return "";
-					case ERROR:
-						return String.valueOf(cell.getErrorCellValue());
-				}
-		}
+		if (cell != null)
+			switch (cell.getCellType())
+			{
+				case STRING:
+					return cell.getStringCellValue();
+				case NUMERIC:
+					return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
+				case BOOLEAN:
+					return String.valueOf(cell.getBooleanCellValue());
+				case BLANK:
+					return "";
+				case ERROR:
+					return String.valueOf(cell.getErrorCellValue());
+				case FORMULA:
+					switch (cell.getCachedFormulaResultType())
+					{
+						case STRING:
+							return cell.getStringCellValue();
+						case NUMERIC:
+							return new BigDecimal(String.valueOf(cell.getNumericCellValue())).toPlainString();
+						case BOOLEAN:
+							return String.valueOf(cell.getBooleanCellValue());
+						case BLANK:
+							return "";
+						case ERROR:
+							return String.valueOf(cell.getErrorCellValue());
+					}
+			}
 		return "";
 	}
 
