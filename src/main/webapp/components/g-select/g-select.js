@@ -7,52 +7,113 @@ class GSelect extends HTMLElement
 		super();
 
 		this.attachShadow({mode: 'open'});
-		var main = this.shadowRoot.appendChild(document.createElement("div"));
-		main.style = "display: flex; flex-direction: column";
+		let main = this.shadowRoot.appendChild(document.createElement("div"));
+		main.style.display = "flex";
+		main.style.flexDirection = "column";
 
-		var select = main.appendChild(document.createElement("div"));
-		select.style = "display: flex; justify-content: space-between";
+		let select = main.appendChild(document.createElement("div"));
+		select.style.display = "flex";
+		select.style.justifyContent = "space-between";
 
-		var label = select.appendChild(document.createElement("label"));
-		label.style = "flex-grow: 1; cursor: pointer";
+		let label = select.appendChild(document.createElement("label"));
+		label.style.flexGrow = "1";
+		label.style.cursor = "pointer";
 		label.innerText = "0 selecionados";
 
-		var link = select.appendChild(document.createElement("a"));
-		link.style = "font-family: gate; flex-basis: 32px; cursor: pointer";
+		let link = select.appendChild(document.createElement("a"));
 		link.innerHTML = "&#X2276;";
+		link.style.cursor = "pointer";
+		link.style.flexBasis = "32px";
+		link.style.fontFamily = "gate";
 
-		var popup = main.appendChild(document.createElement("div"));
-		popup.style = "display: none; flex-direction: column; position: fixed; margin-top: 32px; background-color: var(--main-tinted50); z-index: 10000";
-		popup.appendChild(document.createElement("slot"));
+		let modal = main.appendChild(document.createElement("div"));
+		modal.style.top = "0";
+		modal.style.left = "0";
+		modal.style.right = "0";
+		modal.style.bottom = "0";
+		modal.style.display = "none";
+		modal.style.position = "fixed";
+		modal.style.alignItems = "center";
+		modal.style.justifyContent = "center";
+
+		let dialog = modal.appendChild(document.createElement("div"));
+		dialog.style = "display: flex; flex-direction: column";
+		dialog.style.height = "400px";
+		dialog.style.flexBasis = "50%";
+		dialog.style.minWidth = "300px";
+		dialog.style.maxWidth = "500px";
+		dialog.style.alignItems = "stretch";
+		dialog.style.boxShadow = "3px 10px 5px 0px rgba(0,0,0,0.75)";
+		dialog.style.border = "1px solid var(--g-window-border-color)";
+
+		let head = dialog.appendChild(document.createElement("div"));
+		head.style.padding = "4px";
+		head.style.display = "flex";
+		head.style.flexBasis = "32px";
+		head.style.alignItems = "center";
+		head.style.justifyContent = "right";
+		head.style.backgroundColor = "var(--g-window-border-color)";
+
+		let close = head.appendChild(document.createElement("a"));
+		close.style.width = "24px";
+		close.style.height = "24px";
+		close.style.display = "flex";
+		close.innerHTML = "&#X1011;";
+		close.style.fontSize = "20px";
+		close.style.color = "#FFFFFF";
+		close.style.cursor = "pointer";
+		close.style.fontFamily = "gate";
+		close.style.alignItems = "center";
+		close.style.justifyContent = "center";
+
+		let elements = dialog.appendChild(document.createElement("div"));
+		elements.style.flexGrow = "1";
+		elements.style.display = "flex";
+		elements.style.padding = "4px";
+		elements.style.overflow = "auto";
+		elements.style.flexDirection = "column";
+		elements.style.backgroundColor = "var(--g-window-section-background-color)";
+
+		let slot = elements.appendChild(document.createElement("slot"));
+
+		dialog.addEventListener("click", event =>
+		{
+			event.preventDefault();
+			event.stopPropagation();
+		});
 
 		select.addEventListener("click", e =>
 		{
 			e.preventDefault();
 			e.stopPropagation();
-			popup.style.width = select.clientWidth + "px";
-			popup.style.display = popup.style.display === "flex" ? "none" : "flex";
-			link.innerHTML = popup.style.display === "flex" ? "&#X2278;" : "&#X2276;";
+			modal.style.display = "flex";
 		});
+
+		modal.addEventListener("click", event =>
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			modal.style.display = "none";
+		});
+
+		close.addEventListener("click", () => modal.style.display = "none");
+
+		elements.addEventListener("click", event => event.stopPropagation());
 
 		this.addEventListener("change", () =>
 		{
-			let checked = Array.from(this.querySelectorAll("input")).filter(e => e.checked);
-			label.innerText = checked.length + " selecionados";
+			let inputs = Array.from(this.querySelectorAll("input"));
+			label.innerText = inputs.filter(e => e.checked).length + " selecionados";
 		});
 
-		window.addEventListener("load", () =>
+		slot.addEventListener("slotchange", () =>
 		{
-			let checked = Array.from(this.querySelectorAll("input")).filter(e => e.checked);
-			label.innerText = checked.length + " selecionados";
-			Array.from(this.querySelectorAll("input")).forEach(e => e.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change"))));
-		});
-
-		window.addEventListener("resize", () =>
-		{
-			link.innerHTML = "&#X2276;";
-			popup.style.display = "none";
+			let inputs = Array.from(this.querySelectorAll("input"));
+			label.innerText = inputs.filter(e => e.checked).length + " selecionados";
+			inputs.forEach(e => e.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change"))));
 		});
 	}
+
 }
 
 customElements.define("g-select", GSelect);
