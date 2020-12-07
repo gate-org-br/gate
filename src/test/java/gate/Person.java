@@ -1,7 +1,7 @@
 package gate;
 
 import gate.annotation.Entity;
-import gate.type.DateInterval;
+import gate.type.LocalDateInterval;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Person
 	private int id;
 	private String name;
 	private LocalDate birthdate;
-	private DateInterval contract;
+	private LocalDateInterval contract;
 	private transient List<Contact> contacts;
 
 	public int getId()
@@ -68,12 +68,12 @@ public class Person
 		return this;
 	}
 
-	public DateInterval getContract()
+	public LocalDateInterval getContract()
 	{
 		return contract;
 	}
 
-	public Person setContract(DateInterval contract)
+	public Person setContract(LocalDateInterval contract)
 	{
 		this.contract = contract;
 		return this;

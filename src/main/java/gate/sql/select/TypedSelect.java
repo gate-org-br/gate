@@ -95,7 +95,7 @@ public class TypedSelect<T> implements Query.Builder
 			if (converter.getSufixes().isEmpty())
 				columns.add(columnName + " as '" + name + "'");
 			else
-				converter.getSufixes().stream().map((e) -> columnName + "$" + e + " as '" + name + ":" + e + "'").forEach(columns::add);
+				converter.getSufixes().stream().map((e) -> columnName + "__" + e + " as '" + name + "__" + e + "'").forEach(columns::add);
 			return this;
 		}
 

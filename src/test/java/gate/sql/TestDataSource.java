@@ -10,9 +10,8 @@ import gate.Contact;
 import gate.Person;
 import gate.error.ConstraintViolationException;
 import gate.sql.insert.Insert;
-import gate.type.Date;
-import gate.type.DateInterval;
 import gate.type.ID;
+import gate.type.LocalDateInterval;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ public class TestDataSource
 				person.setId(i);
 				person.setName("Person " + i);
 				person.setBirthdate(LocalDate.of(2000, 12, i));
-				person.setContract(new DateInterval(Date.of(i, 12, 2000), Date.of(i, 12, 2020)));
+				person.setContract(LocalDateInterval.of(LocalDate.of(2000, 12, i), LocalDate.of(2020, 12, i)));
 
 				Contact contact = new Contact();
 				contact.setId(new ID(i));

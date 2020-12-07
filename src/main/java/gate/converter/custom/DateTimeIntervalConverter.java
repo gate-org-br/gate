@@ -1,13 +1,12 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.DateTime;
 import gate.type.DateTimeInterval;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -101,10 +100,10 @@ public class DateTimeIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		java.sql.Timestamp min = rs.getTimestamp(fields + ":" + SUFIXES.get(0));
+		java.sql.Timestamp min = rs.getTimestamp(fields + Converter.SEPARATOR + SUFIXES.get(0));
 		if (rs.wasNull())
 			return null;
-		java.sql.Timestamp max = rs.getTimestamp(fields + ":" + SUFIXES.get(1));
+		java.sql.Timestamp max = rs.getTimestamp(fields + Converter.SEPARATOR + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
 		return new DateTimeInterval(DateTime.of(min), DateTime.of(max));

@@ -1,7 +1,7 @@
 package gate.constraints;
 
-import gate.constraint.Constraints;
 import gate.Mock;
+import gate.constraint.Constraints;
 import gate.error.AppException;
 import gate.lang.property.Property;
 import gate.type.ID;
@@ -129,7 +129,7 @@ public class ConstraintImplTest
 			Assert.fail();
 		} catch (AppException ex)
 		{
-			Assert.assertEquals("O campo age deve ser divisível por 2,0.", ex.getMessage());
+			Assert.assertEquals("O campo age deve ser divisível por 2.", ex.getMessage());
 		} catch (RuntimeException ex)
 		{
 			Assert.fail(ex.getMessage());

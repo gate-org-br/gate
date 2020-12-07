@@ -6,9 +6,8 @@ import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
-import gate.type.Date;
-import gate.type.DateInterval;
 import gate.type.ID;
+import gate.type.LocalDateInterval;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -38,19 +37,19 @@ public class InsertTest
 		{
 			ID id = new ID(40);
 			String name = "Jonh";
-			Date birthdate = Date.of(31, 12, 2005);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDate birthdate = LocalDate.of(2005, 12, 31);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			link.prepare(
-				"insert into Person (id, name, birthdate, contract$date1, contract$date2) values (?, ?, ?, ?, ?)")
+				"insert into Person (id, name, birthdate, contract__min, contract__max) values (?, ?, ?, ?, ?)")
 				.parameters(id, name, birthdate, contract)
 				.execute();
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -70,8 +69,8 @@ public class InsertTest
 		{
 			ID id = new ID(140);
 			String name = "Mary";
-			Date birthdate = Date.of(31, 12, 2005);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDate birthdate = LocalDate.of(2005, 12, 31);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			link.prepare(getClass().getResource("InsertTest/Insert.sql"))
 				.parameters(id, name, birthdate, contract)
@@ -79,9 +78,9 @@ public class InsertTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -101,23 +100,23 @@ public class InsertTest
 		{
 			ID id = new ID(41);
 			String name = "Paul";
-			Date birthdate = Date.of(29, 8, 2008);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDate birthdate = LocalDate.of(2008, 8, 29);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			link
 				.prepare(Insert
 					.into("Person")
 					.set(ID.class, "id", id)
 					.set(String.class, "name", name)
-					.set(Date.class, "birthdate", birthdate)
-					.set(DateInterval.class, "contract", contract))
+					.set(LocalDate.class, "birthdate", birthdate)
+					.set(LocalDateInterval.class, "contract", contract))
 				.execute();
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -137,24 +136,25 @@ public class InsertTest
 		{
 			ID id = new ID(42);
 			String name = "Richard";
-			Date birthdate = Date.of(19, 7, 2001);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+
+			LocalDate birthdate = LocalDate.of(2001, 7, 19);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			link
 				.prepare(Insert
 					.into("Person")
 					.set(ID.class, "id")
 					.set(String.class, "name")
-					.set(Date.class, "birthdate")
-					.set(DateInterval.class, "contract"))
+					.set(LocalDate.class, "birthdate")
+					.set(LocalDateInterval.class, "contract"))
 				.parameters(id, name, birthdate, contract)
 				.execute();
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -175,7 +175,7 @@ public class InsertTest
 			int id = 43;
 			String name = "Richard";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -192,9 +192,9 @@ public class InsertTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(Integer.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -214,7 +214,7 @@ public class InsertTest
 		{
 			String name = "Bill Gates";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setName(name)
@@ -229,16 +229,16 @@ public class InsertTest
 
 			Optional<Map<String, Object>> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where name = ?")
 					.parameters(name)
-					.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
+					.fetchMap(ID.class, String.class, LocalDate.class, LocalDate.class, LocalDate.class);
 			if (optional.isPresent())
 			{
 				Map<String, Object> result = optional.get();
 				assertEquals(name, result.get("name"));
 				assertEquals(birthdate, result.get("birthdate"));
-				assertEquals(contract.getMin(), result.get("contract$date1"));
-				assertEquals(contract.getMax(), result.get("contract$date2"));
+				assertEquals(contract.getMin(), result.get("contract__min"));
+				assertEquals(contract.getMax(), result.get("contract__max"));
 			} else
 				fail("No result found");
 		}
@@ -252,7 +252,7 @@ public class InsertTest
 			int id = 100;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 9);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -267,9 +267,9 @@ public class InsertTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(Integer.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -289,7 +289,7 @@ public class InsertTest
 		{
 			String name = "Jobs";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setName(name)
@@ -300,16 +300,16 @@ public class InsertTest
 
 			Optional<Map<String, Object>> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where name = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where name = ?")
 					.parameters(name)
-					.fetchMap(ID.class, String.class, LocalDate.class, Date.class, Date.class);
+					.fetchMap(ID.class, String.class, LocalDate.class, LocalDate.class, LocalDate.class);
 			if (optional.isPresent())
 			{
 				Map<String, Object> result = optional.get();
 				assertEquals(name, result.get("name"));
 				assertEquals(birthdate, result.get("birthdate"));
-				assertEquals(contract.getMin(), result.get("contract$date1"));
-				assertEquals(contract.getMax(), result.get("contract$date2"));
+				assertEquals(contract.getMin(), result.get("contract__min"));
+				assertEquals(contract.getMax(), result.get("contract__max"));
 			} else
 				fail("No result found");
 		}

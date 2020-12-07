@@ -10,8 +10,7 @@ import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
 import gate.sql.statement.Query;
-import gate.type.Date;
-import gate.type.DateInterval;
+import gate.type.LocalDateInterval;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -80,7 +79,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Uzers", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
 	@Test
@@ -232,7 +231,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
 	@Test
@@ -251,7 +250,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
 	@Test
@@ -270,7 +269,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
 	@Test
@@ -318,7 +317,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select Uzer.id as 'id', Uzer.name as 'name', Role.id as 'role.id', Role.name as 'role.name' from Uzer join Role on Uzer.Role$id = ?", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
 	@Test
@@ -375,7 +374,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select Role.id as 'id', Role.name as 'name', (select count(*) from Uzer where Role$id = Role.id and active = ?) as 'users' from Role where Role.id = ?", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList(Boolean.TRUE, 1));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) Boolean.TRUE, (Object) 1));
 	}
 
 	@Test
@@ -384,13 +383,13 @@ public class SelectTest
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
 			Person person = link
-				.from("select id, name, birthdate, contract$date1 as 'contract:date1', contract$date2 as 'contract:date2' from Person where id = ?")
+				.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 				.parameters(1)
 				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -407,7 +406,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -419,7 +418,7 @@ public class SelectTest
 		{
 			List<Person> persons = link
 				.from(Select.of(
-					"select id, name, birthdate, contract$date1 as 'contract:date1', contract$date2 as 'contract:date2' from Person")
+					"select id, name, birthdate, contract__min, contract__max from Person")
 					.where(Condition
 						.of("id").eq(null)
 						.and("name").lk("1")))
@@ -438,15 +437,16 @@ public class SelectTest
 					.expression("id")
 					.expression("name")
 					.expression("birthdate")
-					.expression("contract$date1").as("contract:date1")
-					.expression("contract$date2").as("contract:date2")
+					.expression("contract__min")
+					.expression("contract__max")
 					.from("Person")
 					.where(Condition.of("id").eq(1)))
-				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
+				.fetchEntity(Person.class)
+				.orElseThrow(NotFoundException::new);
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -461,8 +461,8 @@ public class SelectTest
 					.expression("id")
 					.expression("name")
 					.expression("birthdate")
-					.expression("contract$date1").as("contract:date1")
-					.expression("contract$date2").as("contract:date2")
+					.expression("`contract__min`")
+					.expression("`contract__max`")
 					.from("Person")
 					.where(Condition.of("id").eq()))
 				.parameters(1)
@@ -470,7 +470,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -489,7 +489,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -507,7 +507,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -525,7 +525,7 @@ public class SelectTest
 			Assert.assertEquals(1, person.getId());
 			Assert.assertEquals("Person 1", person.getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				person.getContract());
 		}
 	}
@@ -546,7 +546,7 @@ public class SelectTest
 			Assert.assertEquals(1, contact.getPerson().getId());
 			Assert.assertEquals("Person 1", contact.getPerson().getName());
 			Assert.assertEquals(LocalDate.of(2000, 12, 1), contact.getPerson().getBirthdate());
-			Assert.assertEquals(new DateInterval(Date.of(1, 12, 2000), Date.of(1, 12, 2020)),
+			Assert.assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
 				contact.getPerson().getContract());
 		}
 	}
@@ -586,7 +586,7 @@ public class SelectTest
 			.build();
 
 		Assert.assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
-		Assert.assertEquals(query.getParameters(), Arrays.asList("%name%", "%name%"));
+		Assert.assertEquals(query.getParameters(), Arrays.asList((Object) "%name%", (Object) "%name%"));
 	}
 
 	@Test

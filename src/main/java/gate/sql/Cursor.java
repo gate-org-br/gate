@@ -758,7 +758,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	public List<String> getPropertyNames(Class<?> type)
 	{
 		return Stream.of(getColumnNames())
-			.map(e -> e.contains(":") ? e.split(":")[0] : e)
+			.map(e -> e.contains(Converter.SEPARATOR) ? e.split(Converter.SEPARATOR)[0] : e)
 			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
 			.distinct().collect(Collectors.toList());
 	}
@@ -783,7 +783,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	public List<Property> getProperties(Class<?> type)
 	{
 		return Stream.of(getColumnNames())
-			.map(e -> e.contains(":") ? e.split(":")[0] : e)
+			.map(e -> e.contains(Converter.SEPARATOR) ? e.split("_")[0] : e)
 			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
 			.map(e -> Property.getProperty(type, e))
 			.distinct()

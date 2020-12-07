@@ -1,12 +1,11 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.LocalTimeInterval;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -100,10 +99,10 @@ public class LocalTimeIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		LocalTime min = rs.getObject(fields + ":" + SUFIXES.get(0), LocalTime.class);
+		LocalTime min = rs.getObject(fields + Converter.SEPARATOR + SUFIXES.get(0), LocalTime.class);
 		if (rs.wasNull())
 			return null;
-		LocalTime max = rs.getObject(fields + ":" + SUFIXES.get(1), LocalTime.class);
+		LocalTime max = rs.getObject(fields + Converter.SEPARATOR + SUFIXES.get(1), LocalTime.class);
 		if (rs.wasNull())
 			return null;
 		return LocalTimeInterval.of(min, max);

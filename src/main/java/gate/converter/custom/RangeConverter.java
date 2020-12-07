@@ -18,9 +18,9 @@ public class RangeConverter implements Converter
 {
 
 	private static final List<String> SUFIXES
-			= Arrays.asList("min", "max");
+		= Arrays.asList("min", "max");
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Collections.singletonList(new Pattern.Implementation("^ *([0-9]+) *([-] *([0-9]+))? *$"));
+		= Collections.singletonList(new Pattern.Implementation("^ *([0-9]+) *([-] *([0-9]+))? *$"));
 
 	@Override
 	public String getDescription()
@@ -98,10 +98,10 @@ public class RangeConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		long min = rs.getLong(fields + ":" + SUFIXES.get(0));
+		long min = rs.getLong(fields + Converter.SEPARATOR + SUFIXES.get(0));
 		if (rs.wasNull())
 			return null;
-		long max = rs.getLong(fields + ":" + SUFIXES.get(1));
+		long max = rs.getLong(fields + Converter.SEPARATOR + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
 		return Range.of(min, max);

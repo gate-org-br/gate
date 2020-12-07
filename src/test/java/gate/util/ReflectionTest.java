@@ -7,8 +7,7 @@ package gate.util;
 
 import gate.Doctor;
 import gate.error.NotFoundException;
-import gate.type.Date;
-import gate.type.DateInterval;
+import gate.type.LocalDateInterval;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,7 +33,7 @@ public class ReflectionTest
 		doctor.setId(1);
 		doctor.setName("Jonh");
 		doctor.setBirthdate(LocalDate.of(1950, Month.MARCH, 1));
-		doctor.setContract(new DateInterval(Date.of(1, 2, 2000), Date.of(1, 2, 2010)));
+		doctor.setContract(LocalDateInterval.of(LocalDate.of(2000, 2, 1), LocalDate.of(2010, 2, 1)));
 	}
 
 	@Test

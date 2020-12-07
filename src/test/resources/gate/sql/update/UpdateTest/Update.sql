@@ -1,1 +1,1 @@
-update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?
+update Person set name = ?, birthdate = ?, contract__min = ?, contract__max = ? where id = ?
