@@ -1,13 +1,12 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Month;
 import gate.type.MonthInterval;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -100,10 +99,10 @@ public class MonthIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		java.sql.Date value1 = rs.getDate(fields + ":" + SUFIXES.get(0));
+		java.sql.Date value1 = rs.getDate(fields + Converter.SEPARATOR + SUFIXES.get(0));
 		if (rs.wasNull())
 			return null;
-		java.sql.Date value2 = rs.getDate(fields + ":" + SUFIXES.get(1));
+		java.sql.Date value2 = rs.getDate(fields + Converter.SEPARATOR + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
 		return new MonthInterval(Month.of(value1), Month.of(value2));

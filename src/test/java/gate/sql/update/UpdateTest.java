@@ -10,6 +10,7 @@ import gate.sql.condition.Condition;
 import gate.type.Date;
 import gate.type.DateInterval;
 import gate.type.ID;
+import gate.type.LocalDateInterval;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -39,12 +40,12 @@ public class UpdateTest
 			Date birthdate = Date.of(31, 12, 2005);
 			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
 
-			assertEquals(1, link.prepare("update Person set name = ?, birthdate = ?, contract$date1 = ?, contract$date2 = ? where id = ?")
+			assertEquals(1, link.prepare("update Person set name = ?, birthdate = ?, contract__min = ?, contract__max = ? where id = ?")
 				.parameters(name, birthdate, contract, id)
 				.execute());
 
 			Optional<Object[]> optional
-				= link.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+				= link.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
 					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
 			if (optional.isPresent())
@@ -66,8 +67,8 @@ public class UpdateTest
 		{
 			ID id = new ID(2);
 			String name = "Paul";
-			Date birthdate = Date.of(20, 11, 2004);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2008), Date.of(31, 12, 2010));
+			LocalDate birthdate = LocalDate.of(2004, 11, 20);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2008, 1, 1), LocalDate.of(2010, 12, 31));
 
 			assertEquals(1, link
 				.prepare(getClass().getResource("UpdateTest/Update.sql"))
@@ -76,9 +77,9 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -98,23 +99,23 @@ public class UpdateTest
 		{
 			ID id = new ID(3);
 			String name = "Richard";
-			Date birthdate = Date.of(9, 8, 2000);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2012), Date.of(31, 12, 2014));
+			LocalDate birthdate = LocalDate.of(2000, 8, 9);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 1), LocalDate.of(2014, 12, 31));
 
 			assertEquals(1, link
 				.prepare(Update
 					.table("Person")
 					.set(String.class, "name", name)
-					.set(Date.class, "birthdate", birthdate)
-					.set(DateInterval.class, "contract", contract)
+					.set(LocalDate.class, "birthdate", birthdate)
+					.set(LocalDateInterval.class, "contract", contract)
 					.where(Condition.of("id").eq(id)))
 				.execute());
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -134,24 +135,24 @@ public class UpdateTest
 		{
 			ID id = new ID(4);
 			String name = "Thomas";
-			Date birthdate = Date.of(7, 8, 2000);
-			DateInterval contract = new DateInterval(Date.of(2, 1, 2012), Date.of(4, 12, 2014));
+			LocalDate birthdate = LocalDate.of(2000, 8, 7);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 2), LocalDate.of(2014, 12, 4));
 
 			assertEquals(1, link
 				.prepare(Update
 					.table("Person")
 					.set(String.class, "name")
-					.set(Date.class, "birthdate")
-					.set(DateInterval.class, "contract")
+					.set(LocalDate.class, "birthdate")
+					.set(LocalDateInterval.class, "contract")
 					.where(Condition.of("id").eq()))
 				.parameters(name, birthdate, contract, id)
 				.execute());
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(ID.class, String.class, Date.class, DateInterval.class);
+					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -172,7 +173,7 @@ public class UpdateTest
 			int id = 5;
 			String name = "Maria";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -189,9 +190,9 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -212,7 +213,7 @@ public class UpdateTest
 			int id = 6;
 			String name = "Newton";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -228,9 +229,9 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -251,7 +252,7 @@ public class UpdateTest
 			int id = 7;
 			String name = "Fred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -266,9 +267,9 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -289,7 +290,7 @@ public class UpdateTest
 			int id = 8;
 			String name = "Alfred";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
 			Person person = new Person()
 				.setId(id)
@@ -303,9 +304,9 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 				= link
-					.from("select id, name, birthdate, contract$date1, contract$date2 from Person where id = ?")
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 					.parameters(id)
-					.fetchArray(int.class, String.class, LocalDate.class, DateInterval.class);
+					.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
 				Object[] result = optional.get();
@@ -315,7 +316,7 @@ public class UpdateTest
 				assertEquals(contract, result[3]);
 			} else
 				fail("No result found");
-		} 
+		}
 	}
 
 	@Test

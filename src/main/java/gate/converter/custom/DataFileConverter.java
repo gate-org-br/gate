@@ -25,7 +25,7 @@ public class DataFileConverter implements Converter
 {
 
 	private static final List<String> SUFIXES
-			= Arrays.asList("name", "size", "data");
+		= Arrays.asList("name", "size", "data");
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -47,7 +47,7 @@ public class DataFileConverter implements Converter
 
 	@Override
 	public Object ofString(Class<?> type, String string)
-			throws ConversionException
+		throws ConversionException
 	{
 		try
 		{
@@ -64,7 +64,7 @@ public class DataFileConverter implements Converter
 		} catch (IOException | ClassNotFoundException e)
 		{
 			throw new ConversionException(String.format(
-					"%s não é um objeto válido.", string));
+				"%s não é um objeto válido.", string));
 		}
 	}
 
@@ -72,7 +72,7 @@ public class DataFileConverter implements Converter
 	public Object ofPart(Class<?> type, Part part)
 	{
 		if (part == null
-				|| part.getSubmittedFileName().isEmpty())
+			|| part.getSubmittedFileName().isEmpty())
 			return null;
 
 		try (InputStream is = part.getInputStream())
@@ -131,7 +131,7 @@ public class DataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-			throws SQLException
+		throws SQLException
 	{
 		String name = rs.getString(fields);
 		if (rs.wasNull())
@@ -147,15 +147,15 @@ public class DataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
-			throws SQLException
+		throws SQLException
 	{
-		String name = rs.getString(fields + ":" + SUFIXES.get(0));
+		String name = rs.getString(fields + Converter.SEPARATOR + SUFIXES.get(0));
 		if (rs.wasNull())
 			return null;
-		rs.getLong(fields + ":" + SUFIXES.get(1));
+		rs.getLong(fields + Converter.SEPARATOR + SUFIXES.get(1));
 		if (rs.wasNull())
 			return null;
-		byte[] data = rs.getBytes(fields + ":" + SUFIXES.get(2));
+		byte[] data = rs.getBytes(fields + Converter.SEPARATOR + SUFIXES.get(2));
 		if (rs.wasNull())
 			return null;
 		return new DataFile(data, name);

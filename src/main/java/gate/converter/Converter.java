@@ -23,6 +23,8 @@ import javax.servlet.http.Part;
 public interface Converter
 {
 
+	public static String SEPARATOR = "__";
+
 	default List<String> getSufixes()
 	{
 		return Collections.emptyList();
@@ -31,7 +33,7 @@ public interface Converter
 	default Stream<String> getColumns(String column)
 	{
 		return getSufixes().isEmpty() ? Stream.of(column)
-			: getSufixes().stream().map(e -> column + "$" + e);
+			: getSufixes().stream().map(e -> column + Converter.SEPARATOR + e);
 	}
 
 	/**

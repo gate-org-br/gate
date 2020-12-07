@@ -1,12 +1,11 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.YearMonthInterval;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -100,10 +99,10 @@ public class YearMonthIntervalConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		YearMonth min = rs.getObject(fields + ":" + SUFIXES.get(0), YearMonth.class);
+		YearMonth min = rs.getObject(fields + Converter.SEPARATOR + SUFIXES.get(0), YearMonth.class);
 		if (rs.wasNull())
 			return null;
-		YearMonth max = rs.getObject(fields + ":" + SUFIXES.get(1), YearMonth.class);
+		YearMonth max = rs.getObject(fields + Converter.SEPARATOR + SUFIXES.get(1), YearMonth.class);
 		if (rs.wasNull())
 			return null;
 		return YearMonthInterval.of(min, max);
