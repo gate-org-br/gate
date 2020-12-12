@@ -76,6 +76,8 @@ class GSelect extends HTMLElement
 
 		let slot = elements.appendChild(document.createElement("slot"));
 
+		let changed = false;
+
 		dialog.addEventListener("click", event =>
 		{
 			event.preventDefault();
@@ -89,29 +91,57 @@ class GSelect extends HTMLElement
 			modal.style.display = "flex";
 		});
 
+		slot.addEventListener("click", event =>
+		{
+			event.stopPropagation();
+			if (modal.style.display === "none")
+				event.preventDefault();
+		});
+
 		modal.addEventListener("click", event =>
 		{
+			close.click();
 			event.preventDefault();
 			event.stopPropagation();
 			modal.style.display = "none";
+
+			if (changed)
+				this.dispatchEvent(new CustomEvent("change"));
 		});
 
-		close.addEventListener("click", () => modal.style.display = "none");
-
-		elements.addEventListener("click", event => event.stopPropagation());
-
-		this.addEventListener("change", () =>
+		close.addEventListener("click", () =>
 		{
-			let inputs = Array.from(this.querySelectorAll("input"));
-			label.innerText = inputs.filter(e => e.checked).length + " selecionados";
+			let labels = this.labels;
+			label.innerText = labels.length === 1 ?
+				labels[0] : labels.length + " selecionados";
+
+			modal.style.display = "none";
+			if (changed)
+				this.dispatchEvent(new CustomEvent("change"));
 		});
 
 		slot.addEventListener("slotchange", () =>
 		{
-			let inputs = Array.from(this.querySelectorAll("input"));
-			label.innerText = inputs.filter(e => e.checked).length + " selecionados";
-			inputs.forEach(e => e.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change"))));
+			Array.from(this.querySelectorAll("input"))
+				.forEach(e => e.addEventListener("change", () => changed = true));
+
+			let labels = this.labels;
+			label.innerText = labels.length === 1 ?
+				labels[0] : labels.length + " selecionados";
+
 		});
+	}
+
+	get values()
+	{
+		return Array.from(this.querySelectorAll("input"))
+			.filter(e => e.checked).map(e => e.value);
+	}
+
+	get labels()
+	{
+		return Array.from(this.querySelectorAll("input"))
+			.filter(e => e.checked).map(e => e.parentNode.innerText);
 	}
 
 }
