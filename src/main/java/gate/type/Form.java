@@ -1,14 +1,13 @@
 package gate.type;
 
-import gate.error.AppException;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.FormConverter;
+import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionEception;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,5 +76,119 @@ public class Form implements Serializable
 				Collectors.collectingAndThen(Collectors.toList(),
 					e -> e.stream().flatMap(v -> v.getValue().stream())
 						.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));
+	}
+
+	public void pack(int limit)
+	{
+		int i = 0;
+		while (i < fields.size())
+		{
+			if (i + 8 < fields.size()
+				&& fields.get(i).getMinSize() <= limit
+				&& fields.get(i + 1).getMinSize() <= limit
+				&& fields.get(i + 2).getMinSize() <= limit
+				&& fields.get(i + 3).getMinSize() <= limit
+				&& fields.get(i + 4).getMinSize() <= limit
+				&& fields.get(i + 5).getMinSize() <= limit
+				&& fields.get(i + 6).getMinSize() <= limit
+				&& fields.get(i + 7).getMinSize() <= limit)
+			{
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+
+			} else if (i + 6 < fields.size()
+				&& fields.get(i).getMinSize() <= limit
+				&& fields.get(i + 1).getMinSize() <= limit
+				&& fields.get(i + 2).getMinSize() <= limit
+				&& fields.get(i + 3).getMinSize() <= limit
+				&& fields.get(i + 4).getMinSize() <= limit * 2
+				&& fields.get(i + 5).getMinSize() <= limit * 2)
+			{
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+			} else if (i + 6 < fields.size()
+				&& fields.get(i).getMinSize() <= limit * 2
+				&& fields.get(i + 1).getMinSize() <= limit * 2
+				&& fields.get(i + 2).getMinSize() <= limit
+				&& fields.get(i + 3).getMinSize() <= limit
+				&& fields.get(i + 4).getMinSize() <= limit
+				&& fields.get(i + 5).getMinSize() <= limit)
+			{
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+			} else if (i + 5 < fields.size()
+				&& fields.get(i).getMinSize() <= limit * 4
+				&& fields.get(i + 1).getMinSize() <= limit
+				&& fields.get(i + 2).getMinSize() <= limit
+				&& fields.get(i + 3).getMinSize() <= limit
+				&& fields.get(i + 4).getMinSize() <= limit)
+			{
+				fields.get(i++).setSize(Field.Size.FOUR);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+			} else if (i + 5 < fields.size()
+				&& fields.get(i).getMinSize() <= limit
+				&& fields.get(i + 1).getMinSize() <= limit
+				&& fields.get(i + 2).getMinSize() <= limit
+				&& fields.get(i + 3).getMinSize() <= limit
+				&& fields.get(i + 4).getMinSize() <= limit * 4)
+			{
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.ONE);
+				fields.get(i++).setSize(Field.Size.FOUR);
+			} else if (i + 4 < fields.size()
+				&& fields.get(i).getMinSize() <= limit * 2
+				&& fields.get(i + 1).getMinSize() <= limit * 2
+				&& fields.get(i + 2).getMinSize() <= limit * 2
+				&& fields.get(i + 3).getMinSize() <= limit * 2)
+			{
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+			} else if (i + 3 < fields.size()
+				&& fields.get(i).getMinSize() <= limit * 2
+				&& fields.get(i + 1).getMinSize() <= limit * 2
+				&& fields.get(i + 2).getMinSize() <= limit * 4)
+			{
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.FOUR);
+			} else if (i + 3 < fields.size()
+				&& fields.get(i).getMinSize() <= limit * 4
+				&& fields.get(i + 1).getMinSize() <= limit * 2
+				&& fields.get(i + 2).getMinSize() <= limit * 2)
+			{
+				fields.get(i++).setSize(Field.Size.FOUR);
+				fields.get(i++).setSize(Field.Size.TWO);
+				fields.get(i++).setSize(Field.Size.TWO);
+			} else if (i + 2 < fields.size()
+				&& fields.get(i + 1).getMinSize() <= limit * 4
+				&& fields.get(i + 2).getMinSize() <= limit * 4)
+			{
+				fields.get(i++).setSize(Field.Size.FOUR);
+				fields.get(i++).setSize(Field.Size.FOUR);
+			} else
+				fields.get(i++).setSize(Field.Size.EIGHT);
+
+		}
 	}
 }
