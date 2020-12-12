@@ -74,10 +74,7 @@ class GProgressStatus extends HTMLElement
 
 			if (event.detail.text !== title.innerHTML)
 			{
-				var log = logger.firstElementChild ?
-					logger.insertBefore(document.createElement("li"),
-						logger.firstElementChild)
-					: logger.appendChild(document.createElement("li"));
+				var log = logger.appendChild(document.createElement("li"));
 
 				log.style.height = "16px";
 				log.style.display = "flex";
