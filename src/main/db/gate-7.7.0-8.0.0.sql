@@ -1,0 +1,2 @@
+ALTER TABLE `gate`.`Org` 
+CHANGE COLUMN `icon` `icon` LONGTEXT NULL DEFAULT NULL ;
