@@ -216,6 +216,14 @@ public class Field implements Serializable
 		return this;
 	}
 
+	public int getMinSize()
+	{
+		return Math.max(value != null
+			? value.stream()
+				.mapToInt(e -> e.length()).sum() : 0,
+			name != null ? name.length() : 0);
+	}
+
 	@Override
 	public String toString()
 	{
