@@ -171,7 +171,7 @@ public class SSH implements AutoCloseable
 	 */
 	public void setWorkDirectory(String directory)
 	{
-		this.directory = directory != null ? directory : ".";
+		this.directory = directory != null && !directory.isBlank() ? directory : ".";
 
 	}
 
