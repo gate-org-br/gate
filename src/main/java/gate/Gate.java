@@ -49,36 +49,36 @@ import org.slf4j.Logger;
 @WebServlet("/Gate")
 public class Gate extends HttpServlet
 {
-
+	
 	private static final long serialVersionUID = 1L;
-
+	
 	@Inject
 	@Current
 	private Org org;
-
+	
 	@Inject
 	@Current
 	private App app;
-
+	
 	@Inject
 	private Session session;
-
+	
 	@Inject
 	private GateControl control;
-
+	
 	@Resource
 	private ManagedThreadFactory managedThreadFactory;
-
+	
 	@Inject
 	private Logger logger;
-
+	
 	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
-
+	
 	static
 	{
 		Locale.setDefault(new Locale("pt", "BR"));
 	}
-
+	
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -94,13 +94,13 @@ public class Gate extends HttpServlet
 			request.setAttribute("ACTION", ACTION);
 			request.setAttribute("MODULE", MODULE);
 			request.setAttribute("SCREEN", SCREEN);
-
+			
 			User user = Credentials.of(request).orElseGet(() -> session.getUser());
-
+			
 			if (Toolkit.isEmpty(MODULE)
 				&& Toolkit.isEmpty(SCREEN)
 				&& Toolkit.isEmpty(ACTION))
-
+			
 			{
 				if (request.getSession(false) != null)
 					request.getSession().invalidate();
@@ -110,29 +110,29 @@ public class Gate extends HttpServlet
 			{
 				String username = request.getParameter("$userid");
 				String password = request.getParameter("$passwd");
-
+				
 				if (!Toolkit.isEmpty(username) && !Toolkit.isEmpty(password))
 					session.setUser(user = control.select(org, username, password));
 				else if (httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
 					session.setUser(user = control.select(httpServletRequest.getUserPrincipal().getName()));
-
+				
 				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
 				Method method = Screen.getAction(clazz, ACTION).orElseThrow(InvalidRequestException::new);
 				if (!Gate.checkAccess(user, MODULE, SCREEN, ACTION, clazz, method))
 					throw new AccessDeniedException();
-
+				
 				Screen screen = Screen.create(clazz);
 				request.setAttribute("screen", screen);
 				request.setAttribute("action", method);
 				screen.prepare(request, response);
-
+				
 				if (method.isAnnotationPresent(Asynchronous.class))
 				{
 					Progress progress = Progress.create(org, app, user);
 					request.setAttribute("process", progress.getProcess());
 					Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
-
+					
 					managedThreadFactory.newThread(() ->
 					{
 						Progress.bind(progress);
@@ -178,7 +178,7 @@ public class Gate extends HttpServlet
 							Handler.getHandler(result.getClass()).handle(request, response, result);
 				}
 			}
-
+			
 		} catch (InvalidUsernameException
 			| InvalidPasswordException
 			| InvalidRequestException
@@ -226,10 +226,10 @@ public class Gate extends HttpServlet
 		{
 			Handler.getHandler(Result.class)
 				.handle(httpServletRequest, response, Result.error(ex.getMessage()));
-
+			
 		}
 	}
-
+	
 	public static boolean checkAccess(User user,
 		String module,
 		String screen,
@@ -239,14 +239,14 @@ public class Gate extends HttpServlet
 	{
 		if (Annotations.exists(Disabled.class, clazz, method))
 			return false;
-
+		
 		if (Annotations.exists(Superuser.class, clazz, method))
 			return user != null && user.isSuperUser();
-
+		
 		if (Annotations.exists(Public.class, clazz, method))
-			return true;
-
+			return !user.isBlocked(module, screen, action);
+		
 		return user != null && user.checkAccess(module, screen, action);
 	}
-
+	
 }
