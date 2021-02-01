@@ -371,6 +371,11 @@ public class User implements Serializable
 		return computedAuthStream().anyMatch(Auth::isSuperAuth);
 	}
 
+	public boolean isBlocked(String module, String screen, String action)
+	{
+		return computedAuthStream().anyMatch(e -> e.blocks(module, screen, action));
+	}
+
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream().noneMatch(e -> e.blocks(module, screen, action))
