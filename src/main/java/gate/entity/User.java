@@ -371,21 +371,48 @@ public class User implements Serializable
 		return computedAuthStream().anyMatch(Auth::isSuperAuth);
 	}
 
-	public boolean isBlocked(String module, String screen, String action)
+	public boolean checkBlock(String module, String screen, String action)
 	{
 		if (getAuths().stream()
 			.anyMatch(e -> e.allows(module, screen, action)))
 			return false;
+
+		if (getFuncs().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return false;
+
 		if (getRole().getAuths().stream()
 			.anyMatch(e -> e.allows(module, screen, action)))
 			return false;
+
+		if (getRole().getFuncs().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return false;
+
 		return computedAuthStream()
 			.anyMatch(e -> e.blocks(module, screen, action));
 	}
 
 	public boolean checkAccess(String module, String screen, String action)
 	{
-		return !isBlocked(module, screen, action)
+		if (getAuths().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return true;
+
+		if (getFuncs().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return true;
+
+		if (getRole().getAuths().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return true;
+
+		if (getRole().getFuncs().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return true;
+
+		return computedAuthStream()
+			.noneMatch(e -> e.blocks(module, screen, action))
 			&& computedAuthStream()
 				.anyMatch(e -> e.allows(module, screen, action));
 	}

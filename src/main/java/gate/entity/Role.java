@@ -362,15 +362,10 @@ public class Role implements Serializable, Hierarchy<Role>
 					getRole().publicAuthStream())) : Stream.empty();
 	}
 
-	public Stream<Auth> computedAuthStream()
+	Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(privateAuthStream(),
 			publicAuthStream()) : Stream.empty();
-	}
-
-	public List<Auth> getComputedAuths()
-	{
-		return computedAuthStream().collect(Collectors.toList());
 	}
 
 	@Override
