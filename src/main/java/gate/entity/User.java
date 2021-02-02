@@ -373,12 +373,20 @@ public class User implements Serializable
 
 	public boolean isBlocked(String module, String screen, String action)
 	{
-		return computedAuthStream().anyMatch(e -> e.blocks(module, screen, action));
+		if (getAuths().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return false;
+		if (getRole().getAuths().stream()
+			.anyMatch(e -> e.allows(module, screen, action)))
+			return false;
+		return computedAuthStream()
+			.anyMatch(e -> e.blocks(module, screen, action));
 	}
 
 	public boolean checkAccess(String module, String screen, String action)
 	{
-		return computedAuthStream().noneMatch(e -> e.blocks(module, screen, action))
-			&& computedAuthStream().anyMatch(e -> e.allows(module, screen, action));
+		return !isBlocked(module, screen, action)
+			&& computedAuthStream()
+				.anyMatch(e -> e.allows(module, screen, action));
 	}
 }
