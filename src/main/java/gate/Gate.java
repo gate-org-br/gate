@@ -247,8 +247,7 @@ public class Gate extends HttpServlet
 			return user != null && user.isSuperUser();
 
 		if (Annotations.exists(Public.class, clazz, method))
-			return user == null
-				|| !user.isBlocked(module, screen, action);
+			return user == null || !user.checkBlock(module, screen, action);
 
 		return user != null && user.checkAccess(module, screen, action);
 	}

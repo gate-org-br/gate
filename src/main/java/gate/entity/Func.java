@@ -103,6 +103,16 @@ public class Func implements Serializable
 			? id.getValue() : 0;
 	}
 
+	public boolean allows(String module, String screen, String action)
+	{
+		return getAuths().stream().anyMatch(e -> e.allows(module, screen, action));
+	}
+
+	public boolean blocks(String module, String screen, String action)
+	{
+		return getAuths().stream().anyMatch(e -> e.blocks(module, screen, action));
+	}
+
 	@Override
 	public String toString()
 	{
