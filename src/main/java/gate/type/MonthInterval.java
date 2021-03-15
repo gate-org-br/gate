@@ -106,10 +106,16 @@ public final class MonthInterval implements Serializable, Comparable<MonthInterv
 			@Override
 			public MonthInterval parse(String source) throws ParseException
 			{
-				Matcher matcher = PATTERN.matcher(source.trim());
-				if (!matcher.matches())
-					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
-				return new MonthInterval(formatter.parse(matcher.group(1)), formatter.parse(matcher.group(2)));
+				try
+				{
+					Matcher matcher = PATTERN.matcher(source.trim());
+					if (!matcher.matches())
+						throw new ParseException(String.format("%s não é um intervalo de datas válido", source), 0);
+					return new MonthInterval(formatter.parse(matcher.group(1)), formatter.parse(matcher.group(2)));
+				} catch (IllegalArgumentException ex)
+				{
+					throw new ParseException(ex.getMessage(), 0);
+				}
 			}
 
 			@Override
