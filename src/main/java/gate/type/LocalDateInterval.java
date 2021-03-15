@@ -156,12 +156,18 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		return new Formatter<LocalDateInterval>()
 		{
 			@Override
-			public LocalDateInterval parse(String source)
+			public LocalDateInterval parse(String source) throws ParseException
 			{
-				Matcher matcher = PATTERN.matcher(source.trim());
-				if (!matcher.matches())
-					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
-				return new LocalDateInterval(LocalDate.parse(matcher.group(1), formatter), LocalDate.parse(matcher.group(2), formatter));
+				try
+				{
+					Matcher matcher = PATTERN.matcher(source.trim());
+					if (!matcher.matches())
+						throw new ParseException(String.format("%s não é um intervalo de datas válido", source), 0);
+					return new LocalDateInterval(LocalDate.parse(matcher.group(1), formatter), LocalDate.parse(matcher.group(2), formatter));
+				} catch (IllegalArgumentException ex)
+				{
+					throw new ParseException(ex.getMessage(), 0);
+				}
 			}
 
 			@Override

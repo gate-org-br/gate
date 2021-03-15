@@ -94,12 +94,19 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 		return new Formatter<LocalDateTimeInterval>()
 		{
 			@Override
-			public LocalDateTimeInterval parse(String source)
+			public LocalDateTimeInterval parse(String source) throws ParseException
 			{
-				Matcher matcher = PATTERN.matcher(source.trim());
-				if (!matcher.matches())
-					throw new IllegalArgumentException(String.format("%s não é um intervalo de datas válido", source));
-				return new LocalDateTimeInterval(LocalDateTime.parse(matcher.group(1), formatter), LocalDateTime.parse(matcher.group(2), formatter));
+				try
+				{
+					Matcher matcher = PATTERN.matcher(source.trim());
+					if (!matcher.matches())
+						throw new ParseException(String.format("%s não é um intervalo de datas válido", source), 0);
+					return new LocalDateTimeInterval(LocalDateTime.parse(matcher.group(1), formatter),
+						LocalDateTime.parse(matcher.group(2), formatter));
+				} catch (IllegalArgumentException ex)
+				{
+					throw new ParseException(ex.getMessage(), 0);
+				}
 			}
 
 			@Override

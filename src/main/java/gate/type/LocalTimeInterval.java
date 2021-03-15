@@ -101,12 +101,18 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 		return new Formatter<LocalTimeInterval>()
 		{
 			@Override
-			public LocalTimeInterval parse(String source)
+			public LocalTimeInterval parse(String source) throws ParseException
 			{
-				Matcher matcher = PATTERN.matcher(source.trim());
-				if (!matcher.matches())
-					throw new IllegalArgumentException(String.format("%s não é um intervalo de horas válido", source));
-				return new LocalTimeInterval(LocalTime.parse(matcher.group(1), formatter), LocalTime.parse(matcher.group(2), formatter));
+				try
+				{
+					Matcher matcher = PATTERN.matcher(source.trim());
+					if (!matcher.matches())
+						throw new ParseException(String.format("%s não é um intervalo de horas válido", source), 0);
+					return new LocalTimeInterval(LocalTime.parse(matcher.group(1), formatter), LocalTime.parse(matcher.group(2), formatter));
+				} catch (IllegalArgumentException ex)
+				{
+					throw new ParseException(ex.getMessage(), 0);
+				}
 			}
 
 			@Override
