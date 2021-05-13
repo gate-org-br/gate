@@ -27,7 +27,9 @@ window.addEventListener("load", function ()
 					links.forEach(e => e.parentNode.style.display = "none");
 					this.icons.forEach(e => e.style.display = "");
 					reset.style.display = "";
-					reset.firstChild.onclick = () => (this.parentNode.link || root).onclick();
+					reset.firstChild.onclick = () => {
+						(this.parentNode.link || root).click();
+					};
 					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
 					event.preventDefault();
 					event.stopPropagation();

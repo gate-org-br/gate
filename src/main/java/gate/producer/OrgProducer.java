@@ -16,7 +16,6 @@ import javax.inject.Named;
  * Produces an Org object with current organization data.
  *
  */
-@RequestScoped
 public class OrgProducer implements Serializable
 {
 
@@ -24,19 +23,16 @@ public class OrgProducer implements Serializable
 	private static final Org DEFAULT = new Org().setOrgID("ORG")
 		.setName("Organização");
 
-	private Org org;
-
 	@Inject
 	private OrgControl control;
 
 	@Current
 	@Produces
-	@Named(value = "org")
+	@Named("org")
+	@RequestScoped
 	public Org produce()
 	{
-		if (org == null)
-			org = control.select().orElse(null);
-		return org != null ? org : DEFAULT;
+		return control.select().orElse(DEFAULT);
 	}
 
 }
