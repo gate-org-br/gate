@@ -4,7 +4,7 @@ import gate.annotation.Current;
 import gate.entity.Org;
 import gateconsole.contol.OrgControl;
 import java.io.Serializable;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,7 +16,7 @@ import javax.inject.Named;
  * Produces an Org object with current organization data.
  *
  */
-@ApplicationScoped
+@RequestScoped
 public class OrgProducer implements Serializable
 {
 
