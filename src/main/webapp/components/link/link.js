@@ -196,7 +196,7 @@ window.addEventListener("click", function (event)
 				event.preventDefault();
 				event.stopPropagation();
 				Array.from(link.children)
-					.filter(e => e.tagName.toLowerCase() === "template")
+					.filter(e => e.tagName.toLowerCase() === "div")
 					.forEach(e => GPopup.show(e, link.getAttribute("title")));
 				break;
 			case "_progress-dialog":

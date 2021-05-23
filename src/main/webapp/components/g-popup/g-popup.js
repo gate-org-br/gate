@@ -30,7 +30,8 @@ class GPopup extends GWindow
 	{
 		var popup = window.top.document.createElement("g-popup");
 		popup.caption = caption || template.getAttribute("title") || "";
-		popup.element = template.content.cloneNode(true);
+		popup.element = template.firstElementChild;
+		popup.addEventListener("hide", () => template.appendChild(popup.element));
 		popup.show();
 	}
 }

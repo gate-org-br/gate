@@ -3029,7 +3029,7 @@ window.addEventListener("click", function (event)
 				event.preventDefault();
 				event.stopPropagation();
 				Array.from(link.children)
-					.filter(e => e.tagName.toLowerCase() === "template")
+					.filter(e => e.tagName.toLowerCase() === "div")
 					.forEach(e => GPopup.show(e, link.getAttribute("title")));
 				break;
 			case "_progress-dialog":
@@ -6509,7 +6509,8 @@ class GPopup extends GWindow
 	{
 		var popup = window.top.document.createElement("g-popup");
 		popup.caption = caption || template.getAttribute("title") || "";
-		popup.element = template.content.cloneNode(true);
+		popup.element = template.firstElementChild;
+		popup.addEventListener("hide", () => template.appendChild(popup.element));
 		popup.show();
 	}
 }
