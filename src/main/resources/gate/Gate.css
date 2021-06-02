@@ -5571,6 +5571,9 @@ g-select > label {
 g-select > label > input {
   order: -1;
 }
+g-event-source {
+  display: none;
+}
 body[data-scroll-disabled] * {
   overflow: hidden;
 }

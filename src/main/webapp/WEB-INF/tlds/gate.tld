@@ -1020,6 +1020,15 @@
 				icon is to be printed.
 			</description>
 		</attribute>
+		<attribute>
+			<name>empty</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The name, code, object, class or class name whose
+				icon is to be printed if icon is null.
+			</description>
+		</attribute>
 	</tag>
 	<function>
 		<name>icon</name>

@@ -7,6 +7,7 @@ import javax.ejb.Startup;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
@@ -35,6 +36,11 @@ public class AppEvents
 	}
 
 	public void onEvento(@Observes AppEvent event)
+	{
+		sessions.stream().forEach(e -> e.getAsyncRemote().sendText(event.toString()));
+	}
+
+	public void onEventoAsync(@ObservesAsync AppEvent event)
 	{
 		sessions.stream().forEach(e -> e.getAsyncRemote().sendText(event.toString()));
 	}

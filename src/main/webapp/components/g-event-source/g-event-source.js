@@ -6,7 +6,7 @@ class AppEvents extends HTMLElement
 	{
 		super();
 	}
-	
+
 	static listen()
 	{
 		AppEvents.register(window);
@@ -34,9 +34,12 @@ class AppEvents extends HTMLElement
 
 	connectedCallback()
 	{
-		AppEvents.register(this);
+		AppEvents.register(this.hasAttribute("target")
+			? document.getElementById(this.getAttribute("target"))
+			: window);
 	}
-};
+}
+;
 
 window.addEventListener("load", () => Array.from(document.querySelectorAll("[data-event-source]"))
 		.forEach(listener => AppEvents.register(listener)));

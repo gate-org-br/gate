@@ -9,6 +9,18 @@ public class AppEvent
 	private final String type;
 	private final JsonObject detail;
 
+	public AppEvent()
+	{
+		this.type = getClass().getSimpleName();
+		detail = new JsonObject();
+	}
+
+	public AppEvent(JsonObject detail)
+	{
+		this.type = getClass().getSimpleName();
+		this.detail = Objects.requireNonNull(detail);
+	}
+
 	public AppEvent(String type)
 	{
 		this.type = Objects.requireNonNull(type);
