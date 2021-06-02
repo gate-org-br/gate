@@ -180,7 +180,7 @@ public interface Sentence extends SQL
 			 *
 			 * @return the same sentence bound to the specified database link
 			 */
-			Connected connect(Link link);
+			Connected<T> connect(Link link);
 
 			/**
 			 * A SQL sentence linked to a database and compiled with a set of parameters.
@@ -200,10 +200,10 @@ public interface Sentence extends SQL
 				 *
 				 * @return the current sentence, for chained invocations
 				 */
-				Connected observe(Consumer<T> consumer);
+				Connected<T> observe(Consumer<T> consumer);
 
 				@Override
-				Connected print();
+				Connected<T> print();
 
 			}
 
