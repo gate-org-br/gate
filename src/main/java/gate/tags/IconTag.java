@@ -11,10 +11,16 @@ public class IconTag extends DynamicAttributeTag
 {
 
 	private Object type;
+	private Object empty;
 
 	public void setType(Object type)
 	{
 		this.type = type;
+	}
+
+	public void setEmpty(Object empty)
+	{
+		this.empty = empty;
 	}
 
 	@Override
@@ -28,7 +34,8 @@ public class IconTag extends DynamicAttributeTag
 				Color.Extractor.extract(type)
 					.ifPresent(e -> getAttributes().put("style", "color: " + e));
 
-			Icons.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
+			Icons.Icon icon = Icon.Extractor.extract(type != null ? type : empty).orElse(Icons.UNKNOWN);
+
 			if (icon.getCode().length() == 1)
 				getJspContext().getOut().print(String.format("<i c %s>%s</i>",
 					getAttributes().toString(), icon.getCode()));
