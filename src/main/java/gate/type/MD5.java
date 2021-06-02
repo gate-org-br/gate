@@ -1,6 +1,5 @@
 package gate.type;
 
-import com.google.common.base.Objects;
 import gate.annotation.Converter;
 import gate.converter.custom.MD5Converter;
 import gate.error.AppError;
@@ -8,6 +7,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 @Converter(MD5Converter.class)
 public class MD5 implements Serializable
@@ -54,7 +54,7 @@ public class MD5 implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof MD5
-				&& Objects.equal(((MD5) obj).value, value);
+				&& Objects.equals(((MD5) obj).value, value);
 	}
 
 	@Override

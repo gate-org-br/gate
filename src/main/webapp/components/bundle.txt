@@ -82,7 +82,7 @@
 @import "AutoClick.js"
 @import "unordered-list/unordered-list.js"
 @import "definition-list/definition-list.js"
-@import "app-events/app-events.js"
+@import "g-event-source/g-event-source.js"
 @import "g-tooltip/g-tooltip.js"
 @import "g-tabbar/g-tabbar.js"
 @import "g-scroll-tabbar/g-scroll-tabbar.js"
