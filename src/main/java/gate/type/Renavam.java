@@ -44,11 +44,12 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 	public static boolean validate(String value)
 	{
 		if (value != null)
-			switch (value.length())
-			{
-				case 12:
-					return value.charAt(10) == '-'
-						? validate(value.charAt(0),
+			if (value.length() >= 2
+				&& value.charAt(value.length() - 2) == '-')
+				switch (value.length())
+				{
+					case 12:
+						return validate(value.charAt(0),
 							value.charAt(1),
 							value.charAt(2),
 							value.charAt(3),
@@ -58,24 +59,23 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 							value.charAt(7),
 							value.charAt(8),
 							value.charAt(9),
-							value.charAt(11)) : false;
+							value.charAt(11));
 
-				case 11:
-					return validate(value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7),
-						value.charAt(8),
-						value.charAt(9),
-						value.charAt(10));
+					case 11:
+						return validate('0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(7),
+							value.charAt(8),
+							value.charAt(10));
 
-				case 10:
-					return value.charAt(8) == '-'
-						? validate('0',
+					case 10:
+						return validate('0',
 							'0',
 							value.charAt(0),
 							value.charAt(1),
@@ -85,24 +85,241 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 							value.charAt(5),
 							value.charAt(6),
 							value.charAt(7),
-							value.charAt(9)) : false;
+							value.charAt(9));
+					case 9:
+						return validate('0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(8));
 
-				case 9:
-					return validate('0',
-						'0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7),
-						value.charAt(8));
+					case 8:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(7));
+					case 7:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(6));
 
-			}
+					case 6:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(5));
+					case 5:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(4));
+					case 4:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(3));
+
+					case 3:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(2));
+				}
+			else
+				switch (value.length())
+				{
+					case 11:
+						return validate(value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(7),
+							value.charAt(8),
+							value.charAt(9),
+							value.charAt(10));
+
+					case 10:
+						return validate('0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(7),
+							value.charAt(8),
+							value.charAt(9));
+					case 9:
+						return validate('0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(7),
+							value.charAt(8));
+
+					case 8:
+						return validate('0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6),
+							value.charAt(7));
+					case 7:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(6));
+
+					case 6:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5));
+					case 5:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3),
+							value.charAt(4));
+
+					case 4:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2),
+							value.charAt(3));
+
+					case 3:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1),
+							value.charAt(2));
+
+					case 2:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0),
+							value.charAt(1));
+
+					case 1:
+						return validate('0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							'0',
+							value.charAt(0));
+				}
 
 		return false;
+
 	}
 
 	/**
@@ -114,17 +331,56 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 	public static String format(String value)
 	{
 		if (Renavam.validate(value))
-			switch (value.length())
-			{
-				case 12:
-					return value;
-				case 11:
-					return value.substring(0, 10) + '-' + value.substring(10);
-				case 10:
-					return "00" + value;
-				case 9:
-					return "00" + value.substring(0, 8) + '-' + value.substring(8);
-			}
+			if (value.length() > 2 && value.charAt(value.length() - 2) == '-')
+				switch (value.length())
+				{
+					case 12:
+						return value;
+					case 11:
+						return '0' + value;
+					case 10:
+						return "00" + value;
+					case 9:
+						return "000" + value;
+					case 8:
+						return "0000" + value;
+					case 7:
+						return "00000" + value;
+					case 6:
+						return "000000" + value;
+					case 5:
+						return "0000000" + value;
+					case 4:
+						return "00000000" + value;
+					case 3:
+						return "000000000" + value;
+				}
+			else
+				switch (value.length())
+				{
+					case 11:
+						return value.substring(0, 10) + '-' + value.substring(10);
+					case 10:
+						return '0' + value.substring(0, 9) + '-' + value.substring(9);
+					case 9:
+						return "00" + value.substring(0, 8) + '-' + value.substring(8);
+					case 8:
+						return "000" + value.substring(0, 7) + '-' + value.substring(7);
+					case 7:
+						return "0000" + value.substring(0, 6) + '-' + value.substring(6);
+					case 6:
+						return "00000" + value.substring(0, 5) + '-' + value.substring(5);
+					case 5:
+						return "000000" + value.substring(0, 4) + '-' + value.substring(4);
+					case 4:
+						return "0000000" + value.substring(0, 3) + '-' + value.substring(3);
+					case 3:
+						return "00000000" + value.substring(0, 2) + '-' + value.substring(2);
+					case 2:
+						return "000000000" + value.substring(0, 1) + '-' + value.substring(1);
+					case 1:
+						return "0000000000" + '-' + value;
+				}
 		return null;
 	}
 
