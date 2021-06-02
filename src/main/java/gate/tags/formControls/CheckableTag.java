@@ -23,6 +23,8 @@ public abstract class CheckableTag extends SelectorTag
 		if (options == null)
 			if (Enum.class.isAssignableFrom(getType()))
 				options = Arrays.asList(getType().getEnumConstants());
+			else if (boolean.class.equals(getType()))
+				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 			else if (Boolean.class.isAssignableFrom(getType()))
 				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 			else if (getElementType() != null && Enum.class.isAssignableFrom(getElementType()))

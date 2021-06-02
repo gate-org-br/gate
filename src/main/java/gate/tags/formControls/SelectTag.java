@@ -27,6 +27,8 @@ public class SelectTag extends SelectorTag
 				options = Arrays.asList(getType().getEnumConstants());
 			else if (Boolean.class.isAssignableFrom(getType()))
 				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
+			else if (boolean.class.equals(getType()))
+				options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 			else
 				throw new IOException("No option defined for property " + getProperty());
 
