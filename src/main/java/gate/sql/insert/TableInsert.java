@@ -417,7 +417,7 @@ public class TableInsert implements Insert
 		}
 
 		@Override
-		public Sentence.Extractor.Compiled build()
+		public Sentence.Extractor.Compiled<E> build()
 		{
 			return Sentence.of(toString()).from(type).parameters(extractors);
 		}

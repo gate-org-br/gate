@@ -1,12 +1,13 @@
 package gate.type;
 
-import com.google.common.base.Objects;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.VersionConverter;
 import gate.handler.VersionHandler;
 import java.io.Serializable;
 import java.text.ParseException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -84,8 +85,8 @@ public class Version implements Serializable, Comparable<Version>
 			&& ((Version) obj).major == major
 			&& ((Version) obj).minor == minor
 			&& ((Version) obj).patch == patch
-			&& Objects.equal(((Version) obj).qualifier, qualifier)
-			&& Objects.equal(((Version) obj).iteration, iteration);
+			&& Objects.equals(((Version) obj).qualifier, qualifier)
+			&& Objects.equals(((Version) obj).iteration, iteration);
 	}
 
 	@Override
@@ -104,7 +105,7 @@ public class Version implements Serializable, Comparable<Version>
 		if (patch != version.patch)
 			return version.patch - patch;
 
-		if (!Objects.equal(qualifier, version.qualifier))
+		if (!Objects.equals(qualifier, version.qualifier))
 			if (version.qualifier == null)
 				return 1;
 			else if (qualifier == null)
@@ -112,7 +113,7 @@ public class Version implements Serializable, Comparable<Version>
 			else
 				return version.qualifier.compareTo(qualifier);
 
-		if (!Objects.equal(iteration, version.iteration))
+		if (!Objects.equals(iteration, version.iteration))
 			if (version.iteration == null)
 				return 1;
 			else if (iteration == null)
