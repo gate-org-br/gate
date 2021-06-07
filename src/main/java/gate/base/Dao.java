@@ -45,6 +45,20 @@ public abstract class Dao extends Base implements AutoCloseable
 	}
 
 	/**
+	 * Creates a Dao for the specified database.
+	 *
+	 * @param driver driver to be used
+	 * @param url URL where to connect
+	 * @param username user to be used on connection
+	 * @param password password to be used on connection
+	 */
+	public Dao(String driver, String url, String username, String password)
+	{
+		created = true;
+		this.link = new Link(driver, url, username, password);
+	}
+
+	/**
 	 * Returns the database link associated with this data access object.
 	 *
 	 * @return the database link associated with this data access object

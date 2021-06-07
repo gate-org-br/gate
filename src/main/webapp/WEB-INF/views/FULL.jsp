@@ -27,18 +27,9 @@
 		</nav>
 
 		<section>
-
 			<fieldset>
-				<a target="_popup" href="#">
-					asdfasdf
-					<div>
-						<label>
-							alkfjaslkfdjasjlkf
-						</label>
-					</div>
-				</a>
+				<g:insert/>
 			</fieldset>
-
 		</section>
 
 		<g:if condition="${not empty screen.user.id}">

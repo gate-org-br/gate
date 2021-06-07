@@ -6357,10 +6357,14 @@ window.addEventListener("mouseover", function (event)
 {
 	event = event || window.event;
 	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
 
-	if (action)
-		action.focus();
+	action = action.closest("[data-ret]");
+	if (!action)
+		return;
+
+	if (!action.hasAttribute("tabindex"))
+		action.setAttribute("tabindex", 1000);
+	action.focus();
 });
 
 window.addEventListener("mouseout", function (event)
@@ -6368,18 +6372,22 @@ window.addEventListener("mouseout", function (event)
 	event = event || window.event;
 	let action = event.target || event.srcElement;
 	action = action.closest("[data-ret]");
+	if (!action)
+		return;
 
-	if (action)
-		action.blur();
+	action.blur();
 });
 
 window.addEventListener("keydown", function (event)
 {
 	event = event || window.event;
 	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
 
-	if (action && event.keyCode === 13)
+	action = action.closest("[data-ret]");
+	if (!action)
+		return;
+	
+	if (event.keyCode === 13)
 		action.click();
 });
 
@@ -7994,38 +8002,39 @@ customElements.define('g-dialog-caption', class extends HTMLElement
 });
 /* global customElements */
 
-class GTabControl extends HTMLElement
-{
-	constructor()
+window.addEventListener("load", () => customElements.define('g-tab-control', class extends HTMLElement
 	{
-		super();
-		this.attachShadow({mode: 'open'});
+		constructor()
+		{
+			super();
+			this.attachShadow({mode: 'open'});
 
-		let head = this.shadowRoot.appendChild(document.createElement("div"));
-		head.style = "display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap";
-		head.appendChild(document.createElement("slot")).name = "head";
+			let head = this.shadowRoot.appendChild(document.createElement("div"));
+			head.style = "display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap";
+			head.appendChild(document.createElement("slot")).name = "head";
 
-		let body = this.shadowRoot.appendChild(document.createElement("div"));
-		body.appendChild(document.createElement("slot")).name = "body";
-	}
+			let body = this.shadowRoot.appendChild(document.createElement("div"));
+			body.appendChild(document.createElement("slot")).name = "body";
+		}
 
-	get type()
-	{
-		return this.getAttribute("type") || "frame";
-	}
+		get type()
+		{
+			return this.getAttribute("type") || "frame";
+		}
 
-	set type(type)
-	{
-		this.setAttribute("type", type);
-	}
+		set type(type)
+		{
+			this.setAttribute("type", type);
+		}
 
-	connectedCallback()
-	{
-		window.setTimeout(() =>
+		connectedCallback()
 		{
 			if (this.type !== "dummy")
 			{
-				var links = Array.from(this.children).filter(e => e.tagName === "A");
+				var links = Array.from(this.children).filter(e => e.tagName === "A"
+						|| e.tagName === "BUTTON");
+
+				this.setAttribute("size", links.length);
 
 				links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
 					.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
@@ -8041,8 +8050,6 @@ class GTabControl extends HTMLElement
 
 					link.addEventListener("click", event =>
 					{
-						event.preventDefault();
-						event.stopPropagation();
 						pages.forEach(e => e.style.display = "none");
 						links.forEach(e => e.setAttribute("data-selected", "false"));
 						link.nextElementSibling.style.display = "block";
@@ -8057,14 +8064,15 @@ class GTabControl extends HTMLElement
 							switch (type)
 							{
 								case "fetch":
-									new URL(link.getAttribute('href'))
+									new URL(link.getAttribute('href')
+										|| link.getAttribute('formaction'))
 										.get(text => link.nextElementSibling.innerHTML = text);
 									break;
 								case "frame":
-
 									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
 									iframe.scrolling = "no";
 									iframe.setAttribute("allowfullscreen", "true");
+									iframe.setAttribute("name", Math.random().toString(36).substr(2));
 
 									iframe.onload = () =>
 									{
@@ -8085,10 +8093,17 @@ class GTabControl extends HTMLElement
 										iframe.style.backgroundImage = "none";
 									};
 
-									iframe.src = link.href;
-									break;
+									if (link.tagName === "A")
+										link.setAttribute("target", iframe.getAttribute("name"));
+									else
+										link.setAttribute("formtarget", iframe.getAttribute("name"));
+
+									return;
 							}
 						}
+
+						event.preventDefault();
+						event.stopPropagation();
 					});
 
 					if (link.getAttribute("data-selected") &&
@@ -8101,16 +8116,17 @@ class GTabControl extends HTMLElement
 				if (links.length && links.every(e => !e.hasAttribute("data-selected")
 						|| e.getAttribute("data-selected").toLowerCase() === "false"))
 					links[0].click();
-			} else {
-				Array.from(this.children).filter(e => e.tagName === "A").forEach(e => e.setAttribute("slot", "head"));
+			} else
+			{
+				var links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
+				this.setAttribute("size", links.length);
+				links.forEach(e => e.setAttribute("slot", "head"));
 				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
 			}
-		}, 100);
-	}
-}
 
-customElements.define('g-tab-control', GTabControl);
-
+			this.style.display = "grid";
+		}
+	}));
 
 function PageControl(pageControl)
 {
