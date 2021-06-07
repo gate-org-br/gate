@@ -5032,7 +5032,8 @@ figure > fieldset:only-child {
   }
 }
 g-tab-control {
-  display: grid;
+  display: none;
+  margin-top: 16px;
   border-radius: 8px 8px 0 0;
   grid-template-rows: auto 1fr;
   background-color: var(--g-tab-control-background-color);
@@ -5051,10 +5052,14 @@ g-tab-control > div > iframe {
   border: none;
   overflow: hiddden;
 }
+g-tab-control:first-child {
+  margin-top: 0;
+}
 g-tab-control[type=dummy] > div {
   display: block;
 }
-g-tab-control > a {
+g-tab-control > a,
+g-tab-control > button {
   width: 50%;
   border: none;
   padding: 5px;
@@ -5071,36 +5076,74 @@ g-tab-control > a {
   background-image: var(--g-tab-control-button-background-image);
 }
 g-tab-control > a > i,
-g-tab-control > a > span {
+g-tab-control > button > i,
+g-tab-control > a > span,
+g-tab-control > button > span {
   order: 1;
   color: inherit;
 }
-g-tab-control > a:hover {
+g-tab-control > a:hover,
+g-tab-control > button:hover {
   color: var(--g-tab-control-hovered-button-color);
 }
-g-tab-control > a:focus {
+g-tab-control > a:focus,
+g-tab-control > button:focus {
   border: none;
   outline: none;
 }
-g-tab-control > a[data-selected=true] {
+g-tab-control > a[data-selected=true],
+g-tab-control > button[data-selected=true] {
   color: inherit;
   font-weight: bold;
   background-color: var(--g-tab-control-tab-background-color);
   background-image: var(--g-tab-control-tab-background-image);
 }
-g-tab-control > a > div {
+g-tab-control > a > div,
+g-tab-control > button > div {
   display: none;
 }
 @media only screen and (min-width: 768px) {
-  g-tab-control > a {
+  g-tab-control > a,
+  g-tab-control > button {
     width: 25%;
     flex-basis: 25%;
   }
 }
 @media only screen and (min-width: 1200px) {
-  g-tab-control > a {
+  g-tab-control > a,
+  g-tab-control > button {
     width: 12.5%;
     flex-basis: 12.5%;
+  }
+}
+@media only screen and (min-width: 768px) {
+  g-tab-control[size='10'] > :is(a, button),
+  g-tab-control[size='20'] > :is(a, button),
+  g-tab-control[size='30'] > :is(a, button),
+  g-tab-control[size='40'] > :is(a, button),
+  g-tab-control[size='50'] > :is(a, button),
+  g-tab-control[size='60'] > :is(a, button),
+  g-tab-control[size='70'] > :is(a, button),
+  g-tab-control[size='80'] > :is(a, button),
+  g-tab-control[size='90'] > :is(a, button),
+  g-tab-control[size='100'] > :is(a, button) {
+    width: 20%;
+    flex-basis: 20%;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  g-tab-control[size='10'] > :is(a, button),
+  g-tab-control[size='20'] > :is(a, button),
+  g-tab-control[size='30'] > :is(a, button),
+  g-tab-control[size='40'] > :is(a, button),
+  g-tab-control[size='50'] > :is(a, button),
+  g-tab-control[size='60'] > :is(a, button),
+  g-tab-control[size='70'] > :is(a, button),
+  g-tab-control[size='80'] > :is(a, button),
+  g-tab-control[size='90'] > :is(a, button),
+  g-tab-control[size='100'] > :is(a, button) {
+    width: 10%;
+    flex-basis: 10%;
   }
 }
 div.PageControl,

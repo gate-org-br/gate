@@ -193,10 +193,14 @@ window.addEventListener("mouseover", function (event)
 {
 	event = event || window.event;
 	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
 
-	if (action)
-		action.focus();
+	action = action.closest("[data-ret]");
+	if (!action)
+		return;
+
+	if (!action.hasAttribute("tabindex"))
+		action.setAttribute("tabindex", 1000);
+	action.focus();
 });
 
 window.addEventListener("mouseout", function (event)
@@ -204,18 +208,22 @@ window.addEventListener("mouseout", function (event)
 	event = event || window.event;
 	let action = event.target || event.srcElement;
 	action = action.closest("[data-ret]");
+	if (!action)
+		return;
 
-	if (action)
-		action.blur();
+	action.blur();
 });
 
 window.addEventListener("keydown", function (event)
 {
 	event = event || window.event;
 	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
 
-	if (action && event.keyCode === 13)
+	action = action.closest("[data-ret]");
+	if (!action)
+		return;
+	
+	if (event.keyCode === 13)
 		action.click();
 });
 

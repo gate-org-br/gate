@@ -37,8 +37,9 @@ public class Credentials
 		if (!CREDENTIALS.containsKey(string))
 			throw new InvalidCredentialsException();
 
-		Claims claims = Jwts.parser()
+		Claims claims = Jwts.parserBuilder()
 			.setSigningKey(SECRET)
+			.build()
 			.parseClaimsJws(string)
 			.getBody();
 

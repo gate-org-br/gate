@@ -1,6 +1,7 @@
 g-tab-control
 {
-	display: grid;
+	display: none;
+	margin-top: 16px;
 	border-radius: 8px 8px 0 0;
 	grid-template-rows: auto 1fr;
 	background-color: var(--g-tab-control-background-color);
@@ -21,52 +22,80 @@ g-tab-control
 			   overflow: hiddden }
 	}
 
+	&:first-child { margin-top: 0 }
 	&[type=dummy] >  div  { display: block }
 
-	> a { width: 50%;
-	      border: none;
-	      padding: 5px;
-	      display: flex;
-	      cursor: pointer;
-	      font-size: 12px;
-	      flex-basis: 50%;
-	      align-items: center;
-	      text-decoration: none;
-	      border-radius: 8px 8px 0 0;
-	      justify-content: space-between;
-	      color: var(--g-tab-control-button-color);
-	      background-color: var(--g-tab-control-button-background-color);
-	      background-image: var(--g-tab-control-button-background-image);
+	> a,
+	>button{ width: 50%;
+		 border: none;
+		 padding: 5px;
+		 display: flex;
+		 cursor: pointer;
+		 font-size: 12px;
+		 flex-basis: 50%;
+		 align-items: center;
+		 text-decoration: none;
+		 border-radius: 8px 8px 0 0;
+		 justify-content: space-between;
+		 color: var(--g-tab-control-button-color);
+		 background-color: var(--g-tab-control-button-background-color);
+		 background-image: var(--g-tab-control-button-background-image);
 
-	      > i,
-	      > span {order: 1;
-		      color: inherit; }
+		 > i,
+		 > span {order: 1;
+			 color: inherit; }
 
-	      &:hover { color: var(--g-tab-control-hovered-button-color); }
+		 &:hover { color: var(--g-tab-control-hovered-button-color); }
 
-	      &:focus { border: none;
-			outline: none }
+		 &:focus { border: none;
+			   outline: none }
 
-	      &[data-selected=true] { color: inherit;
-				      font-weight: bold;
-				      background-color: var(--g-tab-control-tab-background-color);
-				      background-image: var(--g-tab-control-tab-background-image);
-	      }
+		 &[data-selected=true] { color: inherit;
+					 font-weight: bold;
+					 background-color: var(--g-tab-control-tab-background-color);
+					 background-image: var(--g-tab-control-tab-background-image);
+		 }
 
-	      > div { display: none }
+		 > div { display: none }
 
-	      @media only screen and (min-width: @tablet)
-		      {
-		      width: 25%;
-		      flex-basis: 25%;
-	      }
+		 @media only screen and (min-width: @tablet)
+			 {
+			 width: 25%;
+			 flex-basis: 25%;
+		 }
 
-	      @media only screen and (min-width: @desktop)
-		      {
+		 @media only screen and (min-width: @desktop)
+			 {
 
-		      width: 12.5%;
-		      flex-basis: 12.5%;
-	      }
+			 width: 12.5%;
+			 flex-basis: 12.5%;
+		 }
+	}
+
+
+	&[size='10'] > :is(a, button),
+		&[size='20'] > :is(a, button),
+		&[size='30'] > :is(a, button),
+		&[size='40'] > :is(a, button),
+		&[size='50'] > :is(a, button),
+		&[size='60'] > :is(a, button),
+		&[size='70'] > :is(a, button),
+		&[size='80'] > :is(a, button),
+		&[size='90'] > :is(a, button),
+		&[size='100'] > :is(a, button),
+		{
+		@media only screen and (min-width: @tablet)
+			{
+			width: 20%;
+			flex-basis: 20%;
+		}
+
+		@media only screen and (min-width: @desktop)
+			{
+
+			width: 10%;
+			flex-basis: 10%;
+		}
 	}
 }
 

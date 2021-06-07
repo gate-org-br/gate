@@ -25,10 +25,13 @@ import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
@@ -38,8 +41,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
- * Holds the connection to the database and provides a clean interface for
- * transaction management, querying and execution of statements.
+ * Holds the connection to the database and provides a clean interface for transaction management, querying and execution of statements.
  *
  * @author davins
  */
@@ -103,8 +105,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Creates a Link for the specified JDBC connection.
 	 *
-	 * @param connection the JDBC connection to be associated with the new
-	 * Link
+	 * @param connection the JDBC connection to be associated with the new Link
 	 */
 	public Link(Connection connection)
 	{
@@ -112,10 +113,29 @@ public class Link implements AutoCloseable
 	}
 
 	/**
+	 * Creates a Link for the specified database.
+	 *
+	 * @param driver driver to be used
+	 * @param url URL where to connect
+	 * @param username user to be used on connection
+	 * @param password password to be used on connection
+	 */
+	public Link(String driver, String url, String username, String password)
+	{
+		try
+		{
+			Class.forName(driver);
+			this.connection = DriverManager.getConnection(url, username, password);
+		} catch (SQLException | ClassNotFoundException ex)
+		{
+			throw new AppError(ex);
+		}
+	}
+
+	/**
 	 * Creates a Link for the specified JNDI data source.
 	 *
-	 * @param datasource name of the data source from where to get the JDBC
-	 * connection
+	 * @param datasource name of the data source from where to get the JDBC connection
 	 */
 	public Link(String datasource)
 	{
@@ -351,8 +371,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a sentence to be executed.
 	 *
-	 * @param builder the builder used to generate the sentence to be
-	 * executed
+	 * @param builder the builder used to generate the sentence to be executed
 	 *
 	 * @return a connected sentence to describe execution parameters
 	 */
@@ -364,8 +383,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a sentence to be executed.
 	 *
-	 * @param builder the builder used to generate the sentence to be
-	 * executed
+	 * @param builder the builder used to generate the sentence to be executed
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
@@ -378,8 +396,7 @@ public class Link implements AutoCloseable
 	 * Prepares a sentence to be executed.
 	 *
 	 * @param <T> type of the parameters compiled with sentence
-	 * @param builder the builder used to generate the sentence to be
-	 * executed
+	 * @param builder the builder used to generate the sentence to be executed
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
@@ -417,14 +434,11 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
 	 *
-	 * @param query the SQL string to be executed after the definition of
-	 * it's parameter values
+	 * @param query the SQL string to be executed after the definition of it's parameter values
 	 *
-	 * @return a connected query whose parameter values are yet to be
-	 * defined
+	 * @return a connected query whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(String query)
 	{
@@ -434,14 +448,11 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
 	 *
-	 * @param resource a resource containing the SQL string to be executed
-	 * after the definition of it's parameter values
+	 * @param resource a resource containing the SQL string to be executed after the definition of it's parameter values
 	 *
-	 * @return a connected query whose parameter values are yet to be
-	 * defined
+	 * @return a connected query whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(URL resource)
 	{
@@ -458,18 +469,14 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective
-	 * format argument.
+	 * Each @ symbol found on the query will be replaced by it's respective format argument.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
 	 *
-	 * @param query the SQL string to be executed after the definition of
-	 * it's parameter values
+	 * @param query the SQL string to be executed after the definition of it's parameter values
 	 * @param args arguments referenced by the @ symbols in the SQL string
 	 *
-	 * @return a connected query formatted with the specified arguments
-	 * whose parameter values are yet to be defined
+	 * @return a connected query formatted with the specified arguments whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(String query, String... args)
 	{
@@ -479,18 +486,14 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective
-	 * format argument.
+	 * Each @ symbol found on the query will be replaced by it's respective format argument.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before execution.
+	 * The query returned will lack parameter values and must have them to be defined before execution.
 	 *
-	 * @param resource a resource containing the SQL string to be executed
-	 * after the definition of it's parameter values
+	 * @param resource a resource containing the SQL string to be executed after the definition of it's parameter values
 	 * @param args arguments referenced by the @ symbols in the SQL string
 	 *
-	 * @return a connected query formatted with the specified arguments
-	 * whose parameter values are yet to be defined
+	 * @return a connected query formatted with the specified arguments whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(URL resource, String... args)
 	{
@@ -506,15 +509,12 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective
-	 * condition sql string.
+	 * Each @ symbol found on the query will be replaced by it's respective condition sql string.
 	 * <p>
-	 * The query returned will be compiled with the parameters of the
-	 * specified conditions.
+	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param query the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols
-	 * and provide the parameters to be compiled into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
@@ -530,15 +530,12 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective
-	 * condition sql string.
+	 * Each @ symbol found on the query will be replaced by it's respective condition sql string.
 	 * <p>
-	 * The query returned will be compiled with the parameters of the
-	 * specified conditions.
+	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param resource a resource containing the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols
-	 * and provide the parameters to be compiled into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
@@ -556,14 +553,11 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
 	 *
-	 * @param query the query object to be executed after the definition of
-	 * it's parameter values
+	 * @param query the query object to be executed after the definition of it's parameter values
 	 *
-	 * @return a connected query whose parameter values are yet to be
-	 * defined
+	 * @return a connected query whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(Query query)
 	{
@@ -573,13 +567,11 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to
-	 * be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
 	 *
 	 * @param query a query builder to generate the query to be executed
 	 *
-	 * @return a connected query whose parameter values are yet to be
-	 * defined
+	 * @return a connected query whose parameter values are yet to be defined
 	 */
 	public Query.Connected from(Query.Builder query)
 	{
@@ -589,8 +581,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 *
-	 * @param query the query object to be executed after the definition of
-	 * it's parameter values
+	 * @param query the query object to be executed after the definition of it's parameter values
 	 *
 	 * @return a connected query ready for execution
 	 */
@@ -602,8 +593,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 *
-	 * @param query the query object to be executed after the definition of
-	 * it's parameter values
+	 * @param query the query object to be executed after the definition of it's parameter values
 	 *
 	 * @return a connected query ready for execution
 	 */
@@ -642,8 +632,7 @@ public class Link implements AutoCloseable
 	 * @param <T> type of the objects to be selected
 	 * @param type type of the objects to be selected
 	 *
-	 * @return a SearchOperation object for definition of the properties and
-	 * the criteria of selection
+	 * @return a SearchOperation object for definition of the properties and the criteria of selection
 	 */
 	public <T> SearchOperation<T> search(Class<T> type)
 	{
@@ -673,8 +662,7 @@ public class Link implements AutoCloseable
 	 * @param <T> type of the object to be selected
 	 * @param type type of the object to be selected
 	 *
-	 * @return a SelectOperation object for definition of the properties and
-	 * the criteria of selection
+	 * @return a SelectOperation object for definition of the properties and the criteria of selection
 	 */
 	public <T> SelectOperation<T> select(Class<T> type)
 	{
@@ -703,8 +691,7 @@ public class Link implements AutoCloseable
 	 * @param <T> type of the objects to be inserted
 	 * @param type type of the objects to be inserted
 	 *
-	 * @return an InsertOperation object for definition of the properties
-	 * and the values to be inserted
+	 * @return an InsertOperation object for definition of the properties and the values to be inserted
 	 */
 	public <T> InsertOperation<T> insert(Class<T> type)
 	{
@@ -717,8 +704,7 @@ public class Link implements AutoCloseable
 	 * @param <T> type of the objects to be updated
 	 * @param type type of the objects to be updated
 	 *
-	 * @return an UpdateOperation object for definition of the properties,
-	 * update criteria and the values to be updated
+	 * @return an UpdateOperation object for definition of the properties, update criteria and the values to be updated
 	 */
 	public <T> UpdateOperation<T> update(Class<T> type)
 	{
@@ -749,8 +735,7 @@ public class Link implements AutoCloseable
 	 * @param <T> type of the objects to be deleted
 	 * @param type type of the objects to be deleted
 	 *
-	 * @return a DeleteOperation object for definition of the deletion
-	 * criteria and the values to be deleted
+	 * @return a DeleteOperation object for definition of the deletion criteria and the values to be deleted
 	 */
 	public <T> DeleteOperation<T> delete(Class<T> type)
 	{
