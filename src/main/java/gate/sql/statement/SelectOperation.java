@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Interface used to define the source of fetching operations.
  *
- * @param <T> type of the object to be fetched by the fetching operation
+ * 
  */
 public interface SelectOperation<T>
 {
@@ -24,7 +24,7 @@ public interface SelectOperation<T>
 	/**
 	 * Interface used to define the parameters of fetching operations.
 	 *
-	 * @param <T> type of the object to be fetched by the fetching operation
+	 * 
 	 */
 	interface Matcher<T>
 	{

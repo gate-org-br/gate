@@ -222,7 +222,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the current column value as an object of the specified type and moves the column index to the next column.
 	 *
-	 * @param <T> type of the object to be read
+	 * 
 	 * @param type type of the object to be read
 	 *
 	 * @return the value of the current column as an object of the specified type
@@ -535,7 +535,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * @param <T> type of the object to be read
+	 * 
 	 * @param type type of the object to be read
 	 * @param columnIndex index of the column to be read
 	 *
@@ -555,7 +555,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * @param <T> type of the object to be read
+	 * 
 	 * @param type type of the object to be read
 	 * @param columnName name of the column to be read
 	 *
@@ -793,7 +793,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the current row as a java object of the specified type with the specified properties set to their respective column values.
 	 *
-	 * @param <T> type of the entity to be read
+	 * 
 	 * @param type type of the entity to be read
 	 * @param properties entity properties to be read
 	 *

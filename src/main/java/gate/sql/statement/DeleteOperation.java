@@ -10,7 +10,7 @@ import java.util.Collections;
 /**
  * Context to describe deletion criteria and values to be deleted.
  *
- * @param <T> type of the objects to be deleted
+ * 
  */
 public interface DeleteOperation<T>
 {
@@ -78,7 +78,7 @@ public interface DeleteOperation<T>
 	/**
 	 * Context to define the objects to be deleted from the database.
 	 *
-	 * @param <T> type of the objects to be deleted
+	 * 
 	 */
 	interface Criteria<T>
 	{

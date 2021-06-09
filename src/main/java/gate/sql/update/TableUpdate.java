@@ -31,7 +31,7 @@ public class TableUpdate implements Update
 	/**
 	 * Binds the update statement to a list of entities.
 	 *
-	 * @param <T> type of entities to be associated with the update
+	 * 
 	 * statement
 	 * @param type of the entities from where the values are to be extracted
 	 *
@@ -57,7 +57,7 @@ public class TableUpdate implements Update
 	/**
 	 * Adds a new column to be updated.
 	 *
-	 * @param <T> type of the column to be updated
+	 * 
 	 * @param type type of the column to be updated
 	 * @param column the column to be updated
 	 *
@@ -84,7 +84,7 @@ public class TableUpdate implements Update
 	/**
 	 * Adds a new column to be updated with the specified value.
 	 *
-	 * @param <T> type of the column to be updated
+	 * 
 	 * @param column the column to be updated
 	 * @param type type of the column to be updated
 	 * @param value the new value of the column
@@ -154,7 +154,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 * @param <T> type of the column added
+		 * 
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 *
@@ -284,7 +284,7 @@ public class TableUpdate implements Update
 			/**
 			 * Adds a new column to be updated.
 			 *
-			 * @param <T> type of the column to be updated
+			 * 
 			 * @param type type of the column to be updated
 			 * @param column the column to be updated
 			 *
@@ -376,7 +376,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * @param <T> type of the column added
+		 * 
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param value the value associated
@@ -542,7 +542,7 @@ public class TableUpdate implements Update
 			 * Adds a new column and it's associated value to the
 			 * builder if the previous specified condition was true.
 			 *
-			 * @param <T> type of the column added
+			 * 
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param value the value associated
@@ -558,7 +558,7 @@ public class TableUpdate implements Update
 			 * Adds a new column and it's associated value to the
 			 * builder if the previous specified condition was true.
 			 *
-			 * @param <T> type of the column added
+			 * 
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param supplier the supplier of the value associated
@@ -661,7 +661,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * @param <T> type of the column added
+		 * 
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param extractor the extractor associated
@@ -740,7 +740,7 @@ public class TableUpdate implements Update
 			 * Adds a new column and it's associated value to the
 			 * builder if the previous specified condition was true.
 			 *
-			 * @param <T> type of the column added
+			 * 
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param extractor the extractor associated
@@ -814,7 +814,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to be updated.
 		 *
-		 * @param <T> type of the column to be updated
+		 * 
 		 * @param type type of the column to be updated
 		 * @param column the column to be updated
 		 *
@@ -858,7 +858,7 @@ public class TableUpdate implements Update
 		 * Adds a new column and it's associated value to the builder if
 		 * the previous specified condition was true.
 		 *
-		 * @param <T> type of the column added
+		 * 
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param value the value associated
@@ -874,7 +874,7 @@ public class TableUpdate implements Update
 		 * Adds a new column and it's associated value to the builder if
 		 * the previous specified condition was true.
 		 *
-		 * @param <T> type of the column added
+		 * 
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param supplier the supplier of the value associated

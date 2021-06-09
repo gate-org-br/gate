@@ -7,15 +7,27 @@ import static java.lang.annotation.ElementType.PARAMETER;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RUNTIME)
 @Target(
-		{
-			TYPE, METHOD, PARAMETER, FIELD
-		})
+	{
+		TYPE, METHOD, PARAMETER, FIELD
+	})
 public @interface Current
 {
+
+	public static final AnnotationLiteral<Current> QUALIFIER = new Qualifier();
+
+	static class Qualifier extends AnnotationLiteral<Current> implements Current
+	{
+
+		private Qualifier()
+		{
+
+		}
+	}
 
 }

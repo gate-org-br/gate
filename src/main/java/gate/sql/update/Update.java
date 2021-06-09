@@ -80,7 +80,7 @@ public interface Update
 	/**
 	 * Creates a new SQL update sentence builder for a java type.
 	 *
-	 * @param <T> java type to be updated
+	 * 
 	 * @param type the java type to be updated
 	 *
 	 * @return the new update sentence builder created
@@ -93,7 +93,7 @@ public interface Update
 	/**
 	 * Creates an update sentence from GQN notation.
 	 *
-	 * @param <T> the type of the entity to be updated
+	 * 
 	 * @param type the type of the entity to be updated
 	 * @param notation GQN notation to be used to generate the sentence
 	 *

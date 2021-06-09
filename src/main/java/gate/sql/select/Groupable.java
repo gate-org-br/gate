@@ -12,7 +12,7 @@ public interface Groupable extends Clause
 	 *
 	 * @param columns the columns of the group by clause
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	GroupedSelect groupBy(List<String> columns);
 
@@ -21,7 +21,7 @@ public interface Groupable extends Clause
 	 *
 	 * @param columns the columns of the group by clause
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	GroupedSelect groupBy(String... columns);
 

@@ -52,8 +52,7 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Create a new SSH connection to the specified host on the specified
-	 * port
+	 * Create a new SSH connection to the specified host on the specified port
 	 *
 	 * @param host address of name of the host where to connect
 	 * @param port the port to be used when connecting
@@ -71,10 +70,8 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Authenticate {@code username} using the {@code "publickey"}
-	 * authentication method, with keys from some common locations on the
-	 * file system. This method relies on {@code ~/.ssh/id_rsa} and
-	 * {@code ~/.ssh/id_dsa}.
+	 * Authenticate {@code username} using the {@code "publickey"} authentication method, with keys from some common locations on the file system. This
+	 * method relies on {@code ~/.ssh/id_rsa} and {@code ~/.ssh/id_dsa}.
 	 * <p>
 	 * This method does not provide a way to specify a passphrase.
 	 *
@@ -100,21 +97,16 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Authenticate {@code username} using the {@code "publickey"}
-	 * authentication method, with keys from one or more {@code locations}
-	 * in the file system.
+	 * Authenticate {@code username} using the {@code "publickey"} authentication method, with keys from one or more {@code locations} in the file system.
 	 * <p>
-	 * In case multiple {@code locations} are specified; authentication is
-	 * attempted in order as long as the {@code
-	 * "publickey"} authentication method is available. If there is an error
-	 * loading keys from any of them (e.g. file could not be read, file
-	 * format not recognized) that key file it is ignored.
+	 * In case multiple {@code locations} are specified; authentication is attempted in order as long as the {@code
+	 * "publickey"} authentication method is available. If there is an error loading keys from any of them (e.g. file could not be read, file format not
+	 * recognized) that key file it is ignored.
 	 * <p>
 	 * This method does not provide a way to specify a passphrase.
 	 *
 	 * @param username user to authenticate
-	 * @param locations one or more locations in the file system containing
-	 * the private key
+	 * @param locations one or more locations in the file system containing the private key
 	 *
 	 * @return true if successful, false otherwise
 	 *
@@ -138,9 +130,7 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Authenticate {@code username} using the {@code "password"}
-	 * authentication method and as a fallback basic challenge-response
-	 * authentication.
+	 * Authenticate {@code username} using the {@code "password"} authentication method and as a fallback basic challenge-response authentication.
 	 *
 	 * @param username user to authenticate
 	 * @param password the password to use for authentication
@@ -213,8 +203,7 @@ public class SSH implements AutoCloseable
 	 * Execute the specified command on the remote host
 	 *
 	 * @param command formatting string of the command to execute
-	 * @param parameters parameters to be used when formatting the command
-	 * to be executed
+	 * @param parameters parameters to be used when formatting the command to be executed
 	 *
 	 * @return true if the command was successful, false otherwise
 	 *
@@ -238,11 +227,10 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Execute the specified command with the specified parameters on the
-	 * remote host and read result
+	 * Execute the specified command with the specified parameters on the remote host and read result
 	 *
 	 * @param command command to execute
-	 * @param parameters
+	 * @param parameters parameters to be used on execution
 	 *
 	 * @return The command result as a SSHResult object
 	 */

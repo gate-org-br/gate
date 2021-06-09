@@ -10,7 +10,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is equals to the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -48,7 +48,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is not equals to the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -86,7 +86,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is less than the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -122,10 +122,9 @@ interface GenericPredicateMethods extends Clause
 	}
 
 	/**
-	 * Evaluates to true if the previously specified clause is less than or equals the parameter to be specified on
-	 * execution.
+	 * Evaluates to true if the previously specified clause is less than or equals the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -163,7 +162,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is greater than the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -199,10 +198,9 @@ interface GenericPredicateMethods extends Clause
 	}
 
 	/**
-	 * Evaluates to true if the previously specified clause is greater than or equals to the parameter to be specified
-	 * on execution.
+	 * Evaluates to true if the previously specified clause is greater than or equals to the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -240,7 +238,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is like the parameter to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */
@@ -259,7 +257,7 @@ interface GenericPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause matches the regular expression to be specified on execution.
 	 *
-	 * @return the current {@link gate.sql.Predicate}, for chained invocations
+	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
 	 *
 	 * @throws java.lang.NullPointerException if any of the parameters is null
 	 */

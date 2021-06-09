@@ -55,7 +55,7 @@ public interface Fetchable
 	/**
 	 * Fetches results using the specified Fetcher.
 	 *
-	 * @param <T> type of results to be fetched
+	 * 
 	 * @param fecher Fetcher to be used to fetch results
 	 *
 	 * @return the results fetched as a java object of the specified type
@@ -65,7 +65,7 @@ public interface Fetchable
 	/**
 	 * Fetches results using the specified Extractor.
 	 *
-	 * @param <T> type of results to be fetched
+	 * 
 	 * @param extractor extractor to be used to fetch results
 	 *
 	 * @return the results fetched as a java object of the specified type
@@ -85,7 +85,7 @@ public interface Fetchable
 	/**
 	 * Fetches the first column of the each row as a stream of java objects.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type type of the object to be fetched
 	 * @return the first column of the each row as a stream of java objects
 	 */
@@ -109,7 +109,7 @@ public interface Fetchable
 	 * Fetches the first column of the first row as a java object of the
 	 * specified type.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type type of the object to be fetched
 	 *
 	 * @return an Optional describing the first column of the first row as a
@@ -145,7 +145,7 @@ public interface Fetchable
 	 * Fetches the first column of each row as as list of java objects of
 	 * the specified type.
 	 *
-	 * @param <T> type of the objects fetched
+	 * 
 	 * @param type type of the objects to be fetched
 	 *
 	 * @return the first column of each row as as list of java objects of
@@ -160,7 +160,7 @@ public interface Fetchable
 	 * Fetches the first column of each row as as set of java objects of the
 	 * specified type.
 	 *
-	 * @param <T> type of the objects fetched
+	 * 
 	 * @param type type of the objects to be fetched
 	 *
 	 * @return the first column of each row as as set of java objects of the
@@ -349,7 +349,7 @@ public interface Fetchable
 	 * Fetches each row as a a stream of java objects of the specified type
 	 * with it's properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type type of the object to be fetched
 	 *
 	 * @return each row as a a stream of java objects of the specified type
@@ -364,7 +364,7 @@ public interface Fetchable
 	 * Fetches first row as a java object of the specified type with it's
 	 * properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type type of the object to be fetched
 	 *
 	 * @return an Optional describing the first row of the result as a java
@@ -380,7 +380,7 @@ public interface Fetchable
 	 * Fetches each row as a list of java objects of the specified type with
 	 * it's properties set to their respective column values.
 	 *
-	 * @param <T> type of the objects fetched
+	 * 
 	 * @param type type of the objects to be fetched
 	 *
 	 * @return each row as a list of java objects of the specified type with
@@ -395,7 +395,7 @@ public interface Fetchable
 	 * Fetches each row as a set of java objects of the specified type with
 	 * it's properties set to their respective column values.
 	 *
-	 * @param <T> type of the objects fetched
+	 * 
 	 * @param type type of the objects to be fetched
 	 *
 	 * @return each row as a set of java objects of the specified type with
@@ -410,7 +410,7 @@ public interface Fetchable
 	 * Fetches each row as a list of java object of the specified type with
 	 * the specified properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *
@@ -426,7 +426,7 @@ public interface Fetchable
 	 * Fetches each row as a set of java object of the specified type with
 	 * the specified properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *
@@ -442,7 +442,7 @@ public interface Fetchable
 	 * Fetches each row as a list of java object of the specified type with
 	 * the specified properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *
@@ -458,7 +458,7 @@ public interface Fetchable
 	 * Fetches each row as a set of java object of the specified type with
 	 * the specified properties set to their respective column values.
 	 *
-	 * @param <T> type of the object fetched
+	 * 
 	 * @param type Type of the java object to be fetched
 	 * @param properties properties to be fetched
 	 *

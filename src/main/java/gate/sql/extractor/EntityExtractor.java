@@ -11,7 +11,7 @@ import java.util.stream.StreamSupport;
 /**
  * Extracts each row from a Cursor as a stream of java objects of the specified type with their properties set to their respective column values.
  *
- * @param <T> type of the objects to be extracted
+ * 
  */
 public class EntityExtractor<T> implements Extractor<T>
 {

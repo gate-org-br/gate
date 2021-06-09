@@ -26,7 +26,7 @@ public interface Replace
 	/**
 	 * Creates a new SQL replace sentence builder for a java type.
 	 *
-	 * @param <T> java type to be persisted
+	 * 
 	 * @param type the java type to be persisted
 	 *
 	 * @return the new replace sentence builder created
@@ -39,7 +39,7 @@ public interface Replace
 	/**
 	 * Creates an replace sentence from GQN notation.
 	 *
-	 * @param <T> the type of the entity to be replaced
+	 * 
 	 * @param type the type of the entity to be replaced
 	 * @param notation GQN notation to be used to generate the sentence
 	 *

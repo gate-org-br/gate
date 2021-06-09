@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 /**
  * Context to define the properties and the values to be inserted.
  *
- * @param <T> type of the objects to be inserted
+ * 
  */
 public interface InsertOperation<T>
 {
@@ -82,7 +82,7 @@ public interface InsertOperation<T>
 	/**
 	 * Context to define the properties and the values to be inserted.
 	 *
-	 * @param <T> type of the objects to be inserted
+	 * 
 	 */
 	interface Properties<T>
 	{

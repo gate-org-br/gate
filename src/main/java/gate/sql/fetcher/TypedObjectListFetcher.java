@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Fetches a cursor as a list of java objects of the specified types.
  *
- * @param <T> types of the objects to be fetched
+ * 
  */
 public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 {

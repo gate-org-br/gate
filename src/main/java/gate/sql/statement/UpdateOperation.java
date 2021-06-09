@@ -10,7 +10,7 @@ import java.util.Collections;
 /**
  * Context to define the properties, the values and the criteria of update operations.
  *
- * @param <T> type of the objects to be updated
+ * 
  */
 public interface UpdateOperation<T>
 {
@@ -78,7 +78,7 @@ public interface UpdateOperation<T>
 	/**
 	 * Context to define the values to be updated.
 	 *
-	 * @param <T> type of the objects to be updated
+	 * 
 	 */
 	interface Properties<T>
 	{

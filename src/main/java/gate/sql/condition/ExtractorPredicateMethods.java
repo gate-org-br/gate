@@ -14,8 +14,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is equals to the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -49,8 +47,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is equals to the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -83,8 +79,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is less than the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -117,8 +111,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is less than or equals the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -151,8 +143,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is greater than the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -185,8 +175,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is greater than or equals the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -219,8 +207,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is between the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
 	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
@@ -250,8 +236,6 @@ interface ExtractorPredicateMethods<T> extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is between the specified parameters.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
-	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter1 first parameter to be compared with the specified clause
 	 * @param parameter2 second parameter to be compared with the specified clause
 	 *

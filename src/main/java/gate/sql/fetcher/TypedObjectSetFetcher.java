@@ -6,7 +6,7 @@ import java.util.Set;
 
 /**
  * Fetches a cursor as a set of java objects of the specified types.
- * @param <T> types of the objects to be fetched
+ * 
  */
 public class TypedObjectSetFetcher<T> implements Fetcher<Set<T>>
 {

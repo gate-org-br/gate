@@ -126,7 +126,7 @@ public class AppException extends Exception
 	/**
 	 * Throws an AppException with the specified message if the specified object is null.
 	 *
-	 * @param <T> the type of the object to be tested for null
+	 * 
 	 * @param object object to be tested for null
 	 * @param message message of the AppException to be generated if the specified object is null
 	 *

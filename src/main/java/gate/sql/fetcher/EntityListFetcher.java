@@ -10,7 +10,7 @@ import java.util.List;
  * Fetches a cursor as a list of java objects of the specified type with it's
  * properties set to their respective column values.
  *
- * @param <T> type returned by the Fetcher
+ * 
  */
 public class EntityListFetcher<T> implements Fetcher<List<T>>
 {

@@ -215,7 +215,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * Create the parent and child relationships setup all elements in the
 	 * specified list.
 	 *
-	 * @param <T> the hierarchical type setup the list entities
+	 * 
 	 * @param list the list to be made hierarchical
 	 *
 	 * @return a new list with the root elements of the specified one

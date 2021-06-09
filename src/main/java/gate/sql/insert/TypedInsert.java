@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 /**
  * Insert SQL builder for a java class.
  *
- * @param <T> java class to be persisted
+ * 
  */
 public class TypedInsert<T> implements Insert, Operation.Builder<T>
 {

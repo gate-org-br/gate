@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 /**
  * Update sentence builder for a java type.
  *
- * @param <T> java type to be updated
+ * 
  */
 public class TypedUpdate<T> implements Update, Operation.Builder<T>
 {

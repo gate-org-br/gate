@@ -26,7 +26,7 @@ public interface Insert
 	/**
 	 * Creates a new SQL insert sentence builder for a java type.
 	 *
-	 * @param <T> java type to be persisted
+	 * 
 	 * @param type the java type to be persisted
 	 *
 	 * @return the new insert sentence builder created
@@ -39,7 +39,7 @@ public interface Insert
 	/**
 	 * Creates an insert sentence from GQN notation.
 	 *
-	 * @param <T> the type of the entity to be inserted
+	 * 
 	 * @param type the type of the entity to be inserted
 	 * @param notation GQN notation to be used to generate the sentence
 	 *

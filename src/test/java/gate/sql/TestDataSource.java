@@ -5,7 +5,7 @@
  */
 package gate.sql;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.mysql.cj.jdbc.MysqlDataSource;
 import gate.Contact;
 import gate.Person;
 import gate.error.ConstraintViolationException;

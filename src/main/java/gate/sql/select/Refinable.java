@@ -17,7 +17,7 @@ public interface Refinable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the having clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		RefinedSelect having(ConstantCondition predicate);
 
@@ -31,7 +31,7 @@ public interface Refinable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the having clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default RefinedSelect.Generic having(GenericCondition predicate)
 		{
@@ -55,7 +55,7 @@ public interface Refinable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the having clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default RefinedSelect.Compiled having(CompiledCondition predicate)
 		{

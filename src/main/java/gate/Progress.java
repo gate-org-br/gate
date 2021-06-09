@@ -188,8 +188,7 @@ public class Progress
 	/**
 	 * Increments the progress of the current task.
 	 *
-	 * @param step number of records to be processed before each
-	 * notification
+	 * @param step number of records to be processed before each notification
 	 */
 	public static void updateForEach(int step)
 	{

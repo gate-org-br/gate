@@ -64,7 +64,7 @@ public interface Sentence extends SQL
 	/**
 	 * Prepares the sentence to be compiled with a list of entities and functions.
 	 *
-	 * @param <T> type of the entities to be compiled with the sentence
+	 * 
 	 * @param type type of the entities to be compiled with the sentence
 	 *
 	 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
@@ -210,7 +210,7 @@ public interface Sentence extends SQL
 			/**
 			 * Compiled sentence builder.
 			 *
-			 * @param <T> type of the parameters compiled with sentence
+			 * 
 			 */
 			interface Builder<T> extends SQLBuilder<Sentence.Extractor.Compiled<T>>
 			{
@@ -230,7 +230,7 @@ public interface Sentence extends SQL
 		/**
 		 * Specify the type with the attributes to be updated on the database
 		 *
-		 * @param <T> type with the attributes to be updated on the database
+		 * 
 		 * @param type type with the attributes to be updated on the database
 		 *
 		 * @return the same sentence compiled with the specified type
@@ -326,7 +326,7 @@ public interface Sentence extends SQL
 			 * <p>
 			 * A connected and compiled sentence is ready for execution
 			 *
-			 * @param <T> type of the parameters compiled with sentence
+			 * 
 			 */
 			interface Compiled<T> extends SQL, Batch<T>
 			{

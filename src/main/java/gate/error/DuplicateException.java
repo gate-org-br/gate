@@ -34,7 +34,7 @@ public class DuplicateException extends AppException
 	/**
 	 * Throws a DuplicateException with the specified message if the specified list has duplicates.
 	 *
-	 * @param <T> the type of the elements of the list to be tested for duplication
+	 * 
 	 * @param list the list to be tested for duplication
 	 * @param message the message of the DuplicateException to be thrown if the list had duplicates
 	 *
@@ -54,7 +54,7 @@ public class DuplicateException extends AppException
 	/**
 	 * Throws a DuplicateException with the default message if the specified list has duplicates.
 	 *
-	 * @param <T> the type of the elements of the list to be tested for duplication
+	 * 
 	 * @param list the list to be tested for duplication
 	 *
 	 * @return the same list passed as the first parameter

@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 /**
  * Replace SQL builder for a java class.
  *
- * @param <T> java class to be persisted
+ * 
  */
 public class TypedReplace<T> implements Replace, Operation.Builder<T>
 {

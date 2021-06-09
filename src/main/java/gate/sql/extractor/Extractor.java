@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 /**
  * Extracts the rows from a cursor as a stream of java objects of the specified type.
  *
- * @param <T> type of the objects to be extracted
+ * 
  */
 public interface Extractor<T>
 {

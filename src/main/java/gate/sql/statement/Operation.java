@@ -15,7 +15,7 @@ import java.util.function.Consumer;
  * An operation must be connected to a database and compiled with the list of java objects to be operated on before
  * execution.
  *
- * @param <T> java type to be operated on
+ * 
  *
  * @author Davi Nunes da Silva
  */
@@ -25,7 +25,7 @@ public interface Operation<T> extends SQL
 	/**
 	 * Creates a new operation for the specified SQL string, java type and a list of properties.
 	 *
-	 * @param <T> java type to be operated on
+	 * 
 	 * @param type java type to be operated on
 	 * @param sql the SQL string of the operation
 	 * @param properties list of properties associated with the operation to be created
@@ -84,7 +84,7 @@ public interface Operation<T> extends SQL
 	 * <p>
 	 * An compiled operation must be connected to a database before execution.
 	 *
-	 * @param <T> java type to be operated on
+	 * 
 	 */
 	interface Compiled<T> extends SQL
 	{
@@ -106,7 +106,7 @@ public interface Operation<T> extends SQL
 		 * <p>
 		 * An compiled and connected operation is ready for execution.
 		 *
-		 * @param <T> java type to be operated on
+		 * 
 		 */
 		interface Connected<T> extends SQL
 		{
@@ -138,7 +138,7 @@ public interface Operation<T> extends SQL
 	 * <p>
 	 * An connected operation must be compiled with the objects to be operated on before it can be executed.
 	 *
-	 * @param <T> java type to be operated on
+	 * 
 	 */
 	interface Connected<T> extends SQL
 	{
@@ -181,7 +181,7 @@ public interface Operation<T> extends SQL
 		 * <p>
 		 * An compiled and connected operation is ready for execution.
 		 *
-		 * @param <T> java type to be operated on
+		 * 
 		 */
 		interface Compiled<T> extends SQL
 		{
