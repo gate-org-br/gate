@@ -14,7 +14,7 @@ import java.util.function.Function;
  * will generate a single row on the Grid. The value to be displayed on each
  * column is obtained using a mapping function on it's row value.
  *
- * @param <T> type of the objects to be displayed by the grid
+ * 
  *
  * @author davins
  */

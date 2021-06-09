@@ -63,8 +63,7 @@
  * }
  * }</pre>
  * <hr>
- * Building SQL sentences using the provided {@link gate.sql.builder.Insert},
- * {@link gate.sql.builder.Update} and {@link gate.sql.builder.Delete} sentence Builders:
+ * Building SQL sentences using the provided sentence Builders:
  * <pre>{@code
  * try (Link link = new Link("datasourcename"))
  * {

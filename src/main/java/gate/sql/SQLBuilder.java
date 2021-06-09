@@ -5,7 +5,7 @@ import gate.sql.statement.SQL;
 /**
  * Builder of SQL
  *
- * @param <T> type of the SQL generated
+ * 
  */
 public interface SQLBuilder<T extends SQL>
 {

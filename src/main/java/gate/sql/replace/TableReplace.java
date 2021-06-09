@@ -29,7 +29,7 @@ public class TableReplace implements Replace
 	/**
 	 * Binds the replace statement to a list of entities.
 	 *
-	 * @param <T> type of entities to be associated with the replace statement
+	 * 
 	 * @param type the type of the entity where parameter values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
@@ -54,7 +54,7 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted.
 	 *
-	 * @param <T> type of the column persisted
+	 * 
 	 * @param type type of the column to be persisted
 	 * @param column the column to be persisted
 	 *
@@ -81,7 +81,7 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted with the specified value.
 	 *
-	 * @param <T> type of the value added
+	 * 
 	 * @param type type of the column to be added
 	 * @param column the column to be added
 	 * @param value the value associated
@@ -135,7 +135,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 * @param <T> type of the value added
+		 * 
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 *
@@ -195,7 +195,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * @param <T> type of the value added
+		 * 
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -269,7 +269,7 @@ public class TableReplace implements Replace
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * @param <T> type of the column added
+			 * 
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param value the value associated
@@ -284,7 +284,7 @@ public class TableReplace implements Replace
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * @param <T> type of the value added
+			 * 
 			 * @param type type of the column to be added
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -436,7 +436,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted if the previous specified condition was true.
 		 *
-		 * @param <T> type of the column persisted
+		 * 
 		 * @param type type of the column to be persisted
 		 * @param column the column to be persisted
 		 *
@@ -476,7 +476,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * @param <T> type of the value added
+		 * 
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -491,7 +491,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * @param <T> type of the value added
+		 * 
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param supplier the supplier of the value associated

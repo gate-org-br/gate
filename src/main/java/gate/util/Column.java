@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Used to extract data from strings
  *
- * @param <T> the java type of the data to be extracted
+ * 
  */
 public interface Column<T>
 {
@@ -34,7 +34,7 @@ public interface Column<T>
 	/**
 	 * Create a column to extract data from a string and return it as a java object
 	 *
-	 * @param <T> java type of the column to be extracted
+	 * 
 	 * @param min column start position
 	 * @param max column end position
 	 * @param converter function to be used to converted the extracted string to a java object if the extracted string is not blank
@@ -71,7 +71,7 @@ public interface Column<T>
 	/**
 	 * Create a column to extract data from a string and return it as a java object
 	 *
-	 * @param <T> java type of the column to be extracted
+	 * 
 	 * @param min column start position
 	 * @param max column end position
 	 * @param cleanup used to remove characters from the extracted string before conversion to a java object

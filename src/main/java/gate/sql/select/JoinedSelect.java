@@ -27,7 +27,7 @@ public abstract class JoinedSelect implements Clause
 	 *
 	 * @param predicate the {@link gate.sql.condition.Predicate} to be associated with the current join clause
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	public abstract SelectedSelect on(ConstantCondition predicate);
 

@@ -11,7 +11,7 @@ import java.util.Set;
  * Fetches a cursor as a set of java objects of the specified type with it's
  * properties set to their respective column values.
  *
- * @param <T> type returned by the Fetcher
+ * 
  */
 public class EntitySetFetcher<T> implements Fetcher<Set<T>>
 {

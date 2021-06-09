@@ -5051,6 +5051,10 @@ g-tab-control > div > iframe {
   width: 100%;
   border: none;
   overflow: hiddden;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-image: var(--loading);
 }
 g-tab-control:first-child {
   margin-top: 0;

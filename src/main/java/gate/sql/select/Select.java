@@ -221,7 +221,7 @@ public class Select implements Clause
 	/**
 	 * Creates a query from GQN notation.
 	 *
-	 * @param <T> the type of the entity to be selected
+	 * 
 	 * @param type the type of the entity to be selected
 	 * @param notation GQN notation to be used to generate the query
 	 *
@@ -250,7 +250,7 @@ public class Select implements Clause
 	/**
 	 * Creates a compiled query from GQN notation ignoring null values.
 	 *
-	 * @param <T> the type of the entity to be selected
+	 * 
 	 * @param type the type of the entity to be selected
 	 * @param object the object whose properties will be compiled with the query
 	 * @param notation GQN notation to be used to generate the query

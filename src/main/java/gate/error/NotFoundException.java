@@ -29,7 +29,7 @@ public class NotFoundException extends AppException
 	/**
 	 * Throws an NotFoundException with the specified message if the specified object is null.
 	 *
-	 * @param <T> the type of the object to be tested for null
+	 * 
 	 * @param object object to be tested for null
 	 *
 	 * @return the same object passed as the first parameter

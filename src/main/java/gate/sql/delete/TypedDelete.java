@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Delete statement bound to a entity java class
  *
- * @param <T> entity java class
+ * 
  *
  * @author Davi Nunes da Silva
  */

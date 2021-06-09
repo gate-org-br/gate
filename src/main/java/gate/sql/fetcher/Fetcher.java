@@ -6,7 +6,7 @@ import gate.sql.Cursor;
  * Fetches a cursor as a java object of the specified type.
  *
  * @author Davi Nunes da Silva
- * @param <T> type returned by the Fetcher
+ * 
  */
 public interface Fetcher<T>
 {

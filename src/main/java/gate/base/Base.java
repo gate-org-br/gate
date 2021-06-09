@@ -4,17 +4,11 @@ import gate.Progress;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
-import gate.producer.AppProducer;
-import gate.producer.OrgProducer;
-import gate.producer.UserProducer;
 import javax.enterprise.inject.spi.CDI;
+import gate.annotation.Current;
 
 abstract class Base
 {
-
-	private Org org;
-	private App app;
-	private User user;
 
 	/**
 	 * Returns information about the current user.
@@ -23,12 +17,10 @@ abstract class Base
 	 */
 	public User getUser()
 	{
-		if (user == null)
-			if (Progress.getUser() != null)
-				user = Progress.getUser();
-			else
-				user = CDI.current().select(UserProducer.class).get().getUser();
-		return user;
+		if (Progress.getUser() != null)
+			return Progress.getUser();
+
+		return CDI.current().select(User.class, Current.QUALIFIER).get();
 	}
 
 	/**
@@ -38,12 +30,11 @@ abstract class Base
 	 */
 	public Org getOrg()
 	{
-		if (org == null)
-			if (Progress.getOrg() != null)
-				org = Progress.getOrg();
-			else
-				org = CDI.current().select(OrgProducer.class).get().produce();
-		return org;
+
+		if (Progress.getOrg() != null)
+			return Progress.getOrg();
+
+		return CDI.current().select(Org.class, Current.QUALIFIER).get();
 	}
 
 	/**
@@ -53,12 +44,9 @@ abstract class Base
 	 */
 	public App getApp()
 	{
-		if (app == null)
-			if (Progress.getApp() != null)
-				app = Progress.getApp();
-			else
-				app = CDI.current().select(AppProducer.class).get().produce();
-		return app;
-	}
+		if (Progress.getApp() != null)
+			return Progress.getApp();
 
+		return CDI.current().select(App.class, Current.QUALIFIER).get();
+	}
 }

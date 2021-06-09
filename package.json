@@ -11,13 +11,12 @@
   "author": "davins",
   "contributors": [],
   "dependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-concat": "~1.0.1",
-    "grunt-contrib-watch": "~1.1.0",
-    "less": "^3.10.3"
+    "grunt": "1.4.0",
+    "grunt-contrib-concat": "1.0.1",
+    "grunt-contrib-watch": "^1.1.0",
+    "less": "^3.13.0"
   },
   "devDependencies": {
-    "grunt-import": "^1.0.3",
-    "grunt-import-js": "^0.1.4"
+    "grunt-import": "1.0.3"
   }
 }

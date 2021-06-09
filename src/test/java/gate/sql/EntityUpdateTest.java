@@ -11,8 +11,10 @@ import java.text.ParseException;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class EntityUpdateTest
 {
 

@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 /**
  * A Sentence associated with a java type a and a list of properties
  *
- * @param <T> java type associated with the sentence
+ * 
  */
 class BasicOperation<T> implements Operation<T>
 {

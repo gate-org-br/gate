@@ -9,7 +9,7 @@ import java.util.stream.StreamSupport;
 /**
  * Extracts each row from a Cursor as stream of java objects of the specified type.
  *
- * @param <T> type of the object to be extracted
+ * 
  */
 public class TypedObjectExtractor<T> implements Extractor<T>
 {

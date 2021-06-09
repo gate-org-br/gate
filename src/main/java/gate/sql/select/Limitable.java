@@ -10,7 +10,7 @@ public interface Limitable extends Clause
 	 *
 	 * @param value the maximum number of rows to be returned
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	LimitedSelect limit(int value);
 
@@ -20,7 +20,7 @@ public interface Limitable extends Clause
 	 * @param offset the first row to be included
 	 * @param count the maximum number or rows to be included
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	LimitedSelect limit(int offset, int count);
 
@@ -30,7 +30,7 @@ public interface Limitable extends Clause
 	 * @param pageSize the size of the page of rows to be returned
 	 * @param pageIndex the index of the page to be returned
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	LimitedSelect paginate(int pageSize, int pageIndex);
 

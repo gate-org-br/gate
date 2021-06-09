@@ -11,7 +11,7 @@ import java.util.function.Function;
  * <p>
  * A Column uses it's associated mapping function to get the value to be displayed on each row of it's associated Grid.
  *
- * @param <T> type of the object displayed on the associated Grid
+ * 
  */
 public final class Column<T> extends Element
 {

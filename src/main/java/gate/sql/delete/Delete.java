@@ -27,7 +27,7 @@ public interface Delete
 	/**
 	 * Creates a new SQL delete sentence builder for a java type.
 	 *
-	 * @param <T> java type to be deleted
+	 * 
 	 * @param type the java type to be deleted
 	 *
 	 * @return the new deleted sentence builder created
@@ -40,7 +40,7 @@ public interface Delete
 	/**
 	 * Creates an delete sentence from GQN notation.
 	 *
-	 * @param <T> the type of the entity to be deleted
+	 * 
 	 * @param type the type of the entity to be deleted
 	 * @param notation GQN notation to be used to generate the sentence
 	 *

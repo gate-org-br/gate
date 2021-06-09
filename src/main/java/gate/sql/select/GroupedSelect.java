@@ -18,7 +18,7 @@ public abstract class GroupedSelect implements Clause, Orderable, Limitable
 	/**
 	 * Adds a WITH ROLLUP modifier to the group by statement.
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	public abstract WithRollupSelect withRollup();
 

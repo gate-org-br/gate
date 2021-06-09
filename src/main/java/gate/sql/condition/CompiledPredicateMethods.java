@@ -33,7 +33,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is equals to the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -144,7 +144,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is equals to the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -253,7 +253,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is less than the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -362,7 +362,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is less than or equals the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -471,7 +471,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is greater than the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -580,7 +580,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is greater than or equals the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -689,7 +689,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is like the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -754,7 +754,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause matches the specified regular expression.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param regex regular expression to be compared with the specified clause
 	 *
@@ -819,7 +819,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is between the specified parameter.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -867,7 +867,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the previously specified clause is between the specified parameters.
 	 *
-	 * @param <T> type of the parameter to be compared with the specified clause
+	 * 
 	 * @param type type of the parameter to be compared with the specified clause
 	 * @param parameter1 first parameter to be compared with the specified clause
 	 * @param parameter2 second parameter to be compared with the specified clause
@@ -934,7 +934,7 @@ interface CompiledPredicateMethods extends Clause
 	/**
 	 * Evaluates to true if the specified parameter list contains the previously specified clause.
 	 *
-	 * @param <T> type of the parameters to be compared with the specified clause
+	 * 
 	 * @param type type of the parameters to be compared with the specified clause
 	 * @param parameters parameter list to be compared with the specified clause
 	 *

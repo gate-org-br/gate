@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Fetches a Cursor as a object of the specified type.
  *
- * @param <T> type of the object to be fetched
+ * 
  */
 public class TypedObjectFetcher<T> implements Fetcher<Optional<T>>
 {

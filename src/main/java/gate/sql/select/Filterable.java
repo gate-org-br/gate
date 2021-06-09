@@ -17,7 +17,7 @@ public interface Filterable extends Clause
 	 *
 	 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 */
 	FilteredSelect where(ConstantCondition predicate);
 
@@ -45,7 +45,7 @@ public interface Filterable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default FilteredSelect.Generic where(GenericCondition predicate)
 		{
@@ -64,7 +64,7 @@ public interface Filterable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default FilteredSelect.Compiled where(CompiledCondition predicate)
 		{
@@ -109,7 +109,7 @@ public interface Filterable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default FilteredSelect.Generic where(GenericCondition predicate)
 		{
@@ -149,7 +149,7 @@ public interface Filterable extends Clause
 		 *
 		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
 		 *
-		 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+		 * @return the current builder, for chained invocations
 		 */
 		default FilteredSelect.Compiled where(CompiledCondition predicate)
 		{

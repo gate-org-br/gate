@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 /**
  * Interpreter of the Gate Query Notation.
  *
- * @param <T> type bound to the notation
+ * 
  *
  * @author Davi Nunes da Silva
  */

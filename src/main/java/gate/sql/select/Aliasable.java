@@ -13,7 +13,7 @@ public interface Aliasable
 	 *
 	 * @param alias the alias to be associated with the previously specified expression
 	 *
-	 * @return the current {@link gate.sql.builder.SQLBuilder}, for chained invocations
+	 * @return the current builder, for chained invocations
 	 *
 	 * @throws NullPointerException if any of the parameters is null
 	 */
