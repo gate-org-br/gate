@@ -157,7 +157,8 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		return exists(subquery.build());
 	}
 
-	static class Rollback extends GenericRelation implements GenericRelationMethods.Rollback
+	static class Rollback extends GenericRelation
+		implements GenericRelationMethods.Rollback
 	{
 
 		public Rollback(Clause clause)
@@ -179,24 +180,6 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 
 		@Override
 		public GenericCondition exists(Query.Constant.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		public GenericCondition not(GenericCondition condition)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		public GenericCondition not(ConstantCondition condition)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		public GenericCondition condition(ConstantCondition condition)
 		{
 			return new GenericCondition(getClause().rollback());
 		}
@@ -232,15 +215,34 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		}
 
 		@Override
+		public GenericCondition not(GenericCondition condition)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		public GenericCondition not(ConstantCondition condition)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
 		public GenericPredicate not(String expression)
 		{
 			return new GenericPredicate.Rollback(getClause());
 		}
 
 		@Override
-		public GenericPredicate expression(String exp)
+		public GenericCondition condition(ConstantCondition condition)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		public GenericPredicate expression(String expression)
 		{
 			return new GenericPredicate.Rollback(getClause());
 		}
+
 	}
 }

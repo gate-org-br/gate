@@ -6,19 +6,13 @@ import gate.sql.Clause;
  * A single predicate of a generic condition.
  */
 public abstract class GenericPredicate extends Predicate implements
-		ConstantPredicateMethods,
-		GenericPredicateMethods
+	ConstantPredicateMethods,
+	GenericPredicateMethods
 {
 
 	GenericPredicate(Clause clause)
 	{
 		super(clause);
-	}
-
-	@Override
-	public GenericPredicate when(boolean assertion)
-	{
-		return assertion ? this : new Rollback(getClause());
 	}
 
 	@Override
@@ -139,8 +133,8 @@ public abstract class GenericPredicate extends Predicate implements
 	}
 
 	static class Rollback extends GenericPredicate implements
-			ConstantPredicateMethods,
-			GenericPredicateMethods.Rollback
+		ConstantPredicateMethods,
+		GenericPredicateMethods.Rollback
 	{
 
 		public Rollback(Clause clause)
@@ -150,6 +144,12 @@ public abstract class GenericPredicate extends Predicate implements
 
 		@Override
 		public GenericCondition isNull()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		public GenericCondition isNotNull()
 		{
 			return new GenericCondition(getClause().rollback());
 		}

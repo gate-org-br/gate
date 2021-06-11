@@ -16,12 +16,6 @@ public class ExtractorPredicate<T> extends Predicate implements
 	}
 
 	@Override
-	public ExtractorPredicate<T> when(boolean assertion)
-	{
-		return assertion ? this : new Rollback(getClause());
-	}
-
-	@Override
 	public ExtractorCondition<T> isNull()
 	{
 		return new ExtractorCondition<T>(this)

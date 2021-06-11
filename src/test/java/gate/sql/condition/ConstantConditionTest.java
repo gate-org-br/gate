@@ -21,10 +21,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isNull()
 			.and().not("column2").isNull()
-			.and("column3").when(true).isNull()
-			.and().not("column4").when(true).isNull()
-			.and("column5").when(false).isNull()
-			.and().not("column6").when(false).isNull()
+			.and().when(true).expression("column3").isNull()
+			.and().when(true).not("column4").isNull()
+			.and().when(false).expression("column5").isNull()
+			.and().when(false).not("column6").isNull()
 			.and("column7").isNull();
 
 		assertEquals("column1 is null and not column2 is null and column3 is null and not column4 is null and column7 is null",
@@ -39,10 +39,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isEq("value1")
 			.and().not("column2").isEq("value2")
-			.and("column3").when(true).isEq("value3")
-			.and().not("column4").when(true).isEq("value4")
-			.and("column5").when(false).isEq("value5")
-			.and().not("column6").when(false).isEq("value6")
+			.and().when(true).expression("column3").isEq("value3")
+			.and().when(true).not("column4").isEq("value4")
+			.and().when(false).expression("column5").isEq("value5")
+			.and().when(false).not("column6").isEq("value6")
 			.and("column7").isEq("value7");
 
 		assertEquals("column1 = value1 and not column2 = value2 and column3 = value3 and not column4 = value4 and column7 = value7",
@@ -57,10 +57,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isNe("value1")
 			.and().not("column2").isNe("value2")
-			.and("column3").when(true).isNe("value3")
-			.and().not("column4").when(true).isNe("value4")
-			.and("column5").when(false).isNe("value5")
-			.and().not("column6").when(false).isNe("value6")
+			.and().when(true).expression("column3").isNe("value3")
+			.and().when(true).not("column4").isNe("value4")
+			.and().when(false).expression("column5").isNe("value5")
+			.and().when(false).not("column6").isNe("value6")
 			.and("column7").isNe("value7");
 
 		assertEquals("column1 <> value1 and not column2 <> value2 and column3 <> value3 and not column4 <> value4 and column7 <> value7",
@@ -74,10 +74,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isLt("value1")
 			.and().not("column2").isLt("value2")
-			.and("column3").when(true).isLt("value3")
-			.and().not("column4").when(true).isLt("value4")
-			.and("column5").when(false).isLt("value5")
-			.and().not("column6").when(false).isLt("value6")
+			.and().when(true).expression("column3").isLt("value3")
+			.and().when(true).not("column4").isLt("value4")
+			.and().when(false).expression("column5").isLt("value5")
+			.and().when(false).not("column6").isLt("value6")
 			.and("column7").isLt("value7");
 
 		assertEquals("column1 < value1 and not column2 < value2 and column3 < value3 and not column4 < value4 and column7 < value7",
@@ -92,10 +92,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isLe("value1")
 			.and().not("column2").isLe("value2")
-			.and("column3").when(true).isLe("value3")
-			.and().not("column4").when(true).isLe("value4")
-			.and("column5").when(false).isLe("value5")
-			.and().not("column6").when(false).isLe("value6")
+			.and().when(true).expression("column3").isLe("value3")
+			.and().when(true).not("column4").isLe("value4")
+			.and().when(false).expression("column5").isLe("value5")
+			.and().when(false).not("column6").isLe("value6")
 			.and("column7").isLe("value7");
 
 		assertEquals("column1 <= value1 and not column2 <= value2 and column3 <= value3 and not column4 <= value4 and column7 <= value7",
@@ -110,10 +110,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isGt("value1")
 			.and().not("column2").isGt("value2")
-			.and("column3").when(true).isGt("value3")
-			.and().not("column4").when(true).isGt("value4")
-			.and("column5").when(false).isGt("value5")
-			.and().not("column6").when(false).isGt("value6")
+			.and().when(true).expression("column3").isGt("value3")
+			.and().when(true).not("column4").isGt("value4")
+			.and().when(false).expression("column5").isGt("value5")
+			.and().when(false).not("column6").isGt("value6")
 			.and("column7").isGt("value7");
 
 		assertEquals("column1 > value1 and not column2 > value2 and column3 > value3 and not column4 > value4 and column7 > value7",
@@ -128,10 +128,10 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isGe("value1")
 			.and().not("column2").isGe("value2")
-			.and("column3").when(true).isGe("value3")
-			.and().not("column4").when(true).isGe("value4")
-			.and("column5").when(false).isGe("value5")
-			.and().not("column6").when(false).isGe("value6")
+			.and().when(true).expression("column3").isGe("value3")
+			.and().when(true).not("column4").isGe("value4")
+			.and().when(false).expression("column5").isGe("value5")
+			.and().when(false).not("column6").isGe("value6")
 			.and("column7").isGe("value7");
 
 		assertEquals("column1 >= value1 and not column2 >= value2 and column3 >= value3 and not column4 >= value4 and column7 >= value7",
@@ -145,12 +145,11 @@ public class ConstantConditionTest
 		Condition condition = Condition
 			.of("column1").isBw("ge1", "le1")
 			.and().not("column2").isBw("ge2", "le2")
-			.and("column3").when(true).isBw("ge3", "le3")
-			.and().not("column4").when(true).isBw("ge4", "le4")
-			.and("column5").when(false).isBw("ge5", "le5")
-			.and().not("column6").when(false).isBw("ge6", "le6")
+			.and().when(true).expression("column3").isBw("ge3", "le3")
+			.and().when(true).not("column4").isBw("ge4", "le4")
+			.and().when(false).expression("column5").isBw("ge5", "le5")
+			.and().when(false).not("column6").isBw("ge6", "le6")
 			.and("column7").isBw("ge7", "le7");
-
 		assertEquals("column1 between ge1 and le1 and not column2 between ge2 and le2 and column3 between ge3 and le3 and not column4 between ge4 and le4 and column7 between ge7 and le7",
 			condition.toString());
 		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
@@ -531,20 +530,20 @@ public class ConstantConditionTest
 	{
 		Condition condition = Condition
 			.of("Role.id").eq(1)
-			.and(Select
+			.and().when(true)
+			.subquery(Select
 				.expression("id")
 				.from("Cliente")
-				.where(Condition
-					.of("id").isEq("1"))).when(true).eq(2);
+				.where(Condition.of("id").isEq("1"))).eq(2);
 		Assert.assertEquals("Role.id = ? and (select id from Cliente where id = 1) = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 
 		condition = Condition.of("Role.id").eq(1)
-			.and(Select
-				.expression("id")
-				.from("Cliente")
-				.where(Condition
-					.of("id").isEq("1"))).when(false).eq(2);
+			.and().when(false).subquery(Select
+			.expression("id")
+			.from("Cliente")
+			.where(Condition
+				.of("id").isEq("1"))).eq(2);
 		Assert.assertEquals("Role.id = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
@@ -554,10 +553,10 @@ public class ConstantConditionTest
 	{
 		String expected = "Role.id = ? and (select id from Cliente where id = 1) = 1";
 		String result = Condition.of("Role.id").eq(1)
-			.and(Select
-				.expression("id")
-				.from("Cliente")
-				.where(Condition.of("id").isEq("1"))).when(true).isEq("1")
+			.and().when(true).subquery(Select
+			.expression("id")
+			.from("Cliente")
+			.where(Condition.of("id").isEq("1"))).isEq("1")
 			.toString();
 		Assert.assertEquals(expected, result);
 	}
@@ -566,7 +565,7 @@ public class ConstantConditionTest
 	public void testFrom()
 	{
 		String expected = "Role.id = ?";
-		String result = Condition.of("Role.id").from(Role.class).eq(Role::getId)
+		String result = Condition.from(Role.class).expression("Role.id").eq(Role::getId)
 			.toString();
 		Assert.assertEquals(expected, result);
 	}

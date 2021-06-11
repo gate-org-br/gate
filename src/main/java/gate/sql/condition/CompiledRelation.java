@@ -181,7 +181,8 @@ public class CompiledRelation extends Relation
 		return not().condition(condition);
 	}
 
-	static class Rollback extends CompiledRelation implements CompiledRelationMethods.Rollback
+	static class Rollback extends CompiledRelation
+		implements CompiledRelationMethods.Rollback
 	{
 
 		public Rollback(Clause clause)
@@ -266,5 +267,54 @@ public class CompiledRelation extends Relation
 		{
 			return new CompiledPredicate.Rollback(getClause());
 		}
+
+		@Override
+		public CompiledPredicate expression(String expression, Object... parameters)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledCondition exists(Query.Compiled.Builder subquery)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledCondition exists(Query.Compiled subquery)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledPredicate subquery(Query.Compiled.Builder subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate subquery(Query.Compiled subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate not(Query.Compiled.Builder subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate not(Query.Compiled subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledCondition condition(CompiledCondition condition)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
 	}
 }

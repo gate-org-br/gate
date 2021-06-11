@@ -289,115 +289,7 @@ interface GenericPredicateMethods extends Clause
 	{
 
 		@Override
-		default GenericCondition eq()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isEq(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isEq(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition ne()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isNe(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isNe(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition lt()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isLt(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isLt(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition le()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isLe(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isLe(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition gt()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isGt(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isGt(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition ge()
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isGe(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition isGe(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
-		default GenericCondition lk()
+		default GenericCondition bw()
 		{
 			return new GenericCondition(getClause().rollback());
 		}
@@ -409,10 +301,117 @@ interface GenericPredicateMethods extends Clause
 		}
 
 		@Override
-		default GenericCondition bw()
+		default GenericCondition lk()
 		{
 			return new GenericCondition(getClause().rollback());
 		}
 
+		@Override
+		default GenericCondition isGe(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isGe(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition ge()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isGt(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isGt(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition gt()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isLe(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isLe(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition le()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isLt(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isLt(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition lt()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isNe(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isNe(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition ne()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isEq(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition isEq(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		default GenericCondition eq()
+		{
+			return new GenericCondition(getClause().rollback());
+		}
 	}
 }

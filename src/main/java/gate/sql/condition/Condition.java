@@ -88,6 +88,87 @@ public abstract class Condition implements Clause
 		};
 	}
 
+	public interface From<T>
+	{
+
+		public ExtractorPredicate<T> expression(String expression);
+	}
+
+	public static <T> From<T> from(Class<T> type)
+	{
+		return (String expression) -> new ExtractorPredicate<T>(ROOT)
+		{
+			@Override
+			public Stream<Object> getParameters()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public Stream<Property> getProperties()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public String toString()
+			{
+				return expression;
+			}
+		};
+	}
+
+	public interface When
+	{
+
+		public ConstantPredicate expression(String expression);
+	}
+
+	public static When when(boolean assertion)
+	{
+		return assertion
+			? (String expression) -> new ConstantPredicate(ROOT)
+		{
+			@Override
+			public Stream<Object> getParameters()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public Stream<Property> getProperties()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public String toString()
+			{
+				return expression;
+			}
+		}
+			: (String expression) -> new ConstantPredicate.Rollback(ROOT)
+		{
+			@Override
+			public Stream<Object> getParameters()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public Stream<Property> getProperties()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public String toString()
+			{
+				return expression;
+			}
+		};
+	}
+
 	/**
 	 * Creates a new predicate with the specified expression.
 	 *

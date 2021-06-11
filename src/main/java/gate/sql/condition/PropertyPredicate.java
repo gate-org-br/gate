@@ -6,19 +6,13 @@ import gate.sql.Clause;
  * A single predicate of a compiled condition.
  */
 public abstract class PropertyPredicate extends Predicate implements
-		ConstantPredicateMethods,
-		PropertyPredicateMethods
+	ConstantPredicateMethods,
+	PropertyPredicateMethods
 {
 
 	PropertyPredicate(Clause clause)
 	{
 		super(clause);
-	}
-
-	@Override
-	public PropertyPredicate when(boolean assertion)
-	{
-		return assertion ? this : new Rollback(getClause());
 	}
 
 	@Override

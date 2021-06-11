@@ -6525,7 +6525,7 @@ class GPopup extends GWindow
 
 window.addEventListener("load", function ()
 {
-	Array.from(document.querySelectorAll('template[data-popup]'))
+	Array.from(document.querySelectorAll('*[data-popup]'))
 		.forEach(element => GPopup.show(element));
 });
 
