@@ -6,8 +6,8 @@
 
 	<groupId>io.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>8.3.0</version>
-	<packaging>war</packaging>
+	<version>9.0.0</version>
+	<packaging>jar</packaging>
 
 	<name>gate</name>
 	<description>A multipurpose java library</description>
@@ -25,7 +25,8 @@
 	</url>
 
 	<scm>
-		<url>https://github.com/gate-org-br/gate</url>
+		<url>scm:git:http://https://github.com/gate-org-br/gate</url>
+		<connection>scm:git:http://https://github.com/gate-org-br/gate.git</connection>
 	</scm>
 
 	<licenses>
@@ -263,27 +264,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>make-a-jar</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>gateclient.GateClient</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

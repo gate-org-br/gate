@@ -1,10 +1,13 @@
 package gate;
 
+import gate.constraint.Constraints;
+import gate.entity.User;
 import gate.error.AppException;
+import gate.error.ConstraintViolationException;
 import gate.error.ConversionException;
+import gate.sql.insert.Insert;
 import gate.type.Phone;
 import gate.util.ScreenServletRequest;
-import gateconsole.contol.UserControl;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -19,6 +22,9 @@ import org.slf4j.Logger;
 @WebServlet("/CreateAccount")
 public class CreateAccount extends HttpServlet
 {
+
+	@Inject
+	private Control control;
 
 	@Inject
 	private Logger logger;
@@ -68,7 +74,7 @@ public class CreateAccount extends HttpServlet
 				user.setPhone(req.getParameter(Phone.class, "user.phone"));
 				user.setCellPhone(req.getParameter(Phone.class, "user.cellPhone"));
 
-				new UserControl().insert(user);
+				control.insert(user);
 				request.setAttribute("messages", "Seu cadastro foi enviado para aprovação. Você será notificado quando aprovado.");
 				request.getRequestDispatcher(Gate.GATE_JSP).forward(request, response);
 			} catch (AppException e)
@@ -82,5 +88,41 @@ public class CreateAccount extends HttpServlet
 		}
 
 		request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
+	}
+
+	public static class Control extends gate.base.Control
+	{
+
+		public void insert(User value) throws AppException
+		{
+			Constraints.validate(value, "active", "userID", "name",
+				"email", "details", "phone", "cellPhone", "CPF");
+
+			try (Dao dao = new Dao())
+			{
+				dao.insert(value);
+			}
+		}
+
+		public static class Dao extends gate.base.Dao
+		{
+
+			public void insert(User user) throws ConstraintViolationException
+			{
+				Insert.into("User")
+					.set("active", user.getActive())
+					.set("userID", user.getUserID())
+					.set("name", user.getName())
+					.set("email", user.getEmail())
+					.set("details", user.getDetails())
+					.set("phone", user.getPhone())
+					.set("cellPhone", user.getCellPhone())
+					.set("CPF", user.getCPF())
+					.set("passwd", user.getUserID())
+					.build()
+					.connect(getLink())
+					.execute();
+			}
+		}
 	}
 }

@@ -12,13 +12,13 @@ public class GenericConditionTest
 	public void testEq()
 	{
 		Condition condition = Condition
-				.of("column1").eq()
-				.and().not("column2").eq()
-				.and("column3").when(true).eq()
-				.and().not("column4").when(true).eq()
-				.and("column3").when(false).eq()
-				.and().not("column4").when(false).eq()
-				.and("column7").eq();
+			.of("column1").eq()
+			.and().not("column2").eq()
+			.and().when(true).expression("column3").eq()
+			.and().when(true).not("column4").eq()
+			.and().when(false).expression("column3").eq()
+			.and().when(false).not("column4").eq()
+			.and("column7").eq();
 		assertEquals("column1 = ? and not column2 = ? and column3 = ? and not column4 = ? and column7 = ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -27,13 +27,13 @@ public class GenericConditionTest
 	public void testNe()
 	{
 		Condition condition = Condition
-				.of("column1").ne()
-				.and().not("column2").ne()
-				.and("column3").when(true).ne()
-				.and().not("column4").when(true).ne()
-				.and("column3").when(false).ne()
-				.and().not("column4").when(false).ne()
-				.and("column7").ne();
+			.of("column1").ne()
+			.and().not("column2").ne()
+			.and().when(true).expression("column3").ne()
+			.and().when(true).not("column4").ne()
+			.and().when(false).expression("column3").ne()
+			.and().when(false).not("column4").ne()
+			.and("column7").ne();
 		assertEquals("column1 <> ? and not column2 <> ? and column3 <> ? and not column4 <> ? and column7 <> ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -42,13 +42,13 @@ public class GenericConditionTest
 	public void testLt()
 	{
 		Condition condition = Condition
-				.of("column1").lt()
-				.and().not("column2").lt()
-				.and("column3").when(true).lt()
-				.and().not("column4").when(true).lt()
-				.and("column3").when(false).lt()
-				.and().not("column4").when(false).lt()
-				.and("column7").lt();
+			.of("column1").lt()
+			.and().not("column2").lt()
+			.and().when(true).expression("column3").lt()
+			.and().when(true).not("column4").lt()
+			.and().when(false).expression("column3").lt()
+			.and().when(false).not("column4").lt()
+			.and("column7").lt();
 		assertEquals("column1 < ? and not column2 < ? and column3 < ? and not column4 < ? and column7 < ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -57,13 +57,13 @@ public class GenericConditionTest
 	public void testLe()
 	{
 		Condition condition = Condition
-				.of("column1").le()
-				.and().not("column2").le()
-				.and("column3").when(true).le()
-				.and().not("column4").when(true).le()
-				.and("column3").when(false).le()
-				.and().not("column4").when(false).le()
-				.and("column7").le();
+			.of("column1").le()
+			.and().not("column2").le()
+			.and().when(true).expression("column3").le()
+			.and().when(true).not("column4").le()
+			.and().when(false).expression("column3").le()
+			.and().when(false).not("column4").le()
+			.and("column7").le();
 		assertEquals("column1 <= ? and not column2 <= ? and column3 <= ? and not column4 <= ? and column7 <= ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -72,13 +72,13 @@ public class GenericConditionTest
 	public void testGt()
 	{
 		Condition condition = Condition
-				.of("column1").gt()
-				.and().not("column2").gt()
-				.and("column3").when(true).gt()
-				.and().not("column4").when(true).gt()
-				.and("column3").when(false).gt()
-				.and().not("column4").when(false).gt()
-				.and("column7").gt();
+			.of("column1").gt()
+			.and().not("column2").gt()
+			.and().when(true).expression("column3").gt()
+			.and().when(true).not("column4").gt()
+			.and().when(false).expression("column3").gt()
+			.and().when(false).not("column4").gt()
+			.and("column7").gt();
 		assertEquals("column1 > ? and not column2 > ? and column3 > ? and not column4 > ? and column7 > ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -87,13 +87,13 @@ public class GenericConditionTest
 	public void testGe()
 	{
 		Condition condition = Condition
-				.of("column1").ge()
-				.and().not("column2").ge()
-				.and("column3").when(true).ge()
-				.and().not("column4").when(true).ge()
-				.and("column3").when(false).ge()
-				.and().not("column4").when(false).ge()
-				.and("column7").ge();
+			.of("column1").ge()
+			.and().not("column2").ge()
+			.and().when(true).expression("column3").ge()
+			.and().when(true).not("column4").ge()
+			.and().when(false).expression("column3").ge()
+			.and().when(false).not("column4").ge()
+			.and("column7").ge();
 		assertEquals("column1 >= ? and not column2 >= ? and column3 >= ? and not column4 >= ? and column7 >= ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -102,13 +102,13 @@ public class GenericConditionTest
 	public void testLk()
 	{
 		Condition condition = Condition
-				.of("column1").lk()
-				.and().not("column2").lk()
-				.and("column3").when(true).lk()
-				.and().not("column4").when(true).lk()
-				.and("column3").when(false).lk()
-				.and().not("column4").when(false).lk()
-				.and("column7").lk();
+			.of("column1").lk()
+			.and().not("column2").lk()
+			.and().when(true).expression("column3").lk()
+			.and().when(true).not("column4").lk()
+			.and().when(false).expression("column3").lk()
+			.and().when(false).not("column4").lk()
+			.and("column7").lk();
 		assertEquals("column1 like ? and not column2 like ? and column3 like ? and not column4 like ? and column7 like ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
@@ -117,13 +117,13 @@ public class GenericConditionTest
 	public void testRx()
 	{
 		Condition condition = Condition
-				.of("column1").rx()
-				.and().not("column2").rx()
-				.and("column3").when(true).rx()
-				.and().not("column4").when(true).rx()
-				.and("column3").when(false).rx()
-				.and().not("column4").when(false).rx()
-				.and("column7").rx();
+			.of("column1").rx()
+			.and().not("column2").rx()
+			.and().when(true).expression("column3").rx()
+			.and().when(true).not("column4").rx()
+			.and().when(false).expression("column3").rx()
+			.and().when(false).not("column4").rx()
+			.and("column7").rx();
 		assertEquals("column1 rlike ? and not column2 rlike ? and column3 rlike ? and not column4 rlike ? and column7 rlike ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}

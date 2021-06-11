@@ -199,5 +199,11 @@ interface GenericRelationMethods extends Clause
 		{
 			return new GenericPredicate.Rollback(getClause());
 		}
+
+		@Override
+		default GenericCondition not(GenericCondition condition)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
 	}
 }

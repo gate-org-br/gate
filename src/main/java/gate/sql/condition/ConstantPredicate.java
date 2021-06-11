@@ -19,12 +19,6 @@ public abstract class ConstantPredicate extends Predicate
 	}
 
 	@Override
-	public ConstantPredicate when(boolean assertion)
-	{
-		return assertion ? this : new Rollback(getClause());
-	}
-
-	@Override
 	public ConstantCondition isNull()
 	{
 		return new ConstantCondition(this)
@@ -141,11 +135,6 @@ public abstract class ConstantPredicate extends Predicate
 		};
 	}
 
-	public <T> ExtractorPredicate<T> from(Class<T> type)
-	{
-		return new ExtractorPredicate<>(this);
-	}
-
 	static class Rollback extends ConstantPredicate
 		implements ConstantPredicateMethods,
 		GenericPredicateMethods.Rollback,
@@ -204,5 +193,12 @@ public abstract class ConstantPredicate extends Predicate
 		{
 			return new ConstantCondition(getClause().rollback());
 		}
+
+		@Override
+		public ConstantCondition isNotNull()
+		{
+			return new ConstantCondition(getClause().rollback());
+		}
+
 	}
 }

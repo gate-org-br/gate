@@ -246,15 +246,63 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
+		public ConstantPredicate expression(String expression)
+		{
+			return new ConstantPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate expression(String expression, Object... parameters)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public GenericCondition exists(Query.Builder subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledCondition exists(Query.Compiled.Builder subquery)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledCondition exists(Query.Compiled subquery)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public GenericCondition exists(Query subquery)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
 		public ConstantPredicate not(Query.Constant.Builder subquery)
 		{
 			return new ConstantPredicate.Rollback(getClause());
 		}
 
 		@Override
-		public ConstantPredicate not(Query.Constant subquery)
+		public GenericPredicate not(Query.Builder subquery)
 		{
-			return new ConstantPredicate.Rollback(getClause());
+			return new GenericPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledCondition condition(CompiledCondition condition)
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledPredicate not(Query.Compiled.Builder subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
 		}
 
 		@Override
@@ -264,19 +312,61 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
+		public CompiledPredicate not(Query.Compiled subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public ConstantPredicate not(Query.Constant subquery)
+		{
+			return new ConstantPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public GenericPredicate subquery(Query.Builder subquery)
+		{
+			return new GenericPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate subquery(Query.Compiled.Builder subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public CompiledPredicate subquery(Query.Compiled subquery)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
+
+		@Override
 		public ConstantPredicate subquery(Query.Constant subquery)
 		{
 			return new ConstantPredicate.Rollback(getClause());
 		}
 
 		@Override
-		public ConstantPredicate not(String exp)
+		public GenericPredicate subquery(Query subquery)
 		{
-			return new ConstantPredicate.Rollback(getClause());
+			return new GenericPredicate.Rollback(getClause());
 		}
 
 		@Override
-		public ConstantPredicate expression(String exp)
+		public GenericPredicate not(Query subquery)
+		{
+			return new GenericPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public GenericCondition condition(GenericCondition condition)
+		{
+			return new GenericCondition(getClause().rollback());
+		}
+
+		@Override
+		public ConstantPredicate not(String expression)
 		{
 			return new ConstantPredicate.Rollback(getClause());
 		}

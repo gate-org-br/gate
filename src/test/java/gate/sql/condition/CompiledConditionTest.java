@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class CompiledConditionTest
@@ -22,10 +21,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").eq(1)
 			.and().not("column2").eq(2)
-			.and("column3").when(true).eq(3)
-			.and().not("column4").when(true).eq(4)
-			.and("column3").when(false).eq(5)
-			.and().not("column4").when(false).eq(6)
+			.and().when(true).expression("column3").eq(3)
+			.and().when(true).not("column4").eq(4)
+			.and().when(false).expression("column3").eq(5)
+			.and().when(false).not("column4").eq(6)
 			.and("column7").eq(7)
 			.and("column8").eq(null)
 			.and().not("column9").eq(null);
@@ -39,10 +38,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").ne(1)
 			.and().not("column2").ne(2)
-			.and("column3").when(true).ne(3)
-			.and().not("column4").when(true).ne(4)
-			.and("column3").when(false).ne(5)
-			.and().not("column4").when(false).ne(6)
+			.and().when(true).expression("column3").ne(3)
+			.and().when(true).not("column4").ne(4)
+			.and().when(false).expression("column3").ne(5)
+			.and().when(false).not("column4").ne(6)
 			.and("column7").ne(7)
 			.and("column8").ne(null)
 			.and().not("column9").ne(null);
@@ -56,10 +55,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").lt(1)
 			.and().not("column2").lt(2)
-			.and("column3").when(true).lt(3)
-			.and().not("column4").when(true).lt(4)
-			.and("column3").when(false).lt(5)
-			.and().not("column4").when(false).lt(6)
+			.and().when(true).expression("column3").lt(3)
+			.and().when(true).not("column4").lt(4)
+			.and().when(false).expression("column3").lt(5)
+			.and().when(false).not("column4").lt(6)
 			.and("column7").lt(7)
 			.and("column8").lt(null)
 			.and().not("column9").lt(null);
@@ -73,10 +72,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").le(1)
 			.and().not("column2").le(2)
-			.and("column3").when(true).le(3)
-			.and().not("column4").when(true).le(4)
-			.and("column3").when(false).le(5)
-			.and().not("column4").when(false).le(6)
+			.and().when(true).expression("column3").le(3)
+			.and().when(true).not("column4").le(4)
+			.and().when(false).expression("column3").le(5)
+			.and().when(false).not("column4").le(6)
 			.and("column7").le(7)
 			.and("column8").le(null)
 			.and().not("column9").le(null);
@@ -90,10 +89,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").gt(1)
 			.and().not("column2").gt(2)
-			.and("column3").when(true).gt(3)
-			.and().not("column4").when(true).gt(4)
-			.and("column3").when(false).gt(5)
-			.and().not("column4").when(false).gt(6)
+			.and().when(true).expression("column3").gt(3)
+			.and().when(true).not("column4").gt(4)
+			.and().when(false).expression("column3").gt(5)
+			.and().when(false).not("column4").gt(6)
 			.and("column7").gt(7)
 			.and("column8").gt(null)
 			.and().not("column9").gt(null);
@@ -107,10 +106,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").ge(1)
 			.and().not("column2").ge(2)
-			.and("column3").when(true).ge(3)
-			.and().not("column4").when(true).ge(4)
-			.and("column3").when(false).ge(5)
-			.and().not("column4").when(false).ge(6)
+			.and().when(true).expression("column3").ge(3)
+			.and().when(true).not("column4").ge(4)
+			.and().when(false).expression("column3").ge(5)
+			.and().when(false).not("column4").ge(6)
 			.and("column7").ge(7)
 			.and("column8").ge(null)
 			.and().not("column9").ge(null);
@@ -124,10 +123,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").lk(1)
 			.and().not("column2").lk(2)
-			.and("column3").when(true).lk(3)
-			.and().not("column4").when(true).lk(4)
-			.and("column3").when(false).lk(5)
-			.and().not("column4").when(false).lk(6)
+			.and().when(true).expression("column3").lk(3)
+			.and().when(true).not("column4").lk(4)
+			.and().when(false).expression("column3").lk(5)
+			.and().when(false).not("column4").lk(6)
 			.and("column7").lk(7)
 			.and("column8").lk(null)
 			.and().not("column9").lk(null);
@@ -141,10 +140,10 @@ public class CompiledConditionTest
 		Condition condition = Condition
 			.of("column1").rx(1)
 			.and().not("column2").rx(2)
-			.and("column3").when(true).rx(3)
-			.and().not("column4").when(true).rx(4)
-			.and("column3").when(false).rx(5)
-			.and().not("column4").when(false).rx(6)
+			.and().when(true).expression("column3").rx(3)
+			.and().when(true).not("column4").rx(4)
+			.and().when(false).expression("column3").rx(5)
+			.and().when(false).not("column4").rx(6)
 			.and("column7").rx(7)
 			.and("column8").rx(null)
 			.and().not("column9").rx(null);
@@ -237,8 +236,8 @@ public class CompiledConditionTest
 	public void test07()
 	{
 		CompiledCondition condition
-			= Condition
-				.of("id").when(false).eq(1)
+			= Condition.when(false)
+				.expression("id").eq(1)
 				.and("name").eq("Person 1")
 				.and("birthdate").gt(null);
 
@@ -253,8 +252,8 @@ public class CompiledConditionTest
 	{
 		CompiledCondition condition = Condition
 			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(new ID(1))
-			.and(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).when(false).eq("Person 1")
-			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).when(true).eq(new ID(2))
+			.and().when(false).expression(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
+			.and().when(true).expression(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());

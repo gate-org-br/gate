@@ -237,5 +237,10 @@ interface CompiledRelationMethods extends Clause
 			return new CompiledPredicate.Rollback(getClause());
 		}
 
+		@Override
+		default CompiledPredicate expression(String expression, Object... parameters)
+		{
+			return new CompiledPredicate.Rollback(getClause());
+		}
 	}
 }

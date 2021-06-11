@@ -782,39 +782,65 @@ ul.DeskPane > li {
   margin: 4px;
   display: flex;
   cursor: pointer;
+  flex-basis: 100%;
   border-radius: 5px;
   align-items: stretch;
   list-style-type: none;
   align-content: stretch;
   justify-content: center;
   border: 2px solid white;
-  width: calc(100% - 8px);
   background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
-}
-@media only screen and (min-width: 576px) {
-  ul.DeskPane > li {
-    width: calc(100% - 8px);
-  }
-}
-@media only screen and (min-width: 768px) {
-  ul.DeskPane > li {
-    width: calc(50% - 8px);
-  }
+  flex-basis: calc(100% - 8px);
 }
 @media only screen and (min-width: 992px) {
   ul.DeskPane > li {
-    width: calc(50% - 8px);
+    flex-basis: calc(50% - 8px);
   }
 }
 @media only screen and (min-width: 1200px) {
   ul.DeskPane > li {
-    width: calc(25% - 8px);
+    flex-basis: calc(25% - 8px);
   }
 }
-@media only screen and (min-width: 1400px) {
-  ul.DeskPane > li {
-    width: calc(25% - 8px);
+@media only screen and (min-width: 768px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(50% - 8px);
   }
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(12.5% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li[data-size='2'],
+  ul.DeskPane > li[x2] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='2'],
+  ul.DeskPane > li[x2] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='4'],
+  ul.DeskPane > li[x4] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+ul.DeskPane > li[data-size='8'],
+ul.DeskPane > li[x8] {
+  flex-basis: calc(100% - 8px);
 }
 ul.DeskPane > li:hover {
   border-color: #FFFACD;
@@ -5630,4 +5656,3 @@ big {
 small {
   font-size: 0.8em;
 }
-/*# sourceMappingURL=Gate.css.map */

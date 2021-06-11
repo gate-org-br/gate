@@ -17,12 +17,6 @@ public abstract class CompiledPredicate extends Predicate implements
 	}
 
 	@Override
-	public CompiledPredicate when(boolean assertion)
-	{
-		return assertion ? this : new Rollback(getClause());
-	}
-
-	@Override
 	public CompiledCondition isNull()
 	{
 		return new CompiledCondition(this)
@@ -149,6 +143,12 @@ public abstract class CompiledPredicate extends Predicate implements
 
 		@Override
 		public CompiledCondition isNull()
+		{
+			return new CompiledCondition(getClause().rollback());
+		}
+
+		@Override
+		public CompiledCondition isNotNull()
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
