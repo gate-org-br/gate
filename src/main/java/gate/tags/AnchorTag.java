@@ -137,6 +137,11 @@ public class AnchorTag extends DynamicAttributeTag
 		return Gate.checkAccess(user, module, screen, action, javaClass, javaMethod);
 	}
 
+	public boolean checkAccess(String module, String screen, String action)
+	{
+		return Gate.checkAccess(user, module, screen, action, javaClass, javaMethod);
+	}
+
 	public String getURL()
 	{
 		return URL.toString(module, screen, action, arguments);

@@ -33,14 +33,14 @@ abstract class PropertyTag extends DynamicAttributeTag
 		return value;
 	}
 
-	public Class<?> getType()
-	{
-		return type;
-	}
-
 	public Class<?> getElementType()
 	{
 		return elementType;
+	}
+
+	public Class<?> getType()
+	{
+		return type;
 	}
 
 	public String getName()
@@ -113,5 +113,7 @@ abstract class PropertyTag extends DynamicAttributeTag
 			if (placeholder != null && !placeholder.isEmpty())
 				getAttributes().put("placeholder", placeholder);
 		}
+
+		getAttributes().putIfAbsent("tabindex", "1");
 	}
 }

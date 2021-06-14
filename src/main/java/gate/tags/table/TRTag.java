@@ -1,21 +1,20 @@
-package gate.tags;
+package gate.tags.table;
 
 import gate.annotation.Color;
 import gate.annotation.Description;
 import gate.annotation.Name;
 import gate.annotation.Tooltip;
+import gate.tags.*;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
-public class TableDataTag extends AnchorTag
+public class TRTag extends AnchorTag
 {
 
 	@Override
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		PageContext pageContext = (PageContext) getJspContext();
 
 		if (!getAttributes().containsKey("title"))
 			Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
@@ -35,22 +34,25 @@ public class TableDataTag extends AnchorTag
 		if (getTabindex() != null)
 			getAttributes().put("tabindex", getTabindex());
 
-		if (getCondition() && checkAccess())
-		{
-			getAttributes().put("data-action", getURL());
-			if ("POST".equalsIgnoreCase(getMethod()))
-				getAttributes().put("data-method", "post");
+		if (getModule() != null
+			|| getScreen() != null
+			|| getAction() != null)
+			if (getCondition() && checkAccess())
+			{
+				getAttributes().put("data-action", getURL());
+				if ("POST".equalsIgnoreCase(getMethod()))
+					getAttributes().put("data-method", "post");
 
-			if (getTarget() != null)
-				getAttributes().put("data-target", getTarget());
-		}
+				if (getTarget() != null)
+					getAttributes().put("data-target", getTarget());
+			}
 
-		pageContext.getOut().print("<td " + getAttributes() + ">");
-		if (getJspBody() != null)
-			getJspBody().invoke(null);
-		else
-			pageContext.getOut().print(createBody());
-		pageContext.getOut().print("</td>");
+		getJspContext().getOut().print(getAttributes().isEmpty()
+			? "<tr>"
+			: "<tr " + getAttributes().toString() + " >");
+		getJspBody().invoke(null);
+		getJspContext().getOut().print("</tr>");
 
 	}
+
 }

@@ -43,6 +43,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -251,5 +252,4 @@ public class Gate extends HttpServlet
 
 		return user != null && user.checkAccess(module, screen, action);
 	}
-
 }

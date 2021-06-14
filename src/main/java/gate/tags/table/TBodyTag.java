@@ -1,10 +1,11 @@
-package gate.tags;
+package gate.tags.table;
 
+import gate.tags.IterableTag;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-public class IteratorTag extends IterableTag
+public class TBodyTag extends IterableTag
 {
 
 	@Override
@@ -25,7 +26,9 @@ public class IteratorTag extends IterableTag
 		if (createDepth)
 			getJspContext().setAttribute(depth, -1, PageContext.REQUEST_SCOPE);
 
+		getJspContext().getOut().print("<tbody>");
 		iterate(source);
+		getJspContext().getOut().print("</tbody>");
 
 		if (createIndex)
 			getJspContext().removeAttribute(index);
@@ -34,5 +37,4 @@ public class IteratorTag extends IterableTag
 			getJspContext().removeAttribute(depth);
 
 	}
-
 }

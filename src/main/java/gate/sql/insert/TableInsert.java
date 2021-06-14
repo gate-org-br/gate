@@ -29,7 +29,7 @@ public class TableInsert implements Insert
 	/**
 	 * Binds the insert statement to a list of entities.
 	 *
-	 * 
+	 *
 	 * @param type the type of the entity where parameter values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
@@ -65,7 +65,7 @@ public class TableInsert implements Insert
 	/**
 	 * Adds a new column to be persisted.
 	 *
-	 * 
+	 *
 	 * @param type type of the column to be persisted
 	 * @param column the column to be persisted
 	 *
@@ -92,7 +92,7 @@ public class TableInsert implements Insert
 	/**
 	 * Adds a new column to be persisted with the specified value.
 	 *
-	 * 
+	 *
 	 * @param type type of the column to be added
 	 * @param column the column to be added
 	 * @param value the value associated
@@ -146,7 +146,7 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 *
@@ -206,7 +206,7 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -280,7 +280,7 @@ public class TableInsert implements Insert
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param value the value associated
@@ -295,7 +295,7 @@ public class TableInsert implements Insert
 			/**
 			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param type type of the column to be added
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -380,6 +380,17 @@ public class TableInsert implements Insert
 		}
 
 		/**
+		 * Adds an ignore modifier to the select sentence.
+		 *
+		 * @return the same builder with the added column
+		 */
+		public Prepared<E> ignore()
+		{
+			insert.add("ignore");
+			return this;
+		}
+
+		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
 		 * @param column the column to be added
@@ -447,7 +458,7 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column to be persisted if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be persisted
 		 * @param column the column to be persisted
 		 *
@@ -487,7 +498,7 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -502,7 +513,7 @@ public class TableInsert implements Insert
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param supplier the supplier of the value associated
