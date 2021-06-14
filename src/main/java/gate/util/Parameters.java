@@ -2,6 +2,7 @@ package gate.util;
 
 import gate.error.AppError;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Parameter;
 import java.io.UnsupportedEncodingException;
 
@@ -13,6 +14,10 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class Parameters extends HashMap<String, Object>
 {
+
+	public Parameters()
+	{
+	}
 
 	public Parameters(List<Parameter> parameters)
 	{
@@ -38,5 +43,31 @@ public class Parameters extends HashMap<String, Object>
 		{
 			throw new AppError(e);
 		}
+	}
+
+	public static Parameters parse(String string) throws ConversionException
+	{
+		Parameters parameters = new Parameters();
+
+		int i = 0;
+		while (i < string.length())
+		{
+			StringBuilder name = new StringBuilder();
+			while (i < string.length() && string.charAt(i) != '=')
+				name.append(string.charAt(i++));
+			i++;
+
+			StringBuilder value = new StringBuilder();
+			while (i < string.length() && string.charAt(i) != '&')
+				value.append(string.charAt(i++));
+			i++;
+
+			if (name.length() == 0 || value.length() == 0)
+				throw new ConversionException(string + " is not a valid query string");
+
+			parameters.put(name.toString(), value.toString());
+		}
+
+		return parameters;
 	}
 }
