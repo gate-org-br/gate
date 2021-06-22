@@ -12,8 +12,6 @@
 @import "Objects.js"
 @import "Colorizer.js"
 @import "DataFormat.js"
-@import "desk-menu/desk-menu.js"
-@import "desk-pane/desk-pane.js"
 @import "mask/mask.js"
 @import "g-modal/g-modal.js"
 @import "g-window/g-window.js"
@@ -91,4 +89,8 @@
 @import "g-grid/g-grid.js"
 @import "g-text-editor/g-text-editor.js"
 @import "g-select/g-select.js"
+@import "g-card/g-card.js"
+@import "g-desk-pane/g-desk-pane.js"
+@import "g-icon-pane/g-icon-pane.js"
+@import "g-card-pane/g-card-pane.js"
 

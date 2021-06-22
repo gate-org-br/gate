@@ -1099,63 +1099,6 @@
 	</tag>
 
 	<tag>
-		<name>label-field</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.LabelFieldTag</tag-class>
-		<description>
-			Creates a HTML label with the provided property value
-			converted to human readable text if the specified condition
-			is true.
-		</description>
-		<attribute>
-			<name>property</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The property whose value is to be printed
-				on the label.
-			</description>
-		</attribute>
-		<attribute>
-			<name>format</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Type specific format string to be used when
-				making the conversion.
-			</description>
-		</attribute>
-		<attribute>
-			<name>empty</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional text to be printed if the property
-				value is null.
-			</description>
-		</attribute>
-
-		<attribute>
-			<name>size</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The number of columns of the field
-				to be created
-			</description>
-		</attribute>
-		<attribute>
-			<name>label</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				the label of the field to be created
-			</description>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>text</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
@@ -1197,69 +1140,6 @@
 			<description>
 				An optional lambda expression to be used to
 				extract option values.
-			</description>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>text-field</name>
-		<body-content>empty</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.TextFieldTag</tag-class>
-		<description>
-			Creates a html text input bound
-			to the current screen specified property.
-		</description>
-		<attribute>
-			<name>property</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The current screen property to be synchronized
-				with the generated text input.
-			</description>
-		</attribute>
-		<attribute>
-			<name>options</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The options of the text input to be created.
-			</description>
-		</attribute>
-		<attribute>
-			<name>labels</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				An optional lambda expression to be used to
-				extract option labels.
-			</description>
-		</attribute>
-		<attribute>
-			<name>values</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				An optional lambda expression to be used to
-				extract option values.
-			</description>
-		</attribute>
-		<attribute>
-			<name>size</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The number of columns of the field
-				to be created
-			</description>
-		</attribute>
-		<attribute>
-			<name>label</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				the label of the field to be created
 			</description>
 		</attribute>
 	</tag>
@@ -1516,108 +1396,6 @@
 			<description>
 				Optional label to be displayed on the
 				empty option.
-			</description>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>select-field</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.SelectFieldTag</tag-class>
-		<description>
-			Creates a html select tag bound
-			to the current screen specified property
-			if the specified condition is true.
-		</description>
-		<attribute>
-			<name>property</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The current screen property to be synchronized
-				with the generated select.
-			</description>
-		</attribute>
-		<attribute>
-			<name>options</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The list of options to be displayed. Defaults
-				to enum elements and boolean values. Required
-				for non enum, non boolean properties.
-			</description>
-		</attribute>
-		<attribute>
-			<name>children</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to extract the
-				descendant list of each option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>values</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to extract the
-				value of each option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>labels</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to extract the
-				label of each option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>groups</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to group
-				select options.
-			</description>
-		</attribute>
-		<attribute>
-			<name>sortby</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to sort
-				select options.
-			</description>
-		</attribute>
-		<attribute>
-			<name>empty</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional label to be displayed on the
-				empty option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>size</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The number of columns of the field
-				to be created
-			</description>
-		</attribute>
-		<attribute>
-			<name>label</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				the label of the field to be created
 			</description>
 		</attribute>
 	</tag>
@@ -2387,7 +2165,7 @@
 		</description>
 		<attribute>
 			<name>source</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
 				Collection with the elements
@@ -2546,6 +2324,33 @@
 				if the value and the body are empty
 			</description>
 		</attribute>
+		<attribute>
+			<name>ordenate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Creates a link to toggle the sort criteria
+				of the current screen.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Request method to be used on the generated
+				ordenate link. Defaults to the current request method.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of optional arguments to be included
+				on the generated ordenate link URL.
+			</description>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -2578,145 +2383,48 @@
 	</tag>
 
 	<tag>
-		<name>search-link</name>
+		<name>hide</name>
 		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.HideTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.SearchLinkTag</tag-class>
 		<description>
-			Creates a HTML button pointing to the current
-			page.
-		</description>
-	</tag>
-	<tag>
-		<name>select-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.SelectLinkTag</tag-class>
-		<description>
-			Creates a HTML link pointing to the current
-			screen select action.
-		</description>
-	</tag>
-	<tag>
-		<name>insert-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.InsertLinkTag</tag-class>
-		<description>
-			Creates a HTML link pointing to the current
-			screen insert action.
-		</description>
-	</tag>
-	<tag>
-		<name>update-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.UpdateLinkTag</tag-class>
-		<description>
-			Creates a HTML link pointing to the current
-			screen update action.
-		</description>
-	</tag>
-	<tag>
-		<name>delete-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.DeleteLinkTag</tag-class>
-		<description>
-			Creates a HTML link pointing to the current
-			screen delete action.
-		</description>
-	</tag>
-
-
-
-	<tag>
-		<name>commit-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.CommitLinkTag</tag-class>
-		<description>
-			Creates a HTML button pointing to the current
-			page.
-		</description>
-	</tag>
-
-
-
-	<tag>
-		<name>export-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.ExportLinkTag</tag-class>
-		<description>
-			Creates a HTML link pointing to the current
-			screen export action.
+			Creates a hide link.
 		</description>
 	</tag>
 
 	<tag>
-		<name>report-link</name>
+		<name>get</name>
+		<display-name>Get</display-name>
 		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.ReportLinkTag</tag-class>
+		<tag-class>gate.tags.GetTag</tag-class>
 		<description>
-			Creates a HTML link pointing to the current
-			screen report action.
+			Excetutes the body only if the request method is get.
 		</description>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed otherwise.
+			</description>
+		</attribute>
 	</tag>
 
 	<tag>
-		<name>search-link</name>
+		<name>post</name>
+		<display-name>Post</display-name>
 		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.SearchLinkTag</tag-class>
+		<tag-class>gate.tags.PostTag</tag-class>
 		<description>
-			Creates a HTML button pointing to the current
-			screen.
+			Excetutes the body only if the request method is post
 		</description>
-	</tag>
-
-
-
-	<tag>
-		<name>return-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.ReturnLinkTag</tag-class>
-		<description>
-			Creates a HTML link to close the
-			current dialog.
-		</description>
-	</tag>
-
-	<tag>
-		<name>cancel-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.CancelLinkTag</tag-class>
-		<description>
-			Creates a HTML link to close the
-			current dialog.
-		</description>
-	</tag>
-
-	<tag>
-		<name>module-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.ModuleLinkTag</tag-class>
-		<description>
-			Creates a HTML link to the current module.
-		</description>
-	</tag>
-
-	<tag>
-		<name>screen-link</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.link.ScreenLinkTag</tag-class>
-		<description>
-			Creates a HTML link to the current screen.
-		</description>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed otherwise.
+			</description>
+		</attribute>
 	</tag>
 </taglib>

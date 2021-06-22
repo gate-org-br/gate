@@ -10,7 +10,7 @@ public class Icons
 {
 
 	public static final Icon UNKNOWN
-		= new Icon("?", "??????");
+		= new Icon("1006", "??????");
 
 	private final List<Icon> icons;
 
@@ -27,7 +27,7 @@ public class Icons
 	{
 		List<Icon> models = new ArrayList<>();
 		models.add(new Icon("1000", "commit"));
-		models.add(new Icon("1001", "cancel"));
+		models.add(new Icon("1001", "hide"));
 		models.add(new Icon("1002", "insert"));
 		models.add(new Icon("1003", "??????"));
 		models.add(new Icon("1006", "??????"));
@@ -49,7 +49,7 @@ public class Icons
 		models.add(new Icon("2004", "person"));
 		models.add(new Icon("2005", "people"));
 		models.add(new Icon("2006", "??????"));
-		models.add(new Icon("2007", "??????"));
+		models.add(new Icon("2007", "exit"));
 		models.add(new Icon("2008", "home"));
 		models.add(new Icon("2009", "??????"));
 		models.add(new Icon("200A", "??????"));
@@ -70,7 +70,7 @@ public class Icons
 		models.add(new Icon("2024", "??????"));
 		models.add(new Icon("2025", "??????"));
 		models.add(new Icon("2026", "delete"));
-		models.add(new Icon("2027", "??????"));
+		models.add(new Icon("2027", "cancel"));
 		models.add(new Icon("2030", "??????"));
 		models.add(new Icon("2031", "pchart"));
 		models.add(new Icon("2032", "lchart"));
@@ -382,6 +382,11 @@ public class Icons
 				return Optional.of(icon);
 
 		return Optional.empty();
+	}
+
+	public static Icon getIcon(String string)
+	{
+		return getInstance().get(string).orElse(UNKNOWN);
 	}
 
 	public static class Icon

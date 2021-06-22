@@ -10,7 +10,7 @@ import java.util.StringJoiner;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-public class PathTag extends DynamicAttributeTag
+public class PathTag extends AttributeTag
 {
 
 	private String module;

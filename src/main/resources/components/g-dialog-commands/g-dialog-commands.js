@@ -1,13 +1,12 @@
-/* global customElements, GOverflow, Proxy, GDialog */
+/* global customElements, GOverflow */
 
-class GDialogCommands extends GOverflow
-{
-	constructor()
+window.addEventListener("load",
+	customElements.define('g-dialog-commands', class extends GOverflow
 	{
-		super();
-		window.addEventListener("load", () =>
-			GDialog.commands = this);
-	}
-}
-
-customElements.define('g-dialog-commands', GDialogCommands);
+		constructor()
+		{
+			super();
+			GDialog.commands = this;
+			this.container.style.flexDirection = "row-reverse";
+		}
+	}));

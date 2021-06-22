@@ -3,7 +3,7 @@ package gate.tags;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class ColorTag extends DynamicAttributeTag
+public class ColorTag extends AttributeTag
 {
 
 	private Object type;

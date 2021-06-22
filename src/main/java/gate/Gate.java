@@ -29,10 +29,14 @@ import gate.type.Result;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.inject.spi.CDI;
@@ -43,7 +47,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
+import org.jboss.weld.context.api.ContextualInstance;
+import org.jboss.weld.context.bound.BoundConversationContext;
+import org.jboss.weld.context.bound.BoundLiteral;
+import org.jboss.weld.context.bound.BoundRequest;
+import org.jboss.weld.context.bound.BoundRequestContext;
+import org.jboss.weld.context.bound.BoundSessionContext;
+import org.jboss.weld.context.bound.MutableBoundRequest;
+import org.jboss.weld.manager.api.WeldManager;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -60,9 +71,6 @@ public class Gate extends HttpServlet
 	@Inject
 	@Current
 	private App app;
-
-	@Inject
-	private Session session;
 
 	@Inject
 	private GateControl control;
@@ -96,7 +104,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("MODULE", MODULE);
 			request.setAttribute("SCREEN", SCREEN);
 
-			User user = Credentials.of(request).orElseGet(() -> session.getUser());
+			User user = Credentials.of(request).orElseGet(() -> (User) request.getSession().getAttribute(User.class.getName()));
 
 			if (Toolkit.isEmpty(MODULE)
 				&& Toolkit.isEmpty(SCREEN)
@@ -105,7 +113,6 @@ public class Gate extends HttpServlet
 			{
 				if (request.getSession(false) != null)
 					request.getSession().invalidate();
-				session = CDI.current().select(Session.class).get();
 				getServletContext().getRequestDispatcher(GATE_JSP).forward(request, response);
 			} else
 			{
@@ -113,10 +120,10 @@ public class Gate extends HttpServlet
 				String password = request.getParameter("$passwd");
 
 				if (!Toolkit.isEmpty(username) && !Toolkit.isEmpty(password))
-					session.setUser(user = control.select(org, username, password));
+					request.getSession().setAttribute(User.class.getName(), user = control.select(org, username, password));
 				else if (httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
-					session.setUser(user = control.select(httpServletRequest.getUserPrincipal().getName()));
+					request.getSession().setAttribute(User.class.getName(), user = control.select(httpServletRequest.getUserPrincipal().getName()));
 
 				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
 				Method method = Screen.getAction(clazz, ACTION).orElseThrow(InvalidRequestException::new);
@@ -129,55 +136,9 @@ public class Gate extends HttpServlet
 				screen.prepare(request, response);
 
 				if (method.isAnnotationPresent(Asynchronous.class))
-				{
-					Progress progress = Progress.create(org, app, user);
-					request.setAttribute("process", progress.getProcess());
-					Handler.getHandler(Integer.class).handle(httpServletRequest, response, progress.getProcess());
-
-					managedThreadFactory.newThread(() ->
-					{
-						Progress.bind(progress);
-						try
-						{
-							Thread.sleep(1000);
-							Object url = screen.execute(method);
-							if (url != null)
-								Progress.redirect(url.toString());
-						} catch (InvocationTargetException ex)
-						{
-							if (Progress.Status.PENDING.equals(Progress.status()))
-								Progress.cancel(ex.getCause().getMessage());
-							else
-								Progress.message(ex.getCause().getMessage());
-						} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
-						{
-							if (Progress.Status.PENDING.equals(Progress.status()))
-								Progress.cancel(ex.getMessage());
-							else
-								Progress.message(ex.getMessage());
-							logger.error(ex.getMessage(), ex);
-						} finally
-						{
-							try
-							{
-								Thread.sleep(5000);
-								Progress.dispose();
-							} catch (InterruptedException ex)
-							{
-								Progress.dispose();
-							}
-						}
-					}).start();
-				} else
-				{
-					Object result = screen.execute(method);
-					if (result != null)
-						if (method.isAnnotationPresent(gate.annotation.Handler.class))
-							Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
-								.handle(request, response, result);
-						else
-							Handler.getHandler(result.getClass()).handle(request, response, result);
-				}
+					executeAsynchronous(httpServletRequest, response, user, screen, method);
+				else
+					execute(httpServletRequest, response, user, screen, method);
 			}
 
 		} catch (InvalidUsernameException
@@ -229,6 +190,96 @@ public class Gate extends HttpServlet
 				.handle(httpServletRequest, response, Result.error(ex.getMessage()));
 
 		}
+	}
+
+	private void execute(HttpServletRequest request,
+		HttpServletResponse response, User user, Screen screen, Method method)
+		throws RuntimeException, IllegalAccessException, InvocationTargetException
+	{
+		Object result = screen.execute(method);
+		if (result != null)
+			if (method.isAnnotationPresent(gate.annotation.Handler.class))
+				Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
+					.handle(request, response, result);
+			else
+				Handler.getHandler(result.getClass()).handle(request, response, result);
+	}
+
+	private void executeAsynchronous(HttpServletRequest request,
+		HttpServletResponse response, User user, Screen screen, Method method)
+	{
+		Progress progress = Progress.create(org, app, user);
+		request.setAttribute("process", progress.getProcess());
+		Handler.getHandler(Integer.class).handle(request, response, progress.getProcess());
+
+		Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
+		CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()
+			.forEach(context -> scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances()));
+
+		managedThreadFactory.newThread(() ->
+		{
+			Progress.bind(progress);
+			try
+			{
+				Thread.sleep(1000);
+
+				WeldManager weldManager = CDI.current().select(WeldManager.class).get();
+				BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
+				BoundSessionContext sessionContext = weldManager.instance().select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
+				BoundConversationContext conversationContext = weldManager.instance().select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
+
+				Map<String, Object> sessionMap = new HashMap<>();
+				Map<String, Object> requestMap = new HashMap<>();
+				BoundRequest boundRequest = new MutableBoundRequest(requestMap, sessionMap);
+
+				requestContext.associate(requestMap);
+				requestContext.activate();
+				sessionContext.associate(sessionMap);
+				sessionContext.activate();
+				conversationContext.associate(boundRequest);
+				conversationContext.activate();
+
+				if (scopeToContextualInstances.get(requestContext.getScope()) != null)
+					requestContext.clearAndSet(scopeToContextualInstances.get(requestContext.getScope()));
+				if (scopeToContextualInstances.get(sessionContext.getScope()) != null)
+					sessionContext.clearAndSet(scopeToContextualInstances.get(sessionContext.getScope()));
+				if (scopeToContextualInstances.get(conversationContext.getScope()) != null)
+					conversationContext.clearAndSet(scopeToContextualInstances.get(conversationContext.getScope()));
+
+				Object url = screen.execute(method);
+
+				requestContext.deactivate();
+				conversationContext.deactivate();
+				sessionContext.deactivate();
+
+				if (url != null)
+					Progress.redirect(url.toString());
+			} catch (InvocationTargetException ex)
+			{
+				if (Progress.Status.PENDING.equals(Progress.status()))
+					Progress.cancel(ex.getCause().getMessage());
+				else
+					Progress.message(ex.getCause().getMessage());
+			} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
+			{
+				if (Progress.Status.PENDING.equals(Progress.status()))
+					Progress.cancel(ex.getMessage());
+				else
+					Progress.message(ex.getMessage());
+				logger.error(ex.getMessage(), ex);
+			} finally
+			{
+				try
+				{
+					Thread.sleep(5000);
+					Progress.dispose();
+				} catch (InterruptedException ex)
+				{
+					Progress.dispose();
+				}
+			}
+		}).start();
+
 	}
 
 	public static boolean checkAccess(User user,

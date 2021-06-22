@@ -6,20 +6,21 @@ class GOverflow extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		var container = document.createElement("div");
+
+		var container = this.shadowRoot.appendChild(document.createElement("div"));
+		container.setAttribute("id", "container");
 		container.style.width = "auto";
 		container.style.flex = "1 1 0px";
 		container.style.display = "flex";
-
 		container.style.whiteSpace = "nowrap";
-		container.style.flexDirection = "row-reverse";
-		this.shadowRoot.appendChild(container);
+
 		container.appendChild(document.createElement("slot"));
 
-		var more = document.createElement("a");
+		var more = container.appendChild(document.createElement("a"));
+		more.setAttribute("id", "more");
+
 		more.href = "#";
 		more.innerHTML = "&#X3018;";
-
 		more.style.padding = "0";
 		more.style.width = "32px";
 		more.style.flexGrow = "0";
@@ -36,48 +37,49 @@ class GOverflow extends HTMLElement
 		more.style.textDecoration = "none";
 		more.style.justifyContent = "center";
 
-		container.appendChild(more);
-
 		more.addEventListener("click", () =>
 		{
 			let elements = Array.from(this.children)
 				.filter(e => e.tagName !== "HR")
+				.filter(e => !e.getAttribute("hidden"))
 				.filter(e => e.style.display === "none")
 				.map(element => Proxy.create(element));
 			elements.forEach(e => e.style.display = "");
 			document.documentElement.appendChild(new GSideMenu(elements)).show(more);
 		});
+	}
 
-		this._private = {more: more, container: container, update: () =>
-			{
-				let selected = GSelection.getSelectedLink(this.children);
-				if (selected)
-					selected.setAttribute("aria-selected", "true");
+	get container()
+	{
+		return this.shadowRoot.getElementById("container");
+	}
 
-				Array.from(this.children).forEach(e => e.style.display = "flex");
+	get more()
+	{
+		return this.shadowRoot.getElementById("more");
+	}
 
-				more.style.display = "none";
-				if (container.clientWidth > this.clientWidth)
-					more.style.display = "flex";
+	update()
+	{
+		let selected = GSelection.getSelectedLink(this.children);
+		if (selected)
+			selected.setAttribute("aria-selected", "true");
 
-				for (let e = this.lastElementChild; e; e = e.previousElementSibling)
-					if (container.clientWidth > this.clientWidth)
-						if (!e.hasAttribute("aria-selected"))
-							e.style.display = "none";
-			}};
+		Array.from(this.children).forEach(e => e.style.display = "");
 
-		window.addEventListener("load", this._private.update);
+		this.more.style.display = this.container.clientWidth > this.clientWidth ? "flex" : "none";
+
+		for (let e = this.lastElementChild; e; e = e.previousElementSibling)
+			if (this.container.clientWidth > this.clientWidth)
+				if (!e.hasAttribute("aria-selected")
+					&& !e.getAttribute("hidden"))
+					e.style.display = "none";
 	}
 
 	connectedCallback()
 	{
-		window.setTimeout(this._private.update, 250);
-		window.addEventListener("resize", this._private.update);
-	}
-
-	disconnectedCallback()
-	{
-		window.removeEventListener("resize", this._private.update);
+		this.update();
+		window.addEventListener("resize", () => this.update());
 	}
 
 	static isOverflowed(element)
@@ -126,7 +128,7 @@ class GOverflow extends HTMLElement
 	}
 }
 
-customElements.define('g-overflow', GOverflow);
+window.addEventListener("load", () => customElements.define('g-overflow', GOverflow));
 
 GOverflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
 

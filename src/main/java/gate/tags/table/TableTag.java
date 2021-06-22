@@ -4,7 +4,7 @@ import gate.tags.*;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class TableTag extends DynamicAttributeTag
+public class TableTag extends AttributeTag
 {
 
 	private boolean condition = true;

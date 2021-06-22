@@ -12,7 +12,7 @@ import javax.el.LambdaExpression;
 import javax.el.StandardELContext;
 import javax.servlet.jsp.JspException;
 
-public class ListTag extends DynamicAttributeTag
+public class ListTag extends AttributeTag
 {
 
 	protected Iterable<?> options;

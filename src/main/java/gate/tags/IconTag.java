@@ -7,7 +7,7 @@ import gate.util.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class IconTag extends DynamicAttributeTag
+public class IconTag extends AttributeTag
 {
 
 	private Object type;
@@ -30,11 +30,14 @@ public class IconTag extends DynamicAttributeTag
 		{
 			super.doTag();
 
+			if (type == null)
+				type = empty;
+
 			if (!getAttributes().containsKey("style"))
 				Color.Extractor.extract(type)
 					.ifPresent(e -> getAttributes().put("style", "color: " + e));
 
-			Icons.Icon icon = Icon.Extractor.extract(type != null ? type : empty).orElse(Icons.UNKNOWN);
+			Icons.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
 
 			if (icon.getCode().length() == 1)
 				getJspContext().getOut().print(String.format("<i c %s>%s</i>",

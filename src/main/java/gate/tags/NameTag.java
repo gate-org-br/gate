@@ -3,7 +3,7 @@ package gate.tags;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class NameTag extends DynamicAttributeTag
+public class NameTag extends AttributeTag
 {
 
 	private Object type;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class StackTraceTag extends DynamicAttributeTag
+public class StackTraceTag extends AttributeTag
 {
 
 	private Throwable exception;

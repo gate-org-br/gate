@@ -8,7 +8,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
-public class MapTag extends DynamicAttributeTag
+public class MapTag extends AttributeTag
 {
 
 	private Object entries;

@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import javax.servlet.jsp.JspException;
 
-public class PropertiesTag extends DynamicAttributeTag
+public class PropertiesTag extends AttributeTag
 {
 
 	private String caption;

@@ -2,13 +2,13 @@ package gate.tags.table;
 
 import gate.annotation.Color;
 import gate.annotation.Icon;
-import gate.error.AppError;
-import gate.tags.DynamicAttributeTag;
+import gate.tags.AttributeTag;
 import gate.util.Icons;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import javax.servlet.jsp.JspException;
 
-public class TITag extends DynamicAttributeTag
+public class TITag extends AttributeTag
 {
 
 	private Object type;
@@ -25,36 +25,39 @@ public class TITag extends DynamicAttributeTag
 	}
 
 	@Override
-	public void doTag()
+	public void doTag() throws JspException
 	{
 		try
 		{
 			super.doTag();
 
+			if (type == null)
+				type = empty;
+
 			if (!getAttributes().containsKey("style"))
 				Color.Extractor.extract(type)
 					.ifPresent(e -> getAttributes().put("style", "color: " + e));
 
-			Icons.Icon icon = Icon.Extractor.extract(type != null ? type : empty).orElse(Icons.UNKNOWN);
+			Icons.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
 
-			if (getParent() instanceof THeadTag)
+			if (getParent() instanceof TRTag && ((TRTag) getParent()).getParent() instanceof THeadTag)
 				getJspContext().getOut().print(getAttributes().isEmpty() ? "<th>" : "<th " + getAttributes() + ">");
 			else
 				getJspContext().getOut().print(getAttributes().isEmpty() ? "<td>" : "<td " + getAttributes() + ">");
 
 			if (icon.getCode().length() == 1)
-				getJspContext().getOut().print(String.format("<i c>" + icon.getCode() + "</i'>"));
+				getJspContext().getOut().print("<i c>" + icon + "</i>");
 			else
-				getJspContext().getOut().print(String.format("<i>" + icon.getCode() + "</i'>"));
+				getJspContext().getOut().print("<i>" + icon + "</i>");
 
-			if (getParent() instanceof THeadTag)
+			if (getParent() instanceof TRTag && ((TRTag) getParent()).getParent() instanceof THeadTag)
 				getJspContext().getOut().print("</th>");
 			else
 				getJspContext().getOut().print("</td>");
 
-		} catch (JspException | IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

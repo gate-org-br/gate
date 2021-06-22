@@ -9,7 +9,7 @@ import gate.type.Form;
 import gate.util.Toolkit;
 import java.io.IOException;
 
-public class FormTag extends DynamicAttributeTag
+public class FormTag extends AttributeTag
 {
 
 	private String property;

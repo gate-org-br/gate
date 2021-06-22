@@ -1,10 +1,6 @@
-/* global customElements, GOverflow, Proxy */
+/* global customElements, GOverflow */
 
-customElements.define('g-tabbar', class extends GOverflow
-{
-	constructor()
+window.addEventListener("load", () =>
+	customElements.define('g-tabbar', class extends GOverflow
 	{
-		super();
-		this._private.container.style.flexDirection = "row";
-	}
-});
+	}));

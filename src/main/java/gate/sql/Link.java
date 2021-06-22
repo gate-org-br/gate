@@ -30,8 +30,6 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
@@ -359,7 +357,7 @@ public class Link implements AutoCloseable
 	 * Prepares a sentence to be executed.
 	 *
 	 * @param sentence the sentence to be executed
-	 * 
+	 *
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
@@ -395,7 +393,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a sentence to be executed.
 	 *
-	 * 
+	 *
 	 * @param builder the builder used to generate the sentence to be executed
 	 *
 	 * @return a compiled and connected sentence ready for execution
@@ -408,7 +406,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares an operation to be executed.
 	 *
-	 * 
+	 *
 	 * @param operation the operation to be executed
 	 *
 	 * @return a connected sentence to describe execution parameters
@@ -421,7 +419,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares an operation to be executed.
 	 *
-	 * 
+	 *
 	 * @param operation the operation to be executed
 	 *
 	 * @return a connected sentence to describe execution parameters
@@ -629,7 +627,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Selects a list of objects from the the database using GQN notation.
 	 *
-	 * 
+	 *
 	 * @param type type of the objects to be selected
 	 *
 	 * @return a SearchOperation object for definition of the properties and the criteria of selection
@@ -659,7 +657,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Selects an object from the the database using GQN notation.
 	 *
-	 * 
+	 *
 	 * @param type type of the object to be selected
 	 *
 	 * @return a SelectOperation object for definition of the properties and the criteria of selection
@@ -688,7 +686,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Inserts objects of the specified type on the database.
 	 *
-	 * 
+	 *
 	 * @param type type of the objects to be inserted
 	 *
 	 * @return an InsertOperation object for definition of the properties and the values to be inserted
@@ -701,7 +699,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Updates objects of the specified type from the database.
 	 *
-	 * 
+	 *
 	 * @param type type of the objects to be updated
 	 *
 	 * @return an UpdateOperation object for definition of the properties, update criteria and the values to be updated
@@ -732,7 +730,7 @@ public class Link implements AutoCloseable
 	/**
 	 * Deletes objects of the specified type from the database.
 	 *
-	 * 
+	 *
 	 * @param type type of the objects to be deleted
 	 *
 	 * @return a DeleteOperation object for definition of the deletion criteria and the values to be deleted

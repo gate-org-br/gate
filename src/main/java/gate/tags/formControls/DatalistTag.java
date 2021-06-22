@@ -1,7 +1,7 @@
 package gate.tags.formControls;
 
 import gate.converter.Converter;
-import gate.tags.DynamicAttributeTag;
+import gate.tags.AttributeTag;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +11,7 @@ import javax.el.LambdaExpression;
 import javax.el.StandardELContext;
 import javax.servlet.jsp.JspException;
 
-public class DatalistTag extends DynamicAttributeTag
+public class DatalistTag extends AttributeTag
 {
 
 	private Object options;
