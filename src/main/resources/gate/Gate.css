@@ -673,330 +673,6 @@ g-window > main > footer,
   background-color: var(--g-window-footer-background-color);
   background-image: var(--g-window-footer-background-image);
 }
-ul.DeskMenu {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  background-color: transparent;
-}
-ul.DeskMenu a {
-  color: black;
-  background-color: transparent;
-}
-ul.DeskMenu ul {
-  margin: 0;
-  padding: 0;
-  display: none;
-}
-ul.DeskMenu > li {
-  order: 1;
-  margin: 4px;
-  width: 120px;
-  display: flex;
-  border-radius: 5px;
-  list-style-type: none;
-  flex-direction: column;
-  background-color: white;
-  border: 1px solid transparent;
-}
-ul.DeskMenu > li:hover {
-  border: 1px solid var(--hovered);
-}
-ul.DeskMenu > li:hover nav {
-  visibility: visible;
-}
-ul.DeskMenu > li > a,
-ul.DeskMenu > li > button {
-  padding: 8px;
-  height: 100px;
-  display: flex;
-  font-size: 12px;
-  text-align: center;
-  align-items: center;
-  flex-direction: column;
-  justify-content: space-between;
-}
-ul.DeskMenu > li > a > i,
-ul.DeskMenu > li > button > i {
-  order: -1;
-  margin: 8px;
-  height: 60px;
-  font-size: 48px;
-}
-ul.DeskMenu > li a[data-icon]::before,
-ul.DeskMenu > li button[data-icon]::before {
-  padding: 8px;
-  font-size: 28px;
-  font-family: gate;
-  content: attr(data-icon);
-}
-ul.DeskMenu > li nav {
-  margin: 4px;
-  height: 32px;
-  flex-grow: 1;
-  border-radius: 5px;
-  width: calc(100% - 8px);
-  background-color: var(--g-coolbar-background-color);
-}
-ul.DeskMenu > li nav:last-child {
-  border-radius: 5px;
-}
-ul.DeskMenu > li > * {
-  width: 100%;
-}
-ul.DeskMenu > li > *:first-child {
-  border-radius: 5px 0 0 5px;
-}
-ul.DeskMenu > li > *:last-child {
-  border-radius: 0 0 5px 5px;
-}
-ul.DeskMenu > li.Reset {
-  order: 0;
-}
-ul.DeskMenu > li.Reset > a {
-  border-radius: 5px;
-  color: #666666;
-}
-g-desk-pane {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  background-color: transparent;
-}
-g-desk-pane g-desk-pane :is(g-desk-pane, a, button, hr) {
-  display: none;
-}
-g-desk-pane > hr {
-  border: solid 4px #BBBBBB;
-  flex-basis: calc(100% - 8px);
-}
-g-desk-pane > hr:first-child,
-g-desk-pane > hr:last-child,
-g-desk-pane > hr + hr {
-  display: none;
-}
-g-desk-pane > :is(g-desk-pane, a, button) {
-  margin: 4px;
-  padding: 8px;
-  display: flex;
-  color: inherit;
-  cursor: pointer;
-  border-radius: 5px;
-  align-items: center;
-  font-weight: inherit;
-  border: 2px solid white;
-  justify-content: flex-start;
-  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
-  flex-basis: calc(100% - 8px);
-}
-g-desk-pane > :is(g-desk-pane, a, button) > i {
-  order: -1;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  color: inherit;
-  font-size: 40px;
-  margin-right: 8px;
-  align-items: center;
-  justify-content: center;
-}
-g-desk-pane > :is(g-desk-pane, a, button) > img {
-  width: 48px;
-  height: 48px;
-  order: -1;
-  margin-right: 8px;
-}
-@media only screen and (min-width: 992px) {
-  g-desk-pane > :is(g-desk-pane, a, button) {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  g-desk-pane > :is(g-desk-pane, a, button) {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 768px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
-    flex-basis: calc(12.5% - 8px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='2'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x2] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='2'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x2] {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  g-desk-pane > :is(g-desk-pane, a, button)[data-size='4'],
-  g-desk-pane > :is(g-desk-pane, a, button)[x4] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-g-desk-pane > :is(g-desk-pane, a, button)[data-size='8'],
-g-desk-pane > :is(g-desk-pane, a, button)[x8] {
-  flex-basis: calc(100% - 8px);
-}
-g-desk-pane > :is(g-desk-pane, a, button):hover {
-  border-color: #FFFACD;
-  background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
-}
-ul.DeskPane {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  background-color: transparent;
-}
-ul.DeskPane a {
-  color: black;
-}
-ul.DeskPane ul {
-  display: none;
-  margin: 0;
-  padding: 0;
-}
-ul.DeskPane > li {
-  margin: 4px;
-  display: flex;
-  cursor: pointer;
-  flex-basis: 100%;
-  border-radius: 5px;
-  align-items: stretch;
-  list-style-type: none;
-  align-content: stretch;
-  justify-content: center;
-  border: 2px solid white;
-  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
-  flex-basis: calc(100% - 8px);
-}
-@media only screen and (min-width: 992px) {
-  ul.DeskPane > li {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  ul.DeskPane > li {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 768px) {
-  ul.DeskPane > li[data-size='1'],
-  ul.DeskPane > li[x1] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  ul.DeskPane > li[data-size='1'],
-  ul.DeskPane > li[x1] {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  ul.DeskPane > li[data-size='1'],
-  ul.DeskPane > li[x1] {
-    flex-basis: calc(12.5% - 8px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  ul.DeskPane > li[data-size='2'],
-  ul.DeskPane > li[x2] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  ul.DeskPane > li[data-size='2'],
-  ul.DeskPane > li[x2] {
-    flex-basis: calc(25% - 8px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  ul.DeskPane > li[data-size='4'],
-  ul.DeskPane > li[x4] {
-    flex-basis: calc(50% - 8px);
-  }
-}
-ul.DeskPane > li[data-size='8'],
-ul.DeskPane > li[x8] {
-  flex-basis: calc(100% - 8px);
-}
-ul.DeskPane > li:hover {
-  border-color: #FFFACD;
-  background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
-}
-ul.DeskPane > li > a,
-ul.DeskPane > li > button {
-  padding: 8px;
-  height: 100%;
-  flex-grow: 1;
-  display: flex;
-  color: inherit;
-  cursor: inherit;
-  text-align: center;
-  align-items: center;
-  font-weight: inherit;
-  align-content: stretch;
-  justify-content: flex-start;
-}
-ul.DeskPane > li > a > i,
-ul.DeskPane > li > button > i {
-  order: -1;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  color: inherit;
-  font-size: 40px;
-  margin-right: 8px;
-  align-items: center;
-  justify-content: center;
-}
-ul.DeskPane > li > a > img,
-ul.DeskPane > li > button > img {
-  width: 48px;
-  height: 48px;
-  order: -1;
-  margin-right: 8px;
-}
-ul.DeskPane > li > a[data-disabled],
-ul.DeskPane > li > button[data-disabled] {
-  color: var(--r);
-  cursor: not-allowed;
-}
-ul.DeskPane > li.Reset {
-  color: var(--g);
-}
-ul.DeskPane > li.Reset > a {
-  font-size: 20px;
-}
 @font-face {
   font-family: 'gate';
   src: local(gate), url('Gate.ttf');
@@ -3038,6 +2714,9 @@ g-dialog-commands > a > i:hover,
 g-dialog-commands > button > i:hover {
   color: var(--hovered);
 }
+g-dialog-commands > *[hidden="true"] {
+  display: none;
+}
 g-tabbar {
   border: none;
   height: auto;
@@ -3096,6 +2775,9 @@ g-tabbar > button > i {
   margin-bottom: 4px;
   align-items: center;
   justify-content: center;
+}
+g-tabbar > *[hidden="true"] {
+  display: none;
 }
 g-coolbar,
 .g-coolbar {
@@ -3258,6 +2940,10 @@ g-coolbar > .g-command.Return,
 g-coolbar > form > button.Return,
 .g-coolbar > form > button.Return {
   color: var(--r);
+}
+g-coolbar > *[hidden="true"],
+.g-coolbar > *[hidden="true"] {
+  display: none;
 }
 div.COOLBAR,
 div.Coolbar {
@@ -5254,6 +4940,7 @@ g-tab-control > button > div {
   }
 }
 @media only screen and (min-width: 768px) {
+  g-tab-control[size='9'] > :is(a, button),
   g-tab-control[size='10'] > :is(a, button),
   g-tab-control[size='20'] > :is(a, button),
   g-tab-control[size='30'] > :is(a, button),
@@ -5269,6 +4956,7 @@ g-tab-control > button > div {
   }
 }
 @media only screen and (min-width: 1200px) {
+  g-tab-control[size='9'] > :is(a, button),
   g-tab-control[size='10'] > :is(a, button),
   g-tab-control[size='20'] > :is(a, button),
   g-tab-control[size='30'] > :is(a, button),
@@ -5753,6 +5441,348 @@ g-select > label > input {
 }
 g-event-source {
   display: none;
+}
+g-card,
+.g-card {
+  border: none;
+  width: 200px;
+  display: flex;
+  font-size: 16px;
+  flex-basis: 200px;
+  text-align: center;
+  border-radius: 5px;
+  visibility: hidden;
+  flex-direction: column;
+  background-color: white;
+  justify-content: space-between;
+}
+g-card > a,
+.g-card > a {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+g-card > a:first-child,
+.g-card > a:first-child {
+  border-radius: 0 0 0 5px;
+}
+g-card > a:last-child,
+.g-card > a:last-child {
+  border-radius: 0 0 5px 0;
+}
+g-card > a:hover,
+.g-card > a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #660000;
+}
+g-card > a > i,
+.g-card > a > i {
+  font-size: 16px;
+}
+g-desk-pane {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: transparent;
+}
+g-desk-pane g-desk-pane :is(g-desk-pane, a, button, hr) {
+  display: none;
+}
+g-desk-pane > hr {
+  border: solid 4px #BBBBBB;
+  flex-basis: calc(100% - 8px);
+}
+g-desk-pane > hr:first-child,
+g-desk-pane > hr:last-child,
+g-desk-pane > hr + hr {
+  display: none;
+}
+g-desk-pane > :is(g-desk-pane, a, button) {
+  margin: 4px;
+  padding: 8px;
+  display: flex;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 5px;
+  align-items: center;
+  font-weight: inherit;
+  border: 2px solid white;
+  justify-content: flex-start;
+  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
+  flex-basis: calc(100% - 8px);
+}
+g-desk-pane > :is(g-desk-pane, a, button) > i {
+  order: -1;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  color: inherit;
+  font-size: 40px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+}
+g-desk-pane > :is(g-desk-pane, a, button) > img {
+  width: 48px;
+  height: 48px;
+  order: -1;
+  margin-right: 8px;
+}
+@media only screen and (min-width: 992px) {
+  g-desk-pane > :is(g-desk-pane, a, button) {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  g-desk-pane > :is(g-desk-pane, a, button) {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 768px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='1'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x1] {
+    flex-basis: calc(12.5% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='2'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x2] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='2'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x2] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  g-desk-pane > :is(g-desk-pane, a, button)[data-size='4'],
+  g-desk-pane > :is(g-desk-pane, a, button)[x4] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+g-desk-pane > :is(g-desk-pane, a, button)[data-size='8'],
+g-desk-pane > :is(g-desk-pane, a, button)[x8] {
+  flex-basis: calc(100% - 8px);
+}
+g-desk-pane > :is(g-desk-pane, a, button):hover {
+  border-color: #FFFACD;
+  background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
+}
+ul.DeskPane {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: transparent;
+}
+ul.DeskPane a {
+  color: black;
+}
+ul.DeskPane ul {
+  display: none;
+  margin: 0;
+  padding: 0;
+}
+ul.DeskPane > li {
+  margin: 4px;
+  display: flex;
+  cursor: pointer;
+  flex-basis: 100%;
+  border-radius: 5px;
+  align-items: stretch;
+  list-style-type: none;
+  align-content: stretch;
+  justify-content: center;
+  border: 2px solid white;
+  background-image: linear-gradient(to bottom, #FDFAE9, #B3B0A4);
+  flex-basis: calc(100% - 8px);
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 768px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='1'],
+  ul.DeskPane > li[x1] {
+    flex-basis: calc(12.5% - 8px);
+  }
+}
+@media only screen and (min-width: 992px) {
+  ul.DeskPane > li[data-size='2'],
+  ul.DeskPane > li[x2] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='2'],
+  ul.DeskPane > li[x2] {
+    flex-basis: calc(25% - 8px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  ul.DeskPane > li[data-size='4'],
+  ul.DeskPane > li[x4] {
+    flex-basis: calc(50% - 8px);
+  }
+}
+ul.DeskPane > li[data-size='8'],
+ul.DeskPane > li[x8] {
+  flex-basis: calc(100% - 8px);
+}
+ul.DeskPane > li:hover {
+  border-color: #FFFACD;
+  background-image: linear-gradient(to bottom, #EDE9D9, #BDBAAD);
+}
+ul.DeskPane > li > a,
+ul.DeskPane > li > button {
+  padding: 8px;
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  text-align: center;
+  align-items: center;
+  font-weight: inherit;
+  align-content: stretch;
+  justify-content: flex-start;
+}
+ul.DeskPane > li > a > i,
+ul.DeskPane > li > button > i {
+  order: -1;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  color: inherit;
+  font-size: 40px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+}
+ul.DeskPane > li > a > img,
+ul.DeskPane > li > button > img {
+  width: 48px;
+  height: 48px;
+  order: -1;
+  margin-right: 8px;
+}
+ul.DeskPane > li > a[data-disabled],
+ul.DeskPane > li > button[data-disabled] {
+  color: var(--r);
+  cursor: not-allowed;
+}
+ul.DeskPane > li.Reset {
+  color: var(--g);
+}
+ul.DeskPane > li.Reset > a {
+  font-size: 20px;
+}
+g-icon-pane {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background-color: transparent;
+}
+g-icon-pane g-icon-pane :is(g-icon-pane, a, button, hr) {
+  display: none;
+}
+g-icon-pane > hr {
+  border: solid 4px #BBBBBB;
+  flex-basis: calc(100% - 8px);
+}
+g-icon-pane > hr:first-child,
+g-icon-pane > hr:last-child,
+g-icon-pane + hr {
+  display: none;
+}
+g-icon-pane > :is(g-icon-pane, a, button) {
+  order: 1;
+  margin: 4px;
+  padding: 4px;
+  height: 100px;
+  display: flex;
+  cursor: pointer;
+  font-size: 16px;
+  flex-basis: 200px;
+  text-align: center;
+  border-radius: 5px;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid transparent;
+}
+g-icon-pane > :is(g-icon-pane, a, button) > i {
+  order: -1;
+  margin: 8px;
+  font-size: 2em;
+  cursor: inherit;
+}
+g-icon-pane > :is(g-icon-pane, a, button) > img {
+  width: 48px;
+  height: 48px;
+  order: -1;
+  margin-right: 8px;
+}
+g-icon-pane > :is(g-icon-pane, a, button):hover {
+  border-color: #FFFACD;
+}
+g-card-pane,
+.g-card-pane {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+g-card-pane > g-card,
+.g-card-pane > g-card,
+g-card-pane > .g-card,
+.g-card-pane > .g-card {
+  margin: 8px;
 }
 body[data-scroll-disabled] * {
   overflow: hidden;

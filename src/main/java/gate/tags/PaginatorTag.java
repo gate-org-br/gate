@@ -3,10 +3,9 @@ package gate.tags;
 import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.util.Page;
-import gate.util.QueryString;
+import gate.util.Parameters;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 public class PaginatorTag extends AttributeTag
@@ -19,7 +18,7 @@ public class PaginatorTag extends AttributeTag
 	{
 		HttpServletRequest request = (HttpServletRequest) ((PageContext) getJspContext()).getRequest();
 
-		QueryString queryString = new QueryString(request.getQueryString());
+		Parameters queryString = Parameters.parse(request.getQueryString());
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
 

@@ -36,12 +36,12 @@ public class Handlers
 		HANDLERS.put(ReportHandler.class, new ReportHandler());
 		HANDLERS.put(TextHandler.class, new TextHandler());
 		HANDLERS.put(RedirectHandler.class, new RedirectHandler());
-		HANDLERS.put(TemplateHandler.class, new TemplateHandler());
+		HANDLERS.put(StringHandler.class, new StringHandler());
 		HANDLERS.put(EnumHandler.class, new EnumHandler());
 
+		INSTANCES.put(String.class, new StringHandler());
 		INSTANCES.put(Object.class, new SerializableHandler());
 		INSTANCES.put(File.class, new FileHandler());
-		INSTANCES.put(String.class, new TemplateHandler());
 		INSTANCES.put(Integer.class, new IntegerHandler());
 		INSTANCES.put(Enum.class, new EnumHandler());
 	}

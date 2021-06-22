@@ -4,6 +4,7 @@ import gate.annotation.Handler;
 import gate.converter.Converter;
 import gate.handler.RedirectHandler;
 import gate.type.Parameter;
+import gate.util.Toolkit;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -272,13 +273,13 @@ public class URL
 		String arguments)
 	{
 		StringJoiner string = new StringJoiner("&");
-		if (module != null)
+		if (!Toolkit.isEmpty(module))
 			string.add("MODULE=" + module);
-		if (screen != null)
+		if (!Toolkit.isEmpty(screen))
 			string.add("SCREEN=" + screen);
-		if (action != null)
+		if (!Toolkit.isEmpty(action))
 			string.add("ACTION=" + action);
-		if (arguments != null)
+		if (!Toolkit.isEmpty(arguments))
 			string.add(arguments);
 		return "Gate?" + string.toString();
 	}

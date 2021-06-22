@@ -3,50 +3,70 @@ package gate.tags;
 import gate.type.Attributes;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 public class MenuTag extends AnchorTag
 {
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void get() throws JspException, IOException
 	{
-		super.doTag();
-		if (!getCondition()
-			|| !checkAccess())
-			return;
-
-		PageContext pageContext = (PageContext) getJspContext();
-
-		pageContext.getOut().print("<li " + getAttributes() + ">");
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
 
 		Attributes attributes = new Attributes();
-		if (getTabindex() != null)
-			attributes.put("tabindex", getTabindex());
-		if ("POST".equalsIgnoreCase(getMethod()))
-		{
-			attributes.put("formaction", getURL());
-			if (getTarget() != null)
-				attributes.put("formtarget", getTarget());
+		if (tabindex != null)
+			attributes.put("tabindex", tabindex);
 
-			pageContext.getOut().print("<button " + attributes + ">");
-			pageContext.getOut().print(createBody());
-			pageContext.getOut().print("</button>");
-		} else
-		{
-			attributes.put("href", getURL());
-			if (getTarget() != null)
-				attributes.put("target", getTarget());
+		attributes.put("href", getURL());
+		if (target != null)
+			attributes.put("target", target);
 
-			pageContext.getOut().print("<a " + attributes + ">");
-			pageContext.getOut().print(createBody());
-			pageContext.getOut().print("</a>");
-		}
+		getJspContext().getOut().print("<a " + attributes + ">");
+		getJspContext().getOut().print(createBody());
+		getJspContext().getOut().print("</a>");
 
-		pageContext.getOut().print("<ul>");
+		getJspContext().getOut().print("<ul>");
 		getJspBody().invoke(null);
-		pageContext.getOut().print("</ul>");
+		getJspContext().getOut().print("</ul>");
 
-		pageContext.getOut().print("</li>");
+		getJspContext().getOut().print("</li>");
+
 	}
+
+	@Override
+	public void post() throws JspException, IOException
+	{
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
+
+		Attributes attributes = new Attributes();
+		if (tabindex != null)
+			attributes.put("tabindex", tabindex);
+
+		attributes.put("formaction", getURL());
+		if (target != null)
+			attributes.put("formtarget", target);
+
+		getJspContext().getOut().print("<button " + attributes + ">");
+		getJspContext().getOut().print(createBody());
+		getJspContext().getOut().print("</button>");
+
+		getJspContext().getOut().print("<ul>");
+		getJspBody().invoke(null);
+		getJspContext().getOut().print("</ul>");
+
+		getJspContext().getOut().print("</li>");
+	}
+
+	@Override
+	public void exit() throws JspException, IOException
+	{
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
+		getJspContext().getOut().print("<a href='Gate'>");
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print("Sair<i>&#X2027</i >");
+		getJspContext().getOut().print("</a>");
+		getJspContext().getOut().print("</li>");
+	}
+
 }

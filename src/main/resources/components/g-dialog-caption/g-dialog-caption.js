@@ -1,4 +1,4 @@
-/* global customElements, GOverflow, Proxy, Dialog */
+/* global customElements, Proxy, Dialog */
 
 customElements.define('g-dialog-caption', class extends HTMLElement
 {

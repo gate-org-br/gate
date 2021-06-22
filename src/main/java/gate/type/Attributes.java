@@ -4,7 +4,7 @@ import gate.converter.Converter;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class Attributes extends HashMap<String, Object>
@@ -23,10 +23,9 @@ public class Attributes extends HashMap<String, Object>
 	@Override
 	public String toString()
 	{
-		StringJoiner str = new StringJoiner(" ");
-		for (Map.Entry<String, Object> entry : entrySet())
-			if (entry.getValue() != null && !"".equals(entry.getValue()))
-				str.add(entry.getKey() + "='" + Converter.toString(entry.getValue()).replaceAll("'", "\"") + "'");
-		return str.toString();
+		return entrySet().stream()
+			.filter(e -> e.getValue() != null && !"".equals(e.getValue()))
+			.map(e -> e.getKey() + "='" + Converter.toString(e.getValue()).replaceAll("'", "\"") + "'")
+			.collect(Collectors.joining(" "));
 	}
 }

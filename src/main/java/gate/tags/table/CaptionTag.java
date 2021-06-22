@@ -1,11 +1,11 @@
 package gate.tags.table;
 
 import gate.converter.Converter;
-import gate.tags.DynamicAttributeTag;
+import gate.tags.AttributeTag;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class CaptionTag extends DynamicAttributeTag
+public class CaptionTag extends AttributeTag
 {
 
 	private Object value;

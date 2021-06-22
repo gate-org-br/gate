@@ -1,9 +1,5 @@
 package gate.tags.table;
 
-import gate.annotation.Color;
-import gate.annotation.Description;
-import gate.annotation.Name;
-import gate.annotation.Tooltip;
 import gate.tags.*;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
@@ -12,47 +8,47 @@ public class TRTag extends AnchorTag
 {
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void get() throws JspException, IOException
 	{
-		super.doTag();
+		if (tabindex != null)
+			getAttributes().put("tabindex", tabindex);
+		getAttributes().put("data-action", getURL());
+		if (target != null)
+			getAttributes().put("data-target", target);
 
-		if (!getAttributes().containsKey("title"))
-			Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
-
-		if (!getAttributes().containsKey("title"))
-			Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
-
-		if (!getAttributes().containsKey("data-tooltip"))
-			Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
-
-		if (!getAttributes().containsKey("data-tooltip"))
-			Tooltip.Extractor.extract(getJavaClass()).ifPresent(e -> getAttributes().put("data-tooltip", e));
-
-		if (!getAttributes().containsKey("style"))
-			Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
-
-		if (getTabindex() != null)
-			getAttributes().put("tabindex", getTabindex());
-
-		if (getModule() != null
-			|| getScreen() != null
-			|| getAction() != null)
-			if (getCondition() && checkAccess())
-			{
-				getAttributes().put("data-action", getURL());
-				if ("POST".equalsIgnoreCase(getMethod()))
-					getAttributes().put("data-method", "post");
-
-				if (getTarget() != null)
-					getAttributes().put("data-target", getTarget());
-			}
-
-		getJspContext().getOut().print(getAttributes().isEmpty()
-			? "<tr>"
-			: "<tr " + getAttributes().toString() + " >");
+		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
 		getJspBody().invoke(null);
 		getJspContext().getOut().print("</tr>");
-
 	}
 
+	@Override
+	public void post() throws JspException, IOException
+	{
+		if (tabindex != null)
+			getAttributes().put("tabindex", tabindex);
+		getAttributes().put("data-action", getURL());
+		getAttributes().put("data-method", "post");
+		if (target != null)
+			getAttributes().put("data-target", target);
+
+		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
+		getJspBody().invoke(null);
+		getJspContext().getOut().print("</tr>");
+	}
+
+	@Override
+	public void exit() throws JspException, IOException
+	{
+		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
+		getJspBody().invoke(null);
+		getJspContext().getOut().print("</tr>");
+	}
+
+	@Override
+	public void accessDenied() throws JspException, IOException
+	{
+		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
+		getJspBody().invoke(null);
+		getJspContext().getOut().print("</tr>");
+	}
 }

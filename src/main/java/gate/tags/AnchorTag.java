@@ -2,13 +2,18 @@ package gate.tags;
 
 import gate.Gate;
 import gate.annotation.Asynchronous;
+import gate.annotation.Color;
 import gate.annotation.Current;
+import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.annotation.Tooltip;
 import gate.base.Screen;
 import gate.entity.User;
+import gate.error.ConversionException;
 import gate.io.URL;
 import gate.util.Icons;
+import gate.util.Parameters;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -18,29 +23,30 @@ import javax.inject.Inject;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
-public class AnchorTag extends DynamicAttributeTag
+public abstract class AnchorTag extends ParameterTag
 {
 
 	@Inject
 	@Current
-	private User user;
+	protected User user;
 
-	private String module;
+	protected String otherwise;
 
-	private String screen;
+	protected String module;
 
-	private String action;
+	protected String screen;
 
-	private String target;
+	protected String action;
 
-	private String method;
+	protected String target;
 
-	private Integer tabindex;
+	protected String method;
 
-	private String arguments;
-	private boolean condition = true;
-	private Class<Screen> javaClass;
-	private Method javaMethod;
+	protected Integer tabindex;
+
+	protected boolean condition = true;
+	protected Class<Screen> javaClass;
+	protected Method javaMethod;
 
 	public void setModule(String module)
 	{
@@ -57,29 +63,9 @@ public class AnchorTag extends DynamicAttributeTag
 		this.action = action;
 	}
 
-	public String getTarget()
-	{
-		return target;
-	}
-
 	public void setTarget(String target)
 	{
 		this.target = target;
-	}
-
-	public String getModule()
-	{
-		return module;
-	}
-
-	public String getScreen()
-	{
-		return screen;
-	}
-
-	public String getAction()
-	{
-		return action;
 	}
 
 	public void setCondition(boolean condition)
@@ -87,49 +73,24 @@ public class AnchorTag extends DynamicAttributeTag
 		this.condition = condition;
 	}
 
-	public boolean getCondition()
-	{
-		return condition;
-	}
-
 	public void setMethod(String method)
 	{
 		this.method = method;
 	}
 
-	public void setArguments(String arguments)
+	public void setOtherwise(String otherwise)
 	{
-		this.arguments = arguments;
+		this.otherwise = otherwise;
 	}
 
-	public String getMethod()
+	public void setArguments(String arguments) throws ConversionException
 	{
-		return method;
-	}
-
-	public String getArguments()
-	{
-		return arguments;
+		getParameters().putAll(Parameters.parse(arguments));
 	}
 
 	public void setTabindex(Integer tabindex)
 	{
 		this.tabindex = tabindex;
-	}
-
-	public Integer getTabindex()
-	{
-		return tabindex;
-	}
-
-	public Class<Screen> getJavaClass()
-	{
-		return javaClass;
-	}
-
-	public Method getJavaMethod()
-	{
-		return javaMethod;
 	}
 
 	public boolean checkAccess()
@@ -144,17 +105,37 @@ public class AnchorTag extends DynamicAttributeTag
 
 	public String getURL()
 	{
-		return URL.toString(module, screen, action, arguments);
+		return URL.toString(module, screen, action, getParameters().toString());
 	}
 
 	public Optional<Icons.Icon> getIcon()
 	{
-		return Icon.Extractor.extract(action != null ? javaMethod : javaClass);
+		return action != null ? Icon.Extractor.extract(javaMethod)
+			: Icon.Extractor.extract(javaMethod).or(() -> Icon.Extractor.extract(javaClass));
 	}
 
 	public Optional<String> getName()
 	{
-		return Name.Extractor.extract(action != null ? javaMethod : javaClass);
+		return action != null ? Name.Extractor.extract(javaMethod)
+			: Name.Extractor.extract(javaMethod).or(() -> Name.Extractor.extract(javaClass));
+	}
+
+	public Optional<String> getDescription()
+	{
+		return action != null ? Description.Extractor.extract(javaMethod)
+			: Description.Extractor.extract(javaMethod).or(() -> Description.Extractor.extract(javaClass));
+	}
+
+	public Optional<String> getTooltip()
+	{
+		return action != null ? Tooltip.Extractor.extract(javaMethod)
+			: Tooltip.Extractor.extract(javaMethod).or(() -> Tooltip.Extractor.extract(javaClass));
+	}
+
+	public Optional<String> getColor()
+	{
+		return action != null ? Color.Extractor.extract(javaMethod)
+			: Color.Extractor.extract(javaMethod).or(() -> Color.Extractor.extract(javaClass));
 	}
 
 	public String createBody()
@@ -168,25 +149,91 @@ public class AnchorTag extends DynamicAttributeTag
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		if (Toolkit.isEmpty(module)
-			&& Toolkit.isEmpty(screen)
-			&& Toolkit.isEmpty(action))
-			return;
+		super.doTag();
 
-		PageContext pageContext = (PageContext) getJspContext();
+		if (!Toolkit.isEmpty(method)
+			|| !Toolkit.isEmpty(module)
+			|| !Toolkit.isEmpty(screen)
+			|| !Toolkit.isEmpty(action))
+		{
+			PageContext pageContext = (PageContext) getJspContext();
 
-		module = "#".equals(module) ? pageContext.getRequest().getParameter("MODULE") : module;
-		screen = "#".equals(screen) ? pageContext.getRequest().getParameter("SCREEN") : screen;
-		action = "#".equals(action) ? pageContext.getRequest().getParameter("ACTION") : action;
+			if (Toolkit.isEmpty(module))
+			{
+				module = pageContext.getRequest().getParameter("MODULE");
+				if (Toolkit.isEmpty(screen))
+				{
+					screen = pageContext.getRequest().getParameter("SCREEN");
+					if (Toolkit.isEmpty(action))
+						action = pageContext.getRequest().getParameter("ACTION");
+				}
+			}
 
-		javaClass = Screen.getScreen(getModule(), getScreen()).orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
-		javaMethod = Screen.getAction(getJavaClass(), getAction()).orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
+			if ("#".equals(module))
+				module = pageContext.getRequest().getParameter("MODULE");
+			if ("#".equals(screen))
+				screen = pageContext.getRequest().getParameter("SCREEN");
+			if ("#".equals(action))
+				action = pageContext.getRequest().getParameter("ACTION");
 
-		if (javaMethod.isAnnotationPresent(Asynchronous.class))
-			if ("_dialog".equals(target))
-				target = "_progress-dialog";
-			else
-				target = "_progress-window";
+			javaClass = Screen.getScreen(module, screen).orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
+			javaMethod = Screen.getAction(javaClass, action).orElseThrow(() -> new JspException(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s", module, screen, action)));
+
+			if (javaMethod.isAnnotationPresent(Asynchronous.class))
+				if ("_dialog".equals(target))
+					target = "_progress-dialog";
+				else
+					target = "_progress-window";
+
+			if (!getAttributes().containsKey("style"))
+				getColor().ifPresent(e -> getAttributes().put("style", "color: " + e));
+
+			if (!getAttributes().containsKey("data-tooltip"))
+				getTooltip().ifPresent(e -> getAttributes().put("data-tooltip", e));
+
+			if (!getAttributes().containsKey("title"))
+				getDescription().ifPresent(e -> getAttributes().put("title", e));
+
+			if (!getAttributes().containsKey("title"))
+				getName().ifPresent(e -> getAttributes().put("title", e));
+
+			if (condition)
+				if (checkAccess())
+					if ("POST".equalsIgnoreCase(method))
+						post();
+					else
+						get();
+				else
+					accessDenied();
+			else if (otherwise != null)
+				otherwise();
+
+		} else
+			exit();
+	}
+
+	public void get() throws JspException, IOException
+	{
+
+	}
+
+	public void post() throws JspException, IOException
+	{
+
+	}
+
+	public void exit() throws JspException, IOException
+	{
+
+	}
+
+	public void otherwise() throws JspException, IOException
+	{
+
+	}
+
+	public void accessDenied() throws JspException, IOException
+	{
 
 	}
 

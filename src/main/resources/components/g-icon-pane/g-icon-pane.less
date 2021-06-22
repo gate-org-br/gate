@@ -1,0 +1,51 @@
+g-icon-pane
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	justify-content: flex-start;
+	background-color: transparent;
+
+	g-icon-pane :is(g-icon-pane, a, button, hr){ display: none; }
+
+	> hr {
+		border: solid 4px #BBBBBB;
+		flex-basis: calc(100% - 8px);
+	}
+
+	> hr:first-child,
+		> hr:last-child, & + hr { display: none }
+
+	> :is(g-icon-pane, a, button) {
+		order: 1;
+		margin: 4px;
+		padding: 4px;
+		height: 100px;
+		display: flex;
+		cursor: pointer;
+		font-size: 16px;
+		flex-basis: 200px;
+		text-align: center;
+		border-radius: 5px;
+		align-items: center;
+		flex-direction: column;
+		justify-content: center;
+		background-color: white;
+		border: 1px solid transparent;
+
+		> i { order: -1;
+		      margin: 8px;
+		      font-size: 2em;
+		      cursor: inherit; }
+	}
+
+	> :is(g-icon-pane, a, button)> img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+
+	> :is(g-icon-pane, a, button):hover { border-color: #FFFACD }
+}
+
+
+

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 
-public class DescriptionTag extends DynamicAttributeTag
+public class DescriptionTag extends AttributeTag
 {
 
 	private Object type;

@@ -1,92 +1,77 @@
 package gate.tags;
 
-import gate.annotation.Color;
-import gate.annotation.Description;
-import gate.annotation.Name;
-import gate.annotation.Tooltip;
-import gate.type.Attributes;
-import gate.util.Toolkit;
+import gate.util.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 public class LinkTag extends AnchorTag
 {
 
-	private String otherwise;
-
-	public void setOtherwise(String otherwise)
+	@Override
+	public void get() throws JspException, IOException
 	{
-		this.otherwise = otherwise;
+		if (tabindex != null)
+			getAttributes().put("tabindex", tabindex);
+
+		getAttributes().put("href", getURL());
+		if (target != null)
+			getAttributes().put("target", target);
+
+		getJspContext().getOut().print("<a " + getAttributes() + ">");
+
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print(createBody());
+
+		getJspContext().getOut().print("</a>");
 	}
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void post() throws JspException, IOException
 	{
-		super.doTag();
-		PageContext pageContext = (PageContext) getJspContext();
+		if (tabindex != null)
+			getAttributes().put("tabindex", tabindex);
 
-		if (Toolkit.isEmpty(getModule())
-			&& Toolkit.isEmpty(getScreen())
-			&& Toolkit.isEmpty(getAction()))
-		{
+		getAttributes().put("formaction", getURL());
+		if (target != null)
+			getAttributes().put("formtarget", target);
 
-			Attributes atrributes = new Attributes();
-			atrributes.put("href", "Gate");
-			pageContext.getOut().print("<a " + atrributes + ">");
-			pageContext.getOut().print("Sair<i>&#X2007;</i>");
-			pageContext.getOut().print("</a>");
-		} else if (getCondition() && checkAccess())
-		{
-			if (!getAttributes().containsKey("title"))
-				Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
+		getJspContext().getOut().print("<button " + getAttributes() + ">");
 
-			if (!getAttributes().containsKey("title"))
-				Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print(createBody());
 
-			if (!getAttributes().containsKey("data-tooltip"))
-				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+		getJspContext().getOut().print("</button>");
+	}
 
-			if (!getAttributes().containsKey("data-tooltip"))
-				Tooltip.Extractor.extract(getJavaClass()).ifPresent(e -> getAttributes().put("data-tooltip", e));
+	@Override
+	public void exit() throws JspException, IOException
+	{
+		if (tabindex != null)
+			getAttributes().put("tabindex", tabindex);
 
-			if (!getAttributes().containsKey("style"))
-				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
+		getAttributes().put("href", "Gate");
+		getJspContext().getOut().print("<a " + getAttributes() + ">");
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print("Sair<i>" + Icons.getIcon("exit") + "</i>");
+		getJspContext().getOut().print("</a>");
+	}
 
-			if (getTabindex() != null)
-				getAttributes().put("tabindex", getTabindex());
+	@Override
+	public void accessDenied() throws JspException, IOException
+	{
+		if (otherwise != null)
+			getJspContext().getOut().print(otherwise);
+	}
 
-			if ("POST".equalsIgnoreCase(getMethod()))
-			{
-				getAttributes().put("formaction", getURL());
-				if (getTarget() != null)
-					getAttributes().put("formtarget", getTarget());
-
-				pageContext.getOut().print("<button " + getAttributes() + ">");
-
-				if (getJspBody() != null)
-					getJspBody().invoke(null);
-				else
-					pageContext.getOut().print(createBody());
-
-				pageContext.getOut().print("</button>");
-			} else
-			{
-				getAttributes().put("href", getURL());
-				if (getTarget() != null)
-					getAttributes().put("target", getTarget());
-
-				pageContext.getOut().print("<a " + getAttributes() + ">");
-
-				if (getJspBody() != null)
-					getJspBody().invoke(null);
-				else
-					pageContext.getOut().print(createBody());
-
-				pageContext.getOut().print("</a>");
-			}
-
-		} else if (otherwise != null)
-			pageContext.getOut().print(otherwise);
+	@Override
+	public void otherwise() throws JspException, IOException
+	{
+		getJspContext().getOut().print(otherwise);
 	}
 }

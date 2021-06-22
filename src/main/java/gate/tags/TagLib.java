@@ -9,7 +9,6 @@ import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionEception;
-import gate.producer.UserProducer;
 import gate.util.Icons;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,11 +77,8 @@ public class TagLib
 
 	public static boolean secure(String module, String screen, String action)
 	{
-		UserProducer producer = CDI.current().select(UserProducer.class).get();
-		if (producer == null)
-			return false;
-		User user = producer.getUser();
-		if (user == null)
+		User user = CDI.current().select(User.class).get();
+		if (user.getId() == null)
 			return false;
 		return user.checkAccess(module, screen, action);
 

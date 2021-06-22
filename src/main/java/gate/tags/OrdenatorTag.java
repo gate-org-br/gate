@@ -1,17 +1,18 @@
 package gate.tags;
 
-import gate.util.QueryString;
+import gate.error.ConversionException;
+import gate.util.Parameters;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
-public class OrdenatorTag extends DynamicAttributeTag
+public class OrdenatorTag extends AttributeTag
 {
 
 	private String method;
 	private String property;
-	private QueryString arguments;
+	private Parameters arguments;
 
 	@Inject
 	private HttpServletRequest request;
@@ -24,7 +25,7 @@ public class OrdenatorTag extends DynamicAttributeTag
 				.getMethod().toUpperCase();
 
 		String orderBy = request.getParameter("orderBy");
-		QueryString queryString = new QueryString(request.getQueryString());
+		Parameters queryString = Parameters.parse(request.getQueryString());
 		if (arguments != null)
 			queryString.putAll(arguments);
 		queryString.remove("orderBy");
@@ -72,9 +73,9 @@ public class OrdenatorTag extends DynamicAttributeTag
 		}
 	}
 
-	public void setArguments(String arguments)
+	public void setArguments(String arguments) throws ConversionException
 	{
-		this.arguments = new QueryString(arguments);
+		this.arguments = Parameters.parse(arguments);
 	}
 
 	public void setProperty(String property)

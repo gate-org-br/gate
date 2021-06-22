@@ -67,10 +67,13 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 										.get(text => link.nextElementSibling.innerHTML = text);
 									break;
 								case "frame":
-									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
+									let iframe = document.createElement("iframe");
 									iframe.scrolling = "no";
 									iframe.setAttribute("allowfullscreen", "true");
-									iframe.setAttribute("name", Math.random().toString(36).substr(2));
+									let name = Math.random().toString(36).substr(2);
+									iframe.setAttribute("id", name);
+									iframe.setAttribute("name", name);
+									link.nextElementSibling.appendChild(iframe);
 
 									iframe.onload = () =>
 									{
@@ -92,9 +95,9 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 									};
 
 									if (link.tagName === "A")
-										link.setAttribute("target", iframe.getAttribute("name"));
+										link.setAttribute("target", name);
 									else
-										link.setAttribute("formtarget", iframe.getAttribute("name"));
+										link.setAttribute("formtarget", name);
 
 									return;
 							}

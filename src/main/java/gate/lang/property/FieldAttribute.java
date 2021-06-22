@@ -254,10 +254,16 @@ class FieldAttribute implements JavaIdentifierAttribute
 	@Override
 	public Object forceValue(Object object)
 	{
-		Object value = getValue(object);
-		if (value == null)
-			setValue(object, value = createInstance(getRawType()));
-		return value;
+		try
+		{
+			Object value = getValue(object);
+			if (value == null)
+				field.set(object, value = createInstance(getRawType()));
+			return value;
+		} catch (IllegalAccessException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
 	}
 
 	@Override

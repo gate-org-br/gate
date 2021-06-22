@@ -1,14 +1,9 @@
 package gate.tags;
 
-import gate.annotation.Color;
-import gate.annotation.Description;
-import gate.annotation.Name;
-import gate.annotation.Tooltip;
 import gate.type.Attributes;
-import gate.util.Toolkit;
+import gate.util.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 
 public class MenuItemTag extends AnchorTag
 {
@@ -21,104 +16,83 @@ public class MenuItemTag extends AnchorTag
 	}
 
 	@Override
-	public void doTag() throws JspException, IOException
+	public void get() throws JspException, IOException
 	{
-		super.doTag();
-		if (!getCondition())
-			return;
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
+		Attributes atrributes = new Attributes();
+		atrributes.put("href", getURL());
+		if (tabindex != null)
+			atrributes.put("tabindex", tabindex);
+		if (target != null)
+			atrributes.put("target", target);
 
-		PageContext pageContext = (PageContext) getJspContext();
+		getJspContext().getOut().print("<a " + atrributes + ">");
 
-		if (Toolkit.isEmpty(getModule())
-			&& Toolkit.isEmpty(getScreen())
-			&& Toolkit.isEmpty(getAction()))
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print(createBody());
+
+		getJspContext().getOut().print("</a>");
+		getJspContext().getOut().print("</li>");
+	}
+
+	@Override
+	public void post() throws JspException, IOException
+	{
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
+		Attributes atrributes = new Attributes();
+		atrributes.put("formaction", getURL());
+		if (tabindex != null)
+			atrributes.put("tabindex", tabindex);
+		if (target != null)
+			atrributes.put("formtarget", target);
+
+		getJspContext().getOut().print("<button " + atrributes + ">");
+
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print(createBody());
+
+		getJspContext().getOut().print("</button>");
+		getJspContext().getOut().print("</li>");
+	}
+
+	@Override
+	public void exit() throws JspException, IOException
+	{
+		getJspContext().getOut().print("<li " + getAttributes() + ">");
+		getJspContext().getOut().print("<a href='Gate'>");
+		if (getJspBody() != null)
+			getJspBody().invoke(null);
+		else
+			getJspContext().getOut().print("Sair<i>" + Icons.getIcon("exit") + "</i>");
+		getJspContext().getOut().print("</a>");
+		getJspContext().getOut().print("</li>");
+	}
+
+	@Override
+	public void accessDenied() throws JspException, IOException
+	{
+		if (fixed)
 		{
-			pageContext.getOut().print("<li " + getAttributes() + ">");
+			getJspContext().getOut().print("<li " + getAttributes() + ">");
 
 			Attributes atrributes = new Attributes();
-			if (getTarget() != null)
-				atrributes.put("target", getTarget());
-			if (getTabindex() != null)
-				atrributes.put("tabindex", getTabindex());
+			atrributes.put("href", "#");
+			atrributes.put("data-disabled", "true");
+			if (tabindex != null)
+				atrributes.put("tabindex", tabindex);
 
-			atrributes.put("href", "Gate");
-			pageContext.getOut().print("<a " + atrributes + ">");
-			pageContext.getOut().print("Sair do sistema<i>&#X2007;</i>");
-			pageContext.getOut().print("</a>");
-			pageContext.getOut().print("</li>");
-		} else
-		{
+			getJspContext().getOut().print("<a " + atrributes + ">");
+			if (getJspBody() != null)
+				getJspBody().invoke(null);
+			else
+				getJspContext().getOut().print(createBody());
 
-			if (!getAttributes().containsKey("title"))
-				Description.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
-
-			if (!getAttributes().containsKey("title"))
-				Name.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("title", e));
-
-			if (!getAttributes().containsKey("tooltip"))
-				Tooltip.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("data-tooltip", e));
-
-			if (!getAttributes().containsKey("style"))
-				Color.Extractor.extract(getJavaMethod()).ifPresent(e -> getAttributes().put("style", "color: " + e));
-
-			if (checkAccess())
-			{
-				pageContext.getOut().print("<li " + getAttributes() + ">");
-				if ("POST".equalsIgnoreCase(getMethod()))
-				{
-					Attributes atrributes = new Attributes();
-					atrributes.put("formaction", getURL());
-					if (getTabindex() != null)
-						atrributes.put("tabindex", getTabindex());
-					if (getTarget() != null)
-						atrributes.put("formtarget", getTarget());
-
-					pageContext.getOut().print("<button " + atrributes + ">");
-
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody());
-
-					pageContext.getOut().print("</button>");
-				} else
-				{
-					Attributes atrributes = new Attributes();
-					atrributes.put("href", getURL());
-					if (getTabindex() != null)
-						atrributes.put("tabindex", getTabindex());
-					if (getTarget() != null)
-						atrributes.put("target", getTarget());
-
-					pageContext.getOut().print("<a " + atrributes + ">");
-
-					if (getJspBody() != null)
-						getJspBody().invoke(null);
-					else
-						pageContext.getOut().print(createBody());
-
-					pageContext.getOut().print("</a>");
-				}
-				pageContext.getOut().print("</li>");
-			} else if (fixed)
-			{
-				pageContext.getOut().print("<li " + getAttributes() + ">");
-
-				Attributes atrributes = new Attributes();
-				atrributes.put("href", "#");
-				atrributes.put("data-disabled", "true");
-				if (getTabindex() != null)
-					atrributes.put("tabindex", getTabindex());
-
-				pageContext.getOut().print("<a " + atrributes + ">");
-				if (getJspBody() != null)
-					getJspBody().invoke(null);
-				else
-					pageContext.getOut().print(createBody());
-
-				pageContext.getOut().print("</a>");
-				pageContext.getOut().print("</li>");
-			}
+			getJspContext().getOut().print("</a>");
+			getJspContext().getOut().print("</li>");
 		}
 	}
 }

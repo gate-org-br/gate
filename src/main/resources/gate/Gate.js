@@ -1542,20 +1542,21 @@ class GOverflow extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		var container = document.createElement("div");
+
+		var container = this.shadowRoot.appendChild(document.createElement("div"));
+		container.setAttribute("id", "container");
 		container.style.width = "auto";
 		container.style.flex = "1 1 0px";
 		container.style.display = "flex";
-
 		container.style.whiteSpace = "nowrap";
-		container.style.flexDirection = "row-reverse";
-		this.shadowRoot.appendChild(container);
+
 		container.appendChild(document.createElement("slot"));
 
-		var more = document.createElement("a");
+		var more = container.appendChild(document.createElement("a"));
+		more.setAttribute("id", "more");
+
 		more.href = "#";
 		more.innerHTML = "&#X3018;";
-
 		more.style.padding = "0";
 		more.style.width = "32px";
 		more.style.flexGrow = "0";
@@ -1572,48 +1573,49 @@ class GOverflow extends HTMLElement
 		more.style.textDecoration = "none";
 		more.style.justifyContent = "center";
 
-		container.appendChild(more);
-
 		more.addEventListener("click", () =>
 		{
 			let elements = Array.from(this.children)
 				.filter(e => e.tagName !== "HR")
+				.filter(e => !e.getAttribute("hidden"))
 				.filter(e => e.style.display === "none")
 				.map(element => Proxy.create(element));
 			elements.forEach(e => e.style.display = "");
 			document.documentElement.appendChild(new GSideMenu(elements)).show(more);
 		});
+	}
 
-		this._private = {more: more, container: container, update: () =>
-			{
-				let selected = GSelection.getSelectedLink(this.children);
-				if (selected)
-					selected.setAttribute("aria-selected", "true");
+	get container()
+	{
+		return this.shadowRoot.getElementById("container");
+	}
 
-				Array.from(this.children).forEach(e => e.style.display = "flex");
+	get more()
+	{
+		return this.shadowRoot.getElementById("more");
+	}
 
-				more.style.display = "none";
-				if (container.clientWidth > this.clientWidth)
-					more.style.display = "flex";
+	update()
+	{
+		let selected = GSelection.getSelectedLink(this.children);
+		if (selected)
+			selected.setAttribute("aria-selected", "true");
 
-				for (let e = this.lastElementChild; e; e = e.previousElementSibling)
-					if (container.clientWidth > this.clientWidth)
-						if (!e.hasAttribute("aria-selected"))
-							e.style.display = "none";
-			}};
+		Array.from(this.children).forEach(e => e.style.display = "");
 
-		window.addEventListener("load", this._private.update);
+		this.more.style.display = this.container.clientWidth > this.clientWidth ? "flex" : "none";
+
+		for (let e = this.lastElementChild; e; e = e.previousElementSibling)
+			if (this.container.clientWidth > this.clientWidth)
+				if (!e.hasAttribute("aria-selected")
+					&& !e.getAttribute("hidden"))
+					e.style.display = "none";
 	}
 
 	connectedCallback()
 	{
-		window.setTimeout(this._private.update, 250);
-		window.addEventListener("resize", this._private.update);
-	}
-
-	disconnectedCallback()
-	{
-		window.removeEventListener("resize", this._private.update);
+		this.update();
+		window.addEventListener("resize", () => this.update());
 	}
 
 	static isOverflowed(element)
@@ -1662,7 +1664,7 @@ class GOverflow extends HTMLElement
 	}
 }
 
-customElements.define('g-overflow', GOverflow);
+window.addEventListener("load", () => customElements.define('g-overflow', GOverflow));
 
 GOverflow.PREVENT_BODY_SCROLL = e => e.preventDefault();
 
@@ -1681,19 +1683,18 @@ window.addEventListener("resize", () => {
 				|| e.scrollHeight > e.clientHeight)
 		.forEach(e => e.setAttribute("data-overflow", "true"));
 });
-/* global customElements, GOverflow, Proxy, GDialog */
+/* global customElements, GOverflow */
 
-class GDialogCommands extends GOverflow
-{
-	constructor()
+window.addEventListener("load",
+	customElements.define('g-dialog-commands', class extends GOverflow
 	{
-		super();
-		window.addEventListener("load", () =>
-			GDialog.commands = this);
-	}
-}
-
-customElements.define('g-dialog-commands', GDialogCommands);
+		constructor()
+		{
+			super();
+			GDialog.commands = this;
+			this.container.style.flexDirection = "row-reverse";
+		}
+	}));
 /* global customElements */
 
 class DigitalClock extends HTMLElement
@@ -1865,150 +1866,6 @@ class DataFormat
 
 	}
 }
-window.addEventListener("load", function ()
-{
-	Array.from(document.querySelectorAll("ul.DeskMenu")).forEach(component =>
-	{
-		var root = document.createElement("a");
-		root.icons = Array.from(component.children);
-		root.onclick = function ()
-		{
-			reset.style.display = "none";
-			links.forEach(e => e.parentNode.style.display = "none");
-			this.icons.forEach(e => e.style.display = "");
-			component.dispatchEvent(new CustomEvent("selected", {detail: this}));
-		};
-
-		let reset = document.createElement("li");
-		reset.className = "Reset";
-		reset.style.display = "none";
-		reset.appendChild(document.createElement("a"));
-		reset.firstChild.innerHTML = "Retornar";
-		reset.firstChild.setAttribute("href", "#");
-		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-
-		let links = Array.from(component.getElementsByTagName("a"))
-			.filter(e => e.parentNode.tagName !== "NAV");
-		links.forEach(link =>
-		{
-			link.icons = Array.from(link.parentNode.children)
-				.filter(e => e.tagName === "UL")
-				.flatMap(e => Array.from(e.children));
-			link.icons.forEach(e => e.link = link);
-			link.icons.forEach(e => e.style.display = "none");
-
-			if (link.icons.length)
-				link.addEventListener("click", function(event)
-				{
-					links.forEach(e => e.parentNode.style.display = "none");
-					this.icons.forEach(e => e.style.display = "");
-					reset.style.display = "";
-					reset.firstChild.onclick = () => (this.parentNode.link || root).onclick();
-					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-				});
-		});
-
-		component.appendChild(reset);
-		links.map(e => e.parentNode).forEach(e => component.appendChild(e));
-	});
-});
-/* global customElements */
-
-window.addEventListener("load", function ()
-{
-	customElements.define('g-desk-pane',
-		class extends HTMLElement
-	{
-		constructor()
-		{
-			super();
-
-			this.addEventListener("click", function (e)
-			{
-				let target = e.target.closest('g-desk-pane');
-				if (target !== this)
-				{
-					let backup = Array.from(this.children);
-					let elements = Array.from(target.children)
-						.filter(e => e.tagName !== 'I');
-					backup.forEach(e => e.parentNode.removeChild(e));
-					elements.forEach(e => this.appendChild(e));
-
-					let reset = this.appendChild(document.createElement("a"));
-					reset.href = "#";
-					reset.style.color = "#660000";
-					reset.innerText = "Retornar";
-					reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-
-					reset.addEventListener("click", () =>
-					{
-						reset.parentNode.removeChild(reset);
-						elements.forEach(e => target.appendChild(e));
-						backup.forEach(e => this.appendChild(e));
-						e.preventDefault();
-						e.stopPropagation();
-					});
-
-					e.preventDefault();
-					e.stopPropagation();
-				}
-
-			}, true);
-		}
-	});
-
-	Array.from(document.querySelectorAll("ul.DeskPane")).forEach(component =>
-	{
-		var root = document.createElement("a");
-		root.icons = Array.from(component.children);
-		root.onclick = function ()
-		{
-			reset.style.display = "none";
-			links.forEach(e => e.parentNode.style.display = "none");
-			this.icons.forEach(e => e.style.display = "");
-			component.dispatchEvent(new CustomEvent("selected", {detail: this}));
-		};
-
-		let links = Array.from(component.getElementsByTagName("a"));
-		links.forEach(link =>
-		{
-			link.icons = Array.from(link.parentNode.children)
-				.filter(e => e.tagName === "UL")
-				.flatMap(e => Array.from(e.children));
-			link.icons.forEach(e => e.link = link);
-			link.icons.forEach(e => e.style.display = "none");
-
-			if (link.icons.length)
-				link.addEventListener("click", function (event)
-				{
-					links.forEach(e => e.parentNode.style.display = "none");
-					this.icons.forEach(e => e.style.display = "");
-					reset.style.display = "";
-					reset.firstChild.onclick = () => {
-						(this.parentNode.link || root).click();
-					};
-					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
-				});
-		});
-
-		links.map(e => e.parentNode).forEach(e => component.appendChild(e));
-
-
-		let reset = component.appendChild(document.createElement("li"));
-		reset.className = "Reset";
-		reset.style.display = "none";
-		reset.appendChild(document.createElement("a"));
-		reset.firstChild.innerHTML = "Retornar";
-		reset.firstChild.setAttribute("href", "#");
-		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-	});
-});
 function Mask(element)
 {
 	var changed = false;
@@ -7764,9 +7621,15 @@ window.addEventListener("input", function (event)
 window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => GDataFilter.filter(e)));
 /* global customElements */
 
-customElements.define('g-coolbar', class extends GOverflow
-{
-});
+window.addEventListener("load", () =>
+	customElements.define('g-coolbar', class extends GOverflow
+	{
+		constructor()
+		{
+			super();
+			this.container.style.flexDirection = "row-reverse";
+		}
+	}));
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
@@ -7970,16 +7833,12 @@ window.addEventListener("mouseover", e =>
 	} else
 		GTooltip.hide();
 });
-/* global customElements, GOverflow, Proxy */
+/* global customElements, GOverflow */
 
-customElements.define('g-tabbar', class extends GOverflow
-{
-	constructor()
+window.addEventListener("load", () =>
+	customElements.define('g-tabbar', class extends GOverflow
 	{
-		super();
-		this._private.container.style.flexDirection = "row";
-	}
-});
+	}));
 /* global customElements, GOverflow, GSelection */
 
 class GScrollTabBar extends HTMLElement
@@ -8032,7 +7891,7 @@ class GScrollTabBar extends HTMLElement
 }
 
 customElements.define("g-scroll-tabbar", GScrollTabBar);
-/* global customElements, GOverflow, Proxy, Dialog */
+/* global customElements, Proxy, Dialog */
 
 customElements.define('g-dialog-caption', class extends HTMLElement
 {
@@ -8112,10 +7971,13 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 										.get(text => link.nextElementSibling.innerHTML = text);
 									break;
 								case "frame":
-									let iframe = link.nextElementSibling.appendChild(document.createElement("iframe"));
+									let iframe = document.createElement("iframe");
 									iframe.scrolling = "no";
 									iframe.setAttribute("allowfullscreen", "true");
-									iframe.setAttribute("name", Math.random().toString(36).substr(2));
+									let name = Math.random().toString(36).substr(2);
+									iframe.setAttribute("id", name);
+									iframe.setAttribute("name", name);
+									link.nextElementSibling.appendChild(iframe);
 
 									iframe.onload = () =>
 									{
@@ -8137,9 +7999,9 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 									};
 
 									if (link.tagName === "A")
-										link.setAttribute("target", iframe.getAttribute("name"));
+										link.setAttribute("target", name);
 									else
-										link.setAttribute("formtarget", iframe.getAttribute("name"));
+										link.setAttribute("formtarget", name);
 
 									return;
 							}
@@ -9082,4 +8944,253 @@ class GSelect extends HTMLElement
 }
 
 customElements.define("g-select", GSelect);
+/* global customElements */
+
+class GCard extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"}).innerHTML =
+			`<div id="icon"></div>
+						<header id="head"></header>
+						<section id="body"></section>
+						<footer id="foot"></footer>
+						<nav><slot name="links"></slot></nav>
+
+						<style>
+							div { padding: 5px; display: flex; font-size: 250%; font-family: gate; align-tems: center; justify-content: center }
+							header { padding: 5px; font-size: 150%; text-align: center }
+							section { padding: 5px; text-align: inherit }
+							footer { padding: 5px; font-size: 80%; text-align: center }
+							nav { height: 40px; display: flex; align-items: stretch; border-radius: 0 0 5px 5px; background-image: var(--g-coolbar-background-image) }
+							div:empty { display: none }
+							header:empty { display: none }
+							section:empty { display: none }
+							footer:empty { display: none }
+							nav:empty { display: none }
+						</style>`;
+
+		Array.from(this.children)
+			.filter(e => e.tagName === "A" || e.tagName === "button")
+			.forEach(e => e.setAttribute("slot", "links"));
+
+		this.style.visibility = "visible";
+
+	}
+
+	set icon(value)
+	{
+		this.setAttribute("icon", value);
+	}
+
+	get icon()
+	{
+		return this.getAtribute("icon");
+	}
+
+	set head(value)
+	{
+		this.setAttribute("head", value);
+	}
+
+	get head()
+	{
+		return this.getAtribute("head");
+	}
+
+	set body(value)
+	{
+		this.setAttribute("body", value);
+	}
+
+	get body()
+	{
+		return this.getAtribute("body");
+	}
+
+	set foot(value)
+	{
+		this.setAttribute("foot", value);
+	}
+
+	get foot()
+	{
+		return this.getAtribute("foot");
+	}
+
+	attributeChangedCallback(name, ignore, value)
+	{
+		switch (name)
+		{
+			case "head":
+			case "foot":
+			case "body":
+				this.shadowRoot.getElementById(name).innerText = value;
+				break;
+			case "icon":
+				this.shadowRoot.getElementById(name).innerHTML = "&#X" + value + ";";
+				break;
+
+		}
+	}
+
+	connectedCallback()
+	{
+		this.classList.add(".g-card");
+	}
+
+	static get observedAttributes()
+	{
+		return ["head", "body", "foot", "icon"];
+	}
+
+}
+
+window.addEventListener("load", () => customElements.define('g-card', GCard));
+/* global customElements */
+
+window.addEventListener("load", function ()
+{
+	customElements.define('g-desk-pane',
+		class extends HTMLElement
+	{
+		constructor()
+		{
+			super();
+
+			this.addEventListener("click", function (e)
+			{
+				let target = e.target.closest('g-desk-pane');
+				if (target !== this)
+				{
+					let backup = Array.from(this.children);
+					let elements = Array.from(target.children)
+						.filter(e => e.tagName !== 'I');
+					backup.forEach(e => e.parentNode.removeChild(e));
+					elements.forEach(e => this.appendChild(e));
+
+					let reset = this.appendChild(document.createElement("a"));
+					reset.href = "#";
+					reset.style.color = "#660000";
+					reset.innerText = "Retornar";
+					reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
+
+					reset.addEventListener("click", () =>
+					{
+						reset.parentNode.removeChild(reset);
+						elements.forEach(e => target.appendChild(e));
+						backup.forEach(e => this.appendChild(e));
+						e.preventDefault();
+						e.stopPropagation();
+					});
+
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+			}, true);
+		}
+	});
+
+	Array.from(document.querySelectorAll("ul.DeskPane")).forEach(component =>
+	{
+		var root = document.createElement("a");
+		root.icons = Array.from(component.children);
+		root.onclick = function ()
+		{
+			reset.style.display = "none";
+			links.forEach(e => e.parentNode.style.display = "none");
+			this.icons.forEach(e => e.style.display = "");
+			component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+		};
+
+		let links = Array.from(component.getElementsByTagName("a"));
+		links.forEach(link =>
+		{
+			link.icons = Array.from(link.parentNode.children)
+				.filter(e => e.tagName === "UL")
+				.flatMap(e => Array.from(e.children));
+			link.icons.forEach(e => e.link = link);
+			link.icons.forEach(e => e.style.display = "none");
+
+			if (link.icons.length)
+				link.addEventListener("click", function (event)
+				{
+					links.forEach(e => e.parentNode.style.display = "none");
+					this.icons.forEach(e => e.style.display = "");
+					reset.style.display = "";
+					reset.firstChild.onclick = () => {
+						(this.parentNode.link || root).click();
+					};
+					component.dispatchEvent(new CustomEvent("selected", {detail: this}));
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+				});
+		});
+
+		links.map(e => e.parentNode).forEach(e => component.appendChild(e));
+
+
+		let reset = component.appendChild(document.createElement("li"));
+		reset.className = "Reset";
+		reset.style.display = "none";
+		reset.appendChild(document.createElement("a"));
+		reset.firstChild.innerHTML = "Retornar";
+		reset.firstChild.setAttribute("href", "#");
+		reset.firstChild.appendChild(document.createElement("i")).innerHTML = "&#X2023";
+	});
+});
+/* global customElements */
+
+window.addEventListener("load", function ()
+{
+	customElements.define('g-icon-pane', class extends HTMLElement
+	{
+		constructor()
+		{
+			super();
+
+			this.addEventListener("click", function (e)
+			{
+				let target = e.target.closest('g-icon-pane');
+				if (target !== this)
+				{
+					let backup = Array.from(this.children);
+					let elements = Array.from(target.children)
+						.filter(e => e.tagName !== 'I');
+					backup.forEach(e => e.parentNode.removeChild(e));
+					elements.forEach(e => this.appendChild(e));
+
+					let reset = this.appendChild(document.createElement("a"));
+					reset.href = "#";
+					reset.style.color = "#660000";
+					reset.innerText = "Retornar";
+					reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
+
+					reset.addEventListener("click", () =>
+					{
+						reset.parentNode.removeChild(reset);
+						elements.forEach(e => target.appendChild(e));
+						backup.forEach(e => this.appendChild(e));
+						e.preventDefault();
+						e.stopPropagation();
+					});
+
+					e.preventDefault();
+					e.stopPropagation();
+				}
+
+			}, true);
+		}
+	});
+});
+/* global customElements */
+class GCardPane extends HTMLElement
+{
+
+}
+
+window.addEventListener("load", () => customElements.define('g-card-pane', GCardPane));
 

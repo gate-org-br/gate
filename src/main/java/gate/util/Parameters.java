@@ -1,18 +1,19 @@
 package gate.util;
 
-import gate.error.AppError;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.type.Parameter;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
-
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
-public class Parameters extends HashMap<String, Object>
+public class Parameters extends LinkedHashMap<String, Object>
 {
 
 	public Parameters()
@@ -27,28 +28,36 @@ public class Parameters extends HashMap<String, Object>
 	@Override
 	public String toString()
 	{
+		return entrySet()
+			.stream()
+			.filter(e -> e.getValue() != null)
+			.map(e -> e.getKey() + "=" + Converter.toString(e.getValue()))
+			.filter(e -> !e.isEmpty())
+			.collect(Collectors.joining("&"));
+	}
+
+	public String toEncodedString()
+	{
 		try
 		{
-			StringBuilder string = new StringBuilder();
+			StringJoiner string = new StringJoiner("&");
 			for (Map.Entry<String, Object> parameter : entrySet())
-			{
-				if (string.length() != 0)
-					string.append("&");
-				string.append(URLEncoder.encode(parameter.getKey(), "UTF-8"));
-				string.append("=");
-				string.append(URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8"));
-			}
+				if (parameter.getValue() != null)
+				{
+					String value = Converter.toString(parameter.getValue());
+					if (!value.isEmpty())
+						string.add(URLEncoder.encode(parameter.getKey(), "UTF-8") + "="
+							+ URLEncoder.encode(value, "UTF-8"));
+				}
 			return string.toString();
-		} catch (UnsupportedEncodingException e)
+		} catch (UnsupportedEncodingException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
-	public static Parameters parse(String string) throws ConversionException
+	public Parameters put(String string) throws ConversionException
 	{
-		Parameters parameters = new Parameters();
-
 		int i = 0;
 		while (i < string.length())
 		{
@@ -62,12 +71,18 @@ public class Parameters extends HashMap<String, Object>
 				value.append(string.charAt(i++));
 			i++;
 
-			if (name.length() == 0 || value.length() == 0)
+			if (name.length() == 0)
 				throw new ConversionException(string + " is not a valid query string");
 
-			parameters.put(name.toString(), value.toString());
+			if (value.length() > 0)
+				put(name.toString(), value.toString());
 		}
 
-		return parameters;
+		return this;
+	}
+
+	public static Parameters parse(String string) throws ConversionException
+	{
+		return new Parameters().put(string);
 	}
 }

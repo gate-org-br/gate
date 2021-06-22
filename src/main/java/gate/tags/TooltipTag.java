@@ -3,7 +3,7 @@ package gate.tags;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-public class TooltipTag extends DynamicAttributeTag
+public class TooltipTag extends AttributeTag
 {
 
 	private Object type;

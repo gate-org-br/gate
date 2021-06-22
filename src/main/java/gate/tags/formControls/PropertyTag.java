@@ -3,11 +3,11 @@ package gate.tags.formControls;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.tags.DynamicAttributeTag;
+import gate.tags.AttributeTag;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
-abstract class PropertyTag extends DynamicAttributeTag
+abstract class PropertyTag extends AttributeTag
 {
 
 	private String color;
@@ -113,7 +113,5 @@ abstract class PropertyTag extends DynamicAttributeTag
 			if (placeholder != null && !placeholder.isEmpty())
 				getAttributes().put("placeholder", placeholder);
 		}
-
-		getAttributes().putIfAbsent("tabindex", "1");
 	}
 }
