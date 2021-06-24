@@ -17,7 +17,22 @@ public class Toolkit
 
 	public static boolean isEmpty(String string)
 	{
-		return string == null || string.isEmpty();
+		return string == null || string.isBlank();
+	}
+
+	public static boolean notEmpty(String string)
+	{
+		return string != null && !string.isBlank();
+	}
+
+	public static boolean isEmpty(String... string)
+	{
+		return Stream.of(string).allMatch(Toolkit::isEmpty);
+	}
+
+	public static boolean notEmpty(String... string)
+	{
+		return Stream.of(string).allMatch(Toolkit::notEmpty);
 	}
 
 	public static boolean isEmpty(Object obj)

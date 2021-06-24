@@ -159,6 +159,11 @@ public abstract class Screen extends Base
 		return messages;
 	}
 
+	public void setMessages(String... messages)
+	{
+		this.messages = List.of(messages);
+	}
+
 	public void setMessages(List<String> messages)
 	{
 		this.messages = messages;

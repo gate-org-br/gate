@@ -2,9 +2,11 @@ package gate.tags;
 
 import gate.annotation.Current;
 import gate.entity.User;
-import java.util.regex.Pattern;
+import gate.Command;
+import java.io.IOException;
 import javax.inject.Inject;
-import javax.servlet.jsp.PageContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public abstract class AccessTag extends SimpleTagSupport
@@ -20,15 +22,10 @@ public abstract class AccessTag extends SimpleTagSupport
 
 	private String action;
 
-	protected String otherwise;
+	protected Command command;
 
-	private static final String[] DEFAULT = new String[1];
-	private static final Pattern SPLIT = Pattern.compile("[ ]*,[ ]*");
-
-	public void setOtherwise(String otherwise)
-	{
-		this.otherwise = otherwise;
-	}
+	@Inject
+	private HttpServletRequest request;
 
 	public void setAction(String action)
 	{
@@ -45,22 +42,15 @@ public abstract class AccessTag extends SimpleTagSupport
 		this.screen = screen;
 	}
 
-	protected boolean check()
+	@Override
+	public void doTag() throws JspException, IOException
 	{
-		if ("#".equals(module))
-			module = ((PageContext) getJspContext()).getRequest().getParameter("MODULE");
-		if ("#".equals(screen))
-			screen = ((PageContext) getJspContext()).getRequest().getParameter("SCREEN");
-		if ("#".equals(action))
-			action = ((PageContext) getJspContext()).getRequest().getParameter("ACTION");
+		super.doTag();
+		command = Command.of(request, module, screen, action);
+	}
 
-		if (user != null)
-			for (String m : this.module != null ? SPLIT.split(this.module) : DEFAULT)
-				for (String s : this.screen != null ? SPLIT.split(this.screen) : DEFAULT)
-					for (String a : this.action != null ? SPLIT.split(this.action) : DEFAULT)
-						if (user.checkAccess(m, s, a))
-							return true;
-
-		return false;
+	public boolean checkAccess()
+	{
+		return command.checkAccess(user);
 	}
 }

@@ -1,17 +1,11 @@
 package gate.thymeleaf;
 
-import gate.Gate;
+import gate.Command;
 import gate.annotation.Current;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.base.Screen;
 import gate.entity.User;
 import gate.io.URL;
 import gate.util.Parameters;
-import gate.util.Toolkit;
-import java.lang.reflect.Method;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +38,9 @@ public class RequestAttributeTagProcessor extends AbstractAttributeTagProcessor
 	}
 
 	@Override
-	protected void doProcess(ITemplateContext context, IProcessableElementTag element, AttributeName key, String val, IElementTagStructureHandler handler)
+	protected void doProcess(ITemplateContext context, IProcessableElementTag element,
+		AttributeName key, String val, IElementTagStructureHandler handler)
 	{
-
 		String module = element.getAttributeValue("g:module");
 		String screen = element.getAttributeValue("g:screen");
 		String action = element.getAttributeValue("g:action");
@@ -57,26 +51,7 @@ public class RequestAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 		HttpServletRequest request = CDI.current().select(HttpServletRequest.class).get();
 
-		if (Toolkit.isEmpty(module))
-		{
-			module = request.getParameter("MODULE");
-			if (Toolkit.isEmpty(screen))
-			{
-				screen = request.getParameter("SCREEN");
-				if (Toolkit.isEmpty(action))
-					action = request.getParameter("ACTION");
-			}
-		}
-
-		if ("#".equals(module))
-			module = request.getParameter("MODULE");
-		if ("#".equals(screen))
-			screen = request.getParameter("SCREEN");
-		if ("#".equals(action))
-			action = request.getParameter("ACTION");
-
-		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow();
-		Method method = Screen.getAction(type, action).orElseThrow();
+		Command command = Command.of(request, module, screen, action);
 
 		User user = CDI.current().select(User.class, Current.QUALIFIER).get();
 
@@ -91,7 +66,7 @@ public class RequestAttributeTagProcessor extends AbstractAttributeTagProcessor
 			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
 			parser.parseExpression(context, e.getValue()).execute(context)));
 
-		if (Gate.checkAccess(user, module, screen, action, type, method))
+		if (command.checkAccess(user))
 		{
 			if (element.getElementCompleteName().toLowerCase().equals("a"))
 				handler.setAttribute("href", URL.toString(module, screen, action, parameters.toString()));
@@ -105,13 +80,12 @@ public class RequestAttributeTagProcessor extends AbstractAttributeTagProcessor
 				|| element.getElementCompleteName().toLowerCase().equals("button")))
 			{
 				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-				Name.Extractor.extract(method).or(() -> Name.Extractor.extract(type)).ifPresent(body::add);
-				Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type)).map(e -> "<i>" + e.toString() + "</i>").ifPresent(body::add);
+				command.getName().ifPresent(body::add);
+				command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
 				handler.setBody(body.toString(), true);
 			}
 		} else if (element.getElementCompleteName().toLowerCase().equals("a")
 			|| element.getElementCompleteName().toLowerCase().equals("button"))
 			handler.removeElement();
-
 	}
 }

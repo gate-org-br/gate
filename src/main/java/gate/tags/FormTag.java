@@ -46,7 +46,7 @@ public class FormTag extends AttributeTag
 
 		int size = Integer.parseInt(field.getSize().toString()) * 2;
 
-		if (!Toolkit.isEmpty(field.getName()))
+		if (Toolkit.notEmpty(field.getName()))
 		{
 			attributes = new Attributes(attributes);
 			if (!attributes.containsKey("data-mask"))

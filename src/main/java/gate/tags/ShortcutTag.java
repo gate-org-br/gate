@@ -23,7 +23,7 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", command.getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 		getJspContext().getOut().print("</button>");
 	}
@@ -43,24 +43,8 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", command.getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 		getJspContext().getOut().print("</a>");
 	}
-
-	@Override
-	public void exit() throws JspException, IOException
-	{
-		if (tabindex != null)
-			getAttributes().put("tabindex", tabindex);
-
-		getAttributes().put("href", "Gate");
-		getJspContext().getOut().print("<a " + getAttributes() + ">");
-		if (getJspBody() != null)
-			getJspBody().invoke(null);
-		else
-			getJspContext().getOut().print("<i>" + Icons.getIcon("exit") + "</i>");
-		getJspContext().getOut().print("</a>");
-	}
-
 }

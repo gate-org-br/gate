@@ -1,12 +1,13 @@
 package gate.error;
 
-public class InvalidRequestException extends Exception
+public class InvalidRequestException extends RuntimeException
 {
 
 	private static final long serialVersionUID = 1L;
 
-	public InvalidRequestException()
+	public InvalidRequestException(String module, String screen, String action)
 	{
-		super("Requisição Inválida");
+		super(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+			module, screen, action));
 	}
 }

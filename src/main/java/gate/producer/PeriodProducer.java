@@ -2,7 +2,6 @@ package gate.producer;
 
 import gate.type.Period;
 import java.io.Serializable;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
@@ -13,7 +12,6 @@ import javax.inject.Named;
  * Produces a ZERO period object
  *
  */
-@Dependent
 public class PeriodProducer implements Serializable
 {
 

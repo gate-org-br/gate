@@ -48,21 +48,6 @@ public class LinkTag extends AnchorTag
 	}
 
 	@Override
-	public void exit() throws JspException, IOException
-	{
-		if (tabindex != null)
-			getAttributes().put("tabindex", tabindex);
-
-		getAttributes().put("href", "Gate");
-		getJspContext().getOut().print("<a " + getAttributes() + ">");
-		if (getJspBody() != null)
-			getJspBody().invoke(null);
-		else
-			getJspContext().getOut().print("Sair<i>" + Icons.getIcon("exit") + "</i>");
-		getJspContext().getOut().print("</a>");
-	}
-
-	@Override
 	public void accessDenied() throws JspException, IOException
 	{
 		if (otherwise != null)

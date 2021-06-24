@@ -1,11 +1,7 @@
 package gate;
 
-import gate.annotation.Annotations;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
-import gate.annotation.Disabled;
-import gate.annotation.Public;
-import gate.annotation.Superuser;
 import gate.base.Screen;
 import gate.entity.App;
 import gate.entity.Org;
@@ -106,9 +102,7 @@ public class Gate extends HttpServlet
 
 			User user = Credentials.of(request).orElseGet(() -> (User) request.getSession().getAttribute(User.class.getName()));
 
-			if (Toolkit.isEmpty(MODULE)
-				&& Toolkit.isEmpty(SCREEN)
-				&& Toolkit.isEmpty(ACTION))
+			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
 
 			{
 				if (request.getSession(false) != null)
@@ -119,26 +113,25 @@ public class Gate extends HttpServlet
 				String username = request.getParameter("$userid");
 				String password = request.getParameter("$passwd");
 
-				if (!Toolkit.isEmpty(username) && !Toolkit.isEmpty(password))
+				if (Toolkit.notEmpty(username, password))
 					request.getSession().setAttribute(User.class.getName(), user = control.select(org, username, password));
 				else if (httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
 					request.getSession().setAttribute(User.class.getName(), user = control.select(httpServletRequest.getUserPrincipal().getName()));
 
-				Class<Screen> clazz = Screen.getScreen(MODULE, SCREEN).orElseThrow(InvalidRequestException::new);
-				Method method = Screen.getAction(clazz, ACTION).orElseThrow(InvalidRequestException::new);
-				if (!Gate.checkAccess(user, MODULE, SCREEN, ACTION, clazz, method))
+				Command command = Command.of(MODULE, SCREEN, ACTION);
+				if (!command.checkAccess(user))
 					throw new AccessDeniedException();
 
-				Screen screen = Screen.create(clazz);
+				Screen screen = Screen.create(command.getType());
 				request.setAttribute("screen", screen);
-				request.setAttribute("action", method);
+				request.setAttribute("action", command.getMethod());
 				screen.prepare(request, response);
 
-				if (method.isAnnotationPresent(Asynchronous.class))
-					executeAsynchronous(httpServletRequest, response, user, screen, method);
+				if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+					executeAsynchronous(httpServletRequest, response, user, screen, command.getMethod());
 				else
-					execute(httpServletRequest, response, user, screen, method);
+					execute(httpServletRequest, response, user, screen, command.getMethod());
 			}
 
 		} catch (InvalidUsernameException
@@ -280,27 +273,5 @@ public class Gate extends HttpServlet
 			}
 		}).start();
 
-	}
-
-	public static boolean checkAccess(User user,
-		String module,
-		String screen,
-		String action,
-		Class<?> clazz,
-		Method method)
-	{
-		if (Annotations.exists(Disabled.class, clazz, method))
-			return false;
-
-		if (user != null && user.isSuperUser())
-			return true;
-
-		if (Annotations.exists(Superuser.class, clazz, method))
-			return user != null && user.isSuperUser();
-
-		if (Annotations.exists(Public.class, clazz, method))
-			return user == null || !user.checkBlock(module, screen, action);
-
-		return user != null && user.checkAccess(module, screen, action);
 	}
 }
