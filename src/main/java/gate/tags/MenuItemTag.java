@@ -60,19 +60,6 @@ public class MenuItemTag extends AnchorTag
 	}
 
 	@Override
-	public void exit() throws JspException, IOException
-	{
-		getJspContext().getOut().print("<li " + getAttributes() + ">");
-		getJspContext().getOut().print("<a href='Gate'>");
-		if (getJspBody() != null)
-			getJspBody().invoke(null);
-		else
-			getJspContext().getOut().print("Sair<i>" + Icons.getIcon("exit") + "</i>");
-		getJspContext().getOut().print("</a>");
-		getJspContext().getOut().print("</li>");
-	}
-
-	@Override
 	public void accessDenied() throws JspException, IOException
 	{
 		if (fixed)

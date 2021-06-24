@@ -2,7 +2,6 @@ package gate.producer;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
@@ -11,7 +10,6 @@ import javax.inject.Named;
  *
  * Produces LocalDate objects with current Date
  */
-@Dependent
 public class LocalDateProducer implements Serializable
 {
 

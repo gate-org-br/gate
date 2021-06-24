@@ -37,14 +37,6 @@ public class TRTag extends AnchorTag
 	}
 
 	@Override
-	public void exit() throws JspException, IOException
-	{
-		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
-		getJspBody().invoke(null);
-		getJspContext().getOut().print("</tr>");
-	}
-
-	@Override
 	public void accessDenied() throws JspException, IOException
 	{
 		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");

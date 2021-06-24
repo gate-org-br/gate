@@ -23,9 +23,9 @@ public class ConnectionProducer
 		return new Link(injectionPoint.getAnnotated().getAnnotation(Name.class).value());
 	}
 
-	public void dispose(@Disposes @Name("") Link c)
+	public void dispose(@Disposes @Name("") Link link)
 	{
-		c.close();
+		link.close();
 	}
 
 }

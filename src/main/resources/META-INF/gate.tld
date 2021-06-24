@@ -2393,6 +2393,33 @@
 	</tag>
 
 	<tag>
+		<name>exit</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.ExitTag</tag-class>
+		<dynamic-attributes>true</dynamic-attributes>
+		<description>
+			Creates a exit link.
+		</description>
+
+		<attribute>
+			<name>icon</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The link icon
+			</description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The link name
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
 		<name>get</name>
 		<display-name>Get</display-name>
 		<body-content>scriptless</body-content>

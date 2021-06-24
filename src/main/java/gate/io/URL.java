@@ -273,13 +273,13 @@ public class URL
 		String arguments)
 	{
 		StringJoiner string = new StringJoiner("&");
-		if (!Toolkit.isEmpty(module))
+		if (Toolkit.notEmpty(module))
 			string.add("MODULE=" + module);
-		if (!Toolkit.isEmpty(screen))
+		if (Toolkit.notEmpty(screen))
 			string.add("SCREEN=" + screen);
-		if (!Toolkit.isEmpty(action))
+		if (Toolkit.notEmpty(action))
 			string.add("ACTION=" + action);
-		if (!Toolkit.isEmpty(arguments))
+		if (Toolkit.notEmpty(arguments))
 			string.add(arguments);
 		return "Gate?" + string.toString();
 	}
