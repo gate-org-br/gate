@@ -2,13 +2,16 @@ package gate.producer;
 
 import gate.annotation.Current;
 import gate.annotation.Name;
+import gate.base.Screen;
 import gate.entity.App;
 import gate.util.ContextMap;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Startup;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,10 +43,17 @@ public class AppProducer implements Serializable
 
 	private App app;
 
+	@Inject
+	private Instance<Screen> instances;
+
 	@PostConstruct
 	public void prepare()
 	{
-		app = App.getInstance(servletContext);
+		app = App.getInstance(servletContext.getServletContextName(),
+			servletContext.getInitParameter("name"),
+			servletContext.getInitParameter("description"),
+			instances.stream().map(e -> e.getClass())
+				.collect(Collectors.toList()));
 		applications.put(app.getId(), app);
 	}
 

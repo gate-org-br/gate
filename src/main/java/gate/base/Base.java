@@ -10,6 +10,10 @@ import gate.annotation.Current;
 abstract class Base
 {
 
+	private Org org;
+	private App app;
+	private User user;
+
 	/**
 	 * Returns information about the current user.
 	 *
@@ -17,10 +21,13 @@ abstract class Base
 	 */
 	public User getUser()
 	{
-		if (Progress.getUser() != null)
-			return Progress.getUser();
+		if (user != null)
+			return user;
 
-		return CDI.current().select(User.class, Current.QUALIFIER).get();
+		if (Progress.getUser() != null)
+			return user = Progress.getUser();
+
+		return user = CDI.current().select(User.class, Current.LITERAL).get();
 	}
 
 	/**
@@ -30,11 +37,13 @@ abstract class Base
 	 */
 	public Org getOrg()
 	{
+		if (org != null)
+			return org;
 
 		if (Progress.getOrg() != null)
-			return Progress.getOrg();
+			return org = Progress.getOrg();
 
-		return CDI.current().select(Org.class, Current.QUALIFIER).get();
+		return org = CDI.current().select(Org.class, Current.LITERAL).get();
 	}
 
 	/**
@@ -44,9 +53,12 @@ abstract class Base
 	 */
 	public App getApp()
 	{
-		if (Progress.getApp() != null)
-			return Progress.getApp();
+		if (app != null)
+			return app;
 
-		return CDI.current().select(App.class, Current.QUALIFIER).get();
+		if (Progress.getApp() != null)
+			return app = Progress.getApp();
+
+		return app = CDI.current().select(App.class, Current.LITERAL).get();
 	}
 }

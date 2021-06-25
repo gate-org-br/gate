@@ -84,7 +84,7 @@ class GWindow extends GModal
 			this._private.minimizeButton = this.head.appendChild(window.top.document.createElement("a"));
 			this._private.minimizeButton.href = "#";
 			this._private.minimizeButton.innerHTML = "<i>&#x3019;<i/>";
-			this._private.minimizeButton.onclick = () => this.minimize();
+			this._private.minimizeButton.onclick = event => event.preventDefault() | this.minimize();
 		}
 
 		return this._private.minimizeButton;
@@ -97,7 +97,7 @@ class GWindow extends GModal
 			this._private.fullScreenButton = this.head.appendChild(window.top.document.createElement("a"));
 			this._private.fullScreenButton.href = "#";
 			this._private.fullScreenButton.innerHTML = (FullScreen.status() ? "<i>&#x3016;</i>" : "<i>&#x3015;</i>");
-			this._private.fullScreenButton.onclick = () => this._private.fullScreenButton.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3015;</i>" : "<i>&#x3016;</i>");
+			this._private.fullScreenButton.onclick = event => this._private.fullScreenButton.innerHTML = (FullScreen.switch(this.main) ? "<i>&#x3015;</i>" : "<i>&#x3016;</i>");
 		}
 
 		return this._private.fullScreenButton;
@@ -110,7 +110,7 @@ class GWindow extends GModal
 			this._private.hideButton = this.head.appendChild(window.top.document.createElement("a"));
 			this._private.hideButton.href = "#";
 			this._private.hideButton.innerHTML = "<i>&#x1011;<i/>";
-			this._private.hideButton.onclick = () => this.hide();
+			this._private.hideButton.onclick = event => event.preventDefault() | this.hide();
 		}
 
 		return this._private.hideButton;
