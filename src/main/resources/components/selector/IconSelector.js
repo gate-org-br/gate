@@ -352,8 +352,9 @@ class IconSelector extends HTMLElement
 		icon.innerHTML = "&#X" + code + ";";
 		icon.href = "#";
 		icon.addEventListener("click", () =>
-			this.dispatchEvent(new CustomEvent('selected',
-				{detail: {selector: this, icon: code}})));
+			event.preventDefault() |
+				this.dispatchEvent(new CustomEvent('selected',
+					{detail: {selector: this, icon: code}})));
 	}
 }
 

@@ -53,7 +53,7 @@ public class RequestAttributeTagProcessor extends AbstractAttributeTagProcessor
 
 		Command command = Command.of(request, module, screen, action);
 
-		User user = CDI.current().select(User.class, Current.QUALIFIER).get();
+		User user = CDI.current().select(User.class, Current.LITERAL).get();
 
 		Parameters parameters = new Parameters();
 		IEngineConfiguration configuration = context.getConfiguration();

@@ -2,8 +2,10 @@ package gate.io;
 
 import gate.annotation.Handler;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.handler.RedirectHandler;
 import gate.type.Parameter;
+import gate.util.Parameters;
 import gate.util.Toolkit;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
@@ -44,7 +45,7 @@ public class URL
 	private String credentials;
 	private boolean trust = false;
 	private int timeout = INFINITE;
-	private final StringJoiner parameters = new StringJoiner("&");
+	private final Parameters parameters;
 
 	private static final TrustManager[] TRUST_MANAGERS = new TrustManager[]
 	{
@@ -73,23 +74,27 @@ public class URL
 	public URL(String url)
 	{
 		this.value = url;
+		this.parameters = new Parameters();
+	}
+
+	public URL(String url, Parameters parameters)
+	{
+		this.value = url;
+		this.parameters = parameters;
 	}
 
 	public URL(String url, Object... args)
 	{
-		this.value = String.format(url, args);
+		this(String.format(url, args));
 	}
 
 	public URL setParameter(String name, Object parameter)
 	{
-		try
-		{
-			parameters.add(name + "=" + URLEncoder.encode(Converter.toString(parameter), "UTF-8"));
-			return this;
-		} catch (UnsupportedEncodingException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		if (parameter != null)
+			parameters.put(name, parameter);
+		else
+			parameters.remove(name);
+		return this;
 	}
 
 	public URL setModule(String module)
@@ -113,14 +118,14 @@ public class URL
 
 	public URL setMessages(List<String> messages)
 	{
-		setParameter("messages", messages);
+		setParameter("messages", !messages.isEmpty() ? messages : null);
 		return this;
 
 	}
 
 	public URL setMessages(String... messages)
 	{
-		setParameter("messages", Arrays.asList(messages));
+		setMessages(Arrays.asList(messages));
 		return this;
 	}
 
@@ -258,13 +263,7 @@ public class URL
 	@Override
 	public String toString()
 	{
-		if (value.charAt(value.length() - 1) == '?'
-			|| value.charAt(value.length() - 1) == '&')
-			return value + parameters.toString();
-		else if (value.indexOf('?') != -1)
-			return value + "&" + parameters.toString();
-		else
-			return value + "?" + parameters.toString();
+		return parameters.isEmpty() ? value : value + "?" + parameters.toEncodedString();
 	}
 
 	public static String toString(String module,
@@ -339,5 +338,24 @@ public class URL
 				throw ex.getCause();
 			}
 		}
+	}
+
+	public static URL parse(String string) throws ConversionException
+	{
+		int i = 0;
+		StringBuilder url = new StringBuilder();
+		StringBuilder qs = new StringBuilder();
+
+		while (i < string.length() && string.charAt(i) != '?')
+			url.append(string.charAt(i++));
+
+		i++;
+
+		while (i < string.length())
+			qs.append(string.charAt(i++));
+
+		return qs.length() != 0
+			? new URL(url.toString(), Parameters.parse(qs.toString()))
+			: new URL(url.toString());
 	}
 }

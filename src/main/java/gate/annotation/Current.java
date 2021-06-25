@@ -19,7 +19,7 @@ import javax.inject.Qualifier;
 public @interface Current
 {
 
-	public static final AnnotationLiteral<Current> QUALIFIER = new Qualifier();
+	public static final AnnotationLiteral<Current> LITERAL = new Qualifier();
 
 	static class Qualifier extends AnnotationLiteral<Current> implements Current
 	{

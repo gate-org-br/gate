@@ -3,14 +3,12 @@ package gate.entity;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.base.Screen;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.servlet.ServletContext;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
 
 @Icon("2189")
 public class App implements Serializable
@@ -46,19 +44,15 @@ public class App implements Serializable
 		return Collections.unmodifiableList(modules);
 	}
 
-	public static App getInstance(ServletContext context)
+	public static App getInstance(String id, String name, String description, List<Class<? extends Screen>> screens)
 	{
-		Reflections reflections = new Reflections(ClasspathHelper.forWebInfClasses(context));
-
-		List<Class<? extends gate.base.Screen>> screens
-			= new ArrayList<>(reflections.getSubTypesOf(gate.base.Screen.class));
 		screens.removeIf(e -> Modifier.isAbstract(e.getModifiers()) || !e.getSimpleName().endsWith("Screen"));
 		screens.sort(Comparator.comparing(a -> a.getPackage().getName()));
 
 		App app = new App();
-		app.id = context.getServletContextName();
-		app.name = context.getInitParameter("name");
-		app.description = context.getInitParameter("description");
+		app.id = id;
+		app.name = name;
+		app.description = description;
 
 		Iterator<Class<? extends gate.base.Screen>> iterator = screens.iterator();
 		while (iterator.hasNext())
