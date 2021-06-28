@@ -2153,6 +2153,33 @@
 				if the value and the body are empty
 			</description>
 		</attribute>
+		<attribute>
+			<name>ordenate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Property used as the sort criteria of
+				the dataset.
+			</description>
+		</attribute>
+		<attribute>
+			<name>method</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				Request method to be used on the generated
+				ordenate link. Defaults to the current request method.
+			</description>
+		</attribute>
+		<attribute>
+			<name>arguments</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				A list of optional arguments to be included
+				on the generated ordenate link URL.
+			</description>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -2333,24 +2360,6 @@
 				of the current screen.
 			</description>
 		</attribute>
-		<attribute>
-			<name>method</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Request method to be used on the generated
-				ordenate link. Defaults to the current request method.
-			</description>
-		</attribute>
-		<attribute>
-			<name>arguments</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				A list of optional arguments to be included
-				on the generated ordenate link URL.
-			</description>
-		</attribute>
 	</tag>
 
 	<tag>
@@ -2390,6 +2399,22 @@
 		<description>
 			Creates a hide link.
 		</description>
+		<attribute>
+			<name>icon</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The link icon
+			</description>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The link name
+			</description>
+		</attribute>
 	</tag>
 
 	<tag>
@@ -2420,34 +2445,24 @@
 	</tag>
 
 	<tag>
-		<name>get</name>
-		<display-name>Get</display-name>
-		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.GetTag</tag-class>
-		<description>
-			Excetutes the body only if the request method is get.
-		</description>
-		<attribute>
-			<name>otherwise</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				An alternative text to be printed otherwise.
-			</description>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>post</name>
+		<name>condition</name>
 		<display-name>Post</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.PostTag</tag-class>
+		<tag-class>gate.tags.ConditionTag</tag-class>
 		<description>
-			Excetutes the body only if the request method is post
+			Excetutes the body if supplied condition is true
 		</description>
 		<attribute>
+			<name>condition</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be tested.
+			</description>
+		</attribute>
+		<attribute>
 			<name>otherwise</name>
-			<required>false</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
 				An alternative text to be printed otherwise.

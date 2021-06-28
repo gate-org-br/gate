@@ -4,18 +4,17 @@ import gate.annotation.Current;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.entity.App;
-import gate.util.ContextMap;
+import gate.util.JNDIContextMap;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Startup;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 import javax.servlet.ServletContext;
 
 /**
@@ -27,8 +26,7 @@ import javax.servlet.ServletContext;
  * Produces a Collection of App objects with all current gate based applications deployed on the container.
  *
  */
-@Startup
-@Singleton
+@ApplicationScoped
 public class AppProducer implements Serializable
 {
 
@@ -36,7 +34,7 @@ public class AppProducer implements Serializable
 
 	@Inject
 	@Name("gate.apps")
-	private ContextMap<App> applications;
+	private JNDIContextMap<App> applications;
 
 	@Inject
 	private ServletContext servletContext;

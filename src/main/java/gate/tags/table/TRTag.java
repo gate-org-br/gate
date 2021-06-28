@@ -1,11 +1,25 @@
 package gate.tags.table;
 
 import gate.tags.*;
+import gate.util.Toolkit;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 public class TRTag extends AnchorTag
 {
+
+	@Override
+	public void doTag() throws JspException, IOException
+	{
+		if (Toolkit.isEmpty(method, target, module, screen, action))
+		{
+			getJspContext().getOut().print("<tr " + getAttributes().toString() + " >");
+			getJspBody().invoke(null);
+			getJspContext().getOut().print("</tr>");
+		} else
+			super.doTag();
+
+	}
 
 	@Override
 	public void get() throws JspException, IOException
@@ -15,8 +29,8 @@ public class TRTag extends AnchorTag
 		getAttributes().put("data-action", getURL());
 		if (target != null)
 			getAttributes().put("data-target", target);
+		getJspContext().getOut().print("<tr " + getAttributes().toString() + " >");
 
-		getJspContext().getOut().print(getAttributes().isEmpty() ? "<tr>" : "<tr " + getAttributes().toString() + " >");
 		getJspBody().invoke(null);
 		getJspContext().getOut().print("</tr>");
 	}

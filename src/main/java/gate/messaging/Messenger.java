@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -36,19 +36,19 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.slf4j.Logger;
 
-@Singleton
+@ApplicationScoped
 public class Messenger
 {
 
 	@Inject
 	private Logger logger;
-	
+
 	private volatile ScheduledExecutorService service;
-	
+
 	public void startup()
 	{
 		service = Executors.newSingleThreadScheduledExecutor();
-		
+
 		service.scheduleWithFixedDelay(() ->
 		{
 			try
@@ -56,11 +56,11 @@ public class Messenger
 				Context context = new InitialContext();
 				Queue queue = (Queue) context.lookup("java:/jms/queue/MailBox");
 				ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("/ConnectionFactory");
-				
+
 				try (Connection connection = connectionFactory.createConnection();
 					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 					MessageConsumer consumer = session.createConsumer(queue))
-				
+
 				{
 					connection.start();
 					ObjectMessage objectMessage
@@ -76,7 +76,7 @@ public class Messenger
 			}
 		}, 0, 60, TimeUnit.SECONDS);
 	}
-	
+
 	@PreDestroy
 	public void teardown()
 	{
@@ -86,7 +86,7 @@ public class Messenger
 			service = null;
 		}
 	}
-	
+
 	public void post(String sender,
 		String receiver,
 		MimeMail<?> mail)
@@ -106,31 +106,31 @@ public class Messenger
 				try
 				{
 					Queue queue = (Queue) new InitialContext().lookup("java:/jms/queue/MailBox");
-					
+
 					try
 					{
 						javax.mail.Session mailSession = (javax.mail.Session) context.lookup("java:/comp/env/MailSession");
 						try
 						{
-							
+
 							if (sender == null
 								&& mailSession.getProperties().get("mail.smtp.user") != null)
 								sender = (String) mailSession.getProperties().get("mail.smtp.user");
 							if (sender == null)
 								throw new MessageException("Esquecifique o remetente da mensagem.");
-							
+
 							try (Connection connection = connectionFactory.createConnection();
 								Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 								MessageProducer producer = session.createProducer(queue))
 							{
-								
+
 								ObjectMessage message = session.createObjectMessage();
 								message.setObject(mail);
 								message.setStringProperty("date", LocalDateTime.now()
 									.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 								message.setStringProperty("sender", sender);
 								message.setStringProperty("receiver", receiver);
-								
+
 								connection.start();
 								producer.send(message);
 								if (service == null)
@@ -158,14 +158,14 @@ public class Messenger
 			throw new MessageException(ex, "O serviço de nomes não foi devidamente configurado neste servidor");
 		}
 	}
-	
+
 	public void post(String receiver,
 		MimeMail<?> mail)
 		throws MessageException
 	{
 		post(null, receiver, mail);
 	}
-	
+
 	public List<Message> search() throws MessageException
 	{
 		try
@@ -183,7 +183,7 @@ public class Messenger
 							javax.jms.Session.AUTO_ACKNOWLEDGE);
 						QueueBrowser browser = session.createBrowser(queue))
 					{
-						
+
 						List<Message> messages = new ArrayList<>();
 						for (Object object : Collections.list(browser.getEnumeration()))
 						{
@@ -205,7 +205,7 @@ public class Messenger
 				{
 					throw new MessageException(ex, "A fila java:/jms/queue/MailBox não foi devidamente configurada neste servidor");
 				}
-				
+
 			} catch (NamingException ex)
 			{
 				throw new MessageException(ex, "O serviço JMS não foi devidamente configurado neste servidor");
@@ -214,9 +214,9 @@ public class Messenger
 		{
 			throw new MessageException(ex, "O serviço de nomes não foi devidamente configurado neste servidor");
 		}
-		
+
 	}
-	
+
 	private void send(String sender, String receiver, MimeMail<?> mail)
 		throws NamingException, MessagingException
 	{
@@ -225,14 +225,14 @@ public class Messenger
 		mimeMessage.setFrom(sender);
 		mimeMessage.setSubject(mail.getSubject());
 		mimeMessage.setSentDate(new java.util.Date());
-		
+
 		if (mail.getPriority() == MimeMail.Priority.LOW)
 			mimeMessage.setHeader("X-Priority", "5");
 		else if (mail.getPriority() == MimeMail.Priority.HIGH)
 			mimeMessage.setHeader("X-Priority", "1");
-		
+
 		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
-		
+
 		if (mail.getContent() instanceof MimeText)
 		{
 			MimeText mimeText = (MimeText) mail.getContent();
@@ -248,16 +248,16 @@ public class Messenger
 			MimeList mimeList = (MimeList) mail.getContent();
 			mimeMessage.setContent(getMultipart(mimeList));
 		}
-		
+
 		Transport.send(mimeMessage);
-		
+
 	}
-	
+
 	private MimeMultipart getMultipart(MimeList data) throws MessagingException
 	{
 		MimeMultipart mimeMultipart = new MimeMultipart();
 		mimeMultipart.setSubType(data.getType());
-		
+
 		for (Mime mime : data)
 		{
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
@@ -276,10 +276,10 @@ public class Messenger
 				MimeList mimeList = (MimeList) mime;
 				mimeBodyPart.setContent(getMultipart(mimeList));
 			}
-			
+
 			mimeMultipart.addBodyPart(mimeBodyPart);
 		}
-		
+
 		return mimeMultipart;
 	}
 }

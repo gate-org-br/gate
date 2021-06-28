@@ -1,34 +1,37 @@
 package gate.tags;
 
 import java.io.IOException;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
-public class PostTag extends ParameterTag
+public class ConditionTag extends AttributeTag
 {
 
+	private boolean condition;
 	private String otherwise;
 
-	@Inject
-	private HttpServletRequest request;
+	public void setCondition(boolean condition)
+	{
+		this.condition = condition;
+	}
 
 	public void setOtherwise(String otherwise)
 	{
 		this.otherwise = otherwise;
 	}
-	
+
 	@Override
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
 
-		if ("POST".equalsIgnoreCase(request.getMethod()))
+		if (condition)
 		{
 			getJspBody().invoke(null);
 		} else if (otherwise != null)
 		{
-			getJspContext().getOut().print("<div class='TEXT'>");
+			if (!getAttributes().containsKey("class"))
+				getAttributes().put("class", "TEXT");
+			getJspContext().getOut().print("<div " + getAttributes() + ">");
 			getJspContext().getOut().print("<h1>" + otherwise + "</h1>");
 			getJspContext().getOut().print("</div>");
 		}

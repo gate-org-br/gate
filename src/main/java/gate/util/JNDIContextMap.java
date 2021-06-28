@@ -16,18 +16,18 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-public class ContextMap<T> extends AbstractMap<String, T>
+public class JNDIContextMap<T> extends AbstractMap<String, T>
 {
 
 	private Context context;
 
-	public ContextMap(Context context)
+	public JNDIContextMap(Context context)
 	{
 		Objects.requireNonNull(context);
 		this.context = context;
 	}
 
-	public ContextMap(String context)
+	public JNDIContextMap(String context)
 	{
 		try
 		{
