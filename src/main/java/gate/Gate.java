@@ -189,7 +189,16 @@ public class Gate extends HttpServlet
 		HttpServletResponse response, User user, Screen screen, Method method)
 		throws RuntimeException, IllegalAccessException, InvocationTargetException
 	{
-		Object result = screen.execute(method);
+
+		Object result;
+		try
+		{
+			result = screen.execute(method);
+		} catch (InvocationTargetException ex)
+		{
+			result = screen.onException(ex);
+		}
+
 		if (result != null)
 			if (method.isAnnotationPresent(gate.annotation.Handler.class))
 				Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())

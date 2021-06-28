@@ -2,10 +2,7 @@ package gate.event;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 import javax.websocket.CloseReason;
@@ -14,10 +11,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-@Startup
-@Singleton
+@ApplicationScoped
 @ServerEndpoint("/AppEvents")
-@TransactionManagement(TransactionManagementType.BEAN)
 public class AppEvents
 {
 

@@ -1,9 +1,12 @@
 package gate.io;
 
 import gate.annotation.Handler;
+import gate.base.Screen;
 import gate.converter.Converter;
+import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.handler.RedirectHandler;
+import gate.type.ID;
 import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
@@ -112,6 +115,25 @@ public class URL
 	public URL setAction(String action)
 	{
 		setParameter("ACTION", action);
+		return this;
+
+	}
+
+	public URL setMessages(AppException ex)
+	{
+		setMessages(ex.getMessages());
+		return this;
+	}
+
+	public URL setMessages(Exception ex)
+	{
+		setMessages(ex.getMessage());
+		return this;
+	}
+
+	public URL setTab(String tab)
+	{
+		setParameter("tab", tab);
 		return this;
 
 	}

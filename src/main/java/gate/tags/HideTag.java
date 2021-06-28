@@ -1,16 +1,23 @@
 package gate.tags;
 
+import gate.util.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 public class HideTag extends AttributeTag
 {
 
-	private String type;
+	private String icon;
+	private String name;
 
-	public void setType(String type)
+	public void setIcon(String icon)
 	{
-		this.type = type;
+		this.icon = icon;
+	}
+
+	public void setName(String name)
+	{
+		this.name = name;
 	}
 
 	@Override
@@ -20,7 +27,18 @@ public class HideTag extends AttributeTag
 		getAttributes().put("href", "#");
 		getAttributes().put("target", "_hide");
 		getJspContext().getOut().println("<a " + getAttributes() + ">");
-		getJspBody().invoke(null);
-		getJspContext().getOut().println("</a>");
+
+		if (getJspBody() == null)
+		{
+			if (name != null)
+				getJspContext().getOut().print(name);
+			if (icon != null)
+				getJspContext().getOut().print("<i>"
+					+ Icons.getInstance().get(icon).orElse(Icons.getIcon("return"))
+						.toString() + "</i>");
+		} else
+			getJspBody().invoke(null);
+
+		getJspContext().getOut().print("</a>");
 	}
 }

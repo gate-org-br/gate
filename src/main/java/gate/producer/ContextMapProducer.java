@@ -1,7 +1,7 @@
 package gate.producer;
 
 import gate.annotation.Name;
-import gate.util.ContextMap;
+import gate.util.JNDIContextMap;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
@@ -17,8 +17,8 @@ public class ContextMapProducer
 
 	@Name("")
 	@Produces
-	public <T> ContextMap<T> produce(InjectionPoint injectionPoint)
+	public <T> JNDIContextMap<T> produce(InjectionPoint injectionPoint)
 	{
-		return new ContextMap(injectionPoint.getAnnotated().getAnnotation(Name.class).value());
+		return new JNDIContextMap(injectionPoint.getAnnotated().getAnnotation(Name.class).value());
 	}
 }

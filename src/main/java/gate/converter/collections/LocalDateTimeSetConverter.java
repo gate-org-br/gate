@@ -57,15 +57,9 @@ public class LocalDateTimeSetConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		try
-		{
-			if (string == null)
-				return null;
-			return new LocalDateTimeSet(string);
-		} catch (ParseException e)
-		{
-			throw new ConversionException(String.format("%s não é uma lista de datas", string));
-		}
+		if (string == null)
+			return null;
+		return new LocalDateTimeSet(string);
 	}
 
 	@Override

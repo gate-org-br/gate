@@ -49,8 +49,9 @@ public class THTag extends ParameterTag
 			} else
 			{
 				getParameters().put("orderBy", ordenate);
-				getJspContext().getOut().write(getParameters().toString());
+				getJspContext().getOut().write(getParameters().toString() + "'>");
 			}
+
 		}
 
 		if (getJspBody() == null)

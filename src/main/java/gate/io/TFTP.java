@@ -1,4 +1,4 @@
-package gate.util;
+package gate.io;
 
 import gate.error.AppException;
 import gate.type.DataFile;
@@ -57,7 +57,7 @@ public class TFTP
 		} finally
 		{
 			if (tftp != null
-					&& tftp.isOpen())
+				&& tftp.isOpen())
 				tftp.close();
 		}
 	}

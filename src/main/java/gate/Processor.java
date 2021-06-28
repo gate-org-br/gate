@@ -1,11 +1,8 @@
 package gate;
 
 import java.io.IOException;
-import javax.ejb.Startup;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import javax.websocket.CloseReason;
 import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
@@ -14,10 +11,8 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.slf4j.Logger;
 
-@Startup
-@Singleton
+@ApplicationScoped
 @ServerEndpoint("/Progress/{process}")
-@TransactionManagement(TransactionManagementType.BEAN)
 public class Processor
 {
 

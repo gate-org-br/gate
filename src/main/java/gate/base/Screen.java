@@ -2,6 +2,7 @@ package gate.base;
 
 import gate.code.PackageName;
 import gate.converter.Converter;
+import gate.error.AppException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.util.Page;
@@ -159,6 +160,16 @@ public abstract class Screen extends Base
 		return messages;
 	}
 
+	public void setMessages(Exception ex)
+	{
+		setMessages(ex.getMessage());
+	}
+
+	public void setMessages(AppException ex)
+	{
+		setMessages(ex.getMessages());
+	}
+
 	public void setMessages(String... messages)
 	{
 		this.messages = List.of(messages);
@@ -249,5 +260,11 @@ public abstract class Screen extends Base
 			+ screenName.substring(0, screenName.length() - 6)
 			+ "/"
 			+ method.getName().substring(4);
+	}
+
+	public Object onException(InvocationTargetException ex)
+		throws InvocationTargetException
+	{
+		throw ex;
 	}
 }
