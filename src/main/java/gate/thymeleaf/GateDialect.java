@@ -32,7 +32,9 @@ public class GateDialect implements IDialect, IProcessorDialect
 	{
 		return Set.of(new PrintAttributeTagProcessor(),
 			new WriteAttributeTagProcessor(),
-			new TypeAttributeTagProcessor(),
+			new SelectTagProcessor(),
+			new InputTagProcessor(),
+			new TextAreaTagProcessor(),
 			new RequestAttributeTagProcessor("module"),
 			new RequestAttributeTagProcessor("screen"),
 			new RequestAttributeTagProcessor("action"));

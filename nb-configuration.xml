@@ -6,10 +6,6 @@ The configuration is intended to be shared among all the users of project and
 therefore it is assumed to be part of version control checkout.
 Without this configuration present, some functionality in the IDE may be limited or fail altogether.
 -->
-    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-        <word>Fetchable</word>
-        <word>sql</word>
-    </spellchecker-wordlist>
     <grunt-tasks xmlns="http://www.netbeans.org/ns/build-tool-tasks/1">
         <workdir path="" showSimpleTasks="true"/>
     </grunt-tasks>
@@ -31,4 +27,9 @@ Any value defined here will override the pom.xml file value but is only applicab
         <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
         <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>WildFly</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>Fetchable</word>
+        <word>fieldset</word>
+        <word>sql</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

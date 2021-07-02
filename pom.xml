@@ -132,7 +132,7 @@
 			<artifactId>sshj</artifactId>
 			<version>0.31.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -149,7 +149,6 @@
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 			<version>2.5.3</version>
 		</dependency>
-
 	</dependencies>
 
 	<distributionManagement>
@@ -231,8 +230,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>11</source>
+					<target>11</target>
 					<compilerArguments>
 						<endorseddirs>${endorsed.dir}</endorseddirs>
 					</compilerArguments>

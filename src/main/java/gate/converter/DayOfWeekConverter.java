@@ -20,21 +20,21 @@ public class DayOfWeekConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		int value = rs.getInt(fields);
-		return rs.wasNull() ? null : DayOfWeek.of(value);
+		return rs.wasNull() ? null : DayOfWeek.of(value - 1);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		int value = rs.getInt(fields);
-		return rs.wasNull() ? null : DayOfWeek.of(value);
+		return rs.wasNull() ? null : DayOfWeek.of(value - 1);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setInt(fields++, ((DayOfWeek) value).getValue());
+			ps.setInt(fields++, ((DayOfWeek) value).getValue() + 1);
 		else
 			ps.setNull(fields++, Types.INTEGER);
 		return fields;

@@ -69,7 +69,7 @@ public final class Style
 		return this;
 
 	}
-	
+
 	public Style color(Color color)
 	{
 		this.color = color;
@@ -212,21 +212,21 @@ public final class Style
 						try
 						{
 							fontSize = Integer.parseInt(value);
-						} catch (NumberFormatException e)
-						{
-							throw new IllegalArgumentException(String.format("%s is not a valid font-size", value));
-						}
-						break;
+					} catch (NumberFormatException e)
+					{
+						throw new IllegalArgumentException(String.format("%s is not a valid font-size", value));
+					}
+					break;
 					case "width":
 						try
 						{
 							width = Double.parseDouble(value);
-						} catch (NumberFormatException e)
-						{
-							throw new IllegalArgumentException(String.format("%s is not a valid width", value));
-						}
+					} catch (NumberFormatException e)
+					{
+						throw new IllegalArgumentException(String.format("%s is not a valid width", value));
+					}
 
-						break;
+					break;
 					default:
 						throw new IllegalArgumentException(String.format("%s is not a valid style", string));
 

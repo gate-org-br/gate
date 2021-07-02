@@ -65,9 +65,10 @@ public class Converters
 		INSTANCES.put(YearMonth.class, new YearMonthConverter());
 		INSTANCES.put(String[][].class, new StringMatrixConverter());
 		INSTANCES.put(byte[].class, new ByteArrayConverter());
-		INSTANCES.put(Month.class, new MonthConverter());
+		INSTANCES.put(Month.class, new LegacyMonthConverter());
 		INSTANCES.put(DayOfWeek.class, new DayOfWeekConverter());
 		INSTANCES.put(File.class, new FileConverter());
+		INSTANCES.put(java.time.Month.class, new MonthConverter());
 	}
 
 	public Converter get(Class<?> type)

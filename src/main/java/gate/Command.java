@@ -1,7 +1,9 @@
 package gate;
 
+import gate.annotation.Alert;
 import gate.annotation.Annotations;
 import gate.annotation.Color;
+import gate.annotation.Confirm;
 import gate.annotation.Description;
 import gate.annotation.Disabled;
 import gate.annotation.Icon;
@@ -105,6 +107,16 @@ public class Command
 	public Optional<String> getColor()
 	{
 		return action != null ? Color.Extractor.extract(method) : Color.Extractor.extract(method).or(() -> Color.Extractor.extract(type));
+	}
+
+	public Optional<String> getConfirm()
+	{
+		return action != null ? Confirm.Extractor.extract(method) : Confirm.Extractor.extract(method).or(() -> Confirm.Extractor.extract(type));
+	}
+
+	public Optional<String> getAlert()
+	{
+		return action != null ? Alert.Extractor.extract(method) : Alert.Extractor.extract(method).or(() -> Alert.Extractor.extract(type));
 	}
 
 	public Class<Screen> getType()

@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class JSPTemplateHandler implements Handler
+public class JSPHandler implements Handler
 {
 
 	@Override

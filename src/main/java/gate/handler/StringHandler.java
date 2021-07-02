@@ -15,9 +15,9 @@ public class StringHandler implements Handler
 	{
 		String string = value.toString();
 		if (string.endsWith(".jsp"))
-			JSPTemplateHandler.handleTemplate(request, response, string);
+			JSPHandler.handleTemplate(request, response, string);
 		else if (string.endsWith(".html"))
-			HTMLTemplateHandler.handleTemplate(request, response, string);
+			HTMLHandler.handleTemplate(request, response, string);
 		else
 		{
 			response.setContentType("text/plain");

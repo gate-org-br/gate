@@ -2445,10 +2445,10 @@
 	</tag>
 
 	<tag>
-		<name>condition</name>
-		<display-name>Post</display-name>
+		<name>block</name>
+		<display-name>Block</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.ConditionTag</tag-class>
+		<tag-class>gate.tags.BlockTag</tag-class>
 		<description>
 			Excetutes the body if supplied condition is true
 		</description>

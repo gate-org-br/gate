@@ -15,7 +15,7 @@ import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-public class HTMLTemplateHandler implements Handler
+public class HTMLHandler implements Handler
 {
 
 	@Override

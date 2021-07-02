@@ -78,7 +78,7 @@ public class XLS extends Doc
 	public void print(OutputStream os)
 	{
 
-		try ( SXSSFWorkbook workbook = new SXSSFWorkbook())
+		try (SXSSFWorkbook workbook = new SXSSFWorkbook())
 		{
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Grid)

@@ -121,6 +121,12 @@ public abstract class AnchorTag extends ParameterTag
 		if (!getAttributes().containsKey("data-tooltip"))
 			command.getTooltip().ifPresent(e -> getAttributes().put("data-tooltip", e));
 
+		if (!getAttributes().containsKey("data-confirm"))
+			command.getConfirm().ifPresent(e -> getAttributes().put("data-confirm", e));
+
+		if (!getAttributes().containsKey("data-alert"))
+			command.getAlert().ifPresent(e -> getAttributes().put("data-alert", e));
+
 		if (!getAttributes().containsKey("title"))
 			command.getDescription().ifPresent(e -> getAttributes().put("title", e));
 
