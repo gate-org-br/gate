@@ -29,9 +29,9 @@ public class AlertTag extends SimpleTagSupport
 			getJspContext().getOut().print("window.addEventListener('load',function(){");
 			getJspContext().getOut().print(alerts);
 			getJspContext().getOut().print("let href = window.location.href;");
-			getJspContext().getOut().print("href = href.replace(/messages=[a-zA-Z0-9+/=]*&/, '');");
-			getJspContext().getOut().print("href = href.replace(/&messages=[a-zA-Z0-9+/=]*/, '');");
-			getJspContext().getOut().print("href = href.replace(/[?]messages=[a-zA-Z0-9+/=]*/, '');");
+			getJspContext().getOut().print("href = href.replace(/messages=[a-zA-Z0-9+\\/=%]*&/, '');");
+			getJspContext().getOut().print("href = href.replace(/&messages=[a-zA-Z0-9+\\/=%]*/, '');");
+			getJspContext().getOut().print("href = href.replace(/[?]messages=[a-zA-Z0-9+\\/=%]*/, '');");
 			getJspContext().getOut().print("window.history.replaceState({}, document.title, href);");
 			getJspContext().getOut().print("});");
 			getJspContext().getOut().print("</script>");

@@ -1,6 +1,5 @@
 package gate.thymeleaf;
 
-import gate.converter.Converter;
 import gate.lang.property.Property;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
@@ -10,6 +9,7 @@ import org.thymeleaf.processor.element.AbstractAttributeTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.StandardExpressions;
+import static org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor.PRECEDENCE;
 import org.thymeleaf.templatemode.TemplateMode;
 
 public abstract class PropertyTagProcessor extends AbstractAttributeTagProcessor
@@ -18,26 +18,30 @@ public abstract class PropertyTagProcessor extends AbstractAttributeTagProcessor
 	protected Object screen;
 	protected Property property;
 
-	public PropertyTagProcessor(TemplateMode templateMode, String dialectPrefix, String elementName,
-		boolean prefixElementName, String attributeName, boolean prefixAttributeName,
-		int precedence, boolean removeAttribute)
+	public PropertyTagProcessor(String elementName)
 	{
-		super(templateMode, dialectPrefix, elementName, prefixElementName, attributeName, prefixAttributeName, precedence, removeAttribute);
+		super(TemplateMode.HTML,
+			"g",
+			elementName,
+			false,
+			"property",
+			true,
+			PRECEDENCE,
+			true);
 	}
 
 	@Override
 	protected void doProcess(ITemplateContext context,
 		IProcessableElementTag element,
 		AttributeName name,
-		String type,
+		String propertyName,
 		IElementTagStructureHandler tag)
 	{
 
 		IEngineConfiguration configuration = context.getConfiguration();
 		IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
 		screen = parser.parseExpression(context, "${screen}").execute(context);
-		property = Property.getProperty(screen.getClass(), element.getAttributeValue("g:property"));
-		tag.removeAttribute("g:property");
+		property = Property.getProperty(screen.getClass(), propertyName);
 
 		tag.setAttribute("name", property.toString());
 
@@ -78,12 +82,5 @@ public abstract class PropertyTagProcessor extends AbstractAttributeTagProcessor
 				tag.setAttribute("placeholder", placeholder);
 		}
 
-		if (!element.hasAttribute("type"))
-			tag.setAttribute("type", type);
-
-		if (!element.hasAttribute("value"))
-			tag.setAttribute("value", property.toString().endsWith("[]")
-				? "" : Converter.toString(property.getValue(screen)));
 	}
-
 }

@@ -51,8 +51,7 @@ public class CSVParser implements Parser
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified Reader using semicolons
-	 * as separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified Reader using semicolons as separators and double quotes as delimiters.
 	 *
 	 * @param reader the reader from where the CSV rows will be extracted
 	 *
@@ -64,11 +63,9 @@ public class CSVParser implements Parser
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified InputStream using
-	 * semicolons as separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters.
 	 *
-	 * @param inputStream InputStream from where the CSV rows will be
-	 * extracted
+	 * @param inputStream InputStream from where the CSV rows will be extracted
 	 *
 	 * @return the new CSVParser created
 	 */
@@ -78,8 +75,7 @@ public class CSVParser implements Parser
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified URL using semicolons as
-	 * separators and double quotes as delimiters.
+	 * Constructs a new CSVParser for the specified URL using semicolons as separators and double quotes as delimiters.
 	 *
 	 * @param resource URL from where the CSV rows will be extracted
 	 *
@@ -117,12 +113,9 @@ public class CSVParser implements Parser
 	}
 
 	/**
-	 * Constructs a new CSVParser for the specified InputStream using
-	 * semicolons as separators and double quotes as delimiters and
-	 * encoding.
+	 * Constructs a new CSVParser for the specified InputStream using semicolons as separators and double quotes as delimiters and encoding.
 	 *
-	 * @param inputStream inputStream InputStream from where the CSV rows
-	 * will be extracted
+	 * @param inputStream inputStream InputStream from where the CSV rows will be extracted
 	 * @param charset the character encoding of the specified input stream
 	 *
 	 * @return the new CSVParser created
@@ -135,8 +128,7 @@ public class CSVParser implements Parser
 	/**
 	 * Constructs a new CSVParser for the specified InputStream.
 	 *
-	 * @param inputStream the inputStream from where the CSV rows will be
-	 * extracted
+	 * @param inputStream the inputStream from where the CSV rows will be extracted
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 *
@@ -150,8 +142,7 @@ public class CSVParser implements Parser
 	/**
 	 * Constructs a new CSVParser for the specified InputStream.
 	 *
-	 * @param inputStream the inputStream from where the CSV rows will be
-	 * extracted
+	 * @param inputStream the inputStream from where the CSV rows will be extracted
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 * @param charset the character encoding of the specified input stream
@@ -392,7 +383,7 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string)
 	{
-		try ( CSVParser parser = CSVParser.of(new BufferedReader(new StringReader(string))))
+		try (CSVParser parser = CSVParser.of(new BufferedReader(new StringReader(string))))
 		{
 			return parser.parse();
 		}
@@ -409,7 +400,7 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string, char separator, char delimiter)
 	{
-		try ( CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
+		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
 		{
 			return parser.parse();
 		}

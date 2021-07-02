@@ -3,6 +3,8 @@ package gate;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.base.Screen;
+import gate.catcher.Catcher;
+import gate.catcher.Catchers;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
@@ -33,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.inject.spi.CDI;
@@ -182,29 +185,37 @@ public class Gate extends HttpServlet
 			Handler.getHandler(Result.class)
 				.handle(httpServletRequest, response, Result.error(ex.getMessage()));
 
+		} catch (ReflectiveOperationException ex)
+		{
+			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
+			httpServletRequest.setAttribute("exception", ex);
+			logger.error(ex.getMessage(), ex);
+			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
 		}
 	}
 
 	private void execute(HttpServletRequest request,
 		HttpServletResponse response, User user, Screen screen, Method method)
-		throws RuntimeException, IllegalAccessException, InvocationTargetException
+		throws RuntimeException, IllegalAccessException, InvocationTargetException,
+		ReflectiveOperationException
 	{
 
-		Object result;
 		try
 		{
-			result = screen.execute(method);
+			Object result = screen.execute(method);
+			if (result != null)
+				if (method.isAnnotationPresent(gate.annotation.Handler.class))
+					Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
+						.handle(request, response, result);
+				else
+					Handler.getHandler(result.getClass()).handle(request, response, result);
 		} catch (InvocationTargetException ex)
 		{
-			result = screen.onException(ex);
+			Catcher catcher = Catchers.get(method, ex.getTargetException().getClass());
+			if (catcher == null)
+				throw ex;
+			catcher.execute(request, response, ex.getTargetException());
 		}
-
-		if (result != null)
-			if (method.isAnnotationPresent(gate.annotation.Handler.class))
-				Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
-					.handle(request, response, result);
-			else
-				Handler.getHandler(result.getClass()).handle(request, response, result);
 	}
 
 	private void executeAsynchronous(HttpServletRequest request,
