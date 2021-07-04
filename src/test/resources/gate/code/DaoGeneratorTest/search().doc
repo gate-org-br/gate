@@ -15,7 +15,8 @@
 				.and("Uzer.birthdate").eq(filter.getBirthdate())
 				.and("Uzer.CPF").eq(filter.getCPF())
 				.and("Uzer.sex").eq(filter.getSex())
-				.and("Uzer.registration").eq(filter.getRegistration()))
+				.and("Uzer.registration").eq(filter.getRegistration())
+				.and("Uzer.code").eq(filter.getCode()))
 			.build()
 			.connect(getLink())
 			.fetchEntityList(User.class);

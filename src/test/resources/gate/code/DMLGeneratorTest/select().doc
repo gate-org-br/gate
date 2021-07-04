@@ -13,6 +13,7 @@ select
     Uzer.birthdate as 'birthdate',
     Uzer.CPF as 'CPF',
     Uzer.sex as 'sex',
-    Uzer.registration as 'registration'
+    Uzer.registration as 'registration',
+    Uzer.code as 'code'
 from
     Uzer

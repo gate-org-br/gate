@@ -44,7 +44,8 @@ public class UserControl extends Control
 			"birthdate",
 			"CPF",
 			"sex",
-			"registration");
+			"registration",
+			"code");
 
 		try (UserDao dao = new UserDao())
 		{
@@ -69,7 +70,8 @@ public class UserControl extends Control
 			"birthdate",
 			"CPF",
 			"sex",
-			"registration");
+			"registration",
+			"code");
 
 		try (UserDao dao = new UserDao())
 		{

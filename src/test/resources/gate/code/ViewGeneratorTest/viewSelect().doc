@@ -90,6 +90,12 @@
 				<g:label property="form.registration"/>
 			</span>
 		</label>
+		<label>
+			Código do usuário:
+			<span>
+				<g:label property="form.code"/>
+			</span>
+		</label>
 	</fieldset>
 
 	<div class='Coolbar'>

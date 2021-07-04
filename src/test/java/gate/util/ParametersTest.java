@@ -24,10 +24,11 @@ public class ParametersTest
 		Assert.assertTrue(parameters.isEmpty());
 	}
 
-	@Test(expected = ConversionException.class)
+	@Test
 	public void testParse3() throws ConversionException
 	{
-		Parameters.parse("module=");
+		Parameters parameters = Parameters.parse("module=");
+		Assert.assertTrue(parameters.isEmpty());
 	}
 
 	@Test
