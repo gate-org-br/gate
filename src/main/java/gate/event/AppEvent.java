@@ -1,5 +1,6 @@
 package gate.event;
 
+import gate.entity.User;
 import gate.lang.json.JsonObject;
 import java.util.Objects;
 
@@ -38,6 +39,11 @@ public class AppEvent
 		return new JsonObject()
 			.setString("type", type)
 			.set("detail", detail);
+	}
+
+	public boolean checkAccess(User user)
+	{
+		return true;
 	}
 
 	@Override
