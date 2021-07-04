@@ -28,7 +28,7 @@ public class PaginatorTag extends AttributeTag
 		if (page == null)
 			setPage((Page<?>) Property.getValue(screen, "page"));
 
-		getJspContext().getOut().write(String.format("<span %s>", getAttributes().toString()));
+		getJspContext().getOut().write(String.format("<g-paginator %s>", getAttributes().toString()));
 
 		if (screen.isPOST())
 		{
@@ -68,7 +68,7 @@ public class PaginatorTag extends AttributeTag
 			}
 		}
 
-		getJspContext().getOut().write("</span>");
+		getJspContext().getOut().write("</g-paginator>");
 	}
 
 	public void setPage(Page<?> page)
