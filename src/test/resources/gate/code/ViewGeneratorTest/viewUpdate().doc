@@ -91,6 +91,12 @@
 					<g:text property="form.registration" tabindex="1"/>
 				</span>
 			</label>
+			<label>
+				Código do usuário:
+				<span>
+					<g:text property="form.code" tabindex="1"/>
+				</span>
+			</label>
 		</fieldset>
 
 		<div class='Coolbar'>

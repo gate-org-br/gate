@@ -14,7 +14,8 @@
 			"birthdate",
 			"CPF",
 			"sex",
-			"registration");
+			"registration",
+			"code");
 
 		try (UserDao dao = new UserDao())
 		{

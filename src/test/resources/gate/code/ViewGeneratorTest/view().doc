@@ -91,6 +91,12 @@
 					<g:text property="form.registration" tabindex="1" required=""/>
 				</span>
 			</label>
+			<label>
+				Código do usuário:
+				<span>
+					<g:text property="form.code" tabindex="1" required=""/>
+				</span>
+			</label>
 		</fieldset>
 
 		<div class='Coolbar'>
@@ -118,6 +124,7 @@
 				<th>CPF</th>
 				<th>Sexo</th>
 				<th>Data de Cadastro</th>
+				<th>Código do usuário</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -137,6 +144,7 @@
 					<td title="CPF"><g:print value="${target.CPF}"/></td>
 					<td title="Sexo"><g:print value="${target.sex}"/></td>
 					<td title="Data de Cadastro"><g:print value="${target.registration}"/></td>
+					<td title="Código do usuário"><g:print value="${target.code}"/></td>
 				</tr>
 			</g:iterator>
 		</tbody>
