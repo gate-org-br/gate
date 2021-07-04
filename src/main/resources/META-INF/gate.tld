@@ -1777,6 +1777,7 @@
 	<tag>
 		<name>paginator</name>
 		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
 		<tag-class>gate.tags.PaginatorTag</tag-class>
 		<description>
 			Creates a paginator for the specified

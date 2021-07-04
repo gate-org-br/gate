@@ -120,6 +120,10 @@ public class User implements Serializable
 	@Description("Data de cadastro do usuário.")
 	private LocalDateTime registration;
 
+	@Maxlength(32)
+	@Name("Código do usuário")
+	private String code;
+
 	private List<Func> funcs;
 
 	public Collection<Auth> getAuths()
@@ -133,6 +137,16 @@ public class User implements Serializable
 	{
 		this.auths = auths;
 		return this;
+	}
+
+	public String getCode()
+	{
+		return code;
+	}
+
+	public void setCode(String code)
+	{
+		this.code = code;
 	}
 
 	public String getRepeat()

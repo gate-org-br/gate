@@ -5,6 +5,7 @@ SELECT
     userID,
     passwd,
     name,
+    code,
     email,
     details,
     phone,

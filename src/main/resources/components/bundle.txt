@@ -93,4 +93,5 @@
 @import "g-desk-pane/g-desk-pane.js"
 @import "g-icon-pane/g-icon-pane.js"
 @import "g-card-pane/g-card-pane.js"
+@import "g-paginator/g-paginator.js"
 

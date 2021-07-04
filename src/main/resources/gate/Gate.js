@@ -9195,4 +9195,10 @@ class GCardPane extends HTMLElement
 }
 
 window.addEventListener("load", () => customElements.define('g-card-pane', GCardPane));
+/* global customElements */
+
+customElements.define('g-paginator', class extends HTMLElement
+{
+
+});
 

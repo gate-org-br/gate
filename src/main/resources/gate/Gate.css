@@ -1368,9 +1368,6 @@ table > tfoot > tr {
   background-color: var(--table-foot-background-color);
   background-image: var(--table-foot-background-image);
 }
-table > tfoot > tr > td:only-child {
-  text-align: right;
-}
 table.c1 > * > tr > *:nth-child(1),
 table[data-c1] > * > tr > *:nth-child(1) {
   text-align: center;
@@ -5783,6 +5780,10 @@ g-card-pane > g-card,
 g-card-pane > .g-card,
 .g-card-pane > .g-card {
   margin: 8px;
+}
+g-paginator {
+  float: right;
+  margin: 4px;
 }
 body[data-scroll-disabled] * {
   overflow: hidden;
