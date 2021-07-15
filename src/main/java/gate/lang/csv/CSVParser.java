@@ -267,7 +267,8 @@ public class CSVParser implements Parser
 			string.append(line.charAt(indx++));
 		}
 
-		indx++;
+		if (!isEOL())
+			indx++;
 
 		while (!isEOL() && line.charAt(indx) != separator)
 			indx++;

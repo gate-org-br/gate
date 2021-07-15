@@ -110,6 +110,20 @@ public class CSVParserTest
 	}
 
 	@Test
+	public void testUsers5() throws IOException
+	{
+		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/Users5.csv"), ';', '"'))
+		{
+			List<List<String>> lines = parser.stream().collect(Collectors.toList());
+			Assert.assertEquals(2, lines.size());
+
+			int index = 0;
+			Assert.assertEquals(List.of("User 4", "Role 4", "", "", "", "", "Name"), lines.get(index++));
+			Assert.assertEquals(List.of("4\""), lines.get(index++));
+		}
+	}
+
+	@Test
 	public void testCsv() throws IOException
 	{
 		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/csv.csv")))
