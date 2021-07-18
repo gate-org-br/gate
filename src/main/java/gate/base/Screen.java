@@ -1,13 +1,8 @@
 package gate.base;
 
-import gate.annotation.Catcher;
-import gate.catcher.JSPCatcher;
-import gate.catcher.ReloadCatcher;
 import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
-import gate.error.FKViolationException;
-import gate.error.NotFoundException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.util.Page;
@@ -26,9 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
-@Catcher(type = AppException.class, value = JSPCatcher.class)
-@Catcher(type = FKViolationException.class, value = ReloadCatcher.class)
-@Catcher(type = NotFoundException.class, value = ReloadCatcher.class)
 public abstract class Screen extends Base
 {
 

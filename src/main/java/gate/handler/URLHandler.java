@@ -6,7 +6,7 @@ import java.io.UncheckedIOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class RedirectHandler implements Handler
+public class URLHandler implements Handler
 {
 
 	@Override

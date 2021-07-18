@@ -3,8 +3,6 @@ package gate;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.base.Screen;
-import gate.catcher.Catcher;
-import gate.catcher.Catchers;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
@@ -133,7 +131,7 @@ public class Gate extends HttpServlet
 				if (command.getMethod().isAnnotationPresent(Asynchronous.class))
 					executeAsynchronous(httpServletRequest, response, user, screen, command.getMethod());
 				else
-					execute(httpServletRequest, response, user, screen, command.getMethod());
+					execute(httpServletRequest, response, screen, command.getMethod());
 			}
 
 		} catch (InvalidUsernameException
@@ -194,7 +192,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request,
-		HttpServletResponse response, User user, Screen screen, Method method)
+		HttpServletResponse response, Screen screen, Method method)
 		throws RuntimeException, IllegalAccessException, InvocationTargetException,
 		ReflectiveOperationException
 	{
@@ -210,10 +208,12 @@ public class Gate extends HttpServlet
 					Handler.getHandler(result.getClass()).handle(request, response, result);
 		} catch (InvocationTargetException ex)
 		{
-			Catcher catcher = Catchers.get(method, ex.getTargetException().getClass());
-			if (catcher == null)
+			if (ex.getTargetException() instanceof AppException)
+				gate.annotation.Catcher.Extractor.extract(method)
+					.getConstructor().newInstance()
+					.execute(request, response, (AppException) ex.getTargetException());
+			else
 				throw ex;
-			catcher.execute(request, response, ex.getTargetException());
 		}
 	}
 

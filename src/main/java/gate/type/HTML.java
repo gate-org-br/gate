@@ -1,11 +1,14 @@
 package gate.type;
 
+import gate.annotation.Catcher;
 import gate.annotation.Handler;
+import gate.catcher.HTMLCatcher;
 import gate.handler.HTMLHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 
 @Handler(HTMLHandler.class)
+@Catcher(HTMLCatcher.class)
 public class HTML
 {
 

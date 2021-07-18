@@ -35,7 +35,7 @@ public class Handlers
 		HANDLERS.put(PNGHandler.class, new PNGHandler());
 		HANDLERS.put(ReportHandler.class, new ReportHandler());
 		HANDLERS.put(TextHandler.class, new TextHandler());
-		HANDLERS.put(RedirectHandler.class, new RedirectHandler());
+		HANDLERS.put(URLHandler.class, new URLHandler());
 		HANDLERS.put(StringHandler.class, new StringHandler());
 		HANDLERS.put(EnumHandler.class, new EnumHandler());
 

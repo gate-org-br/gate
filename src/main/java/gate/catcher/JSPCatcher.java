@@ -1,6 +1,7 @@
 package gate.catcher;
 
 import gate.base.Screen;
+import gate.error.AppException;
 import gate.type.JSP;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -14,7 +15,7 @@ public class JSPCatcher implements Catcher
 	@Override
 	public void execute(HttpServletRequest request,
 		HttpServletResponse response,
-		Throwable exception)
+		AppException exception)
 	{
 		try
 		{

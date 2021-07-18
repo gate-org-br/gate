@@ -1,5 +1,6 @@
 package gate.catcher;
 
+import gate.error.AppException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -12,7 +13,7 @@ public class HideCatcher implements Catcher
 	@Override
 	public void execute(HttpServletRequest request,
 		HttpServletResponse response,
-		Throwable exception)
+		AppException exception)
 	{
 
 		response.setContentType("text/html");
