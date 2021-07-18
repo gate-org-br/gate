@@ -1,7 +1,9 @@
 package gate.type;
 
+import gate.annotation.Catcher;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
+import gate.catcher.ResultCatcher;
 import gate.converter.ResultConverter;
 import gate.error.ConversionException;
 import gate.handler.ResultHandler;
@@ -15,6 +17,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Handler(ResultHandler.class)
+@Catcher(ResultCatcher.class)
 @Converter(ResultConverter.class)
 public class Result implements Serializable
 {

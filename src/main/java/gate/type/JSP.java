@@ -1,11 +1,14 @@
 package gate.type;
 
+import gate.annotation.Catcher;
 import gate.annotation.Handler;
+import gate.catcher.JSPCatcher;
 import gate.handler.JSPHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 
 @Handler(JSPHandler.class)
+@Catcher(JSPCatcher.class)
 public class JSP
 {
 

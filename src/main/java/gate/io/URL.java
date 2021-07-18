@@ -1,12 +1,12 @@
 package gate.io;
 
+import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.base.Screen;
+import gate.catcher.URLCatcher;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.ConversionException;
-import gate.handler.RedirectHandler;
-import gate.type.ID;
+import gate.handler.URLHandler;
 import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
@@ -38,7 +38,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-@Handler(RedirectHandler.class)
+@Catcher(URLCatcher.class)
+@Handler(URLHandler.class)
 public class URL
 {
 

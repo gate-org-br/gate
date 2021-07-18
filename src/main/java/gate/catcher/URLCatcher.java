@@ -1,18 +1,19 @@
 package gate.catcher;
 
+import gate.error.AppException;
 import gate.io.URL;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class ReloadCatcher implements Catcher
+public class URLCatcher implements Catcher
 {
 
 	@Override
 	public void execute(HttpServletRequest request,
 		HttpServletResponse response,
-		Throwable exception)
+		AppException exception)
 	{
 		try
 		{
