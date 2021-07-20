@@ -1,20 +1,20 @@
-package gate.handler;
+package gate.catcher;
 
-import gate.stream.CheckedStream;
-import gate.type.HideCommand;
+import gate.error.AppException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class HideCommandHandler implements Handler
+public class CommandCatcher implements Catcher
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
+	public void execute(HttpServletRequest request,
+		HttpServletResponse response,
+		AppException exception)
 	{
-		HideCommand signal = (HideCommand) value;
 
 		response.setContentType("text/html");
 		try (Writer writer = response.getWriter())
@@ -32,11 +32,7 @@ public class HideCommandHandler implements Handler
 			writer.write("            window.addEventListener('load', () =>");
 			writer.write("            {");
 
-			CheckedStream.of(IOException.class,
-				signal.getMessages().stream())
-				.map(e -> e.replace("'", "\""))
-				.map(e -> "alert('" + e + "');")
-				.forEach(writer::write);
+			writer.write("alert('" + exception.getMessage().replace("'", "\"") + "');");
 
 			writer.write("                GDialog.hide();");
 			writer.write("            });");

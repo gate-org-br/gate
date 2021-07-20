@@ -4878,6 +4878,13 @@ class IconSelector extends HTMLElement
 		this.add("3045");
 		this.add("3046");
 		this.add("3047");
+		this.add("3048");
+		this.add("3049");
+		this.add("3050");
+		this.add("3051");
+		this.add("3052");
+		this.add("3053");
+		this.add("3054");
 	}
 
 	add(code)

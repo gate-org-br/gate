@@ -1,4 +1,4 @@
-package gate.type;
+package gate.command;
 
 import gate.annotation.Catcher;
 import gate.annotation.Handler;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Handler(JSPHandler.class)
 @Catcher(JSPCatcher.class)
-public class JSP
+public class JSP implements Command
 {
 
 	private final String name;
@@ -20,9 +20,14 @@ public class JSP
 		this.name = null;
 	}
 
-	public JSP(String name)
+	private JSP(String name)
 	{
-		this.name = Objects.requireNonNull(name);
+		this.name = name;
+	}
+
+	public static JSP of(String name)
+	{
+		return new JSP(Objects.requireNonNull(name));
 	}
 
 	@Override

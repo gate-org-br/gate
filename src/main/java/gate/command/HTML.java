@@ -1,4 +1,4 @@
-package gate.type;
+package gate.command;
 
 import gate.annotation.Catcher;
 import gate.annotation.Handler;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Handler(HTMLHandler.class)
 @Catcher(HTMLCatcher.class)
-public class HTML
+public class HTML implements Command
 {
 
 	private final String name;
@@ -20,9 +20,14 @@ public class HTML
 		this.name = null;
 	}
 
-	public HTML(String name)
+	private HTML(String name)
 	{
-		this.name = Objects.requireNonNull(name);
+		this.name = name;
+	}
+
+	public static HTML of(String name)
+	{
+		return new HTML(Objects.requireNonNull(name));
 	}
 
 	@Override
