@@ -2,10 +2,10 @@ package gate.annotation;
 
 import gate.base.Screen;
 import gate.catcher.HTMLCatcher;
-import gate.catcher.HideCatcher;
+import gate.catcher.CommandCatcher;
 import gate.catcher.JSPCatcher;
 import gate.catcher.ObjectCatcher;
-import gate.type.JSP;
+import gate.command.JSP;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class CatcherTest
 	private static class Mock extends Screen
 	{
 
-		@Catcher(HideCatcher.class)
+		@Catcher(CommandCatcher.class)
 		public void mock()
 		{
 
@@ -27,7 +27,7 @@ public class CatcherTest
 		{
 
 			@Override
-			@Catcher(HideCatcher.class)
+			@Catcher(CommandCatcher.class)
 			public void mock()
 			{
 
@@ -65,14 +65,14 @@ public class CatcherTest
 	public void test1() throws ReflectiveOperationException
 	{
 		var catcher = Catcher.Extractor.extract(Mock.class.getMethod("mock"));
-		Assert.assertEquals(HideCatcher.class, catcher);
+		Assert.assertEquals(CommandCatcher.class, catcher);
 	}
 
 	@Test
 	public void test2() throws ReflectiveOperationException
 	{
 		var catcher = Catcher.Extractor.extract(Mock.MockSubclass.class.getMethod("mock"));
-		Assert.assertEquals(HideCatcher.class, catcher);
+		Assert.assertEquals(CommandCatcher.class, catcher);
 	}
 
 	@Test

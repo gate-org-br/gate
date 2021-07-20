@@ -19,7 +19,7 @@ public class ObjectCatcher implements Catcher
 			new HideCatcher().execute(request, response, exception);
 
 		if (exception instanceof FKViolationException)
-			new URLCatcher().execute(request, response, exception);
+			new ReloadCatcher().execute(request, response, exception);
 
 		new JSPCatcher().execute(request, response, exception);
 
