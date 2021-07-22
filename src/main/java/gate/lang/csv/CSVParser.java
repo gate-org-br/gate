@@ -25,7 +25,7 @@ public class CSVParser implements Parser
 	private String line;
 	private long lineNumber = -1;
 	private final BufferedReader reader;
-	private final int separator, delimiter;
+	private final char separator, delimiter;
 	private final StringBuilder string = new StringBuilder();
 
 	private CSVParser(BufferedReader reader, char separator, char delimiter)
