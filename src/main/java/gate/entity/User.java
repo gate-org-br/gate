@@ -72,7 +72,7 @@ public class User implements Serializable
 	private transient String repeat;
 
 	@Required
-	@Maxlength(64)
+	@Maxlength(128)
 	@Name("Nome do Usuário")
 	@Description("O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.")
 	private String name;
