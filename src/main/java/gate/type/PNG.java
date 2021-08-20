@@ -32,8 +32,7 @@ public class PNG implements Serializable
 
 	public PNG(String string)
 	{
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(
-				string.split(",")[1])))
+		try (ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(string.split(",")[1])))
 		{
 			BufferedImage image = ImageIO.read(bais);
 			w = image.getWidth();
@@ -47,7 +46,7 @@ public class PNG implements Serializable
 		} catch (IOException e)
 		{
 			throw new IllegalArgumentException(String.format("The image type must be: %s", new StringList(ImageIO
-					.getReaderFileSuffixes()).toString()));
+				.getReaderFileSuffixes()).toString()));
 		}
 	}
 
@@ -67,7 +66,7 @@ public class PNG implements Serializable
 		} catch (IOException e)
 		{
 			throw new IllegalArgumentException(String.format("The image type must be: %s",
-					new StringList(ImageIO.getReaderFileSuffixes()).toString()));
+				new StringList(ImageIO.getReaderFileSuffixes()).toString()));
 		}
 	}
 
@@ -116,7 +115,7 @@ public class PNG implements Serializable
 		} catch (IOException e)
 		{
 			throw new IllegalArgumentException("The image type must be: " + new StringList(ImageIO
-					.getReaderFileSuffixes()));
+				.getReaderFileSuffixes()));
 		}
 	}
 
