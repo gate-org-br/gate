@@ -2,6 +2,7 @@ package gate.lang.csv;
 
 import gate.error.AppError;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,6 +27,10 @@ public class CSVFormatter implements AutoCloseable
 	private final Writer writer;
 	private final char separator, delimiter;
 
+	private static final char SEPARATOR = ';';
+	private static final char DELIMITER = '"';
+	private static final Charset CHARSET = Charset.forName("UTL-8");
+
 	/**
 	 * Constructs a new CSVFormatter for the specified Writer.
 	 *
@@ -41,48 +46,50 @@ public class CSVFormatter implements AutoCloseable
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified Writer using the default separator and default delimiter.
-	 *
-	 * @param writer the writer where CSV rows will be appended
-	 */
-	public CSVFormatter(Writer writer)
-	{
-		this(writer, ';', '"');
-	}
-
-	/**
 	 * Appends a string list to the writer as a new CSV line.
 	 *
 	 * @param values the list of strings to be appended to the previously specified writer
 	 *
-	 * @throws java.io.IOException If an I/O error occurs
+	 * @throws java.io.UncheckedIOException If an I/O error occurs
 	 * @throws java.lang.NullPointerException If any of the parameters is null
 	 */
-	public void writeLine(List<String> values) throws IOException
+	public void writeLine(List<String> values)
 	{
-		write(values);
-		writer.write(System.lineSeparator());
+		try
+		{
+			write(values);
+			writer.write(System.lineSeparator());
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
-	private void write(List<String> values) throws IOException
+	private void write(List<String> values)
 	{
-		Objects.requireNonNull(values);
-		boolean firstVal = true;
-		for (String val : values)
+		try
 		{
-			if (!firstVal)
-				writer.write(separator);
-			writer.write(delimiter);
-			for (int i = 0; i < val.length(); i++)
+			Objects.requireNonNull(values);
+			boolean firstVal = true;
+			for (String val : values)
 			{
-				char ch = val.charAt(i);
-				if (ch == '"')
-					writer.write("\\\"");
-				else
-					writer.write(ch);
+				if (!firstVal)
+					writer.write(separator);
+				writer.write(delimiter);
+				for (int i = 0; i < val.length(); i++)
+				{
+					char ch = val.charAt(i);
+					if (ch == DELIMITER)
+						writer.write("\\\"");
+					else
+						writer.write(ch);
+				}
+				writer.write(delimiter);
+				firstVal = false;
 			}
-			writer.write(delimiter);
-			firstVal = false;
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -91,10 +98,10 @@ public class CSVFormatter implements AutoCloseable
 	 *
 	 * @param values the list of strings to be appended to the previously specified writer
 	 *
-	 * @throws java.io.IOException If an I/O error occurs
+	 * @throws java.io.UncheckedIOException If an I/O error occurs
 	 * @throws java.lang.NullPointerException If any of the parameters is null
 	 */
-	public void writeLine(String... values) throws IOException
+	public void writeLine(String... values)
 	{
 		CSVFormatter.this.writeLine(Arrays.asList(values));
 	}
@@ -114,7 +121,7 @@ public class CSVFormatter implements AutoCloseable
 	public static String format(List<String> line)
 	{
 		try (StringWriter writer = new StringWriter();
-			CSVFormatter formatter = new CSVFormatter(writer))
+			CSVFormatter formatter = CSVFormatter.of(writer))
 		{
 			formatter.write(line);
 			return writer.toString();
@@ -127,7 +134,7 @@ public class CSVFormatter implements AutoCloseable
 	public static String format(List<String> line, char separator, char delimiter)
 	{
 		try (StringWriter writer = new StringWriter();
-			CSVFormatter formatter = new CSVFormatter(writer, separator, delimiter))
+			CSVFormatter formatter = CSVFormatter.of(writer, separator, delimiter))
 		{
 			formatter.write(line);
 			return writer.toString();
@@ -135,6 +142,18 @@ public class CSVFormatter implements AutoCloseable
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified Writer using semicolons as separators and double quotes as delimiters.
+	 *
+	 * @param writer the writer where the lines will be printed
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(Writer writer)
+	{
+		return new CSVFormatter(writer, SEPARATOR, DELIMITER);
 	}
 
 	/**
@@ -152,18 +171,6 @@ public class CSVFormatter implements AutoCloseable
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified Writer using semicolons as separators and double quotes as delimiters.
-	 *
-	 * @param writer the writer where the lines will be printed
-	 *
-	 * @return the new CSVFormatter created
-	 */
-	public static CSVFormatter of(Writer writer)
-	{
-		return new CSVFormatter(writer, ';', '\"');
-	}
-
-	/**
 	 * Constructs a new CSVFormatter for the specified OutputStream.
 	 *
 	 * @param outputStream the OutputStream where the lines will be printed
@@ -172,7 +179,49 @@ public class CSVFormatter implements AutoCloseable
 	 */
 	public static CSVFormatter of(OutputStream outputStream)
 	{
-		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream)), ';', '\"');
+		return of(outputStream, SEPARATOR, DELIMITER, CHARSET);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 *
+	 * @param outputStream the OutputStream where the lines will be printed
+	 * @param charset the character set to be used
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(OutputStream outputStream, Charset charset)
+	{
+		return of(outputStream, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 *
+	 * @param outputStream the OutputStream where the lines will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(OutputStream outputStream, char separator, char delimiter)
+	{
+		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream, CHARSET)), separator, delimiter);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 *
+	 * @param outputStream the OutputStream where the lines will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character set to be used
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(OutputStream outputStream, char separator, char delimiter, Charset charset)
+	{
+		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream, charset)), SEPARATOR, DELIMITER);
 	}
 
 	/**
@@ -184,19 +233,26 @@ public class CSVFormatter implements AutoCloseable
 	 */
 	public static CSVFormatter of(URL resource)
 	{
-		try
-		{
-			return new CSVFormatter(new BufferedWriter(new FileWriter(resource.getFile())), ';', '\"');
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return of(resource, SEPARATOR, DELIMITER, CHARSET);
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified URL.
+	 * Constructs a new CSVFormatter for the specified OutputStream.
 	 *
-	 * @param resource URL where the CSV rows will be printed
+	 * @param resource URL from where the CSV rows will be printed
+	 * @param charset the character set to be used
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(URL resource, Charset charset)
+	{
+		return of(resource, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 *
+	 * @param resource URL from where the CSV rows will be printed
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 *
@@ -204,9 +260,24 @@ public class CSVFormatter implements AutoCloseable
 	 */
 	public static CSVFormatter of(URL resource, char separator, char delimiter)
 	{
+		return of(resource, separator, delimiter, CHARSET);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 *
+	 * @param resource URL from where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character set to be used
+	 *
+	 * @return the new CSVFormatter created
+	 */
+	public static CSVFormatter of(URL resource, char separator, char delimiter, Charset charset)
+	{
 		try
 		{
-			return new CSVFormatter(new BufferedWriter(new FileWriter(resource.getFile())), separator, delimiter);
+			return new CSVFormatter(new BufferedWriter(new FileWriter(new File(resource.getFile()), charset)), SEPARATOR, DELIMITER);
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
@@ -214,44 +285,297 @@ public class CSVFormatter implements AutoCloseable
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified OutputStream using semicolons as separators and double quotes as delimiters.
+	 * Constructs a new CSVFormatter for the specified File.
 	 *
-	 * @param outputStream OutputStream where the CSV rows will be printed
-	 * @param charset the character encoding of the specified output stream
+	 * @param file where the CSV rows will be printed
 	 *
 	 * @return the new CSVFormatter created
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
 	 */
-	public static CSVFormatter of(OutputStream outputStream, Charset charset)
+	public static CSVFormatter of(File file)
 	{
-		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream, charset)), ';', '\"');
+		return of(file, SEPARATOR, DELIMITER, CHARSET);
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 * Constructs a new CSVFormatter for the specified File.
 	 *
-	 * @param outputStream OutputStream where the CSV rows will be printed
+	 * @param file where the CSV rows will be printed
+	 * @param charset the character encoding of the specified output stream
+	 *
+	 * @return the new CSVFormatter created
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static CSVFormatter of(File file, Charset charset)
+	{
+		return of(file, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Constructs a new CSVFormatter for the specified File.
+	 *
+	 * @param file where the CSV rows will be printed
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 *
 	 * @return the new CSVFormatter created
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
 	 */
-	public static CSVFormatter of(OutputStream outputStream, char separator, char delimiter)
+	public static CSVFormatter of(File file, char separator, char delimiter)
 	{
-		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream)), separator, delimiter);
+		return of(file, separator, delimiter, CHARSET);
 	}
 
 	/**
-	 * Constructs a new CSVFormatter for the specified OutputStream.
+	 * Constructs a new CSVFormatter for the specified File.
 	 *
-	 * @param outputStream OutputStream where the CSV rows will be printed
+	 * @param file where the CSV rows will be printed
 	 * @param separator the character used as field separator
 	 * @param delimiter the character used as field delimiter
 	 * @param charset the character encoding of the specified output stream
 	 *
 	 * @return the new CSVFormatter created
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
 	 */
-	public static CSVFormatter of(OutputStream outputStream, char separator, char delimiter, Charset charset)
+	public static CSVFormatter of(File file, char separator, char delimiter, Charset charset)
 	{
-		return new CSVFormatter(new BufferedWriter(new OutputStreamWriter(outputStream, charset)), separator, delimiter);
+		try
+		{
+			return new CSVFormatter(new BufferedWriter(new FileWriter(file, charset)), separator, delimiter);
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	/**
+	 * Prints the specified rows into a resource.
+	 *
+	 * @param rows the rows to be printed
+	 * @param resource where the CSV rows will be printed
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, URL resource)
+	{
+		try (CSVFormatter formatter = CSVFormatter.of(resource, SEPARATOR, DELIMITER, CHARSET))
+		{
+			rows.forEach(row -> formatter.writeLine(row));
+		}
+	}
+
+	/**
+	 * Prints the specified rows into a resource.
+	 *
+	 * @param rows the rows to be printed
+	 * @param resource where the CSV rows will be printed
+	 * @param charset the character encoding of the specified resource
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, URL resource, Charset charset)
+	{
+		print(rows, resource, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Prints the specified rows into a resource.
+	 *
+	 * @param rows the rows to be printed
+	 * @param resource where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, URL resource, char separator, char delimiter)
+	{
+		print(rows, resource, separator, delimiter, CHARSET);
+	}
+
+	/**
+	 * Prints the specified rows into a resource.
+	 *
+	 * @param rows the rows to be printed
+	 * @param resource where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character encoding of the specified resource
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, URL resource, char separator, char delimiter, Charset charset)
+	{
+		try (CSVFormatter formatter = CSVFormatter.of(resource, separator, delimiter, charset))
+		{
+			rows.forEach(row -> formatter.writeLine(row));
+		}
+	}
+
+	/**
+	 * Prints the specified rows into a File.
+	 *
+	 * @param rows the rows to be printed
+	 * @param file where the CSV rows will be printed
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, File file)
+	{
+		print(rows, file, SEPARATOR, DELIMITER, CHARSET);
+	}
+
+	/**
+	 * Prints the specified rows into a File.
+	 *
+	 * @param rows the rows to be printed
+	 * @param file where the CSV rows will be printed
+	 * @param charset the character encoding of the specified output stream
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, File file, Charset charset)
+	{
+		print(rows, file, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Prints the specified rows into a File.
+	 *
+	 * @param rows the rows to be printed
+	 * @param file where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, File file, char separator, char delimiter)
+	{
+		print(rows, file, separator, delimiter, CHARSET);
+	}
+
+	/**
+	 * Prints the specified rows into a File.
+	 *
+	 * @param rows the rows to be printed
+	 * @param file where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character encoding of the specified output stream
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, File file, char separator, char delimiter, Charset charset)
+	{
+		try (CSVFormatter formatter = CSVFormatter.of(file, separator, delimiter, charset))
+		{
+			rows.forEach(row -> formatter.writeLine(row));
+		}
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param outputStream OutputStream where the CSV rows will be printed
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, OutputStream outputStream)
+	{
+		print(rows, outputStream, SEPARATOR, DELIMITER, CHARSET);
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param outputStream OutputStream where the CSV rows will be printed
+	 * @param charset the character encoding of the specified output stream
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, OutputStream outputStream, Charset charset)
+	{
+		print(rows, outputStream, SEPARATOR, DELIMITER, charset);
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param outputStream OutputStream where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, OutputStream outputStream, char separator, char delimiter)
+	{
+		print(rows, outputStream, separator, delimiter, CHARSET);
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param outputStream OutputStream where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 * @param charset the character encoding of the specified output stream
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, OutputStream outputStream, char separator, char delimiter, Charset charset)
+	{
+		try
+		{
+			CSVFormatter formatter = CSVFormatter.of(outputStream, separator, delimiter, charset);
+			rows.forEach(row -> formatter.writeLine(row));
+			outputStream.flush();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param writer Writer where the CSV rows will be printed
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, Writer writer)
+	{
+		print(rows, writer, SEPARATOR, DELIMITER);
+	}
+
+	/**
+	 * Prints the specified rows into a OutputStream.
+	 *
+	 * @param rows the rows to be printed
+	 * @param writer Writer where the CSV rows will be printed
+	 * @param separator the character used as field separator
+	 * @param delimiter the character used as field delimiter
+	 *
+	 * @throws java.io.UncheckedIOException if a IOException is thrown when writing to the file
+	 */
+	public static void print(List<List<String>> rows, Writer writer, char separator, char delimiter)
+	{
+		try
+		{
+			CSVFormatter formatter = CSVFormatter.of(writer, separator, delimiter);
+			rows.forEach(row -> formatter.writeLine(row));
+			writer.flush();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 }

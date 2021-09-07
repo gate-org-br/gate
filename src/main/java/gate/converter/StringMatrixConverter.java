@@ -69,7 +69,7 @@ public class StringMatrixConverter implements Converter
 		if (object == null)
 			return "";
 		try (StringWriter writer = new StringWriter();
-			CSVFormatter formatter = new CSVFormatter(writer))
+			CSVFormatter formatter = CSVFormatter.of(writer))
 		{
 			for (String[] values : (String[][]) object)
 				formatter.writeLine(values);

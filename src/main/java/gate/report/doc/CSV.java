@@ -69,7 +69,7 @@ public class CSV extends Doc
 	{
 		try
 		{
-			CSVFormatter formatter = new CSVFormatter(writer);
+			CSVFormatter formatter = CSVFormatter.of(writer);
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
 				formatter.writeLine(grid.getColumns().stream().map(Column::getHead)

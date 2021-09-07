@@ -56,11 +56,11 @@ public class Backup<T>
 
 	public void save(List<T> objs, Writer writer) throws IOException
 	{
-		try (CSVFormatter csv = new CSVFormatter(writer))
+		try (CSVFormatter csv = CSVFormatter.of(writer))
 		{
-			for (T obj : objs)
-				csv.writeLine(properties.stream().map(e -> e.getValue(obj))
-					.map(Converter::toString).collect(Collectors.toList()));
+			objs.forEach(obj
+				-> csv.writeLine(properties.stream().map(e -> e.getValue(obj))
+					.map(Converter::toString).collect(Collectors.toList())));
 		}
 	}
 
