@@ -1,5 +1,6 @@
 package gate.messaging;
 
+import gate.entity.App;
 import gate.type.DataFile;
 import gate.type.mime.Mime;
 import gate.type.mime.MimeList;
@@ -41,6 +42,9 @@ public class Messenger
 {
 
 	@Inject
+	private App app;
+
+	@Inject
 	private Logger logger;
 
 	private volatile ScheduledExecutorService service;
@@ -59,12 +63,11 @@ public class Messenger
 
 				try (Connection connection = connectionFactory.createConnection();
 					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-					MessageConsumer consumer = session.createConsumer(queue))
+					MessageConsumer consumer = session.createConsumer(queue, "app = '" + app.getId() + "'"))
 
 				{
 					connection.start();
-					ObjectMessage objectMessage
-						= (ObjectMessage) consumer.receiveNoWait();
+					ObjectMessage objectMessage = (ObjectMessage) consumer.receiveNoWait();
 					if (objectMessage != null)
 						send(objectMessage.getStringProperty("sender"),
 							objectMessage.getStringProperty("receiver"),
@@ -126,10 +129,10 @@ public class Messenger
 
 								ObjectMessage message = session.createObjectMessage();
 								message.setObject(mail);
-								message.setStringProperty("date", LocalDateTime.now()
-									.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 								message.setStringProperty("sender", sender);
+								message.setStringProperty("app", app.getId());
 								message.setStringProperty("receiver", receiver);
+								message.setStringProperty("date", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
 								connection.start();
 								producer.send(message);
@@ -193,7 +196,7 @@ public class Messenger
 									DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 							String sender = objectMessage.getStringProperty("sender");
 							String receiver = objectMessage.getStringProperty("receiver");
-							MimeMail data = objectMessage.getBody(MimeMail.class);
+							MimeMail data = MimeMail.of("app", objectMessage.getStringProperty("app"));
 							messages.add(new Message(date, sender, receiver, data));
 						}
 						return messages;
