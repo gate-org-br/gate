@@ -422,13 +422,7 @@ public class CSVParser implements Parser
 	 */
 	public static CSVParser of(URL resource)
 	{
-		try
-		{
-			return new CSVParser(new BufferedReader(new InputStreamReader(resource.openStream(), CHARSET)), SEPARATOR, DELIMITER);
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return of(resource, SEPARATOR, DELIMITER, CHARSET);
 	}
 
 	/**
@@ -456,7 +450,7 @@ public class CSVParser implements Parser
 	 */
 	public static CSVParser of(URL resource, char separator, char delimiter)
 	{
-		return of(resource, SEPARATOR, DELIMITER, CHARSET);
+		return of(resource, separator, delimiter, CHARSET);
 	}
 
 	/**
