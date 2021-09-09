@@ -29,7 +29,7 @@ public class CSVFormatter implements AutoCloseable
 
 	private static final char SEPARATOR = ';';
 	private static final char DELIMITER = '"';
-	private static final Charset CHARSET = Charset.forName("UTL-8");
+	private static final Charset CHARSET = Charset.forName("UTF-8");
 
 	/**
 	 * Constructs a new CSVFormatter for the specified Writer.
