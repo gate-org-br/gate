@@ -2253,7 +2253,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new GDialogCommands());
+				this.head.appendChild(document.createElement("g-dialog-commands"));
 		return this._private.commands;
 	}
 
@@ -5949,7 +5949,7 @@ class GChartDialog extends GWindow
 		close.innerHTML = "<i>&#x1011;</i>";
 		close.onclick = () => this.hide();
 
-		let commands = new GDialogCommands();
+		let commands = document.createElement("g-dialog-commands");
 		var cchart = commands.appendChild(document.createElement('a'));
 		cchart.href = "#";
 		cchart.dialog = this;

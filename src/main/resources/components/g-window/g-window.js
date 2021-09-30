@@ -66,7 +66,7 @@ class GWindow extends GModal
 	{
 		if (!this._private.commands)
 			this._private.commands =
-				this.head.appendChild(new GDialogCommands());
+				this.head.appendChild(document.createElement("g-dialog-commands"));
 		return this._private.commands;
 	}
 
