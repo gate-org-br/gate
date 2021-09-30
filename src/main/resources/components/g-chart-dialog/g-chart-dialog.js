@@ -23,7 +23,7 @@ class GChartDialog extends GWindow
 		close.innerHTML = "<i>&#x1011;</i>";
 		close.onclick = () => this.hide();
 
-		let commands = new GDialogCommands();
+		let commands = document.createElement("g-dialog-commands");
 		var cchart = commands.appendChild(document.createElement('a'));
 		cchart.href = "#";
 		cchart.dialog = this;
