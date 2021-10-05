@@ -22,4 +22,11 @@ window.addEventListener("input", function (event)
 		GDataFilter.filter(event.target);
 });
 
-window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => GDataFilter.filter(e)));
+window.addEventListener("changed", function (event)
+{
+	if (event.target.tagName === "INPUT"
+		&& event.target.hasAttribute("data-filter"))
+		GDataFilter.filter(event.target);
+});
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => setTimeout(() => GDataFilter.filter(e), 0)));
