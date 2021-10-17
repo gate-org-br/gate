@@ -1,12 +1,11 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.SIMCard;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,7 +33,7 @@ public class SIMCardConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(20));
-		constraints.add(new Pattern.Implementation("^[0-9]{1,20}$"));
+		constraints.add(new Pattern.Implementation("^[0-9]{20}$"));
 		return constraints;
 	}
 
@@ -46,12 +45,12 @@ public class SIMCardConverter implements Converter
 			string = string.trim();
 			if (!string.isEmpty())
 				try
-				{
-					return new SIMCard(string);
-				} catch (Exception e)
-				{
-					throw new ConversionException(getDescription());
-				}
+			{
+				return new SIMCard(string);
+			} catch (Exception e)
+			{
+				throw new ConversionException(getDescription());
+			}
 		}
 		return null;
 	}

@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.thymeleaf.CDIWebContextFactory;
 import gate.thymeleaf.GateDialect;
 import java.io.IOException;
