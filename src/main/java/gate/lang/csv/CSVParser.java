@@ -82,7 +82,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(Reader reader)
 	{
-		try (CSVParser parser = CSVParser.of(reader))
+		try ( CSVParser parser = CSVParser.of(reader))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -99,7 +99,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(Reader reader, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(reader, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(reader, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -114,7 +114,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(Reader reader)
 	{
-		try (CSVParser parser = CSVParser.of(reader))
+		try ( CSVParser parser = CSVParser.of(reader))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -131,7 +131,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(Reader reader, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(reader, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(reader, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -172,7 +172,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(BufferedReader reader)
 	{
-		try (CSVParser parser = CSVParser.of(reader))
+		try ( CSVParser parser = CSVParser.of(reader))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -189,7 +189,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(BufferedReader reader, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(reader, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(reader, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -204,7 +204,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(BufferedReader reader)
 	{
-		try (CSVParser parser = CSVParser.of(reader))
+		try ( CSVParser parser = CSVParser.of(reader))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -221,7 +221,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(BufferedReader reader, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(reader, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(reader, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -290,7 +290,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(InputStream inputStream)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream))
+		try ( CSVParser parser = CSVParser.of(inputStream))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -306,7 +306,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(InputStream inputStream, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, charset))
+		try ( CSVParser parser = CSVParser.of(inputStream, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -323,7 +323,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(InputStream inputStream, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(inputStream, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -341,7 +341,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(InputStream inputStream, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(inputStream, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -356,7 +356,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(InputStream inputStream)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream))
+		try ( CSVParser parser = CSVParser.of(inputStream))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -372,7 +372,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(InputStream inputStream, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, charset))
+		try ( CSVParser parser = CSVParser.of(inputStream, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -389,7 +389,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(InputStream inputStream, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(inputStream, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -407,7 +407,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(InputStream inputStream, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(inputStream, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(inputStream, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -484,7 +484,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(URL resource)
 	{
-		try (CSVParser parser = CSVParser.of(resource))
+		try ( CSVParser parser = CSVParser.of(resource))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -500,7 +500,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(URL resource, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(resource, charset))
+		try ( CSVParser parser = CSVParser.of(resource, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -517,7 +517,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(URL resource, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(resource, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(resource, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -535,7 +535,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(URL resource, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(resource, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(resource, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -550,7 +550,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(URL resource)
 	{
-		try (CSVParser parser = CSVParser.of(resource))
+		try ( CSVParser parser = CSVParser.of(resource))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -566,7 +566,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(URL resource, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(resource, charset))
+		try ( CSVParser parser = CSVParser.of(resource, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -583,7 +583,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(URL resource, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(resource, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(resource, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -601,7 +601,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(URL resource, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(resource, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(resource, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -676,7 +676,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(File file)
 	{
-		try (CSVParser parser = CSVParser.of(file))
+		try ( CSVParser parser = CSVParser.of(file))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -692,7 +692,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(File file, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(file, charset))
+		try ( CSVParser parser = CSVParser.of(file, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -709,7 +709,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(File file, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(file, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(file, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -727,7 +727,7 @@ public class CSVParser implements Parser
 	 */
 	public static List<Row> read(File file, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(file, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(file, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toList());
 		}
@@ -742,7 +742,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(File file)
 	{
-		try (CSVParser parser = CSVParser.of(file))
+		try ( CSVParser parser = CSVParser.of(file))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -758,7 +758,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(File file, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(file, charset))
+		try ( CSVParser parser = CSVParser.of(file, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -775,7 +775,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(File file, char separator, char delimiter)
 	{
-		try (CSVParser parser = CSVParser.of(file, separator, delimiter))
+		try ( CSVParser parser = CSVParser.of(file, separator, delimiter))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -793,7 +793,7 @@ public class CSVParser implements Parser
 	 */
 	public static Set<Row> distinct(File file, char separator, char delimiter, Charset charset)
 	{
-		try (CSVParser parser = CSVParser.of(file, separator, delimiter, charset))
+		try ( CSVParser parser = CSVParser.of(file, separator, delimiter, charset))
 		{
 			return parser.stream().collect(Collectors.toSet());
 		}
@@ -862,7 +862,10 @@ public class CSVParser implements Parser
 
 	private void skipSpaces()
 	{
-		while (!isEOL() && Character.isWhitespace(line.charAt(indx)))
+		while (!isEOL()
+			&& line.charAt(indx) != separator
+			&& line.charAt(indx) != delimiter
+			&& Character.isWhitespace(line.charAt(indx)))
 			indx++;
 	}
 
@@ -1029,7 +1032,7 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string)
 	{
-		try (CSVParser parser = CSVParser.of(new BufferedReader(new StringReader(string))))
+		try ( CSVParser parser = CSVParser.of(new BufferedReader(new StringReader(string))))
 		{
 			return parser.parse();
 		}
@@ -1046,7 +1049,7 @@ public class CSVParser implements Parser
 	 */
 	public static Row parseLine(String string, char separator, char delimiter)
 	{
-		try (CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
+		try ( CSVParser parser = new CSVParser(new BufferedReader(new StringReader(string)), separator, delimiter))
 		{
 			return parser.parse();
 		}
