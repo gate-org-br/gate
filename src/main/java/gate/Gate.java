@@ -19,6 +19,7 @@ import gate.error.InvalidRequestException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
+import gate.event.LoginEvent;
 import gate.handler.Handler;
 import gate.io.Credentials;
 import gate.type.Result;
@@ -35,6 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedThreadFactory;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -77,6 +79,9 @@ public class Gate extends HttpServlet
 	@Inject
 	private Logger logger;
 
+	@Inject
+	private Event<LoginEvent> event;
+
 	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
 
 	static
@@ -114,8 +119,11 @@ public class Gate extends HttpServlet
 				String password = request.getParameter("$passwd");
 
 				if (Toolkit.notEmpty(username, password))
-					request.getSession().setAttribute(User.class.getName(), user = control.select(org, username, password));
-				else if (httpServletRequest.getUserPrincipal() != null
+				{
+					request.getSession().setAttribute(User.class.getName(),
+						user = control.select(org, username, password));
+					event.fireAsync(new LoginEvent(user));
+				} else if (httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
 					request.getSession().setAttribute(User.class.getName(), user = control.select(httpServletRequest.getUserPrincipal().getName()));
 

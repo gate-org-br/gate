@@ -4541,7 +4541,7 @@ g-tooltip {
   --color: #feffcd;
   padding: 8px;
   display: flex;
-  z-index: 1000;
+  z-index: 100000;
   position: fixed;
   border-radius: 5px;
   visibility: hidden;
