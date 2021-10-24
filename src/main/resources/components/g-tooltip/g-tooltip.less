@@ -4,7 +4,7 @@ g-tooltip {
 
 	padding: 8px;
 	display: flex;
-	z-index: 1000;
+	z-index: 100000;
 	position: fixed;
 	border-radius: 5px;
 	visibility: hidden;
@@ -12,32 +12,45 @@ g-tooltip {
 	justify-content: center;
 	background-color: var(--color);
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	> * { color: black; width: auto }
+	> * {
+		color: black;
+		width: auto
+	}
 
-	&[arrow]::after { content: " ";
-			  border-width: 6px;
-			  position: absolute;
-			  border-style: solid; }
+	&[arrow]::after {
+		content: " ";
+		border-width: 6px;
+		position: absolute;
+		border-style: solid;
+	}
 
-	&[arrow="bottom"]::after { left: 50%;
-				   bottom: 100%;
-				   margin-left: -6px;
-				   border-color: transparent transparent var(--color) transparent; }
+	&[arrow="bottom"]::after {
+		left: 50%;
+		bottom: 100%;
+		margin-left: -6px;
+		border-color: transparent transparent var(--color) transparent;
+	}
 
-	&[arrow="top"]::after { top: 100%;
-				left: 50%;
-				margin-left: -6px;
-				border-color: var(--color) transparent transparent transparent; }
+	&[arrow="top"]::after {
+		top: 100%;
+		left: 50%;
+		margin-left: -6px;
+		border-color: var(--color) transparent transparent transparent;
+	}
 
-	&[arrow="left"]::after { top: 50%;
-				 left: 100%;
-				 margin-top: -6px;
-				 border-color: transparent transparent transparent var(--color); }
+	&[arrow="left"]::after {
+		top: 50%;
+		left: 100%;
+		margin-top: -6px;
+		border-color: transparent transparent transparent var(--color);
+	}
 
-	&[arrow="right"]::after { top: 50%;
-				  right: 100%;
-				  margin-top: -6px;
-				  border-color: transparent var(--color) transparent transparent; }
+	&[arrow="right"]::after {
+		top: 50%;
+		right: 100%;
+		margin-top: -6px;
+		border-color: transparent var(--color) transparent transparent;
+	}
 }
 
 
