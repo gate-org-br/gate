@@ -7,6 +7,8 @@ public interface Orderable extends Clause
 
 	OrderedSelect orderBy(String exp);
 
+	SortedSelect ordernate(String exp);
+
 	interface Constant extends Orderable
 	{
 
@@ -23,6 +25,25 @@ public interface Orderable extends Clause
 			};
 		}
 
+		@Override
+		default SortedSelect.Constant ordernate(String expression)
+		{
+			return new SortedSelect.Constant(this)
+			{
+				@Override
+				public String toString()
+				{
+					if (expression == null || expression.isBlank())
+						return getClause().toString();
+					else if (expression.charAt(0) == '+')
+						return getClause() + " order by " + expression.substring(1);
+					else if (expression.charAt(0) == '-')
+						return getClause() + " order by " + expression.substring(1) + " desc";
+					else
+						return getClause() + " order by " + expression;
+				}
+			};
+		}
 	}
 
 	interface Generic extends Orderable
@@ -41,6 +62,26 @@ public interface Orderable extends Clause
 			};
 		}
 
+		@Override
+		default SortedSelect.Generic ordernate(String expression)
+		{
+			return new SortedSelect.Generic(this)
+			{
+				@Override
+				public String toString()
+				{
+					if (expression == null || expression.isBlank())
+						return getClause().toString();
+					else if (expression.charAt(0) == '+')
+						return getClause() + " order by " + expression.substring(1);
+					else if (expression.charAt(0) == '-')
+						return getClause() + " order by " + expression.substring(1) + " desc";
+					else
+						return getClause() + " order by " + expression;
+				}
+			};
+		}
+
 	}
 
 	interface Compiled extends Orderable
@@ -55,6 +96,26 @@ public interface Orderable extends Clause
 				public String toString()
 				{
 					return getClause() + " order by " + expression;
+				}
+			};
+		}
+
+		@Override
+		default SortedSelect.Compiled ordernate(String expression)
+		{
+			return new SortedSelect.Compiled(this)
+			{
+				@Override
+				public String toString()
+				{
+					if (expression == null || expression.isBlank())
+						return getClause().toString();
+					else if (expression.charAt(0) == '+')
+						return getClause() + " order by " + expression.substring(1);
+					else if (expression.charAt(0) == '-')
+						return getClause() + " order by " + expression.substring(1) + " desc";
+					else
+						return getClause() + " order by " + expression;
 				}
 			};
 		}

@@ -2,6 +2,7 @@ package gate.sql.fetcher;
 
 import gate.lang.property.Property;
 import gate.sql.Cursor;
+import gate.util.Page;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +11,27 @@ import java.util.List;
  * Fetches a cursor as a list of java objects of the specified type with it's properties set to their respective column values.
  *
  *
+ * @param <T> the java type to be fetched
  */
-public class EntityListFetcher<T> implements Fetcher<List<T>>
+public class PageFetcher<T> implements Fetcher<Page<T>>
 {
 
+	private final int pageSize;
+	private final int pageIndx;
 	private final Class<T> type;
-	private final List<T> result = new ArrayList<>();
 
 	/**
 	 * Creates a new EntityListFetcher for the specified java type.
 	 *
 	 * @param type the java type to be fetched
+	 * @param pageSize number of entities per page
+	 * @param pageIndx index of the page
 	 */
-	public EntityListFetcher(Class<T> type)
+	public PageFetcher(Class<T> type, int pageSize, int pageIndx)
 	{
 		this.type = type;
+		this.pageSize = pageSize;
+		this.pageIndx = pageIndx;
 	}
 
 	/**
@@ -37,15 +44,26 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	 * values
 	 */
 	@Override
-	public List<T> fetch(Cursor cursor)
+	public Page<T> fetch(Cursor cursor)
 	{
 		try
 		{
-			List<Property> properties
-				= Property.getProperties(type, cursor.getPropertyNames(type));
 
-			while (cursor.next())
+			if (!cursor.next())
+				return Page.of(List.of(), 0, pageSize, pageIndx);
+
+			List<T> result = new ArrayList<>();
+			List<String> names = cursor.getPropertyNames(type);
+			if (!names.contains("dataSize"))
+				throw new UnsupportedOperationException("Result set does not contain a dataSize column");
+			names.removeIf(e -> e.equals("dataSize"));
+			List<Property> properties = Property.getProperties(type, names);
+
+			int dataSize = cursor.getIntValue("dataSize");
+
+			do
 			{
+
 				T entity = type.getDeclaredConstructor().newInstance();
 				properties.forEach(e ->
 				{
@@ -70,23 +88,14 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 						e.setValue(entity, cursor.getCurrentValue(clazz));
 				});
 				result.add(entity);
-			}
-			return result;
+			} while (cursor.next());
+
+			return Page.of(result, dataSize, pageSize, pageIndx);
 
 		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
 			| SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex);
 		}
-	}
-
-	/**
-	 * Return the accumulated result of fetch operations.
-	 *
-	 * @return the accumulated result of fetch operations
-	 */
-	public List<T> getResult()
-	{
-		return result;
 	}
 }
