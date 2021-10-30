@@ -146,4 +146,14 @@ public class Page<E> implements Iterable<E>, Serializable
 			throw new UnsupportedOperationException();
 		}
 	}
+
+	public static <T> Page<T> of(List<T> data, int pageSize, int pageIndex)
+	{
+		return new Paginator(data, pageSize).getPage(pageIndex);
+	}
+
+	public static <T> Page<T> of(List<T> data, int dataSize, int pageSize, int pageIndex)
+	{
+		return new Paginator(dataSize, pageSize).getPage(pageIndex, data);
+	}
 }

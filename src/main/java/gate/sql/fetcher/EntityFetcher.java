@@ -8,7 +8,7 @@ import java.util.Optional;
 /**
  * Fetches first row from a Cursor as a java object of the specified type with it's properties set to their respective column values.
  *
- * 
+ *
  */
 public class EntityFetcher<T> implements Fetcher<Optional<T>>
 {
