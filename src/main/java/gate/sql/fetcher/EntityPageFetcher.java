@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @param <T> the java type to be fetched
  */
-public class PageFetcher<T> implements Fetcher<Page<T>>
+public class EntityPageFetcher<T> implements Fetcher<Page<T>>
 {
 
 	private final int pageSize;
@@ -27,7 +27,7 @@ public class PageFetcher<T> implements Fetcher<Page<T>>
 	 * @param pageSize number of entities per page
 	 * @param pageIndx index of the page
 	 */
-	public PageFetcher(Class<T> type, int pageSize, int pageIndx)
+	public EntityPageFetcher(Class<T> type, int pageSize, int pageIndx)
 	{
 		this.type = type;
 		this.pageSize = pageSize;

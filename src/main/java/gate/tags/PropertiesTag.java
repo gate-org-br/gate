@@ -5,6 +5,7 @@ import gate.constraint.Required;
 import gate.lang.property.Property;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import javax.servlet.jsp.JspException;
 
 public class PropertiesTag extends AttributeTag
@@ -48,11 +49,15 @@ public class PropertiesTag extends AttributeTag
 				name = property.toString();
 			getJspContext().getOut().print("<tr>");
 			getJspContext().getOut().print(String.format("<td style='text-align: center'>%02d</td>", ++i));
-			getJspContext().getOut().print(String.format("<td>%s</td>", name));
-			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getConstraints().stream().anyMatch(
-				e -> e instanceof Required.Implementation) ? "Sim" : "Não"));
-			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getConstraints().stream().filter(e -> e instanceof Maxlength.Implementation).map(e -> e.getValue().toString()).findFirst().orElse("N/A")));
-			getJspContext().getOut().print(String.format("<td>%s</td>", property.getDescription()));
+			getJspContext().getOut().print(String.format("<td>%s</td>", Objects.requireNonNullElse(name, "")));
+
+			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getAttributes().get(1)
+				.getConstraints().stream().anyMatch(e -> e instanceof Required.Implementation) ? "Sim" : "Não"));
+
+			getJspContext().getOut().print(String.format("<td style='text-align: center'>%s</td>", property.getConstraints().stream()
+				.filter(e -> e instanceof Maxlength.Implementation).map(e -> e.getValue().toString()).findFirst().orElse("N/A")));
+
+			getJspContext().getOut().print(String.format("<td>%s</td>", Objects.requireNonNullElse(property.getDescription(), "")));
 			getJspContext().getOut().print("</tr>");
 		}
 		getJspContext().getOut().print("</tbody>");

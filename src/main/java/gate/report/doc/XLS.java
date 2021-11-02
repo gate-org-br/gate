@@ -78,12 +78,13 @@ public class XLS extends Doc
 	public void print(OutputStream os)
 	{
 
-		try (SXSSFWorkbook workbook = new SXSSFWorkbook())
+		try ( SXSSFWorkbook workbook = new SXSSFWorkbook())
 		{
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Grid)
 					printGrid(workbook, (Grid) e);
-				else if (e instanceof Form)
+				else if (e instanceof Form
+					&& (!((Form) e).getFields().isEmpty()))
 					printForm(workbook, (Form) e);
 			workbook.write(os);
 			workbook.dispose();

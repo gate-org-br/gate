@@ -68,7 +68,12 @@ public class App implements Serializable
 				{
 					Module.Screen screen = module.addScreen();
 
-					screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+					if (type.getEnclosingClass() != null)
+						screen.id = type.getEnclosingClass().getSimpleName() + "$"
+							+ type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+					else
+						screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+
 					Name.Extractor.extract(type).ifPresent(e -> screen.name = e);
 					Description.Extractor.extract(type).ifPresent(e -> screen.description = e);
 					Icon.Extractor.extract(type).ifPresent(e -> screen.icon = e.getCode());

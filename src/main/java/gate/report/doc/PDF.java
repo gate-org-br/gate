@@ -117,10 +117,11 @@ public class PDF extends Doc
 				else if (element instanceof Footer)
 					document.add(printFooter((Footer) element));
 				else if (element instanceof LineBreak)
-					document.add(printLineBreak((LineBreak) element));
+					document.add(printLineBreak());
 				else if (element instanceof PageBreak)
-					document.add(printPageBreak((PageBreak) element));
-				else if (element instanceof Form)
+					document.add(printPageBreak());
+				else if (element instanceof Form
+					&& (!((Form) element).getFields().isEmpty()))
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid)
 					document.add(printGrid((Grid) element));
@@ -179,12 +180,12 @@ public class PDF extends Doc
 		}
 	}
 
-	private Element printPageBreak(PageBreak element) throws AppError
+	private Element printPageBreak() throws AppError
 	{
 		return Chunk.NEXTPAGE;
 	}
 
-	private Element printLineBreak(LineBreak element) throws AppError
+	private Element printLineBreak() throws AppError
 	{
 		return new Phrase("\n");
 	}

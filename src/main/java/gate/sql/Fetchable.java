@@ -26,7 +26,7 @@ import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
 import gate.sql.fetcher.ObjectListFetcher;
 import gate.sql.fetcher.ObjectSetFetcher;
-import gate.sql.fetcher.PageFetcher;
+import gate.sql.fetcher.EntityPageFetcher;
 import gate.sql.fetcher.PropertyEntityListFetcher;
 import gate.sql.fetcher.PropertyEntitySetFetcher;
 import gate.sql.fetcher.TypedArrayFetcher;
@@ -35,6 +35,7 @@ import gate.sql.fetcher.TypedArraySetFetcher;
 import gate.sql.fetcher.TypedDataGridFetcher;
 import gate.sql.fetcher.TypedMapFetcher;
 import gate.sql.fetcher.TypedMapListFetcher;
+import gate.sql.fetcher.TypedMapPageFetcher;
 import gate.sql.fetcher.TypedObjectFetcher;
 import gate.sql.fetcher.TypedObjectListFetcher;
 import gate.sql.fetcher.TypedObjectSetFetcher;
@@ -321,6 +322,20 @@ public interface Fetchable
 	}
 
 	/**
+	 * Fetches each row as a list of maps whose keys are the column names and values are the column values as objects of the specified types.
+	 *
+	 * @param types types of the objects to be fetched
+	 * @param pageSize number of rows per page
+	 * @param pageIndx index of the page
+	 *
+	 * @return each row as a list of maps whose keys are the column names and values are the column values as objects of the specified types
+	 */
+	default Page<Map<String, Object>> fetchMapPage(int pageSize, int pageIndx, Class<?>... types)
+	{
+		return fetch(new TypedMapPageFetcher(pageSize, pageIndx, types));
+	}
+
+	/**
 	 * Fetches each row as a a stream of java objects of the specified type with it's properties set to their respective column values.
 	 *
 	 *
@@ -370,9 +385,9 @@ public interface Fetchable
 	 *
 	 * @return each row as a list of java objects of the specified type with it's properties set to their respective column values
 	 */
-	default <T> Page<T> fetchPage(Class<T> type, int pageSize, int pageIndx)
+	default <T> Page<T> fetchEntityPage(Class<T> type, int pageSize, int pageIndx)
 	{
-		return fetch(new PageFetcher<>(type, pageSize, pageIndx));
+		return fetch(new EntityPageFetcher<>(type, pageSize, pageIndx));
 	}
 
 	/**
