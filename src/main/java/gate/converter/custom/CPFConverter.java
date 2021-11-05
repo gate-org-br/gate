@@ -69,7 +69,7 @@ public class CPFConverter implements Converter
 		try
 		{
 			return CPF.of(string);
-		} catch (Exception e)
+		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(string.concat(" não é um CPF válido."));
 		}

@@ -21,13 +21,13 @@ public class Progress
 
 	private static final int UNKNOWN = -1;
 	private static final AtomicInteger SEQUENCE = new AtomicInteger();
-	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<Progress>();
+	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
 	static final ConcurrentMap<Integer, Progress> INSTANCES = new ConcurrentHashMap<>();
 
 	private String url;
 	private JsonElement data;
-	private int todo = UNKNOWN;
-	private int done = UNKNOWN;
+	private long todo = UNKNOWN;
+	private long done = UNKNOWN;
 	private String text = "Aguarde";
 	private Status status = Status.CREATED;
 	private final int process = SEQUENCE.incrementAndGet();
@@ -70,8 +70,8 @@ public class Progress
 		sessions.remove(session);
 	}
 
-	public void update(Status status, int todo,
-		int done, String text, JsonElement data)
+	public void update(Status status, long todo,
+		long done, String text, JsonElement data)
 	{
 		this.todo = todo;
 		this.done = done;
@@ -80,7 +80,7 @@ public class Progress
 		this.data = data;
 	}
 
-	public void update(Status status, int todo, int done, String text)
+	public void update(Status status, long todo, long done, String text)
 	{
 		update(status, todo, done, text, null);
 	}
@@ -94,8 +94,8 @@ public class Progress
 	public String toString()
 	{
 		return new JsonObject()
-			.setInt("todo", todo)
-			.setInt("done", done)
+			.setLong("todo", todo)
+			.setLong("done", done)
 			.setString("text", text)
 			.setInt("process", process)
 			.setString("event", "Progress")
@@ -141,7 +141,7 @@ public class Progress
 	 * @param todo size of the task being initiated
 	 * @param text description of the task being initiated
 	 */
-	public static void startup(int todo, String text)
+	public static void startup(long todo, String text)
 	{
 		Objects.requireNonNull(text);
 		Progress progress = CURRENT.get();
@@ -224,7 +224,7 @@ public class Progress
 	 *
 	 * @param done new progress of the current task
 	 */
-	public static void update(int done)
+	public static void update(long done)
 	{
 		Progress progress = CURRENT.get();
 		if (progress != null)
@@ -259,7 +259,7 @@ public class Progress
 	 * @param done new progress of the current task
 	 * @param text description of the progress made
 	 */
-	public static void update(int done, String text)
+	public static void update(long done, String text)
 	{
 		Progress progress = CURRENT.get();
 		if (progress != null)
@@ -344,7 +344,7 @@ public class Progress
 	 *
 	 * @return the current task size
 	 */
-	public static int todo()
+	public static long todo()
 	{
 		Progress progress = CURRENT.get();
 		if (progress != null)
@@ -357,7 +357,7 @@ public class Progress
 	 *
 	 * @return the current task progress
 	 */
-	public static int done()
+	public static long done()
 	{
 		Progress progress = CURRENT.get();
 		if (progress != null)

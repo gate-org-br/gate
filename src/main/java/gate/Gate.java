@@ -1,6 +1,7 @@
 package gate;
 
 import gate.annotation.Asynchronous;
+import gate.annotation.Cors;
 import gate.annotation.Current;
 import gate.base.Screen;
 import gate.entity.App;
@@ -135,6 +136,15 @@ public class Gate extends HttpServlet
 				request.setAttribute("screen", screen);
 				request.setAttribute("action", command.getMethod());
 				screen.prepare(request, response);
+
+				if (command.getMethod().isAnnotationPresent(Cors.class))
+				{
+					response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+					response.setHeader("Access-Control-Allow-Credentials", "true");
+					response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+					response.setHeader("Access-Control-Max-Age", "3600");
+					response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+				}
 
 				if (command.getMethod().isAnnotationPresent(Asynchronous.class))
 					executeAsynchronous(httpServletRequest, response, user, screen, command.getMethod());

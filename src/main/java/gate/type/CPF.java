@@ -4,13 +4,17 @@ import gate.annotation.Converter;
 import gate.converter.custom.CPFConverter;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Brazilian CPF.
  */
 @Converter(CPFConverter.class)
-public class CPF implements Serializable, Cloneable, Comparable<CPF>
+public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianDocument
 {
+
+	public static final Pattern RAW = Pattern.compile("^[0-9]{11}$");
+	public static final Pattern FORMATTED = Pattern.compile("^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}$");
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,13 +31,18 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>
 	 * @param value CPF as a String
 	 * @return the new CPF created
 	 *
-	 * @throws IllegalArgumentException if the specified String is not a
-	 * valid Brazilian CPF
+	 * @throws IllegalArgumentException if the specified String is not a valid Brazilian CPF
 	 */
 	public static CPF of(String value)
 	{
-		return new CPF(Objects.requireNonNull(CPF.format(value),
-			"null is not a valid CPF value"));
+		if (value == null)
+			throw new IllegalArgumentException("null is not a valid CPF value");
+
+		String cpf = CPF.format(value);
+		if (cpf == null)
+			throw new IllegalArgumentException(value + " is not a valid CPF value");
+
+		return new CPF(cpf);
 	}
 
 	/**
@@ -157,8 +166,7 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>
 	 * Checks if the specified value is a valid Brazilian CPF and formats it
 	 *
 	 * @param value the value to be formatted
-	 * @return the specified value as a formatted CPF or null if the
-	 * specified value is not a valid CPF
+	 * @return the specified value as a formatted CPF or null if the specified value is not a valid CPF
 	 */
 	public static String format(String value)
 	{
