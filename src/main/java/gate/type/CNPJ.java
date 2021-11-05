@@ -4,13 +4,17 @@ import gate.annotation.Converter;
 import gate.converter.custom.CNPJConverter;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Brazilian CNPJ
  */
 @Converter(CNPJConverter.class)
-public class CNPJ implements Serializable, Comparable<CNPJ>
+public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument
 {
+
+	public static final Pattern RAW = Pattern.compile("^[0-9]{14}$");
+	public static final Pattern FORMATTED = Pattern.compile("^[0-9]{2}[.][0-9]{3}[.][0-9]{3}[/][0-9]{4}[-][0-9]{2}$");
 
 	private static final long serialVersionUID = 1L;
 
@@ -27,13 +31,18 @@ public class CNPJ implements Serializable, Comparable<CNPJ>
 	 * @param value CNPJ as a String
 	 * @return the new CNPJ created
 	 *
-	 * @throws IllegalArgumentException if the specified String is not a
-	 * valid Brazilian CNPJ
+	 * @throws IllegalArgumentException if the specified String is not a valid Brazilian CNPJ
 	 */
 	public static CNPJ of(String value)
 	{
-		return new CNPJ(Objects.requireNonNull(CNPJ.format(value),
-			"null is not a valid CPF value"));
+		if (value == null)
+			throw new IllegalArgumentException("null is not a valid CNPJ value");
+
+		String cnpj = CNPJ.format(value);
+		if (cnpj == null)
+			throw new IllegalArgumentException(value + " is not a valid CNPJ value");
+
+		return new CNPJ(cnpj);
 	}
 
 	/**
@@ -243,12 +252,10 @@ public class CNPJ implements Serializable, Comparable<CNPJ>
 	}
 
 	/**
-	 * Checks if the specified value is a valid Brazilian CNPJ and formats
-	 * it
+	 * Checks if the specified value is a valid Brazilian CNPJ and formats it
 	 *
 	 * @param value the value to be formatted
-	 * @return the specified value as a formatted CNPJ or null if the
-	 * specified value is not a valid CNPJ
+	 * @return the specified value as a formatted CNPJ or null if the specified value is not a valid CNPJ
 	 */
 	public static String format(String value)
 	{

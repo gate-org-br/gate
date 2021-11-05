@@ -1,11 +1,13 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
+import gate.error.ConversionException;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.type.CNPJ;
+import gate.type.BrasilianDocument;
+import gate.type.CPF;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,28 +15,28 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CNPJConverter implements Converter
+public class BrasilianDocumentConverter implements Converter
 {
+
+	@Override
+	public String getMask()
+	{
+		return null;
+	}
+
+	@Override
+	public String getDescription()
+	{
+		return "CPF ou CNPJ";
+	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(18));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[.][0-9]{3}[.][0-9]{3}[/][0-9]{4}[-][0-9]{2}$"));
+		constraints.add(new Pattern.Implementation("^([0-9]{11})|([0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2})|([0-9]{14})|([0-9]{2}.[0-9]{3}.[0-9]{3}[/][0-9]{4}-[0-9]{2})$"));
 		return constraints;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##.###.###/####-##";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CNPJ devem ser preenchidos no formato 99.999.999/9999-99";
 	}
 
 	@Override
@@ -67,10 +69,10 @@ public class CNPJConverter implements Converter
 
 		try
 		{
-			return CNPJ.of(string);
+			return BrasilianDocument.of(string);
 		} catch (IllegalArgumentException ex)
 		{
-			throw new ConversionException(string + " não é um CNPJ válido.");
+			throw new ConversionException(string + " não é um documento válido.");
 		}
 	}
 
@@ -78,14 +80,14 @@ public class CNPJConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : CNPJ.of(value);
+		return rs.wasNull() ? null : CPF.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : CNPJ.of(value);
+		return rs.wasNull() ? null : CPF.of(value);
 	}
 
 	@Override

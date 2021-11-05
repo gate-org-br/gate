@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -26,6 +28,9 @@ public class App extends Application
 	@Path("resources")
 	public static class Resources
 	{
+
+		@Inject
+		private HttpServletRequest request;
 
 		@GET
 		@Path("Gate.css")
@@ -87,13 +92,19 @@ public class App extends Application
 		{
 			return Response.ok((StreamingOutput) (OutputStream o) ->
 			{
-				try (InputStream i = getClass().getResourceAsStream(filename))
+				try ( InputStream i = getClass().getResourceAsStream(filename))
 				{
 					for (int b = i.read(); b != -1; b = i.read())
 						o.write(b);
 					o.flush();
 				}
-			}).header("Content-Disposition", "attachment; filename=" + filename).build();
+			}).header("Content-Disposition", "attachment; filename=" + filename)
+				.header("Access-Control-Allow-Origin", request.getHeader("Origin"))
+				.header("Access-Control-Allow-Credentials", "true")
+				.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
+				.header("Access-Control-Max-Age", "3600")
+				.header("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me")
+				.build();
 		}
 	}
 }
