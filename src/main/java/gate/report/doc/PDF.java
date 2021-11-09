@@ -51,13 +51,21 @@ import java.util.concurrent.ConcurrentMap;
 public class PDF extends Doc
 {
 
+	private static final BaseColor CAPTION_COLOR = new BaseColor(120, 129, 133);
+	private static final BaseColor HEAD_COLOR = new BaseColor(185, 198, 205);
+
+	private static final BaseColor FORM_COLOR = new BaseColor(255, 255, 255);
+	private static final BaseColor FIELD_COLOR = new BaseColor(230, 230, 230);
+
+	private static final BaseColor BODY_COLOR1 = new BaseColor(255, 255, 255);
+	private static final BaseColor BODY_COLOR2 = new BaseColor(245, 246, 248);
+
 	private static final Map<Color, BaseColor> COLORS = new ConcurrentHashMap<>();
-	private static final BaseColor GRAY = new BaseColor(0xEE, 0xEE, 0xEE);
 	private static final ConcurrentMap<Style, Font> FONTS = new ConcurrentHashMap<>();
 	private static final Font HEAD_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 	private static final Font FIELD_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
 	private static final Font FORM_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-	private static final Font CAPTION_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, BaseColor.WHITE);
+	private static final Font CAPTION_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.WHITE);
 
 	/**
 	 * Constructs a new PDF Doc for the specified report.
@@ -218,14 +226,14 @@ public class PDF extends Doc
 			label.setBorder(0);
 			label.setPadding(0);
 			label.setPaddingBottom(2);
-			label.setBackgroundColor(BaseColor.WHITE);
+			label.setBackgroundColor(FORM_COLOR);
 			table.addCell(label);
 
 			PdfPCell value = new PdfPCell(new com.itextpdf.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
 			value.setPadding(2);
 			value.setMinimumHeight(field.getHeight());
-			value.setBorderColor(BaseColor.GRAY);
-			value.setBackgroundColor(BaseColor.LIGHT_GRAY);
+			value.setBorder(0);
+			value.setBackgroundColor(FIELD_COLOR);
 			value.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 			table.addCell(value);
 
@@ -265,10 +273,10 @@ public class PDF extends Doc
 
 			PdfPCell body = new PdfPCell(table);
 			body.setPadding(4);
-			body.setBorderColor(BaseColor.GRAY);
+			body.setBackgroundColor(FORM_COLOR);
+			body.setBorderColor(BaseColor.LIGHT_GRAY);
 
-			form.getFields()
-				.forEach(e -> table.addCell(printField(e)));
+			form.getFields().forEach(e -> table.addCell(printField(e)));
 
 			element.addCell(body);
 
@@ -301,9 +309,9 @@ public class PDF extends Doc
 		try
 		{
 			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, HEAD_FONT));
-			cell.setMinimumHeight(20);
-			cell.setBorderColor(BaseColor.BLACK);
-			cell.setBackgroundColor(BaseColor.GRAY);
+			cell.setMinimumHeight(16);
+			cell.setBorderColor(BaseColor.GRAY);
+			cell.setBackgroundColor(HEAD_COLOR);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setHorizontalAlignment(getAlignment(style));
 
@@ -322,11 +330,12 @@ public class PDF extends Doc
 			String string = Converter.toText(value);
 
 			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(string, getFont(style)));
+			cell.setMinimumHeight(16);
 			cell.setPaddingLeft(level * 50);
-			cell.setBorderColor(BaseColor.BLACK);
+			cell.setBorderColor(BaseColor.GRAY);
 			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setHorizontalAlignment(getAlignment(style));
-			cell.setBackgroundColor(index % 2 == 0 ? BaseColor.WHITE : GRAY);
+			cell.setBackgroundColor(index % 2 == 0 ? BODY_COLOR1 : BODY_COLOR2);
 
 			return cell;
 		} catch (IllegalArgumentException e)
@@ -341,9 +350,9 @@ public class PDF extends Doc
 		{
 			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, getFont(style)));
 			cell.setMinimumHeight(20);
-			cell.setBorderColor(BaseColor.BLACK);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+			cell.setBorderColor(BaseColor.GRAY);
 			cell.setBackgroundColor(BaseColor.GRAY);
+			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 			cell.setHorizontalAlignment(getAlignment(style));
 
 			return cell;
@@ -353,14 +362,17 @@ public class PDF extends Doc
 		}
 	}
 
-	private void addBodys(Grid<Object> grid, PdfPTable table, Object data, int level)
+	private void addBodies(Grid<Object> grid, PdfPTable table, Object data, int level)
 	{
 
+		int size = grid.getLimit() != null
+			? Math.min(grid.getLimit(), grid.getColumns().size())
+			: grid.getColumns().size();
 		for (Object object : Toolkit.iterable(data))
 		{
 			int index = table.getRows().size() - 1;
 
-			for (int i = 0; i < grid.getColumns().size(); i++)
+			for (int i = 0; i < size; i++)
 			{
 				Column<Object> column = grid.getColumns().get(i);
 				Object value = column.getBody().apply(object);
@@ -373,7 +385,7 @@ public class PDF extends Doc
 
 			if (grid.getChildren() != null)
 				Toolkit.collection(grid.getChildren().apply(object))
-					.forEach(e -> addBodys(grid, table, e, level + 1));
+					.forEach(e -> addBodies(grid, table, e, level + 1));
 		}
 	}
 
@@ -381,8 +393,12 @@ public class PDF extends Doc
 	{
 		try
 		{
-			float[] widths = new float[grid.getColumns().size()];
-			for (int i = 0; i < grid.getColumns().size(); i++)
+			int size = grid.getLimit() != null
+				? Math.min(grid.getLimit(), grid.getColumns().size())
+				: grid.getColumns().size();
+
+			float[] widths = new float[size];
+			for (int i = 0; i < size; i++)
 				widths[i] = (float) grid.getColumns().get(i).style().getWidth();
 
 			PdfPTable table = new PdfPTable(widths.length);
@@ -392,28 +408,31 @@ public class PDF extends Doc
 			if (grid.getCaption() != null)
 			{
 				table.setHeaderRows(table.getHeaderRows() + 1);
-				table.getDefaultCell().setMinimumHeight(20);
+				table.getDefaultCell().setMinimumHeight(16);
+				table.getDefaultCell().setBorderColor(BaseColor.GRAY);
 				table.getDefaultCell().setColspan(widths.length);
-				table.getDefaultCell().setBackgroundColor(BaseColor.DARK_GRAY);
+				table.getDefaultCell().setBackgroundColor(CAPTION_COLOR);
 				table.getDefaultCell().setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 				table.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
 				table.addCell(new com.itextpdf.text.Paragraph(grid.getCaption(), CAPTION_FONT));
 			}
 
-			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
+			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
 			{
-				grid.getColumns().forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
+				grid.getColumns().stream().limit(size)
+					.forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
-			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
+			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null))
 			{
-				grid.getColumns().forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
+				grid.getColumns().stream().limit(size)
+					.forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
 				table.setFooterRows(1);
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
-			addBodys(grid, table, grid.getData(), 0);
+			addBodies(grid, table, grid.getData(), 0);
 
 			return table;
 		} catch (DocumentException ex)

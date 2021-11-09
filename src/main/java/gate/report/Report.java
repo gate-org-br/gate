@@ -7,7 +7,6 @@ import gate.type.mime.MimeDataFile;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -78,7 +77,7 @@ public class Report
 
 	public final List<ReportElement> getElements()
 	{
-		return Collections.unmodifiableList(elements);
+		return elements;
 	}
 
 	public final Report add(ReportElement element)
@@ -110,7 +109,7 @@ public class Report
 
 	public final LineBreak addLineBreak()
 	{
-		LineBreak lineBreak = new LineBreak();
+		LineBreak lineBreak = new LineBreak(this);
 		elements.add(lineBreak);
 		return lineBreak;
 	}
@@ -187,6 +186,18 @@ public class Report
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
+	}
+
+	/**
+	 * Remove empty information from the report.
+	 *
+	 * @return the same object, for chained invocations
+	 */
+	public Report compact()
+	{
+		getElements().forEach(Element::compact);
+		getElements().removeIf(Element::isEmpty);
+		return this;
 	}
 
 	public enum Orientation

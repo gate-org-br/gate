@@ -9,7 +9,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.enterprise.context.Dependent;
 
+@Dependent
 @Icon("2189")
 public class App implements Serializable
 {

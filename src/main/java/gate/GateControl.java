@@ -32,7 +32,7 @@ public class GateControl extends gate.base.Control
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernameException();
-		try (GateDao dao = new GateDao())
+		try ( GateDao dao = new GateDao())
 		{
 			User user = dao.select(username)
 				.orElseThrow(InvalidUsernameException::new);
@@ -78,7 +78,7 @@ public class GateControl extends gate.base.Control
 
 	{
 
-		try (GateDao dao = new GateDao())
+		try ( GateDao dao = new GateDao())
 		{
 			User user = dao.select(username)
 				.orElseThrow(InvalidUsernameException::new);
@@ -130,7 +130,7 @@ public class GateControl extends gate.base.Control
 
 	public void update(User user) throws AppException
 	{
-		try (GateDao dao = new GateDao())
+		try ( GateDao dao = new GateDao())
 		{
 			dao.update(user);
 		}
@@ -138,7 +138,7 @@ public class GateControl extends gate.base.Control
 
 	public void update(User user, String password) throws AppException
 	{
-		try (GateDao dao = new GateDao())
+		try ( GateDao dao = new GateDao())
 		{
 			dao.update(user, password);
 		}

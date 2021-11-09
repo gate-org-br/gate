@@ -63,9 +63,9 @@ public class Link implements AutoCloseable
 	{
 		try
 		{
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream())))
+			try ( BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream())))
 			{
-				try (StringWriter writer = new StringWriter())
+				try ( StringWriter writer = new StringWriter())
 				{
 					for (int c = reader.read();
 						c != -1; c = reader.read())
@@ -108,6 +108,22 @@ public class Link implements AutoCloseable
 	public Link(Connection connection)
 	{
 		this.connection = connection;
+	}
+
+	/**
+	 * Creates a Link for the specified JDBC connection.
+	 *
+	 * @param datasource the DataSource from where to get the connection
+	 */
+	public Link(DataSource datasource)
+	{
+		try
+		{
+			this.connection = datasource.getConnection();
+		} catch (SQLException ex)
+		{
+			throw new AppError(ex);
+		}
 	}
 
 	/**
