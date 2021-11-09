@@ -108,4 +108,25 @@ public class Form extends ReportElement
 	{
 		return (Form) super.style(style);
 	}
+
+	@Override
+	public Element compact()
+	{
+		elements.removeIf(e -> e.getValue() == null);
+		if (!elements.isEmpty())
+			while (elements.stream().mapToInt(Field::getColspan).sum() % columns != 0)
+			{
+				int min = elements.stream().mapToInt(Field::getColspan).min().orElse(0);
+				elements.stream().filter(e -> e.getColspan() == min).findFirst().ifPresent(e -> e.colspan(e.getColspan() + 1));
+			}
+
+		return this;
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return elements.isEmpty();
+	}
+
 }

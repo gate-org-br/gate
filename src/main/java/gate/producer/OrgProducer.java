@@ -2,11 +2,11 @@ package gate.producer;
 
 import gate.annotation.Current;
 import gate.entity.Org;
-import gate.error.AppException;
 import gate.sql.Link;
 import gate.sql.select.Select;
 import java.io.Serializable;
 import java.util.Optional;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -38,12 +38,13 @@ public class OrgProducer implements Serializable
 		return control.select().orElse(DEFAULT);
 	}
 
+	@Dependent
 	public static class Control extends gate.base.Control
 	{
 
 		public Optional<Org> select()
 		{
-			try (Dao dao = new Dao())
+			try ( Dao dao = new Dao())
 			{
 				return dao.select();
 			}
@@ -54,7 +55,7 @@ public class OrgProducer implements Serializable
 
 			public Optional<Org> select()
 			{
-				try (Link link = new Link("Gate"))
+				try ( Link link = new Link("Gate"))
 				{
 					return Select.expression("orgID")
 						.expression("name")

@@ -9,6 +9,7 @@ import gate.sql.insert.Insert;
 import gate.type.Phone;
 import gate.util.ScreenServletRequest;
 import java.io.IOException;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -90,6 +91,7 @@ public class CreateAccount extends HttpServlet
 		request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
 	}
 
+	@Dependent
 	public static class Control extends gate.base.Control
 	{
 
@@ -98,7 +100,7 @@ public class CreateAccount extends HttpServlet
 			Constraints.validate(value, "active", "userID", "name",
 				"email", "details", "phone", "cellPhone", "CPF");
 
-			try (Dao dao = new Dao())
+			try ( Dao dao = new Dao())
 			{
 				dao.insert(value);
 			}
