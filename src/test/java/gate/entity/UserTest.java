@@ -21,8 +21,8 @@ public class UserTest
 		root.setName("Root");
 		root.setActive(true);
 		root.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW)
-				.setType(Auth.Type.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
+				.setScope(Auth.Scope.PUBLIC)
 				.setModule("gate.modules.root")
 				.setScreen("RootScreen")
 				.setAction("RootAction"));
@@ -33,8 +33,8 @@ public class UserTest
 		role1.setActive(true);
 		role1.setName("Role 1");
 		role1.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW)
-				.setType(Auth.Type.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
+				.setScope(Auth.Scope.PUBLIC)
 				.setModule("gate.modules.role1")
 				.setScreen("Role1Screen")
 				.setAction("Role1Action"));
@@ -46,8 +46,8 @@ public class UserTest
 		role2.setActive(true);
 		role2.setName("Role 2");
 		role2.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW)
-				.setType(Auth.Type.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
+				.setScope(Auth.Scope.PUBLIC)
 				.setModule("gate.modules.role2")
 				.setScreen("Role2Screen")
 				.setAction("Role2Action"));
@@ -57,8 +57,8 @@ public class UserTest
 		USER1.setName("User 1");
 		USER1.setRole(role1);
 		USER1.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW)
-				.setType(Auth.Type.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
+				.setScope(Auth.Scope.PUBLIC)
 				.setModule("gate.modules.user1")
 				.setScreen("User1Screen")
 				.setAction("User1Action"));
@@ -68,8 +68,8 @@ public class UserTest
 		USER2.setName("User 2");
 		USER2.setRole(role2);
 		USER2.getAuths().add(new Auth()
-				.setMode(Auth.Mode.ALLOW)
-				.setType(Auth.Type.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
+				.setScope(Auth.Scope.PUBLIC)
 				.setModule("gate.modules.user2")
 				.setScreen("User2Screen")
 				.setAction("User2Action"));
@@ -79,13 +79,13 @@ public class UserTest
 		USER3.setName("User 3");
 		USER3.setRole(new Role().setId(new ID(3)).setName("Role 3"));
 		USER3.getRole().getAuths().add(new Auth()
-				.setType(Auth.Type.PUBLIC)
-				.setMode(Auth.Mode.BLOCK)
+				.setScope(Auth.Scope.PUBLIC)
+				.setAccess(Auth.Access.BLOCK)
 				.setModule("gate.modulos.root")
 				.setScreen("Screen").setAction("Action"));
 		USER3.getAuths().add(new Auth()
-				.setType(Auth.Type.PUBLIC)
-				.setMode(Auth.Mode.ALLOW)
+				.setScope(Auth.Scope.PUBLIC)
+				.setAccess(Auth.Access.GRANT)
 				.setModule("gate.modulos.root"));
 	}
 

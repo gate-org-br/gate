@@ -7,14 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.thymeleaf.context.IWebContext;
 
-/**
- * Extension of the basic CDI context for use in web enviroments.
- *
- * CDI functionality is inherited unchanged from {@link CDIContext}. Additional methods are added to implement the Thymeleaf {@link IWebContext} interface. The
- * context locale cannot be set directly, it is taken from the servlet request.
- *
- * @author PÁLFALVI Tamás &lt;tamas.palfalvi@inbuss.hu&gt;
- */
 public class CDIWebContext extends CDIContext implements IWebContext
 {
 
@@ -22,7 +14,7 @@ public class CDIWebContext extends CDIContext implements IWebContext
 	private final HttpServletResponse response;
 	private final ServletContext servletContext;
 
-	protected CDIWebContext(final HttpServletRequest request, final HttpServletResponse response,
+	public CDIWebContext(final HttpServletRequest request, final HttpServletResponse response,
 		final BeanManager beanManager, final ServletContext servletContext)
 	{
 		super(request.getLocale(), beanManager);

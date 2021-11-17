@@ -12,11 +12,9 @@ import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.io.Credentials;
-
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +41,7 @@ public class Auth extends HttpServlet
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		try (Writer writer = response.getWriter())
+		try ( Writer writer = response.getWriter())
 		{
 			try
 			{

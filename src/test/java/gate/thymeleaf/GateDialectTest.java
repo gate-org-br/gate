@@ -10,14 +10,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.junit.Assert;
 import org.junit.Test;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
-
-import org.thymeleaf.context.Context;
 
 public class GateDialectTest
 {
@@ -26,7 +24,6 @@ public class GateDialectTest
 	public void test() throws URISyntaxException, IOException
 	{
 		TemplateEngine engine = new TemplateEngine();
-		engine.addDialect(new LayoutDialect());
 		engine.addDialect(new GateDialect());
 		StringTemplateResolver resolver = new StringTemplateResolver();
 		resolver.setTemplateMode(TemplateMode.HTML);

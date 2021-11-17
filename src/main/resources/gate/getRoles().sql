@@ -3,7 +3,7 @@ select
     Role.active as active,
     Role.master as master,
     Role.Role$id as 'role.id',
-    Role.roleID as roleID,
+    Role.rolename as rolename,
     Role.name as name,
     Role.email as email,
     Role.description as description,

@@ -2,12 +2,12 @@ SELECT
     id,
     active,
     Role$id as 'role.id',
-    userID,
-    passwd,
+    username,
+    password,
     name,
     code,
     email,
-    details,
+    description,
     phone,
     cellPhone,
     photo,
@@ -17,4 +17,4 @@ SELECT
     registration
 FROM
     gate.Uzer
-where userID = ? or email = ?
+where username = ? or email = ?

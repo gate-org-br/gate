@@ -5,16 +5,17 @@ import gate.type.mime.MimeTextFile;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class MimeTextFileHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request,
-		HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
 		try
 		{
@@ -33,7 +34,7 @@ public class MimeTextFileHandler implements Handler
 			byte[] bytes = mimeTextFile.getText().getBytes(mimeTextFile.getCharset());
 			response.setContentLength(bytes.length);
 
-			try (OutputStream os = response.getOutputStream())
+			try ( OutputStream os = response.getOutputStream())
 			{
 				os.write(bytes);
 				os.flush();

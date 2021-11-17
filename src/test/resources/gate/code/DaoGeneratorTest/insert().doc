@@ -2,7 +2,7 @@
 	{
 		Insert.into("Uzer")
 			.set("active", value.getActive())
-			.set("userID", value.getUserID())
+			.set("username", value.getUserID())
 			.set("passwd", value.getPasswd())
 			.set("name", value.getName())
 			.set("email", value.getEmail())

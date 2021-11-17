@@ -142,7 +142,7 @@ CREATE TABLE `Uzer` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `active` tinyint unsigned NOT NULL DEFAULT '1',
   `Role$id` int unsigned DEFAULT NULL,
-  `userID` varchar(64) NOT NULL,
+  `username` varchar(64) NOT NULL,
   `passwd` varchar(32) NOT NULL,
   `name` varchar(64) NOT NULL,
   `email` varchar(64) DEFAULT NULL,
@@ -155,7 +155,7 @@ CREATE TABLE `Uzer` (
   `birthdate` date DEFAULT NULL,
   `registration` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `Uzer$uk$userID` (`userID`),
+  UNIQUE KEY `Uzer$uk$username` (`username`),
   UNIQUE KEY `Uzer$uk$email` (`email`),
   KEY `Uzer$fk$Role` (`Role$id`),
   CONSTRAINT `Uzer$fk$Role` FOREIGN KEY (`Role$id`) REFERENCES `Role` (`id`)
@@ -191,17 +191,17 @@ BEGIN
 	declare fullname  text;
     declare parent integer;
     declare simplename varchar(64);
-        
+
   	SELECT Role$id, coalesce(roleID, name) INTO parent, fullname FROM Role WHERE  id = parameter;
-    
+
 	REPEAT
 		SELECT Role$id, coalesce(roleID, name) INTO parent, simplename FROM Role WHERE  id = parent;
-        IF simplename is not null THEN 
+        IF simplename is not null THEN
 			set fullname = concat(simplename, ' / ', fullname);
 		END IF;
 	UNTIL parent is null
 	END REPEAT;
-    
+
 	return fullname;
 END ;;
 DELIMITER ;
@@ -218,7 +218,7 @@ BEGIN
 	SELECT Role.master INTO ismaster FROM Role WHERE  id = parent;
 
 	REPEAT
-		IF ismaster = 1 THEN 
+		IF ismaster = 1 THEN
 			return parent;
 		END IF;
 		SELECT Role.Role$id, Role.master INTO parent, ismaster FROM Role WHERE  id = parent;
@@ -240,7 +240,7 @@ declare parent integer;
 	SELECT Role.master INTO master FROM Role WHERE  id = parent;
 
 	REPEAT
-		IF master = 1 and parent = parameter THEN 
+		IF master = 1 and parent = parameter THEN
 			return true;
 		END IF;
 		SELECT Role.Role$id, Role.master INTO parent, master FROM Role WHERE  id = parent;
@@ -257,7 +257,7 @@ BEGIN
 	declare parent integer;
 	set parent = child;
 	REPEAT
-		IF parent = parameter THEN 
+		IF parent = parameter THEN
 			return true;
 		END IF;
 		SELECT Role$id INTO parent FROM Role WHERE  id = parent;
@@ -288,9 +288,9 @@ and (Auth.module is null or Auth.module = module)
             then
                 return true;
             end if;
-           
+
             set parent = (select Role$id from Uzer where id = user);
-           
+
             REPEAT
 
 SELECT
@@ -313,8 +313,8 @@ return true;
 end if;
 
 until parent is null
-END REPEAT;    
-           
+END REPEAT;
+
         elseif module is not null
 and screen is not null
         then
@@ -327,9 +327,9 @@ and (Auth.module is null or Auth.module = module)
             then
                 return true;
             end if;
-           
+
             set parent = (select Role$id from Uzer where id = user);
-           
+
 REPEAT
 
 SELECT
@@ -350,8 +350,8 @@ return true;
 end if;
 
 until parent is null
-END REPEAT;    
-           
+END REPEAT;
+
          elseif module is not null
          then
            if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
@@ -361,9 +361,9 @@ and (Auth.module is null or Auth.module = module))))
             then
                 return true;
             end if;
-           
+
             set parent = (select Role$id from Uzer where id = user);
-           
+
             REPEAT
 
 SELECT
@@ -388,7 +388,7 @@ return false;
 END
 
 INSERT INTO gate.Role (id, active, master, name) values (1, 1, 1, 'Gate');
-INSERT INTO gate.Uzer (id, active, Role$id, userID, passwd, name, registration) values (1, 1, 1, 'gate', MD5('gate'), 'Gate', now());
+INSERT INTO gate.Uzer (id, active, Role$id, username, passwd, name, registration) values (1, 1, 1, 'gate', MD5('gate'), 'Gate', now());
 insert into gate.Func (id, name) values (1, 'Gate');
 INSERT INTO gate.RoleFunc (Role$id, Func$id) VALUES (1, 1);
-INSERT INTO gate.Auth (id, Func$id, type, mode) values (1, 1, 0, 1);
+INSERT INTO gate.Auth (id, Func$id, type, mode) values (1, 1, 0, 0);

@@ -52,7 +52,7 @@ public class RoleProducer
 						.expression("Role.active")
 						.expression("Role.master")
 						.expression("Role.Role$id").as("role.id")
-						.expression("Role.roleID")
+						.expression("Role.rolename")
 						.expression("Role.name")
 						.expression("Role.email")
 						.expression("Role.description")

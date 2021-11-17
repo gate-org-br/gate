@@ -38,6 +38,8 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -83,6 +85,14 @@ public class Gate extends HttpServlet
 	@Inject
 	private Event<LoginEvent> event;
 
+	@Any
+	@Inject
+	Instance<Screen> screens;
+
+	@Any
+	@Inject
+	Instance<Handler> handlers;
+
 	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
 
 	static
@@ -116,8 +126,8 @@ public class Gate extends HttpServlet
 				getServletContext().getRequestDispatcher(GATE_JSP).forward(request, response);
 			} else
 			{
-				String username = request.getParameter("$userid");
-				String password = request.getParameter("$passwd");
+				String username = request.getParameter("$username");
+				String password = request.getParameter("$password");
 
 				if (Toolkit.notEmpty(username, password))
 				{
@@ -132,7 +142,7 @@ public class Gate extends HttpServlet
 				if (!command.checkAccess(user))
 					throw new AccessDeniedException();
 
-				Screen screen = Screen.create(command.getType());
+				Screen screen = screens.select(command.getType()).get();
 				request.setAttribute("screen", screen);
 				request.setAttribute("action", command.getMethod());
 				screen.prepare(request, response);
@@ -186,8 +196,8 @@ public class Gate extends HttpServlet
 		{
 			if (ex.getCause() instanceof AppException)
 			{
-				Handler.getHandler(AppException.class).
-					handle(httpServletRequest, response, ex.getCause());
+				handlers.select(Handler.getHandler(AppException.class)).get()
+					.handle(httpServletRequest, response, ex.getCause());
 			} else
 			{
 				httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
@@ -197,9 +207,8 @@ public class Gate extends HttpServlet
 			}
 		} catch (InvalidCredentialsException ex)
 		{
-			Handler.getHandler(Result.class)
-				.handle(httpServletRequest, response, Result.error(ex.getMessage()));
-
+			handlers.select(Handler.getHandler(Result.class)).get()
+				.handle(httpServletRequest, response, ex.getCause());
 		} catch (ReflectiveOperationException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
@@ -220,10 +229,10 @@ public class Gate extends HttpServlet
 			Object result = screen.execute(method);
 			if (result != null)
 				if (method.isAnnotationPresent(gate.annotation.Handler.class))
-					Handler.getInstance(method.getAnnotation(gate.annotation.Handler.class).value())
+					handlers.select(Handler.getHandler(method.getAnnotation(gate.annotation.Handler.class).value())).get()
 						.handle(request, response, result);
 				else
-					Handler.getHandler(result.getClass()).handle(request, response, result);
+					handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
 		} catch (InvocationTargetException ex)
 		{
 			if (ex.getTargetException() instanceof AppException)
@@ -240,7 +249,7 @@ public class Gate extends HttpServlet
 	{
 		Progress progress = Progress.create(org, app, user);
 		request.setAttribute("process", progress.getProcess());
-		Handler.getHandler(Integer.class).handle(request, response, progress.getProcess());
+		handlers.select(Handler.getHandler(Integer.class)).get().handle(request, response, progress.getProcess());
 
 		Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
 		CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()

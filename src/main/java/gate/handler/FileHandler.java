@@ -7,15 +7,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class FileHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request,
-		HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
 		try
 		{
@@ -24,10 +25,10 @@ public class FileHandler implements Handler
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", String.format(
 				"attachment; filename=\"%s\"", URLEncoder.encode(file.getName(), "UTF-8")));
-			try (BufferedInputStream is = new BufferedInputStream(
+			try ( BufferedInputStream is = new BufferedInputStream(
 				new FileInputStream(file)))
 			{
-				try (BufferedOutputStream os = new BufferedOutputStream(
+				try ( BufferedOutputStream os = new BufferedOutputStream(
 					response.getOutputStream()))
 				{
 					for (int data = is.read(); data != -1; data = is.read())

@@ -37,15 +37,15 @@ public class SetupPassword extends HttpServlet
 			if (request.getMethod().equals("POST"))
 			{
 				User user = new User();
-				user.setUserID(request.getParameter("user.userID"));
-				user.setPasswd(request.getParameter("user.passwd"));
+				user.setUsername(request.getParameter("user.username"));
+				user.setPassword(request.getParameter("user.password"));
 				user.setChange(request.getParameter("user.change"));
 				user.setRepeat(request.getParameter("user.repeat"));
 
-				if (Toolkit.isEmpty(user.getUserID()) || user.getUserID().length() > 64)
+				if (Toolkit.isEmpty(user.getUsername()) || user.getUsername().length() > 64)
 					throw new AppException("O campo login é obrigatório e deve conter no máximo 64 caracteres.");
 
-				if (Toolkit.isEmpty(user.getPasswd()) || user.getPasswd().length() > 64)
+				if (Toolkit.isEmpty(user.getPassword()) || user.getPassword().length() > 64)
 					throw new AppException("O campo senha é obrigatório e deve conter no máximo 64 caracteres.");
 
 				if (Toolkit.isEmpty(user.getChange()) || user.getChange().length() > 64)

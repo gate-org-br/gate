@@ -115,10 +115,10 @@ public class GateControl extends gate.base.Control
 						username, password);
 				} catch (InvalidUsernameException ex)
 				{
-					if (!user.getPasswd().equals(MD5.digest(password).toString()))
+					if (!user.getPassword().equals(MD5.digest(password).toString()))
 						throw new InvalidPasswordException();
 				}
-			} else if (!user.getPasswd().equals(MD5.digest(password).toString()))
+			} else if (!user.getPassword().equals(MD5.digest(password).toString()))
 				throw new InvalidPasswordException();
 
 			if (username.equals(password))

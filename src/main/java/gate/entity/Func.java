@@ -105,12 +105,12 @@ public class Func implements Serializable
 
 	public boolean allows(String module, String screen, String action)
 	{
-		return getAuths().stream().anyMatch(e -> e.allows(module, screen, action));
+		return getAuths().stream().anyMatch(e -> e.granted(module, screen, action));
 	}
 
 	public boolean blocks(String module, String screen, String action)
 	{
-		return getAuths().stream().anyMatch(e -> e.blocks(module, screen, action));
+		return getAuths().stream().anyMatch(e -> e.blocked(module, screen, action));
 	}
 
 	@Override

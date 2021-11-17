@@ -1,34 +1,34 @@
 package gate.handler;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class StringHandler implements Handler
 {
 
+	@Inject
+	private JSPCommandHandler jspHandler;
+
+	@Inject
+	private HTMLCommandHandler htmlHandler;
+
+	@Inject
+	private TextHandler textHandler;
+
 	@Override
-	public void handle(HttpServletRequest request,
-		HttpServletResponse response, Object value)
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		String string = value.toString();
 		if (string.endsWith(".jsp"))
-			JSPHandler.handleTemplate(request, response, string);
+			jspHandler.handle(request, response, string);
 		else if (string.endsWith(".html"))
-			HTMLHandler.handleTemplate(request, response, string);
+			htmlHandler.handle(request, response, value);
+		else if (string.endsWith(".gml"))
+			htmlHandler.handle(request, response, value);
 		else
-		{
-			response.setContentType("text/plain");
-			try (Writer writer = response.getWriter())
-			{
-				writer.write(value.toString());
-				writer.flush();
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		}
+			textHandler.handle(request, response, value);
 	}
 }

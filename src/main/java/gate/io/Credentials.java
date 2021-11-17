@@ -53,8 +53,8 @@ public class Credentials
 		{
 			String[] cols = row.split(":");
 			Auth auth = new Auth();
-			auth.setMode(Auth.Mode.valueOf(cols[0]));
-			auth.setType(Auth.Type.valueOf(cols[1]));
+			auth.setAccess(Auth.Access.valueOf(cols[0]));
+			auth.setScope(Auth.Scope.valueOf(cols[1]));
 			if (!cols[2].equals("*"))
 				auth.setModule(cols[2]);
 			if (!cols[3].equals("*"))
@@ -75,8 +75,8 @@ public class Credentials
 			.claim("role.id", user.getRole().getId().toString())
 			.claim("role.name", user.getRole().getName())
 			.claim("auths", user.getComputedAuths().stream().map(e -> new StringJoiner(":")
-			.add(e.getMode().name())
-			.add(e.getType().name())
+			.add(e.getAccess().name())
+			.add(e.getScope().name())
 			.add(e.getModule() != null ? e.getModule() : "*")
 			.add(e.getScreen() != null ? e.getScreen() : "*")
 			.add(e.getAction() != null ? e.getAction() : "*").toString())

@@ -15,7 +15,7 @@
 		<label>
 			Login do Usuário:
 			<span>
-				<g:label property="form.userID"/>
+				<g:label property="form.username"/>
 			</span>
 		</label>
 		<label>

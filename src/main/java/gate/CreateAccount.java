@@ -44,31 +44,31 @@ public class CreateAccount extends HttpServlet
 				ScreenServletRequest req = new ScreenServletRequest(request);
 				gate.entity.User user = new gate.entity.User();
 
-				user.setUserID(req.getParameter(String.class, "user.userID"));
-				if (user.getUserID() == null)
+				user.setUsername(req.getParameter(String.class, "user.username"));
+				if (user.getUsername() == null)
 					throw new AppException("Entre com o login desejado.");
 
 				user.setName(req.getParameter("user.name"));
 				if (user.getName() == null)
 					throw new AppException("Entre com o seu nome completo.");
 
-				user.setPasswd(req.getParameter(String.class, "user.passwd"));
-				if (user.getPasswd() == null)
+				user.setPassword(req.getParameter(String.class, "user.password"));
+				if (user.getPassword() == null)
 					throw new AppException("Entre com a sua senha.");
 
 				user.setRepeat(req.getParameter(String.class, "user.repeat"));
 				if (user.getRepeat() == null)
 					throw new AppException("Tecla a sua senha novamente.");
 
-				if (!user.getPasswd().equals(user.getRepeat()))
+				if (!user.getPassword().equals(user.getRepeat()))
 					throw new AppException("As senhas digitadas não conferem.");
 
 				user.setEmail(req.getParameter(String.class, "user.email"));
 				if (user.getEmail() == null)
 					throw new AppException("Informe o seu endereço de email.");
 
-				user.setDetails(req.getParameter(String.class, "user.details"));
-				if (user.getDetails() == null)
+				user.setDescription(req.getParameter(String.class, "user.details"));
+				if (user.getDescription() == null)
 					throw new AppException("Informe a empresa onde trabalha.");
 
 				user.setActive(Boolean.TRUE);
@@ -97,7 +97,7 @@ public class CreateAccount extends HttpServlet
 
 		public void insert(User value) throws AppException
 		{
-			Constraints.validate(value, "active", "userID", "name",
+			Constraints.validate(value, "active", "username", "name",
 				"email", "details", "phone", "cellPhone", "CPF");
 
 			try ( Dao dao = new Dao())
@@ -113,14 +113,14 @@ public class CreateAccount extends HttpServlet
 			{
 				Insert.into("User")
 					.set("active", user.getActive())
-					.set("userID", user.getUserID())
+					.set("username", user.getUsername())
+					.set("password", user.getUsername())
 					.set("name", user.getName())
 					.set("email", user.getEmail())
-					.set("details", user.getDetails())
+					.set("details", user.getDescription())
 					.set("phone", user.getPhone())
 					.set("cellPhone", user.getCellPhone())
 					.set("CPF", user.getCPF())
-					.set("passwd", user.getUserID())
 					.build()
 					.connect(getLink())
 					.execute();

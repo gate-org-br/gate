@@ -1,8 +1,6 @@
 package gate.tags;
 
 import java.io.IOException;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 
@@ -12,9 +10,6 @@ public class LoginTag extends SimpleTagSupport
 	private String module;
 	private String screen;
 	private String action;
-
-	@Inject
-	private HttpServletRequest request;
 
 	@Override
 	public void doTag() throws JspException, IOException

@@ -3,7 +3,7 @@
 		Constraints.validate(value,
 			"id",
 			"active",
-			"userID",
+			"username",
 			"passwd",
 			"name",
 			"email",

@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Locale;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class DocHandler implements Handler
 {
 
@@ -19,7 +21,7 @@ public class DocHandler implements Handler
 		response.setLocale(Locale.getDefault());
 		response.setContentType(doc.getContentType());
 		response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", doc.getFileName()));
-		try (OutputStream os = response.getOutputStream())
+		try ( OutputStream os = response.getOutputStream())
 		{
 			((Doc) value).print(os);
 			os.flush();

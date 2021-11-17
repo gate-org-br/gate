@@ -17,7 +17,7 @@ public class CommandCatcher implements Catcher
 	{
 
 		response.setContentType("text/html");
-		try (Writer writer = response.getWriter())
+		try ( Writer writer = response.getWriter())
 		{
 
 			writer.write("<!DOCTYPE HTML>");

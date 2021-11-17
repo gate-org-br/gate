@@ -81,7 +81,7 @@ public class DOC extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try (XWPFDocument XWPFDocument = new XWPFDocument())
+		try ( XWPFDocument XWPFDocument = new XWPFDocument())
 		{
 			CTSectPr section = XWPFDocument.getDocument().getBody().addNewSectPr();
 			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy = new XWPFHeaderFooterPolicy(XWPFDocument, section);
@@ -259,7 +259,7 @@ public class DOC extends Doc
 
 	private void printImage(XWPFHeader XWPFHeader, Image image) throws IOException, InvalidFormatException
 	{
-		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getSource()))
+		try ( ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getSource()))
 		{
 			BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 			XWPFParagraph XWPFParagraph = XWPFHeader.createParagraph();
@@ -293,6 +293,8 @@ public class DOC extends Doc
 	private void printHeaderCell(XWPFTableCell XWPFTableCell, Column<?> column, Object value)
 	{
 		getCTTcPr(XWPFTableCell).addNewShd().setFill(LABEL_BACKGROUND_COLOR);
+		if (XWPFTableCell.getParagraphs().isEmpty())
+			XWPFTableCell.addParagraph();
 		XWPFParagraph XWPFParagraph = XWPFTableCell.getParagraphs().get(0);
 		XWPFParagraph.setVerticalAlignment(TextAlignment.CENTER);
 		XWPFParagraph.setAlignment(getParagraphAlignment(column.style().getTextAlign()));
@@ -316,6 +318,9 @@ public class DOC extends Doc
 
 	private void printCell(XWPFTableCell XWPFTableCell, Object value, Style style)
 	{
+		if (XWPFTableCell.getParagraphs().isEmpty())
+			XWPFTableCell.addParagraph();
+
 		XWPFParagraph XWPFParagraph = XWPFTableCell.getParagraphs().get(0);
 
 		XWPFParagraph.setVerticalAlignment(TextAlignment.CENTER);

@@ -1,7 +1,6 @@
 package gate.util;
 
 import gate.converter.Converter;
-import gate.error.ConversionException;
 import gate.type.Parameter;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -56,7 +55,7 @@ public class Parameters extends LinkedHashMap<String, Object>
 		}
 	}
 
-	public Parameters put(String string) throws ConversionException
+	public Parameters put(String string)
 	{
 		int i = 0;
 		while (i < string.length())
@@ -72,7 +71,7 @@ public class Parameters extends LinkedHashMap<String, Object>
 			i++;
 
 			if (name.length() == 0)
-				throw new ConversionException(string + " is not a valid query string");
+				throw new IllegalArgumentException(string + " is not a valid query string");
 
 			if (value.length() > 0)
 				put(name.toString(), value.toString());
@@ -81,7 +80,7 @@ public class Parameters extends LinkedHashMap<String, Object>
 		return this;
 	}
 
-	public static Parameters parse(String string) throws ConversionException
+	public static Parameters parse(String string)
 	{
 		return new Parameters().put(string);
 	}

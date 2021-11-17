@@ -232,7 +232,7 @@ public abstract class Screen extends Base
 		{
 			return Optional.of(Class.forName(screen != null
 				? module + "." + screen
-				+ "Screen" : module + ".Screen"))
+				+ "Screen" : module + ".Screen", true, Thread.currentThread().getContextClassLoader()))
 				.map(e -> e.asSubclass(Screen.class));
 		} catch (ClassNotFoundException ex)
 		{

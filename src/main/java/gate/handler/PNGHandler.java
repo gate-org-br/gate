@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 
 import java.io.Writer;
-
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class PNGHandler implements Handler
 {
 
@@ -18,7 +20,7 @@ public class PNGHandler implements Handler
 		String string = value.toString();
 		response.setContentType("image/png");
 		response.setContentLength(string.length());
-		try (Writer writer = response.getWriter())
+		try ( Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();

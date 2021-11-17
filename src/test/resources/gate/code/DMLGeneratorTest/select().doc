@@ -1,7 +1,7 @@
 select 
     Uzer.id as 'id',
     Uzer.active as 'active',
-    Uzer.userID as 'userID',
+    Uzer.username as 'username',
     Uzer.passwd as 'passwd',
     Uzer.name as 'name',
     Uzer.email as 'email',

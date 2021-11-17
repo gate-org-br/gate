@@ -1,13 +1,22 @@
 package gate.thymeleaf;
 
+import gate.thymeleaf.processors.Processor;
 import java.util.Set;
+import java.util.stream.Collectors;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 import static org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor.PRECEDENCE;
 
+@ApplicationScoped
 public class GateDialect implements IDialect, IProcessorDialect
 {
+
+	@Inject
+	Instance<Processor> processors;
 
 	@Override
 	public String getName()
@@ -30,13 +39,7 @@ public class GateDialect implements IDialect, IProcessorDialect
 	@Override
 	public Set<IProcessor> getProcessors(String string)
 	{
-		return Set.of(new PrintAttributeTagProcessor(),
-			new WriteAttributeTagProcessor(),
-			new SelectTagProcessor(),
-			new InputTagProcessor(),
-			new TextAreaTagProcessor(),
-			new RequestAttributeTagProcessor("module"),
-			new RequestAttributeTagProcessor("screen"),
-			new RequestAttributeTagProcessor("action"));
+		return processors.stream().collect(Collectors.toSet());
 	}
+
 }
