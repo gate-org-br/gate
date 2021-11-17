@@ -20,7 +20,7 @@ public class CredentialsTest
 		user.getRole().setId(new ID(1));
 		user.getRole().setName("Role 1");
 		user.getAuths().add(new Auth()
-			.setMode(Auth.Mode.ALLOW).setType(Auth.Type.PUBLIC)
+			.setAccess(Auth.Access.GRANT).setScope(Auth.Scope.PUBLIC)
 			.setModule("gateconsole.screen"));
 
 		String credentials = Credentials.create(user);

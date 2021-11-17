@@ -69,7 +69,7 @@ public class Role implements Serializable, Hierarchy<Role>
 	@Name("Sigla")
 	@Maxlength(16)
 	@Description("Entre com a sigla do grupo.")
-	private String roleID;
+	private String rolename;
 
 	@Maxlength(64)
 	@Name("E-Mail")
@@ -228,14 +228,14 @@ public class Role implements Serializable, Hierarchy<Role>
 			.anyMatch(e -> Boolean.FALSE.equals(active));
 	}
 
-	public String getRoleID()
+	public String getRolename()
 	{
-		return roleID;
+		return rolename;
 	}
 
-	public Role setRoleID(String roleID)
+	public Role setRolename(String rolename)
 	{
-		this.roleID = roleID;
+		this.rolename = rolename;
 		return this;
 	}
 
@@ -345,9 +345,9 @@ public class Role implements Serializable, Hierarchy<Role>
 	private Stream<Auth> privateAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream()
-			.filter(e -> Auth.Type.PRIVATE.equals(e.getType())),
+			.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
 			getFuncs().stream().flatMap(e -> e.getAuths().stream())
-				.filter(e -> Auth.Type.PRIVATE.equals(e.getType())))
+				.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
 			: Stream.empty();
 	}
 
@@ -356,9 +356,9 @@ public class Role implements Serializable, Hierarchy<Role>
 
 		return id != null
 			? Stream.concat(getAuths().stream()
-				.filter(e -> Auth.Type.PUBLIC.equals(e.getType())),
+				.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
-					.filter(e -> Auth.Type.PUBLIC.equals(e.getType())),
+					.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 					getRole().publicAuthStream())) : Stream.empty();
 	}
 

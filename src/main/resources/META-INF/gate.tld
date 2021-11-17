@@ -9,7 +9,7 @@
 	<tag>
 		<name>template</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.template.TemplateTag</tag-class>
+		<tag-class>gate.tags.TemplateTag</tag-class>
 		<description>
 			Defines a JSP file to be used as template of another
 			one.
@@ -19,14 +19,14 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<description>
-				The JSP file to be used as template.
+				The JSP file to be used as
 			</description>
 		</attribute>
 	</tag>
 	<tag>
 		<name>insert</name>
 		<body-content>empty</body-content>
-		<tag-class>gate.tags.template.InsertTag</tag-class>
+		<tag-class>gate.tags.InsertTag</tag-class>
 		<description>
 			Marks where the body content will be inserted
 			on a template JSP file.
@@ -130,7 +130,7 @@
 		<name>link</name>
 		<display-name>Link</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.LinkTag</tag-class>
+		<tag-class>gate.tags.anchor.LinkTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a link to the specified resource
@@ -221,7 +221,7 @@
 		<name>shortcut</name>
 		<display-name>Shortcut</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.ShortcutTag</tag-class>
+		<tag-class>gate.tags.anchor.ShortcutTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a small icon linked to the specified resource
@@ -304,7 +304,7 @@
 		<name>menu</name>
 		<display-name>Menu</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.MenuTag</tag-class>
+		<tag-class>gate.tags.anchor.MenuTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a menu to the specified resource
@@ -386,7 +386,7 @@
 		<name>menuitem</name>
 		<display-name>Menu Item</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.MenuItemTag</tag-class>
+		<tag-class>gate.tags.anchor.MenuItemTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a menu item to the specified resource
@@ -503,7 +503,7 @@
 	<tag>
 		<name>choose</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.choose.ChooseTag</tag-class>
+		<tag-class>gate.tags.ChooseTag</tag-class>
 		<description>
 			Proccess the body of the first when child tag whose
 			provided condition is true. Process the body of the
@@ -514,7 +514,7 @@
 	<tag>
 		<name>when</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.choose.WhenTag</tag-class>
+		<tag-class>gate.tags.WhenTag</tag-class>
 		<description>
 			To be used inside a choose tag. Only the body of the
 			first true when condition of a choose tag is executed.
@@ -531,7 +531,7 @@
 	<tag>
 		<name>otherwise</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.choose.OtherwiseTag</tag-class>
+		<tag-class>gate.tags.OtherwiseTag</tag-class>
 		<description>
 			To be used inside a choose tag. Executed only if there
 			is no true when condition on the parent choose tag.
@@ -540,7 +540,7 @@
 	<tag>
 		<name>iterator</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.IteratorTag</tag-class>
+		<tag-class>gate.tags.iterable.IteratorTag</tag-class>
 		<description>
 			Iterates over a collection of objects.
 		</description>
@@ -593,7 +593,7 @@
 	<tag>
 		<name>parent</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.parent.ParentTag</tag-class>
+		<tag-class>gate.tags.ParentTag</tag-class>
 		<description>
 			Iterates a hierarchy of elements.
 		</description>
@@ -618,7 +618,7 @@
 	<tag>
 		<name>child</name>
 		<body-content>empty</body-content>
-		<tag-class>gate.tags.parent.ChildTag</tag-class>
+		<tag-class>gate.tags.ChildTag</tag-class>
 		<description>
 			Indicates where each element children must
 			be printed.
@@ -1028,7 +1028,7 @@
 		<name>datalist</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.DatalistTag</tag-class>
+		<tag-class>gate.tags.DatalistTag</tag-class>
 		<description>
 			Creates a html datalist with the specified options.
 		</description>
@@ -1063,7 +1063,7 @@
 		<name>label</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.LabelTag</tag-class>
+		<tag-class>gate.tags.property.LabelTag</tag-class>
 		<description>
 			Creates a HTML label with the provided property value
 			converted to human readable text if the specified condition
@@ -1102,7 +1102,7 @@
 		<name>text</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.TextTag</tag-class>
+		<tag-class>gate.tags.property.TextTag</tag-class>
 		<description>
 			Creates a html text input bound
 			to the current screen specified property.
@@ -1148,7 +1148,7 @@
 		<name>password</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.PasswordTag</tag-class>
+		<tag-class>gate.tags.property.PasswordTag</tag-class>
 		<description>
 			Creates a html password input bound
 			to the current screen specified property.
@@ -1167,7 +1167,7 @@
 		<name>file</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.FileTag</tag-class>
+		<tag-class>gate.tags.property.FileTag</tag-class>
 		<description>
 			Creates a html file input bound
 			to the current screen specified property.
@@ -1186,7 +1186,7 @@
 		<name>number</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.NumberTag</tag-class>
+		<tag-class>gate.tags.property.NumberTag</tag-class>
 		<description>
 			Creates a html number input bound
 			to the current screen specified property.
@@ -1205,7 +1205,7 @@
 		<name>range</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.RangeTag</tag-class>
+		<tag-class>gate.tags.property.RangeTag</tag-class>
 		<description>
 			Creates a html range input bound
 			to the current screen specified property.
@@ -1224,7 +1224,7 @@
 		<name>email</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.EMailTag</tag-class>
+		<tag-class>gate.tags.property.EMailTag</tag-class>
 		<description>
 			Creates a html email input bound
 			to the current screen specified property.
@@ -1243,7 +1243,7 @@
 		<name>url</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.URLTag</tag-class>
+		<tag-class>gate.tags.property.URLTag</tag-class>
 		<description>
 			Creates a html url input bound
 			to the current screen specified property.
@@ -1262,7 +1262,7 @@
 		<name>textarea</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.TextAreaTag</tag-class>
+		<tag-class>gate.tags.property.TextAreaTag</tag-class>
 		<description>
 			Creates a html textarea bound
 			to the current screen specified property.
@@ -1281,7 +1281,7 @@
 		<name>text-editor</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.TextEditorTag</tag-class>
+		<tag-class>gate.tags.property.TextEditorTag</tag-class>
 		<description>
 			Creates a html text editor bound
 			to the current screen specified property.
@@ -1300,7 +1300,7 @@
 		<name>hidden</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.HiddenTag</tag-class>
+		<tag-class>gate.tags.property.HiddenTag</tag-class>
 		<description>
 			Creates a html hidden input bound
 			to the current screen specified property.
@@ -1319,7 +1319,7 @@
 		<name>select</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.SelectTag</tag-class>
+		<tag-class>gate.tags.property.SelectTag</tag-class>
 		<description>
 			Creates a html select tag bound
 			to the current screen specified property
@@ -1404,7 +1404,7 @@
 		<name>select1</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.Select1Tag</tag-class>
+		<tag-class>gate.tags.property.Select1Tag</tag-class>
 		<description>
 			Creates a group of radio buttons bound
 			to the current screen specified property.
@@ -1486,7 +1486,7 @@
 		<name>selectn</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.SelectNTag</tag-class>
+		<tag-class>gate.tags.property.SelectNTag</tag-class>
 		<description>
 			Creates a group of checkboxes bound
 			to the current screen specified property.
@@ -1570,7 +1570,7 @@
 		<name>selectx</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.SelectXTag</tag-class>
+		<tag-class>gate.tags.property.SelectXTag</tag-class>
 		<description>
 			Creates a group of checkboxes bound
 			to the current screen specified property.
@@ -1627,7 +1627,7 @@
 		<name>checkbox</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.CheckboxTag</tag-class>
+		<tag-class>gate.tags.property.CheckboxTag</tag-class>
 		<description>
 			Creates a checkbox bound to the current screen specified
 			property. The generated checkbox will be checked if it's
@@ -1665,7 +1665,7 @@
 		<name>radio</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.RadioTag</tag-class>
+		<tag-class>gate.tags.property.RadioTag</tag-class>
 		<description>
 			Creates a radio button bound to the current screen specified
 			property. The generated radio button will be checked if it's
@@ -1703,7 +1703,7 @@
 		<name>image</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.ImageTag</tag-class>
+		<tag-class>gate.tags.property.ImageTag</tag-class>
 		<description>
 			Creates an image button bound to the current screen specified
 			property.
@@ -1731,7 +1731,7 @@
 		<name>submit</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.formControls.SubmitTag</tag-class>
+		<tag-class>gate.tags.property.SubmitTag</tag-class>
 		<description>
 			Creates a submit button bound to the current screen specified
 			property.
@@ -2034,7 +2034,7 @@
 		<name>table</name>
 		<display-name>Table</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.table.TableTag</tag-class>
+		<tag-class>gate.tags.TableTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a table element if the specified
@@ -2064,7 +2064,7 @@
 		<name>caption</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.table.CaptionTag</tag-class>
+		<tag-class>gate.tags.CaptionTag</tag-class>
 		<description>
 			Creates a HTML caption with the provided property value
 			converted to human readable text.
@@ -2102,7 +2102,7 @@
 		<name>thead</name>
 		<display-name>THead</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.table.THeadTag</tag-class>
+		<tag-class>gate.tags.THeadTag</tag-class>
 		<description>
 			Creates a thead element.
 		</description>
@@ -2112,7 +2112,7 @@
 		<name>tfoot</name>
 		<display-name>TFoot</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.table.TFootTag</tag-class>
+		<tag-class>gate.tags.TFootTag</tag-class>
 		<description>
 			Creates a tfoot element.
 		</description>
@@ -2122,7 +2122,7 @@
 		<name>th</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.table.THTag</tag-class>
+		<tag-class>gate.tags.THTag</tag-class>
 		<description>
 			Creates a HTML th with the provided property value
 			converted to human readable text.
@@ -2186,7 +2186,7 @@
 	<tag>
 		<name>tbody</name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.table.TBodyTag</tag-class>
+		<tag-class>gate.tags.iterable.TBodyTag</tag-class>
 		<description>
 			Creates a tbody element and
 			iterates over a collection of objects.
@@ -2242,7 +2242,7 @@
 		<name>tr</name>
 		<display-name>TR</display-name>
 		<body-content>scriptless</body-content>
-		<tag-class>gate.tags.table.TRTag</tag-class>
+		<tag-class>gate.tags.anchor.TRTag</tag-class>
 		<dynamic-attributes>true</dynamic-attributes>
 		<description>
 			Creates a tr element and binds it
@@ -2320,7 +2320,7 @@
 		<name>td</name>
 		<body-content>scriptless</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.table.TDTag</tag-class>
+		<tag-class>gate.tags.TDTag</tag-class>
 		<description>
 			Creates a HTML td with the provided property value
 			converted to human readable text.
@@ -2359,35 +2359,6 @@
 			<description>
 				Creates a link to toggle the sort criteria
 				of the current screen.
-			</description>
-		</attribute>
-	</tag>
-
-	<tag>
-		<name>ti</name>
-		<body-content>empty</body-content>
-		<tag-class>gate.tags.table.TITag</tag-class>
-		<dynamic-attributes>true</dynamic-attributes>
-		<description>
-			Prints a td or th with a icon associated
-			with the specified name, code, object, class or class name.
-		</description>
-		<attribute>
-			<name>type</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The name, code, object, class or class name whose
-				icon is to be printed.
-			</description>
-		</attribute>
-		<attribute>
-			<name>empty</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The name, code, object, class or class name whose
-				icon is to be printed if icon is null.
 			</description>
 		</attribute>
 	</tag>

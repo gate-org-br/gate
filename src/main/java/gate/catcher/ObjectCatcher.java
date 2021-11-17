@@ -16,12 +16,12 @@ public class ObjectCatcher implements Catcher
 	{
 
 		if (exception instanceof NotFoundException)
-			new HideCatcher().execute(request, response, exception);
+			new HideCommandCatcher().execute(request, response, exception);
 
 		if (exception instanceof FKViolationException)
-			new ReloadCatcher().execute(request, response, exception);
+			new ReloadCommandCatcher().execute(request, response, exception);
 
-		new JSPCatcher().execute(request, response, exception);
+		new JSPCommandCatcher().execute(request, response, exception);
 
 	}
 

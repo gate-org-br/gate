@@ -16,7 +16,7 @@
 			<label>
 				Login do Usuário:
 				<span>
-					<g:text property="form.userID" tabindex="1" required=""/>
+					<g:text property="form.username" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
@@ -131,7 +131,7 @@
 			<g:iterator source="${screen.page}">
 				<tr data-target="_dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}">
 					<td title="Ativo"><g:print value="${target.active}"/></td>
-					<td title="Login do Usuário"><g:print value="${target.userID}"/></td>
+					<td title="Login do Usuário"><g:print value="${target.username}"/></td>
 					<td title="Senha do Usuário"><g:print value="${target.passwd}"/></td>
 					<td title="Nome do Usuário"><g:print value="${target.name}"/></td>
 					<td title="E-Mail do Usuário"><g:print value="${target.email}"/></td>

@@ -54,7 +54,7 @@ class GateDao extends gate.base.Dao
 	public void update(User user, String password) throws AppException
 	{
 		if (Update.table("Uzer")
-			.set("passwd", MD5.digest(password))
+			.set("password", MD5.digest(password))
 			.where(Condition.of("id").eq(user.getId()))
 			.build()
 			.connect(getLink())
@@ -65,9 +65,9 @@ class GateDao extends gate.base.Dao
 	public void update(User user) throws AppException
 	{
 		if (Update.table("Uzer")
-			.set("passwd", MD5.digest(user.getChange()))
-			.where(Condition.of("userId").eq(user.getUserID())
-				.and("passwd").eq(MD5.digest(user.getPasswd())))
+			.set("password", MD5.digest(user.getChange()))
+			.where(Condition.of("username").eq(user.getUsername())
+				.and("password").eq(MD5.digest(user.getPassword())))
 			.build()
 			.connect(getLink())
 			.execute() == 0)

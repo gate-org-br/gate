@@ -12,14 +12,6 @@ import javax.enterprise.util.AnnotationLiteral;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.context.LazyContextVariable;
 
-/**
- * Thymeleaf context for non-web environments providing CDI named beans as expression root variables.
- *
- * The variables are enumerated eagerly upon context initialization, but their values are only queried upon use. This should be enough to prevent unnecessary
- * instantiation of beans that are available to, but not actually referenced in, the current view.
- *
- * @author PÁLFALVI Tamás &lt;tamas.palfalvi@inbuss.hu&gt;
- */
 public class CDIContext implements IContext
 {
 

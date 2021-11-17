@@ -6,7 +6,7 @@ SELECT
     module,
     screen,
     action,
-    type,
-    mode
+    scope,
+    access
 FROM
     gate.Auth

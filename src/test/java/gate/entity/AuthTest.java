@@ -10,35 +10,35 @@ public class AuthTest
 	public void test01()
 	{
 		assertTrue(new Auth()
-			.setMode(Auth.Mode.ALLOW)
-			.allows("module1", "screen1", "action1"));
+			.setAccess(Auth.Access.GRANT)
+			.granted("module1", "screen1", "action1"));
 	}
 
 	@Test
 	public void test02()
 	{
 		assertTrue(new Auth()
-			.setMode(Auth.Mode.ALLOW)
+			.setAccess(Auth.Access.GRANT)
 			.setModule("module1")
-			.allows("module1", "screen1", "action1"));
+			.granted("module1", "screen1", "action1"));
 	}
 
 	@Test
 	public void test05()
 	{
 		assertTrue(new Auth()
-			.setMode(Auth.Mode.ALLOW)
+			.setAccess(Auth.Access.GRANT)
 			.setAction("action1")
-			.allows("module1", "screen1", "action1"));
+			.granted("module1", "screen1", "action1"));
 	}
 
 	@Test
 	public void test07()
 	{
 		assertFalse(new Auth()
-			.setMode(Auth.Mode.ALLOW)
+			.setAccess(Auth.Access.GRANT)
 			.setAction("action1")
-			.allows("module1", "screen1", "action2"));
+			.granted("module1", "screen1", "action2"));
 	}
 
 }

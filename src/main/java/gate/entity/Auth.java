@@ -2,6 +2,7 @@ package gate.entity;
 
 import gate.annotation.Color;
 import gate.annotation.Column;
+import gate.annotation.Converter;
 import gate.annotation.Description;
 import gate.annotation.Entity;
 import gate.annotation.Icon;
@@ -10,6 +11,7 @@ import gate.annotation.Schema;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
+import gate.converter.EnumStringConverter;
 import gate.type.ID;
 import java.io.Serializable;
 import java.util.Objects;
@@ -36,11 +38,11 @@ public class Auth implements Serializable
 
 	@Required
 	@Description("Defina o tipo do acesso. Acessos públicos são herdados e acessos privados não.")
-	private Type type;
+	private Scope scope;
 
 	@Required
 	@Description("Defina o modo do acesso.")
-	private Mode mode;
+	private Access access;
 
 	@Maxlength(64)
 	@Pattern("^[$a-zA-Z0-9_.]*$")
@@ -140,25 +142,25 @@ public class Auth implements Serializable
 		return this;
 	}
 
-	public Type getType()
+	public Scope getScope()
 	{
-		return type;
+		return scope;
 	}
 
-	public Auth setType(Type type)
+	public Auth setScope(Scope scope)
 	{
-		this.type = type;
+		this.scope = scope;
 		return this;
 	}
 
-	public Mode getMode()
+	public Access getAccess()
 	{
-		return mode;
+		return access;
 	}
 
-	public Auth setMode(Mode mode)
+	public Auth setAccess(Access access)
 	{
-		this.mode = mode;
+		this.access = access;
 		return this;
 	}
 
@@ -187,26 +189,28 @@ public class Auth implements Serializable
 
 	public boolean isSuperAuth()
 	{
-		return Mode.ALLOW == mode
+		return Access.GRANT == access
 			&& module == null
 			&& screen == null
 			&& action == null;
 	}
 
-	public enum Mode
+	@Converter(EnumStringConverter.class)
+	public enum Access
 	{
 
 		@Icon("2037")
 		@Color("#006600")
-		@Name("Permissão")
-		ALLOW,
+		@Name("Permitir")
+		GRANT,
 		@Icon("2038")
 		@Color("#660000")
-		@Name("Bloqueio")
+		@Name("Bloquear")
 		BLOCK
 	}
 
-	public enum Type
+	@Converter(EnumStringConverter.class)
+	public enum Scope
 	{
 		@Icon("2006")
 		@Name("Público")
@@ -216,17 +220,17 @@ public class Auth implements Serializable
 		PRIVATE
 	}
 
-	public boolean blocks(String module, String screen, String action)
+	public boolean blocked(String module, String screen, String action)
 	{
-		return this.mode == Mode.BLOCK
+		return this.access == Access.BLOCK
 			&& (this.module == null || this.module.equals(module))
 			&& (this.screen == null || this.screen.equals(screen))
 			&& (this.action == null || this.action.equals(action));
 	}
 
-	public boolean allows(String module, String screen, String action)
+	public boolean granted(String module, String screen, String action)
 	{
-		return this.mode == Mode.ALLOW
+		return this.access == Access.GRANT
 			&& (module == null || this.module == null || this.module.equals(module))
 			&& (screen == null || this.screen == null || this.screen.equals(screen))
 			&& (action == null || this.action == null || this.action.equals(action));

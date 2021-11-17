@@ -5,15 +5,16 @@ import gate.type.mime.MimeDataFile;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class MimeDataFileHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request,
-		HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
 		MimeDataFile mimeDataFile = (MimeDataFile) value;
 
@@ -27,7 +28,7 @@ public class MimeDataFileHandler implements Handler
 			String.format("attachment; filename=\"%s\"",
 				mimeDataFile.getName()));
 
-		try (OutputStream os = response.getOutputStream())
+		try ( OutputStream os = response.getOutputStream())
 		{
 			os.write(mimeDataFile.getData());
 			os.flush();

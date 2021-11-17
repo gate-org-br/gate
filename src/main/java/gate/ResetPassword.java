@@ -40,16 +40,16 @@ public class ResetPassword extends HttpServlet
 			if (request.getMethod().equals("POST"))
 			{
 				User user = control
-					.select(request.getParameter("user.userID"))
-					.setPasswd(PasswordGenerator.generate());
+					.select(request.getParameter("user.username"))
+					.setPassword(PasswordGenerator.generate());
 
 				if (user.getEmail() == null)
 					throw new AppException("Você não definiu um email para o qual sua nova senha possa ser enviada");
 
 				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-					"Sua senha foi redefinida para " + user.getPasswd()));
+					"Sua senha foi redefinida para " + user.getPassword()));
 
-				control.update(user, user.getPasswd());
+				control.update(user, user.getPassword());
 
 				request.setAttribute("messages", new String[]
 				{

@@ -53,13 +53,13 @@ public class User implements Serializable
 	@Maxlength(64)
 	@Name("Login do Usuário")
 	@Description("O campo LOGIN deve possuir no máximo 64 caracteres.")
-	private String userID;
+	private String username;
 
 	@Required
 	@Maxlength(64)
 	@Name("Senha do Usuário")
 	@Description("O campo SENHA deve ser preenchido com no máximo 64 caracteres.")
-	private String passwd;
+	private String password;
 
 	@Required
 	@Maxlength(64)
@@ -90,8 +90,8 @@ public class User implements Serializable
 
 	@Maxlength(1024)
 	@Name("Comentários sobre o Usuário")
-	@Description("O campo details deve ser preenchido com, no máximo, 1024 CARACTERES.")
-	private String details;
+	@Description("O campo description deve ser preenchido com, no máximo, 1024 CARACTERES.")
+	private String description;
 
 	@Maxlength(24)
 	@Name("Telefone Celular do Usuário")
@@ -193,14 +193,14 @@ public class User implements Serializable
 		return this;
 	}
 
-	public String getPasswd()
+	public String getPassword()
 	{
-		return passwd;
+		return password;
 	}
 
-	public User setPasswd(String passwd)
+	public User setPassword(String password)
 	{
-		this.passwd = passwd;
+		this.password = password;
 		return this;
 	}
 
@@ -217,14 +217,14 @@ public class User implements Serializable
 		return this;
 	}
 
-	public String getUserID()
+	public String getUsername()
 	{
-		return userID;
+		return username;
 	}
 
-	public User setUserID(String userID)
+	public User setUsername(String username)
 	{
-		this.userID = userID;
+		this.username = username;
 		return this;
 	}
 
@@ -301,14 +301,14 @@ public class User implements Serializable
 		this.registration = registration;
 	}
 
-	public String getDetails()
+	public String getDescription()
 	{
-		return details;
+		return description;
 	}
 
-	public void setDetails(String details)
+	public void setDescription(String description)
 	{
-		this.details = details;
+		this.description = description;
 	}
 
 	public Phone getCellPhone()
@@ -388,14 +388,14 @@ public class User implements Serializable
 	public boolean checkBlock(String module, String screen, String action)
 	{
 		return computedAuthStream()
-			.anyMatch(e -> e.blocks(module, screen, action));
+			.anyMatch(e -> e.blocked(module, screen, action));
 	}
 
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-			.noneMatch(e -> e.blocks(module, screen, action))
+			.noneMatch(e -> e.blocked(module, screen, action))
 			&& computedAuthStream()
-				.anyMatch(e -> e.allows(module, screen, action));
+				.anyMatch(e -> e.granted(module, screen, action));
 	}
 }

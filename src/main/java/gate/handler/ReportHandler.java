@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.util.Locale;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ApplicationScoped
 public class ReportHandler implements Handler
 {
 
@@ -21,7 +23,7 @@ public class ReportHandler implements Handler
 			String.format("attachment; filename=\"%s.pdf\"",
 				((Report) value).getName()));
 
-		try (OutputStream os = response.getOutputStream())
+		try ( OutputStream os = response.getOutputStream())
 		{
 			new PDF((Report) value).print(os);
 		} catch (IOException ex)

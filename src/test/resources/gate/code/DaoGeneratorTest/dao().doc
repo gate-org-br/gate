@@ -32,7 +32,7 @@ public class UserDao extends Dao
 		return Select.of(getClass().getResource("UserDao/search(User).sql"))
 			.where(Condition.TRUE.and("Uzer.id").eq(filter.getId())
 				.and("Uzer.active").eq(filter.getActive())
-				.and("Uzer.userID").eq(filter.getUserID())
+				.and("Uzer.username").eq(filter.getUserID())
 				.and("Uzer.passwd").eq(filter.getPasswd())
 				.and("Uzer.name").eq(filter.getName())
 				.and("Uzer.email").eq(filter.getEmail())
@@ -65,7 +65,7 @@ public class UserDao extends Dao
 	{
 		Insert.into("Uzer")
 			.set("active", value.getActive())
-			.set("userID", value.getUserID())
+			.set("username", value.getUserID())
 			.set("passwd", value.getPasswd())
 			.set("name", value.getName())
 			.set("email", value.getEmail())
@@ -89,7 +89,7 @@ public class UserDao extends Dao
 	{
 		if (Update.table("Uzer")
 			.set("active", value.getActive())
-			.set("userID", value.getUserID())
+			.set("username", value.getUserID())
 			.set("passwd", value.getPasswd())
 			.set("name", value.getName())
 			.set("email", value.getEmail())

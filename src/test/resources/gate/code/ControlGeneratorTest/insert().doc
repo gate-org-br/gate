@@ -2,7 +2,7 @@
 	{
 		Constraints.validate(value,
 			"active",
-			"userID",
+			"username",
 			"passwd",
 			"name",
 			"email",

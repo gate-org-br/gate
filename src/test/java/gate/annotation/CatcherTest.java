@@ -1,18 +1,18 @@
 package gate.annotation;
 
 import gate.base.Screen;
-import gate.catcher.HTMLCatcher;
+import gate.catcher.HTMLCommandCatcher;
 import gate.catcher.CommandCatcher;
-import gate.catcher.JSPCatcher;
+import gate.catcher.JSPCommandCatcher;
 import gate.catcher.ObjectCatcher;
-import gate.command.JSP;
+import gate.command.JSPCommand;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class CatcherTest
 {
 
-	@Catcher(JSPCatcher.class)
+	@Catcher(JSPCommandCatcher.class)
 	private static class Mock extends Screen
 	{
 
@@ -22,7 +22,7 @@ public class CatcherTest
 
 		}
 
-		@Catcher(HTMLCatcher.class)
+		@Catcher(HTMLCommandCatcher.class)
 		private static class MockSubclass extends Mock
 		{
 
@@ -34,7 +34,7 @@ public class CatcherTest
 			}
 		}
 
-		@Catcher(HTMLCatcher.class)
+		@Catcher(HTMLCommandCatcher.class)
 		private static class Mock2Subclass extends Mock
 		{
 
@@ -49,7 +49,7 @@ public class CatcherTest
 	private static class Mock2 extends Screen
 	{
 
-		public JSP mock()
+		public JSPCommand mock()
 		{
 			return null;
 		}
@@ -79,14 +79,14 @@ public class CatcherTest
 	public void test3() throws ReflectiveOperationException
 	{
 		var catcher = Catcher.Extractor.extract(Mock.Mock2Subclass.class.getMethod("mock"));
-		Assert.assertEquals(HTMLCatcher.class, catcher);
+		Assert.assertEquals(HTMLCommandCatcher.class, catcher);
 	}
 
 	@Test
 	public void test4() throws ReflectiveOperationException
 	{
 		var catcher = Catcher.Extractor.extract(Mock2.class.getMethod("mock"));
-		Assert.assertEquals(JSPCatcher.class, catcher);
+		Assert.assertEquals(JSPCommandCatcher.class, catcher);
 	}
 
 	@Test

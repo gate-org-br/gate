@@ -305,13 +305,15 @@ public class Link implements AutoCloseable
 		{
 			if (!connection.isClosed())
 			{
-				if (isInTran())
-					rollback();
-				connection.close();
+				try (connection)
+				{
+					if (isInTran())
+						rollback();
+				}
 			}
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new AppError(ex);
 		}
 	}
 
@@ -373,7 +375,7 @@ public class Link implements AutoCloseable
 	 * Prepares a sentence to be executed.
 	 *
 	 * @param sentence the sentence to be executed
-	 *
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
@@ -411,6 +413,7 @@ public class Link implements AutoCloseable
 	 *
 	 *
 	 * @param builder the builder used to generate the sentence to be executed
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
@@ -422,8 +425,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares an operation to be executed.
 	 *
-	 *
 	 * @param operation the operation to be executed
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a connected sentence to describe execution parameters
 	 */
@@ -435,8 +438,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares an operation to be executed.
 	 *
-	 *
 	 * @param operation the operation to be executed
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a connected sentence to describe execution parameters
 	 */
@@ -643,8 +646,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Selects a list of objects from the the database using GQN notation.
 	 *
-	 *
 	 * @param type type of the objects to be selected
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a SearchOperation object for definition of the properties and the criteria of selection
 	 */
@@ -673,8 +676,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Selects an object from the the database using GQN notation.
 	 *
-	 *
 	 * @param type type of the object to be selected
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a SelectOperation object for definition of the properties and the criteria of selection
 	 */
@@ -702,8 +705,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Inserts objects of the specified type on the database.
 	 *
-	 *
 	 * @param type type of the objects to be inserted
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return an InsertOperation object for definition of the properties and the values to be inserted
 	 */
@@ -715,8 +718,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Updates objects of the specified type from the database.
 	 *
-	 *
 	 * @param type type of the objects to be updated
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return an UpdateOperation object for definition of the properties, update criteria and the values to be updated
 	 */
@@ -746,8 +749,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Deletes objects of the specified type from the database.
 	 *
-	 *
 	 * @param type type of the objects to be deleted
+	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
 	 * @return a DeleteOperation object for definition of the deletion criteria and the values to be deleted
 	 */
