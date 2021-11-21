@@ -501,6 +501,32 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>condition</name>
+		<body-content>scriptless</body-content>
+		<tag-class>gate.tags.ConditionTag</tag-class>
+		<description>
+			Proccess it's body only if the specified condition
+			is true.
+		</description>
+		<attribute>
+			<name>if</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The condition to be checked.
+			</description>
+		</attribute>
+		<attribute>
+			<name>otherwise</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				An alternative text to be printed on a pannel
+				if the specified condition is false.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
 		<name>choose</name>
 		<body-content>scriptless</body-content>
 		<tag-class>gate.tags.ChooseTag</tag-class>

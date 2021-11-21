@@ -1,9 +1,8 @@
 package gate.catcher;
 
 import gate.base.Screen;
-import gate.catcher.Catcher;
-import gate.error.AppException;
 import gate.command.HTMLCommand;
+import gate.error.AppException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import javax.servlet.ServletException;

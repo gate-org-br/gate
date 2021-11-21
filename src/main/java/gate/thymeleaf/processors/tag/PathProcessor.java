@@ -3,15 +3,20 @@ package gate.thymeleaf.processors.tag;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class PathProcessor extends ModelProcessor
+public class PathProcessor extends TagAttributeProcessor
 {
 
 	public PathProcessor()
@@ -20,21 +25,23 @@ public class PathProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		String module = model.get("module");
-		String screen = model.get("screen");
-		String action = model.get("action");
+		String module = extract(element, handler, "module").orElse(null);
+		String screen = extract(element, handler, "screen").orElse(null);
+		String action = extract(element, handler, "action").orElse(null);
+
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+
 		boolean empty = module == null && screen == null && action == null;
 		if ("#".equals(module) || empty)
-			module = model.request().getParameter("MODULE");
+			module = request.getParameter("MODULE");
 		if ("#".equals(screen) || empty)
-			screen = model.request().getParameter("SCREEN");
+			screen = request.getParameter("SCREEN");
 		if ("#".equals(action) || empty)
-			action = model.request().getParameter("ACTION");
+			action = request.getParameter("ACTION");
 
 		StringJoiner string = new StringJoiner("");
-
 		if (module != null)
 		{
 			Screen.getScreen(module, null).flatMap(PathProcessor::getLabel).ifPresent(string::add);
@@ -47,14 +54,10 @@ public class PathProcessor extends ModelProcessor
 		}
 
 		Attributes attributes = new Attributes();
-		model.stream()
+		Stream.of(element.getAllAttributes())
 			.filter(e -> e.getValue() != null)
-			.filter(e -> !e.getAttributeCompleteName().startsWith("_"))
-			.filter(e -> !"module".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"screen".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"action".equals(e.getAttributeCompleteName()))
 			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
-		model.replaceAll("<g-path " + attributes + ">" + string + "</g-path>");
+		handler.replaceWith("<g-path " + attributes + ">" + string + "</g-path>", false);
 	}
 
 	private static Optional<String> getLabel(AnnotatedElement element)

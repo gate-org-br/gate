@@ -5,16 +5,20 @@ import gate.annotation.Asynchronous;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.io.URL;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import java.util.StringJoiner;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class LinkProcessor extends AnchorProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public LinkProcessor()
 	{
@@ -24,7 +28,6 @@ public class LinkProcessor extends AnchorProcessor
 	@Override
 	protected void process(Model model, Command command, Attributes attributes, Parameters parameters)
 	{
-		Expression expression = Expression.of(model.getContext());
 		User user = (User) model.session().getAttribute(User.class.getName());
 
 		if (command.checkAccess(user))

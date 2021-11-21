@@ -1,14 +1,18 @@
 package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Command;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.thymeleaf.processors.tag.ModelProcessor;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import javax.inject.Inject;
 
 public abstract class AnchorProcessor extends ModelProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public AnchorProcessor(String name)
 	{
@@ -18,20 +22,19 @@ public abstract class AnchorProcessor extends ModelProcessor
 	@Override
 	protected void doProcess(Model model)
 	{
-		Expression expression = Expression.of(model.getContext());
 		Parameters parameters = new Parameters();
 		if (model.has("arguments"))
 			Parameters.parse(model.get("arguments")).entrySet()
 				.forEach(entry -> parameters.put(entry.getKey(),
 				expression.evaluate(entry.getValue().toString())));
 
-		model.stream()
+		model.attributes()
 			.filter(e -> e.getValue() != null)
 			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
 			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1), expression.evaluate(e.getValue())));
 
 		Attributes attributes = new Attributes();
-		model.stream()
+		model.attributes()
 			.filter(e -> e.getValue() != null)
 			.filter(e -> !e.getAttributeCompleteName().startsWith("_"))
 			.filter(e -> !"module".equals(e.getAttributeCompleteName()))

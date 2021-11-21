@@ -13,7 +13,7 @@ public class InsertAttributeProcessor extends AttributeProcessor
 
 	public InsertAttributeProcessor()
 	{
-		super("insert");
+		super(null, "insert");
 
 	}
 

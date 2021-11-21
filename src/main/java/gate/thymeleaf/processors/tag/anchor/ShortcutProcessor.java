@@ -4,15 +4,19 @@ import gate.Command;
 import gate.annotation.Asynchronous;
 import gate.entity.User;
 import gate.io.URL;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class ShortcutProcessor extends AnchorProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public ShortcutProcessor()
 	{
@@ -22,7 +26,6 @@ public class ShortcutProcessor extends AnchorProcessor
 	@Override
 	protected void process(Model model, Command command, Attributes attributes, Parameters parameters)
 	{
-		Expression expression = Expression.of(model.getContext());
 		User user = (User) model.session().getAttribute(User.class.getName());
 
 		if (command.checkAccess(user)

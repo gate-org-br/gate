@@ -1,14 +1,21 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.Expression;
-import gate.thymeleaf.Model;
+import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class IfProcessor extends ModelProcessor
+public class IfProcessor extends TagAttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public IfProcessor()
 	{
@@ -16,18 +23,26 @@ public class IfProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element,
+		IElementTagStructureHandler handler)
 	{
-		if (!model.has("condition"))
+		if (!element.hasAttribute("condition"))
 			throw new TemplateProcessingException("Missing required attribute condition on g:if");
 
-		Expression expression = Expression.of(model.getContext());
-		if ((boolean) expression.evaluate(model.get("condition")))
-			model.removeTag();
-		else if (model.has("otherwise"))
-			model.replaceAll(Converter.toText(expression.evaluate(model.get("otherwise"))));
-		else
-			model.removeAll();
+		if ((boolean) expression.evaluate(element.getAttributeValue("condition")))
+			handler.removeTags();
+		else if (element.hasAttribute("otherwise"))
+		{
+			String otherwise = element.getAttributeValue("g:otherwise");
+			otherwise = Converter.toText(expression.evaluate(otherwise));
+			handler.replaceWith(otherwise, false);
+		} else
+			handler.removeElement();
 	}
 
+	@Override
+	public int getPrecedence()
+	{
+		return Precedence.HIGH;
+	}
 }

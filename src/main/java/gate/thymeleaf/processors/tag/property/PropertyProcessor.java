@@ -1,12 +1,17 @@
 package gate.thymeleaf.processors.tag.property;
 
+import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.Model;
-import gate.thymeleaf.processors.tag.ModelProcessor;
+import gate.thymeleaf.processors.tag.TagAttributeProcessor;
 import gate.type.Attributes;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-public abstract class PropertyProcessor extends ModelProcessor
+public abstract class PropertyProcessor extends TagAttributeProcessor
 {
 
 	public PropertyProcessor(String name)
@@ -16,28 +21,27 @@ public abstract class PropertyProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		if (!model.has("property"))
-			throw new TemplateProcessingException("Missing required attribute property on g:" + model.getName());
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+		Screen screen = (Screen) request.getAttribute("screen");
+
+		var property = extract(element, handler, "property")
+			.map(e -> Property.getProperty(screen.getClass(), e))
+			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute property on g:" + getElement()));
 
 		Attributes attributes = new Attributes();
-		model.stream()
-			.filter(e -> !"property".equals(e.getAttributeCompleteName()))
-			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
-
-		Property property = Property.getProperty(model.screen().getClass(), model.get("property"));
 		attributes.put("name", property.toString());
 
 		property.getConstraints().stream()
-			.filter(e -> !model.has(e.getName()))
+			.filter(e -> !element.hasAttribute(e.getName()))
 			.forEachOrdered(e -> attributes.put(e.getName(), e.getValue().toString()));
 
-		if (!attributes.containsKey("mask"))
+		if (!attributes.containsKey("data-mask"))
 		{
 			String mask = property.getMask();
 			if (mask != null && !mask.isEmpty())
-				attributes.put("mask", mask);
+				attributes.put("data-mask", mask);
 		}
 
 		if (!attributes.containsKey("title"))
@@ -66,10 +70,13 @@ public abstract class PropertyProcessor extends ModelProcessor
 				attributes.put("placeholder", placeholder);
 		}
 
-		process(model, property, attributes);
+		attributes.entrySet().removeIf(e -> e.getValue() == null || e.getValue().toString().isBlank());
+
+		process(context, element, handler, screen, property, attributes);
 
 	}
 
-	protected abstract void process(Model model, Property property, Attributes attributes);
+	protected abstract void process(ITemplateContext context, IProcessableElementTag element,
+		IElementTagStructureHandler handler, Screen screen, Property property, Attributes attributes);
 
 }

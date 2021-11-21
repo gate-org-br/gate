@@ -1,6 +1,8 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.thymeleaf.Precedence;
 import gate.thymeleaf.processors.Processor;
+import java.util.Optional;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeNames;
 import org.thymeleaf.engine.ElementNames;
@@ -9,36 +11,30 @@ import org.thymeleaf.processor.element.IElementTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
-import static org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor.PRECEDENCE;
 import org.thymeleaf.templatemode.TemplateMode;
 
-public class AttributeProcessor implements IElementTagProcessor, Processor
+public abstract class AttributeProcessor implements IElementTagProcessor, Processor
 {
 
+	private final String element;
+	private final String attribute;
 	private final MatchingElementName matchingElementName;
 	private final MatchingAttributeName matchingAttributeName;
 
-	public AttributeProcessor(String attribute)
-	{
-		this(null, attribute);
-	}
-
 	public AttributeProcessor(String element, String attribute)
 	{
+		this.element = element;
+		this.attribute = attribute;
 		this.matchingElementName = element != null
 			? MatchingElementName.forElementName(TemplateMode.HTML,
 				ElementNames.forName(TemplateMode.HTML, null, element)) : null;
 
-		this.matchingAttributeName = MatchingAttributeName.forAttributeName(TemplateMode.HTML,
-			AttributeNames.forName(TemplateMode.HTML, "g", attribute));
+		this.matchingAttributeName = attribute != null ? MatchingAttributeName.forAttributeName(TemplateMode.HTML,
+			AttributeNames.forName(TemplateMode.HTML, "g", attribute)) : null;
 	}
 
 	@Override
-	public void process(ITemplateContext context,
-		IProcessableElementTag element, IElementTagStructureHandler handler)
-	{
-
-	}
+	public abstract void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler);
 
 	@Override
 	public MatchingElementName getMatchingElementName()
@@ -61,7 +57,25 @@ public class AttributeProcessor implements IElementTagProcessor, Processor
 	@Override
 	public int getPrecedence()
 	{
-		return PRECEDENCE;
+		return Precedence.DEFAULT;
 	}
 
+	public String getElement()
+	{
+		return element;
+	}
+
+	public String getAttribute()
+	{
+		return attribute;
+	}
+
+	public Optional<String> extract(IProcessableElementTag element, IElementTagStructureHandler handler, String attribute)
+	{
+		if (!element.hasAttribute(attribute))
+			return Optional.empty();
+		String result = element.getAttributeValue(attribute);
+		handler.removeAttribute(attribute);
+		return Optional.ofNullable(result);
+	}
 }

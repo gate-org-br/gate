@@ -3,8 +3,8 @@ package gate.thymeleaf;
 import java.io.Writer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
@@ -19,19 +19,18 @@ public interface FileEngine
 	public static class FileEngineImpl implements FileEngine
 	{
 
-		private final SpringTemplateEngine templateEngine;
+		private final TemplateEngine templateEngine;
 
 		@Inject
 		public FileEngineImpl(GateDialect dialect)
 		{
 
-			this.templateEngine = new SpringTemplateEngine();
+			this.templateEngine = new TemplateEngine();
 
 			templateEngine.addDialect(dialect);
 			var resolver = new ClassLoaderTemplateResolver();
 			resolver.setTemplateMode(TemplateMode.HTML);
 			templateEngine.setTemplateResolver(resolver);
-			templateEngine.setEnableSpringELCompiler(true);
 		}
 
 		@Override

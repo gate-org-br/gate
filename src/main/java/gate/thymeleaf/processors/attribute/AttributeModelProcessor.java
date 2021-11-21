@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.thymeleaf.Model;
+import gate.thymeleaf.Precedence;
 import gate.thymeleaf.processors.Processor;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeNames;
@@ -10,7 +11,6 @@ import org.thymeleaf.processor.element.IElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
-import static org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor.PRECEDENCE;
 import org.thymeleaf.templatemode.TemplateMode;
 
 public abstract class AttributeModelProcessor implements IElementModelProcessor, Processor
@@ -65,7 +65,7 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 	@Override
 	public int getPrecedence()
 	{
-		return PRECEDENCE;
+		return Precedence.DEFAULT;
 	}
 
 }

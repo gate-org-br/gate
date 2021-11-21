@@ -21,8 +21,7 @@ public class TextAreaAttributeProcessor extends FormControlAttributeProcessor
 	public void process(ITemplateContext context, IProcessableElementTag element,
 		IElementTagStructureHandler handler, Screen screen, Property property, Object value)
 	{
-		if (value != null)
-			handler.setBody(Converter.toString(value), false);
+		handler.setBody(Converter.toString(value), false);
 	}
 
 }

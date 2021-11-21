@@ -1,18 +1,27 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Color;
+import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.Expression;
-import gate.thymeleaf.Model;
+import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class LabelProcessor extends ModelProcessor
+public class LabelProcessor extends TagAttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public LabelProcessor()
 	{
@@ -20,23 +29,21 @@ public class LabelProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+		Screen screen = (Screen) request.getAttribute("screen");
 
-		if (!model.has("property"))
-			throw new TemplateProcessingException("Missing required attribute property on g:label");
+		var property = extract(element, handler, "property")
+			.map(e -> Property.getProperty(screen.getClass(), e))
+			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute property on g:label"));
 
-		Expression expression = Expression.of(model.getContext());
+		var format = extract(element, handler, "format").orElse(null);
+		var empty = extract(element, handler, "empty").orElse(null);
 
 		Attributes attributes = new Attributes();
-		model.stream()
-			.filter(e -> !"property".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"format".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"empty".equals(e.getAttributeCompleteName()))
-			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
 
-		var property = Property.getProperty(model.screen().getClass(), model.get("property"));
-		var value = property.getValue(model.screen());
+		var value = property.getValue(screen);
 
 		if (!attributes.containsKey("title"))
 		{
@@ -62,12 +69,11 @@ public class LabelProcessor extends ModelProcessor
 				.or(() -> Optional.ofNullable(property.getColor()))
 				.ifPresent(e -> attributes.put("style", "color: " + e));
 
-		String string = Converter.toText(value, model.get("format"));
-		if (string.isBlank() && model.has("empty"))
-			string = Converter.toText(expression.evaluate(model.get("empty")));
+		String string = Converter.toText(value, format);
+		if (string.isBlank() && empty != null)
+			string = Converter.toText(expression.evaluate(empty));
 		string = string.replaceAll("\\n", "<br/>");
 
-		model.replaceAll("<label " + attributes + ">" + string + "</label>");
+		handler.replaceWith("<label " + attributes + ">" + string + "</label>", true);
 	}
-
 }

@@ -18,7 +18,7 @@ public class TBodyProcessor extends IterableProcessor
 	protected void process(Model model)
 	{
 		Attributes attributes = new Attributes();
-		model.stream().filter(e -> e.getValue() != null)
+		model.attributes().filter(e -> e.getValue() != null)
 			.filter(e -> !"source".equals(e.getAttributeCompleteName()))
 			.filter(e -> !"target".equals(e.getAttributeCompleteName()))
 			.filter(e -> !"depth".equals(e.getAttributeCompleteName()))

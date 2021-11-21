@@ -58,7 +58,7 @@ public class Model
 		return element.getAttributeValue(attribute);
 	}
 
-	public Stream<IAttribute> stream()
+	public Stream<IAttribute> attributes()
 	{
 		return Stream.of(element.getAllAttributes());
 	}

@@ -1,16 +1,20 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Icons;
 import java.util.StringJoiner;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class ExitProcessor extends ModelProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public ExitProcessor()
 	{
@@ -20,10 +24,8 @@ public class ExitProcessor extends ModelProcessor
 	@Override
 	protected void doProcess(Model model)
 	{
-		Expression expression = Expression.of(model.getContext());
-
 		Attributes attributes = new Attributes();
-		model.stream()
+		model.attributes()
 			.filter(e -> e.getValue() != null)
 			.filter(e -> !"name".equals(e.getAttributeCompleteName()))
 			.filter(e -> !"icon".equals(e.getAttributeCompleteName()))
