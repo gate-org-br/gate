@@ -2,13 +2,18 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
+import java.util.stream.Stream;
+import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 public abstract class FormControlAttributeProcessor extends PropertyAttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public FormControlAttributeProcessor(String element)
 	{
@@ -25,11 +30,11 @@ public abstract class FormControlAttributeProcessor extends PropertyAttributePro
 			.filter(e -> !element.hasAttribute(e.getName()))
 			.forEachOrdered(e -> handler.setAttribute(e.getName(), e.getValue().toString()));
 
-		if (!element.hasAttribute("mask"))
+		if (!element.hasAttribute("data-mask"))
 		{
 			String mask = property.getMask();
 			if (mask != null && !mask.isEmpty())
-				handler.setAttribute("mask", mask);
+				handler.setAttribute("data-mask", mask);
 		}
 
 		if (!element.hasAttribute("title"))
@@ -69,9 +74,14 @@ public abstract class FormControlAttributeProcessor extends PropertyAttributePro
 		if (element.hasAttribute("value"))
 		{
 			handler.removeAttribute("value");
-			value = Expression.of(context).evaluate(element.getAttributeValue("value"));
+			value = expression.evaluate(element.getAttributeValue("value"));
 		} else if (!property.toString().endsWith("[]"))
 			value = property.getValue(screen);
+
+		Stream.of(element.getAllAttributes())
+			.filter(e -> e.getValue() == null
+			|| e.getValue().isBlank())
+			.forEach(e -> handler.removeAttribute(e.getAttributeCompleteName()));
 
 		process(context, element, handler, screen, property, value);
 

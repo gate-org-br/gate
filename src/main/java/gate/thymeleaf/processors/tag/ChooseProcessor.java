@@ -3,6 +3,7 @@ package gate.thymeleaf.processors.tag;
 import gate.thymeleaf.*;
 import java.util.ArrayList;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.ICloseElementTag;
 import org.thymeleaf.model.IModel;
@@ -12,6 +13,9 @@ import org.thymeleaf.model.ITemplateEvent;
 @ApplicationScoped
 public class ChooseProcessor extends ModelProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public ChooseProcessor()
 	{
@@ -23,7 +27,6 @@ public class ChooseProcessor extends ModelProcessor
 	{
 		IModel otherwise = null;
 		var whens = new ArrayList<IModel>();
-		Expression expression = Expression.of(model.getContext());
 
 		int i = 0;
 		while (i < model.getModel().size())

@@ -7,9 +7,9 @@ import java.io.Writer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import ognl.OgnlRuntime;
+import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.model.IModel;
-import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 public interface TextEngine
@@ -25,16 +25,15 @@ public interface TextEngine
 	public static class TextEngineImpl implements TextEngine
 	{
 
-		private final SpringTemplateEngine templateEngine;
+		private final TemplateEngine templateEngine;
 
 		@Inject
 		public TextEngineImpl(GateDialect dialect)
 		{
 			OgnlRuntime.setSecurityManager(null);
-			this.templateEngine = new SpringTemplateEngine();
+			this.templateEngine = new TemplateEngine();
 			templateEngine.addDialect(dialect);
 			templateEngine.setTemplateResolver(new StringTemplateResolver());
-			templateEngine.setEnableSpringELCompiler(true);
 		}
 
 		@Override

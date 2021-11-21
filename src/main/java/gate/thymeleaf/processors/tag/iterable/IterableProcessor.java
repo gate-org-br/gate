@@ -1,9 +1,11 @@
 package gate.thymeleaf.processors.tag.iterable;
 
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
+import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.thymeleaf.processors.tag.ModelProcessor;
+import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import javax.inject.Inject;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -14,6 +16,9 @@ public abstract class IterableProcessor extends ModelProcessor
 
 	@Inject
 	TextEngine engine;
+
+	@Inject
+	ELExpression expression;
 
 	public IterableProcessor(String name)
 	{
@@ -33,8 +38,6 @@ public abstract class IterableProcessor extends ModelProcessor
 		if (!model.has("source"))
 			throw new TemplateProcessingException("Missing required attribute source on g:" + model.getName());
 
-		Expression expression = Expression.of(model.getContext());
-
 		var depth = "depth";
 		if (model.has("depth"))
 			depth = model.get("depth");
@@ -51,14 +54,14 @@ public abstract class IterableProcessor extends ModelProcessor
 		if (model.request().getAttribute(index) == null)
 		{
 			createdIndex = true;
-			model.request().setAttribute(index, 0);
+			model.request().setAttribute(index, -1);
 		}
 
 		boolean createdDepth = false;
 		if (model.request().getAttribute(depth) == null)
 		{
 			createdDepth = true;
-			model.request().setAttribute(depth, 0);
+			model.request().setAttribute(depth, -1);
 		}
 
 		iterate(model,
@@ -67,8 +70,7 @@ public abstract class IterableProcessor extends ModelProcessor
 			target,
 			index,
 			depth,
-			model.get("children"),
-			expression);
+			model.get("children"));
 
 		if (createdDepth)
 			model.request().removeAttribute(depth);
@@ -79,7 +81,7 @@ public abstract class IterableProcessor extends ModelProcessor
 	}
 
 	private void iterate(Model model, IModel body, Object source,
-		String target, String index, String depth, String children, Expression expression)
+		String target, String index, String depth, String children)
 	{
 		increment(model, depth);
 		for (Object value : Toolkit.iterable(source))
@@ -91,8 +93,12 @@ public abstract class IterableProcessor extends ModelProcessor
 			if (target != null)
 				model.request().removeAttribute(target);
 			if (value != null && children != null)
-				for (Object child : Toolkit.iterable(expression.evaluate(children)))
-					iterate(model, body, child, target, index, depth, children, expression);
+				for (Object child : Toolkit.iterable(expression.evaluate(children, value)))
+					iterate(model, body, child, target, index, depth, children);
+			else if (value instanceof Hierarchy)
+				for (Object child : Toolkit.iterable(((Hierarchy) value).getChildren()))
+					iterate(model, body, child, target, index, depth, children);
+
 		}
 		decrement(model, depth);
 	}
@@ -111,4 +117,9 @@ public abstract class IterableProcessor extends ModelProcessor
 		model.request().setAttribute(field, value);
 	}
 
+	@Override
+	public int getPrecedence()
+	{
+		return Precedence.MAX;
+	}
 }

@@ -1,15 +1,22 @@
 package gate.thymeleaf.processors.tag.property;
 
+import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.Expression;
-import gate.thymeleaf.Model;
+import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class TextareaProcessor extends PropertyProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public TextareaProcessor()
 	{
@@ -17,15 +24,15 @@ public class TextareaProcessor extends PropertyProcessor
 	}
 
 	@Override
-	protected void process(Model model, Property property, Attributes attributes)
+	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
+		Screen screen, Property property, Attributes attributes)
 	{
-		Expression expression = Expression.of(model.getContext());
-		if (model.has("value"))
-			model.replaceAll("<textarea " + attributes + ">" + Converter.toString(expression.evaluate(model.get("value"))) + "</textarea>");
+		if (element.hasAttribute("value"))
+			handler.replaceWith("<textarea " + attributes + ">"
+				+ Converter.toString(expression.evaluate(element.getAttributeValue("value"))) + "</textarea>", false);
 		else if (!property.toString().endsWith("[]"))
-			model.replaceAll("<textarea " + attributes + ">" + Converter.toString(property.getValue(model.screen())) + "</textarea>");
+			handler.replaceWith("<textarea " + attributes + ">" + Converter.toString(property.getValue(screen)) + "</textarea>", false);
 		else
-			model.replaceAll("<textarea " + attributes + "></textarea>");
+			handler.replaceWith("<textarea " + attributes + "></textarea>", false);
 	}
-
 }

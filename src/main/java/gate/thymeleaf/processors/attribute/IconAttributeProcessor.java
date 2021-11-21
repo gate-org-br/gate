@@ -1,9 +1,10 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.annotation.Icon;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.util.Icons;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -12,9 +13,12 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 public class IconAttributeProcessor extends AttributeProcessor
 {
 
+	@Inject
+	ELExpression expression;
+
 	public IconAttributeProcessor()
 	{
-		super("icon");
+		super(null, "icon");
 	}
 
 	@Override
@@ -22,10 +26,11 @@ public class IconAttributeProcessor extends AttributeProcessor
 		IProcessableElementTag element,
 		IElementTagStructureHandler handler)
 	{
-		var type = element.getAttributeValue("g:icon");
-		handler.removeAttribute("g:icon");
-		var value = Expression.of(context).evaluate(type);
-		var icon = Icon.Extractor.extract(value).orElse(Icons.UNKNOWN);
-		handler.setAttribute("data-icon", icon.toString());
+		handler.setAttribute("data-icon",
+			extract(element, handler, "g:icon")
+				.map(expression::evaluate)
+				.flatMap(Icon.Extractor::extract)
+				.orElse(Icons.UNKNOWN)
+				.toString());
 	}
 }

@@ -1,13 +1,20 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.Expression;
-import gate.thymeleaf.Model;
+import gate.thymeleaf.ELExpression;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class WriteProcessor extends ModelProcessor
+public class WriteProcessor extends TagAttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public WriteProcessor()
 	{
@@ -15,9 +22,14 @@ public class WriteProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		Expression expression = Expression.of(model.getContext());
-		model.replaceAll(Converter.toString(expression.evaluate(model.get("value"))));
+		if (!element.hasAttribute("value"))
+			throw new TemplateProcessingException("Missing required attribute value on g:write");
+
+		var value = expression.evaluate(element.getAttributeValue("value"));
+		String string = Converter.toString(value);
+		handler.replaceWith(string, false);
 	}
+
 }

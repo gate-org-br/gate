@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
-import static org.thymeleaf.standard.processor.StandardInlineHTMLTagProcessor.PRECEDENCE;
 
 @ApplicationScoped
 public class GateDialect implements IDialect, IProcessorDialect
@@ -33,7 +32,7 @@ public class GateDialect implements IDialect, IProcessorDialect
 	@Override
 	public int getDialectProcessorPrecedence()
 	{
-		return PRECEDENCE;
+		return Precedence.DEFAULT;
 	}
 
 	@Override

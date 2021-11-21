@@ -1,18 +1,25 @@
 package gate.entity;
 
+import gate.annotation.Converter;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
+import gate.converter.AppConverter;
+import gate.error.ConversionException;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonObject;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 
 @Dependent
 @Icon("2189")
+@Converter(AppConverter.class)
 public class App implements Serializable
 {
 
@@ -23,8 +30,9 @@ public class App implements Serializable
 	private String id;
 	private String name;
 	private String description;
+	private List<Module> modules;
+
 	private static final long serialVersionUID = 1L;
-	private final List<Module> modules = new CopyOnWriteArrayList<>();
 
 	public String getId()
 	{
@@ -43,81 +51,89 @@ public class App implements Serializable
 
 	public List<Module> getModules()
 	{
-		return Collections.unmodifiableList(modules);
+		return modules;
 	}
 
-	public static App getInstance(String id, String name, String description, List<Class<? extends Screen>> screens)
+	public static App getInstance(String id, String name, String description,
+		List<Class<? extends Screen>> screens)
 	{
-		screens.removeIf(e -> Modifier.isAbstract(e.getModifiers()) || !e.getSimpleName().endsWith("Screen"));
-		screens.sort(Comparator.comparing(a -> a.getPackage().getName()));
-
 		App app = new App();
 		app.id = id;
 		app.name = name;
 		app.description = description;
 
-		Iterator<Class<? extends gate.base.Screen>> iterator = screens.iterator();
-		while (iterator.hasNext())
+		app.modules = screens.stream()
+			.filter(type -> type.getSimpleName().length() > 6)
+			.filter(type -> type.getSimpleName().endsWith("Screen"))
+			.filter(type -> !Modifier.isAbstract(type.getModifiers()))
+			.map(type -> type.getPackage()).distinct().map(pack ->
 		{
-			Class<? extends gate.base.Screen> type = iterator.next();
+			Module module = new Module();
+			module.id = pack.getName();
 
-			Module module = app.addModule();
-			module.id = type.getPackage().getName();
-
-			do
+			screens.stream()
+				.filter(type -> !Modifier.isAbstract(type.getModifiers()))
+				.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
 			{
-				if (type.getSimpleName().length() > 6)
-				{
-					Module.Screen screen = module.addScreen();
+				Name.Extractor.extract(type).ifPresent(e -> module.name = e);
+				Description.Extractor.extract(type).ifPresent(e -> module.description = e);
+				Icon.Extractor.extract(type).ifPresent(e -> module.icon = e.getCode());
+			});
 
-					if (type.getEnclosingClass() != null)
-						screen.id = type.getEnclosingClass().getSimpleName() + "$"
-							+ type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
-					else
-						screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+			module.screens = screens.stream()
+				.filter(e -> e.getPackage().getName().equals(pack.getName()))
+				.filter(e -> e.getSimpleName().endsWith("Screen"))
+				.map(Module.Screen::of)
+				.collect(Collectors.toList());
 
-					Name.Extractor.extract(type).ifPresent(e -> screen.name = e);
-					Description.Extractor.extract(type).ifPresent(e -> screen.description = e);
-					Icon.Extractor.extract(type).ifPresent(e -> screen.icon = e.getCode());
-
-					for (Method method : type.getMethods())
-					{
-						if (method.getName().length() > 4
-							&& method.getName().startsWith("call"))
-						{
-							Module.Screen.Action action = screen.addAction();
-							action.id = method.getName().substring(4);
-
-							Name.Extractor.extract(method).ifPresent(e -> action.name = e);
-							Description.Extractor.extract(method).ifPresent(e -> action.description = e);
-							Icon.Extractor.extract(method).ifPresent(e -> action.icon = e.getCode());
-						}
-					}
-				} else
-				{
-					Name.Extractor.extract(type).ifPresent(e -> module.name = e);
-					Description.Extractor.extract(type).ifPresent(e -> module.description = e);
-					Icon.Extractor.extract(type).ifPresent(e -> module.icon = e.getCode());
-				}
-
-				if (!iterator.hasNext())
-					break;
-				type = iterator.next();
-			} while (type.getPackage().getName().equals(module.getId()));
-		}
+			return module;
+		}).collect(Collectors.toList());
 
 		return app;
 	}
 
-	public Module addModule()
+	public JsonObject toJsonObject()
 	{
-		Module module = new Module();
-		modules.add(module);
-		return module;
+		return new JsonObject()
+			.setString("id", id)
+			.setString("name", name)
+			.setString("description", description)
+			.set("modules", modules.stream().map(Module::toJsonObject)
+				.collect(Collectors.toCollection(() -> new JsonArray())));
+
+	}
+
+	@Override
+	public String toString()
+	{
+		return toJsonObject().toString();
+
+	}
+
+	public static App of(String string) throws ConversionException
+	{
+		return of(JsonObject.parse(string));
+	}
+
+	public static App of(JsonObject jsonObject)
+	{
+		var app = new App();
+		jsonObject.getString("id").ifPresent(e -> app.id = e);
+		jsonObject.getString("name").ifPresent(e -> app.name = e);
+		jsonObject.getString("description").ifPresent(e -> app.description = e);
+
+		jsonObject.getJsonArray("modules").ifPresent(jsonArray
+			-> app.modules = jsonArray.stream()
+				.filter(e -> e instanceof JsonObject)
+				.map(e -> (JsonObject) e)
+				.map(Module::of)
+				.collect(Collectors.toList()));
+
+		return app;
 	}
 
 	@Icon("2006")
-	public final class Module implements Serializable
+	public static class Module implements Serializable
 	{
 
 		private static final long serialVersionUID = 1L;
@@ -126,7 +142,7 @@ public class App implements Serializable
 		private String icon;
 		private String name;
 		private String description;
-		private final List<Screen> screens = new ArrayList<>();
+		private List<Screen> screens;
 
 		public String getId()
 		{
@@ -145,12 +161,7 @@ public class App implements Serializable
 
 		public List<Screen> getScreens()
 		{
-			return Collections.unmodifiableList(screens);
-		}
-
-		public App getApp()
-		{
-			return App.this;
+			return screens;
 		}
 
 		public String getIcon()
@@ -165,8 +176,45 @@ public class App implements Serializable
 			return screen;
 		}
 
+		public JsonObject toJsonObject()
+		{
+			return new JsonObject()
+				.setString("id", id)
+				.setString("name", name)
+				.setString("icon", icon)
+				.setString("description", description)
+				.set("screens", screens.stream().map(Screen::toJsonObject)
+					.collect(Collectors.toCollection(() -> new JsonArray())));
+
+		}
+
+		@Override
+		public String toString()
+		{
+			return toJsonObject().toString();
+
+		}
+
+		private static Module of(JsonObject jsonObject)
+		{
+			var module = new Module();
+			jsonObject.getString("id").ifPresent(e -> module.id = e);
+			jsonObject.getString("name").ifPresent(e -> module.name = e);
+			jsonObject.getString("icon").ifPresent(e -> module.icon = e);
+			jsonObject.getString("description").ifPresent(e -> module.description = e);
+
+			jsonObject.getJsonArray("screens").ifPresent(jsonArray
+				-> module.screens = jsonArray.stream()
+					.filter(e -> e instanceof JsonObject)
+					.map(e -> (JsonObject) e)
+					.map(Screen::of)
+					.collect(Collectors.toList()));
+
+			return module;
+		}
+
 		@Icon("2044")
-		public class Screen implements Serializable
+		public static class Screen implements Serializable
 		{
 
 			private static final long serialVersionUID = 1L;
@@ -175,7 +223,7 @@ public class App implements Serializable
 			private String name;
 			private String icon;
 			private String description;
-			private final List<Action> actions = new ArrayList<>();
+			private List<Action> actions;
 
 			public String getId()
 			{
@@ -189,7 +237,7 @@ public class App implements Serializable
 
 			public List<Action> getActions()
 			{
-				return Collections.unmodifiableList(actions);
+				return actions;
 			}
 
 			public String getDescription()
@@ -197,25 +245,70 @@ public class App implements Serializable
 				return description;
 			}
 
-			public Module getModule()
-			{
-				return Module.this;
-			}
-
 			public String getIcon()
 			{
 				return icon;
 			}
 
-			public Action addAction()
+			public JsonObject toJsonObject()
 			{
-				Action action = new Action();
-				actions.add(action);
-				return action;
+				return new JsonObject()
+					.setString("id", id)
+					.setString("name", name)
+					.setString("icon", icon)
+					.setString("description", description)
+					.set("actions", actions.stream().map(Action::toJsonObject)
+						.collect(Collectors.toCollection(() -> new JsonArray())));
+
+			}
+
+			@Override
+			public String toString()
+			{
+				return toJsonObject().toString();
+
+			}
+
+			private static Screen of(Class<?> type)
+			{
+				var screen = new Screen();
+				if (type.getEnclosingClass() != null)
+					screen.id = type.getEnclosingClass().getSimpleName() + "$"
+						+ type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+				else
+					screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+
+				Name.Extractor.extract(type).ifPresent(e -> screen.name = e);
+				Description.Extractor.extract(type).ifPresent(e -> screen.description = e);
+				Icon.Extractor.extract(type).ifPresent(e -> screen.icon = e.getCode());
+				screen.actions = Stream.of(type.getMethods())
+					.filter(e -> e.getName().length() > 4 && e.getName().startsWith("call"))
+					.map(Screen.Action::of)
+					.collect(Collectors.toList());
+
+				return screen;
+			}
+
+			private static Screen of(JsonObject jsonObject)
+			{
+				var screen = new Screen();
+				jsonObject.getString("id").ifPresent(e -> screen.id = e);
+				jsonObject.getString("name").ifPresent(e -> screen.name = e);
+				jsonObject.getString("icon").ifPresent(e -> screen.icon = e);
+				jsonObject.getString("description").ifPresent(e -> screen.description = e);
+
+				jsonObject.getJsonArray("actions").ifPresent(jsonArray
+					-> screen.actions = jsonArray.stream()
+						.filter(e -> e instanceof JsonObject)
+						.map(e -> (JsonObject) e)
+						.map(Action::of)
+						.collect(Collectors.toList()));
+
+				return screen;
 			}
 
 			@Icon("2072")
-			public class Action implements Serializable
+			public static class Action implements Serializable
 			{
 
 				private static final long serialVersionUID = 1L;
@@ -243,6 +336,42 @@ public class App implements Serializable
 				public String getIcon()
 				{
 					return icon;
+				}
+
+				public JsonObject toJsonObject()
+				{
+					return new JsonObject()
+						.setString("id", id)
+						.setString("name", name)
+						.setString("icon", icon)
+						.setString("description", description);
+
+				}
+
+				@Override
+				public String toString()
+				{
+					return toJsonObject().toString();
+				}
+
+				private static Action of(Method method)
+				{
+					var action = new Action();
+					action.id = method.getName().substring(4);
+					Name.Extractor.extract(method).ifPresent(e -> action.name = e);
+					Description.Extractor.extract(method).ifPresent(e -> action.description = e);
+					Icon.Extractor.extract(method).ifPresent(e -> action.icon = e.getCode());
+					return action;
+				}
+
+				private static Action of(JsonObject jsonObject)
+				{
+					var action = new Action();
+					jsonObject.getString("id").ifPresent(e -> action.id = e);
+					jsonObject.getString("name").ifPresent(e -> action.name = e);
+					jsonObject.getString("icon").ifPresent(e -> action.icon = e);
+					jsonObject.getString("description").ifPresent(e -> action.description = e);
+					return action;
 				}
 			}
 		}

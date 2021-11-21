@@ -2,31 +2,38 @@ package gate.thymeleaf.processors.tag;
 
 import gate.Command;
 import gate.entity.User;
-import gate.thymeleaf.Model;
+import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class SecureProcessor extends ModelProcessor
+public class SecureProcessor extends AttributeProcessor
 {
 
 	public SecureProcessor()
 	{
-		super("secure");
+		super("secure", null);
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context,
+		IProcessableElementTag element,
+		IElementTagStructureHandler handler)
 	{
-		User user = (User) model.session().getAttribute(User.class.getName());
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+		User user = (User) request.getSession().getAttribute(User.class.getName());
 
-		if (Command.of(model.request(),
-			model.get("module"),
-			model.get("screen"),
-			model.get("action"))
+		if (Command.of(request,
+			element.getAttributeValue("module"),
+			element.getAttributeValue("screen"),
+			element.getAttributeValue("action"))
 			.checkAccess(user))
-			model.removeTag();
+			handler.removeTags();
 		else
-			model.removeAll();
+			handler.removeElement();
 	}
-
 }

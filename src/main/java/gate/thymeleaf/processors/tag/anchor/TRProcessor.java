@@ -3,15 +3,19 @@ package gate.thymeleaf.processors.tag.anchor;
 import gate.Command;
 import gate.entity.User;
 import gate.io.URL;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class TRProcessor extends AnchorProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public TRProcessor()
 	{
@@ -21,7 +25,6 @@ public class TRProcessor extends AnchorProcessor
 	@Override
 	protected void process(Model model, Command command, Attributes attributes, Parameters parameters)
 	{
-		Expression expression = Expression.of(model.getContext());
 		User user = (User) model.session().getAttribute(User.class.getName());
 
 		if (!model.has("condition") || (boolean) expression.evaluate(model.get("condition")))

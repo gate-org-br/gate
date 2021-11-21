@@ -25,7 +25,7 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 	public RequestAttributeProcessor(String name)
 	{
-		super(name);
+		super(null, name);
 	}
 
 	@Override
@@ -97,6 +97,17 @@ public class RequestAttributeProcessor extends AttributeProcessor
 							handler.setAttribute("formtarget", "_progress-dialog");
 						else
 							handler.setAttribute("formtarget", "_progress-window");
+
+					break;
+
+				case "form":
+					handler.setAttribute("action", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+
+					if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+						if ("_dialog".equals(element.getAttributeValue("target")))
+							handler.setAttribute("target", "_progress-dialog");
+						else
+							handler.setAttribute("target", "_progress-window");
 
 					break;
 				default:

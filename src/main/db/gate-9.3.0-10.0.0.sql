@@ -35,3 +35,8 @@ update gate.Role set rolename = roleID;
 ALTER TABLE gate.Role DROP COLUMN roleID;
 ALTER TABLE gate.Role ADD roleID VARCHAR(64) GENERATED ALWAYS AS (rolename) VIRTUAL;
 ALTER TABLE gate.Role ADD UNIQUE INDEX Role$uk$rolename (rolename ASC) VISIBLE;
+
+CREATE TABLE `gate`.`App` (
+  `id` VARCHAR(32) NOT NULL,
+  `json` TEXT NOT NULL,
+  PRIMARY KEY (`id`));

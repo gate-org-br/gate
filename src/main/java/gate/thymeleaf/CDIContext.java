@@ -4,13 +4,11 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.AmbiguousResolutionException;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import org.thymeleaf.context.IContext;
-import org.thymeleaf.context.LazyContextVariable;
 
 public class CDIContext implements IContext
 {
@@ -54,22 +52,8 @@ public class CDIContext implements IContext
 		final Set<Bean<?>> beans = beanManager.getBeans(name);
 		if (beans.isEmpty())
 			return null;
-
-		return new LazyContextVariable<Object>()
-		{
-			@Override
-			protected Object loadValue()
-			{
-				try
-				{
-					final Bean<?> bean = beanManager.resolve(beans);
-					final CreationalContext<?> cctx = beanManager.createCreationalContext(bean);
-					return beanManager.getReference(bean, Object.class, cctx);
-				} catch (final AmbiguousResolutionException are)
-				{
-					return null;
-				}
-			}
-		};
+		Bean<?> bean = beanManager.resolve(beans);
+		CreationalContext<?> cctx = beanManager.createCreationalContext(bean);
+		return beanManager.getReference(bean, Object.class, cctx);
 	}
 }

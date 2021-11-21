@@ -1,14 +1,18 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class CaptionProcessor extends ModelProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public CaptionProcessor()
 	{
@@ -18,9 +22,8 @@ public class CaptionProcessor extends ModelProcessor
 	@Override
 	protected void doProcess(Model model)
 	{
-		Expression expression = Expression.of(model.getContext());
 		Attributes attributes = new Attributes();
-		model.stream()
+		model.attributes()
 			.filter(e -> e.getValue() != null)
 			.filter(e -> !"value".equals(e.getAttributeCompleteName()))
 			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));

@@ -17,7 +17,7 @@ public class TFootProcessor extends ModelProcessor
 	protected void doProcess(Model model)
 	{
 		Attributes attributes = new Attributes();
-		model.stream().filter(e -> e.getValue() != null)
+		model.attributes().filter(e -> e.getValue() != null)
 			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
 		model.replaceTag("tfoot", attributes);
 	}

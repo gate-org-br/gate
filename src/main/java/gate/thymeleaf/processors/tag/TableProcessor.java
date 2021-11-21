@@ -1,14 +1,18 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.Expression;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class TableProcessor extends ModelProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public TableProcessor()
 	{
@@ -18,11 +22,10 @@ public class TableProcessor extends ModelProcessor
 	@Override
 	protected void doProcess(Model model)
 	{
-		Expression expression = Expression.of(model.getContext());
 		if (!model.has("condition") || (boolean) expression.evaluate(model.get("condition")))
 		{
 			Attributes attributes = new Attributes();
-			model.stream()
+			model.attributes()
 				.filter(e -> e.getValue() != null)
 				.filter(e -> !"condition".equals(e.getAttributeCompleteName()))
 				.filter(e -> !"otherwise".equals(e.getAttributeCompleteName()))
