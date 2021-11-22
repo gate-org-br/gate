@@ -2302,6 +2302,15 @@ class GWindow extends GModal
 
 		return this._private.hideButton;
 	}
+
+	set size(value)
+	{
+		let size = /^([0-9]+(px|%))(\/([0-9]+(px|%)))?$/g.exec(value);
+		if (!size)
+			throw new Error(value + " is not a valid size");
+		this.main.style.maxWidth = size[1];
+		this.main.style.maxHeight = size[4] || size[1];
+	}
 }
 
 customElements.define('g-window', GWindow);
@@ -2793,37 +2802,6 @@ window.addEventListener("click", function (event)
 	{
 		switch (target)
 		{
-			case "_dialog":
-				event.preventDefault();
-				event.stopPropagation();
-				if (event.ctrlKey)
-				{
-					link.setAttribute("target", "_blank");
-					link.click();
-					link.setAttribute("target", "_dialog");
-				} else
-				{
-					let dialog = window.top.document.createElement("g-dialog");
-					dialog.navigator = link.navigator;
-					dialog.target = link.getAttribute("href");
-					dialog.caption = link.getAttribute("title");
-					dialog.blocked = Boolean(link.getAttribute("data-blocked"));
-
-					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
-					if (link.getAttribute("data-on-hide"))
-						if (link.getAttribute("data-on-hide") === "reload")
-							dialog.addEventListener("hide", () => window.location = window.location.href);
-						else if (link.getAttribute("data-on-hide") === "submit")
-							dialog.addEventListener("hide", () => link.closest("form").submit());
-						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-									.exec(link.getAttribute("data-on-hide"))[1]).submit());
-
-					dialog.show();
-				}
-				break;
 			case "_stack":
 				event.preventDefault();
 				event.stopPropagation();
@@ -3004,7 +2982,42 @@ window.addEventListener("click", function (event)
 				break;
 
 			default:
-				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				if (/^_dialog(\((.*)\))?$/g.test(target))
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					if (event.ctrlKey)
+					{
+						link.setAttribute("target", "_blank");
+						link.click();
+						link.setAttribute("target", "_dialog");
+					} else
+					{
+						let dialog = window.top.document.createElement("g-dialog");
+						dialog.navigator = link.navigator;
+						dialog.target = link.getAttribute("href");
+						dialog.caption = link.getAttribute("title");
+						dialog.blocked = Boolean(link.getAttribute("data-blocked"));
+
+						let regex = /^_dialog(\((.*)\))?$/g.exec(target);
+						if (regex[2])
+							dialog.size = regex[2];
+
+						dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+						dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+						if (link.getAttribute("data-on-hide"))
+							if (link.getAttribute("data-on-hide") === "reload")
+								dialog.addEventListener("hide", () => window.location = window.location.href);
+							else if (link.getAttribute("data-on-hide") === "submit")
+								dialog.addEventListener("hide", () => link.closest("form").submit());
+							else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+										.exec(link.getAttribute("data-on-hide"))[1]).submit());
+
+						dialog.show();
+					}
+				} else if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
 				{
 					event.preventDefault();
 					event.stopPropagation();
@@ -3111,49 +3124,6 @@ window.addEventListener("click", function (event)
 	{
 		switch (target)
 		{
-			case "_dialog":
-				if (button.form.checkValidity())
-				{
-					if (event.ctrlKey)
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						event.preventDefault();
-						event.stopPropagation();
-						button.setAttribute("formtarget", "_blank");
-						button.click();
-						button.setAttribute("formtarget", "_dialog");
-					} else if (event.target.form.getAttribute("target") !== "_dialog")
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						let dialog = window.top.document.createElement("g-dialog");
-						dialog.caption = event.target.getAttribute("title");
-						dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
-
-						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
-						if (button.getAttribute("data-on-hide"))
-							if (button.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => button.closest("form").submit());
-							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(button.getAttribute("data-on-hide"))[1]).submit());
-
-						dialog.show();
-
-						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
-							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
-							.then(e => e.text())
-							.then(e => dialog.iframe.setAttribute("srcdoc", e));
-					}
-				}
-				break;
 			case "_stack":
 				if (button.form.checkValidity())
 				{
@@ -3370,7 +3340,51 @@ window.addEventListener("click", function (event)
 				break;
 
 			default:
-				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				if (/^_dialog(\((.*)\))?$/g.test(target))
+				{
+					if (button.form.checkValidity())
+						if (event.ctrlKey)
+						{
+							event.preventDefault();
+							event.stopPropagation();
+
+							button.setAttribute("formtarget", "_blank");
+							button.click();
+							button.setAttribute("formtarget", "_dialog");
+						} else if (event.target.form.getAttribute("target") !== "_dialog")
+						{
+							event.preventDefault();
+							event.stopPropagation();
+
+							let dialog = window.top.document.createElement("g-dialog");
+							dialog.caption = event.target.getAttribute("title");
+							dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
+
+							let regex = /^_dialog(\((.*)\))?$/g.exec(target);
+							if (regex[2])
+								dialog.size = regex[2];
+
+							dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+							dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+							if (button.getAttribute("data-on-hide"))
+								if (button.getAttribute("data-on-hide") === "reload")
+									dialog.addEventListener("hide", () => window.location = window.location.href);
+								else if (button.getAttribute("data-on-hide") === "submit")
+									dialog.addEventListener("hide", () => button.closest("form").submit());
+								else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+									dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+											.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+							dialog.show();
+
+							window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+								{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+								.then(e => e.text())
+								.then(e => dialog.iframe.setAttribute("srcdoc", e));
+						}
+
+				} else if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
 				{
 					event.preventDefault();
 					event.stopPropagation();
@@ -6187,6 +6201,13 @@ class GDialog extends GWindow
 		this.hide();
 	}
 
+	set size(value)
+	{
+		super.size = value;
+		this.minimizeButton.style.display = "none";
+		this.fullScreenButton.style.display = "none";
+	}
+
 	static hide()
 	{
 		if (window.frameElement && window.frameElement.dialog)
@@ -6295,7 +6316,7 @@ window.addEventListener("keydown", function (event)
 	action = action.closest("[data-ret]");
 	if (!action)
 		return;
-	
+
 	if (event.keyCode === 13)
 		action.click();
 });

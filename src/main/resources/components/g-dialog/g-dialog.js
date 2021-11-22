@@ -114,6 +114,13 @@ class GDialog extends GWindow
 		this.hide();
 	}
 
+	set size(value)
+	{
+		super.size = value;
+		this.minimizeButton.style.display = "none";
+		this.fullScreenButton.style.display = "none";
+	}
+
 	static hide()
 	{
 		if (window.frameElement && window.frameElement.dialog)
@@ -222,7 +229,7 @@ window.addEventListener("keydown", function (event)
 	action = action.closest("[data-ret]");
 	if (!action)
 		return;
-	
+
 	if (event.keyCode === 13)
 		action.click();
 });

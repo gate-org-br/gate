@@ -64,49 +64,6 @@ window.addEventListener("click", function (event)
 	{
 		switch (target)
 		{
-			case "_dialog":
-				if (button.form.checkValidity())
-				{
-					if (event.ctrlKey)
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						event.preventDefault();
-						event.stopPropagation();
-						button.setAttribute("formtarget", "_blank");
-						button.click();
-						button.setAttribute("formtarget", "_dialog");
-					} else if (event.target.form.getAttribute("target") !== "_dialog")
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						let dialog = window.top.document.createElement("g-dialog");
-						dialog.caption = event.target.getAttribute("title");
-						dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
-
-						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
-						if (button.getAttribute("data-on-hide"))
-							if (button.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => button.closest("form").submit());
-							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(button.getAttribute("data-on-hide"))[1]).submit());
-
-						dialog.show();
-
-						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
-							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
-							.then(e => e.text())
-							.then(e => dialog.iframe.setAttribute("srcdoc", e));
-					}
-				}
-				break;
 			case "_stack":
 				if (button.form.checkValidity())
 				{
@@ -323,7 +280,51 @@ window.addEventListener("click", function (event)
 				break;
 
 			default:
-				if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
+				if (/^_dialog(\((.*)\))?$/g.test(target))
+				{
+					if (button.form.checkValidity())
+						if (event.ctrlKey)
+						{
+							event.preventDefault();
+							event.stopPropagation();
+
+							button.setAttribute("formtarget", "_blank");
+							button.click();
+							button.setAttribute("formtarget", "_dialog");
+						} else if (event.target.form.getAttribute("target") !== "_dialog")
+						{
+							event.preventDefault();
+							event.stopPropagation();
+
+							let dialog = window.top.document.createElement("g-dialog");
+							dialog.caption = event.target.getAttribute("title");
+							dialog.blocked = Boolean(event.target.getAttribute("data-blocked"));
+
+							let regex = /^_dialog(\((.*)\))?$/g.exec(target);
+							if (regex[2])
+								dialog.size = regex[2];
+
+							dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+							dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+
+							if (button.getAttribute("data-on-hide"))
+								if (button.getAttribute("data-on-hide") === "reload")
+									dialog.addEventListener("hide", () => window.location = window.location.href);
+								else if (button.getAttribute("data-on-hide") === "submit")
+									dialog.addEventListener("hide", () => button.closest("form").submit());
+								else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
+									dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
+											.exec(button.getAttribute("data-on-hide"))[1]).submit());
+
+							dialog.show();
+
+							window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
+								{method: 'post', body: new URLSearchParams(new FormData(button.form))})
+								.then(e => e.text())
+								.then(e => dialog.iframe.setAttribute("srcdoc", e));
+						}
+
+				} else if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))
 				{
 					event.preventDefault();
 					event.stopPropagation();
