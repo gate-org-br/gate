@@ -115,6 +115,15 @@ class GWindow extends GModal
 
 		return this._private.hideButton;
 	}
+
+	set size(value)
+	{
+		let size = /^([0-9]+(px|%))(\/([0-9]+(px|%)))?$/g.exec(value);
+		if (!size)
+			throw new Error(value + " is not a valid size");
+		this.main.style.maxWidth = size[1];
+		this.main.style.maxHeight = size[4] || size[1];
+	}
 }
 
 customElements.define('g-window', GWindow);
