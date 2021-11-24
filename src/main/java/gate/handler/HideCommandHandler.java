@@ -1,8 +1,7 @@
 package gate.handler;
 
-import gate.stream.CheckedStream;
 import gate.command.HideCommand;
-import gate.handler.Handler;
+import gate.stream.CheckedStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;

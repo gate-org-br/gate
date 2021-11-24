@@ -6,6 +6,7 @@ import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.NotFoundException;
+import gate.sql.Link;
 import gate.sql.condition.Condition;
 import gate.sql.update.Update;
 import gate.type.MD5;
@@ -15,9 +16,9 @@ import java.util.Optional;
 class GateDao extends gate.base.Dao
 {
 
-	public GateDao()
+	public GateDao(Link link)
 	{
-		super("Gate");
+		super(link);
 	}
 
 	public Optional<User> select(String username)

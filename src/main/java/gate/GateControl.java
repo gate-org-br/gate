@@ -1,5 +1,6 @@
 package gate;
 
+import gate.annotation.DataSource;
 import gate.authenticator.LDAPAuthenticator;
 import gate.entity.Bond;
 import gate.entity.Org;
@@ -14,16 +15,23 @@ import gate.error.InvalidPasswordException;
 import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
+import gate.sql.Link;
+import gate.sql.LinkSource;
 import gate.type.Hierarchy;
 import gate.type.MD5;
 import gate.util.Toolkit;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 public class GateControl extends gate.base.Control
 {
+
+	@Inject
+	@DataSource("Gate")
+	LinkSource linksource;
 
 	private static final LDAPAuthenticator AUTHENTICATOR = new LDAPAuthenticator();
 
@@ -32,7 +40,9 @@ public class GateControl extends gate.base.Control
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernameException();
-		try ( GateDao dao = new GateDao())
+
+		try ( Link link = linksource.getLink();
+			 GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(username)
 				.orElseThrow(InvalidUsernameException::new);
@@ -78,7 +88,8 @@ public class GateControl extends gate.base.Control
 
 	{
 
-		try ( GateDao dao = new GateDao())
+		try ( Link link = linksource.getLink();
+			 GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(username)
 				.orElseThrow(InvalidUsernameException::new);
@@ -130,7 +141,8 @@ public class GateControl extends gate.base.Control
 
 	public void update(User user) throws AppException
 	{
-		try ( GateDao dao = new GateDao())
+		try ( Link link = linksource.getLink();
+			 GateDao dao = new GateDao(link))
 		{
 			dao.update(user);
 		}
@@ -138,7 +150,8 @@ public class GateControl extends gate.base.Control
 
 	public void update(User user, String password) throws AppException
 	{
-		try ( GateDao dao = new GateDao())
+		try ( Link link = linksource.getLink();
+			 GateDao dao = new GateDao(link))
 		{
 			dao.update(user, password);
 		}
