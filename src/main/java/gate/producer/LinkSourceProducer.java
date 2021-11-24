@@ -3,11 +3,15 @@ package gate.producer;
 import gate.annotation.DataSource;
 import gate.annotation.DefaultDataSource;
 import gate.sql.LinkSource;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 
 public class LinkSourceProducer
 {
+
+	private static final Map<String, LinkSource> LINK_SOURCES = new ConcurrentHashMap<>();
 
 	@Produces
 	@DefaultDataSource
@@ -21,6 +25,7 @@ public class LinkSourceProducer
 	@DataSource("")
 	public LinkSource namedLinkSource(InjectionPoint ip)
 	{
-		return LinkSource.of(ip.getAnnotated().getAnnotation(DataSource.class).value());
+		String name = ip.getAnnotated().getAnnotation(DataSource.class).value();
+		return LINK_SOURCES.computeIfAbsent(name, LinkSource::of);
 	}
 }
