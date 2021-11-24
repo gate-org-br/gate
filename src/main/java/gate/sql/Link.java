@@ -2,6 +2,7 @@ package gate.sql;
 
 import gate.error.AppError;
 import gate.error.ConstraintViolationException;
+import gate.error.DatabaseException;
 import gate.io.StringReader;
 import gate.producer.AppProducer;
 import gate.sql.condition.CompiledCondition;
@@ -34,8 +35,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.CDI;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 /**
@@ -155,13 +154,10 @@ public class Link implements AutoCloseable
 	{
 		try
 		{
-			connection
-				= ((DataSource) new InitialContext()
-					.lookup(String.format("java:/comp/env/%s", datasource)))
-					.getConnection();
-		} catch (SQLException | NamingException e)
+			connection = LinkSource.getNamedDataSource(datasource).getConnection();
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new DatabaseException(ex);
 		}
 	}
 

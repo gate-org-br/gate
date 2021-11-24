@@ -1,12 +1,14 @@
 package gate.producer;
 
 import gate.annotation.Current;
+import gate.annotation.DataSource;
 import gate.base.Control;
 import gate.base.Dao;
 import gate.base.Screen;
 import gate.entity.App;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
+import gate.sql.LinkSource;
 import gate.sql.condition.Condition;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
@@ -15,7 +17,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
@@ -23,7 +24,6 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
-import javax.sql.DataSource;
 import org.slf4j.Logger;
 
 /**
@@ -87,14 +87,14 @@ public class AppProducer implements Serializable
 	private static class AppControl extends Control
 	{
 
-		@Named("Gate")
-		@Resource(lookup = "java:/comp/env/Gate")
-		private DataSource datasource;
+		@Inject
+		@DataSource("Gate")
+		LinkSource linksource;
 
 		public void update(App app)
 			throws ConstraintViolationException
 		{
-			try ( Link link = new Link(datasource);
+			try ( Link link = linksource.getLink();
 				 AppDao dao = new AppDao(link))
 			{
 				link.beginTran();

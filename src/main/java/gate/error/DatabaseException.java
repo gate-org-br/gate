@@ -10,9 +10,14 @@ public class DatabaseException extends RuntimeException
 
 	private static final long serialVersionUID = 1L;
 
-	DatabaseException(Throwable cause)
+	public DatabaseException(Throwable cause)
 	{
-		super(cause);
+		super(cause.getMessage(), cause);
+	}
+
+	public DatabaseException(String message)
+	{
+		super(message);
 	}
 
 	public static void handle(Link link, SQLException cause)
@@ -55,11 +60,5 @@ public class DatabaseException extends RuntimeException
 		{
 			throw new DatabaseException(ex);
 		}
-	}
-
-	@Override
-	public String getMessage()
-	{
-		return getCause().getMessage();
 	}
 }

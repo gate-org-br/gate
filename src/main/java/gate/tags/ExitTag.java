@@ -23,7 +23,7 @@ public class ExitTag extends AttributeTag
 	@Override
 	public void doTag() throws JspException, IOException
 	{
-		getJspContext().getOut().print("<a " + getAttributes().toString() + "href='Gate'>");
+		getJspContext().getOut().print("<a " + getAttributes().toString() + " href='Gate'>");
 
 		if (getJspBody() == null)
 		{
