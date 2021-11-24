@@ -229,8 +229,8 @@ public class Gate extends HttpServlet
 			Object result = screen.execute(method);
 			if (result != null)
 				if (method.isAnnotationPresent(gate.annotation.Handler.class))
-					handlers.select(Handler.getHandler(method.getAnnotation(gate.annotation.Handler.class).value())).get()
-						.handle(request, response, result);
+					handlers.select(method.getAnnotation(gate.annotation.Handler.class).value())
+						.get().handle(request, response, result);
 				else
 					handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
 		} catch (InvocationTargetException ex)
