@@ -37,7 +37,7 @@ public class TRProcessor extends AnchorProcessor
 				|| model.has("target")))
 			{
 				if (model.has("target"))
-					attributes.put("data-target", model.get("target"));
+					attributes.put("data-target", expression.evaluate(model.get("target")));
 
 				attributes.put("data-action",
 					URL.toString(command.getModule(),
@@ -45,7 +45,7 @@ public class TRProcessor extends AnchorProcessor
 						command.getAction(),
 						parameters.toString()));
 
-				if ("POST".equalsIgnoreCase(model.get("method")))
+				if ("POST".equalsIgnoreCase((String) expression.evaluate(model.get("method"))))
 					attributes.put("data-method", "post");
 			}
 

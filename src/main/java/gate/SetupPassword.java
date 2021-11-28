@@ -2,6 +2,7 @@ package gate;
 
 import gate.entity.User;
 import gate.error.AppException;
+import gate.handler.HTMLCommandHandler;
 import gate.type.DateTime;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -18,12 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 public class SetupPassword extends HttpServlet
 {
 
-	private static final long serialVersionUID = 1L;
-
 	@Inject
 	private GateControl control;
 
-	static final String JSP = "/WEB-INF/views/SetupPassword.jsp";
+	@Inject
+	private HTMLCommandHandler htmlHanlder;
+
+	private static final long serialVersionUID = 1L;
+
+	static final String HTML = "/views/SetupPassword.html";
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -63,8 +67,7 @@ public class SetupPassword extends HttpServlet
 				{
 					"Sua senha foi alterada com sucesso."
 				});
-				request.getRequestDispatcher("/WEB-INF/views/Gate.jsp")
-					.forward(request, response);
+				htmlHanlder.handle(request, response, Gate.HTML);
 				return;
 			}
 		} catch (AppException e)
@@ -72,6 +75,6 @@ public class SetupPassword extends HttpServlet
 			request.setAttribute("messages", e.getMessages());
 		}
 
-		request.getRequestDispatcher(SetupPassword.JSP).forward(request, response);
+		htmlHanlder.handle(request, response, HTML);
 	}
 }
