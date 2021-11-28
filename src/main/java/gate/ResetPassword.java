@@ -3,6 +3,7 @@ package gate;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.InvalidUsernameException;
+import gate.handler.HTMLCommandHandler;
 import gate.messaging.Messenger;
 import gate.type.mime.MimeMail;
 import gate.util.PasswordGenerator;
@@ -27,9 +28,12 @@ public class ResetPassword extends HttpServlet
 	@Inject
 	private Messenger messenger;
 
+	@Inject
+	private HTMLCommandHandler htmlHanlder;
+
 	private static final long serialVersionUID = 1L;
 
-	static final String JSP = "/WEB-INF/views/ResetPassword.jsp";
+	static final String HTML = "/views/ResetPassword.html";
 
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -55,8 +59,8 @@ public class ResetPassword extends HttpServlet
 				{
 					"Sua senha foi redefinida e enviada para " + user.getEmail()
 				});
-				request.getRequestDispatcher("/WEB-INF/views/Gate.jsp")
-					.forward(request, response);
+
+				htmlHanlder.handle(request, response, Gate.HTML);
 			}
 		} catch (AppException ex)
 		{
@@ -66,6 +70,6 @@ public class ResetPassword extends HttpServlet
 			request.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 		}
 
-		request.getRequestDispatcher(ResetPassword.JSP).forward(request, response);
+		htmlHanlder.handle(request, response, HTML);
 	}
 }

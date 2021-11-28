@@ -5,6 +5,7 @@ import gate.entity.User;
 import gate.error.AppException;
 import gate.error.ConstraintViolationException;
 import gate.error.ConversionException;
+import gate.handler.HTMLCommandHandler;
 import gate.sql.insert.Insert;
 import gate.type.Phone;
 import gate.util.ScreenServletRequest;
@@ -25,12 +26,15 @@ public class CreateAccount extends HttpServlet
 {
 
 	@Inject
+	private Logger logger;
+
+	@Inject
 	private Control control;
 
 	@Inject
-	private Logger logger;
+	private HTMLCommandHandler htmlHanlder;
 
-	static final String JSP = "/WEB-INF/views/CreateAccount.jsp";
+	static final String HTML = "/views/CreateAccount.html";
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -77,18 +81,19 @@ public class CreateAccount extends HttpServlet
 
 				control.insert(user);
 				request.setAttribute("messages", "Seu cadastro foi enviado para aprovação. Você será notificado quando aprovado.");
-				request.getRequestDispatcher(Gate.GATE_JSP).forward(request, response);
+
+				htmlHanlder.handle(request, response, Gate.HTML);
 			} catch (AppException e)
 			{
 				request.setAttribute("messages", e.getMessages());
-				request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
+				htmlHanlder.handle(request, response, HTML);
 			} catch (ConversionException ex)
 			{
 				logger.error(ex.getMessage(), ex);
 			}
 		}
 
-		request.getRequestDispatcher(CreateAccount.JSP).forward(request, response);
+		htmlHanlder.handle(request, response, HTML);
 	}
 
 	@Dependent

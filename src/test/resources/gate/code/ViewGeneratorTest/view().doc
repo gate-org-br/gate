@@ -1,6 +1,6 @@
 
 
-<g:template filename="/WEB-INF/views/FULL.jsp">
+<g:template filename="/views/FULL.html">
 	<form method='POST' action='#'>
 		<fieldset>
 			<legend>

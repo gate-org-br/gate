@@ -2,7 +2,6 @@ package gate;
 
 import java.io.IOException;
 import java.io.Writer;
-import javax.el.ExpressionFactory;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

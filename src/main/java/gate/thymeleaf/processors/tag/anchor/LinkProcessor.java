@@ -32,7 +32,7 @@ public class LinkProcessor extends AnchorProcessor
 
 		if (command.checkAccess(user))
 			if (!model.has("condition") || (boolean) expression.evaluate(model.get("condition")))
-				if ("POST".equalsIgnoreCase(model.get("method")))
+				if ("POST".equalsIgnoreCase((String) expression.evaluate(model.get("method"))))
 					createButton(model, command, attributes, parameters);
 				else
 					createLink(model, command, attributes, parameters);
@@ -53,12 +53,12 @@ public class LinkProcessor extends AnchorProcessor
 
 		if (model.has("target"))
 			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(model.get("target")))
-					attributes.put("formtarget", model.get("_progress-dialog"));
+				if ("_dialog".equals(expression.evaluate(model.get("target"))))
+					attributes.put("formtarget", expression.evaluate(model.get("_progress-dialog")));
 				else
-					attributes.put("formtarget", model.get("_progress-window"));
+					attributes.put("formtarget", expression.evaluate(model.get("_progress-window")));
 			else
-				attributes.put("formtarget", model.get("target"));
+				attributes.put("formtarget", expression.evaluate(model.get("target")));
 
 		if (model.isStandalone())
 		{
@@ -79,12 +79,12 @@ public class LinkProcessor extends AnchorProcessor
 
 		if (model.has("target"))
 			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(model.get("target")))
-					attributes.put("target", model.get("_progress-dialog"));
+				if ("_dialog".equals(expression.evaluate(model.get("target"))))
+					attributes.put("target", expression.evaluate(model.get("_progress-dialog")));
 				else
-					attributes.put("target", model.get("_progress-window"));
+					attributes.put("target", expression.evaluate(model.get("_progress-window")));
 			else
-				attributes.put("target", model.get("target"));
+				attributes.put("target", expression.evaluate(model.get("target")));
 
 		if (model.isStandalone())
 		{

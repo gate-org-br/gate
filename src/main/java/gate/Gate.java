@@ -21,6 +21,7 @@ import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.event.LoginEvent;
+import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.io.Credentials;
 import gate.type.Result;
@@ -93,7 +94,10 @@ public class Gate extends HttpServlet
 	@Inject
 	Instance<Handler> handlers;
 
-	static final String GATE_JSP = "/WEB-INF/views/Gate.jsp";
+	@Inject
+	private HTMLCommandHandler htmlHanlder;
+
+	static final String HTML = "/views/Gate.html";
 
 	static
 	{
@@ -123,7 +127,8 @@ public class Gate extends HttpServlet
 			{
 				if (request.getSession(false) != null)
 					request.getSession().invalidate();
-				getServletContext().getRequestDispatcher(GATE_JSP).forward(request, response);
+
+				htmlHanlder.handle(httpServletRequest, response, HTML);
 			} else
 			{
 				String username = request.getParameter("$username");
@@ -169,29 +174,23 @@ public class Gate extends HttpServlet
 			| InvalidServiceException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+			htmlHanlder.handle(httpServletRequest, response, HTML);
 		} catch (DefaultPasswordException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			httpServletRequest.getRequestDispatcher(SetupPassword.JSP).forward(httpServletRequest, response);
+			htmlHanlder.handle(httpServletRequest, response, SetupPassword.HTML);
 		} catch (AuthenticatorException | AppError ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.setAttribute("exception", ex.getCause());
 			logger.error(ex.getCause().getMessage(), ex.getCause());
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+			htmlHanlder.handle(httpServletRequest, response, HTML);
 		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Banco de dados inconsistente"));
 			httpServletRequest.setAttribute("exception", ex);
 			logger.error(ex.getMessage(), ex);
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
-		} catch (IOException | IllegalAccessException | ServletException | RuntimeException ex)
-		{
-			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
-			httpServletRequest.setAttribute("exception", ex);
-			logger.error(ex.getMessage(), ex);
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+			htmlHanlder.handle(httpServletRequest, response, HTML);
 		} catch (InvocationTargetException ex)
 		{
 			if (ex.getCause() instanceof AppException)
@@ -203,7 +202,7 @@ public class Gate extends HttpServlet
 				httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 				httpServletRequest.setAttribute("exception", ex.getTargetException());
 				logger.error(ex.getCause().getMessage(), ex.getCause());
-				httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+				htmlHanlder.handle(httpServletRequest, response, HTML);
 			}
 		} catch (InvalidCredentialsException ex)
 		{
@@ -214,7 +213,7 @@ public class Gate extends HttpServlet
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 			httpServletRequest.setAttribute("exception", ex);
 			logger.error(ex.getMessage(), ex);
-			httpServletRequest.getRequestDispatcher(GATE_JSP).forward(httpServletRequest, response);
+			htmlHanlder.handle(httpServletRequest, response, HTML);
 		}
 	}
 

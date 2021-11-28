@@ -26,8 +26,6 @@ public class StringHandler implements Handler
 			jspHandler.handle(request, response, string);
 		else if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, value);
-		else if (string.endsWith(".gml"))
-			htmlHandler.handle(request, response, value);
 		else
 			textHandler.handle(request, response, value);
 	}

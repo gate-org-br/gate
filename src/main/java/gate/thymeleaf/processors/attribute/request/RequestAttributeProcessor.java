@@ -110,6 +110,9 @@ public class RequestAttributeProcessor extends AttributeProcessor
 							handler.setAttribute("target", "_progress-window");
 
 					break;
+				case "img":
+					handler.setAttribute("src", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					break;
 				default:
 					handler.setAttribute("data-action", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
 

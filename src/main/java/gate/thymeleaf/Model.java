@@ -89,6 +89,12 @@ public class Model
 		return this;
 	}
 
+	public Model add(int index, String text)
+	{
+		model.insert(index, context.getModelFactory().createText(text));
+		return this;
+	}
+
 	public void removeAll()
 	{
 		model.reset();

@@ -14,33 +14,28 @@ import javax.servlet.ServletContext;
 /**
  * Produces a Version object with the version number of the current application.
  */
-@ApplicationScoped
 public class VersionProducer
 {
-
-	private Version version;
 
 	@Inject
 	private ServletContext servletContext;
 
 	@Produces
+	@ApplicationScoped
 	@Named(value = "version")
 	public Version produce() throws IOException
 	{
-		if (version != null)
-			return version;
-
-		try (InputStream inputStream = servletContext.getResourceAsStream("/META-INF/MANIFEST.MF"))
+		try ( InputStream inputStream = servletContext.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
 			if (inputStream == null)
-				return version = Version.UNDEFINED;
+				return Version.UNDEFINED;
 
 			Manifest manifest = new Manifest(inputStream);
 			String value = manifest.getMainAttributes().getValue("Implementation-Version");
-			return version = value != null ? version = Version.of(value) : Version.UNDEFINED;
+			return value != null ? Version.of(value) : Version.UNDEFINED;
 		} catch (ParseException ex)
 		{
-			return version = Version.INVALID;
+			return Version.INVALID;
 		}
 	}
 }
