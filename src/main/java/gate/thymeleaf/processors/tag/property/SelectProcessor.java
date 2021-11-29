@@ -32,9 +32,10 @@ public class SelectProcessor extends PropertyProcessor
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
 		Screen screen, Property property, Attributes attributes)
 	{
-		Object options = null;
-		if (element.hasAttribute("options"))
-			options = expression.evaluate(element.getAttributeValue("options"));
+
+		Object options = attributes.remove("options");
+		if (options != null)
+			options = expression.evaluate((String) options);
 		else if (Boolean.class.isAssignableFrom(property.getRawType()))
 			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else if (boolean.class.isAssignableFrom(property.getRawType()))
@@ -44,8 +45,8 @@ public class SelectProcessor extends PropertyProcessor
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 
-		String labels = extract(element, handler, "labels").orElse(null);
-		String values = extract(element, handler, "values").orElse(null);
+		String labels = (String) attributes.remove("labels");
+		String values = (String) attributes.remove("values");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");

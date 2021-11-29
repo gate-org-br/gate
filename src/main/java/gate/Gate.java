@@ -223,24 +223,13 @@ public class Gate extends HttpServlet
 		ReflectiveOperationException
 	{
 
-		try
-		{
-			Object result = screen.execute(method);
-			if (result != null)
-				if (method.isAnnotationPresent(gate.annotation.Handler.class))
-					handlers.select(method.getAnnotation(gate.annotation.Handler.class).value())
-						.get().handle(request, response, result);
-				else
-					handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
-		} catch (InvocationTargetException ex)
-		{
-			if (ex.getTargetException() instanceof AppException)
-				gate.annotation.Catcher.Extractor.extract(method)
-					.getConstructor().newInstance()
-					.execute(request, response, (AppException) ex.getTargetException());
+		Object result = screen.execute(method);
+		if (result != null)
+			if (method.isAnnotationPresent(gate.annotation.Handler.class))
+				handlers.select(method.getAnnotation(gate.annotation.Handler.class).value())
+					.get().handle(request, response, result);
 			else
-				throw ex;
-		}
+				handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
 	}
 
 	private void executeAsynchronous(HttpServletRequest request,

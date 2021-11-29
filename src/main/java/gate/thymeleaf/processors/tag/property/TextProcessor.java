@@ -35,15 +35,15 @@ public class TextProcessor extends PropertyProcessor
 		Screen screen, Property property, Attributes attributes)
 	{
 		attributes.put("type", "text");
-		if (element.hasAttribute("value"))
-			attributes.put("value", Converter.toString(expression.evaluate(element.getAttributeValue("value"))));
+
+		if (attributes.containsKey("value"))
+			attributes.put("value", Converter.toString(expression.evaluate((String) attributes.get("value"))));
 		else if (!property.toString().endsWith("[]"))
 			attributes.put("value", Converter.toString(property.getValue(screen)));
 
-		if (element.hasAttribute("options"))
+		if (attributes.containsKey("options"))
 		{
-			var options = expression.evaluate(element.getAttributeValue("options"));
-			handler.removeAttribute("options");
+			var options = expression.evaluate((String) attributes.remove("options"));
 
 			Attributes parameters = new Attributes();
 			String id = "datalist-" + sequence.next();
@@ -52,21 +52,19 @@ public class TextProcessor extends PropertyProcessor
 
 			StringJoiner string = new StringJoiner(System.lineSeparator());
 			string.add("<datalist " + parameters + ">");
+
+			String labels = (String) attributes.remove("labels");
+			String values = (String) attributes.remove("values");
+
 			for (Object option : Toolkit.iterable(options))
 			{
 				Object optionLabel = option;
-				if (element.hasAttribute("labels"))
-				{
-					optionLabel = expression.evaluate(element.getAttributeValue("labels"), option);
-					handler.removeAttribute("labels");
-				}
+				if (labels != null)
+					optionLabel = expression.evaluate(labels, option);
 
 				Object optionValue = option;
-				if (element.hasAttribute("values"))
-				{
-					optionValue = expression.evaluate(element.getAttributeValue("values"), option);
-					handler.removeAttribute("values");
-				}
+				if (values != null)
+					optionValue = expression.evaluate(values, option);
 
 				string.add(String.format("<option data-value='%s'>%s</option>",
 					Converter.toString(optionValue), Converter.toText(optionLabel)));
@@ -75,9 +73,9 @@ public class TextProcessor extends PropertyProcessor
 			string.add("</datalist>");
 
 			string.add("<input " + attributes + "/>");
-			handler.replaceWith(string.toString(), false);
+			handler.replaceWith(string.toString(), true);
 		} else
-			handler.replaceWith("<input " + attributes + "/>", false);
+			handler.replaceWith("<input " + attributes + "/>", true);
 	}
 
 }

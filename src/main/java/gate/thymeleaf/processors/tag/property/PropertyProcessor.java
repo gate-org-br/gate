@@ -4,6 +4,8 @@ import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.processors.tag.TagAttributeProcessor;
 import gate.type.Attributes;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -30,11 +32,12 @@ public abstract class PropertyProcessor extends TagAttributeProcessor
 			.map(e -> Property.getProperty(screen.getClass(), e))
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute property on g:" + getElement()));
 
-		Attributes attributes = new Attributes();
-		attributes.put("name", property.toString());
+		Attributes attributes = Stream.of(element.getAllAttributes())
+			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+				e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		property.getConstraints().stream()
-			.filter(e -> !element.hasAttribute(e.getName()))
+			.filter(e -> !attributes.containsKey(e.getName()))
 			.forEachOrdered(e -> attributes.put(e.getName(), e.getValue().toString()));
 
 		if (!attributes.containsKey("data-mask"))

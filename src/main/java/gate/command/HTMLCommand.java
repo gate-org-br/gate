@@ -1,14 +1,11 @@
 package gate.command;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.HTMLCommandCatcher;
 import gate.handler.HTMLCommandHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 
 @Handler(HTMLCommandHandler.class)
-@Catcher(HTMLCommandCatcher.class)
 public class HTMLCommand implements Command
 {
 

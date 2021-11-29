@@ -1,8 +1,6 @@
 package gate.io;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.URLCatcher;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.ConversionException;
@@ -38,7 +36,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-@Catcher(URLCatcher.class)
 @Handler(URLHandler.class)
 public class URL
 {
@@ -206,7 +203,7 @@ public class URL
 		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
+			try ( BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
 					line != null;
@@ -242,7 +239,7 @@ public class URL
 
 		connection.connect();
 
-		try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
+		try ( DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
 		{
 			wr.write(bytes);
 			wr.flush();
@@ -251,7 +248,7 @@ public class URL
 		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
+			try ( BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
 					line != null;
@@ -324,7 +321,7 @@ public class URL
 		@Override
 		public <T> T read(Reader<T> loader) throws IOException
 		{
-			try (InputStream stream = connection.getInputStream())
+			try ( InputStream stream = connection.getInputStream())
 			{
 				return loader.read(stream);
 			}
@@ -333,7 +330,7 @@ public class URL
 		@Override
 		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
-			try (InputStream stream = connection.getInputStream())
+			try ( InputStream stream = connection.getInputStream())
 			{
 				return processor.process(stream);
 			}
