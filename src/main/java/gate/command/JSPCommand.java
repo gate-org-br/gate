@@ -1,14 +1,11 @@
 package gate.command;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.JSPCommandCatcher;
 import gate.handler.JSPCommandHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 
 @Handler(JSPCommandHandler.class)
-@Catcher(JSPCommandCatcher.class)
 public class JSPCommand implements Command
 {
 

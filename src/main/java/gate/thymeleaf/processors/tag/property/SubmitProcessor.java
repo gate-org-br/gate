@@ -5,14 +5,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class HiddenProcessor extends InputProcessor
+public class SubmitProcessor extends InputProcessor
 {
 
 	@Inject
 	ELExpression expression;
 
-	public HiddenProcessor()
+	public SubmitProcessor()
 	{
-		super("hidden");
+		super("submit");
 	}
 }

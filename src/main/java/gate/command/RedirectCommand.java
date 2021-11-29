@@ -1,8 +1,6 @@
 package gate.command;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.RedirectCommandCatcher;
 import gate.error.AppException;
 import gate.handler.RedirectCommandHandler;
 import gate.util.Parameters;
@@ -10,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @Handler(RedirectCommandHandler.class)
-@Catcher(RedirectCommandCatcher.class)
 public class RedirectCommand implements Command
 {
 

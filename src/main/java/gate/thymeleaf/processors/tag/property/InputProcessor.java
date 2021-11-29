@@ -5,33 +5,31 @@ import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-@ApplicationScoped
-public class TextareaProcessor extends PropertyProcessor
+public abstract class InputProcessor extends PropertyProcessor
 {
 
 	@Inject
 	ELExpression expression;
 
-	public TextareaProcessor()
+	public InputProcessor(String name)
 	{
-		super("textarea");
+		super(name);
 	}
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
 		Screen screen, Property property, Attributes attributes)
 	{
-		String value = "";
+		attributes.put("type", getElement());
 		if (attributes.containsKey("value"))
-			value = Converter.toString(expression.evaluate((String) attributes.remove("value")));
+			attributes.put("value", Converter.toString(expression.evaluate((String) attributes.get("value"))));
 		else if (!property.toString().endsWith("[]"))
-			value = Converter.toString(property.getValue(screen));
-		handler.replaceWith("<textarea " + attributes + ">" + value + "</textarea>", true);
+			attributes.put("value", Converter.toString(property.getValue(screen)));
+		handler.replaceWith("<input " + attributes + "/>", true);
 	}
 }

@@ -1,13 +1,10 @@
 package gate.command;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.HideCommandCatcher;
 import gate.handler.HideCommandHandler;
 import java.util.Collections;
 import java.util.List;
 
-@Catcher(HideCommandCatcher.class)
 @Handler(HideCommandHandler.class)
 public class HideCommand implements Command
 {

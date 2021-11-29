@@ -1,15 +1,11 @@
 package gate.command;
 
-import gate.annotation.Catcher;
 import gate.annotation.Handler;
-import gate.catcher.ReloadCommandCatcher;
-import gate.error.AppException;
 import gate.handler.ReloadCommandHandler;
 import java.util.Collections;
 import java.util.List;
 
 @Handler(ReloadCommandHandler.class)
-@Catcher(ReloadCommandCatcher.class)
 public class ReloadCommand implements Command
 {
 
