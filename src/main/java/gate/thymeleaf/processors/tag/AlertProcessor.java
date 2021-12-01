@@ -1,12 +1,23 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.Model;
+import gate.base.Screen;
+import gate.thymeleaf.ELExpression;
+import java.util.List;
 import java.util.StringJoiner;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class AlertProcessor extends ModelProcessor
+public class AlertProcessor extends TagAttributeProcessor
 {
+
+	@Inject
+	private ELExpression expression;
 
 	public AlertProcessor()
 	{
@@ -14,9 +25,18 @@ public class AlertProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		var messages = model.screen().getMessages();
+		List<String> messages = extract(element, handler, "messages")
+			.map(expression::evaluate)
+			.map(e -> (List<String>) e)
+			.orElseGet(() ->
+			{
+				IWebContext webContext = (IWebContext) context;
+				HttpServletRequest request = webContext.getRequest();
+				Screen screen = (Screen) request.getAttribute("screen");
+				return screen != null ? screen.getMessages() : List.of();
+			});
 
 		if (!messages.isEmpty())
 		{
@@ -36,9 +56,8 @@ public class AlertProcessor extends ModelProcessor
 			string.add("});");
 			string.add("</script>");
 
-			model.replaceAll(string.toString());
+			handler.replaceWith(string.toString(), false);
 		} else
-			model.removeAll();
+			handler.removeElement();
 	}
-
 }
