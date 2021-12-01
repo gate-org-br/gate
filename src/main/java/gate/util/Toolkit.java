@@ -150,4 +150,18 @@ public class Toolkit
 				.log(Level.SEVERE, null, ex);
 		}
 	}
+
+	public static String escapeHTML(String string)
+	{
+		StringBuilder result = new StringBuilder(Math.max(16, string.length()));
+		for (int i = 0; i < string.length(); i++)
+		{
+			char c = string.charAt(i);
+			if (c > 127 || c == '"' || c == '\'' || c == '<' || c == '>' || c == '&')
+				result.append("&#").append((int) c).append(';');
+			else
+				result.append(c);
+		}
+		return result.toString();
+	}
 }

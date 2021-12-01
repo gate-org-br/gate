@@ -2,6 +2,7 @@ package gate.thymeleaf.processors.tag;
 
 import gate.entity.User;
 import gate.thymeleaf.Model;
+import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -21,6 +22,12 @@ public class SuperUserProcessor extends ModelProcessor
 			model.removeTag();
 		else
 			model.removeAll();
+	}
+
+	@Override
+	public int getPrecedence()
+	{
+		return Precedence.HIGH;
 	}
 
 }

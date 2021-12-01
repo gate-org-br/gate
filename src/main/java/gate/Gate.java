@@ -28,20 +28,13 @@ import gate.type.Result;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedThreadFactory;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -49,14 +42,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.jboss.weld.context.api.ContextualInstance;
-import org.jboss.weld.context.bound.BoundConversationContext;
-import org.jboss.weld.context.bound.BoundLiteral;
-import org.jboss.weld.context.bound.BoundRequest;
-import org.jboss.weld.context.bound.BoundRequestContext;
-import org.jboss.weld.context.bound.BoundSessionContext;
-import org.jboss.weld.context.bound.MutableBoundRequest;
-import org.jboss.weld.manager.api.WeldManager;
+import org.eclipse.microprofile.context.ManagedExecutor;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -68,23 +54,14 @@ public class Gate extends HttpServlet
 
 	@Inject
 	@Current
-	private Org org;
-
-	@Inject
-	@Current
 	private App app;
 
 	@Inject
-	private GateControl control;
-
-	@Resource
-	private ManagedThreadFactory managedThreadFactory;
+	@Current
+	private Org org;
 
 	@Inject
 	private Logger logger;
-
-	@Inject
-	private Event<LoginEvent> event;
 
 	@Any
 	@Inject
@@ -95,7 +72,16 @@ public class Gate extends HttpServlet
 	Instance<Handler> handlers;
 
 	@Inject
+	private GateControl control;
+
+	@Inject
+	private Event<LoginEvent> event;
+
+	@Inject
 	private HTMLCommandHandler htmlHanlder;
+
+	@Inject
+	private ManagedExecutor managedExecutor;
 
 	static final String HTML = "/views/Gate.html";
 
@@ -239,46 +225,13 @@ public class Gate extends HttpServlet
 		request.setAttribute("process", progress.getProcess());
 		handlers.select(Handler.getHandler(Integer.class)).get().handle(request, response, progress.getProcess());
 
-		Map<Class<? extends Annotation>, Collection<ContextualInstance<?>>> scopeToContextualInstances = new HashMap<>();
-		CDI.current().select(WeldManager.class).get().getActiveWeldAlterableContexts()
-			.forEach(context -> scopeToContextualInstances.put(context.getScope(), context.getAllContextualInstances()));
-
-		managedThreadFactory.newThread(() ->
+		managedExecutor.runAsync(() ->
 		{
 			Progress.bind(progress);
 			try
 			{
 				Thread.sleep(1000);
-
-				WeldManager weldManager = CDI.current().select(WeldManager.class).get();
-				BoundRequestContext requestContext = weldManager.instance().select(BoundRequestContext.class, BoundLiteral.INSTANCE).get();
-				BoundSessionContext sessionContext = weldManager.instance().select(BoundSessionContext.class, BoundLiteral.INSTANCE).get();
-				BoundConversationContext conversationContext = weldManager.instance().select(BoundConversationContext.class, BoundLiteral.INSTANCE).get();
-
-				Map<String, Object> sessionMap = new HashMap<>();
-				Map<String, Object> requestMap = new HashMap<>();
-				BoundRequest boundRequest = new MutableBoundRequest(requestMap, sessionMap);
-
-				requestContext.associate(requestMap);
-				requestContext.activate();
-				sessionContext.associate(sessionMap);
-				sessionContext.activate();
-				conversationContext.associate(boundRequest);
-				conversationContext.activate();
-
-				if (scopeToContextualInstances.get(requestContext.getScope()) != null)
-					requestContext.clearAndSet(scopeToContextualInstances.get(requestContext.getScope()));
-				if (scopeToContextualInstances.get(sessionContext.getScope()) != null)
-					sessionContext.clearAndSet(scopeToContextualInstances.get(sessionContext.getScope()));
-				if (scopeToContextualInstances.get(conversationContext.getScope()) != null)
-					conversationContext.clearAndSet(scopeToContextualInstances.get(conversationContext.getScope()));
-
 				Object url = screen.execute(method);
-
-				requestContext.deactivate();
-				conversationContext.deactivate();
-				sessionContext.deactivate();
-
 				if (url != null)
 					Progress.redirect(url.toString());
 			} catch (InvocationTargetException ex)
@@ -305,7 +258,7 @@ public class Gate extends HttpServlet
 					Progress.dispose();
 				}
 			}
-		}).start();
+		});
 
 	}
 }
