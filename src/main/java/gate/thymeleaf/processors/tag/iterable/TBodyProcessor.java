@@ -1,9 +1,13 @@
 package gate.thymeleaf.processors.tag.iterable;
 
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
 public class TBodyProcessor extends IterableProcessor
@@ -15,23 +19,26 @@ public class TBodyProcessor extends IterableProcessor
 	}
 
 	@Override
-	protected void process(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		Attributes attributes = new Attributes();
-		model.attributes().filter(e -> e.getValue() != null)
-			.filter(e -> !"source".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"target".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"depth".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"index".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"children".equals(e.getAttributeCompleteName()))
-			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		model.removeTag();
+		Attributes attributes
+			= Stream.of(element.getAllAttributes()).filter(e -> e.getValue() != null)
+				.filter(e -> !"source".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"target".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"depth".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"index".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"children".equals(e.getAttributeCompleteName()))
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+					e -> e.getValue(), (a, b) -> a, Attributes::new));
+
+		removeTag(context, model, handler);
 		IModel content = model.cloneModel();
+		model.reset();
 
-		model.removeAll();
-		iterate(model, content);
-
-		model.encloseWith("tbody", attributes);
+		add(context, model, handler, "<tbody " + attributes + ">");
+		iterate(context, model, handler, element, content);
+		add(context, model, handler, "</tbody>");
 	}
 }

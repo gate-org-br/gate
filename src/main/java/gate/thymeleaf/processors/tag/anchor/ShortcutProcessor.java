@@ -1,15 +1,18 @@
 package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Command;
-import gate.annotation.Asynchronous;
 import gate.entity.User;
 import gate.io.URL;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.IStandaloneElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
 public class ShortcutProcessor extends AnchorProcessor
@@ -24,62 +27,67 @@ public class ShortcutProcessor extends AnchorProcessor
 	}
 
 	@Override
-	protected void process(Model model, Command command, Attributes attributes, Parameters parameters)
+	protected void process(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		User user,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
 	{
-		User user = (User) model.session().getAttribute(User.class.getName());
-
-		if (command.checkAccess(user)
-			&& (!model.has("condition")
-			|| (boolean) expression.evaluate(model.get("condition"))))
-			if ("POST".equalsIgnoreCase((String) expression.evaluate(model.get("method"))))
-				createButton(model, command, attributes, parameters);
+		if (command.checkAccess(user) && condition(attributes))
+			if ("POST".equalsIgnoreCase(method(attributes)))
+				button(context, model, handler, element, command, attributes, parameters);
 			else
-				createLink(model, command, attributes, parameters);
+				link(context, model, handler, element, command, attributes, parameters);
 		else
-			model.removeAll();
+			model.reset();
 	}
 
-	public void createLink(Model model, Command command, Attributes attributes, Parameters parameters)
-	{
-		attributes.put("href", URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
-			parameters.toString()));
-
-		if (model.has("target"))
-			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(expression.evaluate(model.get("target"))))
-					attributes.put("target", expression.evaluate(model.get("_progress-dialog")));
-				else
-					attributes.put("target", expression.evaluate(model.get("_progress-window")));
-			else
-				attributes.put("target", expression.evaluate(model.get("target")));
-
-		if (model.isStandalone())
-			model.replaceAll("<a " + attributes + ">" + command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?") + "</a>");
-		else
-			model.replaceTag("a", attributes);
-	}
-
-	public void createButton(Model model, Command command, Attributes attributes, Parameters parameters)
+	public void button(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
 	{
 		attributes.put("formaction", URL.toString(command.getModule(),
 			command.getScreen(),
 			command.getAction(),
 			parameters.toString()));
 
-		if (model.has("target"))
-			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(expression.evaluate(model.get("target"))))
-					attributes.put("formtarget", expression.evaluate(model.get("_progress-dialog")));
-				else
-					attributes.put("formtarget", expression.evaluate(model.get("_progress-window")));
-			else
-				attributes.put("formtarget", expression.evaluate(model.get("target")));
+		target(command, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
-		if (model.isStandalone())
-			model.replaceAll("<button " + attributes + ">" + command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?") + "</button>");
-		else
-			model.replaceTag("button", attributes);
+		if (element instanceof IStandaloneElementTag)
+		{
+			String icon = command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
+			replaceWith(context, model, handler, "<button " + attributes + ">" + icon + "</button>");
+		} else
+			replaceTag(context, model, handler, "button", attributes);
+	}
+
+	public void link(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
+	{
+		attributes.put("href", URL.toString(command.getModule(),
+			command.getScreen(),
+			command.getAction(),
+			parameters.toString()));
+
+		target(command, attributes).ifPresent(target -> attributes.put("target", target));
+
+		if (element instanceof IStandaloneElementTag)
+		{
+			String icon = command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
+			replaceWith(context, model, handler, "<a " + attributes + ">" + icon + "</button>");
+		} else
+			replaceTag(context, model, handler, "a", attributes);
 	}
 }

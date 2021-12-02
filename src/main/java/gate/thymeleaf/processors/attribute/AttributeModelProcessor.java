@@ -1,8 +1,8 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.Model;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.processors.Processor;
+import gate.type.Attributes;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeNames;
 import org.thymeleaf.engine.ElementNames;
@@ -25,8 +25,6 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 		this(null, attribute);
 	}
 
-	protected abstract void process(Model model);
-
 	public AttributeModelProcessor(String element, String attribute)
 	{
 		this.name = attribute;
@@ -36,12 +34,6 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 
 		this.matchingAttributeName = MatchingAttributeName.forAttributeName(TemplateMode.HTML,
 			AttributeNames.forName(TemplateMode.HTML, "g", attribute));
-	}
-
-	@Override
-	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
-	{
-		process(new Model(name, context, model, handler));
 	}
 
 	@Override
@@ -68,4 +60,30 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 		return Precedence.DEFAULT;
 	}
 
+	public void add(ITemplateContext context, IModel model,
+		IElementModelStructureHandler handler, String text)
+	{
+		model.add(context.getModelFactory().createText(text));
+	}
+
+	public void removeTag(ITemplateContext context,
+		IModel model, IElementModelStructureHandler handler)
+	{
+		model.remove(0);
+		model.remove(model.size() - 1);
+	}
+
+	public void replaceTag(ITemplateContext context,
+		IModel model, IElementModelStructureHandler handler, String tag, Attributes attributes)
+	{
+		model.replace(0, context.getModelFactory().createText("<" + tag + " " + attributes + ">"));
+		model.replace(model.size() - 1, context.getModelFactory().createText("</" + tag + ">"));
+	}
+
+	public void replaceWith(ITemplateContext context,
+		IModel model, IElementModelStructureHandler handler, String text)
+	{
+		model.reset();
+		model.add(context.getModelFactory().createText(text));
+	}
 }

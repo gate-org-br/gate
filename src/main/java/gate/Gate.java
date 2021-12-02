@@ -4,7 +4,6 @@ import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
 import gate.base.Screen;
-import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
 import gate.error.AccessDeniedException;
@@ -29,7 +28,6 @@ import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
 import javax.enterprise.event.Event;
@@ -42,7 +40,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.microprofile.context.ManagedExecutor;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -51,10 +48,6 @@ public class Gate extends HttpServlet
 {
 
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	@Current
-	private App app;
 
 	@Inject
 	@Current
@@ -72,6 +65,13 @@ public class Gate extends HttpServlet
 	Instance<Handler> handlers;
 
 	@Inject
+	private JakartaRunner runner;
+
+	@Inject
+	@Current
+	private gate.entity.App app;
+
+	@Inject
 	private GateControl control;
 
 	@Inject
@@ -79,9 +79,6 @@ public class Gate extends HttpServlet
 
 	@Inject
 	private HTMLCommandHandler htmlHanlder;
-
-	@Inject
-	private ManagedExecutor managedExecutor;
 
 	static final String HTML = "/views/Gate.html";
 
@@ -148,9 +145,21 @@ public class Gate extends HttpServlet
 				}
 
 				if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-					executeAsynchronous(httpServletRequest, response, user, screen, command.getMethod());
-				else
-					execute(httpServletRequest, response, screen, command.getMethod());
+				{
+					Progress progress = Progress.create(org, app, user);
+					request.setAttribute("process", progress.getProcess());
+					handlers.select(Handler.getHandler(Integer.class)).get().handle(request, response, progress.getProcess());
+					runner.execute(progress, httpServletRequest, screen, command.getMethod());
+				} else
+				{
+					Object result = screen.execute(command.getMethod());
+					if (result != null)
+						if (command.getMethod().isAnnotationPresent(gate.annotation.Handler.class))
+							handlers.select(command.getMethod().getAnnotation(gate.annotation.Handler.class).value())
+								.get().handle(request, response, result);
+						else
+							handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
+				}
 			}
 
 		} catch (InvalidUsernameException
@@ -201,64 +210,5 @@ public class Gate extends HttpServlet
 			logger.error(ex.getMessage(), ex);
 			htmlHanlder.handle(httpServletRequest, response, HTML);
 		}
-	}
-
-	private void execute(HttpServletRequest request,
-		HttpServletResponse response, Screen screen, Method method)
-		throws RuntimeException, IllegalAccessException, InvocationTargetException,
-		ReflectiveOperationException
-	{
-
-		Object result = screen.execute(method);
-		if (result != null)
-			if (method.isAnnotationPresent(gate.annotation.Handler.class))
-				handlers.select(method.getAnnotation(gate.annotation.Handler.class).value())
-					.get().handle(request, response, result);
-			else
-				handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
-	}
-
-	private void executeAsynchronous(HttpServletRequest request,
-		HttpServletResponse response, User user, Screen screen, Method method)
-	{
-		Progress progress = Progress.create(org, app, user);
-		request.setAttribute("process", progress.getProcess());
-		handlers.select(Handler.getHandler(Integer.class)).get().handle(request, response, progress.getProcess());
-
-		managedExecutor.runAsync(() ->
-		{
-			Progress.bind(progress);
-			try
-			{
-				Thread.sleep(1000);
-				Object url = screen.execute(method);
-				if (url != null)
-					Progress.redirect(url.toString());
-			} catch (InvocationTargetException ex)
-			{
-				if (Progress.Status.PENDING.equals(Progress.status()))
-					Progress.cancel(ex.getCause().getMessage());
-				else
-					Progress.message(ex.getCause().getMessage());
-			} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
-			{
-				if (Progress.Status.PENDING.equals(Progress.status()))
-					Progress.cancel(ex.getMessage());
-				else
-					Progress.message(ex.getMessage());
-				logger.error(ex.getMessage(), ex);
-			} finally
-			{
-				try
-				{
-					Thread.sleep(5000);
-					Progress.dispose();
-				} catch (InterruptedException ex)
-				{
-					Progress.dispose();
-				}
-			}
-		});
-
 	}
 }

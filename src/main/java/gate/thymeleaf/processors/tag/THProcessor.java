@@ -2,14 +2,22 @@ package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.IStandaloneElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class THProcessor extends ModelProcessor
+public class THProcessor extends TagModelProcessor
 {
 
 	@Inject
@@ -21,41 +29,45 @@ public class THProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		Attributes attributes = new Attributes();
-		model.attributes()
-			.filter(e -> e.getValue() != null)
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
+		Attributes attributes = Stream.of(element.getAllAttributes())
 			.filter(e -> !"value".equals(e.getAttributeCompleteName()))
 			.filter(e -> !"ordenate".equals(e.getAttributeCompleteName()))
-			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
+			.filter(e -> !"format".equals(e.getAttributeCompleteName()))
+			.filter(e -> !"empty".equals(e.getAttributeCompleteName()))
+			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+				e -> e.getValue(), (a, b) -> a, Attributes::new));
 
-		if (model.isStandalone())
-			standalone(model, attributes);
+		if (element instanceof IStandaloneElementTag)
+			standalone(context, model, handler, element, attributes);
 		else
-			nonStandalone(model, attributes);
+			nonStandalone(context, model, handler, element, attributes);
 	}
 
-	private void standalone(Model model, Attributes attributes)
+	private void standalone(ITemplateContext context, IModel model, IElementModelStructureHandler handler, IProcessableElementTag element, Attributes attributes)
 	{
 
-		var value = expression.evaluate(model.get("value"));
-		String string = Converter.toText(value, model.get("format"));
-		if (string.isBlank() && model.has("empty"))
-			string = Converter.toText(expression.evaluate(model.get("empty")));
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+
+		var value = expression.evaluate(element.getAttributeValue("value"));
+		String string = Converter.toText(value, element.getAttributeValue("format"));
+		if (string.isBlank() && element.hasAttribute("empty"))
+			string = Converter.toText(expression.evaluate(element.getAttributeValue("empty")));
 		String body = string.replaceAll("\\n", "<br/>");
 
-		model.removeAll();
-		model.add("<th " + attributes + ">");
+		model.reset();
+		add(context, model, handler, "<th " + attributes + ">");
 
-		if (model.has("ordenate"))
+		if (element.hasAttribute("ordenate"))
 		{
-			var ordenate = model.get("ordenate");
+			var ordenate = element.getAttributeValue("ordenate");
 			final String ordenateDesc = "-" + ordenate;
 
 			Parameters parameters = new Parameters();
-			parameters.put(model.request().getQueryString());
-			String orderBy = model.request().getParameter("orderBy");
+			parameters.put(request.getQueryString());
+			String orderBy = request.getParameter("orderBy");
 			parameters.remove("orderBy");
 
 			String arrow = "";
@@ -69,26 +81,28 @@ public class THProcessor extends ModelProcessor
 			else if (!ordenateDesc.equals(orderBy))
 				parameters.put("orderBy", ordenate);
 
-			if ("post".equalsIgnoreCase(model.get("method")))
-				model.add("<button formaction='Gate?" + parameters + "'>" + arrow + body + "</button>");
+			if ("post".equalsIgnoreCase(element.getAttributeValue("method")))
+				add(context, model, handler, "<button formaction='Gate?" + parameters + "'>" + arrow + body + "</button>");
 			else
-				model.add("<a href='Gate?" + parameters + "'>" + arrow + body + "</a>");
+				add(context, model, handler, "<a href='Gate?" + parameters + "'>" + arrow + body + "</a>");
 		} else
-			model.add(body);
+			add(context, model, handler, body);
 
-		model.add("</th>");
+		add(context, model, handler, "</th>");
 	}
 
-	private void nonStandalone(Model model, Attributes attributes)
+	private void nonStandalone(ITemplateContext context, IModel model, IElementModelStructureHandler handler, IProcessableElementTag element, Attributes attributes)
 	{
-		if (model.has("ordenate"))
+		if (element.hasAttribute("ordenate"))
 		{
-			var ordenate = model.get("ordenate");
+			HttpServletRequest request = ((IWebContext) context).getRequest();
+
+			var ordenate = element.getAttributeValue("ordenate");
 			final String ordenateDesc = "-" + ordenate;
 
 			Parameters parameters = new Parameters();
-			parameters.put(model.request().getQueryString());
-			String orderBy = model.request().getParameter("orderBy");
+			parameters.put(request.getQueryString());
+			String orderBy = request.getParameter("orderBy");
 			parameters.remove("orderBy");
 
 			String arrow = "";
@@ -102,11 +116,11 @@ public class THProcessor extends ModelProcessor
 			else if (!ordenateDesc.equals(orderBy))
 				parameters.put("orderBy", ordenate);
 
-			if ("post".equalsIgnoreCase(model.get("method")))
-				model.replaceTag("<th " + attributes + "><button formaction='Gate?" + parameters + "'>" + arrow, "</button></th>");
+			if ("post".equalsIgnoreCase(element.getAttributeValue("method")))
+				replaceTag(context, model, handler, "<th " + attributes + "><button formaction='Gate?" + parameters + "'>" + arrow, "</button></th>");
 			else
-				model.replaceTag("<th " + attributes + "><a href='Gate?" + parameters + "'>" + arrow, "</a></th>");
+				replaceTag(context, model, handler, "<th " + attributes + "><a href='Gate?" + parameters + "'>" + arrow, "</a></th>");
 		} else
-			model.replaceTag("th", attributes);
+			replaceTag(context, model, handler, "th", attributes);
 	}
 }
