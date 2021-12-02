@@ -2,7 +2,6 @@ package gate.thymeleaf.processors.tag;
 
 import gate.Command;
 import gate.entity.User;
-import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
@@ -11,12 +10,12 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class SecureProcessor extends AttributeProcessor
+public class SecureProcessor extends TagProcessor
 {
 
 	public SecureProcessor()
 	{
-		super("secure", null);
+		super("secure");
 	}
 
 	@Override

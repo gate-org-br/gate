@@ -13,7 +13,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class AlertProcessor extends TagAttributeProcessor
+public class AlertProcessor extends TagProcessor
 {
 
 	@Inject

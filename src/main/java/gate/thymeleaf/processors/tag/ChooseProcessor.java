@@ -4,14 +4,16 @@ import gate.thymeleaf.*;
 import java.util.ArrayList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.ICloseElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IOpenElementTag;
 import org.thymeleaf.model.ITemplateEvent;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class ChooseProcessor extends ModelProcessor
+public class ChooseProcessor extends TagModelProcessor
 {
 
 	@Inject
@@ -23,22 +25,22 @@ public class ChooseProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
 		IModel otherwise = null;
 		var whens = new ArrayList<IModel>();
 
 		int i = 0;
-		while (i < model.getModel().size())
+		while (i < model.size())
 		{
-			if (isOpenTag(model.getModel().get(i), "g:when"))
+			if (isOpenTag(model.get(i), "g:when"))
 			{
-				IModel when = model.getContext().getModelFactory().createModel();
+				IModel when = context.getModelFactory().createModel();
 
 				int stack = 0;
 				do
 				{
-					var event = model.getModel().get(i++);
+					var event = model.get(i++);
 
 					when.add(event);
 					if (isOpenTag(event, "g:when"))
@@ -46,20 +48,20 @@ public class ChooseProcessor extends ModelProcessor
 					else if (isCloseTag(event, "g:when"))
 						stack--;
 
-				} while (i < model.getModel().size() && stack > 0);
+				} while (i < model.size() && stack > 0);
 
 				if (stack != 0)
 					throw new TemplateProcessingException("Unbalanced g:when tag");
 
 				whens.add(when);
-			} else if (isOpenTag(model.getModel().get(i), "g:otherwise"))
+			} else if (isOpenTag(model.get(i), "g:otherwise"))
 			{
-				otherwise = model.getContext().getModelFactory().createModel();
+				otherwise = context.getModelFactory().createModel();
 
 				int stack = 0;
 				do
 				{
-					var event = model.getModel().get(i++);
+					var event = model.get(i++);
 
 					otherwise.add(event);
 					if (isOpenTag(event, "g:otherwise"))
@@ -67,7 +69,7 @@ public class ChooseProcessor extends ModelProcessor
 					else if (isCloseTag(event, "g:otherwise"))
 						stack--;
 
-				} while (i < model.getModel().size() && stack > 0);
+				} while (i < model.size() && stack > 0);
 
 				if (stack != 0)
 					throw new TemplateProcessingException("Unbalanced g:otherwise tag");
@@ -76,7 +78,7 @@ public class ChooseProcessor extends ModelProcessor
 				i++;
 		}
 
-		model.removeAll();
+		model.reset();
 
 		for (IModel imodel : whens)
 		{
@@ -84,14 +86,14 @@ public class ChooseProcessor extends ModelProcessor
 			if ((boolean) expression.evaluate(when.getAttributeValue("condition")))
 			{
 				for (int j = 1; j < imodel.size() - 1; j++)
-					model.getModel().add(imodel.get(j));
+					model.add(imodel.get(j));
 				return;
 			}
 		}
 
 		if (otherwise != null)
 			for (int j = 1; j < otherwise.size() - 1; j++)
-				model.getModel().add(otherwise.get(j));
+				model.add(otherwise.get(j));
 
 	}
 

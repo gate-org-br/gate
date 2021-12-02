@@ -1,10 +1,13 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.Model;
 import javax.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class InsertProcessor extends ModelProcessor
+public class InsertProcessor extends TagModelProcessor
 {
 
 	public InsertProcessor()
@@ -14,8 +17,11 @@ public class InsertProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		model.replaceAll(model.request().getAttribute("g-template-content").toString());
+		var request = ((IWebContext) context).getRequest();
+		var content = request.getAttribute("g-template-content");
+		request.removeAttribute("g-template-content");
+		replaceWith(context, model, handler, content.toString());
 	}
 }

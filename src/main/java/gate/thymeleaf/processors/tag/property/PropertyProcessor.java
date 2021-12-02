@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.processors.tag.TagAttributeProcessor;
+import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +13,7 @@ import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-public abstract class PropertyProcessor extends TagAttributeProcessor
+public abstract class PropertyProcessor extends TagProcessor
 {
 
 	public PropertyProcessor(String name)

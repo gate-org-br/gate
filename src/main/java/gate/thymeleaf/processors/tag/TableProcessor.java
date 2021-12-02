@@ -2,13 +2,18 @@ package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class TableProcessor extends ModelProcessor
+public class TableProcessor extends TagModelProcessor
 {
 
 	@Inject
@@ -20,22 +25,28 @@ public class TableProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		if (!model.has("condition") || (boolean) expression.evaluate(model.get("condition")))
-		{
-			Attributes attributes = new Attributes();
-			model.attributes()
-				.filter(e -> e.getValue() != null)
-				.filter(e -> !"condition".equals(e.getAttributeCompleteName()))
-				.filter(e -> !"otherwise".equals(e.getAttributeCompleteName()))
-				.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-			model.replaceTag("table", attributes);
-		} else if (model.has("otherwise"))
-			model.replaceAll("<div class='TEXT'><h1>" + Converter.toText(expression.evaluate(model.get("otherwise"))) + "</h1></div>");
-		else
-			model.removeAll();
+		Attributes attributes = Stream.of(element.getAllAttributes())
+			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+				e -> e.getValue(), (a, b) -> a, Attributes::new));
+
+		if (!attributes.containsKey("condition")
+			|| (boolean) expression.evaluate((String) attributes.remove("condition")))
+		{
+			attributes.remove("otherwise");
+			replaceTag(context, model, handler, "table", attributes);
+		} else if (attributes.containsKey("otherwise"))
+		{
+			var otherwise = attributes.remove("otherwise");
+			otherwise = expression.evaluate((String) otherwise);
+			otherwise = Converter.toText(otherwise);
+			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
+			replaceWith(context, model, handler, otherwise.toString());
+		} else
+			model.reset();
 	}
 
 }

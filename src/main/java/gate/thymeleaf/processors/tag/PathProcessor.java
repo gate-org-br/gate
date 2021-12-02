@@ -16,7 +16,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class PathProcessor extends TagAttributeProcessor
+public class PathProcessor extends TagProcessor
 {
 
 	public PathProcessor()

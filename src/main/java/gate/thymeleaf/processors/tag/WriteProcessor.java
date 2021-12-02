@@ -10,7 +10,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class WriteProcessor extends TagAttributeProcessor
+public class WriteProcessor extends TagProcessor
 {
 
 	@Inject

@@ -11,7 +11,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class ConditionProcessor extends TagAttributeProcessor
+public class ConditionProcessor extends TagProcessor
 {
 
 	@Inject

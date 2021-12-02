@@ -15,7 +15,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class PaginatorProcessor extends TagAttributeProcessor
+public class PaginatorProcessor extends TagProcessor
 {
 
 	@Inject

@@ -1,12 +1,15 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.entity.User;
-import gate.thymeleaf.Model;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class SuperUserProcessor extends ModelProcessor
+public class SuperUserProcessor extends TagModelProcessor
 {
 
 	public SuperUserProcessor()
@@ -15,13 +18,14 @@ public class SuperUserProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		User user = (User) model.session().getAttribute(User.class.getName());
+		var request = ((IWebContext) context).getRequest();
+		User user = (User) request.getSession().getAttribute(User.class.getName());
 		if (user != null && user.isSuperUser())
-			model.removeTag();
+			removeTag(context, model, handler);
 		else
-			model.removeAll();
+			model.reset();
 	}
 
 	@Override

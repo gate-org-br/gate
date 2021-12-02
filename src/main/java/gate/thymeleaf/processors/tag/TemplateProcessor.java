@@ -1,16 +1,20 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.thymeleaf.FileEngine;
-import gate.thymeleaf.Model;
 import gate.thymeleaf.TextEngine;
 import java.io.IOException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class TemplateProcessor extends ModelProcessor
+public class TemplateProcessor extends TagModelProcessor
 {
 
 	@Inject
@@ -26,29 +30,38 @@ public class TemplateProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
 
-		try
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
+
+		if (!element.hasAttribute("filename"))
+			throw new TemplateProcessingException("Missing required attribute filename on g:template");
+
+		var filename = element.getAttributeValue("filename");
+
+		removeTag(context, model, handler);
+
+		var content = textEngine.process(model, context);
+		var request = ((IWebContext) context).getRequest();
+		request.setAttribute("g-template-content", content);
+
+		if (filename.endsWith(".jsp"))
 		{
-			if (!model.has("filename"))
-				throw new TemplateProcessingException("Missing required attribute filename on g:template");
-
-			model.removeTag();
-
-			model.request().setAttribute("g-template-content", textEngine.process(model.getModel(), model.getContext()));
-
-			if (!model.get("filename").endsWith(".jsp"))
-				model.replaceAll(fileEngine.process(model.get("filename"), model.getContext()));
-			else
-				model.request().getRequestDispatcher(model.get("filename"))
-					.forward(model.request(), model.response());
-
-			model.request().removeAttribute("g-template-content");
-		} catch (IOException | ServletException ex)
+			var response = ((IWebContext) context).getResponse();
+			try
+			{
+				request.getRequestDispatcher(filename).forward(request, response);
+			} catch (IOException | ServletException ex)
+			{
+				throw new TemplateProcessingException(ex.getMessage(), ex);
+			}
+		} else
 		{
-			throw new TemplateProcessingException(ex.getMessage(), ex);
+			content = fileEngine.process(filename, context);
+			replaceWith(context, model, handler, content);
 		}
-	}
 
+		request.removeAttribute("g-template-content");
+	}
 }

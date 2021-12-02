@@ -1,14 +1,17 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.Model;
 import gate.thymeleaf.TextEngine;
 import gate.util.Icons;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
-public class IconsProcessor extends ModelProcessor
+public class IconsProcessor extends TagModelProcessor
 {
 
 	@Inject
@@ -20,21 +23,25 @@ public class IconsProcessor extends ModelProcessor
 	}
 
 	@Override
-	protected void doProcess(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		String name = "icon";
-		if (model.has("name"))
-			name = model.get("name");
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		model.removeTag();
+		String name = "icon";
+		if (element.hasAttribute("name"))
+			name = element.getAttributeValue("name");
+
+		removeTag(context, model, handler);
 		IModel content = model.cloneModel();
-		model.removeAll();
+		model.reset();
+
+		var request = ((IWebContext) context).getRequest();
 
 		for (Icons.Icon icon : Icons.getInstance().get())
 		{
-			model.request().setAttribute(name, icon);
-			model.add(engine.process(content, model.getContext()));
-			model.request().removeAttribute(name);
+			request.setAttribute(name, icon);
+			add(context, model, handler, engine.process(content, context));
+			request.removeAttribute(name);
 		}
 	}
 }
