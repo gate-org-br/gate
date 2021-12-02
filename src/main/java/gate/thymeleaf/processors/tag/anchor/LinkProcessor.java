@@ -1,17 +1,21 @@
 package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Command;
-import gate.annotation.Asynchronous;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.io.URL;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.Model;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import java.util.Optional;
 import java.util.StringJoiner;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.IStandaloneElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
 public class LinkProcessor extends AnchorProcessor
@@ -26,73 +30,85 @@ public class LinkProcessor extends AnchorProcessor
 	}
 
 	@Override
-	protected void process(Model model, Command command, Attributes attributes, Parameters parameters)
+	protected void process(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		User user,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
 	{
-		User user = (User) model.session().getAttribute(User.class.getName());
-
 		if (command.checkAccess(user))
-			if (!model.has("condition") || (boolean) expression.evaluate(model.get("condition")))
-				if ("POST".equalsIgnoreCase((String) expression.evaluate(model.get("method"))))
-					createButton(model, command, attributes, parameters);
+			if (condition(attributes))
+				if ("POST".equalsIgnoreCase(method(attributes)))
+					button(context, model, handler, element, command, attributes, parameters);
 				else
-					createLink(model, command, attributes, parameters);
-			else if (model.has("otherwise"))
-				model.replaceAll(Converter.toText(expression.evaluate(model.get("otherwise"))));
+					link(context, model, handler, element, command, attributes, parameters);
 			else
-				model.removeAll();
+				otherwise(attributes).ifPresentOrElse(e -> replaceWith(context, model, handler, e), model::reset);
 		else
-			model.removeAll();
+			model.reset();
 	}
 
-	private void createButton(Model model, Command command, Attributes attributes, Parameters parameters)
+	private void button(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
 	{
 		attributes.put("formaction", URL.toString(command.getModule(),
 			command.getScreen(),
 			command.getAction(),
 			parameters.toString()));
 
-		if (model.has("target"))
-			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(expression.evaluate(model.get("target"))))
-					attributes.put("formtarget", expression.evaluate(model.get("_progress-dialog")));
-				else
-					attributes.put("formtarget", expression.evaluate(model.get("_progress-window")));
-			else
-				attributes.put("formtarget", expression.evaluate(model.get("target")));
+		target(command, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
-		if (model.isStandalone())
+		if (element instanceof IStandaloneElementTag)
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 			command.getName().ifPresent(body::add);
 			command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
-			model.replaceAll("<button " + attributes + ">" + body + "</button>");
+			replaceWith(context, model, handler, "<button " + attributes + ">" + body + "</button>");
 		} else
-			model.replaceTag("button", attributes);
+			replaceTag(context, model, handler, "button", attributes);
 	}
 
-	private void createLink(Model model, Command command, Attributes attributes, Parameters parameters)
+	private void link(ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		Command command,
+		Attributes attributes,
+		Parameters parameters)
 	{
 		attributes.put("href", URL.toString(command.getModule(),
 			command.getScreen(),
 			command.getAction(),
 			parameters.toString()));
 
-		if (model.has("target"))
-			if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-				if ("_dialog".equals(expression.evaluate(model.get("target"))))
-					attributes.put("target", expression.evaluate(model.get("_progress-dialog")));
-				else
-					attributes.put("target", expression.evaluate(model.get("_progress-window")));
-			else
-				attributes.put("target", expression.evaluate(model.get("target")));
+		target(command, attributes).ifPresent(target -> attributes.put("target", target));
 
-		if (model.isStandalone())
+		if (element instanceof IStandaloneElementTag)
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 			command.getName().ifPresent(body::add);
 			command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
-			model.replaceAll("<a " + attributes + ">" + body + "</a>");
+			replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");
 		} else
-			model.replaceTag("a", attributes);
+			replaceTag(context, model, handler, "a", attributes);
+	}
+
+	private Optional<String> otherwise(Attributes attributes)
+	{
+		if (!attributes.containsKey("otherwise"))
+			return Optional.empty();
+		Object otherwise = attributes.remove("otherwise");
+		otherwise = expression.evaluate((String) otherwise);
+		if (otherwise == null)
+			return Optional.empty();
+		return Optional.of(Converter.toText(otherwise));
 	}
 }

@@ -52,16 +52,15 @@ public abstract class TagModelProcessor implements IElementModelProcessor, IElem
 		return Precedence.DEFAULT;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
 	public void add(ITemplateContext context, IModel model,
 		IElementModelStructureHandler handler, String text)
 	{
 		model.add(context.getModelFactory().createText(text));
-	}
-
-	public void add(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-		int index, String text)
-	{
-		model.insert(index, context.getModelFactory().createText(text));
 	}
 
 	public void removeTag(ITemplateContext context,
@@ -85,4 +84,10 @@ public abstract class TagModelProcessor implements IElementModelProcessor, IElem
 		model.replace(model.size() - 1, context.getModelFactory().createText("</" + tag + ">"));
 	}
 
+	public void replaceTag(ITemplateContext context,
+		IModel model, IElementModelStructureHandler handler, String open, String close)
+	{
+		model.replace(0, context.getModelFactory().createText(open));
+		model.replace(model.size() - 1, context.getModelFactory().createText(close));
+	}
 }

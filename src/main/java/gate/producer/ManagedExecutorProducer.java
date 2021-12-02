@@ -14,7 +14,9 @@ public class ManagedExecutorProducer
 	public ManagedExecutor produce()
 	{
 		return ManagedExecutor.builder()
-			.propagated(ThreadContext.ALL_REMAINING)
+			.propagated(ThreadContext.APPLICATION,
+				ThreadContext.CDI)
+			.cleared(ThreadContext.ALL_REMAINING)
 			.build();
 	}
 

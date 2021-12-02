@@ -1,8 +1,10 @@
 package gate.thymeleaf.processors.tag.iterable;
 
-import gate.thymeleaf.Model;
 import javax.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
 public class IteratorProcessor extends IterableProcessor
@@ -14,12 +16,14 @@ public class IteratorProcessor extends IterableProcessor
 	}
 
 	@Override
-	protected void process(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		model.removeTag();
-		IModel content = model.cloneModel();
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		model.removeAll();
-		iterate(model, content);
+		removeTag(context, model, handler);
+		IModel content = model.cloneModel();
+		model.reset();
+
+		iterate(context, model, handler, element, content);
 	}
 }

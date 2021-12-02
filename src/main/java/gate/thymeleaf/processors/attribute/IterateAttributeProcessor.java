@@ -2,18 +2,22 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.Model;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.type.Attributes;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 @ApplicationScoped
 public class IterateAttributeProcessor extends AttributeModelProcessor
@@ -31,29 +35,31 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 	}
 
 	@Override
-	protected void process(Model model)
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		HttpServletRequest request = ((IWebContext) model.getContext()).getRequest();
+		HttpServletRequest request = ((IWebContext) context).getRequest();
+		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		var attributes = new Attributes();
-		var source = model.get("g:iterate");
-		var depth = Objects.requireNonNullElse(model.get("g:depth"), "depth");
-		var index = Objects.requireNonNullElse(model.get("g:index"), "index");
-		var target = Objects.requireNonNullElse(model.get("g:target"), "target");
-		var children = model.get("g:children");
+		var source = expression.evaluate(element.getAttributeValue("g:iterate"));
+		var depth = Objects.requireNonNullElse(element.getAttributeValue("g:depth"), "depth");
+		var index = Objects.requireNonNullElse(element.getAttributeValue("g:index"), "index");
+		var target = Objects.requireNonNullElse(element.getAttributeValue("g:target"), "target");
+		var children = element.getAttributeValue("g:children");
 
-		model.attributes()
-			.filter(e -> e.getValue() != null)
-			.filter(e -> !"g:iterate".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"g:depth".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"g:index".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"g:target".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"g:children".equals(e.getAttributeCompleteName()))
-			.forEach(e -> attributes.put(e.getAttributeCompleteName(), e.getValue()));
+		Attributes attributes
+			= Stream.of(element.getAllAttributes())
+				.filter(e -> e.getValue() != null)
+				.filter(e -> !"g:iterate".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"g:depth".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"g:index".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"g:target".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"g:children".equals(e.getAttributeCompleteName()))
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+					e -> e.getValue(), (a, b) -> a, Attributes::new));
+		replaceTag(context, model, handler, element.getElementCompleteName(), attributes);
 
-		model.replaceTag(model.tag(), attributes);
-		IModel clone = model.cloneModel();
-		model.removeAll();
+		IModel content = model.cloneModel();
+		model.reset();
 
 		if (request.getAttribute(index) == null)
 		{
@@ -61,56 +67,43 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 			if (request.getAttribute(depth) == null)
 			{
 				request.setAttribute(depth, -1);
-				iterate(model, clone, request, expression.evaluate(source), target, index, depth, children);
+				iterate(context, model, handler, content, request, source, target, index, depth, children);
 				request.removeAttribute(depth);
 			} else
-				iterate(model, clone, request, expression.evaluate(source), target, index, depth, children);
+				iterate(context, model, handler, content, request, source, target, index, depth, children);
 			request.removeAttribute(index);
 		} else if (request.getAttribute(depth) == null)
 		{
 			request.setAttribute(depth, -1);
-			iterate(model, clone, request, expression.evaluate(source), target, index, depth, children);
+			iterate(context, model, handler, content, request, source, target, index, depth, children);
 			request.removeAttribute(depth);
 		} else
-			iterate(model, clone, request, expression.evaluate(source), target, index, depth, children);
+			iterate(context, model, handler, content, request, source, target, index, depth, children);
 	}
 
-	private void iterate(Model model, IModel clone, HttpServletRequest request, Object source,
+	private void iterate(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
+		IModel content, HttpServletRequest request, Object source,
 		String target, String index, String depth, String children)
 	{
-		increment(request, depth);
+		request.setAttribute(depth, ((int) request.getAttribute(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
 		{
-			increment(request, index);
+			request.setAttribute(index, ((int) request.getAttribute(index)) + 1);
 
 			if (target != null)
 				request.setAttribute(target, value);
-			model.add(engine.process(clone, model.getContext()));
+			add(context, model, handler, engine.process(content, context));
 			if (target != null)
 				request.removeAttribute(target);
 
 			if (value != null)
 				if (children != null)
 					for (Object child : Toolkit.iterable(Property.getValue(value, children)))
-						iterate(model, clone, request, child, target, index, depth, children);
+						iterate(context, model, handler, content, request, child, target, index, depth, children);
 				else if (value instanceof Hierarchy)
-					((Hierarchy) value).getChildren().forEach(child -> iterate(model, clone, request, child, target, index, depth, children));
+					((Hierarchy) value).getChildren().forEach(child -> iterate(context, model, handler, content, request, child, target, index, depth, children));
 		}
-		decrement(request, depth);
-	}
-
-	private void increment(HttpServletRequest request, String field)
-	{
-		Integer value = (Integer) request.getAttribute(field);
-		value++;
-		request.setAttribute(field, value);
-	}
-
-	private void decrement(HttpServletRequest request, String field)
-	{
-		Integer value = (Integer) request.getAttribute(field);
-		value--;
-		request.setAttribute(field, value);
+		request.setAttribute(depth, ((int) request.getAttribute(depth)) - 1);
 	}
 
 	@Override
