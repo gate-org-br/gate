@@ -1,10 +1,10 @@
 package gate.report.doc;
 
-import gate.report.Doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.report.Column;
+import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Form;
 import gate.report.Grid;
@@ -16,8 +16,6 @@ import gate.util.Toolkit;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -139,38 +137,10 @@ public class XLS extends Doc
 
 			if (e.getValue() == null)
 				value.setCellType(CellType.BLANK);
-			else if (e.getValue() instanceof Byte)
+			else if (e.getValue() instanceof Number)
 			{
 				value.setCellType(CellType.NUMERIC);
 				value.setCellValue(((Byte) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof Short)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Short) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof Integer)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Integer) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof Long)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Long) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof Float)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Float) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof Double)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Double) e.getValue()));
-			} else if (e.getValue() instanceof BigInteger)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((BigInteger) e.getValue()).doubleValue());
-			} else if (e.getValue() instanceof BigDecimal)
-			{
-				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((BigDecimal) e.getValue()).doubleValue());
 			} else if (e.getValue() instanceof Boolean)
 			{
 				value.setCellType(CellType.BOOLEAN);
@@ -286,46 +256,18 @@ public class XLS extends Doc
 
 				if (value == null)
 					cell.setCellType(CellType.BLANK);
-				else if (value instanceof Byte)
+				else if (value instanceof Number)
 				{
 					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Byte) value).doubleValue());
-				} else if (value instanceof Short)
+					cell.setCellValue(((Number) value).doubleValue());
+				} else if (value instanceof Boolean)
 				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Short) value).doubleValue());
-				} else if (value instanceof Integer)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Integer) value).doubleValue());
-				} else if (value instanceof Long)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Long) value).doubleValue());
-				} else if (value instanceof Float)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Float) value).doubleValue());
-				} else if (value instanceof Double)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((Double) value));
-				} else if (value instanceof BigInteger)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((BigInteger) value).doubleValue());
-				} else if (value instanceof BigDecimal)
-				{
-					cell.setCellType(CellType.NUMERIC);
-					cell.setCellValue(((BigDecimal) value).doubleValue());
-				} else
-				{
-					StringBuilder text = new StringBuilder(Converter.toText(value));
-					if (j == 0)
-						for (int d = 0; d < level; d++)
-							text.insert(0, "        ");
-					cell.setCellValue(new XSSFRichTextString(text.toString()));
-				}
+					cell.setCellType(CellType.BOOLEAN);
+					cell.setCellValue((Boolean) value);
+				} else if (j == 0 && level > 0)
+					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Converter.toText(value)));
+				else
+					cell.setCellValue(new XSSFRichTextString(Converter.toText(value)));
 			}
 
 			if (grid.getChildren() != null)
