@@ -11,7 +11,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class IconProcessor extends TagAttributeProcessor
+public class IconProcessor extends TagProcessor
 {
 
 	@Inject
@@ -25,10 +25,10 @@ public class IconProcessor extends TagAttributeProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		var type = extract(element, handler, "type")
+		var icon = extract(element, handler, "type")
+			.map(expression::evaluate)
+			.map(e -> Icon.Extractor.extract(e).orElse(Icons.UNKNOWN))
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute type on g:icon"));
-		var value = expression.evaluate(type);
-		var icon = Icon.Extractor.extract(value).orElse(Icons.UNKNOWN);
 		handler.replaceWith("<i>" + icon + "</i>", false);
 	}
 

@@ -10,7 +10,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class WithProcessor extends TagAttributeProcessor
+public class WithProcessor extends TagProcessor
 {
 
 	@Inject
@@ -22,8 +22,7 @@ public class WithProcessor extends TagAttributeProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
 		try
 		{

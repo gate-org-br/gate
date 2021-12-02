@@ -12,13 +12,13 @@ import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
 
-public class TagAttributeProcessor implements IElementTagProcessor, Processor
+public class TagProcessor implements IElementTagProcessor, Processor
 {
 
 	private final String element;
 	private final MatchingElementName matchingElementName;
 
-	public TagAttributeProcessor(String element)
+	public TagProcessor(String element)
 	{
 		this.element = element;
 		this.matchingElementName = element != null
