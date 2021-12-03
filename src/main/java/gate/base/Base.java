@@ -1,11 +1,10 @@
 package gate.base;
 
-import gate.Progress;
+import gate.annotation.Current;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
 import javax.enterprise.inject.spi.CDI;
-import gate.annotation.Current;
 
 abstract class Base
 {
@@ -24,9 +23,6 @@ abstract class Base
 		if (user != null)
 			return user;
 
-		if (Progress.getUser() != null)
-			return user = Progress.getUser();
-
 		return user = CDI.current().select(User.class, Current.LITERAL).get();
 	}
 
@@ -40,9 +36,6 @@ abstract class Base
 		if (org != null)
 			return org;
 
-		if (Progress.getOrg() != null)
-			return org = Progress.getOrg();
-
 		return org = CDI.current().select(Org.class, Current.LITERAL).get();
 	}
 
@@ -55,9 +48,6 @@ abstract class Base
 	{
 		if (app != null)
 			return app;
-
-		if (Progress.getApp() != null)
-			return app = Progress.getApp();
 
 		return app = CDI.current().select(App.class, Current.LITERAL).get();
 	}
