@@ -1,8 +1,5 @@
 package gate;
 
-import gate.entity.App;
-import gate.entity.Org;
-import gate.entity.User;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.IOException;
@@ -33,20 +30,13 @@ public class Progress
 	private final int process = SEQUENCE.incrementAndGet();
 	private final List<Session> sessions = new CopyOnWriteArrayList<>();
 
-	private final Org org;
-	private final App app;
-	private final User user;
-
 	public enum Status
 	{
 		CREATED, PENDING, COMMITED, CANCELED
 	}
 
-	Progress(Org org, App app, User user)
+	Progress()
 	{
-		this.org = org;
-		this.app = app;
-		this.user = user;
 	}
 
 	int getProcess()
@@ -104,14 +94,10 @@ public class Progress
 			.toString();
 	}
 
-	static void bind(Progress progress)
+	static Progress create()
 	{
+		Progress progress = new Progress();
 		CURRENT.set(progress);
-	}
-
-	static Progress create(Org org, App app, User user)
-	{
-		Progress progress = new Progress(org, app, user);
 		INSTANCES.put(progress.getProcess(), progress);
 		return progress;
 	}
@@ -416,29 +402,5 @@ public class Progress
 	public String getUrl()
 	{
 		return url;
-	}
-
-	public static Org getOrg()
-	{
-		Progress progress = CURRENT.get();
-		if (progress != null)
-			return progress.org;
-		return null;
-	}
-
-	public static App getApp()
-	{
-		Progress progress = CURRENT.get();
-		if (progress != null)
-			return progress.app;
-		return null;
-	}
-
-	public static User getUser()
-	{
-		Progress progress = CURRENT.get();
-		if (progress != null)
-			return progress.user;
-		return null;
 	}
 }
