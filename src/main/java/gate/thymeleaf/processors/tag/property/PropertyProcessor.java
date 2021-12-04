@@ -28,13 +28,14 @@ public abstract class PropertyProcessor extends TagProcessor
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		Screen screen = (Screen) request.getAttribute("screen");
 
-		var property = extract(element, handler, "property")
-			.map(e -> Property.getProperty(screen.getClass(), e))
-			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute property on g:" + getElement()));
-
 		Attributes attributes = Stream.of(element.getAllAttributes())
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
 				e -> e.getValue(), (a, b) -> a, Attributes::new));
+
+		if (!attributes.containsKey("property"))
+			throw new TemplateProcessingException("Missing required attribute property on g:" + getElement());
+		var property = Property.getProperty(screen.getClass(), (String) attributes.remove("property"));
+		attributes.put("name", property.toString());
 
 		property.getConstraints().stream()
 			.filter(e -> !attributes.containsKey(e.getName()))

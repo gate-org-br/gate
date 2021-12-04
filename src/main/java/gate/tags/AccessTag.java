@@ -2,7 +2,7 @@ package gate.tags;
 
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.Command;
+import gate.Call;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,7 @@ public abstract class AccessTag extends SimpleTagSupport
 
 	private String action;
 
-	protected Command command;
+	protected Call call;
 
 	@Inject
 	private HttpServletRequest request;
@@ -46,11 +46,11 @@ public abstract class AccessTag extends SimpleTagSupport
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		command = Command.of(request, module, screen, action);
+		call = Call.of(request, module, screen, action);
 	}
 
 	public boolean checkAccess()
 	{
-		return command.checkAccess(user);
+		return call.checkAccess(user);
 	}
 }

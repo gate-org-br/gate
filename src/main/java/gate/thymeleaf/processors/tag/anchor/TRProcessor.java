@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.Command;
+import gate.Call;
 import gate.entity.User;
 import gate.io.URL;
 import gate.thymeleaf.ELExpression;
@@ -31,13 +31,13 @@ public class TRProcessor extends AnchorProcessor
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
 		User user,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
 		if (condition(attributes))
 		{
-			if (command.checkAccess(user)
+			if (call.checkAccess(user)
 				&& (element.hasAttribute("module")
 				|| element.hasAttribute("screen")
 				|| element.hasAttribute("action")
@@ -45,9 +45,9 @@ public class TRProcessor extends AnchorProcessor
 				|| element.hasAttribute("target")))
 			{
 
-				target(command, attributes).ifPresent(target -> attributes.put("data-target", target));
-				attributes.put("data-action", URL.toString(command.getModule(), command.getScreen(),
-					command.getAction(), parameters.toString()));
+				target(call, attributes).ifPresent(target -> attributes.put("data-target", target));
+				attributes.put("data-action", URL.toString(call.getModule(), call.getScreen(),
+					call.getAction(), parameters.toString()));
 				if ("POST".equalsIgnoreCase(method(attributes)))
 					attributes.put("data-method", "post");
 			}

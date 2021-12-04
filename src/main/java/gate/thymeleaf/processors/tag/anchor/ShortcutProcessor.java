@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.Command;
+import gate.Call;
 import gate.entity.User;
 import gate.io.URL;
 import gate.thymeleaf.ELExpression;
@@ -32,15 +32,15 @@ public class ShortcutProcessor extends AnchorProcessor
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
 		User user,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		if (command.checkAccess(user) && condition(attributes))
+		if (call.checkAccess(user) && condition(attributes))
 			if ("POST".equalsIgnoreCase(method(attributes)))
-				button(context, model, handler, element, command, attributes, parameters);
+				button(context, model, handler, element, call, attributes, parameters);
 			else
-				link(context, model, handler, element, command, attributes, parameters);
+				link(context, model, handler, element, call, attributes, parameters);
 		else
 			model.reset();
 	}
@@ -49,20 +49,20 @@ public class ShortcutProcessor extends AnchorProcessor
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("formaction", URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
+		attributes.put("formaction", URL.toString(call.getModule(),
+			call.getScreen(),
+			call.getAction(),
 			parameters.toString()));
 
-		target(command, attributes).ifPresent(target -> attributes.put("formtarget", target));
+		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
 		if (element instanceof IStandaloneElementTag)
 		{
-			String icon = command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
+			String icon = call.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
 			replaceWith(context, model, handler, "<button " + attributes + ">" + icon + "</button>");
 		} else
 			replaceTag(context, model, handler, "button", attributes);
@@ -72,21 +72,21 @@ public class ShortcutProcessor extends AnchorProcessor
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("href", URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
+		attributes.put("href", URL.toString(call.getModule(),
+			call.getScreen(),
+			call.getAction(),
 			parameters.toString()));
 
-		target(command, attributes).ifPresent(target -> attributes.put("target", target));
+		target(call, attributes).ifPresent(target -> attributes.put("target", target));
 
 		if (element instanceof IStandaloneElementTag)
 		{
-			String icon = command.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
-			replaceWith(context, model, handler, "<a " + attributes + ">" + icon + "</button>");
+			String icon = call.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
+			replaceWith(context, model, handler, "<a " + attributes + ">" + icon + "</a>");
 		} else
 			replaceTag(context, model, handler, "a", attributes);
 	}

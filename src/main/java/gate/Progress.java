@@ -305,8 +305,6 @@ public class Progress
 		Progress progress = CURRENT.get();
 		if (progress != null)
 		{
-			if (!Status.PENDING.equals(progress.status))
-				throw new IllegalStateException("Attempt to cancel non pending task");
 			progress.update(Status.CANCELED, progress.todo, progress.done, text);
 			progress.dispatch(progress.toString());
 		}

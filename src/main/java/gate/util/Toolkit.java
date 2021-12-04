@@ -4,12 +4,9 @@ import gate.converter.Converter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class Toolkit
@@ -83,12 +80,12 @@ public class Toolkit
 	public static Iterable<Object> iterable(Object obj)
 	{
 		if (obj == null)
-			return Collections.emptyList();
+			return List.of();
 		if (obj instanceof Iterable<?>)
 			return (Iterable) obj;
 		if (obj instanceof Object[])
 			return Arrays.asList((Object[]) obj);
-		return Collections.singleton(obj);
+		return List.of(obj);
 	}
 
 	public static Stream<Object> stream(Object obj)
@@ -106,48 +103,53 @@ public class Toolkit
 	public static Collection<Object> collection(Object obj)
 	{
 		if (obj == null)
-			return Collections.emptyList();
+			return List.of();
 		else if (obj instanceof Collection)
 			return (Collection) obj;
 		else if (obj instanceof Object[])
 			return Arrays.asList((Object[]) obj);
 		else
-			return Collections.singleton(obj);
+			return List.of(obj);
 	}
 
-	public static List<Object> list(Object obj)
+	public static List<? extends Object> list(Object obj)
 	{
 		if (obj == null)
-			return Collections.emptyList();
+			return List.of();
 		else if (obj instanceof List)
 			return (List) obj;
 		else if (obj instanceof Collection)
 			return new ArrayList((Collection) obj);
-		else if (obj.getClass().isArray())
-			return Collections.singletonList(obj);
+		else if (obj instanceof Object[])
+			return Arrays.asList((Object[]) obj);
 		else
-			return Collections.singletonList(obj);
+			return List.of(obj);
 	}
 
-	public static Object coalesce(Object a, Object b)
+	public static <T> T coalesce(T a, T b)
 	{
 		return a != null ? a : b;
 	}
 
-	public static Object coalesce(Object obj, Supplier<Object> supplier)
+	public static <T> T coalesce(T obj, Supplier<T> supplier)
 	{
 		return obj != null ? obj : supplier.get();
 	}
 
-	public static void sleep(int value)
+	public static <T> T coalesce(T... elements)
+	{
+		return Stream.of(elements).filter(e -> e != null).findFirst().orElse(null);
+	}
+
+	public static boolean sleep(int value)
 	{
 		try
 		{
 			Thread.sleep(value);
+			return true;
 		} catch (InterruptedException ex)
 		{
-			Logger.getLogger(Toolkit.class.getName())
-				.log(Level.SEVERE, null, ex);
+			return false;
 		}
 	}
 

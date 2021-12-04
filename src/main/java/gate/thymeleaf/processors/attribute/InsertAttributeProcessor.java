@@ -24,6 +24,8 @@ public class InsertAttributeProcessor extends AttributeProcessor
 	{
 		handler.removeAttribute("g:insert");
 		HttpServletRequest request = ((IWebContext) context).getRequest();
-		handler.setBody(request.getAttribute("g-template-content").toString(), false);
+		Object content = request.getAttribute("g-template-content");
+		request.removeAttribute("g-template-content");
+		handler.setBody(content.toString(), false);
 	}
 }

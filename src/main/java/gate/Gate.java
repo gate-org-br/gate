@@ -30,13 +30,13 @@ import gate.type.Result;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 
 @MultipartConfig
-@WebServlet("/Gate")
+@WebServlet(value = "/Gate", asyncSupported = true)
 public class Gate extends HttpServlet
 {
 
@@ -69,23 +69,7 @@ public class Gate extends HttpServlet
 
 	@Any
 	@Inject
-	Instance<Screen> screens;
-
-	@Any
-	@Inject
 	Instance<Handler> handlers;
-
-	@Inject
-	ResultHandler resultHandler;
-
-	@Inject
-	IntegerHandler intergerHandler;
-
-	@Inject
-	HTMLCommandHandler htmlCommandHanlder;
-
-	@Inject
-	AppExceptionHandler appExceptionHandler;
 
 	static
 	{
@@ -115,8 +99,8 @@ public class Gate extends HttpServlet
 			{
 				if (request.getSession(false) != null)
 					request.getSession().invalidate();
-
-				htmlCommandHanlder.handle(httpServletRequest, response, HTML);
+				handlers.select(HTMLCommandHandler.class).get()
+					.handle(httpServletRequest, response, HTML);
 			} else
 			{
 				String username = request.getParameter("$username");
@@ -132,22 +116,22 @@ public class Gate extends HttpServlet
 					request.getSession().setAttribute(User.class.getName(),
 						user = control.select(httpServletRequest.getUserPrincipal().getName()));
 
-				Command command = Command.of(MODULE, SCREEN, ACTION);
-				if (!command.checkAccess(user))
+				Call call = Call.of(MODULE, SCREEN, ACTION);
+				if (!call.checkAccess(user))
 					throw new AccessDeniedException();
 
-				Screen screen = screens.select(command.getType()).get();
+				Screen screen = CDI.current().select(call.getType()).get();
 				request.setAttribute("screen", screen);
-				request.setAttribute("action", command.getMethod());
+				request.setAttribute("action", call.getMethod());
 				screen.prepare(request, response);
 
-				if (command.getMethod().isAnnotationPresent(Cors.class))
+				if (call.getMethod().isAnnotationPresent(Cors.class))
 					setCorsHeaders(request, response);
 
-				if (command.getMethod().isAnnotationPresent(Asynchronous.class))
-					executeAsync(httpServletRequest, response, screen, command.getMethod());
+				if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+					executeAsync(httpServletRequest, response, screen, call.getMethod());
 				else
-					execute(httpServletRequest, response, screen, command.getMethod());
+					execute(httpServletRequest, response, screen, call.getMethod());
 			}
 
 		} catch (InvalidUsernameException
@@ -157,26 +141,31 @@ public class Gate extends HttpServlet
 			| InvalidServiceException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			htmlCommandHanlder.handle(httpServletRequest, response, HTML);
+			Handler handler = handlers.select(HTMLCommandHandler.class).get();
+			handler.handle(httpServletRequest, response, HTML);
 		} catch (DefaultPasswordException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			htmlCommandHanlder.handle(httpServletRequest, response, SetupPassword.HTML);
+			Handler handler = handlers.select(HTMLCommandHandler.class).get();
+			handler.handle(httpServletRequest, response, SetupPassword.HTML);
 		} catch (AuthenticatorException | AppError ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			httpServletRequest.setAttribute("exception", ex.getCause());
 			logger.error(ex.getCause().getMessage(), ex.getCause());
-			htmlCommandHanlder.handle(httpServletRequest, response, HTML);
+			Handler handler = handlers.select(HTMLCommandHandler.class).get();
+			handler.handle(httpServletRequest, response, HTML);
 		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList("Banco de dados inconsistente"));
 			httpServletRequest.setAttribute("exception", ex);
 			logger.error(ex.getMessage(), ex);
-			htmlCommandHanlder.handle(httpServletRequest, response, HTML);
+			Handler handler = handlers.select(HTMLCommandHandler.class).get();
+			handler.handle(httpServletRequest, response, HTML);
 		} catch (InvalidCredentialsException ex)
 		{
-			resultHandler.handle(httpServletRequest, response, Result.error(ex.getMessage()));
+			Handler handler = handlers.select(ResultHandler.class).get();
+			handler.handle(httpServletRequest, response, Result.error(ex.getMessage()));
 		}
 	}
 
@@ -184,29 +173,26 @@ public class Gate extends HttpServlet
 	{
 		try
 		{
-			try
+			Object result = screen.execute(method);
+			if (result != null)
 			{
-				Object result = screen.execute(method);
-				if (result != null)
-					if (method.isAnnotationPresent(gate.annotation.Handler.class))
-						handlers.select(method.getAnnotation(gate.annotation.Handler.class).value())
-							.get().handle(request, response, result);
-					else
-						handlers.select(Handler.getHandler(result.getClass())).get().handle(request, response, result);
-
-			} catch (InvocationTargetException ex)
-			{
-				throw ex.getCause();
+				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
+					? method.getAnnotation(gate.annotation.Handler.class).value()
+					: Handler.getHandler(result.getClass());
+				var handler = handlers.select(type).get();
+				handler.handle(request, response, result);
 			}
 		} catch (AppException ex)
 		{
-			appExceptionHandler.handle(request, response, ex.getCause());
+			Handler handler = handlers.select(AppExceptionHandler.class).get();
+			handler.handle(request, response, ex);
 		} catch (Throwable ex)
 		{
 			request.setAttribute("messages", Collections.singletonList("Erro de sistema"));
 			request.setAttribute("exception", ex);
 			logger.error(ex.getMessage(), ex);
-			htmlCommandHanlder.handle(request, response, HTML);
+			Handler handler = handlers.select(HTMLCommandHandler.class).get();
+			handler.handle(request, response, HTML);
 		}
 	}
 
@@ -214,36 +200,36 @@ public class Gate extends HttpServlet
 	{
 		try
 		{
+			request.startAsync();
 			Progress progress = Progress.create();
-			intergerHandler.handle(request, response, progress.getProcess());
+			Handler handler = handlers.select(IntegerHandler.class).get();
+			handler.handle(request, response, progress.getProcess());
+			request.getAsyncContext().complete();
 
 			Thread.sleep(1000);
 			Object url = screen.execute(method);
 			if (url != null)
 				Progress.redirect(url.toString());
-		} catch (InvocationTargetException ex)
+		} catch (AppException ex)
 		{
-			if (Progress.Status.PENDING.equals(Progress.status()))
-				Progress.cancel(ex.getCause().getMessage());
+			if (Progress.status() == Progress.Status.PENDING
+				|| Progress.status() == Progress.Status.CREATED)
+				Progress.cancel(ex.getMessage());
 			else
-				Progress.message(ex.getCause().getMessage());
-		} catch (RuntimeException | IllegalAccessException | InterruptedException ex)
+				Progress.message(ex.getMessage());
+		} catch (Throwable ex)
 		{
-			if (Progress.Status.PENDING.equals(Progress.status()))
+			if (Progress.status() == Progress.Status.PENDING
+				|| Progress.status() == Progress.Status.CREATED)
 				Progress.cancel(ex.getMessage());
 			else
 				Progress.message(ex.getMessage());
 			logger.error(ex.getMessage(), ex);
 		} finally
 		{
-			try
-			{
-				Thread.sleep(1000);
-				Progress.dispose();
-			} catch (InterruptedException ex)
-			{
-				Progress.dispose();
-			}
+			if (request.isAsyncStarted())
+				request.getAsyncContext().complete();
+			Progress.dispose();
 		}
 	}
 

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.Command;
+import gate.Call;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.io.URL;
@@ -35,16 +35,16 @@ public class LinkProcessor extends AnchorProcessor
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
 		User user,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		if (command.checkAccess(user))
+		if (call.checkAccess(user))
 			if (condition(attributes))
 				if ("POST".equalsIgnoreCase(method(attributes)))
-					button(context, model, handler, element, command, attributes, parameters);
+					button(context, model, handler, element, call, attributes, parameters);
 				else
-					link(context, model, handler, element, command, attributes, parameters);
+					link(context, model, handler, element, call, attributes, parameters);
 			else
 				otherwise(attributes).ifPresentOrElse(e -> replaceWith(context, model, handler, e), model::reset);
 		else
@@ -55,22 +55,22 @@ public class LinkProcessor extends AnchorProcessor
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("formaction", URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
+		attributes.put("formaction", URL.toString(call.getModule(),
+			call.getScreen(),
+			call.getAction(),
 			parameters.toString()));
 
-		target(command, attributes).ifPresent(target -> attributes.put("formtarget", target));
+		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
 		if (element instanceof IStandaloneElementTag)
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-			command.getName().ifPresent(body::add);
-			command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+			call.getName().ifPresent(body::add);
+			call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
 			replaceWith(context, model, handler, "<button " + attributes + ">" + body + "</button>");
 		} else
 			replaceTag(context, model, handler, "button", attributes);
@@ -80,22 +80,22 @@ public class LinkProcessor extends AnchorProcessor
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
-		Command command,
+		Call call,
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("href", URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
+		attributes.put("href", URL.toString(call.getModule(),
+			call.getScreen(),
+			call.getAction(),
 			parameters.toString()));
 
-		target(command, attributes).ifPresent(target -> attributes.put("target", target));
+		target(call, attributes).ifPresent(target -> attributes.put("target", target));
 
 		if (element instanceof IStandaloneElementTag)
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-			command.getName().ifPresent(body::add);
-			command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+			call.getName().ifPresent(body::add);
+			call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
 			replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");
 		} else
 			replaceTag(context, model, handler, "a", attributes);

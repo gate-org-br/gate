@@ -38,6 +38,8 @@ public class Auth extends HttpServlet
 		HttpServletResponse response)
 		throws IOException
 	{
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
