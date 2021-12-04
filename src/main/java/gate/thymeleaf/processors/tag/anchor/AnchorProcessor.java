@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.Command;
+import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.entity.User;
 import gate.thymeleaf.ELExpression;
@@ -51,32 +51,32 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Command command = Command.of(request,
+		Call call = Call.of(request,
 			(String) attributes.remove("module"),
 			(String) attributes.remove("screen"),
 			(String) attributes.remove("action"));
 
 		if (!attributes.containsKey("style"))
-			command.getColor().ifPresent(e -> attributes.put("style", "color: " + e));
+			call.getColor().ifPresent(e -> attributes.put("style", "color: " + e));
 
 		if (!attributes.containsKey("data-tooltip"))
-			command.getTooltip().ifPresent(e -> attributes.put("data-tooltip", e));
+			call.getTooltip().ifPresent(e -> attributes.put("data-tooltip", e));
 
 		if (!attributes.containsKey("data-confirm"))
-			command.getConfirm().ifPresent(e -> attributes.put("data-confirm", e));
+			call.getConfirm().ifPresent(e -> attributes.put("data-confirm", e));
 
 		if (!attributes.containsKey("data-alert"))
-			command.getAlert().ifPresent(e -> attributes.put("data-alert", e));
+			call.getAlert().ifPresent(e -> attributes.put("data-alert", e));
 
 		if (!attributes.containsKey("title"))
 		{
-			command.getDescription().ifPresent(e -> attributes.put("title", e));
-			command.getName().ifPresent(e -> attributes.put("title", e));
+			call.getDescription().ifPresent(e -> attributes.put("title", e));
+			call.getName().ifPresent(e -> attributes.put("title", e));
 		}
 
 		User user = (User) request.getSession().getAttribute(User.class.getName());
 
-		process(context, model, handler, element, user, command, attributes, parameters);
+		process(context, model, handler, element, user, call, attributes, parameters);
 	}
 
 	protected boolean condition(Attributes attributes)
@@ -97,7 +97,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		return method;
 	}
 
-	protected Optional<String> target(Command command, Attributes attributes)
+	protected Optional<String> target(Call call, Attributes attributes)
 	{
 		if (!attributes.containsKey("target"))
 			Optional.empty();
@@ -105,7 +105,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		String target = (String) attributes.remove("target");
 		target = (String) expression.evaluate(target);
 
-		if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 			if ("_dialog".equals(target))
 				return Optional.of("_progress-dialog");
 			else
@@ -116,5 +116,5 @@ public abstract class AnchorProcessor extends TagModelProcessor
 
 	protected abstract void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
 		IProcessableElementTag element,
-		User user, Command command, Attributes attributes, Parameters parameters);
+		User user, Call call, Attributes attributes, Parameters parameters);
 }

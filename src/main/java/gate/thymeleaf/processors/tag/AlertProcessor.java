@@ -1,7 +1,9 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.base.Screen;
+import gate.converter.Converter;
 import gate.thymeleaf.ELExpression;
+import gate.util.Toolkit;
 import java.util.List;
 import java.util.StringJoiner;
 import javax.enterprise.context.ApplicationScoped;
@@ -27,9 +29,9 @@ public class AlertProcessor extends TagProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		List<String> messages = extract(element, handler, "messages")
+		List<? extends Object> messages = extract(element, handler, "messages")
 			.map(expression::evaluate)
-			.map(e -> (List<String>) e)
+			.map(Toolkit::list)
 			.orElseGet(() ->
 			{
 				IWebContext webContext = (IWebContext) context;
@@ -45,6 +47,7 @@ public class AlertProcessor extends TagProcessor
 			string.add("<script>");
 			string.add("window.addEventListener('load',function(){");
 			messages.stream()
+				.map(Converter::toText)
 				.map(e -> e.replace('\'', '"'))
 				.map(e -> "alert('" + e + "');")
 				.forEach(string::add);

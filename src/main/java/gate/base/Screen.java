@@ -85,12 +85,15 @@ public abstract class Screen extends Base
 		});
 	}
 
-	public Object execute(Method method)
-		throws RuntimeException,
-		IllegalAccessException,
-		InvocationTargetException
+	public Object execute(Method method) throws Throwable
 	{
-		return method.invoke(this);
+		try
+		{
+			return method.invoke(this);
+		} catch (InvocationTargetException ex)
+		{
+			throw ex.getCause();
+		}
 	}
 
 	public Integer getDefaultPageSize()

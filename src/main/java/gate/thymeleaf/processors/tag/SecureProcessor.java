@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.Command;
+import gate.Call;
 import gate.entity.User;
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class SecureProcessor extends TagProcessor
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		User user = (User) request.getSession().getAttribute(User.class.getName());
 
-		if (Command.of(request,
+		if (Call.of(request,
 			element.getAttributeValue("module"),
 			element.getAttributeValue("screen"),
 			element.getAttributeValue("action"))

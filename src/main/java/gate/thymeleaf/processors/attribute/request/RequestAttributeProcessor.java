@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute.request;
 
-import gate.Command;
+import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.entity.User;
@@ -42,7 +42,7 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 
-		Command command = Command.of(request, module, screen, action);
+		Call call = Call.of(request, module, screen, action);
 
 		User user = CDI.current().select(User.class, Current.LITERAL).get();
 
@@ -57,32 +57,32 @@ public class RequestAttributeProcessor extends AttributeProcessor
 			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
 			parser.parseExpression(context, e.getValue()).execute(context)));
 
-		if (command.checkAccess(user))
+		if (call.checkAccess(user))
 		{
 			if (!element.hasAttribute("style"))
-				command.getColor().ifPresent(e -> handler.setAttribute("style", "color: " + e));
+				call.getColor().ifPresent(e -> handler.setAttribute("style", "color: " + e));
 
 			if (!element.hasAttribute("data-alert"))
-				command.getAlert().ifPresent(e -> handler.setAttribute("data-alert", e));
+				call.getAlert().ifPresent(e -> handler.setAttribute("data-alert", e));
 
 			if (!element.hasAttribute("data-confirm"))
-				command.getConfirm().ifPresent(e -> handler.setAttribute("data-confirm", e));
+				call.getConfirm().ifPresent(e -> handler.setAttribute("data-confirm", e));
 
 			if (!element.hasAttribute("data-tooltip"))
-				command.getTooltip().ifPresent(e -> handler.setAttribute("data-tooltip", e));
+				call.getTooltip().ifPresent(e -> handler.setAttribute("data-tooltip", e));
 
 			if (!element.hasAttribute("title"))
-				command.getDescription().ifPresent(e -> handler.setAttribute("description", e));
+				call.getDescription().ifPresent(e -> handler.setAttribute("description", e));
 
 			if (!element.hasAttribute("title"))
-				command.getName().ifPresent(e -> handler.setAttribute("title", e));
+				call.getName().ifPresent(e -> handler.setAttribute("title", e));
 
 			switch (element.getElementCompleteName().toLowerCase())
 			{
 				case "a":
-					handler.setAttribute("href", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					handler.setAttribute("href", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
-					if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						if ("_dialog".equals(element.getAttributeValue("target")))
 							handler.setAttribute("target", "_progress-dialog");
 						else
@@ -90,9 +90,9 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					break;
 				case "button":
-					handler.setAttribute("formaction", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					handler.setAttribute("formaction", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
-					if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						if ("_dialog".equals(element.getAttributeValue("formtarget")))
 							handler.setAttribute("formtarget", "_progress-dialog");
 						else
@@ -101,9 +101,9 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					break;
 
 				case "form":
-					handler.setAttribute("action", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					handler.setAttribute("action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
-					if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						if ("_dialog".equals(element.getAttributeValue("target")))
 							handler.setAttribute("target", "_progress-dialog");
 						else
@@ -111,12 +111,12 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					break;
 				case "img":
-					handler.setAttribute("src", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					handler.setAttribute("src", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 					break;
 				default:
-					handler.setAttribute("data-action", URL.toString(command.getModule(), command.getScreen(), command.getAction(), parameters.toString()));
+					handler.setAttribute("data-action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
-					if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						if ("_dialog".equals(element.getAttributeValue("formtarget")))
 							handler.setAttribute("data-target", "_progress-dialog");
 						else
@@ -129,8 +129,8 @@ public class RequestAttributeProcessor extends AttributeProcessor
 				|| element.getElementCompleteName().toLowerCase().equals("button")))
 			{
 				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-				command.getName().ifPresent(body::add);
-				command.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+				call.getName().ifPresent(body::add);
+				call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
 				handler.setBody(body.toString(), true);
 			}
 		} else if (element.getElementCompleteName().toLowerCase().equals("a")

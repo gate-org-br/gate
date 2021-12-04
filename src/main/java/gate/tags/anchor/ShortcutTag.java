@@ -23,7 +23,7 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", command.getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", call.getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 		getJspContext().getOut().print("</button>");
 	}
@@ -43,7 +43,7 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", command.getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", call.getIcon().map(Icons.Icon::getCode).orElse("?")));
 
 		getJspContext().getOut().print("</a>");
 	}

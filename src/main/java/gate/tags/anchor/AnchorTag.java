@@ -1,6 +1,6 @@
 package gate.tags.anchor;
 
-import gate.Command;
+import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.entity.User;
@@ -38,7 +38,7 @@ public abstract class AnchorTag extends ParameterTag
 
 	protected Integer tabindex;
 
-	protected Command command;
+	protected Call call;
 
 	protected boolean condition = true;
 
@@ -89,17 +89,17 @@ public abstract class AnchorTag extends ParameterTag
 
 	public String getURL()
 	{
-		return URL.toString(command.getModule(),
-			command.getScreen(),
-			command.getAction(),
+		return URL.toString(call.getModule(),
+			call.getScreen(),
+			call.getAction(),
 			getParameters().toString());
 	}
 
 	public String createBody()
 	{
 		StringJoiner string = new StringJoiner("").setEmptyValue("unamed");
-		command.getName().ifPresent(string::add);
-		command.getIcon().ifPresent(e -> string.add("<i>" + e + "</i>"));
+		call.getName().ifPresent(string::add);
+		call.getIcon().ifPresent(e -> string.add("<i>" + e + "</i>"));
 		return string.toString();
 	}
 
@@ -108,34 +108,34 @@ public abstract class AnchorTag extends ParameterTag
 	{
 		super.doTag();
 
-		command = Command.of(request, module, screen, action);
+		call = Call.of(request, module, screen, action);
 
-		if (command.getMethod().isAnnotationPresent(Asynchronous.class))
+		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 			if ("_dialog".equals(target))
 				target = "_progress-dialog";
 			else
 				target = "_progress-window";
 
 		if (!getAttributes().containsKey("style"))
-			command.getColor().ifPresent(e -> getAttributes().put("style", "color: " + e));
+			call.getColor().ifPresent(e -> getAttributes().put("style", "color: " + e));
 
 		if (!getAttributes().containsKey("data-tooltip"))
-			command.getTooltip().ifPresent(e -> getAttributes().put("data-tooltip", e));
+			call.getTooltip().ifPresent(e -> getAttributes().put("data-tooltip", e));
 
 		if (!getAttributes().containsKey("data-confirm"))
-			command.getConfirm().ifPresent(e -> getAttributes().put("data-confirm", e));
+			call.getConfirm().ifPresent(e -> getAttributes().put("data-confirm", e));
 
 		if (!getAttributes().containsKey("data-alert"))
-			command.getAlert().ifPresent(e -> getAttributes().put("data-alert", e));
+			call.getAlert().ifPresent(e -> getAttributes().put("data-alert", e));
 
 		if (!getAttributes().containsKey("title"))
-			command.getDescription().ifPresent(e -> getAttributes().put("title", e));
+			call.getDescription().ifPresent(e -> getAttributes().put("title", e));
 
 		if (!getAttributes().containsKey("title"))
-			command.getName().ifPresent(e -> getAttributes().put("title", e));
+			call.getName().ifPresent(e -> getAttributes().put("title", e));
 
 		if (condition)
-			if (command.checkAccess(user))
+			if (call.checkAccess(user))
 				if ("POST".equalsIgnoreCase(method))
 					post();
 				else

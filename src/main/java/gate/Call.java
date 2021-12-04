@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
-public class Command
+public class Call
 {
 
 	private final String module;
@@ -29,7 +29,7 @@ public class Command
 	private final Class<Screen> type;
 	private final Method method;
 
-	public Command(String module, String screen, String action, Class<Screen> type, Method method)
+	public Call(String module, String screen, String action, Class<Screen> type, Method method)
 	{
 		this.module = module;
 		this.screen = screen;
@@ -38,14 +38,14 @@ public class Command
 		this.method = method;
 	}
 
-	public static Command of(String module, String screen, String action) throws InvalidRequestException
+	public static Call of(String module, String screen, String action) throws InvalidRequestException
 	{
 		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow(() -> new InvalidRequestException(module, screen, action));
 		Method method = Screen.getAction(type, action).orElseThrow(() -> new InvalidRequestException(module, screen, action));
-		return new Command(module, screen, action, type, method);
+		return new Call(module, screen, action, type, method);
 	}
 
-	public static Command of(HttpServletRequest request, String module, String screen, String action) throws InvalidRequestException
+	public static Call of(HttpServletRequest request, String module, String screen, String action) throws InvalidRequestException
 	{
 
 		if ("#".equals(module))
