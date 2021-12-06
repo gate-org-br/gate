@@ -18,6 +18,7 @@ public class Percentage extends Number implements Serializable, Comparable<Perce
 	private static final long serialVersionUID = 1L;
 
 	public static final Percentage ZERO = new Percentage(BigDecimal.ZERO);
+	public static final Percentage ONE_HUNDRED = new Percentage(new BigDecimal(100).setScale(2, RoundingMode.HALF_EVEN));
 
 	public Percentage(BigDecimal value)
 	{
