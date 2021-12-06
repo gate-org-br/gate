@@ -33,11 +33,12 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 		Parameters queryString = Parameters.parse(request.getQueryString());
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
-
+		
 		String url = String.format("Gate?%s", queryString.toString());
 		Screen screen = (Screen) request.getAttribute("screen");
 
 		var value = element.getAttributeValue("g:paginator");
+		handler.removeAttribute("g:paginator");
 		Page<?> page = value != null && !value.isBlank()
 			? (Page<?>) expression.evaluate(value)
 			: (Page<?>) Property.getValue(screen, "page");
