@@ -10,13 +10,13 @@ import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-public abstract class InputProcessor extends PropertyProcessor
+public abstract class ISOInputProcessor extends PropertyProcessor
 {
 
 	@Inject
 	ELExpression expression;
 
-	public InputProcessor(String name)
+	public ISOInputProcessor(String name)
 	{
 		super(name);
 	}
@@ -32,12 +32,12 @@ public abstract class InputProcessor extends PropertyProcessor
 		{
 			var value = attributes.get("value");
 			value = expression.evaluate((String) value);
-			value = Converter.toString(value);
-			attributes.put("value", (String) value);
+			value = Converter.toISOString(value);
+			attributes.put("value", value);
 		} else if (!property.toString().endsWith("[]"))
 		{
 			var value = property.getValue(screen);
-			value = Converter.toString(value);
+			value = Converter.toISOString(value);
 			attributes.put("value", value);
 		}
 

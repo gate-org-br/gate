@@ -41,13 +41,6 @@ public abstract class PropertyProcessor extends TagProcessor
 			.filter(e -> !attributes.containsKey(e.getName()))
 			.forEachOrdered(e -> attributes.put(e.getName(), e.getValue().toString()));
 
-		if (!attributes.containsKey("data-mask"))
-		{
-			String mask = property.getMask();
-			if (mask != null && !mask.isEmpty())
-				attributes.put("data-mask", mask);
-		}
-
 		if (!attributes.containsKey("title"))
 		{
 			String description = property.getDescription();

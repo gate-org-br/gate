@@ -34,6 +34,13 @@ public class TextProcessor extends PropertyProcessor
 		IElementTagStructureHandler handler,
 		Screen screen, Property property, Attributes attributes)
 	{
+		if (!attributes.containsKey("data-mask"))
+		{
+			String mask = property.getMask();
+			if (mask != null && !mask.isEmpty())
+				attributes.put("data-mask", mask);
+		}
+
 		attributes.put("type", "text");
 
 		if (attributes.containsKey("value"))

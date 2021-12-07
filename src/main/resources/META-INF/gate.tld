@@ -1266,6 +1266,63 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>date</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.property.DateTag</tag-class>
+		<description>
+			Creates a html date input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated date input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>time</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.property.TimeTag</tag-class>
+		<description>
+			Creates a html time input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated time input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
+		<name>datetime-local</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.property.DateTimeLocalTag</tag-class>
+		<description>
+			Creates a html datetime-local input bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated datetime-local input.
+			</description>
+		</attribute>
+	</tag>
+	<tag>
 		<name>url</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>

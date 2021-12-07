@@ -17,6 +17,10 @@ import java.util.List;
 public class DateConverter implements Converter
 {
 
+	private static final java.util.regex.Pattern SIMPLE_PATTERN = java.util.regex.Pattern.compile("^[0-9]{8}$");
+	private static final java.util.regex.Pattern PATTERN = java.util.regex.Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$");
+	private static final java.util.regex.Pattern ISO_PATTERN = java.util.regex.Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}$");
+
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Arrays.asList(new Maxlength.Implementation(10),
 			new Pattern.Implementation("^[0-9]{8}|[0-9]{2}[/][0-9]{2}[/][0-9]{4}$"));
@@ -50,7 +54,14 @@ public class DateConverter implements Converter
 
 		try
 		{
-			return Date.of(string);
+			if (PATTERN.matcher(string).matches())
+				return Date.of(string);
+			else if (ISO_PATTERN.matcher(string).matches())
+				return Date.formatter("yyyy-MM-dd").parse(string);
+			else if (SIMPLE_PATTERN.matcher(string).matches())
+				return Date.formatter("ddMMyyyy").parse(string);
+			else
+				throw new ParseException(string, 0);
 		} catch (ParseException ex)
 		{
 			throw new ConversionException(ex, getDescription());
@@ -73,6 +84,12 @@ public class DateConverter implements Converter
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
+	}
+
+	@Override
+	public String toISOString(Class<?> type, Object object)
+	{
+		return object != null ? Date.formatter("yyyy-MM-dd").format((Date) object) : "";
 	}
 
 	@Override
