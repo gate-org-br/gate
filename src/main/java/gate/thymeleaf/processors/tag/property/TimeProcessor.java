@@ -5,14 +5,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
-public class NumberProcessor extends InputProcessor
+public class TimeProcessor extends InputProcessor
 {
 
 	@Inject
 	ELExpression expression;
 
-	public NumberProcessor()
+	public TimeProcessor()
 	{
-		super("number");
+		super("time");
 	}
+
 }

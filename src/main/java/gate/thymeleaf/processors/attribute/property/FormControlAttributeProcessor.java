@@ -30,13 +30,6 @@ public abstract class FormControlAttributeProcessor extends PropertyAttributePro
 			.filter(e -> !element.hasAttribute(e.getName()))
 			.forEachOrdered(e -> handler.setAttribute(e.getName(), e.getValue().toString()));
 
-		if (!element.hasAttribute("data-mask"))
-		{
-			String mask = property.getMask();
-			if (mask != null && !mask.isEmpty())
-				handler.setAttribute("data-mask", mask);
-		}
-
 		if (!element.hasAttribute("title"))
 		{
 			String description = property.getDescription();
