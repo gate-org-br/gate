@@ -3,12 +3,12 @@ package gate.thymeleaf.processors.attribute.property;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class LabelAttributeProcessor extends ReadOnlyAttributeProcessor
+public class SpanAttributeProcessor extends ReadOnlyAttributeProcessor
 {
 
-	public LabelAttributeProcessor()
+	public SpanAttributeProcessor()
 	{
-		super("label");
+		super("span");
 
 	}
 }
