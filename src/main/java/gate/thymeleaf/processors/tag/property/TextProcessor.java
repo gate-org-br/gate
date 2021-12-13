@@ -8,6 +8,7 @@ import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -34,14 +35,14 @@ public class TextProcessor extends PropertyProcessor
 		IElementTagStructureHandler handler,
 		Screen screen, Property property, Attributes attributes)
 	{
+		attributes.put("type", "text");
+
 		if (!attributes.containsKey("data-mask"))
 		{
 			String mask = property.getMask();
 			if (mask != null && !mask.isEmpty())
 				attributes.put("data-mask", mask);
 		}
-
-		attributes.put("type", "text");
 
 		if (attributes.containsKey("value"))
 			attributes.put("value", Converter.toString(expression.evaluate((String) attributes.get("value"))));
@@ -51,6 +52,8 @@ public class TextProcessor extends PropertyProcessor
 		if (attributes.containsKey("options"))
 		{
 			var options = expression.evaluate((String) attributes.remove("options"));
+			var labels = extract(element, handler, "labels").map(expression::function).orElse(Function.identity());
+			var values = extract(element, handler, "values").map(expression::function).orElse(Function.identity());
 
 			Attributes parameters = new Attributes();
 			String id = "datalist-" + sequence.next();
@@ -60,23 +63,13 @@ public class TextProcessor extends PropertyProcessor
 			StringJoiner string = new StringJoiner(System.lineSeparator());
 			string.add("<datalist " + parameters + ">");
 
-			String labels = (String) attributes.remove("labels");
-			String values = (String) attributes.remove("values");
-
 			for (Object option : Toolkit.iterable(options))
 			{
-				Object optionLabel = option;
-				if (labels != null)
-					optionLabel = expression.evaluate(labels, option);
-
-				Object optionValue = option;
-				if (values != null)
-					optionValue = expression.evaluate(values, option);
-
-				string.add(String.format("<option data-value='%s'>%s</option>",
-					Converter.toString(optionValue), Converter.toText(optionLabel)));
-
+				var label = Converter.toText(labels.apply(option));
+				var value = Converter.toString(values.apply(option));
+				string.add(String.format("<option data-value='%s'>%s</option>", value, label));
 			}
+
 			string.add("</datalist>");
 
 			string.add("<input " + attributes + "/>");

@@ -1,6 +1,8 @@
 package gate.thymeleaf;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.el.ELContext;
@@ -17,7 +19,9 @@ public interface ELExpression
 
 	public Object evaluate(String expression);
 
-	public Object evaluate(String expression, Object parameter);
+	public Function<Object, Object> function(String expression);
+
+	public Comparator<Object> comparator(String expression);
 
 	@RequestScoped
 	public static class ELExpressionImpl implements ELExpression
@@ -26,7 +30,8 @@ public interface ELExpression
 		private final ELContext context;
 		private final ExpressionFactory factory;
 		private static final Pattern VAR = Pattern.compile("^\\$\\{[^}]+\\}$");
-		private static final Pattern LAMBDA = Pattern.compile("^\\$\\{([a-zA-Z][a-zA-Z0-9]*) *-> *(.*)\\}$");
+		private static final Pattern FUNCTION = Pattern.compile("^\\$\\{([a-zA-Z][a-zA-Z0-9]) *-> *(.*)\\}$");
+		private static final Pattern BI_FUNCTION = Pattern.compile("^\\$\\{\\(([a-zA-Z][a-zA-Z0-9]*), *([a-zA-Z][a-zA-Z0-9]*)\\)\\ *-> *(.*)}$");
 
 		@Inject
 		public ELExpressionImpl(BeanManager beanManager, HttpServletRequest request)
@@ -75,14 +80,32 @@ public interface ELExpression
 		}
 
 		@Override
-		public Object evaluate(String expression, Object parameter)
+		public Function<Object, Object> function(String expression)
 		{
-			Matcher matcher = LAMBDA.matcher(expression);
+			Matcher matcher = FUNCTION.matcher(expression);
 			if (!matcher.matches())
-				throw new ELException(expression + " is not a valid lambda expression");
-			return new LambdaExpression(List.of(matcher.group(1)),
+				throw new ELException(expression + " is not a valid lambda function");
+
+			var lambda = new LambdaExpression(List.of(matcher.group(1)),
 				factory.createValueExpression(context, "${" + matcher.group(2) + "}",
-					Object.class)).invoke(context, parameter);
+					Object.class));
+
+			return a -> lambda.invoke(a);
 		}
+
+		@Override
+		public Comparator<Object> comparator(String expression)
+		{
+			Matcher matcher = BI_FUNCTION.matcher(expression);
+			if (!matcher.matches())
+				throw new ELException(expression + " is not a valid lambda comparator");
+
+			var lambda = new LambdaExpression(List.of(matcher.group(1), matcher.group(2)),
+				factory.createValueExpression(context, "${" + matcher.group(3) + "}",
+					Object.class));
+
+			return (a, b) -> (int) lambda.invoke(a, b);
+		}
+
 	}
 }

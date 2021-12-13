@@ -125,7 +125,7 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
 			}
 
-			this.style.display = "grid";
+			this.style.visibility = "visible";
 		}
 	}));
 

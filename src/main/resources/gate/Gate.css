@@ -4868,8 +4868,9 @@ figure > fieldset:only-child {
   }
 }
 g-tab-control {
-  display: none;
+  display: grid;
   margin-top: 16px;
+  visibility: hidden;
   border-radius: 8px 8px 0 0;
   grid-template-rows: auto 1fr;
   background-color: var(--g-tab-control-background-color);

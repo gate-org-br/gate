@@ -1543,16 +1543,18 @@ class GOverflow extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 
-		var container = this.shadowRoot.appendChild(document.createElement("div"));
+		let container = this.shadowRoot.appendChild(document.createElement("div"));
 		container.setAttribute("id", "container");
 		container.style.width = "auto";
 		container.style.flex = "1 1 0px";
 		container.style.display = "flex";
 		container.style.whiteSpace = "nowrap";
 
-		container.appendChild(document.createElement("slot"));
+		window.addEventListener("resize", () => this.update());
+		container.appendChild(document.createElement("slot"))
+			.addEventListener('slotchange', () => this.update());
 
-		var more = container.appendChild(document.createElement("a"));
+		let more = container.appendChild(document.createElement("a"));
 		more.setAttribute("id", "more");
 
 		more.href = "#";
@@ -1601,21 +1603,23 @@ class GOverflow extends HTMLElement
 		if (selected)
 			selected.setAttribute("aria-selected", "true");
 
-		Array.from(this.children).forEach(e => e.style.display = "");
+		Array.from(this.children)
+			.filter(e => !e.getAttribute("hidden"))
+			.forEach(e => e.style.display = "");
 
-		this.more.style.display = this.container.clientWidth > this.clientWidth ? "flex" : "none";
+		this.more.style.display = this.overflowed ? "flex" : "none";
 
-		for (let e = this.lastElementChild; e; e = e.previousElementSibling)
-			if (this.container.clientWidth > this.clientWidth)
-				if (!e.hasAttribute("aria-selected")
-					&& !e.getAttribute("hidden"))
-					e.style.display = "none";
+		for (let e = this.lastElementChild;
+			e && this.overflowed; e = e.previousElementSibling)
+			if (!e.hasAttribute("aria-selected")
+				&& !e.getAttribute("hidden"))
+				e.style.display = "none";
 	}
 
-	connectedCallback()
+	get overflowed()
 	{
-		this.update();
-		window.addEventListener("resize", () => this.update());
+		return this.container.getBoundingClientRect().left < this.getBoundingClientRect().left
+			|| this.container.getBoundingClientRect().right > this.getBoundingClientRect().right;
 	}
 
 	static isOverflowed(element)
@@ -1740,7 +1744,7 @@ customElements.define('digital-clock', DigitalClock);
 
 window.addEventListener("load", () =>
 {
-	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
+	window.setInterval(() => window.dispatchEvent(new CustomEvent("ClockTick")), 1000);
 });
 /* global ENTER, ESC */
 
@@ -7658,15 +7662,31 @@ window.addEventListener("changed", function (event)
 window.addEventListener("load", () => Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => setTimeout(() => GDataFilter.filter(e), 0)));
 /* global customElements */
 
-window.addEventListener("load", () =>
-	customElements.define('g-coolbar', class extends GOverflow
+
+customElements.define('g-coolbar', class extends GOverflow
+{
+	constructor()
 	{
-		constructor()
-		{
-			super();
-			this.container.style.flexDirection = "row-reverse";
-		}
-	}));
+		super();
+		this.container.style.flexDirection = "row-reverse";
+	}
+});
+
+window.addEventListener("load", () => Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true")));
+
+window.addEventListener("resize", () => {
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.hasAttribute("data-overflow"))
+		.forEach(e => e.removeAttribute("data-overflow"));
+
+	Array.from(document.querySelectorAll("div.Coolbar, div.COOLBAR"))
+		.filter(e => e.scrollWidth > e.clientWidth
+				|| e.scrollHeight > e.clientHeight)
+		.forEach(e => e.setAttribute("data-overflow", "true"));
+});
 window.addEventListener("load", function ()
 {
 	Array.from(document.querySelectorAll("*[data-autoclick]")).forEach(a => a.click());
@@ -8066,7 +8086,7 @@ window.addEventListener("load", () => customElements.define('g-tab-control', cla
 				Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
 			}
 
-			this.style.display = "grid";
+			this.style.visibility = "visible";
 		}
 	}));
 

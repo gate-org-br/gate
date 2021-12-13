@@ -6,9 +6,12 @@ import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import gate.util.Toolkit;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -38,35 +41,58 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 			options = expression.evaluate(element.getAttributeValue("g:options"));
 			handler.removeAttribute("g:options");
 		} else if (Boolean.class.isAssignableFrom(property.getRawType()))
-			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
+			options = List.of(Boolean.FALSE, Boolean.TRUE);
 		else if (boolean.class.isAssignableFrom(property.getRawType()))
-			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
+			options = List.of(Boolean.FALSE, Boolean.TRUE);
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 
-		String labels = extract(element, handler, "g:labels").orElse(null);
-		String values = extract(element, handler, "g:values").orElse(null);
+		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression::comparator).orElse(null);
+		if (comparator != null)
+			options = Toolkit
+				.collection(options)
+				.stream()
+				.sorted(comparator)
+				.collect(Collectors.toList());
+
+		var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
+		var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
 
 		StringJoiner body = new StringJoiner(System.lineSeparator());
 		body.add("<option></option>");
-		print(body, Toolkit.iterable(options), labels, values, value);
+
+		Function<Object, Object> groups = extract(element, handler, "g:groups").map(expression::function).orElse(null);
+		if (groups != null)
+		{
+			Toolkit.stream(options)
+				.collect(Collectors.groupingBy(groups,
+					LinkedHashMap::new,
+					Collectors.toList()))
+				.entrySet()
+				.forEach(group ->
+				{
+					body.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
+					print(body, group.getValue(), labels, values, value);
+					body.add("</optgroup>");
+				});
+		} else
+			print(body, Toolkit.iterable(options), labels, values, value);
+
 		handler.setBody(body.toString(), false);
 	}
 
 	private String print(StringJoiner result,
 		Iterable<?> options,
-		String labels, String values,
+		Function<Object, Object> labels, Function<Object, Object> values,
 		Object value)
 	{
 		for (Object option : options)
 		{
-			var label = Converter.toText(labels != null
-				? expression.evaluate(labels, option) : option);
+			var label = Converter.toText(labels.apply(option));
 
-			if (values != null)
-				option = expression.evaluate(values, option);
+			option = values.apply(option);
 
 			Attributes attributes = new Attributes();
 

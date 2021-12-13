@@ -43,5 +43,5 @@ customElements.define('digital-clock', DigitalClock);
 
 window.addEventListener("load", () =>
 {
-	window.setInterval(() => this.dispatchEvent(new CustomEvent("ClockTick")), 1000);
+	window.setInterval(() => window.dispatchEvent(new CustomEvent("ClockTick")), 1000);
 });

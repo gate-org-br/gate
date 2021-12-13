@@ -7,16 +7,18 @@ class GOverflow extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 
-		var container = this.shadowRoot.appendChild(document.createElement("div"));
+		let container = this.shadowRoot.appendChild(document.createElement("div"));
 		container.setAttribute("id", "container");
 		container.style.width = "auto";
 		container.style.flex = "1 1 0px";
 		container.style.display = "flex";
 		container.style.whiteSpace = "nowrap";
 
-		container.appendChild(document.createElement("slot"));
+		window.addEventListener("resize", () => this.update());
+		container.appendChild(document.createElement("slot"))
+			.addEventListener('slotchange', () => this.update());
 
-		var more = container.appendChild(document.createElement("a"));
+		let more = container.appendChild(document.createElement("a"));
 		more.setAttribute("id", "more");
 
 		more.href = "#";
@@ -65,21 +67,23 @@ class GOverflow extends HTMLElement
 		if (selected)
 			selected.setAttribute("aria-selected", "true");
 
-		Array.from(this.children).forEach(e => e.style.display = "");
+		Array.from(this.children)
+			.filter(e => !e.getAttribute("hidden"))
+			.forEach(e => e.style.display = "");
 
-		this.more.style.display = this.container.clientWidth > this.clientWidth ? "flex" : "none";
+		this.more.style.display = this.overflowed ? "flex" : "none";
 
-		for (let e = this.lastElementChild; e; e = e.previousElementSibling)
-			if (this.container.clientWidth > this.clientWidth)
-				if (!e.hasAttribute("aria-selected")
-					&& !e.getAttribute("hidden"))
-					e.style.display = "none";
+		for (let e = this.lastElementChild;
+			e && this.overflowed; e = e.previousElementSibling)
+			if (!e.hasAttribute("aria-selected")
+				&& !e.getAttribute("hidden"))
+				e.style.display = "none";
 	}
 
-	connectedCallback()
+	get overflowed()
 	{
-		this.update();
-		window.addEventListener("resize", () => this.update());
+		return this.container.getBoundingClientRect().left < this.getBoundingClientRect().left
+			|| this.container.getBoundingClientRect().right > this.getBoundingClientRect().right;
 	}
 
 	static isOverflowed(element)

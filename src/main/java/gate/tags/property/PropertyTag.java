@@ -65,35 +65,35 @@ abstract class PropertyTag extends AttributeTag
 
 		Screen screen = (Screen) getJspContext().findAttribute("screen");
 
-		Property p = Property.getProperty(screen.getClass(), this.property);
+		Property property = Property.getProperty(screen.getClass(), this.property);
 
-		this.name = p.toString();
-		this.color = p.getColor();
-		this.type = p.getRawType();
-		this.value = p.getValue(screen);
-		this.converter = p.getConverter();
-		this.elementType = p.getElementRawType();
+		this.name = property.toString();
+		this.color = property.getColor();
+		this.type = property.getRawType();
+		this.value = property.getValue(screen);
+		this.converter = property.getConverter();
+		this.elementType = property.getElementRawType();
 
 		if (!getAttributes().containsKey("name"))
-			getAttributes().put("name", p.toString());
+			getAttributes().put("name", this.name);
 
-		p.getConstraints().stream()
+		property.getConstraints().stream()
 			.filter(e -> !getAttributes().containsKey(e.getName()))
 			.forEachOrdered(e -> getAttributes().put(e.getName(), e.getValue().toString()));
 
 		if (!getAttributes().containsKey("data-mask"))
 		{
-			String mask = p.getMask();
+			String mask = property.getMask();
 			if (mask != null && !mask.isEmpty())
 				getAttributes().put("data-mask", mask);
 		}
 
 		if (!getAttributes().containsKey("title"))
 		{
-			String description = p.getDescription();
+			String description = property.getDescription();
 			if (description == null || description.isEmpty())
 			{
-				String propertyName = p.getDisplayName();
+				String propertyName = property.getDisplayName();
 				if (propertyName != null && !propertyName.isEmpty())
 					getAttributes().put("title", propertyName);
 			} else
@@ -102,14 +102,14 @@ abstract class PropertyTag extends AttributeTag
 
 		if (!getAttributes().containsKey("data-tooltip"))
 		{
-			String tooltip = p.getTooltip();
+			String tooltip = property.getTooltip();
 			if (tooltip != null && !tooltip.isEmpty())
 				getAttributes().put("data-tooltip", tooltip);
 		}
 
 		if (!getAttributes().containsKey("placeholder"))
 		{
-			String placeholder = p.getPlaceholder();
+			String placeholder = property.getPlaceholder();
 			if (placeholder != null && !placeholder.isEmpty())
 				getAttributes().put("placeholder", placeholder);
 		}
