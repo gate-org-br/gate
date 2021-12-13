@@ -7,6 +7,7 @@ import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
 import gate.util.Toolkit;
+import java.util.function.Function;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -54,11 +55,9 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 					handler.setAttribute("data-mask", mask);
 			}
 
-			if (element.hasAttribute("g:options"))
+			var options = extract(element, handler, "g:options").map(expression::evaluate).orElse(null);
+			if (options != null)
 			{
-				var options = expression.evaluate(element.getAttributeValue("g:options"));
-				handler.removeAttribute("g:options");
-
 				Attributes parameters = new Attributes();
 				String id = "datalist-" + sequence.next();
 				parameters.put("id", id);
@@ -67,24 +66,19 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 				IModel model = context.getModelFactory().createModel();
 
 				model.add(context.getModelFactory().createText("<datalist " + parameters + ">"));
+
+				var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
+				var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
+
 				for (Object option : Toolkit.iterable(options))
 				{
-					Object optionLabel = option;
-					if (element.hasAttribute("g:labels"))
-					{
-						optionLabel = expression.evaluate(element.getAttributeValue("g:labels"), option);
-						handler.removeAttribute("g:labels");
-					}
+					Object optionLabel = labels.apply(option);
+					Object optionValue = values.apply(option);
 
-					Object optionValue = option;
-					if (element.hasAttribute("g:values"))
-					{
-						optionValue = expression.evaluate(element.getAttributeValue("g:values"), option);
-						handler.removeAttribute("g:values");
-					}
-
-					model.add(context.getModelFactory().createText(String.format("<option data-value='%s'>%s</option>",
-						Converter.toString(optionValue), Converter.toText(optionLabel))));
+					optionLabel = Converter.toText(optionLabel);
+					optionValue = Converter.toString(optionValue);
+					String string = String.format("<option data-value='%s'>%s</option>", optionValue, optionLabel);
+					model.add(context.getModelFactory().createText(string));
 
 				}
 				model.add(context.getModelFactory().createText("</datalist " + parameters + ">"));

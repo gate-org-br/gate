@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
@@ -8,6 +7,8 @@ import gate.type.Attributes;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
@@ -44,7 +45,7 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("g:depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("g:index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("g:target"), "target");
-		var children = element.getAttributeValue("g:children");
+		var children = Optional.ofNullable(element.getAttributeValue("g:children")).map(expression::function).orElse(null);
 
 		Attributes attributes
 			= Stream.of(element.getAllAttributes())
@@ -83,7 +84,7 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 
 	private void iterate(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
 		IModel content, HttpServletRequest request, Object source,
-		String target, String index, String depth, String children)
+		String target, String index, String depth, Function<Object, Object> children)
 	{
 		request.setAttribute(depth, ((int) request.getAttribute(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
@@ -98,7 +99,7 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 
 			if (value != null)
 				if (children != null)
-					for (Object child : Toolkit.iterable(Property.getValue(value, children)))
+					for (Object child : Toolkit.iterable(children.apply(value)))
 						iterate(context, model, handler, content, request, child, target, index, depth, children);
 				else if (value instanceof Hierarchy)
 					((Hierarchy) value).getChildren().forEach(child -> iterate(context, model, handler, content, request, child, target, index, depth, children));

@@ -7,6 +7,7 @@ import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import java.util.Objects;
+import java.util.function.Function;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
@@ -42,6 +43,8 @@ public abstract class IterableProcessor extends TagModelProcessor
 		var index = Objects.requireNonNullElse(element.getAttributeValue("index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("target"), "target");
 
+		var children = element.hasAttribute("children") ? expression.function("children") : null;
+
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		if (request.getAttribute(index) == null)
 		{
@@ -59,7 +62,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 					target,
 					index,
 					depth,
-					element.getAttributeValue("children"));
+					children);
 				request.removeAttribute(depth);
 			} else
 				iterate(context,
@@ -71,7 +74,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 					target,
 					index,
 					depth,
-					element.getAttributeValue("children"));
+					children);
 
 			request.removeAttribute(index);
 		} else if (request.getAttribute(depth) == null)
@@ -86,7 +89,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 				target,
 				index,
 				depth,
-				element.getAttributeValue("children"));
+				children);
 			request.removeAttribute(depth);
 		} else
 			iterate(context,
@@ -98,13 +101,13 @@ public abstract class IterableProcessor extends TagModelProcessor
 				target,
 				index,
 				depth,
-				element.getAttributeValue("children"));
+				children);
 	}
 
 	private void iterate(ITemplateContext context, IModel model,
 		IElementModelStructureHandler handler,
 		HttpServletRequest request, IModel body, Object source,
-		String target, String index, String depth, String children)
+		String target, String index, String depth, Function<Object, Object> children)
 	{
 		request.setAttribute(depth, ((int) request.getAttribute(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
@@ -116,7 +119,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 			if (target != null)
 				request.removeAttribute(target);
 			if (value != null && children != null)
-				for (Object child : Toolkit.iterable(expression.evaluate(children, value)))
+				for (Object child : Toolkit.iterable(children.apply(value)))
 					iterate(context, model, handler, request, body, child, target, index, depth, children);
 			else if (value instanceof Hierarchy)
 				for (Object child : Toolkit.iterable(((Hierarchy) value).getChildren()))

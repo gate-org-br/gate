@@ -9,7 +9,7 @@ import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-public abstract class FormControlAttributeProcessor extends PropertyAttributeProcessor
+public abstract class FormControlAttributeProcessor extends AbstractPropertyAttributeProcessor
 {
 
 	@Inject

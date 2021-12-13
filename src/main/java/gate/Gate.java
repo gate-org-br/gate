@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -44,6 +45,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -70,6 +72,10 @@ public class Gate extends HttpServlet
 	@Any
 	@Inject
 	Instance<Handler> handlers;
+
+	@Inject
+	@ConfigProperty(name = "gate.denveloper")
+	Optional<String> denveloper;
 
 	static
 	{
@@ -108,13 +114,20 @@ public class Gate extends HttpServlet
 
 				if (Toolkit.notEmpty(username, password))
 				{
-					request.getSession().setAttribute(User.class.getName(),
-						user = control.select(org, username, password));
+					user = control.select(org, username, password);
+					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
 				} else if (httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
-					request.getSession().setAttribute(User.class.getName(),
-						user = control.select(httpServletRequest.getUserPrincipal().getName()));
+				{
+					user = control.select(httpServletRequest.getUserPrincipal().getName());
+					request.getSession().setAttribute(User.class.getName(), user);
+				} else if (denveloper.isPresent())
+				{
+					user = control.select(denveloper.orElseThrow());
+					request.getSession().setAttribute(User.class.getName(), user);
+					event.fireAsync(new LoginEvent(user));
+				}
 
 				Call call = Call.of(MODULE, SCREEN, ACTION);
 				if (!call.checkAccess(user))

@@ -1,35 +1,58 @@
 package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
+import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.processors.attribute.AttributeProcessor;
-import javax.servlet.http.HttpServletRequest;
+import gate.thymeleaf.Precedence;
+import javax.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-public abstract class PropertyAttributeProcessor extends AttributeProcessor
+@ApplicationScoped
+public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcessor
 {
 
-	public PropertyAttributeProcessor(String element)
+	public PropertyAttributeProcessor()
 	{
-		super(element, "property");
+		super(null);
+
 	}
 
 	@Override
 	public void process(ITemplateContext context,
 		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+		IElementTagStructureHandler handler, Screen screen, Property property)
 	{
-		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Screen screen = (Screen) request.getAttribute("screen");
-		Property property = Property.getProperty(screen.getClass(),
-			element.getAttributeValue("g:property"));
-		handler.removeAttribute("g:property");
-		process(context, element, handler, screen, property);
+
+		if (!element.hasAttribute("title"))
+		{
+			String description = property.getDescription();
+			if (description == null || description.isEmpty())
+			{
+				String displayName = property.getDisplayName();
+				if (displayName != null && !displayName.isEmpty())
+					handler.setAttribute("title", displayName);
+			} else
+				handler.setAttribute("title", description);
+		}
+
+		if (!element.hasAttribute("data-tooltip"))
+		{
+			String tooltip = property.getTooltip();
+			if (tooltip != null && !tooltip.isEmpty())
+				handler.setAttribute("data-tooltip", tooltip);
+		}
+
+		if (!property.toString().endsWith("[]"))
+			handler.setBody(Converter.toText(property.getValue(screen)), false);
+		else
+			handler.setBody("", false);
 	}
 
-	public abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property);
+	@Override
+	public int getPrecedence()
+	{
+		return Precedence.LOW;
+	}
 }

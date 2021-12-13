@@ -7,8 +7,12 @@ import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -45,28 +49,54 @@ public class SelectProcessor extends PropertyProcessor
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 
-		String labels = (String) attributes.remove("labels");
-		String values = (String) attributes.remove("values");
+		String sortby = (String) attributes.remove("sortby");
+		if (sortby != null)
+		{
+			var comparator = expression.comparator(sortby);
+			options = Toolkit
+				.collection(options)
+				.stream()
+				.sorted(comparator)
+				.collect(Collectors.toList());
+		}
+
+		Object value = property.getValue(screen);
+
+		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
+		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");
 		string.add("<option></option>");
-		print(string, Toolkit.iterable(options), labels, values, property.getValue(screen));
+
+		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
+		if (groups != null)
+		{
+			Toolkit.stream(options)
+				.collect(Collectors.groupingBy(groups,
+					LinkedHashMap::new,
+					Collectors.toList()))
+				.entrySet()
+				.forEach(group ->
+				{
+					string.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
+					print(string, group.getValue(), labels, values, value);
+					string.add("</optgroup>");
+				});
+		} else
+			print(string, Toolkit.iterable(options), labels, values, property.getValue(screen));
+
 		string.add("</select>");
 		handler.replaceWith(string.toString(), false);
-
 	}
 
-	private void print(StringJoiner string, Iterable<?> options, String labels, String values, Object value)
+	private void print(StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Object value)
 	{
 		for (Object option : options)
 		{
-			var label = Converter.toText(labels != null
-				? expression.evaluate(labels, option)
-				: option);
+			var label = Converter.toText(labels.apply(option));
 
-			if (values != null)
-				option = expression.evaluate(values, option);
+			option = values.apply(option);
 
 			Attributes attributes = new Attributes();
 
