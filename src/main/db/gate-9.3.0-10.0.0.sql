@@ -40,3 +40,25 @@ CREATE TABLE `gate`.`App` (
   `id` VARCHAR(32) NOT NULL,
   `json` TEXT NOT NULL,
   PRIMARY KEY (`id`));
+
+
+CREATE TABLE `Mail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `app` varchar(32) NOT NULL,
+  `date` datetime NOT NULL,
+  `sender` varchar(128) NOT NULL,
+  `receiver` varchar(128) NOT NULL,
+  `attempts` int unsigned NOT NULL,
+  `expiration` datetime NOT NULL,
+  `message` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `Server` (
+  `type` varchar(32) NOT NULL,
+  `host` varchar(32) NOT NULL,
+  `port` int unsigned NOT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `password` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
