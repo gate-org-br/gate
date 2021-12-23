@@ -1,0 +1,268 @@
+ul.HMenu {
+  padding: 0;
+  margin: 4px;
+  width: 100%;
+  color: black;
+  display: flex;
+  flex-basis: 100%;
+}
+ul.HMenu ul {
+  margin: 0;
+  padding: 0;
+  width: 160px;
+  display: none;
+  z-index: 1000;
+  position: absolute;
+  align-items: stretch;
+  flex-direction: column;
+}
+ul.HMenu li {
+  height: 40px;
+  color: black;
+  display: flex;
+  align-items: stretch;
+  list-style-type: none;
+  justify-content: center;
+}
+ul.HMenu li:hover > ul {
+  display: flex;
+}
+ul.HMenu li > a {
+  display: flex;
+  color: inherit;
+  align-items: center;
+  border: 1px solid var(--base);
+  background-color: var(--main-tinted50);
+}
+ul.HMenu li > a:hover {
+  background-color: var(--acent-tinted35);
+}
+ul.HMenu li > a > i {
+  order: 1;
+  color: inherit;
+}
+ul.HMenu > li {
+  position: relative;
+  align-content: stretch;
+}
+ul.HMenu > li:not(:first-of-type) > a {
+  border-left: none;
+}
+ul.HMenu > li > a {
+  width: 40px;
+  padding: 0px;
+  font-size: 0px;
+  justify-content: center;
+}
+ul.HMenu > li > a > i {
+  font-size: 16px;
+}
+ul.HMenu > li > a:first-child {
+  border-radius: 5px 0 0 5px;
+}
+ul.HMenu > li > a:last-child {
+  border-radius: 0 5px 5px 0;
+}
+ul.HMenu > li > a:only-of-type {
+  border-radius: 0 0 0 0;
+}
+ul.HMenu > li > ul {
+  left: 0;
+  top: 100%;
+}
+ul.HMenu > li > ul li {
+  flex-grow: 1;
+}
+ul.HMenu > li > ul li:empty {
+  flex-basis: 4px;
+  border: 2px solid var(--base);
+}
+ul.HMenu > li > ul li > a {
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 10px;
+  justify-content: space-between;
+}
+ul.HMenu > li > ul li > a > i {
+  font-size: 12px;
+}
+ul.HMenu > li > ul li > ul {
+  left: 100%;
+}
+ul.HMenu > li:empty {
+  width: auto;
+  flex-grow: 1;
+  border: none;
+  min-width: 8px;
+  max-width: none;
+  flex-basis: unset;
+  background-color: transparent;
+}
+ul.HMenu ul > li:not(:first-of-type) > a {
+  border-top: none;
+}
+ul.HMenu .full > a:only-of-type {
+  width: 160px;
+  padding: 10px;
+  font-size: 10px;
+  justify-content: space-between;
+}
+ul.HMenu .full > a:only-of-type > i {
+  font-size: 12px;
+}
+@media only screen and (min-width: 180px) {
+  ul.HMenu > li:first-child:nth-last-child(1) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(1) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(1) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(1) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 340px) {
+  ul.HMenu > li:first-child:nth-last-child(2) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(2) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(2) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(2) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 500px) {
+  ul.HMenu > li:first-child:nth-last-child(3) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(3) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(3) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 660px) {
+  ul.HMenu > li:first-child:nth-last-child(4) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(4) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(4) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 820px) {
+  ul.HMenu > li:first-child:nth-last-child(5) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(5) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(5) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 980px) {
+  ul.HMenu > li:first-child:nth-last-child(6) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(6) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(6) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1140px) {
+  ul.HMenu > li:first-child:nth-last-child(7) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(7) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(7) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1300px) {
+  ul.HMenu > li:first-child:nth-last-child(8) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(8) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(8) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1460px) {
+  ul.HMenu > li:first-child:nth-last-child(9) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(9) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(9) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1620px) {
+  ul.HMenu > li:first-child:nth-last-child(10) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(10) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(10) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1780px) {
+  ul.HMenu > li:first-child:nth-last-child(11) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(11) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(11) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}
+@media only screen and (min-width: 1940px) {
+  ul.HMenu > li:first-child:nth-last-child(12) > a:only-of-type,
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li > a:only-of-type {
+    width: 160px;
+    padding: 10px;
+    font-size: 10px;
+    justify-content: space-between;
+  }
+  ul.HMenu > li:first-child:nth-last-child(12) > a:only-of-type > i,
+  ul.HMenu > li:first-child:nth-last-child(12) ~ li > a:only-of-type > i {
+    font-size: 12px;
+  }
+}

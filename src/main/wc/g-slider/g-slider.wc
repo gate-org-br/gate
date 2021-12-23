@@ -1,0 +1,5 @@
+<template>
+	<a id='prev' href='#'>&#X2278;</a>
+	<div id='main'></div>
+	<a id='next' href='#'>&#X2276;</a>
+</template>

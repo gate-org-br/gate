@@ -1,0 +1,25 @@
+#container {
+	width: auto;
+	flex: 1 1 0px;
+	display:  flex;
+	white-space: nowrap;
+	flex-direction: inherit;
+}
+
+#more {
+	padding: 0;
+	width: 32px;
+	flex-grow: 0;
+	height: 100%;
+	outline: none;
+	display: none;
+	flex-shrink: 0;
+	color: inherit;
+	font-size: 20px;
+	cursor: pointer;
+	font-family: gate;
+	margin-right: auto;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}

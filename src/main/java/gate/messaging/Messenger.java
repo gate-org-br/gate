@@ -1,40 +1,32 @@
 package gate.messaging;
 
+import gate.annotation.Current;
 import gate.entity.App;
+import gate.entity.Mail;
+import gate.entity.Server;
+import gate.error.AppException;
 import gate.type.DataFile;
 import gate.type.mime.Mime;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
 import gate.type.mime.MimeText;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.jms.QueueBrowser;
-import javax.jms.Session;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import org.slf4j.Logger;
 
 @ApplicationScoped
@@ -42,123 +34,76 @@ public class Messenger
 {
 
 	@Inject
+	@Current
 	private App app;
+
+	@Inject
+	MailControl control;
 
 	@Inject
 	private Logger logger;
 
-	private volatile ScheduledExecutorService service;
+	private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
+	@PostConstruct
 	public void startup()
 	{
-		service = Executors.newSingleThreadScheduledExecutor();
-
 		service.scheduleWithFixedDelay(() ->
 		{
 			try
 			{
-				Context context = new InitialContext();
-				Queue queue = (Queue) context.lookup("java:/jms/queue/MailBox");
-				ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("/ConnectionFactory");
-
-				try (Connection connection = connectionFactory.createConnection();
-					Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-					MessageConsumer consumer = session.createConsumer(queue, "app = '" + app.getId() + "'"))
-
+				control.expire(app);
+				for (Mail mail : control.search(app))
 				{
-					connection.start();
-					ObjectMessage objectMessage = (ObjectMessage) consumer.receiveNoWait();
-					if (objectMessage != null)
-						send(objectMessage.getStringProperty("sender"),
-							objectMessage.getStringProperty("receiver"),
-							objectMessage.getBody(MimeMail.class));
+					try
+					{
+						send(mail.getSender(), mail.getReceiver(), mail.getMessage());
+						control.delete(mail);
+					} catch (MessagingException | AppException | RuntimeException ex)
+					{
+						logger.warn(ex.getMessage(), ex);
+						mail.setAttempts(mail.getAttempts() + 1);
+						control.update(mail);
+					}
 				}
-			} catch (NamingException | JMSException | RuntimeException | MessagingException ex)
+			} catch (AppException ex)
 			{
 				logger.error(ex.getMessage(), ex);
 			}
-		}, 0, 60, TimeUnit.SECONDS);
+		}, 0, 1, TimeUnit.MINUTES);
 	}
 
 	@PreDestroy
-	public void teardown()
+	public void shutdown()
 	{
-		if (service != null)
-		{
+		if (!service.isShutdown())
 			service.shutdownNow();
-			service = null;
-		}
 	}
 
 	public void post(String sender,
 		String receiver,
-		MimeMail<?> mail)
+		MimeMail<?> message)
 		throws MessageException
 	{
-		if (receiver == null)
-			throw new MessageException("Esquecifique o destinatário da mensagem.");
-		if (mail == null)
-			throw new MessageException("Esquecifique o conteudo da mensagem a ser enviada.");
 		try
 		{
-			Context context = new InitialContext();
-			try
-			{
-				ConnectionFactory connectionFactory
-					= (ConnectionFactory) context.lookup("/ConnectionFactory");
-				try
-				{
-					Queue queue = (Queue) new InitialContext().lookup("java:/jms/queue/MailBox");
+			if (receiver == null)
+				throw new MessageException("Esquecifique o destinatário da mensagem.");
+			if (message == null)
+				throw new MessageException("Esquecifique o conteudo da mensagem a ser enviada.");
 
-					try
-					{
-						javax.mail.Session mailSession = (javax.mail.Session) context.lookup("java:/comp/env/MailSession");
-						try
-						{
-
-							if (sender == null
-								&& mailSession.getProperties().get("mail.smtp.user") != null)
-								sender = (String) mailSession.getProperties().get("mail.smtp.user");
-							if (sender == null)
-								throw new MessageException("Esquecifique o remetente da mensagem.");
-
-							try (Connection connection = connectionFactory.createConnection();
-								Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-								MessageProducer producer = session.createProducer(queue))
-							{
-
-								ObjectMessage message = session.createObjectMessage();
-								message.setObject(mail);
-								message.setStringProperty("sender", sender);
-								message.setStringProperty("app", app.getId());
-								message.setStringProperty("receiver", receiver);
-								message.setStringProperty("date", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-
-								connection.start();
-								producer.send(message);
-								if (service == null)
-									startup();
-							}
-						} catch (JMSException ex)
-						{
-							throw new MessageException(ex, "Erro ao enviar messagem de %s para %s: "
-								+ ex.getMessage(), sender, receiver);
-						}
-					} catch (NamingException ex)
-					{
-						throw new MessageException(ex, "O servidor de EMails java:/comp/env/MailSession não foi devidamente configurado neste servidor");
-					}
-				} catch (NamingException ex)
-				{
-					throw new MessageException(ex, "A fila java:/jms/queue/MailBox não foi devidamente configurada neste servidor");
-				}
-			} catch (NamingException ex)
-			{
-				throw new MessageException(ex, "O serviço JMS não foi devidamente configurado neste servidor");
-			}
-		} catch (NamingException ex)
+			Mail mail = new Mail();
+			mail.setAttempts(0);
+			mail.setSender(sender);
+			mail.setApp(app.getId());
+			mail.setMessage(message);
+			mail.setReceiver(receiver);
+			mail.setDate(LocalDateTime.now());
+			mail.setExpiration(mail.getDate().plusDays(1));
+			control.insert(mail);
+		} catch (AppException ex)
 		{
-			throw new MessageException(ex, "O serviço de nomes não foi devidamente configurado neste servidor");
+			throw new MessageException(ex.getMessage());
 		}
 	}
 
@@ -166,93 +111,86 @@ public class Messenger
 		MimeMail<?> mail)
 		throws MessageException
 	{
-		post(null, receiver, mail);
-	}
-
-	public List<Message> search() throws MessageException
-	{
 		try
 		{
-			Context context = new InitialContext();
-			try
-			{
-				ConnectionFactory connectionFactory
-					= (ConnectionFactory) context.lookup("/ConnectionFactory");
-				try
-				{
-					Queue queue = (Queue) new InitialContext().lookup("java:/jms/queue/MailBox");
-					try (Connection connection = connectionFactory.createConnection();
-						javax.jms.Session session = connection.createSession(true,
-							javax.jms.Session.AUTO_ACKNOWLEDGE);
-						QueueBrowser browser = session.createBrowser(queue))
-					{
-
-						List<Message> messages = new ArrayList<>();
-						for (Object object : Collections.list(browser.getEnumeration()))
-						{
-							ObjectMessage objectMessage = (ObjectMessage) object;
-							LocalDateTime date = LocalDateTime
-								.parse(objectMessage.getStringProperty("date"),
-									DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-							String sender = objectMessage.getStringProperty("sender");
-							String receiver = objectMessage.getStringProperty("receiver");
-							MimeMail data = MimeMail.of("app", objectMessage.getStringProperty("app"));
-							messages.add(new Message(date, sender, receiver, data));
-						}
-						return messages;
-					} catch (JMSException ex)
-					{
-						throw new MessageException(ex, "Erro ao obter mensgens: " + ex.getMessage());
-					}
-				} catch (NamingException ex)
-				{
-					throw new MessageException(ex, "A fila java:/jms/queue/MailBox não foi devidamente configurada neste servidor");
-				}
-
-			} catch (NamingException ex)
-			{
-				throw new MessageException(ex, "O serviço JMS não foi devidamente configurado neste servidor");
-			}
-		} catch (NamingException ex)
+			Server server = control.server();
+			post(server.getUsername(), receiver, mail);
+		} catch (AppException ex)
 		{
-			throw new MessageException(ex, "O serviço de nomes não foi devidamente configurado neste servidor");
+			throw new MessageException(ex.getMessage());
 		}
-
 	}
 
-	private void send(String sender, String receiver, MimeMail<?> mail)
-		throws NamingException, MessagingException
+	public List<Mail> search() throws MessageException
 	{
-		javax.mail.Session mailSession = (javax.mail.Session) new InitialContext().lookup("java:/comp/env/MailSession");
-		MimeMessage mimeMessage = new MimeMessage(mailSession);
-		mimeMessage.setFrom(sender);
-		mimeMessage.setSubject(mail.getSubject());
-		mimeMessage.setSentDate(new java.util.Date());
+		return control.search();
+	}
 
-		if (mail.getPriority() == MimeMail.Priority.LOW)
-			mimeMessage.setHeader("X-Priority", "5");
-		else if (mail.getPriority() == MimeMail.Priority.HIGH)
-			mimeMessage.setHeader("X-Priority", "1");
+	private void send(String sender, String receiver, MimeMail<?> mail) throws MessagingException
+	{
 
-		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
+		try
+		{
 
-		if (mail.getContent() instanceof MimeText)
+			Server server = control.server();
+			Properties props = new Properties();
+			props.put("mail.smtp.timeout", 30);
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.connectiontimeout", 30);
+			props.put("mail.smtp.port", server.getPort());
+			props.put("mail.smtp.host", server.getHost());
+			props.put("mail.smtp.socketFactory.port", server.getPort());
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+			javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, new javax.mail.Authenticator()
+			{
+				@Override
+				protected PasswordAuthentication getPasswordAuthentication()
+				{
+					return new PasswordAuthentication(server.getUsername(), server.getPassword());
+				}
+			});
+
+			MimeMessage mimeMessage = new MimeMessage(session);
+			mimeMessage.setFrom(sender);
+			mimeMessage.setSubject(mail.getSubject());
+			mimeMessage.setSentDate(new java.util.Date());
+
+			if (mail.getPriority() == MimeMail.Priority.LOW)
+				mimeMessage.setHeader("X-Priority", "5");
+			else if (mail.getPriority() == MimeMail.Priority.HIGH)
+				mimeMessage.setHeader("X-Priority", "1");
+
+			mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
+
+			if (mail.getContent() instanceof MimeText)
+			{
+				MimeText mimeText = (MimeText) mail.getContent();
+				mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
+			} else if (mail.getContent() instanceof DataFile)
+			{
+				DataFile mimeDataFile = (DataFile) mail.getContent();
+				mimeMessage.setDisposition("Attachment");
+				mimeMessage.setFileName(mimeDataFile.getName());
+				mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
+			} else if (mail.getContent() instanceof MimeList)
+			{
+				MimeList mimeList = (MimeList) mail.getContent();
+				mimeMessage.setContent(getMultipart(mimeList));
+			}
+
+			mimeMessage.saveChanges();
+			try ( Transport transport = session.getTransport("smtp"))
+			{
+				if (!transport.isConnected())
+					transport.connect();
+				transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+			}
+
+		} catch (AppException ex)
 		{
-			MimeText mimeText = (MimeText) mail.getContent();
-			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-		} else if (mail.getContent() instanceof DataFile)
-		{
-			DataFile mimeDataFile = (DataFile) mail.getContent();
-			mimeMessage.setDisposition("Attachment");
-			mimeMessage.setFileName(mimeDataFile.getName());
-			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
-		} else if (mail.getContent() instanceof MimeList)
-		{
-			MimeList mimeList = (MimeList) mail.getContent();
-			mimeMessage.setContent(getMultipart(mimeList));
+			throw new MessagingException(ex.getMessage());
 		}
-
-		Transport.send(mimeMessage);
 
 	}
 

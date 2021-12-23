@@ -1,0 +1,1587 @@
+table {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  border: none;
+  color: black;
+  font-weight: normal;
+  table-layout: fixed;
+  border-spacing: 1px;
+  text-decoration: none;
+  background-color: #EEEEEE;
+}
+table:first-child {
+  margin-top: 0px;
+}
+table:last-child {
+  margin-bottom: 0px;
+}
+table:only-child {
+  margin-bottom: 0px;
+}
+table thead,
+table tbody,
+table tfoot,
+table tr,
+table td {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: inherit;
+}
+table > * > tr > * > fieldset {
+  padding: 0;
+}
+table tr {
+  height: 32px;
+}
+table tr th {
+  padding: 4px;
+  text-align: left;
+  vertical-align: middle;
+  background-color: var(--table-head-background-color);
+  background-image: var(--table-head-background-image);
+}
+table tr td {
+  padding: 4px;
+  text-align: left;
+  word-break: normal;
+  vertical-align: middle;
+  background-color: transparent;
+}
+table tr td > select:only-child,
+table tr td > textarea:only-child,
+table tr td > input[type='text']:only-child,
+table tr td > input[type='password']:only-child {
+  width: 100%;
+  height: 32px;
+  text-indent: 4px;
+}
+table tr td > form {
+  height: 32px;
+}
+table tr td > form > select:only-child,
+table tr td > form > textarea:only-child,
+table tr td > form > input[type='text']:only-child,
+table tr td > form > input[type='password']:only-child {
+  width: 100%;
+  height: 32px;
+  text-indent: 4px;
+}
+table tr td.TOOLTIP {
+  color: blue;
+  padding: 12px;
+  background-image: none;
+  border: 1px dashed gray;
+  background-color: #F0F0F4;
+}
+table tr td.SEPARATOR {
+  height: 0px;
+  color: blue;
+  margin: 0px;
+  padding: 0px;
+  background-image: none;
+  border: 1px dotted gray;
+  background-color: #CBCAC9;
+}
+table > caption {
+  height: 32px;
+  color: white;
+  line-height: 32px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 5px 5px 0px 0px;
+  background-color: var(--table-caption-background-color);
+  background-image: var(--table-caption-background-image);
+}
+table > thead > tr {
+  background-color: var(--main-tinted50);
+}
+table > tbody > tr:nth-child(even) {
+  background-color: var(--table-body-background-color-even);
+}
+table > tbody > tr:nth-child(odd) {
+  background-color: var(--table-body-background-color-odd);
+}
+table > tbody > tr.even {
+  background-color: var(--table-body-background-color-even);
+}
+table > tbody > tr.odd {
+  background-color: var(--table-body-background-color-odd);
+}
+table > tbody > tr[data-action],
+table > tbody > tr[data-value],
+table > tbody > tr[data-ret] {
+  cursor: pointer;
+}
+table > tbody > tr[data-action]:focus,
+table > tbody > tr[data-value]:focus,
+table > tbody > tr[data-ret]:focus {
+  background-color: var(--hovered);
+}
+table > tfoot > tr {
+  background-color: var(--table-foot-background-color);
+  background-image: var(--table-foot-background-image);
+}
+table > tfoot > tr th:only-child {
+  text-align: right;
+}
+table > tfoot > tr td:only-child {
+  text-align: right;
+}
+table.c1 > * > tr > *:nth-child(1),
+table[data-c1] > * > tr > *:nth-child(1) {
+  text-align: center;
+}
+table.c2 > * > tr > *:nth-child(2),
+table[data-c2] > * > tr > *:nth-child(2) {
+  text-align: center;
+}
+table.c3 > * > tr > *:nth-child(3),
+table[data-c3] > * > tr > *:nth-child(3) {
+  text-align: center;
+}
+table.c4 > * > tr > *:nth-child(4),
+table[data-c4] > * > tr > *:nth-child(4) {
+  text-align: center;
+}
+table.c5 > * > tr > *:nth-child(5),
+table[data-c5] > * > tr > *:nth-child(5) {
+  text-align: center;
+}
+table.c6 > * > tr > *:nth-child(6),
+table[data-c6] > * > tr > *:nth-child(6) {
+  text-align: center;
+}
+table.c7 > * > tr > *:nth-child(7),
+table[data-c7] > * > tr > *:nth-child(7) {
+  text-align: center;
+}
+table.c8 > * > tr > *:nth-child(8),
+table[data-c8] > * > tr > *:nth-child(8) {
+  text-align: center;
+}
+table.c9 > * > tr > *:nth-child(9),
+table[data-c9] > * > tr > *:nth-child(9) {
+  text-align: center;
+}
+table.c10 > * > tr > *:nth-child(10),
+table[data-c10] > * > tr > *:nth-child(10) {
+  text-align: center;
+}
+table.c11 > * > tr > *:nth-child(11),
+table[data-c11] > * > tr > *:nth-child(11) {
+  text-align: center;
+}
+table.c12 > * > tr > *:nth-child(12),
+table[data-c12] > * > tr > *:nth-child(12) {
+  text-align: center;
+}
+table.c13 > * > tr > *:nth-child(13),
+table[data-c13] > * > tr > *:nth-child(13) {
+  text-align: center;
+}
+table.c14 > * > tr > *:nth-child(14),
+table[data-c14] > * > tr > *:nth-child(14) {
+  text-align: center;
+}
+table.c15 > * > tr > *:nth-child(15),
+table[data-c15] > * > tr > *:nth-child(15) {
+  text-align: center;
+}
+table.c16 > * > tr > *:nth-child(16),
+table[data-c16] > * > tr > *:nth-child(16) {
+  text-align: center;
+}
+table.c17 > * > tr > *:nth-child(17),
+table[data-c17] > * > tr > *:nth-child(17) {
+  text-align: center;
+}
+table.c18 > * > tr > *:nth-child(18),
+table[data-c18] > * > tr > *:nth-child(18) {
+  text-align: center;
+}
+table.c19 > * > tr > *:nth-child(19),
+table[data-c19] > * > tr > *:nth-child(19) {
+  text-align: center;
+}
+table.c20 > * > tr > *:nth-child(20),
+table[data-c20] > * > tr > *:nth-child(20) {
+  text-align: center;
+}
+@media only screen and (max-width: 576px) {
+  table[data-collapse="Phone"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Phone"] > col {
+    display: none;
+  }
+  table[data-collapse="Phone"] > thead {
+    display: none;
+  }
+  table[data-collapse="Phone"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Phone"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Phone"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="Phone"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Phone"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="Phone"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="Phone"] > tfoot > tr,
+  table[data-collapse="Phone"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 768px) {
+  table[data-collapse="Tablet"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Tablet"] > col {
+    display: none;
+  }
+  table[data-collapse="Tablet"] > thead {
+    display: none;
+  }
+  table[data-collapse="Tablet"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Tablet"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Tablet"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="Tablet"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Tablet"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="Tablet"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="Tablet"] > tfoot > tr,
+  table[data-collapse="Tablet"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 992px) {
+  table[data-collapse="Notebook"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Notebook"] > col {
+    display: none;
+  }
+  table[data-collapse="Notebook"] > thead {
+    display: none;
+  }
+  table[data-collapse="Notebook"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Notebook"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Notebook"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="Notebook"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Notebook"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="Notebook"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="Notebook"] > tfoot > tr,
+  table[data-collapse="Notebook"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  table[data-collapse="Desktop"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Desktop"] > col {
+    display: none;
+  }
+  table[data-collapse="Desktop"] > thead {
+    display: none;
+  }
+  table[data-collapse="Desktop"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Desktop"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Desktop"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="Desktop"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Desktop"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="Desktop"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="Desktop"] > tfoot > tr,
+  table[data-collapse="Desktop"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1400px) {
+  table[data-collapse="Widescreen"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Widescreen"] > col {
+    display: none;
+  }
+  table[data-collapse="Widescreen"] > thead {
+    display: none;
+  }
+  table[data-collapse="Widescreen"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="Widescreen"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Widescreen"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="Widescreen"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="Widescreen"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="Widescreen"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="Widescreen"] > tfoot > tr,
+  table[data-collapse="Widescreen"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 100px) {
+  table[data-collapse="100px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="100px"] > col {
+    display: none;
+  }
+  table[data-collapse="100px"] > thead {
+    display: none;
+  }
+  table[data-collapse="100px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="100px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="100px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="100px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="100px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="100px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="100px"] > tfoot > tr,
+  table[data-collapse="100px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 200px) {
+  table[data-collapse="200px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="200px"] > col {
+    display: none;
+  }
+  table[data-collapse="200px"] > thead {
+    display: none;
+  }
+  table[data-collapse="200px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="200px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="200px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="200px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="200px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="200px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="200px"] > tfoot > tr,
+  table[data-collapse="200px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 300px) {
+  table[data-collapse="300px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="300px"] > col {
+    display: none;
+  }
+  table[data-collapse="300px"] > thead {
+    display: none;
+  }
+  table[data-collapse="300px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="300px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="300px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="300px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="300px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="300px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="300px"] > tfoot > tr,
+  table[data-collapse="300px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 400px) {
+  table[data-collapse="400px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="400px"] > col {
+    display: none;
+  }
+  table[data-collapse="400px"] > thead {
+    display: none;
+  }
+  table[data-collapse="400px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="400px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="400px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="400px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="400px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="400px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="400px"] > tfoot > tr,
+  table[data-collapse="400px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 500px) {
+  table[data-collapse="500px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="500px"] > col {
+    display: none;
+  }
+  table[data-collapse="500px"] > thead {
+    display: none;
+  }
+  table[data-collapse="500px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="500px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="500px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="500px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="500px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="500px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="500px"] > tfoot > tr,
+  table[data-collapse="500px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 600px) {
+  table[data-collapse="600px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="600px"] > col {
+    display: none;
+  }
+  table[data-collapse="600px"] > thead {
+    display: none;
+  }
+  table[data-collapse="600px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="600px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="600px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="600px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="600px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="600px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="600px"] > tfoot > tr,
+  table[data-collapse="600px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 700px) {
+  table[data-collapse="700px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="700px"] > col {
+    display: none;
+  }
+  table[data-collapse="700px"] > thead {
+    display: none;
+  }
+  table[data-collapse="700px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="700px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="700px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="700px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="700px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="700px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="700px"] > tfoot > tr,
+  table[data-collapse="700px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 800px) {
+  table[data-collapse="800px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="800px"] > col {
+    display: none;
+  }
+  table[data-collapse="800px"] > thead {
+    display: none;
+  }
+  table[data-collapse="800px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="800px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="800px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="800px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="800px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="800px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="800px"] > tfoot > tr,
+  table[data-collapse="800px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 900px) {
+  table[data-collapse="900px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="900px"] > col {
+    display: none;
+  }
+  table[data-collapse="900px"] > thead {
+    display: none;
+  }
+  table[data-collapse="900px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="900px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="900px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="900px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="900px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="900px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="900px"] > tfoot > tr,
+  table[data-collapse="900px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1000px) {
+  table[data-collapse="1000px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1000px"] > col {
+    display: none;
+  }
+  table[data-collapse="1000px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1000px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1000px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1000px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1000px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1000px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1000px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1000px"] > tfoot > tr,
+  table[data-collapse="1000px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1100px) {
+  table[data-collapse="1100px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1100px"] > col {
+    display: none;
+  }
+  table[data-collapse="1100px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1100px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1100px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1100px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1100px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1100px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1100px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1100px"] > tfoot > tr,
+  table[data-collapse="1100px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  table[data-collapse="1200px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1200px"] > col {
+    display: none;
+  }
+  table[data-collapse="1200px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1200px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1200px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1200px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1200px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1200px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1200px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1200px"] > tfoot > tr,
+  table[data-collapse="1200px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1300px) {
+  table[data-collapse="1300px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1300px"] > col {
+    display: none;
+  }
+  table[data-collapse="1300px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1300px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1300px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1300px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1300px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1300px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1300px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1300px"] > tfoot > tr,
+  table[data-collapse="1300px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1400px) {
+  table[data-collapse="1400px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1400px"] > col {
+    display: none;
+  }
+  table[data-collapse="1400px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1400px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1400px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1400px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1400px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1400px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1400px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1400px"] > tfoot > tr,
+  table[data-collapse="1400px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1500px) {
+  table[data-collapse="1500px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1500px"] > col {
+    display: none;
+  }
+  table[data-collapse="1500px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1500px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1500px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1500px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1500px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1500px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1500px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1500px"] > tfoot > tr,
+  table[data-collapse="1500px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1600px) {
+  table[data-collapse="1600px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1600px"] > col {
+    display: none;
+  }
+  table[data-collapse="1600px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1600px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1600px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1600px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1600px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1600px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1600px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1600px"] > tfoot > tr,
+  table[data-collapse="1600px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1700px) {
+  table[data-collapse="1700px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1700px"] > col {
+    display: none;
+  }
+  table[data-collapse="1700px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1700px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1700px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1700px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1700px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1700px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1700px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1700px"] > tfoot > tr,
+  table[data-collapse="1700px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1800px) {
+  table[data-collapse="1800px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1800px"] > col {
+    display: none;
+  }
+  table[data-collapse="1800px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1800px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1800px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1800px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1800px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1800px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1800px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1800px"] > tfoot > tr,
+  table[data-collapse="1800px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1900px) {
+  table[data-collapse="1900px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1900px"] > col {
+    display: none;
+  }
+  table[data-collapse="1900px"] > thead {
+    display: none;
+  }
+  table[data-collapse="1900px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="1900px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1900px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="1900px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="1900px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="1900px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="1900px"] > tfoot > tr,
+  table[data-collapse="1900px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@media only screen and (max-width: 1600px) {
+  table[data-collapse="2000px"] {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="2000px"] > col {
+    display: none;
+  }
+  table[data-collapse="2000px"] > thead {
+    display: none;
+  }
+  table[data-collapse="2000px"] > tbody {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+  table[data-collapse="2000px"] > tbody > tr {
+    margin: 4px;
+    padding: 4px;
+    height: auto;
+    display: flex;
+    border-radius: 5px;
+    align-items: stretch;
+    flex-direction: column;
+    border: 2px solid #CCCCCC;
+    justify-content: flex-start;
+  }
+  table[data-collapse="2000px"] > tbody > tr > td:not([title]) {
+    display: none;
+  }
+  table[data-collapse="2000px"] > tbody > tr > td[title] {
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  table[data-collapse="2000px"] > tbody > tr > td[title]::before {
+    float: left;
+    text-align: left;
+    font-weight: bold;
+    margin-right: 8px;
+    content: attr(title) ":";
+  }
+  table[data-collapse="2000px"] > tfoot {
+    order: 1000;
+  }
+  table[data-collapse="2000px"] > tfoot > tr,
+  table[data-collapse="2000px"] > tfoot > tr > td {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

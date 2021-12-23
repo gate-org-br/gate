@@ -1,0 +1,96 @@
+g-window > main,
+.g-window > main {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: fixed;
+  border-radius: 5px;
+  flex-direction: column;
+  box-shadow: 3px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  border: 4px solid var(--g-window-border-color);
+}
+g-window > main > header,
+.g-window > main > header {
+  order: 1;
+  flex-grow: 0;
+  padding: 4px;
+  outline: none;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 20px;
+  flex-basis: 40px;
+  max-height: 40px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--g-window-header-color);
+  background-color: var(--g-window-header-background-color);
+  background-image: var(--g-window-header-background-image);
+}
+g-window > main > header > label,
+.g-window > main > header > label {
+  order: 1;
+  flex-grow: 1;
+  display: flex;
+  color: inherit;
+  font-size: inherit;
+  align-items: center;
+  justify-content: flex-start;
+}
+g-window > main > header > g-navbar,
+.g-window > main > header > g-navbar {
+  order: 2;
+}
+g-window > main > header > g-dialog-commands,
+.g-window > main > header > g-dialog-commands {
+  order: 3;
+}
+g-window > main > header > a,
+.g-window > main > header > a,
+g-window > main > header > button,
+.g-window > main > header > button {
+  order: 4;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+g-window > main > header > a > i,
+.g-window > main > header > a > i,
+g-window > main > header > button > i,
+.g-window > main > header > button > i {
+  color: white;
+  font-size: 16px;
+}
+g-window > main > header > *,
+.g-window > main > header > * {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+g-window > main > section,
+.g-window > main > section {
+  order: 2;
+  flex-grow: 1;
+  display: flex;
+  overflow: auto;
+  align-items: stretch;
+  justify-content: center;
+  -webkit-overflow-scrolling: touch;
+  background-image: var(--g-window-section-background-image);
+  background-color: var(--g-window-section-background-color);
+}
+g-window > main > footer,
+.g-window > main > footer {
+  order: 3;
+  margin: 0;
+  padding: 0;
+  border: none;
+  height: auto;
+  outline: none;
+  display: flex;
+  padding-top: 4px;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--g-window-footer-background-color);
+  background-image: var(--g-window-footer-background-image);
+}

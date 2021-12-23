@@ -1,0 +1,9 @@
+g-date-interval-picker g-date-interval-selector {
+  height: 400px;
+}
+input.DateInterval {
+  width: calc(100% - 32px);
+}
+input.DateInterval + a {
+  width: 32px;
+}

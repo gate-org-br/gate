@@ -1,0 +1,7 @@
+<template>
+	<div id="icon"></div>
+	<header id="head"></header>
+	<section id="body"></section>
+	<footer id="foot"></footer>
+	<nav><slot name="links"></slot></nav>
+</template>

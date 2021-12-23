@@ -1,0 +1,6 @@
+<template>
+	<a href='#' data-type='PDF'>PDF<i>&#x2218;</i></a>
+	<a href='#' data-type='XLS'>XLS<i>&#x2221;</i></a>
+	<a href='#' data-type='DOC'>DOC<i>&#x2220;</i></a>
+	<a href='#' data-type='CSV'>CSV<i>&#x2222;</i></a>
+</template>

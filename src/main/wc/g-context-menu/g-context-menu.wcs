@@ -1,0 +1,54 @@
+:host(*)
+{
+	margin: 0;
+	padding: 0;
+	color: black;
+	width: 280px;
+	display: none;
+	z-index: 1000;
+	cursor: pointer;
+	position: fixed;
+	font-size: 16px;
+	visibility: hidden;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: var(--main-tinted50);
+	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+}
+
+:host(*) > a,
+:host(*) > button
+{
+	padding: 8px;
+	display: flex;
+	color: inherit;
+	flex-basis: 24px;
+	font-size: inherit;
+	align-items: center;
+	text-decoration: none;
+	justify-content: flex-start;
+	border: 1px solid var(--base);
+	background-color: var(--main-tinted50);
+}
+
+:host(*) > a:hover,
+:host(*) > button:hover
+{
+	background-color: var(--acent-tinted35);
+}
+
+:host(*) > a > i,
+:host(*) > button > i
+{
+	order: -1;
+	speak: none;
+	line-height: 1;
+	margin-right: 8px;
+	font-style: normal;
+	font-weight: normal;
+	font-family: 'gate';
+	font-variant: normal;
+	text-transform: none;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}

@@ -1,0 +1,48 @@
+:host(*)
+{
+	display: flex;
+	overflow: hidden;
+	color: var(--g-tabbar-color);
+	background-color:  var(--g-tabbar-background-color);
+	background-image:  var(--g-tabbar-background-image);
+}
+
+:host([data-overflowing=left])::before,
+:host([data-overflowing=left])::after,
+:host([data-overflowing=right])::before,
+:host([data-overflowing=right])::after,
+:host([data-overflowing=both])::before,
+:host([data-overflowing=both])::after
+{
+	display: flex;
+	content: " ";
+	color: #999999;
+	font-size: 16px;
+	flex-basis: 32px;
+	font-family: "gate";
+	align-items: center;
+	justify-content: center;
+}
+
+:host([data-overflowing=left])::before,
+:host([data-overflowing=both])::before
+{
+	content: "\\3017";
+
+}
+
+:host([data-overflowing=right])::after,
+:host([data-overflowing=both])::after
+{
+	content: "\\3017";
+}
+
+div
+{
+	width: 100%;
+	height: auto;
+	border: none;
+	display:  flex;
+	overflow-x : hidden;
+	white-space:  nowrap;
+}

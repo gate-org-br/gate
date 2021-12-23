@@ -1,0 +1,4 @@
+<template>
+	<g-month-selector>
+	</g-month-selector>
+</template>

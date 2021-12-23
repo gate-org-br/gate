@@ -1,0 +1,18 @@
+g-stack-frame,
+.g-stack-frame {
+  overflow: auto;
+  position: fixed;
+  border-radius: 0;
+  background-color: var(--g-stack-frame-background-color);
+  background-image: var(--g-stack-frame-background-image);
+}
+g-stack-frame > iframe,
+.g-stack-frame > iframe {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-position-y: center;
+  background-image: var(--loading);
+}

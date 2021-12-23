@@ -1,0 +1,41 @@
+g-scroll-tabbar > a,
+g-scroll-tabbar > button {
+  margin: 4px;
+  padding: 4px;
+  height: auto;
+  display: flex;
+  color: inherit;
+  max-width: 160px;
+  width: fit-content;
+  border-radius: 5px;
+  white-space: nowrap;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+}
+g-scroll-tabbar > a:focus,
+g-scroll-tabbar > button:focus {
+  outline: none;
+}
+g-scroll-tabbar > a:hover,
+g-scroll-tabbar > button:hover {
+  color: var(--g-tabbar-hovered-color);
+  background-color: var(--g-tabbar-hovered-background-color);
+  background-image: var(--g-tabbar-hovered-background-image);
+}
+g-scroll-tabbar > a[aria-selected],
+g-scroll-tabbar > button[aria-selected] {
+  color: var(--g-tabbar-selected-color);
+  background-color: var(--g-tabbar-selected-background-color);
+  background-image: var(--g-tabbar-selected-background-image);
+}
+g-scroll-tabbar > a > i,
+g-scroll-tabbar > button > i {
+  order: -1;
+  display: flex;
+  min-width: 80px;
+  font-size: 16px;
+  margin-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+}

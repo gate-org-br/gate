@@ -1,0 +1,10 @@
+table.TreeView > tbody > tr,
+table.TREEVIEW > tbody > tr {
+  display: none;
+}
+table.TreeView > tbody > tr > td:first-child,
+table.TREEVIEW > tbody > tr > td:first-child {
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+}

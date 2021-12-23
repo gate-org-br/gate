@@ -1,0 +1,39 @@
+g-picker > main,
+.g-picker > main {
+  height: auto;
+  min-width: 320px;
+  max-width: 600px;
+  width: calc(100% - 40px);
+  flex-basis: calc(100% - 20px);
+}
+g-picker > main > footer,
+.g-picker > main > footer {
+  padding: 0;
+  flex-basis: 40px;
+}
+g-picker > main > footer > a,
+.g-picker > main > footer > a {
+  height: 40px;
+  flex-grow: 1;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #CCCCCC;
+  background-image: linear-gradient(to bottom, #D6D3C4 0%, #8A887E 100%);
+}
+g-picker > main > footer > a:first-child,
+.g-picker > main > footer > a:first-child {
+  color: var(--r);
+}
+g-picker > main > footer > a:last-child,
+.g-picker > main > footer > a:last-child {
+  color: var(--g);
+}
+g-picker > main > footer > a:hover,
+.g-picker > main > footer > a:hover {
+  font-weight: bold;
+  border-color: var(--hovered);
+  background-image: linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
+}

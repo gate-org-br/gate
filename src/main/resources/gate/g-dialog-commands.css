@@ -1,0 +1,43 @@
+g-dialog-commands {
+  height: 24px;
+  color: white;
+  outline: none;
+  display: flex;
+  overflow: hidden;
+  border-radius: 5px;
+  font-size: inherit;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row-reverse;
+}
+g-dialog-commands:empty {
+  display: none;
+}
+g-dialog-commands > a,
+g-dialog-commands > button {
+  padding: 0;
+  width: 24px;
+  font-size: 0;
+  height: 24px;
+  display: flex;
+  color: inherit;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+g-dialog-commands > a:hover,
+g-dialog-commands > button:hover {
+  color: var(--hovered);
+}
+g-dialog-commands > a > i,
+g-dialog-commands > button > i {
+  color: inherit;
+  font-size: 16px;
+}
+g-dialog-commands > a > i:hover,
+g-dialog-commands > button > i:hover {
+  color: var(--hovered);
+}
+g-dialog-commands > *[hidden="true"] {
+  display: none;
+}
