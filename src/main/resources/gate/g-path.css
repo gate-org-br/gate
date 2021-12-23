@@ -1,0 +1,48 @@
+g-path,
+.g-path {
+  display: flex;
+  padding-left: 4px;
+  padding-right: 4px;
+  align-items: center;
+  justify-content: flex-start;
+}
+g-path[iconless] > a > i,
+.g-path[iconless] > a > i,
+g-path[iconless] > label > i,
+.g-path[iconless] > label > i {
+  display: none;
+}
+g-path > a,
+.g-path > a,
+g-path > label,
+.g-path > label {
+  display: flex;
+  font-size: inherit;
+  align-items: center;
+  justify-content: space-between;
+}
+g-path > a > i,
+.g-path > a > i,
+g-path > label > i,
+.g-path > label > i {
+  order: -1;
+  display: flex;
+  margin-right: 4px;
+  font-size: inherit;
+  align-items: center;
+  justify-content: center;
+}
+g-path > a:not(:last-child):after,
+.g-path > a:not(:last-child):after,
+g-path > label:not(:last-child):after,
+.g-path > label:not(:last-child):after {
+  display: flex;
+  color: #999999;
+  content: "\2275";
+  align-items: center;
+  font-family: "gate";
+  pointer-events: none;
+  margin-left: 4px;
+  margin-right: 4px;
+  justify-content: center;
+}

@@ -1,0 +1,82 @@
+g-side-menu,
+.g-side-menu {
+  display: flex;
+  align-items: stretch;
+}
+g-side-menu > div,
+.g-side-menu > div {
+  width: 0;
+  padding: 0px;
+  display: flex;
+  max-width: 80%;
+  transition: 0.5s;
+  overflow-y: auto;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+g-side-menu > div > a,
+.g-side-menu > div > a,
+g-side-menu > div > button,
+.g-side-menu > div > button,
+g-side-menu > div > .g-command,
+.g-side-menu > div > .g-command {
+  width: 100%;
+  color: black;
+  padding: 8px;
+  height: 40px;
+  display: flex;
+  font-size: 16px;
+  min-height: 40px;
+  overflow: hidden;
+  font-weight: bold;
+  align-items: center;
+  justify-content: flex-start;
+}
+g-side-menu > div > a > i,
+.g-side-menu > div > a > i,
+g-side-menu > div > button > i,
+.g-side-menu > div > button > i,
+g-side-menu > div > .g-command > i,
+.g-side-menu > div > .g-command > i {
+  order: -1;
+  margin-right: 8px;
+  font-size: inherit;
+}
+g-side-menu > div > a:hover,
+.g-side-menu > div > a:hover,
+g-side-menu > div > button:hover,
+.g-side-menu > div > button:hover,
+g-side-menu > div > .g-command:hover,
+.g-side-menu > div > .g-command:hover {
+  background-color: var(--hovered);
+}
+g-side-menu > div > hr,
+.g-side-menu > div > hr {
+  border: none;
+  flex-grow: 1;
+}
+g-side-menu > div > br,
+.g-side-menu > div > br {
+  height: 16px;
+}
+g-side-menu.L,
+.g-side-menu.L {
+  justify-content: flex-start;
+}
+g-side-menu.L > div,
+.g-side-menu.L > div {
+  width: 280px;
+  padding: 8px;
+  background-image: linear-gradient(to right, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
+}
+g-side-menu.R,
+.g-side-menu.R {
+  justify-content: flex-end;
+}
+g-side-menu.R > div,
+.g-side-menu.R > div {
+  width: 280px;
+  padding: 8px;
+  background-image: linear-gradient(to left, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
+}

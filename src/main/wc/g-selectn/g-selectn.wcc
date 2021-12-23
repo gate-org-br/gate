@@ -1,0 +1,19 @@
+/* global customElements */
+
+customElements.define('g-selectn', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.shadowRoot.children[0].addEventListener("slotchange", () =>
+		{
+			Array.from(this.querySelectorAll("label")).forEach(e =>
+			{
+				e.addEventListener("click", () => e.previousElementSibling && e.previousElementSibling.click());
+			});
+		});
+	}
+});

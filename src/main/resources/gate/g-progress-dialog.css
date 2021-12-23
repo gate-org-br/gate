@@ -1,0 +1,6 @@
+g-progress-dialog > main,
+.g-progress-dialog > main {
+  width: 800px;
+  height: 320px;
+  max-width: 80%;
+}

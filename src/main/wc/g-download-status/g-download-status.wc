@@ -1,0 +1,11 @@
+<template>
+	<label></label>
+	<progress></progress>
+	<div>
+		<g-digital-clock>
+		</g-digital-clock>
+		<span>
+			...
+		</span>
+	</div>
+</template>

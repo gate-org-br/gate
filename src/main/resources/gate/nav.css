@@ -1,0 +1,36 @@
+nav {
+  width: auto;
+  border: none;
+  display: flex;
+  margin: 0 2px 0 2px;
+  align-items: stretch;
+  align-content: stretch;
+  justify-content: center;
+  background-color: transparent;
+}
+nav > a {
+  width: 40px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-tinted50);
+}
+nav > a > i {
+  font-size: 16px;
+}
+nav > a:hover > i {
+  font-size: 18px;
+}
+nav > a:last-of-type {
+  border-radius: 0 5px 5px 0;
+}
+nav > a:first-of-type {
+  border-radius: 5px 0 0 5px;
+}
+nav > a:only-of-type {
+  border-radius: 5px 5px 5px 5px;
+}
+nav > a:hover {
+  background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
+}

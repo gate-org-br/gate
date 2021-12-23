@@ -1,0 +1,22 @@
+/* global DateFormat, customElements */
+
+customElements.define('g-icon-selector', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		Array.from(this.shadowRoot.children).forEach(icon =>
+		{
+			icon.addEventListener("click", event =>
+			{
+				event.preventDefault();
+				let code = icon.getAttribute("data-code");
+				this.dispatchEvent(new CustomEvent('selected',
+					{detail: {selector: this, icon: code}}));
+			});
+		});
+	}
+});

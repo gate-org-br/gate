@@ -30,7 +30,7 @@ public interface ELExpression
 		private final ELContext context;
 		private final ExpressionFactory factory;
 		private static final Pattern VAR = Pattern.compile("^\\$\\{[^}]+\\}$");
-		private static final Pattern FUNCTION = Pattern.compile("^\\$\\{([a-zA-Z][a-zA-Z0-9]) *-> *(.*)\\}$");
+		private static final Pattern FUNCTION = Pattern.compile("^\\$\\{([a-zA-Z][a-zA-Z0-9]*) *-> *(.*)\\}$");
 		private static final Pattern BI_FUNCTION = Pattern.compile("^\\$\\{\\(([a-zA-Z][a-zA-Z0-9]*), *([a-zA-Z][a-zA-Z0-9]*)\\)\\ *-> *(.*)}$");
 
 		@Inject
@@ -90,7 +90,7 @@ public interface ELExpression
 				factory.createValueExpression(context, "${" + matcher.group(2) + "}",
 					Object.class));
 
-			return a -> lambda.invoke(a);
+			return a -> lambda.invoke(context, a);
 		}
 
 		@Override
@@ -104,7 +104,7 @@ public interface ELExpression
 				factory.createValueExpression(context, "${" + matcher.group(3) + "}",
 					Object.class));
 
-			return (a, b) -> (int) lambda.invoke(a, b);
+			return (a, b) -> (int) lambda.invoke(context, a, b);
 		}
 
 	}

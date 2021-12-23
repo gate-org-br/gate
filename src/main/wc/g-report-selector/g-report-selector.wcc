@@ -1,0 +1,14 @@
+/* global customElements, template */
+
+customElements.define('g-report-selector', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		Array.from(this.shadowRoot.querySelectorAll("a"))
+			.forEach(e => e.addEventListener("click", () =>
+					this.dispatchEvent(new CustomEvent('selected', {cancelable: false, detail: e.getAttribute("data-type")}))));
+	}
+});

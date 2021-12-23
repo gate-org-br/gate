@@ -1,0 +1,96 @@
+:host(*)
+{
+	display: flex;
+	font-size: 16px;
+	min-width: 240px;
+	align-items: center;
+	align-content: center;
+	flex-direction: column;
+	justify-content: center;
+	border: 2px solid #CCCCCC;
+	background-color: #CCCCCC;
+}
+
+a {
+	color: black;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}
+
+label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+:host(*):hover {
+	border-color: var(--hovered);
+}
+
+:host(*) > div
+{
+	flex-grow: 1;
+	width:  100%;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: stretch;
+	justify-content: space-around;
+}
+
+:host(*) > div > label {
+	flex-grow: 1;
+	flex-shrink: 0;
+	flex-basis: 14%;
+	font-size: 16px;
+	background-color: var(--base);
+}
+
+:host(*) > div > a {
+	flex-grow: 1;
+	flex-shrink: 0;
+	font-size: 16px;
+	flex-basis: 14%;
+	background-color: white;
+}
+
+:host(*) > div > a.current {
+	font-weight: bold;
+	text-decoration: underline
+}
+:host(*) > div > a.disabled {
+	color: #AAAAAA;
+}
+:host(*) > div > a.selected {
+	background-color: var(--acent);
+}
+
+:host(*) > div > a:hover {
+	background-color: var(--hovered)
+}
+
+:host(*) > div > div:last-child {
+	display: flex;
+	font-size: 16px;
+	flex-basis: 100%;
+	padding-left: 4px;
+	padding-right: 4px;
+	font-weight: bolder;
+	align-items:  center;
+	align-content: space-around;
+	justify-content: space-around;
+	background-image: linear-gradient(to bottom, var(--base-tinted40) 0%, var(--base-shaded20) 100% );
+}
+
+:host(*) > div > div:last-child	> a {
+	flex-basis: 48px;
+	font-size: inherit;
+	font-weight: bolder;
+}
+
+:host(*) > div > div:last-child	> label {
+	flex-grow: 1;
+	font-size: inherit;
+	font-weight: bolder;
+}

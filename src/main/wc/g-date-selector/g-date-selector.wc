@@ -1,0 +1,4 @@
+<template>
+	<g-calendar max="1">
+	</g-calendar>
+</template>

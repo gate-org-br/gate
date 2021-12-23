@@ -1,0 +1,9 @@
+g-date-picker g-date-selector {
+  height: 400px;
+}
+input.Date {
+  width: calc(100% - 32px);
+}
+input.Date + a {
+  width: 32px;
+}

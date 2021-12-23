@@ -1,0 +1,4 @@
+<template>
+	<g-date-interval-selector>
+	</g-date-interval-selector>
+</template>

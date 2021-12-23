@@ -1,0 +1,6 @@
+:host(*)
+{
+	display:grid;
+	border: 1px solid #CCCCCC;
+	grid-template-rows: 1fr 1fr;
+}

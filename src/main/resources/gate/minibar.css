@@ -1,0 +1,28 @@
+div.MINIBAR,
+div.Minibar {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+div.MINIBAR > a,
+div.Minibar > a {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  font-size: 16px;
+}
+div.MINIBAR > a > i,
+div.Minibar > a > i {
+  font-size: inherit;
+}
+div.MINIBAR > a:focus,
+div.Minibar > a:focus {
+  outline: none;
+}
+div.MINIBAR hr,
+div.Minibar hr {
+  margin: 0;
+  padding: 0;
+  border: none;
+  flex-grow: 1;
+}

@@ -1,0 +1,6 @@
+<template>
+	<g-slider id='h' size="5" value='0'>
+	</g-slider>
+	<g-slider id='m' size="5" value='0'>
+	</g-slider>
+</template>

@@ -1,0 +1,45 @@
+:host(*) {
+	width: 100%;
+	display: flex;
+	padding: 10px;
+	border-radius: 5px;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: center;
+	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
+}
+
+label {
+	font-size: 20px;
+	flex-basis: 40px;
+}
+
+progress {
+	width: 100%;
+	flex-basis: 40px;
+}
+
+div {
+	display: flex;
+	flex-basis: 40px;
+	align-items: center;
+}
+
+g-digital-clock
+{
+	flex-grow: 1;
+	display:  flex;
+	font-size:  12px;
+	align-items:  center;
+	justify-content: flex-start;
+}
+
+
+span
+{
+	flex-grow: 1;
+	display:  flex;
+	font-size:  12px;
+	align-items:  center;
+	justify-content: flex-end;
+}

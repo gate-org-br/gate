@@ -45,11 +45,11 @@ public class FieldConverter implements Converter
 			if (Boolean.FALSE.equals(field.getMultiple()))
 				return String.format("<label data-size='%d'>%s: <span><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
 			else
-				return String.format("<label data-size='%d'>%s: <span style='height: 60px;'><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
+				return String.format("<label data-size='%d'>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
 		else if (Boolean.FALSE.equals(field.getMultiple()))
 			return String.format("<label data-size='%d'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		else
-			return String.format("<label data-size='%d'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
+			return String.format("<label data-size='%d'>&nbsp; <span style='flex-basis: 60px; ; overflow: auto; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 	}
 
 	@Override

@@ -1,0 +1,358 @@
+g-coolbar,
+.g-coolbar {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 48px;
+  flex-grow: 1;
+  padding: 2px;
+  display: flex;
+  overflow: hidden;
+  border-radius: 5px;
+  align-items: stretch;
+  flex-direction: row-reverse;
+  color: var(--g-coolbar--color);
+  background-color: var(--g-coolbar-background-color);
+  background-image: var(--g-coolbar-background-image);
+}
+g-coolbar:first-child,
+.g-coolbar:first-child {
+  margin-top: 0px;
+}
+g-coolbar:last-child,
+.g-coolbar:last-child {
+  margin-bottom: 0px;
+}
+g-coolbar:only-child,
+.g-coolbar:only-child {
+  margin-bottom: 0px;
+}
+g-coolbar > progress,
+.g-coolbar > progress {
+  flex-grow: 1;
+  margin: 4px;
+}
+g-coolbar > hr,
+.g-coolbar > hr {
+  border: none;
+  flex-grow: 1;
+}
+g-coolbar > a,
+.g-coolbar > a,
+g-coolbar > button,
+.g-coolbar > button,
+g-coolbar > .g-command,
+.g-coolbar > .g-command,
+g-coolbar > form > button,
+.g-coolbar > form > button {
+  margin: 2px;
+  height: 40px;
+  padding: 4px;
+  float: right;
+  display: flex;
+  flex: 0 1 auto;
+  color: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 120px;
+  font-weight: bold;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--g-coolbar-button-border-color);
+  background-color: var(--g-coolbar-button-background-color);
+  background-image: var(--g-coolbar-button-background-image);
+}
+g-coolbar > a:hover,
+.g-coolbar > a:hover,
+g-coolbar > button:hover,
+.g-coolbar > button:hover,
+g-coolbar > .g-command:hover,
+.g-coolbar > .g-command:hover,
+g-coolbar > form > button:hover,
+.g-coolbar > form > button:hover {
+  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+  background-color: var(--g-coolbar-hovered-button-background-color);
+  background-image: var(--g-coolbar-hovered-button-background-image);
+}
+g-coolbar > a:focus,
+.g-coolbar > a:focus,
+g-coolbar > button:focus,
+.g-coolbar > button:focus,
+g-coolbar > .g-command:focus,
+.g-coolbar > .g-command:focus,
+g-coolbar > form > button:focus,
+.g-coolbar > form > button:focus {
+  outline: none;
+  border: 2px solid var(--hovered);
+}
+g-coolbar > a > i,
+.g-coolbar > a > i,
+g-coolbar > button > i,
+.g-coolbar > button > i,
+g-coolbar > .g-command > i,
+.g-coolbar > .g-command > i,
+g-coolbar > form > button > i,
+.g-coolbar > form > button > i,
+g-coolbar > a > span,
+.g-coolbar > a > span,
+g-coolbar > button > span,
+.g-coolbar > button > span,
+g-coolbar > .g-command > span,
+.g-coolbar > .g-command > span,
+g-coolbar > form > button > span,
+.g-coolbar > form > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+}
+g-coolbar > a.Delete,
+.g-coolbar > a.Delete,
+g-coolbar > button.Delete,
+.g-coolbar > button.Delete,
+g-coolbar > .g-command.Delete,
+.g-coolbar > .g-command.Delete,
+g-coolbar > form > button.Delete,
+.g-coolbar > form > button.Delete {
+  color: var(--r);
+}
+g-coolbar > a.Commit,
+.g-coolbar > a.Commit,
+g-coolbar > button.Commit,
+.g-coolbar > button.Commit,
+g-coolbar > .g-command.Commit,
+.g-coolbar > .g-command.Commit,
+g-coolbar > form > button.Commit,
+.g-coolbar > form > button.Commit {
+  color: var(--g);
+}
+g-coolbar > a.Action,
+.g-coolbar > a.Action,
+g-coolbar > button.Action,
+.g-coolbar > button.Action,
+g-coolbar > .g-command.Action,
+.g-coolbar > .g-command.Action,
+g-coolbar > form > button.Action,
+.g-coolbar > form > button.Action {
+  color: var(--b);
+}
+g-coolbar > a.Cancel,
+.g-coolbar > a.Cancel,
+g-coolbar > button.Cancel,
+.g-coolbar > button.Cancel,
+g-coolbar > .g-command.Cancel,
+.g-coolbar > .g-command.Cancel,
+g-coolbar > form > button.Cancel,
+.g-coolbar > form > button.Cancel {
+  color: var(--r);
+}
+g-coolbar > a.Return,
+.g-coolbar > a.Return,
+g-coolbar > button.Return,
+.g-coolbar > button.Return,
+g-coolbar > .g-command.Return,
+.g-coolbar > .g-command.Return,
+g-coolbar > form > button.Return,
+.g-coolbar > form > button.Return {
+  color: var(--r);
+}
+g-coolbar > *[hidden="true"],
+.g-coolbar > *[hidden="true"] {
+  display: none;
+}
+div.COOLBAR,
+div.Coolbar {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  height: 48px;
+  padding: 4px;
+  display: block;
+  overflow: hidden;
+  border-radius: 5px;
+  color: var(--g-coolbar--color);
+  background-color: var(--g-coolbar-background-color);
+  background-image: var(--g-coolbar-background-image);
+}
+div.COOLBAR:first-child,
+div.Coolbar:first-child {
+  margin-top: 0px;
+}
+div.COOLBAR:last-child,
+div.Coolbar:last-child {
+  margin-bottom: 0px;
+}
+div.COOLBAR:only-child,
+div.Coolbar:only-child {
+  margin-bottom: 0px;
+}
+div.COOLBAR > *,
+div.Coolbar > * {
+  margin: 2px;
+  height: 36px;
+}
+div.COOLBAR > a,
+div.Coolbar > a,
+div.COOLBAR > .g-command,
+div.Coolbar > .g-command,
+div.COOLBAR > button,
+div.Coolbar > button {
+  margin: 2px;
+  width: auto;
+  padding: 4px;
+  float: right;
+  display: flex;
+  color: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  min-width: 90px;
+  font-weight: bold;
+  border-radius: 5px;
+  align-items: center;
+  border: 1px solid #CCCCCC;
+  justify-content: space-between;
+  border: 1px solid var(--g-coolbar-button-border-color);
+  background-color: var(--g-coolbar-button-background-color);
+  background-image: var(--g-coolbar-button-background-image);
+}
+div.COOLBAR > a:hover,
+div.Coolbar > a:hover,
+div.COOLBAR > .g-command:hover,
+div.Coolbar > .g-command:hover,
+div.COOLBAR > button:hover,
+div.Coolbar > button:hover {
+  border: 1px solid var(--g-coolbar-hovered-button-border-color);
+  background-color: var(--g-coolbar-hovered-button-background-color);
+  background-image: var(--g-coolbar-hovered-button-background-image);
+}
+div.COOLBAR > a:focus,
+div.Coolbar > a:focus,
+div.COOLBAR > .g-command:focus,
+div.Coolbar > .g-command:focus,
+div.COOLBAR > button:focus,
+div.Coolbar > button:focus {
+  outline: none;
+  border: 2px solid var(--hovered);
+}
+div.COOLBAR > a.Delete,
+div.Coolbar > a.Delete,
+div.COOLBAR > .g-command.Delete,
+div.Coolbar > .g-command.Delete,
+div.COOLBAR > button.Delete,
+div.Coolbar > button.Delete {
+  color: var(--r);
+}
+div.COOLBAR > a.Commit,
+div.Coolbar > a.Commit,
+div.COOLBAR > .g-command.Commit,
+div.Coolbar > .g-command.Commit,
+div.COOLBAR > button.Commit,
+div.Coolbar > button.Commit {
+  color: var(--g);
+}
+div.COOLBAR > a.Action,
+div.Coolbar > a.Action,
+div.COOLBAR > .g-command.Action,
+div.Coolbar > .g-command.Action,
+div.COOLBAR > button.Action,
+div.Coolbar > button.Action {
+  color: var(--b);
+}
+div.COOLBAR > a.Cancel,
+div.Coolbar > a.Cancel,
+div.COOLBAR > .g-command.Cancel,
+div.Coolbar > .g-command.Cancel,
+div.COOLBAR > button.Cancel,
+div.Coolbar > button.Cancel {
+  color: var(--r);
+  float: left;
+}
+div.COOLBAR > a.Return,
+div.Coolbar > a.Return,
+div.COOLBAR > .g-command.Return,
+div.Coolbar > .g-command.Return,
+div.COOLBAR > button.Return,
+div.Coolbar > button.Return {
+  color: var(--r);
+  float: left;
+}
+div.COOLBAR > a > i,
+div.Coolbar > a > i,
+div.COOLBAR > .g-command > i,
+div.Coolbar > .g-command > i,
+div.COOLBAR > button > i,
+div.Coolbar > button > i,
+div.COOLBAR > a > span,
+div.Coolbar > a > span,
+div.COOLBAR > .g-command > span,
+div.Coolbar > .g-command > span,
+div.COOLBAR > button > span,
+div.Coolbar > button > span {
+  order: 1;
+  display: flex;
+  color: inherit;
+  cursor: inherit;
+  font-size: 12px;
+  margin-left: 4px;
+  align-items: center;
+  justify-content: center;
+}
+div.COOLBAR > a:only-child,
+div.Coolbar > a:only-child,
+div.COOLBAR > .g-command:only-child,
+div.Coolbar > .g-command:only-child,
+div.COOLBAR > button:only-child,
+div.Coolbar > button:only-child {
+  float: right;
+}
+div.COOLBAR > progress,
+div.Coolbar > progress {
+  flex-grow: 1;
+  margin: 4px;
+}
+div.COOLBAR > label,
+div.Coolbar > label {
+  float: left;
+  padding: 4px;
+  font-size: 16px;
+  align-items: center;
+  display: inline-flex;
+  justify-content: flex-start;
+}
+div.COOLBAR > hr,
+div.Coolbar > hr {
+  width: 12px;
+  float: right;
+  max-width: 12px;
+  display: inline-block;
+  border: 0px none transparent;
+  background-color: transparent;
+}
+div.COOLBAR[data-overflow],
+div.Coolbar[data-overflow] {
+  height: auto;
+}
+div.COOLBAR[data-overflow] > a,
+div.Coolbar[data-overflow] > a,
+div.COOLBAR[data-overflow] > button,
+div.Coolbar[data-overflow] > button {
+  width: 36px;
+  padding: 0px;
+  font-size: 0px;
+  min-width: 0px;
+  justify-content: center;
+}
+div.COOLBAR[data-overflow] > a > i,
+div.Coolbar[data-overflow] > a > i,
+div.COOLBAR[data-overflow] > button > i,
+div.Coolbar[data-overflow] > button > i {
+  font-size: 16px;
+  margin-left: 0px;
+}

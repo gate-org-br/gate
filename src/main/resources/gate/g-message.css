@@ -1,0 +1,65 @@
+g-message > main,
+.g-message > main {
+  width: 80%;
+  height: 280px;
+  min-width: 320px;
+  max-width: 800px;
+}
+g-message > main > section::before,
+.g-message > main > section::before {
+  display: flex;
+  color: inherit;
+  flex-shrink: 0;
+  font-size: 80px;
+  flex-basis: 160px;
+  align-items: center;
+  font-family: 'gate';
+  justify-content: center;
+  background-color: white;
+}
+g-message > main > section > label,
+.g-message > main > section > label {
+  flex-grow: 1;
+  padding: 8px;
+  display: flex;
+  color: inherit;
+  font-size: 20px;
+  align-items: center;
+  background-color: white;
+}
+g-message > main > section > label::first-line,
+.g-message > main > section > label::first-line {
+  text-indent: 40px;
+}
+g-message[type="INFO"],
+.g-message[type="INFO"] {
+  color: black;
+}
+g-message[type="INFO"] > main > section::before,
+.g-message[type="INFO"] > main > section::before {
+  content: "\2015";
+}
+g-message[type="ERROR"],
+.g-message[type="ERROR"] {
+  color: var(--r);
+}
+g-message[type="ERROR"] > main > section::before,
+.g-message[type="ERROR"] > main > section::before {
+  content: "\1001";
+}
+g-message[type="SUCCESS"],
+.g-message[type="SUCCESS"] {
+  color: var(--g);
+}
+g-message[type="SUCCESS"] > main > section::before,
+.g-message[type="SUCCESS"] > main > section::before {
+  content: "\1000";
+}
+g-message[type="WARNING"],
+.g-message[type="WARNING"] {
+  color: var(--y);
+}
+g-message[type="WARNING"] > main > section::before,
+.g-message[type="WARNING"] > main > section::before {
+  content: "\1007";
+}

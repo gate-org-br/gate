@@ -1,0 +1,53 @@
+g-text-editor {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+g-text-editor > div {
+  height: 100%;
+  grid-gap: 4px;
+  display: grid;
+  align-items: stretch;
+  justify-items: stretch;
+  align-content: stretch;
+  grid-template-rows: auto 1fr;
+}
+g-text-editor > div > div:first-child {
+  padding: 4px;
+  display: flex;
+  overflow: auto;
+  align-items: center;
+  background-color: #CCCCCC;
+  justify-content: flex-start;
+}
+g-text-editor > div > div:first-child > button {
+  margin: 2px;
+  color: black;
+  height: 30px;
+  display: flex;
+  flex: 0 0 30px;
+  font-size: 18px;
+  background: none;
+  border-radius: 5px;
+  align-items: center;
+  font-family: "gate";
+  justify-content: center;
+  border: 1px solid #DDDDDD;
+  background-color: #EEEEEE;
+}
+g-text-editor > div > div:first-child > button:hover {
+  background-color: #FFFFFF;
+}
+g-text-editor > div > div:first-child > span {
+  margin: 2px;
+  height: 30px;
+  border: none;
+  flex: 0 0 4px;
+}
+g-text-editor > div > div[contentEditable] {
+  flex-grow: 1;
+  padding: 8px;
+  overflow: auto;
+  line-height: 18px;
+  background-color: white;
+}

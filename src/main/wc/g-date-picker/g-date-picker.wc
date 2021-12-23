@@ -1,0 +1,4 @@
+<template>
+	<g-date-selector>
+	</g-date-selector>
+</template>

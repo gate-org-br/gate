@@ -1,0 +1,16 @@
+th[data-sortable] {
+  cursor: pointer;
+  color: var(--b);
+}
+th[data-sortable]::before {
+  font-size: 16px;
+}
+th[data-sortable="N"]::before {
+  content: " ";
+}
+th[data-sortable="U"]::before {
+  content: "\2191 ";
+}
+th[data-sortable="D"]::before {
+  content: "\2193 ";
+}

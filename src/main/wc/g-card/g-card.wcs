@@ -1,0 +1,83 @@
+:host(*) {
+	border: none;
+	width: 200px;
+	display: flex;
+	font-size: 16px;
+	flex-basis: 200px;
+	text-align: center;
+	border-radius: 5px;
+	visibility: hidden;
+	flex-direction: column;
+	background-color: white;
+	justify-content: space-between;
+}
+
+::slotted(a)
+{
+	flex-grow: 1;
+	display: flex;
+	font-size: 16px;
+	align-items: center;
+	justify-content: center;
+}
+
+::slotted(a:first-child)
+{
+	border-radius: 0 0 0 5px
+}
+
+::slotted(a:last-child)
+{
+	border-radius: 0 0 5px 0
+}
+
+::slotted(a:hover)
+{
+	background-color: rgba(256, 256, 256, 0.2);
+	color: #660000
+}
+
+div {
+	padding: 5px;
+	display: flex;
+	font-size: 250%;
+	font-family: gate;
+	align-tems: center;
+	justify-content: center
+}
+header {
+	padding: 5px;
+	font-size: 150%;
+	text-align: center
+}
+section {
+	padding: 5px;
+	text-align: inherit
+}
+footer {
+	padding: 5px;
+	font-size: 80%;
+	text-align: center
+}
+nav {
+	height: 40px;
+	display: flex;
+	align-items: stretch;
+	border-radius: 0 0 5px 5px;
+	background-image: var(--g-coolbar-background-image)
+}
+div:empty {
+	display: none
+}
+header:empty {
+	display: none
+}
+section:empty {
+	display: none
+}
+footer:empty {
+	display: none
+}
+nav:empty {
+	display: none
+}

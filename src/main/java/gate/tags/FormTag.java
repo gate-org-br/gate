@@ -111,9 +111,9 @@ public class FormTag extends AttributeTag
 							attributes.put("checked", "checked");
 						else
 							attributes.remove("checked");
-						options.append(String.format("<label><input %s/>%s</label>", attributes.toString(), option));
+						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
-					return String.format("<fieldset data-size='%d'><legend>%s:</legend>%s</fieldset>",
+					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
 						size, field.getName(), options.toString());
 				}
 			}

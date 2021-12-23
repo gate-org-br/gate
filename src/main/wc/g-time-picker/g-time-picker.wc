@@ -1,0 +1,4 @@
+<template>
+	<g-time-selector>
+	</g-time-selector>
+</template>
