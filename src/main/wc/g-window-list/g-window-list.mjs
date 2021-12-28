@@ -16,7 +16,7 @@ export default class GWindowList extends HTMLElement
 		if (!GWindowList._private.instance)
 			GWindowList._private.instance =
 				window.top.document.documentElement
-				.appendChild(new WindowList());
+				.appendChild(document.createElement("g-window.list"));
 		return GWindowList._private.instance;
 	}
 }
