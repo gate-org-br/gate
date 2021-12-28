@@ -46,29 +46,35 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 				.stream().map(e -> Property.getProperty(type, e))
 				.forEach(e ->
 				{
-					Class<?> clazz = e.getRawType();
-					if (clazz == boolean.class)
-						e.setBoolean(result, cursor.getCurrentBooleanValue());
-					else if (clazz == char.class)
-						e.setChar(result, cursor.getCurrentCharValue());
-					else if (clazz == byte.class)
-						e.setByte(result, cursor.getCurrentByteValue());
-					else if (clazz == short.class)
-						e.setShort(result, cursor.getCurrentShortValue());
-					else if (clazz == int.class)
-						e.setInt(result, cursor.getCurrentIntValue());
-					else if (clazz == long.class)
-						e.setLong(result, cursor.getCurrentLongValue());
-					else if (clazz == float.class)
-						e.setFloat(result, cursor.getCurrentFloatValue());
-					else if (clazz == double.class)
-						e.setDouble(result, cursor.getCurrentDoubleValue());
-					else
-						e.setValue(result, cursor.getCurrentValue(clazz));
+					try
+					{
+						Class<?> clazz = e.getRawType();
+						if (clazz == boolean.class)
+							e.setBoolean(result, cursor.getCurrentBooleanValue());
+						else if (clazz == char.class)
+							e.setChar(result, cursor.getCurrentCharValue());
+						else if (clazz == byte.class)
+							e.setByte(result, cursor.getCurrentByteValue());
+						else if (clazz == short.class)
+							e.setShort(result, cursor.getCurrentShortValue());
+						else if (clazz == int.class)
+							e.setInt(result, cursor.getCurrentIntValue());
+						else if (clazz == long.class)
+							e.setLong(result, cursor.getCurrentLongValue());
+						else if (clazz == float.class)
+							e.setFloat(result, cursor.getCurrentFloatValue());
+						else if (clazz == double.class)
+							e.setDouble(result, cursor.getCurrentDoubleValue());
+						else
+							e.setValue(result, cursor.getCurrentValue(clazz));
+					} catch (Exception ex)
+					{
+						throw new UnsupportedOperationException("Error trying to process property "
+							+ e + ": " + ex.getMessage(), ex);
+					}
 				});
 			return Optional.of(result);
-		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-			| SecurityException | IllegalArgumentException | InvocationTargetException ex)
+		} catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | SecurityException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex);
 		}
