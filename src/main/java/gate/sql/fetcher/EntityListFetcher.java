@@ -49,25 +49,32 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 				T entity = type.getDeclaredConstructor().newInstance();
 				properties.forEach(e ->
 				{
-					Class<?> clazz = e.getRawType();
-					if (clazz == boolean.class)
-						e.setBoolean(entity, cursor.getCurrentBooleanValue());
-					else if (clazz == char.class)
-						e.setChar(entity, cursor.getCurrentCharValue());
-					else if (clazz == byte.class)
-						e.setByte(entity, cursor.getCurrentByteValue());
-					else if (clazz == short.class)
-						e.setShort(entity, cursor.getCurrentShortValue());
-					else if (clazz == int.class)
-						e.setInt(entity, cursor.getCurrentIntValue());
-					else if (clazz == long.class)
-						e.setLong(entity, cursor.getCurrentLongValue());
-					else if (clazz == float.class)
-						e.setFloat(entity, cursor.getCurrentFloatValue());
-					else if (clazz == double.class)
-						e.setDouble(entity, cursor.getCurrentDoubleValue());
-					else
-						e.setValue(entity, cursor.getCurrentValue(clazz));
+					try
+					{
+						Class<?> clazz = e.getRawType();
+						if (clazz == boolean.class)
+							e.setBoolean(entity, cursor.getCurrentBooleanValue());
+						else if (clazz == char.class)
+							e.setChar(entity, cursor.getCurrentCharValue());
+						else if (clazz == byte.class)
+							e.setByte(entity, cursor.getCurrentByteValue());
+						else if (clazz == short.class)
+							e.setShort(entity, cursor.getCurrentShortValue());
+						else if (clazz == int.class)
+							e.setInt(entity, cursor.getCurrentIntValue());
+						else if (clazz == long.class)
+							e.setLong(entity, cursor.getCurrentLongValue());
+						else if (clazz == float.class)
+							e.setFloat(entity, cursor.getCurrentFloatValue());
+						else if (clazz == double.class)
+							e.setDouble(entity, cursor.getCurrentDoubleValue());
+						else
+							e.setValue(entity, cursor.getCurrentValue(clazz));
+					} catch (Exception ex)
+					{
+						throw new UnsupportedOperationException("Error trying to process property "
+							+ e + ": " + ex.getMessage(), ex);
+					}
 				});
 				result.add(entity);
 			}
