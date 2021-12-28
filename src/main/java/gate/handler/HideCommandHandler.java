@@ -30,9 +30,8 @@ public class HideCommandHandler implements Handler
 			writer.write("        <script src='app/resources/Gate.js'></script>");
 			writer.write("    </head>");
 			writer.write("    <body>");
-			writer.write("        <script>");
-			writer.write("            window.addEventListener('load', () =>");
-			writer.write("            {");
+			writer.write("        <script type='module'>");
+			writer.write("                import GDialog from './gate/script/g-dialog.mjs';");
 
 			CheckedStream.of(IOException.class,
 				signal.getMessages().stream())
@@ -41,7 +40,6 @@ public class HideCommandHandler implements Handler
 				.forEach(writer::write);
 
 			writer.write("                GDialog.hide();");
-			writer.write("            });");
 			writer.write("        </script>");
 			writer.write("    </body>");
 			writer.write("</html>");
