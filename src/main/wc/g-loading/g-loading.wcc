@@ -1,0 +1,25 @@
+/* global customElements, template */
+
+export default class GLoading extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+
+	static show()
+	{
+		if (!document.querySelector("g-loading"))
+			document.documentElement.appendChild(document.createElement("g-loading"));
+	}
+
+	static hide()
+	{
+		if (document.querySelector("g-loading"))
+			document.documentElement.removeChild(document.querySelector("g-loading"));
+	}
+}
+
+customElements.define('g-loading', GLoading);

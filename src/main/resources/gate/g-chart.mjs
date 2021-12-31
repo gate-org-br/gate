@@ -1,5 +1,6 @@
 /* global echarts, customElements */
 
+import URL from './url.mjs';
 import * as echarts from './echarts.mjs';
 
 customElements.define('g-chart', class extends HTMLElement

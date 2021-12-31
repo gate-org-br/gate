@@ -88,7 +88,14 @@ export default class GDialog extends GWindow
 			let navbar = document.createElement("g-navbar");
 			navbar.links = navigator;
 			navbar.url = navigator.target;
-			navbar.addEventListener("update", event => this._private.iframe.setAttribute('src', event.detail.target));
+			navbar.addEventListener("update", event =>
+			{
+				this._private.iframe.backgroundImage = "";
+				this._private.iframe.contentWindow.document.open();
+				this._private.iframe.contentWindow.document.write("");
+				this._private.iframe.contentWindow.document.close();
+				this._private.iframe.setAttribute('src', event.detail.target)
+			});
 			this.head.appendChild(navbar);
 		}
 

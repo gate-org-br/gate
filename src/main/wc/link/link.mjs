@@ -1,7 +1,24 @@
 import URL from './url.mjs';
 import GPopup from './g-popup.mjs';
 import Process from './process.mjs';
+import resolve from './resolve.mjs';
 import Message from './g-message.mjs';
+import GLoading from './g-loading.mjs';
+
+function processHide(link)
+{
+	GLoading.show();
+	setTimeout(() =>
+	{
+		let type = link.getAttribute("data-on-hide");
+		if (type === "reload")
+			window.location.reload();
+		else if (type === "submit")
+			return link.closest("form").submit();
+		else if (type.match(/submit\([^)]+\)/))
+			document.getElementById(/submit\(([^)]+)\)/.exec(type)[1]).submit();
+	}, 0);
+}
 
 window.addEventListener("click", function (event)
 {
@@ -11,7 +28,6 @@ window.addEventListener("click", function (event)
 		.closest("a");
 	if (!link)
 		return;
-
 	if (link.hasAttribute("data-cancel"))
 	{
 		event.preventDefault();
@@ -75,19 +91,10 @@ window.addEventListener("click", function (event)
 				{
 					let dialog = window.top.document.createElement("g-stack-frame");
 					dialog.target = link.getAttribute("href");
-
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
 					if (link.getAttribute("data-on-hide"))
-						if (link.getAttribute("data-on-hide") === "reload")
-							dialog.addEventListener("hide", () => window.location = window.location.href);
-						else if (link.getAttribute("data-on-hide") === "submit")
-							dialog.addEventListener("hide", () => link.closest("form").submit());
-						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-									.exec(link.getAttribute("data-on-hide"))[1]).submit());
-
+						dialog.addEventListener("hide", () => processHide(link));
 					dialog.show();
 				}
 				break;
@@ -143,7 +150,6 @@ window.addEventListener("click", function (event)
 					}
 				});
 				break;
-
 			case "_alert":
 				event.preventDefault();
 				event.stopPropagation();
@@ -178,27 +184,15 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new Process(JSON.parse(process));
-
 					let dialog = window.top.document.createElement("g-progress-dialog");
 					dialog.process = process.id;
 					dialog.caption = link.getAttribute("title") || "Progresso";
 					dialog.target = link.getAttribute("data-redirect") || "_self";
-
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
 					if (link.getAttribute("data-on-hide"))
-						if (link.getAttribute("data-on-hide") === "reload")
-							dialog.addEventListener("hide", () => window.location = window.location.href);
-						else if (link.getAttribute("data-on-hide") === "submit")
-							dialog.addEventListener("hide", () => link.closest("form").submit());
-						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-									.exec(link.getAttribute("data-on-hide"))[1]).submit());
-
-
+						dialog.addEventListener("hide", () => processHide(link));
 					dialog.addEventListener("redirect", event => window.location.href = event.detail);
-
 					dialog.show();
 				});
 				break;
@@ -209,26 +203,14 @@ window.addEventListener("click", function (event)
 				{
 					link.setAttribute("data-process", process);
 					process = new Process(JSON.parse(process));
-
 					let dialog = window.top.document.createElement("g-progress-window");
 					dialog.process = process.id;
 					dialog.target = link.getAttribute("data-redirect") || "_self";
-
-
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
 					if (link.getAttribute("data-on-hide"))
-						if (link.getAttribute("data-on-hide") === "reload")
-							dialog.addEventListener("hide", () => window.location = window.location.href);
-						else if (link.getAttribute("data-on-hide") === "submit")
-							dialog.addEventListener("hide", () => link.closest("form").submit());
-						else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-							dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-									.exec(link.getAttribute("data-on-hide"))[1]).submit());
-
+						dialog.addEventListener("hide", () => processHide(link));
 					dialog.addEventListener("redirect", event => window.location.href = event.detail);
-
 					dialog.show();
 				});
 				break;
@@ -241,7 +223,6 @@ window.addEventListener("click", function (event)
 				dialog.caption = link.getAttribute("title") || "Imprimir";
 				dialog.get(link.href);
 				break;
-
 			default:
 				if (/^_dialog(\((.*)\))?$/g.test(target))
 				{
@@ -259,23 +240,13 @@ window.addEventListener("click", function (event)
 						dialog.target = link.getAttribute("href");
 						dialog.caption = link.getAttribute("title");
 						dialog.blocked = Boolean(link.getAttribute("data-blocked"));
-
 						let regex = /^_dialog(\((.*)\))?$/g.exec(target);
 						if (regex[2])
 							dialog.size = regex[2];
-
 						dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 						dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
 						if (link.getAttribute("data-on-hide"))
-							if (link.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (link.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => link.closest("form").submit());
-							else if (link.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(link.getAttribute("data-on-hide"))[1]).submit());
-
+							dialog.addEventListener("hide", () => processHide(link));
 						dialog.show();
 					}
 				} else if (/^_id\(([a-zA-Z0-9]+)\)$/g.test(target))

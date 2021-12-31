@@ -1,0 +1,13 @@
+:host(*) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+	position: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
+	background-color: var(--main-shaded05);
+}

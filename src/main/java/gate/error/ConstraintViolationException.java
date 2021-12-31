@@ -15,6 +15,7 @@ public class ConstraintViolationException extends AppException
 	ConstraintViolationException(SQLException cause, String message)
 	{
 		super(cause, message);
+
 	}
 
 	@Override

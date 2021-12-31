@@ -1,6 +1,8 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
+import "./g-loading.mjs";
+
 import "./link.mjs";
 import "./mask.mjs";
 import "./button.mjs";

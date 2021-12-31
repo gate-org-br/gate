@@ -4,6 +4,8 @@ import gate.sql.Link;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DatabaseException extends RuntimeException
 {
@@ -24,6 +26,7 @@ public class DatabaseException extends RuntimeException
 		throws DatabaseException,
 		ConstraintViolationException
 	{
+
 		try
 		{
 			DatabaseMetaData metadata = link.getConnection().getMetaData();
@@ -34,7 +37,18 @@ public class DatabaseException extends RuntimeException
 					{
 						case 1062:
 						case 1586:
-							throw new UKViolationException(cause);
+							Matcher matcher
+								= Pattern.compile("Duplicate entry '([^']+)' for key")
+									.matcher(cause.getMessage());
+
+							if (!matcher.matches())
+								throw new UKViolationException(cause);
+
+							throw new UKViolationException(cause, "Tentativa de inserir registro duplicado: "
+								+ matcher.group(1));
+
+						case 1216:
+						case 1217:
 						case 1451:
 						case 1452:
 							throw new FKViolationException(cause);

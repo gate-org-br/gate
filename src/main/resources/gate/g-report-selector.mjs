@@ -16,14 +16,15 @@ template.innerHTML = `
 
 a {
 	margin: 8px;
+	flex-grow: 1;
 	display: flex;
 	height: 128px;
-	flex-grow: 1;
 	cursor: pointer;
 	font-size: 24px;
 	min-width: 128px;
 	border-radius: 5px;
 	align-items: center;
+	text-decoration: none;
 	flex-direction: column;
 	justify-content: center;
 	background-color: white;
@@ -38,9 +39,18 @@ i
 {
 	order: -1;
 	margin: 8px;
+	speak: none;
+	line-height: 1;
 	font-size: 50px;
 	border-radius: 5px;
+	font-style: normal;
+	font-weight: normal;
 	font-family: "gate";
+	font-variant: normal;
+	text-transform: none;
+	text-decoration: none;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
 }
 </style>`;
 
