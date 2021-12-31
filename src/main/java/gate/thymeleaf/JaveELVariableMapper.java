@@ -10,6 +10,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.LazyContextVariable;
 
 public class JaveELVariableMapper extends VariableMapper
 {
@@ -30,21 +31,27 @@ public class JaveELVariableMapper extends VariableMapper
 	public ValueExpression resolveVariable(String variable)
 	{
 		if ("param".equals(variable))
-			return factory.createValueExpression(request.getParameterMap()
+			return createValue(request.getParameterMap()
 				.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
-					e -> e.getValue()[0])), Object.class);
+					e -> e.getValue()[0])));
 
 		if (values.containsKey(variable))
 			return values.get(variable);
 
 		if (request.getAttribute(variable) != null)
-			return factory.createValueExpression(request.getAttribute(variable), Object.class);
+			return createValue(request.getAttribute(variable));
 
 		Bean<?> bean = beanManager.resolve(beanManager.getBeans(variable));
 		if (bean == null)
 			return factory.createValueExpression(null, Object.class);
 		CreationalContext<?> cctx = beanManager.createCreationalContext(bean);
-		var value = beanManager.getReference(bean, Object.class, cctx);
+		return createValue(beanManager.getReference(bean, Object.class, cctx));
+	}
+
+	private ValueExpression createValue(Object value)
+	{
+		if (value instanceof LazyContextVariable)
+			value = ((LazyContextVariable) value).getValue();
 		return factory.createValueExpression(value, Object.class);
 	}
 

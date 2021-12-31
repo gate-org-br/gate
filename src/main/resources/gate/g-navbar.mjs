@@ -1,11 +1,11 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<label id='text'>
-		<a id='first' href='#'>&#x2277;</a>
-		<a id='prev' >&#x2273;</a>
-		<a id='next' >&#x2275;</a>
-		<a id='last' href='#'>&#x2279;</a>
+	<a id='first' href='#'>&#x2277;</a>
+	<a id='prev' >&#x2273;</a>
+	<label id='label'>
 	</label>
+	<a id='next' >&#x2275;</a>
+	<a id='last' href='#'>&#x2279;</a>
  <style>:host(*) {
 	width: auto;
 	padding: 4px;
@@ -57,10 +57,11 @@ customElements.define('g-navbar', class extends HTMLElement
 		super();
 		this._private = {};
 		this._private.index = 0;
-
-		this.shadowRoot.getElementById("label").addEventListener("click", () => this.url = this.links[this._private.index]);
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("first").addEventListener("click", () => this.url = this.links[0]);
 		this.shadowRoot.getElementById("prev").addEventListener("click", () => this.url = this.links[this._private.index - 1]);
+		this.shadowRoot.getElementById("label").addEventListener("click", () => this.url = this.links[this._private.index]);
 		this.shadowRoot.getElementById("next").addEventListener("click", () => this.url = this.links[this._private.index + 1]);
 		this.shadowRoot.getElementById("last").addEventListener("click", () => this.url = this.links[this._private.links.length - 1]);
 	}
@@ -88,7 +89,7 @@ customElements.define('g-navbar', class extends HTMLElement
 		this._private.index = Math.max(this._private.links.indexOf(url), 0);
 		this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(this.index === 0));
 		this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(this.index === 0));
-		this.shadowRoot.getElementById("text").innerHTML = `${this.index + 1} de ${this.links.length}`;
+		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
 		this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
 		this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
 	}

@@ -1,6 +1,24 @@
 import URL from './url.mjs';
+import resolve from './resolve.mjs';
 import Process from './process.mjs';
 import Message from './g-message.mjs';
+import GLoading from './g-loading.mjs';
+
+function processHide(button)
+{
+	GLoading.show();
+	setTimeout(() =>
+	{
+
+		let type = button.getAttribute("data-on-hide");
+		if (type === "reload")
+			window.location = window.location.href;
+		else if (type === "submit")
+			return button.closest("form").submit();
+		else if (type.match(/submit\([^)]+\)/))
+			document.getElementById(/submit\(([^)]+)\)/.exec(type)[1]).submit();
+	}, 0);
+}
 
 window.addEventListener("click", function (event)
 {
@@ -88,13 +106,7 @@ window.addEventListener("click", function (event)
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 						if (button.getAttribute("data-on-hide"))
-							if (button.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => button.closest("form").submit());
-							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+							dialog.addEventListener("hide", () => processHide(button));
 
 						dialog.show();
 
@@ -210,13 +222,7 @@ window.addEventListener("click", function (event)
 						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 						if (button.getAttribute("data-on-hide"))
-							if (button.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => button.closest("form").submit());
-							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+							dialog.addEventListener("hide", () => processHide(button));
 
 						dialog.addEventListener("redirect", event => window.location.href = event.detail);
 
@@ -249,13 +255,7 @@ window.addEventListener("click", function (event)
 						dialog.addEventListener("hide", () => button.disabled = false);
 
 						if (button.getAttribute("data-on-hide"))
-							if (button.getAttribute("data-on-hide") === "reload")
-								dialog.addEventListener("hide", () => window.location = window.location.href);
-							else if (button.getAttribute("data-on-hide") === "submit")
-								dialog.addEventListener("hide", () => button.closest("form").submit());
-							else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-								dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-										.exec(button.getAttribute("data-on-hide"))[1]).submit());
+							dialog.addEventListener("hide", () => processHide(button));
 
 						dialog.addEventListener("redirect", event => window.location.href = event.detail);
 
@@ -310,13 +310,7 @@ window.addEventListener("click", function (event)
 							dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 
 							if (button.getAttribute("data-on-hide"))
-								if (button.getAttribute("data-on-hide") === "reload")
-									dialog.addEventListener("hide", () => window.location = window.location.href);
-								else if (button.getAttribute("data-on-hide") === "submit")
-									dialog.addEventListener("hide", () => button.closest("form").submit());
-								else if (button.getAttribute("data-on-hide").match(/submit\([^)]+\)/))
-									dialog.addEventListener("hide", () => document.getElementById(/submit\(([^)]+)\)/
-											.exec(button.getAttribute("data-on-hide"))[1]).submit());
+								dialog.addEventListener("hide", () => processHide(button));
 
 							dialog.show();
 
