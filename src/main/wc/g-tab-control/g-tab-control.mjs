@@ -75,24 +75,18 @@ customElements.define('g-tab-control', class extends HTMLElement
 								iframe.setAttribute("name", name);
 								link.nextElementSibling.appendChild(iframe);
 
-								iframe.onload = () =>
+								iframe.addEventListener("load", () =>
 								{
-									if (iframe.contentWindow
-										&& iframe.contentWindow.document
-										&& iframe.contentWindow.document.body
-										&& iframe.contentWindow.document.body.scrollHeight)
+									var height = iframe.contentDocument.body.scrollHeight + "px";
+									if (iframe.style.height !== height)
 									{
-										var height = iframe.contentWindow
-											.document.body.scrollHeight + "px";
-										if (iframe.height !== height)
-										{
-											iframe.height = "0";
-											iframe.height = height;
-										}
+										iframe.style.height = height;
+										if (iframe.contentDocument.body.firstElementChild)
+											iframe.contentDocument.body.firstElementChild
+												.scrollIntoView(true);
 									}
-
 									iframe.style.backgroundImage = "none";
-								};
+								});
 
 								if (link.tagName === "A")
 									link.setAttribute("target", name);

@@ -69,6 +69,7 @@ public class Converters
 		INSTANCES.put(DayOfWeek.class, new DayOfWeekConverter());
 		INSTANCES.put(File.class, new FileConverter());
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
+		INSTANCES.put(java.time.Year.class, new YearConverter());
 	}
 
 	public Converter get(Class<?> type)

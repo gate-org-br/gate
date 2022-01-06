@@ -79,6 +79,8 @@ import "./g-progress-status.mjs";
 import "./g-progress-dialog.mjs";
 import "./g-progress-window.mjs";
 
+import "./g-desk-pane.mjs";
+
 import "./sort.mjs";
 import "./filter.mjs";
 
