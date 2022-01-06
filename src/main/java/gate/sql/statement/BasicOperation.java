@@ -1,8 +1,6 @@
 package gate.sql.statement;
 
 import gate.error.ConstraintViolationException;
-import gate.error.FKViolationException;
-import gate.error.UKViolationException;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.Command;
@@ -16,7 +14,7 @@ import java.util.function.Consumer;
 /**
  * A Sentence associated with a java type a and a list of properties
  *
- * 
+ *
  */
 class BasicOperation<T> implements Operation<T>
 {
