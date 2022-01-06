@@ -27,6 +27,7 @@ import gate.sql.fetcher.ObjectFetcher;
 import gate.sql.fetcher.ObjectListFetcher;
 import gate.sql.fetcher.ObjectSetFetcher;
 import gate.sql.fetcher.EntityPageFetcher;
+import gate.sql.fetcher.IntArrayFetcher;
 import gate.sql.fetcher.PropertyEntityListFetcher;
 import gate.sql.fetcher.PropertyEntitySetFetcher;
 import gate.sql.fetcher.TypedArrayFetcher;
@@ -174,6 +175,16 @@ public interface Fetchable
 	default Optional<Object[]> fetchArray()
 	{
 		return fetch(new ArrayFetcher());
+	}
+
+	/**
+	 * Fetches the first row as a int Array.
+	 *
+	 * @return an Optional describing the first row as a int array or an empty Optional if the result is empty
+	 */
+	default Optional<int[]> fetchIntArray()
+	{
+		return fetch(new IntArrayFetcher());
 	}
 
 	/**

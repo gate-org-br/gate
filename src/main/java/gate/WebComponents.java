@@ -68,7 +68,7 @@ public class WebComponents extends Application
 		@Produces("font/ttf")
 		public Response getTTFFont()
 		{
-			return getFile(request, "Gate.ttf");
+			return getFile(request, "../font/Gate.ttf");
 		}
 
 		@GET
@@ -76,7 +76,7 @@ public class WebComponents extends Application
 		@Produces("application/vnd.ms-fontobject")
 		public Response getEOTFont()
 		{
-			return getFile(request, "Gate.eot");
+			return getFile(request, "../font/Gate.eot");
 		}
 
 		@GET
@@ -84,7 +84,7 @@ public class WebComponents extends Application
 		@Produces("application/font-woff")
 		public Response getWoffFont()
 		{
-			return getFile(request, "Gate.woff");
+			return getFile(request, "../font/Gate.woff");
 		}
 
 		@GET
@@ -92,7 +92,7 @@ public class WebComponents extends Application
 		@Produces("image/svg+xml")
 		public Response getSVGFont()
 		{
-			return getFile(request, "Gate.svg");
+			return getFile(request, "../font/Gate.svg");
 		}
 
 	}
