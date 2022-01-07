@@ -19,7 +19,7 @@ public class HideCommandHandler implements Handler
 		HideCommand signal = (HideCommand) value;
 
 		response.setContentType("text/html");
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 
 			writer.write("<!DOCTYPE HTML>");
@@ -27,7 +27,7 @@ public class HideCommandHandler implements Handler
 			writer.write("    <head>");
 			writer.write("        <meta charset='UTF-8'>");
 			writer.write("        <title>Hide Signal</title>");
-			writer.write("        <script src='app/resources/Gate.js'></script>");
+			writer.write("        <script src='gate/script/Gate.mjs'></script>");
 			writer.write("    </head>");
 			writer.write("    <body>");
 			writer.write("        <script type='module'>");
