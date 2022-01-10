@@ -120,3 +120,25 @@ function register(table)
 }
 
 Array.from(document.querySelectorAll('table.TreeView, table.TREEVIEW')).forEach(e => register(e));
+
+Array.from(document.querySelectorAll("ul.TreeView li")).forEach(li =>
+	{
+		if (li.querySelector("ul"))
+		{
+			li.addEventListener("click", event =>
+			{
+				event.stopPropagation();
+				if (li.hasAttribute('data-expanded'))
+				{
+					li.removeAttribute("data-expanded")
+					Array.from(li.getElementsByTagName("li"))
+						.forEach(e => e.removeAttribute("data-expanded"));
+				} else
+					li.setAttribute("data-expanded", "data-expanded");
+			});
+		} else
+		{
+			li.setAttribute("data-empty", "data-empty");
+			li.addEventListener("click", event => event.stopPropagation());
+		}
+	});

@@ -8,3 +8,25 @@ table.TREEVIEW > tbody > tr > td:first-child {
   font-weight: bold;
   text-align: center;
 }
+ul.TreeView {
+  list-style-type: none;
+}
+ul.TreeView ul {
+  display: none;
+  list-style-type: none;
+}
+ul.TreeView li::before {
+  content: '+';
+  font-size: 16px;
+  font-weight: bold;
+  font-family: monospace;
+}
+ul.TreeView li[data-expanded]::before {
+  content: '-';
+}
+ul.TreeView li[data-empty]::before {
+  content: '\00a0';
+}
+ul.TreeView li[data-expanded] > ul {
+  display: block;
+}
