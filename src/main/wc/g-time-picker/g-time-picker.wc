@@ -1,4 +1,18 @@
 <template>
-	<g-time-selector>
-	</g-time-selector>
+	<main>
+		<header>
+			Selecione uma hora
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-time-selector>
+			</g-time-selector>
+		</section>
+		<footer>
+			<a id='commit' href='#'>
+			</a>
+		</footer>
+	</main>
 </template>

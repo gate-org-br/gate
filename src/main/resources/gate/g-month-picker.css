@@ -1,9 +1,0 @@
-g-month-picker g-month-selector {
-  height: 400px;
-}
-input.Month {
-  width: calc(100% - 32px);
-}
-input.Month + a {
-  width: 32px;
-}

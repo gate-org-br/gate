@@ -1,0 +1,25 @@
+<template>
+	<main>
+		<header tabindex='1'>
+			<label id='caption'>
+			</label>
+			<g-dialog-commands>
+			</g-dialog-commands>
+			<g-navbar>
+			</g-navbar>
+			<a id='minimize' href='#'>
+				&#x3019;
+			</a>
+			<a id='fullscreen' href='#'>
+				&#x3016;
+			</a>
+			<a id='hide' href='#'>
+				&#x1011;
+			</a>
+		</header>
+		<section>
+			<iframe scrolling="no">
+			</iframe>
+		</section>
+	</main>
+</template>

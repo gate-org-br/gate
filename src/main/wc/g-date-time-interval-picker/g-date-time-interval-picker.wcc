@@ -1,34 +1,34 @@
 /* global customElements */
 
-import GPicker from './g-picker.mjs';
+import './g-date-time-interval-selector.mjs';
+import GModal from './g-modal.mjs';
 
-customElements.define('g-date-time-interval-picker', class extends GPicker
+customElements.define('g-date-time-interval-picker', class extends GModal
 {
 	constructor()
 	{
 		super();
-		this.hideButton;
-		this.caption = "Selecione um período";
-		this.body.appendChild(template.content.cloneNode(true));
-		let selector = this.body.querySelector("g-date-time-interval-selector");
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
 
-		this.addEventListener("show", () => this.commit.focus());
+		let commit = this.shadowRoot.getElementById("commit");
+		let selector = this.shadowRoot.querySelector("g-date-time-interval-selector");
+
 		setTimeout(() =>
 		{
 			let dateTime = new Date();
 			selector.min = dateTime;
 			selector.max = dateTime;
-			this.commit.innerText = selector.selection;
+			commit.innerText = selector.selection;
 		}, 0);
-		selector.addEventListener("selected", () => this.commit.innerText = selector.selection);
 
-		this.commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent('picked', {detail: this.commit.innerText})) | this.hide());
-	}
+		setTimeout(() => commit.innerText = selector.selection, 0);
+		selector.addEventListener("selected", () => commit.innerText = selector.selection);
 
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.classList.add("g-date-time-interval-picker");
+		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: commit.innerText})) | this.hide());
 	}
 });
 
@@ -56,7 +56,6 @@ Array.from(document.querySelectorAll("input.DateTimeInterval")).forEach(function
 			});
 
 
-		input.dispatchEvent(new Event('change', {bubbles: true}));
 		link.focus();
 		link.blur();
 	});

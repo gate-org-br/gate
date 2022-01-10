@@ -13,6 +13,7 @@ template.innerHTML = `
 
 /* global customElements, template */
 
+import './g-calendar.mjs';
 import DateFormat from './date-format.mjs';
 
 customElements.define('g-date-selector', class extends HTMLElement

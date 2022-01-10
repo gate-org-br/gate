@@ -1,4 +1,16 @@
-a { color: var(--b);
-    font-size: 12px;
-    font-weight: normal;
-    text-decoration: none;  }
+a {
+	color: var(--b);
+	font-size: 12px;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a[target='_popup'] > div
+{
+	display: none;
+}
+
+[data-popup]:not(:only-child)
+{
+	display: none;
+}

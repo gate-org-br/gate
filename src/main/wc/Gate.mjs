@@ -77,7 +77,6 @@ import "./g-date-time-interval-picker.mjs";
 
 import "./g-progress-status.mjs";
 import "./g-progress-dialog.mjs";
-import "./g-progress-window.mjs";
 
 import "./g-desk-pane.mjs";
 

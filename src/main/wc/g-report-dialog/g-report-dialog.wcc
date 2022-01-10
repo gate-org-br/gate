@@ -1,0 +1,53 @@
+/* global customElements */
+
+import GModal from './g-modal.mjs';
+import Command from './command.mjs';
+
+customElements.define('g-report-dialog', class extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+		this.shadowRoot.querySelector("g-download-status").addEventListener("done", () => this.hide());
+	}
+
+	show()
+	{
+		this.shadowRoot.querySelector("g-report-selector").style.display = "";
+		this.shadowRoot.querySelector("g-download-status").style.display = "none";
+		super.show();
+	}
+
+	get(url)
+	{
+		let status = this.shadowRoot.querySelector("g-download-status");
+		let selector = this.shadowRoot.querySelector("g-report-selector");
+
+		selector.addEventListener("selected", event =>
+		{
+			status.style.display = "";
+			selector.style.display = "none";
+			status.download("get", new Command(url).parameter("type", event.detail), null);
+		});
+		this.show();
+	}
+
+	post(url, data)
+	{
+		let status = this.shadowRoot.querySelector("g-download-status");
+		let selector = this.shadowRoot.querySelector("g-report-selector");
+
+		selector.addEventListener("selected", event =>
+		{
+			status.style.display = "";
+			selector.style.display = "none";
+			status.download("post", new Command(url).parameter("type", event.detail), data);
+		});
+		this.show();
+	}
+});

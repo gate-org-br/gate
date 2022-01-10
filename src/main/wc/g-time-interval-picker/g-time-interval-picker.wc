@@ -1,4 +1,18 @@
 <template>
-	<g-time-interval-selector>
-	</g-time-interval-selector>
+	<main>
+		<header>
+			Selecione um período
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-time-interval-selector>
+			</g-time-interval-selector>
+		</section>
+		<footer>
+			<a id='commit' href='#'>
+			</a>
+		</footer>
+	</main>
 </template>

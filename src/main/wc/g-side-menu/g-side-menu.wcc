@@ -1,0 +1,52 @@
+/* global customElements */
+
+import GModal from './g-modal.mjs';
+
+customElements.define('g-side-menu', class extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", e => e.stopPropagation() | this.hide());
+	}
+
+	showLeft()
+	{
+		setTimeout(() => this.position = "left", 100);
+	}
+
+	showRight()
+	{
+		setTimeout(() => this.position = "right", 100);
+	}
+
+	set position(position)
+	{
+		this.setAttribute("position", position);
+	}
+
+	get position()
+	{
+		return this.getAttribute("position");
+	}
+
+	show(element)
+	{
+		let center = element.getBoundingClientRect();
+		center = center.left + (center.width / 2);
+		if (center <= window.innerWidth / 2)
+			this.showLeft();
+		else
+			this.showRight();
+	}
+
+	set elements(elements)
+	{
+		let menu = this.shadowRoot.querySelector("section");
+		while (menu.firstChild)
+			menu.removeChild(menu.firstChild);
+		elements.forEach(e => menu.appendChild(e));
+	}
+});

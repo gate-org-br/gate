@@ -1,0 +1,19 @@
+<template>
+	<main>
+		<header>
+			Progresso
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-progress-status>
+			</g-progress-status>
+		</section>
+		<footer>
+			<a id='commit' href='#'>
+				Processando
+			</a>
+		</footer>
+	</main>
+</template>

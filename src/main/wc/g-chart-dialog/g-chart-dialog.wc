@@ -1,0 +1,37 @@
+<template>
+	<main>
+		<header tabindex='1'>
+			<label id='caption'>
+				Chart
+			</label>
+			<a id='rchart' href='#' title='Rose'>
+				&#x2247;
+			</a>
+			<a id='dchart' href='#' title='Donut'>
+				&#x2245;
+			</a>
+			<a id='pchart' href='#' title='Pizza'>
+				&#x2031;
+			</a>
+			<a id='achart' href='#' title='Área'>
+				&#x2244;
+			</a>
+			<a id='lchart' href='#' title='Linha'>
+				&#x2032;
+			</a>
+			<a id='bchart' href='#' title='Barra'>
+				&#x2246;
+			</a>
+			<a id='cchart' href='#' title='Coluna'>
+				&#x2033;
+			</a>
+			<a id='close' href='#' title='Fechar'>
+				&#x1011;
+			</a>
+		</header>
+		<section>
+			<g-chart>
+			</g-chart>
+		</section>
+	</main>
+</template>

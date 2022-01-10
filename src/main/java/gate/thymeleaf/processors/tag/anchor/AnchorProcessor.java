@@ -106,10 +106,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		target = (String) expression.evaluate(target);
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-			if ("_dialog".equals(target))
-				return Optional.of("_progress-dialog");
-			else
-				return Optional.of("_progress-window");
+			return Optional.of("_progress-dialog");
 		else
 			return Optional.ofNullable(target);
 	}

@@ -1,0 +1,50 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	width: 100%;
+	display: grid;
+	padding: 10px;
+	border-radius: 5px;
+	place-items: stretch;
+	place-content: stretch;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 32px 32px 32px 1fr;
+	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
+}
+
+#title
+{
+	display: flex;
+	font-size: 20px;
+	align-items: center;
+	grid-column: 1 / span 2;
+}
+
+progress
+{
+	height: 40px;
+	grid-column: 1 / span 2;
+}
+
+g-digital-clock
+{
+	display: flex;
+	font-size: 12px;
+	align-items: center;
+}
+
+#counter{
+	display: flex;
+	font-size: 12px;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+g-logger
+{
+	grid-column: 1 / span 2;
+}
+
+

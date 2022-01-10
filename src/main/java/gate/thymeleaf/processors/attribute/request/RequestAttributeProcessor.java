@@ -83,20 +83,14 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					handler.setAttribute("href", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						if ("_dialog".equals(element.getAttributeValue("target")))
-							handler.setAttribute("target", "_progress-dialog");
-						else
-							handler.setAttribute("target", "_progress-window");
+						handler.setAttribute("target", "_progress-dialog");
 
 					break;
 				case "button":
 					handler.setAttribute("formaction", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						if ("_dialog".equals(element.getAttributeValue("formtarget")))
-							handler.setAttribute("formtarget", "_progress-dialog");
-						else
-							handler.setAttribute("formtarget", "_progress-window");
+						handler.setAttribute("formtarget", "_progress-dialog");
 
 					break;
 
@@ -104,10 +98,7 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					handler.setAttribute("action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						if ("_dialog".equals(element.getAttributeValue("target")))
-							handler.setAttribute("target", "_progress-dialog");
-						else
-							handler.setAttribute("target", "_progress-window");
+						handler.setAttribute("target", "_progress-dialog");
 
 					break;
 				case "img":
@@ -117,10 +108,7 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					handler.setAttribute("data-action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						if ("_dialog".equals(element.getAttributeValue("formtarget")))
-							handler.setAttribute("data-target", "_progress-dialog");
-						else
-							handler.setAttribute("data-target", "_progress-window");
+						handler.setAttribute("data-target", "_progress-dialog");
 					break;
 			}
 

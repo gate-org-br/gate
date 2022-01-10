@@ -27,7 +27,6 @@ public class HideCommandHandler implements Handler
 			writer.write("    <head>");
 			writer.write("        <meta charset='UTF-8'>");
 			writer.write("        <title>Hide Signal</title>");
-			writer.write("        <script src='gate/script/Gate.mjs'></script>");
 			writer.write("    </head>");
 			writer.write("    <body>");
 			writer.write("        <script type='module'>");

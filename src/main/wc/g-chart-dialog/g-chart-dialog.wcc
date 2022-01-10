@@ -1,0 +1,89 @@
+/* global customElements, template */
+
+import GModal from './g-modal.mjs';
+
+export default class GChartDialog extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.getElementById("close").onclick = () => this.hide();
+		this.shadowRoot.getElementById("cchart").onclick = () => this.type = 'cchart';
+		this.shadowRoot.getElementById("bchart").onclick = () => this.type = 'bchart';
+		this.shadowRoot.getElementById("lchart").onclick = () => this.type = 'lchart';
+		this.shadowRoot.getElementById("achart").onclick = () => this.type = 'achart';
+		this.shadowRoot.getElementById("pchart").onclick = () => this.type = 'pchart';
+		this.shadowRoot.getElementById("dchart").onclick = () => this.type = 'dchart';
+		this.shadowRoot.getElementById("rchart").onclick = () => this.type = 'rchart';
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+	}
+
+	set type(type)
+	{
+		this.shadowRoot.querySelector('g-chart').type = type;
+		switch (type)
+		{
+			case 'cchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Coluna';
+				break;
+			case 'bchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Barra';
+				break;
+			case 'pchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Pizza';
+				break;
+			case 'dchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Donnut';
+				break;
+			case 'achart':
+				this.shadowRoot.getElementById('caption').innerText = 'Área';
+				break;
+			case 'rchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Rose';
+				break;
+			case 'lchart':
+				this.shadowRoot.getElementById('caption').innerText = 'Linha';
+				break;
+		}
+	}
+
+	set title(title)
+	{
+		this.shadowRoot.querySelector('g-chart').title = title;
+	}
+
+	set data(data)
+	{
+		this.shadowRoot.querySelector('g-chart').data = data;
+	}
+
+	static show(chart, series, title)
+	{
+		let dialog = document.createElement("g-chart-dialog");
+		dialog.show();
+
+		dialog.type = chart;
+		dialog.title = title;
+		dialog.data = series;
+	}
+}
+
+customElements.define('g-chart-dialog', GChartDialog);
+
+window.addEventListener("click", function (event)
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+
+	action = action.closest("*[data-chart]");
+	if (!action)
+		return;
+
+	GChartDialog.show(action.getAttribute('data-chart'),
+		action.getAttribute('data-series') || action.getAttribute('href'),
+		action.getAttribute("title"));
+});
+

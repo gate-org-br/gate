@@ -1,9 +1,0 @@
-g-icon-picker g-icon-selector {
-  height: 400px;
-}
-input.Icon {
-  width: calc(100% - 32px);
-}
-input.Icon + a {
-  width: 32px;
-}

@@ -1,4 +1,18 @@
 <template>
-	<g-date-time-selector>
-	</g-date-time-selector>
+	<main>
+		<header>
+			Selecione uma data e uma hora
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-date-time-selector>
+			</g-date-time-selector>
+		</section>
+		<footer>
+			<a id='commit' href='#'>
+			</a>
+		</footer>
+	</main>
 </template>

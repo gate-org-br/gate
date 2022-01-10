@@ -1,0 +1,85 @@
+/* global customElements */
+
+import './g-logger.mjs';
+customElements.define('g-progress-status', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		let title = this.shadowRoot.getElementById("title");
+		let progress = this.shadowRoot.querySelector("progress");
+		let clock = this.shadowRoot.querySelector("g-digital-clock");
+		let counter = this.shadowRoot.getElementById("counter");
+		let logger = this.shadowRoot.querySelector("g-logger");
+		window.addEventListener("ProcessPending", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+			this.log(event);
+			title.style.color = '#000000';
+			clock.style.color = '#000000';
+			counter.style.color = '#000000';
+		});
+		window.addEventListener("ProcessCommited", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+			this.log(event);
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 100;
+			title.style.color = '#006600';
+			clock.style.color = '#006600';
+			counter.style.color = '#006600';
+			clock.setAttribute("paused", "paused");
+		});
+		window.addEventListener("ProcessCanceled", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+			this.log(event);
+			if (!progress.max)
+				progress.max = 100;
+			if (!progress.value)
+				progress.value = 0;
+			title.style.color = '#660000';
+			clock.style.color = '#660000';
+			counter.style.color = '#660000';
+			clock.setAttribute("paused", "paused");
+		});
+		window.addEventListener("ProcessError", event =>
+		{
+			if (event.detail.process !== this.process)
+				return;
+			this.log(event);
+			title.style.color = '#666666';
+			clock.style.color = '#666666';
+			counter.style.color = '#666666';
+		});
+	}
+
+	log(event)
+	{
+		let title = this.shadowRoot.getElementById("title");
+		let logger = this.shadowRoot.querySelector("g-logger");
+		let counter = this.shadowRoot.getElementById("counter");
+		let progress = this.shadowRoot.querySelector("progress");
+		if (event.detail.progress)
+			counter.innerHTML = event.detail.progress;
+		if (event.detail.text !== title.innerHTML)
+		{
+			logger.append(event.detail.text);
+			title.innerHTML = event.detail.text;
+		}
+
+		if (event.todo !== -1)
+		{
+			progress.max = event.detail.todo;
+			if (event.done !== -1)
+				progress.value = event.detail.done;
+		}
+	}
+});
