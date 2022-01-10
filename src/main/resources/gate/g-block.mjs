@@ -1,40 +1,128 @@
-/* global customElements */
+let template = document.createElement("template");
+template.innerHTML = `
+	<main>
+		<header>
+		</header>
+		<section>
+			<progress>
+			</progress>
+		</section>
+		<footer>
+			<g-digital-clock>
+			</g-digital-clock>
+		</footer>
+	</main>
+ <style>* {
+	box-sizing: border-box
+}
 
-import GWindow from './g-window.mjs';
+:host(*) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+	display: flex;
+	position: fixed;
+	align-items: center;
+	justify-content: center;
+}
 
-export default class GBlock extends GWindow
+main
+{
+	height: 150px;
+	display: grid;
+	position: fixed;
+	min-width: 320px;
+	max-width: 800px;
+	border-radius: 5px;
+	place-items: stretch;
+	place-content: stretch;
+	width: calc(100% - 40px);
+	grid-template-rows: 40px 1fr 24px;
+	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	border: 4px solid var(--g-window-border-color);
+}
+
+header{
+	padding: 4px;
+	display: flex;
+	font-size: 20px;
+	font-weight: bold;
+	align-items: center;
+	justify-content: space-between;
+	color: var(--g-window-header-color);
+	background-color: var(--g-window-header-background-color);
+	background-image: var(--g-window-header-background-image);
+}
+
+section {
+	padding: 8px;
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
+}
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	background-color: var(--g-window-footer-background-color);
+	background-image: var(--g-window-footer-background-image);
+}
+
+g-digital-clock
+{
+	color: white;
+	font-size: 16px;
+}
+
+progress
+{
+	flex-grow: 1;
+}</style>`;
+
+/* global customElements, template */
+
+import GModal from './g-modal.mjs';
+
+export default class GBlock extends GModal
 {
 	constructor()
 	{
 		super();
-		this.blocked = true;
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	connectedCallback()
+	set caption(text)
 	{
-		super.connectedCallback();
-		this.classList.add("g-block");
-		this.body.appendChild(window.top.document.createElement('progress'));
-		this.foot.appendChild(window.top.document.createElement('g-digital-clock'));
+		this.shadowRoot.querySelector("header").innerText = text;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.querySelector("header").innerText;
 	}
 
 	static show(text)
 	{
-		if (!window.top.GateBlockDialog)
-		{
-			window.top.GateBlockDialog = window.top.document.createElement("g-block");
-			window.top.GateBlockDialog.caption = text || "Aguarde";
-			window.top.GateBlockDialog.show();
-		}
+		if (window.top.GBlock)
+			return;
+
+		window.top.GateBlockDialog = window.top.document.createElement("g-block");
+		window.top.GateBlockDialog.caption = text || "Aguarde";
+		window.top.GateBlockDialog.show();
 	}
 
 	static  hide()
 	{
-		if (window.top.GateBlockDialog)
-		{
-			window.top.GateBlockDialog.hide();
-			window.top.GateBlockDialog = null;
-		}
+		if (!window.top.GBlock)
+			return;
+
+		window.top.GateBlockDialog.hide();
+		window.top.GateBlockDialog = null;
 	}
 }
 
@@ -42,36 +130,23 @@ customElements.define('g-block', GBlock);
 
 GBlock.hide();
 
-Array.from(document.querySelectorAll("form[data-block]")).forEach(function (element)
-{
-	element.addEventListener("submit", function ()
-	{
-		if (this.getAttribute("data-block"))
-			GBlock.show(this.getAttribute("data-block"));
-	});
-});
+Array.from(document.querySelectorAll("form[data-block]"))
+	.forEach(e => e.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"))));
 
-Array.from(document.querySelectorAll("a")).forEach(function (element)
-{
-	element.addEventListener("click", function ()
-	{
-		if (this.getAttribute("data-block"))
-			GBlock.show(this.getAttribute("data-block"));
-	});
-});
+Array.from(document.querySelectorAll("a[data-block]"))
+	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
-Array.from(document.querySelectorAll("button")).forEach(function (button)
+Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
 {
-	button.addEventListener("click", function ()
+	e.addEventListener("click", () =>
 	{
-		if (button.getAttribute("data-block"))
-			if (button.form)
-				button.form.addEventListener("submit", function (event)
-				{
-					GBlock.show(button.getAttribute("data-block"));
-					event.target.removeEventListener(event.type, arguments.callee);
-				});
-			else
-				GBlock.show(this.getAttribute("data-block"));
+		if (e.form)
+			e.form.addEventListener("submit", () =>
+			{
+				GBlock.show(e.getAttribute("data-block"));
+				e.form.removeEventListener(event.type, arguments.callee);
+			});
+		else
+			GBlock.show(e.getAttribute("data-block"));
 	});
 });

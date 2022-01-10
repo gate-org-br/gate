@@ -1,0 +1,30 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display:  flex;
+	overflow: auto;
+	position: fixed;
+	border-radius: 0;
+	align-items: stretch;
+	justify-content: center;
+	background-color: var(--g-stack-frame-background-color);
+	background-image: var(--g-stack-frame-background-image);
+}
+
+iframe {
+	margin: 0;
+	padding: 0;
+	border: none;
+	flex-grow: 1;
+	overflow:  hidden;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
+}

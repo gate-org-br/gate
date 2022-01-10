@@ -196,24 +196,6 @@ window.addEventListener("click", function (event)
 					dialog.show();
 				});
 				break;
-			case "_progress-window":
-				event.preventDefault();
-				event.stopPropagation();
-				new URL(link.href).get(process =>
-				{
-					link.setAttribute("data-process", process);
-					process = new Process(JSON.parse(process));
-					let dialog = window.top.document.createElement("g-progress-window");
-					dialog.process = process.id;
-					dialog.target = link.getAttribute("data-redirect") || "_self";
-					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-					if (link.getAttribute("data-on-hide"))
-						dialog.addEventListener("hide", () => processHide(link));
-					dialog.addEventListener("redirect", event => window.location.href = event.detail);
-					dialog.show();
-				});
-				break;
 			case "_report":
 			case "_report-dialog":
 				event.preventDefault();

@@ -1,0 +1,14 @@
+<template>
+	<main>
+		<header>
+		</header>
+		<section>
+			<progress>
+			</progress>
+		</section>
+		<footer>
+			<g-digital-clock>
+			</g-digital-clock>
+		</footer>
+	</main>
+</template>

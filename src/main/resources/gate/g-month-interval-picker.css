@@ -1,9 +1,0 @@
-g-month-interval-picker g-month-interval-selector {
-  height: 400px;
-}
-input.MonthInterval {
-  width: calc(100% - 32px);
-}
-input.MonthInterval + a {
-  width: 32px;
-}

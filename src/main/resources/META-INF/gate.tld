@@ -1842,7 +1842,7 @@
 		<name>stacktrace</name>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.StackTraceTag</tag-class>
+		<tag-class>gate.tags.StacktraceTag</tag-class>
 		<description>
 			Prints the stacktrace of the specified throwable
 			on a table.

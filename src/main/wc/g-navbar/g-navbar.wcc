@@ -28,7 +28,9 @@ customElements.define('g-navbar', class extends HTMLElement
 
 	set links(links)
 	{
+		this._private.index = 0;
 		this._private.links = links;
+		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
 	}
 
 	set url(url)

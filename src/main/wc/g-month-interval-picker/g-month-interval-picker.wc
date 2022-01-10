@@ -1,4 +1,18 @@
 <template>
-	<g-month-interval-selector>
-	</g-month-interval-selector>
+	<main>
+		<header>
+			Selecione um período
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-month-interval-selector>
+			</g-month-interval-selector>
+		</section>
+		<footer>
+			<a id='commit' href='#'>
+			</a>
+		</footer>
+	</main>
 </template>

@@ -1,0 +1,40 @@
+/* global customElements, template */
+
+import GModal from './g-modal.mjs';
+
+export default class GPopup extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+	}
+
+	set caption(caption)
+	{
+		this.shadowRoot.getElementById("caption")
+			.innerText = caption;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.getElementById("caption")
+			.innerText;
+	}
+
+	static show(template, caption)
+	{
+		let popup = window.top.document.createElement("g-popup");
+		popup.caption = caption || template.getAttribute("title") || "";
+		let parent = template.parentNode;
+		popup.addEventListener("hide", () => parent.appendChild(popup.firstElementChild));
+		popup.show();
+		popup.appendChild(template);
+	}
+}
+
+customElements.define('g-popup', GPopup);

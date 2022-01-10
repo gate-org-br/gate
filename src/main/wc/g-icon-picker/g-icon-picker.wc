@@ -1,0 +1,14 @@
+<template>
+	<main>
+		<header>
+			Selecione um ícone
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-icon-selector>
+			</g-icon-selector>
+		</section>
+	</main>
+</template>

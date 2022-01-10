@@ -1,0 +1,49 @@
+/* global customElements, template */
+
+import GModal from './g-modal.mjs';
+
+export default class GStacktrace extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+	}
+
+	set caption(caption)
+	{
+		this.shadowRoot.getElementById("caption")
+			.innerText = caption;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.getElementById("caption")
+			.innerText;
+	}
+
+	static show(caption, errors)
+	{
+		let popup = window.top.document.createElement("g-popup");
+		popup.caption = caption || template.getAttribute("title") || "";
+		popup.show();
+
+		let table = popup.appendChild(document.createElement("table"))
+			.appendChild(document.createElement("tbody"));
+		errors.forEach(erro =>
+		{
+			let td = table.appendChild(document.createElement("tr")).appendChild(document.createElement("td"));
+			td.style.fontWeight = 'bold';
+			td.innerText = erro.message;
+			erro.stacktrace.forEach(trace => table
+					.appendChild(document.createElement("tr"))
+					.appendChild(document.createElement("td")).innerText = trace);
+		});
+	}
+}
+
+customElements.define('g-stacktrace', GStacktrace);

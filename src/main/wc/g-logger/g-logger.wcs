@@ -1,0 +1,15 @@
+:host(*)
+{
+	padding: 4px;
+	cursor: pointer;
+	overflow-y: auto;
+	border-radius: 5px;
+	background-color: white;
+}
+
+span
+{
+	height: 16px;
+	display: flex;
+	align-items: center;
+}

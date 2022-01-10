@@ -8,38 +8,10 @@
 @import './g-scroll-tabbar.css';
 @import './g-tab-control.css';
 @import './g-dialog-commands.css';
-@import "./g-window-list.css";
-@import './g-modal.css';
-@import './g-side-menu.css';
-@import './g-window.css';
-@import './g-dialog.css';
-@import './g-message.css';
-@import './g-stack-frame.css';
 @import './g-desk-pane.css';
 @import './g-text-editor.css';
-@import './g-report-dialog.css';
-@import './g-chart-dialog.css';
 @import './g-icon-pane.css';
-@import './g-popup.css';
-@import './g-block.css';
 @import './g-select.css';
-
-@import './g-picker.css';
-@import './g-icon-picker.css';
-
-@import './g-date-picker.css';
-@import './g-time-picker.css';
-@import './g-month-picker.css';
-@import './g-date-time-picker.css';
-
-@import './g-date-interval-picker.css';
-@import './g-time-interval-picker.css';
-@import './g-month-interval-picker.css';
-@import './g-date-time-interval-picker.css';
-
-@import './g-progress-status.css';
-@import './g-progress-dialog.css';
-@import './g-progress-window.css';
 
 @import './icon.css';
 @import './fieldset.css';

@@ -1,4 +1,14 @@
 <template>
-	<g-date-selector>
-	</g-date-selector>
+	<main>
+		<header>
+			Selecione uma data
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<g-date-selector>
+			</g-date-selector>
+		</section>
+	</main>
 </template>

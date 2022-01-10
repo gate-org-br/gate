@@ -234,36 +234,6 @@ window.addEventListener("click", function (event)
 
 				break;
 
-			case "_progress-window":
-				event.preventDefault();
-				event.stopPropagation();
-
-				if (button.form.reportValidity())
-				{
-					button.disabled = true;
-
-					new URL(button.getAttribute("formaction")).post(new FormData(button.form), process =>
-					{
-						button.setAttribute("data-process", process);
-						process = new Process(JSON.parse(process));
-						let dialog = window.top.document.createElement("g-progress-window");
-						dialog.process = process.id;
-						dialog.target = button.getAttribute("data-redirect") || "_self";
-
-						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-						dialog.addEventListener("hide", () => button.disabled = false);
-
-						if (button.getAttribute("data-on-hide"))
-							dialog.addEventListener("hide", () => processHide(button));
-
-						dialog.addEventListener("redirect", event => window.location.href = event.detail);
-
-						dialog.show();
-					});
-				}
-				break;
-
 			case "_report":
 			case "_report-dialog":
 				event.preventDefault();

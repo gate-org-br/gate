@@ -1,23 +1,20 @@
 /* global customElements */
 
-import GPicker from './g-picker.mjs';
+import './g-date-selector.mjs';
+import GModal from './g-modal.mjs';
 
-customElements.define('g-date-picker', class extends GPicker
+customElements.define('g-date-picker', class extends GModal
 {
 	constructor()
 	{
 		super();
-		this.hideButton;
-		this.caption = "Selecione uma data";
-		this.body.appendChild(template.content.cloneNode(true));
-		let selector = this.body.querySelector("g-date-selector");
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		let selector = this.shadowRoot.querySelector("g-date-selector");
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
 		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
-	}
-
-	connectedCallback()
-	{
-		super.connectedCallback();
-		this.classList.add("g-date-picker");
 	}
 });
 

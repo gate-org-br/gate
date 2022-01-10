@@ -1,0 +1,15 @@
+<template>
+	<main>
+		<header>
+			<label id='caption'>
+			</label>
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</header>
+		<section>
+			<slot>
+			</slot>
+		</section>
+	</main>
+</template>

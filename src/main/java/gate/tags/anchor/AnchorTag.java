@@ -111,10 +111,7 @@ public abstract class AnchorTag extends ParameterTag
 		call = Call.of(request, module, screen, action);
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-			if ("_dialog".equals(target))
-				target = "_progress-dialog";
-			else
-				target = "_progress-window";
+			target = "_progress-dialog";
 
 		if (!getAttributes().containsKey("style"))
 			call.getColor().ifPresent(e -> getAttributes().put("style", "color: " + e));
