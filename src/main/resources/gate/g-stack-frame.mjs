@@ -11,10 +11,10 @@ template.innerHTML = `
 	left: 0;
 	right: 0;
 	bottom: 0;
+	display:  flex;
 	overflow: auto;
 	position: fixed;
 	border-radius: 0;
-	display:  flex;
 	align-items: stretch;
 	justify-content: center;
 	background-color: var(--g-stack-frame-background-color);
