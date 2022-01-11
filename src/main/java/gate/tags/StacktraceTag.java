@@ -1,11 +1,7 @@
 package gate.tags;
 
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
 import java.io.IOException;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StacktraceTag extends AttributeTag
@@ -21,22 +17,20 @@ public class StacktraceTag extends AttributeTag
 	@Override
 	public void doTag() throws IOException
 	{
-		JsonArray array = new JsonArray();
-		for (Throwable error = this.exception; error != null; error = error.getCause())
-		{
-			JsonObject object = new JsonObject();
-			object.setString("message", error.getMessage());
-			object.set("stacktrace", Stream.of(error.getStackTrace())
-				.map(StackTraceElement::toString)
-				.map(JsonString::of)
-				.collect(Collectors.toCollection(JsonArray::new)));
-			array.add(object);
-		}
-
 		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add("<script type='module'>");
-		string.add("import GStacktrace from './gate/script/g-stacktrace.mjs';");
-		string.add("GStacktrace.show('Erro de sistema', " + array.toString() + ");");
-		string.add("</script>");
+		string.add("<ul class='TreeView'>");
+		for (Throwable error = exception; error != null; error = error.getCause())
+		{
+			string.add("<li>");
+			string.add(error.getMessage());
+			string.add("<ul>");
+			Stream.of(error.getStackTrace())
+				.map(StackTraceElement::toString)
+				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			string.add("</ul>");
+			string.add("</li>");
+		}
+		string.add("</ul>");
+		getJspContext().getOut().println(string);
 	}
 }

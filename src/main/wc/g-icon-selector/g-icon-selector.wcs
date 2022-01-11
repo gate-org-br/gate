@@ -23,6 +23,7 @@ a {
 	font-family: 'gate';
 	font-variant: normal;
 	text-transform: none;
+	text-decoration: none;
 	justify-content: center;
 	background-color: white;
 }

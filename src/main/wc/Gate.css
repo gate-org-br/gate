@@ -9,7 +9,6 @@
 @import './g-tab-control.css';
 @import './g-dialog-commands.css';
 @import './g-desk-pane.css';
-@import './g-text-editor.css';
 @import './g-icon-pane.css';
 @import './g-select.css';
 
@@ -26,6 +25,9 @@
 @import "./filter.css";
 
 @import './table.css';
+
+@import './visibility.css';
+
 
 iframe {
 	border: none;
@@ -55,30 +57,6 @@ form {
 	border: none;
 }
 
-.margin
-{
-	margin: 0;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	&:first-child {
-		margin-top: 0px;
-	}
-	&:last-child {
-		margin-bottom: 0px;
-	}
-
-	&:only-child {
-		margin-bottom: 0px;
-		margin-bottom: 0px
-	}
-}
-
-*[disabled],
-*[data-disabled] {
-	opacity: 0.5;
-	pointer-events: none;
-}
-
 * {
 	font-size: 12px;
 	box-shadow: none;
@@ -93,11 +71,6 @@ body.Panel {
 body.Page {
 	background-color: var(--main-shaded05);
 	background-image: none;
-}
-
-span.PAGINATOR a {
-	color: black;
-	font-weight: bold
 }
 
 p  {
@@ -135,17 +108,6 @@ img {
 	margin-right: 2px
 }
 
-td > label, th > label {
-	width: 100%;
-	display: inline-block
-}
-td > label > i, td > label > span, th > label > i, th > label > span {
-	position: absolute;
-	right: 2px;
-	color: gray;
-	font-size: 10px
-}
-
 ul.LIST {
 	width: 100%;
 	list-style-type: none;
@@ -174,24 +136,6 @@ ul.LIST > li:focus {
 	background-color: #FFFACD;
 	font-weight: bold;
 	color: var(--g)
-}
-
-input[type='text'],
-input[type='password'],
-input[type='file'],
-textarea,
-select {
-	width: 100%;
-	background-color: white;
-	border: 1px solid #CCCCCC;
-	&:hover {
-		outline: none;
-		border-color: var(--hovered)
-	}
-	&:focus {
-		outline: none;
-		background-color: var(--hovered)
-	}
 }
 
 input[type='file'] {
@@ -289,37 +233,7 @@ tr[data-canceled='true'] > td {
 }
 
 datalist {
-	display: none
-}
-
-*[data-visibility] {
-	display: none
-}
-
-@media only screen and (min-width: 576px) {
-	*[data-visibility='Phone'] {
-		display: block
-	}
-}
-@media only screen and (min-width: 768px) {
-	*[data-visibility='Tablet'] {
-		display: block
-	}
-}
-@media only screen and (min-width: 992px) {
-	*[data-visibility='Notebook'] {
-		display: block
-	}
-}
-@media only screen and (min-width: 1200px) {
-	*[data-visibility='Desktop'] {
-		display: block
-	}
-}
-@media only screen and (min-width: 1400px) {
-	*[data-visibility='Widescreen'] {
-		display: block
-	}
+	display: none;
 }
 
 body[data-scroll-disabled] * {
@@ -333,3 +247,36 @@ small {
 	font-size: 0.8em
 }
 
+*[disabled],
+*[data-disabled] {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+input[type='text'],
+input[type='password'],
+input[type='file'],
+textarea,
+select {
+	width: 100%;
+	background-color: white;
+	border: 1px solid #CCCCCC;
+}
+
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='file']:focus,
+textarea:focus,
+select:focus {
+	outline: none;
+	background-color: var(--hovered);
+}
+
+input[type='text']:hover,
+input[type='password']:hover,
+input[type='file']:hover,
+textarea:hover,
+select:focus {
+	outline: none;
+	border-color: var(--hovered);
+}
