@@ -267,7 +267,7 @@ table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20)
 
 	> tfoot {
 		order: 1000;
-		
+
 		> tr,
 		> tr > td {
 			display: flex;
@@ -276,6 +276,21 @@ table.c20 > * > tr > *:nth-child(20), table[data-c20] > * > tr > *:nth-child(20)
 		}
 	}
 }
+
+
+td > label,
+th > label {
+	width: 100%;
+	display: inline-block;
+
+	> i, > span {
+		right: 2px;
+		color: gray;
+		font-size: 10px
+		position: absolute;
+	}
+}
+
 
 
 @media only screen and (max-width: 576px)

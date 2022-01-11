@@ -1,0 +1,87 @@
+<template>
+	<div id='toolbar'>
+		<button tabindex='-1' id='bold' title='Negrito'>
+			&#X3026;
+		</button>
+		<button tabindex='-1' id='italic' title='Itálico'>
+			&#X3027;
+		</button>
+		<button tabindex='-1' id='underline' title='Sublinhado'>
+			&#X3028;
+		</button>
+		<button tabindex='-1' id='strikeThrough' title='Riscado'>
+			&#X3029;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='red' title='Vermelho'>
+			&#X3025;
+		</button>
+		<button tabindex='-1' id='green' title='Verde'>
+			&#X3025;
+		</button>
+		<button tabindex='-1' id='blue' title='Azul'>
+			&#X3025;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='increaseFontSize' title='Aumentar fonte'>
+			&#X1012;
+		</button>
+		<button tabindex='-1' id='decreaseFontSize' title='Reduzir fonte'>
+			&#X1013;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
+			&#X3030;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='justifyCenter' title='Centralizar'>
+			&#X3034;
+		</button>
+		<button tabindex='-1' id='justifyLeft' title='Alinha à esquerda'>
+			&#X3032;
+		</button>
+		<button tabindex='-1' id='justifyRight' title='Alinha à direita'>
+			&#X3033;
+		</button>
+		<button tabindex='-1' id='justifyFull' title='Justificar'>
+			&#X3031;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='indent' title='Indentar'>
+			&#X3039;
+		</button>
+		<button tabindex='-1' id='outdent' title='Remover indentação'>
+			&#X3040;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='insertUnorderedList' title='Criar lista'>
+			&#X3035;
+		</button>
+		<button tabindex='-1' id='insertOrderedList' title='Criar lista ordenada'>
+			&#X3038;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='createLink' title='Criar link'>
+			&#X2076;
+		</button>
+		<button tabindex='-1' id='unlink' title='Remover link'>
+			&#X2233;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='happyFace' title='Carinha feliz"'>
+			&#X2104;
+		</button>
+		<button tabindex='-1' id='sadFace' title='Carinha triste"'>
+			&#X2106;
+		</button>
+		<button tabindex='-1' id='insertIcon' title='Inserir ícone'>
+			&#X3017;
+		</button>
+		<span></span>
+		<button tabindex='-1' id='insertImage' title='Inserir imagem'>
+			&#X2009;
+		</button>
+	</div>
+	<div id='editor' tabindex="0" contentEditable='true'>
+	</div>
+</template>

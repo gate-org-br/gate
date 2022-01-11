@@ -1,0 +1,83 @@
+:host(*)
+{
+	width: 100%;
+	height: 100%;
+	display: grid;
+	border-radius: 5px;
+	place-items: stretch;
+	place-content: stretch;
+	grid-template-rows: auto 1fr;
+}
+
+#toolbar
+{
+	padding: 4px;
+	display: flex;
+	overflow: auto;
+	align-items: center;
+	background-color: #CCCCCC;
+	border-radius: 5px 5px 0 0;
+	justify-content: flex-start;
+}
+
+button
+{
+	margin: 2px;
+	color: black;
+	height: 32px;
+	display: flex;
+	flex: 0 0 32px;
+	font-size: 16px;
+	background: none;
+	border-radius: 5px;
+	align-items: center;
+	font-family: "gate";
+	justify-content: center;
+	border: 1px solid #DDDDDD;
+	background-color: #EEEEEE;
+}
+
+button:hover {
+	background-color: #FFFFFF;
+}
+
+#red {
+	color: #660000
+}
+#green {
+	color: #006600
+}
+#blue {
+	color: #000066
+}
+
+span  {
+	flex: 0 0 8px;
+	display: block;
+}
+
+#editor
+{
+	flex-grow: 1;
+	padding: 8px;
+	outline: none;
+	overflow: auto;
+	line-height: 18px;
+	background-color: white;
+	border-radius: 0 0 5px 5px;
+}
+
+#editor:focus {
+	outline: none;
+	background-color: var(--hovered);
+}
+
+i {
+	font-family: gate;
+	font-style: normal;
+	text-decoration: none;
+}
+
+img {
+	max-width: 100%;
+}

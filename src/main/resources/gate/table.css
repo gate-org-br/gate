@@ -210,6 +210,20 @@ table.c20 > * > tr > *:nth-child(20),
 table[data-c20] > * > tr > *:nth-child(20) {
   text-align: center;
 }
+td > label,
+th > label {
+  width: 100%;
+  display: inline-block;
+}
+td > label > i,
+th > label > i,
+td > label > span,
+th > label > span {
+  right: 2px;
+  color: gray;
+  font-size: 10px
+		position: absolute;
+}
 @media only screen and (max-width: 576px) {
   table[data-collapse="Phone"] {
     display: flex;

@@ -1,11 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
 import gate.thymeleaf.ELExpression;
 import java.util.StringJoiner;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -36,23 +32,20 @@ public class StacktraceProcessor extends TagProcessor
 			.map(e -> (Throwable) e)
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute exception on g:stacktrace"));
 
-		JsonArray array = new JsonArray();
+		StringJoiner string = new StringJoiner(System.lineSeparator());
+		string.add("<ul class='TreeView'>");
 		for (Throwable error = exception; error != null; error = error.getCause())
 		{
-			JsonObject object = new JsonObject();
-			object.setString("message", error.getMessage());
-			object.set("stacktrace", Stream.of(error.getStackTrace())
+			string.add("<li>");
+			string.add(error.getMessage());
+			string.add("<ul>");
+			Stream.of(error.getStackTrace())
 				.map(StackTraceElement::toString)
-				.map(JsonString::of)
-				.collect(Collectors.toCollection(JsonArray::new)));
-			array.add(object);
+				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			string.add("</ul>");
+			string.add("</li>");
 		}
-
-		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add("<script type='module'>");
-		string.add("import GStacktrace from './gate/script/g-stacktrace.mjs';");
-		string.add("GStacktrace.show('Erro de sistema', " + array.toString() + ");");
-		string.add("</script>");
+		string.add("</ul>");
 
 		handler.replaceWith(string.toString(), false);
 	}

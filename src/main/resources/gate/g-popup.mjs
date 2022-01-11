@@ -27,7 +27,7 @@ template.innerHTML = `
 
 main {
 	width: 100%;
-	height: auto;
+	height: 100%;
 	display: grid;
 	max-height: 100%;
 	border-radius: 0;
@@ -59,16 +59,12 @@ header{
 }
 
 section {
-	display: flex;
-	overflow-y: auto;
-	align-items: stretch;
-	justify-content: center;
+	display: grid;
+	overflow: auto;
+	place-items: stretch;
+	place-content: stretch;
 	background-image: var(--g-window-section-background-image);
 	background-color: var(--g-window-section-background-color);
-}
-
-::slotted {
-	display: block;
 }
 
 #close {
