@@ -1,8 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.tags.TagLib;
 import gate.thymeleaf.ELExpression;
-import java.util.StringJoiner;
-import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -30,25 +29,7 @@ public class StacktraceAttributeProcessor extends AttributeProcessor
 			.map(expression::evaluate)
 			.filter(object -> object instanceof Throwable)
 			.map(throwable -> (Throwable) throwable)
-			.ifPresentOrElse(throwable ->
-			{
-
-				StringJoiner string = new StringJoiner(System.lineSeparator());
-				string.add("<ul class='TreeView'>");
-				for (Throwable error = throwable; error != null; error = error.getCause())
-				{
-					string.add("<li>");
-					string.add(error.getMessage());
-					string.add("<ul>");
-					Stream.of(error.getStackTrace())
-						.map(StackTraceElement::toString)
-						.forEach(e -> string.add("<li>").add(e).add("</li>"));
-					string.add("</ul>");
-					string.add("</li>");
-				}
-				string.add("</ul>");
-
-				handler.setBody(string.toString(), false);
-			}, handler::removeElement);
+			.map(TagLib::format)
+			.ifPresentOrElse(exception -> handler.setBody(exception, false), handler::removeElement);
 	}
 }

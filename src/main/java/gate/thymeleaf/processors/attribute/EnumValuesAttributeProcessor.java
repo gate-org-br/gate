@@ -13,7 +13,7 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class ValuesAttributeProcessor extends AttributeProcessor
+public class EnumValuesAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
@@ -22,9 +22,9 @@ public class ValuesAttributeProcessor extends AttributeProcessor
 	@Inject
 	ELExpression expression;
 
-	public ValuesAttributeProcessor()
+	public EnumValuesAttributeProcessor()
 	{
-		super(null, "values");
+		super(null, "enum-values");
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class ValuesAttributeProcessor extends AttributeProcessor
 
 		try
 		{
-			var source = element.getAttributeValue("g:values");
+			var source = element.getAttributeValue("g:enum-values");
 			if (source == null || source.isBlank())
-				throw new TemplateProcessingException("Missing required enum class name on g:values attribute");
+				throw new TemplateProcessingException("Missing required enum class name on g:enum-values attribute");
 			var type = Class.forName(source, true, getClass().getClassLoader());
 
 			var status = Optional.ofNullable(element.getAttributeValue("g:status")).orElse("status");
