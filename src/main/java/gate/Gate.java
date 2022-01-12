@@ -122,7 +122,7 @@ public class Gate extends HttpServlet
 				{
 					user = control.select(httpServletRequest.getUserPrincipal().getName());
 					request.getSession().setAttribute(User.class.getName(), user);
-				} else if (denveloper.isPresent())
+				} else if (user == null && denveloper.isPresent())
 				{
 					user = control.select(denveloper.orElseThrow());
 					request.getSession().setAttribute(User.class.getName(), user);

@@ -10,10 +10,13 @@ import gate.entity.User;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionEception;
 import gate.util.Icons;
+import gate.util.Toolkit;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.StringJoiner;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import javax.enterprise.inject.spi.CDI;
 
 public class TagLib
@@ -82,5 +85,25 @@ public class TagLib
 			return false;
 		return user.checkAccess(module, screen, action);
 
+	}
+
+	public static String format(Throwable exception)
+	{
+		StringJoiner string = new StringJoiner(System.lineSeparator());
+		string.add("<ul class='TreeView'>");
+		for (Throwable error = exception; error != null; error = error.getCause())
+		{
+			string.add("<li>");
+			string.add(Toolkit.escapeHTML(error.getMessage()));
+			string.add("<ul>");
+			Stream.of(error.getStackTrace())
+				.map(StackTraceElement::toString)
+				.map(Toolkit::escapeHTML)
+				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			string.add("</ul>");
+			string.add("</li>");
+		}
+		string.add("</ul>");
+		return string.toString();
 	}
 }
