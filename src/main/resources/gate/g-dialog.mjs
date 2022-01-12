@@ -144,6 +144,7 @@ iframe {
 /* global customElements, template */
 
 import './g-navbar.mjs';
+import CSV from './csv.mjs';
 import './g-dialog-commands.mjs';
 import GModal from './g-modal.mjs';
 import FullScreen from './fullscreen.mjs';
