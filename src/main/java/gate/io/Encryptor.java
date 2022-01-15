@@ -21,12 +21,12 @@ public class Encryptor
 	private final SecretKeySpec key;
 
 	private static final Map<String, Map<String, Encryptor>> ENCRYPTORS
-			= new ConcurrentHashMap<>();
+		= new ConcurrentHashMap<>();
 
 	public static Encryptor of(String algorithm, String key)
 	{
 		return ENCRYPTORS.computeIfAbsent(algorithm, e -> new ConcurrentHashMap<>())
-				.computeIfAbsent(key, e -> new Encryptor(algorithm, e));
+			.computeIfAbsent(key, e -> new Encryptor(algorithm, e));
 	}
 
 	private Encryptor(String algorithm, String key)
@@ -37,13 +37,13 @@ public class Encryptor
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex)
 		{
 			throw new UncheckedIOException(ex.getMessage(),
-					new IOException(ex));
+				new IOException(ex));
 		}
 
 		this.key = new SecretKeySpec(Base64.getDecoder().decode(key), algorithm);
 	}
 
-	public synchronized byte[] decrypt(byte[] data) throws ConversionException
+	public byte[] decrypt(byte[] data) throws ConversionException
 	{
 
 		try
@@ -51,22 +51,22 @@ public class Encryptor
 			cipher.init(Cipher.DECRYPT_MODE, key);
 			return cipher.doFinal(data);
 		} catch (IllegalBlockSizeException
-				| BadPaddingException
-				| InvalidKeyException ex)
+			| BadPaddingException
+			| InvalidKeyException ex)
 		{
 			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 
-	public synchronized byte[] encrypt(byte[] data)
+	public byte[] encrypt(byte[] data)
 	{
 		try
 		{
 			cipher.init(Cipher.ENCRYPT_MODE, key);
 			return cipher.doFinal(data);
 		} catch (IllegalBlockSizeException
-				| BadPaddingException
-				| InvalidKeyException ex)
+			| BadPaddingException
+			| InvalidKeyException ex)
 		{
 			throw new UncheckedIOException(ex.getMessage(), new IOException(ex));
 		}
