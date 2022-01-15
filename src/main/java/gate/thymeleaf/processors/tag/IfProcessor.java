@@ -30,10 +30,11 @@ public class IfProcessor extends TagProcessor
 			throw new TemplateProcessingException("Missing required attribute condition on g:if");
 
 		if ((boolean) expression.evaluate(element.getAttributeValue("condition")))
-			handler.removeTags();
-		else if (element.hasAttribute("otherwise"))
 		{
-			String otherwise = element.getAttributeValue("g:otherwise");
+			handler.removeTags();
+		} else if (element.hasAttribute("otherwise"))
+		{
+			String otherwise = element.getAttributeValue("otherwise");
 			otherwise = Converter.toText(expression.evaluate(otherwise));
 			handler.replaceWith(otherwise, false);
 		} else

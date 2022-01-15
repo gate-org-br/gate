@@ -3,6 +3,7 @@ package gate.thymeleaf.processors.tag;
 import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import java.io.IOException;
+import java.util.LinkedList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -42,15 +43,15 @@ public class TemplateProcessor extends TagModelProcessor
 
 		removeTag(context, model, handler);
 
-		var content = textEngine.process(model, context);
 		var request = ((IWebContext) context).getRequest();
-		request.setAttribute("g-template-content", content);
 
 		if (filename.endsWith(".jsp"))
 		{
 			var response = ((IWebContext) context).getResponse();
 			try
 			{
+				var content = textEngine.process(model, context);
+				request.setAttribute("g-template-content", content);
 				request.getRequestDispatcher(filename).forward(request, response);
 			} catch (IOException | ServletException ex)
 			{
@@ -58,7 +59,10 @@ public class TemplateProcessor extends TagModelProcessor
 			}
 		} else
 		{
-			content = fileEngine.process(filename, context);
+			if (request.getAttribute("g-template-content") == null)
+				request.setAttribute("g-template-content", new LinkedList<>());
+			((LinkedList) request.getAttribute("g-template-content")).add(model);
+			var content = fileEngine.process(filename, context);
 			replaceWith(context, model, handler, content);
 		}
 

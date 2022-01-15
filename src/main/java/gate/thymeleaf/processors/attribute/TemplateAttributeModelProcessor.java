@@ -3,6 +3,7 @@ package gate.thymeleaf.processors.attribute;
 import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import java.io.IOException;
+import java.util.LinkedList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -40,21 +41,27 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 		removeTag(context, model, handler);
 
 		var request = ((IWebContext) context).getRequest();
-		var content = textEngine.process(model, context);
-		request.setAttribute("g-template-content", content);
 
 		if (template.endsWith(".jsp"))
 		{
+			var response = ((IWebContext) context).getResponse();
+
 			try
 			{
-				var response = ((IWebContext) context).getResponse();
+				var content = textEngine.process(model, context);
+				request.setAttribute("g-template-content", content);
 				request.getRequestDispatcher(template).forward(request, response);
 			} catch (IOException | ServletException ex)
 			{
 				throw new TemplateProcessingException(ex.getMessage(), ex);
 			}
 		} else
+		{
+			if (request.getAttribute("g-template-content") == null)
+				request.setAttribute("g-template-content", new LinkedList<>());
+			((LinkedList) request.getAttribute("g-template-content")).add(model);
 			replaceWith(context, model, handler, fileEngine.process(template, context));
+		}
 
 		request.removeAttribute("g-template-content");
 	}

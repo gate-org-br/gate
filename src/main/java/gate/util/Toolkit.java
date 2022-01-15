@@ -155,6 +155,8 @@ public class Toolkit
 
 	public static String escapeHTML(String string)
 	{
+		if (string == null)
+			return null;
 		StringBuilder result = new StringBuilder(Math.max(16, string.length()));
 		for (int i = 0; i < string.length(); i++)
 		{

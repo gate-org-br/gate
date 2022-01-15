@@ -51,7 +51,7 @@ public interface TextEngine
 		@Override
 		public String process(IModel imodel, IContext context)
 		{
-			try ( StringWriter writer = new StringWriter())
+			try (StringWriter writer = new StringWriter())
 			{
 				imodel.write(writer);
 				writer.flush();
