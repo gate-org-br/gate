@@ -33,7 +33,7 @@ public class ConditionProcessor extends TagProcessor
 			handler.removeTags();
 		else if (element.hasAttribute("otherwise"))
 		{
-			String otherwise = element.getAttributeValue("g:otherwise");
+			String otherwise = element.getAttributeValue("otherwise");
 			otherwise = Converter.toText(expression.evaluate(otherwise));
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			handler.replaceWith(otherwise, false);

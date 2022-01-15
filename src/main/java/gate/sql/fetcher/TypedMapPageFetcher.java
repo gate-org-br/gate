@@ -36,14 +36,14 @@ public class TypedMapPageFetcher implements Fetcher<Page<Map<String, Object>>>
 		int dataSize = cursor.getIntValue("dataSize");
 
 		List<Map<String, Object>> results = new ArrayList<>();
-		while (cursor.next())
+		do
 		{
 			Map<String, Object> result = new HashMap<>();
 			for (int i = 0; i < names.length; i++)
 				if (!"dataSize".equals(names[i]))
 					result.put(names[i], cursor.getValue(types[i], names[i]));
 			results.add(result);
-		}
+		} while (cursor.next());
 		return Page.of(results, dataSize, pageSize, pageIndx);
 	}
 }
