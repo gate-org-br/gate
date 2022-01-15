@@ -6,8 +6,6 @@ import java.io.UncheckedIOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -20,13 +18,9 @@ public class Encryptor
 	private final Cipher cipher;
 	private final SecretKeySpec key;
 
-	private static final Map<String, Map<String, Encryptor>> ENCRYPTORS
-		= new ConcurrentHashMap<>();
-
 	public static Encryptor of(String algorithm, String key)
 	{
-		return ENCRYPTORS.computeIfAbsent(algorithm, e -> new ConcurrentHashMap<>())
-			.computeIfAbsent(key, e -> new Encryptor(algorithm, e));
+		return new Encryptor(algorithm, key);
 	}
 
 	private Encryptor(String algorithm, String key)
