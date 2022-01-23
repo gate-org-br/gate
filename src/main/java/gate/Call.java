@@ -6,6 +6,7 @@ import gate.annotation.Color;
 import gate.annotation.Confirm;
 import gate.annotation.Description;
 import gate.annotation.Disabled;
+import gate.annotation.Emoji;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.annotation.Public;
@@ -14,6 +15,7 @@ import gate.annotation.Tooltip;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.error.InvalidRequestException;
+import gate.util.Emojis;
 import gate.util.Icons;
 import gate.util.Toolkit;
 import java.lang.reflect.Method;
@@ -87,6 +89,11 @@ public class Call
 	public Optional<Icons.Icon> getIcon()
 	{
 		return action != null ? Icon.Extractor.extract(method) : Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
+	}
+
+	public Optional<Emojis.Emoji> getEmoji()
+	{
+		return action != null ? Emoji.Extractor.extract(method) : Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
 	}
 
 	public Optional<String> getName()

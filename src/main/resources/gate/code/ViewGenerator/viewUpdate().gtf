@@ -1,0 +1,31 @@
+
+
+<g:template filename="/WEB-INF/views/DIAG.jsp">
+	<form method='POST' action='#' <g:if condition="${isUpload()}">enctype="multipart/form-data"</g:if>>
+		<fieldset>
+			<legend>
+				Alterar ${getDisplayName()}<g:icon type="update"/>
+			</legend>
+
+			<g:iterator source="${getProperties()}" target="property">
+			<label>
+				${@property.getDisplayName()}:
+				<span>
+					<g:${@property.getInputType()} property="form.${@property.getName()}" tabindex="1"/>
+				</span>
+			</label>
+			</g:iterator>
+		</fieldset>
+
+		<div class='Coolbar'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
+				Concluir<g:icon type="commit"/>
+			</g:link>
+			<g:link class="Cancel" module="#" screen="#" action="Select" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'>
+				Cancelar<g:icon type="cancel"/>
+			</g:link>
+		</div>
+
+		<g:hidden property="form.${id.getName()}" tabindex="1"/>
+	</form>
+</g:template>

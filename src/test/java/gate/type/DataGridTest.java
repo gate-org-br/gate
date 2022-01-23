@@ -17,7 +17,7 @@ public class DataGridTest
 		dataGrid.insert(1, 2);
 		dataGrid.insert(3, 4);
 		dataGrid.insert(5, 6);
-		Assert.assertEquals("[[\"Column 1\",\"Column 2\"],[1,2],[3,4],[5,6]]", dataGrid.toString());
+		Assert.assertEquals("[ [ \"Column 1\",\"Column 2\" ],[ 1,2 ],[ 3,4 ],[ 5,6 ] ]", dataGrid.toString());
 	}
 
 	@Test
@@ -27,6 +27,6 @@ public class DataGridTest
 		dataGrid.insert(3, 1, 2, 3);
 		dataGrid.insert(2, 3, 4, 5);
 		dataGrid.insert(1, 5, 6, 7);
-		Assert.assertEquals("[[\"Column 1\",\"Column 2\"],[1,2],[3,4],[5,6]]", dataGrid.toString(1, 2));
+		Assert.assertEquals("[ [ \"Column 1\",\"Column 2\" ],[ 1,2 ],[ 3,4 ],[ 5,6 ] ]", dataGrid.toString(1, 2));
 	}
 }

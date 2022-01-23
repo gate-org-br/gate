@@ -22,7 +22,7 @@
 			<label>
 				Senha do Usuário:
 				<span>
-					<g:text property="form.passwd" tabindex="1" required=""/>
+					<g:text property="form.password" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
@@ -46,7 +46,7 @@
 			<label>
 				Comentários sobre o Usuário:
 				<span>
-					<g:text property="form.details" tabindex="1" required=""/>
+					<g:text property="form.description" tabindex="1" required=""/>
 				</span>
 			</label>
 			<label>
@@ -132,11 +132,11 @@
 				<tr data-target="_dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}">
 					<td title="Ativo"><g:print value="${target.active}"/></td>
 					<td title="Login do Usuário"><g:print value="${target.username}"/></td>
-					<td title="Senha do Usuário"><g:print value="${target.passwd}"/></td>
+					<td title="Senha do Usuário"><g:print value="${target.password}"/></td>
 					<td title="Nome do Usuário"><g:print value="${target.name}"/></td>
 					<td title="E-Mail do Usuário"><g:print value="${target.email}"/></td>
 					<td title="Perfil"><g:print value="${target.role.id}"/></td>
-					<td title="Comentários sobre o Usuário"><g:print value="${target.details}"/></td>
+					<td title="Comentários sobre o Usuário"><g:print value="${target.description}"/></td>
 					<td title="Telefone Celular do Usuário"><g:print value="${target.cellPhone}"/></td>
 					<td title="Telefone Fixo do Usuário"><g:print value="${target.phone}"/></td>
 					<td title="Foto do Usuário"><g:print value="${target.photo}"/></td>

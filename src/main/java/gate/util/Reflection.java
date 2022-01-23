@@ -157,7 +157,7 @@ public class Reflection
 		if (!matcher.matches())
 			return Optional.empty();
 
-		Class type = Class.forName(matcher.group(1));
+		Class type = Thread.currentThread().getContextClassLoader().loadClass(matcher.group(1));
 
 		String member = matcher.group(6);
 

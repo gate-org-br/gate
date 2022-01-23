@@ -70,7 +70,7 @@ public class LinkProcessor extends AnchorProcessor
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 			call.getName().ifPresent(body::add);
-			call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+			getIcon(call).ifPresent(body::add);
 			replaceWith(context, model, handler, "<button " + attributes + ">" + body + "</button>");
 		} else
 			replaceTag(context, model, handler, "button", attributes);
@@ -95,7 +95,7 @@ public class LinkProcessor extends AnchorProcessor
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 			call.getName().ifPresent(body::add);
-			call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+			getIcon(call).ifPresent(body::add);
 			replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");
 		} else
 			replaceTag(context, model, handler, "a", attributes);
@@ -110,5 +110,11 @@ public class LinkProcessor extends AnchorProcessor
 		if (otherwise == null)
 			return Optional.empty();
 		return Optional.of(Converter.toText(otherwise));
+	}
+
+	private Optional<String> getIcon(Call call)
+	{
+		return call.getIcon().map(e -> "<i>" + e + "</i>")
+			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"));
 	}
 }

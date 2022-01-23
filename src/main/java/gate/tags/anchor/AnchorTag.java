@@ -99,7 +99,10 @@ public abstract class AnchorTag extends ParameterTag
 	{
 		StringJoiner string = new StringJoiner("").setEmptyValue("unamed");
 		call.getName().ifPresent(string::add);
-		call.getIcon().ifPresent(e -> string.add("<i>" + e + "</i>"));
+
+		call.getIcon().map(e -> "<i>" + e + "</i>")
+			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+			.ifPresent(string::add);
 		return string.toString();
 	}
 

@@ -1,0 +1,29 @@
+
+
+<g:template filename="/WEB-INF/views/DIAG.jsp">
+	<form method='POST' action='#' <g:if condition="${isUpload()}">enctype="multipart/form-data"</g:if>>
+		<fieldset>
+			<legend>
+				Novo ${getDisplayName()}<g:icon type="insert"/>
+			</legend>
+
+			<g:iterator source="${getProperties()}" target="property">
+			<label>
+				${@property.getDisplayName()}:
+				<span>
+					<g:${@property.getInputType()} property="form.${@property.getName()}" tabindex="1"/>
+				</span>
+			</label>
+			</g:iterator>
+		</fieldset>
+
+		<div class='Coolbar'>
+			<g:link class="Commit" method="post" module="#" screen="#" action="#" tabindex='2'>
+				Concluir<g:icon type="commit"/>
+			</g:link>
+			<a class='Cancel Hide' tabindex='2'>
+				Desistir<g:icon type='cancel'/>
+			</a>
+		</div>
+	</form>
+</g:template>

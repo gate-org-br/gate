@@ -43,7 +43,7 @@ public class ValuesTag extends SimpleTagSupport
 		{
 			super.doTag();
 			int i = 0;
-			Object[] items = Class.forName(source).getEnumConstants();
+			Object[] items = Thread.currentThread().getContextClassLoader().loadClass(source).getEnumConstants();
 			if (reverse)
 				Collections.reverse(Arrays.asList(items));
 			for (Object item : items)

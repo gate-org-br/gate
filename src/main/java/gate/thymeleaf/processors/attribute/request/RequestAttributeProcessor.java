@@ -118,7 +118,9 @@ public class RequestAttributeProcessor extends AttributeProcessor
 			{
 				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 				call.getName().ifPresent(body::add);
-				call.getIcon().map(e -> "<i>" + e + "</i>").ifPresent(body::add);
+				call.getIcon().map(e -> "<i>" + e + "</i>")
+					.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+					.ifPresent(body::add);
 				handler.setBody(body.toString(), true);
 			}
 		} else if (element.getElementCompleteName().toLowerCase().equals("a")

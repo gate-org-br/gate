@@ -12,9 +12,11 @@ g-tabbar
 	background-image:  var(--g-tabbar-background-image);
 
 
-	hr { border: none;
-	     flex-grow: 1;
-	     background-color: transparent;}
+	hr {
+		border: none;
+		flex-grow: 1;
+		background-color: transparent;
+	}
 
 	> a,
 	> button
@@ -33,7 +35,9 @@ g-tabbar
 		flex-direction: column;
 		justify-content: space-around;
 
-		&:focus { outline: none }
+		&:focus {
+			outline: none
+		}
 
 		&:hover {
 			color: var(--g-tabbar-hovered-color);
@@ -48,16 +52,20 @@ g-tabbar
 			background-image:  var(--g-tabbar-selected-background-image);
 		}
 
-		> i { order: -1;
-		      display: flex;
-		      min-width: 60px;
-		      font-size: 16px;
-		      margin-bottom: 4px;
-		      align-items: center;
-		      justify-content: center;}
+		> i, > e {
+			order: -1;
+			display: flex;
+			min-width: 60px;
+			font-size: 16px;
+			margin-bottom: 4px;
+			align-items: center;
+			justify-content: center;
+		}
 	}
 
-	> *[hidden="true"] { display: none }
+	> *[hidden="true"] {
+		display: none
+	}
 }
 
 

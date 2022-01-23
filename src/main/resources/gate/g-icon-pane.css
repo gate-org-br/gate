@@ -37,7 +37,8 @@ g-icon-pane > :is(g-icon-pane, a, button) {
   background-color: white;
   border: 1px solid transparent;
 }
-g-icon-pane > :is(g-icon-pane, a, button) > i {
+g-icon-pane > :is(g-icon-pane, a, button) > i,
+g-icon-pane > :is(g-icon-pane, a, button) > e {
   order: -1;
   margin: 8px;
   font-size: 2em;

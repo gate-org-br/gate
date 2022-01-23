@@ -2,7 +2,6 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.AppError;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +35,7 @@ public class ClassConverter implements Converter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? Class.forName(string) : null;
+			return string != null && string.trim().length() > 0 ? Thread.currentThread().getContextClassLoader().loadClass(string) : null;
 		} catch (ClassNotFoundException e)
 		{
 			throw new AppError(e);
@@ -67,7 +66,7 @@ public class ClassConverter implements Converter
 		try
 		{
 			String value = rs.getString(fields);
-			return rs.wasNull() ? null : Class.forName(value);
+			return rs.wasNull() ? null : Thread.currentThread().getContextClassLoader().loadClass(value);
 		} catch (ClassNotFoundException e)
 		{
 			throw new AppError(e);
@@ -80,7 +79,7 @@ public class ClassConverter implements Converter
 		try
 		{
 			String value = rs.getString(fields);
-			return rs.wasNull() ? null : Class.forName(value);
+			return rs.wasNull() ? null : Thread.currentThread().getContextClassLoader().loadClass(value);
 		} catch (ClassNotFoundException e)
 		{
 			throw new AppError(e);

@@ -1,6 +1,5 @@
 package gate.tags.anchor;
 
-import gate.util.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
@@ -10,6 +9,7 @@ public class ShortcutTag extends AnchorTag
 	@Override
 	public void post() throws JspException, IOException
 	{
+
 		if (tabindex != null)
 			getAttributes().put("tabindex", tabindex);
 
@@ -23,7 +23,7 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", call.getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(getIcon());
 
 		getJspContext().getOut().print("</button>");
 	}
@@ -43,8 +43,15 @@ public class ShortcutTag extends AnchorTag
 		if (getJspBody() != null)
 			getJspBody().invoke(null);
 		else
-			getJspContext().getOut().print(String.format("<i>&#X%s;</i>", call.getIcon().map(Icons.Icon::getCode).orElse("?")));
+			getJspContext().getOut().print(getIcon());
 
 		getJspContext().getOut().print("</a>");
+	}
+
+	private String getIcon()
+	{
+		return call.getIcon().map(e -> "<i>" + e + "</i>")
+			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+			.orElse("?");
 	}
 }

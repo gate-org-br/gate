@@ -46,7 +46,7 @@ public class JsonArrayTest
 			new User().setId(new ID(2)).setName("User 2"),
 			new User().setId(new ID(3)).setName("User 3"));
 
-		String expected = "[{\"label\":\"User 1\",\"value\":\"0000000001\"},{\"label\":\"User 2\",\"value\":\"0000000002\"},{\"label\":\"User 3\",\"value\":\"0000000003\"}]";
+		String expected = "[ { \"label\":\"User 1\",\"value\":\"0000000001\" },{ \"label\":\"User 2\",\"value\":\"0000000002\" },{ \"label\":\"User 3\",\"value\":\"0000000003\" } ]";
 		String result = JsonArray.format(users, e -> e.getName(), e -> e.getId()).toString();
 		Assert.assertEquals(expected, result);
 	}

@@ -193,7 +193,7 @@ public class Report
 	 *
 	 * @return the same object, for chained invocations
 	 */
-	public Report compact()
+	public final Report compact()
 	{
 		getElements().forEach(Element::compact);
 		getElements().removeIf(Element::isEmpty);

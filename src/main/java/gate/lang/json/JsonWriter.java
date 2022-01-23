@@ -32,7 +32,8 @@ public class JsonWriter implements AutoCloseable
 	 * @param type type of the token to be written
 	 * @param value value of the token to be written
 	 *
-	 * @throws gate.error.ConversionException if an error occurs white trying to write the token
+	 * @throws gate.error.ConversionException if an error occurs white
+	 * trying to write the token
 	 */
 	public void write(JsonToken.Type type, String value)
 		throws ConversionException
@@ -43,16 +44,16 @@ public class JsonWriter implements AutoCloseable
 			switch (type)
 			{
 				case OPEN_ARRAY:
-					writer.write('[');
+					writer.write("[ ");
 					break;
 				case CLOSE_ARRAY:
-					writer.write(']');
+					writer.write(" ]");
 					break;
 				case OPEN_OBJECT:
-					writer.write('{');
+					writer.write("{ ");
 					break;
 				case CLOSE_OBJECT:
-					writer.write('}');
+					writer.write(" }");
 					break;
 				case DOUBLE_DOT:
 					writer.write(':');

@@ -19,7 +19,7 @@ public class Annotations
 		String className,
 		String methodName) throws ClassNotFoundException, NoSuchMethodException
 	{
-		Class<?> clazz = Class.forName(className);
+		Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		return exists(annotation, clazz, clazz.getMethod(methodName));
 	}
 
@@ -47,7 +47,7 @@ public class Annotations
 		String className,
 		String methodName) throws ClassNotFoundException, NoSuchMethodException
 	{
-		Class<?> clazz = Class.forName(className);
+		Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
 		return search(annotation, clazz, clazz.getMethod(methodName));
 	}
 

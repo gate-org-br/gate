@@ -68,7 +68,7 @@ public class WebComponents extends Application
 		@Produces("font/ttf")
 		public Response getTTFFont()
 		{
-			return getFile(request, "../font/Gate.ttf");
+			return getFile(request, "Gate.ttf");
 		}
 
 		@GET
@@ -76,7 +76,7 @@ public class WebComponents extends Application
 		@Produces("application/vnd.ms-fontobject")
 		public Response getEOTFont()
 		{
-			return getFile(request, "../font/Gate.eot");
+			return getFile(request, "Gate.eot");
 		}
 
 		@GET
@@ -84,7 +84,7 @@ public class WebComponents extends Application
 		@Produces("application/font-woff")
 		public Response getWoffFont()
 		{
-			return getFile(request, "../font/Gate.woff");
+			return getFile(request, "Gate.woff");
 		}
 
 		@GET
@@ -92,7 +92,7 @@ public class WebComponents extends Application
 		@Produces("image/svg+xml")
 		public Response getSVGFont()
 		{
-			return getFile(request, "../font/Gate.svg");
+			return getFile(request, "Gate.svg");
 		}
 
 	}
@@ -101,7 +101,7 @@ public class WebComponents extends Application
 	{
 		return Response.ok((StreamingOutput) (OutputStream o) ->
 		{
-			try ( InputStream i = WebComponents.class.getResourceAsStream(filename))
+			try (InputStream i = WebComponents.class.getResourceAsStream(filename))
 			{
 				for (int b = i.read(); b != -1; b = i.read())
 					o.write(b);

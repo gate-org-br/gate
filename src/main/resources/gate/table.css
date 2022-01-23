@@ -1,3 +1,40 @@
+th[data-chart],
+td[data-chart] {
+  cursor: pointer;
+  color: var(--b);
+}
+th[data-chart]::before,
+td[data-chart]::before {
+  font-size: 10px;
+  content: '\2031';
+  font-family: gate;
+  margin-right: 4px;
+  text-decoration: none;
+}
+th[data-chart='pchart']::before,
+td[data-chart='pchart']::before {
+  content: '\2031';
+}
+th[data-chart='cchart']::before,
+td[data-chart='cchart']::before {
+  content: '\2033';
+}
+th[data-chart='lchart']::before,
+td[data-chart='lchart']::before {
+  content: '\2032';
+}
+th[data-chart='dchart']::before,
+td[data-chart='dchart']::before {
+  content: '\2245';
+}
+th[data-chart='rchart']::before,
+td[data-chart='rchart']::before {
+  content: '\2247';
+}
+th[data-chart='bchart']::before,
+td[data-chart='bchart']::before {
+  content: '\2246';
+}
 table {
   margin: 0;
   margin-top: 10px;
@@ -222,7 +259,7 @@ th > label > span {
   right: 2px;
   color: gray;
   font-size: 10px
-		position: absolute;
+			position: absolute;
 }
 @media only screen and (max-width: 576px) {
   table[data-collapse="Phone"] {
@@ -1598,4 +1635,18 @@ th > label > span {
     align-items: center;
     justify-content: center;
   }
+}
+div[data-column-sticker] {
+  overflow: auto;
+}
+div[data-column-sticker] > table {
+  position: relative;
+}
+div[data-column-sticker] > table > thead > tr > th {
+  position: sticky;
+  top: 0;
+}
+div[data-column-sticker] > table > tfoot > tr > th {
+  position: sticky;
+  bottom: 0;
 }

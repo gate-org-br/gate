@@ -48,7 +48,9 @@ g-tabbar > button[aria-selected] {
   background-image: var(--g-tabbar-selected-background-image);
 }
 g-tabbar > a > i,
-g-tabbar > button > i {
+g-tabbar > button > i,
+g-tabbar > a > e,
+g-tabbar > button > e {
   order: -1;
   display: flex;
   min-width: 60px;

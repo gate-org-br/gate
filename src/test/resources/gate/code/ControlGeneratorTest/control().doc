@@ -20,6 +20,7 @@ public class UserControl extends Control
 		}
 	}
 
+
 	public User select(ID id) throws NotFoundException
 	{
 		try (UserDao dao = new UserDao())
@@ -28,16 +29,17 @@ public class UserControl extends Control
 		}
 	}
 
+
 	public void insert(User value) throws AppException
 	{
 		Constraints.validate(value,
 			"active",
 			"username",
-			"passwd",
+			"password",
 			"name",
 			"email",
 			"role.id",
-			"details",
+			"description",
 			"cellPhone",
 			"phone",
 			"photo",
@@ -53,17 +55,18 @@ public class UserControl extends Control
 		}
 	}
 
+
 	public void update(User value) throws AppException
 	{
 		Constraints.validate(value,
 			"id",
 			"active",
 			"username",
-			"passwd",
+			"password",
 			"name",
 			"email",
 			"role.id",
-			"details",
+			"description",
 			"cellPhone",
 			"phone",
 			"photo",
@@ -79,6 +82,7 @@ public class UserControl extends Control
 		}
 	}
 
+
 	public void delete(User value) throws AppException
 	{
 		try (UserDao dao = new UserDao())
@@ -86,4 +90,5 @@ public class UserControl extends Control
 			dao.delete(value);
 		}
 	}
+
 }

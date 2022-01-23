@@ -1,0 +1,46 @@
+
+
+<g:template filename="/views/FULL.html">
+	<form method='POST' action='#'>
+		<fieldset>
+			<legend>
+				Pesquisar<g:icon type="search"/>
+			</legend>
+
+			<g:iterator source="${getProperties()}" target="property">
+			<label>
+				${@property.getDisplayName()}:
+				<span>
+					<g:${@property.getInputType()} property="form.${@property.getName()}" tabindex="1" required=""/>
+				</span>
+			</label>
+			</g:iterator>
+		</fieldset>
+
+		<div class='Coolbar'>
+			<g:link class="Action" method="post" module="#" screen="#" tabindex='2'>
+				Pesquisar<g:icon type="search"/>
+			</g:link>
+			<g:link target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
+		</div>
+	</form>
+
+	<table>
+		<thead>
+			<tr>
+				<g:iterator source="${getProperties()}" target="property">
+				<th>${@property.getDisplayName()}</th>
+				</g:iterator>
+			</tr>
+		</thead>
+		<tbody>
+			\<g:iterator source="\${screen.page}">
+				<tr data-target="_dialog" data-action="Gate?MODULE=\${MODULE}&SCREEN=\${SCREEN}&ACTION=Select&form.${id.getName()}=\${target.${id.getName()}}">
+					<g:iterator source="${getProperties()}" target="property">
+					<td title="${@property.getDisplayName()}">\<g:print value="\${target.${@property.getName()}}"/></td>
+					</g:iterator>
+				</tr>
+			\</g:iterator>
+		</tbody>
+	</table>
+</g:template>
