@@ -1,0 +1,53 @@
+package ${@screen.getPackageName()};
+
+import gate.annotation.Icon;
+import gate.annotation.Name;
+import gate.base.Screen;
+import gate.error.AppException;
+import gate.error.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import ${@control};
+import ${className};
+
+public class ${@screen.getName()} extends Screen
+{
+	private ${className.getName()} form;
+	private List<${className.getName()}> page;
+
+	@Inject
+	private ${@control.getName()} control;
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/call().gtf"/>
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/callSearch().gtf"/>
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/callSelect().gtf"/>
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/callInsert().gtf"/>
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/callUpdate().gtf"/>
+
+
+	<g:import type="gate.code.ScreenGenerator" resource="ScreenGenerator/callDelete().gtf"/>
+
+	public ${className.getName()} getForm()
+	{
+		if (form == null)
+			form = new ${className.getName()}();
+		return form;
+	}
+
+	public List<${className.getName()}> getPage()
+	{
+		if (page == null)
+			page = new ArrayList<>();
+		return page;
+	}
+}

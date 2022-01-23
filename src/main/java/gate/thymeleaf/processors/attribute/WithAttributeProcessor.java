@@ -33,7 +33,7 @@ public class WithAttributeProcessor extends AttributeProcessor
 			if (value != null)
 				handler.setLocalVariable(name, expression.evaluate(value));
 			else if (type != null)
-				handler.setLocalVariable(name, Class.forName(type, true, getClass().getClassLoader())
+				handler.setLocalVariable(name, Thread.currentThread().getContextClassLoader().loadClass(type)
 					.getDeclaredConstructor().newInstance());
 
 		} catch (ReflectiveOperationException ex)

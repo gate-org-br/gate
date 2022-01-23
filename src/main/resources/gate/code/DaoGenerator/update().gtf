@@ -1,0 +1,12 @@
+	public void update(${className.getName()} value) throws AppException
+	{
+		if (Update.table("${tableName}")
+			<g:iterator source="${properties}" target="property">
+			.set("${@property.getColumnName()}", value.${@property.getGetter()})
+			</g:iterator>
+			.where(Condition.of("${id.getColumnName()}").eq(value.${id.getGetter()}))
+			.build()
+			.connect(getLink())
+			.execute() == 0)
+			throw new NotFoundException();
+	}

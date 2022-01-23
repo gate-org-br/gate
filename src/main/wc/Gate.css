@@ -13,6 +13,7 @@
 @import './g-select.css';
 
 @import './icon.css';
+@import './emoji.css';
 @import './fieldset.css';
 @import './div.css';
 @import './nav.css';
@@ -28,6 +29,9 @@
 
 @import './visibility.css';
 
+body {
+	visibility: hidden;
+}
 
 iframe {
 	border: none;

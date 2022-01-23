@@ -34,7 +34,7 @@ public class WithProcessor extends TagProcessor
 					expression.evaluate(element.getAttributeValue("value")));
 			else if (element.hasAttribute("type"))
 				handler.setLocalVariable(name,
-					Class.forName(element.getAttributeValue("type"))
+					Thread.currentThread().getContextClassLoader().loadClass(element.getAttributeValue("type"))
 						.getDeclaredConstructor()
 						.newInstance());
 			handler.removeTags();

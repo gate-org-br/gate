@@ -32,12 +32,12 @@ public class UserDao extends Dao
 		return Select.of(getClass().getResource("UserDao/search(User).sql"))
 			.where(Condition.TRUE.and("Uzer.id").eq(filter.getId())
 				.and("Uzer.active").eq(filter.getActive())
-				.and("Uzer.username").eq(filter.getUserID())
-				.and("Uzer.passwd").eq(filter.getPasswd())
+				.and("Uzer.username").eq(filter.getUsername())
+				.and("Uzer.password").eq(filter.getPassword())
 				.and("Uzer.name").eq(filter.getName())
 				.and("Uzer.email").eq(filter.getEmail())
 				.and("Uzer.Role$id").eq(filter.getRole().getId())
-				.and("Uzer.details").eq(filter.getDetails())
+				.and("Uzer.description").eq(filter.getDescription())
 				.and("Uzer.cellPhone").eq(filter.getCellPhone())
 				.and("Uzer.phone").eq(filter.getPhone())
 				.and("Uzer.photo").eq(filter.getPhoto())
@@ -61,16 +61,17 @@ public class UserDao extends Dao
 			.orElseThrow(NotFoundException::new);
 	}
 
+
 	public void insert(User value) throws ConstraintViolationException
 	{
 		Insert.into("Uzer")
 			.set("active", value.getActive())
-			.set("username", value.getUserID())
-			.set("passwd", value.getPasswd())
+			.set("username", value.getUsername())
+			.set("password", value.getPassword())
 			.set("name", value.getName())
 			.set("email", value.getEmail())
 			.set("Role$id", value.getRole().getId())
-			.set("details", value.getDetails())
+			.set("description", value.getDescription())
 			.set("cellPhone", value.getCellPhone())
 			.set("phone", value.getPhone())
 			.set("photo", value.getPhoto())
@@ -89,12 +90,12 @@ public class UserDao extends Dao
 	{
 		if (Update.table("Uzer")
 			.set("active", value.getActive())
-			.set("username", value.getUserID())
-			.set("passwd", value.getPasswd())
+			.set("username", value.getUsername())
+			.set("password", value.getPassword())
 			.set("name", value.getName())
 			.set("email", value.getEmail())
 			.set("Role$id", value.getRole().getId())
-			.set("details", value.getDetails())
+			.set("description", value.getDescription())
 			.set("cellPhone", value.getCellPhone())
 			.set("phone", value.getPhone())
 			.set("photo", value.getPhoto())

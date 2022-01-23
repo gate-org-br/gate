@@ -106,4 +106,14 @@ public class TagLib
 		string.add("</ul>");
 		return string.toString();
 	}
+
+	public static String write(Object object)
+	{
+		return Converter.toString(object);
+	}
+
+	public static String print(Object object)
+	{
+		return Converter.toText(object);
+	}
 }

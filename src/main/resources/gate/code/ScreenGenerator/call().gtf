@@ -1,0 +1,6 @@
+	public String call()
+	{
+		if (isPOST() && getMessages().isEmpty())
+			page = control.search(getForm());
+		return "/WEB-INF/views/${@screen.getPackageName().getFolderName()}/${className.getName()}/View.jsp";
+	}

@@ -8,14 +8,14 @@ import java.util.stream.Stream;
 
 public class ClasspathLoader
 {
-	
+
 	public static Class<?> forName(ClassLoader classloader, String classpath, String classname) throws ClassNotFoundException
 	{
 		URL[] urls = Stream.of(classpath.split(":")).map(e -> ClasspathLoader.url(e)).toArray(URL[]::new);
 		classloader = URLClassLoader.newInstance(urls, classloader);
 		return Class.forName(classname, true, classloader);
 	}
-	
+
 	private static URL url(String string)
 	{
 		try

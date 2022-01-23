@@ -1,301 +1,234 @@
 /* global echarts, customElements */
 
 import URL from './url.mjs';
+import Dataset from './dataset.mjs';
 import * as echarts from './echarts.mjs';
+
+let grid = {top: '80px', left: '80px', right: '80px', bottom: '80px', containLabel: true}
+let category = {type: 'category', axisLabel: {width: "100", interval: 0, overflow: "break"}};
+let toolbox = {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}};
 
 customElements.define('g-chart', class extends HTMLElement
 {
+	constructor()
+	{
+		super();
+		this._private = {};
+	}
+
 	set data(data)
 	{
-		this.setAttribute("data", data);
+		this._private.data = data;
+		if (this.type && this.title && this.data)
+			this.draw(this.type, this.title, this.dataset);
 	}
 
 	get data()
 	{
-		return this.getAttribute("data");
+		return this._private.data;
 	}
 
 	set type(type)
 	{
-		this.setAttribute("type", type);
+		this._private.type = type;
+		if (this.type && this.title && this.data)
+			this.draw(this.type, this.title, this.dataset);
 	}
 
 	get type()
 	{
-		return this.getAttribute("type");
+		return this._private.type;
 	}
 
 	set title(title)
 	{
-		this.setAttribute("title", title);
+		this._private.title = title;
+		if (this.type && this.title && this.data)
+			this.draw(this.type, this.title, this.dataset);
 	}
 
 	get title()
 	{
-		return this.getAttribute("title");
+		return this._private.title;
 	}
 
-	attributeChangedCallback()
+	get dataset()
 	{
-		if (!this.data
-			|| !this.type
-			|| !this.title)
-			return;
+		if (typeof this.data === 'object')
+			return this.data;
+		else if (this.data.match(/^#.*$/))
+			return Dataset.fromTable(document.getElementById(this.data.substring(1)));
+		else if (this.data.match(/^\[.*\]$/))
+			return JSON.parse(this.data);
+		else
+			return JSON.parse(new URL(this.data).get());
+	}
 
-		let data = this.data;
-
-		try
+	attributeChangedCallback(name)
+	{
+		switch (name)
 		{
-			data = JSON.parse(this.data);
-		} catch (ex)
-		{
-			data = JSON.parse(new URL(data).get());
+			case 'type':
+				this.type = this.getAttribute("type");
+				break;
+			case 'title':
+				this.title = this.getAttribute("title");
+				break;
+			case 'data':
+				this.data = this.getAttribute("data");
+				break;
 		}
+	}
 
-		let categories = new Array();
-		for (var i = 1; i < data.length; i++)
-			categories.push(data[i][0]);
-
-		let groups = new Array();
-		for (var j = 1; j < data[0].length; j++)
-		{
-			var group = {'label': data[0][j], 'values': new Array()};
-			for (var i = 1; i < data.length; i++)
-				group.values.push(data[i][j]);
-			groups.push(group);
-		}
-
-
-		let color = () => '#'
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10))
-				+ '0123456789'.charAt(Math.floor(Math.random() * 10));
-		let tooltipFormater = params => params.name + ': ' + params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-		let axisLabelFormater = value => value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-		let itemStyleFormater = params => params.value.toString().replace(".", ',').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-		switch (this.type)
+	draw(type, title, data)
+	{
+		switch (type)
 		{
 			case 'cchart':
-				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
-					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-					series: []};
-
-				options.title = {x: 'center', text: this.title};
-
-				for (var i = 0; i < groups.length; i++)
-				{
-					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'top', formatter: itemStyleFormater}}}, data: groups[i].values});
-					options.series[options.series.length - 1].name = groups[i].label;
-					if (groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
-					if (groups.length > 1)
-					{
-						if (!options.legend)
-							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(groups[i].label);
-					} else
-						options.series[options.series.length - 1].itemStyle.normal.color = color;
-				}
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.cchart(title, data);
 			case 'bchart':
-
-				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, yAxis: {type: 'category', data: categories,
-						axisLabel: {rotate: -70}}, xAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
-					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-					series: []};
-
-				options.title = {x: 'center', text: this.title};
-
-				for (var i = 0; i < groups.length; i++)
-				{
-					options.series.push({type: "bar", itemStyle: {normal: {label: {show: true, position: 'right', formatter: itemStyleFormater}}}, data: groups[i].values});
-					options.series[options.series.length - 1].name = groups[i].label;
-					if (groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
-					if (groups.length > 1)
-					{
-						if (!options.legend)
-							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(groups[i].label);
-					} else
-						options.series[options.series.length - 1].itemStyle.normal.color = color;
-				}
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.bchart(title, data);
 			case 'lchart':
-
-				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
-					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-					series: []};
-
-				options.title = {x: 'center', text: this.title};
-
-				for (var i = 0; i < groups.length; i++)
-				{
-					options.series.push({type: "line", itemStyle: {normal: {}}, data: groups[i].values});
-					options.series[options.series.length - 1].name = groups[i].label;
-					if (groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
-					if (groups.length > 1)
-					{
-						if (!options.legend)
-							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(groups[i].label);
-					}
-				}
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.lchart(title, data);
 			case 'achart':
-
-				var options = {calculable: true, tooltip: {show: true, formatter: tooltipFormater}, xAxis: {type: 'category', data: categories,
-						axisLabel: {rotate: 10}}, yAxis: {type: 'value', axisLabel: {formatter: axisLabelFormater}},
-					dataZoom: {show: true, y: 26, height: 12, start: 0, end: 100 / (categories.length > 0 ? Math.ceil((categories.length / 8)) : 1)},
-					toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-					series: []};
-
-				options.title = {x: 'center', text: this.title};
-
-				for (var i = 0; i < groups.length; i++)
-				{
-					options.series.push({type: "line", itemStyle: {normal: {areaStyle: {type: 'default'}}}, data: groups[i].values});
-					options.series[options.series.length - 1].name = groups[i].label;
-					if (groups[i].color)
-						options.series[options.series.length - 1].itemStyle.normal.color = groups[i].color;
-					if (groups.length > 1)
-					{
-						if (!options.legend)
-							options.legend = {x: 'center', y: 'bottom', data: []};
-						options.legend.data.push(groups[i].label);
-					}
-				}
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.achart(title, data);
 			case 'pchart':
-
-				var options =
-					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
-						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-						series: [{type: 'pie', roseType: false, radius: this.title ? '60%' : '80%', data: [],
-								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-
-				options.title = {x: 'center', text: this.title};
-
-				if (groups.length > 1)
-				{
-					for (var i = 0; i < groups.length; i++)
-					{
-						options.legend.data.push(groups[i].label);
-						var sum = 0;
-						for (var j = 0; j < groups[i].values.length; j++)
-							sum = sum + groups[i].values[j];
-						options.series[0].data.push({name: groups[i].label, value: sum});
-						if (groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
-					}
-				} else
-				{
-					for (var i = 0; i < categories.length; i++)
-					{
-						options.legend.data.push(categories[i]);
-						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
-					}
-				}
-
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.pchart(title, data);
 			case 'dchart':
-
-				var options =
-					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
-						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-						series: [{type: 'pie', roseType: false, radius: this.title ? ['40%', '60%'] : ['60%', '80%'], data: [],
-								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-
-				options.title = {x: 'center', text: this.title};
-
-				if (groups.length > 1)
-				{
-					for (var i = 0; i < groups.length; i++)
-					{
-						options.legend.data.push(groups[i].label);
-						var sum = 0;
-						for (var j = 0; j < groups[i].values.length; j++)
-							sum = sum + groups[i].values[j];
-						options.series[0].data.push({name: groups[i].label, value: sum});
-						if (groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
-					}
-				} else
-				{
-					for (var i = 0; i < categories.length; i++)
-					{
-						options.legend.data.push(categories[i]);
-						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
-					}
-				}
-
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.dchart(title, data);
 			case 'rchart':
-				var options =
-					{calculable: true, tooltip: {show: true, formatter: tooltipFormater},
-						legend: {x: 'center', orient: 'horizontal', y: 'bottom', data: []},
-						toolbox: {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}},
-						series: [{type: 'pie', roseType: 'area', radius: this.title ? [20, '60%'] : [20, '80%'], data: [],
-								center: ['50%', '50%'], itemStyle: {normal: {label: {show: false}, labelLine: {show: false}}}}]};
-
-				options.title = {x: 'center', text: this.title};
-
-				if (groups.length > 1)
-				{
-					for (var i = 0; i < groups.length; i++)
-					{
-						options.legend.data.push(groups[i].label);
-						var sum = 0;
-						for (var j = 0; j < groups[i].values.length; j++)
-							sum = sum + groups[i].values[j];
-						options.series[0].data.push({name: groups[i].label, value: sum});
-						if (groups[i].color)
-							options.series[0].data[options.series[0].data.length - 1].itemStyle = {normal: {color: groups[i].color}};
-					}
-				} else
-				{
-					for (var i = 0; i < categories.length; i++)
-					{
-						options.legend.data.push(categories[i]);
-						options.series[0].data.push({name: categories[i], value: groups[0].values[i]});
-					}
-				}
-
-				var chart = echarts.init(this);
-				chart.clear();
-				chart.setOption(options);
-				break;
+				return this.rchart(title, data);
 		}
+	}
+
+	cchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			grid: grid,
+			toolbox: toolbox,
+			dataset: {source: data},
+			title: {x: 'center', text: title},
+			legend: {show: data[0].length > 2, y: 'bottom'},
+			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+			xAxis: category,
+			yAxis: {},
+			series: Array(data[0].length - 1)
+				.fill({type: 'bar',
+					barGap: 0,
+					seriesLayoutBy: 'column',
+					itemStyle: {normal: {label: {show: true, position: 'top'}}}})
+		});
+	}
+
+	bchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			grid: grid,
+			toolbox: toolbox,
+			dataset: {source: data},
+			title: {x: 'center', text: title},
+			legend: {show: data[0].length > 2, y: 'bottom'},
+			dataZoom: {right: 40, width: 12, endValue: 9, startValue: 0, orient: 'vertical', filterMode: 'empty'},
+			yAxis: category,
+			xAxis: {},
+			series: Array(data[0].length - 1)
+				.fill({type: 'bar',
+					barGap: 0,
+					seriesLayoutBy: 'column',
+					itemStyle: {normal: {label: {show: true, position: 'right'}}}})
+		});
+	}
+
+	lchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			grid: grid,
+			toolbox: toolbox,
+			dataset: {source: data},
+			title: {x: 'center', text: title},
+			legend: {show: data[0].length > 2, y: 'bottom'},
+			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+			xAxis: category,
+			yAxis: {},
+			series: Array(data[0].length - 1)
+				.fill({type: 'line',
+					seriesLayoutBy: 'column',
+					itemStyle: {normal: {label: {show: true, position: 'top'}}}})
+		});
+	}
+
+	achart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			grid: grid,
+			toolbox: toolbox,
+			dataset: {source: data},
+			title: {x: 'center', text: title},
+			legend: {show: data[0].length > 2, y: 'bottom'},
+			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+			xAxis: category,
+			yAxis: {},
+			series: Array(data[0].length - 1)
+				.fill({type: 'line',
+					seriesLayoutBy: 'column',
+					itemStyle: {normal: {label: {show: true, position: 'top'}, areaStyle: {type: 'default'}}}})
+		});
+	}
+
+	pchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			toolbox: toolbox,
+			tooltip: {show: true},
+			dataset: {source: data},
+			legend: {show: true, y: 'bottom'},
+			title: {x: 'center', text: title},
+			xAxis: {type: 'category', gridIndex: 0},
+			yAxis: {type: 'value', gridIndex: 0},
+			series: {type: 'pie', itemStyle: {normal: {label: {show: false}}}}
+		});
+	}
+
+	dchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			toolbox: toolbox,
+			tooltip: {show: true},
+			dataset: {source: data},
+			legend: {show: true, y: 'bottom'},
+			title: {x: 'center', text: title},
+			xAxis: {type: 'category', gridIndex: 0},
+			yAxis: {type: 'value', gridIndex: 0},
+			series: {type: 'pie', radius: ['40%', '60%'], itemStyle: {normal: {label: {show: false}}}}
+		});
+	}
+
+	rchart(title, data)
+	{
+		let chart = echarts.init(this);
+		chart.clear();
+		chart.setOption({
+			toolbox: toolbox,
+			tooltip: {show: true},
+			dataset: {source: data},
+			legend: {show: true, y: 'bottom'},
+			title: {x: 'center', text: title},
+			xAxis: {type: 'category', gridIndex: 0},
+			yAxis: {type: 'value', gridIndex: 0},
+			series: {type: 'pie', roseType: 'area', itemStyle: {normal: {label: {show: false}}}}
+		});
 	}
 
 	static get observedAttributes()
@@ -303,6 +236,3 @@ customElements.define('g-chart', class extends HTMLElement
 		return ['type', 'data', 'title'];
 	}
 });
-
-
-

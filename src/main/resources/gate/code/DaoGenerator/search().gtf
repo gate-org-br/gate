@@ -1,0 +1,11 @@
+	public List<${className.getName()}> search(${className.getName()} filter)
+	{
+		return Select.of(getClass().getResource("${@dao.getName()}/search(${className.getName()}).sql"))
+			.where(Condition.TRUE.and("${tableName}.${id.getColumnName()}").eq(filter.${id.getGetter()})
+			<g:iterator source="${properties}" target="property">
+				.and("${tableName}.${@property.getColumnName()}").eq(filter.${@property.getGetter()})
+			</g:iterator>)
+			.build()
+			.connect(getLink())
+			.fetchEntityList(${className.getName()}.class);
+	}

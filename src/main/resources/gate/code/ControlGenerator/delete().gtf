@@ -1,0 +1,7 @@
+	public void delete(${className.getName()} value) throws AppException
+	{
+		try (${@dao.getName()} dao = new ${@dao.getName()}())
+		{
+			dao.delete(value);
+		}
+	}

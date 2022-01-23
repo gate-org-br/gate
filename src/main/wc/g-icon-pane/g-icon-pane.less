@@ -9,7 +9,9 @@ g-icon-pane
 	justify-content: flex-start;
 	background-color: transparent;
 
-	g-icon-pane :is(g-icon-pane, a, button, hr){ display: none; }
+	g-icon-pane :is(g-icon-pane, a, button, hr){
+		display: none;
+	}
 
 	> hr {
 		border: solid 4px #BBBBBB;
@@ -17,7 +19,9 @@ g-icon-pane
 	}
 
 	> hr:first-child,
-		> hr:last-child, & + hr { display: none }
+		> hr:last-child, & + hr {
+		display: none
+	}
 
 	> :is(g-icon-pane, a, button) {
 		order: 1;
@@ -36,15 +40,24 @@ g-icon-pane
 		background-color: white;
 		border: 1px solid transparent;
 
-		> i { order: -1;
-		      margin: 8px;
-		      font-size: 2em;
-		      cursor: inherit; }
+		> i, > e {
+			order: -1;
+			margin: 8px;
+			font-size: 2em;
+			cursor: inherit;
+		}
 	}
 
-	> :is(g-icon-pane, a, button)> img { width: 48px; height: 48px; order: -1;  margin-right: 8px; }
+	> :is(g-icon-pane, a, button)> img {
+		width: 48px;
+		height: 48px;
+		order: -1;
+		margin-right: 8px;
+	}
 
-	> :is(g-icon-pane, a, button):hover { border-color: #FFFACD }
+	> :is(g-icon-pane, a, button):hover {
+		border-color: #FFFACD
+	}
 }
 
 

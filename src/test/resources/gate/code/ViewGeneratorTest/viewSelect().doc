@@ -21,7 +21,7 @@
 		<label>
 			Senha do Usuário:
 			<span>
-				<g:label property="form.passwd"/>
+				<g:label property="form.password"/>
 			</span>
 		</label>
 		<label>
@@ -45,7 +45,7 @@
 		<label>
 			Comentários sobre o Usuário:
 			<span>
-				<g:label property="form.details"/>
+				<g:label property="form.description"/>
 			</span>
 		</label>
 		<label>

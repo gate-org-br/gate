@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.27, for Linux (x86_64)
 --
 -- Host: localhost    Database: gate
 -- ------------------------------------------------------
--- Server version	8.0.19
+-- Server version	8.0.27-0ubuntu0.20.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,20 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `App`
+--
+
+DROP TABLE IF EXISTS `App`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `App` (
+  `id` varchar(32) NOT NULL,
+  `json` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Auth`
@@ -30,8 +44,8 @@ CREATE TABLE `Auth` (
   `module` varchar(32) DEFAULT NULL,
   `screen` varchar(32) DEFAULT NULL,
   `action` varchar(32) DEFAULT NULL,
-  `type` tinyint NOT NULL DEFAULT '0',
-  `mode` tinyint NOT NULL DEFAULT '0',
+  `scope` varchar(32) NOT NULL DEFAULT '0',
+  `access` varchar(32) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `Auth$fk$Func` (`Func$id`),
   KEY `Auth$fk$Role` (`Role$id`),
@@ -58,6 +72,26 @@ CREATE TABLE `Func` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Mail`
+--
+
+DROP TABLE IF EXISTS `Mail`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Mail` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `app` varchar(32) NOT NULL,
+  `date` datetime NOT NULL,
+  `sender` varchar(128) NOT NULL,
+  `receiver` varchar(128) NOT NULL,
+  `attempts` int unsigned NOT NULL,
+  `expiration` datetime NOT NULL,
+  `message` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Org`
 --
 
@@ -70,20 +104,20 @@ CREATE TABLE `Org` (
   `icon` longtext,
   `description` varchar(256) DEFAULT NULL,
   `authenticators` text,
-  `sun$time1` time DEFAULT NULL,
-  `sun$time2` time DEFAULT NULL,
-  `mon$time1` time DEFAULT NULL,
-  `mon$time2` time DEFAULT NULL,
-  `tue$time1` time DEFAULT NULL,
-  `tue$time2` time DEFAULT NULL,
-  `wed$time1` time DEFAULT NULL,
-  `wed$time2` time DEFAULT NULL,
-  `thu$time1` time DEFAULT NULL,
-  `thu$time2` time DEFAULT NULL,
-  `fri$time1` time DEFAULT NULL,
-  `fri$time2` time DEFAULT NULL,
-  `sat$time1` time DEFAULT NULL,
-  `sat$time2` time DEFAULT NULL,
+  `sun__min` time DEFAULT NULL,
+  `sun__max` time DEFAULT NULL,
+  `mon__min` time DEFAULT NULL,
+  `mon__max` time DEFAULT NULL,
+  `tue__min` time DEFAULT NULL,
+  `tue__max` time DEFAULT NULL,
+  `wed__min` time DEFAULT NULL,
+  `wed__max` time DEFAULT NULL,
+  `thu__min` time DEFAULT NULL,
+  `thu__max` time DEFAULT NULL,
+  `fri__min` time DEFAULT NULL,
+  `fri__max` time DEFAULT NULL,
+  `sat__min` time DEFAULT NULL,
+  `sat__max` time DEFAULT NULL,
   PRIMARY KEY (`orgID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -104,14 +138,14 @@ CREATE TABLE `Role` (
   `Role$id` int unsigned DEFAULT NULL,
   `email` varchar(64) DEFAULT NULL,
   `Manager$id` int unsigned DEFAULT NULL,
-  `roleID` varchar(16) DEFAULT NULL,
+  `rolename` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `roleID_UNIQUE` (`roleID`),
+  UNIQUE KEY `roleID_UNIQUE` (`rolename`),
   KEY `Role$fk1_idx` (`Manager$id`),
   KEY `Roke$fk$Role_idx` (`Role$id`),
   CONSTRAINT `Roke$fk$Role` FOREIGN KEY (`Role$id`) REFERENCES `Role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `Role$fk$Uzer` FOREIGN KEY (`Manager$id`) REFERENCES `Uzer` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=106 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,6 +166,23 @@ CREATE TABLE `RoleFunc` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Server`
+--
+
+DROP TABLE IF EXISTS `Server`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Server` (
+  `type` varchar(32) NOT NULL,
+  `host` varchar(32) NOT NULL,
+  `port` int unsigned NOT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `password` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Uzer`
 --
 
@@ -143,10 +194,10 @@ CREATE TABLE `Uzer` (
   `active` tinyint unsigned NOT NULL DEFAULT '1',
   `Role$id` int unsigned DEFAULT NULL,
   `username` varchar(64) NOT NULL,
-  `passwd` varchar(32) NOT NULL,
+  `password` varchar(32) NOT NULL,
   `name` varchar(64) NOT NULL,
   `email` varchar(64) DEFAULT NULL,
-  `details` varchar(1024) DEFAULT NULL,
+  `description` varchar(1024) DEFAULT NULL,
   `phone` varchar(24) DEFAULT NULL,
   `cellPhone` varchar(45) DEFAULT NULL,
   `photo` text,
@@ -154,6 +205,7 @@ CREATE TABLE `Uzer` (
   `sex` tinyint(1) DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
   `registration` datetime NOT NULL,
+  `code` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `Uzer$uk$username` (`username`),
   UNIQUE KEY `Uzer$uk$email` (`email`),
@@ -182,7 +234,15 @@ CREATE TABLE `UzerFunc` (
 --
 -- Dumping routines for database 'gate'
 --
-
+/*!50003 DROP FUNCTION IF EXISTS `fullname` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `fullname`(parameter integer) RETURNS text CHARSET utf8mb4
     READS SQL DATA
@@ -205,7 +265,19 @@ BEGIN
 	return fullname;
 END ;;
 DELIMITER ;
-
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `getmaster` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `getmaster`(parameter integer) RETURNS int
     READS SQL DATA
@@ -227,7 +299,19 @@ BEGIN
 	return parameter;
 END ;;
 DELIMITER ;
-
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `ismaster` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `ismaster`(parameter integer, child INTEGER) RETURNS int
     READS SQL DATA
@@ -248,7 +332,20 @@ declare parent integer;
 	END REPEAT;
 	return false;
 END ;;
-
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `isparent` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` FUNCTION `isparent`(parameter integer, child INTEGER) RETURNS int
     READS SQL DATA
@@ -266,129 +363,46 @@ BEGIN
 	return false;
 END ;;
 DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-CREATE DEFINER=`davins`@`%` FUNCTION `secure`(user integer, module varchar(64), screen varchar(32), action varchar(32)) RETURNS int(11)
-    READS SQL DATA
-BEGIN
-declare role integer;
-declare parent integer;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-        if module is not null
-and screen is not null
-            and action is not null
-        then
-            if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
-and (Auth.module is null or Auth.module = module)
-                and (Auth.screen is null or Auth.screen = screen)
-                and (Auth.action is null or Auth.action = action))
-                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
-and (Auth.module is null or Auth.module = module)
-                and (Auth.screen is null or Auth.screen = screen)
-                and (Auth.action is null or Auth.action = action))))
-            then
-                return true;
-            end if;
+-- Dump completed on 2022-01-21 16:51:53
 
-            set parent = (select Role$id from Uzer where id = user);
 
-            REPEAT
+INSERT INTO `gate`.`Role`
+(id,
+active,
+master,
+name,
+rolename)
+VALUES
+(1, 1, 1, 'Raiz', 'Raiz');
 
-SELECT
-Role.id, Role.Role$id
-FROM
-Role
-WHERE
-Role.id = parent INTO role , parent;
+INSERT INTO `gate`.`Auth`
+(id,
+Role$id,
+scope,
+access)
+VALUES
+(1, 1, 'PRIVATE', 'GRANT');
 
-if (select exists(select Auth.id from Auth where Auth.Role$id = role
-and (Auth.module is null or Auth.module = module)
-and (Auth.screen is null or Auth.screen = screen)
-and (Auth.action is null or Auth.action = action))
-or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
-and (Auth.module is null or Auth.module = module)
-and (Auth.screen is null or Auth.screen = screen)
-and (Auth.action is null or Auth.action = action))))
-then
-return true;
-end if;
-
-until parent is null
-END REPEAT;
-
-        elseif module is not null
-and screen is not null
-        then
-           if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
-and (Auth.module is null or Auth.module = module)
-                and (Auth.screen is null or Auth.screen = screen))
-                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
-and (Auth.module is null or Auth.module = module)
-                and (Auth.screen is null or Auth.screen = screen))))
-            then
-                return true;
-            end if;
-
-            set parent = (select Role$id from Uzer where id = user);
-
-REPEAT
-
-SELECT
-Role.id, Role.Role$id
-FROM
-Role
-WHERE
-Role.id = parent INTO role , parent;
-
-if (select exists(select Auth.id from Auth where Auth.Role$id = role
-and (Auth.module is null or Auth.module = module)
-and (Auth.screen is null or Auth.screen = screen))
-or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
-and (Auth.module is null or Auth.module = module)
-and (Auth.screen is null or Auth.screen = screen))))
-then
-return true;
-end if;
-
-until parent is null
-END REPEAT;
-
-         elseif module is not null
-         then
-           if (select exists(select Auth.id from Auth where Auth.Uzer$id = user
-and (Auth.module is null or Auth.module = module))
-                or (select exists(select Auth.id from Auth join UzerFunc on Auth.Func$id = UzerFunc.Func$id where UzerFunc.Uzer$id = user
-and (Auth.module is null or Auth.module = module))))
-            then
-                return true;
-            end if;
-
-            set parent = (select Role$id from Uzer where id = user);
-
-            REPEAT
-
-SELECT
-Role.id, Role.Role$id
-FROM
-Role
-WHERE
-Role.id = parent INTO role , parent;
-
-if (select exists(select Auth.id from Auth where Auth.Role$id = role
-and (Auth.module is null or Auth.module = module))
-or (select exists(select Auth.id from Auth join RoleFunc on Auth.Func$id = RoleFunc.Func$id where RoleFunc.Role$id = role
-and (Auth.module is null or Auth.module = module))))
-then
-return true;
-end if;
-
-until parent is null
-END REPEAT;
-        end if;
-return false;
-END
-
-INSERT INTO gate.Role (id, active, master, name) values (1, 1, 1, 'Gate');
-INSERT INTO gate.Uzer (id, active, Role$id, username, passwd, name, registration) values (1, 1, 1, 'gate', MD5('gate'), 'Gate', now());
-insert into gate.Func (id, name) values (1, 'Gate');
-INSERT INTO gate.RoleFunc (Role$id, Func$id) VALUES (1, 1);
-INSERT INTO gate.Auth (id, Func$id, type, mode) values (1, 1, 0, 0);
+INSERT INTO `gate`.`Uzer`
+(id,
+active,
+Role$id,
+username,
+password,
+name)
+VALUES
+(1, 1, 1, 'gate', MD5('gate'), 'Gate');

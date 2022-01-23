@@ -24,7 +24,7 @@ public class UseTag extends SimpleTagSupport
 					value, PageContext.REQUEST_SCOPE);
 			else if (type != null)
 				getJspContext().setAttribute(name,
-					Class.forName(type).getDeclaredConstructor()
+					Thread.currentThread().getContextClassLoader().loadClass(type).getDeclaredConstructor()
 						.newInstance(), PageContext.REQUEST_SCOPE);
 
 			getJspContext().setAttribute(name, value, PageContext.REQUEST_SCOPE);

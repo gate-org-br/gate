@@ -61,10 +61,8 @@ public class ShortcutProcessor extends AnchorProcessor
 		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
 		if (element instanceof IStandaloneElementTag)
-		{
-			String icon = call.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
-			replaceWith(context, model, handler, "<button " + attributes + ">" + icon + "</button>");
-		} else
+			replaceWith(context, model, handler, "<button " + attributes + ">" + getIcon(call) + "</button>");
+		else
 			replaceTag(context, model, handler, "button", attributes);
 	}
 
@@ -84,10 +82,15 @@ public class ShortcutProcessor extends AnchorProcessor
 		target(call, attributes).ifPresent(target -> attributes.put("target", target));
 
 		if (element instanceof IStandaloneElementTag)
-		{
-			String icon = call.getIcon().map(e -> "<i>" + e + "</i>").orElse("?");
-			replaceWith(context, model, handler, "<a " + attributes + ">" + icon + "</a>");
-		} else
+			replaceWith(context, model, handler, "<a " + attributes + ">" + getIcon(call) + "</a>");
+		else
 			replaceTag(context, model, handler, "a", attributes);
+	}
+
+	private String getIcon(Call call)
+	{
+		return call.getIcon().map(e -> "<i>" + e + "</i>")
+			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+			.orElse("?");
 	}
 }

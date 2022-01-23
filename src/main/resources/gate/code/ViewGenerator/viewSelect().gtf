@@ -1,0 +1,31 @@
+
+
+<g:template filename="/WEB-INF/views/DIAG.jsp">
+	<fieldset>
+		<legend>
+			${getDisplayName()}<g:icon type="select"/>
+		</legend>
+
+		<g:iterator source="${getProperties()}" target="property">
+		<label>
+			${@property.getDisplayName()}:
+			<span>
+				<g:label property="form.${@property.getName()}"/>
+			</span>
+		</label>
+		</g:iterator>
+	</fieldset>
+
+	<div class='Coolbar'>
+		<g:link module="#" screen="#" action="Update" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'>
+			Alterar<g:icon type="update"/>
+		</g:link>
+		<g:link module="#" screen="#" action="Delete" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'
+			data-confirm="Tem certeza de que deseja remover este registro?">
+			Remover<g:icon type="delete"/>
+		</g:link>
+		<a class='Cancel Hide' tabindex='1'>
+			Fechar<g:icon type='cancel'/>
+		</a>
+	</div>
+</g:template>

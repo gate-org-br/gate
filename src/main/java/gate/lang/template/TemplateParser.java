@@ -369,7 +369,7 @@ class TemplateParser
 			if (resource == null)
 				throw new TemplateException("Iterator required resource parameter not specified.");
 
-			return new TemplateImport(Template.compile(Class.forName(type).getResource(resource)));
+			return new TemplateImport(Template.compile(Thread.currentThread().getContextClassLoader().loadClass(type).getResource(resource)));
 		} catch (ClassNotFoundException ex)
 		{
 			throw new TemplateException(ex.getMessage(), ex);

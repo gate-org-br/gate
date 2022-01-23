@@ -80,8 +80,11 @@ section {
 
 /* global customElements */
 
+import './g-download-status.mjs';
+import './g-report-selector.mjs';
 import GModal from './g-modal.mjs';
 import Command from './command.mjs';
+
 
 customElements.define('g-report-dialog', class extends GModal
 {

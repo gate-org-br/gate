@@ -1,5 +1,4 @@
-th[data-sortable] { cursor: pointer; color: var(--b)}
-th[data-sortable]::before { font-size: 16px; }
-th[data-sortable="N"]::before { content: " ";  }
-th[data-sortable="A"]::before { content: "\2191 " }
-th[data-sortable="D"]::before { content: "\2193 " }
+th[data-sortable] { cursor: pointer; color: var(--b) }
+th[data-sortable]::before { font-family: monospace; content: "\2195 "; font-size: 16px; color: rgba(0, 0, 0, 0.2) }
+th[data-sortable="A"]::before { content: "\2191 "; color: #000000 }
+th[data-sortable="D"]::before { content: "\2193 "; color: #000000 }

@@ -396,7 +396,7 @@ public class Icons
 		return getInstance().get(string).orElse(UNKNOWN);
 	}
 
-	public static class Icon
+	public static class Icon implements Glyph
 	{
 
 		private final String code;
@@ -408,6 +408,7 @@ public class Icons
 			this.name = name;
 		}
 
+		@Override
 		public String getCode()
 		{
 			return code;

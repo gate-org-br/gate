@@ -31,11 +31,9 @@ import "./g-tabbar.mjs";
 import "./g-scroll-tabbar.mjs";
 import "./g-tab-control.mjs";
 import "./g-navbar.mjs";
-import "./g-dialog-commands.mjs";
 import "./g-dialog.mjs";
 import "./g-dialog-caption.mjs";
 import "./g-stack-frame.mjs";
-import "./g-download-status.mjs";
 import "./g-context-menu.mjs";
 import "./g-action-context-menu.mjs";
 import "./g-checkable-context-menu.mjs";
@@ -47,35 +45,16 @@ import "./g-chart-dialog.mjs";
 import "./g-icon-pane.mjs";
 import "./g-popup.mjs";
 
-import "./g-slider.mjs";
-import "./g-calendar.mjs";
-
-import "./g-icon-selector.mjs";
-import "./g-report-selector.mjs";
-
-import "./g-date-selector.mjs";
-import "./g-time-selector.mjs";
-import "./g-month-selector.mjs";
-import "./g-date-time-selector.mjs";
-
-import "./g-date-interval-selector.mjs";
-import "./g-time-interval-selector.mjs";
-import "./g-month-interval-selector.mjs";
-import "./g-date-time-interval-selector.mjs";
-
 import "./g-icon-picker.mjs";
-
 import "./g-date-picker.mjs";
 import "./g-time-picker.mjs";
 import "./g-month-picker.mjs";
 import "./g-date-time-picker.mjs";
-
 import "./g-date-interval-picker.mjs";
 import "./g-time-interval-picker.mjs";
 import "./g-month-interval-picker.mjs";
 import "./g-date-time-interval-picker.mjs";
 
-import "./g-progress-status.mjs";
 import "./g-progress-dialog.mjs";
 
 import "./g-desk-pane.mjs";
@@ -87,6 +66,8 @@ import "./form.mjs";
 import "./validation.mjs";
 
 import "./password.mjs";
+
+import "./datalist.mjs";
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
@@ -110,3 +91,5 @@ Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][dat
 });
 
 setInterval(() => window.dispatchEvent(new CustomEvent("refresh_size")), 500);
+
+document.body.style.visibility = 'visible';

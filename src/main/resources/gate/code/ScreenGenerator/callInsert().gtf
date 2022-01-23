@@ -1,0 +1,18 @@
+	@Name("Novo")
+	@Icon("insert")
+	public String callInsert()
+	{
+		if (isPOST() && getMessages().isEmpty())
+		{
+			try
+			{
+				control.insert(getForm());
+				return callSelect();
+			} catch (AppException ex)
+			{
+				setMessages(ex.getMessages());
+			}
+		}
+
+		return "/WEB-INF/views/${@screen.getPackageName().getFolderName()}/${className.getName()}/ViewInsert.jsp";
+	}

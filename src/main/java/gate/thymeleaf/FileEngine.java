@@ -30,6 +30,7 @@ public interface FileEngine
 			templateEngine.addDialect(dialect);
 			var resolver = new ClassLoaderTemplateResolver();
 			resolver.setTemplateMode(TemplateMode.HTML);
+
 			templateEngine.setTemplateResolver(resolver);
 		}
 

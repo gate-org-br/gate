@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'gate';
-  src: local(gate), url('../font/Gate.ttf');
-  src: local(gate), url('../fontGate.eot') format('embedded-opentype'), url('../font/Gate.woff') format('woff'), url('../font/Gate.ttf') format('truetype'), url('../font/Gate.svg') format('svg');
+  src: local(gate), url('Gate.ttf');
+  src: local(gate), url('../fontGate.eot') format('embedded-opentype'), url('Gate.woff') format('woff'), url('Gate.ttf') format('truetype'), url('Gate.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }

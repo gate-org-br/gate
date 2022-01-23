@@ -118,8 +118,6 @@ customElements.define('g-tab-control', class extends HTMLElement
 			links.forEach(e => e.setAttribute("slot", "head"));
 			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
 		}
-
-		this.style.visibility = "visible";
 	}
 });
 
