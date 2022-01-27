@@ -140,7 +140,7 @@ CREATE TABLE `Role` (
   `Manager$id` int unsigned DEFAULT NULL,
   `rolename` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `roleID_UNIQUE` (`rolename`),
+  UNIQUE KEY `rolename_UNIQUE` (`rolename`),
   KEY `Role$fk1_idx` (`Manager$id`),
   KEY `Roke$fk$Role_idx` (`Role$id`),
   CONSTRAINT `Roke$fk$Role` FOREIGN KEY (`Role$id`) REFERENCES `Role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -252,10 +252,10 @@ BEGIN
     declare parent integer;
     declare simplename varchar(64);
 
-  	SELECT Role$id, coalesce(roleID, name) INTO parent, fullname FROM Role WHERE  id = parameter;
+  	SELECT Role$id, coalesce(rolename, name) INTO parent, fullname FROM Role WHERE  id = parameter;
 
 	REPEAT
-		SELECT Role$id, coalesce(roleID, name) INTO parent, simplename FROM Role WHERE  id = parent;
+		SELECT Role$id, coalesce(rolename, name) INTO parent, simplename FROM Role WHERE  id = parent;
         IF simplename is not null THEN
 			set fullname = concat(simplename, ' / ', fullname);
 		END IF;
