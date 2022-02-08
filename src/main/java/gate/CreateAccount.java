@@ -10,6 +10,7 @@ import gate.sql.insert.Insert;
 import gate.type.Phone;
 import gate.util.ScreenServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -118,16 +119,17 @@ public class CreateAccount extends HttpServlet
 
 			public void insert(User user) throws ConstraintViolationException
 			{
-				Insert.into("User")
+				Insert.into("gate.Uzer")
 					.set("active", user.getActive())
 					.set("username", user.getUsername())
-					.set("password", user.getUsername())
+					.set("password", user.getPassword())
 					.set("name", user.getName())
 					.set("email", user.getEmail())
 					.set("details", user.getDescription())
 					.set("phone", user.getPhone())
 					.set("cellPhone", user.getCellPhone())
 					.set("CPF", user.getCPF())
+					.set("registration", LocalDate.now())
 					.build()
 					.connect(getLink())
 					.execute();
