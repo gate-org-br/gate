@@ -14,6 +14,8 @@ template.innerHTML = `
 
 /* global customElements */
 
+import './g-slider.mjs';
+
 customElements.define('g-time-selector', class extends HTMLElement
 {
 	constructor()
