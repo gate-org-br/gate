@@ -20,7 +20,7 @@ customElements.define('g-date-time-picker', class extends GModal
 		setTimeout(() =>
 		{
 			selector.date = new Date();
-			this.commit.innerText = selector.selection;
+			commit.innerText = selector.selection;
 		}, 0);
 
 		setTimeout(() => commit.innerText = selector.selection, 0);
