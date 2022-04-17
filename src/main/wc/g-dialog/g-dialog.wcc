@@ -4,6 +4,7 @@ import './g-navbar.mjs';
 import CSV from './csv.mjs';
 import './g-dialog-commands.mjs';
 import GModal from './g-modal.mjs';
+import resolve from './resolve.mjs';
 import FullScreen from './fullscreen.mjs';
 
 const ESC = 27;
