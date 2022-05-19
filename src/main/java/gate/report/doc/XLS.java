@@ -140,7 +140,7 @@ public class XLS extends Doc
 			else if (e.getValue() instanceof Number)
 			{
 				value.setCellType(CellType.NUMERIC);
-				value.setCellValue(((Byte) e.getValue()).doubleValue());
+				value.setCellValue(((Number) e.getValue()).doubleValue());
 			} else if (e.getValue() instanceof Boolean)
 			{
 				value.setCellType(CellType.BOOLEAN);
