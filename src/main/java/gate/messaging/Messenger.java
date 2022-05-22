@@ -80,6 +80,11 @@ public class Messenger
 			service.shutdownNow();
 	}
 
+	public boolean isEnabled()
+	{
+		return control.isEnabled();
+	}
+
 	public void post(String sender,
 		String receiver,
 		MimeMail<?> message)

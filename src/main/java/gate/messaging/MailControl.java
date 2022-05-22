@@ -21,6 +21,15 @@ class MailControl extends Control
 	@DataSource("Gate")
 	LinkSource linkSource;
 
+	public boolean isEnabled()
+	{
+		try ( Link link = linkSource.getLink();
+			 MailDao dao = new MailDao(link))
+		{
+			return dao.isEnabled();
+		}
+	}
+
 	public Server server() throws AppException
 	{
 		try ( Link link = linkSource.getLink();

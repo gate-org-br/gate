@@ -25,6 +25,14 @@ class MailDao extends Dao
 		super(link);
 	}
 
+	public boolean isEnabled()
+	{
+		return getLink()
+			.from("select exists (select * from Server where type = ?)")
+			.parameters(Server.Type.SMTP)
+			.fetchBoolean();
+	}
+
 	public Server server() throws AppException
 	{
 		return Select.expression("type")
@@ -37,7 +45,7 @@ class MailDao extends Dao
 			.build()
 			.connect(getLink())
 			.fetchEntity(Server.class)
-			.orElseThrow(() -> new NotFoundException("Nenhum servidor SMTP configurado."));
+			.orElseThrow(() -> new AppException("Nenhum servidor SMTP configurado"));
 	}
 
 	public List<Mail> search()
