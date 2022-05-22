@@ -9,8 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,7 +16,7 @@ public class VersionConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-			= Collections.singletonList(new Pattern.Implementation(Version.PATTERN.toString()));
+		= Collections.singletonList(new Pattern.Implementation(Version.PATTERN.toString()));
 
 	@Override
 	public String getMask()
@@ -63,15 +61,7 @@ public class VersionConverter implements Converter
 		{
 			string = string.trim();
 			if (!string.isEmpty())
-			{
-				try
-				{
-					return Version.of(string);
-				} catch (ParseException ex)
-				{
-					throw new ConversionException(string + " não é um número de versão válido.", ex);
-				}
-			}
+				return Version.of(string);
 		}
 		return null;
 	}
@@ -80,26 +70,14 @@ public class VersionConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		try
-		{
-			return rs.wasNull() ? null : Version.of(string);
-		} catch (ParseException ex)
-		{
-			throw new ConversionException(string + " não é um número de versão válido.", ex);
-		}
+		return rs.wasNull() ? null : Version.of(string);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		try
-		{
-			return rs.wasNull() ? null : Version.of(string);
-		} catch (ParseException ex)
-		{
-			throw new ConversionException(string + " não é um número de versão válido.", ex);
-		}
+		return rs.wasNull() ? null : Version.of(string);
 	}
 
 	@Override
