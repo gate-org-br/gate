@@ -5,7 +5,6 @@ import gate.annotation.Handler;
 import gate.converter.custom.VersionConverter;
 import gate.handler.VersionHandler;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,26 +37,29 @@ public interface Version extends Serializable, Comparable<Version>
 	@Override
 	public boolean equals(Object obj);
 
-	public static VersionImpl of(int major, int minor, int patch)
+	public static Version of(int major, int minor, int patch)
 	{
 		return new VersionImpl(major, minor, patch, null, null);
 	}
 
-	public static VersionImpl of(int major, int minor, int patch, String qualifier)
+	public static Version of(int major, int minor, int patch, String qualifier)
 	{
 		return new VersionImpl(major, minor, patch, qualifier, null);
 	}
 
-	public static VersionImpl of(int major, int minor, int patch, String qualifier, String iteration)
+	public static Version of(int major, int minor, int patch, String qualifier, String iteration)
 	{
 		return new VersionImpl(major, minor, patch, qualifier, iteration);
 	}
 
-	public static VersionImpl of(String string) throws ParseException
+	public static Version of(String string)
 	{
+		if (string == null)
+			return Version.UNDEFINED;
+
 		Matcher matcher = PATTERN.matcher(string);
 		if (!matcher.matches())
-			throw new ParseException("Invalid version number: " + string, 0);
+			return Version.INVALID;
 
 		return new VersionImpl(Short.parseShort(matcher.group(1)),
 			Short.parseShort(matcher.group(2)),
