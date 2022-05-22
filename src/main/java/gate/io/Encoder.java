@@ -7,10 +7,10 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.util.Base64;
+import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 
 public abstract class Encoder<T>
 {
@@ -52,9 +52,9 @@ public abstract class Encoder<T>
 			if (object == null)
 				return "";
 
-			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
+			try ( ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+				 ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
 
 			{
 				objectOutputStream.writeObject(object);
@@ -76,9 +76,9 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
-				BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
-				ObjectInputStream objectInputStream = new ObjectInputStream(bufferedInputStream))
+			try ( ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
+				 BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
+				 ClassLoaderObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(Thread.currentThread().getContextClassLoader(), bufferedInputStream))
 
 			{
 				return (T) objectInputStream.readObject();
