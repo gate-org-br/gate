@@ -23,7 +23,7 @@ template.innerHTML = `
 	place-items: stretch;
 	place-content: stretch;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 32px 32px 32px 1fr;
+	grid-template-rows: 32px 32px 32px 120px;
 	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
 }
 
