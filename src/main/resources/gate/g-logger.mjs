@@ -32,5 +32,6 @@ customElements.define('g-logger', class extends HTMLElement
 	{
 
 		this.shadowRoot.appendChild(document.createElement("span")).innerHTML = text;
+		this.shadowRoot.lastElementChild.scrollIntoView();
 	}
 });

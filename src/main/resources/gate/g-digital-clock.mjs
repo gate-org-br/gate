@@ -13,6 +13,9 @@ customElements.define('g-digital-clock', class extends HTMLElement
 	{
 		super();
 		this.tick = () => {
+			if (this.hasAttribute("paused"))
+				return;
+
 			let time = this.hasAttribute("time") ?
 				Number(this.getAttribute("time")) : 0;
 			this.setAttribute("time", time + 1);

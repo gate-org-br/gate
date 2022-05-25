@@ -36,7 +36,7 @@ template.innerHTML = `
 main
 {
 	width: 800px;
-	height: 320px;
+	height: auto;
 	display: grid;
 	max-width: 80%;
 	position: fixed;
