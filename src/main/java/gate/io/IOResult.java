@@ -55,7 +55,7 @@ public interface IOResult
 	{
 		return process(new CSVProcessor(action));
 	}
-	
+
 	default long processCSV(CheckedConsumer<List<String>> action) throws IOException, InvocationTargetException
 	{
 		return process(new CSVProcessor(action));
@@ -91,7 +91,7 @@ public interface IOResult
 		return read(CSVReader.getInstance(charset));
 	}
 
-	default List<List<String>> readXLS() throws IOException
+	default List<List<Object>> readXLS() throws IOException
 	{
 		return read(XLSReader.getInstance());
 	}

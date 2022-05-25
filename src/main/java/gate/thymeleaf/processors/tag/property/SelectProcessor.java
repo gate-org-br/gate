@@ -64,6 +64,7 @@ public class SelectProcessor extends PropertyProcessor
 
 		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
 		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
+		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");
@@ -80,23 +81,22 @@ public class SelectProcessor extends PropertyProcessor
 				.forEach(group ->
 				{
 					string.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
-					print(string, group.getValue(), labels, values, value);
+					print(0, string, group.getValue(), labels, values, children, value);
 					string.add("</optgroup>");
 				});
 		} else
-			print(string, Toolkit.iterable(options), labels, values, property.getValue(screen));
+			print(0, string, Toolkit.iterable(options), labels, values, children, property.getValue(screen));
 
 		string.add("</select>");
 		handler.replaceWith(string.toString(), false);
 	}
 
-	private void print(StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Object value)
+	private void print(int level, StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Function<Object, Object> children, Object value)
 	{
-		for (Object option : options)
+		for (Object object : options)
 		{
-			var label = Converter.toText(labels.apply(option));
 
-			option = values.apply(option);
+			var option = values.apply(object);
 
 			Attributes attributes = new Attributes();
 
@@ -105,7 +105,14 @@ public class SelectProcessor extends PropertyProcessor
 
 			attributes.put("value", Converter.toString(option));
 
-			string.add("<option " + attributes + ">" + label + "</option>");
+			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
+				+ Converter.toText(labels.apply(object)) + "</option>");
+
+			if (children != null)
+			{
+				print(level + 1, string, Toolkit.iterable(children.apply(object)),
+					labels, values, children, value);
+			}
 		}
 	}
 }
