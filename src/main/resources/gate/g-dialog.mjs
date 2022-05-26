@@ -257,8 +257,7 @@ export default class GDialog extends GModal
 
 	set target(target)
 	{
-		this.shadowRoot.querySelector("iframe")
-			.setAttribute('src', target);
+		setTimeout(() => this.shadowRoot.querySelector("g-navbar").url = target, 0);
 	}
 
 	get()

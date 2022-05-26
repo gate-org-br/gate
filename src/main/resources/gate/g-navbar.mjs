@@ -88,11 +88,14 @@ customElements.define('g-navbar', class extends HTMLElement
 		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail: {navbar: this, target: url}})))
 			return this;
 
-		this._private.index = Math.max(this._private.links.indexOf(url), 0);
-		this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(this.index === 0));
-		this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(this.index === 0));
-		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
-		this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
-		this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
+		if (this._private.links)
+		{
+			this._private.index = Math.max(this._private.links.indexOf(url), 0);
+			this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(this.index === 0));
+			this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(this.index === 0));
+			this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
+			this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
+			this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
+		}
 	}
 });
