@@ -1,8 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<header>
-		</header>
+		<g-window-header>
+		</g-window-header>
 		<section>
 			<progress>
 			</progress>
@@ -44,18 +44,6 @@ main
 	border: 4px solid var(--g-window-border-color);
 }
 
-header{
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
-}
-
 section {
 	padding: 8px;
 	display: flex;
@@ -85,6 +73,7 @@ progress
 
 /* global customElements, template */
 
+import './g-window-header.mjs';
 import GModal from './g-modal.mjs';
 
 export default class GBlock extends GModal
@@ -98,12 +87,12 @@ export default class GBlock extends GModal
 
 	set caption(text)
 	{
-		this.shadowRoot.querySelector("header").innerText = text;
+		this.shadowRoot.querySelector("g-window-header").innerText = text;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.querySelector("header").innerText;
+		return this.shadowRoot.querySelector("g-window-header").innerText;
 	}
 
 	static show(text)
@@ -137,16 +126,16 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
-{
-	e.addEventListener("click", () =>
 	{
-		if (e.form)
-			e.form.addEventListener("submit", () =>
-			{
+		e.addEventListener("click", () =>
+		{
+			if (e.form)
+				e.form.addEventListener("submit", () =>
+				{
+					GBlock.show(e.getAttribute("data-block"));
+					e.form.removeEventListener(event.type, arguments.callee);
+				});
+			else
 				GBlock.show(e.getAttribute("data-block"));
-				e.form.removeEventListener(event.type, arguments.callee);
-			});
-		else
-			GBlock.show(e.getAttribute("data-block"));
+		});
 	});
-});

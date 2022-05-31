@@ -1,7 +1,9 @@
 /* global customElements */
 
-import './g-month-interval-selector.mjs';
+import './g-window-header.mjs';
+import './g-window-footer.mjs';
 import GModal from './g-modal.mjs';
+import './g-month-interval-selector.mjs';
 
 customElements.define('g-month-interval-picker', class extends GModal
 {

@@ -1,11 +1,11 @@
 <template>
 	<main>
-		<header>
+		<g-window-header>
 			Selecione um tipo de relatório
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<g-report-selector>
 			</g-report-selector>

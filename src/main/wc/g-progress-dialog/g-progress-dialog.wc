@@ -1,11 +1,11 @@
 <template>
 	<main>
-		<header>
+		<g-window-header>
 			Progresso
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<g-progress-status>
 			</g-progress-status>

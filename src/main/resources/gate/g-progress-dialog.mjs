@@ -1,12 +1,12 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<header>
+		<g-window-header>
 			Progresso
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<g-progress-status>
 			</g-progress-status>
@@ -48,18 +48,6 @@ main
 	border: 4px solid var(--g-window-border-color);
 }
 
-header{
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
-}
-
 section {
 	display: flex;
 	align-items: stretch;
@@ -93,21 +81,11 @@ footer {
 	color: var(--b);
 	font-weight: bold;
 	border-color: var(--hovered);
-}
-
-#close {
-	color: white;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	font-weight: bold;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
 }</style>`;
 
 /* global customElements */
 
+import './g-window-header.mjs';
 import './g-progress-status.mjs';
 import Scroll from './scroll.mjs';
 

@@ -1,5 +1,6 @@
 /* global customElements */
 
+import './g-window-header.mjs';
 import './g-icon-selector.mjs';
 import GModal from './g-modal.mjs';
 

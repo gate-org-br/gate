@@ -1,7 +1,7 @@
 <template>
 	<main>
-		<header>
-		</header>
+		<g-window-header>
+		</g-window-header>
 		<section>
 			<progress>
 			</progress>

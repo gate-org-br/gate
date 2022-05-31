@@ -171,8 +171,8 @@
   --g-window-header-background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100%);
   --g-window-section-background-color: var(--main-shaded10);
   --g-window-section-background-image: var(--noise);
-  --g-window-footer-background-color: var(--base-shaded35);
-  --g-window-footer-background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100%);
+  --g-window-footer-background-color: var(--base-tinted45);
+  --g-window-footer-background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%);
   --g-stack-frame-background-color: var(--main-shaded10);
   --g-stack-frame-background-image: var(--noise);
   --g-window-list-color: var(--g-window-header-color);

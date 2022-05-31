@@ -1,12 +1,12 @@
 <template>
 	<main>
-		<header>
+		<g-window-header>
 			<label id='title'>
 			</label>
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<label id='text'>
 			</label>
