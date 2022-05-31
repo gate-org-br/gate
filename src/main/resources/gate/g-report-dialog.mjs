@@ -1,12 +1,12 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<header>
+		<g-window-header>
 			Selecione um tipo de relatório
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<g-report-selector>
 			</g-report-selector>
@@ -46,18 +46,6 @@ main
 	border: 4px solid var(--g-window-border-color);
 }
 
-header{
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
-}
-
 section {
 	display: flex;
 	overflow: auto;
@@ -65,21 +53,11 @@ section {
 	justify-content: center;
 	background-image: var(--g-window-section-background-image);
 	background-color: var(--g-window-section-background-color);
-}
-
-#close {
-	color: white;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	font-weight: bold;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
 }</style>`;
 
 /* global customElements */
 
+import './g-window-header.mjs';
 import './g-download-status.mjs';
 import './g-report-selector.mjs';
 import GModal from './g-modal.mjs';

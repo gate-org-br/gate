@@ -1,11 +1,11 @@
 <template>
 	<main>
-		<header>
+		<g-window-header>
 			Selecione um ícone
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<g-icon-selector>
 			</g-icon-selector>

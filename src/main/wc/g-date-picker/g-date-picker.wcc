@@ -1,6 +1,7 @@
 /* global customElements */
 
 import './g-date-selector.mjs';
+import './g-window-header.mjs';
 import GModal from './g-modal.mjs';
 
 customElements.define('g-date-picker', class extends GModal

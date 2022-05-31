@@ -1,13 +1,13 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<header>
+		<g-window-header>
 			<label id='title'>
 			</label>
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</header>
+		</g-window-header>
 		<section>
 			<label id='text'>
 			</label>
@@ -46,18 +46,6 @@ main
 	border: 4px solid var(--g-window-border-color);
 }
 
-header{
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
-}
-
 section {
 	display: flex;
 	overflow: auto;
@@ -93,17 +81,6 @@ label::first-line  {
 	text-indent: 40px;
 }
 
-#close {
-	color: white;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	font-weight: bold;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-}
-
 :host([type="INFO"]) {
 	color: black
 }
@@ -134,6 +111,7 @@ label::first-line  {
 
 /* global customElements, template */
 
+import './g-window-header.mjs';
 import GModal from './g-modal.mjs';
 
 export default class Message extends GModal

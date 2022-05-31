@@ -1,5 +1,6 @@
 /* global customElements, template */
 
+import './g-window-header.mjs';
 import GModal from './g-modal.mjs';
 
 export default class Message extends GModal

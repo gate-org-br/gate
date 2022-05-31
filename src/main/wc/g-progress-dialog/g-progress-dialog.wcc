@@ -1,5 +1,6 @@
 /* global customElements */
 
+import './g-window-header.mjs';
 import './g-progress-status.mjs';
 import Scroll from './scroll.mjs';
 

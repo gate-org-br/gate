@@ -1,7 +1,9 @@
 /* global customElements */
 
-import './g-date-time-interval-selector.mjs';
+import './g-window-header.mjs';
+import './g-window-footer.mjs';
 import GModal from './g-modal.mjs';
+import './g-date-time-interval-selector.mjs';
 
 customElements.define('g-date-time-interval-picker', class extends GModal
 {
