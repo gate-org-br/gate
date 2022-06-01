@@ -1,6 +1,7 @@
 /* global customElements */
 
 import './g-window-header.mjs';
+import './g-window-section.mjs';
 import './g-window-footer.mjs';
 import GModal from './g-modal.mjs';
 import './g-time-interval-selector.mjs';

@@ -1,6 +1,7 @@
 /* global customElements */
 
 import './g-window-header.mjs';
+import './g-window-section.mjs';
 import './g-download-status.mjs';
 import './g-report-selector.mjs';
 import GModal from './g-modal.mjs';

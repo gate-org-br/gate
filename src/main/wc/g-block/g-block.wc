@@ -2,10 +2,10 @@
 	<main>
 		<g-window-header>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<progress>
 			</progress>
-		</section>
+		</g-window-section>
 		<footer>
 			<g-digital-clock>
 			</g-digital-clock>
