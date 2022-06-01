@@ -58,10 +58,13 @@ customElements.define('g-chart', class extends HTMLElement
 			return this.data;
 		else if (this.data.match(/^#.*$/))
 			return Dataset.fromTable(document.getElementById(this.data.substring(1)));
-		else if (this.data.match(/^\[.*\]$/m))
-			return JSON.parse(this.data);
-		else
-			return JSON.parse(new URL(this.data).get());
+		else {
+			let json = JSON.parse(this.data);
+			if (Array.isArray(json))
+				return json;
+			else
+				return JSON.parse(new URL(this.data).get());
+		}
 	}
 
 	attributeChangedCallback(name)
