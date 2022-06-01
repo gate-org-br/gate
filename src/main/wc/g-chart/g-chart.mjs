@@ -56,15 +56,13 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		if (typeof this.data === 'object')
 			return this.data;
-		else if (this.data.match(/^#.*$/))
-			return Dataset.fromTable(document.getElementById(this.data.substring(1)));
-		else {
-			let json = JSON.parse(this.data);
-			if (Array.isArray(json))
-				return json;
+		else if (typeof this.data === 'string')
+			if (this.data.length && this.data[0] === "#")
+				return Dataset.fromTable(document.getElementById(this.data.substring(1)));
+			else if (this.data.includes("[") && this.data.includes("]"))
+				return JSON.parse(this.data);
 			else
 				return JSON.parse(new URL(this.data).get());
-		}
 	}
 
 	attributeChangedCallback(name)
