@@ -2,6 +2,7 @@
 
 import './g-time-selector.mjs';
 import './g-window-header.mjs';
+import './g-window-section.mjs';
 import './g-window-footer.mjs';
 import GModal from './g-modal.mjs';
 

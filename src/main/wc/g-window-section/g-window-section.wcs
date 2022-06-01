@@ -1,0 +1,11 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	background-image: var(--g-window-section-background-image);
+	background-color: var(--g-window-section-background-color);
+}

@@ -6,10 +6,10 @@
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-month-selector>
 			</g-month-selector>
-		</section>
+		</g-window-section>
 		<g-window-footer>
 			<a id='commit' href='#'>
 			</a>

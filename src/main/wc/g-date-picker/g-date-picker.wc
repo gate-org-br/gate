@@ -6,9 +6,9 @@
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-date-selector>
 			</g-date-selector>
-		</section>
+		</g-window-section>
 	</main>
 </template>

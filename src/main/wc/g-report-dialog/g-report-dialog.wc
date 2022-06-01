@@ -6,11 +6,11 @@
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-footer>
 			<g-report-selector>
 			</g-report-selector>
 			<g-download-status>
 			</g-download-status>
-		</section>
+		</g-window-footer>
 	</main>
 </template>

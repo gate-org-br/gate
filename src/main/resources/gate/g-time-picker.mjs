@@ -7,10 +7,10 @@ template.innerHTML = `
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-time-selector>
 			</g-time-selector>
-		</section>
+		</g-window-section>
 		<g-window-footer>
 			<a id='commit' href='#'>
 			</a>
@@ -46,20 +46,13 @@ main
 	grid-template-rows: 40px 360px 40px;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	border: 4px solid var(--g-window-border-color);
-}
-
-section {
-	display: flex;
-	align-items: stretch;
-	justify-content: center;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
 }</style>`;
 
 /* global customElements */
 
 import './g-time-selector.mjs';
 import './g-window-header.mjs';
+import './g-window-section.mjs';
 import './g-window-footer.mjs';
 import GModal from './g-modal.mjs';
 

@@ -7,15 +7,15 @@ template.innerHTML = `
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-progress-status>
 			</g-progress-status>
-		</section>
-		<footer>
+		</g-window-section>
+		<g-window-footer>
 			<a id='commit' href='#'>
 				Processando
 			</a>
-		</footer>
+		</g-window-footer>
 	</main>
  <style>* {
 	box-sizing: border-box
@@ -46,46 +46,13 @@ main
 	grid-template-rows: 40px 1fr 40px;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	border: 4px solid var(--g-window-border-color);
-}
-
-section {
-	display: flex;
-	align-items: stretch;
-	justify-content: center;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
-}
-
-footer {
-	display: flex;
-	align-items: stretch;
-	justify-content: center;
-	background-color: var(--g-window-footer-background-color);
-	background-image: var(--g-window-footer-background-image);
-}
-
-#commit {
-	flex-grow: 1;
-	display: flex;
-	color: #000000;
-	font-size: 16px;
-	font-weight: bold;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-	border: 1px solid transparent;
-	background-image:  linear-gradient(to bottom, #E3E0D0 0%, #858279 100%);
-}
-
-#commit:hover {
-	color: var(--b);
-	font-weight: bold;
-	border-color: var(--hovered);
 }</style>`;
 
 /* global customElements */
 
 import './g-window-header.mjs';
+import './g-window-section.mjs';
+import './g-window-footer.mjs';
 import './g-progress-status.mjs';
 import Scroll from './scroll.mjs';
 

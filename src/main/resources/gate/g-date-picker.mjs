@@ -7,10 +7,10 @@ template.innerHTML = `
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-date-selector>
 			</g-date-selector>
-		</section>
+		</g-window-section>
 	</main>
  <style>* {
 	box-sizing: border-box
@@ -42,20 +42,12 @@ main
 	grid-template-rows: 40px 1fr;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	border: 4px solid var(--g-window-border-color);
-}
-
-
-section {
-	display: flex;
-	align-items: stretch;
-	justify-content: center;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
 }</style>`;
 
 /* global customElements */
 
 import './g-date-selector.mjs';
+import './g-window-section.mjs';
 import './g-window-header.mjs';
 import GModal from './g-modal.mjs';
 

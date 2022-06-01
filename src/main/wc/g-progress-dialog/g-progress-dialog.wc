@@ -6,14 +6,14 @@
 				&#X1011;
 			</a>
 		</g-window-header>
-		<section>
+		<g-window-section>
 			<g-progress-status>
 			</g-progress-status>
-		</section>
-		<footer>
+		</g-window-section>
+		<g-window-footer>
 			<a id='commit' href='#'>
 				Processando
 			</a>
-		</footer>
+		</g-window-footer>
 	</main>
 </template>
