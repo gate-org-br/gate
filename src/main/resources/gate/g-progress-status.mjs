@@ -37,6 +37,7 @@ template.innerHTML = `
 
 progress
 {
+	width: 100%;
 	height: 40px;
 	grid-column: 1 / span 2;
 }

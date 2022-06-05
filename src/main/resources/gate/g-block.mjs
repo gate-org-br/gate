@@ -4,8 +4,10 @@ template.innerHTML = `
 		<g-window-header>
 		</g-window-header>
 		<g-window-section>
-			<progress>
-			</progress>
+			<div>
+				<span>
+				</span>
+			</div>
 		</g-window-section>
 		<footer>
 			<g-digital-clock>
@@ -30,7 +32,7 @@ template.innerHTML = `
 
 main
 {
-	height: 150px;
+	height: auto;
 	display: grid;
 	position: fixed;
 	min-width: 320px;
@@ -58,10 +60,27 @@ g-digital-clock
 	font-size: 16px;
 }
 
-progress
+ div
 {
+  	width: 100%;
 	margin: 4px;
 	flex-grow: 1;
+	height: 40px;
+    display: flex;
+    align-items: stretch;
+	background-color: #CCCCCC;
+}
+
+span
+{
+	animation-fill-mode:both;
+	background-color: #778899;
+	animation: progress 2s infinite ease-in-out;
+}
+
+@keyframes progress {
+	0% { flex-basis: 0; 	}
+	100% { flex-basis: 100%; }
 }</style>`;
 
 /* global customElements, template */
@@ -94,9 +113,9 @@ export default class GBlock extends GModal
 		if (window.top.GBlock)
 			return;
 
-		window.top.GateBlockDialog = window.top.document.createElement("g-block");
-		window.top.GateBlockDialog.caption = text || "Aguarde";
-		window.top.GateBlockDialog.show();
+		window.top.GBlock = window.top.document.createElement("g-block");
+		window.top.GBlock.caption = text || "Aguarde";
+		window.top.GBlock.show();
 	}
 
 	static  hide()
@@ -104,8 +123,8 @@ export default class GBlock extends GModal
 		if (!window.top.GBlock)
 			return;
 
-		window.top.GateBlockDialog.hide();
-		window.top.GateBlockDialog = null;
+		window.top.GBlock.hide();
+		window.top.GBlock = null;
 	}
 }
 
@@ -120,16 +139,16 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
-{
-	e.addEventListener("click", () =>
 	{
-		if (e.form)
-			e.form.addEventListener("submit", () =>
-			{
+		e.addEventListener("click", () =>
+		{
+			if (e.form)
+				e.form.addEventListener("submit", () =>
+				{
+					GBlock.show(e.getAttribute("data-block"));
+					e.form.removeEventListener(event.type, arguments.callee);
+				});
+			else
 				GBlock.show(e.getAttribute("data-block"));
-				e.form.removeEventListener(event.type, arguments.callee);
-			});
-		else
-			GBlock.show(e.getAttribute("data-block"));
+		});
 	});
-});
