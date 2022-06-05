@@ -16,7 +16,7 @@
 
 main
 {
-	height: 150px;
+	height: auto;
 	display: grid;
 	position: fixed;
 	min-width: 320px;
@@ -44,8 +44,25 @@ g-digital-clock
 	font-size: 16px;
 }
 
-progress
+ div
 {
+  	width: 100%;
 	margin: 4px;
 	flex-grow: 1;
+	height: 40px;
+    display: flex;
+    align-items: stretch;
+	background-color: #CCCCCC;
+}
+
+span
+{
+	animation-fill-mode:both;
+	background-color: #778899;
+	animation: progress 2s infinite ease-in-out;
+}
+
+@keyframes progress {
+	0% { flex-basis: 0; 	}
+	100% { flex-basis: 100%; }
 }
