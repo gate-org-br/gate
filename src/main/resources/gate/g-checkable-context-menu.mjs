@@ -1,8 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<a id='invert' href='#'>Inverter seleção<i>&#X2205;</i></a>
-	<a id='select' href='#'>Selecionar tudo<i>&#X1011;</i></a>
-	<a id='clear' href='#'>Desmarcar tudo<i>&#X1014;</i></a>
+	<a href='#'>Inverter seleção<i>&#X2205;</i></a>
+	<a href='#'>Selecionar tudo<i>&#X1011;</i></a>
+	<a href='#'>Desmarcar tudo<i>&#X1014;</i></a>
 `;
 
 /* global customElements, template */
