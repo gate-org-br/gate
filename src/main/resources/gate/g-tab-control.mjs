@@ -14,8 +14,8 @@ template.innerHTML = `
 	margin-top: 16px;
 	border-radius: 8px 8px 0 0;
 	grid-template-rows: auto 1fr;
-	background-color: var(--background-color) !important;
-	border: 4px solid var(--background-color) !important;
+	background-color: var(--g-tab-control-background-color) !important;
+	border: 4px solid var(--g-tab-control-background-color) !important;
 }
 
 :host(:first-child)
@@ -36,8 +36,8 @@ header
 	display: none;
 	padding : 10px;
 	overflow: hidden;
-	background-color: var(--tab-background-color) !important;
-	background-image: var(--tab-background-image) !important;
+	background-color: var(--g-tab-control-tab-background-color) !important;
+	background-image: var(--g-tab-control-tab-background-image) !important;
 }
 
 :host([type='dummy']) ::slotted(div)
@@ -58,14 +58,14 @@ header
 	text-decoration: none;
 	border-radius: 8px 8px 0 0;
 	justify-content: space-between;
-	color: var(--button-color) !important;
-	background-color: var(--button-background-color) !important;
-	background-image: var(--button-background-image) !important;
+	color: var(--g-tab-control-button-color) !important;
+	background-color: var(--g-tab-control-button-background-color) !important;
+	background-image: var(--g-tab-control-button-background-image) !important;
 }
 
 ::slotted(:is(a, button):hover)
 {
-	color: var(--hovered-button-color) !important;
+	color: var(--g-tab-control-hovered-button-color) !important;
 }
 
 ::slotted(:is(a, button):focus)
@@ -77,8 +77,8 @@ header
 ::slotted(:is(a, button)[data-selected=true])
 {
 	font-weight: bold !important;
-	background-color: var(--tab-background-color) !important;
-	background-image: var(--tab-background-image) !important;
+	background-color: var(--g-tab-control-tab-background-color) !important;
+	background-image: var(--g-tab-control-tab-background-image) !important;
 }
 
 @media only screen and (min-width: 768px)

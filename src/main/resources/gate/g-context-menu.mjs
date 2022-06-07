@@ -16,8 +16,8 @@ template.innerHTML = `
 	visibility: hidden;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: var(--background-color);
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	background-color: var(--g-context-menu-background-color);
 }
 
 ::slotted(:is(a, button))
@@ -30,13 +30,13 @@ template.innerHTML = `
 	align-items: center !important;
 	text-decoration: none !important;
 	justify-content: space-between !important;
-	border: 1px solid var(--border-color) !important;
-	background-color: var(--background-color) !important;
+	border: 1px solid var(--g-context-menu-border-color) !important;
+	background-color: var(--g-context-menu-background-color) !important;
 }
 
 ::slotted(:is(a, button):hover)
 {
-	background-color: var(--hovered-background-color);
+	background-color: var(--g-context-menu-hovered-background-color);
 }</style>`;
 
 /* global customElements, template */
