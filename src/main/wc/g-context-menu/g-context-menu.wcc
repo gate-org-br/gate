@@ -47,7 +47,6 @@ export default class GContextMenu extends HTMLElement
 	{
 		this.classList.add('g-context-menu');
 		window.addEventListener("mousedown", this._private.mousedown);
-		Array.from(this.children).forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	disconnectedCallback()
@@ -69,17 +68,17 @@ export default class GContextMenu extends HTMLElement
 customElements.define('g-context-menu', GContextMenu);
 
 window.addEventListener("contextmenu", event =>
-	{
-		event = event || window.event;
-		let action = event.target || event.srcElement;
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
 
-		action = action.closest("[data-context-menu]");
-		if (action)
-		{
-			document.getElementById(action.getAttribute("data-context-menu"))
-				.show(action, event.target, event.clientX, event.clientY);
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	}, true);
+	action = action.closest("[data-context-menu]");
+	if (action)
+	{
+		document.getElementById(action.getAttribute("data-context-menu"))
+			.show(action, event.target, event.clientX, event.clientY);
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+	}
+}, true);

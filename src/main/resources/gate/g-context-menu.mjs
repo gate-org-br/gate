@@ -1,5 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<slot>
+	</slot>
  <style>:host(*)
 {
 	margin: 0;
@@ -14,45 +16,27 @@ template.innerHTML = `
 	visibility: hidden;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: var(--main-tinted50);
+	background-color: var(--background-color);
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 }
 
-:host(*) > a,
-:host(*) > button
+::slotted(:is(a, button))
 {
-	padding: 8px;
-	display: flex;
 	color: inherit;
-	flex-basis: 24px;
 	font-size: inherit;
-	align-items: center;
-	text-decoration: none;
-	justify-content: flex-start;
-	border: 1px solid var(--base);
-	background-color: var(--main-tinted50);
+	padding: 8px !important;
+	display: flex !important;
+	flex-basis: 24px !important;
+	align-items: center !important;
+	text-decoration: none !important;
+	justify-content: space-between !important;
+	border: 1px solid var(--border-color) !important;
+	background-color: var(--background-color) !important;
 }
 
-:host(*) > a:hover,
-:host(*) > button:hover
+::slotted(:is(a, button):hover)
 {
-	background-color: var(--acent-tinted35);
-}
-
-:host(*) > a > i,
-:host(*) > button > i
-{
-	order: -1;
-	speak: none;
-	line-height: 1;
-	margin-right: 8px;
-	font-style: normal;
-	font-weight: normal;
-	font-family: 'gate';
-	font-variant: normal;
-	text-transform: none;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
+	background-color: var(--hovered-background-color);
 }</style>`;
 
 /* global NodeList, customElements, template */
@@ -104,7 +88,6 @@ export default class GContextMenu extends HTMLElement
 	{
 		this.classList.add('g-context-menu');
 		window.addEventListener("mousedown", this._private.mousedown);
-		Array.from(this.children).forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	disconnectedCallback()
@@ -126,17 +109,17 @@ export default class GContextMenu extends HTMLElement
 customElements.define('g-context-menu', GContextMenu);
 
 window.addEventListener("contextmenu", event =>
-	{
-		event = event || window.event;
-		let action = event.target || event.srcElement;
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
 
-		action = action.closest("[data-context-menu]");
-		if (action)
-		{
-			document.getElementById(action.getAttribute("data-context-menu"))
-				.show(action, event.target, event.clientX, event.clientY);
-			event.preventDefault();
-			event.stopPropagation();
-			event.stopImmediatePropagation();
-		}
-	}, true);
+	action = action.closest("[data-context-menu]");
+	if (action)
+	{
+		document.getElementById(action.getAttribute("data-context-menu"))
+			.show(action, event.target, event.clientX, event.clientY);
+		event.preventDefault();
+		event.stopPropagation();
+		event.stopImmediatePropagation();
+	}
+}, true);

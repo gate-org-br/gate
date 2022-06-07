@@ -12,43 +12,25 @@
 	visibility: hidden;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: var(--main-tinted50);
+	background-color: var(--background-color);
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 }
 
-:host(*) > a,
-:host(*) > button
+::slotted(:is(a, button))
 {
-	padding: 8px;
-	display: flex;
 	color: inherit;
-	flex-basis: 24px;
 	font-size: inherit;
-	align-items: center;
-	text-decoration: none;
-	justify-content: flex-start;
-	border: 1px solid var(--base);
-	background-color: var(--main-tinted50);
+	padding: 8px !important;
+	display: flex !important;
+	flex-basis: 24px !important;
+	align-items: center !important;
+	text-decoration: none !important;
+	justify-content: space-between !important;
+	border: 1px solid var(--border-color) !important;
+	background-color: var(--background-color) !important;
 }
 
-:host(*) > a:hover,
-:host(*) > button:hover
+::slotted(:is(a, button):hover)
 {
-	background-color: var(--acent-tinted35);
-}
-
-:host(*) > a > i,
-:host(*) > button > i
-{
-	order: -1;
-	speak: none;
-	line-height: 1;
-	margin-right: 8px;
-	font-style: normal;
-	font-weight: normal;
-	font-family: 'gate';
-	font-variant: normal;
-	text-transform: none;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
+	background-color: var(--hovered-background-color);
 }

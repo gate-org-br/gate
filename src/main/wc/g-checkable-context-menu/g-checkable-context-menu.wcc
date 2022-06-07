@@ -7,10 +7,10 @@ customElements.define('g-checkable-context-menu', class extends GContextMenu
 	connectedCallback()
 	{
 		super.connectedCallback();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("invert").addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
-		this.shadowRoot.getElementById("select").addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = true));
-		this.shadowRoot.getElementById("clear").addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = false));
+		this.appendChild(template.content.cloneNode(true));
+		this.children[0].addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = !input.checked));
+		this.children[1].addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = true));
+		this.children[2].addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = false));
 	}
 });
 
