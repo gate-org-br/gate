@@ -31,3 +31,7 @@ i {
 i[c] {
   font-family: arial;
 }
+g-tab-control > :is(a, button) > :is(i, span) {
+  order: 1;
+  color: inherit;
+}
