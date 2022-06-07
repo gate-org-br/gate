@@ -1,4 +1,4 @@
-/* global NodeList, customElements, template */
+/* global customElements, template */
 
 export default class GContextMenu extends HTMLElement
 {
@@ -10,7 +10,29 @@ export default class GContextMenu extends HTMLElement
 
 		this._private = {};
 		this.addEventListener("click", () => this.hide());
-		this._private.mousedown = e => !this.contains(e.target) && this.hide();
+
+		this._private.mousedown = event => !this.contains(event.target) && this.hide();
+
+		this._private.contextmenu = event =>
+		{
+			event = event || window.event;
+			let action = event.target || event.srcElement;
+
+			if (this.id)
+				action = action.closest("[data-context-menu=" + this.id + "]");
+			else if (this.parentNode.contains(action))
+				action = this.parentNode;
+			else
+				action = null;
+
+			if (action)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				this.show(action, event.target, event.clientX, event.clientY);
+			}
+		};
 	}
 
 	show(context, target, x, y)
@@ -47,11 +69,13 @@ export default class GContextMenu extends HTMLElement
 	{
 		this.classList.add('g-context-menu');
 		window.addEventListener("mousedown", this._private.mousedown);
+		window.addEventListener("contextmenu", this._private.contextmenu);
 	}
 
 	disconnectedCallback()
 	{
 		window.removeEventListener("mousedown", this._private.mousedown);
+		window.addEventListener("contextmenu", this._private.contextmenu);
 	}
 
 	get context()
@@ -66,19 +90,3 @@ export default class GContextMenu extends HTMLElement
 }
 
 customElements.define('g-context-menu', GContextMenu);
-
-window.addEventListener("contextmenu", event =>
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-
-	action = action.closest("[data-context-menu]");
-	if (action)
-	{
-		document.getElementById(action.getAttribute("data-context-menu"))
-			.show(action, event.target, event.clientX, event.clientY);
-		event.preventDefault();
-		event.stopPropagation();
-		event.stopImmediatePropagation();
-	}
-}, true);

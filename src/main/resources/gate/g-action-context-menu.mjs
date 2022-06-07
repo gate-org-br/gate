@@ -1,8 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<a id='copy-text' href='#'>Copiar texto<i>&#X2217;</i></a>
-	<a id='copy-link' href='#'>Copiar endereço<i>&#X2159;</i></a>
-	<a id='open-link' href='#'>Abrir em nova aba<i>&#X2256;</i></a>
+	<a href='#'>Copiar texto<i>&#X2217;</i></a>
+	<a href='#'>Copiar endereço<i>&#X2159;</i></a>
+	<a href='#'>Abrir em nova aba<i>&#X2256;</i></a>
 `;
 
 /* global customElements, template */
