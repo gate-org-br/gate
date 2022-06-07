@@ -5,13 +5,13 @@ import GContextMenu from './g-context-menu.mjs';
 
 customElements.define('g-action-context-menu', class extends GContextMenu
 {
-	constructor()
+	connectedCallback()
 	{
-		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("copy-text").addEventListener("click", () => Clipboard.copy(this.target.innerText, true));
-		this.shadowRoot.getElementById("copy-link").addEventListener("click", () => Clipboard.copy(this.context.getAttribute("data-action"), true));
-		this.shadowRoot.getElementById("open-link").addEventListener("click", () =>
+		super.connectedCallback();
+		this.appendChild(template.content.cloneNode(true));
+		this.children[0].addEventListener("click", () => Clipboard.copy(this.target.innerText, true));
+		this.children[1].addEventListener("click", () => Clipboard.copy(this.context.getAttribute("data-action"), true));
+		this.children[2].addEventListener("click", () =>
 		{
 			let context = this.context;
 			let target = this.context.getAttribute("data-target");
