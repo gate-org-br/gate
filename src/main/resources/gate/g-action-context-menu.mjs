@@ -28,20 +28,3 @@ customElements.define('g-action-context-menu', class extends GContextMenu
 		});
 	}
 });
-
-
-window.addEventListener("contextmenu", event => {
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-action]");
-	if (!action)
-		return;
-
-	let menu = document.querySelector("g-action-context-menu")
-		|| document.body.appendChild(document.createElement("g-action-context-menu"));
-	menu.show(action, event.target, event.clientX, event.clientY);
-
-	event.preventDefault();
-	event.stopPropagation();
-	event.stopImmediatePropagation();
-});

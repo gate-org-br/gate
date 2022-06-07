@@ -20,20 +20,3 @@ customElements.define('g-checkable-context-menu', class extends GContextMenu
 		this.children[2].addEventListener("click", () => Array.from(this.context.getElementsByTagName("input")).forEach(input => input.checked = false));
 	}
 });
-
-
-window.addEventListener("contextmenu", event => {
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("g-selectn");
-	if (!action)
-		return;
-
-	let menu = document.querySelector("g-checkable-context-menu")
-		|| document.body.appendChild(document.createElement("g-checkable-context-menu"));
-	menu.show(action, event.target, event.clientX, event.clientY);
-
-	event.preventDefault();
-	event.stopPropagation();
-	event.stopImmediatePropagation();
-});
