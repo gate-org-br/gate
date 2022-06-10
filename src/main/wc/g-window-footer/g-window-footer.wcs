@@ -5,13 +5,19 @@
 :host(*) {
 	padding: 2px;
 	display: flex;
-	align-items: stretch;
+	align-items: center;
 	justify-content: center;
 	background-color: var(--g-window-footer-background-color);
 	background-image: var(--g-window-footer-background-image);
 }
 
+::slotted(g-coolbar)
+{
+	margin: 4px;
+}
+
 ::slotted(a), ::slotted(button) {
+	height: 100%;
 	flex-grow: 1;
 	display: flex;
 	color: var(--g);

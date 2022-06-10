@@ -1,0 +1,14 @@
+/* global customElements, template */
+
+import GOverflow from "./g-overflow.mjs";
+
+export default class GCoolbar extends GOverflow
+{
+	constructor()
+	{
+		super();
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+}
+
+customElements.define('g-coolbar', GCoolbar);

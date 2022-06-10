@@ -1,6 +1,4 @@
-let template = document.createElement("template");
-template.innerHTML = `
- <style>:host(*)
+:host(*)
 {
 	margin: 0;
 	margin-top: 10px;
@@ -106,19 +104,4 @@ template.innerHTML = `
 ::slotted(*[hidden="true"])) 
 {
 	display: none !important;
-}</style>`;
-
-/* global customElements */
-
-import GOverflow from "./g-overflow.mjs";
-
-export default class GCoolbar extends GOverflow
-{
-	constructor()
-	{
-		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-	}
 }
-
-customElements.define('g-coolbar', GCoolbar);
