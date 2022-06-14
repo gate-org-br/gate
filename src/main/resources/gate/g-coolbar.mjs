@@ -108,7 +108,7 @@ template.innerHTML = `
 	display: none !important;
 }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
 import GOverflow from "./g-overflow.mjs";
 

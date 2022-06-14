@@ -1,0 +1,6 @@
+<template>
+	<g-chat-user-list>
+	</g-chat-user-list>
+	<g-chat-contact-list>
+	</g-chat-contact-list>
+</template>

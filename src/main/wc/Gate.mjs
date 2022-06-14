@@ -69,6 +69,9 @@ import "./password.mjs";
 
 import "./datalist.mjs";
 
+import "./g-chat.mjs";
+import "./g-chat-contact-dialog.mjs";
+
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)

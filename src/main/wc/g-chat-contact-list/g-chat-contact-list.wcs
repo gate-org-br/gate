@@ -1,0 +1,14 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*)
+{
+	display: flex;
+	height: inherit;
+	border-radius: 5px;
+	align-items: stretch;
+	justify-content: center;
+	background-color: white;
+	background-image: var(--noise);
+}

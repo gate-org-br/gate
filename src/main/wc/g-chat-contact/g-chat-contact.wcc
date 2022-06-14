@@ -1,0 +1,96 @@
+/* global customElements */
+
+import './g-chat-message-list.mjs';
+import Message from './g-message.mjs';
+import ChatService from './g-chat-service.mjs';
+
+customElements.define('g-chat-contact', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let button = this.shadowRoot.querySelector("button");
+		let message = this.shadowRoot.getElementById("message");
+		const post = () =>
+		{
+			message.enabled = false;
+			ChatService.post(this.peerId, message.value)
+				.then(response =>
+				{
+					if (response.status === 'error')
+						Message.error(response.message);
+					message.value = "";
+					message.enabled = true;
+				});
+		}
+
+		button.addEventListener("click", () => post());
+		message.addEventListener("keydown", event => event.keyCode === 13 && post());
+
+
+		let search = this.shadowRoot.getElementById("search");
+		let messages = this.shadowRoot.querySelector("g-chat-message-list");
+
+		search.addEventListener("input", () => messages.filter = search.value);
+		messages.addEventListener("selected", () => search.value = "");
+	}
+
+	set hostId(hostId)
+	{
+		this.setAttribute("host-id", hostId);
+	}
+
+	get hostId()
+	{
+		return Number(this.getAttribute("host-id"));
+	}
+
+	set hostName(hostName)
+	{
+		this.setAttribute("host-name", hostName);
+	}
+
+	get hostName()
+	{
+		return this.getAttribute("host-name");
+	}
+
+	set peerId(peerId)
+	{
+		this.setAttribute("peer-id", peerId);
+	}
+
+	get peerId()
+	{
+		return Number(this.getAttribute("peer-id"));
+	}
+
+	set peerName(peerName)
+	{
+		this.setAttribute("peer-name", peerName);
+	}
+
+	get peerName()
+	{
+		return this.getAttribute("peer-name");
+	}
+
+	set status(status)
+	{
+		this.setAttribute("status", status);
+	}
+
+	get status()
+	{
+		return this.getAttribute("status");
+	}
+
+	connectedCallback()
+	{
+		this.shadowRoot.querySelector("label").innerText = this.peerName;
+		this.shadowRoot.querySelector("i").innerHTML = this.status === 'ONLINE' ? '&#X2004' : '&#X2008';
+	}
+});

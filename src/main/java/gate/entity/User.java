@@ -1,5 +1,6 @@
 package gate.entity;
 
+import gate.annotation.Converter;
 import gate.annotation.Description;
 import gate.annotation.Entity;
 import gate.annotation.Icon;
@@ -9,6 +10,7 @@ import gate.annotation.Table;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
+import gate.converter.EnumStringConverter;
 import gate.type.CPF;
 import gate.type.EMail;
 import gate.type.ID;
@@ -45,9 +47,9 @@ public class User implements Serializable
 	private ID id;
 
 	@Required
-	@Name("Ativo")
-	@Description("O campo ATIVO é requerido.")
-	private Boolean active;
+	@Name("Status")
+	@Description("Status do usuário.")
+	private Status status;
 
 	@Required
 	@Maxlength(64)
@@ -171,14 +173,14 @@ public class User implements Serializable
 		return this;
 	}
 
-	public Boolean getActive()
+	public Status getStatus()
 	{
-		return active;
+		return status;
 	}
 
-	public User setActive(Boolean active)
+	public User setStatus(Status status)
 	{
-		this.active = active;
+		this.status = status;
 		return this;
 	}
 
@@ -345,7 +347,7 @@ public class User implements Serializable
 
 	public boolean isDisabled()
 	{
-		return Boolean.FALSE.equals(active) || getRole().isDisabled();
+		return this.status == Status.INACTIVE || getRole().isDisabled();
 	}
 
 	public MimeData getPhoto()
@@ -397,5 +399,22 @@ public class User implements Serializable
 			.noneMatch(e -> e.blocked(module, screen, action))
 			&& computedAuthStream()
 				.anyMatch(e -> e.granted(module, screen, action));
+	}
+
+	@Converter(EnumStringConverter.class)
+	public enum Status
+	{
+		@Name("Offline")
+		OFFLINE,
+		@Name("Online")
+		ONLINE,
+		@Name("Inativo")
+		INACTIVE;
+
+		@Override
+		public String toString()
+		{
+			return Name.Extractor.extract(this).orElseThrow();
+		}
 	}
 }

@@ -1,0 +1,5 @@
+<template>
+	<input type="text" placeholder="Localizar"/>
+	<div>
+	</div>
+</template>

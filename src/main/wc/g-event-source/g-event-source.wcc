@@ -8,7 +8,11 @@ export default function registerEventSource(listener)
 		throw new Error("Attempt to redefine an app event listener");
 
 	let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
-	var url = protocol + /.*:\/\/(.*\/.*)\//.exec(location.href)[1] + "/AppEvents";
+	let hostname = location.hostname;
+	let port = location.port;
+	let pathname = location.pathname.replace("/Gate", "/AppEvents");
+
+	var url = protocol + hostname + ':' + port + pathname;
 
 	connection = new WebSocket(url);
 

@@ -2,7 +2,7 @@ package gate.event;
 
 import gate.entity.User;
 
-public class LoginEvent
+public class LoginEvent extends AppEvent
 {
 
 	private final User user;

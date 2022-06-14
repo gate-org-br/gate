@@ -1,0 +1,32 @@
+:host(*) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+	display: flex;
+	position: fixed;
+	align-items: center;
+	justify-content: center;
+}
+
+main
+{
+	height: auto;
+	display: grid;
+	position: fixed;
+	min-width: 320px;
+	max-width: 600px;
+	border-radius: 5px;
+	place-items: stretch;
+	place-content: stretch;
+	width: calc(100% - 40px);
+	grid-template-rows: 40px 500px;
+	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	border: 4px solid var(--g-window-border-color);
+}
+
+g-window-section
+{
+	padding: 4px;
+}

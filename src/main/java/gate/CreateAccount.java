@@ -78,7 +78,7 @@ public class CreateAccount extends HttpServlet
 				if (user.getDescription() == null)
 					throw new AppException("Informe a empresa onde trabalha.");
 
-				user.setActive(Boolean.TRUE);
+				user.setStatus(User.Status.OFFLINE);
 				user.setPhone(req.getParameter(Phone.class, "user.phone"));
 				user.setCellPhone(req.getParameter(Phone.class, "user.cellPhone"));
 
@@ -105,7 +105,7 @@ public class CreateAccount extends HttpServlet
 
 		public void insert(User value) throws AppException
 		{
-			Constraints.validate(value, "active", "username", "name",
+			Constraints.validate(value, "status", "username", "name",
 				"email", "details", "phone", "cellPhone", "CPF");
 
 			try ( Dao dao = new Dao())
@@ -120,7 +120,7 @@ public class CreateAccount extends HttpServlet
 			public void insert(User user) throws ConstraintViolationException
 			{
 				Insert.into("gate.Uzer")
-					.set("active", user.getActive())
+					.set("status", user.getStatus())
 					.set("username", user.getUsername())
 					.set("password", user.getPassword())
 					.set("name", user.getName())

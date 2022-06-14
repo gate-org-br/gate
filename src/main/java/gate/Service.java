@@ -15,13 +15,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 @ApplicationPath("gate")
-public class WebComponents extends Application
+public class Service extends Application
 {
 
 	@Override
 	public Set<Class<?>> getClasses()
 	{
-		return Set.of(Script.class, Style.class, Font.class);
+		return Set.of(Script.class, Style.class, Font.class, ChatService.class);
 	}
 
 	@Path("script")
@@ -34,7 +34,7 @@ public class WebComponents extends Application
 		@GET
 		@Path("/{file}")
 		@Produces("text/javascript")
-		public Response js(@PathParam("file") String file)
+		public Response get(@PathParam("file") String file)
 		{
 			return getFile(request, file);
 		}
@@ -50,7 +50,7 @@ public class WebComponents extends Application
 		@GET
 		@Path("/{file}")
 		@Produces("text/css")
-		public Response js(@PathParam("file") String file)
+		public Response get(@PathParam("file") String file)
 		{
 			return getFile(request, file);
 		}
@@ -101,7 +101,7 @@ public class WebComponents extends Application
 	{
 		return Response.ok((StreamingOutput) (OutputStream o) ->
 		{
-			try (InputStream i = WebComponents.class.getResourceAsStream(filename))
+			try ( InputStream i = Service.class.getResourceAsStream(filename))
 			{
 				for (int b = i.read(); b != -1; b = i.read())
 					o.write(b);
