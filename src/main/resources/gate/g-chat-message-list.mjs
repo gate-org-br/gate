@@ -15,8 +15,9 @@ template.innerHTML = `
 
 /* global customElements */
 
-import './g-chat-message.mjs';
-import ChatService from './g-chat-service.mjs';
+import  './g-chat-message.mjs';
+import Message from './g-message.mjs';
+import GChatService from './g-chat-service.mjs';
 
 customElements.define('g-chat-message-list', class extends HTMLElement
 {
@@ -31,41 +32,24 @@ customElements.define('g-chat-message-list', class extends HTMLElement
 			this.filter = "";
 			e.detail.scrollIntoView();
 		});
-
-		window.addEventListener("ChatEvent", event =>
-		{
-			let sender = Number(event.detail.sender.id);
-			let receiver = Number(event.detail.receiver.id);
-			if (sender === this.hostId && receiver === this.peerId)
-				this.add(event.detail.date, "LOCAL", event.detail.text);
-			else if (sender === this.peerId && receiver === this.hostId)
-				this.add(event.detail.date, "REMOTE", event.detail.text);
-		});
 	}
 
-	add(date, type, message)
+	add(date, type, message, status)
 	{
 		let element = document.createElement("g-chat-message");
 		element.date = date;
 		element.type = type;
 		element.text = message;
+		element.status = status;
 		this.shadowRoot.appendChild(element);
 		element.scrollIntoView();
 	}
 
-	connectedCallback()
+	update(type, status)
 	{
-		ChatService.messages(this.peerId)
-			.then(response =>
-			{
-				response.forEach(e =>
-				{
-					if (Number(e.sender.id) === this.hostId)
-						this.add(e.date, "LOCAL", e.text);
-					else if (Number(e.receiver.id) === this.hostId)
-						this.add(e.date, "REMOTE", e.text);
-				});
-			});
+		Array.from(this.shadowRoot.children)
+			.filter(e => e.type === type)
+			.forEach(e => e.status = status);
 	}
 
 	get filter()
@@ -76,30 +60,6 @@ customElements.define('g-chat-message-list', class extends HTMLElement
 	set filter(filter)
 	{
 		this.setAttribute("filter", filter);
-	}
-
-	get hostId()
-	{
-		return this.getRootNode().host.hostId;
-	}
-
-	get hostName()
-	{
-		return this.getRootNode().host.hostName;
-	}
-
-	get peerId()
-	{
-		return this.getRootNode().host.peerId;
-	}
-
-	get peerName()
-	{
-		return this.getRootNode().host.peerName;
-	}
-	get status()
-	{
-		return this.getRootNode().host.status;
 	}
 
 	attributeChangedCallback()

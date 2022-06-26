@@ -10,7 +10,7 @@ export default function registerEventSource(listener)
 	let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
 	let hostname = location.hostname;
 	let port = location.port;
-	let pathname = location.pathname.replace("/Gate", "/AppEvents");
+	let pathname = location.pathname.replace(/\/Gate.*/, "/AppEvents");
 
 	var url = protocol + hostname + ':' + port + pathname;
 
@@ -19,7 +19,7 @@ export default function registerEventSource(listener)
 	connection.onmessage = event =>
 	{
 		event = JSON.parse(event.data);
-		listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail}));
+		listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail, composed: true}));
 	};
 
 	connection.onopen = () => console.log("listening to app events");

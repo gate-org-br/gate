@@ -23,13 +23,14 @@ public class ChatEvent extends AppEvent
 		super(new JsonObject()
 			.set("id", null)
 			.set("sender", new JsonObject()
-				.setInt("id", msg.getSender().getId().getValue())
+				.setString("id", msg.getSender().getId().toString())
 				.setString("name", msg.getSender().getName()))
 			.set("receiver", new JsonObject()
-				.setInt("id", msg.getReceiver().getId().getValue())
+				.setString("id", msg.getReceiver().getId().toString())
 				.setString("name", msg.getReceiver().getName()))
 			.setString("date", Converter.toText(msg.getDate()))
-			.setString("text", msg.getText()));
+			.setString("text", msg.getText())
+			.setString("status", msg.getStatus().name()));
 		this.msg = msg;
 	}
 

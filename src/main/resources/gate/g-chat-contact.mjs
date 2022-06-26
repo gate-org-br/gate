@@ -3,6 +3,8 @@ template.innerHTML = `
 	<header>
 		<i></i>
 		<label></label>
+		<g-chat-notification-config>
+		</g-chat-notification-config>
 		<input id='search' placeholder="Localizar"/>
 	</header>
 	<section>
@@ -28,10 +30,15 @@ template.innerHTML = `
 	border: 2px solid var(--table-head-background-color);
 }
 
+:host([hidden])
+{
+	display: none;
+}
+
 section
 {
 	display: flex;
-	overflow: scroll;
+	overflow: auto;
 	align-items: stretch;
 	background-color: white;
 	background-image: var(--noise);
@@ -48,7 +55,7 @@ header
 	display: grid;
 	flex-basis: 50px;
 	align-items: center;
-	grid-template-columns: 32px 1fr 128px;
+	grid-template-columns: 32px 1fr 32px 128px;
 	background-color: var(--table-head-background-color);
 }
 
@@ -113,7 +120,7 @@ button
 
 import './g-chat-message-list.mjs';
 import Message from './g-message.mjs';
-import ChatService from './g-chat-service.mjs';
+import GChatService from './g-chat-service.mjs';
 
 customElements.define('g-chat-contact', class extends HTMLElement
 {
@@ -125,10 +132,58 @@ customElements.define('g-chat-contact', class extends HTMLElement
 
 		let button = this.shadowRoot.querySelector("button");
 		let message = this.shadowRoot.getElementById("message");
+
+		let messages = this.shadowRoot.querySelector("g-chat-message-list");
+
+		this._private = {
+			ChatEvent: event =>
+			{
+				let sender = Number(event.detail.sender.id);
+				let receiver = Number(event.detail.receiver.id);
+
+				if (sender === this.peerId && receiver === this.hostId)
+				{
+					if (!this.hasAttribute("hidden"))
+					{
+						event.detail.status = 'RECEIVED';
+						GChatService.received(this.peerId);
+					}
+
+					messages.add(event.detail.date, "REMOTE", event.detail.text, event.detail.status);
+
+				} else if (sender === this.hostId && receiver === this.peerId)
+					messages.add(event.detail.date, "LOCAL", event.detail.text, event.detail.status);
+			},
+
+			ChatReceivedEvent: event =>
+			{
+				let sender = Number(event.detail.sender);
+				let receiver = Number(event.detail.receiver);
+				if (sender === this.hostId
+					&& receiver === this.peerId)
+					this.shadowRoot.querySelector("g-chat-message-list")
+						.update('LOCAL', 'RECEIVED');
+			},
+
+			LoginEvent: event =>
+			{
+				let user = Number(event.detail.id);
+				if (user === this.peerId)
+					this.peerStatus = 'ONLINE';
+			},
+
+			LogoffEvent: event =>
+			{
+				let user = Number(event.detail.id);
+				if (user === this.peerId)
+					this.peerStatus = 'OFFLINE';
+			}
+		};
+
 		const post = () =>
 		{
 			message.enabled = false;
-			ChatService.post(this.peerId, message.value)
+			GChatService.post(this.peerId, message.value)
 				.then(response =>
 				{
 					if (response.status === 'error')
@@ -136,16 +191,14 @@ customElements.define('g-chat-contact', class extends HTMLElement
 					message.value = "";
 					message.enabled = true;
 				});
-		}
-
+		};
 		button.addEventListener("click", () => post());
 		message.addEventListener("keydown", event => event.keyCode === 13 && post());
 
 
 		let search = this.shadowRoot.getElementById("search");
-		let messages = this.shadowRoot.querySelector("g-chat-message-list");
-
 		search.addEventListener("input", () => messages.filter = search.value);
+
 		messages.addEventListener("selected", () => search.value = "");
 	}
 
@@ -189,19 +242,80 @@ customElements.define('g-chat-contact', class extends HTMLElement
 		return this.getAttribute("peer-name");
 	}
 
-	set status(status)
+	set peerStatus(peerStatus)
 	{
-		this.setAttribute("status", status);
+		this.setAttribute("peer-status", peerStatus);
 	}
 
-	get status()
+	get peerStatus()
 	{
-		return this.getAttribute("status");
+		return this.getAttribute("peer-status");
 	}
 
 	connectedCallback()
 	{
-		this.shadowRoot.querySelector("label").innerText = this.peerName;
-		this.shadowRoot.querySelector("i").innerHTML = this.status === 'ONLINE' ? '&#X2004' : '&#X2008';
+		window.addEventListener("ChatEvent", this._private.ChatEvent);
+		window.addEventListener("ChatReceivedEvent", this._private.ChatReceivedEvent);
+		window.addEventListener("LoginEvent", this._private.LoginEvent);
+		window.addEventListener("LogoffEvent", this._private.LogoffEvent);
+
+		GChatService.messages(this.peerId).then(response =>
+		{
+			if (response.status !== 'success')
+				return Message.error(response.error);
+
+			let messages = this.shadowRoot.querySelector("g-chat-message-list");
+			response.messages.forEach(e =>
+			{
+				if (Number(e.sender.id) === this.hostId)
+					messages.add(e.date, "LOCAL", e.text, e.status);
+				else if (Number(e.receiver.id) === this.hostId)
+					messages.add(e.date, "REMOTE", e.text, e.status);
+			});
+
+			GChatService.received(this.peerId);
+		});
+	}
+
+	disconnectedCallback()
+	{
+		window.removeEventListener("ChatEvent", this._private.ChatEvent);
+		window.removeEventListener("ChatReceivedEvent", this._private.ChatReceivedEvent);
+		window.removeEventListener("LoginEvent", this._private.LoginEvent);
+		window.removeEventListener("LogoffEvent", this._private.LogoffEvent);
+	}
+
+	show()
+	{
+		this.removeAttribute("hidden");
+		GChatService.received(this.peerId);
+		this.shadowRoot.querySelector("g-chat-message-list")
+			.update('REMOTE', 'RECEIVED');
+	}
+
+	hide()
+	{
+		this.setAttribute("hidden", "hidden");
+	}
+
+	attributeChangedCallback(attribute)
+	{
+		switch (attribute)
+		{
+			case 'peer-id':
+				this.shadowRoot.querySelector("g-chat-notification-config").peerId = this.peerId;
+				break;
+			case 'peer-name':
+				this.shadowRoot.querySelector("label").innerText = this.peerName;
+				break;
+			case 'peer-status':
+				this.shadowRoot.querySelector("i").innerHTML = this.peerStatus === 'ONLINE' ? '&#X2004' : '&#X2008';
+				break;
+		}
+	}
+
+	static get observedAttributes()
+	{
+		return ['peer-id', 'peer-name', 'peer-status'];
 	}
 });

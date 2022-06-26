@@ -1,0 +1,17 @@
+<template>
+	<header>
+		<i></i>
+		<label></label>
+		<g-chat-notification-config>
+		</g-chat-notification-config>
+		<input id='search' placeholder="Localizar"/>
+	</header>
+	<section>
+		<g-chat-message-list>
+		</g-chat-message-list>
+	</section>
+	<footer>
+		<input id='message' type='text' placeholder='Mensagem'/>
+		<button>&#X2034</button>
+	</footer>
+</template>

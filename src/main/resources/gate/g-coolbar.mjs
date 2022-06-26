@@ -37,15 +37,15 @@ template.innerHTML = `
 
 ::slotted(:is(a, button, .g-command))
 {
-	display: flex;
-	color: inherit;
-	min-width: 120px;
 	margin: 2px !important;
+	color: black !important;
 	height: 40px !important;
 	padding: 4px !important;
+	display: flex !important;
 	flex: 0 1 auto !important;
 	font-size: 12px !important;
 	cursor: pointer !important;
+	min-width: 120px !important;
 	font-weight: bold !important;
 	font-style: normal !important;
 	border-radius: 5px !important;
@@ -83,7 +83,7 @@ template.innerHTML = `
 	border: 2px solid var(--hovered) !important;
 }
 
-::slotted(:is(a, button, .g-command).Delete)
+::slotted(:is(a, button, .g-command).Delete) {
 	color: var(--r) !important;
 }
 
@@ -103,7 +103,7 @@ template.innerHTML = `
 	color: var(--r) !important;
 }
 
-::slotted(*[hidden="true"])) 
+::slotted(*[hidden="true"])
 {
 	display: none !important;
 }</style>`;

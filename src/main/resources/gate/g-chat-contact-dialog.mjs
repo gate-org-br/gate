@@ -51,7 +51,7 @@ import './g-chat-contact.mjs';
 import './g-window-section.mjs';
 import GModal from './g-modal.mjs';
 
-export class GChatContact extends GModal
+export default class GChatContactDialog extends GModal
 {
 	constructor()
 	{
@@ -103,14 +103,14 @@ export class GChatContact extends GModal
 		return this.getAttribute("peer-name");
 	}
 
-	set status(status)
+	set peerStatus(peerStatus)
 	{
-		this.setAttribute("status", status);
+		this.setAttribute("peer-status", peerStatus);
 	}
 
-	get status()
+	get peerStatus()
 	{
-		return this.getAttribute("status");
+		return this.getAttribute("peer-status");
 	}
 
 	connectedCallback()
@@ -120,39 +120,40 @@ export class GChatContact extends GModal
 		contact.hostName = this.hostName;
 		contact.peerId = this.peerId;
 		contact.peerName = this.peerName;
-		contact.status = this.status;
+		contact.peerStatus = this.peerStatus;
 	}
 
-	static show(hostId, hostName, peerId, peerName, status)
+	static show(hostId, hostName, peerId, peerName, peerStatus)
 	{
-		let dialog = window.top.document.createElement("g-chat-contact-dialog");
-		dialog.hostId = hostId;
-		dialog.hostName = hostName;
-		dialog.peerId = peerId;
-		dialog.peerName = peerName;
-		dialog.status = status;
-		dialog.show();
+		if (hostId && hostName && peerId && peerName && peerStatus)
+		{
+			let dialog = window.top.document.createElement("g-chat-contact-dialog");
+			dialog.hostId = hostId;
+			dialog.hostName = hostName;
+			dialog.peerId = peerId;
+			dialog.peerName = peerName;
+			dialog.peerStatus = peerStatus;
+			dialog.show();
+		}
 	}
 }
 
-customElements.define('g-chat-contact-dialog', GChatContact);
+customElements.define('g-chat-contact-dialog', GChatContactDialog);
 
-window.addEventListener("click", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
 
-	action = action.closest("a[target=_chat-contact]");
-	if (!action)
-		return;
-
-	event.preventDefault();
-	event.stopPropagation();
-
-	GChatContact.show(action.getAttribute('data-host-id'),
-		action.getAttribute('data-host-name'),
-		action.getAttribute('data-peer-id'),
-		action.getAttribute('data-peer-name'),
-		action.getAttribute('data-status'));
-});
-
+window.addEventListener("click", event =>
+	{
+		event = event || window.event;
+		let action = event.target || event.srcElement;
+		action = action.closest("a[target=_chat_contact]");
+		if (action)
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			GChatContactDialog.show(action.getAttribute("host-id"),
+				action.getAttribute("host-name"),
+				action.getAttribute("peer-id"),
+				action.getAttribute("peer-name"),
+				action.getAttribute("peer-status"));
+		}
+	});

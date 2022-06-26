@@ -145,7 +145,7 @@ export default class GDialog extends GModal
 			throw new Error(value + " is not a valid size");
 		let main = this.shadowRoot.querySelector("main");
 		main.style.maxWidth = size[1] + "px";
-		main.style.maxHeight = (size[4] || size[1]) + "px";
+		main.style.maxHeight = (size[3] || size[1]) + "px";
 
 		this.shadowRoot.getElementById("minimize").style.display = "none";
 		this.shadowRoot.getElementById("fullscreen").style.display = "none";

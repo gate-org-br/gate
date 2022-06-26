@@ -1,0 +1,14 @@
+<template>
+	<main>
+		<g-window-header>
+			Chat
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</g-window-header>
+		<g-window-section>
+			<g-chat>
+			</g-chat>
+		</g-window-section>
+	</main>
+</template>

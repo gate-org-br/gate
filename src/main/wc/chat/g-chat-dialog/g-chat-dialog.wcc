@@ -1,0 +1,70 @@
+/* global customElements, template, GChatContactDialog */
+
+import './g-chat-contact.mjs';
+import './g-window-section.mjs';
+import GModal from './g-modal.mjs';
+
+export default class GChatDialog extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+	}
+
+	set hostId(hostId)
+	{
+		this.setAttribute("host-id", hostId);
+	}
+
+	get hostId()
+	{
+		return Number(this.getAttribute("host-id"));
+	}
+
+	set hostName(hostName)
+	{
+		this.setAttribute("host-name", hostName);
+	}
+
+	get hostName()
+	{
+		return this.getAttribute("host-name");
+	}
+
+	connectedCallback()
+	{
+		let contact = this.shadowRoot.querySelector("g-chat");
+		contact.hostId = this.hostId;
+		contact.hostName = this.hostName;
+	}
+
+	static show(hostId, hostName)
+	{
+		let dialog = window.top.document.createElement("g-chat-dialog");
+		dialog.hostId = hostId;
+		dialog.hostName = hostName;
+		dialog.show();
+	}
+}
+
+customElements.define('g-chat-dialog', GChatDialog);
+
+
+window.addEventListener("click", event =>
+	{
+		event = event || window.event;
+		let action = event.target || event.srcElement;
+		action = action.closest("a[target=_chat]");
+		if (action)
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			GChatDialog.show(action.getAttribute("host-id"),
+				action.getAttribute("host-name"));
+		}
+	});

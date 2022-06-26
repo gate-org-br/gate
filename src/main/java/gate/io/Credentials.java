@@ -98,7 +98,7 @@ public class Credentials
 			Matcher matcher = BEARER.matcher(header);
 			if (matcher.matches())
 				return Optional.of(of(matcher.group(1)));
-			throw new InvalidCredentialsException();
+			return Optional.empty();
 		}
 
 		String credentials = request.getParameter("_credentials");

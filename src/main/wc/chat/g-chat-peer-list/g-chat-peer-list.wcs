@@ -1,0 +1,60 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*)
+{
+	display: grid;
+	height: inherit;
+	border-radius: 5px;
+	align-items: stretch;
+	border: 1px solid #CCCCCC;
+	background-color: transparent;
+	grid-template-rows: 40px 1fr 40px;
+}
+
+div
+{
+	flex-grow: 1;
+	display: flex;
+	overflow: auto;
+	flex-direction: column;
+	background-color: white;
+	border: 1px solid #CCCCCC;
+}
+
+footer
+{
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	border-radius: 0 0 5px 5px;
+	background-image: var(--g-coolbar-button-background-image);
+}
+
+g-chat-notification-config
+{
+	flex: 1 1 100%;
+}
+
+input
+{
+	border: none;
+	border: 1px solid #CCCCCC;
+	border-radius: 5px 5px 0 0;
+}
+
+g-chat-peer:first-child
+{
+	border-radius: 5px 5px 0 0;
+}
+
+g-chat-peer:last-child
+{
+	border-radius:  0 0 5px 5px;
+}
+
+g-chat-peer:hover
+{
+	background-color: var(--hovered);
+}

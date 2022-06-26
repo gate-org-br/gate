@@ -38,16 +38,16 @@ header
 ::slotted(:is(a, button))
 {
 	width: 50%;
-	border: none;
-	padding: 5px;
-	display: flex;
-	cursor: pointer;
+	border: none !important;
+	padding: 5px !important;
+	display: flex !important;
+	cursor: pointer !important;
 	font-size: 12px;
 	flex-basis: 50%;
 	align-items: center;
-	text-decoration: none;
-	border-radius: 8px 8px 0 0;
-	justify-content: space-between;
+	text-decoration: none !important;
+	border-radius: 8px 8px 0 0 !important;
+	justify-content: space-between !important;
 	color: var(--g-tab-control-button-color) !important;
 	background-color: var(--g-tab-control-button-background-color) !important;
 	background-image: var(--g-tab-control-button-background-image) !important;

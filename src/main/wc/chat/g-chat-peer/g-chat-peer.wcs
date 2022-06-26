@@ -1,0 +1,87 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*)
+{
+	width: 100%;
+	padding: 8px;
+	height: 40px;
+	display: grid;
+	cursor: pointer;
+	min-height: 40px;
+	align-items: center;
+	grid-template-columns: 32px 1fr 24px;
+}
+
+:host([peer-status='ONLINE'])
+{
+	order: 1;
+}
+
+:host([peer-status='OFFLINE'])
+{
+	order: 2;
+}
+
+:host([peer-status='ONLINE'][unread='0'])
+{
+	order: 3;
+}
+
+:host([peer-status='OFFLINE'][unread='0'])
+{
+	order: 4;
+}
+
+:host([peer-status=ONLINE])
+{
+	color: #006600;
+}
+
+:host([peer-status=OFFLINE])
+{
+	color: #660000;
+}
+
+:host(*)::before
+{
+	display: flex;
+	font-size: 16px;
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+}
+
+
+
+:host([peer-status=ONLINE])::before
+{
+	content: '\\2004';
+}
+
+:host([peer-status=OFFLINE])::before
+{
+	content: '\\2008';
+}
+
+:host([unread])::after
+{
+	width: 24px;
+	height: 16px;
+	color: white;
+	display: flex;
+	font-size: 10px;
+	font-weight: bold;
+	border-radius: 5px;
+	align-items: center;
+	content: attr(unread);
+	justify-content: center;
+	background-color: #999999;
+}
+
+
+:host([unread='0'])::after
+{
+	display: none;
+}

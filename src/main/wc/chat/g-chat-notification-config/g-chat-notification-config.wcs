@@ -1,0 +1,64 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*)
+{
+	padding: 4px;
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+
+
+:host([status=enabled])
+{
+	color: #006600;
+}
+
+:host([status=disabled])
+{
+	color: #666666;
+}
+
+:host([status=denied])
+{
+	color: #660000;
+}
+
+
+:host(*)::before
+{
+	display: flex;
+	font-size: 16px;
+	flex-basis: 24px;
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+}
+
+:host([status=enabled])::before
+{
+	content: "\\2087";
+}
+
+:host([status=disabled])::before
+{
+	content: "\\2089";
+}
+
+:host([status=denied])::before
+{
+	content: "\\2088";
+}
+
+:host([label])::after
+{
+	display: flex;
+	align-items: center;
+	content: attr(label);
+	justify-content: flex-start;
+}
+

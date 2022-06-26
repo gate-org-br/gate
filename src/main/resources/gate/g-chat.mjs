@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<g-chat-user-list>
-	</g-chat-user-list>
+	<g-chat-peer-list>
+	</g-chat-peer-list>
 	<g-chat-contact-list>
 	</g-chat-contact-list>
  <style>* {
@@ -14,12 +14,12 @@ template.innerHTML = `
 	display: grid;
 	align-items: stretch;
 	background-color: transparent;
-	grid-template-columns: minmax(200px, 20%) 1fr;
+	grid-template-columns: 250px 1fr;
 }</style>`;
 
 /* global customElements */
 
-import './g-chat-user-list.mjs';
+import './g-chat-peer-list.mjs';
 import './g-chat-contact-list.mjs';
 
 customElements.define('g-chat', class extends HTMLElement
@@ -31,7 +31,7 @@ customElements.define('g-chat', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let contacts = this.shadowRoot.querySelector('g-chat-contact-list');
-		this.shadowRoot.querySelector("g-chat-user-list")
+		this.shadowRoot.querySelector("g-chat-peer-list")
 			.addEventListener("selected", e => contacts.add(e.detail));
 	}
 
@@ -53,5 +53,10 @@ customElements.define('g-chat', class extends HTMLElement
 	set hostName(hostName)
 	{
 		this.setAttribute("host-name", hostName);
+	}
+
+	select(peer)
+	{
+		this.shadowRoot.querySelector("g-chat-peer-list").select(peer);
 	}
 });

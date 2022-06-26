@@ -1,5 +1,8 @@
 package gate.entity;
 
+import gate.annotation.Converter;
+import gate.annotation.Name;
+import gate.converter.EnumStringConverter;
 import gate.type.ID;
 import java.time.LocalDateTime;
 
@@ -10,6 +13,7 @@ public class Chat
 	private LocalDateTime date;
 	private User sender;
 	private User receiver;
+	private Status status;
 	private String text;
 
 	public ID getId()
@@ -36,6 +40,8 @@ public class Chat
 
 	public User getSender()
 	{
+		if (sender == null)
+			sender = new User();
 		return sender;
 	}
 
@@ -47,6 +53,8 @@ public class Chat
 
 	public User getReceiver()
 	{
+		if (receiver == null)
+			receiver = new User();
 		return receiver;
 	}
 
@@ -67,4 +75,22 @@ public class Chat
 		return this;
 	}
 
+	public Status getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(Status status)
+	{
+		this.status = status;
+	}
+
+	@Converter(EnumStringConverter.class)
+	public enum Status
+	{
+		@Name("Postada")
+		POSTED,
+		@Name("Entregue")
+		RECEIVED
+	}
 }

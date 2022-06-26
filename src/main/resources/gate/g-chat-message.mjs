@@ -16,7 +16,7 @@ template.innerHTML = `
 	width: auto;
 	height: auto;
 	margin: 12px;
-	padding: 20px;
+	padding: 12px;
 	display: grid;
 	cursor: pointer;
 	min-width: 200px;
@@ -45,16 +45,33 @@ footer
 
 :host([type=LOCAL])
 {
-	align-self: flex-start;
-	background-color: #E6E9EF;
-
+	align-self: flex-end;
+	background-color: #AACCAA;
 }
 
 :host([type=REMOTE])
 {
-	align-self: flex-end;
-	background-color: #AACCAA;
+	align-self: flex-start;
+	background-color: #FFFFFF;
+}
 
+:host([type=LOCAL]) footer::after
+{
+	margin-left: 4px;
+	font-family: gate;
+	font-size: inherit;
+}
+
+:host([type=LOCAL][status=POSTED]) footer::after
+{
+	color: #EFFDDE;
+	content: '\\2017';
+}
+
+:host([type=LOCAL][status=RECEIVED]) footer::after
+{
+	color: #006600;
+	content: '\\1000';
 }</style>`;
 
 /* global customElements */
@@ -98,6 +115,16 @@ customElements.define('g-chat-message', class extends HTMLElement
 	get date()
 	{
 		return this.getAttribute("date");
+	}
+
+	set status(status)
+	{
+		this.setAttribute("status", status);
+	}
+
+	get status()
+	{
+		return this.getAttribute("status");
 	}
 
 	attributeChangedCallback()

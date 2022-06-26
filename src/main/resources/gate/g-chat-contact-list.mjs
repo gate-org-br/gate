@@ -28,22 +28,22 @@ customElements.define('g-chat-contact-list', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	add(user)
+	add(peer)
 	{
-		let contact = this.shadowRoot.querySelector("g-chat-contact[id='" + user.id + "']");
+		let contact = this.shadowRoot.querySelector("g-chat-contact[peer-id='" + peer.id + "']");
 		if (!contact)
 		{
 			contact = document.createElement("g-chat-contact");
 			contact.hostId = this.hostId;
 			contact.hostName = this.hostName;
-			contact.peerId = user.id;
-			contact.peerName = user.name;
-			contact.status = user.status;
+			contact.peerId = peer.id;
+			contact.peerName = peer.name;
+			contact.peerStatus = peer.status;
 			this.shadowRoot.appendChild(contact);
 		}
 
-		Array.from(this.shadowRoot.children).forEach(e => e.style.display = 'none');
-		contact.style.display = "";
+		Array.from(this.shadowRoot.querySelectorAll("g-chat-contact")).forEach(e => e.hide());
+		contact.show();
 	}
 
 	get hostId()

@@ -16,7 +16,8 @@ g-tabbar hr {
   background-color: transparent;
 }
 g-tabbar > a,
-g-tabbar > button {
+g-tabbar > button,
+g-tabbar > .g-command {
   margin: 4px;
   padding: 4px;
   height: auto;
@@ -32,25 +33,30 @@ g-tabbar > button {
   justify-content: space-around;
 }
 g-tabbar > a:focus,
-g-tabbar > button:focus {
+g-tabbar > button:focus,
+g-tabbar > .g-command:focus {
   outline: none;
 }
 g-tabbar > a:hover,
-g-tabbar > button:hover {
+g-tabbar > button:hover,
+g-tabbar > .g-command:hover {
   color: var(--g-tabbar-hovered-color);
   background-color: var(--g-tabbar-hovered-background-color);
   background-image: var(--g-tabbar-hovered-background-image);
 }
 g-tabbar > a[aria-selected],
-g-tabbar > button[aria-selected] {
+g-tabbar > button[aria-selected],
+g-tabbar > .g-command[aria-selected] {
   color: var(--g-tabbar-selected-color);
   background-color: var(--g-tabbar-selected-background-color);
   background-image: var(--g-tabbar-selected-background-image);
 }
 g-tabbar > a > i,
 g-tabbar > button > i,
+g-tabbar > .g-command > i,
 g-tabbar > a > e,
-g-tabbar > button > e {
+g-tabbar > button > e,
+g-tabbar > .g-command > e {
   order: -1;
   display: flex;
   min-width: 60px;

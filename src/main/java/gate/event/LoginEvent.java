@@ -1,6 +1,7 @@
 package gate.event;
 
 import gate.entity.User;
+import gate.lang.json.JsonObject;
 
 public class LoginEvent extends AppEvent
 {
@@ -9,6 +10,8 @@ public class LoginEvent extends AppEvent
 
 	public LoginEvent(User user)
 	{
+		super(new JsonObject()
+			.setString("id", user.getId().toString()));
 		this.user = user;
 	}
 
