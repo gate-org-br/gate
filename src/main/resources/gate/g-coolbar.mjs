@@ -41,7 +41,7 @@ template.innerHTML = `
 
 ::slotted(a),
 ::slotted(button),
-::slotted(g-command)
+::slotted(.g-command)
 {
 	display: flex;
 	margin: 2px !important;
