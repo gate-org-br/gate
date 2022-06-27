@@ -1,6 +1,10 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*)
 {
 	margin: 0;
 	margin-top: 10px;
@@ -35,13 +39,15 @@ template.innerHTML = `
 	margin-bottom: 0px
 }
 
-::slotted(:is(a, button, .g-command))
+::slotted(a),
+::slotted(button),
+::slotted(g-command)
 {
+	display: flex;
 	margin: 2px !important;
-	color: black !important;
 	height: 40px !important;
+	color: black !important;
 	padding: 4px !important;
-	display: flex !important;
 	flex: 0 1 auto !important;
 	font-size: 12px !important;
 	cursor: pointer !important;
@@ -63,7 +69,7 @@ template.innerHTML = `
 	flex-grow: 1 !important;
 }
 
-::slotted(hr) 
+::slotted(hr)
 {
 	flex-grow: 1 !important;
 	border: none !important;
@@ -105,7 +111,7 @@ template.innerHTML = `
 
 ::slotted(*[hidden="true"])
 {
-	display: none !important;
+	display: none;
 }</style>`;
 
 /* global customElements, template */
