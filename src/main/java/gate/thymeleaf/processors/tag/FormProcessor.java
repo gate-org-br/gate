@@ -129,7 +129,7 @@ public class FormProcessor extends PropertyProcessor
 							attributes.remove("checked");
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
-					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
+					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-select>%s</g-select></fieldset>",
 						size, field.getName(), options.toString());
 				}
 			}

@@ -8,41 +8,73 @@ function path(path)
 
 export default class GChatService
 {
+	static host()
+	{
+		let url = path(`/gate/chat/host`);
+		return fetch(url).then(response =>
+		{
+			return response.ok ?
+				response.json()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
+		});
+	}
+
 	static peers()
 	{
 		let url = path(`/gate/chat/peers`);
-		return fetch(url).then(response => response.json());
+		return fetch(url).then(response =>
+		{
+			return response.ok ?
+				response.json()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
+		});
 	}
 
 	static messages(peerId)
 	{
-		let url = path(`/gate/chat/messages/${peerId}`);
-		return fetch(url)
-			.then(response => response.json());
+		let url = path(`/gate/chat/peers/${peerId}/messages`);
+		return fetch(url).then(response =>
+		{
+			return response.ok ?
+				response.json()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
+		});
 	}
 
 	static post(peerId, message)
 	{
-		let url = path(`/gate/chat/post/${peerId}/${encodeURIComponent(message)}`);
-		return fetch(url)
-			.then(response => response.json());
+		let url = path(`/gate/chat/peers/${peerId}/messages`);
+		return fetch(url, {body: message, method: "post"}).then(response =>
+		{
+			return response.ok ?
+				response.text()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
+		});
 	}
 
 	static received(peerId)
 	{
-		let url = path(`/gate/chat/received/${peerId}`);
-		fetch(url).then(response => response.json()).then(response =>
+		let url = path(`/gate/chat/peers/${peerId}/messages`);
+		return fetch(url, {method: "patch"}).then(response =>
 		{
-			if (response.status === 'error')
-				Message.error(response.message);
+			return response.ok ?
+				response.text()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
 		});
-	}
-
-	static summary(peerId)
-	{
-		let url = path(peerId ? `/gate/chat/summary/${peerId}`
-			: "/gate/chat/summary");
-		return fetch(url)
-			.then(response => response.json());
 	}
 }

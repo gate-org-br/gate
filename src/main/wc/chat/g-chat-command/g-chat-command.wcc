@@ -30,13 +30,11 @@ customElements.define('g-chat-command', class extends HTMLElement
 				{
 					if (Number(event.detail.receiver) === this.hostId)
 					{
-						GChatService.summary().then(response =>
+						GChatService.host().then(response =>
 						{
-							if (response.status === 'success')
-								this.unread = response.result.posted;
-							else
-								Message.error(response.error);
-						});
+							this.unread = response.unread;
+
+						}).catch(error => Message.error(response.error));
 					}
 				}
 			};
@@ -86,13 +84,11 @@ customElements.define('g-chat-command', class extends HTMLElement
 		window.addEventListener("ChatEvent", this._private.ChatEvent);
 		window.addEventListener("ChatReceivedEvent", this._private.ChatReceivedEvent);
 
-		GChatService.summary().then(response =>
+		GChatService.host().then(response =>
 		{
-			if (response.status === 'success')
-				this.unread = response.result.posted;
-			else
-				Message.error(response.error);
-		});
+			this.unread = response.unread;
+		}).catch(error => Message.error(response.error));
+
 	}
 
 	disconnectedCallback()

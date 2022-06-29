@@ -15,7 +15,6 @@ import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.sql.condition.Condition;
 import gate.sql.insert.Insert;
-import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
 import java.time.LocalDateTime;
@@ -25,10 +24,17 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/chat")
 public class ChatService
@@ -41,30 +47,57 @@ public class ChatService
 	private Event<AppEvent> event;
 
 	@GET
-	@Path("/peers")
+	@Path("/host")
 	@Produces("application/json")
-	public String peers()
+	public String host()
 	{
 		try
 		{
-			return new JsonObject()
-				.setString("status", "success")
-				.set("peers", control.getPeers())
-				.toString();
-		} catch (AppException ex)
+			return control.host().toString();
+		} catch (NotFoundException ex)
 		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
+			throw new BadRequestException(Response
+				.status(Response.Status.BAD_REQUEST)
+				.entity(ex.getMessage())
+				.build());
 		}
 	}
 
 	@GET
+	@Path("/peers")
 	@Produces("application/json")
-	@Path("/post/{peer}/{message}")
+	public Object peers()
+	{
+		return control.peers().toString();
+	}
+
+	@GET
+	@Produces("application/json")
+	@Path("/peers/{peer}/messages")
+	public String messages(@PathParam("peer") String peer)
+	{
+		return control.messages(new ID(peer)).stream()
+			.map(e -> new JsonObject()
+			.setInt("id", e.getId().getValue())
+			.set("sender", new JsonObject()
+				.setInt("id", e.getSender().getId().getValue())
+				.setString("name", e.getSender().getName()))
+			.set("receiver", new JsonObject()
+				.setInt("id", e.getReceiver().getId().getValue())
+				.setString("name", e.getReceiver().getName()))
+			.setString("text", e.getText())
+			.setString("status", e.getStatus().name())
+			.setString("date", Converter.toText(e.getDate())))
+			.collect(Collectors.toCollection(JsonArray::new))
+			.toString();
+	}
+
+	@POST
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/peers/{peer}/messages")
 	public String post(@PathParam("peer") String peer,
-		@PathParam("message") String message)
+		String message)
 	{
 		try
 		{
@@ -72,111 +105,32 @@ public class ChatService
 
 			event.fireAsync(new ChatEvent(msg));
 
-			return new JsonObject()
-				.setString("status", "success")
-				.setInt("id", msg.getId().getValue())
-				.toString();
+			return msg.getId().toString();
 		} catch (AppException ex)
 		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
+			throw new BadRequestException(Response
+				.status(Response.Status.BAD_REQUEST)
+				.entity(ex.getMessage())
+				.build());
 		}
 	}
 
-	@GET
-	@Path("/summary")
-	@Produces("application/json")
-	public String summary()
-	{
-		try
-		{
-			return new JsonObject()
-				.setString("status", "success")
-				.set("result", control.summary())
-				.toString();
-		} catch (AppException ex)
-		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
-		}
-	}
-
-	@GET
-	@Path("/summary/{peer}")
-	@Produces("application/json")
-	public String summary(@PathParam("peer") String peer)
-	{
-		try
-		{
-			return new JsonObject()
-				.setString("status", "success")
-				.set("result", control.summary(new ID(peer)))
-				.toString();
-		} catch (AppException ex)
-		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
-		}
-	}
-
-	@GET
-	@Path("/messages/{peer}")
-	@Produces("application/json")
-	public String messages(@PathParam("peer") String peer)
-	{
-		try
-		{
-			var messges = control.getMessages(new ID(peer));
-			var result = messges.stream()
-				.map(e -> new JsonObject()
-				.setInt("id", e.getId().getValue())
-				.set("sender", new JsonObject()
-					.setInt("id", e.getSender().getId().getValue())
-					.setString("name", e.getSender().getName()))
-				.set("receiver", new JsonObject()
-					.setInt("id", e.getReceiver().getId().getValue())
-					.setString("name", e.getReceiver().getName()))
-				.setString("text", e.getText())
-				.setString("status", e.getStatus().name())
-				.setString("date", Converter.toText(e.getDate())))
-				.collect(Collectors.toCollection(JsonArray::new));
-
-			return new JsonObject()
-				.setString("status", "success")
-				.set("messages", result)
-				.toString();
-		} catch (AppException ex)
-		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
-		}
-	}
-
-	@GET
-	@Path("/received/{peer}")
-	@Produces("application/json")
+	@PATCH
+	@Produces(MediaType.TEXT_PLAIN)
+	@Path("/peers/{peer}/messages")
 	public String received(@PathParam("peer") String peer)
 	{
 		try
 		{
 			control.received(new ID(peer));
-			return new JsonObject()
-				.setString("status", "success")
-				.toString();
+			return peer;
 		} catch (AppException ex)
 		{
-			return new JsonObject()
-				.setString("status", "error")
-				.setString("message", ex.getMessage())
-				.toString();
+			throw new BadRequestException(Response
+				.status(Response.Status.BAD_REQUEST)
+				.type(MediaType.TEXT_PLAIN)
+				.entity(ex.getMessage())
+				.build());
 		}
 	}
 
@@ -194,47 +148,51 @@ public class ChatService
 		@Inject
 		private Event<AppEvent> event;
 
-		private ID host() throws AppException
+		private ID getHostId() throws ForbiddenException
 		{
 			var host = getUser();
 			if (host == null)
-				throw new AppException("Tentativa de utilizar chat sem estar logado");
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
 			return host.getId();
 		}
 
-		public JsonObject summary() throws AppException
-		{
-			try ( ChatDao dao = new ChatDao())
-			{
-				return dao.summary(null, host());
-			}
-		}
-
-		public JsonObject summary(ID peer) throws AppException
-		{
-			try ( ChatDao dao = new ChatDao())
-			{
-				return dao.summary(peer, host());
-			}
-		}
-
-		public JsonArray getPeers() throws AppException
+		public JsonArray peers()
 		{
 			try ( PeerDao dao = new PeerDao())
 			{
-				return dao.search(host());
+				return dao.search(getHostId());
+			}
+		}
+
+		public List<Chat> messages(ID peer)
+		{
+			try ( ChatDao dao = new ChatDao())
+			{
+				return dao.search(getHostId(), peer);
+			}
+		}
+
+		public JsonObject host() throws NotFoundException
+		{
+			try ( PeerDao dao = new PeerDao())
+			{
+				return dao.select(getHostId());
 			}
 		}
 
 		public Chat post(ID peer, String message) throws AppException
 		{
-			try ( PeerDao peerDao = new PeerDao();
+			try ( UserDao userDao = new UserDao();
 				 ChatDao chatDao = new ChatDao())
 			{
 				var chat = new Chat();
 				chat.setSender(getUser());
 				chat.setStatus(Chat.Status.POSTED);
-				chat.setReceiver(peerDao.select(peer));
+				chat.setReceiver(userDao.select(peer));
 				chat.setDate(LocalDateTime.now());
 				chat.setText(message);
 				chatDao.insert(chat);
@@ -242,19 +200,11 @@ public class ChatService
 			}
 		}
 
-		public List<Chat> getMessages(ID peer) throws AppException
-		{
-			try ( ChatDao dao = new ChatDao())
-			{
-				return dao.search(host(), peer);
-			}
-		}
-
 		public void received(ID peer) throws AppException
 		{
 			try ( ChatDao dao = new ChatDao())
 			{
-				var host = host();
+				var host = getHostId();
 				dao.update(peer, host, Chat.Status.RECEIVED);
 				event.fireAsync(new ChatReceivedEvent(peer, host));
 			}
@@ -282,19 +232,12 @@ public class ChatService
 			}
 		}
 
-		public static class PeerDao extends Dao
+		public static class UserDao extends Dao
 		{
 
-			public PeerDao()
+			public UserDao()
 			{
 				super("Gate");
-			}
-
-			public JsonArray search(ID id)
-			{
-				return getLink().from(getClass().getResource("ChatService/PeerDao/search(ID).sql"))
-					.parameters(id, id)
-					.fetchJsonArray();
 			}
 
 			public User select(ID id) throws NotFoundException
@@ -304,6 +247,33 @@ public class ChatService
 					.fetchEntity(User.class)
 					.orElseThrow(NotFoundException::new);
 			}
+
+		}
+
+		public static class PeerDao extends Dao
+		{
+
+			public PeerDao()
+			{
+				super("Gate");
+			}
+
+			public JsonObject select(ID id)
+				throws NotFoundException
+			{
+				return getLink().from(getClass().getResource("ChatService/PeerDao/select(ID).sql"))
+					.parameters(id)
+					.fetchJsonObject()
+					.orElseThrow(NotFoundException::new);
+			}
+
+			public JsonArray search(ID id)
+			{
+				return getLink().from(getClass().getResource("ChatService/PeerDao/search(ID).sql"))
+					.parameters(id, id)
+					.fetchJsonArray();
+			}
+
 		}
 
 		public static class ChatDao extends Dao
@@ -312,22 +282,6 @@ public class ChatService
 			public ChatDao()
 			{
 				super("Gate");
-			}
-
-			public JsonObject summary(ID sender, ID receiver)
-				throws NotFoundException
-			{
-				return Select.expression("count(*)").as("messages")
-					.expression("coalesce(sum(status='POSTED'), 0)").as("posted")
-					.expression("coalesce(sum(status='RECEIVED'), 0)").as("received")
-					.from("gate.Chat")
-					.where(Condition
-						.of("Sender$id").eq(sender)
-						.and("Receiver$id").eq(receiver))
-					.build()
-					.connect(getLink())
-					.fetchJsonObject()
-					.orElseThrow(NotFoundException::new);
 			}
 
 			public List<Chat> search(ID host, ID peer)

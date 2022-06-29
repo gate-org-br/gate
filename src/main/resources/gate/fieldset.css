@@ -347,7 +347,9 @@ fieldset > label > form > input[type="CHECKBOX"] {
 fieldset > label > span > a,
 fieldset > label > form > a,
 fieldset > label > span > button,
-fieldset > label > form > button {
+fieldset > label > form > button,
+fieldset > label > span > .g-command,
+fieldset > label > form > .g-command {
   flex-grow: 0;
   display: flex;
   text-indent: 0;
@@ -355,12 +357,15 @@ fieldset > label > form > button {
   min-width: 32px;
   flex-basis: 32px;
   align-items: stretch;
+  text-decoration: none;
   justify-content: center;
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
 fieldset > label > span > button > i,
-fieldset > label > form > button > i {
+fieldset > label > form > button > i,
+fieldset > label > span > .g-command > i,
+fieldset > label > form > .g-command > i {
   flex-grow: 1;
   display: flex;
   text-indent: 0;
@@ -370,13 +375,17 @@ fieldset > label > form > button > i {
 fieldset > label > span > a:hover,
 fieldset > label > form > a:hover,
 fieldset > label > span > button:hover,
-fieldset > label > form > button:hover {
+fieldset > label > form > button:hover,
+fieldset > label > span > .g-command:hover,
+fieldset > label > form > .g-command:hover {
   background-color: var(--acent);
 }
 fieldset > label > span > a:focus,
 fieldset > label > form > a:focus,
 fieldset > label > span > button:focus,
-fieldset > label > form > button:focus {
+fieldset > label > form > button:focus,
+fieldset > label > span > .g-command:focus,
+fieldset > label > form > .g-command:focus {
   background-color: var(--hovered);
 }
 fieldset > label > span > i,

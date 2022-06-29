@@ -1648,64 +1648,6 @@
 		</attribute>
 	</tag>
 
-
-	<tag>
-		<name>selectx</name>
-		<body-content>scriptless</body-content>
-		<dynamic-attributes>true</dynamic-attributes>
-		<tag-class>gate.tags.property.SelectXTag</tag-class>
-		<description>
-			Creates a group of checkboxes bound
-			to the current screen specified property.
-		</description>
-		<attribute>
-			<name>property</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The current screen property to be synchronized
-				with the generated checkboxes.
-			</description>
-		</attribute>
-		<attribute>
-			<name>options</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				The list of options to be displayed. Defaults
-				to enum elements and boolean values. Required
-				for non enum, non boolean properties.
-			</description>
-		</attribute>
-		<attribute>
-			<name>values</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to extract the
-				value of each option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>labels</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to extract the
-				label of each option.
-			</description>
-		</attribute>
-		<attribute>
-			<name>sortby</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<description>
-				Optional lambda expression used to sort
-				select options.
-			</description>
-		</attribute>
-	</tag>
-
 	<tag>
 		<name>checkbox</name>
 		<body-content>empty</body-content>

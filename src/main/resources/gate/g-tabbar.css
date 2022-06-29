@@ -29,6 +29,7 @@ g-tabbar > .g-command {
   border-radius: 5px;
   white-space: nowrap;
   align-items: center;
+  text-decoration: none;
   flex-direction: column;
   justify-content: space-around;
 }

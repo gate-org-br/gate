@@ -24,6 +24,7 @@ g-icon-pane > :is(g-icon-pane, a, button) {
   order: 1;
   margin: 4px;
   padding: 4px;
+  color: black;
   height: 100px;
   display: flex;
   cursor: pointer;

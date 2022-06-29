@@ -129,12 +129,9 @@ customElements.define('g-chat-peer-list', class extends HTMLElement
 
 		if (!root.children.length)
 		{
-			GChatService.peers(this.hostId).then(response =>
+			GChatService.peers().then(response =>
 			{
-				if (response.status === 'error')
-					return Message.error(response.error);
-
-				response.peers.forEach(e =>
+				response.forEach(e =>
 				{
 					let peer = document.createElement("g-chat-peer");
 					peer.hostId = this.hostId;
@@ -144,7 +141,7 @@ customElements.define('g-chat-peer-list', class extends HTMLElement
 					peer.unread = e.unread;
 					div.appendChild(peer);
 				});
-			});
+			}).catch(error => Message.error(error.message));
 		} else
 			Array.from(root.children)
 				.forEach(e => div.appendChild(e));

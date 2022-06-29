@@ -33,7 +33,7 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 		Parameters queryString = Parameters.parse(request.getQueryString());
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
-		
+
 		String url = String.format("Gate?%s", queryString.toString());
 		Screen screen = (Screen) request.getAttribute("screen");
 
@@ -44,6 +44,7 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 			: (Page<?>) Property.getValue(screen, "page");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
+		string.add("<g-paginator>");
 		if (screen.isPOST())
 		{
 			if (!page.isFrst())
@@ -85,7 +86,7 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 					.add(String.format("&nbsp;&nbsp;<a href='%s&pageSize=%d&pageIndx=%d' title='&Uacute;ltimo'>&gt;&gt;</a>",
 						url, page.getPaginator().getPageSize(), page.getPaginator().getLastPageIndx()));
 		}
-
+		string.add("</g-paginator>");
 		handler.setBody(string.toString(), false);
 	}
 }

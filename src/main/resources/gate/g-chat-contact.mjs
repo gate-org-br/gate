@@ -146,7 +146,12 @@ customElements.define('g-chat-contact', class extends HTMLElement
 					if (!this.hasAttribute("hidden"))
 					{
 						event.detail.status = 'RECEIVED';
-						GChatService.received(this.peerId);
+						GChatService.received(this.peerId)
+							.then(response => {
+							}).catch(error =>
+						{
+							Message.error(error.message);
+						});
 					}
 
 					messages.add(event.detail.date, "REMOTE", event.detail.text, event.detail.status);
@@ -186,9 +191,12 @@ customElements.define('g-chat-contact', class extends HTMLElement
 			GChatService.post(this.peerId, message.value)
 				.then(response =>
 				{
-					if (response.status === 'error')
-						Message.error(response.message);
 					message.value = "";
+					message.enabled = true;
+				})
+				.catch(error =>
+				{
+					Message.error(error.message);
 					message.enabled = true;
 				});
 		};
@@ -261,11 +269,8 @@ customElements.define('g-chat-contact', class extends HTMLElement
 
 		GChatService.messages(this.peerId).then(response =>
 		{
-			if (response.status !== 'success')
-				return Message.error(response.error);
-
 			let messages = this.shadowRoot.querySelector("g-chat-message-list");
-			response.messages.forEach(e =>
+			response.forEach(e =>
 			{
 				if (Number(e.sender.id) === this.hostId)
 					messages.add(e.date, "LOCAL", e.text, e.status);
@@ -273,8 +278,13 @@ customElements.define('g-chat-contact', class extends HTMLElement
 					messages.add(e.date, "REMOTE", e.text, e.status);
 			});
 
-			GChatService.received(this.peerId);
-		});
+			GChatService.received(this.peerId)
+				.then(response => {
+				}).catch(error =>
+			{
+				Message.error(error.message);
+			});
+		}).catch(error => Message.error(error.message));
 	}
 
 	disconnectedCallback()
@@ -288,9 +298,15 @@ customElements.define('g-chat-contact', class extends HTMLElement
 	show()
 	{
 		this.removeAttribute("hidden");
-		GChatService.received(this.peerId);
-		this.shadowRoot.querySelector("g-chat-message-list")
-			.update('REMOTE', 'RECEIVED');
+		GChatService.received(this.peerId).then(response =>
+		{
+			this.shadowRoot
+				.querySelector("g-chat-message-list")
+				.update('REMOTE', 'RECEIVED');
+		}).catch(error =>
+		{
+			Message.error(error.message);
+		});
 	}
 
 	hide()

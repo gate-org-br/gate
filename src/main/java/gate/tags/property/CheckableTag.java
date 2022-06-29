@@ -41,30 +41,22 @@ public abstract class CheckableTag extends SelectorTag
 				.collect(Collectors.toList());
 
 		Attributes attributes = new Attributes();
-		attributes.put("class", "Checkable");
 		if (style != null)
 			attributes.put("style", style);
 
-		getJspContext().getOut().print("<ul " + attributes + ">");
+		getJspContext().getOut().print("<g-select>");
 
 		if (groups != null)
-		{
-
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
 				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
-			{
-				getJspContext().getOut().print("<li>");
-				getJspContext().getOut().print(Converter.toText(group.getKey()));
-				print(group.getValue());
-				getJspContext().getOut().print("</li>");
-			}
-		} else
-			print(options);
+				print(group.getValue(), 0);
+		else
+			print(options, 0);
 
-		getJspContext().getOut().print("</ul>");
+		getJspContext().getOut().print("</<g-select>");
 	}
 
-	private void print(Iterable<?> options) throws IOException, JspException
+	private void print(Iterable<?> options, int depth) throws IOException, JspException
 	{
 
 		for (Object option : options)
@@ -83,9 +75,8 @@ public abstract class CheckableTag extends SelectorTag
 
 			attributes.put("value", Converter.toString(value));
 
-			getJspContext().getOut().print("<li>");
-			getJspContext().getOut().print("<label>");
 			getJspContext().getOut().print(String.format("<input %s/>", attributes.toString()));
+			getJspContext().getOut().print("<label>");
 
 			if (getJspBody() != null)
 			{
@@ -102,13 +93,7 @@ public abstract class CheckableTag extends SelectorTag
 			getJspContext().getOut().print("</label>");
 
 			if (children != null)
-			{
-				getJspContext().getOut().print("<ul>");
-				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)));
-				getJspContext().getOut().print("</ul>");
-			}
-
-			getJspContext().getOut().print("</li>");
+				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)), depth + 1);
 		}
 	}
 

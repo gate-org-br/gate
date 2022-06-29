@@ -20,7 +20,6 @@ import "./g-block.mjs";
 
 import "./g-event-source.mjs";
 import "./g-select.mjs";
-import "./g-selectn.mjs";
 import "./g-digital-clock.mjs";
 import "./g-card.mjs";
 import "./g-card-pane.mjs";

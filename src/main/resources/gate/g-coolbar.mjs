@@ -43,21 +43,23 @@ template.innerHTML = `
 ::slotted(button),
 ::slotted(.g-command)
 {
+	margin: 2px;
+	height: 40px;
+	padding: 4px;
+	color: black;
 	display: flex;
-	margin: 2px !important;
-	height: 40px !important;
-	color: black !important;
-	padding: 4px !important;
-	flex: 0 1 auto !important;
-	font-size: 12px !important;
-	cursor: pointer !important;
-	min-width: 120px !important;
-	font-weight: bold !important;
-	font-style: normal !important;
-	border-radius: 5px !important;
-	align-items: center !important;
-	text-decoration: none !important;
-	justify-content: space-between !important;
+	flex: 0 1 auto;
+	font-size: 12px;
+	cursor: pointer;
+	min-width: 120px;
+	font-weight: bold;
+	font-style: normal;
+	border-radius: 5px;
+	align-items: center;
+	text-decoration: none;
+	justify-content: space-between;
+
+
 	border: 1px solid var(--g-coolbar-button-border-color) !important;
 	background-color: var(--g-coolbar-button-background-color) !important;
 	background-image: var(--g-coolbar-button-background-image) !important;
@@ -65,16 +67,15 @@ template.innerHTML = `
 
 ::slotted(progress)
 {
-	margin: 4px !important;
-	flex-grow: 1 !important;
+	margin: 4px;
+	flex-grow: 1;
 }
 
 ::slotted(hr)
 {
-	flex-grow: 1 !important;
-	border: none !important;
+	flex-grow: 1;
+	border: none;
 }
-
 
 ::slotted(:is(a, button, .g-command):hover)
 {
@@ -85,28 +86,28 @@ template.innerHTML = `
 
 ::slotted(:is(a, button, .g-command):focus)
 {
-	outline: none !important;
-	border: 2px solid var(--hovered) !important;
+	outline: none;
+	border: 2px solid var(--hovered);
 }
 
 ::slotted(:is(a, button, .g-command).Delete) {
-	color: var(--r) !important;
+	color: var(--r);
 }
 
 ::slotted(:is(a, button, .g-command).Commit) {
-	color: var(--g) !important;
+	color: var(--g);
 }
 
 ::slotted(:is(a, button, .g-command).Action) {
-	color: var(--b) !important;
+	color: var(--b);
 }
 
 ::slotted(:is(a, button, .g-command).Cancel) {
-	color: var(--r) !important;
+	color: var(--r);
 }
 
 ::slotted(:is(a, button, .g-command).Return) {
-	color: var(--r) !important;
+	color: var(--r);
 }
 
 ::slotted(*[hidden="true"])

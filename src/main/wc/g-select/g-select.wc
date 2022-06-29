@@ -1,26 +1,3 @@
 <template>
-	<div id='main'>
-		<div id='select'>
-			<label id='label'>
-				0 selecionados
-			</label>
-			<a id='link' href="#">
-				&#X2276;
-			</a>
-		</div>
-
-		<div id='modal'>
-			<div id='dialog'>
-				<div id='head'>
-					<a id='close' href="#">
-						&#X1011;
-					</a>
-				</div>
-				<div id='elements'>
-					<slot>
-					</slot>
-				</div>
-			</div>
-		</div>
-	</div>
+	<slot></slot>
 </template>
