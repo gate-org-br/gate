@@ -44,7 +44,7 @@ public abstract class CheckableTag extends SelectorTag
 		if (style != null)
 			attributes.put("style", style);
 
-		getJspContext().getOut().print("<g-select>");
+		getJspContext().getOut().print("<g-select " + getAttributes() + ">");
 
 		if (groups != null)
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
@@ -53,7 +53,7 @@ public abstract class CheckableTag extends SelectorTag
 		else
 			print(options, 0);
 
-		getJspContext().getOut().print("</<g-select>");
+		getJspContext().getOut().print("</g-select>");
 	}
 
 	private void print(Iterable<?> options, int depth) throws IOException, JspException
