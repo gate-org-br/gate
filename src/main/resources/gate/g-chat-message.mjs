@@ -47,13 +47,13 @@ footer
 {
 	align-self: flex-end;
 	background-color: #AACCAA;
+
 }
 
 :host([type=REMOTE])
 {
 	align-self: flex-start;
 	background-color: #FFFFFF;
-}
 
 :host([type=LOCAL]) footer::after
 {
@@ -72,7 +72,8 @@ footer
 {
 	color: #006600;
 	content: '\\1000';
-}</style>`;
+}
+</style>`;
 
 /* global customElements */
 
