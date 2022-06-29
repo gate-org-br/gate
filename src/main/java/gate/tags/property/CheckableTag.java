@@ -13,8 +13,6 @@ import javax.servlet.jsp.JspException;
 public abstract class CheckableTag extends SelectorTag
 {
 
-	private String style;
-
 	@Override
 	public void doTag() throws JspException, IOException
 	{
@@ -40,10 +38,6 @@ public abstract class CheckableTag extends SelectorTag
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
-		Attributes attributes = new Attributes();
-		if (style != null)
-			attributes.put("style", style);
-
 		getJspContext().getOut().print("<g-select " + getAttributes() + ">");
 
 		if (groups != null)
@@ -66,7 +60,6 @@ public abstract class CheckableTag extends SelectorTag
 				value = values.invoke(EL_CONTEXT, option);
 
 			Attributes attributes = new Attributes();
-			attributes.putAll(getAttributes());
 			attributes.put("type", getComponentType());
 			attributes.put("name", getName());
 
@@ -95,11 +88,6 @@ public abstract class CheckableTag extends SelectorTag
 			if (children != null)
 				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)), depth + 1);
 		}
-	}
-
-	public void setStyle(String style)
-	{
-		this.style = style;
 	}
 
 	protected abstract String getComponentType();
