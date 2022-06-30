@@ -149,6 +149,16 @@ customElements.define('g-chat-contact', class extends HTMLElement
 		window.addEventListener("LoginEvent", this._private.LoginEvent);
 		window.addEventListener("LogoffEvent", this._private.LogoffEvent);
 
+		if (!this.peerName || !this.peerStatus)
+		{
+			GChatService.peer(this.peerId)
+				.then(response =>
+				{
+					this.peerName = response.name;
+					this.peerStatus = response.status;
+				}).catch(error => Message.error(error.message));
+		}
+
 		GChatService.messages(this.peerId).then(response =>
 		{
 			let messages = this.shadowRoot.querySelector("g-chat-message-list");

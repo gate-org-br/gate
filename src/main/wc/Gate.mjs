@@ -69,9 +69,9 @@ import "./password.mjs";
 import "./datalist.mjs";
 
 import "./g-chat.mjs";
+import "./g-chat-dialog.mjs";
 import "./g-chat-notificator.mjs";
-import "./g-chat-command.mjs";
-import "./g-chat-contact-command.mjs";
+import "./g-chat-contact-dialog.mjs";
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {

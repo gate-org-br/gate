@@ -9,6 +9,5 @@ FROM
         AND Chat.Receiver$id = ?
         AND Chat.status = 'POSTED'
 WHERE
-    Uzer.id <> ? AND Uzer.active
+    Uzer.id = ?
 GROUP BY Uzer.id
-ORDER BY Uzer.name

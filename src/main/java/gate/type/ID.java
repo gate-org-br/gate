@@ -52,4 +52,14 @@ public class ID implements Serializable, Comparable<ID>
 	{
 		return this.value - id.value;
 	}
+
+	public static ID of(int value)
+	{
+		return new ID(value);
+	}
+
+	public static ID of(String value)
+	{
+		return new ID(value);
+	}
 }

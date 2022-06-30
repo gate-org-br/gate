@@ -1,5 +1,6 @@
 package gate;
 
+import gate.ChatService.PeerControl.PeerDao;
 import gate.base.Control;
 import gate.base.Dao;
 import gate.converter.Converter;
@@ -41,7 +42,13 @@ public class ChatService
 {
 
 	@Inject
-	private ChatControl control;
+	private HostControl hostControl;
+
+	@Inject
+	private PeerControl peerControl;
+
+	@Inject
+	private ChatControl messageControl;
 
 	@Inject
 	private Event<AppEvent> event;
@@ -53,7 +60,7 @@ public class ChatService
 	{
 		try
 		{
-			return control.host().toString();
+			return hostControl.select().toString();
 		} catch (NotFoundException ex)
 		{
 			throw new BadRequestException(Response
@@ -68,7 +75,24 @@ public class ChatService
 	@Produces("application/json")
 	public Object peers()
 	{
-		return control.peers().toString();
+		return peerControl.search().toString();
+	}
+
+	@GET
+	@Path("/peers/{peer}")
+	@Produces("application/json")
+	public Object peers(@PathParam("peer") String peer)
+	{
+		try
+		{
+			return peerControl.select(ID.of(peer)).toString();
+		} catch (NotFoundException ex)
+		{
+			throw new BadRequestException(Response
+				.status(Response.Status.BAD_REQUEST)
+				.entity(ex.getMessage())
+				.build());
+		}
 	}
 
 	@GET
@@ -76,7 +100,7 @@ public class ChatService
 	@Path("/peers/{peer}/messages")
 	public String messages(@PathParam("peer") String peer)
 	{
-		return control.messages(new ID(peer)).stream()
+		return messageControl.search(new ID(peer)).stream()
 			.map(e -> new JsonObject()
 			.setInt("id", e.getId().getValue())
 			.set("sender", new JsonObject()
@@ -101,7 +125,7 @@ public class ChatService
 	{
 		try
 		{
-			Chat msg = control.post(new ID(peer), message);
+			Chat msg = messageControl.insert(new ID(peer), message);
 
 			event.fireAsync(new ChatEvent(msg));
 
@@ -122,7 +146,7 @@ public class ChatService
 	{
 		try
 		{
-			control.received(new ID(peer));
+			messageControl.update(new ID(peer));
 			return peer;
 		} catch (AppException ex)
 		{
@@ -136,9 +160,126 @@ public class ChatService
 
 	public void post(String message, List<? extends User> peers) throws AppException
 	{
-		control.post(message, peers)
+		messageControl.post(message, peers)
 			.stream().map(ChatEvent::new)
 			.forEach(event::fireAsync);
+	}
+
+	@Dependent
+	public static class HostControl extends Control
+	{
+
+		@Inject
+		private Status status;
+
+		public JsonObject select() throws NotFoundException
+		{
+			if (getUser() == null)
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
+
+			try ( HostDao dao = new HostDao())
+			{
+				var result = dao.select(getUser());
+				result.setString("status", status
+					.get(ID.of(result.getInt("id")
+						.orElseThrow())).name());
+				return result;
+			}
+		}
+
+		public static class HostDao extends Dao
+		{
+
+			public HostDao()
+			{
+				super("Gate");
+			}
+
+			public JsonObject select(User host)
+				throws NotFoundException
+			{
+				return getLink().from(getClass().getResource("ChatService/HostDao/select(ID).sql"))
+					.parameters(host.getId())
+					.fetchJsonObject()
+					.orElseThrow(NotFoundException::new);
+			}
+		}
+	}
+
+	@Dependent
+	public static class PeerControl extends Control
+	{
+
+		@Inject
+		private Status status;
+
+		public JsonObject select(ID id) throws NotFoundException
+		{
+			if (getUser() == null)
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
+
+			try ( PeerDao dao = new PeerDao())
+			{
+				var peer = dao.select(getUser(), id);
+				peer.setString("status", status
+					.get(ID.of(peer.getInt("id")
+						.orElseThrow())).name());
+				return peer;
+			}
+		}
+
+		public JsonArray search()
+		{
+			if (getUser() == null)
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
+
+			try ( PeerDao dao = new PeerDao())
+			{
+				JsonArray peers = dao.search(getUser());
+				peers.stream().map(e -> (JsonObject) e)
+					.forEach(e -> e.setString("status",
+					status.get(ID.of(e.getInt("id")
+						.orElseThrow())).name()));
+				return peers;
+			}
+		}
+
+		public static class PeerDao extends Dao
+		{
+
+			public PeerDao()
+			{
+				super("Gate");
+			}
+
+			public JsonArray search(User host)
+			{
+				return getLink().from(getClass().getResource("ChatService/PeerDao/search(ID).sql"))
+					.parameters(host.getId(), host.getId())
+					.fetchJsonArray();
+			}
+
+			public JsonObject select(User host, ID peer) throws NotFoundException
+			{
+				return getLink().from(getClass().getResource("ChatService/PeerDao/select(ID, ID).sql"))
+					.parameters(host.getId(), peer)
+					.fetchJsonObject()
+					.orElseThrow(NotFoundException::new);
+			}
+
+		}
 	}
 
 	@Dependent
@@ -148,44 +289,30 @@ public class ChatService
 		@Inject
 		private Event<AppEvent> event;
 
-		private ID getHostId() throws ForbiddenException
+		public List<Chat> search(ID peer)
 		{
-			var host = getUser();
-			if (host == null)
+			if (getUser() == null)
 				throw new ForbiddenException(Response
 					.status(Response.Status.FORBIDDEN)
 					.entity("Tentativa de acessar chat sem estar logado")
 					.type(MediaType.TEXT_PLAIN)
 					.build());
-			return host.getId();
-		}
 
-		public JsonArray peers()
-		{
-			try ( PeerDao dao = new PeerDao())
-			{
-				return dao.search(getHostId());
-			}
-		}
-
-		public List<Chat> messages(ID peer)
-		{
 			try ( ChatDao dao = new ChatDao())
 			{
-				return dao.search(getHostId(), peer);
+				return dao.search(peer);
 			}
 		}
 
-		public JsonObject host() throws NotFoundException
+		public Chat insert(ID peer, String message) throws AppException
 		{
-			try ( PeerDao dao = new PeerDao())
-			{
-				return dao.select(getHostId());
-			}
-		}
+			if (getUser() == null)
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
 
-		public Chat post(ID peer, String message) throws AppException
-		{
 			try ( UserDao userDao = new UserDao();
 				 ChatDao chatDao = new ChatDao())
 			{
@@ -200,13 +327,19 @@ public class ChatService
 			}
 		}
 
-		public void received(ID peer) throws AppException
+		public void update(ID peer) throws AppException
 		{
+			if (getUser() == null)
+				throw new ForbiddenException(Response
+					.status(Response.Status.FORBIDDEN)
+					.entity("Tentativa de acessar chat sem estar logado")
+					.type(MediaType.TEXT_PLAIN)
+					.build());
+
 			try ( ChatDao dao = new ChatDao())
 			{
-				var host = getHostId();
-				dao.update(peer, host, Chat.Status.RECEIVED);
-				event.fireAsync(new ChatReceivedEvent(peer, host));
+				dao.update(peer, Chat.Status.RECEIVED);
+				event.fireAsync(new ChatReceivedEvent(peer, getUser().getId()));
 			}
 		}
 
@@ -250,32 +383,6 @@ public class ChatService
 
 		}
 
-		public static class PeerDao extends Dao
-		{
-
-			public PeerDao()
-			{
-				super("Gate");
-			}
-
-			public JsonObject select(ID id)
-				throws NotFoundException
-			{
-				return getLink().from(getClass().getResource("ChatService/PeerDao/select(ID).sql"))
-					.parameters(id)
-					.fetchJsonObject()
-					.orElseThrow(NotFoundException::new);
-			}
-
-			public JsonArray search(ID id)
-			{
-				return getLink().from(getClass().getResource("ChatService/PeerDao/search(ID).sql"))
-					.parameters(id, id)
-					.fetchJsonArray();
-			}
-
-		}
-
 		public static class ChatDao extends Dao
 		{
 
@@ -284,10 +391,10 @@ public class ChatService
 				super("Gate");
 			}
 
-			public List<Chat> search(ID host, ID peer)
+			public List<Chat> search(ID peer)
 			{
-				return getLink().from(getClass().getResource("ChatService/ChatDao/search(ID, ID).sql"))
-					.parameters(host, peer, host, peer)
+				return getLink().from(getClass().getResource("ChatService/ChatDao/search(ID).sql"))
+					.parameters(getUser().getId(), peer, getUser().getId(), peer)
 					.fetchEntityList(Chat.class);
 			}
 
@@ -305,12 +412,12 @@ public class ChatService
 					.ifPresent(chat::setId);
 			}
 
-			public void update(ID sender, ID receiver, Chat.Status status) throws ConstraintViolationException
+			public void update(ID peer, Chat.Status status) throws ConstraintViolationException
 			{
 				Update.table("Chat")
 					.set("status", status)
-					.where(Condition.of("Sender$id").eq(sender)
-						.and("Receiver$id").eq(receiver))
+					.where(Condition.of("Sender$id").eq(peer)
+						.and("Receiver$id").eq(getUser().getId()))
 					.build()
 					.connect(getLink())
 					.execute();

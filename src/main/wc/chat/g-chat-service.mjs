@@ -36,6 +36,20 @@ export default class GChatService
 		});
 	}
 
+	static peer(peerId)
+	{
+		let url = path(`/gate/chat/peers/${peerId}`);
+		return fetch(url).then(response =>
+		{
+			return response.ok ?
+				response.json()
+				: response.text().then(message =>
+			{
+				throw new Error(message);
+			});
+		});
+	}
+
 	static messages(peerId)
 	{
 		let url = path(`/gate/chat/peers/${peerId}/messages`);

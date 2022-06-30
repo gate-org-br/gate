@@ -50,6 +50,8 @@ g-window-section
 import './g-chat-contact.mjs';
 import './g-window-section.mjs';
 import GModal from './g-modal.mjs';
+import Message from './g-message.mjs';
+import GChatService from './g-chat-service.mjs';
 
 export default class GChatContactDialog extends GModal
 {
@@ -115,12 +117,15 @@ export default class GChatContactDialog extends GModal
 
 	connectedCallback()
 	{
-		let contact = this.shadowRoot.querySelector("g-chat-contact");
-		contact.hostId = this.hostId;
-		contact.hostName = this.hostName;
-		contact.peerId = this.peerId;
-		contact.peerName = this.peerName;
-		contact.peerStatus = this.peerStatus;
+		setTimeout(() =>
+		{
+			let contact = this.shadowRoot.querySelector("g-chat-contact");
+			contact.hostId = this.hostId;
+			contact.hostName = this.hostName;
+			contact.peerId = this.peerId;
+			contact.peerName = this.peerName;
+			contact.peerStatus = this.peerStatus;
+		}, 0);
 	}
 
 	static show(hostId, hostName, peerId, peerName, peerStatus)
@@ -145,15 +150,18 @@ window.addEventListener("click", event =>
 	{
 		event = event || window.event;
 		let action = event.target || event.srcElement;
-		action = action.closest("a[target=_chat_contact]");
+		action = action.closest("a[target=_chat-contact]");
 		if (action)
 		{
 			event.preventDefault();
 			event.stopPropagation();
-			GChatContactDialog.show(action.getAttribute("host-id"),
-				action.getAttribute("host-name"),
-				action.getAttribute("peer-id"),
-				action.getAttribute("peer-name"),
-				action.getAttribute("peer-status"));
+			GChatService.peer(action.getAttribute("data-peer-id"))
+				.then(response => GChatContactDialog
+						.show(action.getAttribute("data-host-id"),
+							action.getAttribute("data-host-name"),
+							action.getAttribute("data-peer-id"),
+							action.getAttribute("data-peer-name"),
+							response.status))
+				.catch(error => Message.error(error.message));
 		}
 	});

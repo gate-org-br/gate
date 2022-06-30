@@ -1,6 +1,6 @@
 SELECT
     id,
-    status,
+    active,
     Role$id as 'role.id',
     username,
     password,

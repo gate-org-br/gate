@@ -36,7 +36,6 @@ public class EnumerateProcessor extends TagModelProcessor
 				throw new TemplateProcessingException("Missing required enum class name on source attribute");
 
 			var type = Thread.currentThread().getContextClassLoader().loadClass(source);
-			var status = Optional.ofNullable(element.getAttributeValue("status")).orElse("status");
 			var target = Optional.ofNullable(element.getAttributeValue("target")).orElse("target");
 
 			removeTag(context, model, handler);

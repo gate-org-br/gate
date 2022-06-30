@@ -6,6 +6,7 @@ template.innerHTML = `
 	gap: 4px;
 	padding: 8px;
 	display: grid;
+	overflow: auto;
 	overflow-y: auto;
 	border-radius: 5px;
 	align-items: center;

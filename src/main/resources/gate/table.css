@@ -79,6 +79,18 @@ table tr th {
   background-color: var(--table-head-background-color);
   background-image: var(--table-head-background-image);
 }
+table tr th a,
+table tr th button,
+table tr th .g-command {
+  border: 0;
+  padding: 0;
+  color: var(--b);
+  font-size: 12px;
+  cursor: pointer;
+  background: none;
+  font-weight: normal;
+  text-decoration: none;
+}
 table tr td {
   padding: 4px;
   text-align: left;
@@ -120,6 +132,18 @@ table tr td.SEPARATOR {
   background-image: none;
   border: 1px dotted gray;
   background-color: #CBCAC9;
+}
+table tr td a,
+table tr td button,
+table tr td .g-command {
+  border: 0;
+  padding: 0;
+  color: var(--b);
+  font-size: 12px;
+  cursor: pointer;
+  background: none;
+  font-weight: normal;
+  text-decoration: none;
 }
 table > caption {
   height: 32px;

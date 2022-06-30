@@ -55,6 +55,8 @@ g-window-section
 import './g-chat-contact.mjs';
 import './g-window-section.mjs';
 import GModal from './g-modal.mjs';
+import Message from './g-message.mjs';
+import GChatService from './g-chat-service.mjs';
 
 export default class GChatDialog extends GModal
 {
@@ -108,15 +110,51 @@ customElements.define('g-chat-dialog', GChatDialog);
 
 
 window.addEventListener("click", event =>
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("a[target=_chat]");
+	if (action)
 	{
-		event = event || window.event;
-		let action = event.target || event.srcElement;
-		action = action.closest("a[target=_chat]");
-		if (action)
+		event.preventDefault();
+		event.stopPropagation();
+		GChatDialog.show(action.getAttribute("data-host-id"),
+			action.getAttribute("data-host-name"));
+	}
+});
+
+window.addEventListener("load", () =>
+{
+	Array.from(document.querySelectorAll("a[target=_chat]")).forEach(e =>
+	{
+		GChatService.host()
+			.then(response => e.innerHTML = response.unread ? `<i>&#X2015</i>Chat (${response.unread})` : "<i>&#X2015</i>Chat")
+			.catch(error => Message.error(error.message));
+	});
+});
+
+window.addEventListener("ChatEvent", event =>
+{
+	Array.from(document.querySelectorAll("a[target=_chat]")).forEach(e =>
+	{
+		if (Number(event.detail.receiver) === Number(e.getAttribute("data-host-id")))
 		{
-			event.preventDefault();
-			event.stopPropagation();
-			GChatDialog.show(action.getAttribute("host-id"),
-				action.getAttribute("host-name"));
+			GChatService.host()
+				.then(response => e.innerHTML = response.unread ? `<i>&#X2015</i>Chat (${response.unread})` : "<i>&#X2015</i>Chat")
+				.catch(error => Message.error(error.message));
 		}
 	});
+});
+
+window.addEventListener("ChatReceivedEvent", event =>
+{
+	Array.from(document.querySelectorAll("a[target=_chat]")).forEach(e =>
+	{
+		if (Number(event.detail.receiver) === Number(e.getAttribute("data-host-id")))
+		{
+			GChatService.host()
+				.then(response => e.innerHTML = response.unread ? `<i>&#X2015</i>Chat (${response.unread})` : "<i>&#X2015</i>Chat")
+				.catch(error => Message.error(error.message));
+		}
+	});
+});
