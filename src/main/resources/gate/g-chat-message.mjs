@@ -54,6 +54,7 @@ footer
 {
 	align-self: flex-start;
 	background-color: #FFFFFF;
+}
 
 :host([type=LOCAL]) footer::after
 {

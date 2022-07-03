@@ -4,8 +4,8 @@
 	margin-top: 16px;
 	border-radius: 8px 8px 0 0;
 	grid-template-rows: auto 1fr;
-	background-color: var(--g-tab-control-background-color) !important;
-	border: 4px solid var(--g-tab-control-background-color) !important;
+	background-color: var(--g-tab-control-background-color);
+	border: 4px solid var(--g-tab-control-background-color);
 }
 
 :host(:first-child)
@@ -26,8 +26,8 @@ header
 	display: none;
 	padding : 10px;
 	overflow: hidden;
-	background-color: var(--g-tab-control-tab-background-color) !important;
-	background-image: var(--g-tab-control-tab-background-image) !important;
+	background-color: var(--g-tab-control-tab-background-color);
+	background-image: var(--g-tab-control-tab-background-image);
 }
 
 :host([type='dummy']) ::slotted(div)
@@ -38,24 +38,24 @@ header
 ::slotted(:is(a, button))
 {
 	width: 50%;
-	border: none !important;
-	padding: 5px !important;
-	display: flex !important;
-	cursor: pointer !important;
+	border: none;
+	padding: 5px;
+	display: flex;
+	cursor: pointer;
 	font-size: 12px;
 	flex-basis: 50%;
 	align-items: center;
-	text-decoration: none !important;
-	border-radius: 8px 8px 0 0 !important;
-	justify-content: space-between !important;
-	color: var(--g-tab-control-button-color) !important;
-	background-color: var(--g-tab-control-button-background-color) !important;
-	background-image: var(--g-tab-control-button-background-image) !important;
+	text-decoration: none;
+	border-radius: 8px 8px 0 0;
+	justify-content: space-between;
+	color: var(--g-tab-control-button-color);
+	background-color: var(--g-tab-control-button-background-color);
+	background-image: var(--g-tab-control-button-background-image);
 }
 
 ::slotted(:is(a, button):hover)
 {
-	color: var(--g-tab-control-hovered-button-color) !important;
+	color: var(--g-tab-control-hovered-button-color);
 }
 
 ::slotted(:is(a, button):focus)
@@ -67,8 +67,8 @@ header
 ::slotted(:is(a, button)[data-selected=true])
 {
 	font-weight: bold !important;
-	background-color: var(--g-tab-control-tab-background-color) !important;
-	background-image: var(--g-tab-control-tab-background-image) !important;
+	background-color: var(--g-tab-control-tab-background-color);
+	background-image: var(--g-tab-control-tab-background-image);
 }
 
 @media only screen and (min-width: 768px)
