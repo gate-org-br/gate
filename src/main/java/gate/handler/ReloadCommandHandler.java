@@ -1,12 +1,10 @@
 package gate.handler;
 
-import gate.io.URL;
 import gate.command.ReloadCommand;
-import gate.handler.Handler;
+import gate.io.URL;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 

@@ -70,13 +70,13 @@ header
 
 ::slotted(:is(a, button):focus)
 {
-	border: none !important;
-	outline: none !important;
+	border: none;
+	outline: none;
 }
 
 ::slotted(:is(a, button)[data-selected=true])
 {
-	font-weight: bold !important;
+	font-weight: bold;
 	background-color: var(--g-tab-control-tab-background-color);
 	background-image: var(--g-tab-control-tab-background-image);
 }
