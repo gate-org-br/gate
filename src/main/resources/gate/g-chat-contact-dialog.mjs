@@ -8,8 +8,6 @@ template.innerHTML = `
 			</a>
 		</g-window-header>
 		<g-window-section>
-			<g-chat-contact>
-			</g-chat-contact>
 		</g-window-section>
 	</main>
  <style>:host(*) {
@@ -59,7 +57,7 @@ export default class GChatContactDialog extends GModal
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = template.innerHTML;
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
 		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
@@ -117,15 +115,20 @@ export default class GChatContactDialog extends GModal
 
 	connectedCallback()
 	{
-		setTimeout(() =>
-		{
-			let contact = this.shadowRoot.querySelector("g-chat-contact");
-			contact.hostId = this.hostId;
-			contact.hostName = this.hostName;
-			contact.peerId = this.peerId;
-			contact.peerName = this.peerName;
-			contact.peerStatus = this.peerStatus;
-		}, 0);
+		let contact = document.createElement("g-chat-contact");
+		contact.hostId = this.hostId;
+		contact.hostName = this.hostName;
+		contact.peerId = this.peerId;
+		contact.peerName = this.peerName;
+		contact.peerStatus = this.peerStatus;
+		this.shadowRoot.querySelector("g-window-section")
+			.appendChild(contact);
+	}
+
+	disconnectedCallback()
+	{
+		this.shadowRoot.querySelector("g-window-section")
+			.firstElementChild.remove();
 	}
 
 	static show(hostId, hostName, peerId, peerName, peerStatus)
@@ -147,21 +150,21 @@ customElements.define('g-chat-contact-dialog', GChatContactDialog);
 
 
 window.addEventListener("click", event =>
+{
+	event = event || window.event;
+	let action = event.target || event.srcElement;
+	action = action.closest("a[target=_chat-contact]");
+	if (action)
 	{
-		event = event || window.event;
-		let action = event.target || event.srcElement;
-		action = action.closest("a[target=_chat-contact]");
-		if (action)
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			GChatService.peer(action.getAttribute("data-peer-id"))
-				.then(response => GChatContactDialog
-						.show(action.getAttribute("data-host-id"),
-							action.getAttribute("data-host-name"),
-							action.getAttribute("data-peer-id"),
-							action.getAttribute("data-peer-name"),
-							response.status))
-				.catch(error => Message.error(error.message));
-		}
-	});
+		event.preventDefault();
+		event.stopPropagation();
+		GChatService.peer(action.getAttribute("data-peer-id"))
+			.then(response => GChatContactDialog
+					.show(action.getAttribute("data-host-id"),
+						action.getAttribute("data-host-name"),
+						action.getAttribute("data-peer-id"),
+						action.getAttribute("data-peer-name"),
+						response.status))
+			.catch(error => Message.error(error.message));
+	}
+});

@@ -7,8 +7,6 @@
 			</a>
 		</g-window-header>
 		<g-window-section>
-			<g-chat-contact>
-			</g-chat-contact>
 		</g-window-section>
 	</main>
 </template>
