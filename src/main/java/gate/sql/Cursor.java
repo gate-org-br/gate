@@ -3,8 +3,8 @@ package gate.sql;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
-import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.mapper.Mapper;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -12,8 +12,10 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Enables iteration over the results of a query.
@@ -37,9 +39,23 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	@Override
-	public <T> Stream<T> stream(Extractor<T> extractor)
+	public <T> Stream<T> stream(Mapper<T> mapper)
 	{
-		return extractor.extract(this);
+		return StreamSupport.stream(new CursorSpliterator<T>()
+		{
+			@Override
+			public boolean tryAdvance(Consumer<? super T> action)
+			{
+				if (!next())
+					return false;
+
+				action.accept(mapper.apply(Cursor.this));
+
+				return true;
+
+			}
+
+		}, false);
 	}
 
 	@Override
@@ -93,7 +109,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the current column index to be read on the next read operation.
 	 *
-	 * @return the current column index to be read on the next read operation
+	 * @return the current column index to be read on the next read
+	 * operation
 	 */
 	public int getCurrentColumnIndex()
 	{
@@ -149,7 +166,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Move to the next record of the query result.
 	 *
-	 * @return true if there is a next record to be moved to, false otherwise
+	 * @return true if there is a next record to be moved to, false
+	 * otherwise
 	 */
 	public boolean next()
 	{
@@ -210,7 +228,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current column value and moves the column index to the next column.
+	 * Reads the current column value and moves the column index to the next
+	 * column.
 	 *
 	 * @return the value of the current column
 	 */
@@ -220,12 +239,14 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current column value as an object of the specified type and moves the column index to the next column.
+	 * Reads the current column value as an object of the specified type and
+	 * moves the column index to the next column.
 	 *
-	 * 
+	 *
 	 * @param type type of the object to be read
 	 *
-	 * @return the value of the current column as an object of the specified type
+	 * @return the value of the current column as an object of the specified
+	 * type
 	 */
 	public <T> T getCurrentValue(Class<T> type)
 	{
@@ -535,7 +556,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * 
+	 *
 	 * @param type type of the object to be read
 	 * @param columnIndex index of the column to be read
 	 *
@@ -555,7 +576,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * 
+	 *
 	 * @param type type of the object to be read
 	 * @param columnName name of the column to be read
 	 *
@@ -718,7 +739,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the names of columns of the cursor.
 	 *
-	 * @return a java array with the names of the columns associated with this cursor
+	 * @return a java array with the names of the columns associated with
+	 * this cursor
 	 */
 	public String[] getColumnNames()
 	{
@@ -738,7 +760,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the default java types of the columns of the cursor.
 	 *
-	 * @return a java array with the default java types of the columns of the cursor
+	 * @return a java array with the default java types of the columns of
+	 * the cursor
 	 */
 	public Class<?>[] getColumnTypes()
 	{
@@ -791,13 +814,15 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with the specified properties set to their respective column values.
+	 * Reads the current row as a java object of the specified type with the
+	 * specified properties set to their respective column values.
 	 *
-	 * 
+	 *
 	 * @param type type of the entity to be read
 	 * @param properties entity properties to be read
 	 *
-	 * @return the current as a java object of the specified type with the specified properties set to their respective column values
+	 * @return the current as a java object of the specified type with the
+	 * specified properties set to their respective column values
 	 */
 	public <T> T getEntity(Class<T> type, List<Property> properties)
 	{
@@ -832,5 +857,19 @@ public class Cursor implements AutoCloseable, Fetchable
 		{
 			throw new UnsupportedOperationException(ex);
 		}
+	}
+
+	/**
+	 * Reads the current row as a java object of the specified type with
+	 * it's property values matched to their respective column values.
+	 *
+	 * @param type type of the entity to be read
+	 *
+	 * @return the current row as a java object of the specified type with
+	 * it's property values matched to their respective column values.
+	 */
+	public <T> T getEntity(Class<T> type)
+	{
+		return getEntity(type, getProperties(type));
 	}
 }

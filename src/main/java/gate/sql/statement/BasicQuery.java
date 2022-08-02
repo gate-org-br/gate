@@ -2,8 +2,8 @@ package gate.sql.statement;
 
 import gate.sql.Command;
 import gate.sql.Link;
-import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.mapper.Mapper;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -108,25 +108,23 @@ class BasicQuery implements Query
 			@Override
 			public <T> T fetch(Fetcher<T> fetcher)
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetch(fetcher);
 				}
 			}
 
 			@Override
-			public <T> Stream<T> stream(Extractor<T> extractor)
+			public <T> Stream<T> stream(Mapper<T> mapper)
 			{
-				try (Command command = createCommand())
-				{
-					return command.stream(extractor);
-				}
+				Command command = createCommand();
+				return command.stream(mapper).onClose(() -> command.close());
 			}
 
 			@Override
 			public char fetchChar()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchChar();
 				}
@@ -135,7 +133,7 @@ class BasicQuery implements Query
 			@Override
 			public boolean fetchBoolean()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchBoolean();
 				}
@@ -144,7 +142,7 @@ class BasicQuery implements Query
 			@Override
 			public byte fetchByte()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchByte();
 				}
@@ -153,7 +151,7 @@ class BasicQuery implements Query
 			@Override
 			public short fetchShort()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchShort();
 				}
@@ -162,7 +160,7 @@ class BasicQuery implements Query
 			@Override
 			public int fetchInt()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchInt();
 				}
@@ -171,7 +169,7 @@ class BasicQuery implements Query
 			@Override
 			public long fetchLong()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchLong();
 				}
@@ -180,7 +178,7 @@ class BasicQuery implements Query
 			@Override
 			public float fetchFloat()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchFloat();
 				}
@@ -189,7 +187,7 @@ class BasicQuery implements Query
 			@Override
 			public double fetchDouble()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchDouble();
 				}
@@ -266,25 +264,23 @@ class BasicQuery implements Query
 			@Override
 			public <T> T fetch(Fetcher<T> fetcher)
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetch(fetcher);
 				}
 			}
 
 			@Override
-			public <T> Stream<T> stream(Extractor<T> extractor)
+			public <T> Stream<T> stream(Mapper<T> mapper)
 			{
-				try (Command command = createCommand())
-				{
-					return command.stream(extractor);
-				}
+				Command command = createCommand();
+				return command.stream(mapper).onClose(() -> command.close());
 			}
 
 			@Override
 			public char fetchChar()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchChar();
 				}
@@ -293,7 +289,7 @@ class BasicQuery implements Query
 			@Override
 			public boolean fetchBoolean()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchBoolean();
 				}
@@ -302,7 +298,7 @@ class BasicQuery implements Query
 			@Override
 			public byte fetchByte()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchByte();
 				}
@@ -311,7 +307,7 @@ class BasicQuery implements Query
 			@Override
 			public short fetchShort()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchShort();
 				}
@@ -320,7 +316,7 @@ class BasicQuery implements Query
 			@Override
 			public int fetchInt()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchInt();
 				}
@@ -329,7 +325,7 @@ class BasicQuery implements Query
 			@Override
 			public long fetchLong()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchLong();
 				}
@@ -338,7 +334,7 @@ class BasicQuery implements Query
 			@Override
 			public float fetchFloat()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchFloat();
 				}
@@ -347,7 +343,7 @@ class BasicQuery implements Query
 			@Override
 			public double fetchDouble()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchDouble();
 				}
@@ -424,25 +420,23 @@ class BasicQuery implements Query
 			@Override
 			public <T> T fetch(Fetcher<T> fetcher)
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetch(fetcher);
 				}
 			}
 
 			@Override
-			public <T> Stream<T> stream(Extractor<T> extractor)
+			public <T> Stream<T> stream(Mapper<T> mapper)
 			{
-				try (Command command = createCommand())
-				{
-					return command.stream(extractor);
-				}
+				Command command = createCommand();
+				return command.stream(mapper).onClose(() -> command.close());
 			}
 
 			@Override
 			public char fetchChar()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchChar();
 				}
@@ -451,7 +445,7 @@ class BasicQuery implements Query
 			@Override
 			public boolean fetchBoolean()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchBoolean();
 				}
@@ -460,7 +454,7 @@ class BasicQuery implements Query
 			@Override
 			public byte fetchByte()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchByte();
 				}
@@ -469,7 +463,7 @@ class BasicQuery implements Query
 			@Override
 			public short fetchShort()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchShort();
 				}
@@ -478,7 +472,7 @@ class BasicQuery implements Query
 			@Override
 			public int fetchInt()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchInt();
 				}
@@ -487,7 +481,7 @@ class BasicQuery implements Query
 			@Override
 			public long fetchLong()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchLong();
 				}
@@ -496,7 +490,7 @@ class BasicQuery implements Query
 			@Override
 			public float fetchFloat()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchFloat();
 				}
@@ -505,7 +499,7 @@ class BasicQuery implements Query
 			@Override
 			public double fetchDouble()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchDouble();
 				}
@@ -548,25 +542,23 @@ class BasicQuery implements Query
 			@Override
 			public <T> T fetch(Fetcher<T> fetcher)
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetch(fetcher);
 				}
 			}
 
 			@Override
-			public <T> Stream<T> stream(Extractor<T> extractor)
+			public <T> Stream<T> stream(Mapper<T> mapper)
 			{
-				try (Command command = createCommand())
-				{
-					return command.stream(extractor);
-				}
+				Command command = createCommand();
+				return command.stream(mapper).onClose(() -> command.close());
 			}
 
 			@Override
 			public char fetchChar()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchChar();
 				}
@@ -575,7 +567,7 @@ class BasicQuery implements Query
 			@Override
 			public boolean fetchBoolean()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchBoolean();
 				}
@@ -584,7 +576,7 @@ class BasicQuery implements Query
 			@Override
 			public byte fetchByte()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchByte();
 				}
@@ -593,7 +585,7 @@ class BasicQuery implements Query
 			@Override
 			public short fetchShort()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchShort();
 				}
@@ -602,7 +594,7 @@ class BasicQuery implements Query
 			@Override
 			public int fetchInt()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchInt();
 				}
@@ -611,7 +603,7 @@ class BasicQuery implements Query
 			@Override
 			public long fetchLong()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchLong();
 				}
@@ -620,7 +612,7 @@ class BasicQuery implements Query
 			@Override
 			public float fetchFloat()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchFloat();
 				}
@@ -629,7 +621,7 @@ class BasicQuery implements Query
 			@Override
 			public double fetchDouble()
 			{
-				try (Command command = createCommand())
+				try ( Command command = createCommand())
 				{
 					return command.fetchDouble();
 				}
