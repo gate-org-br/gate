@@ -73,6 +73,7 @@ a, button, .g-command
 	font-weight: bold;
 	align-items: center;
 	text-decoration: none;
+	justify-content: space-between;
 }
 
 
@@ -83,7 +84,7 @@ a:hover, button:hover, .g-command:hover
 
 
 i {
-	order: -1;
+	order: 1;
 	font-family: gate;
 	margin-right: 8px;
 	font-size: inherit;
