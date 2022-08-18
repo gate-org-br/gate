@@ -8,7 +8,7 @@ import gate.annotation.Tooltip;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionEception;
+import gate.error.UncheckedConversionException;
 import gate.util.Icons;
 import gate.util.Toolkit;
 import java.time.LocalDate;
@@ -66,7 +66,7 @@ public class TagLib
 					temporal = Converter.fromString(LocalDateTime.class, (String) temporal);
 		} catch (ConversionException ex)
 		{
-			throw new UncheckedConversionEception(ex);
+			throw new UncheckedConversionException(ex);
 		}
 
 		if (temporal instanceof LocalDateTime)

@@ -4,7 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionEception;
+import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
 import java.util.Collection;
@@ -251,9 +251,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 			return Optional.ofNullable(get(key))
 				.filter(e -> e instanceof JsonString)
 				.map(e -> (JsonString) e)
-				.map(e -> UncheckedConversionEception.execute(()
+				.map(e -> UncheckedConversionException.execute(()
 				-> gate.converter.Converter.fromString(type, e.toString())));
-		} catch (UncheckedConversionEception ex)
+		} catch (UncheckedConversionException ex)
 		{
 			throw ex.getCause();
 		}

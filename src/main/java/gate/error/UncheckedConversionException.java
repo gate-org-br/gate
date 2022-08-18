@@ -2,12 +2,12 @@ package gate.error;
 
 import java.io.UncheckedIOException;
 
-public class UncheckedConversionEception extends UncheckedIOException
+public class UncheckedConversionException extends UncheckedIOException
 {
 
 	private static final long serialVersionUID = 1L;
 
-	public UncheckedConversionEception(ConversionException cause)
+	public UncheckedConversionException(ConversionException cause)
 	{
 		super(cause);
 	}
@@ -25,7 +25,7 @@ public class UncheckedConversionEception extends UncheckedIOException
 			executor.execute();
 		} catch (ConversionException ex)
 		{
-			throw new UncheckedConversionEception(ex);
+			throw new UncheckedConversionException(ex);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class UncheckedConversionEception extends UncheckedIOException
 			return executor.get();
 		} catch (ConversionException ex)
 		{
-			throw new UncheckedConversionEception(ex);
+			throw new UncheckedConversionException(ex);
 		}
 	}
 

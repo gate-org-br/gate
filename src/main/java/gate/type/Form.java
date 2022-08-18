@@ -5,7 +5,7 @@ import gate.annotation.Icon;
 import gate.converter.custom.FormConverter;
 import gate.error.AppException;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionEception;
+import gate.error.UncheckedConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import java.io.Serializable;
@@ -52,9 +52,9 @@ public class Form implements Serializable
 			return new Form().setFields(JsonArray.parse(string)
 				.stream()
 				.map(e -> (JsonObject) e)
-				.map(e -> UncheckedConversionEception.execute(() -> Field.parse(e)))
+				.map(e -> UncheckedConversionException.execute(() -> Field.parse(e)))
 				.collect(Collectors.toList()));
-		} catch (UncheckedConversionEception ex)
+		} catch (UncheckedConversionException ex)
 		{
 			throw ex.getCause();
 		}
