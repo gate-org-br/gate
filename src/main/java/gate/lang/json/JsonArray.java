@@ -246,7 +246,7 @@ public class JsonArray implements List<JsonElement>, JsonElement
 
 	public JsonArray addJsonElement(JsonElement value)
 	{
-		add(value != null ? JsonNull.INSTANCE : value);
+		add(value != null ? value : JsonNull.INSTANCE);
 		return this;
 	}
 
