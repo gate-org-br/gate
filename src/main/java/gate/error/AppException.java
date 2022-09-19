@@ -1,8 +1,8 @@
 package gate.error;
 
-import gate.annotation.Handler;
+import gate.annotation.Catcher;
+import gate.catcher.AppExceptionCatcher;
 import gate.converter.Converter;
-import gate.handler.AppExceptionHandler;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -10,9 +10,10 @@ import java.util.Objects;
 /**
  * Signals that an application level exception of some sort has occurred.
  * <p>
- * This class is the general class of application level exceptions produced by user actions.
+ * This class is the general class of application level exceptions produced by
+ * user actions.
  */
-@Handler(AppExceptionHandler.class)
+@Catcher(AppExceptionCatcher.class)
 public class AppException extends Exception
 {
 
@@ -20,11 +21,14 @@ public class AppException extends Exception
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs an AppException with the specified cause and detail messages.
+	 * Constructs an AppException with the specified cause and detail
+	 * messages.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is permitted,
-	 * and indicates that the cause is nonexistent or unknown.
-	 * @param messages The detail messages, which are saved for later retrieval by the getMessages() method
+	 * @param cause The cause, which is saved for later retrieval by the
+	 * getCause() method. A null value is permitted, and indicates that the
+	 * cause is nonexistent or unknown.
+	 * @param messages The detail messages, which are saved for later
+	 * retrieval by the getMessages() method
 	 */
 	public AppException(Throwable cause, List<String> messages)
 	{
@@ -34,12 +38,14 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Constructs an AppException with the specified cause and detail message.
+	 * Constructs an AppException with the specified cause and detail
+	 * message.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is permitted,
-	 * and indicates that the cause is nonexistent or unknown.
-	 * @param message The detail message, which are saved for later retrieval by the getMessages() or getMessage()
-	 * method
+	 * @param cause The cause, which is saved for later retrieval by the
+	 * getCause() method. A null value is permitted, and indicates that the
+	 * cause is nonexistent or unknown.
+	 * @param message The detail message, which are saved for later
+	 * retrieval by the getMessages() or getMessage() method
 	 */
 	public AppException(Throwable cause, String message)
 	{
@@ -49,11 +55,14 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Constructs an AppException with the specified detail message formatted with the specified parameters.
+	 * Constructs an AppException with the specified detail message
+	 * formatted with the specified parameters.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is permitted,
-	 * and indicates that the cause is nonexistent or unknown.
-	 * @param message The detail message, which is saved for later retrieval by the getMessages() or getMessage() method
+	 * @param cause The cause, which is saved for later retrieval by the
+	 * getCause() method. A null value is permitted, and indicates that the
+	 * cause is nonexistent or unknown.
+	 * @param message The detail message, which is saved for later retrieval
+	 * by the getMessages() or getMessage() method
 	 * @param parameters parameters to formatted into the detail message
 	 *
 	 * @see java.util.Formatter
@@ -66,9 +75,11 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Constructs an AppException with the specified detail message formatted with the specified parameters.
+	 * Constructs an AppException with the specified detail message
+	 * formatted with the specified parameters.
 	 *
-	 * @param message The detail message, which is saved for later retrieval by the getMessages() or getMessage() method
+	 * @param message The detail message, which is saved for later retrieval
+	 * by the getMessages() or getMessage() method
 	 * @param parameters parameters to formatted into the detail message
 	 *
 	 * @see java.util.Formatter
@@ -82,7 +93,8 @@ public class AppException extends Exception
 	/**
 	 * Constructs an AppException with the specified detail messages.
 	 *
-	 * @param messages The detail messages, which are saved for later retrieval by the getMessages() method
+	 * @param messages The detail messages, which are saved for later
+	 * retrieval by the getMessages() method
 	 */
 	public AppException(List<String> messages)
 	{
@@ -93,8 +105,8 @@ public class AppException extends Exception
 	/**
 	 * Constructs an AppException with the specified detail message.
 	 *
-	 * @param message The detail message, which are saved for later retrieval by the getMessages() or getMessage()
-	 * method
+	 * @param message The detail message, which are saved for later
+	 * retrieval by the getMessages() or getMessage() method
 	 */
 	public AppException(String message)
 	{
@@ -124,11 +136,13 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Throws an AppException with the specified message if the specified object is null.
+	 * Throws an AppException with the specified message if the specified
+	 * object is null.
 	 *
-	 * 
+	 *
 	 * @param object object to be tested for null
-	 * @param message message of the AppException to be generated if the specified object is null
+	 * @param message message of the AppException to be generated if the
+	 * specified object is null
 	 *
 	 * @return the same object passed as the first parameter
 	 *
@@ -142,10 +156,12 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Throws an AppException with the specified message if the specified assertion is false.
+	 * Throws an AppException with the specified message if the specified
+	 * assertion is false.
 	 *
 	 * @param assertion the assertion to be checked
-	 * @param message message of the AppException to be generated if the specified assertion is false
+	 * @param message message of the AppException to be generated if the
+	 * specified assertion is false
 	 *
 	 * @throws gate.error.AppException if the specified assertion is false
 	 */
@@ -156,10 +172,12 @@ public class AppException extends Exception
 	}
 
 	/**
-	 * Throws an AppException with the specified message if the specified assertion is true.
+	 * Throws an AppException with the specified message if the specified
+	 * assertion is true.
 	 *
 	 * @param assertion the assertion to be checked
-	 * @param message message of the AppException to be generated if the specified assertion is true
+	 * @param message message of the AppException to be generated if the
+	 * specified assertion is true
 	 *
 	 * @throws gate.error.AppException if the specified assertion is true
 	 */

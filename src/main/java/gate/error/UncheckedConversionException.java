@@ -12,6 +12,11 @@ public class UncheckedConversionException extends UncheckedIOException
 		super(cause);
 	}
 
+	public UncheckedConversionException(String message)
+	{
+		super(new ConversionException(message));
+	}
+
 	@Override
 	public ConversionException getCause()
 	{

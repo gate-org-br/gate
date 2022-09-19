@@ -1,8 +1,12 @@
 package gate.error;
 
+import gate.annotation.Catcher;
+import gate.catcher.NotFoundExceptionCatcher;
+
 /**
  * Signals that a requested resource could not be found.
  */
+@Catcher(NotFoundExceptionCatcher.class)
 public class NotFoundException extends AppException
 {
 
@@ -27,9 +31,10 @@ public class NotFoundException extends AppException
 	}
 
 	/**
-	 * Throws an NotFoundException with the specified message if the specified object is null.
+	 * Throws an NotFoundException with the specified message if the
+	 * specified object is null.
 	 *
-	 * 
+	 *
 	 * @param object object to be tested for null
 	 *
 	 * @return the same object passed as the first parameter
@@ -44,11 +49,13 @@ public class NotFoundException extends AppException
 	}
 
 	/**
-	 * Throws an NotFoundException with the specified message if the specified assertion is false.
+	 * Throws an NotFoundException with the specified message if the
+	 * specified assertion is false.
 	 *
 	 * @param assertion the assertion to be checked
 	 *
-	 * @throws gate.error.NotFoundException if the specified assertion is false
+	 * @throws gate.error.NotFoundException if the specified assertion is
+	 * false
 	 */
 	public static void assertTrue(boolean assertion) throws NotFoundException
 	{
@@ -57,11 +64,13 @@ public class NotFoundException extends AppException
 	}
 
 	/**
-	 * Throws an NotFoundException with the specified message if the specified assertion is true.
+	 * Throws an NotFoundException with the specified message if the
+	 * specified assertion is true.
 	 *
 	 * @param assertion the assertion to be checked
 	 *
-	 * @throws gate.error.NotFoundException if the specified assertion is true
+	 * @throws gate.error.NotFoundException if the specified assertion is
+	 * true
 	 */
 	public static void assertFalse(boolean assertion) throws NotFoundException
 	{

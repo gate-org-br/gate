@@ -4,6 +4,7 @@ import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
 import gate.base.Screen;
+import gate.catcher.Catcher;
 import gate.entity.Org;
 import gate.entity.User;
 import gate.error.AccessDeniedException;
@@ -20,7 +21,6 @@ import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.event.LoginEvent;
-import gate.handler.AppExceptionHandler;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.handler.IntegerHandler;
@@ -72,6 +72,10 @@ public class Gate extends HttpServlet
 	@Any
 	@Inject
 	Instance<Handler> handlers;
+
+	@Any
+	@Inject
+	Instance<Catcher> catchers;
 
 	@Inject
 	@ConfigProperty(name = "gate.denveloper")
@@ -195,17 +199,11 @@ public class Gate extends HttpServlet
 				var handler = handlers.select(type).get();
 				handler.handle(request, response, result);
 			}
-		} catch (AppException ex)
-		{
-			Handler handler = handlers.select(AppExceptionHandler.class).get();
-			handler.handle(request, response, ex);
 		} catch (Throwable ex)
 		{
-			request.setAttribute("messages", Collections.singletonList("Erro de sistema"));
-			request.setAttribute("exception", ex);
-			logger.error(ex.getMessage(), ex);
-			Handler handler = handlers.select(HTMLCommandHandler.class).get();
-			handler.handle(request, response, HTML);
+			var type = Catcher.getCatcher(ex.getClass());
+			Catcher catcher = catchers.select(type).get();
+			catcher.catches(request, response, ex);
 		}
 	}
 
