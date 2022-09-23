@@ -1,0 +1,31 @@
+/* global customElements, template */
+
+customElements.define('g-property', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+
+	get label()
+	{
+		return this.getAttribute("label");
+	}
+
+	get value()
+	{
+		return this.getAtribute("value");
+	}
+
+	set label(label)
+	{
+		this.setAttribute("label", label);
+	}
+
+	set value(value)
+	{
+		this.setAttribute("value", value);
+	}
+});

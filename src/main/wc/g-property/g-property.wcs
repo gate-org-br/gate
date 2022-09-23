@@ -1,0 +1,23 @@
+:host(*) {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+:host(*)::before
+{
+	padding: 4px;
+	display: flex;
+	font-weight: bold;
+	align-items: center;
+	content: attr(label);
+	justify-content: flex-end;
+}
+
+:host(*)::after
+{
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	content: attr(value);
+	justify-content: flex-start;
+}

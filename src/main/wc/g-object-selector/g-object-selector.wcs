@@ -1,0 +1,27 @@
+:host(*)
+{
+	display:flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+label {
+	padding: 8px;
+	cursor: pointer;
+}
+
+label:nth-child(odd)
+{
+	background-color: #FFFFFF;
+}
+
+label:nth-child(even)
+{
+	background-color: #EEEEEE;
+}
+
+label:hover
+{
+	background-color: var(--hovered);
+}

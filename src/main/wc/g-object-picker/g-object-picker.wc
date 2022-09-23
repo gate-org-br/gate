@@ -1,0 +1,17 @@
+<template>
+	<main>
+		<g-window-header>
+			Selecione um item
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</g-window-header>
+		<g-window-section>
+			<input type="TEXT" placeholder="Pesquisar"/>
+			<div>
+				<g-object-selector>
+				</g-object-selector>
+			</div>
+		</g-window-section>
+	</main>
+</template>

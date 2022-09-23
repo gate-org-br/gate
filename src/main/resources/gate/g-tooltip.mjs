@@ -95,6 +95,8 @@ li {
 
 /* global customElements, HTMLElement, template */
 
+import './g-properties.mjs';
+
 export default class GTooltip extends HTMLElement
 {
 	constructor()
@@ -146,12 +148,8 @@ export default class GTooltip extends HTMLElement
 					this.shadowRoot.firstElementChild.appendChild(content);
 				} else
 				{
-					let dd = this.shadowRoot.firstElementChild.appendChild(document.createElement("dl"));
-					for (var key in content)
-					{
-						dd.appendChild(document.createElement("dt")).innerHTML = key;
-						dd.appendChild(document.createElement("dd")).innerHTML = content[key];
-					}
+					this.shadowRoot.firstElementChild.appendChild(document.createElement("g-properties"))
+						.value = content;
 				}
 				break;
 		}
