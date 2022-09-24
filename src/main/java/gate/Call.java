@@ -2,6 +2,11 @@ package gate;
 
 import gate.annotation.Alert;
 import gate.annotation.Annotations;
+import gate.annotation.AuthWithAction;
+import gate.annotation.AuthWithAuthentication;
+import gate.annotation.AuthWithFullAccess;
+import gate.annotation.AuthWithModule;
+import gate.annotation.AuthWithScreen;
 import gate.annotation.Color;
 import gate.annotation.Confirm;
 import gate.annotation.Description;
@@ -33,11 +38,11 @@ public class Call
 
 	public Call(String module, String screen, String action, Class<Screen> type, Method method)
 	{
+		this.type = type;
+		this.method = method;
 		this.module = module;
 		this.screen = screen;
 		this.action = action;
-		this.type = type;
-		this.method = method;
 	}
 
 	public static Call of(String module, String screen, String action) throws InvalidRequestException
@@ -147,10 +152,20 @@ public class Call
 		if (Annotations.exists(Superuser.class, type, method))
 			return user != null && user.isSuperUser();
 
-		if (Annotations.exists(Public.class, type, method))
-			return user == null || !user.checkBlock(module, screen, action);
+		if (Annotations.exists(AuthWithAuthentication.class, type, method))
+			return user != null;
 
-		return user != null && user.checkAccess(module, screen, action);
+		var _module = Annotations.search(AuthWithModule.class, type, method).map(e -> e.value()).orElse(this.module);
+		var _screen = Annotations.search(AuthWithScreen.class, type, method).map(e -> e.value()).orElse(this.module);
+		var _action = Annotations.search(AuthWithAction.class, type, method).map(e -> e.value()).orElse(this.module);
+
+		if (Annotations.exists(AuthWithFullAccess.class, type, method))
+			return user != null && user.checkFullAccess(_module, _screen, _action);
+
+		if (Annotations.exists(Public.class, type, method))
+			return user == null || !user.checkBlock(_module, _screen, _action);
+
+		return user != null && user.checkAccess(_module, _screen, _action);
 	}
 
 }

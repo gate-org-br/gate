@@ -398,4 +398,12 @@ public class User implements Serializable
 			&& computedAuthStream()
 				.anyMatch(e -> e.granted(module, screen, action));
 	}
+
+	public boolean checkFullAccess(String module, String screen, String action)
+	{
+		return computedAuthStream()
+			.noneMatch(e -> e.blocked(module, screen, action))
+			&& computedAuthStream()
+				.anyMatch(e -> e.equals(module, screen, action));
+	}
 }
