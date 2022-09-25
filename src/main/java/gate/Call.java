@@ -155,9 +155,9 @@ public class Call
 		if (Annotations.exists(AuthWithAuthentication.class, type, method))
 			return user != null;
 
-		var _module = Annotations.search(AuthWithModule.class, type, method).map(e -> e.value()).orElse(this.module);
-		var _screen = Annotations.search(AuthWithScreen.class, type, method).map(e -> e.value()).orElse(this.module);
-		var _action = Annotations.search(AuthWithAction.class, type, method).map(e -> e.value()).orElse(this.module);
+		var _module = Annotations.search(AuthWithModule.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
+		var _screen = Annotations.search(AuthWithScreen.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
+		var _action = Annotations.search(AuthWithAction.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
 
 		if (Annotations.exists(AuthWithFullAccess.class, type, method))
 			return user != null && user.checkFullAccess(_module, _screen, _action);
