@@ -2,7 +2,6 @@ package gate.handler;
 
 import gate.converter.Converter;
 import gate.error.AppError;
-import gate.lang.json.JsonObject;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
@@ -50,22 +49,6 @@ public class OptionHandler implements Handler
 		Object id = property.getValue(object);
 		String label = object.toString();
 		String value = Converter.toString(id);
-
-		JsonObject properties = new JsonObject();
-		Property.getProperties(type).stream()
-			.filter(e -> !e.equals(property))
-			.filter(e -> e.getDisplayName() != null)
-			.filter(e -> !e.isEmpty(object))
-			.forEach(e -> properties.setString(e.getDisplayName(),
-			Converter.toText(e.getValue(object))));
-
-		JsonObject result = new JsonObject()
-			.setString("label", label)
-			.setString("value", value);
-
-		if (!properties.isEmpty())
-			result.set("properties", properties);
-
-		return result.toString();
+		return String.format("{\"label\":\"%s\",\"value\":\"%s\"}", label, value);
 	}
 }
