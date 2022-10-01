@@ -1,7 +1,9 @@
 <template>
 	<main>
 		<g-window-header>
-			Selecione um item
+			<label id='caption'>
+				Selecione um ítem
+			</label>
 			<a id='close' href="#">
 				&#X1011;
 			</a>

@@ -13,11 +13,11 @@ customElements.define('g-object-selector', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	set value(value)
+	set options(options)
 	{
-		this._private.value = value;
+		this._private.options = options;
 		Array.from(this.shadowRoot.querySelectorAll("label")).forEach(e => e.remove());
-		value.forEach(e =>
+		options.forEach(e =>
 		{
 			let label = this.shadowRoot
 				.appendChild(document.createElement("label"));
@@ -33,18 +33,18 @@ customElements.define('g-object-selector', class extends HTMLElement
 		});
 	}
 
-	get value()
+	get options()
 	{
-		return this._private.value;
+		return this._private.options;
 	}
 
 	attributeChangedCallback()
 	{
-		this.value = JSON.parse(this.getAttribute("value"));
+		this.value = JSON.parse(this.getAttribute("options"));
 	}
 
 	static get observedAttributes()
 	{
-		return ["value"];
+		return ["options"];
 	}
 });

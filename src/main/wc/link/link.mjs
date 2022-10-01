@@ -1,9 +1,13 @@
+/* global fetch */
+
 import URL from './url.mjs';
 import GPopup from './g-popup.mjs';
 import Process from './process.mjs';
 import resolve from './resolve.mjs';
 import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
+import GObjectPicker from './g-object-picker.mjs';
+
 
 function processHide(link)
 {
@@ -150,6 +154,39 @@ window.addEventListener("click", function (event)
 					}
 				});
 				break;
+			case "_select":
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				let label = link.parentNode.querySelector("input[type=text]");
+				let value = link.parentNode.querySelector("input[type=hidden]");
+				if (label && value)
+				{
+					if (label.value || value.value)
+					{
+						label.value = '';
+						value.value = '';
+					} else
+					{
+						fetch(link.href)
+							.then(options => options.json())
+							.then(options =>
+							{
+								GObjectPicker.pick(options, link.title)
+									.then(object =>
+									{
+										if (object)
+										{
+											label.value = object.label;
+											value.value = object.value;
+										}
+									});
+							});
+					}
+				} else
+					console.log("label and value inputs not found");
+				break;
+			}
 			case "_alert":
 				event.preventDefault();
 				event.stopPropagation();

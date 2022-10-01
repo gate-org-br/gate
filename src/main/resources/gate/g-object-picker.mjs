@@ -2,7 +2,9 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<main>
 		<g-window-header>
-			Selecione um item
+			<label id='caption'>
+				Selecione um ítem
+			</label>
 			<a id='close' href="#">
 				&#X1011;
 			</a>
@@ -87,7 +89,7 @@ export default class GObjectPicker extends GModal
 		{
 			let text = input.value.toLowerCase();
 			this.shadowRoot.querySelector("g-object-selector").value = text
-				? this.value.filter(e =>
+				? this.options.filter(e =>
 				{
 					let label = e.label.toLowerCase();
 
@@ -99,26 +101,38 @@ export default class GObjectPicker extends GModal
 							return true;
 
 					return false;
-				}) : this.value;
+				}) : this.options;
 		});
 	}
 
-	set value(value)
+	set caption(caption)
 	{
-		this._private.value = value;
+		this.shadowRoot.getElementById("caption").innerHTML = caption;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.getElementById("caption").innerHTML;
+	}
+
+	set options(options)
+	{
+		this._private.options = options;
 		this.shadowRoot.querySelector("input").value = "";
-		this.shadowRoot.querySelector("g-object-selector").value = value;
+		this.shadowRoot.querySelector("g-object-selector").options = options;
 	}
 
-	get value()
+	get options()
 	{
-		return this._private.value;
+		return this._private.options;
 	}
 
-	static pick(value)
+	static pick(options, caption)
 	{
 		let picker = window.top.document.createElement("g-object-picker");
-		picker.value = value;
+		picker.options = options;
+		if (caption)
+			picker.caption = caption;
 		picker.show();
 
 		return new Promise(resolve =>
