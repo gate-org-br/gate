@@ -1,16 +1,28 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<slot>
+	</slot>
  <style>:host(*) {
-	display: flex;
-	align-items: stretch;
-	flex-direction: column;
-	justify-content: center;
+	display: grid;
+	grid-template-columns: auto auto;
 }
-</style>`;
+
+::slotted(label) {
+	padding: 4px;
+	display: flex;
+	font-weight: bold;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+::slotted(span) {
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}</style>`;
 
 /* global customElements, template */
-
-import './g-property.mjs';
 
 customElements.define('g-properties', class extends HTMLElement
 {
@@ -23,18 +35,20 @@ customElements.define('g-properties', class extends HTMLElement
 
 	get value()
 	{
-		return this.getAtribute("value");
+		let value = {};
+		Array.from(this.shadowRoot.querySelectorAll("label"))
+			.forEach(e => value[e.value] = e.nextElementSibling.value);
+		return value;
 	}
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("g-property"))
+		Array.from(this.shadowRoot.querySelectorAll("label, span"))
 			.forEach(e => e.remove());
 		Object.getOwnPropertyNames(value).forEach(e =>
 		{
-			let property = this.shadowRoot.appendChild(document.createElement("g-property"));
-			property.label = e;
-			property.value = value[e];
+			this.appendChild(document.createElement("label")).innerHTML = e;
+			this.appendChild(document.createElement("span")).innerHTML = value[e];
 		});
 	}
 

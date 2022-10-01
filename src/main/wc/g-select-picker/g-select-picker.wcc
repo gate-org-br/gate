@@ -5,7 +5,7 @@ import './g-window-section.mjs';
 import './g-object-selector.mjs';
 import GModal from './g-modal.mjs';
 
-export default class GObjectPicker extends GModal
+export default class GSelectPicker extends GModal
 {
 	constructor()
 	{
@@ -24,7 +24,7 @@ export default class GObjectPicker extends GModal
 		input.addEventListener("input", () =>
 		{
 			let text = input.value.toLowerCase();
-			this.shadowRoot.querySelector("g-object-selector").value = text
+			this.shadowRoot.querySelector("g-object-selector").options = text
 				? this.options.filter(e =>
 				{
 					let label = e.label.toLowerCase();
@@ -65,7 +65,7 @@ export default class GObjectPicker extends GModal
 
 	static pick(options, caption)
 	{
-		let picker = window.top.document.createElement("g-object-picker");
+		let picker = window.top.document.createElement("g-select-picker");
 		picker.options = options;
 		if (caption)
 			picker.caption = caption;
@@ -79,4 +79,4 @@ export default class GObjectPicker extends GModal
 	}
 };
 
-customElements.define('g-object-picker', GObjectPicker);
+customElements.define('g-select-picker', GSelectPicker);

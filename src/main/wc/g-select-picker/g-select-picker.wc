@@ -1,0 +1,19 @@
+<template>
+	<main>
+		<g-window-header>
+			<label id='caption'>
+				Selecione um ítem
+			</label>
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</g-window-header>
+		<g-window-section>
+			<input type="TEXT" placeholder="Pesquisar"/>
+			<div>
+				<g-object-selector>
+				</g-object-selector>
+			</div>
+		</g-window-section>
+	</main>
+</template>

@@ -6,7 +6,8 @@ import Process from './process.mjs';
 import resolve from './resolve.mjs';
 import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
-import GObjectPicker from './g-object-picker.mjs';
+import GSelectPicker from './g-select-picker.mjs';
+import GSearchPicker from './g-search-picker.mjs';
 
 
 function processHide(link)
@@ -172,7 +173,7 @@ window.addEventListener("click", function (event)
 							.then(options => options.json())
 							.then(options =>
 							{
-								GObjectPicker.pick(options, link.title)
+								GSelectPicker.pick(options, link.title)
 									.then(object =>
 									{
 										if (object)
@@ -182,6 +183,35 @@ window.addEventListener("click", function (event)
 										}
 									});
 							});
+					}
+				} else
+					console.log("label and value inputs not found");
+				break;
+			}
+			case "_search":
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				let label = link.parentNode.querySelector("input[type=text]");
+				let value = link.parentNode.querySelector("input[type=hidden]");
+				if (label && value)
+				{
+					if (label.value || value.value)
+					{
+						label.value = '';
+						value.value = '';
+					} else
+					{
+						GSearchPicker.pick(link.href, link.title)
+							.then(object =>
+							{
+								if (object)
+								{
+									label.value = object.label;
+									value.value = object.value;
+								}
+							});
+
 					}
 				} else
 					console.log("label and value inputs not found");

@@ -1,7 +1,5 @@
 /* global customElements, template */
 
-import './g-property.mjs';
-
 customElements.define('g-properties', class extends HTMLElement
 {
 	constructor()
@@ -13,18 +11,20 @@ customElements.define('g-properties', class extends HTMLElement
 
 	get value()
 	{
-		return this.getAtribute("value");
+		let value = {};
+		Array.from(this.shadowRoot.querySelectorAll("label"))
+			.forEach(e => value[e.value] = e.nextElementSibling.value);
+		return value;
 	}
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("g-property"))
+		Array.from(this.shadowRoot.querySelectorAll("label, span"))
 			.forEach(e => e.remove());
 		Object.getOwnPropertyNames(value).forEach(e =>
 		{
-			let property = this.shadowRoot.appendChild(document.createElement("g-property"));
-			property.label = e;
-			property.value = value[e];
+			this.appendChild(document.createElement("label")).innerHTML = e;
+			this.appendChild(document.createElement("span")).innerHTML = value[e];
 		});
 	}
 

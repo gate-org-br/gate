@@ -73,7 +73,8 @@ import "./g-chat-counter.mjs";
 import "./g-chat-notificator.mjs";
 import "./g-chat-contact-dialog.mjs";
 
-import "./g-object-picker.mjs";
+import "./g-select-picker.mjs";
+import "./g-search-picker.mjs";
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {

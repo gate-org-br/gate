@@ -62,14 +62,14 @@ div {
 	overflow: auto;
 }</style>`;
 
-/* global customElements, template */
+/* global customElements, template, fetch */
 
 import './g-window-header.mjs';
 import './g-window-section.mjs';
 import './g-object-selector.mjs';
 import GModal from './g-modal.mjs';
 
-export default class GObjectPicker extends GModal
+export default class GSearchPicker extends GModal
 {
 	constructor()
 	{
@@ -87,21 +87,48 @@ export default class GObjectPicker extends GModal
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
 		{
-			let text = input.value.toLowerCase();
-			this.shadowRoot.querySelector("g-object-selector").value = text
-				? this.options.filter(e =>
+			if (this._private.length)
+			{
+				let text = input.value.toLowerCase();
+
+				if (text.length < this._private.length)
 				{
-					let label = e.label.toLowerCase();
+					this._private.result = null;
+					this._private.length = null;
+					this.shadowRoot.querySelector("g-object-selector").options = [];
+				} else
+				{
+					this.shadowRoot.querySelector("g-object-selector").options =
+						this._private.result.filter(e =>
+						{
+							let label = e.label.toLowerCase();
 
-					if (label.includes(text))
-						return true;
+							if (label.includes(text))
+								return true;
 
-					if (e.properties)
-						if (Object.values(e.properties).some(property => text === property.toLowerCase()))
-							return true;
+							if (e.properties)
+								if (Object.values(e.properties).some(property => text === property.toLowerCase()))
+									return true;
 
-					return false;
-				}) : this.options;
+							return false;
+						});
+				}
+			} else
+			{
+				input.disabled = true;
+				fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
+					.then(options => options.json())
+					.then(options =>
+					{
+						if (options && options.length)
+						{
+							this._private.result = options;
+							this._private.length = input.value.length;
+							this.shadowRoot.querySelector("g-object-selector").options = options;
+						}
+						input.disabled = false;
+					}).catch(() => alert("Error ao tentar obter dados do servidor"));
+			}
 		});
 	}
 
@@ -119,7 +146,6 @@ export default class GObjectPicker extends GModal
 	{
 		this._private.options = options;
 		this.shadowRoot.querySelector("input").value = "";
-		this.shadowRoot.querySelector("g-object-selector").options = options;
 	}
 
 	get options()
@@ -129,7 +155,7 @@ export default class GObjectPicker extends GModal
 
 	static pick(options, caption)
 	{
-		let picker = window.top.document.createElement("g-object-picker");
+		let picker = window.top.document.createElement("g-search-picker");
 		picker.options = options;
 		if (caption)
 			picker.caption = caption;
@@ -143,4 +169,4 @@ export default class GObjectPicker extends GModal
 	}
 };
 
-customElements.define('g-object-picker', GObjectPicker);
+customElements.define('g-search-picker', GSearchPicker);
