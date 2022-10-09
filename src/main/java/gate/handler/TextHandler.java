@@ -1,13 +1,10 @@
 package gate.handler;
 
-import gate.error.AppError;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-
 import java.io.Writer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
