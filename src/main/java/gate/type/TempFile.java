@@ -157,6 +157,28 @@ public class TempFile implements AutoCloseable
 	}
 
 	/**
+	 * Creates a new temporary file with the contents of a byte array.
+	 *
+	 * @param bytes a byte array with the temporary file data
+	 *
+	 * @return the temporary file created
+	 */
+	public static TempFile of(byte[] bytes)
+	{
+		TempFile tempFile = TempFile.empty();
+
+		try ( OutputStream outputStream = tempFile.getOutputStream())
+		{
+			outputStream.write(bytes);
+			return tempFile;
+		} catch (IOException ex)
+		{
+			tempFile.close();
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	/**
 	 * Creates a new temporary file with the contents of the specified InputStream.
 	 *
 	 * @param inputStream the InputStream object from where to get the temporary file data
