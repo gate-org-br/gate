@@ -59,7 +59,7 @@ public class TempFileConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException, ConversionException
 	{
-		try (InputStream inputStream = rs.getBinaryStream(index))
+		try ( InputStream inputStream = rs.getBinaryStream(index))
 		{
 			return TempFile.of(inputStream);
 		} catch (IOException ex)
@@ -71,7 +71,7 @@ public class TempFileConverter implements Converter
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
-		try (InputStream inputStream = rs.getBinaryStream(fields))
+		try ( InputStream inputStream = rs.getBinaryStream(fields))
 		{
 			return TempFile.of(inputStream);
 		} catch (IOException ex)
@@ -83,11 +83,17 @@ public class TempFileConverter implements Converter
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
-		if (value == null)
-			ps.setNull(index, Types.VARBINARY);
-		else
-			ps.setBinaryStream(index, ((TempFile) value).getInputStream());
-		return ++index;
+		try
+		{
+			if (value == null)
+				ps.setNull(index, Types.VARBINARY);
+			else
+				ps.setBinaryStream(index, ((TempFile) value).getInputStream());
+			return ++index;
+		} catch (IOException ex)
+		{
+			throw new SQLException(ex.getMessage());
+		}
 	}
 
 	@Override
