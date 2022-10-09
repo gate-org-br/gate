@@ -64,7 +64,7 @@ export default class GOverflow extends HTMLElement
 
 	connectedCallback()
 	{
-		setTimeout(() => this.update(), 0);
+		setTimeout(() => this.update(), 200);
 	}
 
 	menu()
