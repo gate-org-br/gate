@@ -4,10 +4,8 @@ template.innerHTML = `
 		<g-window-header>
 		</g-window-header>
 		<g-window-section>
-			<div>
-				<span>
-				</span>
-			</div>
+			<g-progress>
+			</g-progress>
 		</g-window-section>
 		<footer>
 			<g-digital-clock>
@@ -41,9 +39,13 @@ main
 	place-items: stretch;
 	place-content: stretch;
 	width: calc(100% - 40px);
-	grid-template-rows: 40px 1fr 24px;
+	grid-template-rows: 40px 48px 24px;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 	border: 4px solid var(--g-window-border-color);
+}
+
+g-window-section {
+	padding: 4px;
 }
 
 footer {
@@ -58,33 +60,11 @@ g-digital-clock
 {
 	color: white;
 	font-size: 16px;
-}
-
- div
-{
-  	width: 100%;
-	margin: 4px;
-	flex-grow: 1;
-	height: 40px;
-    display: flex;
-    align-items: stretch;
-	background-color: #CCCCCC;
-}
-
-span
-{
-	animation-fill-mode:both;
-	background-color: #778899;
-	animation: progress 2s infinite ease-in-out;
-}
-
-@keyframes progress {
-	0% { flex-basis: 0; 	}
-	100% { flex-basis: 100%; }
 }</style>`;
 
 /* global customElements, template */
 
+import './g-progress.mjs';
 import './g-window-header.mjs';
 import './g-window-section.mjs';
 import GModal from './g-modal.mjs';
@@ -139,16 +119,16 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
+{
+	e.addEventListener("click", () =>
 	{
-		e.addEventListener("click", () =>
-		{
-			if (e.form)
-				e.form.addEventListener("submit", () =>
-				{
-					GBlock.show(e.getAttribute("data-block"));
-					e.form.removeEventListener(event.type, arguments.callee);
-				});
-			else
+		if (e.form)
+			e.form.addEventListener("submit", () =>
+			{
 				GBlock.show(e.getAttribute("data-block"));
-		});
+				e.form.removeEventListener(event.type, arguments.callee);
+			});
+		else
+			GBlock.show(e.getAttribute("data-block"));
 	});
+});

@@ -3,10 +3,8 @@
 		<g-window-header>
 		</g-window-header>
 		<g-window-section>
-			<div>
-				<span>
-				</span>
-			</div>
+			<g-progress>
+			</g-progress>
 		</g-window-section>
 		<footer>
 			<g-digital-clock>
