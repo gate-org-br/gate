@@ -1,0 +1,10 @@
+<template>
+	<input type="text" placeholder="Filtrar"/>
+	<div>
+		<table>
+		</table>
+	</div>
+	<label>
+		<slot></slot>
+	</label>
+</template>

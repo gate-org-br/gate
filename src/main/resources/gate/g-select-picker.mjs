@@ -10,14 +10,22 @@ template.innerHTML = `
 			</a>
 		</g-window-header>
 		<g-window-section>
-			<input type="TEXT" placeholder="Pesquisar"/>
+			<g-grid filter>
+			</g-grid>
 			<div>
-				<g-object-selector>
-				</g-object-selector>
+				<g-coolbar>
+					<a id='cancel' href="#">
+						Cancelar<g-icon>&#X1001;</g-icon>
+					</a>
+				</g-coolbar>
 			</div>
 		</g-window-section>
 	</main>
- <style>:host(*) {
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*) {
 	top: 0;
 	left: 0;
 	right: 0;
@@ -35,7 +43,7 @@ main
 	display: grid;
 	position: fixed;
 	min-width: 320px;
-	max-width: 600px;
+	max-width: 800px;
 	border-radius: 5px;
 	place-items: stretch;
 	place-content: stretch;
@@ -47,26 +55,28 @@ main
 
 g-window-section
 {
-	gap: 8px;
+	gap: 4px;
 	padding: 4px;
 	display: grid;
 	align-items: stretch;
-	align-content: stretch;
 	justify-items:stretch;
+	align-content: stretch;
 	justify-content: stretch;
-	grid-template-rows: 32px auto;
+	grid-template-rows: 400px 60px;
 }
 
 div {
-	height: 400px;
-	overflow: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }</style>`;
 
 /* global customElements, template */
 
+import './g-icon.mjs';
+import './g-grid.mjs';
 import './g-window-header.mjs';
 import './g-window-section.mjs';
-import './g-object-selector.mjs';
 import GModal from './g-modal.mjs';
 
 export default class GSelectPicker extends GModal
@@ -74,35 +84,15 @@ export default class GSelectPicker extends GModal
 	constructor()
 	{
 		super();
-		this._private = {};
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click",
+			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
 
-		let selector = this.shadowRoot.querySelector("g-object-selector");
-		selector.addEventListener("selected", e =>
-			this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
-
-		let input = this.shadowRoot.querySelector("input");
-		input.addEventListener("input", () =>
-		{
-			let text = input.value.toLowerCase();
-			this.shadowRoot.querySelector("g-object-selector").options = text
-				? this.options.filter(e =>
-				{
-					let label = e.label.toLowerCase();
-
-					if (label.includes(text))
-						return true;
-
-					if (e.properties)
-						if (Object.values(e.properties).some(property => text === property.toLowerCase()))
-							return true;
-
-					return false;
-				}) : this.options;
-		});
+		let grid = this.shadowRoot.querySelector("g-grid");
+		grid.addEventListener("selected", e => this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
 	}
 
 	set caption(caption)
@@ -117,14 +107,34 @@ export default class GSelectPicker extends GModal
 
 	set options(options)
 	{
-		this._private.options = options;
-		this.shadowRoot.querySelector("input").value = "";
-		this.shadowRoot.querySelector("g-object-selector").options = options;
+		let grid = this.shadowRoot.querySelector("g-grid");
+		if (options.length)
+		{
+			if (Array.isArray(options[0]))
+			{
+				grid.style.textAlign = '';
+				grid.mapper = e => e.slice(1);
+				grid.header = options[0].slice(1);
+				grid.values = options.slice(1);
+			} else
+			{
+				grid.style.textAlign = 'left';
+				grid.mapper = e => e.properties || e.label;
+				grid.header = null;
+				grid.values = options;
+			}
+		} else
+		{
+			grid.style.textAlign = '';
+			grid.mapper = null;
+			grid.header = null;
+			grid.values = null;
+		}
 	}
 
 	get options()
 	{
-		return this._private.options;
+		return this.shadowRoot.querySelector("g-grid").values;
 	}
 
 	static pick(options, caption)

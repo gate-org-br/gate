@@ -176,13 +176,17 @@ window.addEventListener("click", function (event)
 								GSelectPicker.pick(options, link.title)
 									.then(object =>
 									{
-										if (object)
+										if (Array.isArray(object))
+										{
+											label.value = object[1];
+											value.value = object[0];
+										} else if (object)
 										{
 											label.value = object.label;
 											value.value = object.value;
 										}
 									});
-							});
+							}).catch(error => Message.error(error.message));
 					}
 				} else
 					console.log("label and value inputs not found");
@@ -205,7 +209,11 @@ window.addEventListener("click", function (event)
 						GSearchPicker.pick(link.href, link.title)
 							.then(object =>
 							{
-								if (object)
+								if (Array.isArray(object))
+								{
+									label.value = object[1];
+									value.value = object[0];
+								} else if (object)
 								{
 									label.value = object.label;
 									value.value = object.value;

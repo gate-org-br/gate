@@ -10,6 +10,12 @@ alter table gate.Uzer add description VARCHAR(1024) after email;
 update gate.Uzer set description = details;
 ALTER TABLE gate.Uzer ADD details VARCHAR(1024) GENERATED ALWAYS AS (description) VIRTUAL;
 
+ALTER TABLE gate.Uzer 
+ADD UNIQUE INDEX Uzer$fk$username (username ASC) VISIBLE;
+
+ALTER TABLE `gate`.`Uzer` 
+ADD UNIQUE INDEX `Uzer$uk$email` (`email` ASC) VISIBLE;
+
 DELIMITER $$
 USE `gate`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `gate`.`Uzer_BEFORE_INSERT` BEFORE INSERT ON `Uzer` FOR EACH ROW

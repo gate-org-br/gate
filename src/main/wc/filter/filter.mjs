@@ -5,7 +5,7 @@ import colorize from './colorize.mjs';
 export default function filter(elements, value)
 {
 	elements.forEach(row => row.style.display = !value
-			|| row.innerHTML.toUpperCase().indexOf(value.toUpperCase()) !== -1 ? "" : "none");
+			|| row.innerHTML.toUpperCase().startsWith(value.toUpperCase()) ? "" : "none");
 }
 
 function process(input)

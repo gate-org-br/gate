@@ -1,0 +1,125 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	gap: 4px;
+	display: flex;
+	text-align: center;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+input {
+	width: 100%;
+	height: 32px;
+	display: none;
+	flex-basis: 32px;
+	padding: 8px 4px 8px 4px;
+}
+
+:host([filter]) input {
+	display: block
+}
+
+div {
+	flex-grow: 1;
+	display: flex;
+	overflow: auto;
+	align-items: flex-start;
+	justify-content: stretch;
+}
+
+label {
+	display: flex;
+	padding: 16px;
+	font-size: 24px;
+	text-align: center;
+	border-radius: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: #FFFFFF;
+}
+
+table {
+	margin: 0;
+	width: 100%;
+	border: none;
+	color: black;
+	flex-grow: 1;
+	position: relative;
+	font-weight: normal;
+	table-layout: fixed;
+	border-spacing: 1px;
+	text-decoration: none;
+	background-color: #EEEEEE;
+}
+
+caption {
+	height: 32px;
+	color: white;
+	line-height: 32px;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 5px 5px 0px 0px;
+	background-color: var(--table-caption-background-color);
+	background-image: var(--table-caption-background-image);
+}
+
+table, thead, tbody, tfoot, tr, th, td
+{
+	color: inherit;
+	text-align: inherit;
+	font-weight: inherit;
+	text-decoration: inherit;
+}
+
+tr {
+	height: 32px;
+	cursor: pointer;
+}
+
+tbody>tr:nth-child(even) {
+	background-color: var(--table-body-background-color-even);
+}
+
+tbody>tr:nth-child(odd) {
+	background-color: var(--table-body-background-color-odd);
+}
+
+tbody>tr:hover {
+	background-color: var(--hovered);
+}
+
+td, th {
+	padding: 4px;
+	vertical-align: middle;
+	background-color: transparent;
+}
+
+thead > tr
+{
+	background-color: var(--table-head-background-color);
+	background-image: var(--table-head-background-image);
+}
+
+thead > tr > th {
+	top: 0;
+	position: sticky;
+	background-color: var(--table-head-background-color);
+	background-image: var(--table-head-background-image);
+}
+
+tfoot > tr
+{
+	background-color: var(--table-foot-background-color);
+	background-image: var(--table-foot-background-image);
+}
+
+tfoot > tr > td
+{
+	bottom: 0;
+	position: sticky;
+}

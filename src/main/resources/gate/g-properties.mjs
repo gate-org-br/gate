@@ -1,13 +1,11 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<slot>
-	</slot>
  <style>:host(*) {
-	display: grid;
+	display: inline-grid;
 	grid-template-columns: auto auto;
 }
 
-::slotted(label) {
+label {
 	padding: 4px;
 	display: flex;
 	font-weight: bold;
@@ -15,7 +13,7 @@ template.innerHTML = `
 	justify-content: flex-end;
 }
 
-::slotted(span) {
+span {
 	padding: 4px;
 	display: flex;
 	align-items: center;
@@ -33,22 +31,14 @@ customElements.define('g-properties', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	get value()
-	{
-		let value = {};
-		Array.from(this.shadowRoot.querySelectorAll("label"))
-			.forEach(e => value[e.value] = e.nextElementSibling.value);
-		return value;
-	}
-
 	set value(value)
 	{
 		Array.from(this.shadowRoot.querySelectorAll("label, span"))
 			.forEach(e => e.remove());
 		Object.getOwnPropertyNames(value).forEach(e =>
 		{
-			this.appendChild(document.createElement("label")).innerHTML = e;
-			this.appendChild(document.createElement("span")).innerHTML = value[e];
+			this.shadowRoot.appendChild(document.createElement("label")).innerHTML = e;
+			this.shadowRoot.appendChild(document.createElement("span")).innerHTML = value[e];
 		});
 	}
 

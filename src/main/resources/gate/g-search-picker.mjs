@@ -11,13 +11,23 @@ template.innerHTML = `
 		</g-window-header>
 		<g-window-section>
 			<input type="TEXT" placeholder="Pesquisar"/>
+			<g-grid>
+				Entre com o critério pesquisa
+			</g-grid>
 			<div>
-				<g-object-selector>
-				</g-object-selector>
+				<g-coolbar>
+					<a id='cancel' href="#">
+						Cancelar<g-icon>&#X1001;</g-icon>
+					</a>
+				</g-coolbar>
 			</div>
 		</g-window-section>
 	</main>
- <style>:host(*) {
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*) {
 	top: 0;
 	left: 0;
 	right: 0;
@@ -35,7 +45,7 @@ main
 	display: grid;
 	position: fixed;
 	min-width: 320px;
-	max-width: 600px;
+	max-width: 800px;
 	border-radius: 5px;
 	place-items: stretch;
 	place-content: stretch;
@@ -47,26 +57,28 @@ main
 
 g-window-section
 {
-	gap: 8px;
+	gap: 4px;
 	padding: 4px;
 	display: grid;
 	align-items: stretch;
-	align-content: stretch;
 	justify-items:stretch;
+	align-content: stretch;
 	justify-content: stretch;
-	grid-template-rows: 32px auto;
+	grid-template-rows: 40px 400px 60px;
 }
 
 div {
-	height: 400px;
-	overflow: auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }</style>`;
 
 /* global customElements, template, fetch */
 
+import './g-icon.mjs';
+import './g-grid.mjs';
 import './g-window-header.mjs';
 import './g-window-section.mjs';
-import './g-object-selector.mjs';
 import GModal from './g-modal.mjs';
 
 export default class GSearchPicker extends GModal
@@ -74,61 +86,92 @@ export default class GSearchPicker extends GModal
 	constructor()
 	{
 		super();
-		this._private = {};
+		let prev = "";
+		let result = null;
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click",
+			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
 
-		let selector = this.shadowRoot.querySelector("g-object-selector");
-		selector.addEventListener("selected", e =>
+		let grid = this.shadowRoot.querySelector("g-grid");
+		grid.addEventListener("selected", e =>
 			this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
 		{
-			if (this._private.length)
-			{
-				let text = input.value.toLowerCase();
+			let text = input.value.toLowerCase();
 
-				if (text.length < this._private.length)
+			if (text.length)
+			{
+				if (result && text.includes(prev))
 				{
-					this._private.result = null;
-					this._private.length = null;
-					this.shadowRoot.querySelector("g-object-selector").options = [];
+					grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
+					if (Array.isArray(result[0]))
+					{
+						grid.style.textAlign = '';
+						grid.mapper = e => e.slice(1);
+						grid.header = result[0].slice(1);
+						grid.values = result.slice(1).filter(row => row.some(col => col.toLowerCase().includes(text)));
+					} else
+					{
+						grid.style.textAlign = 'left';
+						grid.mapper = e => e.properties || e.label;
+						grid.header = null;
+						grid.values = result.filter(e => e.label.toLowerCase().includes(text)
+								|| (e.properties && Object.values(e.properties).some(property => text === property.toLowerCase())));
+					}
 				} else
 				{
-					this.shadowRoot.querySelector("g-object-selector").options =
-						this._private.result.filter(e =>
+					input.disabled = true;
+					fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
+						.then(options => options.json())
+						.then(options =>
 						{
-							let label = e.label.toLowerCase();
+							if (Array.isArray(options))
+							{
+								grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
 
-							if (label.includes(text))
-								return true;
-
-							if (e.properties)
-								if (Object.values(e.properties).some(property => text === property.toLowerCase()))
-									return true;
-
-							return false;
-						});
+								result = options;
+								if (Array.isArray(result[0]))
+								{
+									grid.style.textAlign = '';
+									grid.mapper = e => e.slice(1);
+									grid.header = result[0].slice(1);
+									grid.values = result.slice(1);
+								} else
+								{
+									grid.style.textAlign = 'left';
+									grid.mapper = e => e.properties || e.label;
+									grid.header = null;
+									grid.values = result;
+								}
+							} else if (typeof options === "string")
+							{
+								grid.innerText = options;
+								result = null;
+								grid.mapper = null;
+								grid.header = null;
+								grid.values = null;
+								grid.style.textAlign = '';
+							} else
+								alert("Dados inválidos retornados pelo servidor");
+							input.disabled = false;
+						}).catch(() => alert("Error ao tentar obter dados do servidor"));
 				}
 			} else
 			{
-				input.disabled = true;
-				fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
-					.then(options => options.json())
-					.then(options =>
-					{
-						if (options && options.length)
-						{
-							this._private.result = options;
-							this._private.length = input.value.length;
-							this.shadowRoot.querySelector("g-object-selector").options = options;
-						}
-						input.disabled = false;
-					}).catch(() => alert("Error ao tentar obter dados do servidor"));
+				grid.innerText = "Entre com o critério de pesquisa";
+				result = null;
+				grid.mapper = null;
+				grid.header = null;
+				grid.values = null;
+				grid.style.textAlign = '';
 			}
+
+			prev = text;
 		});
 	}
 
