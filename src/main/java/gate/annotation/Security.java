@@ -36,7 +36,7 @@ public @interface Security
 		 */
 		AUTHORIZATION,
 		/**
-		 * Require strict access to the specified resource
+		 * Require specific access to the specified resource
 		 */
 		SPECIFIC_AUTHORIZATION,
 		/**
