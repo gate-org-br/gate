@@ -385,12 +385,6 @@ public class User implements Serializable
 		return computedAuthStream().anyMatch(Auth::isSuperAuth);
 	}
 
-	public boolean checkBlock(String module, String screen, String action)
-	{
-		return computedAuthStream()
-			.anyMatch(e -> e.blocked(module, screen, action));
-	}
-
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
@@ -399,7 +393,7 @@ public class User implements Serializable
 				.anyMatch(e -> e.granted(module, screen, action));
 	}
 
-	public boolean checkFullAccess(String module, String screen, String action)
+	public boolean checkSpecificAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
 			.noneMatch(e -> e.blocked(module, screen, action))

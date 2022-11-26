@@ -4,8 +4,8 @@ import colorize from './colorize.mjs';
 
 export default function filter(elements, value)
 {
-	elements.forEach(row => row.style.display = !value
-			|| row.innerHTML.toUpperCase().startsWith(value.toUpperCase()) ? "" : "none");
+	value = value ? value.toUpperCase() : "";
+	elements.forEach(row => row.style.display = row.innerHTML.toUpperCase().indexOf(value) !== -1 ? "" : "none");
 }
 
 function process(input)

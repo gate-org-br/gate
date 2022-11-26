@@ -87,12 +87,12 @@ export default class GSelectPicker extends GModal
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("cancel").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("selected", e => this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: e.detail})) | this.hide());
 	}
 
 	set caption(caption)
@@ -118,9 +118,30 @@ export default class GSelectPicker extends GModal
 				grid.values = options.slice(1);
 			} else
 			{
-				grid.style.textAlign = 'left';
-				grid.mapper = e => e.properties || e.label;
 				grid.header = null;
+				grid.style.textAlign = 'left';
+
+				grid.mapper = e =>
+				{
+					let keys = Object.keys(e);
+					if (keys.length === 2
+						&& keys.indexOf("label") >= 0
+						&& keys.indexOf("value") >= 0)
+						return e.label;
+					else if (keys.length === 3
+						&& keys.indexOf("label") >= 0
+						&& keys.indexOf("value") >= 0
+						&& keys.indexOf("properties") >= 0)
+						return e.properties;
+					else
+						return keys.slice(1)
+							.reduce((val, key) =>
+							{
+								val[key] = e[key];
+								return val;
+							}, {});
+				}
+
 				grid.values = options;
 			}
 		} else
@@ -147,8 +168,8 @@ export default class GSelectPicker extends GModal
 
 		return new Promise(resolve =>
 		{
-			picker.addEventListener("canceled", () => resolve());
-			picker.addEventListener("picked", e => resolve(e.detail));
+			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("select", e => resolve(e.detail));
 		});
 	}
 };

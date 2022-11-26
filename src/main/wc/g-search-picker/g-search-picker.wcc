@@ -17,13 +17,12 @@ export default class GSearchPicker extends GModal
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("cancel").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("selected", e =>
-			this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: e.detail})) | this.hide());
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
@@ -37,17 +36,57 @@ export default class GSearchPicker extends GModal
 					grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
 					if (Array.isArray(result[0]))
 					{
+						let values = result.slice(1).filter(row => row.some(col => col.toLowerCase().includes(text)));
 						grid.style.textAlign = '';
 						grid.mapper = e => e.slice(1);
 						grid.header = result[0].slice(1);
-						grid.values = result.slice(1).filter(row => row.some(col => col.toLowerCase().includes(text)));
+						grid.values = values;
+						this.dispatchEvent(new CustomEvent("update", {detail: values}));
 					} else
 					{
-						grid.style.textAlign = 'left';
-						grid.mapper = e => e.properties || e.label;
 						grid.header = null;
-						grid.values = result.filter(e => e.label.toLowerCase().includes(text)
-								|| (e.properties && Object.values(e.properties).some(property => text === property.toLowerCase())));
+						grid.style.textAlign = 'left';
+
+						grid.mapper = e =>
+						{
+							let keys = Object.keys(e);
+							if (keys.length === 2
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0)
+								return e.label;
+							else if (keys.length === 3
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0
+								&& keys.indexOf("properties") >= 0)
+								return e.properties;
+							else
+								return keys.slice(1)
+									.reduce((val, key) => {
+										val[key] = e[key];
+										return val;
+									}, {});
+						}
+
+
+						let values = result.filter(e =>
+						{
+							let keys = Object.keys(e);
+							if (keys.length === 2
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0)
+								return e.label.toLowerCase().startsWith(text);
+							else if (keys.length === 3
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0
+								&& keys.indexOf("properties") >= 0)
+								return e.label.toLowerCase().startsWith(text)
+									|| Object.values(e.properties).some(property => property.toLowerCase().startsWith(text));
+							else
+								return Object.values(e).some(property => property.toLowerCase().startsWith(text));
+						});
+
+						grid.values = values;
+						this.dispatchEvent(new CustomEvent("update", {detail: values}));
 					}
 				} else
 				{
@@ -63,17 +102,42 @@ export default class GSearchPicker extends GModal
 								result = options;
 								if (Array.isArray(result[0]))
 								{
+									let values = result.slice(1);
 									grid.style.textAlign = '';
 									grid.mapper = e => e.slice(1);
 									grid.header = result[0].slice(1);
 									grid.values = result.slice(1);
+									this.dispatchEvent(new CustomEvent("update", {detail: values}));
 								} else
 								{
-									grid.style.textAlign = 'left';
-									grid.mapper = e => e.properties || e.label;
 									grid.header = null;
+									grid.style.textAlign = 'left';
+
+									grid.mapper = e =>
+									{
+										let keys = Object.keys(e);
+										if (keys.length === 2
+											&& keys.indexOf("label") >= 0
+											&& keys.indexOf("value") >= 0)
+											return e.label;
+										else if (keys.length === 3
+											&& keys.indexOf("label") >= 0
+											&& keys.indexOf("value") >= 0
+											&& keys.indexOf("properties") >= 0)
+											return e.properties;
+										else
+											return keys.slice(1)
+												.reduce((val, key) => {
+													val[key] = e[key];
+													return val;
+												}, {});
+									}
+
+
 									grid.values = result;
+									this.dispatchEvent(new CustomEvent("update", {detail: result}));
 								}
+
 							} else if (typeof options === "string")
 							{
 								grid.innerText = options;
@@ -82,6 +146,7 @@ export default class GSearchPicker extends GModal
 								grid.header = null;
 								grid.values = null;
 								grid.style.textAlign = '';
+								this.dispatchEvent(new CustomEvent("update", {detail: null}));
 							} else
 								alert("Dados inválidos retornados pelo servidor");
 							input.disabled = false;
@@ -99,6 +164,13 @@ export default class GSearchPicker extends GModal
 
 			prev = text;
 		});
+	}
+
+	set text(text)
+	{
+		let input = this.shadowRoot.querySelector("input");
+		input.value = text;
+		input.dispatchEvent(new Event('input'));
 	}
 
 	set caption(caption)
@@ -122,7 +194,7 @@ export default class GSearchPicker extends GModal
 		return this._private.options;
 	}
 
-	static pick(options, caption)
+	static pick(options, caption, text)
 	{
 		let picker = window.top.document.createElement("g-search-picker");
 		picker.options = options;
@@ -130,11 +202,29 @@ export default class GSearchPicker extends GModal
 			picker.caption = caption;
 		picker.show();
 
-		return new Promise(resolve =>
+		if (text)
 		{
-			picker.addEventListener("canceled", () => resolve());
-			picker.addEventListener("picked", e => resolve(e.detail));
-		});
+			let promise = new Promise(resolve =>
+			{
+				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("select", e => resolve(e.detail));
+				picker.addEventListener("update", e =>
+				{
+					if (e.detail && e.detail.length === 1)
+					{
+						resolve(e.detail[0]);
+						picker.hide();
+					}
+				});
+			});
+			picker.text = text;
+			return promise;
+		} else
+			return  new Promise(resolve =>
+			{
+				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("select", e => resolve(e.detail));
+			});
 	}
 };
 

@@ -118,6 +118,7 @@ thead > tr
 thead > tr > th {
 	top: 0;
 	position: sticky;
+	font-weight: bold;
 	background-color: var(--table-head-background-color);
 	background-image: var(--table-head-background-image);
 }
@@ -278,7 +279,7 @@ customElements.define('g-grid', class extends HTMLElement
 					else
 						tr.appendChild(document.createElement("td")).appendChild(element(content));
 
-					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('selected', {detail: value})));
+					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('select', {detail: value})));
 				});
 			} else
 			{

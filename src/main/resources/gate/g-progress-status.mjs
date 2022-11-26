@@ -141,10 +141,10 @@ customElements.define('g-progress-status', class extends HTMLElement
 			title.innerHTML = event.detail.text;
 		}
 
-		if (event.todo !== -1)
+		if (event.todo && event.todo !== -1)
 		{
 			progress.max = event.detail.todo;
-			if (event.done !== -1)
+			if (event.done && event.done !== -1)
 				progress.value = event.detail.done;
 		}
 	}

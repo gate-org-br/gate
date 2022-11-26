@@ -6,6 +6,7 @@ import Process from './process.mjs';
 import resolve from './resolve.mjs';
 import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
+import Extractor from './extractor.mjs';
 import GSelectPicker from './g-select-picker.mjs';
 import GSearchPicker from './g-search-picker.mjs';
 
@@ -176,15 +177,8 @@ window.addEventListener("click", function (event)
 								GSelectPicker.pick(options, link.title)
 									.then(object =>
 									{
-										if (Array.isArray(object))
-										{
-											label.value = object[1];
-											value.value = object[0];
-										} else if (object)
-										{
-											label.value = object.label;
-											value.value = object.value;
-										}
+										label.value = Extractor.label(object);
+										value.value = Extractor.value(object);
 									});
 							}).catch(error => Message.error(error.message));
 					}
@@ -209,15 +203,8 @@ window.addEventListener("click", function (event)
 						GSearchPicker.pick(link.href, link.title)
 							.then(object =>
 							{
-								if (Array.isArray(object))
-								{
-									label.value = object[1];
-									value.value = object[0];
-								} else if (object)
-								{
-									label.value = object.label;
-									value.value = object.value;
-								}
+								label.value = Extractor.label(object);
+								value.value = Extractor.value(object);
 							});
 
 					}

@@ -3,8 +3,6 @@ package gate;
 import gate.annotation.Alert;
 import gate.annotation.Annotations;
 import gate.annotation.AuthWithAction;
-import gate.annotation.AuthWithAuthentication;
-import gate.annotation.AuthWithFullAccess;
 import gate.annotation.AuthWithModule;
 import gate.annotation.AuthWithScreen;
 import gate.annotation.Color;
@@ -15,6 +13,7 @@ import gate.annotation.Emoji;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.annotation.Public;
+import gate.annotation.Security;
 import gate.annotation.Superuser;
 import gate.annotation.Tooltip;
 import gate.base.Screen;
@@ -143,29 +142,39 @@ public class Call
 
 	public boolean checkAccess(User user)
 	{
+
 		if (Annotations.exists(Disabled.class, type, method))
 			return false;
 
 		if (user != null && user.isSuperUser())
 			return true;
 
+		if (Annotations.exists(Public.class, type, method))
+			return true;
+
 		if (Annotations.exists(Superuser.class, type, method))
 			return user != null && user.isSuperUser();
-
-		if (Annotations.exists(AuthWithAuthentication.class, type, method))
-			return user != null;
 
 		var _module = Annotations.search(AuthWithModule.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
 		var _screen = Annotations.search(AuthWithScreen.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
 		var _action = Annotations.search(AuthWithAction.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
 
-		if (Annotations.exists(AuthWithFullAccess.class, type, method))
-			return user != null && user.checkFullAccess(_module, _screen, _action);
-
-		if (Annotations.exists(Public.class, type, method))
-			return user == null || !user.checkBlock(_module, _screen, _action);
-
-		return user != null && user.checkAccess(_module, _screen, _action);
+		switch (Security.Extractor.extract(method)
+			.orElse(Security.Type.AUTHORIZATION))
+		{
+			case NONE:
+				return true;
+			case AUTHENTICATION:
+				return user != null;
+			case AUTHORIZATION:
+				return user != null && user.checkAccess(_module, _screen, _action);
+			case SPECIFIC_AUTHORIZATION:
+				return user != null && user.checkSpecificAccess(_module, _screen, _action);
+			case SUPERUSER:
+				return user != null && user.isSuperUser();
+			default:
+				throw new IllegalStateException();
+		}
 	}
 
 }
