@@ -249,6 +249,6 @@ window.addEventListener("click", function (event)
 
 	GChartDialog.show(action.getAttribute('data-chart'),
 		JSON.stringify(series),
-		`${title2} X ${title1}`);
+		action.getAttribute("title") || `${title2} X ${title1}`);
 });
 
