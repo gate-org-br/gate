@@ -6,6 +6,7 @@ import Process from './process.mjs';
 import resolve from './resolve.mjs';
 import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
+import Extractor from './extractor.mjs';
 import GSelectPicker from './g-select-picker.mjs';
 import GSearchPicker from './g-search-picker.mjs';
 
@@ -176,13 +177,10 @@ window.addEventListener("click", function (event)
 								GSelectPicker.pick(options, link.title)
 									.then(object =>
 									{
-										if (object)
-										{
-											label.value = object.label;
-											value.value = object.value;
-										}
+										label.value = Extractor.label(object);
+										value.value = Extractor.value(object);
 									});
-							});
+							}).catch(error => Message.error(error.message));
 					}
 				} else
 					console.log("label and value inputs not found");
@@ -205,11 +203,8 @@ window.addEventListener("click", function (event)
 						GSearchPicker.pick(link.href, link.title)
 							.then(object =>
 							{
-								if (object)
-								{
-									label.value = object.label;
-									value.value = object.value;
-								}
+								label.value = Extractor.label(object);
+								value.value = Extractor.value(object);
 							});
 
 					}

@@ -1,0 +1,171 @@
+/* global customElements, template, HTMLElement */
+
+import './g-properties.mjs';
+import filter from './filter.mjs';
+import colorize from './colorize.mjs';
+
+function element(content)
+{
+	switch (typeof content)
+	{
+		case "string":
+			return document.createTextNode(content);
+		case "number":
+			return document.createTextNode(content);
+		case "undefined":
+			return document.createTextNode("");
+		case "boolean":
+			return document.createTextNode(content ? "Sim" : "Não");
+		case "function":
+			return element(content());
+		case "object":
+			if (!content)
+				return document.createTextNode("");
+
+			if (content instanceof HTMLElement)
+				return content;
+
+			if (Array.isArray(content))
+			{
+				let ul = document.createElement("ul");
+				content.forEach(e => ul.appendChild(document.createElement("li")).appendChild(element(e)));
+				return ul;
+			}
+
+			let properties = document.createElement("g-properties");
+			properties.value = content;
+			return properties;
+	}
+}
+
+customElements.define('g-grid', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this._private = {};
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.innerHTML = template.innerHTML;
+
+		this.shadowRoot.querySelector("label").style.display = "";
+		this.shadowRoot.querySelector("div").style.display = "none";
+
+		let input = this.shadowRoot.querySelector("input");
+		let table = this.shadowRoot.querySelector("table");
+		input.style.display = "none";
+		input.addEventListener("input", () =>
+		{
+			let elements = Array.from(this.shadowRoot.querySelectorAll("tbody > tr"));
+			filter(elements, input.value);
+			colorize(table);
+		});
+	}
+
+	set caption(value)
+	{
+		let caption = this.shadowRoot.querySelector("caption");
+		if (value)
+		{
+			if (!caption)
+				caption = this.shadowRoot.querySelector("table")
+					.appendChild(document.createElement("caption"));
+			caption.innerText = value;
+		} else if (caption)
+			caption.remove();
+	}
+
+	get caption()
+	{
+		let caption = this.shadowRoot.querySelector("caption");
+		return caption ? caption.innerHTML : null;
+	}
+
+	set header(value)
+	{
+		let tr = this.shadowRoot.querySelector("thead > tr");
+		if (value)
+		{
+			if (tr)
+				while (tr.firstChild)
+					tr.firstChild.remove();
+			else
+				tr = this.shadowRoot.querySelector("table")
+					.appendChild(document.createElement("thead"))
+					.appendChild(document.createElement("tr"));
+			value.forEach(e => tr.appendChild(document.createElement("th")).innerText = e);
+		} else if (tr)
+			tr.parentNode.remove();
+	}
+
+	set footer(value)
+	{
+		let tr = this.shadowRoot.querySelector("tfoot > td");
+		if (value)
+		{
+			if (tr)
+				while (tr.firstChild)
+					tr.firstChild.remove();
+			else
+				tr = this.shadowRoot.querySelector("table")
+					.appendChild(document.createElement("thead"))
+					.appendChild(document.createElement("tr"));
+
+			value.forEach(e => tr.appendChild(document.createElement("td")).innerText = e);
+		} else if (tr)
+			tr.parentNode.remove();
+	}
+
+	set values(values)
+	{
+		let tbody = this.shadowRoot.querySelector("tbody");
+		if (values)
+		{
+			if (tbody)
+				while (tbody.firstChild)
+					tbody.firstChild.remove();
+			else
+				tbody = this.shadowRoot.querySelector("table")
+					.appendChild(document.createElement("tbody"));
+
+			if (values.length)
+			{
+				this.shadowRoot.querySelector("div").style.display = "";
+				this.shadowRoot.querySelector("input").style.display = "";
+				this.shadowRoot.querySelector("label").style.display = "none";
+				values.forEach(value =>
+				{
+					let tr = tbody.appendChild(document.createElement("tr"));
+
+					let content = this.mapper(value);
+					if (Array.isArray(content))
+						content.forEach(e => tr.appendChild(document.createElement("td")).appendChild(element(e)));
+					else
+						tr.appendChild(document.createElement("td")).appendChild(element(content));
+
+					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('select', {detail: value})));
+				});
+			} else
+			{
+				this.shadowRoot.querySelector("label").style.display = "";
+				this.shadowRoot.querySelector("div").style.display = "none";
+				this.shadowRoot.querySelector("input").style.display = "none";
+			}
+		} else if (tbody)
+		{
+			tbody.remove();
+			this.shadowRoot.querySelector("label").style.display = "";
+			this.shadowRoot.querySelector("div").style.display = "none";
+			this.shadowRoot.querySelector("input").style.display = "none";
+		}
+	}
+
+	set mapper(mapper)
+	{
+		this._private.mapper = mapper || (e => e);
+	}
+
+	get mapper()
+	{
+		return this._private.mapper || (e => e);
+	}
+});

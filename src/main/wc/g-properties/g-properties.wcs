@@ -1,9 +1,9 @@
 :host(*) {
-	display: grid;
+	display: inline-grid;
 	grid-template-columns: auto auto;
 }
 
-::slotted(label) {
+label {
 	padding: 4px;
 	display: flex;
 	font-weight: bold;
@@ -11,7 +11,7 @@
 	justify-content: flex-end;
 }
 
-::slotted(span) {
+span {
 	padding: 4px;
 	display: flex;
 	align-items: center;

@@ -319,14 +319,11 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Parses a JSON formatted string into a JsonObject object.
 	 *
-	 * @param json the JSON formatted string to be parsed into a JsonObject
-	 * object
+	 * @param json the JSON formatted string to be parsed into a JsonObject object
 	 *
-	 * @return a JsonObject object representing the JSON formatted string
-	 * specified
+	 * @return a JsonObject object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse
-	 * the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
@@ -342,11 +339,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonObject into a JSON formatted string.
 	 * <p>
-	 * The attributes of the specified JsonObject will be formatted
-	 * recursively as their respective elements on JSON notation.
+	 * The attributes of the specified JsonObject will be formatted recursively as their respective elements on JSON notation.
 	 *
-	 * @param jsonObject the jsonObject object to be formatted on JSON
-	 * notation
+	 * @param jsonObject the jsonObject object to be formatted on JSON notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonObject
 	 *
@@ -446,13 +441,20 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 			.set("value", JsonElement.of(value.apply(obj)));
 	}
 
+	public static <T> JsonObject of(T obj,
+		Function<T, String> label, Function<T, Object> value, Function<T, JsonObject> properties)
+	{
+		return new JsonObject()
+			.set("label", JsonString.of(label.apply(obj)))
+			.set("value", JsonElement.of(value.apply(obj)))
+			.set("properties", properties.apply(obj));
+	}
+
 	/**
-	 * Creates a JsonObject from the named non null properties of a java
-	 * object.
+	 * Creates a JsonObject from the named non null properties of a java object.
 	 *
 	 * @param obj the object to be formatted
-	 * @return a JsonObject with all named non null properties of the
-	 * specified object
+	 * @return a JsonObject with all named non null properties of the specified object
 	 */
 	public static JsonObject format(Object obj)
 	{

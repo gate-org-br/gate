@@ -1,71 +1,176 @@
 /* global customElements, template, fetch */
 
+import './g-icon.mjs';
+import './g-grid.mjs';
 import './g-window-header.mjs';
 import './g-window-section.mjs';
-import './g-object-selector.mjs';
 import GModal from './g-modal.mjs';
+import Message from './g-message.mjs';
 
 export default class GSearchPicker extends GModal
 {
 	constructor()
 	{
 		super();
-		this._private = {};
+		let prev = "";
+		let result = null;
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("canceled")) | this.hide());
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click",
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
-		let selector = this.shadowRoot.querySelector("g-object-selector");
-		selector.addEventListener("selected", e =>
-			this.dispatchEvent(new CustomEvent("picked", {detail: e.detail})) | this.hide());
+		let grid = this.shadowRoot.querySelector("g-grid");
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: e.detail})) | this.hide());
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
 		{
-			if (this._private.length)
-			{
-				let text = input.value.toLowerCase();
+			let text = input.value.toLowerCase();
 
-				if (text.length < this._private.length)
+			if (text.length)
+			{
+				if (result && text.includes(prev))
 				{
-					this._private.result = null;
-					this._private.length = null;
-					this.shadowRoot.querySelector("g-object-selector").options = [];
+					grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
+					if (Array.isArray(result[0]))
+					{
+						let values = result.slice(1).filter(row => row.some(col => col.toLowerCase().includes(text)));
+						grid.style.textAlign = '';
+						grid.mapper = e => e.slice(1);
+						grid.header = result[0].slice(1);
+						grid.values = values;
+						this.dispatchEvent(new CustomEvent("update", {detail: values}));
+					} else
+					{
+						grid.header = null;
+						grid.style.textAlign = 'left';
+
+						grid.mapper = e =>
+						{
+							let keys = Object.keys(e);
+							if (keys.length === 2
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0)
+								return e.label;
+							else if (keys.length === 3
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0
+								&& keys.indexOf("properties") >= 0)
+								return e.properties;
+							else
+								return keys.slice(1)
+									.reduce((val, key) => {
+										val[key] = e[key];
+										return val;
+									}, {});
+						}
+
+
+						let values = result.filter(e =>
+						{
+							let keys = Object.keys(e);
+							if (keys.length === 2
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0)
+								return e.label.toLowerCase().startsWith(text);
+							else if (keys.length === 3
+								&& keys.indexOf("label") >= 0
+								&& keys.indexOf("value") >= 0
+								&& keys.indexOf("properties") >= 0)
+								return e.label.toLowerCase().startsWith(text)
+									|| Object.values(e.properties).some(property => property.toLowerCase().startsWith(text));
+							else
+								return Object.values(e).some(property => property.toLowerCase().startsWith(text));
+						});
+
+						grid.values = values;
+						this.dispatchEvent(new CustomEvent("update", {detail: values}));
+					}
 				} else
 				{
-					this.shadowRoot.querySelector("g-object-selector").options =
-						this._private.result.filter(e =>
+					input.disabled = true;
+					fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
+						.then(options => options.json())
+						.then(options =>
 						{
-							let label = e.label.toLowerCase();
+							if (Array.isArray(options))
+							{
+								grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
 
-							if (label.includes(text))
-								return true;
+								result = options;
+								if (Array.isArray(result[0]))
+								{
+									let values = result.slice(1);
+									grid.style.textAlign = '';
+									grid.mapper = e => e.slice(1);
+									grid.header = result[0].slice(1);
+									grid.values = result.slice(1);
+									this.dispatchEvent(new CustomEvent("update", {detail: values}));
+								} else
+								{
+									grid.header = null;
+									grid.style.textAlign = 'left';
 
-							if (e.properties)
-								if (Object.values(e.properties).some(property => text === property.toLowerCase()))
-									return true;
+									grid.mapper = e =>
+									{
+										let keys = Object.keys(e);
+										if (keys.length === 2
+											&& keys.indexOf("label") >= 0
+											&& keys.indexOf("value") >= 0)
+											return e.label;
+										else if (keys.length === 3
+											&& keys.indexOf("label") >= 0
+											&& keys.indexOf("value") >= 0
+											&& keys.indexOf("properties") >= 0)
+											return e.properties;
+										else
+											return keys.slice(1)
+												.reduce((val, key) => {
+													val[key] = e[key];
+													return val;
+												}, {});
+									}
 
-							return false;
-						});
+
+									grid.values = result;
+									this.dispatchEvent(new CustomEvent("update", {detail: result}));
+								}
+
+							} else if (typeof options === "string")
+							{
+								grid.innerText = options;
+								result = null;
+								grid.mapper = null;
+								grid.header = null;
+								grid.values = null;
+								grid.style.textAlign = '';
+								this.dispatchEvent(new CustomEvent("update", {detail: null}));
+							} else
+								alert("Dados inválidos retornados pelo servidor");
+							input.disabled = false;
+						}).catch(error => Message.error(error.message));
 				}
 			} else
 			{
-				input.disabled = true;
-				fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
-					.then(options => options.json())
-					.then(options =>
-					{
-						if (options && options.length)
-						{
-							this._private.result = options;
-							this._private.length = input.value.length;
-							this.shadowRoot.querySelector("g-object-selector").options = options;
-						}
-						input.disabled = false;
-					}).catch(() => alert("Error ao tentar obter dados do servidor"));
+				grid.innerText = "Entre com o critério de pesquisa";
+				result = null;
+				grid.mapper = null;
+				grid.header = null;
+				grid.values = null;
+				grid.style.textAlign = '';
 			}
+
+			prev = text;
 		});
+	}
+
+	set text(text)
+	{
+		let input = this.shadowRoot.querySelector("input");
+		input.value = text;
+		input.dispatchEvent(new Event('input'));
 	}
 
 	set caption(caption)
@@ -89,7 +194,7 @@ export default class GSearchPicker extends GModal
 		return this._private.options;
 	}
 
-	static pick(options, caption)
+	static pick(options, caption, text)
 	{
 		let picker = window.top.document.createElement("g-search-picker");
 		picker.options = options;
@@ -97,11 +202,29 @@ export default class GSearchPicker extends GModal
 			picker.caption = caption;
 		picker.show();
 
-		return new Promise(resolve =>
+		if (text)
 		{
-			picker.addEventListener("canceled", () => resolve());
-			picker.addEventListener("picked", e => resolve(e.detail));
-		});
+			let promise = new Promise(resolve =>
+			{
+				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("select", e => resolve(e.detail));
+				picker.addEventListener("update", e =>
+				{
+					if (e.detail && e.detail.length === 1)
+					{
+						resolve(e.detail[0]);
+						picker.hide();
+					}
+				});
+			});
+			picker.text = text;
+			return promise;
+		} else
+			return  new Promise(resolve =>
+			{
+				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("select", e => resolve(e.detail));
+			});
 	}
 };
 
