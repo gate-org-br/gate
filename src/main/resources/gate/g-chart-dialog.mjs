@@ -124,9 +124,10 @@ g-chart {
 	background-color: white;
 }</style>`;
 
-/* global customElements, template */
+/* global customElements, template, fetch */
 
 import GModal from './g-modal.mjs';
+import Dataset from './dataset.mjs';
 
 export default class GChartDialog extends GModal
 {
@@ -211,10 +212,40 @@ window.addEventListener("click", function (event)
 	event.preventDefault();
 	event.stopPropagation();
 
-	GChartDialog.show(action.getAttribute('data-chart'),
-		action.getAttribute('data-series')
-		|| action.getAttribute('href'),
-		action.getAttribute("title"));
+	let chart = action.getAttribute("data-chart");
+	let title = action.getAttribute("title") || "???";
+
+	if (action.hasAttribute('data-series'))
+	{
+		let series = action.getAttribute("data-series");
+		if (series[0] === '#')
+		{
+			let min = action.hasAttribute("data-min") ? Number(action.getAttribute("data-min")) : undefined;
+			let max = action.hasAttribute("data-max") ? Number(action.getAttribute("data-max")) : undefined;
+			let locale = action.hasAttribute("data-locale") ? Number(action.getAttribute("data-locale")) : undefined;
+			let category = action.hasAttribute("data-category") ? Number(action.getAttribute("data-category")) : undefined;
+			let dataset = Dataset.fromTable(document.querySelector(series), category, min, max, locale);
+			if (action.hasAttribute('data-reverse'))
+				dataset = Dataset.reverse(dataset);
+			GChartDialog.show(chart, dataset, title);
+		} else
+		{
+			let dataset = JSON.parse(series);
+			if (action.hasAttribute('data-reverse'))
+				dataset = Dataset.reverse(dataset);
+			GChartDialog.show(chart, dataset, title);
+		}
+	} else
+	{
+		fetch(action.href)
+			.then(dataset => dataset.json())
+			.then(dataset =>
+			{
+				if (action.hasAttribute('data-reverse'))
+					dataset = Dataset.reverse(dataset);
+				GChartDialog.show(chart, dataset, title);
+			});
+	}
 });
 
 window.addEventListener("click", function (event)

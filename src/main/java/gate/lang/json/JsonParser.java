@@ -215,7 +215,15 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 
 	private JsonString string() throws ConversionException
 	{
-		JsonString value = JsonString.of(scanner.getCurrent().toString());
+		JsonString value = JsonString.of(scanner.getCurrent().toString()
+			.replace("\\r", "\r")
+			.replace("\\n", "\n")
+			.replace("\\t", "\t")
+			.replace("\\b", "\b")
+			.replace("\\f", "\f")
+			.replace("\\\'", "\'")
+			.replace("\\\"", "\"")
+			.replace("\\\\", "\\"));
 		scanner.scan();
 		return value;
 	}

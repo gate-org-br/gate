@@ -1,12 +1,27 @@
+import URL from './url.mjs';
+import NumberParser from './number-parser.mjs';
+
 export default class Dataset
 {
-	static fromTable(table)
+	static fromTable(table, category = 0, min = 1, max, locale)
 	{
-		let data = Array.from(table.querySelectorAll(":scope > thead > tr, :scope > tbody > tr"));
-		data = data.map(e => Array.from(e.children).map(c => c.getAttribute("data-value") || c.innerHTML.trim()));
-		for (let i = 1; i < data.length; i++)
-			for (let j = 1; j < data[i].length; j++)
-				data[i][j] = Number(data[i][j].replace(/\./g, "").replace(/\,/g, "."));
-		return data;
+		const parser = new NumberParser(locale);
+		return Array.from(table.querySelectorAll("tr"))
+			.filter(e => e.parentNode.tagName === "THEAD" || e.parentNode.tagName === "TBODY")
+			.map(row => row.parentNode.tagName === "THEAD"
+					? [row.children[category].innerText.trim(), ...Array.from(row.children)
+							.filter((e, index) => index >= min && (!max || index <= max))
+							.map(e => e.innerText.trim())]
+					: [row.children[category].innerText.trim(), ...Array.from(row.children)
+							.filter((e, index) => index >= min && (!max || index <= max))
+							.map(e => e.getAttribute("data-value") || e.innerText.trim())
+							.map(e => parser.parse(e))]);
+	}
+
+	static reverse(dataset)
+	{
+		return dataset.length
+			? dataset[0].map((e, index) => dataset.map(row => row[index]))
+			: dataset;
 	}
 }
