@@ -218,34 +218,35 @@ window.addEventListener("click", function (event)
 	if (action.hasAttribute('data-series'))
 	{
 		let series = action.getAttribute("data-series");
-		if (series[0] === '#')
+
+		let matcher = series.match(/^(#[a-z]+)(\(((dir|cat|min|max|loc)=[a-z0-9-]+(, *(dir|cat|min|max|loc)=[a-z0-9-]+)*)\))?$/i);
+		if (matcher)
 		{
-			let min = action.hasAttribute("data-min") ? Number(action.getAttribute("data-min")) : undefined;
-			let max = action.hasAttribute("data-max") ? Number(action.getAttribute("data-max")) : undefined;
-			let locale = action.hasAttribute("data-locale") ? Number(action.getAttribute("data-locale")) : undefined;
-			let category = action.hasAttribute("data-category") ? Number(action.getAttribute("data-category")) : undefined;
-			let dataset = Dataset.fromTable(document.querySelector(series), category, min, max, locale);
-			if (action.hasAttribute('data-reverse'))
-				dataset = Dataset.reverse(dataset);
+			let table = matcher[1];
+			let dir = 'X';
+			let cat = 0;
+			let min = 1;
+			let max = undefined;
+			let loc = undefined;
+			if (matcher[3])
+			{
+				let parameters = matcher[3].split(",");
+				parameters = parameters.map(e => e.split("="));
+				parameters.filter(e => e[0] === 'dir').map(e => e[1]).forEach(e => dir = e);
+				parameters.filter(e => e[0] === 'cat').map(e => e[1]).forEach(e => cat = e);
+				parameters.filter(e => e[0] === 'min').map(e => e[1]).forEach(e => min = e);
+				parameters.filter(e => e[0] === 'max').map(e => e[1]).forEach(e => max = e);
+				parameters.filter(e => e[0] === 'loc').map(e => e[1]).forEach(e => loc = e);
+			}
+
+			let dataset = Dataset.fromTable(document.querySelector(table), dir, cat, min, max, loc);
 			GChartDialog.show(chart, dataset, title);
 		} else
-		{
-			let dataset = JSON.parse(series);
-			if (action.hasAttribute('data-reverse'))
-				dataset = Dataset.reverse(dataset);
-			GChartDialog.show(chart, dataset, title);
-		}
+			GChartDialog.show(chart, JSON.parse(series), title);
 	} else
-	{
 		fetch(action.href)
 			.then(dataset => dataset.json())
-			.then(dataset =>
-			{
-				if (action.hasAttribute('data-reverse'))
-					dataset = Dataset.reverse(dataset);
-				GChartDialog.show(chart, dataset, title);
-			});
-	}
+			.then(dataset => GChartDialog.show(chart, dataset, title));
 });
 
 window.addEventListener("click", function (event)
