@@ -1,13 +1,11 @@
 import URL from './url.mjs';
-import NumberParser from './number-parser.mjs';
+import NumberFormat from './number-format.mjs';
 
 export default class Dataset
 {
-	static fromTable(table, {dir = 'X', cat = 0, min = 1, max,
-		lang = document.querySelector("html").getAttribute("lang")
-		|| navigator.language})
+	static fromTable(table, {dir = 'X', cat = 0, min = 1, max, lang })
 	{
-		const parser = new NumberParser(lang);
+		const parser = new NumberFormat(lang);
 
 		let rows = Array.from(table.querySelectorAll("tr"))
 			.filter(e => e.parentNode.tagName === "THEAD"
