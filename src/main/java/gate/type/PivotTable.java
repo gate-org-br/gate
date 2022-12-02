@@ -11,8 +11,19 @@ import java.util.stream.Stream;
 public class PivotTable<T> implements Serializable
 {
 
+	private final String rowLabel;
+	private final String colLabel;
+	private final String valueLabel;
+
 	private static final long serialVersionUID = 1L;
 	private final Map<String, Map<String, T>> values = new LinkedHashMap<>();
+
+	public PivotTable(String rowLabel, String colLabel, String valueLabel)
+	{
+		this.rowLabel = rowLabel;
+		this.colLabel = colLabel;
+		this.valueLabel = valueLabel;
+	}
 
 	public PivotTable add(String row, String col, T value)
 	{
@@ -42,7 +53,7 @@ public class PivotTable<T> implements Serializable
 
 	public List<String> header()
 	{
-		return Stream.concat(Stream.of("#"),
+		return Stream.concat(Stream.of(getRowLabel()),
 			values.values().stream().flatMap(e -> e.keySet().stream())
 				.map(e -> String.valueOf(e))).distinct().toList();
 	}
@@ -53,6 +64,21 @@ public class PivotTable<T> implements Serializable
 			.map(row -> Stream.concat(Stream.of(row.getKey()),
 			row.getValue().values().stream()).collect(Collectors.toList()))
 			.collect(Collectors.toList());
+	}
+
+	public String getRowLabel()
+	{
+		return rowLabel;
+	}
+
+	public String getColLabel()
+	{
+		return colLabel;
+	}
+
+	public String getValueLabel()
+	{
+		return valueLabel;
 	}
 
 	public List<Object> dataset()
@@ -72,7 +98,7 @@ public class PivotTable<T> implements Serializable
 
 	public PivotTable inverted()
 	{
-		PivotTable result = new PivotTable();
+		PivotTable result = new PivotTable(getColLabel(), getRowLabel(), getValueLabel());
 
 		for (Map.Entry<String, Map<String, T>> row : values.entrySet())
 			for (Map.Entry<String, T> col : row.getValue().entrySet())
@@ -89,7 +115,7 @@ public class PivotTable<T> implements Serializable
 
 	public static void main(String[] args)
 	{
-		PivotTable pivot = new PivotTable();
+		PivotTable pivot = new PivotTable("Ano", "Programador", "Quantidade");
 		pivot.add("2015", "Davi", 1000);
 		pivot.add("2016", "Davi", 1100);
 		pivot.add("2017", "Davi", 1200);
@@ -100,11 +126,7 @@ public class PivotTable<T> implements Serializable
 		pivot.add("2016", "Mia", 200);
 		pivot.add("2017", "Mia", 300);
 
-		System.out.println(pivot.header());
-		System.out.println(pivot.values());
-		System.out.println(pivot.dataset());
-
-		System.out.println(pivot.toJson());
+		System.out.println(pivot.inverted().toJson());
 
 	}
 }
