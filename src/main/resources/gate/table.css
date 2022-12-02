@@ -192,83 +192,43 @@ table > tfoot > tr td:only-child {
   text-align: right;
 }
 table.c1 > * > tr > *:nth-child(1),
-table[data-c1] > * > tr > *:nth-child(1) {
-  text-align: center;
-}
+table.cge1 > * > tr > *:nth-child(n+1),
 table.c2 > * > tr > *:nth-child(2),
-table[data-c2] > * > tr > *:nth-child(2) {
-  text-align: center;
-}
+table.cge2 > * > tr > *:nth-child(n+2),
 table.c3 > * > tr > *:nth-child(3),
-table[data-c3] > * > tr > *:nth-child(3) {
-  text-align: center;
-}
+table.cge3 > * > tr > *:nth-child(n+3),
 table.c4 > * > tr > *:nth-child(4),
-table[data-c4] > * > tr > *:nth-child(4) {
-  text-align: center;
-}
+table.cge4 > * > tr > *:nth-child(n+4),
 table.c5 > * > tr > *:nth-child(5),
-table[data-c5] > * > tr > *:nth-child(5) {
-  text-align: center;
-}
+table.cge5 > * > tr > *:nth-child(n+5),
 table.c6 > * > tr > *:nth-child(6),
-table[data-c6] > * > tr > *:nth-child(6) {
-  text-align: center;
-}
+table.cge6 > * > tr > *:nth-child(n+6),
 table.c7 > * > tr > *:nth-child(7),
-table[data-c7] > * > tr > *:nth-child(7) {
-  text-align: center;
-}
+table.cge7 > * > tr > *:nth-child(n+7),
 table.c8 > * > tr > *:nth-child(8),
-table[data-c8] > * > tr > *:nth-child(8) {
-  text-align: center;
-}
+table.cge8 > * > tr > *:nth-child(n+8),
 table.c9 > * > tr > *:nth-child(9),
-table[data-c9] > * > tr > *:nth-child(9) {
-  text-align: center;
-}
+table.cge9 > * > tr > *:nth-child(n+9),
 table.c10 > * > tr > *:nth-child(10),
-table[data-c10] > * > tr > *:nth-child(10) {
-  text-align: center;
-}
+table.cge10 > * > tr > *:nth-child(n+10),
 table.c11 > * > tr > *:nth-child(11),
-table[data-c11] > * > tr > *:nth-child(11) {
-  text-align: center;
-}
+table.cge11 > * > tr > *:nth-child(n+11),
 table.c12 > * > tr > *:nth-child(12),
-table[data-c12] > * > tr > *:nth-child(12) {
-  text-align: center;
-}
+table.cge12 > * > tr > *:nth-child(n+12),
 table.c13 > * > tr > *:nth-child(13),
-table[data-c13] > * > tr > *:nth-child(13) {
-  text-align: center;
-}
+table.cge13 > * > tr > *:nth-child(n+13),
 table.c14 > * > tr > *:nth-child(14),
-table[data-c14] > * > tr > *:nth-child(14) {
-  text-align: center;
-}
+table.cge14 > * > tr > *:nth-child(n+14),
 table.c15 > * > tr > *:nth-child(15),
-table[data-c15] > * > tr > *:nth-child(15) {
-  text-align: center;
-}
+table.cge15 > * > tr > *:nth-child(n+15),
 table.c16 > * > tr > *:nth-child(16),
-table[data-c16] > * > tr > *:nth-child(16) {
-  text-align: center;
-}
+table.cge16 > * > tr > *:nth-child(n+16),
 table.c17 > * > tr > *:nth-child(17),
-table[data-c17] > * > tr > *:nth-child(17) {
-  text-align: center;
-}
+table.cge17 > * > tr > *:nth-child(n+17),
 table.c18 > * > tr > *:nth-child(18),
-table[data-c18] > * > tr > *:nth-child(18) {
-  text-align: center;
-}
+table.cge18 > * > tr > *:nth-child(n+18),
 table.c19 > * > tr > *:nth-child(19),
-table[data-c19] > * > tr > *:nth-child(19) {
-  text-align: center;
-}
-table.c20 > * > tr > *:nth-child(20),
-table[data-c20] > * > tr > *:nth-child(20) {
+table.cge19 > * > tr > *:nth-child(n+19) {
   text-align: center;
 }
 td > label,

@@ -219,27 +219,12 @@ window.addEventListener("click", function (event)
 	{
 		let series = action.getAttribute("data-series");
 
-		let matcher = series.match(/^(#[a-z]+)(\(((dir|cat|min|max|loc)=[a-z0-9-]+(, *(dir|cat|min|max|loc)=[a-z0-9-]+)*)\))?$/i);
+		let matcher = series.match(/^(#[a-z]+)(\(([^)]*)\))?$/i);
 		if (matcher)
 		{
-			let table = matcher[1];
-			let dir = 'X';
-			let cat = 0;
-			let min = 1;
-			let max = undefined;
-			let loc = undefined;
-			if (matcher[3])
-			{
-				let parameters = matcher[3].split(",");
-				parameters = parameters.map(e => e.split("="));
-				parameters.filter(e => e[0] === 'dir').map(e => e[1]).forEach(e => dir = e);
-				parameters.filter(e => e[0] === 'cat').map(e => e[1]).forEach(e => cat = e);
-				parameters.filter(e => e[0] === 'min').map(e => e[1]).forEach(e => min = e);
-				parameters.filter(e => e[0] === 'max').map(e => e[1]).forEach(e => max = e);
-				parameters.filter(e => e[0] === 'loc').map(e => e[1]).forEach(e => loc = e);
-			}
-
-			let dataset = Dataset.fromTable(document.querySelector(table), dir, cat, min, max, loc);
+			let table = document.querySelector(matcher[1]);
+			let options = matcher[3] ? JSON.parse(matcher[3]) : {};
+			let dataset = Dataset.fromTable(table, options);
 			GChartDialog.show(chart, dataset, title);
 		} else
 			GChartDialog.show(chart, JSON.parse(series), title);
@@ -262,25 +247,21 @@ window.addEventListener("click", function (event)
 	event.stopPropagation();
 
 	let table = action.closest("table");
+
 	let main = table.querySelector(":scope > tfoot > tr > *[data-chart-category]")
 		|| table.querySelector(":scope > tfoot > tr > *:first-child");
 	main = Array.from(main.parentNode.children).indexOf(main);
-	let self = Array.from(action.parentNode.children).indexOf(action);
+
+	let indx = Array.from(action.parentNode.children).indexOf(action);
+
+	let chart = action.getAttribute('data-chart');
+
+	let dataset = Dataset.fromTable(table, {cat: main, min: indx, max: indx});
 
 	let title1 = table.querySelector(`:scope > thead > tr > *:nth-child(${main + 1})`).innerText;
-	let title2 = table.querySelector(`:scope > thead > tr > *:nth-child(${self + 1})`).innerText;
+	let title2 = table.querySelector(`:scope > thead > tr > *:nth-child(${indx + 1})`).innerText;
+	let title = action.getAttribute("title") || `${title2} X ${title1}`;
 
-	let labels = Array.from(table.querySelectorAll(`:scope > tbody > tr > *:nth-child(${main + 1})`))
-		.map(e => e.getAttribute("data-value") || e.innerText);
-	let values = Array.from(table.querySelectorAll(`:scope > tbody > tr > *:nth-child(${self + 1})`))
-		.map(e => e.getAttribute("data-value") || e.innerText);
-
-	let series = [];
-	for (let i = 0; i < labels.length; i++)
-		series.push([labels[i], Number(values[i].replace(/\./g, "").replace(/\,/g, "."))]);
-
-	GChartDialog.show(action.getAttribute('data-chart'),
-		JSON.stringify(series),
-		action.getAttribute("title") || `${title2} X ${title1}`);
+	GChartDialog.show(chart, dataset, title);
 });
 
