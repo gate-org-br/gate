@@ -187,14 +187,14 @@ export default class GChartDialog extends GModal
 		this.shadowRoot.querySelector('g-chart').data = data;
 	}
 
-	static show(chart, series, title)
+	static show(chart, title, data)
 	{
 		let dialog = document.createElement("g-chart-dialog");
 		dialog.show();
 
 		dialog.type = chart;
 		dialog.title = title;
-		dialog.data = series;
+		dialog.data = data;
 	}
 }
 
@@ -215,23 +215,12 @@ window.addEventListener("click", function (event)
 	let chart = action.getAttribute("data-chart");
 	let title = action.getAttribute("title") || "???";
 
-	if (action.hasAttribute('data-series'))
-	{
-		let series = action.getAttribute("data-series");
-
-		let matcher = series.match(/^(#[a-z]+)(\(([^)]*)\))?$/i);
-		if (matcher)
-		{
-			let table = document.querySelector(matcher[1]);
-			let options = matcher[3] ? JSON.parse(matcher[3]) : {};
-			let dataset = Dataset.fromTable(table, options);
-			GChartDialog.show(chart, dataset, title);
-		} else
-			GChartDialog.show(chart, JSON.parse(series), title);
-	} else
-		fetch(action.href)
-			.then(dataset => dataset.json())
-			.then(dataset => GChartDialog.show(chart, dataset, title));
+	if (action.hasAttribute('data-table'))
+		Dataset.parse('table', action.getAttribute("data-table")).then(e => GChartDialog.show(chart, title, e));
+	else if (action.hasAttribute('data-array'))
+		Dataset.parse('array', action.getAttribute("data-array")).then(e => GChartDialog.show(chart, title, e));
+	else
+		Dataset.parse('url', action.href).then(e => GChartDialog.show(chart, title, e));
 });
 
 window.addEventListener("click", function (event)
@@ -262,6 +251,6 @@ window.addEventListener("click", function (event)
 	let title2 = table.querySelector(`:scope > thead > tr > *:nth-child(${indx + 1})`).innerText;
 	let title = action.getAttribute("title") || `${title2} X ${title1}`;
 
-	GChartDialog.show(chart, dataset, title);
+	GChartDialog.show(chart, title, dataset);
 });
 

@@ -112,21 +112,4 @@ public class PivotTable<T> implements Serializable
 	{
 		return toJson().toString();
 	}
-
-	public static void main(String[] args)
-	{
-		PivotTable pivot = new PivotTable("Ano", "Programador", "Quantidade");
-		pivot.add("2015", "Davi", 1000);
-		pivot.add("2016", "Davi", 1100);
-		pivot.add("2017", "Davi", 1200);
-		pivot.add("2015", "Marília", 900);
-		pivot.add("2016", "Marília", 1200);
-		pivot.add("2017", "Marília", 1050);
-		pivot.add("2015", "Mia", 100);
-		pivot.add("2016", "Mia", 200);
-		pivot.add("2017", "Mia", 300);
-
-		System.out.println(pivot.inverted().toJson());
-
-	}
 }

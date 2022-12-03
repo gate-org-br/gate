@@ -1,3 +1,5 @@
+/* global fetch */
+
 import URL from './url.mjs';
 import NumberFormat from './number-format.mjs';
 
@@ -31,5 +33,36 @@ export default class Dataset
 		return dataset.length
 			? dataset[0].map((e, index) => dataset.map(row => row[index]))
 			: dataset;
+	}
+
+	static parse(type, value)
+	{
+		return new Promise((resolve, reject) =>
+		{
+			try {
+				switch (type)
+				{
+					case 'table':
+						let matcher = value.match(/^(#[a-z]+)(\(([^)]*)\))?$/i);
+						if (!matcher)
+							throw new Error("Invalid table id");
+						let table = document.querySelector(matcher[1]);
+						let options = matcher[3] ? JSON.parse(matcher[3]) : {};
+						return resolve(Dataset.fromTable(table, options));
+						break;
+					case 'url':
+						fetch(value).then(e => e.json()).then(e => resolve(e));
+						break;
+					case 'array':
+						resolve(JSON.parse(value));
+						break;
+					default:
+						throw new Error("Invalid value type");
+				}
+			} catch (error)
+			{
+				reject(error);
+			}
+		});
 	}
 }
