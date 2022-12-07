@@ -13,10 +13,10 @@ export default function registerEventSource(listener)
 
 	let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
 	let hostname = location.hostname;
-	let port = location.port;
-	let pathname = location.pathname.replace(/\/Gate.*/, "/AppEvents");
+	let port = location.port ? ':' + location.port : null;
+	let pathname = location.pathname.replace(/\/Gate.*/, "") + "/AppEvents";
 
-	var url = protocol + hostname + ':' + port + pathname;
+	var url = protocol + hostname + port + pathname;
 
 	connection = new WebSocket(url);
 
