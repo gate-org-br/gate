@@ -241,7 +241,8 @@ window.addEventListener("mouseover", e => {
 		var object = e.getAttribute("data-tooltip");
 		if (/ *[{"[].*[}"\]] */.test(object))
 			object = JSON.parse(object);
+
+		e.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
 		GTooltip.show(e, e.getAttribute("data-tooltip-orientation"), object);
-	} else
-		GTooltip.hide();
+	}
 });
