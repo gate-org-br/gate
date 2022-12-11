@@ -1,7 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
-import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
@@ -29,9 +28,9 @@ public class TextareaProcessor extends PropertyProcessor
 	{
 		String value = "";
 		if (attributes.containsKey("value"))
-			value = Converter.toString(expression.evaluate((String) attributes.remove("value")));
+			value = property.getConverter().toString(property.getRawType(), expression.evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
-			value = Converter.toString(property.getValue(screen));
+			value = property.getConverter().toString(property.getRawType(), property.getValue(screen));
 		handler.replaceWith("<textarea " + attributes + ">" + value + "</textarea>", true);
 	}
 }

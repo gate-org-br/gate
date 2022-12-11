@@ -1,7 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
-import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
@@ -32,12 +31,12 @@ public abstract class InputProcessor extends PropertyProcessor
 		{
 			var value = attributes.get("value");
 			value = expression.evaluate((String) value);
-			value = Converter.toString(value);
+			value = property.getConverter().toString(property.getRawType(), value);
 			attributes.put("value", (String) value);
 		} else if (!property.toString().endsWith("[]"))
 		{
 			var value = property.getValue(screen);
-			value = Converter.toString(value);
+			value = property.getConverter().toString(property.getRawType(), value);
 			attributes.put("value", value);
 		}
 

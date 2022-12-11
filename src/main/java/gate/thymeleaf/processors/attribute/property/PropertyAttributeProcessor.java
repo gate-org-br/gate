@@ -1,7 +1,6 @@
 package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
-import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
@@ -45,7 +44,7 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 		}
 
 		if (!property.toString().endsWith("[]"))
-			handler.setBody(Converter.toText(property.getValue(screen)), false);
+			handler.setBody(property.getConverter().toText(property.getRawType(), property.getValue(screen)), false);
 		else
 			handler.setBody("", false);
 	}

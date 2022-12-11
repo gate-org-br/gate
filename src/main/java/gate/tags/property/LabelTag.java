@@ -1,7 +1,6 @@
 package gate.tags.property;
 
 import gate.annotation.Color;
-import gate.converter.Converter;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
@@ -24,8 +23,8 @@ public class LabelTag extends PropertyTag
 		}
 
 		String string = format != null
-			? Converter.toText(getValue(), format)
-			: Converter.toText(getValue());
+			? getConverter().toText(getType(), getValue(), format)
+			: getConverter().toText(getType(), getValue());
 		if (string.isEmpty() && empty != null)
 			string = empty;
 		string = string.replaceAll("\\n", "<br/>");
