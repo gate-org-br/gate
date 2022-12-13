@@ -2,111 +2,94 @@ package gate.converter;
 
 import gate.error.ConversionException;
 import java.time.Duration;
-import java.util.Locale;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DurationConverterTest
 {
 
-	@BeforeClass
-	public static void setUp()
+	private static final Converter CONVERTER = new DurationConverter();
+
+	@Test
+	public void testParseDays() throws ConversionException
 	{
-		Locale.setDefault(new Locale("pt", "br"));
+		Assert.assertEquals(Duration.ofDays(34), CONVERTER.ofString(Duration.class, "34d"));
+		Assert.assertEquals(Duration.ofDays(34), CONVERTER.ofString(Duration.class, "34D"));
 	}
 
 	@Test
-	public void testConvertHHMMSSToString() throws Exception
+	public void testFormatDays() throws ConversionException
 	{
-		String expected = "02:01:30";
-		String result = Converter.toString(Duration
-			.ofHours(2)
-			.plusMinutes(1)
-			.plusSeconds(30));
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals("34d", CONVERTER.toString(Duration.class, Duration.ofDays(34)));
 	}
 
 	@Test
-	public void testConvertMMSSToString() throws Exception
+	public void testParseHours() throws ConversionException
 	{
-		String expected = "00:01:30";
-		String result = Converter.toString(Duration
-			.ofMinutes(1)
-			.plusSeconds(30));
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals(Duration.ofHours(34), CONVERTER.ofString(Duration.class, "34h"));
+		Assert.assertEquals(Duration.ofHours(34), CONVERTER.ofString(Duration.class, "34H"));
 	}
 
 	@Test
-	public void testConvertSSToString() throws Exception
+	public void testFormatHours() throws ConversionException
 	{
-		String expected = "00:00:30";
-		String result = Converter.toString(Duration
-			.ofSeconds(30));
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals("14h", CONVERTER.toString(Duration.class, Duration.ofHours(14)));
+		Assert.assertEquals("1d 10h", CONVERTER.toString(Duration.class, Duration.ofHours(34)));
 	}
 
 	@Test
-	public void testConvertHHMMSSToObject() throws Exception
+	public void testParseMinutes() throws ConversionException
 	{
-		String string = "02:01:30";
-		Duration expected = Duration
-			.ofHours(2)
-			.plusMinutes(1)
-			.plusSeconds(30);
-
-		Duration result = (Duration) Converter.getConverter(Duration.class).ofString(Duration.class, string);
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34"));
+		Assert.assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34m"));
+		Assert.assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34M"));
 	}
 
 	@Test
-	public void testConvertMMSSToObject() throws Exception
+	public void testFormatMinutes() throws ConversionException
 	{
-		String string = "02:01";
-		Duration expected = Duration
-			.ofMinutes(2)
-			.plusSeconds(1);
-
-		Duration result = (Duration) Converter.getConverter(Duration.class).ofString(Duration.class, string);
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals("1h 15m", CONVERTER.toString(Duration.class, Duration.ofMinutes(75)));
+		Assert.assertEquals("34m", CONVERTER.toString(Duration.class, Duration.ofMinutes(34)));
 	}
 
 	@Test
-	public void testConvertSSToObject() throws Exception
+	public void testParseSeconds() throws ConversionException
 	{
-		String string = "01";
-		Duration expected = Duration
-			.ofSeconds(1);
-
-		Duration result = (Duration) Converter.getConverter(Duration.class).ofString(Duration.class, string);
-		Assert.assertEquals(expected, result);
+		Assert.assertEquals(Duration.ofSeconds(34), CONVERTER.ofString(Duration.class, "34s"));
+		Assert.assertEquals(Duration.ofSeconds(34), CONVERTER.ofString(Duration.class, "34S"));
 	}
 
 	@Test
-	public void testConvertStringWithErrorToObject()
+	public void testFormatSeconds() throws ConversionException
 	{
-		try
-		{
-			Converter.getConverter(Duration.class).ofString(Duration.class, "02:01::30");
-			Assert.fail();
-		} catch (ConversionException ex)
-		{
-		}
+		Assert.assertEquals("1m 15s", CONVERTER.toString(Duration.class, Duration.ofSeconds(75)));
+		Assert.assertEquals("34s", CONVERTER.toString(Duration.class, Duration.ofSeconds(34)));
+	}
 
-		try
-		{
-			Converter.getConverter(Duration.class).ofString(Duration.class, "02:01::");
-			Assert.fail();
-		} catch (ConversionException ex)
-		{
-		}
+	@Test
+	public void testParseComplete() throws ConversionException
+	{
+		Assert.assertEquals(Duration.ofDays(34).plusHours(12).plusMinutes(50).plusSeconds(20), CONVERTER.ofString(Duration.class, "34d 12h 50m 20s"));
+	}
 
-		try
-		{
-			Converter.getConverter(Duration.class).ofString(Duration.class, ":");
-			Assert.fail();
-		} catch (ConversionException ex)
-		{
-		}
+	@Test
+	public void testFormatComplete() throws ConversionException
+	{
+		Assert.assertEquals("34d 12h 50m 20s", CONVERTER.toString(Duration.class, Duration.ofDays(34).plusHours(12).plusMinutes(50).plusSeconds(20)));
+	}
+
+	@Test
+	public void testParseAlternative() throws ConversionException
+	{
+		Assert.assertEquals(Duration.ofHours(12).plusMinutes(50), CONVERTER.ofString(Duration.class, "12:50"));
+		Assert.assertEquals(Duration.ofHours(12).plusMinutes(50).plusSeconds(20), CONVERTER.ofString(Duration.class, "12:50:20"));
+	}
+
+	@Test
+	public void testFormatHHMM() throws ConversionException
+	{
+		Assert.assertEquals("01:15", CONVERTER.toText(Duration.class, Duration.ofMinutes(75), "hh:mm"));
+
+		Assert.assertEquals("00:01:15:00", CONVERTER.toText(Duration.class, Duration.ofMinutes(75), "dd:hh:mm:ss"));
 	}
 }

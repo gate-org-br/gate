@@ -1,9 +1,12 @@
 package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
+import gate.converter.Converter;
 import gate.lang.property.Property;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -11,6 +14,9 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 @ApplicationScoped
 public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public PropertyAttributeProcessor()
 	{
@@ -44,8 +50,13 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 		}
 
 		if (!property.toString().endsWith("[]"))
-			handler.setBody(property.getConverter().toText(property.getRawType(), property.getValue(screen)), false);
-		else
+		{
+			Object value = property.getValue(screen);
+			if (value == null && element.hasAttribute("g:empty"))
+				handler.setBody(Converter.toText(expression.evaluate(element.getAttributeValue("g:empty"))), false);
+			else
+				handler.setBody(property.getConverter().toText(property.getRawType(), value), false);
+		} else
 			handler.setBody("", false);
 	}
 

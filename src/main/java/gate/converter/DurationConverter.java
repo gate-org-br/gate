@@ -1,39 +1,24 @@
 package gate.converter;
 
 import gate.constraint.Constraint;
-import gate.constraint.Pattern;
 import gate.error.ConversionException;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
-import gate.util.DurationFormatter;
-import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.time.Duration;
-import java.time.format.DateTimeParseException;
-import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DurationConverter implements Converter
 {
 
-	private static final List<Constraint.Implementation<?>> CONSTRAINTS
-		= Collections.singletonList(new Pattern.Implementation(DurationFormatter.PATTERN.toString()));
+	private static final Pattern ALTERNATIVE = Pattern.compile("^ *([0-9]{2}):([0-9]{2})(:([0-9]{2}))? *$");
+	private static final Pattern PATTERN = Pattern.compile("^ *(([0-9]+)[dD])? *(([0-9]+)[hH])? *(([0-9]+)[mM])? *(([0-9]+)[sS])?|([0-9]+) *$");
 
-	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
-		return CONSTRAINTS;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de duração devem estar no formato HH:MM:SS";
-	}
+	private static final List<Constraint.Implementation<?>> CONSTRAINTS = List.of(new gate.constraint.Pattern.Implementation(PATTERN.toString()));
 
 	@Override
 	public String getMask()
@@ -42,40 +27,15 @@ public class DurationConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public String getDescription()
 	{
-		try
-		{
-			if (string == null)
-				return null;
-			string = string.trim();
-			if (string.isEmpty())
-				return null;
-
-			return DurationFormatter.parse(string);
-		} catch (DateTimeParseException ex)
-		{
-			throw new ConversionException(ex, "%s não representa uma duração no formato HH:MM:SS", string);
-		}
-
+		return "Duração no formato dD hH mM sS onde d, h, m e s são o número de dias, horas, minutos e segundos respectivamente";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		return object != null ? DurationFormatter.format((Duration) object) : "";
-	}
-
-	@Override
-	public String toText(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
-	public String toString(Class<?> type, Object object)
-	{
-		return object != null ? DurationFormatter.format((Duration) object) : "";
+		return CONSTRAINTS;
 	}
 
 	@Override
@@ -93,40 +53,83 @@ public class DurationConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setLong(fields++, ((Duration) value).getSeconds());
+			ps.setLong(index++, ((Duration) value).getSeconds());
 		else
-			ps.setNull(fields++, Types.INTEGER);
-		return fields;
+			ps.setNull(index++, Types.INTEGER);
+		return index;
 	}
 
 	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
-	{
-		switch (scanner.getCurrent().getType())
-		{
-			case NULL:
-				scanner.scan();
-				return null;
-			case NUMBER:
-				Duration value = Duration.ofSeconds(Long.parseLong(scanner.getCurrent().toString()));
-				scanner.scan();
-				return value;
-			default:
-				throw new ConversionException(scanner.getCurrent() + " is not a duration");
-		}
-	}
-
-	@Override
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public String toString(Class<?> type, Object object)
 	{
 		if (object == null)
-			writer.write(JsonToken.Type.NULL, null);
-		else if (object instanceof Duration)
-			writer.write(JsonToken.Type.NUMBER, Long.toString(((Duration) object).getSeconds()));
-		else
-			throw new ConversionException(object.getClass().getName() + " is not a duration");
+			return "";
+		Duration duration = (Duration) object;
+		StringJoiner string = new StringJoiner(" ");
+		if (duration.toDaysPart() > 0)
+			string.add(duration.toDaysPart() + "d");
+		if (duration.toHoursPart() > 0)
+			string.add(duration.toHoursPart() + "h");
+		if (duration.toMinutesPart() > 0)
+			string.add(duration.toMinutesPart() + "m");
+		if (duration.toSecondsPart() > 0)
+			string.add(duration.toSecondsPart() + "s");
+		return string.toString();
+	}
+
+	@Override
+	public Object ofString(Class<?> type, String string) throws ConversionException
+	{
+		if (string.isBlank())
+			return null;
+
+		Matcher matcher = PATTERN.matcher(string);
+		if (matcher.matches())
+		{
+			if (matcher.group(9) != null)
+				return Duration.ofMinutes(Integer.parseInt(matcher.group(9)));
+			int d = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
+			int h = matcher.group(4) != null ? Integer.parseInt(matcher.group(4)) : 0;
+			int m = matcher.group(6) != null ? Integer.parseInt(matcher.group(6)) : 0;
+			int s = matcher.group(8) != null ? Integer.parseInt(matcher.group(8)) : 0;
+
+			return Duration.ofSeconds(d * 24 * 60 * 60 + h * 60 * 60 + m * 60 + s);
+		}
+
+		matcher = ALTERNATIVE.matcher(string);
+		if (!matcher.matches())
+			throw new ConversionException(string + " não é uma duração válida");
+
+		int h = matcher.group(1) != null ? Integer.parseInt(matcher.group(1)) : 0;
+		int m = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
+		int s = matcher.group(4) != null ? Integer.parseInt(matcher.group(4)) : 0;
+		return Duration.ofSeconds(h * 60 * 60 + m * 60 + s);
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object)
+	{
+		return toString(type, object);
+	}
+
+	@Override
+	public String toText(Class<?> type, Object object, String format)
+	{
+		Duration duration = (Duration) object;
+
+		switch (format.toLowerCase())
+		{
+			case "hh:mm":
+				return String.format("%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart());
+			case "hh:mm:ss":
+				return String.format("%02d:%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+			case "dd:hh:mm:ss":
+				return String.format("%02d:%02d:%02d:%02d", duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+			default:
+				return String.format(format, toString(type, duration));
+		}
 	}
 }

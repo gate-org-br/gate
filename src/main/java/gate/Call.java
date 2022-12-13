@@ -2,9 +2,6 @@ package gate;
 
 import gate.annotation.Alert;
 import gate.annotation.Annotations;
-import gate.annotation.AuthWithAction;
-import gate.annotation.AuthWithModule;
-import gate.annotation.AuthWithScreen;
 import gate.annotation.Color;
 import gate.annotation.Confirm;
 import gate.annotation.Description;
@@ -25,6 +22,7 @@ import gate.util.Toolkit;
 import java.lang.reflect.Method;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+import gate.annotation.Authorization;
 
 public class Call
 {
@@ -155,21 +153,22 @@ public class Call
 		if (Annotations.exists(Superuser.class, type, method))
 			return user != null && user.isSuperUser();
 
-		var _module = Annotations.search(AuthWithModule.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
-		var _screen = Annotations.search(AuthWithScreen.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
-		var _action = Annotations.search(AuthWithAction.class, type, method).map(e -> e.value().isBlank() ? null : e.value()).orElse(this.module);
-
-		switch (Security.Extractor.extract(method)
-			.orElse(Security.Type.AUTHORIZATION))
+		switch (Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION))
 		{
 			case NONE:
 				return true;
 			case AUTHENTICATION:
 				return user != null;
 			case AUTHORIZATION:
-				return user != null && user.checkAccess(_module, _screen, _action);
+			{
+				var auth = Authorization.Extractor.extract(method, module, screen, action);
+				return user != null && user.checkAccess(auth.module(), auth.screen(), auth.action());
+			}
 			case SPECIFIC_AUTHORIZATION:
-				return user != null && user.checkSpecificAccess(_module, _screen, _action);
+			{
+				var auth = Authorization.Extractor.extract(method, module, screen, action);
+				return user != null && user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
+			}
 			case SUPERUSER:
 				return user != null && user.isSuperUser();
 			default:
