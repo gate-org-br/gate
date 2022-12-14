@@ -3,6 +3,7 @@ package gate;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +28,7 @@ public class Progress
 	private long done = UNKNOWN;
 	private String text = "Aguarde";
 	private Status status = Status.CREATED;
+	private final List<String> messages = new ArrayList<>();
 	private final int process = SEQUENCE.incrementAndGet();
 	private final List<Session> sessions = new CopyOnWriteArrayList<>();
 
@@ -46,6 +48,7 @@ public class Progress
 
 	public void add(Session session)
 	{
+		messages.forEach(session.getAsyncRemote()::sendText);
 		session.getAsyncRemote().sendText(toString());
 		if (url != null)
 			session.getAsyncRemote()
@@ -63,6 +66,8 @@ public class Progress
 	public void update(Status status, long todo,
 		long done, String text, JsonElement data)
 	{
+		messages.add(toString());
+
 		this.todo = todo;
 		this.done = done;
 		this.text = text;

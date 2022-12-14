@@ -238,7 +238,7 @@ window.addEventListener("mouseover", e => {
 	e = e.closest("*[data-tooltip]");
 	if (e)
 	{
-		var object = e.getAttribute("data-tooltip");
+		let object = e.getAttribute("data-tooltip");
 		if (/ *[{"[].*[}"\]] */.test(object))
 			object = JSON.parse(object);
 

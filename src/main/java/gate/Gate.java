@@ -217,7 +217,6 @@ public class Gate extends HttpServlet
 			handler.handle(request, response, progress.getProcess());
 			request.getAsyncContext().complete();
 
-			Thread.sleep(1000);
 			Object url = screen.execute(method);
 			if (url != null)
 				Progress.redirect(url.toString());
@@ -240,6 +239,8 @@ public class Gate extends HttpServlet
 		{
 			if (request.isAsyncStarted())
 				request.getAsyncContext().complete();
+
+			Toolkit.sleep(60000);
 			Progress.dispose();
 		}
 	}
