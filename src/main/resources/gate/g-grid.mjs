@@ -133,6 +133,13 @@ tfoot > tr > td
 {
 	bottom: 0;
 	position: sticky;
+}
+
+ul {
+	padding: 0;
+}
+li {
+	list-style-type: none
 }</style>`;
 
 /* global customElements, template, HTMLElement */
@@ -217,6 +224,40 @@ customElements.define('g-grid', class extends HTMLElement
 		return caption ? caption.innerHTML : null;
 	}
 
+	set widths(value)
+	{
+		let colgroup = this.shadowRoot.querySelector("colgroup");
+		if (value)
+		{
+			if (colgroup)
+				while (colgroup.firstChild)
+					colgroup.firstChild.remove();
+			else
+				colgroup = this.shadowRoot.querySelector("table")
+					.appendChild(document.createElement("colgroup"));
+			value.forEach(e => colgroup.appendChild(document.createElement("col")).style.width = e);
+		} else if (colgroup)
+			colgroup.remove();
+	}
+
+	set aligns(value)
+	{
+		let aligns = this.shadowRoot.getElementById("aligns");
+		if (value)
+		{
+			if (!aligns)
+			{
+				aligns = this.shadowRoot.appendChild(document.createElement("style"));
+				aligns.id = "aligns";
+			} else
+				while (colgroup.firstChild)
+					colgroup.firstChild.remove();
+
+			value.forEach((e, index) => aligns.appendChild(document.createTextNode(`th:nth-child(${index + 1}), td:nth-child(${index + 1}) { text-align: ${e}}\n`)));
+		} else if (aligns)
+			aligns.remove();
+	}
+
 	set header(value)
 	{
 		let tr = this.shadowRoot.querySelector("thead > tr");
@@ -269,17 +310,30 @@ customElements.define('g-grid', class extends HTMLElement
 				this.shadowRoot.querySelector("div").style.display = "";
 				this.shadowRoot.querySelector("input").style.display = "";
 				this.shadowRoot.querySelector("label").style.display = "none";
-				values.forEach(value =>
+				values.forEach((value, index) =>
 				{
 					let tr = tbody.appendChild(document.createElement("tr"));
 
-					let content = this.mapper(value);
+					tr.draggable = this.draggable;
+					tr.addEventListener("dragover", event => event.preventDefault());
+					tr.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", index));
+					tr.addEventListener("drop", event =>
+					{
+						event.preventDefault();
+						let result = Array.from(values);
+						let dropped = Number(event.dataTransfer.getData("text/plain"));
+						result.splice(index, 0, result.splice(dropped, 1)[0]);
+						this.values = result;
+						this.dispatchEvent(new CustomEvent("change", {detail: result}));
+					});
+
+					let content = this.mapper(value, index);
 					if (Array.isArray(content))
 						content.forEach(e => tr.appendChild(document.createElement("td")).appendChild(element(e)));
 					else
 						tr.appendChild(document.createElement("td")).appendChild(element(content));
 
-					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('select', {detail: value})));
+					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('select', {detail: {"index": index, "value": value}})));
 				});
 			} else
 			{
@@ -294,6 +348,22 @@ customElements.define('g-grid', class extends HTMLElement
 			this.shadowRoot.querySelector("div").style.display = "none";
 			this.shadowRoot.querySelector("input").style.display = "none";
 		}
+	}
+
+	set draggable(value)
+	{
+		if (value)
+			this.setAttribute("draggable", "draggable");
+		else
+			this.removeAttribute("draggable");
+
+		Array.from(this.shadowRoot.querySelectorAll("tbody > tr"))
+			.forEach(e => e.draggable = value);
+	}
+
+	get draggable()
+	{
+		return this.hasAttribute("draggable");
 	}
 
 	set mapper(mapper)

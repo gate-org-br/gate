@@ -124,3 +124,10 @@ tfoot > tr > td
 	bottom: 0;
 	position: sticky;
 }
+
+ul {
+	padding: 0;
+}
+li {
+	list-style-type: none
+}
