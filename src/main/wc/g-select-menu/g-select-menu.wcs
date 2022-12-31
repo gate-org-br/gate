@@ -1,0 +1,91 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	width: auto;
+	display: flex;
+	font-size: 12px;
+	cursor: pointer;
+	position: relative;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+	background-color: var(--g-coolbar-background-color);
+}
+
+header
+{
+	gap: 8px;
+	padding: 4px;
+	height: 32px;
+	display: grid;
+	user-select: none;
+	font-size: inherit;
+	align-items: center;
+	font-family: inherit;
+	border: 1px solid #999999;
+	grid-template-columns: 1fr 32px;
+}
+
+header::before
+{
+	content: attr(title);
+}
+
+header::after
+{
+	display: flex;
+	content: '\\2276';
+	font-family: gate;
+	font-size: 0.5em;
+	align-items: center;
+	justify-content: center;
+}
+
+main {
+	left: 0;
+	flex-grow: 1;
+	display: flex;
+	display: none;
+	width: inherit;
+	top: calc(100%);
+	flex-basis: 100%;
+	font-size: inherit;
+	position: absolute;
+	flex-direction: column;
+	border-top: 1px solid #CCCCCC;
+	background-color: var(--g-coolbar-background-color);
+}
+
+a {
+	gap: 8px;
+	padding: 4px;
+	height: 32px;
+	display: grid;
+	flex-basis: 100%;
+	font-size: inherit;
+	align-items: center;
+	text-decoration: none;
+	grid-template-columns: 1fr 32px;
+}
+
+g-icon, i {
+	order: 1;
+	font-size: 1.5em;
+}
+
+a:hover
+{
+	background-color: var(--hovered);
+}
+
+:host([opened]) > main
+{
+	display: block;
+}
+
+:host([opened]) > header::after
+{
+	content: '\\2278';
+}
