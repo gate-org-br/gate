@@ -1,0 +1,180 @@
+/* global customElements */
+
+import Message from './g-message.mjs';
+import GContextMenu from './g-context-menu.mjs';
+
+customElements.define('g-selectn', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.addEventListener("contextmenu", event =>
+		{
+			if (!event.ctrlKey)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				GContextMenu.show(event.clientX, event.clientY,
+					{"icon": "2205", "text": "Inverter seleção", "action": () => Array.from(this.shadowRoot.querySelectorAll("input")).forEach(e => e.checked = !e.checked)},
+					{"icon": "1011", "text": "Selecionar tudo", "action": () => Array.from(this.shadowRoot.querySelectorAll("input")).forEach(e => e.checked = true)},
+					{"icon": "1014", "text": "Desmarcar tudo", "action": () => Array.from(this.shadowRoot.querySelectorAll("input")).forEach(e => e.checked = false)});
+			}
+		});
+
+		this.shadowRoot.addEventListener("click", event =>
+		{
+			if (event.target.tagName === "LABEL")
+				event.target.previousElementSibling.click();
+		});
+	}
+
+	set options(options)
+	{
+		Array.from(this.shadowRoot.querySelectorAll("input, label"))
+			.forEach(e => e.remove());
+		options.forEach(option =>
+		{
+			let checkbox = this.shadowRoot.appendChild(document.createElement("input"));
+			checkbox.type = "checkbox";
+			checkbox.value = option.value;
+
+			let label = this.shadowRoot.appendChild(document.createElement("label"));
+			label.innerText = option.label;
+		});
+	}
+
+	get options()
+	{
+		return Array.from(this.shadowRoot.querySelectorAll("input"))
+			.map(checkbox => ({
+					"value": checkbox.value,
+					"label": checkbox.previousElementSibling.innerText
+				}));
+	}
+
+	get value()
+	{
+		return Array.from(this.shadowRoot.querySelectorAll("input"))
+			.filter(checkbox => checkbox.checked)
+			.map(checkbox => checkbox.value);
+	}
+
+	set value(value)
+	{
+		Array.from(this.shadowRoot.querySelectorAll("input"))
+			.forEach(checkbox => checkbox.checked = value.includes(checkbox.value));
+	}
+
+	get name()
+	{
+		return this.getAttribute("name");
+	}
+
+	set name(name)
+	{
+		this.setAttribute("name", name);
+	}
+
+	get required()
+	{
+		return this.getAttribute("required");
+	}
+
+	set required(required)
+	{
+		if (required)
+			this.setAttribute("required", "required");
+		else
+			this.removeAttribute("required");
+	}
+
+	set max(max)
+	{
+		this.setAttribute("max", "max");
+	}
+
+	get max()
+	{
+		return this.hasAttribute("max") ? Number(this.getAttribute("max")) : null;
+	}
+
+	set min(min)
+	{
+		this.setAttribute("min", "min");
+	}
+
+	get min()
+	{
+		return this.hasAttribute("min") ? Number(this.getAttribute("min")) : null;
+	}
+
+	connectedCallback()
+	{
+		Array.from(this.children)
+			.forEach(e => this.shadowRoot.appendChild(e));
+
+		if (this.name)
+		{
+			let form = this.closest("form");
+			if (form)
+				form.addEventListener("formdata", event =>
+					Array.from(this.shadowRoot.querySelectorAll("input"))
+						.filter(checkbox => checkbox.checked)
+						.forEach(checkbox => event.formData.append(this.name, checkbox.value)));
+		}
+	}
+
+	attributeChangedCallback(attribute)
+	{
+		if (attribute === "value")
+			this.value = JSON.parse(this.getAttribute("value"));
+		else
+			this.options = JSON.parse(this.getAttribute("options"));
+	}
+
+	checkValidity()
+	{
+		let checked =
+			Array.from(this.shadowRoot.querySelectorAll("input"))
+			.filter(checkbox => checkbox.checked)
+			.length;
+
+		if (this.required && !checked)
+			return false;
+
+		if (this.min && checked < min)
+			return false;
+
+		if (this.max && checked > max)
+			return false;
+
+		return true;
+	}
+
+	reportValidity()
+	{
+		let checked =
+			Array.from(this.shadowRoot.querySelectorAll("input"))
+			.filter(checkbox => checkbox.checked)
+			.length;
+
+		if (this.required && !checked)
+			return false & Message.error("Selecione ao menos uma opção");
+
+		if (this.min && checked < min)
+			return false & Message.error(`Selecione ao menos ${min} opções`);
+
+		if (this.max && checked > max)
+			return false & Message.error(`Selecione no máximo ${max} opções`);
+
+		return true;
+	}
+
+	static get observedAttributes()
+	{
+		return ['value', "options"];
+	}
+});

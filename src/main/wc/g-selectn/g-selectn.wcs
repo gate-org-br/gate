@@ -9,7 +9,7 @@
 	align-items: center;
 	justify-items: stretch;
 	background-color: white;
-	grid-template-columns: 32px 1fr;
+	grid-template-columns: 24px 1fr;
 }
 
 :host([columns='1'])  {
@@ -37,6 +37,6 @@
 	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
 }
 
-::slotted(*) {
+label {
 	cursor: pointer
 }
