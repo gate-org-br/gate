@@ -10,13 +10,13 @@ import gate.type.Field;
 import gate.type.Form;
 import gate.util.Toolkit;
 import java.util.StringJoiner;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-@ApplicationScoped
+@Vetoed
 public class FormProcessor extends PropertyProcessor
 {
 
@@ -129,7 +129,7 @@ public class FormProcessor extends PropertyProcessor
 							attributes.remove("checked");
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
-					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-select>%s</g-select></fieldset>",
+					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
 						size, field.getName(), options.toString());
 				}
 			}

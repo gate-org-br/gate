@@ -10,13 +10,16 @@ import gate.constraint.Required;
 import gate.converter.custom.FieldConverter;
 import gate.error.AppException;
 import gate.error.ConversionException;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import gate.type.collections.StringList;
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Icon("2198")
 @Converter(FieldConverter.class)
@@ -38,7 +41,7 @@ public class Field implements Serializable
 	@Required
 	@Name("Multiplo")
 	@Description("Defina se o campo admite múltiplas linhas (caso seja de preenchimento livre), ou múltiplas opções (caso possua lista predefinida de opções).")
-	private Boolean multiple;
+	private boolean multiple;
 
 	@Name("Opções")
 	@Description("Defina as opções possíveis de respostas para o campo. Separe as opções por vírgula. Deixe em branco se o campo for de preenchimento livre.")
@@ -51,7 +54,7 @@ public class Field implements Serializable
 	@Required
 	@Name("Requerido")
 	@Description("Defina se o campo é requerido.")
-	private Boolean required;
+	private boolean required;
 
 	@Name("Máscara")
 	@Description("Defina uma máscara para o campo.")
@@ -71,7 +74,7 @@ public class Field implements Serializable
 
 	@Name("Somente Leitura")
 	@Description("Define se o campo é somente leitura.")
-	private Boolean readonly;
+	private boolean readonly;
 
 	public String getName()
 	{
@@ -110,8 +113,6 @@ public class Field implements Serializable
 
 	public Size getSize()
 	{
-		if (size == null)
-			size = Size.ONE;
 		return size;
 	}
 
@@ -121,14 +122,12 @@ public class Field implements Serializable
 		return this;
 	}
 
-	public Boolean getMultiple()
+	public boolean getMultiple()
 	{
-		if (multiple == null)
-			multiple = false;
 		return multiple;
 	}
 
-	public Field setMultiple(Boolean multiple)
+	public Field setMultiple(boolean multiple)
 	{
 		this.multiple = multiple;
 		return this;
@@ -172,12 +171,10 @@ public class Field implements Serializable
 
 	public Boolean getRequired()
 	{
-		if (required == null)
-			required = false;
 		return required;
 	}
 
-	public Field setRequired(Boolean required)
+	public Field setRequired(boolean required)
 	{
 		this.required = required;
 		return this;
@@ -205,12 +202,12 @@ public class Field implements Serializable
 		return this;
 	}
 
-	public Boolean getReadonly()
+	public boolean getReadonly()
 	{
 		return readonly;
 	}
 
-	public Field setReadonly(Boolean readonly)
+	public Field setReadonly(boolean readonly)
 	{
 		this.readonly = readonly;
 		return this;
@@ -224,22 +221,26 @@ public class Field implements Serializable
 			name != null ? name.length() : 0);
 	}
 
-	@Override
-	public String toString()
+	public JsonObject toJson()
 	{
 		return new JsonObject()
 			.setString("name", name)
-			.setObject("size", Size.class, size)
-			.setBoolean("multiple", multiple)
-			.setObject("options", StringList.class, options)
-			.setObject("value", StringList.class, value)
-			.setBoolean("required", required)
 			.setString("mask", mask)
+			.setInt("maxlength", maxlength)
+			.setObject("size", Size.class, size)
 			.setString("description", description)
 			.setObject("pattern", Pattern.class, pattern)
-			.setInt("maxlength", maxlength)
-			.setBoolean("readonly", readonly)
-			.toString();
+			.setBoolean("readonly", readonly ? true : null)
+			.setBoolean("multiple", multiple ? true : null)
+			.setBoolean("required", required ? true : null)
+			.set("value", value != null && !value.isEmpty() ? JsonArray.of(value) : null)
+			.set("options", options != null && !options.isEmpty() ? JsonArray.of(options) : null);
+	}
+
+	@Override
+	public String toString()
+	{
+		return toJson().toString();
 	}
 
 	public static Field parse(String string) throws ConversionException
@@ -249,24 +250,30 @@ public class Field implements Serializable
 
 	public static Field parse(JsonObject jsonObject) throws ConversionException
 	{
-		try
-		{
-			return new Field()
-				.setName(jsonObject.getString("name").orElse(null))
-				.setSize(Size.parse(jsonObject.getString("size").orElse("8")))
-				.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
-				.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
-				.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
-				.setOptions(jsonObject.getObject("options", StringList.class).orElse(null))
-				.setValue(jsonObject.getObject("value", StringList.class).orElse(null))
-				.setMask(jsonObject.getString("mask").orElse(null))
-				.setDescription(jsonObject.getString("description").orElse(null))
-				.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null))
-				.setMaxlength(jsonObject.getInt("maxlength").orElse(null));
-		} catch (ParseException ex)
-		{
-			throw new ConversionException("Error trying to parse field size", ex);
-		}
+		Field field = new Field()
+			.setName(jsonObject.getString("name").orElse(null))
+			.setMask(jsonObject.getString("mask").orElse(null))
+			.setMaxlength(jsonObject.getInt("maxlength").orElse(null))
+			.setDescription(jsonObject.getString("description").orElse(null))
+			.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
+			.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
+			.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
+			.setSize(jsonObject.getString("size").map(Size::parse).orElse(null))
+			.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null));
+
+		JsonElement options = jsonObject.get("options");
+		if (options instanceof JsonString)
+			field.setOptions(new StringList(options.toString()));
+		else if (options instanceof JsonArray)
+			field.setOptions(((JsonArray) options).stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
+
+		JsonElement value = jsonObject.get("value");
+		if (value instanceof JsonString)
+			field.setValue(new StringList(value.toString()));
+		else if (value instanceof JsonArray)
+			field.setValue(((JsonArray) value).stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
+
+		return field;
 	}
 
 	public void validate() throws AppException
@@ -308,21 +315,23 @@ public class Field implements Serializable
 			return Name.Extractor.extract(this).orElse(name());
 		}
 
-		public static Size parse(String string) throws ParseException
+		public static Size parse(String string)
 		{
-			switch (string.trim())
-			{
-				case "0":
-					return ONE;
-				case "1":
-					return TWO;
-				case "2":
-					return FOUR;
-				case "3":
-					return EIGHT;
-				default:
-					return EIGHT;
-			}
+			if (string != null)
+				switch (string.trim())
+				{
+					case "0":
+						return ONE;
+					case "1":
+						return TWO;
+					case "2":
+						return FOUR;
+					case "3":
+						return EIGHT;
+					default:
+						return null;
+				}
+			return null;
 		}
 	}
 }

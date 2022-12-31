@@ -38,7 +38,7 @@ public abstract class CheckableTag extends SelectorTag
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
-		getJspContext().getOut().print("<g-select " + getAttributes() + ">");
+		getJspContext().getOut().print("<g-selectn " + getAttributes() + ">");
 
 		if (groups != null)
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
@@ -47,7 +47,7 @@ public abstract class CheckableTag extends SelectorTag
 		else
 			print(options, 0);
 
-		getJspContext().getOut().print("</g-select>");
+		getJspContext().getOut().print("</g-selectn>");
 	}
 
 	private void print(Iterable<?> options, int depth) throws IOException, JspException

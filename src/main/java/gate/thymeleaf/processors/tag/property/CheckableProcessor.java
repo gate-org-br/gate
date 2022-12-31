@@ -64,7 +64,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add("<g-select " + attributes + ">");
+		string.add("<g-selectn " + attributes + ">");
 
 		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
 		if (groups != null)
@@ -78,7 +78,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 		} else
 			print(string, Toolkit.iterable(options), labels, values, children, property.toString(), value, 0);
 
-		string.add("</g-select>");
+		string.add("</g-selectn>");
 		handler.replaceWith(string.toString(), false);
 	}
 

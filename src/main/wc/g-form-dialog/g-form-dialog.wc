@@ -1,0 +1,25 @@
+<template>
+	<main>
+		<g-window-header>
+			<label id='caption'></label>
+			<a id='close' href="#">
+				&#X1011;
+			</a>
+		</g-window-header>
+		<g-window-section>
+			<fieldset>
+				<g-form>
+				</g-form>
+			</fieldset>
+			<g-coolbar>
+				<a id='commit' href='#'>
+					Concluir<g-icon>&#X1000;</g-icon>
+				</a>
+				<hr/>
+				<a id='cancel' href="#">
+					Cancelar<g-icon>&#X1001;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-window-section>
+	</main>
+</template>

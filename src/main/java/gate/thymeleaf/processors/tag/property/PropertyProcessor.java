@@ -2,10 +2,12 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -15,6 +17,9 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 public abstract class PropertyProcessor extends TagProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public PropertyProcessor(String name)
 	{
@@ -34,7 +39,11 @@ public abstract class PropertyProcessor extends TagProcessor
 
 		if (!attributes.containsKey("property"))
 			throw new TemplateProcessingException("Missing required attribute property on g:" + getElement());
-		var property = Property.getProperty(screen.getClass(), (String) attributes.remove("property"));
+
+		var name = (String) attributes.remove("property");
+		name = (String) expression.evaluate(name);
+		var property = Property.getProperty(screen.getClass(), name);
+
 		attributes.put("name", property.toString());
 
 		property.getConstraints().stream()

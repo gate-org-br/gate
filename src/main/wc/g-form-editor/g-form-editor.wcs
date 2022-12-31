@@ -1,0 +1,17 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	gap: 8px;
+	display: flex;
+	flex-direction: column;
+}
+
+fieldset {
+	border: none;
+	padding: 12px;
+	border-radius: 5px;
+	border: 1px solid var(--base);
+	background-color: var(--main-shaded10);
+}

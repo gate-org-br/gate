@@ -1,0 +1,96 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	display: grid;
+	grid-template-columns: repeat(16, 1fr);
+}
+
+label {
+	padding: 4px;
+	display: flex;
+	grid-column: span 16;
+	flex-direction: column;
+}
+
+span {
+	flex-grow: 1;
+	display: block;
+	flex-basis: 32px;
+}
+
+input,
+select {
+	padding: 8px 4px 8px 4px;
+}
+
+input,
+textarea,
+select,
+g-selectn {
+	width: 100%;
+	height: 100%;
+	border-radius:  5px;
+	border: 1px solid #CCCCCC;
+}
+
+textarea {
+	resize: none
+}
+
+input:invalid,
+select:invalid,
+textarea:invalid
+{
+	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
+}
+
+@media only screen and (min-width: 576px) {
+	label[data-size="1"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	label[data-size="1"] {
+		grid-column: span 4;
+	}
+
+	label[data-size="2"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 992px) {
+	label[data-size="1"] {
+		grid-column: span 2;
+	}
+
+	label[data-size="2"] {
+		grid-column: span 4;
+	}
+
+	label[data-size="4"] {
+		grid-column: span 8;
+	}
+}
+
+
+@media only screen and (min-width: 1200px) {
+	label[data-size="1"] {
+		grid-column: span 1;
+	}
+
+	label[data-size="2"] {
+		grid-column: span 2;
+	}
+
+	label[data-size="4"] {
+		grid-column: span 4;
+	}
+
+	label[data-size="8"] {
+		grid-column: span 8;
+	}
+}

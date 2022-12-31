@@ -40,9 +40,7 @@ public class Form implements Serializable
 	@Override
 	public String toString()
 	{
-		return getFields().stream()
-			.map(Field::toString)
-			.collect(Collectors.joining(",", "[", "]"));
+		return toJson().toString();
 	}
 
 	public static Form parse(String string) throws ConversionException
@@ -58,6 +56,12 @@ public class Form implements Serializable
 		{
 			throw ex.getCause();
 		}
+	}
+
+	public JsonArray toJson()
+	{
+		return getFields().stream().map(e -> e.toJson())
+			.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public void validate() throws AppException

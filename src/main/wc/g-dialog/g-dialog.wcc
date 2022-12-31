@@ -67,7 +67,6 @@ export default class GDialog extends GModal
 		iframe.onmouseenter = () => iframe.focus();
 		iframe.addEventListener("load", () =>
 		{
-			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
 			resize(iframe);
 			window.addEventListener("refresh_size", () => resize(iframe));
 			iframe.backgroundImage = "none";

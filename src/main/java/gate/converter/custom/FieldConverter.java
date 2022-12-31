@@ -4,7 +4,6 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.type.Field;
-import gate.util.Toolkit;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,16 +39,24 @@ public class FieldConverter implements Converter
 			return "";
 
 		Field field = (Field) object;
-		int size = Integer.parseInt(field.getSize().toString()) * 2;
-		if (!Toolkit.isEmpty(field.getName()))
-			if (Boolean.FALSE.equals(field.getMultiple()))
-				return String.format("<label data-size='%d'>%s: <span><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
+
+		String value = Converter.toText(field.getValue());
+
+		if (field.getSize() != null)
+		{
+			int size = (int) Math.pow(2, field.getSize().ordinal());
+			if (Boolean.TRUE.equals(field.getMultiple()))
+				return String.format("<label data-size='%d'>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", size, field.getName(), value);
 			else
-				return String.format("<label data-size='%d'>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", size, field.getName(), Converter.toText(field.getValue()));
-		else if (Boolean.FALSE.equals(field.getMultiple()))
-			return String.format("<label data-size='%d'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
-		else
-			return String.format("<label data-size='%d'>&nbsp; <span style='flex-basis: 60px; ; overflow: auto; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
+				return String.format("<label data-size='%d'>%s: <span><label>%s</label></span></label>", size, field.getName(), value);
+
+		} else
+		{
+			if (Boolean.TRUE.equals(field.getMultiple()))
+				return String.format("<label>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", field.getName(), value);
+			else
+				return String.format("<label>%s: <span><label>%s</label></span></label>", field.getName(), value);
+		}
 	}
 
 	@Override

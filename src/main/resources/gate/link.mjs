@@ -177,8 +177,8 @@ window.addEventListener("click", function (event)
 								GSelectPicker.pick(options, link.title)
 									.then(object =>
 									{
-										label.value = Extractor.label(object);
-										value.value = Extractor.value(object);
+										label.value = Extractor.label(object.value);
+										value.value = Extractor.value(object.value);
 									});
 							}).catch(error => Message.error(error.message));
 					}

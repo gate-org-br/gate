@@ -269,7 +269,6 @@ fieldset > label > form {
 fieldset > label > span > *,
 fieldset > label > form > * {
   margin: 0px;
-  padding: 0px;
   color: black;
   border: 1px solid #CCCCCC;
 }
@@ -306,6 +305,11 @@ fieldset > label > form > select {
   flex-grow: 1;
   text-indent: 4px;
   line-height: 32px;
+}
+fieldset > label > span > g-selectn,
+fieldset > label > form > g-selectn {
+  flex-grow: 1;
+  line-height: normal;
 }
 fieldset > label > span[style] > textarea,
 fieldset > label > form[style] > textarea {
