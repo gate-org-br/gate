@@ -31,13 +31,13 @@ public class EntityUpdateTest
 		{
 			Contact expected
 				= new Contact()
-					.setId(new ID(1))
+					.setId(ID.valueOf(1))
 					.setType(Contact.Type.PHONE)
 					.setValue("99999999")
 					.setPerson(new Person()
 						.setId(1));
 
-			new ContactUpdate(link, new ID(1))
+			new ContactUpdate(link, ID.valueOf(1))
 				.setType(expected.getType())
 				.setPerson(expected.getPerson())
 				.setValue(expected.getValue())

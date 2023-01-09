@@ -65,7 +65,7 @@ public class FormConverter implements Converter
 		try
 		{
 			return string != null && string.trim().length() > 0
-				? Form.parse(string) : null;
+				? Form.valueOf(string) : null;
 		} catch (IllegalArgumentException e)
 		{
 			throw new ConversionException(string.concat(" não é um Formulário válido."));
@@ -76,14 +76,14 @@ public class FormConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		return rs.wasNull() ? null : Form.parse(string);
+		return rs.wasNull() ? null : Form.valueOf(string);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		return rs.wasNull() ? null : Form.parse(string);
+		return rs.wasNull() ? null : Form.valueOf(string);
 	}
 
 	@Override

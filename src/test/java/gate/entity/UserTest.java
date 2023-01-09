@@ -17,7 +17,7 @@ public class UserTest
 	public void before()
 	{
 		Role root = new Role();
-		root.setId(new ID(0));
+		root.setId(ID.valueOf(0));
 		root.setName("Root");
 		root.setActive(true);
 		root.getAuths().add(new Auth()
@@ -28,7 +28,7 @@ public class UserTest
 				.setAction("RootAction"));
 
 		Role role1 = new Role();
-		role1.setId(new ID(1));
+		role1.setId(ID.valueOf(1));
 		role1.setRole(root);
 		role1.setActive(true);
 		role1.setName("Role 1");
@@ -41,7 +41,7 @@ public class UserTest
 		root.getRoles().add(role1);
 
 		Role role2 = new Role();
-		role2.setId(new ID(2));
+		role2.setId(ID.valueOf(2));
 		role2.setRole(root);
 		role2.setActive(true);
 		role2.setName("Role 2");
@@ -53,7 +53,7 @@ public class UserTest
 				.setAction("Role2Action"));
 
 		USER1 = new User();
-		USER1.setId(new ID(1));
+		USER1.setId(ID.valueOf(1));
 		USER1.setName("User 1");
 		USER1.setRole(role1);
 		USER1.getAuths().add(new Auth()
@@ -64,7 +64,7 @@ public class UserTest
 				.setAction("User1Action"));
 
 		USER2 = new User();
-		USER2.setId(new ID(2));
+		USER2.setId(ID.valueOf(2));
 		USER2.setName("User 2");
 		USER2.setRole(role2);
 		USER2.getAuths().add(new Auth()
@@ -75,9 +75,9 @@ public class UserTest
 				.setAction("User2Action"));
 
 		USER3 = new User();
-		USER3.setId(new ID(3));
+		USER3.setId(ID.valueOf(3));
 		USER3.setName("User 3");
-		USER3.setRole(new Role().setId(new ID(3)).setName("Role 3"));
+		USER3.setRole(new Role().setId(ID.valueOf(3)).setName("Role 3"));
 		USER3.getRole().getAuths().add(new Auth()
 				.setScope(Auth.Scope.PUBLIC)
 				.setAccess(Auth.Access.BLOCK)

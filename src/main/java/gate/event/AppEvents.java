@@ -46,6 +46,7 @@ public class AppEvents
 
 	public void onEventoAsync(@ObservesAsync AppEvent event)
 	{
+
 		sessions.stream()
 			.filter(e -> event.checkAccess(e.user))
 			.forEach(e -> e.session.getAsyncRemote().sendText(event.toString()));

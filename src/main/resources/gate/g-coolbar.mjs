@@ -39,6 +39,11 @@ template.innerHTML = `
 	margin-bottom: 0px
 }
 
+:host([reverse]) #container
+{
+	flex-direction: row;
+}
+
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command)
@@ -68,12 +73,12 @@ template.innerHTML = `
 ::slotted(progress)
 {
 	margin: 4px;
-	flex-grow: 1;
+	flex-grow: 100000;
 }
 
 ::slotted(hr)
 {
-	flex-grow: 1;
+	flex-grow: 100000;
 	border: none;
 }
 

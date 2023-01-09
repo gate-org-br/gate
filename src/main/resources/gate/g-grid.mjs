@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<input type="text" placeholder="Filtrar"/>
+	<input id="input" type="text" placeholder="Filtrar"/>
 	<div>
 		<table>
 		</table>
@@ -21,7 +21,7 @@ template.innerHTML = `
 	flex-direction: column;
 }
 
-input {
+#input {
 	width: 100%;
 	height: 32px;
 	display: none;
@@ -29,7 +29,7 @@ input {
 	padding: 8px 4px 8px 4px;
 }
 
-:host([filter]) input {
+:host([filter]) #input {
 	display: block
 }
 
@@ -194,7 +194,7 @@ customElements.define('g-grid', class extends HTMLElement
 		this.shadowRoot.querySelector("label").style.display = "";
 		this.shadowRoot.querySelector("div").style.display = "none";
 
-		let input = this.shadowRoot.querySelector("input");
+		let input = this.shadowRoot.getElementById("input");
 		let table = this.shadowRoot.querySelector("table");
 		input.style.display = "none";
 		input.addEventListener("input", () =>
@@ -308,7 +308,7 @@ customElements.define('g-grid', class extends HTMLElement
 			if (values.length)
 			{
 				this.shadowRoot.querySelector("div").style.display = "";
-				this.shadowRoot.querySelector("input").style.display = "";
+				this.shadowRoot.getElementById("input").style.display = "";
 				this.shadowRoot.querySelector("label").style.display = "none";
 				values.forEach((value, index) =>
 				{
@@ -339,14 +339,14 @@ customElements.define('g-grid', class extends HTMLElement
 			{
 				this.shadowRoot.querySelector("label").style.display = "";
 				this.shadowRoot.querySelector("div").style.display = "none";
-				this.shadowRoot.querySelector("input").style.display = "none";
+				this.shadowRoot.getElementById("input").style.display = "none";
 			}
 		} else if (tbody)
 		{
 			tbody.remove();
 			this.shadowRoot.querySelector("label").style.display = "";
 			this.shadowRoot.querySelector("div").style.display = "none";
-			this.shadowRoot.querySelector("input").style.display = "none";
+			this.shadowRoot.getElementById("input").style.display = "none";
 		}
 	}
 

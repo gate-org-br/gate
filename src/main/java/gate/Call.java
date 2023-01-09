@@ -2,6 +2,7 @@ package gate;
 
 import gate.annotation.Alert;
 import gate.annotation.Annotations;
+import gate.annotation.Authorization;
 import gate.annotation.Color;
 import gate.annotation.Confirm;
 import gate.annotation.Description;
@@ -15,14 +16,17 @@ import gate.annotation.Superuser;
 import gate.annotation.Tooltip;
 import gate.base.Screen;
 import gate.entity.User;
-import gate.error.InvalidRequestException;
+import gate.error.BadRequestException;
 import gate.util.Emojis;
 import gate.util.Icons;
 import gate.util.Toolkit;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
-import gate.annotation.Authorization;
 
 public class Call
 {
@@ -33,6 +37,8 @@ public class Call
 	private final Class<Screen> type;
 	private final Method method;
 
+	private static final Pattern PARAMETERS = Pattern.compile("/([0-9]+)");
+
 	public Call(String module, String screen, String action, Class<Screen> type, Method method)
 	{
 		this.type = type;
@@ -42,14 +48,14 @@ public class Call
 		this.action = action;
 	}
 
-	public static Call of(String module, String screen, String action) throws InvalidRequestException
+	public static Call of(String module, String screen, String action) throws BadRequestException
 	{
-		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow(() -> new InvalidRequestException(module, screen, action));
-		Method method = Screen.getAction(type, action).orElseThrow(() -> new InvalidRequestException(module, screen, action));
+		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow(() -> new BadRequestException(module, screen, action));
+		Method method = Screen.getAction(type, action).orElseThrow(() -> new BadRequestException(module, screen, action));
 		return new Call(module, screen, action, type, method);
 	}
 
-	public static Call of(HttpServletRequest request, String module, String screen, String action) throws InvalidRequestException
+	public static Call of(HttpServletRequest request, String module, String screen, String action) throws BadRequestException
 	{
 
 		if ("#".equals(module))
@@ -176,4 +182,12 @@ public class Call
 		}
 	}
 
+	public static List<Integer> getParameters(String path)
+	{
+		List<Integer> parameters = new ArrayList<>();
+		Matcher matcher = PARAMETERS.matcher(path);
+		while (matcher.find())
+			parameters.add(Integer.valueOf(matcher.group(1)));
+		return parameters;
+	}
 }

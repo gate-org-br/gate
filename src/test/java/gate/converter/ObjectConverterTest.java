@@ -23,7 +23,7 @@ public class ObjectConverterTest
 	public void testObject() throws ConversionException, NoSuchAlgorithmException
 	{
 		User user = new User();
-		user.setId(new ID(1));
+		user.setId(ID.valueOf(1));
 		user.setName("User 1");
 
 		Converter converter = Converter.getConverter(Object.class);
@@ -31,7 +31,7 @@ public class ObjectConverterTest
 		String string = converter.toString(User.class, user);
 		user = (User) converter.ofString(User.class, string);
 
-		Assert.assertEquals(new ID(1), user.getId());
+		Assert.assertEquals(ID.valueOf(1), user.getId());
 		Assert.assertEquals("User 1", user.getName());
 	}
 
@@ -39,7 +39,7 @@ public class ObjectConverterTest
 	public void testSecureObject() throws ConversionException
 	{
 		ClassifiedUser user = new ClassifiedUser();
-		user.setId(new ID(1));
+		user.setId(ID.valueOf(1));
 		user.setName("User 1");
 
 		Converter converter = Converter.getConverter(Object.class);
@@ -47,7 +47,7 @@ public class ObjectConverterTest
 		String string = converter.toString(ClassifiedUser.class, user);
 		user = (ClassifiedUser) converter.ofString(ClassifiedUser.class, string);
 
-		Assert.assertEquals(new ID(1), user.getId());
+		Assert.assertEquals(ID.valueOf(1), user.getId());
 		Assert.assertEquals("User 1", user.getName());
 
 	}

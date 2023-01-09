@@ -7,14 +7,12 @@ import gate.entity.Org;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
+import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
-import gate.error.DuplicateException;
-import gate.error.InvalidCircularRelationException;
+import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
-import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.LinkSource;
 import gate.type.Hierarchy;
@@ -35,8 +33,8 @@ public class GateControl extends gate.base.Control
 
 	private static final LDAPAuthenticator AUTHENTICATOR = new LDAPAuthenticator();
 
-	public User select(String username) throws InvalidUsernameException, DuplicateException,
-		InvalidCircularRelationException, NotFoundException
+	public User select(String username) throws InvalidUsernameException,
+		HierarchyException
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernameException();
@@ -66,7 +64,7 @@ public class GateControl extends gate.base.Control
 			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
 			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
 
-			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(NotFoundException::new));
+			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(() -> new HierarchyException("Perfil do usuário não encontrado")));
 
 			if (user.getRole().isDisabled())
 				throw new InvalidUsernameException();
@@ -77,14 +75,9 @@ public class GateControl extends gate.base.Control
 	public User select(Org org,
 		String username,
 		String password) throws
-		InvalidServiceException,
-		InvalidUsernameException,
-		InvalidPasswordException,
-		DefaultPasswordException,
+		AuthenticationException,
 		AuthenticatorException,
-		DuplicateException,
-		InvalidCircularRelationException,
-		NotFoundException
+		HierarchyException
 
 	{
 
@@ -113,7 +106,7 @@ public class GateControl extends gate.base.Control
 			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
 			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
 
-			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(NotFoundException::new));
+			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(() -> new HierarchyException("Perfil do usuário não encontrado")));
 
 			if (user.getRole().isDisabled())
 				throw new InvalidUsernameException();

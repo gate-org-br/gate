@@ -3,6 +3,8 @@ package gate.thymeleaf.processors.tag.anchor;
 import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.entity.User;
+import gate.error.AppError;
+import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
@@ -51,10 +53,18 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Call call = Call.of(request,
-			(String) attributes.remove("module"),
-			(String) attributes.remove("screen"),
-			(String) attributes.remove("action"));
+
+		Call call;
+		try
+		{
+			call = Call.of(request,
+				(String) attributes.remove("module"),
+				(String) attributes.remove("screen"),
+				(String) attributes.remove("action"));
+		} catch (BadRequestException ex)
+		{
+			throw new AppError(ex);
+		}
 
 		if (!attributes.containsKey("style"))
 			call.getColor().ifPresent(e -> attributes.put("style", "color: " + e));

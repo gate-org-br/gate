@@ -181,24 +181,24 @@ public class CompiledConditionTest
 	public void testAndPropertyEquals()
 	{
 		Condition condition = Condition
-			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(new ID(1))
+			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(ID.valueOf(1))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
-			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
+			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(ID.valueOf(2))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 		Assert.assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
-		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(new ID(1), "Person 1", new ID(2)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
 	}
 
 	@Test
 	public void testOrPropertyEquals()
 	{
 		CompiledCondition condition = Condition
-			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(new ID(1))
+			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(ID.valueOf(1))
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
-			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
+			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(ID.valueOf(2))
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 		Assert.assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
-		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(new ID(1), "Person 1", new ID(2)));
+		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
 	}
 
 	@Test
@@ -207,7 +207,7 @@ public class CompiledConditionTest
 		GQN GQN = new GQN(User.class, "=id", "%name", "=email");
 		CompiledCondition condition
 			= GQN.getCondition(new User()
-				.setId(new ID(1))
+				.setId(ID.valueOf(1))
 				.setName("Person 1"));
 
 		String expected = "0 = 0 and Uzer.id = ? and Uzer.name like ?";
@@ -216,7 +216,7 @@ public class CompiledConditionTest
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals(expected, result);
 		assertEquals(2, parameters.size());
-		assertEquals(parameters.get(0), new ID(1));
+		assertEquals(parameters.get(0), ID.valueOf(1));
 		assertEquals("%Person 1%", parameters.get(1));
 	}
 
@@ -251,17 +251,17 @@ public class CompiledConditionTest
 	public void test08()
 	{
 		CompiledCondition condition = Condition
-			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(new ID(1))
+			.of(Entity.getFullColumnName(Property.getProperty(User.class, "id"))).eq(ID.valueOf(1))
 			.and().when(false).expression(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
-			.and().when(true).expression(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(new ID(2))
+			.and().when(true).expression(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(ID.valueOf(2))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
 		Assert.assertEquals("Uzer.id = ? and Uzer$Role.id = ?",
 			condition.toString());
 		assertEquals(2, parameters.size());
-		assertEquals(parameters.get(0), new ID(1));
-		assertEquals(parameters.get(1), new ID(2));
+		assertEquals(parameters.get(0), ID.valueOf(1));
+		assertEquals(parameters.get(1), ID.valueOf(2));
 	}
 
 }

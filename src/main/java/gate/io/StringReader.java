@@ -45,7 +45,7 @@ public class StringReader implements Reader<String>
 	{
 		BufferedReader reader
 			= new BufferedReader(new InputStreamReader(is, charset));
-		try (StringWriter writer = new StringWriter())
+		try ( StringWriter writer = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				writer.write((char) c);
@@ -62,15 +62,23 @@ public class StringReader implements Reader<String>
 
 	public static String read(File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return INSTANCE.read(is);
 		}
 	}
 
+	public static String read(java.io.Reader reader) throws IOException
+	{
+		StringBuilder string = new StringBuilder();
+		for (int c = reader.read(); c != -1; c = reader.read())
+			string.append((char) c);
+		return string.toString();
+	}
+
 	public static String read(String charset, File file) throws IOException
 	{
-		try (FileInputStream is = new FileInputStream(file))
+		try ( FileInputStream is = new FileInputStream(file))
 		{
 			return getInstance(charset).read(is);
 		}
@@ -78,7 +86,7 @@ public class StringReader implements Reader<String>
 
 	public static String read(java.net.URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return INSTANCE.read(is);
 		}
@@ -86,7 +94,7 @@ public class StringReader implements Reader<String>
 
 	public static String read(String charset, java.net.URL url) throws IOException
 	{
-		try (InputStream is = url.openStream())
+		try ( InputStream is = url.openStream())
 		{
 			return INSTANCE.read(is);
 

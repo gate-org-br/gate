@@ -1,26 +1,45 @@
 package gate;
 
-import static gate.Service.getFile;
-import javax.inject.Inject;
+import gate.util.Toolkit;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
+import javax.servlet.http.HttpServletResponse;
 
-@Path("/style")
-public class Style
+@WebServlet(value = "/gate/style/*")
+public class Style extends HttpServlet
 {
 
-	@Inject
-	private HttpServletRequest request;
-
-	@GET
-	@Path("/{file}")
-	@Produces("text/css")
-	public Response get(@PathParam("file") String file)
+	@Override
+	public void service(HttpServletRequest request,
+		HttpServletResponse response) throws ServletException, IOException
 	{
-		return getFile(request, file);
+		List<String> path
+			= Toolkit.parsePath(request.getPathInfo());
+		if (!path.isEmpty())
+		{
+			String filename = path.get(0);
+			response.setHeader("Content-Type", "text/css; charset=utf-8");
+			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+
+			response.setHeader("Access-Control-Max-Age", "3600");
+			response.setHeader("Access-Control-Allow-Credentials", "true");
+			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+			response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+			response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+
+			try ( OutputStream o = response.getOutputStream();
+				 InputStream i = Script.class.getResourceAsStream(filename))
+			{
+				for (int b = i.read(); b != -1; b = i.read())
+					o.write(b);
+				o.flush();
+			}
+		}
 	}
 }

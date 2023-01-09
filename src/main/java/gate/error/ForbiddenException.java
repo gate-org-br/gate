@@ -3,15 +3,15 @@ package gate.error;
 /**
  * Signals that the current user has no access to a resource.
  */
-public class AccessDeniedException extends Exception
+public class ForbiddenException extends AppException
 {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a new AccessDeniedException.
+	 * Constructs a new ForbiddenException.
 	 */
-	public AccessDeniedException()
+	public ForbiddenException()
 	{
 		super("Acesso negado");
 	}

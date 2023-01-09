@@ -16,7 +16,7 @@ public interface Catcher
 			clazz = clazz.getSuperclass())
 			if (clazz.isAnnotationPresent(gate.annotation.Catcher.class))
 				return clazz.getAnnotation(gate.annotation.Catcher.class).value();
-		return DefaultCatcher.class;
+		return ThrowableCatcher.class;
 	}
 
 }

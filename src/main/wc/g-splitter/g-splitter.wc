@@ -1,0 +1,5 @@
+<template>
+	<slot name="L"></slot>
+	<div></div>
+	<slot name="R"></slot>
+</template>

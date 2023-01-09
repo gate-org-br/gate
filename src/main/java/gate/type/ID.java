@@ -15,14 +15,14 @@ public class ID implements Serializable, Comparable<ID>
 
 	private final int value;
 
-	public ID(int value)
+	private ID(int value)
 	{
 		if (value < 0)
 			throw new IllegalArgumentException("value");
 		this.value = value;
 	}
 
-	public ID(String string)
+	private ID(String string)
 	{
 		this(Integer.parseInt(string));
 	}
@@ -56,12 +56,12 @@ public class ID implements Serializable, Comparable<ID>
 		return this.value - id.value;
 	}
 
-	public static ID of(int value)
+	public static ID valueOf(int value)
 	{
 		return new ID(value);
 	}
 
-	public static ID of(String value)
+	public static ID valueOf(String value)
 	{
 		return new ID(value);
 	}

@@ -29,27 +29,27 @@ public class ReportTest
 		List<Role> roles = new ArrayList<>();
 
 		Role role1 = new Role();
-		role1.setId(new ID(1));
+		role1.setId(ID.valueOf(1));
 		role1.setName("Role 1");
 		roles.add(role1);
 
 		Role role11 = new Role();
-		role11.setId(new ID(11));
+		role11.setId(ID.valueOf(11));
 		role11.setName("Role 11");
 		role1.getRoles().add(role11);
 
 		Role role111 = new Role();
-		role111.setId(new ID(11));
+		role111.setId(ID.valueOf(11));
 		role111.setName("Role 111");
 		role11.getRoles().add(role111);
 
 		Role role2 = new Role();
-		role2.setId(new ID(2));
+		role2.setId(ID.valueOf(2));
 		role2.setName("Role 2");
 		roles.add(role2);
 
 		Role role21 = new Role();
-		role21.setId(new ID(12));
+		role21.setId(ID.valueOf(12));
 		role21.setName("Role 21");
 		role2.getRoles().add(role21);
 
@@ -109,8 +109,8 @@ public class ReportTest
 		report.addLineBreak();
 
 		Grid<User> grid = report.addGrid(User.class,
-			List.of(new User().setId(new ID(1)).setName("Foo"),
-				new User().setId(new ID(2)).setName("Bar")))
+			List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+				new User().setId(ID.valueOf(2)).setName("Bar")))
 			.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");

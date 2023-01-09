@@ -37,7 +37,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(40);
+			ID id = ID.valueOf(40);
 			String name = "Jonh";
 			LocalDate birthdate = LocalDate.of(2005, 12, 31);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
@@ -69,7 +69,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(140);
+			ID id = ID.valueOf(140);
 			String name = "Mary";
 			LocalDate birthdate = LocalDate.of(2005, 12, 31);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
@@ -100,7 +100,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(41);
+			ID id = ID.valueOf(41);
 			String name = "Paul";
 			LocalDate birthdate = LocalDate.of(2008, 8, 29);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
@@ -136,7 +136,7 @@ public class InsertTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(42);
+			ID id = ID.valueOf(42);
 			String name = "Richard";
 
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);

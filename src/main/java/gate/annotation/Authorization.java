@@ -41,6 +41,11 @@ public @interface Authorization
 
 			return new Value(module, screen, action);
 		}
+
+		public static Value extract(Method method)
+		{
+			return extract(method, null, null, null);
+		}
 	}
 
 	public static class Value

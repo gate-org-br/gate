@@ -1,0 +1,88 @@
+/* global customElements, template, fetch */
+
+import './g-icon.mjs';
+import './g-selectn.mjs';
+import './g-window-header.mjs';
+import './g-window-section.mjs';
+import GModal from './g-modal.mjs';
+import handle from './response-handler.mjs';
+
+export default class GSelectNPicker extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.getElementById("close").addEventListener("click",
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click",
+			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+
+		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
+		{
+			let values = this.shadowRoot.querySelector("g-selectn").value;
+			this.dispatchEvent(new CustomEvent("commit", {"detail": values}));
+			this.hide();
+		});
+	}
+
+	set caption(caption)
+	{
+		this.shadowRoot.getElementById("caption").innerHTML = caption;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.getElementById("caption").innerHTML;
+	}
+
+	set options(options)
+	{
+		this.shadowRoot.querySelector("g-selectn").options = options;
+	}
+
+	get options()
+	{
+		return this.shadowRoot.querySelector("g-selectn").options;
+	}
+
+	set values(values)
+	{
+		this.shadowRoot.querySelector("g-selectn").value = values;
+	}
+
+	get values()
+	{
+		return this.shadowRoot.querySelector("g-selectn").value;
+	}
+
+	static pick(caption, options, values)
+	{
+		if (typeof options === "string")
+			return fetch(options)
+				.then(response => handle(response))
+				.then(response => GSelectNPicker.pick(caption, response, values));
+
+		if (typeof values === "string")
+			return fetch(options)
+				.then(response => handle(response))
+				.then(response => GSelectNPicker.pick(caption, options, response));
+
+		let picker = window.top.document.createElement("g-selectn-picker");
+		picker.options = options;
+		if (values)
+			picker.values = values;
+		if (caption)
+			picker.caption = caption;
+		picker.show();
+
+		return new Promise(resolve =>
+		{
+			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("commit", e => resolve(e.detail));
+		});
+	}
+};
+
+customElements.define('g-selectn-picker', GSelectNPicker);

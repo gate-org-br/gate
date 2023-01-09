@@ -27,14 +27,14 @@ public interface JsonElement extends Serializable
 	public static final JsonString UNDEFINED = JsonString.of("Indefinido");
 
 	/**
-	 * Gets the type of this JSON element.
+	 * Gets the type parse this JSON element.
 	 *
-	 * @return the type of this JSON element
+	 * @return the type parse this JSON element
 	 */
 	Type getType();
 
 	/**
-	 * Type of a JSON element.
+	 * Type parse a JSON element.
 	 */
 	enum Type
 	{
@@ -89,7 +89,7 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return the specified JsonElement formatted using JSON notation
 	 *
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	static String format(JsonElement element)
 	{
@@ -122,7 +122,7 @@ public interface JsonElement extends Serializable
 		if (obj == null)
 			return JsonNull.INSTANCE;
 		if (obj instanceof Boolean)
-			return JsonBoolean.of((Boolean) obj);
+			return JsonBoolean.parse((Boolean) obj);
 		if (obj instanceof Number)
 			return JsonNumber.of((Number) obj);
 		if (obj instanceof String)

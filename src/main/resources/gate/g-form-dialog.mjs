@@ -78,12 +78,13 @@ fieldset {
 	}
 }</style>`;
 
-/* global customElements, template */
+/* global customElements, template, fetch, Promise */
 
+import './g-form.mjs';
 import './g-window-header.mjs';
 import './g-window-section.mjs';
-import './g-form.mjs';
 import GModal from './g-modal.mjs';
+import handle from './response-handler.mjs';
 
 export default class GFormDialog extends GModal
 {
@@ -92,9 +93,7 @@ export default class GFormDialog extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
-
 		let form = this.shadowRoot.querySelector("g-form");
-
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
@@ -134,14 +133,30 @@ export default class GFormDialog extends GModal
 		if (caption)
 			dialog.caption = caption;
 		dialog.show();
-
 		let promise = new Promise(resolve =>
 		{
 			dialog.addEventListener("commit", e => resolve(e.detail));
-			dialog.addEventListener("cancel", () => resolve(null));
+			dialog.addEventListener("cancel", () => resolve());
 		});
-
 		return promise;
+	}
+
+	static update(url, caption)
+	{
+		return fetch(url)
+			.then(response => handle(response))
+			.then(form => GFormDialog.edit(form, caption))
+			.then(result =>
+			{
+				if (!result)
+					return Promise.resolve({"ok": true});
+
+				return fetch(url,
+					{method: "post",
+						headers: {'Content-Type': 'application/json'},
+						body: JSON.stringify(result)});
+			})
+			.then(response => handle(response));
 	}
 }
 

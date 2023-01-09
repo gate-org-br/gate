@@ -40,7 +40,7 @@ public @interface Length
 				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
-				throw new AppException("O campo %s deve possuir %d caracteres.", name, getValue());
+				throw new AppException(String.format("O campo %s deve possuir %d caracteres.", name, getValue()));
 			}
 		}
 

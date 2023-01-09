@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DurationConverter;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -58,7 +57,7 @@ public class Duration extends TimeAmount
 	public static Duration of(Period period)
 	{
 		return period != null
-				? Duration.of(period.getValue()) : null;
+			? Duration.of(period.getValue()) : null;
 	}
 
 	public static Duration of(long h, long m, long s)
@@ -67,10 +66,10 @@ public class Duration extends TimeAmount
 	}
 
 	public static Duration of(DateTime dateTime1,
-			DateTime dateTime2)
+		DateTime dateTime2)
 	{
 		return Duration.of(Math.abs(dateTime2.getValue()
-				- dateTime1.getValue()) / 1000);
+			- dateTime1.getValue()) / 1000);
 	}
 
 	public Period toPeriod()
@@ -173,5 +172,4 @@ public class Duration extends TimeAmount
 	{
 		return new Duration(durations.filter(Objects::nonNull).mapToLong(Duration::getValue).max().orElse(0));
 	}
-
 }

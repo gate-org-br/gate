@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 /**
  * A User on the organization structure.
  * <p>
- * A User can have a Role and a list of authorizations
+ A User can have a Role and a list valueOf authorizations
  */
 @Entity
 @Icon("2004")

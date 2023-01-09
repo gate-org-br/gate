@@ -7,31 +7,28 @@ import gate.base.Screen;
 import gate.catcher.Catcher;
 import gate.entity.Org;
 import gate.entity.User;
-import gate.error.AccessDeniedException;
-import gate.error.AppError;
 import gate.error.AppException;
+import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
+import gate.error.BadRequestException;
 import gate.error.DefaultPasswordException;
-import gate.error.DuplicateException;
-import gate.error.InvalidCircularRelationException;
-import gate.error.InvalidCredentialsException;
+import gate.error.ForbiddenException;
+import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidRequestException;
-import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
-import gate.error.NotFoundException;
+import gate.error.UnauthorizedException;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.handler.IntegerHandler;
-import gate.handler.ResultHandler;
 import gate.io.Credentials;
-import gate.type.Result;
 import gate.util.ScreenServletRequest;
 import gate.util.Toolkit;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import javax.enterprise.event.Event;
@@ -49,7 +46,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @MultipartConfig
-@WebServlet(value = "/Gate", asyncSupported = true)
+@WebServlet(value = "/Gate/*", asyncSupported = true)
 public class Gate extends HttpServlet
 {
 
@@ -95,14 +92,21 @@ public class Gate extends HttpServlet
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
 			ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+
 			String MODULE = request.getParameter("MODULE");
 			String SCREEN = request.getParameter("SCREEN");
 			String ACTION = request.getParameter("ACTION");
+			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION) && httpServletRequest.getPathInfo() != null)
+			{
+				List<String> path = Toolkit.parsePath(httpServletRequest.getPathInfo());
+				MODULE = path.size() >= 1 ? path.get(0) : null;
+				SCREEN = path.size() >= 2 ? path.get(1) : null;
+				ACTION = path.size() >= 3 ? path.get(2) : null;
+			}
+
 			request.setAttribute("ACTION", ACTION);
 			request.setAttribute("MODULE", MODULE);
 			request.setAttribute("SCREEN", SCREEN);
-
-			User user = Credentials.of(request).orElseGet(() -> (User) request.getSession().getAttribute(User.class.getName()));
 
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
 
@@ -113,12 +117,22 @@ public class Gate extends HttpServlet
 					.handle(httpServletRequest, response, HTML);
 			} else
 			{
-				String username = request.getParameter("$username");
-				String password = request.getParameter("$password");
 
-				if (Toolkit.notEmpty(username, password))
+				User user = null;
+
+				if (request.getSession(false) != null)
 				{
-					user = control.select(org, username, password);
+					user = (User) request.getSession()
+						.getAttribute(User.class.getName());
+				} else if (Credentials.isPresent(httpServletRequest))
+				{
+					user = Credentials.of(request).orElseThrow();
+					request.setAttribute(User.class.getName(), user);
+				} else if (Toolkit.notEmpty(request.getParameter("$username"),
+					request.getParameter("$password")))
+				{
+					user = control.select(org, request.getParameter("$username"),
+						request.getParameter("$password"));
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
 				} else if (httpServletRequest.getUserPrincipal() != null
@@ -126,7 +140,8 @@ public class Gate extends HttpServlet
 				{
 					user = control.select(httpServletRequest.getUserPrincipal().getName());
 					request.getSession().setAttribute(User.class.getName(), user);
-				} else if (user == null && denveloper.isPresent())
+					event.fireAsync(new LoginEvent(user));
+				} else if (denveloper.isPresent())
 				{
 					user = control.select(denveloper.orElseThrow());
 					request.getSession().setAttribute(User.class.getName(), user);
@@ -135,7 +150,10 @@ public class Gate extends HttpServlet
 
 				Call call = Call.of(MODULE, SCREEN, ACTION);
 				if (!call.checkAccess(user))
-					throw new AccessDeniedException();
+					if (user != null)
+						throw new ForbiddenException();
+					else
+						throw new UnauthorizedException();
 
 				Screen screen = CDI.current().select(call.getType()).get();
 				request.setAttribute("screen", screen);
@@ -151,38 +169,27 @@ public class Gate extends HttpServlet
 					execute(httpServletRequest, response, screen, call.getMethod());
 			}
 
-		} catch (InvalidUsernameException
-			| InvalidPasswordException
-			| InvalidRequestException
-			| AccessDeniedException
-			| InvalidServiceException ex)
-		{
-			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			Handler handler = handlers.select(HTMLCommandHandler.class).get();
-			handler.handle(httpServletRequest, response, HTML);
 		} catch (DefaultPasswordException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, SetupPassword.HTML);
-		} catch (AuthenticatorException | AppError ex)
+		} catch (AuthenticatorException
+			| InvalidUsernameException
+			| InvalidPasswordException
+			| UnauthorizedException
+			| ForbiddenException ex)
 		{
 			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			httpServletRequest.setAttribute("exception", ex.getCause());
-			logger.error(ex.getCause().getMessage(), ex.getCause());
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, HTML);
-		} catch (DuplicateException | InvalidCircularRelationException | NotFoundException ex)
+		} catch (HierarchyException | BadRequestException
+			| UnsupportedEncodingException | AuthenticationException
+			| RuntimeException ex)
 		{
-			httpServletRequest.setAttribute("messages", Collections.singletonList("Banco de dados inconsistente"));
-			httpServletRequest.setAttribute("exception", ex);
-			logger.error(ex.getMessage(), ex);
-			Handler handler = handlers.select(HTMLCommandHandler.class).get();
-			handler.handle(httpServletRequest, response, HTML);
-		} catch (InvalidCredentialsException ex)
-		{
-			Handler handler = handlers.select(ResultHandler.class).get();
-			handler.handle(httpServletRequest, response, Result.error(ex.getMessage()));
+			var type = Catcher.getCatcher(ex.getClass());
+			Catcher catcher = catchers.select(type).get();
+			catcher.catches(httpServletRequest, response, ex);
 		}
 	}
 

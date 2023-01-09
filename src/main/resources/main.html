@@ -12,109 +12,49 @@
 
 <body>
 	<main>
-
-		<g-select-menu label='Selecione uma ação' style="width: 200px">
-			<a href='#' id='aplicar-tag'>
-				<g-icon>&#X2013;</g-icon>
-				Aplicar tag
-			</a>
-			<a href='#' id='enviar-arquivo'>
-				<g-icon>&#X2036;</g-icon>
-				Enviar arquivo
-			</a>
-			<a href='#' id='editar-formulario'>
-				<g-icon>&#X3011;</g-icon>
-				Editar formulário
-			</a>
-			<a href='#' id='mensagem-rapida'>
-				<g-icon>&#X2034;</g-icon>
-				Mensagem rápida
-			</a>
-			<a href='#' id='encaminhar'>
-				<g-icon>&#X2005;</g-icon>
-				Encaminhar para fila
-			</a>
-			<a href='#' id='transferir'>
-				<g-icon>&#X2004;</g-icon>
-				Transferir para operador
-			</a>
-			<a href='#' id='finalizar-sessao'>
-				<g-icon>&#X1000;</g-icon>
-				Finalizar sessão
-			</a>
-		</g-select-menu>
-		<fieldset>
-			<g-form>
-			</g-form>
-		</fieldset>
-
 		<g-coolbar>
-			<a id='show' href="#">
-				Show
-				<g-icon>
-					&#X1000;
-				</g-icon>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<a href="#">
+				Link
+			</a>
+			<hr/>
+			<a href="#">
+				Link
 			</a>
 		</g-coolbar>
 	</main>
 </body>
 
 <script type="module">
-	import GFormDialog from './gate/g-form-dialog.mjs';
-	window.addEventListener("load", () => {
-		let form = [
-			{
-				"size": "2",
-				"name": "Nome",
-				"value": ["Fulano"]
-			},
-
-			{
-				"size": "2",
-				"name": "Sexo",
-				"options": ["Masculino", "Feminino"],
-				"value": ["Masculino"]
-			},
-
-			{
-				"size": "2",
-				"name": "CPF",
-				"mask": "###.###.###-##"
-			},
-
-			{
-				"size": "2",
-				"name": "Data de Nascimento"
-			},
-
-			{
-				"size": "3",
-				"name": "Descrição",
-				"multiple": true,
-				"value": [ "1",
-            "2",
-            "3",
-            "4"]
-			},
-
-			{
-				"size": "3",
-				"name": "Interesses",
-				"multiple": true,
-				"options": ["1", "2", "3", "4", "5", "6"],
-				"value": ["1", "2", "3", "4"]
-			}
-		]
-
-		let gform = document.querySelector("g-form");
-		gform.value = form;
-
-		document.getElementById("show").addEventListener("click", () => {
-			console.log(JSON.stringify(gform.value, null, 4));
-		});
-
-	});
-
 </script>
 
 </html>

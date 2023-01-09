@@ -1,6 +1,7 @@
 package gate.lang.contentType;
 
 import gate.error.AppError;
+import gate.error.ConversionException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -79,6 +80,17 @@ public class ContentType
 			{
 				throw new AppError(ex);
 			}
+		}
+	}
+
+	public static ContentType valueOf(String string) throws ConversionException
+	{
+		try
+		{
+			return parse(string);
+		} catch (ParseException ex)
+		{
+			throw new ConversionException("Invalid content type header");
 		}
 	}
 }

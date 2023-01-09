@@ -11,7 +11,7 @@
 	flex-direction: column;
 }
 
-input {
+#input {
 	width: 100%;
 	height: 32px;
 	display: none;
@@ -19,7 +19,7 @@ input {
 	padding: 8px 4px 8px 4px;
 }
 
-:host([filter]) input {
+:host([filter]) #input {
 	display: block
 }
 

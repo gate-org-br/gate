@@ -168,4 +168,21 @@ public class Toolkit
 		}
 		return result.toString();
 	}
+
+	public static List<String> parsePath(String path)
+	{
+		int index = 0;
+		List<String> result = new ArrayList<>();
+
+		while (index < path.length() && path.charAt(index) == '/')
+		{
+			index++;
+			StringBuilder string = new StringBuilder();
+			for (; index < path.length() && path.charAt(index) != '/'; index++)
+				string.append(path.charAt(index));
+			result.add(!string.isEmpty() ? string.toString() : null);
+		}
+
+		return result;
+	}
 }

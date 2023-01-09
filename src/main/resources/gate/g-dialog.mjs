@@ -175,7 +175,7 @@ export default class GDialog extends GModal
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = template.innerHTML;
 		let main = this.shadowRoot.querySelector("main");
 		let head = this.shadowRoot.querySelector("header");
 		let fullscreen = this.shadowRoot.getElementById("fullscreen");

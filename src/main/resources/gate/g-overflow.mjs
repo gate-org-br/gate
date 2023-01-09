@@ -3,6 +3,8 @@ template.innerHTML = `
 	<div id='container'>
 		<slot>
 		</slot>
+		<span>
+		</span>
 		<a id='more' href='#'>
 			&#X3018;
 		</a>
@@ -13,6 +15,10 @@ template.innerHTML = `
 	display:  flex;
 	white-space: nowrap;
 	flex-direction: inherit;
+}
+
+span {
+	flex-grow: 1;
 }
 
 #more {
@@ -46,9 +52,8 @@ export default class GOverflow extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.innerHTML = template.innerHTML;
-
 		this.more.addEventListener("click", () => this.menu());
-		window.addEventListener("resize", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 		this.container.firstChild.addEventListener('slotchange', () => this.update());
 	}
 

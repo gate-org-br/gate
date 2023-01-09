@@ -13,11 +13,11 @@ public class FKViolationException extends ConstraintViolationException
 	/**
 	 * Constructs an FKViolationException with the specified cause.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is
-	 * permitted, and indicates that the cause is nonexistent or unknown.
+	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is permitted, and indicates that the cause is
+	 * nonexistent or unknown.
 	 */
 	FKViolationException(SQLException cause)
 	{
-		super(cause, "Tentativa de remover registro que possui outros registros associados");
+		super("Tentativa de remover registro que possui outros registros associados", cause);
 	}
 }

@@ -8,6 +8,7 @@ import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -65,8 +66,7 @@ public class Reflection
 	 * @param type type where to find the specified field
 	 * @param name name of the field to be found
 	 *
-	 * @return an Optional describing the requested field of an empty
-	 * Optional if the field does not exists
+	 * @return an Optional describing the requested field of an empty Optional if the field does not exists
 	 */
 	public static Optional<Field> findField(Class type, String name)
 	{
@@ -84,16 +84,13 @@ public class Reflection
 	}
 
 	/**
-	 * Finds the specified method on the specified type and it's super
-	 * types.
+	 * Finds the specified method on the specified type and it's super types.
 	 *
 	 * @param type type where to find the specified method
 	 * @param name name of the method to be found
-	 * @param parameterTypes types of the parameters of the method to be
-	 * found
+	 * @param parameterTypes types of the parameters of the method to be found
 	 *
-	 * @return an Optional describing the requested method of an empty
-	 * Optional if the method does not exists
+	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
 	 */
 	public static Optional<Method> findMethod(Class type, String name, Class... parameterTypes)
 	{
@@ -112,12 +109,39 @@ public class Reflection
 	}
 
 	/**
+	 * Finds the specified method on the specified type and it's super types.
+	 *
+	 * @param type type where to find the specified method
+	 * @param name name of the method to be found
+	 *
+	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
+	 */
+	public static Optional<Method> findMethodByName(Class type, String name)
+	{
+		List<Method> methods = Stream.of(type.getDeclaredMethods())
+			.filter(e -> e.getName().equals(name))
+			.collect(Collectors.toCollection(ArrayList::new));
+
+		switch (methods.size())
+		{
+			case 0:
+				Class supertype = type.getSuperclass();
+				if (supertype != null)
+					return findMethodByName(supertype, name);
+				return Optional.empty();
+			case 1:
+				return Optional.of(methods.get(0));
+			default:
+				return Optional.empty();
+		}
+	}
+
+	/**
 	 * Finds the getter method of the specified field.
 	 *
 	 * @param field the field associated with the requested getter
 	 *
-	 * @return an Optional describing the getter method of the specified
-	 * field or an empty Optional if the field does not have a getter method
+	 * @return an Optional describing the getter method of the specified field or an empty Optional if the field does not have a getter method
 	 */
 	public static Optional<Method> findGetter(Field field)
 	{
@@ -139,8 +163,7 @@ public class Reflection
 	 *
 	 * @param field the field associated with the requested setter
 	 *
-	 * @return an Optional describing the setter method of the specified
-	 * field or an empty Optional if the field does not have a setter method
+	 * @return an Optional describing the setter method of the specified field or an empty Optional if the field does not have a setter method
 	 */
 	public static Optional<Method> findSetter(Field field)
 	{

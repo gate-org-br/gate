@@ -73,7 +73,7 @@ public class TestDataSource
 				person.setContract(LocalDateInterval.of(LocalDate.of(2000, 12, i), LocalDate.of(2020, 12, i)));
 
 				Contact contact = new Contact();
-				contact.setId(new ID(i));
+				contact.setId(ID.valueOf(i));
 				contact.setPerson(person);
 				contact.setType(Contact.Type.PHONE);
 				contact.setValue(String.valueOf(i));

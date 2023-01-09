@@ -71,7 +71,7 @@ div {
 	justify-content: center;
 }</style>`;
 
-/* global customElements, template */
+/* global customElements, template, fetch */
 
 import './g-icon.mjs';
 import './g-grid.mjs';
@@ -153,13 +153,20 @@ export default class GSelectPicker extends GModal
 		}
 	}
 
-	get options()
-	{
-		return this.shadowRoot.querySelector("g-grid").values;
-	}
-
 	static pick(options, caption)
 	{
+		if (typeof options === "string")
+			return fetch(options)
+				.then(response =>
+				{
+					return response.ok ?
+						response.json()
+						: response.text().then(message =>
+					{
+						throw new Error(message);
+					});
+				}).then(result => GSelectPicker.pick(result, caption));
+
 		let picker = window.top.document.createElement("g-select-picker");
 		picker.options = options;
 		if (caption)

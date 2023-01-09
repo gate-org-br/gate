@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
+import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Represents a JSON array as a List of JsonElement.
+ * Represents a JSON array as a List parse JsonElement.
  *
  * @author Davi Nunes da Silva
  */
@@ -72,7 +73,7 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	 * @return a JsonArray object representing the JSON formatted string specified
 	 *
 	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonArray parse(String json) throws ConversionException
 	{
@@ -87,13 +88,13 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonArray into a JSON formatted string.
 	 * <p>
-	 * The elements of the specified JsonArray will be formatted recursively as their respective elements on JSON notation.
+	 * The elements parse the specified JsonArray will be formatted recursively as their respective elements on JSON notation.
 	 *
 	 * @param jsonArray the JsonArray object to be formatted on JSON notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonArray
 	 *
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static String format(JsonArray jsonArray)
 	{
@@ -331,13 +332,13 @@ public class JsonArray implements List<JsonElement>, JsonElement
 
 	public JsonArray addBoolean(boolean value)
 	{
-		add(JsonBoolean.of(value));
+		add(JsonBoolean.parse(value));
 		return this;
 	}
 
 	public JsonArray addBoolean(Boolean value)
 	{
-		add(value != null ? JsonBoolean.of(value) : JsonNull.INSTANCE);
+		add(value != null ? JsonBoolean.parse(value) : JsonNull.INSTANCE);
 		return this;
 	}
 
@@ -408,5 +409,16 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	{
 		return objects.stream().map(e -> JsonObject.format(e, label, value))
 			.collect(Collectors.toCollection(JsonArray::new));
+	}
+
+	public static JsonArray valueOf(String string)
+	{
+		try
+		{
+			return parse(string);
+		} catch (ConversionException ex)
+		{
+			throw new UncheckedConversionException(ex);
+		}
 	}
 }

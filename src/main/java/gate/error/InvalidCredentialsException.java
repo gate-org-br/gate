@@ -9,10 +9,20 @@ public class InvalidCredentialsException extends AuthenticationException
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs an InvalidPasswordException.
+	 * Constructs an InvalidCredentialsException.
 	 */
 	public InvalidCredentialsException()
 	{
 		super("Credenciais inválidas");
+	}
+
+	/**
+	 * Constructs an InvalidCredentialsException.
+	 *
+	 * @param message the message of the exception created
+	 */
+	public InvalidCredentialsException(String message)
+	{
+		super(message);
 	}
 }

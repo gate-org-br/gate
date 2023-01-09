@@ -149,15 +149,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public <T> T getString(Class<T> type)
+	public <T> T getBody(Class<T> type) throws ConversionException
 	{
-		try
-		{
-			return (T) Converter.getConverter(type).ofString(type, getBody());
-		} catch (ConversionException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return (T) Converter.getConverter(type)
+			.ofString(type, ScreenServletRequest.this.getBody());
 	}
-
 }

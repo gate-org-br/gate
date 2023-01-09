@@ -25,7 +25,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("Pessoa 1");
 
 			Constraints.validate(mock, Property.getProperties(Mock.class, "id"));
@@ -41,7 +41,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("Pessoa 1");
 
 			Constraints.validate(mock, Property.getProperties(Mock.class, "id", "name"));
@@ -60,7 +60,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("P1");
 
 			Constraints.validate(mock, Property.getProperties(Mock.class, "id", "name"));
@@ -79,7 +79,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("PA");
 
 			Constraints.validate(mock, Property.getProperties(Mock.class, "id", "name"));
@@ -100,7 +100,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("P2");
 			mock.setAge(20);
 
@@ -121,7 +121,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("P2");
 			mock.setAge(9);
 
@@ -142,7 +142,7 @@ public class ConstraintImplTest
 		try
 		{
 			Mock mock = new Mock();
-			mock.setId(new ID(1));
+			mock.setId(ID.valueOf(1));
 			mock.setName("P2");
 			mock.setAge(4);
 

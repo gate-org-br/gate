@@ -28,7 +28,7 @@ public class IDConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			return new ID(string);
+			return ID.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(ex, string + " não é um número válido");
@@ -78,14 +78,14 @@ public class IDConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		int value = rs.getInt(fields);
-		return rs.wasNull() ? null : new ID(value);
+		return rs.wasNull() ? null : ID.valueOf(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		int value = rs.getInt(fields);
-		return rs.wasNull() ? null : new ID(value);
+		return rs.wasNull() ? null : ID.valueOf(value);
 	}
 
 	@Override

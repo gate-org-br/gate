@@ -42,7 +42,7 @@ public @interface Step
 					String name = property.getDisplayName();
 					if (name == null)
 						name = property.toString();
-					throw new AppException("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue()));
+					throw new AppException(String.format("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue())));
 				}
 			}
 		}

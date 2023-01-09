@@ -1,0 +1,22 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	height: 100%;
+	display: flex;
+	align-items: stretch;
+}
+
+div
+{
+	flex-basis: 5px;
+	cursor: col-resize;
+	background-color: #999999;
+}
+
+::slotted(*)
+{
+	flex-basis: 50%;
+}
+

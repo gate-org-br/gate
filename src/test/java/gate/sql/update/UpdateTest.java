@@ -37,7 +37,7 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(1);
+			ID id = ID.valueOf(1);
 			String name = "Jonh";
 			Date birthdate = Date.of(31, 12, 2005);
 			DateInterval contract = new DateInterval(Date.of(1, 1, 2010), Date.of(31, 12, 2010));
@@ -67,7 +67,7 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(2);
+			ID id = ID.valueOf(2);
 			String name = "Paul";
 			LocalDate birthdate = LocalDate.of(2004, 11, 20);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2008, 1, 1), LocalDate.of(2010, 12, 31));
@@ -99,7 +99,7 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(3);
+			ID id = ID.valueOf(3);
 			String name = "Richard";
 			LocalDate birthdate = LocalDate.of(2000, 8, 9);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 1), LocalDate.of(2014, 12, 31));
@@ -135,7 +135,7 @@ public class UpdateTest
 	{
 		try (Link link = TestDataSource.getInstance().getLink())
 		{
-			ID id = new ID(4);
+			ID id = ID.valueOf(4);
 			String name = "Thomas";
 			LocalDate birthdate = LocalDate.of(2000, 8, 7);
 			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 2), LocalDate.of(2014, 12, 4));
@@ -328,7 +328,7 @@ public class UpdateTest
 		{
 			Contact expected
 				= new Contact()
-					.setId(new ID(1))
+					.setId(ID.valueOf(1))
 					.setType(Contact.Type.PHONE)
 					.setValue("99999999")
 					.setPerson(new Person()

@@ -1,11 +1,13 @@
 package gate.type;
 
 import gate.annotation.Converter;
+import gate.annotation.Handler;
 import gate.annotation.Icon;
 import gate.converter.custom.FormConverter;
 import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
+import gate.handler.FormHandler;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import java.io.Serializable;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Icon("2044")
+@Handler(FormHandler.class)
 @Converter(FormConverter.class)
 public class Form implements Serializable
 {
@@ -43,11 +46,16 @@ public class Form implements Serializable
 		return toJson().toString();
 	}
 
-	public static Form parse(String string) throws ConversionException
+	public static Form valueOf(String string) throws ConversionException
+	{
+		return valueOf(JsonArray.parse(string));
+	}
+
+	public static Form valueOf(JsonArray json) throws ConversionException
 	{
 		try
 		{
-			return new Form().setFields(JsonArray.parse(string)
+			return new Form().setFields(json
 				.stream()
 				.map(e -> (JsonObject) e)
 				.map(e -> UncheckedConversionException.execute(() -> Field.parse(e)))

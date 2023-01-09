@@ -1,31 +1,30 @@
 * {
-	box-sizing: border-box
+	box-sizing: border-box;
 }
 
-:host(*) {
-	width: auto;
+:host(*)
+{
 	display: flex;
 	font-size: 12px;
 	cursor: pointer;
 	position: relative;
 	align-items: stretch;
 	flex-direction: column;
-	justify-content: stretch;
+	border: 1px solid #999999;
 	background-color: var(--g-coolbar-background-color);
 }
 
 header
 {
 	gap: 8px;
-	padding: 4px;
+	padding: 8px;
 	height: 32px;
 	display: grid;
 	user-select: none;
 	font-size: inherit;
 	align-items: center;
 	font-family: inherit;
-	border: 1px solid #999999;
-	grid-template-columns: 1fr 32px;
+	grid-template-columns: 1fr 24px;
 }
 
 header::before
@@ -36,21 +35,19 @@ header::before
 header::after
 {
 	display: flex;
+	font-size: 0.5em;
 	content: '\\2276';
 	font-family: gate;
-	font-size: 0.5em;
 	align-items: center;
 	justify-content: center;
 }
 
 main {
 	left: 0;
-	flex-grow: 1;
-	display: flex;
 	display: none;
-	width: inherit;
 	top: calc(100%);
-	flex-basis: 100%;
+	width: inherit;
+	max-width: 100%;
 	font-size: inherit;
 	position: absolute;
 	flex-direction: column;
@@ -58,16 +55,15 @@ main {
 	background-color: var(--g-coolbar-background-color);
 }
 
-a {
+a, .g-command {
 	gap: 8px;
-	padding: 4px;
+	padding: 8px;
 	height: 32px;
 	display: grid;
-	flex-basis: 100%;
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
-	grid-template-columns: 1fr 32px;
+	grid-template-columns: 1fr 24px;
 }
 
 g-icon, i {
@@ -75,7 +71,8 @@ g-icon, i {
 	font-size: 1.5em;
 }
 
-a:hover
+a:hover,
+.g-command:hover
 {
 	background-color: var(--hovered);
 }

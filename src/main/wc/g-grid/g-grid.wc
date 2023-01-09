@@ -1,5 +1,5 @@
 <template>
-	<input type="text" placeholder="Filtrar"/>
+	<input id="input" type="text" placeholder="Filtrar"/>
 	<div>
 		<table>
 		</table>

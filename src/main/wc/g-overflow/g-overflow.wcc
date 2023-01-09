@@ -11,9 +11,8 @@ export default class GOverflow extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.innerHTML = template.innerHTML;
-
 		this.more.addEventListener("click", () => this.menu());
-		window.addEventListener("resize", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 		this.container.firstChild.addEventListener('slotchange', () => this.update());
 	}
 

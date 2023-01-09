@@ -2,7 +2,6 @@ package gate.authenticator;
 
 import gate.error.AuthenticatorException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidServiceException;
 import gate.error.InvalidUsernameException;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;
@@ -19,7 +18,10 @@ public class LDAPAuthenticator implements Authenticator
 {
 
 	@Override
-	public void authenticate(String server, String username, String password) throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, InvalidServiceException
+	public void authenticate(String server, String username, String password)
+		throws AuthenticatorException,
+		InvalidPasswordException,
+		InvalidUsernameException
 	{
 		try
 		{
@@ -36,9 +38,9 @@ public class LDAPAuthenticator implements Authenticator
 					SearchControls controls = new SearchControls();
 					controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 					NamingEnumeration<SearchResult> enumeration
-							= serverContext.search("", "(|(cn={0})(mail={1}))", new Object[]
-							{
-								username, username
+						= serverContext.search("", "(|(cn={0})(mail={1}))", new Object[]
+						{
+							username, username
 					}, controls);
 
 					if (!enumeration.hasMore())
@@ -57,7 +59,7 @@ public class LDAPAuthenticator implements Authenticator
 
 			} catch (CommunicationException ex)
 			{
-				throw new InvalidServiceException();
+				throw new AuthenticatorException(ex);
 			} catch (AuthenticationException e)
 			{
 				throw new InvalidPasswordException();

@@ -82,7 +82,7 @@ public class GQNTest
 					.setId(4)
 					.setName("Nome Modificado da Pessoa 4"));
 
-			String result = Select.expression("name").from("Person").where(Condition.of("id").eq(new ID(4))).build()
+			String result = Select.expression("name").from("Person").where(Condition.of("id").eq(ID.valueOf(4))).build()
 				.connect(connection).fetchObject(String.class).get();
 			Assert.assertEquals("Nome Modificado da Pessoa 4", result);
 
@@ -100,11 +100,11 @@ public class GQNTest
 				.execute(new Person().setId(5).setName("Nome Modificado da Pessoa 5"),
 					new Person().setId(6).setName("Nome Modificado da Pessoa 6"));
 
-			String result1 = Select.expression("name").from("Person").where(Condition.of("id").eq(new ID(5))).build()
+			String result1 = Select.expression("name").from("Person").where(Condition.of("id").eq(ID.valueOf(5))).build()
 				.connect(connection).fetchObject(String.class).get();
 			Assert.assertEquals("Nome Modificado da Pessoa 5", result1);
 
-			String result2 = Select.expression("name").from("Person").where(Condition.of("id").eq(new ID(6))).build()
+			String result2 = Select.expression("name").from("Person").where(Condition.of("id").eq(ID.valueOf(6))).build()
 				.connect(connection).fetchObject(String.class).get();
 			Assert.assertEquals("Nome Modificado da Pessoa 6", result2);
 

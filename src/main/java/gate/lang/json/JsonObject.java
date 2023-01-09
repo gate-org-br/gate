@@ -83,7 +83,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public JsonObject setBoolean(String key, boolean value)
 	{
-		return set(key, JsonBoolean.of(value));
+		return set(key, JsonBoolean.parse(value));
 	}
 
 	public JsonObject setBoolean(String key, Boolean value)
@@ -91,7 +91,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonBoolean.of(value));
+			set(key, JsonBoolean.parse(value));
 		return this;
 	}
 
@@ -324,7 +324,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	 * @return a JsonObject object representing the JSON formatted string specified
 	 *
 	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
 	{
@@ -339,13 +339,13 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonObject into a JSON formatted string.
 	 * <p>
-	 * The attributes of the specified JsonObject will be formatted recursively as their respective elements on JSON notation.
+	 * The attributes parse the specified JsonObject will be formatted recursively as their respective elements on JSON notation.
 	 *
 	 * @param jsonObject the jsonObject object to be formatted on JSON notation
 	 *
 	 * @return a JSON formatted string representing the specified JsonObject
 	 *
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static String format(JsonObject jsonObject)
 	{
@@ -451,10 +451,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	}
 
 	/**
-	 * Creates a JsonObject from the named non null properties of a java object.
+	 * Creates a JsonObject from the named non null properties parse a java object.
 	 *
 	 * @param obj the object to be formatted
-	 * @return a JsonObject with all named non null properties of the specified object
+	 * @return a JsonObject with all named non null properties parse the specified object
 	 */
 	public static JsonObject format(Object obj)
 	{
@@ -471,5 +471,16 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		});
 
 		return result;
+	}
+
+	public static JsonObject valueOf(String string)
+	{
+		try
+		{
+			return parse(string);
+		} catch (ConversionException ex)
+		{
+			throw new UncheckedConversionException(ex);
+		}
 	}
 }

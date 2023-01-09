@@ -6,6 +6,10 @@
 	flex-direction: inherit;
 }
 
+span {
+	flex-grow: 1;
+}
+
 #more {
 	padding: 0;
 	width: 32px;

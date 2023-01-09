@@ -119,16 +119,12 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
-{
-	e.addEventListener("click", () =>
 	{
-		if (e.form)
-			e.form.addEventListener("submit", () =>
-			{
+		e.addEventListener("click", () =>
+		{
+			if (e.form)
+				e.form.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"), {once: true}));
+			else
 				GBlock.show(e.getAttribute("data-block"));
-				e.form.removeEventListener(event.type, arguments.callee);
-			});
-		else
-			GBlock.show(e.getAttribute("data-block"));
+		});
 	});
-});

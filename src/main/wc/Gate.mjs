@@ -83,6 +83,10 @@ import "./g-form-dialog.mjs";
 
 import "./g-select-menu.mjs";
 
+import "./g-selectn-picker.mjs";
+
+import "./g-splitter.mjs";
+
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)

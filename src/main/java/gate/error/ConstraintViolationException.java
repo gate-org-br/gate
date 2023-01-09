@@ -12,20 +12,20 @@ public class ConstraintViolationException extends AppException
 
 	private static final long serialVersionUID = 1L;
 
-	ConstraintViolationException(SQLException cause, String message)
+	ConstraintViolationException(String message, SQLException cause)
 	{
-		super(cause, message);
+		super(message, cause);
 
+	}
+
+	ConstraintViolationException(SQLException cause)
+	{
+		this("Tentativa de violar restrição de integridade", cause);
 	}
 
 	@Override
 	public synchronized SQLException getCause()
 	{
 		return (SQLException) super.getCause();
-	}
-
-	ConstraintViolationException(SQLException cause)
-	{
-		this(cause, "Tentativa de violar restrição de integridade");
 	}
 }

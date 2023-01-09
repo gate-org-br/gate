@@ -18,27 +18,29 @@ import gate.sql.condition.Condition;
 import gate.sql.insert.Insert;
 import gate.sql.update.Update;
 import gate.type.ID;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.GET;
-import javax.ws.rs.PATCH;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/chat")
-public class ChatService
+@WebServlet(value = "/gate/chat/*")
+public class ChatService extends HttpServlet
 {
 
 	@Inject
@@ -48,119 +50,100 @@ public class ChatService
 	private PeerControl peerControl;
 
 	@Inject
-	private ChatControl messageControl;
+	private ChatControl chatControl;
 
 	@Inject
 	private Event<AppEvent> event;
 
-	@GET
-	@Path("/host")
-	@Produces("application/json")
-	public String host()
+	@Override
+	public void service(HttpServletRequest request,
+		HttpServletResponse response) throws ServletException, IOException
 	{
 		try
 		{
-			return hostControl.select().toString();
+			if ("/host".equals(request.getPathInfo()))
+			{
+				send(response, 200, "application/json", hostControl.select());
+			} else if ("/peers".equals(request.getPathInfo()))
+			{
+				send(response, 200, "application/json", peerControl.search());
+			} else if (request.getPathInfo() != null)
+			{
+				Matcher matcher = Pattern.compile("^\\/peers\\/([0-9]+)$").matcher(request.getPathInfo());
+				if (matcher.matches())
+				{
+					ID peer = ID.valueOf(matcher.group(1));
+					send(response, 200, "application/json", peerControl.select(peer));
+				} else
+				{
+					matcher = Pattern.compile("^\\/peers\\/([0-9]+)/messages$").matcher(request.getPathInfo());
+					if (matcher.matches())
+					{
+						ID peer = ID.valueOf(matcher.group(1));
+						switch (request.getMethod().toUpperCase())
+						{
+							case "GET":
+								send(response, 200, "application/json",
+									chatControl.search(peer).stream()
+										.map(e -> new JsonObject()
+										.setInt("id", e.getId().getValue())
+										.set("sender", new JsonObject()
+											.setInt("id", e.getSender().getId().getValue())
+											.setString("name", e.getSender().getName()))
+										.set("receiver", new JsonObject()
+											.setInt("id", e.getReceiver().getId().getValue())
+											.setString("name", e.getReceiver().getName()))
+										.setString("text", e.getText())
+										.setString("status", e.getStatus().name())
+										.setString("date", Converter.toText(e.getDate())))
+										.collect(Collectors.toCollection(JsonArray::new)).toString());
+								break;
+
+							case "POST":
+								StringBuilder message = new StringBuilder();
+								try ( Reader reader = request.getReader())
+								{
+									for (int c = reader.read(); c != -1; c = reader.read())
+										message.append((char) c);
+								}
+
+								send(response, 200, "text/plain",
+									chatControl.insert(peer,
+										message.toString()).toString());
+								break;
+							case "PATH":
+								chatControl.update(peer);
+								send(response, 200, "text/plain", matcher.group(1));
+								break;
+						}
+					}
+				}
+			}
 		} catch (NotFoundException ex)
 		{
-			throw new BadRequestException(Response
-				.status(Response.Status.BAD_REQUEST)
-				.entity(ex.getMessage())
-				.build());
-		}
-	}
-
-	@GET
-	@Path("/peers")
-	@Produces("application/json")
-	public Object peers()
-	{
-		return peerControl.search().toString();
-	}
-
-	@GET
-	@Path("/peers/{peer}")
-	@Produces("application/json")
-	public Object peers(@PathParam("peer") String peer)
-	{
-		try
-		{
-			return peerControl.select(ID.of(peer)).toString();
-		} catch (NotFoundException ex)
-		{
-			throw new BadRequestException(Response
-				.status(Response.Status.BAD_REQUEST)
-				.entity(ex.getMessage())
-				.build());
-		}
-	}
-
-	@GET
-	@Produces("application/json")
-	@Path("/peers/{peer}/messages")
-	public String messages(@PathParam("peer") String peer)
-	{
-		return messageControl.search(new ID(peer)).stream()
-			.map(e -> new JsonObject()
-			.setInt("id", e.getId().getValue())
-			.set("sender", new JsonObject()
-				.setInt("id", e.getSender().getId().getValue())
-				.setString("name", e.getSender().getName()))
-			.set("receiver", new JsonObject()
-				.setInt("id", e.getReceiver().getId().getValue())
-				.setString("name", e.getReceiver().getName()))
-			.setString("text", e.getText())
-			.setString("status", e.getStatus().name())
-			.setString("date", Converter.toText(e.getDate())))
-			.collect(Collectors.toCollection(JsonArray::new))
-			.toString();
-	}
-
-	@POST
-	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.TEXT_PLAIN)
-	@Path("/peers/{peer}/messages")
-	public String post(@PathParam("peer") String peer,
-		String message)
-	{
-		try
-		{
-			Chat msg = messageControl.insert(new ID(peer), message);
-
-			event.fireAsync(new ChatEvent(msg));
-
-			return msg.getId().toString();
+			response.setStatus(404);
 		} catch (AppException ex)
 		{
-			throw new BadRequestException(Response
-				.status(Response.Status.BAD_REQUEST)
-				.entity(ex.getMessage())
-				.build());
+			response.setStatus(400);
 		}
+
 	}
 
-	@PATCH
-	@Produces(MediaType.TEXT_PLAIN)
-	@Path("/peers/{peer}/messages")
-	public String received(@PathParam("peer") String peer)
+	private void send(HttpServletResponse response,
+		int status, String type, Object result) throws IOException
 	{
-		try
+		response.setStatus(status);
+		response.setContentType(type);
+		response.setCharacterEncoding("UTF-8");
+		try ( PrintWriter writer = response.getWriter())
 		{
-			messageControl.update(new ID(peer));
-			return peer;
-		} catch (AppException ex)
-		{
-			throw new BadRequestException(Response
-				.status(Response.Status.BAD_REQUEST)
-				.type(MediaType.TEXT_PLAIN)
-				.entity(ex.getMessage())
-				.build());
+			writer.write(result.toString());
 		}
 	}
 
 	public void post(String message, List<? extends User> peers) throws AppException
 	{
-		messageControl.post(message, peers)
+		chatControl.post(message, peers)
 			.stream().map(ChatEvent::new)
 			.forEach(event::fireAsync);
 	}
@@ -185,7 +168,7 @@ public class ChatService
 			{
 				var result = dao.select(getUser());
 				result.setString("status", status
-					.get(ID.of(result.getInt("id")
+					.get(ID.valueOf(result.getInt("id")
 						.orElseThrow())).name());
 				return result;
 			}
@@ -230,7 +213,7 @@ public class ChatService
 			{
 				var peer = dao.select(getUser(), id);
 				peer.setString("status", status
-					.get(ID.of(peer.getInt("id")
+					.get(ID.valueOf(peer.getInt("id")
 						.orElseThrow())).name());
 				return peer;
 			}
@@ -250,7 +233,7 @@ public class ChatService
 				JsonArray peers = dao.search(getUser());
 				peers.stream().map(e -> (JsonObject) e)
 					.forEach(e -> e.setString("status",
-					status.get(ID.of(e.getInt("id")
+					status.get(ID.valueOf(e.getInt("id")
 						.orElseThrow())).name()));
 				return peers;
 			}
@@ -323,6 +306,8 @@ public class ChatService
 				chat.setDate(LocalDateTime.now());
 				chat.setText(message);
 				chatDao.insert(chat);
+
+				event.fireAsync(new ChatEvent(chat));
 				return chat;
 			}
 		}
