@@ -1,6 +1,4 @@
-let template = document.createElement("template");
-template.innerHTML = `
- <style>* {
+* {
 	box-sizing: border-box;
 }
 
@@ -22,7 +20,6 @@ template.innerHTML = `
 ::slotted(button),
 ::slotted(.g-command)
 {
-	flex-basis: 100%;
 	margin: 4px;
 	padding: 4px;
 	height: auto;
@@ -30,6 +27,7 @@ template.innerHTML = `
 	display: flex;
 	color: inherit;
 	flex-shrink: 1;
+	flex-basis: 100%;
 	max-width: 160px;
 	border-radius: 5px;
 	white-space: nowrap;
@@ -74,17 +72,3 @@ template.innerHTML = `
 	border: none;
 	flex-grow: 100000;
 }
-</style>`;
-
-/* global customElements, template */
-
-import GOverflow from "./g-overflow.mjs";
-
-customElements.define('g-tabbar', class extends GOverflow
-{
-	constructor()
-	{
-		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-	}
-});

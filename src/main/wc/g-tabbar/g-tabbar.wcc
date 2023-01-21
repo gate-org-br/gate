@@ -1,0 +1,12 @@
+/* global customElements, template */
+
+import GOverflow from "./g-overflow.mjs";
+
+customElements.define('g-tabbar', class extends GOverflow
+{
+	constructor()
+	{
+		super();
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+});
