@@ -126,7 +126,6 @@ public class Form extends ReportElement
 	@Override
 	public boolean isEmpty()
 	{
-		return elements.isEmpty();
+		return elements.stream().allMatch(e -> e.getValue() == null);
 	}
-
 }
