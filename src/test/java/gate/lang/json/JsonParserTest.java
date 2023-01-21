@@ -5,8 +5,6 @@
  */
 package gate.lang.json;
 
-import gate.lang.json.JsonParser;
-import gate.lang.json.JsonElement;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +24,9 @@ public class JsonParserTest
 	public void testParse() throws Exception
 	{
 		String json = "{'field1': 'value1'} [1, 2, 3] true 'string'";
-		try (StringReader reader = new StringReader(json))
+		try ( StringReader reader = new StringReader(json))
 		{
-			try (JsonParser parser = new JsonParser(reader))
+			try ( JsonParser parser = new JsonParser(reader))
 			{
 				Optional<JsonElement> object = parser.parse();
 				Assert.assertEquals(JsonElement.Type.OBJECT,
@@ -56,9 +54,9 @@ public class JsonParserTest
 	public void testIteration() throws Exception
 	{
 		String json = "{'field1': 'value1'} [1, 2, 3] true 'string'";
-		try (StringReader reader = new StringReader(json))
+		try ( StringReader reader = new StringReader(json))
 		{
-			try (JsonParser parser = new JsonParser(reader))
+			try ( JsonParser parser = new JsonParser(reader))
 			{
 				List<JsonElement> elements
 					= new ArrayList<>();
@@ -82,9 +80,9 @@ public class JsonParserTest
 	public void testStream() throws Exception
 	{
 		String json = "{'field1': 'value1'} [1, 2, 3] true 'string'";
-		try (StringReader reader = new StringReader(json))
+		try ( StringReader reader = new StringReader(json))
 		{
-			try (JsonParser parser = new JsonParser(reader))
+			try ( JsonParser parser = new JsonParser(reader))
 			{
 				List<JsonElement.Type> elements
 					= parser.stream()
