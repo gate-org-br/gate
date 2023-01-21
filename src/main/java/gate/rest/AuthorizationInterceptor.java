@@ -31,21 +31,14 @@ public class AuthorizationInterceptor
 		if (user == null)
 			throw new ForbiddenException();
 
-		if (ctx.getMethod().isAnnotationPresent(Authorization.class))
-		{
-			Authorization.Value authorization = Authorization.Extractor.extract(ctx.getMethod());
-			if (!user.checkAccess(authorization.module(),
-				authorization.screen(),
-				authorization.action()))
-				throw new ForbiddenException();
-		} else
-		{
-			String module = ctx.getMethod().getDeclaringClass().getName();
-			String screen = ctx.getMethod().getDeclaringClass().getSimpleName();
-			String action = ctx.getMethod().getName();
-			if (!user.checkAccess(module, screen, action))
-				throw new ForbiddenException();
-		}
+		Authorization.Value authorization = Authorization.Extractor.extract(ctx.getMethod(),
+			ctx.getMethod().getDeclaringClass().getName(),
+			ctx.getMethod().getDeclaringClass().getSimpleName(),
+			ctx.getMethod().getName());
+		if (!user.checkAccess(authorization.module(),
+			authorization.screen(),
+			authorization.action()))
+			throw new ForbiddenException();
 
 		return ctx.proceed();
 	}
