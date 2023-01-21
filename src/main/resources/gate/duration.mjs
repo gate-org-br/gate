@@ -66,12 +66,17 @@ export default class Duration
 
 	static parse(string)
 	{
-		if (/^[0-9]{2,}:[0-9]{2}:[0-9]{2}$/.test(string))
-			return new Duration(new Date("1970-01-01T" + string + "Z").getTime() / 1000);
-		else if (/^[0-9]{2,}:[0-9]{2}$/.test(string))
-			return new Duration(new Date("1970-01-01T" + string + ":00Z").getTime() / 1000);
-		else if (/^[0-9]+$/.test(string))
+		if (/^[0-9]+$/.test(string))
 			return new Duration(Number(String * 60));
+
+		let match = string.match(/^(\d+):(\d{2})(?::(\d{2}))?$/);
+		if (match)
+		{
+			let hours = parseInt(match[1], 10);
+			let minutes = parseInt(match[2], 10);
+			let seconds = match[3] ? parseInt(match[3], 10) : 0;
+			return new Duration(hours * 3600 + minutes * 60 + seconds);
+		}
 
 		const parts = string.split(", ");
 		const days = parts.find(part => part.endsWith("d")) || 0;
