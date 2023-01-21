@@ -59,20 +59,20 @@ public class Call
 	{
 
 		if ("#".equals(module))
-			module = request.getParameter("MODULE");
+			module = (String) request.getAttribute("MODULE");
 		if ("#".equals(screen))
-			screen = request.getParameter("SCREEN");
+			screen = (String) request.getAttribute("SCREEN");
 		if ("#".equals(action))
-			action = request.getParameter("ACTION");
+			action = (String) request.getAttribute("ACTION");
 
 		if (Toolkit.isEmpty(module))
 		{
-			module = request.getParameter("MODULE");
+			module = (String) request.getAttribute("MODULE");
 			if (Toolkit.isEmpty(screen))
 			{
-				screen = request.getParameter("SCREEN");
+				screen = (String) request.getAttribute("SCREEN");
 				if (Toolkit.isEmpty(action))
-					action = request.getParameter("ACTION");
+					action = (String) request.getAttribute("ACTION");
 			}
 		}
 
