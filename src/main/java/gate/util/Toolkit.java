@@ -1,11 +1,11 @@
 package gate.util;
 
-import gate.converter.Converter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -60,21 +60,6 @@ public class Toolkit
 		if (obj instanceof String)
 			return ((CharSequence) obj).length();
 		return 1;
-	}
-
-	public static String write(Object object)
-	{
-		return Converter.toString(object);
-	}
-
-	public static String print(Object object)
-	{
-		return Converter.toText(object);
-	}
-
-	public static String print(Object object, String format)
-	{
-		return Converter.toText(object, format);
 	}
 
 	public static Iterable<Object> iterable(Object obj)
@@ -184,5 +169,25 @@ public class Toolkit
 		}
 
 		return result;
+	}
+
+	public static String format(Throwable exception)
+	{
+		StringJoiner string = new StringJoiner(System.lineSeparator());
+		string.add("<ul class='TreeView'>");
+		for (Throwable error = exception; error != null; error = error.getCause())
+		{
+			string.add("<li>");
+			string.add(Toolkit.escapeHTML(error.getMessage()));
+			string.add("<ul>");
+			Stream.of(error.getStackTrace())
+				.map(StackTraceElement::toString)
+				.map(Toolkit::escapeHTML)
+				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			string.add("</ul>");
+			string.add("</li>");
+		}
+		string.add("</ul>");
+		return string.toString();
 	}
 }

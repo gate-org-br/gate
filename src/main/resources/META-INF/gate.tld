@@ -807,13 +807,24 @@
 	</tag>
 	<function>
 		<name>print</name>
-		<function-class>gate.util.Toolkit</function-class>
+		<function-class>gate.tags.TagLib</function-class>
 		<function-signature>
 			java.lang.String print(java.lang.Object)
 		</function-signature>
 		<description>
 			Converts the provided value into a human readable
 			text and print it as HTML.
+		</description>
+	</function>
+	<function>
+		<name>format</name>
+		<function-class>gate.tags.TagLib</function-class>
+		<function-signature>
+			java.lang.String format(java.lang.Object, java.lang.String)
+		</function-signature>
+		<description>
+			Converts the provided value into a human readable
+			text and print it as HTML with the specified format.
 		</description>
 	</function>
 	<tag>
@@ -835,7 +846,7 @@
 	</tag>
 	<function>
 		<name>write</name>
-		<function-class>gate.util.Toolkit</function-class>
+		<function-class>gate.tags.TagLib</function-class>
 		<function-signature>
 			java.lang.String write(java.lang.Object)
 		</function-signature>

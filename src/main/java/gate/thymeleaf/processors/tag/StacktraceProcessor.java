@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.tags.TagLib;
 import gate.thymeleaf.ELExpression;
+import gate.util.Toolkit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -31,6 +31,6 @@ public class StacktraceProcessor extends TagProcessor
 			.map(e -> (Throwable) e)
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute exception on g:stacktrace"));
 
-		handler.replaceWith(TagLib.format(exception), false);
+		handler.replaceWith(Toolkit.format(exception), false);
 	}
 }
