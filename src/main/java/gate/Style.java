@@ -24,17 +24,17 @@ public class Style extends HttpServlet
 		if (!path.isEmpty())
 		{
 			String filename = path.get(0);
+			response.setHeader("Cache-Control", "public, max-age=86400");
 			response.setHeader("Content-Type", "text/css; charset=utf-8");
 			response.setHeader("Content-Disposition", "attachment; filename=" + filename);
-
 			response.setHeader("Access-Control-Max-Age", "3600");
 			response.setHeader("Access-Control-Allow-Credentials", "true");
 			response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 			response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 			response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 
-			try ( OutputStream o = response.getOutputStream();
-				 InputStream i = Script.class.getResourceAsStream(filename))
+			try (OutputStream o = response.getOutputStream();
+				InputStream i = Script.class.getResourceAsStream(filename))
 			{
 				for (int b = i.read(); b != -1; b = i.read())
 					o.write(b);
