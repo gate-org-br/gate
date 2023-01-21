@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 /**
  * A User on the organization structure.
  * <p>
- A User can have a Role and a list valueOf authorizations
+ * A User can have a Role and a list valueOf authorizations
  */
 @Entity
 @Icon("2004")
@@ -399,5 +399,10 @@ public class User implements Serializable
 			.noneMatch(e -> e.blocked(module, screen, action))
 			&& computedAuthStream()
 				.anyMatch(e -> e.equals(module, screen, action));
+	}
+
+	public static User valueOf(String string)
+	{
+		return new User().setId(ID.valueOf(string));
 	}
 }

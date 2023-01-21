@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 /**
  * A Role on the organization structure.
  * <p>
- A Role can contain users, other roles and a list valueOf authorizations
+ * A Role can contain users, other roles and a list valueOf authorizations
  */
 @Entity
 @Icon("2005")
@@ -386,5 +386,10 @@ public class Role implements Serializable, Hierarchy<Role>
 		return getRole().getId() != null
 			? String.format("%s / %s", getRole().toString(), getName())
 			: getName();
+	}
+
+	public static Role valueOf(String string)
+	{
+		return new Role().setId(ID.valueOf(string));
 	}
 }
