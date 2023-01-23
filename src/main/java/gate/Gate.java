@@ -117,14 +117,9 @@ public class Gate extends HttpServlet
 					.handle(httpServletRequest, response, HTML);
 			} else
 			{
-
 				User user = null;
 
-				if (request.getSession(false) != null)
-				{
-					user = (User) request.getSession()
-						.getAttribute(User.class.getName());
-				} else if (Credentials.isPresent(httpServletRequest))
+				if (Credentials.isPresent(httpServletRequest))
 				{
 					user = Credentials.of(request).orElseThrow();
 					request.setAttribute(User.class.getName(), user);
@@ -141,6 +136,10 @@ public class Gate extends HttpServlet
 					user = control.select(httpServletRequest.getUserPrincipal().getName());
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
+				} else if (request.getSession(false) != null)
+				{
+					user = (User) request.getSession()
+						.getAttribute(User.class.getName());
 				} else if (denveloper.isPresent())
 				{
 					user = control.select(denveloper.orElseThrow());
@@ -161,7 +160,13 @@ public class Gate extends HttpServlet
 				screen.prepare(request, response);
 
 				if (call.getMethod().isAnnotationPresent(Cors.class))
-					setCorsHeaders(request, response);
+				{
+					response.setHeader("Access-Control-Max-Age", "3600");
+					response.setHeader("Access-Control-Allow-Credentials", "true");
+					response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+					response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+					response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
+				}
 
 				if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 					executeAsync(httpServletRequest, response, screen, call.getMethod());
@@ -250,14 +255,5 @@ public class Gate extends HttpServlet
 			Toolkit.sleep(60000);
 			Progress.dispose();
 		}
-	}
-
-	public void setCorsHeaders(HttpServletRequest request, HttpServletResponse response)
-	{
-		response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-		response.setHeader("Access-Control-Allow-Credentials", "true");
-		response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-		response.setHeader("Access-Control-Max-Age", "3600");
-		response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 	}
 }
