@@ -22,7 +22,6 @@ template.innerHTML = `
 ::slotted(button),
 ::slotted(.g-command)
 {
-	flex-basis: 100%;
 	margin: 4px;
 	padding: 4px;
 	height: auto;
@@ -30,6 +29,7 @@ template.innerHTML = `
 	display: flex;
 	color: inherit;
 	flex-shrink: 1;
+	flex-basis: 100%;
 	max-width: 160px;
 	border-radius: 5px;
 	white-space: nowrap;

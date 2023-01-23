@@ -1,8 +1,4 @@
-let template = document.createElement("template");
-template.innerHTML = `
-	<slot>
-	</slot>
- <style>* {
+* {
 	box-sizing: border-box
 }
 
@@ -150,57 +146,4 @@ template.innerHTML = `
 	{
 		flex-basis: calc(50% - 8px);
 	}
-}</style>`;
-
-/* global customElements */
-
-customElements.define('g-desk-pane', class extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		this.addEventListener("click", function (e)
-		{
-			let target = e.target.closest('g-desk-pane');
-			if (target !== this)
-			{
-				let backup = Array.from(this.children);
-				let elements = Array.from(target.children)
-					.filter(e => e.tagName !== 'I'
-							&& e.tagName !== 'IMG');
-				backup.forEach(e => e.parentNode.removeChild(e));
-				elements.forEach(e => this.appendChild(e));
-
-				let reset = this.appendChild(document.createElement("a"));
-				reset.href = "#";
-				reset.style.color = "#660000";
-				reset.innerText = "Retornar";
-				reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-
-				reset.addEventListener("click", () =>
-				{
-					reset.parentNode.removeChild(reset);
-					elements.forEach(e => target.appendChild(e));
-					backup.forEach(e => this.appendChild(e));
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
-				e.preventDefault();
-				e.stopPropagation();
-			}
-
-		}, true);
-	}
-
-	connectedCallback()
-	{
-		Array.from(this.querySelectorAll("hr + hr"))
-			.forEach(e => e.remove());
-		Array.from(this.querySelectorAll("g-desk-pane"))
-			.forEach(e => e.setAttribute("child", true));
-	}
-});
+}

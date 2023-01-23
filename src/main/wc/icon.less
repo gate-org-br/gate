@@ -69,3 +69,23 @@ g-tabbar > :is(a, button) > :is(i, span)
 	align-items: center;
 	justify-content: center;
 }
+
+g-desk-pane > :is(g-desk-pane, a, button) > :is(i, span) {
+
+	order: -1;
+	width: 48px;
+	height: 48px;
+	display: flex;
+	color: inherit;
+	font-size: 40px;
+	margin-right: 8px;
+	align-items: center;
+	justify-content: center
+}
+
+g-desk-pane > :is(g-desk-pane, a, button) > img {
+	order: -1;
+	width: 48px;
+	height: 48px;
+	margin-right: 8px;
+}
