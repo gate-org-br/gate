@@ -31,6 +31,7 @@ section
 	flex-grow: 1;
 	font-size: 12px;
 	text-align: justify;
+	word-break: break-all;
 }
 
 footer
