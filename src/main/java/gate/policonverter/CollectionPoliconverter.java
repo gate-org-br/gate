@@ -34,7 +34,7 @@ public class CollectionPoliconverter implements Policonverter
 		Collection<String> strings = new ArrayList<>();
 		for (Object object : (Collection<?>) value)
 			strings.add(Converter.getConverter(type).toString(type, object));
-		return strings.toArray(new String[0]);
+		return strings.toArray(String[]::new);
 	}
 
 	@Override

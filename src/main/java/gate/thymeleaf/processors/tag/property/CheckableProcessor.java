@@ -43,6 +43,10 @@ public abstract class CheckableProcessor extends PropertyProcessor
 			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
+		else if (property.getElementType() != null && Enum.class.isAssignableFrom(property.getElementRawType()))
+			options = Arrays.asList(property.getElementRawType().getEnumConstants());
+		else if (property.getElementType() != null && Boolean.class.isAssignableFrom(property.getElementRawType()))
+			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 

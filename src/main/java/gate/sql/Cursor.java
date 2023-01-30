@@ -109,8 +109,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the current column index to be read on the next read operation.
 	 *
-	 * @return the current column index to be read on the next read
-	 * operation
+	 * @return the current column index to be read on the next read operation
 	 */
 	public int getCurrentColumnIndex()
 	{
@@ -166,8 +165,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Move to the next record of the query result.
 	 *
-	 * @return true if there is a next record to be moved to, false
-	 * otherwise
+	 * @return true if there is a next record to be moved to, false otherwise
 	 */
 	public boolean next()
 	{
@@ -228,8 +226,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current column value and moves the column index to the next
-	 * column.
+	 * Reads the current column value and moves the column index to the next column.
 	 *
 	 * @return the value of the current column
 	 */
@@ -239,14 +236,12 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current column value as an object of the specified type and
-	 * moves the column index to the next column.
+	 * Reads the current column value as an object of the specified type and moves the column index to the next column.
 	 *
 	 *
 	 * @param type type of the object to be read
 	 *
-	 * @return the value of the current column as an object of the specified
-	 * type
+	 * @return the value of the current column as an object of the specified type
 	 */
 	public <T> T getCurrentValue(Class<T> type)
 	{
@@ -254,6 +249,20 @@ public class Cursor implements AutoCloseable, Fetchable
 		{
 			Converter converter = Converter.getConverter(type);
 			T value = (T) converter.readFromResultSet(getResultSet(), column, type);
+			column += Math.max(1, converter.getSufixes().size());
+			return value;
+		} catch (ConversionException | SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	public <T> T getCurrentValue(Class<T> type, Class<?> elementType)
+	{
+		try
+		{
+			Converter converter = Converter.getConverter(type);
+			T value = (T) converter.readFromResultSet(getResultSet(), column, elementType);
 			column += Math.max(1, converter.getSufixes().size());
 			return value;
 		} catch (ConversionException | SQLException ex)
@@ -739,8 +748,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the names of columns of the cursor.
 	 *
-	 * @return a java array with the names of the columns associated with
-	 * this cursor
+	 * @return a java array with the names of the columns associated with this cursor
 	 */
 	public String[] getColumnNames()
 	{
@@ -760,8 +768,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the default java types of the columns of the cursor.
 	 *
-	 * @return a java array with the default java types of the columns of
-	 * the cursor
+	 * @return a java array with the default java types of the columns of the cursor
 	 */
 	public Class<?>[] getColumnTypes()
 	{
@@ -814,15 +821,13 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with the
-	 * specified properties set to their respective column values.
+	 * Reads the current row as a java object of the specified type with the specified properties set to their respective column values.
 	 *
 	 *
 	 * @param type type of the entity to be read
 	 * @param properties entity properties to be read
 	 *
-	 * @return the current as a java object of the specified type with the
-	 * specified properties set to their respective column values
+	 * @return the current as a java object of the specified type with the specified properties set to their respective column values
 	 */
 	public <T> T getEntity(Class<T> type, List<Property> properties)
 	{
@@ -860,13 +865,11 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with
-	 * it's property values matched to their respective column values.
+	 * Reads the current row as a java object of the specified type with it's property values matched to their respective column values.
 	 *
 	 * @param type type of the entity to be read
 	 *
-	 * @return the current row as a java object of the specified type with
-	 * it's property values matched to their respective column values.
+	 * @return the current row as a java object of the specified type with it's property values matched to their respective column values.
 	 */
 	public <T> T getEntity(Class<T> type)
 	{

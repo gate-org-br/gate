@@ -3,6 +3,7 @@ package gate.report.doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.report.Chart;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -23,8 +24,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -85,8 +91,12 @@ public class XLS extends Doc
 		try (SXSSFWorkbook workbook = new SXSSFWorkbook())
 		{
 			for (ReportElement e : getReport().getElements())
+			{
 				if (e instanceof Grid)
 					printGrid(workbook, (Grid) e);
+				if (e instanceof Chart)
+					printChart(workbook, (Chart) e);
+			}
 
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Form
@@ -105,11 +115,8 @@ public class XLS extends Doc
 	{
 		short i = -1;
 
-		SXSSFSheet sheet
-			= form.getCaption() != null
-			? workbook.createSheet(form.getCaption().chars()
-				.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
-				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString())
+		SXSSFSheet sheet = form.getCaption() != null
+			? workbook.createSheet(getValidSheedName(form.getCaption()))
 			: workbook.createSheet();
 
 		if (form.getCaption() != null)
@@ -185,9 +192,7 @@ public class XLS extends Doc
 	private void printGrid(SXSSFWorkbook workbook, Grid<Object> grid) throws ConversionException
 	{
 		SXSSFSheet sheet = grid.getCaption() != null
-			? workbook.createSheet(grid.getCaption().chars()
-				.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
-				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString())
+			? workbook.createSheet(getValidSheedName(grid.getCaption()))
 			: workbook.createSheet();
 
 		sheet.trackAllColumnsForAutoSizing();
@@ -327,6 +332,24 @@ public class XLS extends Doc
 		}
 	}
 
+	private void printChart(SXSSFWorkbook workbook, Chart<?> chart)
+	{
+		SXSSFSheet sheet = chart.getCaption() != null
+			? workbook.createSheet(getValidSheedName(chart.getCaption()))
+			: workbook.createSheet();
+
+		int pictureIdx = workbook.addPicture(chart.create(800, 600), Workbook.PICTURE_TYPE_PNG);
+
+		CreationHelper helper = workbook.getCreationHelper();
+
+		Drawing drawing = sheet.createDrawingPatriarch();
+		ClientAnchor anchor = helper.createClientAnchor();
+		anchor.setCol1(1);
+		anchor.setRow1(1);
+		Picture picture = drawing.createPicture(anchor, pictureIdx);
+		picture.resize();
+	}
+
 	private XSSFColor getXLSColor(Color color)
 	{
 		return COLORS.computeIfAbsent(color, e
@@ -351,6 +374,13 @@ public class XLS extends Doc
 			default:
 				return HorizontalAlignment.LEFT;
 		}
+	}
+
+	private String getValidSheedName(String name)
+	{
+		return name.chars()
+			.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
+			.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 	}
 
 	private XSSFCellStyle getXLSStyle(SXSSFWorkbook workbook, Style style)

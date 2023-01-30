@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -65,6 +66,8 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 							e.setFloat(result, cursor.getCurrentFloatValue());
 						else if (clazz == double.class)
 							e.setDouble(result, cursor.getCurrentDoubleValue());
+						else if (Collection.class.isAssignableFrom(clazz))
+							e.setValue(result, cursor.getCurrentValue(clazz, e.getElementRawType()));
 						else
 							e.setValue(result, cursor.getCurrentValue(clazz));
 					} catch (Exception ex)

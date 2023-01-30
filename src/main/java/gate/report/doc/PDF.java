@@ -20,7 +20,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
-import gate.type.Color;
+import gate.report.Chart;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -33,10 +33,12 @@ import gate.report.LineBreak;
 import gate.report.PageBreak;
 import gate.report.Paragraph;
 import gate.report.Report;
+import gate.report.Report.Orientation;
 import static gate.report.Report.Orientation.LANDSCAPE;
 import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
 import gate.report.Style;
+import gate.type.Color;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -135,75 +137,55 @@ public class PDF extends Doc
 					document.add(printGrid((Grid) element));
 				else if (element instanceof Image && ((Image) element).getSource() != null)
 					document.add(printImage((Image) element));
+				else if (element instanceof Chart<?>)
+					document.add(printChart((Chart<?>) element));
 			}
 			document.close();
-		} catch (DocumentException | AppError ex)
+		} catch (DocumentException ex)
 		{
 			throw new AppError(ex);
-		} catch (RuntimeException e)
-		{
-			throw e;
 		}
 	}
 
-	private Element printHeader(Header header) throws AppError
+	private Element printHeader(Header header)
 	{
-		try
-		{
-			String string = Converter.toText(header.getValue());
-			com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(header.style()));
-			element.setAlignment(getAlignment(header.style()));
-			return element;
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		String string = Converter.toText(header.getValue());
+		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(header.style()));
+		element.setAlignment(getAlignment(header.style()));
+		return element;
 	}
 
-	private Element printParagraph(Paragraph paragraph) throws AppError
+	private Element printParagraph(Paragraph paragraph)
 	{
-		try
-		{
-			String string = Converter.toText(paragraph.getValue());
-			com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(paragraph.style()));
-			element.setAlignment(getAlignment(paragraph.style()));
-			return element;
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		String string = Converter.toText(paragraph.getValue());
+		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(paragraph.style()));
+		element.setAlignment(getAlignment(paragraph.style()));
+		return element;
 	}
 
-	private Element printFooter(Footer footer) throws AppError
+	private Element printFooter(Footer footer)
 	{
-		try
-		{
-			String string = Converter.toText(footer.getValue());
-			com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(footer.style()));
-			element.setAlignment(getAlignment(footer.style()));
-			return element;
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		String string = Converter.toText(footer.getValue());
+		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(footer.style()));
+		element.setAlignment(getAlignment(footer.style()));
+		return element;
 	}
 
-	private Element printPageBreak() throws AppError
+	private Element printPageBreak()
 	{
 		return Chunk.NEXTPAGE;
 	}
 
-	private Element printLineBreak() throws AppError
+	private Element printLineBreak()
 	{
 		return new Phrase("\n");
 	}
 
-	private Element printImage(Image image) throws AppError
+	private Element printImage(Image image)
 	{
 		try
 		{
-			com.itextpdf.text.Image element;
-			element = com.itextpdf.text.Image.getInstance((byte[]) image.getSource());
+			com.itextpdf.text.Image element = com.itextpdf.text.Image.getInstance((byte[]) image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)
@@ -212,7 +194,34 @@ public class PDF extends Doc
 		}
 	}
 
-	private PdfPCell printField(Field field) throws AppError
+	private Element printChart(Chart<?> chart)
+	{
+		try
+		{
+			int max = getReport().getOrientation() == Orientation.PORTRAIT
+				? (int) PageSize.A4.getHeight() - 100
+				: (int) PageSize.A4.getWidth() - 100;
+
+			int width = getReport().getOrientation() == Orientation.PORTRAIT
+				? (int) PageSize.A4.getWidth() - 100
+				: (int) PageSize.A4.getHeight() - 100;
+
+			int height = chart.getFormat() == Chart.Format.BAR
+				? (int) Math.min(100 + (10 * chart.getValues().size() * chart.getDataset().size()), max)
+				: chart.getFormat() == Chart.Format.PIE
+				? (int) Math.min(100 + (120 * chart.getValues().size() / 2), max)
+				: 300;
+
+			com.itextpdf.text.Image element = com.itextpdf.text.Image.getInstance((byte[]) chart.create(width, height));
+			element.setAlignment(PdfPCell.ALIGN_CENTER);
+			return element;
+		} catch (BadElementException | IOException e)
+		{
+			throw new AppError(e);
+		}
+	}
+
+	private PdfPCell printField(Field field)
 	{
 		try
 		{
@@ -248,7 +257,7 @@ public class PDF extends Doc
 		}
 	}
 
-	private Element printForm(Form form) throws AppError
+	private Element printForm(Form form)
 	{
 		try
 		{
@@ -304,62 +313,43 @@ public class PDF extends Doc
 		}
 	}
 
-	private PdfPCell createHeadCell(String value, Style style) throws AppError
+	private PdfPCell createHeadCell(String value, Style style)
 	{
-		try
-		{
-			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, HEAD_FONT));
-			cell.setMinimumHeight(16);
-			cell.setBorderColor(BaseColor.GRAY);
-			cell.setBackgroundColor(HEAD_COLOR);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setHorizontalAlignment(getAlignment(style));
+		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, HEAD_FONT));
+		cell.setMinimumHeight(16);
+		cell.setBorderColor(BaseColor.GRAY);
+		cell.setBackgroundColor(HEAD_COLOR);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(getAlignment(style));
 
-			return cell;
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		return cell;
 	}
 
-	private PdfPCell createBodyCell(Object value, Style style, int index, int level) throws AppError
+	private PdfPCell createBodyCell(Object value, Style style, int index, int level)
 	{
-		try
-		{
+		String string = Converter.toText(value);
 
-			String string = Converter.toText(value);
+		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(string, getFont(style)));
+		cell.setMinimumHeight(16);
+		cell.setPaddingLeft(level * 50);
+		cell.setBorderColor(BaseColor.GRAY);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(getAlignment(style));
+		cell.setBackgroundColor(index % 2 == 0 ? BODY_COLOR1 : BODY_COLOR2);
 
-			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(string, getFont(style)));
-			cell.setMinimumHeight(16);
-			cell.setPaddingLeft(level * 50);
-			cell.setBorderColor(BaseColor.GRAY);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setHorizontalAlignment(getAlignment(style));
-			cell.setBackgroundColor(index % 2 == 0 ? BODY_COLOR1 : BODY_COLOR2);
-
-			return cell;
-		} catch (IllegalArgumentException e)
-		{
-			throw new AppError(e);
-		}
+		return cell;
 	}
 
-	private PdfPCell createFootCell(String value, Style style) throws AppError
+	private PdfPCell createFootCell(String value, Style style)
 	{
-		try
-		{
-			PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, getFont(style)));
-			cell.setMinimumHeight(20);
-			cell.setBorderColor(BaseColor.GRAY);
-			cell.setBackgroundColor(BaseColor.GRAY);
-			cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-			cell.setHorizontalAlignment(getAlignment(style));
+		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, getFont(style)));
+		cell.setMinimumHeight(20);
+		cell.setBorderColor(BaseColor.GRAY);
+		cell.setBackgroundColor(BaseColor.GRAY);
+		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+		cell.setHorizontalAlignment(getAlignment(style));
 
-			return cell;
-		} catch (Exception e)
-		{
-			throw new AppError(e);
-		}
+		return cell;
 	}
 
 	private void addBodies(Grid<Object> grid, PdfPTable table, Object data, int level)
@@ -389,7 +379,7 @@ public class PDF extends Doc
 		}
 	}
 
-	private PdfPTable printGrid(Grid<Object> grid) throws AppError
+	private PdfPTable printGrid(Grid<Object> grid)
 	{
 		try
 		{
@@ -438,6 +428,7 @@ public class PDF extends Doc
 		} catch (DocumentException ex)
 		{
 			throw new AppError(ex);
+
 		}
 	}
 

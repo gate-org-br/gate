@@ -1,5 +1,6 @@
 package gate.converter;
 
+import gate.converter.collections.EnumSetConverter;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.time.YearMonth;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,6 +72,7 @@ public class Converters
 		INSTANCES.put(File.class, new FileConverter());
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
 		INSTANCES.put(java.time.Year.class, new YearConverter());
+		INSTANCES.put(EnumSet.class, new EnumSetConverter());
 	}
 
 	public Converter get(Class<?> type)

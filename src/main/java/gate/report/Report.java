@@ -7,6 +7,7 @@ import gate.type.mime.MimeDataFile;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -186,6 +187,14 @@ public class Report
 		Image image = Image.of(source);
 		elements.add(image);
 		return image;
+	}
+
+	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
+		Chart.Format format)
+	{
+		Chart chart = new Chart(type, dataset, format);
+		elements.add(chart);
+		return chart;
 	}
 
 	/**
