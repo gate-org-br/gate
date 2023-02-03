@@ -1,6 +1,9 @@
 package gate.report;
 
+import gate.annotation.Converter;
 import gate.annotation.Handler;
+import gate.annotation.Name;
+import gate.converter.EnumStringConverter;
 import gate.handler.ReportHandler;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
@@ -209,8 +212,12 @@ public class Report
 		return this;
 	}
 
+	@Converter(EnumStringConverter.class)
 	public enum Orientation
 	{
-		PORTRAIT, LANDSCAPE
+		@Name("Retrato")
+		PORTRAIT,
+		@Name("Paisagem")
+		LANDSCAPE
 	}
 }

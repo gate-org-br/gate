@@ -1,26 +1,27 @@
 package gate.report.doc;
 
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfPageEventHelper;
-import com.itextpdf.text.pdf.PdfTemplate;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfGraphics2D;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfPageEventHelper;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.report.Chart;
+import gate.report.ChartGenerator;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -33,13 +34,14 @@ import gate.report.LineBreak;
 import gate.report.PageBreak;
 import gate.report.Paragraph;
 import gate.report.Report;
-import gate.report.Report.Orientation;
 import static gate.report.Report.Orientation.LANDSCAPE;
 import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
 import gate.report.Style;
-import gate.type.Color;
 import gate.util.Toolkit;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
@@ -53,21 +55,21 @@ import java.util.concurrent.ConcurrentMap;
 public class PDF extends Doc
 {
 
-	private static final BaseColor CAPTION_COLOR = new BaseColor(120, 129, 133);
-	private static final BaseColor HEAD_COLOR = new BaseColor(185, 198, 205);
+	private static final Color CAPTION_COLOR = new Color(120, 129, 133);
+	private static final Color HEAD_COLOR = new Color(185, 198, 205);
 
-	private static final BaseColor FORM_COLOR = new BaseColor(255, 255, 255);
-	private static final BaseColor FIELD_COLOR = new BaseColor(230, 230, 230);
+	private static final Color FORM_COLOR = new Color(255, 255, 255);
+	private static final Color FIELD_COLOR = new Color(230, 230, 230);
 
-	private static final BaseColor BODY_COLOR1 = new BaseColor(255, 255, 255);
-	private static final BaseColor BODY_COLOR2 = new BaseColor(245, 246, 248);
+	private static final Color BODY_COLOR1 = new Color(255, 255, 255);
+	private static final Color BODY_COLOR2 = new Color(245, 246, 248);
 
-	private static final Map<Color, BaseColor> COLORS = new ConcurrentHashMap<>();
+	private static final Map<gate.type.Color, Color> COLORS = new ConcurrentHashMap<>();
 	private static final ConcurrentMap<Style, Font> FONTS = new ConcurrentHashMap<>();
-	private static final Font HEAD_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
-	private static final Font FIELD_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
-	private static final Font FORM_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.BLACK);
-	private static final Font CAPTION_FONT = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD, BaseColor.WHITE);
+	private static final Font HEAD_FONT = new Font(Font.TIMES_ROMAN, 10, Font.BOLD);
+	private static final Font FIELD_FONT = new Font(Font.TIMES_ROMAN, 10, Font.NORMAL);
+	private static final Font FORM_FONT = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, Color.BLACK);
+	private static final Font CAPTION_FONT = new Font(Font.TIMES_ROMAN, 10, Font.BOLD, Color.WHITE);
 
 	/**
 	 * Constructs a new PDF Doc for the specified report.
@@ -116,8 +118,10 @@ public class PDF extends Doc
 					throw new IllegalArgumentException("Invalid report orientation");
 			}
 
-			PdfWriter.getInstance(document, os).setPageEvent(new Numerator());
+			var writer = PdfWriter.getInstance(document, os);
+			writer.setPageEvent(new Numerator());
 			document.open();
+
 			for (ReportElement element : getReport().getElements())
 			{
 				if (element instanceof Header)
@@ -138,7 +142,7 @@ public class PDF extends Doc
 				else if (element instanceof Image && ((Image) element).getSource() != null)
 					document.add(printImage((Image) element));
 				else if (element instanceof Chart<?>)
-					document.add(printChart((Chart<?>) element));
+					document.add(printChart((Chart<?>) element, document, writer));
 			}
 			document.close();
 		} catch (DocumentException ex)
@@ -150,7 +154,7 @@ public class PDF extends Doc
 	private Element printHeader(Header header)
 	{
 		String string = Converter.toText(header.getValue());
-		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(header.style()));
+		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(header.style()));
 		element.setAlignment(getAlignment(header.style()));
 		return element;
 	}
@@ -158,7 +162,7 @@ public class PDF extends Doc
 	private Element printParagraph(Paragraph paragraph)
 	{
 		String string = Converter.toText(paragraph.getValue());
-		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(paragraph.style()));
+		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(paragraph.style()));
 		element.setAlignment(getAlignment(paragraph.style()));
 		return element;
 	}
@@ -166,7 +170,7 @@ public class PDF extends Doc
 	private Element printFooter(Footer footer)
 	{
 		String string = Converter.toText(footer.getValue());
-		com.itextpdf.text.Paragraph element = new com.itextpdf.text.Paragraph(string, getFont(footer.style()));
+		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(footer.style()));
 		element.setAlignment(getAlignment(footer.style()));
 		return element;
 	}
@@ -185,7 +189,7 @@ public class PDF extends Doc
 	{
 		try
 		{
-			com.itextpdf.text.Image element = com.itextpdf.text.Image.getInstance((byte[]) image.getSource());
+			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance((byte[]) image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)
@@ -194,31 +198,22 @@ public class PDF extends Doc
 		}
 	}
 
-	private Element printChart(Chart<?> chart)
+	private com.lowagie.text.Image printChart(Chart<?> chart, Document document, PdfWriter writer)
 	{
-		try
-		{
-			int max = getReport().getOrientation() == Orientation.PORTRAIT
-				? (int) PageSize.A4.getHeight() - 100
-				: (int) PageSize.A4.getWidth() - 100;
 
-			int width = getReport().getOrientation() == Orientation.PORTRAIT
-				? (int) PageSize.A4.getWidth() - 100
-				: (int) PageSize.A4.getHeight() - 100;
+		float width = document.getPageSize().getWidth() - 40;
+		float height = (document.getPageSize().getHeight() - 40) / 2;
 
-			int height = chart.getFormat() == Chart.Format.BAR
-				? (int) Math.min(100 + (10 * chart.getValues().size() * chart.getDataset().size()), max)
-				: chart.getFormat() == Chart.Format.PIE
-				? (int) Math.min(100 + (120 * chart.getValues().size() / 2), max)
-				: 300;
+		PdfContentByte cb = writer.getDirectContent();
+		PdfTemplate template = cb.createTemplate(width, height);
+		Graphics2D g2d = new PdfGraphics2D(template, width, height);
+		Rectangle2D r2d = new Rectangle2D.Double(0, 0, width, height);
+		ChartGenerator.create(chart).draw(g2d, r2d);
+		g2d.dispose();
 
-			com.itextpdf.text.Image element = com.itextpdf.text.Image.getInstance((byte[]) chart.create(width, height));
-			element.setAlignment(PdfPCell.ALIGN_CENTER);
-			return element;
-		} catch (BadElementException | IOException e)
-		{
-			throw new AppError(e);
-		}
+		var image = com.lowagie.text.Image.getInstance(template);
+		image.setAlignment(PdfPCell.ALIGN_CENTER);
+		return image;
 	}
 
 	private PdfPCell printField(Field field)
@@ -231,14 +226,14 @@ public class PDF extends Doc
 				1f
 			});
 
-			PdfPCell label = new PdfPCell(new com.itextpdf.text.Paragraph(field.getName(), FIELD_FONT));
+			PdfPCell label = new PdfPCell(new com.lowagie.text.Paragraph(field.getName(), FIELD_FONT));
 			label.setBorder(0);
 			label.setPadding(0);
 			label.setPaddingBottom(2);
 			label.setBackgroundColor(FORM_COLOR);
 			table.addCell(label);
 
-			PdfPCell value = new PdfPCell(new com.itextpdf.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
+			PdfPCell value = new PdfPCell(new com.lowagie.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
 			value.setPadding(2);
 			value.setMinimumHeight(field.getHeight());
 			value.setBorder(0);
@@ -266,7 +261,7 @@ public class PDF extends Doc
 
 			if (form.getCaption() != null)
 			{
-				PdfPCell caption = new PdfPCell(new com.itextpdf.text.Paragraph(form.getCaption(), FORM_FONT));
+				PdfPCell caption = new PdfPCell(new com.lowagie.text.Paragraph(form.getCaption(), FORM_FONT));
 				caption.setBorder(0);
 				caption.setMinimumHeight(20);
 				caption.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
@@ -283,7 +278,7 @@ public class PDF extends Doc
 			PdfPCell body = new PdfPCell(table);
 			body.setPadding(4);
 			body.setBackgroundColor(FORM_COLOR);
-			body.setBorderColor(BaseColor.LIGHT_GRAY);
+			body.setBorderColor(Color.LIGHT_GRAY);
 
 			form.getFields().forEach(e -> table.addCell(printField(e)));
 
@@ -315,9 +310,9 @@ public class PDF extends Doc
 
 	private PdfPCell createHeadCell(String value, Style style)
 	{
-		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, HEAD_FONT));
+		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(value, HEAD_FONT));
 		cell.setMinimumHeight(16);
-		cell.setBorderColor(BaseColor.GRAY);
+		cell.setBorderColor(Color.GRAY);
 		cell.setBackgroundColor(HEAD_COLOR);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setHorizontalAlignment(getAlignment(style));
@@ -329,10 +324,10 @@ public class PDF extends Doc
 	{
 		String string = Converter.toText(value);
 
-		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(string, getFont(style)));
+		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(string, getFont(style)));
 		cell.setMinimumHeight(16);
 		cell.setPaddingLeft(level * 50);
-		cell.setBorderColor(BaseColor.GRAY);
+		cell.setBorderColor(Color.GRAY);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setHorizontalAlignment(getAlignment(style));
 		cell.setBackgroundColor(index % 2 == 0 ? BODY_COLOR1 : BODY_COLOR2);
@@ -342,10 +337,10 @@ public class PDF extends Doc
 
 	private PdfPCell createFootCell(String value, Style style)
 	{
-		PdfPCell cell = new PdfPCell(new com.itextpdf.text.Paragraph(value, getFont(style)));
+		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(value, getFont(style)));
 		cell.setMinimumHeight(20);
-		cell.setBorderColor(BaseColor.GRAY);
-		cell.setBackgroundColor(BaseColor.GRAY);
+		cell.setBorderColor(Color.GRAY);
+		cell.setBackgroundColor(Color.GRAY);
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setHorizontalAlignment(getAlignment(style));
 
@@ -399,12 +394,12 @@ public class PDF extends Doc
 			{
 				table.setHeaderRows(table.getHeaderRows() + 1);
 				table.getDefaultCell().setMinimumHeight(16);
-				table.getDefaultCell().setBorderColor(BaseColor.GRAY);
+				table.getDefaultCell().setBorderColor(Color.GRAY);
 				table.getDefaultCell().setColspan(widths.length);
 				table.getDefaultCell().setBackgroundColor(CAPTION_COLOR);
 				table.getDefaultCell().setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
 				table.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
-				table.addCell(new com.itextpdf.text.Paragraph(grid.getCaption(), CAPTION_FONT));
+				table.addCell(new com.lowagie.text.Paragraph(grid.getCaption(), CAPTION_FONT));
 			}
 
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
@@ -477,7 +472,7 @@ public class PDF extends Doc
 		}
 
 		@Override
-		public void onCloseDocument(PdfWriter writer, com.itextpdf.text.Document document)
+		public void onCloseDocument(PdfWriter writer, com.lowagie.text.Document document)
 		{
 			pages.beginText();
 			pages.setFontAndSize(baseFont, FOOTER_SIZE);
@@ -487,10 +482,10 @@ public class PDF extends Doc
 		}
 	}
 
-	private BaseColor getColor(Style style)
+	private Color getColor(Style style)
 	{
 		return COLORS.computeIfAbsent(style.getColor(),
-			c -> new BaseColor(c.getR(), c.getG(), c.getB()));
+			c -> new Color(c.getR(), c.getG(), c.getB()));
 	}
 
 	private int getFontWeight(Style style)
@@ -509,7 +504,7 @@ public class PDF extends Doc
 	private Font getFont(Style style)
 	{
 		return FONTS.computeIfAbsent(style, e
-			-> new Font(Font.FontFamily.TIMES_ROMAN, e.getFontSize(),
+			-> new Font(Font.TIMES_ROMAN, e.getFontSize(),
 				getFontWeight(e), getColor(e)));
 	}
 }

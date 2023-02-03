@@ -12,7 +12,7 @@ template.innerHTML = `
 		</g-chat-message-list>
 	</section>
 	<footer>
-		<input id='message' type='text' placeholder='Mensagem'/>
+		<input id='message' type='text' maxlength='256' placeholder='Mensagem'/>
 		<button>&#X2034</button>
 	</footer>
  <style>* {

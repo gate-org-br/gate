@@ -1,5 +1,6 @@
 package gate.report;
 
+import gate.annotation.Name;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -15,8 +16,8 @@ import org.jfree.chart.encoders.EncoderUtil;
 import org.jfree.chart.plot.MultiplePiePlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.util.TableOrder;
 
 public class Chart<T> extends ReportElement
 {
@@ -110,7 +111,16 @@ public class Chart<T> extends ReportElement
 
 	public enum Format
 	{
-		PIE, LINE, AREA, BAR, COLUMN
+		@Name("Pizza")
+		PIE,
+		@Name("Linhas")
+		LINE,
+		@Name("Áreas")
+		AREA,
+		@Name("Barras")
+		BAR,
+		@Name("Colunas")
+		COLUMN
 	}
 
 	public byte[] create(int width, int height)
@@ -151,7 +161,7 @@ public class Chart<T> extends ReportElement
 				{
 					JFreeChart chart = ChartFactory.createLineChart(getCaption(),
 						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.HORIZONTAL, true, false, false);
+						PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
 							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -164,7 +174,7 @@ public class Chart<T> extends ReportElement
 
 					JFreeChart chart = ChartFactory.createAreaChart(getCaption(),
 						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.HORIZONTAL, true, false, false);
+						PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
 							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());

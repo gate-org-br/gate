@@ -101,11 +101,14 @@ public class ChatService extends HttpServlet
 
 							case "POST":
 								StringBuilder message = new StringBuilder();
-								try ( Reader reader = request.getReader())
+								try (Reader reader = request.getReader())
 								{
 									for (int c = reader.read(); c != -1; c = reader.read())
 										message.append((char) c);
 								}
+
+								if (message.length() > 256)
+									throw new AppException("Mensagens devem possuir no máximo 256 caracteres");
 
 								send(response, 200, "text/plain",
 									chatControl.insert(peer,
@@ -135,7 +138,7 @@ public class ChatService extends HttpServlet
 		response.setStatus(status);
 		response.setContentType(type);
 		response.setCharacterEncoding("UTF-8");
-		try ( PrintWriter writer = response.getWriter())
+		try (PrintWriter writer = response.getWriter())
 		{
 			writer.write(result.toString());
 		}
@@ -164,7 +167,7 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( HostDao dao = new HostDao())
+			try (HostDao dao = new HostDao())
 			{
 				var result = dao.select(getUser());
 				result.setString("status", status
@@ -209,7 +212,7 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( PeerDao dao = new PeerDao())
+			try (PeerDao dao = new PeerDao())
 			{
 				var peer = dao.select(getUser(), id);
 				peer.setString("status", status
@@ -228,7 +231,7 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( PeerDao dao = new PeerDao())
+			try (PeerDao dao = new PeerDao())
 			{
 				JsonArray peers = dao.search(getUser());
 				peers.stream().map(e -> (JsonObject) e)
@@ -281,7 +284,7 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( ChatDao dao = new ChatDao())
+			try (ChatDao dao = new ChatDao())
 			{
 				return dao.search(peer);
 			}
@@ -296,8 +299,8 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( UserDao userDao = new UserDao();
-				 ChatDao chatDao = new ChatDao())
+			try (UserDao userDao = new UserDao();
+				ChatDao chatDao = new ChatDao())
 			{
 				var chat = new Chat();
 				chat.setSender(getUser());
@@ -321,7 +324,7 @@ public class ChatService extends HttpServlet
 					.type(MediaType.TEXT_PLAIN)
 					.build());
 
-			try ( ChatDao dao = new ChatDao())
+			try (ChatDao dao = new ChatDao())
 			{
 				dao.update(peer, Chat.Status.RECEIVED);
 				event.fireAsync(new ChatReceivedEvent(peer, getUser().getId()));
@@ -330,7 +333,7 @@ public class ChatService extends HttpServlet
 
 		public List<Chat> post(String message, List<? extends User> peers) throws AppException
 		{
-			try ( ChatDao dao = new ChatDao())
+			try (ChatDao dao = new ChatDao())
 			{
 				dao.beginTran();
 				var messages = new ArrayList<Chat>();

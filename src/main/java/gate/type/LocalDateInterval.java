@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.annotation.Icon;
+import gate.annotation.Name;
 import gate.converter.custom.LocalDateIntervalConverter;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -207,8 +208,21 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	public static class Mutable
 	{
 
+		@Name("Data min")
 		private LocalDate min;
+
+		@Name("Data max")
 		private LocalDate max;
+
+		public Mutable()
+		{
+		}
+
+		public Mutable(LocalDate min, LocalDate max)
+		{
+			this.min = min;
+			this.max = max;
+		}
 
 		public LocalDate getMin()
 		{

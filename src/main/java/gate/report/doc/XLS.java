@@ -4,6 +4,7 @@ import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.report.Chart;
+import gate.report.ChartGenerator;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -40,6 +41,7 @@ import org.apache.poi.xssf.usermodel.DefaultIndexedColorMap;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.jfree.chart.encoders.EncoderUtil;
 
 /**
  * Generates XLS documents from objects of type {@link gate.report.Report}.
@@ -334,20 +336,28 @@ public class XLS extends Doc
 
 	private void printChart(SXSSFWorkbook workbook, Chart<?> chart)
 	{
-		SXSSFSheet sheet = chart.getCaption() != null
-			? workbook.createSheet(getValidSheedName(chart.getCaption()))
-			: workbook.createSheet();
+		try
+		{
+			SXSSFSheet sheet = chart.getCaption() != null
+				? workbook.createSheet(getValidSheedName(chart.getCaption()))
+				: workbook.createSheet();
 
-		int pictureIdx = workbook.addPicture(chart.create(800, 600), Workbook.PICTURE_TYPE_PNG);
+			var image = EncoderUtil.encode(ChartGenerator.create(chart).createBufferedImage(1024, 768), "png");
 
-		CreationHelper helper = workbook.getCreationHelper();
+			int pictureIdx = workbook.addPicture(image, Workbook.PICTURE_TYPE_PNG);
 
-		Drawing drawing = sheet.createDrawingPatriarch();
-		ClientAnchor anchor = helper.createClientAnchor();
-		anchor.setCol1(1);
-		anchor.setRow1(1);
-		Picture picture = drawing.createPicture(anchor, pictureIdx);
-		picture.resize();
+			CreationHelper helper = workbook.getCreationHelper();
+
+			Drawing drawing = sheet.createDrawingPatriarch();
+			ClientAnchor anchor = helper.createClientAnchor();
+			anchor.setCol1(1);
+			anchor.setRow1(1);
+			Picture picture = drawing.createPicture(anchor, pictureIdx);
+			picture.resize();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	private XSSFColor getXLSColor(Color color)

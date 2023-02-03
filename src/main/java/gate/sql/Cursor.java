@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -585,6 +586,28 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
+	 * @param <T> type of the object to be read
+	 * @param <E> type of the object elements
+	 * @param type type of the object to be read
+	 * @param elementType type of the object elements
+	 * @param columnIndex index of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public <T, E> T getValue(Class<T> type, Class<E> elementType, int columnIndex)
+	{
+		try
+		{
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex, elementType);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as an object of the specified type.
+	 *
 	 *
 	 * @param type type of the object to be read
 	 * @param columnName name of the column to be read
@@ -596,6 +619,28 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, type);
+		} catch (ConversionException | SQLException e)
+		{
+			throw new UnsupportedOperationException(e);
+		}
+	}
+
+	/**
+	 * Reads the specified column value as an object of the specified type.
+	 *
+	 * @param <T> type of the object to be read
+	 * @param <E> type of the object elements
+	 * @param type type of the object to be read
+	 * @param elementType type of the object elements
+	 * @param columnName name of the column to be read
+	 *
+	 * @return the value of the specified column
+	 */
+	public <T, E> T getValue(Class<T> type, Class<E> elementType, String columnName)
+	{
+		try
+		{
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, elementType);
 		} catch (ConversionException | SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
@@ -853,6 +898,8 @@ public class Cursor implements AutoCloseable, Fetchable
 					property.setFloat(result, getCurrentFloatValue());
 				else if (clazz == double.class)
 					property.setDouble(result, getCurrentDoubleValue());
+				else if (Collection.class.isAssignableFrom(clazz))
+					property.setValue(result, getCurrentValue(clazz, property.getElementRawType()));
 				else
 					property.setValue(result, getCurrentValue(clazz));
 			});
