@@ -103,6 +103,105 @@ textarea:invalid
 import './g-selectn.mjs';
 import mask from './mask.mjs';
 
+function create(element)
+{
+	let label = document.createElement("label");
+
+	if (element.size)
+		switch (Number(element.size))
+		{
+			case 0:
+				label.setAttribute("data-size", 1);
+				break;
+			case 1:
+				label.setAttribute("data-size", 2);
+				break;
+			case 2:
+				label.setAttribute("data-size", 4);
+				break;
+			case 3:
+				label.setAttribute("data-size", 8);
+				break;
+		}
+
+	label.innerText = element.name + ': ';
+
+	let span = label.appendChild(document.createElement("span"));
+	if (element.multiple)
+		span.style.flexBasis = "80px";
+
+	let input;
+	if (element.options)
+	{
+		if (element.multiple)
+		{
+			input = span.appendChild(document.createElement("g-selectn"));
+			input.options = element.options.map(option => ({"label": option, "value": option}));
+
+			if (element.value)
+				if (Array.isArray(element.value)
+					&& element.value.length)
+					input.value = element.value;
+				else
+					input.value = [element.value];
+		} else
+		{
+			input = span.appendChild(document.createElement("select"));
+			input.appendChild(document.createElement("option")).value = "";
+			element.options.forEach(value => {
+				let option = input.appendChild(document.createElement("option"));
+				option.value = value;
+				option.innerText = value;
+			});
+
+			if (element.value)
+				if (Array.isArray(element.value)
+					&& element.value.length)
+					input.value = element.value[0];
+				else
+					input.value = element.value;
+		}
+	} else if (element.multiple)
+	{
+		input = span.appendChild(document.createElement("textarea"));
+		if (element.value)
+			if (Array.isArray(element.value)
+				&& element.value.length)
+				input.value = element.value.join("\n");
+			else
+				input.value = element.value;
+	} else
+	{
+		input = span.appendChild(document.createElement("input"));
+		if (element.value)
+			if (Array.isArray(element.value)
+				&& element.value.length)
+				input.value = element.value[0];
+			else
+				input.value = element.value;
+	}
+
+	input.name = element.name;
+
+	if (element.required)
+		input.setAttribute("required", "required");
+	if (element.description)
+		input.title = element.description;
+	if (element.readonly)
+		input.setAttribute("readonly", "readonly");
+	if (element.maxlength)
+		input.setAttribute("maxlength", element.maxlength);
+	if (element.pattern)
+		input.setAttribute("pattern", element.pattern);
+	if (element.mask)
+	{
+		input.setAttribute("data-mask", element.mask);
+		mask(input);
+	}
+
+	return label;
+}
+
 customElements.define('g-form', class extends HTMLElement
 {
 	constructor()
@@ -124,103 +223,9 @@ customElements.define('g-form', class extends HTMLElement
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("label")).forEach(e => e.remove());
-
-		value.forEach(element => {
-			let label = this.shadowRoot.appendChild(document.createElement("label"));
-
-			if (element.size)
-				switch (Number(element.size))
-				{
-					case 0:
-						label.setAttribute("data-size", 1);
-						break;
-					case 1:
-						label.setAttribute("data-size", 2);
-						break;
-					case 2:
-						label.setAttribute("data-size", 4);
-						break;
-					case 3:
-						label.setAttribute("data-size", 8);
-						break;
-				}
-
-			label.innerText = element.name + ': ';
-
-			let span = label.appendChild(document.createElement("span"));
-			if (element.multiple)
-				span.style.flexBasis = "80px";
-
-			let input;
-			if (element.options)
-			{
-				if (element.multiple)
-				{
-					input = span.appendChild(document.createElement("g-selectn"));
-					input.options = element.options.map(option => ({"label": option, "value": option}));
-
-					if (element.value)
-						if (Array.isArray(element.value)
-							&& element.value.length)
-							input.value = element.value;
-						else
-							input.value = [element.value];
-				} else
-				{
-					input = span.appendChild(document.createElement("select"));
-					input.appendChild(document.createElement("option")).value = "";
-					element.options.forEach(value => {
-						let option = input.appendChild(document.createElement("option"));
-						option.value = value;
-						option.innerText = value;
-					});
-
-					if (element.value)
-						if (Array.isArray(element.value)
-							&& element.value.length)
-							input.value = element.value[0];
-						else
-							input.value = element.value;
-				}
-			} else if (element.multiple)
-			{
-				input = span.appendChild(document.createElement("textarea"));
-				if (element.value)
-					if (Array.isArray(element.value)
-						&& element.value.length)
-						input.value = element.value.join("\n");
-					else
-						input.value = element.value;
-			} else
-			{
-				input = span.appendChild(document.createElement("input"));
-				if (element.value)
-					if (Array.isArray(element.value)
-						&& element.value.length)
-						input.value = element.value[0];
-					else
-						input.value = element.value;
-			}
-
-			input.name = element.name;
-
-			if (element.required)
-				input.setAttribute("required", "required");
-			if (element.description)
-				input.title = element.description;
-			if (element.readonly)
-				input.setAttribute("readonly", "readonly");
-			if (element.maxlength)
-				input.setAttribute("maxlength", element.maxlength);
-			if (element.pattern)
-				input.setAttribute("pattern", element.pattern);
-			if (element.mask)
-			{
-				input.setAttribute("data-mask", element.mask);
-				mask(input);
-			}
-		});
+		Array.from(this.shadowRoot.querySelectorAll("label"))
+			.forEach(e => e.remove());
+		value.forEach(element => this.add(element));
 	}
 
 	get value()
@@ -292,6 +297,30 @@ customElements.define('g-form', class extends HTMLElement
 
 				return object;
 			});
+	}
+
+	add(element)
+	{
+		this.shadowRoot.appendChild(create(element));
+	}
+
+	set(index, element)
+	{
+		this.shadowRoot.replaceChild(create(element),
+			this.shadowRoot.querySelectorAll("label")[index]);
+	}
+
+	remove(index)
+	{
+		this.shadowRoot.querySelectorAll("label")[index].remove();
+	}
+
+	move(source, target)
+	{
+		let elements = this.shadowRoot.querySelectorAll("label");
+		source = elements[source];
+		target = elements[target];
+		this.shadowRoot.insertBefore(source, target);
 	}
 
 	validate()

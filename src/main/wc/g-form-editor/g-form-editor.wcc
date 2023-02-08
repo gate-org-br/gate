@@ -5,6 +5,21 @@ import './g-grid.mjs';
 import './g-field-editor.mjs';
 import GFieldEditorDialog from './g-field-editor-dialog.mjs';
 
+function fill(row, campo)
+{
+	row.value = campo;
+	row.cell(0).value = campo.name;
+	row.cell(1).value = campo.description;
+	row.cell(2).value = ["1", "2", "4", "8", "16"][Number(campo.size || "4")];
+	row.cell(3).value = campo.required || false;
+	row.cell(4).value = campo.multiple || false;
+	row.cell(5).value = campo.maxlength;
+	row.cell(6).value = campo.pattern;
+	row.cell(7).value = campo.mask;
+	row.cell(8).value = campo.options;
+	row.cell(9).value = campo.value;
+}
+
 customElements.define('g-form-editor', class extends HTMLElement
 {
 	constructor()
@@ -14,52 +29,69 @@ customElements.define('g-form-editor', class extends HTMLElement
 		this.shadowRoot.innerHTML = template.innerHTML;
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.draggable = true;
+		grid.movable = true;
 		grid.caption = "CAMPOS";
-		grid.header = ["Nome", "Descrição", "Colunas", "Requerido", "Múltiplo", "Tam Max", "Padrão", "Máscara", "Opções", "Valor"];
 
-		grid.widths = ["", "", "80px", "80px", "80px", "80px", "160px", "160px", "160px", "160px"];
-		grid.aligns = ["left", "left"];
-		grid.mapper = e => [
-				e.name,
-				e.description,
-				["1", "2", "4", "8", "16"][Number(e.size || "4")],
-				e.required || false,
-				e.multiple || false,
-				e.maxlength,
-				e.pattern,
-				e.mask,
-				e.options,
-				e.value
-			];
+		grid.column(0).header.value = "Nome";
+		grid.column(0).style.textAligh = "left";
+
+		grid.column(1).header.value = "Descrição";
+		grid.column(1).style.textAligh = "left";
+
+		grid.column(2).header.value = "Colunas";
+		grid.column(2).style.width = "80px";
+
+		grid.column(3).header.value = "Requerido";
+		grid.column(3).style.width = "80px";
+
+		grid.column(4).header.value = "Múltiplo";
+		grid.column(4).style.width = "80px";
+
+		grid.column(5).header.value = "Tam Max";
+		grid.column(5).style.width = "80px";
+
+		grid.column(6).header.value = "Padrão";
+		grid.column(6).style.width = "160px";
+
+		grid.column(7).header.value = "Máscara";
+		grid.column(7).style.width = "160px";
+
+		grid.column(8).header.value = "Opções";
+		grid.column(8).style.width = "160px";
+
+		grid.column(9).header.value = "Valor";
+		grid.column(9).style.width = "160px";
 
 		let form = this.shadowRoot.querySelector("g-form");
 
 		grid.addEventListener("select", event =>
 		{
-			GFieldEditorDialog.edit(event.detail.value, "Campo").then(field =>
+			GFieldEditorDialog.edit(event.detail.value, "Campo").then(campo =>
 			{
-				let value = form.value;
-				if (field)
-					value[event.detail.index] = field;
-				else
-					value = value.filter((e, index) => index !== event.detail.index);
-				form.value = value;
-				grid.values = value;
-
+				let row = event.detail;
+				if (campo)
+				{
+					fill(row, campo);
+					form.set(row.index, campo);
+				} else
+				{
+					form.remove(row.index);
+					row.remove();
+				}
 			});
 		});
 
-		grid.addEventListener("change", event => form.value = event.detail);
+		grid.addEventListener("move", event =>
+			form.move(event.detail.source, event.detail.target));
 
 		this.shadowRoot.getElementById("new").addEventListener("click", () =>
 		{
-			GFieldEditorDialog.edit(null, "Novo campo").then(selected =>
+			GFieldEditorDialog.edit(null, "Novo campo").then(campo =>
 			{
-				let value = form.value;
-				value.push(selected);
-				form.value = value;
-				grid.values = value;
+				form.add(campo);
+
+				let row = grid.row();
+				fill(row, campo);
 			});
 		});
 
@@ -77,8 +109,12 @@ customElements.define('g-form-editor', class extends HTMLElement
 
 	set value(value)
 	{
-		this.shadowRoot.querySelector("g-form").value = value;
-		this.shadowRoot.querySelector("g-grid").values = value;
+		let form = this.shadowRoot.querySelector("g-form");
+		form.value = value;
+
+		let grid = this.shadowRoot.querySelector("g-grid");
+		grid.rows.forEach(e => e.remove());
+		Array.from(value).forEach(campo => fill(grid.row(), campo));
 	}
 
 	get value()

@@ -65,7 +65,9 @@ function register(table)
 						else if (this.innerHTML === '-')
 							colapse(this.parentNode);
 
-						colorize(table);
+						colorize(Array.from(table.children)
+							.filter(e => e.tagName === "TBODY")
+							.flatMap(e => Array.from(e.children)));
 					};
 				} else
 					tr.children[0].innerHTML = ' ';
@@ -113,10 +115,14 @@ function register(table)
 
 				break;
 		}
-		colorize(table);
+		colorize(Array.from(table.children)
+			.filter(e => e.tagName === "TBODY")
+			.flatMap(e => Array.from(e.children)));
 	};
 
-	colorize(table);
+	colorize(Array.from(table.children)
+		.filter(e => e.tagName === "TBODY")
+		.flatMap(e => Array.from(e.children)));
 }
 
 Array.from(document.querySelectorAll('table.TreeView, table.TREEVIEW')).forEach(e => register(e));

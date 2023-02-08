@@ -1,0 +1,25 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	height: 32px;
+	cursor: inherit;
+	display: table-row;
+	background-color: var(--table-foot-cell-background-color);
+	background-image: var(--table-foot-cell-background-image);
+}
+
+:host(:empty)
+{
+	display: none;
+}
+
+::slotted(g-grid-cell) {
+	bottom: 0;
+	position: sticky;
+	font-weight: bold;
+	background-color: var(--table-foot-cell-background-color);
+	background-image: var(--table-foot-cell-background-image);
+}

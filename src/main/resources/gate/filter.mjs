@@ -19,7 +19,7 @@ function process(input)
 		.flatMap(e => Array.from(e.children));
 
 	filter(elements, input.value);
-	colorize(table);
+	colorize(elements);
 }
 
 window.addEventListener("input", function (event)

@@ -9,6 +9,7 @@ import gate.lang.json.JsonWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
@@ -393,7 +394,6 @@ public interface Converter
 	 * @param object the java object to be serialized
 	 *
 	 * @return the specified java object serialized using JSON notation
-	 * @throws ConversionException if the specified object can't be serialized on JSON notation
 	 *
 	 * @see gate.converter.BooleanConverter#toJson
 	 * @see gate.converter.NumberConverter#toJson
@@ -402,13 +402,12 @@ public interface Converter
 	 * @see gate.converter.ObjectConverter#toJson
 	 */
 	static String toJson(Object object)
-		throws ConversionException
 	{
 		if (object == null)
 			return "null";
 
-		try ( StringWriter stringWriter = new StringWriter();
-			 JsonWriter writer = new JsonWriter(stringWriter))
+		try (StringWriter stringWriter = new StringWriter();
+			JsonWriter writer = new JsonWriter(stringWriter))
 		{
 			Class type = object.getClass();
 			Converter converter = Converter.getConverter(type);
@@ -416,7 +415,7 @@ public interface Converter
 			return stringWriter.toString();
 		} catch (IOException ex)
 		{
-			throw new ConversionException(ex.getMessage());
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -445,8 +444,8 @@ public interface Converter
 		if (object == null)
 			return "";
 
-		try ( StringWriter stringWriter = new StringWriter();
-			 JsonWriter writer = new JsonWriter(stringWriter))
+		try (StringWriter stringWriter = new StringWriter();
+			JsonWriter writer = new JsonWriter(stringWriter))
 		{
 			Class type = object.getClass();
 			Converter converter = Converter.getConverter(type);
@@ -502,7 +501,7 @@ public interface Converter
 		if (string.isEmpty())
 			return null;
 
-		try ( JsonScanner scanner = new JsonScanner(new StringReader(string)))
+		try (JsonScanner scanner = new JsonScanner(new StringReader(string)))
 		{
 			Converter converter = Converter.getConverter(type);
 			return type.cast(converter.ofJson(scanner, type, elementType));

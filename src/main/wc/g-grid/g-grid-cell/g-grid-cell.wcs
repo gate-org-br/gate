@@ -1,0 +1,12 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	padding: 4px;
+	cursor: inherit;
+	display: table-cell;
+	vertical-align: middle;
+	background-color: transparent;
+}

@@ -1,13 +1,19 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<input id="input" type="text" placeholder="Filtrar"/>
+	<nav>
+		<input id="input" type="text" placeholder="Filtrar"/>
+	</nav>
 	<div>
-		<table>
-		</table>
+		<main>
+			<label></label>
+			<header><g-grid-header></g-grid-header></header>
+			<section></section>
+			<footer><g-grid-footer></g-grid-footer></footer>
+		</main>
 	</div>
-	<label>
+	<aside>
 		<slot></slot>
-	</label>
+	</aside>
  <style>* {
 	box-sizing: border-box;
 }
@@ -16,169 +22,123 @@ template.innerHTML = `
 {
 	gap: 4px;
 	display: flex;
-	text-align: center;
-	align-items: stretch;
 	flex-direction: column;
 }
 
-#input {
-	width: 100%;
+nav {
 	height: 32px;
 	display: none;
-	flex-basis: 32px;
-	padding: 8px 4px 8px 4px;
-}
-
-:host([filter]) #input {
-	display: block
-}
-
-div {
-	flex-grow: 1;
-	display: flex;
-	overflow: auto;
-	align-items: flex-start;
+	min-height: 32px;
+	align-items: stretch;
 	justify-content: stretch;
 }
 
-label {
+:host([filter]) nav
+{
 	display: flex;
-	padding: 16px;
-	font-size: 24px;
-	text-align: center;
-	border-radius: 5px;
-	align-items: center;
-	justify-content: center;
-	background-color: #FFFFFF;
 }
 
-table {
-	margin: 0;
-	width: 100%;
-	border: none;
-	color: black;
+input {
 	flex-grow: 1;
-	position: relative;
-	font-weight: normal;
-	table-layout: fixed;
-	border-spacing: 1px;
-	text-decoration: none;
-	background-color: #EEEEEE;
 }
 
-caption {
+div {
+	display: flex;
+	overflow: auto;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+main
+{
+	flex-grow: 1;
+	display: table;
+	border-spacing: 1px;
+	background-color: #EEEEEE;
+
+	table-layout: fixed;
+}
+
+label {
 	height: 32px;
 	color: white;
 	line-height: 32px;
 	font-weight: bold;
 	text-align: center;
+	display: table-caption;
 	vertical-align: middle;
 	border-radius: 5px 5px 0px 0px;
 	background-color: var(--table-caption-background-color);
 	background-image: var(--table-caption-background-image);
 }
 
-table, thead, tbody, tfoot, tr, th, td
+header
 {
-	color: inherit;
-	text-align: inherit;
-	font-weight: inherit;
-	text-decoration: inherit;
+	display: table-header-group;
 }
 
-tr {
+section
+{
 	height: 32px;
 	cursor: pointer;
+	display: table-row-group;
 }
 
-tbody>tr:nth-child(even) {
-	background-color: var(--table-body-background-color-even);
+aside {
+	padding: 12px;
+	display: flex;
+	font-size: 20px;
+	border-radius: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
 }
 
-tbody>tr:nth-child(odd) {
-	background-color: var(--table-body-background-color-odd);
-}
-
-tbody>tr:hover {
-	background-color: var(--hovered);
-}
-
-td, th {
-	padding: 4px;
-	vertical-align: middle;
-	background-color: transparent;
-}
-
-thead > tr
+footer
 {
-	background-color: var(--table-head-background-color);
-	background-image: var(--table-head-background-image);
-}
-
-thead > tr > th {
-	top: 0;
-	position: sticky;
-	font-weight: bold;
-	background-color: var(--table-head-background-color);
-	background-image: var(--table-head-background-image);
-}
-
-tfoot > tr
-{
-	background-color: var(--table-foot-background-color);
-	background-image: var(--table-foot-background-image);
-}
-
-tfoot > tr > td
-{
-	bottom: 0;
-	position: sticky;
-}
-
-ul {
-	padding: 0;
-}
-li {
-	list-style-type: none
+	display: table-footer-group;
 }</style>`;
 
-/* global customElements, template, HTMLElement */
-
-import './g-properties.mjs';
+import './g-grid-row.mjs';
+import './g-grid-header.mjs';
+import './g-grid-footer.mjs';
 import filter from './filter.mjs';
 import colorize from './colorize.mjs';
 
-function element(content)
+class Column
 {
-	switch (typeof content)
+	constructor(owner, index)
 	{
-		case "string":
-			return document.createTextNode(content);
-		case "number":
-			return document.createTextNode(content);
-		case "undefined":
-			return document.createTextNode("");
-		case "boolean":
-			return document.createTextNode(content ? "Sim" : "Não");
-		case "function":
-			return element(content());
-		case "object":
-			if (!content)
-				return document.createTextNode("");
+		this._private = {};
+		this._private.index = index;
+		this._private.owner = owner;
+	}
 
-			if (content instanceof HTMLElement)
-				return content;
+	get index()
+	{
+		return this._private.index;
+	}
 
-			if (Array.isArray(content))
-			{
-				let ul = document.createElement("ul");
-				content.forEach(e => ul.appendChild(document.createElement("li")).appendChild(element(e)));
-				return ul;
-			}
+	get style()
+	{
+		if (!this._private.style)
+		{
+			let sheet = this._private.owner._private.stylesheet;
+			let ruleIndex = sheet.insertRule(`g-grid-cell:nth-child(${this.index + 1}) {}`);
+			this._private.style = sheet.cssRules[ruleIndex].style;
+		}
 
-			let properties = document.createElement("g-properties");
-			properties.value = content;
-			return properties;
+		return this._private.style;
+	}
+
+	get header()
+	{
+		return this._private.owner.shadowRoot.querySelector("g-grid-header").cell(this.index);
+	}
+
+	get footer()
+	{
+		return this._private.owner.shadowRoot.querySelector("g-grid-footer").cell(this.index);
 	}
 }
 
@@ -187,192 +147,148 @@ customElements.define('g-grid', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this._private = {};
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 
-		this.shadowRoot.querySelector("label").style.display = "";
-		this.shadowRoot.querySelector("div").style.display = "none";
+		this._private = {};
+		this._private.columns = new Map();
+		this._private.stylesheet = new CSSStyleSheet();
+
+		this.shadowRoot.adoptedStyleSheets = [this._private.stylesheet];
+
+		this.addEventListener("change", () => this.connectedCallback());
 
 		let input = this.shadowRoot.getElementById("input");
-		let table = this.shadowRoot.querySelector("table");
-		input.style.display = "none";
+		let section = this.shadowRoot.querySelector("section");
 		input.addEventListener("input", () =>
 		{
-			let elements = Array.from(this.shadowRoot.querySelectorAll("tbody > tr"));
-			filter(elements, input.value);
-			colorize(table);
+			let rows = this.rows;
+			filter(rows, input.value);
+			colorize(rows);
 		});
 	}
 
 	set caption(value)
 	{
-		let caption = this.shadowRoot.querySelector("caption");
-		if (value)
-		{
-			if (!caption)
-				caption = this.shadowRoot.querySelector("table")
-					.appendChild(document.createElement("caption"));
-			caption.innerText = value;
-		} else if (caption)
-			caption.remove();
+		this.shadowRoot.querySelector("label")
+			.innerHTML = value || "";
 	}
 
-	get caption()
+	get columns()
 	{
-		let caption = this.shadowRoot.querySelector("caption");
-		return caption ? caption.innerHTML : null;
+		return Array.from(this._private.columns.values());
 	}
 
-	set widths(value)
+	column(index)
 	{
-		let colgroup = this.shadowRoot.querySelector("colgroup");
-		if (value)
-		{
-			if (colgroup)
-				while (colgroup.firstChild)
-					colgroup.firstChild.remove();
-			else
-				colgroup = this.shadowRoot.querySelector("table")
-					.appendChild(document.createElement("colgroup"));
-			value.forEach(e => colgroup.appendChild(document.createElement("col")).style.width = e);
-		} else if (colgroup)
-			colgroup.remove();
+		if (!this._private.columns.has(index))
+			this._private.columns.set(index, new Column(this, index));
+		return this._private.columns.get(index);
 	}
 
-	set aligns(value)
+	get rows()
 	{
-		let aligns = this.shadowRoot.getElementById("aligns");
+		return Array.from(this.shadowRoot.querySelector("section").children);
+	}
+
+	row(index = this.length)
+	{
+		let section = this.shadowRoot.querySelector("section");
+
+		while (section.children.length <= index)
+			section.appendChild(document.createElement("g-grid-row"));
+
+		return section.children[index];
+	}
+
+	get length()
+	{
+		return this.shadowRoot.querySelector("section")
+			.children.length;
+	}
+
+	get movable()
+	{
+		return this.hasAttribute("movable");
+	}
+
+	set movable(value)
+	{
 		if (value)
-		{
-			if (!aligns)
+			this.setAttribute("movable", "");
+		else
+			this.removeAttribute("movable");
+	}
+
+	set dataset(values)
+	{
+		this.clear();
+		if (values.length)
+			if (Array.isArray(values[0]))
 			{
-				aligns = this.shadowRoot.appendChild(document.createElement("style"));
-				aligns.id = "aligns";
-			} else
-				while (colgroup.firstChild)
-					colgroup.firstChild.remove();
+				values[0].slice(1).forEach((header, index) =>
+					this.column(index).header.value = header);
 
-			value.forEach((e, index) => aligns.appendChild(document.createTextNode(`th:nth-child(${index + 1}), td:nth-child(${index + 1}) { text-align: ${e}}\n`)));
-		} else if (aligns)
-			aligns.remove();
-	}
-
-	set header(value)
-	{
-		let tr = this.shadowRoot.querySelector("thead > tr");
-		if (value)
-		{
-			if (tr)
-				while (tr.firstChild)
-					tr.firstChild.remove();
-			else
-				tr = this.shadowRoot.querySelector("table")
-					.appendChild(document.createElement("thead"))
-					.appendChild(document.createElement("tr"));
-			value.forEach(e => tr.appendChild(document.createElement("th")).innerText = e);
-		} else if (tr)
-			tr.parentNode.remove();
-	}
-
-	set footer(value)
-	{
-		let tr = this.shadowRoot.querySelector("tfoot > td");
-		if (value)
-		{
-			if (tr)
-				while (tr.firstChild)
-					tr.firstChild.remove();
-			else
-				tr = this.shadowRoot.querySelector("table")
-					.appendChild(document.createElement("thead"))
-					.appendChild(document.createElement("tr"));
-
-			value.forEach(e => tr.appendChild(document.createElement("td")).innerText = e);
-		} else if (tr)
-			tr.parentNode.remove();
-	}
-
-	set values(values)
-	{
-		let tbody = this.shadowRoot.querySelector("tbody");
-		if (values)
-		{
-			if (tbody)
-				while (tbody.firstChild)
-					tbody.firstChild.remove();
-			else
-				tbody = this.shadowRoot.querySelector("table")
-					.appendChild(document.createElement("tbody"));
-
-			if (values.length)
-			{
-				this.shadowRoot.querySelector("div").style.display = "";
-				this.shadowRoot.getElementById("input").style.display = "";
-				this.shadowRoot.querySelector("label").style.display = "none";
-				values.forEach((value, index) =>
+				values.slice(1).forEach(value =>
 				{
-					let tr = tbody.appendChild(document.createElement("tr"));
-
-					tr.draggable = this.draggable;
-					tr.addEventListener("dragover", event => event.preventDefault());
-					tr.addEventListener("dragstart", event => event.dataTransfer.setData("text/plain", index));
-					tr.addEventListener("drop", event =>
-					{
-						event.preventDefault();
-						let result = Array.from(values);
-						let dropped = Number(event.dataTransfer.getData("text/plain"));
-						result.splice(index, 0, result.splice(dropped, 1)[0]);
-						this.values = result;
-						this.dispatchEvent(new CustomEvent("change", {detail: result}));
-					});
-
-					let content = this.mapper(value, index);
-					if (Array.isArray(content))
-						content.forEach(e => tr.appendChild(document.createElement("td")).appendChild(element(e)));
-					else
-						tr.appendChild(document.createElement("td")).appendChild(element(content));
-
-					tr.addEventListener("click", () => this.dispatchEvent(new CustomEvent('select', {detail: {"index": index, "value": value}})));
+					let row = this.row();
+					row.value = value;
+					value.slice(1).forEach(e => row.cell().value = e);
 				});
 			} else
 			{
-				this.shadowRoot.querySelector("label").style.display = "";
-				this.shadowRoot.querySelector("div").style.display = "none";
-				this.shadowRoot.getElementById("input").style.display = "none";
+				values.forEach(value =>
+				{
+					let row = this.row();
+					row.value = value;
+
+					let keys = Object.keys(value);
+					if (keys.length === 2
+						&& keys.includes("label")
+						&& keys.includes("value"))
+						row.cell().value = value.label;
+					else if (keys.length === 3
+						&& keys.includes("label")
+						&& keys.includes("value")
+						&& keys.includes("properties"))
+						row.cell().value = value.properties;
+					else
+						row.cell().value = keys.slice(1).reduce((val, key) =>
+						{
+							val[key] = value[key];
+							return val;
+						}, {});
+				});
 			}
-		} else if (tbody)
+	}
+
+	clear()
+	{
+		this._private.columns.clear();
+		while (this._private.stylesheet.cssRules.length)
+			this._private.stylesheet.deleteRule(0);
+
+		[this.shadowRoot.querySelector("g-grid-header"),
+			this.shadowRoot.querySelector("section"),
+			this.shadowRoot.querySelector("g-grid-footer")].forEach(e =>
 		{
-			tbody.remove();
-			this.shadowRoot.querySelector("label").style.display = "";
+			while (e.firstChild)
+				e.firstChild.remove();
+		});
+	}
+
+	connectedCallback()
+	{
+		if (this.length)
+		{
+			this.shadowRoot.querySelector("div").style.display = "";
+			this.shadowRoot.querySelector("nav").style.display = "";
+			this.shadowRoot.querySelector("aside").style.display = "none";
+		} else
+		{
+			this.shadowRoot.querySelector("nav").style.display = "none";
 			this.shadowRoot.querySelector("div").style.display = "none";
-			this.shadowRoot.getElementById("input").style.display = "none";
+			this.shadowRoot.querySelector("aside").style.display = "";
 		}
-	}
-
-	set draggable(value)
-	{
-		if (value)
-			this.setAttribute("draggable", "draggable");
-		else
-			this.removeAttribute("draggable");
-
-		Array.from(this.shadowRoot.querySelectorAll("tbody > tr"))
-			.forEach(e => e.draggable = value);
-	}
-
-	get draggable()
-	{
-		return this.hasAttribute("draggable");
-	}
-
-	set mapper(mapper)
-	{
-		this._private.mapper = mapper || (e => e);
-	}
-
-	get mapper()
-	{
-		return this._private.mapper || (e => e);
 	}
 });

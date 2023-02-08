@@ -2,6 +2,7 @@ package gate.converter.custom;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.converter.ObjectConverter;
 import gate.error.ConversionException;
 import gate.type.Field;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 
-public class FieldConverter implements Converter
+public class FieldConverter extends ObjectConverter
 {
 
 	@Override

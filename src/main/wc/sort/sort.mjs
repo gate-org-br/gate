@@ -52,11 +52,14 @@ window.addEventListener("click", event =>
 		}
 
 		var table = link.closest("TABLE");
+		let elements = Array.from(table.children)
+			.filter(e => e.tagName === "TBODY")
+			.flatMap(e => Array.from(e.children));
 		Array.from(table.children)
 			.filter(e => e.tagName.toUpperCase() === "TBODY")
 			.forEach(e => sort(e, Array.prototype.indexOf
 					.call(link.parentNode.children, link),
 					link.getAttribute("data-sortable")));
-		colorize(table);
+		colorize(elements);
 	}
 });

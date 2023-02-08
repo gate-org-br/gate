@@ -159,6 +159,8 @@
   --table-body-background-color-odd: var(--base-tinted85);
   --table-foot-background-color: var(--base-shaded10);
   --table-foot-background-image: linear-gradient(to bottom, var(--base-shaded10) 0%, var(--base) 50%, var(--base-shaded10) 100%);
+  --table-foot-cell-background-color: var(--base-tinted50);
+  --table-foot-cell-background-image: linear-gradient(to bottom, var(--base-tinted40) 0%, var(--base-tinted50) 50%, var(--base-tinted60) 100%);
   --figure-border-color: var(--base);
   --figure-background-color: var(--main-shaded10);
   --g-navbar-color: white;

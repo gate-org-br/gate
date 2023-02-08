@@ -97,7 +97,7 @@ export default class GSearchPicker extends GModal
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: e.detail})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
@@ -111,56 +111,30 @@ export default class GSearchPicker extends GModal
 					grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
 					if (Array.isArray(result[0]))
 					{
-						let values = result.slice(1).filter(row => row.some(col => col.toLowerCase().includes(text)));
-						grid.style.textAlign = '';
-						grid.mapper = e => e.slice(1);
-						grid.header = result[0].slice(1);
-						grid.values = values;
-						this.dispatchEvent(new CustomEvent("update", {detail: values}));
+						let values = result.filter((row, index) => index === 0
+								|| row.some(col => col.toLowerCase().includes(text)));
+						grid.dataset = values;
+						this.dispatchEvent(new CustomEvent("update", {detail: values.slice(1)}));
 					} else
 					{
-						grid.header = null;
-						grid.style.textAlign = 'left';
-
-						grid.mapper = e =>
-						{
-							let keys = Object.keys(e);
-							if (keys.length === 2
-								&& keys.indexOf("label") >= 0
-								&& keys.indexOf("value") >= 0)
-								return e.label;
-							else if (keys.length === 3
-								&& keys.indexOf("label") >= 0
-								&& keys.indexOf("value") >= 0
-								&& keys.indexOf("properties") >= 0)
-								return e.properties;
-							else
-								return keys.slice(1)
-									.reduce((val, key) => {
-										val[key] = e[key];
-										return val;
-									}, {});
-						}
-
-
 						let values = result.filter(e =>
 						{
 							let keys = Object.keys(e);
 							if (keys.length === 2
-								&& keys.indexOf("label") >= 0
-								&& keys.indexOf("value") >= 0)
+								&& keys.includes("label")
+								&& keys.includes("value"))
 								return e.label.toLowerCase().startsWith(text);
 							else if (keys.length === 3
-								&& keys.indexOf("label") >= 0
-								&& keys.indexOf("value") >= 0
-								&& keys.indexOf("properties") >= 0)
+								&& keys.includes("label")
+								&& keys.includes("value")
+								&& keys.includes("properties"))
 								return e.label.toLowerCase().startsWith(text)
 									|| Object.values(e.properties).some(property => property.toLowerCase().startsWith(text));
 							else
 								return Object.values(e).some(property => property.toLowerCase().startsWith(text));
 						});
 
-						grid.values = values;
+						grid.dataset = values;
 						this.dispatchEvent(new CustomEvent("update", {detail: values}));
 					}
 				} else
@@ -172,55 +146,14 @@ export default class GSearchPicker extends GModal
 						{
 							if (Array.isArray(options))
 							{
-								grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
-
 								result = options;
-								if (Array.isArray(result[0]))
-								{
-									let values = result.slice(1);
-									grid.style.textAlign = '';
-									grid.mapper = e => e.slice(1);
-									grid.header = result[0].slice(1);
-									grid.values = result.slice(1);
-									this.dispatchEvent(new CustomEvent("update", {detail: values}));
-								} else
-								{
-									grid.header = null;
-									grid.style.textAlign = 'left';
-
-									grid.mapper = e =>
-									{
-										let keys = Object.keys(e);
-										if (keys.length === 2
-											&& keys.indexOf("label") >= 0
-											&& keys.indexOf("value") >= 0)
-											return e.label;
-										else if (keys.length === 3
-											&& keys.indexOf("label") >= 0
-											&& keys.indexOf("value") >= 0
-											&& keys.indexOf("properties") >= 0)
-											return e.properties;
-										else
-											return keys.slice(1)
-												.reduce((val, key) => {
-													val[key] = e[key];
-													return val;
-												}, {});
-									}
-
-
-									grid.values = result;
-									this.dispatchEvent(new CustomEvent("update", {detail: result}));
-								}
-
+								grid.dataset = result;
+								grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
+								this.dispatchEvent(new CustomEvent("update", {detail: Array.isArray(result[0]) ? result.slice(1) : result}));
 							} else if (typeof options === "string")
 							{
-								grid.innerText = options;
 								result = null;
-								grid.mapper = null;
-								grid.header = null;
-								grid.values = null;
-								grid.style.textAlign = '';
+								grid.innerText = options;
 								this.dispatchEvent(new CustomEvent("update", {detail: null}));
 							} else
 								alert("Dados inválidos retornados pelo servidor");
@@ -229,12 +162,9 @@ export default class GSearchPicker extends GModal
 				}
 			} else
 			{
-				grid.innerText = "Entre com o critério de pesquisa";
+				grid.clear();
 				result = null;
-				grid.mapper = null;
-				grid.header = null;
-				grid.values = null;
-				grid.style.textAlign = '';
+				grid.innerText = "Entre com o critério de pesquisa";
 			}
 
 			prev = text;

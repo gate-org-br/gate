@@ -1,0 +1,34 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	height: 32px;
+	cursor: inherit;
+	display: table-row;
+}
+
+:host(:nth-child(even))
+{
+	background-color: var(--table-body-background-color-even);
+}
+
+:host(:nth-child(odd))
+{
+	background-color: var(--table-body-background-color-odd);
+}
+
+:host(.even)
+{
+	background-color: var(--table-body-background-color-even);
+}
+
+:host(.odd)
+{
+	background-color: var(--table-body-background-color-odd);
+}
+
+:host(:hover){
+	background-color: var(--hovered);
+}

@@ -6,128 +6,79 @@
 {
 	gap: 4px;
 	display: flex;
-	text-align: center;
-	align-items: stretch;
 	flex-direction: column;
 }
 
-#input {
-	width: 100%;
+nav {
 	height: 32px;
 	display: none;
-	flex-basis: 32px;
-	padding: 8px 4px 8px 4px;
-}
-
-:host([filter]) #input {
-	display: block
-}
-
-div {
-	flex-grow: 1;
-	display: flex;
-	overflow: auto;
-	align-items: flex-start;
+	min-height: 32px;
+	align-items: stretch;
 	justify-content: stretch;
 }
 
-label {
+:host([filter]) nav
+{
 	display: flex;
-	padding: 16px;
-	font-size: 24px;
-	text-align: center;
-	border-radius: 5px;
-	align-items: center;
-	justify-content: center;
-	background-color: #FFFFFF;
 }
 
-table {
-	margin: 0;
-	width: 100%;
-	border: none;
-	color: black;
+input {
 	flex-grow: 1;
-	position: relative;
-	font-weight: normal;
-	table-layout: fixed;
-	border-spacing: 1px;
-	text-decoration: none;
-	background-color: #EEEEEE;
 }
 
-caption {
+div {
+	display: flex;
+	overflow: auto;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+main
+{
+	flex-grow: 1;
+	display: table;
+	border-spacing: 1px;
+	background-color: #EEEEEE;
+
+	table-layout: fixed;
+}
+
+label {
 	height: 32px;
 	color: white;
 	line-height: 32px;
 	font-weight: bold;
 	text-align: center;
+	display: table-caption;
 	vertical-align: middle;
 	border-radius: 5px 5px 0px 0px;
 	background-color: var(--table-caption-background-color);
 	background-image: var(--table-caption-background-image);
 }
 
-table, thead, tbody, tfoot, tr, th, td
+header
 {
-	color: inherit;
-	text-align: inherit;
-	font-weight: inherit;
-	text-decoration: inherit;
+	display: table-header-group;
 }
 
-tr {
+section
+{
 	height: 32px;
 	cursor: pointer;
+	display: table-row-group;
 }
 
-tbody>tr:nth-child(even) {
-	background-color: var(--table-body-background-color-even);
+aside {
+	padding: 12px;
+	display: flex;
+	font-size: 20px;
+	border-radius: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
 }
 
-tbody>tr:nth-child(odd) {
-	background-color: var(--table-body-background-color-odd);
-}
-
-tbody>tr:hover {
-	background-color: var(--hovered);
-}
-
-td, th {
-	padding: 4px;
-	vertical-align: middle;
-	background-color: transparent;
-}
-
-thead > tr
+footer
 {
-	background-color: var(--table-head-background-color);
-	background-image: var(--table-head-background-image);
-}
-
-thead > tr > th {
-	top: 0;
-	position: sticky;
-	font-weight: bold;
-	background-color: var(--table-head-background-color);
-	background-image: var(--table-head-background-image);
-}
-
-tfoot > tr
-{
-	background-color: var(--table-foot-background-color);
-	background-image: var(--table-foot-background-image);
-}
-
-tfoot > tr > td
-{
-	bottom: 0;
-	position: sticky;
-}
-
-ul {
-	padding: 0;
-}
-li {
-	list-style-type: none
+	display: table-footer-group;
 }
