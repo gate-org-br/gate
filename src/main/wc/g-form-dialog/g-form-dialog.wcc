@@ -18,7 +18,7 @@ export default class GFormDialog extends GModal
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
 		{
-			if (form.validate())
+			if (form.checkValidity())
 			{
 				this.dispatchEvent(new CustomEvent("commit", {detail: form.value}));
 				this.hide();

@@ -103,7 +103,7 @@ textarea:invalid
 import './g-selectn.mjs';
 import mask from './mask.mjs';
 
-function create(element)
+function create(form, element)
 {
 	let label = document.createElement("label");
 
@@ -136,6 +136,7 @@ function create(element)
 		if (element.multiple)
 		{
 			input = span.appendChild(document.createElement("g-selectn"));
+			input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 			input.options = element.options.map(option => ({"label": option, "value": option}));
 
 			if (element.value)
@@ -147,6 +148,7 @@ function create(element)
 		} else
 		{
 			input = span.appendChild(document.createElement("select"));
+			input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 			input.appendChild(document.createElement("option")).value = "";
 			element.options.forEach(value => {
 				let option = input.appendChild(document.createElement("option"));
@@ -164,6 +166,8 @@ function create(element)
 	} else if (element.multiple)
 	{
 		input = span.appendChild(document.createElement("textarea"));
+		input.addEventListener("input", () => form.dispatchEvent(new CustomEvent("input")));
+		input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 		if (element.value)
 			if (Array.isArray(element.value)
 				&& element.value.length)
@@ -173,6 +177,8 @@ function create(element)
 	} else
 	{
 		input = span.appendChild(document.createElement("input"));
+		input.addEventListener("input", () => form.dispatchEvent(new CustomEvent("input")));
+		input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 		if (element.value)
 			if (Array.isArray(element.value)
 				&& element.value.length)
@@ -301,12 +307,12 @@ customElements.define('g-form', class extends HTMLElement
 
 	add(element)
 	{
-		this.shadowRoot.appendChild(create(element));
+		this.shadowRoot.appendChild(create(this, element));
 	}
 
 	set(index, element)
 	{
-		this.shadowRoot.replaceChild(create(element),
+		this.shadowRoot.replaceChild(create(this, element),
 			this.shadowRoot.querySelectorAll("label")[index]);
 	}
 
@@ -323,9 +329,17 @@ customElements.define('g-form', class extends HTMLElement
 		this.shadowRoot.insertBefore(source, target);
 	}
 
-	validate()
+	checkValidity()
 	{
-		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, g-selectn")))
+		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
+			if (input.checkValidity && !input.checkValidity())
+				return false;
+		return true;
+	}
+
+	reportValidity()
+	{
+		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
 		{
 			if (input.checkValidity && !input.checkValidity())
 			{
@@ -342,12 +356,10 @@ customElements.define('g-form', class extends HTMLElement
 		let form = this.closest("form");
 		if (form)
 		{
-			form.addEventListener("submit", event => {
-				alert(JSON.stringify(this.value, null, 4));
-				Array.from(this.shadowRoot.querySelectorAll("input, select, textarea"))
-					.filter(input => !input.reportValidity())
-					.slice(0, 1)
-					.forEach(() => event.preventDefault());
+			form.addEventListener("submit", event =>
+			{
+				if (!this.reportValidity())
+					event.preventDefault();
 			});
 
 			form.addEventListener("formdata", event => event.formData.set(this.name, JSON.stringify(this.value)));

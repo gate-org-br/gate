@@ -84,6 +84,7 @@ customElements.define('g-selectn', class extends HTMLElement
 		options.forEach(option =>
 		{
 			let checkbox = this.shadowRoot.appendChild(document.createElement("input"));
+			checkbox.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
 			checkbox.type = "checkbox";
 			checkbox.value = option.value;
 

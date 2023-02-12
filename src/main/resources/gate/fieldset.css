@@ -1,33 +1,13 @@
-legend + fieldset {
-  margin: 0;
-}
 fieldset {
+  gap: 4px;
   margin: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
   border: none;
-  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
   border-radius: 5px;
-  border: 1px solid var(--base);
+  margin-bottom: 10px;
   background-color: var(--main-shaded10);
-}
-fieldset:first-child {
-  margin-top: 0px;
-}
-fieldset:last-child {
-  margin-bottom: 0px;
-}
-fieldset:only-child {
-  margin-bottom: 0px;
-}
-fieldset > input,
-fieldset > select {
-  width: 100%;
-  height: 32px;
-  padding: 8px 4px 8px 4px;
-}
-fieldset > input[type="FILE"] {
-  padding: 0;
 }
 fieldset * {
   font-size: 16px;
@@ -45,32 +25,43 @@ fieldset > legend {
   border-radius: 5px;
   align-items: center;
   background-color: var(--base);
-  justify-content: flex-start;
   box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.4);
 }
 fieldset > legend > i {
   order: -1;
-  float: left;
   margin-right: 4px;
 }
 fieldset > legend > img {
   order: -1;
-  float: left;
   width: 20px;
   height: 20px;
   margin-right: 4px;
 }
 fieldset > legend > label {
-  float: left;
   height: 20px;
   display: flex;
   align-items: center;
 }
-fieldset fieldset {
-  float: left;
-  width: 100%;
+fieldset:first-child {
+  margin-top: 0px;
+}
+fieldset:last-child {
+  margin-bottom: 0px;
+}
+fieldset:only-child {
+  margin-bottom: 0px;
+}
+fieldset legend + fieldset {
+  margin: 0;
+}
+fieldset > label {
   padding: 4px;
-  box-shadow: none;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+fieldset fieldset {
+  margin: 0;
   border: 4px solid var(--main-shaded10);
   background-color: var(--main-shaded05);
 }
@@ -86,24 +77,9 @@ fieldset fieldset fieldset fieldset fieldset {
   border: 4px solid var(--main-shaded05);
   background-color: var(--main-shaded10);
 }
-fieldset fieldset:only-child {
-  margin: 0;
-}
-fieldset > div {
-  width: 100%;
-  margin: 0px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: white;
-  border: 4px solid var(--main-shaded10);
-}
-fieldset > label.x1,
-fieldset > fieldset.x1,
-fieldset > label[x1],
-fieldset > fieldset[x1],
-fieldset > label[data-size="1"],
-fieldset > fieldset[data-size="1"] {
-  width: 100%;
+fieldset > label,
+fieldset > fieldset {
+  flex-basis: 100%;
 }
 @media only screen and (min-width: 576px) {
   fieldset > label.x1,
@@ -112,7 +88,7 @@ fieldset > fieldset[data-size="1"] {
   fieldset > fieldset[x1],
   fieldset > label[data-size="1"],
   fieldset > fieldset[data-size="1"] {
-    width: 50%;
+    flex-basis: calc(50% - 4px);
   }
 }
 @media only screen and (min-width: 768px) {
@@ -122,7 +98,7 @@ fieldset > fieldset[data-size="1"] {
   fieldset > fieldset[x1],
   fieldset > label[data-size="1"],
   fieldset > fieldset[data-size="1"] {
-    width: 25%;
+    flex-basis: calc(25% - 4px);
   }
 }
 @media only screen and (min-width: 992px) {
@@ -132,7 +108,7 @@ fieldset > fieldset[data-size="1"] {
   fieldset > fieldset[x1],
   fieldset > label[data-size="1"],
   fieldset > fieldset[data-size="1"] {
-    width: 12.5%;
+    flex-basis: calc(12.5% - 4px);
   }
 }
 @media only screen and (min-width: 1200px) {
@@ -142,16 +118,8 @@ fieldset > fieldset[data-size="1"] {
   fieldset > fieldset[x1],
   fieldset > label[data-size="1"],
   fieldset > fieldset[data-size="1"] {
-    width: 6.25%;
+    flex-basis: calc(6.25% - 4px);
   }
-}
-fieldset > label.x2,
-fieldset > fieldset.x2,
-fieldset > label[x2],
-fieldset > fieldset[x2],
-fieldset > label[data-size="2"],
-fieldset > fieldset[data-size="2"] {
-  width: 100%;
 }
 @media only screen and (min-width: 768px) {
   fieldset > label.x2,
@@ -160,7 +128,7 @@ fieldset > fieldset[data-size="2"] {
   fieldset > fieldset[x2],
   fieldset > label[data-size="2"],
   fieldset > fieldset[data-size="2"] {
-    width: 50%;
+    flex-basis: calc(50% - 4px);
   }
 }
 @media only screen and (min-width: 992px) {
@@ -170,7 +138,7 @@ fieldset > fieldset[data-size="2"] {
   fieldset > fieldset[x2],
   fieldset > label[data-size="2"],
   fieldset > fieldset[data-size="2"] {
-    width: 25%;
+    flex-basis: calc(25% - 4px);
   }
 }
 @media only screen and (min-width: 1200px) {
@@ -180,16 +148,8 @@ fieldset > fieldset[data-size="2"] {
   fieldset > fieldset[x2],
   fieldset > label[data-size="2"],
   fieldset > fieldset[data-size="2"] {
-    width: 12.5%;
+    flex-basis: calc(12.5% - 4px);
   }
-}
-fieldset > label.x4,
-fieldset > fieldset.x4,
-fieldset > label[x4],
-fieldset > fieldset[x4],
-fieldset > label[data-size="4"],
-fieldset > fieldset[data-size="4"] {
-  width: 100%;
 }
 @media only screen and (min-width: 992px) {
   fieldset > label.x4,
@@ -198,7 +158,7 @@ fieldset > fieldset[data-size="4"] {
   fieldset > fieldset[x4],
   fieldset > label[data-size="4"],
   fieldset > fieldset[data-size="4"] {
-    width: 50%;
+    flex-basis: calc(50% - 4px);
   }
 }
 @media only screen and (min-width: 1200px) {
@@ -208,16 +168,8 @@ fieldset > fieldset[data-size="4"] {
   fieldset > fieldset[x4],
   fieldset > label[data-size="4"],
   fieldset > fieldset[data-size="4"] {
-    width: 25%;
+    flex-basis: calc(25% - 4px);
   }
-}
-fieldset > label.x8,
-fieldset > fieldset.x8,
-fieldset > label[x8],
-fieldset > fieldset[x8],
-fieldset > label[data-size="8"],
-fieldset > fieldset[data-size="8"] {
-  width: 100%;
 }
 @media only screen and (min-width: 1200px) {
   fieldset > label.x8,
@@ -226,36 +178,17 @@ fieldset > fieldset[data-size="8"] {
   fieldset > fieldset[x8],
   fieldset > label[data-size="8"],
   fieldset > fieldset[data-size="8"] {
-    width: 50%;
+    flex-basis: calc(50% - 4px);
   }
 }
-fieldset > label {
-  float: left;
-  width: 100%;
-  padding: 4px;
-  display: flex;
-  align-items: stretch;
-  flex-direction: column;
-}
-fieldset > label > input,
-fieldset > label > select,
-fieldset > label > label {
-  flex-basis: 32px;
-  padding: 8px 4px 8px 4px;
-}
-fieldset > label > input[type="FILE"] {
-  padding: 0;
-}
 fieldset > label > span,
-fieldset > label > form {
-  margin: 0px;
+fieldset > fieldset > span,
+fieldset > label > form,
+fieldset > fieldset > form {
   flex-grow: 1;
-  border: none;
-  padding: 0px;
-  color: black;
   display: flex;
-  flex-basis: 32px;
   text-indent: 4px;
+  min-height: 32px;
   line-height: 32px;
   overflow: hidden;
   border-radius: 5px;
@@ -263,97 +196,118 @@ fieldset > label > form {
   white-space: nowrap;
   align-items: stretch;
   text-overflow: ellipsis;
-  justify-content: flex-start;
   background-color: var(--main-tinted50);
 }
 fieldset > label > span > *,
-fieldset > label > form > * {
-  margin: 0px;
+fieldset > fieldset > span > *,
+fieldset > label > form > *,
+fieldset > fieldset > form > * {
   color: black;
   border: 1px solid #CCCCCC;
 }
 fieldset > label > span > *:first-child,
-fieldset > label > form > *:first-child {
+fieldset > fieldset > span > *:first-child,
+fieldset > label > form > *:first-child,
+fieldset > fieldset > form > *:first-child {
   border-radius: 5px 0 0 5px;
 }
 fieldset > label > span > *:first-child > *,
-fieldset > label > form > *:first-child > * {
+fieldset > fieldset > span > *:first-child > *,
+fieldset > label > form > *:first-child > *,
+fieldset > fieldset > form > *:first-child > * {
   border-radius: 5px 0 0 5px;
 }
 fieldset > label > span > *:last-child,
-fieldset > label > form > *:last-child {
+fieldset > fieldset > span > *:last-child,
+fieldset > label > form > *:last-child,
+fieldset > fieldset > form > *:last-child {
   border-radius: 0 5px 5px 0;
 }
 fieldset > label > span > *:last-child > *,
-fieldset > label > form > *:last-child > * {
+fieldset > fieldset > span > *:last-child > *,
+fieldset > label > form > *:last-child > *,
+fieldset > fieldset > form > *:last-child > * {
   border-radius: 0 5px 5px 0;
 }
 fieldset > label > span > *:only-child,
-fieldset > label > form > *:only-child {
+fieldset > fieldset > span > *:only-child,
+fieldset > label > form > *:only-child,
+fieldset > fieldset > form > *:only-child {
   border-radius: 5px;
 }
 fieldset > label > span > *:only-child > *,
-fieldset > label > form > *:only-child > * {
+fieldset > fieldset > span > *:only-child > *,
+fieldset > label > form > *:only-child > *,
+fieldset > fieldset > form > *:only-child > * {
   border-radius: 5px;
 }
 fieldset > label > span > input,
+fieldset > fieldset > span > input,
 fieldset > label > form > input,
+fieldset > fieldset > form > input,
 fieldset > label > span > label,
+fieldset > fieldset > span > label,
 fieldset > label > form > label,
+fieldset > fieldset > form > label,
 fieldset > label > span > select,
-fieldset > label > form > select {
+fieldset > fieldset > span > select,
+fieldset > label > form > select,
+fieldset > fieldset > form > select {
+  height: 32px;
   flex-grow: 1;
   text-indent: 4px;
   line-height: 32px;
 }
 fieldset > label > span > g-selectn,
-fieldset > label > form > g-selectn {
+fieldset > fieldset > span > g-selectn,
+fieldset > label > form > g-selectn,
+fieldset > fieldset > form > g-selectn {
   flex-grow: 1;
   line-height: normal;
 }
-fieldset > label > span[style] > textarea,
-fieldset > label > form[style] > textarea {
-  flex-grow: 1;
-  padding: 4px;
-  text-indent: 0;
-  line-height: 16px;
-  overflow: auto;
-  white-space: pre-line;
-}
-fieldset > label > span[style] > label,
-fieldset > label > form[style] > label {
-  padding: 4px;
-  flex-grow: 1;
-  overflow: auto;
-  text-indent: 0;
-  line-height: 16px;
-  white-space: normal;
-}
 fieldset > label > span > input[type="file"],
+fieldset > fieldset > span > input[type="file"],
 fieldset > label > form > input[type="file"],
+fieldset > fieldset > form > input[type="file"],
 fieldset > label > span > input[type="FILE"],
-fieldset > label > form > input[type="FILE"] {
+fieldset > fieldset > span > input[type="FILE"],
+fieldset > label > form > input[type="FILE"],
+fieldset > fieldset > form > input[type="FILE"] {
   padding: 0;
 }
 fieldset > label > span > input[type="radio"],
+fieldset > fieldset > span > input[type="radio"],
 fieldset > label > form > input[type="radio"],
+fieldset > fieldset > form > input[type="radio"],
 fieldset > label > span > input[type="checkbox"],
+fieldset > fieldset > span > input[type="checkbox"],
 fieldset > label > form > input[type="checkbox"],
+fieldset > fieldset > form > input[type="checkbox"],
 fieldset > label > span > input[type="RADIO"],
+fieldset > fieldset > span > input[type="RADIO"],
 fieldset > label > form > input[type="RADIO"],
+fieldset > fieldset > form > input[type="RADIO"],
 fieldset > label > span > input[type="CHECKBOX"],
-fieldset > label > form > input[type="CHECKBOX"] {
+fieldset > fieldset > span > input[type="CHECKBOX"],
+fieldset > label > form > input[type="CHECKBOX"],
+fieldset > fieldset > form > input[type="CHECKBOX"] {
   margin: 8px;
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: 16px;
 }
 fieldset > label > span > a,
+fieldset > fieldset > span > a,
 fieldset > label > form > a,
+fieldset > fieldset > form > a,
 fieldset > label > span > button,
+fieldset > fieldset > span > button,
 fieldset > label > form > button,
+fieldset > fieldset > form > button,
 fieldset > label > span > .g-command,
-fieldset > label > form > .g-command {
+fieldset > fieldset > span > .g-command,
+fieldset > label > form > .g-command,
+fieldset > fieldset > form > .g-command {
   flex-grow: 0;
   display: flex;
   text-indent: 0;
@@ -365,11 +319,17 @@ fieldset > label > form > .g-command {
   justify-content: center;
 }
 fieldset > label > span > a > i,
+fieldset > fieldset > span > a > i,
 fieldset > label > form > a > i,
+fieldset > fieldset > form > a > i,
 fieldset > label > span > button > i,
+fieldset > fieldset > span > button > i,
 fieldset > label > form > button > i,
+fieldset > fieldset > form > button > i,
 fieldset > label > span > .g-command > i,
-fieldset > label > form > .g-command > i {
+fieldset > fieldset > span > .g-command > i,
+fieldset > label > form > .g-command > i,
+fieldset > fieldset > form > .g-command > i {
   flex-grow: 1;
   display: flex;
   text-indent: 0;
@@ -377,23 +337,47 @@ fieldset > label > form > .g-command > i {
   justify-content: center;
 }
 fieldset > label > span > a:hover,
+fieldset > fieldset > span > a:hover,
 fieldset > label > form > a:hover,
+fieldset > fieldset > form > a:hover,
 fieldset > label > span > button:hover,
+fieldset > fieldset > span > button:hover,
 fieldset > label > form > button:hover,
+fieldset > fieldset > form > button:hover,
 fieldset > label > span > .g-command:hover,
-fieldset > label > form > .g-command:hover {
+fieldset > fieldset > span > .g-command:hover,
+fieldset > label > form > .g-command:hover,
+fieldset > fieldset > form > .g-command:hover {
   background-color: var(--acent);
 }
 fieldset > label > span > a:focus,
+fieldset > fieldset > span > a:focus,
 fieldset > label > form > a:focus,
+fieldset > fieldset > form > a:focus,
 fieldset > label > span > button:focus,
+fieldset > fieldset > span > button:focus,
 fieldset > label > form > button:focus,
+fieldset > fieldset > form > button:focus,
 fieldset > label > span > .g-command:focus,
-fieldset > label > form > .g-command:focus {
+fieldset > fieldset > span > .g-command:focus,
+fieldset > label > form > .g-command:focus,
+fieldset > fieldset > form > .g-command:focus {
   background-color: var(--hovered);
 }
+fieldset > label > span label,
+fieldset > fieldset > span label,
+fieldset > label > form label,
+fieldset > fieldset > form label,
+fieldset > label > span textarea,
+fieldset > fieldset > span textarea,
+fieldset > label > form textarea,
+fieldset > fieldset > form textarea {
+  height: 100%;
+}
 fieldset > label > span > i,
-fieldset > label > form > i {
+fieldset > fieldset > span > i,
+fieldset > label > form > i,
+fieldset > fieldset > form > i {
   right: 0px;
   width: 32px;
   height: 100%;
@@ -405,6 +389,13 @@ fieldset > label > form > i {
   justify-content: center;
   background-color: transparent;
   border: 1px solid transparent;
+}
+fieldset > div {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: white;
+  border: 4px solid var(--main-shaded10);
 }
 fieldset > ul,
 fieldset > div > ul {

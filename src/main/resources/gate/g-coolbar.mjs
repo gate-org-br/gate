@@ -65,9 +65,9 @@ template.innerHTML = `
 	justify-content: space-between;
 
 
-	border: 1px solid var(--g-coolbar-button-border-color) !important;
-	background-color: var(--g-coolbar-button-background-color) !important;
-	background-image: var(--g-coolbar-button-background-image) !important;
+	border: 1px solid var(--g-coolbar-button-border-color);
+	background-color: var(--g-coolbar-button-background-color);
+	background-image: var(--g-coolbar-button-background-image);
 }
 
 ::slotted(progress)
@@ -84,9 +84,9 @@ template.innerHTML = `
 
 ::slotted(:is(a, button, .g-command):hover)
 {
-	border: 1px solid var(--g-coolbar-hovered-button-border-color) !important;
-	background-color: var(--g-coolbar-hovered-button-background-color) !important;
-	background-image: var(--g-coolbar-hovered-button-background-image) !important;
+	border: 1px solid var(--g-coolbar-hovered-button-border-color);
+	background-color: var(--g-coolbar-hovered-button-background-color);
+	background-image: var(--g-coolbar-hovered-button-background-image);
 }
 
 ::slotted(:is(a, button, .g-command):focus)
