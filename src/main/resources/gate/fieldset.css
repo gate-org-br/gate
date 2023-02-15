@@ -132,10 +132,9 @@ fieldset > label > span > select,
 fieldset > fieldset > span > select,
 fieldset > label > form > select,
 fieldset > fieldset > form > select {
-  height: 32px;
   flex-grow: 1;
   text-indent: 4px;
-  line-height: 32px;
+  line-height: 100%;
 }
 fieldset > label > span > g-selectn,
 fieldset > fieldset > span > g-selectn,

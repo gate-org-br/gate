@@ -126,9 +126,6 @@
   --g-navbar-background-color: var(--base-shaded30);
   --g-navbar-background-image: none;
   --g-window-border: 4px solid var(--base-shaded35);
-  --g-window-header-color: white;
-  --g-window-header-background-color: var(--base-shaded35);
-  --g-window-header-background-image: linear-gradient(to bottom, var(--base-shaded35) 0%, var(--base-shaded30) 50%, var(--base-shaded35) 100%);
   --g-window-section-background-color: var(--main-shaded05);
   --g-window-section-background-image: none;
   --g-window-footer-background-color: var(--base-tinted45);

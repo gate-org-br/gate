@@ -12,10 +12,10 @@ template.innerHTML = `
 {
 	display: grid;
 	margin-top: 16px;
-	border-radius: 8px 8px 0 0;
 	grid-template-rows: auto 1fr;
-	background-color: var(--g-tab-control-background-color);
-	border: 4px solid var(--g-tab-control-background-color);
+	border: var(--g-tab-control-border, 4px solid, #b9b6a7);
+	border-radius: var(--g-tab-control-border-radius, 8px 8px 0 0);
+	background-color: var(--g-tab-control-background-color, #b9b6a7);
 }
 
 :host(:first-child)
@@ -26,18 +26,18 @@ template.innerHTML = `
 header
 {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	flex-wrap: wrap
 }
 
 ::slotted(div)
 {
 	display: none;
-	padding : 10px;
 	overflow: hidden;
-	background-color: var(--g-tab-control-tab-background-color);
-	background-image: var(--g-tab-control-tab-background-image);
+	padding : var(--g-tab-control-tab-padding, 10px);
+	background-image: var(--g-tab-control-tab-background-image, none);
+	background-color: var(--g-tab-control-tab-background-color, #c3c0b0);
 }
 
 :host([type='dummy']) ::slotted(div)
@@ -45,7 +45,8 @@ header
 	display: block;
 }
 
-::slotted(:is(a, button))
+::slotted(a),
+::slotted(button)
 {
 	width: 50%;
 	border: none;
@@ -56,29 +57,33 @@ header
 	flex-basis: 50%;
 	align-items: center;
 	text-decoration: none;
-	border-radius: 8px 8px 0 0;
 	justify-content: space-between;
-	color: var(--g-tab-control-button-color);
-	background-color: var(--g-tab-control-button-background-color);
-	background-image: var(--g-tab-control-button-background-image);
+	color: var(--g-tab-control-button-color, black);
+	border-radius: var(--g-tab-control-button-border-radius, 8px 8px 0 0);
+	background-image: var(--g-tab-control-button-background-image, none);
+	background-color: var(--g-tab-control-button-background-color, #dce3e6);
 }
 
-::slotted(:is(a, button):hover)
+::slotted(a:hover),
+::slotted(button:hover)
 {
 	color: var(--g-tab-control-hovered-button-color);
 }
 
-::slotted(:is(a, button):focus)
+::slotted(a:focus),
+::slotted(button:focus)
 {
 	border: none;
 	outline: none;
 }
 
-::slotted(:is(a, button)[data-selected=true])
+::slotted(a[data-selected=true]),
+::slotted(button[data-selected=true])
 {
-	font-weight: bold;
-	background-color: var(--g-tab-control-tab-background-color);
-	background-image: var(--g-tab-control-tab-background-image);
+	color: var(--g-tab-control-selected-button-color, black);
+	background-image: var(--g-tab-control-tab-background-image, none);
+	font-weight: var(--g-tab-control-selected-button-font-weight, bold);
+	background-color: var(--g-tab-control-tab-background-color, #c3c0b0);
 }
 
 @media only screen and (min-width: 768px)
