@@ -7,32 +7,27 @@ template.innerHTML = `
 }
 
 :host(*) {
+	padding: 4px;
 	display: flex;
+	font-size: 20px;
+	font-weight: bold;
 	align-items: center;
 	justify-content: space-between;
-
 	color: var(--g-window-header-color, white);
-	border: var(--g-window-header-border, none);
-	padding: var(--g-window-header-padding, 4px);
-	font-size: var(--g-window-header-font-size, 20px);
-	font-weight: var(--g-window-header-font-weight, bold);
 	background-color: var(--g-window-header-background-color, #788185);
-	background-image: var(--g-window-header-background-image,
-		linear-gradient(to bottom, #788185 0%, #ced7dc 50%, #788185 100%));
+	background-image: var(--g-window-header-background-image, linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
 }
 
-::slotted(a),
-::slotted(button)
-{
+
+::slotted(a), ::slotted(button) {
+	color: white;
 	display: flex;
+	font-size: 16px;
 	font-family: gate;
+	font-weight: bold;
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-
-	color: var(--g-window-header-button-color, white);
-	font-size: var(--g-window-header-button-font-size, 16px);
-	font-weight: var(--g-window-header-button-font-weight, bold);
 }</style>`;
 
 /* global customElements */

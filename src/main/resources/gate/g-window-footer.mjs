@@ -12,8 +12,7 @@ template.innerHTML = `
 	align-items: center;
 	justify-content: center;
 	background-color: var(--g-window-footer-background-color, #d9e0e4);
-	background-image: var(--g-window-footer-background-image,
-		linear-gradient(to bottom, #d9e0e4 0%, #a4a294 100%));
+	background-image: var(--g-window-footer-background-image, linear-gradient(to bottom, #d9e0e4 0%, #a4a294 100%));
 }
 
 ::slotted(g-coolbar)
@@ -21,9 +20,7 @@ template.innerHTML = `
 	margin: 4px;
 }
 
-::slotted(a),
-::slotted(button)
-{
+::slotted(a), ::slotted(button) {
 	height: 100%;
 	flex-grow: 1;
 	display: flex;
@@ -34,9 +31,8 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	border: var(--g-window-footer-button-border, 1px solid #CCCCCC);
-	background-image:  var(--g-window-footer-button-background-image,
-		linear-gradient(to bottom, #E3E0D0 0%, #858279 100%));
+	border: 1px solid #CCCCCC;
+	background-image:  var(--g-window-footer-button-background-image, linear-gradient(to bottom, #E3E0D0 0%, #858279 100%));
 }
 
 ::slotted(a:first-child) {

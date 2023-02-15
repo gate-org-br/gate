@@ -11,7 +11,7 @@ template.innerHTML = `
 	align-items: stretch;
 	justify-content: center;
 	background-image: var(--g-window-section-background-image, none);
-	background-color: var(--g-window-section-background-color, #b0bcc3);
+	background-color: var(--g-window-section-background-color, #c3c0b0);
 }</style>`;
 
 /* global customElements */

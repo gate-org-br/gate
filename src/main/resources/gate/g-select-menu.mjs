@@ -17,7 +17,7 @@ template.innerHTML = `
 	align-items: stretch;
 	flex-direction: column;
 	border: 1px solid #999999;
-	background-color: var(--g-coolbar-background-color);
+	background-color: var(--g-select-menu-background-color, #e4e2d9);
 }
 
 header
@@ -58,7 +58,7 @@ main {
 	position: absolute;
 	flex-direction: column;
 	border-top: 1px solid #CCCCCC;
-	background-color: var(--g-coolbar-background-color);
+	background-color: var(--g-select-menu-background-color, #e4e2d9);
 }
 
 a, .g-command {
