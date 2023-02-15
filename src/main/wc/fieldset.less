@@ -1,14 +1,11 @@
 fieldset
 {
 	gap: 4px;
-	margin: 0;
 	border: none;
-	display: flex;
-	flex-wrap: wrap;
-	margin-top: 10px;
+	display: grid;
 	border-radius: 5px;
-	margin-bottom: 10px;
 	background-color: var(--main-shaded10);
+	grid-template-columns: repeat(16, 1fr);
 
 	* {
 		font-size: 16px
@@ -50,7 +47,9 @@ fieldset
 		}
 	}
 
-
+	margin: 0;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	&:first-child {
 		margin-top: 0px;
 	}
@@ -74,75 +73,8 @@ fieldset
 		flex-direction: column;
 	}
 
-	fieldset
-	{
-		margin: 0;
-		border: 4px solid var(--main-shaded10);
-		background-color: var(--main-shaded05);
-
-		fieldset
-		{
-			border: 4px solid var(--main-shaded05);
-			background-color: var(--main-shaded10);
-
-			fieldset
-			{
-				border: 4px solid var(--main-shaded10);
-				background-color: var(--main-shaded05);
-
-				fieldset
-				{
-					border: 4px solid var(--main-shaded05);
-					background-color: var(--main-shaded10);
-				}
-
-			}
-
-		}
-	}
-
 	> label, > fieldset
 	{
-		flex-basis: 100%;
-		&.x1, &[x1], &[data-size="1"] {
-			@media only screen and (min-width: 576px) {
-				flex-basis: calc(50% - 4px);
-			}
-			@media only screen and (min-width: 768px) {
-				flex-basis: calc(25% - 4px);
-			}
-			@media only screen and (min-width: 992px) {
-				flex-basis: calc(12.5% - 4px);
-			}
-			@media only screen and (min-width: 1200px) {
-				flex-basis: calc(6.25% - 4px);
-			}
-		}
-		&.x2, &[x2], &[data-size="2"] {
-			@media only screen and (min-width: 768px) {
-				flex-basis: calc(50% - 4px);
-			}
-			@media only screen and (min-width: 992px) {
-				flex-basis: calc(25% - 4px);
-			}
-			@media only screen and (min-width: 1200px) {
-				flex-basis: calc(12.5% - 4px);
-			}
-		}
-		&.x4, &[x4], &[data-size="4"] {
-			@media only screen and (min-width: 992px) {
-				flex-basis: calc(50% - 4px);
-			}
-			@media only screen and (min-width: 1200px) {
-				flex-basis: calc(25% - 4px);
-			}
-		}
-		&.x8, &[x8], &[data-size="8"] {
-			@media only screen and (min-width: 1200px) {
-				flex-basis: calc(50% - 4px);
-			}
-		}
-
 		> span, > form
 		{
 			flex-grow: 1;
@@ -266,9 +198,8 @@ fieldset
 	}
 
 	> div {
-		width: 100%;
 		padding: 10px;
-		border-radius: 10px;
+		border-radius: 5px;
 		background-color: white;
 		border: 4px solid var(--main-shaded10);
 	}
@@ -312,5 +243,77 @@ fieldset
 			}
 		}
 
+	}
+
+	> *
+	{
+		grid-column: span 16;
+		&.x1, &[x1], &[data-size="1"]
+		{
+			@media only screen and (min-width: 576px) {
+				grid-column: span 8;
+			}
+			@media only screen and (min-width: 768px) {
+				grid-column: span 4;
+			}
+			@media only screen and (min-width: 992px) {
+				grid-column: span 2;
+			}
+			@media only screen and (min-width: 1200px) {
+				grid-column: span 1;
+			}
+		}
+
+		&.x2, &[x2], &[data-size="2"]
+		{
+			@media only screen and (min-width: 768px) {
+				grid-column: span 8;
+			}
+			@media only screen and (min-width: 992px) {
+				grid-column: span 4;
+			}
+			@media only screen and (min-width: 1200px) {
+				grid-column: span 2;
+			}
+		}
+
+		&.x4, &[x4], &[data-size="4"]
+		{
+			@media only screen and (min-width: 992px) {
+				grid-column: span 8;
+			}
+			@media only screen and (min-width: 1200px) {
+				grid-column: span 4;
+			}
+		}
+
+		&.x8, &[x8], &[data-size="8"]
+		{
+			@media only screen and (min-width: 1200px) {
+				grid-column: span 8;
+			}
+		}
+	}
+
+	fieldset
+	{
+		margin: 0;
+		background-color: var(--main-shaded05);
+
+		fieldset
+		{
+			background-color: var(--main-shaded10);
+
+			fieldset
+			{
+				background-color: var(--main-shaded05);
+
+				fieldset
+				{
+					background-color: var(--main-shaded10);
+				}
+			}
+
+		}
 	}
 }

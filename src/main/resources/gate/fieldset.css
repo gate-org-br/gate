@@ -1,13 +1,13 @@
 fieldset {
   gap: 4px;
-  margin: 0;
   border: none;
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 10px;
+  display: grid;
   border-radius: 5px;
-  margin-bottom: 10px;
   background-color: var(--main-shaded10);
+  grid-template-columns: repeat(16, 1fr);
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 fieldset * {
   font-size: 16px;
@@ -59,127 +59,6 @@ fieldset > label {
   display: flex;
   align-items: stretch;
   flex-direction: column;
-}
-fieldset fieldset {
-  margin: 0;
-  border: 4px solid var(--main-shaded10);
-  background-color: var(--main-shaded05);
-}
-fieldset fieldset fieldset {
-  border: 4px solid var(--main-shaded05);
-  background-color: var(--main-shaded10);
-}
-fieldset fieldset fieldset fieldset {
-  border: 4px solid var(--main-shaded10);
-  background-color: var(--main-shaded05);
-}
-fieldset fieldset fieldset fieldset fieldset {
-  border: 4px solid var(--main-shaded05);
-  background-color: var(--main-shaded10);
-}
-fieldset > label,
-fieldset > fieldset {
-  flex-basis: 100%;
-}
-@media only screen and (min-width: 576px) {
-  fieldset > label.x1,
-  fieldset > fieldset.x1,
-  fieldset > label[x1],
-  fieldset > fieldset[x1],
-  fieldset > label[data-size="1"],
-  fieldset > fieldset[data-size="1"] {
-    flex-basis: calc(50% - 4px);
-  }
-}
-@media only screen and (min-width: 768px) {
-  fieldset > label.x1,
-  fieldset > fieldset.x1,
-  fieldset > label[x1],
-  fieldset > fieldset[x1],
-  fieldset > label[data-size="1"],
-  fieldset > fieldset[data-size="1"] {
-    flex-basis: calc(25% - 4px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  fieldset > label.x1,
-  fieldset > fieldset.x1,
-  fieldset > label[x1],
-  fieldset > fieldset[x1],
-  fieldset > label[data-size="1"],
-  fieldset > fieldset[data-size="1"] {
-    flex-basis: calc(12.5% - 4px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > label.x1,
-  fieldset > fieldset.x1,
-  fieldset > label[x1],
-  fieldset > fieldset[x1],
-  fieldset > label[data-size="1"],
-  fieldset > fieldset[data-size="1"] {
-    flex-basis: calc(6.25% - 4px);
-  }
-}
-@media only screen and (min-width: 768px) {
-  fieldset > label.x2,
-  fieldset > fieldset.x2,
-  fieldset > label[x2],
-  fieldset > fieldset[x2],
-  fieldset > label[data-size="2"],
-  fieldset > fieldset[data-size="2"] {
-    flex-basis: calc(50% - 4px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  fieldset > label.x2,
-  fieldset > fieldset.x2,
-  fieldset > label[x2],
-  fieldset > fieldset[x2],
-  fieldset > label[data-size="2"],
-  fieldset > fieldset[data-size="2"] {
-    flex-basis: calc(25% - 4px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > label.x2,
-  fieldset > fieldset.x2,
-  fieldset > label[x2],
-  fieldset > fieldset[x2],
-  fieldset > label[data-size="2"],
-  fieldset > fieldset[data-size="2"] {
-    flex-basis: calc(12.5% - 4px);
-  }
-}
-@media only screen and (min-width: 992px) {
-  fieldset > label.x4,
-  fieldset > fieldset.x4,
-  fieldset > label[x4],
-  fieldset > fieldset[x4],
-  fieldset > label[data-size="4"],
-  fieldset > fieldset[data-size="4"] {
-    flex-basis: calc(50% - 4px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > label.x4,
-  fieldset > fieldset.x4,
-  fieldset > label[x4],
-  fieldset > fieldset[x4],
-  fieldset > label[data-size="4"],
-  fieldset > fieldset[data-size="4"] {
-    flex-basis: calc(25% - 4px);
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > label.x8,
-  fieldset > fieldset.x8,
-  fieldset > label[x8],
-  fieldset > fieldset[x8],
-  fieldset > label[data-size="8"],
-  fieldset > fieldset[data-size="8"] {
-    flex-basis: calc(50% - 4px);
-  }
 }
 fieldset > label > span,
 fieldset > fieldset > span,
@@ -391,9 +270,8 @@ fieldset > fieldset > form > i {
   border: 1px solid transparent;
 }
 fieldset > div {
-  width: 100%;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: white;
   border: 4px solid var(--main-shaded10);
 }
@@ -433,4 +311,90 @@ fieldset > div > ul li > label > input {
   order: -1;
   cursor: inherit;
   margin-top: -1px;
+}
+fieldset > * {
+  grid-column: span 16;
+}
+@media only screen and (min-width: 576px) {
+  fieldset > *.x1,
+  fieldset > *[x1],
+  fieldset > *[data-size="1"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 768px) {
+  fieldset > *.x1,
+  fieldset > *[x1],
+  fieldset > *[data-size="1"] {
+    grid-column: span 4;
+  }
+}
+@media only screen and (min-width: 992px) {
+  fieldset > *.x1,
+  fieldset > *[x1],
+  fieldset > *[data-size="1"] {
+    grid-column: span 2;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  fieldset > *.x1,
+  fieldset > *[x1],
+  fieldset > *[data-size="1"] {
+    grid-column: span 1;
+  }
+}
+@media only screen and (min-width: 768px) {
+  fieldset > *.x2,
+  fieldset > *[x2],
+  fieldset > *[data-size="2"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 992px) {
+  fieldset > *.x2,
+  fieldset > *[x2],
+  fieldset > *[data-size="2"] {
+    grid-column: span 4;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  fieldset > *.x2,
+  fieldset > *[x2],
+  fieldset > *[data-size="2"] {
+    grid-column: span 2;
+  }
+}
+@media only screen and (min-width: 992px) {
+  fieldset > *.x4,
+  fieldset > *[x4],
+  fieldset > *[data-size="4"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  fieldset > *.x4,
+  fieldset > *[x4],
+  fieldset > *[data-size="4"] {
+    grid-column: span 4;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  fieldset > *.x8,
+  fieldset > *[x8],
+  fieldset > *[data-size="8"] {
+    grid-column: span 8;
+  }
+}
+fieldset fieldset {
+  margin: 0;
+  background-color: var(--main-shaded05);
+}
+fieldset fieldset fieldset {
+  background-color: var(--main-shaded10);
+}
+fieldset fieldset fieldset fieldset {
+  background-color: var(--main-shaded05);
+}
+fieldset fieldset fieldset fieldset fieldset {
+  background-color: var(--main-shaded10);
 }
