@@ -14,12 +14,14 @@
 	padding: 2px;
 	display: flex;
 	overflow: hidden;
-	border-radius: 5px;
 	align-items: stretch;
 	flex-direction: row-reverse;
-	color: var(--g-coolbar--color);
-	background-color: var(--g-coolbar-background-color);
-	background-image: var(--g-coolbar-background-image);
+
+	color: var(--g-coolbar-color, black);
+	border: var(--g-coolbar-border, none);
+	border-radius: var(--g-coolbar-border-radius, 5px);
+	background-color: var(--g-coolbar-background-color, #e4e2d9);
+	background-image: var(--g-coolbar-background-image, linear-gradient(to bottom, #e4e2d9 0%, #a4a294 100%));
 }
 
 
@@ -49,7 +51,6 @@
 	margin: 2px;
 	height: 40px;
 	padding: 4px;
-	color: black;
 	display: flex;
 	flex: 0 1 auto;
 	font-size: 12px;
@@ -57,15 +58,15 @@
 	min-width: 120px;
 	font-weight: bold;
 	font-style: normal;
-	border-radius: 5px;
 	align-items: center;
 	text-decoration: none;
 	justify-content: space-between;
 
-
-	border: 1px solid var(--g-coolbar-button-border-color);
-	background-color: var(--g-coolbar-button-background-color);
-	background-image: var(--g-coolbar-button-background-image);
+	color: var(--g-coolbar-button-color, black);
+	border: var(--g-coolbar-button-border, 1px solid #CCCCCC);
+	border-radius: var(--g-coolbar-button-border-radius, 5px);
+	background-color: var(--g-coolbar-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
 }
 
 ::slotted(progress)
@@ -80,37 +81,122 @@
 	border: none;
 }
 
-::slotted(:is(a, button, .g-command):hover)
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
-	border: 1px solid var(--g-coolbar-hovered-button-border-color);
-	background-color: var(--g-coolbar-hovered-button-background-color);
-	background-image: var(--g-coolbar-hovered-button-background-image);
+	color: var(--g-coolbar-hovered-button-color, black);
+	border: var(--g-coolbar-hovered-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
 }
 
-::slotted(:is(a, button, .g-command):focus)
+::slotted(a.Commit),
+::slotted(button.Commit),
+::slotted(.g-command.Commit)
+{
+	color: var(--g-coolbar-commit-button-color, #006600);
+	border: var(--g-coolbar-commit-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-commit-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-commit-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
+}
+
+::slotted(a.Commit:hover),
+::slotted(button.Commit:hover),
+::slotted(.g-command.Commit:hover)
+{
+	color: var(--g-coolbar-hovered-commit-button-color, #006600);
+	border: var(--g-coolbar-hovered-commit-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-commit-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-commit-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
+}
+
+::slotted(a.Action),
+::slotted(button.Action),
+::slotted(.g-command.Action)
+{
+	color: var(--g-coolbar-action-button-color, #000066);
+	border: var(--g-coolbar-action-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-action-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-action-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
+}
+
+::slotted(a.Action:hover),
+::slotted(button.Action:hover),
+::slotted(.g-command.Action:hover)
+{
+	color: var(--g-coolbar-hovered-action-button-color, #000066);
+	border: var(--g-coolbar-hovered-action-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-action-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-action-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
+}
+
+::slotted(a.Delete),
+::slotted(button.Delete),
+::slotted(.g-command.Delete)
+{
+	color: var(--g-coolbar-delete-button-color, #660000);
+	border: var(--g-coolbar-delete-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-delete-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-delete-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
+}
+
+::slotted(a.Delete:hover),
+::slotted(button.Delete:hover),
+::slotted(.g-command.Delete:hover)
+{
+	color: var(--g-coolbar-hovered-delete-button-color, #660000);
+	border: var(--g-coolbar-hovered-delete-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-delete-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-delete-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
+}
+
+::slotted(a.Cancel),
+::slotted(button.Cancel),
+::slotted(.g-command.Cancel)
+{
+	color: var(--g-coolbar-cancel-button-color, #660000);
+	border: var(--g-coolbar-cancel-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-cancel-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-cancel-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
+}
+
+::slotted(a.Cancel:hover),
+::slotted(button.Cancel:hover),
+::slotted(.g-command.Cancel:hover)
+{
+	color: var(--g-coolbar-hovered-cancel-button-color, #660000);
+	border: var(--g-coolbar-hovered-cancel-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-cancel-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-cancel-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
+}
+
+::slotted(a.Return),
+::slotted(button.Return),
+::slotted(.g-command.Return)
+{
+	color: var(--g-coolbar-return-button-color, #660000);
+	border: var(--g-coolbar-return-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-return-button-background-color, #d7d5c7);
+	background-image: var(--g-coolbar-return-button-background-image, linear-gradient(to bottom, #d7d5c7 0%, #858378 100%));
+}
+
+::slotted(a.Return:hover),
+::slotted(button.Return:hover),
+::slotted(.g-command.Return:hover)
+{
+	color: var(--g-coolbar-hovered-return-button-color, #660000);
+	border: var(--g-coolbar-hovered-return-button-border, 1px solid #CCCCCC);
+	background-color: var(--g-coolbar-hovered-return-button-background-color, #d9d5e1);
+	background-image: var(--g-coolbar-hovered-return-button-background-image, linear-gradient(to bottom,  #d9d5e1 0%, #9a94a4 100%));
+}
+
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
 {
 	outline: none;
 	border: 2px solid var(--hovered);
-}
-
-::slotted(:is(a, button, .g-command).Delete) {
-	color: var(--r);
-}
-
-::slotted(:is(a, button, .g-command).Commit) {
-	color: var(--g);
-}
-
-::slotted(:is(a, button, .g-command).Action) {
-	color: var(--b);
-}
-
-::slotted(:is(a, button, .g-command).Cancel) {
-	color: var(--r);
-}
-
-::slotted(:is(a, button, .g-command).Return) {
-	color: var(--r);
 }
 
 ::slotted(*[hidden="true"])

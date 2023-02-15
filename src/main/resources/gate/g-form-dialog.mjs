@@ -49,7 +49,7 @@ main
 	position: relative;
 	grid-template-rows: 40px 1fr;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: 4px solid var(--g-window-border-color);
+	border: var(--g-window-border);
 }
 
 g-window-section

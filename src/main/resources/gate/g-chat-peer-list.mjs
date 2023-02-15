@@ -38,7 +38,7 @@ footer
 	align-items: stretch;
 	justify-content: center;
 	border-radius: 0 0 5px 5px;
-	background-image: var(--g-coolbar-button-background-image);
+	background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
 
 g-chat-notification-config

@@ -33,34 +33,40 @@ customElements.define('g-form-editor', class extends HTMLElement
 		grid.caption = "CAMPOS";
 
 		grid.column(0).header.value = "Nome";
-		grid.column(0).style.textAligh = "left";
 
 		grid.column(1).header.value = "Descrição";
-		grid.column(1).style.textAligh = "left";
 
 		grid.column(2).header.value = "Colunas";
 		grid.column(2).style.width = "80px";
+		grid.column(2).style.textAligh = "center";
 
 		grid.column(3).header.value = "Requerido";
 		grid.column(3).style.width = "80px";
+		grid.column(3).style.textAligh = "center";
 
 		grid.column(4).header.value = "Múltiplo";
 		grid.column(4).style.width = "80px";
+		grid.column(4).style.textAligh = "center";
 
 		grid.column(5).header.value = "Tam Max";
 		grid.column(5).style.width = "80px";
+		grid.column(5).style.textAligh = "center";
 
 		grid.column(6).header.value = "Padrão";
 		grid.column(6).style.width = "160px";
+		grid.column(6).style.textAligh = "center";
 
 		grid.column(7).header.value = "Máscara";
 		grid.column(7).style.width = "160px";
+		grid.column(7).style.textAligh = "center";
 
 		grid.column(8).header.value = "Opções";
 		grid.column(8).style.width = "160px";
+		grid.column(8).style.textAligh = "center";
 
 		grid.column(9).header.value = "Valor";
 		grid.column(9).style.width = "160px";
+		grid.column(9).style.textAligh = "center";
 
 		let form = this.shadowRoot.querySelector("g-form");
 

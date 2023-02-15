@@ -45,7 +45,7 @@ main
 	place-content: stretch;
 	grid-template-rows: 40px 1fr 40px;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: 4px solid var(--g-window-border-color);
+	border: var(--g-window-border);
 }</style>`;
 
 /* global customElements */
