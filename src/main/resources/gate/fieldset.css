@@ -385,7 +385,7 @@ fieldset > * {
   }
 }
 fieldset fieldset {
-  margin: 4px;
+  margin: 0;
   background-color: var(--main-shaded05);
 }
 fieldset fieldset fieldset {
