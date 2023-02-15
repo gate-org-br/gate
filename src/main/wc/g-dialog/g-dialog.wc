@@ -1,6 +1,6 @@
 <template>
-	<main>
-		<header tabindex='1'>
+	<main part='main'>
+		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
 			<g-dialog-commands>
@@ -17,7 +17,7 @@
 				&#x1011;
 			</a>
 		</header>
-		<section>
+		<section part='section'>
 			<iframe scrolling="no">
 			</iframe>
 		</section>

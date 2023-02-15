@@ -80,8 +80,8 @@ header{
 	align-items: center;
 	justify-content: space-between;
 	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
+	background-color: var(--g-window-header-background-color, #788185);;
+	background-image: var(--g-window-header-background-image, linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
 }
 
 #caption {

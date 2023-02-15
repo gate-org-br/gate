@@ -61,13 +61,13 @@ header
 	color: var(--g-tab-control-button-color, black);
 	border-radius: var(--g-tab-control-button-border-radius, 8px 8px 0 0);
 	background-image: var(--g-tab-control-button-background-image, none);
-	background-color: var(--g-tab-control-button-background-color, #dce3e6);
+	background-color: var(--g-tab-control-button-background-color, #E6E5DC);
 }
 
 ::slotted(a:hover),
 ::slotted(button:hover)
 {
-	color: var(--g-tab-control-hovered-button-color);
+	color: var(--g-tab-control-hovered-button-color, #CA171B);
 }
 
 ::slotted(a:focus),

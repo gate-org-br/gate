@@ -25,9 +25,9 @@ main
 	place-items: stretch;
 	place-content: stretch;
 	width: calc(100% - 40px);
+	border: var(--g-window-border);
 	grid-template-rows: 40px 48px 24px;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
 g-window-section {
@@ -38,8 +38,9 @@ footer {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	background-color: var(--g-window-header-background-color);
-	background-image: var(--g-window-header-background-image);
+	background-color: var(--g-window-header-background-color, #788185);
+	background-image: var(--g-window-header-background-image,
+		linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
 }
 
 g-digital-clock
