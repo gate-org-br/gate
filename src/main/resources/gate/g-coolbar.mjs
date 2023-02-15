@@ -52,7 +52,6 @@ template.innerHTML = `
 {
 	margin: 2px;
 	height: 40px;
-	padding: 4px;
 	display: flex;
 	flex: 0 1 auto;
 	font-size: 12px;
@@ -65,6 +64,7 @@ template.innerHTML = `
 	justify-content: space-between;
 
 	color: var(--g-coolbar-button-color, black);
+	padding: var(--g-coolbar-button-padding, 4px);
 	border: var(--g-coolbar-button-border, 1px solid #CCCCCC);
 	border-radius: var(--g-coolbar-button-border-radius, 5px);
 	background-color: var(--g-coolbar-button-background-color, #d7d5c7);
