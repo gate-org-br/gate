@@ -1,11 +1,11 @@
 <template>
 	<main>
-		<g-window-header>
-		</g-window-header>
-		<g-window-section>
+		<header>
+		</header>
+		<section>
 			<g-progress>
 			</g-progress>
-		</g-window-section>
+		</section>
 		<footer>
 			<g-digital-clock>
 			</g-digital-clock>

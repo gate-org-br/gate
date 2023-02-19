@@ -12,7 +12,7 @@ template.innerHTML = `
 	align-content: stretch;
 	justify-content: center;
 	border: 2px solid #CCCCCC;
-	background-image: linear-gradient(to bottom, #AAAAAA 0%, white 50%, #AAAAAA 100%);
+	background-image: linear-gradient(to bottom, #CCCCCC 0%, white 50%, #CCCCCC 100%);
 }
 
 :host(:hover) {
@@ -138,23 +138,6 @@ customElements.define('g-slider', class extends HTMLElement
 				body.appendChild(document.createElement("span"))
 					.onclick = () => this.value = execute(this._private.value, this.next, i + 1);
 		};
-
-//		this._private.update = value =>
-//		{
-//			this._private.value = value;
-//
-//			let labels = this.shadowRoot.getElementById("main").children;
-//
-//			for (let i = 0; i < this.size; i++)
-//				labels[i].innerHTML = this.format(execute(value, this.prev, this.size - i));
-//
-//			labels[this.size].innerHTML = this.format(value);
-//
-//			for (let i = 1; i <= this.size; i++)
-//				labels[this.size + i].innerHTML = this.format(execute(value, this.next, i));
-//
-//			this.dispatchEvent(new CustomEvent('update', {detail: {slider: this}}));
-//		};
 	}
 
 	connectedCallback()

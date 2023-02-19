@@ -1,18 +1,20 @@
 <template>
 	<main>
-		<g-window-header>
+		<header>
 			Selecione uma hora
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<g-time-selector>
 			</g-time-selector>
-		</g-window-section>
-		<g-window-footer>
-			<a id='commit' href='#'>
-			</a>
-		</g-window-footer>
+		</section>
+		<footer>
+			<button id='commit'>
+			</button>
+		</footer>
 	</main>
 </template>

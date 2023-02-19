@@ -255,7 +255,11 @@ fieldset > fieldset > form textarea {
 fieldset > label > span > i,
 fieldset > fieldset > span > i,
 fieldset > label > form > i,
-fieldset > fieldset > form > i {
+fieldset > fieldset > form > i,
+fieldset > label > span > g-icon,
+fieldset > fieldset > span > g-icon,
+fieldset > label > form > g-icon,
+fieldset > fieldset > form > g-icon {
   right: 0px;
   width: 32px;
   height: 100%;

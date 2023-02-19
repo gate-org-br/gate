@@ -1,91 +1,63 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
-		</g-window-header>
-		<g-window-section>
+		<header>
+		</header>
+		<section>
 			<g-progress>
 			</g-progress>
-		</g-window-section>
+		</section>
 		<footer>
 			<g-digital-clock>
 			</g-digital-clock>
 		</footer>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	height: auto;
-	display: grid;
-	position: fixed;
 	min-width: 320px;
 	max-width: 800px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
 	width: calc(100% - 40px);
-	border: var(--g-window-border);
-	grid-template-rows: 40px 48px 24px;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 }
 
-g-window-section {
-	padding: 4px;
-}
 
 footer {
-	display: flex;
+	flex-basis: 40px;
 	align-items: center;
 	justify-content: flex-end;
-	background-color: var(--g-window-header-background-color, #788185);
-	background-image: var(--g-window-header-background-image, linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
+}
+
+g-progress
+{
+	height: 40px;
 }
 
 g-digital-clock
 {
-	color: white;
 	font-size: 16px;
-}</style>`;
+}
+</style>`;
 
 /* global customElements, template */
 
 import './g-progress.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GBlock extends GModal
+export default class GBlock extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set caption(text)
 	{
-		this.shadowRoot.querySelector("g-window-header").innerText = text;
+		this.shadowRoot.querySelector("header").innerText = text;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.querySelector("g-window-header").innerText;
+		return this.shadowRoot.querySelector("header").innerText;
 	}
 
 	static show(text)
@@ -119,12 +91,12 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
+{
+	e.addEventListener("click", () =>
 	{
-		e.addEventListener("click", () =>
-		{
-			if (e.form)
-				e.form.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"), {once: true}));
-			else
-				GBlock.show(e.getAttribute("data-block"));
-		});
+		if (e.form)
+			e.form.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"), {once: true}));
+		else
+			GBlock.show(e.getAttribute("data-block"));
 	});
+});

@@ -6,8 +6,8 @@ template.innerHTML = `
 	</g-date-selector>
  <style>:host(*)
 {
-	display:grid;
-	border: 1px solid #CCCCCC;
+	gap: 4px;
+	display: grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
 

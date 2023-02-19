@@ -7,7 +7,7 @@
 	align-content: stretch;
 	justify-content: center;
 	border: 2px solid #CCCCCC;
-	background-image: linear-gradient(to bottom, #AAAAAA 0%, white 50%, #AAAAAA 100%);
+	background-image: linear-gradient(to bottom, #CCCCCC 0%, white 50%, #CCCCCC 100%);
 }
 
 :host(:hover) {

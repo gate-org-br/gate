@@ -10,6 +10,7 @@ template.innerHTML = `
 {
 	display: flex;
 	font-family: gate;
+	font-size: inherit;
 	font-style: normal;
 	align-items: center;
 	justify-content: center;

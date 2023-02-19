@@ -351,7 +351,6 @@ template.innerHTML = `
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: flex-start;
-	background-color: var(--main);
 }
 
 a {

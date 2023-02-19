@@ -1,14 +1,14 @@
 <template>
 	<main>
-		<g-window-header>
+		<header>
 			Selecione uma data
 			<a id='close' href="#">
 				&#X1011;
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<g-date-selector>
 			</g-date-selector>
-		</g-window-section>
+		</section>
 	</main>
 </template>
