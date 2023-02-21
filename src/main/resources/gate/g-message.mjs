@@ -1,58 +1,33 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			<label id='title'>
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
+		</header>
 		<section>
-			<label id='text'>
-			</label>
 		</section>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	width: 80%;
-	height: 280px;
-	display: grid;
-	position: fixed;
+	width: 100%;
 	min-width: 320px;
 	max-width: 800px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
-	width: calc(100% - 40px);
-	grid-template-rows: 40px 1fr;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
-section {
+main > section {
+	padding: 8px;
 	display: flex;
-	overflow: auto;
-	align-items: stretch;
+	color: inherit;
+	font-size: 20px;
+	flex-basis: 200px;
+	align-items: center;
 	justify-content: center;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
 }
 
 section::before {
@@ -64,17 +39,6 @@ section::before {
 	align-items: center;
 	font-family: 'gate';
 	justify-content: center;
-	background-color: white;
-}
-
-#text {
-	flex-grow: 1;
-	padding: 8px;
-	display: flex;
-	color: inherit;
-	font-size: 20px;
-	align-items: center;
-	background-color: white;
 }
 
 label::first-line  {
@@ -111,15 +75,14 @@ label::first-line  {
 
 /* global customElements, template */
 
-import './g-window-header.mjs';
-import GModal from './g-modal.mjs';
+import './g-icon.mjs';
+import GWindow from './g-window.mjs';
 
-export default class Message extends GModal
+export default class Message extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
@@ -163,12 +126,13 @@ export default class Message extends GModal
 				this.shadowRoot.getElementById("title").innerText = this.title || "";
 				break;
 			case 'text':
-				this.shadowRoot.getElementById("text").innerText = this.text || "";
+				this.shadowRoot.querySelector("section").innerText = this.text || "";
 				break;
 		}
 	}
 
-	static get observedAttributes() {
+	static get observedAttributes()
+	{
 		return ['type', 'text', "title"];
 	}
 

@@ -4,18 +4,22 @@ template.innerHTML = `
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
-			<g-dialog-commands>
-			</g-dialog-commands>
-			<g-navbar>
-			</g-navbar>
+			<g-dialog-commands></g-dialog-commands>
+			<g-navbar></g-navbar>
 			<a id='minimize' href='#'>
-				&#x3019;
+				<g-icon>
+					&#x3019;
+				</g-icon>
 			</a>
 			<a id='fullscreen' href='#'>
-				&#x3016;
+				<g-icon>
+					&#x3016;
+				</g-icon>
 			</a>
 			<a id='hide' href='#'>
-				&#x1011;
+				<g-icon>
+					&#x1011;
+				</g-icon>
 			</a>
 		</header>
 		<section part='section'>
@@ -23,66 +27,20 @@ template.innerHTML = `
 			</iframe>
 		</section>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main {
+ <style>main {
 	width: 100%;
 	height: 100%;
-	display: grid;
 	border-radius: 0;
-	position: relative;
-	grid-template-rows: 40px 1fr;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
 @media only screen and (min-width: 640px)
 {
 	main{
-		border-radius: 5px;
+		border-radius: 3px;
 		width: calc(100% - 80px);
 		height: calc(100% - 80px);
 	}
 }
-
-header{
-	gap: 4px;
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color, white);
-	background-color: var(--g-window-header-background-color, #788185);
-	background-image: var(--g-window-header-background-image,
-		linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
-}
-
-#caption {
-	order: 1;
-	flex-grow: 1;
-	display: flex;
-	color: inherit;
-	font-size: inherit;
-	align-items: center;
-	justify-content: flex-start;
-}
-
 
 g-navbar {
 	order: 2;
@@ -102,25 +60,6 @@ g-dialog-commands {
 
 a,  button {
 	order: 4;
-	color: white;
-	padding: 2px;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-}
-
-section {
-	flex-grow: 1;
-	display: flex;
-	overflow: auto;
-	align-items: stretch;
-	justify-content: center;
-	-webkit-overflow-scrolling: touch;
-	background-image: var(--g-window-section-background-image, none);
-	background-color: var(--g-window-section-background-color, #c3c0b0);
 }
 
 iframe,
@@ -147,8 +86,8 @@ iframe {
 import './g-navbar.mjs';
 import CSV from './csv.mjs';
 import './g-dialog-commands.mjs';
-import GModal from './g-modal.mjs';
 import resolve from './resolve.mjs';
+import GWindow from './g-window.mjs';
 import FullScreen from './fullscreen.mjs';
 
 const ESC = 27;
@@ -170,13 +109,12 @@ const resize = function (iframe)
 		}
 	}
 };
-export default class GDialog extends GModal
+export default class GDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let main = this.shadowRoot.querySelector("main");
 		let head = this.shadowRoot.querySelector("header");
 		let fullscreen = this.shadowRoot.getElementById("fullscreen");

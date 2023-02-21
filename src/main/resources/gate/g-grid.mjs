@@ -72,6 +72,10 @@ label {
 	background-image: var(--table-caption-background-image);
 }
 
+label:empty {
+	display: none;
+}
+
 header
 {
 	display: table-header-group;

@@ -2,23 +2,18 @@
 
 import './g-icon.mjs';
 import './g-grid.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import Message from './g-message.mjs';
 
-export default class GSearchPicker extends GModal
+export default class GSearchPicker extends GWindow
 {
 	constructor()
 	{
 		super();
 		let prev = "";
 		let result = null;
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
@@ -83,6 +78,7 @@ export default class GSearchPicker extends GModal
 							} else
 								alert("Dados inválidos retornados pelo servidor");
 							input.disabled = false;
+							input.focus();
 						}).catch(error => Message.error(error.message));
 				}
 			} else

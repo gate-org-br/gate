@@ -3,8 +3,8 @@
 import './g-navbar.mjs';
 import CSV from './csv.mjs';
 import './g-dialog-commands.mjs';
-import GModal from './g-modal.mjs';
 import resolve from './resolve.mjs';
+import GWindow from './g-window.mjs';
 import FullScreen from './fullscreen.mjs';
 
 const ESC = 27;
@@ -26,13 +26,12 @@ const resize = function (iframe)
 		}
 	}
 };
-export default class GDialog extends GModal
+export default class GDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let main = this.shadowRoot.querySelector("main");
 		let head = this.shadowRoot.querySelector("header");
 		let fullscreen = this.shadowRoot.getElementById("fullscreen");

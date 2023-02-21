@@ -1,6 +1,4 @@
-let template = document.createElement("template");
-template.innerHTML = `
- <style>:host(*)
+:host(*)
 {
 	height: 24px;
 	color: white;
@@ -41,20 +39,4 @@ template.innerHTML = `
 ::slotted(button[hidden="true"])
 {
 	display: none;
-}</style>`;
-
-/* global customElements */
-
-import GDialog from './g-dialog.mjs';
-import GOverflow from "./g-overflow.mjs";
-
-customElements.define('g-dialog-commands', class extends GOverflow
-{
-	constructor()
-	{
-		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		GDialog.commands = this;
-		this.container.style.flexDirection = "row-reverse";
-	}
-});
+}

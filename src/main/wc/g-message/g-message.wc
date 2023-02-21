@@ -1,15 +1,15 @@
 <template>
 	<main>
-		<g-window-header>
+		<header>
 			<label id='title'>
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
+		</header>
 		<section>
-			<label id='text'>
-			</label>
 		</section>
 	</main>
 </template>

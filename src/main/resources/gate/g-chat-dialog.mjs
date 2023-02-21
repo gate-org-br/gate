@@ -1,67 +1,42 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			Chat
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<g-chat>
 			</g-chat>
-		</g-window-section>
+		</section>
 	</main>
- <style>:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	height: auto;
-	display: grid;
-	position: fixed;
 	min-width: 320px;
 	max-width: 800px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
 	width: calc(100% - 40px);
-	grid-template-rows: 40px 500px;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
 g-chat {
 	width: 100%;
 	height: 492px;
-}
-
-g-window-section
-{
-	padding: 4px;
 }</style>`;
 
 /* global customElements, template, GChatContactDialog */
 
+import './g-icon.mjs';
 import './g-chat.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GChatDialog extends GModal
+export default class GChatDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());

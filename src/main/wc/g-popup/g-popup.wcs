@@ -1,64 +1,15 @@
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
 main {
 	width: 100%;
 	height: 100%;
-	display: grid;
 	max-height: 100%;
 	border-radius: 0;
-	position: relative;
-	grid-template-rows: 40px 1fr;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
 @media only screen and (min-width: 640px)
 {
 	main{
-		border-radius: 5px;
+		border-radius: 3px;
 		width: calc(100% - 80px);
 		max-height: calc(100% - 80px);
 	}
-}
-
-header{
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color, #788185);;
-	background-image: var(--g-window-header-background-image, linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
-}
-
-section {
-	display: grid;
-	overflow: auto;
-	place-items: stretch;
-	place-content: stretch;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
-}
-
-#close {
-	color: white;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	font-weight: bold;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
 }

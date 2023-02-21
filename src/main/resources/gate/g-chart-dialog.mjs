@@ -6,28 +6,44 @@ template.innerHTML = `
 				Chart
 			</label>
 			<a id='rchart' href='#' title='Rose'>
-				&#x2247;
+				<g-icon>
+					&#x2247;
+				</g-icon>
 			</a>
 			<a id='dchart' href='#' title='Donut'>
-				&#x2245;
+				<g-icon>
+					&#x2245;
+				</g-icon>
 			</a>
 			<a id='pchart' href='#' title='Pizza'>
-				&#x2031;
+				<g-icon>
+					&#x2031;
+				</g-icon>
 			</a>
 			<a id='achart' href='#' title='Área'>
-				&#x2244;
+				<g-icon>
+					&#x2244;
+				</g-icon>
 			</a>
 			<a id='lchart' href='#' title='Linha'>
-				&#x2032;
+				<g-icon>
+					&#x2032;
+				</g-icon>
 			</a>
 			<a id='bchart' href='#' title='Barra'>
-				&#x2246;
+				<g-icon>
+					&#x2246;
+				</g-icon>
 			</a>
 			<a id='cchart' href='#' title='Coluna'>
-				&#x2033;
+				<g-icon>
+					&#x2033;
+				</g-icon>
 			</a>
 			<a id='close' href='#' title='Fechar'>
-				&#x1011;
+				<g-icon>
+					&#x1011;
+				</g-icon>
 			</a>
 		</header>
 		<section>
@@ -35,31 +51,9 @@ template.innerHTML = `
 			</g-chart>
 		</section>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main {
+ <style>main {
 	width: 100%;
 	height: 100%;
-	display: grid;
-	border-radius: 0;
-	position: relative;
-	grid-template-rows: 40px 1fr;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
 @media only screen and (min-width: 640px)
@@ -71,52 +65,8 @@ main {
 	}
 }
 
-header{
-	gap: 4px;
-	padding: 4px;
-	display: flex;
-	font-size: 20px;
-	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	color: var(--g-window-header-color);
-	background-color: var(--g-window-header-background-color, #788185);;
-	background-image: var(--g-window-header-background-image, linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%));
-}
-
-#caption {
-	order: 1;
-	flex-grow: 1;
-	display: flex;
-	color: inherit;
-	font-size: inherit;
-	align-items: center;
-	justify-content: flex-start;
-}
-
-a {
-	order: 4;
-	color: white;
-	padding: 2px;
-	display: flex;
-	font-size: 16px;
-	font-family: gate;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-}
-
-#close { margin-left: 8px; }
-
-section {
-	flex-grow: 1;
-	display: flex;
-	overflow: auto;
+main > section {
 	align-items: stretch;
-	justify-content: center;
-	-webkit-overflow-scrolling: touch;
-	background-image: var(--g-window-section-background-image);
-	background-color: var(--g-window-section-background-color);
 }
 
 g-chart {
@@ -126,15 +76,16 @@ g-chart {
 
 /* global customElements, template, fetch */
 
-import GModal from './g-modal.mjs';
+import  './g-icon.mjs';
 import Dataset from './dataset.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GChartDialog extends GModal
+
+export default class GChartDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").onclick = () => this.hide();
 		this.shadowRoot.getElementById("cchart").onclick = () => this.type = 'cchart';

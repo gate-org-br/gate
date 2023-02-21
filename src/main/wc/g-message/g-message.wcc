@@ -1,14 +1,13 @@
 /* global customElements, template */
 
-import './g-window-header.mjs';
-import GModal from './g-modal.mjs';
+import './g-icon.mjs';
+import GWindow from './g-window.mjs';
 
-export default class Message extends GModal
+export default class Message extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
@@ -52,12 +51,13 @@ export default class Message extends GModal
 				this.shadowRoot.getElementById("title").innerText = this.title || "";
 				break;
 			case 'text':
-				this.shadowRoot.getElementById("text").innerText = this.text || "";
+				this.shadowRoot.querySelector("section").innerText = this.text || "";
 				break;
 		}
 	}
 
-	static get observedAttributes() {
+	static get observedAttributes()
+	{
 		return ['type', 'text', "title"];
 	}
 

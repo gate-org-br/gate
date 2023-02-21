@@ -8,6 +8,7 @@ customElements.define('g-dialog-commands', class extends GOverflow
 	constructor()
 	{
 		super();
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		GDialog.commands = this;
 		this.container.style.flexDirection = "row-reverse";
 	}

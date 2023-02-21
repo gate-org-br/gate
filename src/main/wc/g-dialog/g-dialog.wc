@@ -3,18 +3,22 @@
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
-			<g-dialog-commands>
-			</g-dialog-commands>
-			<g-navbar>
-			</g-navbar>
+			<g-dialog-commands></g-dialog-commands>
+			<g-navbar></g-navbar>
 			<a id='minimize' href='#'>
-				&#x3019;
+				<g-icon>
+					&#x3019;
+				</g-icon>
 			</a>
 			<a id='fullscreen' href='#'>
-				&#x3016;
+				<g-icon>
+					&#x3016;
+				</g-icon>
 			</a>
 			<a id='hide' href='#'>
-				&#x1011;
+				<g-icon>
+					&#x1011;
+				</g-icon>
 			</a>
 		</header>
 		<section part='section'>

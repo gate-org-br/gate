@@ -1,69 +1,51 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			Progresso
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<g-progress-status>
 			</g-progress-status>
-		</g-window-section>
-		<g-window-footer>
-			<a id='commit' href='#'>
+		</section>
+		<footer>
+			<button id='commit'>
 				Processando
-			</a>
-		</g-window-footer>
+			</button>
+		</footer>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	width: 800px;
-	height: auto;
-	display: grid;
-	max-width: 80%;
-	position: fixed;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
-	grid-template-rows: 40px 1fr 40px;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
+	min-width: 320px;
+	max-width: 800px;
+	width: calc(100% - 40px);
+}
+
+main > footer > button {
+	flex-grow: 1;
+	justify-content: center;
 }</style>`;
 
 /* global customElements */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import './g-window-footer.mjs';
+import './g-icon.mjs';
 import './g-progress-status.mjs';
-import Scroll from './scroll.mjs';
+import GWindow from './g-window.mjs';
 
-customElements.define('g-progress-dialog', class extends HTMLElement
+customElements.define('g-progress-dialog', class extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click",
+			() => confirm("Tem certeza de que deseja fechar o progresso?")
+				&& this.hide());
 
 		let commit = this.shadowRoot.getElementById("commit");
 
@@ -109,16 +91,6 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 		});
 	}
 
-	set target(target)
-	{
-		this.setAttribute("target", target);
-	}
-
-	get target()
-	{
-		return this.getAttribute("target") || "_self";
-	}
-
 	set process(process)
 	{
 		this.setAttribute("process", process);
@@ -131,36 +103,12 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 
 	attributeChangedCallback(name)
 	{
-		switch (name)
-		{
-			case "process":
-				this.shadowRoot.querySelector("g-progress-status")
-					.process = this.process;
-				break;
-			case "target":
-				this.shadowRoot.getElementById("commit")
-					.setAttribute("target", this.target);
-				break;
-		}
-
-	}
-
-	show()
-	{
-		Scroll.disable(window.top.document.documentElement);
-		window.top.document.documentElement.appendChild(this);
-		return this;
-	}
-
-	hide()
-	{
-		Scroll.enable(window.top.document.documentElement);
-		this.parentNode.removeChild(this);
-		return this;
+		this.shadowRoot.querySelector("g-progress-status")
+			.process = this.process;
 	}
 
 	static get observedAttributes()
 	{
-		return ["process", "target"];
+		return ["process"];
 	}
 });

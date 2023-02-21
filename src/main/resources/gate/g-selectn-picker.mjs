@@ -1,91 +1,62 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			<label id='caption'>
 				Selecione
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>&#X1011;</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
-			<div>
-				<g-selectn>
-				</g-selectn>
-			</div>
-			<g-coolbar>
-				<a id='commit' href="#">
-					Concluir<g-icon>&#X1000;</g-icon>
-				</a>
-				<hr/>
-				<a id='cancel' href="#">
-					Cancelar<g-icon>&#X1001;</g-icon>
-				</a>
-			</g-coolbar>
-		</g-window-section>
+		</header>
+		<section>
+			<g-selectn>
+			</g-selectn>
+		</section>
+		<footer>
+			<button id='cancel' class="Cancel">
+				Cancelar
+				<g-icon>
+					&#X1001;
+				</g-icon>
+			</button>
+			<hr/>
+			<button id='commit' class="Commit">
+				Concluir
+				<g-icon>
+					&#X1000;
+				</g-icon>
+			</button>
+		</footer>
 	</main>
- <style>* {
-	box-sizing: border-box;
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	height: auto;
-	display: grid;
-	position: fixed;
 	min-width: 320px;
-	max-width: 800px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
+	max-width: 600px;
 	width: calc(100% - 40px);
-	grid-template-rows: 40px auto;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
-g-window-section
-{
-	gap: 4px;
-	padding: 4px;
-	display: grid;
-	justify-content: stretch;
-	grid-template-rows: 400px 60px;
+section {
+	flex-basis: 400px;
 }
 
-div {
-	padding: 4px
+g-selectn {
+	flex-grow: 1;
 }</style>`;
 
 /* global customElements, template, fetch */
 
 import './g-icon.mjs';
 import './g-selectn.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import handle from './response-handler.mjs';
 
-export default class GSelectNPicker extends GModal
+export default class GSelectNPicker extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("cancel").addEventListener("click",
@@ -111,7 +82,7 @@ export default class GSelectNPicker extends GModal
 
 	set options(options)
 	{
-		this.shadowRoot.querySelector("g-selectn").options = options;
+		setTimeout(() => this.shadowRoot.querySelector("g-selectn").options = options, 0);
 	}
 
 	get options()
@@ -121,7 +92,7 @@ export default class GSelectNPicker extends GModal
 
 	set values(values)
 	{
-		this.shadowRoot.querySelector("g-selectn").value = values;
+		setTimeout(() => this.shadowRoot.querySelector("g-selectn").value = values, 0);
 	}
 
 	get values()

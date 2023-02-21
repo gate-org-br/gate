@@ -1,18 +1,17 @@
 /* global customElements, template */
 
+import './g-icon.mjs';
 import './g-chat-contact.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import Message from './g-message.mjs';
 import GChatService from './g-chat-service.mjs';
 
-export default class GChatContactDialog extends GModal
+export default class GChatContactDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
 		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
@@ -76,14 +75,12 @@ export default class GChatContactDialog extends GModal
 		contact.peerId = this.peerId;
 		contact.peerName = this.peerName;
 		contact.peerStatus = this.peerStatus;
-		this.shadowRoot.querySelector("g-window-section")
-			.appendChild(contact);
+		this.shadowRoot.querySelector("section").appendChild(contact);
 	}
 
 	disconnectedCallback()
 	{
-		this.shadowRoot.querySelector("g-window-section")
-			.firstElementChild.remove();
+		this.shadowRoot.querySelector("section").firstElementChild.remove();
 	}
 
 	static show(hostId, hostName, peerId, peerName, peerStatus)

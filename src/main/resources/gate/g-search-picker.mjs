@@ -1,61 +1,31 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			<label id='caption'>
 				Selecione um ítem
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
 			<g-grid>
 				Entre com o critério pesquisa
 			</g-grid>
-			<div>
-				<g-coolbar>
-					<a id='cancel' href="#">
-						Cancelar<g-icon>&#X1001;</g-icon>
-					</a>
-				</g-coolbar>
-			</div>
-		</g-window-section>
+		</section>
 	</main>
- <style>* {
-	box-sizing: border-box;
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	height: auto;
-	display: grid;
-	position: fixed;
 	min-width: 320px;
-	max-width: 800px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
+	max-width: 600px;
 	width: calc(100% - 40px);
-	grid-template-rows: 40px auto;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
 }
 
-g-window-section
+main > section
 {
 	gap: 4px;
 	padding: 4px;
@@ -64,36 +34,25 @@ g-window-section
 	justify-items:stretch;
 	align-content: stretch;
 	justify-content: stretch;
-	grid-template-rows: 40px 400px 60px;
-}
-
-div {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	grid-template-rows: 40px 400px;
 }</style>`;
 
 /* global customElements, template, fetch */
 
 import './g-icon.mjs';
 import './g-grid.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import Message from './g-message.mjs';
 
-export default class GSearchPicker extends GModal
+export default class GSearchPicker extends GWindow
 {
 	constructor()
 	{
 		super();
 		let prev = "";
 		let result = null;
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
@@ -158,6 +117,7 @@ export default class GSearchPicker extends GModal
 							} else
 								alert("Dados inválidos retornados pelo servidor");
 							input.disabled = false;
+							input.focus();
 						}).catch(error => Message.error(error.message));
 				}
 			} else

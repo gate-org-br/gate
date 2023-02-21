@@ -1,25 +1,20 @@
 <template>
 	<main>
-		<g-window-header>
+		<header>
 			<label id='caption'>
 				Selecione um ítem
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
 			<g-grid>
 				Entre com o critério pesquisa
 			</g-grid>
-			<div>
-				<g-coolbar>
-					<a id='cancel' href="#">
-						Cancelar<g-icon>&#X1001;</g-icon>
-					</a>
-				</g-coolbar>
-			</div>
-		</g-window-section>
+		</section>
 	</main>
 </template>

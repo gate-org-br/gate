@@ -29,10 +29,9 @@ g-time-selector {
 	flex-grow: 1;
 }
 
-button {
+main > footer > button {
 	flex-grow: 1;
-	cursor: pointer;
-	font-size: 16px;
+	justify-content: center;
 }</style>`;
 
 /* global customElements */

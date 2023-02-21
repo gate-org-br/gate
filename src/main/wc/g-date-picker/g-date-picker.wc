@@ -3,7 +3,9 @@
 		<header>
 			Selecione uma data
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
 		</header>
 		<section>

@@ -15,10 +15,9 @@ template.innerHTML = `
 {
 	display: grid;
 	height: inherit;
-	border-radius: 5px;
+	border-radius: 3px;
 	align-items: stretch;
 	border: 1px solid #CCCCCC;
-	background-color: transparent;
 	grid-template-rows: 40px 1fr 40px;
 }
 
@@ -38,7 +37,6 @@ footer
 	align-items: stretch;
 	justify-content: center;
 	border-radius: 0 0 5px 5px;
-	background-image: linear-gradient(to bottom, #d7d5c7 0%, #858378 100%);
 }
 
 g-chat-notification-config

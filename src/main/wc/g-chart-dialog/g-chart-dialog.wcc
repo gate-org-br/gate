@@ -1,14 +1,15 @@
 /* global customElements, template, fetch */
 
-import GModal from './g-modal.mjs';
+import  './g-icon.mjs';
 import Dataset from './dataset.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GChartDialog extends GModal
+
+export default class GChartDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").onclick = () => this.hide();
 		this.shadowRoot.getElementById("cchart").onclick = () => this.type = 'cchart';

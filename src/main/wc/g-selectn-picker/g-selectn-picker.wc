@@ -1,27 +1,31 @@
 <template>
 	<main>
-		<g-window-header>
+		<header>
 			<label id='caption'>
 				Selecione
 			</label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>&#X1011;</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
-			<div>
-				<g-selectn>
-				</g-selectn>
-			</div>
-			<g-coolbar>
-				<a id='commit' href="#">
-					Concluir<g-icon>&#X1000;</g-icon>
-				</a>
-				<hr/>
-				<a id='cancel' href="#">
-					Cancelar<g-icon>&#X1001;</g-icon>
-				</a>
-			</g-coolbar>
-		</g-window-section>
+		</header>
+		<section>
+			<g-selectn>
+			</g-selectn>
+		</section>
+		<footer>
+			<button id='cancel' class="Cancel">
+				Cancelar
+				<g-icon>
+					&#X1001;
+				</g-icon>
+			</button>
+			<hr/>
+			<button id='commit' class="Commit">
+				Concluir
+				<g-icon>
+					&#X1000;
+				</g-icon>
+			</button>
+		</footer>
 	</main>
 </template>

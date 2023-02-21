@@ -13,8 +13,6 @@ template.innerHTML = `
 	justify-content: center;
 }
 
-
-
 :host([status=enabled])
 {
 	color: #006600;

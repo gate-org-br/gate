@@ -249,7 +249,6 @@ window.addEventListener("click", function (event)
 					let dialog = window.top.document.createElement("g-progress-dialog");
 					dialog.process = process.id;
 					dialog.caption = link.getAttribute("title") || "Progresso";
-					dialog.target = link.getAttribute("data-redirect") || "_self";
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 					if (link.getAttribute("data-on-hide"))

@@ -4,7 +4,9 @@ template.innerHTML = `
 		<header>
 			Selecione uma data
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
 		</header>
 		<section>
@@ -19,6 +21,10 @@ template.innerHTML = `
 	width: calc(100% - 40px);
 }
 
+main > section {
+	flex-basis: 400px;
+	align-items: stretch;
+}
 
 g-date-selector {
 	flex-grow: 1;

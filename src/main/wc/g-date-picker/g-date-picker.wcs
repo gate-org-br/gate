@@ -5,6 +5,10 @@ main
 	width: calc(100% - 40px);
 }
 
+main > section {
+	flex-basis: 400px;
+	align-items: stretch;
+}
 
 g-date-selector {
 	flex-grow: 1;

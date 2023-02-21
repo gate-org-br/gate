@@ -2,18 +2,15 @@
 
 import './g-icon.mjs';
 import './g-selectn.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import handle from './response-handler.mjs';
 
-export default class GSelectNPicker extends GModal
+export default class GSelectNPicker extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 		this.shadowRoot.getElementById("cancel").addEventListener("click",
@@ -39,7 +36,7 @@ export default class GSelectNPicker extends GModal
 
 	set options(options)
 	{
-		this.shadowRoot.querySelector("g-selectn").options = options;
+		setTimeout(() => this.shadowRoot.querySelector("g-selectn").options = options, 0);
 	}
 
 	get options()
@@ -49,7 +46,7 @@ export default class GSelectNPicker extends GModal
 
 	set values(values)
 	{
-		this.shadowRoot.querySelector("g-selectn").value = values;
+		setTimeout(() => this.shadowRoot.querySelector("g-selectn").value = values, 0);
 	}
 
 	get values()
