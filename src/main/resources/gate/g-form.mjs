@@ -12,6 +12,7 @@ template.innerHTML = `
 label {
 	padding: 4px;
 	display: flex;
+	font-size: 16px;
 	grid-column: span 16;
 	flex-direction: column;
 }
@@ -19,7 +20,7 @@ label {
 span {
 	flex-grow: 1;
 	display: block;
-	flex-basis: 32px;
+	flex-basis: 38px;
 }
 
 input,
@@ -33,7 +34,8 @@ select,
 g-selectn {
 	width: 100%;
 	height: 100%;
-	border-radius:  5px;
+	font-size: 16px;
+	border-radius:  3px;
 	border: 1px solid #CCCCCC;
 }
 
@@ -46,6 +48,14 @@ select:invalid,
 textarea:invalid
 {
 	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
+}
+
+input:focus,
+select:focus,
+textarea:focus
+{
+	outline: none;
+	background-color: var(--hovered);
 }
 
 @media only screen and (min-width: 576px) {

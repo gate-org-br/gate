@@ -86,6 +86,7 @@ main > footer {
 	flex-basis: 60px;
 	align-items: stretch;
 	justify-content: stretch;
+	flex-direction: row-reverse;
 	border-top: 1px solid #CCCCCC;
 }
 
@@ -103,6 +104,7 @@ main > footer > button {
 	flex-basis: 140px;
 	border-radius: 3px;
 	align-items: center;
+	text-decoration: none;
 	background-color: #FFFFFF;
 	border: 1px solid #CCCCCC;
 	justify-content: space-between;
@@ -174,4 +176,136 @@ main > footer > button[disabled] {
 main > footer > a:focus,
 main > footer > button:focus{
 	outline: 4px solid var(--hovered);
+}
+
+
+select,
+textarea,
+input[type='text']
+{
+
+}
+
+input,
+select {
+	padding: 8px 4px 8px 4px;
+}
+
+input,
+textarea,
+select,
+g-selectn {
+	width: 100%;
+	height: 100%;
+	font-size: 14px;
+	border-radius:  3px;
+	border: 1px solid #CCCCCC;
+}
+
+textarea {
+	resize: none
+}
+
+input:invalid,
+select:invalid,
+textarea:invalid
+{
+	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
+}
+
+input:focus,
+select:focus,
+textarea:focus
+{
+	outline: none;
+	background-color: var(--hovered);
+}
+
+fieldset {
+	border: none;
+	display: grid;
+	border-radius: 3px;
+	background-color: #EFEFEF;
+	grid-template-columns: repeat(16, 1fr);
+}
+
+fieldset > legend {
+	font-size: 16px;
+	font-weight: bold;
+}
+
+fieldset > * {
+	grid-column: span 16;
+}
+
+fieldset > label {
+	padding: 4px;
+	display: flex;
+	font-size: 14px;
+	grid-column: span 16;
+	flex-direction: column;
+}
+
+fieldset > label > span {
+	flex-grow: 1;
+	display: block;
+	flex-basis: 38px;
+}
+
+@media only screen and (min-width: 576px) {
+	fieldset > *[x1],
+	fieldset > *[data-size="1"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 768px) {
+	fieldset > *[x1],
+	fieldset > *[data-size="1"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[x2],
+	fieldset > *[data-size="2"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 992px) {
+	fieldset > *[x1],
+	fieldset > *[data-size="1"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[x2],
+	fieldset > *[data-size="2"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[x4],
+	fieldset > *[data-size="4"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	fieldset > *[x1],
+	fieldset > *[data-size="1"] {
+		grid-column: span 1;
+	}
+
+	fieldset > *[x2],
+	fieldset > *[data-size="2"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[x4],
+	fieldset > *[data-size="4"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[x8],
+	fieldset > *[data-size="8"] {
+		grid-column: span 8;
+	}
 }

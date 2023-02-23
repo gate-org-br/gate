@@ -75,6 +75,7 @@ template.innerHTML = `
 		</span>
 	</label>
  <style>* {
+	font-size: 16px;
 	box-sizing: border-box
 }
 
@@ -92,7 +93,7 @@ label {
 
 span {
 	display: block;
-	flex-basis: 32px;
+	flex-basis: 38px;
 }
 
 input,
@@ -105,7 +106,7 @@ textarea,
 select {
 	width: 100%;
 	height: 100%;
-	border-radius:  5px;
+	border-radius:  3px;
 	border: 1px solid #CCCCCC;
 }
 
@@ -114,6 +115,14 @@ select:invalid,
 textarea:invalid
 {
 	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
+}
+
+input:focus,
+select:focus,
+textarea:focus
+{
+	outline: none;
+	background-color: var(--hovered);
 }
 
 @media only screen and (min-width: 500px) {
@@ -142,9 +151,7 @@ textarea:invalid
 	label[data-size="8"] {
 		grid-column: span 8;
 	}
-}
-
-</style>`;
+}</style>`;
 
 /* global customElements */
 
@@ -154,7 +161,7 @@ customElements.define('g-field-editor', class extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set value(value)
@@ -247,6 +254,7 @@ customElements.define('g-field-editor', class extends HTMLElement
 		return true;
 
 	}
+
 	attributeChangedCallback()
 	{
 		this.value = JSON.parse(this.getAttribute("value"));

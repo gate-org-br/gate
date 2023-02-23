@@ -10,22 +10,6 @@ import FullScreen from './fullscreen.mjs';
 const ESC = 27;
 const ENTER = 13;
 
-const resize = function (iframe)
-{
-	if (iframe.contentWindow
-		&& !iframe.contentWindow.document
-		&& iframe.contentWindow.document.body
-		&& iframe.contentWindow.document.body.scrollHeight)
-	{
-		let height = Math.max(iframe.contentWindow.document.body.scrollHeight,
-			iframe.parentNode.offsetHeight) + "px";
-		if (iframe.height !== height)
-		{
-			this.iframe.height = "0";
-			this.iframe.height = height;
-		}
-	}
-};
 export default class GDialog extends GWindow
 {
 	constructor()
@@ -64,12 +48,7 @@ export default class GDialog extends GWindow
 		});
 		iframe.dialog = this;
 		iframe.onmouseenter = () => iframe.focus();
-		iframe.addEventListener("load", () =>
-		{
-			resize(iframe);
-			window.addEventListener("refresh_size", () => resize(iframe));
-			iframe.backgroundImage = "none";
-		});
+		iframe.addEventListener("load", () => iframe.backgroundImage = "none");
 		navbar.addEventListener("update", event =>
 		{
 			let iframe = this.shadowRoot.querySelector("iframe");

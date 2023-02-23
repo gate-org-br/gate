@@ -12,10 +12,10 @@ template.innerHTML = `
 {
 	display: grid;
 	margin-top: 16px;
+	background-color: #c3c0b0;
+	border: 4px solid #c3c0b0;
+	border-radius: 8px 8px 0 0;
 	grid-template-rows: auto 1fr;
-	border: var(--g-tab-control-border, 4px solid, #b9b6a7);
-	border-radius: var(--g-tab-control-border-radius, 8px 8px 0 0);
-	background-color: var(--g-tab-control-background-color, #b9b6a7);
 }
 
 :host(:first-child)
@@ -34,10 +34,9 @@ header
 ::slotted(div)
 {
 	display: none;
+	padding : 10px;
 	overflow: hidden;
-	padding : var(--g-tab-control-tab-padding, 10px);
-	background-image: var(--g-tab-control-tab-background-image, none);
-	background-color: var(--g-tab-control-tab-background-color, #c3c0b0);
+	background-color: #b9b6a7;
 }
 
 :host([type='dummy']) ::slotted(div)
@@ -51,23 +50,22 @@ header
 	width: 50%;
 	border: none;
 	padding: 5px;
+	color: black;
 	display: flex;
 	cursor: pointer;
 	font-size: 12px;
 	flex-basis: 50%;
 	align-items: center;
 	text-decoration: none;
+	background-color: #E6E5DC;
+	border-radius: 8px 8px 0 0;
 	justify-content: space-between;
-	color: var(--g-tab-control-button-color, black);
-	border-radius: var(--g-tab-control-button-border-radius, 8px 8px 0 0);
-	background-image: var(--g-tab-control-button-background-image, none);
-	background-color: var(--g-tab-control-button-background-color, #E6E5DC);
 }
 
 ::slotted(a:hover),
 ::slotted(button:hover)
 {
-	color: var(--g-tab-control-hovered-button-color, #CA171B);
+	color: #CA171B;
 }
 
 ::slotted(a:focus),
@@ -80,10 +78,10 @@ header
 ::slotted(a[data-selected=true]),
 ::slotted(button[data-selected=true])
 {
-	color: var(--g-tab-control-selected-button-color, black);
-	background-image: var(--g-tab-control-tab-background-image, none);
-	font-weight: var(--g-tab-control-selected-button-font-weight, bold);
-	background-color: var(--g-tab-control-tab-background-color, #c3c0b0);
+	color: black;
+	font-weight: bold;
+	background-image: none;
+	background-color: #b9b6a7;
 }
 
 @media only screen and (min-width: 768px)

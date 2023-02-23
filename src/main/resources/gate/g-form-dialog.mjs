@@ -1,102 +1,65 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			<label id='caption'></label>
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
-			<fieldset>
-				<g-form>
-				</g-form>
-			</fieldset>
-			<g-coolbar>
-				<a id='commit' href='#'>
-					Concluir<g-icon>&#X1000;</g-icon>
-				</a>
-				<hr/>
-				<a id='cancel' href="#">
-					Cancelar<g-icon>&#X1001;</g-icon>
-				</a>
-			</g-coolbar>
-		</g-window-section>
+		</header>
+		<section>
+			<g-form>
+			</g-form>
+		</section>
+		<footer>
+			<button class='Commit'>
+				Concluir<g-icon>&#X1000;</g-icon>
+			</button>
+			<hr/>
+			<button class='Cancel'>
+				Cancelar<g-icon>&#X1001;</g-icon>
+			</button>
+		</footer>
 	</main>
- <style>* {
-	box-sizing: border-box;
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
 	width: 100%;
-	height: 100%;
-	display: grid;
-	overflow: auto;
-	border-radius: 0;
-	position: relative;
-	grid-template-rows: 40px 1fr;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: var(--g-window-border);
-}
-
-g-window-section
-{
-	padding: 4px;
-	display: grid;
-	align-items: stretch;
-	justify-content: stretch;
-	grid-template-rows: auto 60px;
-}
-
-fieldset {
-	border: none;
-	padding: 12px;
-	border-radius: 5px;
-	border: 1px solid var(--base);
-	background-color: var(--main-shaded10);
+	height: auto;
+	max-height: 100%;
 }
 
 @media only screen and (min-width: 640px)
 {
-	main{
-		border-radius: 5px;
+	main {
+		border-radius: 3px;
 		width: calc(100% - 80px);
-		height: calc(100% - 80px);
+		max-height: calc(100% - 80px);
 	}
+}
+
+g-form {
+	flex-grow: 1;
 }</style>`;
 
 /* global customElements, template, fetch, Promise */
 
 import './g-form.mjs';
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
-import handle from './response-handler.mjs';
+import './g-icon.mjs';
+import GWindow from './g-window.mjs';
+import ResponseHandler from './response-handler.mjs';
 
-export default class GFormDialog extends GModal
+export default class GFormDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		let form = this.shadowRoot.querySelector("g-form");
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
+		this.shadowRoot.querySelector(".Cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
 		{
 			if (form.checkValidity())
 			{
@@ -144,7 +107,7 @@ export default class GFormDialog extends GModal
 	static update(url, caption)
 	{
 		return fetch(url)
-			.then(response => handle(response))
+			.then(response => ResponseHandler.json(response))
 			.then(form => GFormDialog.edit(form, caption))
 			.then(result =>
 			{
@@ -156,7 +119,7 @@ export default class GFormDialog extends GModal
 						headers: {'Content-Type': 'application/json'},
 						body: JSON.stringify(result)});
 			})
-			.then(response => handle(response));
+			.then(response => ResponseHandler.json(response));
 	}
 }
 

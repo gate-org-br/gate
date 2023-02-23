@@ -1,25 +1,23 @@
 /* global customElements, template */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import './g-window-footer.mjs';
+import './g-icon.mjs';
 import './g-field-editor.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GFieldEditorDialog extends GModal
+export default class GFieldEditorDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.innerHTML =
+			this.shadowRoot.innerHTML + template.innerHTML;
 
 		let editor = this.shadowRoot.querySelector("g-field-editor");
 
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
-		this.shadowRoot.getElementById("delete").addEventListener("click", () => this.dispatchEvent(new CustomEvent("delete")) | this.hide());
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
+		this.shadowRoot.querySelector(".Cancel").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector(".Delete").addEventListener("click", () => this.dispatchEvent(new CustomEvent("delete")) | this.hide());
+		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
 		{
 			if (editor.validate())
 			{
@@ -43,9 +41,9 @@ export default class GFieldEditorDialog extends GModal
 	{
 		this.shadowRoot.querySelector("g-field-editor").value = value;
 		if (value)
-			this.shadowRoot.getElementById("delete").removeAttribute("hidden");
+			this.shadowRoot.querySelector(".Delete").removeAttribute("hidden");
 		else
-			this.shadowRoot.getElementById("delete").setAttribute("hidden", "true");
+			this.shadowRoot.querySelector(".Delete").setAttribute("hidden", "true");
 
 	}
 

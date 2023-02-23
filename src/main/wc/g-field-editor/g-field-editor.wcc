@@ -6,7 +6,7 @@ customElements.define('g-field-editor', class extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.innerHTML = template.innerHTML;
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set value(value)
@@ -99,6 +99,7 @@ customElements.define('g-field-editor', class extends HTMLElement
 		return true;
 
 	}
+
 	attributeChangedCallback()
 	{
 		this.value = JSON.parse(this.getAttribute("value"));

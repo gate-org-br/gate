@@ -4,6 +4,11 @@ main {
 	border-radius: 0;
 }
 
+main > section {
+	padding: 0;
+	align-items: stretch;
+}
+
 @media only screen and (min-width: 640px)
 {
 	main{
