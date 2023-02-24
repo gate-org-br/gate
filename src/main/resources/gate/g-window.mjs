@@ -171,8 +171,14 @@ main > footer > button.Cancel:hover {
 }
 
 main > footer > a[disabled],
-main > footer > button[disabled] {
-	filter: grayscale(80%) opacity(40%);
+main > footer > a[disabled]:hover,
+main > footer > button[disabled],
+main > footer > button[disabled]:hover {
+
+	color: #AAAAAA;
+	cursor: not-allowed;
+	filter: opacity(40%);
+	background-color: #CCCCCC;
 }
 
 main > footer > a:focus,

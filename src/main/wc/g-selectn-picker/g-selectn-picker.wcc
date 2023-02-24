@@ -13,10 +13,10 @@ export default class GSelectNPicker extends GWindow
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click",
+		this.shadowRoot.querySelector(".Cancel").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
+		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
 		{
 			let values = this.shadowRoot.querySelector("g-selectn").value;
 			this.dispatchEvent(new CustomEvent("commit", {"detail": values}));
@@ -26,12 +26,12 @@ export default class GSelectNPicker extends GWindow
 
 	set caption(caption)
 	{
-		this.shadowRoot.getElementById("caption").innerHTML = caption;
+		this.shadowRoot.querySelector("label").innerHTML = caption;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.getElementById("caption").innerHTML;
+		return this.shadowRoot.querySelector("label").innerHTML;
 	}
 
 	set options(options)

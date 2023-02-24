@@ -1,29 +1,29 @@
 <template>
 	<main>
-		<header>
-			<label id='caption'>
+		<header part='header'>
+			<label>
 				Selecione
 			</label>
 			<a id='close' href="#">
 				<g-icon>&#X1011;</g-icon>
 			</a>
 		</header>
-		<section>
-			<g-selectn>
+		<section part='section'>
+			<g-selectn part='selector'>
 			</g-selectn>
 		</section>
-		<footer>
-			<button id='cancel' class="Cancel">
-				Cancelar
-				<g-icon>
-					&#X1001;
-				</g-icon>
-			</button>
-			<hr/>
-			<button id='commit' class="Commit">
+		<footer part='footer'>
+			<button class="Commit">
 				Concluir
 				<g-icon>
 					&#X1000;
+				</g-icon>
+			</button>
+			<hr/>
+			<button class="Cancel">
+				Cancelar
+				<g-icon>
+					&#X1001;
 				</g-icon>
 			</button>
 		</footer>

@@ -1,30 +1,30 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<header>
-			<label id='caption'>
+		<header part='header'>
+			<label>
 				Selecione
 			</label>
 			<a id='close' href="#">
 				<g-icon>&#X1011;</g-icon>
 			</a>
 		</header>
-		<section>
-			<g-selectn>
+		<section part='section'>
+			<g-selectn part='selector'>
 			</g-selectn>
 		</section>
-		<footer>
-			<button id='cancel' class="Cancel">
-				Cancelar
-				<g-icon>
-					&#X1001;
-				</g-icon>
-			</button>
-			<hr/>
-			<button id='commit' class="Commit">
+		<footer part='footer'>
+			<button class="Commit">
 				Concluir
 				<g-icon>
 					&#X1000;
+				</g-icon>
+			</button>
+			<hr/>
+			<button class="Cancel">
+				Cancelar
+				<g-icon>
+					&#X1001;
 				</g-icon>
 			</button>
 		</footer>
@@ -59,10 +59,10 @@ export default class GSelectNPicker extends GWindow
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click",
+		this.shadowRoot.querySelector(".Cancel").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
+		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
 		{
 			let values = this.shadowRoot.querySelector("g-selectn").value;
 			this.dispatchEvent(new CustomEvent("commit", {"detail": values}));
@@ -72,12 +72,12 @@ export default class GSelectNPicker extends GWindow
 
 	set caption(caption)
 	{
-		this.shadowRoot.getElementById("caption").innerHTML = caption;
+		this.shadowRoot.querySelector("label").innerHTML = caption;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.getElementById("caption").innerHTML;
+		return this.shadowRoot.querySelector("label").innerHTML;
 	}
 
 	set options(options)

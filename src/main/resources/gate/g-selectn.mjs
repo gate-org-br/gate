@@ -7,9 +7,8 @@ template.innerHTML = `
 	display: grid;
 	overflow: auto;
 	overflow-y: auto;
-	border-radius: 5px;
-	align-items: center;
-	justify-items: stretch;
+	border-radius: 3px;
+	align-content: start;
 	background-color: white;
 	grid-template-columns: 24px 1fr;
 }
@@ -40,7 +39,9 @@ template.innerHTML = `
 }
 
 label {
-	cursor: pointer
+	display: flex;
+	cursor: pointer;
+	align-items: center;
 }
 </style>`;
 
