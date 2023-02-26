@@ -1,5 +1,5 @@
 fieldset {
-	gap: 4px;
+	gap: 8px;
 	border: none;
 	display: grid;
 	margin-top: 10px;
@@ -65,6 +65,7 @@ fieldset {
 		> form {
 			flex-grow: 1;
 			display: flex;
+			max-height: 38px;
 			flex-basis: 38px;
 			text-indent: 4px;
 			border-radius: 3px;
@@ -109,15 +110,6 @@ fieldset {
 				background-color: var(--hovered);
 			}
 
-			* + a,
-			* + input,
-			* + button,
-			* + command,
-			* + select  {
-				border-left: 1px solid #CCCCCC;
-			}
-
-
 			> a,
 			> button,
 			> .g-command
@@ -128,11 +120,21 @@ fieldset {
 				display: flex;
 				text-indent: 0;
 				flex-shrink: 0;
-				min-width: 48px;
-				flex-basis: 48px;
+				min-width: 32px;
+				flex-basis: 32px;
 				align-items: stretch;
 				text-decoration: none;
 				justify-content: center;
+				border-left: 1px solid #CCCCCC;
+				border-right: 1px solid #CCCCCC;
+
+				&:first-child {
+					border-left: none;
+				}
+
+				&:last-child {
+					border-right: none;
+				}
 
 				> i, > g-icon {
 					flex-grow: 1;
@@ -142,10 +144,8 @@ fieldset {
 					justify-content: center;
 				}
 
-				&:hover {
-					background-color: var(--acent);
-				}
-				&:focus {
+				&:hover,
+					&:focus {
 					background-color: var(--hovered);
 				}
 			}
@@ -158,7 +158,24 @@ fieldset {
 				margin-left: 16px;
 				margin-right: 16px;
 			}
+
+			> i, > g-icon {
+				order: 1000;
+				border: none;
+				height: 100%;
+				display: flex;
+				color: #999999;
+				text-indent: 0;
+				flex-basis: 32px;
+				align-items: center;
+				justify-content: center;
+				background-color: white;
+			}
 		}
+	}
+
+	> fieldset {
+		margin: 0;
 	}
 }
 

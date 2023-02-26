@@ -1,5 +1,5 @@
 fieldset {
-  gap: 4px;
+  gap: 8px;
   border: none;
   display: grid;
   margin-top: 10px;
@@ -58,6 +58,7 @@ fieldset > label > span,
 fieldset > label > form {
   flex-grow: 1;
   display: flex;
+  max-height: 38px;
   flex-basis: 38px;
   text-indent: 4px;
   border-radius: 3px;
@@ -108,18 +109,6 @@ fieldset > label > form textarea:focus {
   outline: none;
   background-color: var(--hovered);
 }
-fieldset > label > span * + a,
-fieldset > label > form * + a,
-fieldset > label > span * + input,
-fieldset > label > form * + input,
-fieldset > label > span * + button,
-fieldset > label > form * + button,
-fieldset > label > span * + command,
-fieldset > label > form * + command,
-fieldset > label > span * + select,
-fieldset > label > form * + select {
-  border-left: 1px solid #CCCCCC;
-}
 fieldset > label > span > a,
 fieldset > label > form > a,
 fieldset > label > span > button,
@@ -132,11 +121,29 @@ fieldset > label > form > .g-command {
   display: flex;
   text-indent: 0;
   flex-shrink: 0;
-  min-width: 48px;
-  flex-basis: 48px;
+  min-width: 32px;
+  flex-basis: 32px;
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
+  border-left: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+}
+fieldset > label > span > a:first-child,
+fieldset > label > form > a:first-child,
+fieldset > label > span > button:first-child,
+fieldset > label > form > button:first-child,
+fieldset > label > span > .g-command:first-child,
+fieldset > label > form > .g-command:first-child {
+  border-left: none;
+}
+fieldset > label > span > a:last-child,
+fieldset > label > form > a:last-child,
+fieldset > label > span > button:last-child,
+fieldset > label > form > button:last-child,
+fieldset > label > span > .g-command:last-child,
+fieldset > label > form > .g-command:last-child {
+  border-right: none;
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
@@ -161,9 +168,7 @@ fieldset > label > form > a:hover,
 fieldset > label > span > button:hover,
 fieldset > label > form > button:hover,
 fieldset > label > span > .g-command:hover,
-fieldset > label > form > .g-command:hover {
-  background-color: var(--acent);
-}
+fieldset > label > form > .g-command:hover,
 fieldset > label > span > a:focus,
 fieldset > label > form > a:focus,
 fieldset > label > span > button:focus,
@@ -180,6 +185,24 @@ fieldset > label > form > input[type='radio'] {
   flex-basis: 16px;
   margin-left: 16px;
   margin-right: 16px;
+}
+fieldset > label > span > i,
+fieldset > label > form > i,
+fieldset > label > span > g-icon,
+fieldset > label > form > g-icon {
+  order: 1000;
+  border: none;
+  height: 100%;
+  display: flex;
+  color: #999999;
+  text-indent: 0;
+  flex-basis: 32px;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+fieldset > fieldset {
+  margin: 0;
 }
 @media only screen and (min-width: 576px) {
   fieldset > *[data-size="1"] {
