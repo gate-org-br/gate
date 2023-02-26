@@ -2,8 +2,6 @@
 	<div id='container'>
 		<slot>
 		</slot>
-		<span>
-		</span>
 		<a id='more' href='#'>
 			&#X3018;
 		</a>

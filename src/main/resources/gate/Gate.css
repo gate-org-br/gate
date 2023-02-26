@@ -251,6 +251,7 @@ small {
 	pointer-events: none;
 }
 
+
 input[type='text'],
 input[type='password'],
 input[type='file'],
@@ -258,7 +259,6 @@ textarea,
 select {
 	width: 100%;
 	background-color: white;
-	border: 1px solid #CCCCCC;
 }
 
 input[type='text']:focus,
@@ -274,7 +274,6 @@ input[type='text']:hover,
 input[type='password']:hover,
 input[type='file']:hover,
 textarea:hover,
-select:focus {
+select:hover {
 	outline: none;
-	border-color: var(--hovered);
 }

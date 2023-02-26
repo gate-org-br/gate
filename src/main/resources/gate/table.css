@@ -1,52 +1,16 @@
-th[data-chart],
-td[data-chart] {
-  cursor: pointer;
-  color: var(--b);
-}
-th[data-chart]::before,
-td[data-chart]::before {
-  font-size: 10px;
-  content: '\2031';
-  font-family: gate;
-  margin-right: 4px;
-  text-decoration: none;
-}
-th[data-chart='pchart']::before,
-td[data-chart='pchart']::before {
-  content: '\2031';
-}
-th[data-chart='cchart']::before,
-td[data-chart='cchart']::before {
-  content: '\2033';
-}
-th[data-chart='lchart']::before,
-td[data-chart='lchart']::before {
-  content: '\2032';
-}
-th[data-chart='dchart']::before,
-td[data-chart='dchart']::before {
-  content: '\2245';
-}
-th[data-chart='rchart']::before,
-td[data-chart='rchart']::before {
-  content: '\2247';
-}
-th[data-chart='bchart']::before,
-td[data-chart='bchart']::before {
-  content: '\2246';
-}
 table {
-  margin: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
   width: 100%;
   border: none;
   color: black;
   font-weight: normal;
   table-layout: fixed;
-  border-spacing: 1px;
+  border-spacing: 0px;
   text-decoration: none;
-  background-color: #EEEEEE;
+  border-collapse: collapse;
+  border: 1px solid #E8E8E8;
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 table:first-child {
   margin-top: 0px;
@@ -70,45 +34,40 @@ table > * > tr > * > fieldset {
   padding: 0;
 }
 table tr {
-  height: 32px;
+  height: 38px;
 }
-table tr th {
+table tr > * {
   padding: 4px;
   text-align: left;
   vertical-align: middle;
-  background-color: var(--table-head-background-color);
-  background-image: var(--table-head-background-image);
+  border: 1px solid #E8E8E8;
 }
-table tr th a,
-table tr th button,
-table tr th .g-command {
+table tr > * a,
+table tr > * button,
+table tr > * .g-command {
   border: 0;
   padding: 0;
   color: var(--b);
   font-size: 12px;
   cursor: pointer;
   background: none;
-  font-weight: normal;
+  font-weight: inherit;
   text-decoration: none;
 }
-table tr td {
-  padding: 4px;
-  text-align: left;
-  word-break: normal;
-  vertical-align: middle;
-  background-color: transparent;
+table tr th {
+  font-weight: bold;
 }
-table tr td > select:only-child,
-table tr td > textarea:only-child,
-table tr td > input[type='text']:only-child,
-table tr td > input[type='password']:only-child {
-  width: 100%;
-  height: 32px;
-  text-indent: 4px;
+table tr td {
+  word-break: normal;
+  background-color: transparent;
 }
 table tr td > form {
   height: 32px;
 }
+table tr td > select:only-child,
+table tr td > textarea:only-child,
+table tr td > input[type='text']:only-child,
+table tr td > input[type='password']:only-child,
 table tr td > form > select:only-child,
 table tr td > form > textarea:only-child,
 table tr td > form > input[type='text']:only-child,
@@ -116,48 +75,21 @@ table tr td > form > input[type='password']:only-child {
   width: 100%;
   height: 32px;
   text-indent: 4px;
-}
-table tr td.TOOLTIP {
-  color: blue;
-  padding: 12px;
-  background-image: none;
-  border: 1px dashed gray;
-  background-color: #F0F0F4;
-}
-table tr td.SEPARATOR {
-  height: 0px;
-  color: blue;
-  margin: 0px;
-  padding: 0px;
-  background-image: none;
-  border: 1px dotted gray;
-  background-color: #CBCAC9;
-}
-table tr td a,
-table tr td button,
-table tr td .g-command {
-  border: 0;
-  padding: 0;
-  color: var(--b);
-  font-size: 12px;
-  cursor: pointer;
-  background: none;
-  font-weight: normal;
-  text-decoration: none;
+  border-radius: 3px;
+  border: 1px solid #DDDDDD;
 }
 table > caption {
   height: 32px;
-  color: white;
   line-height: 32px;
   font-weight: bold;
   text-align: center;
   vertical-align: middle;
-  border-radius: 5px 5px 0px 0px;
-  background-color: var(--table-caption-background-color);
-  background-image: var(--table-caption-background-image);
+  background-color: #E8E8E8;
+  border-radius: 3px 3px 0 0;
 }
-table > thead > tr {
-  background-color: var(--main-tinted50);
+table > thead > tr > * {
+  background-color: white;
+  border-bottom: 1px solid #d0dae0;
 }
 table > tbody > tr:nth-child(even) {
   background-color: var(--table-body-background-color-even);
@@ -176,20 +108,14 @@ table > tbody > tr[data-value],
 table > tbody > tr[data-ret] {
   cursor: pointer;
 }
-table > tbody > tr[data-action]:focus,
-table > tbody > tr[data-value]:focus,
-table > tbody > tr[data-ret]:focus {
+table > tbody > tr[data-action]:hover,
+table > tbody > tr[data-value]:hover,
+table > tbody > tr[data-ret]:hover {
   background-color: var(--hovered);
 }
-table > tfoot > tr {
-  background-color: var(--table-foot-background-color);
-  background-image: var(--table-foot-background-image);
-}
-table > tfoot > tr th:only-child {
-  text-align: right;
-}
-table > tfoot > tr td:only-child {
-  text-align: right;
+table > tfoot > tr > * {
+  font-weight: bold;
+  border-bottom: 1px solid #d0dae0;
 }
 table.c1 > * > tr > *:nth-child(1),
 table.cge1 > * > tr > *:nth-child(n+1),
@@ -242,8 +168,8 @@ td > label > span,
 th > label > span {
   right: 2px;
   color: gray;
-  font-size: 10px
-			position: absolute;
+  font-size: 10px;
+  position: absolute;
 }
 @media only screen and (max-width: 576px) {
   table[data-collapse="Phone"] {
@@ -1620,17 +1546,40 @@ th > label > span {
     justify-content: center;
   }
 }
-div[data-column-sticker] {
-  overflow: auto;
+th[data-chart],
+td[data-chart] {
+  cursor: pointer;
+  color: var(--b);
 }
-div[data-column-sticker] > table {
-  position: relative;
+th[data-chart]::before,
+td[data-chart]::before {
+  font-size: 10px;
+  content: '\2031';
+  font-family: gate;
+  margin-right: 4px;
+  text-decoration: none;
 }
-div[data-column-sticker] > table > thead > tr > th {
-  position: sticky;
-  top: 0;
+th[data-chart='pchart']::before,
+td[data-chart='pchart']::before {
+  content: '\2031';
 }
-div[data-column-sticker] > table > tfoot > tr > th {
-  position: sticky;
-  bottom: 0;
+th[data-chart='cchart']::before,
+td[data-chart='cchart']::before {
+  content: '\2033';
+}
+th[data-chart='lchart']::before,
+td[data-chart='lchart']::before {
+  content: '\2032';
+}
+th[data-chart='dchart']::before,
+td[data-chart='dchart']::before {
+  content: '\2245';
+}
+th[data-chart='rchart']::before,
+td[data-chart='rchart']::before {
+  content: '\2247';
+}
+th[data-chart='bchart']::before,
+td[data-chart='bchart']::before {
+  content: '\2246';
 }

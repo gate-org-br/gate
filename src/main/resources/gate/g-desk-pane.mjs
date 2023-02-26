@@ -48,17 +48,17 @@ template.innerHTML = `
 	align-items: center;
 	font-weight: inherit;
 	border: 2px solid white;
+	background-color: #E8E8E8;
+	border: 1px solid #E0E0E0;
 	justify-content: flex-start;
 	flex-basis: calc(100% - 8px);
-	background-image: linear-gradient(to bottom, var(--main-tinted70), var(--main-shaded10));
 }
 
 ::slotted(a:hover),
 ::slotted(button:hover),
 ::slotted(g-desk-pane:hover)
 {
-	border-color: #FFFACD;
-	background-image: linear-gradient(to bottom, var(--main-tinted80), var(--main));
+	background-color:  #FFFACD;
 }
 
 ::slotted(a[x8]),

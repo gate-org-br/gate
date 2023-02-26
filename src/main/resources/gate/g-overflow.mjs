@@ -3,8 +3,6 @@ template.innerHTML = `
 	<div id='container'>
 		<slot>
 		</slot>
-		<span>
-		</span>
 		<a id='more' href='#'>
 			&#X3018;
 		</a>
@@ -15,10 +13,6 @@ template.innerHTML = `
 	display:  flex;
 	white-space: nowrap;
 	flex-direction: inherit;
-}
-
-span {
-	flex-grow: 1;
 }
 
 #more {

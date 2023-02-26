@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>LinQ - Plataforma de Telefonia</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+
+	<main>
+		<header>
+			<img src='Logo.png' />
+			<label>LinQ</label>
+			<label>Versão 10.6.0-SNAPSHOT</label>
+		</header>
+
+		<nav>
+			<g-tabbar>
+				<a href='Gate?MODULE=linq.modulos.configuracoes' title='Configurações'
+					target='_top'>Configurações<i>&#X2020;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.gerencia' title='Gerência' target='_top'>Gerência<i>&#X2059;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter' title='Call Center' target='_top'>Call
+					Center<i>&#X2155;</i></a>
+				<a href='Gate?MODULE=linq.modulos.ramais' title='Ramais' target='_top'>Ramais<i>&#X2223;</i></a>
+				<a href='Gate?MODULE=linq.modulos.gravacao' title='Gravação' target='_top'>Gravação<i>&#X2087;</i></a>
+				<a href='Gate?MODULE=linq.modulos.tarifacao' title='Tarifação'
+					target='_top'>Tarifação<i>&#X2094;</i></a>
+				<a href='Gate?MODULE=linq.modulos.inventario' title='Inventário'
+					target='_top'>Inventário<i>&#X2090;</i></a>
+				<a href='Gate?MODULE=linq.modulos.relatorios' title='Relatórios'
+					target='_top'>Relatórios<i>&#X2021;</i></a>
+				<a href='Gate?MODULE=linq.modulos.mensageiro' title='Mensageiro'
+					target='_top'>Mensageiro<i>&#X2034;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.importacao' title='Importação'
+					target='_top'>Importação<i>&#X2181;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.ajuda' title='Ajuda' target='_top'>Ajuda<i>&#X2122;</i></a>
+				<hr />
+				<a href='Gate'>Sair<i>&#X2007;</i></a>
+			</g-tabbar>
+		</nav>
+
+		<section>
+
+
+
+
+
+			<form method="post" action="Gate?MODULE=linq.modulos.callCenter&SCREEN=&ACTION=Change">
+				<fieldset>
+					<legend>
+						Call Center
+						<i>&#x2155;</i>
+					</legend>
+					<label>
+						<span>
+							<select maxlength='10' groupedBy='central.nome' data-method='post' name='callCenter.id'
+								pattern='^[0-9]{1,10}$'
+								data-action='Gate?MODULE=linq.modulos.callCenter&SCREEN=&ACTION=Change'
+								title='Qual o id do call center?'>
+								<option value=''></option>
+								<option value='0000000101' selected='selected'>Pós Vendas-11</option>
+								<option value='0000000103'>Pós Vendas-16</option>
+								<option value='0000000102'>Prospecção de Clientes-11</option>
+								<option value='0000000105'>Prospecção de Clientes-16</option>
+								<option value='0000000097'>Vendas-11</option>
+								<option value='0000000104'>Vendas-16</option>
+							</select>
+
+							<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Configuracao' title='Configurações'
+								target='_dialog'><i>&#X2020;</i></a>
+						</span>
+					</label>
+				</fieldset>
+			</form>
+
+
+
+
+
+
+			<fieldset>
+				<g-desk-pane>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelOperador' title='Painel Operador'>Painel
+						Operador<i>&#X2004;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelSupervisor'
+						title='Painel Supervisor'>Painel Supervisor<i>&#X2059;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador'
+						title='Operadores'>Operadores<i>&#X2005;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Fila' title='Filas'>Filas<i>&#X2231;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Campanha'
+						title='Campanhas'>Campanhas<i>&#X2232;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada'
+						title='Jornadas'>Jornadas<i>&#X2167;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Recebida'
+						title='Recebidas'>Recebidas<i>&#X2226;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Efetuada'
+						title='Efetuadas'>Efetuadas<i>&#X2227;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Sessao'
+						title='Sessões'>Sessões<i>&#X2016;</i></a>
+					<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Pesquisa'
+						title='Pesquisas'>Pesquisas<i>&#X2146;</i></a>
+				</g-desk-pane>
+			</fieldset>
+		</section>
+
+
+		<footer>
+
+			<label>Homologação</label>
+			<label>Davi Silva</label>
+		</footer>
+
+	</main>
+</body>
+
+</html>

@@ -6,6 +6,7 @@ template.innerHTML = `
 
 :host(*)
 {
+	color: black;
 	border: none;
 	height: auto;
 	flex-grow: 1;
@@ -13,9 +14,6 @@ template.innerHTML = `
 	overflow: hidden;
 	align-items: stretch;
 	justify-content: flex-start;
-	color: var(--g-tabbar-color);
-	background-color:  var(--g-tabbar-background-color);
-	background-image:  var(--g-tabbar-background-image);
 }
 
 ::slotted(a),
@@ -23,7 +21,7 @@ template.innerHTML = `
 ::slotted(.g-command)
 {
 	margin: 4px;
-	padding: 4px;
+	padding: 6px;
 	height: auto;
 	flex-grow: 1;
 	display: flex;
@@ -43,18 +41,14 @@ template.innerHTML = `
 ::slotted(button[aria-selected]),
 ::slotted(.g-command[aria-selected])
 {
-	color: var(--g-tabbar-selected-color);
-	background-color:  var(--g-tabbar-selected-background-color);
-	background-image:  var(--g-tabbar-selected-background-image);
+	background-color: #E8E8E8;
 }
 
 ::slotted(a:hover),
 ::slotted(button:hover),
 ::slotted(.g-command:hover)
 {
-	color: var(--g-tabbar-hovered-color);
-	background-color:  var(--g-tabbar-hovered-background-color);
-	background-image:  var(--g-tabbar-hovered-background-image);
+	background-color:  #FFFACD;
 }
 
 ::slotted(a:focus),

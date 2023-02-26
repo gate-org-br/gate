@@ -2,45 +2,12 @@ fieldset {
   gap: 4px;
   border: none;
   display: grid;
-  border-radius: 5px;
-  background-color: var(--main-shaded10);
-  grid-template-columns: repeat(16, 1fr);
-  margin: 0;
   margin-top: 10px;
+  border-radius: 3px;
   margin-bottom: 10px;
-}
-fieldset * {
-  font-size: 16px;
-}
-@media only screen and (min-width: 768px) {
-  fieldset * {
-    font-size: 12px;
-  }
-}
-fieldset > legend {
-  padding: 6px;
-  color: black;
-  display: flex;
-  font-weight: bold;
-  border-radius: 5px;
-  align-items: center;
-  background-color: var(--base);
-  box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, 0.4);
-}
-fieldset > legend > i {
-  order: -1;
-  margin-right: 4px;
-}
-fieldset > legend > img {
-  order: -1;
-  width: 20px;
-  height: 20px;
-  margin-right: 4px;
-}
-fieldset > legend > label {
-  height: 20px;
-  display: flex;
-  align-items: center;
+  background-color: #F8F8F8;
+  border: 1px solid #E8E8E8;
+  grid-template-columns: repeat(16, 1fr);
 }
 fieldset:first-child {
   margin-top: 0px;
@@ -51,163 +18,138 @@ fieldset:last-child {
 fieldset:only-child {
   margin-bottom: 0px;
 }
-fieldset legend + fieldset {
-  margin: 0;
+fieldset > * {
+  grid-column: span 16;
+}
+fieldset > legend {
+  padding: 6px;
+  display: flex;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 3px;
+  align-items: center;
+  background-color: #E8E8E8;
+}
+fieldset > legend > i,
+fieldset > legend > g-icon {
+  order: -1;
+  margin-right: 4px;
+  font-size: inherit;
+}
+fieldset > legend > img {
+  order: -1;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+fieldset > legend label {
+  height: 20px;
+  display: flex;
+  align-items: center;
 }
 fieldset > label {
   padding: 4px;
   display: flex;
-  align-items: stretch;
+  font-size: 14px;
+  grid-column: span 16;
   flex-direction: column;
 }
 fieldset > label > span,
-fieldset > fieldset > span,
-fieldset > label > form,
-fieldset > fieldset > form {
+fieldset > label > form {
   flex-grow: 1;
   display: flex;
+  flex-basis: 38px;
   text-indent: 4px;
-  min-height: 32px;
-  line-height: 32px;
-  overflow: hidden;
-  border-radius: 5px;
-  position: relative;
-  white-space: nowrap;
-  align-items: stretch;
-  text-overflow: ellipsis;
-  background-color: var(--main-tinted50);
+  border-radius: 3px;
+  align-items: center;
+  border: 1px solid #CCCCCC;
+  background-color: #F4F4F4;
 }
 fieldset > label > span > *,
-fieldset > fieldset > span > *,
-fieldset > label > form > *,
-fieldset > fieldset > form > * {
-  color: black;
-  border: 1px solid #CCCCCC;
+fieldset > label > form > * {
+  border: none;
 }
-fieldset > label > span > *:first-child,
-fieldset > fieldset > span > *:first-child,
-fieldset > label > form > *:first-child,
-fieldset > fieldset > form > *:first-child {
-  border-radius: 5px 0 0 5px;
+fieldset > label > span input,
+fieldset > label > form input,
+fieldset > label > span select,
+fieldset > label > form select {
+  padding: 8px 4px 8px 4px;
 }
-fieldset > label > span > *:first-child > *,
-fieldset > fieldset > span > *:first-child > *,
-fieldset > label > form > *:first-child > *,
-fieldset > fieldset > form > *:first-child > * {
-  border-radius: 5px 0 0 5px;
-}
-fieldset > label > span > *:last-child,
-fieldset > fieldset > span > *:last-child,
-fieldset > label > form > *:last-child,
-fieldset > fieldset > form > *:last-child {
-  border-radius: 0 5px 5px 0;
-}
-fieldset > label > span > *:last-child > *,
-fieldset > fieldset > span > *:last-child > *,
-fieldset > label > form > *:last-child > *,
-fieldset > fieldset > form > *:last-child > * {
-  border-radius: 0 5px 5px 0;
-}
-fieldset > label > span > *:only-child,
-fieldset > fieldset > span > *:only-child,
-fieldset > label > form > *:only-child,
-fieldset > fieldset > form > *:only-child {
-  border-radius: 5px;
-}
-fieldset > label > span > *:only-child > *,
-fieldset > fieldset > span > *:only-child > *,
-fieldset > label > form > *:only-child > *,
-fieldset > fieldset > form > *:only-child > * {
-  border-radius: 5px;
-}
-fieldset > label > span > input,
-fieldset > fieldset > span > input,
-fieldset > label > form > input,
-fieldset > fieldset > form > input,
-fieldset > label > span > label,
-fieldset > fieldset > span > label,
-fieldset > label > form > label,
-fieldset > fieldset > form > label,
-fieldset > label > span > select,
-fieldset > fieldset > span > select,
-fieldset > label > form > select,
-fieldset > fieldset > form > select {
+fieldset > label > span input,
+fieldset > label > form input,
+fieldset > label > span textarea,
+fieldset > label > form textarea,
+fieldset > label > span select,
+fieldset > label > form select,
+fieldset > label > span g-selectn,
+fieldset > label > form g-selectn {
+  height: 100%;
   flex-grow: 1;
-  text-indent: 4px;
-  line-height: 100%;
+  font-size: 14px;
 }
-fieldset > label > span > g-selectn,
-fieldset > fieldset > span > g-selectn,
-fieldset > label > form > g-selectn,
-fieldset > fieldset > form > g-selectn {
-  flex-grow: 1;
-  line-height: normal;
+fieldset > label > span textarea,
+fieldset > label > form textarea {
+  resize: none;
 }
-fieldset > label > span > input[type="file"],
-fieldset > fieldset > span > input[type="file"],
-fieldset > label > form > input[type="file"],
-fieldset > fieldset > form > input[type="file"],
-fieldset > label > span > input[type="FILE"],
-fieldset > fieldset > span > input[type="FILE"],
-fieldset > label > form > input[type="FILE"],
-fieldset > fieldset > form > input[type="FILE"] {
-  padding: 0;
+fieldset > label > span input:invalid,
+fieldset > label > form input:invalid,
+fieldset > label > span select:invalid,
+fieldset > label > form select:invalid,
+fieldset > label > span textarea:invalid,
+fieldset > label > form textarea:invalid {
+  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
 }
-fieldset > label > span > input[type="radio"],
-fieldset > fieldset > span > input[type="radio"],
-fieldset > label > form > input[type="radio"],
-fieldset > fieldset > form > input[type="radio"],
-fieldset > label > span > input[type="checkbox"],
-fieldset > fieldset > span > input[type="checkbox"],
-fieldset > label > form > input[type="checkbox"],
-fieldset > fieldset > form > input[type="checkbox"],
-fieldset > label > span > input[type="RADIO"],
-fieldset > fieldset > span > input[type="RADIO"],
-fieldset > label > form > input[type="RADIO"],
-fieldset > fieldset > form > input[type="RADIO"],
-fieldset > label > span > input[type="CHECKBOX"],
-fieldset > fieldset > span > input[type="CHECKBOX"],
-fieldset > label > form > input[type="CHECKBOX"],
-fieldset > fieldset > form > input[type="CHECKBOX"] {
-  margin: 8px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 16px;
+fieldset > label > span input:focus,
+fieldset > label > form input:focus,
+fieldset > label > span select:focus,
+fieldset > label > form select:focus,
+fieldset > label > span textarea:focus,
+fieldset > label > form textarea:focus {
+  outline: none;
+  background-color: var(--hovered);
+}
+fieldset > label > span * + a,
+fieldset > label > form * + a,
+fieldset > label > span * + input,
+fieldset > label > form * + input,
+fieldset > label > span * + button,
+fieldset > label > form * + button,
+fieldset > label > span * + command,
+fieldset > label > form * + command,
+fieldset > label > span * + select,
+fieldset > label > form * + select {
+  border-left: 1px solid #CCCCCC;
 }
 fieldset > label > span > a,
-fieldset > fieldset > span > a,
 fieldset > label > form > a,
-fieldset > fieldset > form > a,
 fieldset > label > span > button,
-fieldset > fieldset > span > button,
 fieldset > label > form > button,
-fieldset > fieldset > form > button,
 fieldset > label > span > .g-command,
-fieldset > fieldset > span > .g-command,
-fieldset > label > form > .g-command,
-fieldset > fieldset > form > .g-command {
+fieldset > label > form > .g-command {
+  color: black;
+  height: 100%;
   flex-grow: 0;
   display: flex;
   text-indent: 0;
   flex-shrink: 0;
-  min-width: 32px;
-  flex-basis: 32px;
+  min-width: 48px;
+  flex-basis: 48px;
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
 }
 fieldset > label > span > a > i,
-fieldset > fieldset > span > a > i,
 fieldset > label > form > a > i,
-fieldset > fieldset > form > a > i,
 fieldset > label > span > button > i,
-fieldset > fieldset > span > button > i,
 fieldset > label > form > button > i,
-fieldset > fieldset > form > button > i,
 fieldset > label > span > .g-command > i,
-fieldset > fieldset > span > .g-command > i,
 fieldset > label > form > .g-command > i,
-fieldset > fieldset > form > .g-command > i {
+fieldset > label > span > a > g-icon,
+fieldset > label > form > a > g-icon,
+fieldset > label > span > button > g-icon,
+fieldset > label > form > button > g-icon,
+fieldset > label > span > .g-command > g-icon,
+fieldset > label > form > .g-command > g-icon {
   flex-grow: 1;
   display: flex;
   text-indent: 0;
@@ -215,189 +157,65 @@ fieldset > fieldset > form > .g-command > i {
   justify-content: center;
 }
 fieldset > label > span > a:hover,
-fieldset > fieldset > span > a:hover,
 fieldset > label > form > a:hover,
-fieldset > fieldset > form > a:hover,
 fieldset > label > span > button:hover,
-fieldset > fieldset > span > button:hover,
 fieldset > label > form > button:hover,
-fieldset > fieldset > form > button:hover,
 fieldset > label > span > .g-command:hover,
-fieldset > fieldset > span > .g-command:hover,
-fieldset > label > form > .g-command:hover,
-fieldset > fieldset > form > .g-command:hover {
+fieldset > label > form > .g-command:hover {
   background-color: var(--acent);
 }
 fieldset > label > span > a:focus,
-fieldset > fieldset > span > a:focus,
 fieldset > label > form > a:focus,
-fieldset > fieldset > form > a:focus,
 fieldset > label > span > button:focus,
-fieldset > fieldset > span > button:focus,
 fieldset > label > form > button:focus,
-fieldset > fieldset > form > button:focus,
 fieldset > label > span > .g-command:focus,
-fieldset > fieldset > span > .g-command:focus,
-fieldset > label > form > .g-command:focus,
-fieldset > fieldset > form > .g-command:focus {
+fieldset > label > form > .g-command:focus {
   background-color: var(--hovered);
 }
-fieldset > label > span label,
-fieldset > fieldset > span label,
-fieldset > label > form label,
-fieldset > fieldset > form label,
-fieldset > label > span textarea,
-fieldset > fieldset > span textarea,
-fieldset > label > form textarea,
-fieldset > fieldset > form textarea {
-  height: 100%;
-}
-fieldset > label > span > i,
-fieldset > fieldset > span > i,
-fieldset > label > form > i,
-fieldset > fieldset > form > i,
-fieldset > label > span > g-icon,
-fieldset > fieldset > span > g-icon,
-fieldset > label > form > g-icon,
-fieldset > fieldset > form > g-icon {
-  right: 0px;
-  width: 32px;
-  height: 100%;
-  display: flex;
-  color: #999999;
-  text-indent: 0;
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  background-color: transparent;
-  border: 1px solid transparent;
-}
-fieldset > div {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: white;
-  border: 4px solid var(--main-shaded10);
-}
-fieldset > ul,
-fieldset > div > ul {
-  margin: 4px;
-  padding: 6px;
-  flex-grow: 1;
-  overflow: auto;
-  border-radius: 5px;
-  list-style-type: none;
-  background-color: white;
-}
-fieldset > ul ul,
-fieldset > div > ul ul {
-  list-style-type: none;
-}
-fieldset > ul li,
-fieldset > div > ul li {
-  cursor: pointer;
-}
-fieldset > ul li > label,
-fieldset > div > ul li > label {
-  height: 24px;
-  display: flex;
-  font-size: 12px;
-  cursor: inherit;
-  align-items: center;
-  justify-content: flex-start;
-}
-fieldset > ul li > label:hover,
-fieldset > div > ul li > label:hover {
-  background-color: var(--hovered);
-}
-fieldset > ul li > label > input,
-fieldset > div > ul li > label > input {
-  order: -1;
-  cursor: inherit;
-  margin-top: -1px;
-}
-fieldset > * {
-  grid-column: span 16;
+fieldset > label > span > input[type='checkbox'],
+fieldset > label > form > input[type='checkbox'],
+fieldset > label > span > input[type='radio'],
+fieldset > label > form > input[type='radio'] {
+  margin: 0;
+  flex-basis: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
 }
 @media only screen and (min-width: 576px) {
-  fieldset > *.x1,
-  fieldset > *[x1],
   fieldset > *[data-size="1"] {
     grid-column: span 8;
   }
 }
 @media only screen and (min-width: 768px) {
-  fieldset > *.x1,
-  fieldset > *[x1],
   fieldset > *[data-size="1"] {
     grid-column: span 4;
   }
+  fieldset > *[data-size="2"] {
+    grid-column: span 8;
+  }
 }
 @media only screen and (min-width: 992px) {
-  fieldset > *.x1,
-  fieldset > *[x1],
   fieldset > *[data-size="1"] {
     grid-column: span 2;
   }
+  fieldset > *[data-size="2"] {
+    grid-column: span 4;
+  }
+  fieldset > *[data-size="4"] {
+    grid-column: span 8;
+  }
 }
 @media only screen and (min-width: 1200px) {
-  fieldset > *.x1,
-  fieldset > *[x1],
   fieldset > *[data-size="1"] {
     grid-column: span 1;
   }
-}
-@media only screen and (min-width: 768px) {
-  fieldset > *.x2,
-  fieldset > *[x2],
-  fieldset > *[data-size="2"] {
-    grid-column: span 8;
-  }
-}
-@media only screen and (min-width: 992px) {
-  fieldset > *.x2,
-  fieldset > *[x2],
-  fieldset > *[data-size="2"] {
-    grid-column: span 4;
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > *.x2,
-  fieldset > *[x2],
   fieldset > *[data-size="2"] {
     grid-column: span 2;
   }
-}
-@media only screen and (min-width: 992px) {
-  fieldset > *.x4,
-  fieldset > *[x4],
-  fieldset > *[data-size="4"] {
-    grid-column: span 8;
-  }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > *.x4,
-  fieldset > *[x4],
   fieldset > *[data-size="4"] {
     grid-column: span 4;
   }
-}
-@media only screen and (min-width: 1200px) {
-  fieldset > *.x8,
-  fieldset > *[x8],
   fieldset > *[data-size="8"] {
     grid-column: span 8;
   }
-}
-fieldset fieldset {
-  margin: 0;
-  background-color: var(--main-shaded05);
-}
-fieldset fieldset fieldset {
-  background-color: var(--main-shaded10);
-}
-fieldset fieldset fieldset fieldset {
-  background-color: var(--main-shaded05);
-}
-fieldset fieldset fieldset fieldset fieldset {
-  background-color: var(--main-shaded10);
 }

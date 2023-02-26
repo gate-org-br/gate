@@ -1,55 +1,14 @@
-fieldset
-{
+fieldset {
 	gap: 4px;
 	border: none;
 	display: grid;
-	border-radius: 5px;
-	background-color: var(--main-shaded10);
+	margin-top: 10px;
+	border-radius: 3px;
+	margin-bottom: 10px;
+	background-color: #F8F8F8;
+	border: 1px solid #E8E8E8;
 	grid-template-columns: repeat(16, 1fr);
 
-	* {
-		font-size: 16px
-	}
-
-	@media only screen and (min-width: 768px) {
-		* {
-			font-size: 12px
-		}
-	}
-
-	> legend
-	{
-		padding: 6px;
-		color: black;
-		display: flex;
-		font-weight: bold;
-		border-radius: 5px;
-		align-items: center;
-		background-color: var(--base);
-		box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.4);
-
-		> i {
-			order: -1;
-			margin-right: 4px
-		}
-
-		> img {
-			order: -1;
-			width: 20px;
-			height: 20px;
-			margin-right: 4px;
-		}
-
-		> label {
-			height: 20px;
-			display: flex;
-			align-items: center;
-		}
-	}
-
-	margin: 0;
-	margin-top: 10px;
-	margin-bottom: 10px;
 	&:first-child {
 		margin-top: 0px;
 	}
@@ -61,106 +20,121 @@ fieldset
 		margin-bottom: 0px
 	}
 
-	legend + fieldset {
-		margin: 0
+	> *
+	{
+		grid-column: span 16;
 	}
 
-	> label
-	{
+	> legend {
+		padding: 6px;
+		display: flex;
+		font-size: 16px;
+		font-weight: bold;
+		border-radius: 3px;
+		align-items: center;
+		background-color: #E8E8E8;
+
+		> i, > g-icon {
+			order: -1;
+			margin-right: 4px;
+			font-size: inherit;
+		}
+
+		> img {
+			order: -1;
+			width: 20px;
+			height: 20px;
+			margin-right: 4px;
+		}
+
+		label {
+			height: 20px;
+			display: flex;
+			align-items: center;
+		}
+	}
+
+	> label {
 		padding: 4px;
 		display: flex;
-		align-items: stretch;
+		font-size: 14px;
+		grid-column: span 16;
 		flex-direction: column;
-	}
 
-	> label, > fieldset
-	{
-		> span, > form
-		{
+		> span,
+		> form {
 			flex-grow: 1;
 			display: flex;
+			flex-basis: 38px;
 			text-indent: 4px;
-			min-height: 32px;
-			line-height: 32px;
-			overflow: hidden;
-			border-radius:5px;
-			position: relative;
-			white-space: nowrap;
-			align-items: stretch;
-			text-overflow: ellipsis;
-			background-color: var(--main-tinted50);
+			border-radius: 3px;
+			align-items: center;
+			border: 1px solid #CCCCCC;
+			background-color: #F4F4F4;
 
 			> * {
-				color: black;
-				border: 1px solid #CCCCCC;
+				border: none;
 			}
 
-			> *:first-child
-				{
-				border-radius:  5px 0 0 5px;
-				> * {
-					border-radius:  5px 0 0 5px;
-				}
-			}
-			> *:last-child
-				{
-				border-radius: 0 5px 5px 0;
-				> * {
-					border-radius: 0 5px 5px 0;
-				}
+			input,
+			select {
+				padding: 8px 4px 8px 4px;
 			}
 
-			> *:only-child
-				{
-				border-radius: 5px;
-				> * {
-					border-radius: 5px;
-				}
-			}
-
-			> input,
-			> label,
-			> select {
+			input,
+			textarea,
+			select,
+			g-selectn {
+				height: 100%;
 				flex-grow: 1;
-				text-indent: 4px;
-				line-height: 100%;
+				font-size: 14px;
 			}
 
-			> g-selectn
-			{
-				flex-grow: 1;
-				line-height: normal;
+			textarea {
+				resize: none
 			}
 
-			> input[type="file"],
-			> input[type="FILE"] {
-				padding: 0
+			input:invalid,
+				select:invalid,
+				textarea:invalid
+				{
+				box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
 			}
 
-			> input[type="radio"],
-			> input[type="checkbox"],
-			> input[type="RADIO"],
-			> input[type="CHECKBOX"] {
-				margin: 8px;
-				flex-grow: 0;
-				flex-shrink: 0;
-				flex-basis: 16px
+			input:focus,
+				select:focus,
+				textarea:focus
+				{
+				outline: none;
+				background-color: var(--hovered);
 			}
+
+			* + a,
+			* + input,
+			* + button,
+			* + command,
+			* + select  {
+				border-left: 1px solid #CCCCCC;
+			}
+
+
 			> a,
 			> button,
 			> .g-command
 			{
+				color: black;
+				height: 100%;
 				flex-grow: 0;
 				display: flex;
 				text-indent: 0;
 				flex-shrink: 0;
-				min-width: 32px;
-				flex-basis: 32px;
+				min-width: 48px;
+				flex-basis: 48px;
 				align-items: stretch;
 				text-decoration: none;
 				justify-content: center;
 
-				> i {
+				> i, > g-icon {
 					flex-grow: 1;
 					display: flex;
 					text-indent: 0;
@@ -176,144 +150,63 @@ fieldset
 				}
 			}
 
-			label, textarea {
-				height: 100%;
-			}
-
-			> i,
-			> g-icon {
-				right: 0px;
-				width: 32px;
-				height: 100%;
-				display: flex;
-				color: #999999;
-				text-indent: 0;
-				position: absolute;
-				align-items: center;
-				justify-content: center;
-				background-color: transparent;
-				border: 1px solid transparent;
-			}
-		}
-	}
-
-	> div {
-		padding: 10px;
-		border-radius: 5px;
-		background-color: white;
-		border: 4px solid var(--main-shaded10);
-	}
-
-	> ul,
-	> div > ul
-	{
-		margin: 4px;
-		padding: 6px;
-		flex-grow: 1;
-		overflow: auto;
-		border-radius: 5px;
-		list-style-type: none;
-		background-color: white;
-
-		ul {
-			list-style-type: none;
-		}
-
-		li
-		{
-			cursor: pointer;
-
-			> label
+			> input[type='checkbox'],
+			> input[type='radio']
 			{
-				height: 24px;
-				display: flex;
-				font-size: 12px;
-				cursor: inherit;
-				align-items: center;
-				justify-content: flex-start;
-				&:hover {
-					background-color: var(--hovered)
-				}
-
-				> input {
-					order: -1;
-					cursor: inherit;
-					margin-top: -1px
-				}
-			}
-		}
-
-	}
-
-	> *
-	{
-		grid-column: span 16;
-		&.x1, &[x1], &[data-size="1"]
-		{
-			@media only screen and (min-width: 576px) {
-				grid-column: span 8;
-			}
-			@media only screen and (min-width: 768px) {
-				grid-column: span 4;
-			}
-			@media only screen and (min-width: 992px) {
-				grid-column: span 2;
-			}
-			@media only screen and (min-width: 1200px) {
-				grid-column: span 1;
-			}
-		}
-
-		&.x2, &[x2], &[data-size="2"]
-		{
-			@media only screen and (min-width: 768px) {
-				grid-column: span 8;
-			}
-			@media only screen and (min-width: 992px) {
-				grid-column: span 4;
-			}
-			@media only screen and (min-width: 1200px) {
-				grid-column: span 2;
-			}
-		}
-
-		&.x4, &[x4], &[data-size="4"]
-		{
-			@media only screen and (min-width: 992px) {
-				grid-column: span 8;
-			}
-			@media only screen and (min-width: 1200px) {
-				grid-column: span 4;
-			}
-		}
-
-		&.x8, &[x8], &[data-size="8"]
-		{
-			@media only screen and (min-width: 1200px) {
-				grid-column: span 8;
+				margin: 0;
+				flex-basis: 16px;
+				margin-left: 16px;
+				margin-right: 16px;
 			}
 		}
 	}
+}
 
-	fieldset
-	{
-		margin: 0;
-		background-color: var(--main-shaded05);
 
-		fieldset
-		{
-			background-color: var(--main-shaded10);
+@media only screen and (min-width: 576px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 8;
+	}
+}
 
-			fieldset
-			{
-				background-color: var(--main-shaded05);
+@media only screen and (min-width: 768px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 4;
+	}
 
-				fieldset
-				{
-					background-color: var(--main-shaded10);
-				}
-			}
+	fieldset > *[data-size="2"] {
+		grid-column: span 8;
+	}
+}
 
-		}
+@media only screen and (min-width: 992px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[data-size="2"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[data-size="4"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 1;
+	}
+
+	fieldset > *[data-size="2"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[data-size="4"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[data-size="8"] {
+		grid-column: span 8;
 	}
 }

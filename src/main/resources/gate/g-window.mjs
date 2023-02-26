@@ -186,14 +186,6 @@ main > footer > button:focus{
 	outline: 4px solid var(--hovered);
 }
 
-
-select,
-textarea,
-input[type='text']
-{
-
-}
-
 input,
 select {
 	padding: 8px 4px 8px 4px;
@@ -261,58 +253,48 @@ fieldset > label > span {
 }
 
 @media only screen and (min-width: 576px) {
-	fieldset > *[x1],
 	fieldset > *[data-size="1"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 768px) {
-	fieldset > *[x1],
 	fieldset > *[data-size="1"] {
 		grid-column: span 4;
 	}
 
-	fieldset > *[x2],
 	fieldset > *[data-size="2"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 992px) {
-	fieldset > *[x1],
 	fieldset > *[data-size="1"] {
 		grid-column: span 2;
 	}
 
-	fieldset > *[x2],
 	fieldset > *[data-size="2"] {
 		grid-column: span 4;
 	}
 
-	fieldset > *[x4],
 	fieldset > *[data-size="4"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 1200px) {
-	fieldset > *[x1],
 	fieldset > *[data-size="1"] {
 		grid-column: span 1;
 	}
 
-	fieldset > *[x2],
 	fieldset > *[data-size="2"] {
 		grid-column: span 2;
 	}
 
-	fieldset > *[x4],
 	fieldset > *[data-size="4"] {
 		grid-column: span 4;
 	}
 
-	fieldset > *[x8],
 	fieldset > *[data-size="8"] {
 		grid-column: span 8;
 	}
