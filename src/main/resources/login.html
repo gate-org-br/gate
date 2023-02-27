@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>LinQ - Plataforma de Telefonia</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+	<form class="Login" method='POST' target='_top' action='Gate?MODULE=linq.modulos'>
+		<main>
+			<header>
+				<img src='Logo.png' />
+				<label>LinQ</label>
+				<label>Versão 0.0.0</label>
+			</header>
+			<section>
+				<g-tab-control type="dummy">
+					<a href='Gate' data-selected="true" style="flex-basis: 25%">
+						Fazer Logon<i>&#X2000;</i>
+					</a>
+					<a href='SetupPassword' style="flex-basis: 25%">
+						Trocar Senha<i>&#X2002;</i>
+					</a>
+					<a href='ResetPassword' style="flex-basis: 25%">
+						Recuperar Senha<i>&#X2023;</i>
+					</a>
+					<a href='CreateAccount' style="flex-basis: 25%">
+						Criar Conta<i>&#X2004;</i>
+					</a>
+					<div>
+						<fieldset>
+							<label>
+								Login:
+								<span>
+									<i>&#X2004;</i>
+									<input type="text" required='required' name='$username' maxlength='64' tabindex="1"
+										title='Entre com o seu login.' />
+								</span>
+							</label>
+							<label>
+								Senha:
+								<span>
+									<input type="password" required='required' name='$password' maxlength='32'
+										tabindex="1" title='Entre com a sua senha.' />
+								</span>
+							</label>
+						</fieldset>
+					</div>
+				</g-tab-control>
+			</section>
+			<footer>
+				<g-coolbar>
+					<button class="Action" tabindex="2">
+						Entrar<i>&#X1000;</i>
+					</button>
+				</g-coolbar>
+			</footer>
+		</main>
+	</form>
+</body>
+
+</html>

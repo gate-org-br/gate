@@ -40,7 +40,6 @@ div.Panel:only-child {
 }
 div.Page {
   padding: 0px;
-  background-color: var(--main-shaded05);
 }
 div.TEXT {
   margin: 0;
@@ -48,10 +47,10 @@ div.TEXT {
   margin-bottom: 10px;
   width: 100%;
   padding: 12px;
-  border-radius: 5px;
+  border-radius: 3px;
   text-align: justify;
   background-image: none;
-  background-color: white;
+  background-color: #F8F8F8;
 }
 div.TEXT:first-child {
   margin-top: 0px;

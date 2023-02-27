@@ -27,7 +27,6 @@ main > section {
 	font-size: 20px;
 	flex-basis: 200px;
 	align-items: center;
-	justify-content: center;
 }
 
 section::before {

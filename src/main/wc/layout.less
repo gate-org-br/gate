@@ -1,5 +1,5 @@
 body {
-	main {
+	> main {
 		top: 0;
 		left: 0;
 		right: 0;
@@ -130,31 +130,29 @@ body {
 	}
 }
 
-div.Login
+form.Login
 {
 	height: 100vh;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 
-	> div
-	{
-		padding: 10px;
+	> main {
+		min-width: 320px;
 		flex-basis: 600px;
-		background-color: var(--main);
-		box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+		background-color: #F8F8F8;
+		box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 
-		> div:nth-child(1)
-			{
-
-			height: 64px;
+		> header
+		{
+			height: 50px;
+			color: white;
 			display: flex;
-			border-radius: 5px;
 			align-items: stretch;
+			background-color: #3f729b;
 			justify-content: space-around;
-			background-color: var(--base-tinted85);
 
-			> *:nth-child(1) {
+			> img {
 				width: 48px;
 				margin: 8px;
 				display: flex;
@@ -163,9 +161,9 @@ div.Login
 			}
 
 			> *:nth-child(2) {
-				display: flex;
-				flex-grow: 1;
 				margin: 8px;
+				flex-grow: 1;
+				display: flex;
 				font-size: 20px;
 				align-items: center;
 				justify-content: flex-start;
@@ -179,11 +177,14 @@ div.Login
 			}
 		}
 
-		> div:nth-child(2) > ul > li {
-			flex-basis: 50%;
-			@media only screen and (min-width: 768px) {
-				flex-basis: 25%
-			}
+		> section
+		{
+			padding: 10px;
+		}
+
+		> footer
+		{
+			padding: 10px;
 		}
 	}
 }

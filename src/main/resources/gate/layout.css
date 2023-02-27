@@ -1,4 +1,4 @@
-body main {
+body > main {
   top: 0;
   left: 0;
   right: 0;
@@ -8,7 +8,7 @@ body main {
   position: absolute;
   grid-template-rows: auto auto 1fr auto;
 }
-body main > header {
+body > main > header {
   grid-row: 1;
   width: 100%;
   height: 50px;
@@ -17,10 +17,10 @@ body main > header {
   align-items: center;
   background-color: #3f729b;
 }
-body main > header > * {
+body > main > header > * {
   margin: 0 8px 0 8px;
 }
-body main > header > img {
+body > main > header > img {
   width: 28px;
   height: 30px;
   display: flex;
@@ -29,19 +29,19 @@ body main > header > img {
   grid-row: 1 / span 2;
   justify-content: center;
 }
-body main > header > *:nth-child(2) {
+body > main > header > *:nth-child(2) {
   flex-grow: 1;
   display: flex;
   font-size: 22px;
   align-items: center;
   justify-content: flex-start;
 }
-body main > header > *:nth-child(3) {
+body > main > header > *:nth-child(3) {
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
 }
-body main > nav {
+body > main > nav {
   margin: 0;
   grid-row: 2;
   border: none;
@@ -53,10 +53,10 @@ body main > nav {
   grid-template-columns: 1fr;
   background-color: #F8F8F8;
 }
-body main > nav {
+body > main > nav {
   grid-row: 2;
 }
-body main > section {
+body > main > section {
   margin: 0;
   grid-row: 3;
   padding: 10px;
@@ -65,7 +65,7 @@ body main > section {
   position: relative;
   background-color: white;
 }
-body main > section > article {
+body > main > section > article {
   margin: 0;
   padding: 0;
   grid-row: 3;
@@ -73,33 +73,33 @@ body main > section > article {
   display: grid;
   grid-template-rows: auto auto 1fr auto;
 }
-body main > section > article > header {
+body > main > section > article > header {
   grid-row: 1;
 }
-body main > section > article > nav {
+body > main > section > article > nav {
   grid-row: 2;
 }
-body main > section > article > section,
-body main > section > article > article {
+body > main > section > article > section,
+body > main > section > article > article {
   grid-row: 3;
   overflow: auto;
   overflow-x: hidden;
 }
-body main > section > article > footer {
+body > main > section > article > footer {
   grid-row: 4;
   overflow: auto;
   overflow-x: hidden;
 }
-body main > section > article > * {
+body > main > section > article > * {
   margin-top: 10px;
 }
-body main > section > article > *:first-child {
+body > main > section > article > *:first-child {
   margin-top: 0px;
 }
-body main > section > article > *:only-child {
+body > main > section > article > *:only-child {
   margin-top: 0px;
 }
-body main > footer {
+body > main > footer {
   bottom: 0;
   grid-row: 4;
   height: 22px;
@@ -111,55 +111,53 @@ body main > footer {
   justify-content: space-between;
   background-color: #F8F8F8;
 }
-body main > footer > label {
+body > main > footer > label {
   font-size: inherit;
 }
-div.Login {
+form.Login {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-div.Login > div {
-  padding: 10px;
+form.Login > main {
+  min-width: 320px;
   flex-basis: 600px;
-  background-color: var(--main);
-  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  background-color: #F8F8F8;
+  box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
 }
-div.Login > div > div:nth-child(1) {
-  height: 64px;
+form.Login > main > header {
+  height: 50px;
+  color: white;
   display: flex;
-  border-radius: 5px;
   align-items: stretch;
+  background-color: #3f729b;
   justify-content: space-around;
-  background-color: var(--base-tinted85);
 }
-div.Login > div > div:nth-child(1) > *:nth-child(1) {
+form.Login > main > header > img {
   width: 48px;
   margin: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-div.Login > div > div:nth-child(1) > *:nth-child(2) {
-  display: flex;
-  flex-grow: 1;
+form.Login > main > header > *:nth-child(2) {
   margin: 8px;
+  flex-grow: 1;
+  display: flex;
   font-size: 20px;
   align-items: center;
   justify-content: flex-start;
 }
-div.Login > div > div:nth-child(1) > *:nth-child(3) {
+form.Login > main > header > *:nth-child(3) {
   margin: 8px;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
 }
-div.Login > div > div:nth-child(2) > ul > li {
-  flex-basis: 50%;
+form.Login > main > section {
+  padding: 10px;
 }
-@media only screen and (min-width: 768px) {
-  div.Login > div > div:nth-child(2) > ul > li {
-    flex-basis: 25%;
-  }
+form.Login > main > footer {
+  padding: 10px;
 }

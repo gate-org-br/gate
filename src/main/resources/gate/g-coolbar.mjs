@@ -59,8 +59,13 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	background-color: #E8E8E8;
-	border: 1px solid transparent;
 	justify-content: space-between;
+}
+
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover) {
+	background-color: #D0D0D0;
 }
 
 ::slotted(a.Action),
@@ -71,6 +76,12 @@ template.innerHTML = `
 	background-color: #2A6B9A;
 }
 
+::slotted(a.Action:hover),
+::slotted(button.Action:hover),
+::slotted(.g-command.Action:hover) {
+	background-color: #25608A;
+}
+
 ::slotted(a.Commit),
 ::slotted(button.Commit),
 ::slotted(.g-command.Commit) {
@@ -78,6 +89,13 @@ template.innerHTML = `
 	border: none;
 	background-color: #009E60;
 }
+
+::slotted(a.Commit:hover),
+::slotted(button.Commit:hover),
+::slotted(.g-command.Commit:hover) {
+	background-color: #008E56;
+}
+
 
 ::slotted(a.Delete),
 ::slotted(button.Delete),
@@ -87,6 +105,12 @@ template.innerHTML = `
 	background-color: #DC4C64;
 }
 
+::slotted(a.Delete:hover),
+::slotted(button.Delete:hover),
+::slotted(.g-command.Delete:hover) {
+	background-color: #C6445A;
+}
+
 ::slotted(a.Return),
 ::slotted(button.Return),
 ::slotted(.g-command.Return),
@@ -94,7 +118,16 @@ template.innerHTML = `
 ::slotted(button.Cancel),
 ::slotted(.g-command.Cancel) {
 	background-color: #FFFFFF;
-	border: 1px solid #E8E8E8;
+	border: 1px solid #CCCCCC;
+}
+
+::slotted(a.Return:hover),
+::slotted(button.Return:hover),
+::slotted(.g-command.Return:hover),
+::slotted(a.Cancel:hover),
+::slotted(button.Cancel:hover),
+::slotted(.g-command.Cancel:hover) {
+	border: 1px solid black;
 }
 
 ::slotted(a[disabled]),
@@ -104,7 +137,7 @@ template.innerHTML = `
 ::slotted(.g-command[disabled]:hover),
 ::slotted(.g-command[disabled]:hover) {
 
-	color: #888888;
+	color: #AAAAAA;
 	cursor: not-allowed;
 	filter: opacity(40%);
 	background-color: #CCCCCC;
@@ -113,7 +146,7 @@ template.innerHTML = `
 ::slotted(a:focus),
 ::slotted(button:focus),
 ::slotted(.g-command:focus){
-	outline: 4px solid #FFFACD;
+	outline: 4px solid var(--hovered);
 }
 
 ::slotted(*[hidden="true"])
@@ -129,17 +162,10 @@ template.innerHTML = `
 
 ::slotted(hr)
 {
-	border: none;
 	flex-grow: 100000;
+	border: none;
 }
-
-::slotted(a:hover),
-::slotted(button:hover),
-::slotted(.g-command:hover) {
-	color: black;
-	border: 1px solid #E8E8E8;
-	background-color: #FFFACD;
-}</style>`;
+</style>`;
 
 /* global customElements, template */
 

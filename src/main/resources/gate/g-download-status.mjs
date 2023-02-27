@@ -17,7 +17,6 @@ template.innerHTML = `
 	align-items: stretch;
 	flex-direction: column;
 	justify-content: center;
-	background-image: linear-gradient(to bottom, #FDFAE9 0%, #B3B0A4 100%);
 }
 
 label {

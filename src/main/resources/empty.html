@@ -1,0 +1,230 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>LinQ - Plataforma de Telefonia</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+
+	<main>
+		<header>
+			<img src='Logo.png' />
+			<label>LinQ</label>
+			<label>Versão 0.0.0</label>
+		</header>
+
+		<nav>
+			<g-tabbar>
+				<a href='Gate?MODULE=linq.modulos.configuracoes' title='Configurações'
+					target='_top'>Configurações<i>&#X2020;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.gerencia' title='Gerência' target='_top'>Gerência<i>&#X2059;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter' title='Call Center' target='_top'>Call
+					Center<i>&#X2155;</i></a>
+				<a href='Gate?MODULE=linq.modulos.ramais' title='Ramais' target='_top'>Ramais<i>&#X2223;</i></a>
+				<a href='Gate?MODULE=linq.modulos.gravacao' title='Gravação' target='_top'>Gravação<i>&#X2087;</i></a>
+				<a href='Gate?MODULE=linq.modulos.tarifacao' title='Tarifação'
+					target='_top'>Tarifação<i>&#X2094;</i></a>
+				<a href='Gate?MODULE=linq.modulos.inventario' title='Inventário'
+					target='_top'>Inventário<i>&#X2090;</i></a>
+				<a href='Gate?MODULE=linq.modulos.relatorios' title='Relatórios'
+					target='_top'>Relatórios<i>&#X2021;</i></a>
+				<a href='Gate?MODULE=linq.modulos.mensageiro' title='Mensageiro'
+					target='_top'>Mensageiro<i>&#X2034;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.importacao' title='Importação'
+					target='_top'>Importação<i>&#X2181;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.ajuda' title='Ajuda' target='_top'>Ajuda<i>&#X2122;</i></a>
+				<hr />
+				<a href='Gate'>Sair<i>&#X2007;</i></a>
+			</g-tabbar>
+		</nav>
+
+		<section>
+
+
+
+
+
+			<form method="post" action="Gate?MODULE=linq.modulos.callCenter&SCREEN=Change">
+				<fieldset>
+					<legend>
+						Call Center
+						<i>&#x2155;</i>
+					</legend>
+					<label>
+						<span>
+							<select maxlength='10' data-method='post' name='callCenter.id' pattern='^[0-9]{1,10}$'
+								data-action='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Change'
+								title='Qual o id do call center?'>
+								<option value=''></option>
+								<option value='0000000091'>Agendamento Indiana Iguatemi</option>
+								<option value='0000000099'>asdfasdfasf asdf</option>
+								<option value='0000000094'>Brione - Itabuna</option>
+								<option value='0000000090' selected='selected'>Durango</option>
+								<option value='0000000095'>Francesa - Itabuna</option>
+								<option value='0000000089'>Pos vendas_16</option>
+								<option value='0000000088'>PosVendas_11</option>
+								<option value='0000000092'>Telepeças Baviera Iguatemi</option>
+								<option value='0000000093'>Telepeças Indiana Iguatemi</option>
+								<option value='0000000086'>Vendas_11</option>
+								<option value='0000000087'>Vendas_16</option>
+							</select>
+
+							<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Configuracao' title='Configurações'
+								target='_dialog'><i>&#X2020;</i></a>
+						</span>
+					</label>
+				</fieldset>
+			</form>
+
+
+
+
+
+			<g-tab-control type="dummy">
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelOperador' title='Painel Operador'
+					data-selected='false'>Painel Operador<i>&#X2004;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelSupervisor' title='Painel Supervisor'
+					data-selected='false'>Painel Supervisor<i>&#X2059;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador' title='Operadores'
+					data-selected='false'>Operadores<i>&#X2005;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Fila' title='Filas'
+					data-selected='false'>Filas<i>&#X2231;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Campanha' title='Campanhas'
+					data-selected='false'>Campanhas<i>&#X2232;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada' title='Jornadas'
+					data-selected='true'>Jornadas<i>&#X2167;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Recebida' title='Recebidas'
+					data-selected='false'>Recebidas<i>&#X2226;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Efetuada' title='Efetuadas'
+					data-selected='false'>Efetuadas<i>&#X2227;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Sessao' title='Sessões'
+					data-selected='false'>Sessões<i>&#X2016;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Pesquisa' title='Pesquisas'
+					data-selected='false'>Pesquisas<i>&#X2146;</i></a>
+				<div>
+
+					<form method="POST" action="#">
+						<fieldset>
+							<legend>
+								<i>&#X2010;</i>Pesquisar
+							</legend>
+							<label data-size="8">
+								Operador:
+								<span>
+									<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
+										title='O campo USUÁRIO é requerido.' type='hidden' />
+									<input data-getter='form.user' maxlength='128' tabindex='1' name='form.user.name'
+										id='form.user.name'
+										title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.'
+										type='text' />
+									<a data-get='form.user.id, form.user.name' id='form.user'
+										href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador&ACTION=Search&form.name=@{form.user.name}'
+										title='Pesquisar'><i>&#X2010;</i></a>
+								</span>
+							</label>
+							<label data-size="2">
+								Data min:
+								<span>
+									<input maxlength='19' tabindex='1' name='form.ini'
+										pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+										title='Selecione a data e hora de início da jornada.' type='text'
+										data-mask='##/##/#### ##:##' class='DateTime' value='26/02/2023 00:00' />
+								</span>
+							</label>
+							<label data-size="2">
+								Data max:
+								<span>
+									<input maxlength='19' tabindex='1' name='form.fim'
+										pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+										title='Selecione a data e hora de fim da jornada.' type='text'
+										data-mask='##/##/#### ##:##' class='DateTime' />
+								</span>
+							</label>
+							<label data-size="2">
+								Linha:
+								<span>
+									<input maxlength='14' tabindex='1' name='form.linha.numero'
+										title='O número da linha é obrigatório de deve possuir no máximo 14 caracteres.'
+										type='text' />
+								</span>
+							</label>
+							<label data-size="2">
+								Resgatada:
+								<span>
+									<select tabindex='1' name='form.resgatada'>
+										<option></option>
+										<option value='false'>Não</option>
+										<option value='true'>Sim</option>
+									</select>
+								</span>
+							</label>
+							<label data-size="8">
+								Fila:
+								<span>
+									<select tabindex='1' name='form.fila'>
+										<option></option>
+										<option value='0000000304'>Assuntos administrativos</option>
+										<option value='0000000305'>Demais Assuntos</option>
+										<option value='0000000297'>Falar com Atendente</option>
+										<option value='0000000301'>Parcelas em Atraso</option>
+										<option value='0000000294'>Plano de Saúde e Odontológico</option>
+										<option value='0000000298'>Recepcionista</option>
+										<option value='0000000296'>Renovação de Seguros</option>
+										<option value='0000000295'>Seguros Novos</option>
+										<option value='0000000299'>Sinistro perda total ou parcial</option>
+										<option value='0000000300'>Substituição de veículos ou alteração nos dados da
+											apólice</option>
+									</select>
+								</span>
+							</label>
+							<label data-size="8">
+								Campanha:
+								<span>
+									<select tabindex='1' name='form.campanha'>
+										<option></option>
+									</select>
+								</span>
+							</label>
+						</fieldset>
+
+						<g-coolbar>
+							<button class='Action' tabindex="2" data-block='Consultando o banco de dados'
+								title="Jornadas" formaction="Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada">
+								Pesquisar<i>&#X2010;</i>
+							</button>
+							<button formaction='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Report'
+								tabindex='2' title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
+						</g-coolbar>
+
+
+						<div class='TEXT'>
+							<h1>Nenhuma jornada cadastrada para os critérios de busca selecionados</h1>
+						</div>
+
+					</form>
+
+				</div>
+			</g-tab-control>
+		</section>
+
+
+		<footer>
+
+			<label>Desenvolvimento</label>
+			<label>Davi Nunes da Silva</label>
+		</footer>
+
+	</main>
+</body>
+
+</html>

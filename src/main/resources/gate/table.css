@@ -7,7 +7,6 @@ table {
   border-spacing: 0px;
   text-decoration: none;
   border-collapse: collapse;
-  border: 1px solid #E8E8E8;
   margin: 0;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -40,7 +39,7 @@ table tr > * {
   padding: 4px;
   text-align: left;
   vertical-align: middle;
-  border: 1px solid #E8E8E8;
+  border: 1px solid #F6F6F6;
 }
 table tr > * a,
 table tr > * button,
@@ -84,24 +83,21 @@ table > caption {
   font-weight: bold;
   text-align: center;
   vertical-align: middle;
-  background-color: #E8E8E8;
+  background-color: #E6E6E6;
   border-radius: 3px 3px 0 0;
 }
 table > thead > tr > * {
-  background-color: white;
-  border-bottom: 1px solid #d0dae0;
+  font-weight: bold;
+  background-color: #F2F2F2;
+  border: 1px solid #E6E6E6;
 }
-table > tbody > tr:nth-child(even) {
-  background-color: var(--table-body-background-color-even);
-}
-table > tbody > tr:nth-child(odd) {
-  background-color: var(--table-body-background-color-odd);
-}
+table > tbody > tr:nth-child(even),
 table > tbody > tr.even {
-  background-color: var(--table-body-background-color-even);
+  background-color: #FFFFFF;
 }
+table > tbody > tr:nth-child(odd),
 table > tbody > tr.odd {
-  background-color: var(--table-body-background-color-odd);
+  background-color: #FAFAFA;
 }
 table > tbody > tr[data-action],
 table > tbody > tr[data-value],
@@ -111,11 +107,12 @@ table > tbody > tr[data-ret] {
 table > tbody > tr[data-action]:hover,
 table > tbody > tr[data-value]:hover,
 table > tbody > tr[data-ret]:hover {
-  background-color: var(--hovered);
+  background-color: #FFFACD;
 }
 table > tfoot > tr > * {
   font-weight: bold;
-  border-bottom: 1px solid #d0dae0;
+  background-color: #F2F2F2;
+  border: 1px solid #E6E6E6;
 }
 table.c1 > * > tr > *:nth-child(1),
 table.cge1 > * > tr > *:nth-child(n+1),

@@ -1,6 +1,6 @@
 g-path,
 .g-path {
-  display: flex;
+  display: inline-flex;
   padding-left: 4px;
   padding-right: 4px;
   align-items: center;

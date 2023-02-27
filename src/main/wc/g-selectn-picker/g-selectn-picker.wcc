@@ -2,6 +2,7 @@
 
 import './g-icon.mjs';
 import './g-selectn.mjs';
+import './g-coolbar.mjs';
 import GWindow from './g-window.mjs';
 import handle from './response-handler.mjs';
 

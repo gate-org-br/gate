@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>LinQ - Plataforma de Telefonia</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+
+	<main>
+		<header style="background-color: 0088cc">
+			<img src='./Logo.png' />
+			<label>LinQ</label>
+			<label>Versão 0.0.0</label>
+		</header>
+
+		<nav>
+			<g-tabbar>
+				<a href='Gate?MODULE=linq.modulos.configuracoes' title='Configurações' aria-selected
+					target='_top'>Configurações<i>&#X2020;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.gerencia' title='Gerência' target='_top'>Gerência<i>&#X2059;</i></a>
+				<a href='Gate?MODULE=linq.modulos.callCenter' title='Call Center' target='_top'>Call
+					Center<i>&#X2155;</i></a>
+				<a href='Gate?MODULE=linq.modulos.ramais' title='Ramais' target='_top'>Ramais<i>&#X2223;</i></a>
+				<a href='Gate?MODULE=linq.modulos.gravacao' title='Gravação' target='_top'>Gravação<i>&#X2087;</i></a>
+				<a href='Gate?MODULE=linq.modulos.tarifacao' title='Tarifação'
+					target='_top'>Tarifação<i>&#X2094;</i></a>
+				<a href='Gate?MODULE=linq.modulos.inventario' title='Inventário'
+					target='_top'>Inventário<i>&#X2090;</i></a>
+				<a href='Gate?MODULE=linq.modulos.relatorios' title='Relatórios'
+					target='_top'>Relatórios<i>&#X2021;</i></a>
+				<a href='Gate?MODULE=linq.modulos.mensageiro' title='Mensageiro'
+					target='_top'>Mensageiro<i>&#X2034;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.importacao' title='Importação'
+					target='_top'>Importação<i>&#X2181;</i></a>
+
+				<a href='Gate?MODULE=linq.modulos.ajuda' title='Ajuda' target='_top'>Ajuda<i>&#X2122;</i></a>
+				<hr />
+				<a href='Gate'>Sair<i>&#X2007;</i></a>
+			</g-tabbar>
+		</nav>
+
+		<section>
+			<fieldset>
+				<label data-size="4">
+					Date:
+					<span>
+						<input class='Date' />
+					</span>
+				</label>
+				<label data-size="4">
+					Time:
+					<span>
+						<input class='Time' />
+					</span>
+				</label>
+				<label data-size="4">
+					Date Time:
+					<span>
+						<input class='DateTime' />
+					</span>
+				</label>
+				<label data-size="4">
+					Month:
+					<span>
+						<input class='Month' />
+					</span>
+				</label>
+				<label data-size="4">
+					Date Interval:
+					<span>
+						<input class='DateInterval' />
+					</span>
+				</label>
+				<label data-size="4">
+					Time Interval:
+					<span>
+						<input class='TimeInterval' />
+					</span>
+				</label>
+				<label data-size="4">
+					Date Time Interval:
+					<span>
+						<input class='DateTimeInterval' />
+					</span>
+				</label>
+				<label data-size="4">
+					Month Interval:
+					<span>
+						<input class='MonthInterval' />
+					</span>
+				</label>
+				<label>
+					Icon:
+					<span>
+						<input class='Icon' />
+					</span>
+				</label>
+			</fieldset>
+
+			<g-coolbar>
+				<a href="#" data-block="Aguarde">
+					Block
+				</a>
+				<a id='success' href="#">
+					Success
+				</a>
+				<a id='error' href="#">
+					Error
+				</a>
+				<a id='warning' href="#">
+					Warning
+				</a>
+				<a id='info' href="#">
+					Info
+				</a>
+				<a target='_report' href="http://ipv4.download.thinkbroadband.com/20MB.zip">
+					Report
+				</a>
+				<a href="#" id='select1'>
+					Select 1
+				</a>
+				<a href="#" id='selectn'>
+					Select n
+				</a>
+				<a href="#" id='search'>
+					Search
+				</a>
+			</g-coolbar>
+		</section>
+		<footer>
+
+			<label>Desenvolvimento</label>
+			<label>Davi Nunes da Silva</label>
+		</footer>
+	</main>
+
+	<script type="module">
+		import Message from './gate/g-message.mjs';
+		import GSelectPicker from './gate/g-select-picker.mjs';
+		import GSelectNPicker from './gate/g-selectn-picker.mjs';
+		import GSearchPicker from './gate/g-search-picker.mjs';
+
+		let options = [{ "label": "Label", "value": "Value" }, { "label": "Label", "value": "Value" }, { "label": "Label", "value": "Value" }];
+		document.getElementById("success").addEventListener("click", () => Message.success("Mensagem de sucesso"));
+		document.getElementById("error").addEventListener("click", () => Message.error("Mensagem de erro"));
+		document.getElementById("warning").addEventListener("click", () => Message.warning("Mensagem de alerta"));
+		document.getElementById("info").addEventListener("click", () => Message.info("Mensagem de informação"));
+		document.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Mensagem de informação"));
+		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Mensagem de informação"));
+	</script>
+</body>
+
+</html>

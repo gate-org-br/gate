@@ -5,8 +5,7 @@ fieldset {
   margin-top: 10px;
   border-radius: 3px;
   margin-bottom: 10px;
-  background-color: #F8F8F8;
-  border: 1px solid #E8E8E8;
+  border: 1px solid #F6F6F6;
   grid-template-columns: repeat(16, 1fr);
 }
 fieldset:first-child {
@@ -62,6 +61,7 @@ fieldset > label > form {
   flex-basis: 38px;
   text-indent: 4px;
   border-radius: 3px;
+  position: relative;
   align-items: center;
   border: 1px solid #CCCCCC;
   background-color: #F4F4F4;
@@ -87,6 +87,14 @@ fieldset > label > form g-selectn {
   height: 100%;
   flex-grow: 1;
   font-size: 14px;
+}
+fieldset > label > span label,
+fieldset > label > form label {
+  height: 100%;
+  flex-grow: 1;
+  display: flex;
+  font-size: 14px;
+  align-items: center;
 }
 fieldset > label > span textarea,
 fieldset > label > form textarea {
@@ -123,6 +131,7 @@ fieldset > label > form > .g-command {
   flex-shrink: 0;
   min-width: 32px;
   flex-basis: 32px;
+  position: relative;
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
@@ -190,16 +199,17 @@ fieldset > label > span > i,
 fieldset > label > form > i,
 fieldset > label > span > g-icon,
 fieldset > label > form > g-icon {
+  right: 0;
   order: 1000;
+  width: 32px;
   border: none;
   height: 100%;
   display: flex;
   color: #999999;
   text-indent: 0;
-  flex-basis: 32px;
+  position: absolute;
   align-items: center;
   justify-content: center;
-  background-color: white;
 }
 fieldset > fieldset {
   margin: 0;

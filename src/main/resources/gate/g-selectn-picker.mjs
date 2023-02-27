@@ -14,19 +14,21 @@ template.innerHTML = `
 			</g-selectn>
 		</section>
 		<footer part='footer'>
-			<button class="Commit">
-				Concluir
-				<g-icon>
-					&#X1000;
-				</g-icon>
-			</button>
-			<hr/>
-			<button class="Cancel">
-				Cancelar
-				<g-icon>
-					&#X1001;
-				</g-icon>
-			</button>
+			<g-coolbar>
+				<button class="Commit">
+					Concluir
+					<g-icon>
+						&#X1000;
+					</g-icon>
+				</button>
+				<hr/>
+				<button class="Cancel">
+					Cancelar
+					<g-icon>
+						&#X1001;
+					</g-icon>
+				</button>
+			</g-coolbar>
 		</footer>
 	</main>
  <style>main
@@ -48,6 +50,7 @@ g-selectn {
 
 import './g-icon.mjs';
 import './g-selectn.mjs';
+import './g-coolbar.mjs';
 import GWindow from './g-window.mjs';
 import handle from './response-handler.mjs';
 

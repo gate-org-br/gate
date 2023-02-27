@@ -42,7 +42,7 @@ header
 ::slotted(div)
 {
 	display: none;
-	padding : 20px;
+	padding : 12px;
 	overflow: hidden;
 	background-color: white;
 }

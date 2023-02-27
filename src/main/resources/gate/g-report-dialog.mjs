@@ -16,7 +16,9 @@ template.innerHTML = `
 			</g-download-status>
 		</footer>
 	</main>
-`;
+ <style>main {
+	width: 600px;
+}</style>`;
 
 /* global customElements */
 
