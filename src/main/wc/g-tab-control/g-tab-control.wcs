@@ -87,19 +87,34 @@ header
 		grid-template-columns: repeat(4, 1fr);
 	}
 
-	:host([size='9']) ::slotted(:is(a, button)),
-	:host([size='10']) ::slotted(:is(a, button)),
-	:host([size='20']) ::slotted(:is(a, button)),
-	:host([size='30']) ::slotted(:is(a, button)),
-	:host([size='40']) ::slotted(:is(a, button)),
-	:host([size='50']) ::slotted(:is(a, button)),
-	:host([size='60']) ::slotted(:is(a, button)),
-	:host([size='70']) ::slotted(:is(a, button)),
-	:host([size='80']) ::slotted(:is(a, button)),
-	:host([size='90']) ::slotted(:is(a, button)),
-	:host([size='100']) ::slotted(:is(a, button))
+	:host([size='9']) > header,
+	:host([size='10']) > header,
+	:host([size='20']) > header,
+	:host([size='30']) > header,
+	:host([size='40']) > header,
+	:host([size='50']) > header,
+	:host([size='60']) > header,
+	:host([size='70']) > header,
+	:host([size='80']) > header,
+	:host([size='90']) > header,
+	:host([size='100']) > header
 	{
 		grid-template-columns: repeat(5, 1fr);
+	}
+
+	:host([size='11']) > header,
+	:host([size='12']) > header,
+	:host([size='24']) > header,
+	:host([size='36']) > header,
+	:host([size='48']) > header,
+	:host([size='60']) > header,
+	:host([size='72']) > header,
+	:host([size='84']) > header,
+	:host([size='96']) > header,
+	:host([size='108']) > header,
+	:host([size='120']) > header
+	{
+		grid-template-columns: repeat(6, 1fr);
 	}
 }
 
@@ -110,18 +125,33 @@ header
 		grid-template-columns: repeat(8, 1fr);
 	}
 
-	:host([size='9']) ::slotted(:is(a, button)),
-	:host([size='10']) ::slotted(:is(a, button)),
-	:host([size='20']) ::slotted(:is(a, button)),
-	:host([size='30']) ::slotted(:is(a, button)),
-	:host([size='40']) ::slotted(:is(a, button)),
-	:host([size='50']) ::slotted(:is(a, button)),
-	:host([size='60']) ::slotted(:is(a, button)),
-	:host([size='70']) ::slotted(:is(a, button)),
-	:host([size='80']) ::slotted(:is(a, button)),
-	:host([size='90']) ::slotted(:is(a, button)),
-	:host([size='100']) ::slotted(:is(a, button))
+	:host([size='9']) > header,
+	:host([size='10']) > header,
+	:host([size='20']) > header,
+	:host([size='30']) > header,
+	:host([size='40']) > header,
+	:host([size='50']) > header,
+	:host([size='60']) > header,
+	:host([size='70']) > header,
+	:host([size='80']) > header,
+	:host([size='90']) > header,
+	:host([size='100']) > header
 	{
 		grid-template-columns: repeat(10, 1fr);
+	}
+
+	:host([size='11']) > header,
+	:host([size='12']) > header,
+	:host([size='24']) > header,
+	:host([size='36']) > header,
+	:host([size='48']) > header,
+	:host([size='60']) > header,
+	:host([size='72']) > header,
+	:host([size='84']) > header,
+	:host([size='96']) > header,
+	:host([size='108']) > header,
+	:host([size='120']) > header
+	{
+		grid-template-columns: repeat(12, 1fr);
 	}
 }
