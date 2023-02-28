@@ -111,16 +111,6 @@ header
 	{
 		grid-template-columns: repeat(5, 1fr);
 	}
-
-	:host([size='11']) > header,
-	:host([size='12']) > header,
-	:host([size='36']) > header,
-	:host([size='60']) > header,
-	:host([size='84']) > header,
-	:host([size='108']) > header
-	{
-		grid-template-columns: repeat(6, 1fr);
-	}
 }
 
 @media only screen and (min-width: 1200px)
@@ -130,11 +120,7 @@ header
 		grid-template-columns: repeat(8, 1fr);
 	}
 
-	:host([size='9']) > header
-	{
-		grid-template-columns: repeat(9, 1fr);
-	}
-
+	:host([size='9']) > header,
 	:host([size='10']) > header,
 	:host([size='20']) > header,
 	:host([size='30']) > header,
@@ -147,20 +133,6 @@ header
 	:host([size='100']) > header
 	{
 		grid-template-columns: repeat(10, 1fr);
-	}
-
-	:host([size='11']) > header
-	{
-		grid-template-columns: repeat(11, 1fr);
-	}
-
-	:host([size='12']) > header,
-	:host([size='36']) > header,
-	:host([size='60']) > header,
-	:host([size='84']) > header,
-	:host([size='108']) > header
-	{
-		grid-template-columns: repeat(12, 1fr);
 	}
 }</style>`;
 
