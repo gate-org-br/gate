@@ -112,16 +112,12 @@ header
 		grid-template-columns: repeat(5, 1fr);
 	}
 
+	:host([size='11']) > header,
 	:host([size='12']) > header,
-	:host([size='24']) > header,
 	:host([size='36']) > header,
-	:host([size='48']) > header,
 	:host([size='60']) > header,
-	:host([size='72']) > header,
 	:host([size='84']) > header,
-	:host([size='96']) > header,
-	:host([size='108']) > header,
-	:host([size='120']) > header
+	:host([size='108']) > header
 	{
 		grid-template-columns: repeat(6, 1fr);
 	}
@@ -134,7 +130,11 @@ header
 		grid-template-columns: repeat(8, 1fr);
 	}
 
-	:host([size='9']) > header,
+	:host([size='9']) > header
+	{
+		grid-template-columns: repeat(9, 1fr);
+	}
+
 	:host([size='10']) > header,
 	:host([size='20']) > header,
 	:host([size='30']) > header,
@@ -149,16 +149,16 @@ header
 		grid-template-columns: repeat(10, 1fr);
 	}
 
+	:host([size='11']) > header
+	{
+		grid-template-columns: repeat(11, 1fr);
+	}
+
 	:host([size='12']) > header,
-	:host([size='24']) > header,
 	:host([size='36']) > header,
-	:host([size='48']) > header,
 	:host([size='60']) > header,
-	:host([size='72']) > header,
 	:host([size='84']) > header,
-	:host([size='96']) > header,
-	:host([size='108']) > header,
-	:host([size='120']) > header
+	:host([size='108']) > header
 	{
 		grid-template-columns: repeat(12, 1fr);
 	}
