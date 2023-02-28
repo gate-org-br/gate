@@ -8,6 +8,7 @@
 
 @import './icon.css';
 @import './emoji.css';
+@import './input.css';
 @import './fieldset.css';
 @import './div.css';
 @import './nav.css';
@@ -143,12 +144,6 @@ input:invalid, select:invalid, textarea:invalid {
 	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
 }
 
-textarea {
-	resize: none;
-	padding: 4px;
-	margin: 0px
-}
-
 label[data-icon], span[data-icon]
 {
 	margin: 4px;
@@ -164,14 +159,8 @@ label[data-icon], span[data-icon]
 	background-color: #8899AA;
 }
 
-fieldset > label > span > label[data-icon]
-{
-	margin: 0;
-	width: 100%;
-	height: 100%;
-}
-
-label[data-icon]::before, span[data-icon]::before
+label[data-icon]::before,
+span[data-icon]::before
 {
 	width: 32px;
 	height: 100%;
@@ -249,31 +238,4 @@ small {
 *[data-disabled] {
 	opacity: 0.5;
 	pointer-events: none;
-}
-
-
-input[type='text'],
-input[type='password'],
-input[type='file'],
-textarea,
-select {
-	width: 100%;
-	background-color: white;
-}
-
-input[type='text']:focus,
-input[type='password']:focus,
-input[type='file']:focus,
-textarea:focus,
-select:focus {
-	outline: none;
-	background-color: var(--hovered);
-}
-
-input[type='text']:hover,
-input[type='password']:hover,
-input[type='file']:hover,
-textarea:hover,
-select:hover {
-	outline: none;
 }

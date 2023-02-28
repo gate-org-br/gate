@@ -57,65 +57,26 @@ fieldset > label > span,
 fieldset > label > form {
   flex-grow: 1;
   display: flex;
-  max-height: 38px;
   flex-basis: 38px;
   text-indent: 4px;
-  border-radius: 3px;
   position: relative;
+  border-radius: 3px;
   align-items: center;
-  border: 1px solid #CCCCCC;
   background-color: #F4F4F4;
 }
-fieldset > label > span > *,
-fieldset > label > form > * {
-  border: none;
-}
-fieldset > label > span input,
-fieldset > label > form input,
-fieldset > label > span select,
-fieldset > label > form select {
-  padding: 8px 4px 8px 4px;
-}
-fieldset > label > span input,
-fieldset > label > form input,
-fieldset > label > span textarea,
-fieldset > label > form textarea,
-fieldset > label > span select,
-fieldset > label > form select,
-fieldset > label > span g-selectn,
-fieldset > label > form g-selectn {
-  height: 100%;
-  flex-grow: 1;
-  font-size: 14px;
-}
-fieldset > label > span label,
-fieldset > label > form label {
+fieldset > label > span > label,
+fieldset > label > form > label {
   height: 100%;
   flex-grow: 1;
   display: flex;
   font-size: 14px;
   align-items: center;
 }
-fieldset > label > span textarea,
-fieldset > label > form textarea {
-  resize: none;
-}
-fieldset > label > span input:invalid,
-fieldset > label > form input:invalid,
-fieldset > label > span select:invalid,
-fieldset > label > form select:invalid,
-fieldset > label > span textarea:invalid,
-fieldset > label > form textarea:invalid {
-  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
-}
-fieldset > label > span input:focus,
-fieldset > label > form input:focus,
-fieldset > label > span select:focus,
-fieldset > label > form select:focus,
-fieldset > label > span textarea:focus,
-fieldset > label > form textarea:focus {
-  outline: none;
-  background-color: var(--hovered);
+fieldset > label > span > label[data-icon],
+fieldset > label > form > label[data-icon] {
+  margin: 0;
+  width: 100%;
+  height: 100%;
 }
 fieldset > label > span > a,
 fieldset > label > form > a,
@@ -129,14 +90,15 @@ fieldset > label > form > .g-command {
   display: flex;
   text-indent: 0;
   flex-shrink: 0;
-  min-width: 32px;
-  flex-basis: 32px;
+  min-width: 36px;
+  flex-basis: 36px;
+  border-radius: 3px;
   position: relative;
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
-  border-left: 1px solid #CCCCCC;
-  border-right: 1px solid #CCCCCC;
+  border-top: 1px solid #CCCCCC;
+  border-bottom: 1px solid #CCCCCC;
 }
 fieldset > label > span > a:first-child,
 fieldset > label > form > a:first-child,
@@ -145,6 +107,7 @@ fieldset > label > form > button:first-child,
 fieldset > label > span > .g-command:first-child,
 fieldset > label > form > .g-command:first-child {
   border-left: none;
+  border-left: 1px solid #CCCCCC;
 }
 fieldset > label > span > a:last-child,
 fieldset > label > form > a:last-child,
@@ -153,6 +116,7 @@ fieldset > label > form > button:last-child,
 fieldset > label > span > .g-command:last-child,
 fieldset > label > form > .g-command:last-child {
   border-right: none;
+  border-right: 1px solid #CCCCCC;
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
@@ -190,7 +154,6 @@ fieldset > label > span > input[type='checkbox'],
 fieldset > label > form > input[type='checkbox'],
 fieldset > label > span > input[type='radio'],
 fieldset > label > form > input[type='radio'] {
-  margin: 0;
   flex-basis: 16px;
   margin-left: 16px;
   margin-right: 16px;

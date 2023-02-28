@@ -16,8 +16,8 @@ template.innerHTML = `
 {
 	display: grid;
 	margin-top: 16px;
-	border: 1px solid #E8E8E8;
-	background-color: #E8E8E8;
+	border: 1px solid #F4F4F4;
+	background-color: #F4F4F4;
 	grid-template-rows: auto 1fr;
 }
 
@@ -33,10 +33,9 @@ template.innerHTML = `
 
 header
 {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	justify-content: flex-start;
+	gap: 1px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
 }
 
 ::slotted(div)
@@ -55,7 +54,7 @@ header
 ::slotted(a),
 ::slotted(button)
 {
-	width: 50%;
+	width: 100%;
 	height: 32px;
 	border: none;
 	padding: 5px;
@@ -93,11 +92,9 @@ header
 
 @media only screen and (min-width: 768px)
 {
-	::slotted(a),
-	::slotted(button)
+	header
 	{
-		width: 25%;
-		flex-basis: 25%;
+		grid-template-columns: repeat(4, 1fr);
 	}
 
 	:host([size='9']) ::slotted(:is(a, button)),
@@ -112,18 +109,15 @@ header
 	:host([size='90']) ::slotted(:is(a, button)),
 	:host([size='100']) ::slotted(:is(a, button))
 	{
-		width: 20%;
-		flex-basis: 20%;
+		grid-template-columns: repeat(5, 1fr);
 	}
 }
 
 @media only screen and (min-width: 1200px)
 {
-	::slotted(a),
-	::slotted(button)
+	header
 	{
-		width: 12.5%;
-		flex-basis: 12.5%;
+		grid-template-columns: repeat(8, 1fr);
 	}
 
 	:host([size='9']) ::slotted(:is(a, button)),
@@ -138,8 +132,7 @@ header
 	:host([size='90']) ::slotted(:is(a, button)),
 	:host([size='100']) ::slotted(:is(a, button))
 	{
-		width: 10%;
-		flex-basis: 10%;
+		grid-template-columns: repeat(10, 1fr);
 	}
 }</style>`;
 
