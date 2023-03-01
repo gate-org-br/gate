@@ -87,6 +87,8 @@ import "./g-selectn-picker.mjs";
 
 import "./g-splitter.mjs";
 
+import "./g-callout.mjs";
+
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)

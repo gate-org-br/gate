@@ -8,15 +8,15 @@ template.innerHTML = `
 
 :host(*)
 {
+	gap: 16px;
 	margin: 0;
 	padding: 0;
 	width: 100%;
 	color: black;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: flex-start;
+	display: grid;
+	padding: 16px;
 	background-color: transparent;
+	grid-template-columns: repeat(8, 1fr);
 }
 
 ::slotted(hr:last-child),
@@ -31,27 +31,27 @@ template.innerHTML = `
 
 ::slotted(hr)
 {
+	grid-column: span 8;
 	border: solid 4px #BBBBBB;
-	flex-basis: calc(100% - 8px);
 }
 
 ::slotted(a),
 ::slotted(button),
 ::slotted(g-desk-pane)
 {
-	margin: 4px;
 	padding: 8px;
 	display: flex;
 	color: inherit;
 	cursor: pointer;
-	border-radius: 5px;
+	border-radius: 3px;
+	grid-column: span 8;
 	align-items: center;
 	font-weight: inherit;
 	border: 2px solid white;
-	background-color: #E8E8E8;
-	border: 1px solid #E0E0E0;
+	background-color: #F8F8F8;
+	border: 1px solid #F0F0F0;
 	justify-content: flex-start;
-	flex-basis: calc(100% - 8px);
+	box-shadow: 5px 10px #888888;
 }
 
 ::slotted(a:hover),
@@ -61,26 +61,34 @@ template.innerHTML = `
 	background-color:  #FFFACD;
 }
 
-::slotted(a[x8]),
-::slotted(button[x8]),
-::slotted(g-desk-pane[x8]),
-::slotted(a[data-size='8']),
-::slotted(button[data-size='8']),
-::slotted(g-desk-pane[data-size='8'])
-{
-	flex-basis: 100%;
-}
-
 @media only screen and (min-width: 768px) {
 
-	::slotted(a[x1]),
-	::slotted(button[x1]),
-	::slotted(g-desk-pane[x1]),
 	::slotted(a[data-size='1']),
 	::slotted(button[data-size='1']),
 	::slotted(g-desk-pane[data-size='1'])
 	{
-		flex-basis: calc(50% - 8px);
+		grid-column: span 4;
+	}
+
+	::slotted(a[data-size='2']),
+	::slotted(button[data-size='2']),
+	::slotted(g-desk-pane[data-size='2'])
+	{
+		grid-column: span 8;
+	}
+
+	::slotted(a[data-size='4']),
+	::slotted(button[data-size='4']),
+	::slotted(g-desk-pane[data-size='4'])
+	{
+		grid-column: span 8;
+	}
+
+	::slotted(a[data-size='8']),
+	::slotted(button[data-size='8']),
+	::slotted(g-desk-pane[data-size='8'])
+	{
+		grid-column: span 8;
 	}
 }
 
@@ -89,27 +97,35 @@ template.innerHTML = `
 	::slotted(button),
 	::slotted(g-desk-pane)
 	{
-		flex-basis: calc(50% - 8px);
+		grid-column: span 4;
 	}
 
-	::slotted(a[x1]),
-	::slotted(button[x1]),
-	::slotted(g-desk-pane[x1]),
 	::slotted(a[data-size='1']),
 	::slotted(button[data-size='1']),
 	::slotted(g-desk-pane[data-size='1'])
 	{
-		flex-basis: calc(25% - 8px);
+		grid-column: span 2;
 	}
 
-	::slotted(a[x2]),
-	::slotted(button[x2]),
-	::slotted(g-desk-pane[x2]),
 	::slotted(a[data-size='2']),
 	::slotted(button[data-size='2']),
 	::slotted(g-desk-pane[data-size='2'])
 	{
-		flex-basis: calc(50% - 8px);
+		grid-column: span 4;
+	}
+
+	::slotted(a[data-size='4']),
+	::slotted(button[data-size='4']),
+	::slotted(g-desk-pane[data-size='4'])
+	{
+		grid-column: span 8;
+	}
+
+	::slotted(a[data-size='8']),
+	::slotted(button[data-size='8']),
+	::slotted(g-desk-pane[data-size='8'])
+	{
+		grid-column: span 8;
 	}
 }
 
@@ -118,37 +134,35 @@ template.innerHTML = `
 	::slotted(button),
 	::slotted(g-desk-pane)
 	{
-		flex-basis: calc(25% - 8px);
+		grid-column: span 2;
 	}
 
-	::slotted(a[x1]),
-	::slotted(button[x1]),
-	::slotted(g-desk-pane[x1]),
 	::slotted(a[data-size='1']),
 	::slotted(button[data-size='1']),
 	::slotted(g-desk-pane[data-size='1'])
 	{
-		flex-basis: calc(12.5% - 8px);
+		grid-column: span 1;
 	}
 
-	::slotted(a[x2]),
-	::slotted(button[x2]),
-	::slotted(g-desk-pane[x2]),
 	::slotted(a[data-size='2']),
 	::slotted(button[data-size='2']),
 	::slotted(g-desk-pane[data-size='2'])
 	{
-		flex-basis: calc(25% - 8px);
+		grid-column: span 2;
 	}
 
-	::slotted(a[x4]),
-	::slotted(button[x4]),
-	::slotted(g-desk-pane[x4]),
 	::slotted(a[data-size='4']),
 	::slotted(button[data-size='4']),
 	::slotted(g-desk-pane[data-size='4'])
 	{
-		flex-basis: calc(50% - 8px);
+		grid-column: span 4;
+	}
+
+	::slotted(a[data-size='8']),
+	::slotted(button[data-size='8']),
+	::slotted(g-desk-pane[data-size='8'])
+	{
+		grid-column: span 8;
 	}
 }</style>`;
 

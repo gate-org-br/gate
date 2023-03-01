@@ -1,0 +1,8 @@
+<template>
+	<div part='bar'>
+	</div>
+	<main part='main'>
+		<slot>
+		</slot>
+	</main>
+</template>
