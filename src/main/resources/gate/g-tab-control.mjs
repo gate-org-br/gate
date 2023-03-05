@@ -54,6 +54,7 @@ header
 ::slotted(a),
 ::slotted(button)
 {
+	gap: 8px;
 	width: 100%;
 	height: 32px;
 	border: none;
@@ -66,7 +67,7 @@ header
 	align-items: center;
 	text-decoration: none;
 	background-color: #E8E8E8;
-	justify-content: space-between;
+	justify-content: flex-start;
 }
 
 ::slotted(a:hover),

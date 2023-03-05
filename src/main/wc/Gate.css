@@ -57,8 +57,6 @@ form {
 }
 
 * {
-	font-size: 12px;
-	box-shadow: none;
 	box-sizing: border-box;
 	font-family: Arial, Tahoma, Geneva, sans-serif;
 }

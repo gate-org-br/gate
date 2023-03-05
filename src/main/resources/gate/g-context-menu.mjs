@@ -13,8 +13,8 @@ template.innerHTML = `
 	font-size: 16px;
 	align-items: stretch;
 	flex-direction: column;
+	background-color: #F0F0F0;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	background-color: var(--g-context-menu-background-color);
 }
 
 a, button
@@ -26,15 +26,14 @@ a, button
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
+	border: 1px solid #E0E0E0;
 	justify-content: space-between;
-	border: 1px solid var(--g-context-menu-border-color);
-	background-color: var(--g-context-menu-background-color);
 }
 
 a:hover,
 button:hover
 {
-	background-color: var(--g-context-menu-hovered-background-color);
+	background-color: var(--hovered, #FFFACD);
 }</style>`;
 
 /* global customElements, template */

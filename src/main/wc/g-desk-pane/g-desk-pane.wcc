@@ -10,27 +10,25 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 		this.addEventListener("click", function (e)
 		{
-			let target = e.target.closest('g-desk-pane');
-			if (target !== this)
+			let target = this.getRootNode().host;
+			if (target)
 			{
-				let backup = Array.from(this.children);
-				let elements = Array.from(target.children)
-					.filter(e => e.tagName !== 'I'
-							&& e.tagName !== 'IMG');
-				backup.forEach(e => e.parentNode.removeChild(e));
-				elements.forEach(e => this.appendChild(e));
+				let backup = target.buttons;
+				backup.forEach(e => e.remove());
+				this.buttons.forEach(e => target.shadowRoot.appendChild(e));
 
-				let reset = this.appendChild(document.createElement("a"));
+				let reset = target.shadowRoot.appendChild(document.createElement("a"));
 				reset.href = "#";
-				reset.style.color = "#660000";
 				reset.innerText = "Retornar";
+				reset.style.color = "#660000";
+				reset.setAttribute("part", "button");
 				reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
 
 				reset.addEventListener("click", () =>
 				{
-					reset.parentNode.removeChild(reset);
-					elements.forEach(e => target.appendChild(e));
-					backup.forEach(e => this.appendChild(e));
+					reset.remove();
+					target.buttons.forEach(e => this.shadowRoot.appendChild(e));
+					backup.forEach(e => target.shadowRoot.appendChild(e));
 					e.preventDefault();
 					e.stopPropagation();
 				});
@@ -42,11 +40,17 @@ customElements.define('g-desk-pane', class extends HTMLElement
 		}, true);
 	}
 
+	get buttons()
+	{
+		return Array.from(this.shadowRoot.querySelectorAll("a, button, g-command, g-desk-pane"));
+	}
+
 	connectedCallback()
 	{
-		Array.from(this.querySelectorAll("hr + hr"))
-			.forEach(e => e.remove());
-		Array.from(this.querySelectorAll("g-desk-pane"))
-			.forEach(e => e.setAttribute("child", true));
+		Array.from(this.childNodes)
+			.forEach(e => this.shadowRoot.appendChild(e));
+		if (this.getRootNode().host)
+			this.classList = this.getRootNode().host.classList;
+		this.buttons.forEach(e => e.setAttribute("part", "button"));
 	}
 });

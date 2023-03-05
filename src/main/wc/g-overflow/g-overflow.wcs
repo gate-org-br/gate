@@ -1,9 +1,14 @@
+:host(*)
+{
+	display: grid;
+	grid-template-columns: 1fr auto;
+}
+
 #container {
-	width: auto;
-	flex: 1 1 0px;
-	display:  flex;
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
 	white-space: nowrap;
-	flex-direction: inherit;
 }
 
 #more {
@@ -22,4 +27,19 @@
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
+}
+
+:host([reverse]) #container
+{
+	flex-direction: row;
+}
+
+:host([reverse])
+{
+	grid-template-columns: auto 1fr;
+}
+
+:host([reverse]) #more
+{
+	order: -1;
 }

@@ -3,16 +3,21 @@ template.innerHTML = `
 	<div id='container'>
 		<slot>
 		</slot>
-		<a id='more' href='#'>
-			&#X3018;
-		</a>
 	</div>
- <style>#container {
-	width: auto;
-	flex: 1 1 0px;
-	display:  flex;
+	<a id='more' href='#'>
+		&#X3018;
+	</a>
+ <style>:host(*)
+{
+	display: grid;
+	grid-template-columns: 1fr auto;
+}
+
+#container {
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
 	white-space: nowrap;
-	flex-direction: inherit;
 }
 
 #more {
@@ -31,7 +36,23 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-}</style>`;
+}
+
+:host([reverse]) #container
+{
+	flex-direction: row;
+}
+
+:host([reverse])
+{
+	grid-template-columns: auto 1fr;
+}
+
+:host([reverse]) #more
+{
+	order: -1;
+}
+</style>`;
 
 /* global customElements, template */
 
@@ -102,8 +123,7 @@ export default class GOverflow extends HTMLElement
 
 	get overflowed()
 	{
-		return this.container.getBoundingClientRect().left < this.getBoundingClientRect().left
-			|| this.container.getBoundingClientRect().right > this.getBoundingClientRect().right;
+		return GOverflow.isOverflowed(this.container);
 	}
 
 	static isOverflowed(element)

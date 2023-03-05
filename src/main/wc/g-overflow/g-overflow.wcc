@@ -67,8 +67,7 @@ export default class GOverflow extends HTMLElement
 
 	get overflowed()
 	{
-		return this.container.getBoundingClientRect().left < this.getBoundingClientRect().left
-			|| this.container.getBoundingClientRect().right > this.getBoundingClientRect().right;
+		return GOverflow.isOverflowed(this.container);
 	}
 
 	static isOverflowed(element)

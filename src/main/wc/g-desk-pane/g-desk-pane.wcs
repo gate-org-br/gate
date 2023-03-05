@@ -5,159 +5,107 @@
 :host(*)
 {
 	gap: 16px;
-	margin: 0;
-	padding: 0;
 	width: 100%;
 	color: black;
 	display: grid;
-	padding: 16px;
 	background-color: transparent;
-	grid-template-columns: repeat(8, 1fr);
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-::slotted(hr:last-child),
-::slotted(hr:first-child),
-:host([child]) > ::slotted(a),
-:host([child]) > ::slotted(hr),
-:host([child]) > ::slotted(button),
-:host([child]) > ::slotted(g-desk-pane)
+*[part]
 {
-	display: none;
-}
-
-::slotted(hr)
-{
-	grid-column: span 8;
-	border: solid 4px #BBBBBB;
-}
-
-::slotted(a),
-::slotted(button),
-::slotted(g-desk-pane)
-{
-	padding: 8px;
-	display: flex;
-	color: inherit;
-	cursor: pointer;
+	gap: 10px;
+	margin: 0;
+	color: black;
+	padding: 16px;
+	height: 200px;
+	font-size: 18px;
+	position: relative;
+	text-align: center;
 	border-radius: 3px;
-	grid-column: span 8;
-	align-items: center;
-	font-weight: inherit;
-	border: 2px solid white;
-	background-color: #F8F8F8;
+	font-style: normal;
+	text-decoration: none;
 	border: 1px solid #F0F0F0;
-	justify-content: flex-start;
-	box-shadow: 5px 10px #888888;
+
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	justify-content: center;
+	grid-template-rows: 1fr 1fr;
 }
 
-::slotted(a:hover),
-::slotted(button:hover),
-::slotted(g-desk-pane:hover)
+:host(*) > g-desk-pane::after
+{
+	top: 4px;
+	right: 4px;
+	font-size: 16px;
+	font-family: gate;
+	content: '\\2181';
+	position: absolute;
+}
+
+
+*[part]:hover
 {
 	background-color:  #FFFACD;
 }
 
-@media only screen and (min-width: 768px) {
-
-	::slotted(a[data-size='1']),
-	::slotted(button[data-size='1']),
-	::slotted(g-desk-pane[data-size='1'])
-	{
-		grid-column: span 4;
-	}
-
-	::slotted(a[data-size='2']),
-	::slotted(button[data-size='2']),
-	::slotted(g-desk-pane[data-size='2'])
-	{
-		grid-column: span 8;
-	}
-
-	::slotted(a[data-size='4']),
-	::slotted(button[data-size='4']),
-	::slotted(g-desk-pane[data-size='4'])
-	{
-		grid-column: span 8;
-	}
-
-	::slotted(a[data-size='8']),
-	::slotted(button[data-size='8']),
-	::slotted(g-desk-pane[data-size='8'])
-	{
-		grid-column: span 8;
-	}
+i,
+e,
+span,
+g-icon
+{
+	order: -1;
+	width: 80px;
+	height: 80px;
+	display: flex;
+	font-size: 36px;
+	font-family: gate;
+	font-style: normal;
+	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
+	background-color: #F6F6F6;
 }
 
-@media only screen and (min-width: 992px) {
-	::slotted(a),
-	::slotted(button),
-	::slotted(g-desk-pane)
-	{
-		grid-column: span 4;
-	}
-
-	::slotted(a[data-size='1']),
-	::slotted(button[data-size='1']),
-	::slotted(g-desk-pane[data-size='1'])
-	{
-		grid-column: span 2;
-	}
-
-	::slotted(a[data-size='2']),
-	::slotted(button[data-size='2']),
-	::slotted(g-desk-pane[data-size='2'])
-	{
-		grid-column: span 4;
-	}
-
-	::slotted(a[data-size='4']),
-	::slotted(button[data-size='4']),
-	::slotted(g-desk-pane[data-size='4'])
-	{
-		grid-column: span 8;
-	}
-
-	::slotted(a[data-size='8']),
-	::slotted(button[data-size='8']),
-	::slotted(g-desk-pane[data-size='8'])
-	{
-		grid-column: span 8;
-	}
+img
+{
+	order: -1;
+	width: 48px;
+	height: 48px;
+	margin-right: 8px;
 }
 
-@media only screen and (min-width: 1200px) {
-	::slotted(a),
-	::slotted(button),
-	::slotted(g-desk-pane)
-	{
-		grid-column: span 2;
-	}
+:host(*) > g-desk-pane
+{
+	cursor: pointer;
+}
 
-	::slotted(a[data-size='1']),
-	::slotted(button[data-size='1']),
-	::slotted(g-desk-pane[data-size='1'])
-	{
-		grid-column: span 1;
-	}
+:host(*) > g-desk-pane::part(button)
+{
+	display: none;
+}
 
-	::slotted(a[data-size='2']),
-	::slotted(button[data-size='2']),
-	::slotted(g-desk-pane[data-size='2'])
-	{
-		grid-column: span 2;
-	}
+:host(.inline)
+{
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
 
-	::slotted(a[data-size='4']),
-	::slotted(button[data-size='4']),
-	::slotted(g-desk-pane[data-size='4'])
-	{
-		grid-column: span 4;
-	}
 
-	::slotted(a[data-size='8']),
-	::slotted(button[data-size='8']),
-	::slotted(g-desk-pane[data-size='8'])
-	{
-		grid-column: span 8;
-	}
+:host(.inline) > *[part]
+
+{
+	height: 80px;
+	display: flex;
+	text-align: left;
+	justify-content: flex-start;
+}
+
+:host(.inline) i,
+:host(.inline) e,
+:host(.inline) span,
+:host(.inline) g-icon
+{
+	width: 36px;
+	background-color: transparent;
 }

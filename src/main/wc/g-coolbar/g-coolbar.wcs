@@ -5,13 +5,9 @@
 :host(*)
 {
 	width: 100%;
-	height: 44px;
 	flex-grow: 1;
-	display: flex;
 	margin-top: 10px;
-	overflow: hidden;
 	margin-bottom: 10px;
-	align-items: stretch;
 }
 
 :host(:first-child) {
@@ -36,15 +32,13 @@
 	flex-direction: row-reverse;
 }
 
-:host([reverse]) #container
-{
-	flex-direction: row;
-}
-
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command)
 {
+	gap: 8px;
+	width: auto;
+	height: 44px;
 	color: black;
 	padding: 8px;
 	color: black;
@@ -52,7 +46,7 @@
 	display: flex;
 	cursor: pointer;
 	font-size: 16px;
-	flex-basis: 140px;
+	min-width: 140px;
 	border-radius: 3px;
 	align-items: center;
 	text-decoration: none;
@@ -62,70 +56,120 @@
 
 ::slotted(a:hover),
 ::slotted(button:hover),
-::slotted(.g-command:hover) {
+::slotted(.g-command:hover)
+{
 	background-color: #D0D0D0;
 }
 
-::slotted(a.Action),
-::slotted(button.Action),
-::slotted(.g-command.Action) {
+::slotted(a.primary),
+::slotted(button.primary),
+::slotted(.g-command.primary) {
 	color: white;
 	border: none;
 	background-color: #2A6B9A;
 }
 
-::slotted(a.Action:hover),
-::slotted(button.Action:hover),
-::slotted(.g-command.Action:hover) {
+::slotted(a.primary:hover),
+::slotted(button.primary:hover),
+::slotted(.g-command.primary:hover) {
 	background-color: #25608A;
 }
 
-::slotted(a.Commit),
-::slotted(button.Commit),
-::slotted(.g-command.Commit) {
+::slotted(a.warning),
+::slotted(button.warning),
+::slotted(.g-command.warning) {
+	color: black;
+	border: none;
+	background-color: #ffc107;
+}
+
+::slotted(a.warning:hover),
+::slotted(button.warning:hover),
+::slotted(.g-command.warning:hover) {
+	background-color: #dfa700;
+}
+
+::slotted(a.danger),
+::slotted(button.danger),
+::slotted(.g-command.danger) {
+	color: white;
+	border: none;
+	background-color: #b23d51;
+}
+
+::slotted(a.danger:hover),
+::slotted(button.danger:hover),
+::slotted(.g-command.danger:hover) {
+	background-color: #C6445A;
+}
+
+::slotted(a.success),
+::slotted(button.success),
+::slotted(.g-command.success) {
 	color: white;
 	border: none;
 	background-color: #009E60;
 }
 
-::slotted(a.Commit:hover),
-::slotted(button.Commit:hover),
-::slotted(.g-command.Commit:hover) {
+::slotted(a.success:hover),
+::slotted(button.success:hover),
+::slotted(.g-command.success:hover) {
 	background-color: #008E56;
 }
 
-
-::slotted(a.Delete),
-::slotted(button.Delete),
-::slotted(.g-command.Delete) {
-	color: white;
-	border: none;
-	background-color: #DC4C64;
-}
-
-::slotted(a.Delete:hover),
-::slotted(button.Delete:hover),
-::slotted(.g-command.Delete:hover) {
-	background-color: #C6445A;
-}
-
-::slotted(a.Return),
-::slotted(button.Return),
-::slotted(.g-command.Return),
-::slotted(a.Cancel),
-::slotted(button.Cancel),
-::slotted(.g-command.Cancel) {
+::slotted(a.light),
+::slotted(button.light),
+::slotted(.g-command.light) {
 	background-color: #FFFFFF;
 	border: 1px solid #CCCCCC;
 }
 
-::slotted(a.Return:hover),
-::slotted(button.Return:hover),
-::slotted(.g-command.Return:hover),
-::slotted(a.Cancel:hover),
-::slotted(button.Cancel:hover),
-::slotted(.g-command.Cancel:hover) {
+::slotted(a.light:hover),
+::slotted(button.light:hover),
+::slotted(.g-command.light:hover) {
 	border: 1px solid black;
+}
+
+::slotted(a.dark),
+::slotted(button.dark),
+::slotted(.g-command.dark) {
+	color: white;
+	border: none;
+	background-color: #000000;
+}
+
+::slotted(a.dark:hover),
+::slotted(button.dark:hover),
+::slotted(.g-command.dark:hover) {
+	background-color: #222222;
+}
+
+::slotted(a.info),
+::slotted(button.info),
+::slotted(.g-command.info) {
+	color: black;
+	border: none;
+	background-color: #0dcaf0;
+}
+
+::slotted(a.info:hover),
+::slotted(button.info:hover),
+::slotted(.g-command.info:hover) {
+	background-color: #0cbadd;
+}
+
+::slotted(a.link),
+::slotted(button.link),
+::slotted(.g-command.link) {
+	border: none;
+	color: #1371fd;
+	background-color: #FFFFFF;
+}
+
+::slotted(a.link:hover),
+::slotted(button.link:hover),
+::slotted(.g-command.link:hover) {
+	color: #025ee7;
 }
 
 ::slotted(a[disabled]),

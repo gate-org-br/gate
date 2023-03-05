@@ -10,38 +10,53 @@ template.innerHTML = `
 	border: none;
 	height: auto;
 	flex-grow: 1;
-	display: flex;
-	overflow: hidden;
-	align-items: stretch;
+	background-color: #F8F8F8;
 	justify-content: flex-start;
 }
+
+#container
+{
+	gap: 8px;
+	padding: 8px;
+}
+
 
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command)
 {
-	margin: 4px;
+	gap: 4px;
 	padding: 6px;
 	height: auto;
 	flex-grow: 1;
 	display: flex;
 	color: inherit;
-	flex-shrink: 1;
-	flex-basis: 100%;
-	max-width: 160px;
+	flex-shrink: 0;
+	font-size: 16px;
+	flex-basis: 120px;
 	border-radius: 5px;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
+	background-color: #F4F4F4;
 	justify-content: space-around;
+}
+
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
+{
+	min-width: 160px;
+	flex-direction: row;
+	justify-content: flex-start;
 }
 
 ::slotted(a[aria-selected]),
 ::slotted(button[aria-selected]),
 ::slotted(.g-command[aria-selected])
 {
-	background-color: #E8E8E8;
+	background-color: #E6E6E6;
 }
 
 ::slotted(a:hover),

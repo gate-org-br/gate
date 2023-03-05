@@ -13,6 +13,8 @@
 i {
 	speak: none;
 	line-height: 1;
+	color: inherit;
+	cursor: inherit;
 	font-style: normal;
 	font-weight: normal;
 	font-family: 'gate';
@@ -41,51 +43,39 @@ i[c] {
 }
 
 
-g-tab-control > :is(a, button) > :is(i, span)
+g-tab-control
 {
-	order: 1;
-	color: inherit;
+	> a, button
+	{
+		> i, e, span, g-icon
+		{
+			order: -1;
+		}
+	}
 }
 
-g-coolbar > :is(a, button) > :is(i, span)
+g-coolbar
 {
-	order: 1;
-	display: flex;
-	color: inherit;
-	cursor: inherit;
-	font-size: 12px;
-	margin-left: 4px;
-	align-items: center;
-	justify-content: center;
+	> a, button, .g-command
+	{
+		> i, e, span, g-icon
+		{
+			order: 1;
+		}
+	}
 }
 
-g-tabbar > :is(a, button) > :is(i, span)
+g-tabbar
 {
-	order: -1;
-	display: flex;
-	min-width: 60px;
-	font-size: 16px;
-	margin-bottom: 4px;
-	align-items: center;
-	justify-content: center;
-}
-
-g-desk-pane > :is(g-desk-pane, a, button) > :is(i, span) {
-
-	order: -1;
-	width: 48px;
-	height: 48px;
-	display: flex;
-	color: inherit;
-	font-size: 40px;
-	margin-right: 8px;
-	align-items: center;
-	justify-content: center
-}
-
-g-desk-pane > :is(g-desk-pane, a, button) > img {
-	order: -1;
-	width: 48px;
-	height: 48px;
-	margin-right: 8px;
+	> a, button, .g-command
+	{
+		> i, e, span, g-icon
+		{
+			order: -1;
+			display: flex;
+			font-size: 22px;
+			align-items: center;
+			justify-content: center;
+		}
+	}
 }

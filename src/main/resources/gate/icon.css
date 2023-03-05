@@ -8,6 +8,8 @@
 i {
   speak: none;
   line-height: 1;
+  color: inherit;
+  cursor: inherit;
   font-style: normal;
   font-weight: normal;
   font-family: 'gate';
@@ -31,43 +33,45 @@ i {
 i[c] {
   font-family: arial;
 }
-g-tab-control > :is(a, button) > :is(i, span) {
+g-tab-control > a > i,
+g-tab-control button > i,
+g-tab-control > a e,
+g-tab-control button e,
+g-tab-control > a span,
+g-tab-control button span,
+g-tab-control > a g-icon,
+g-tab-control button g-icon {
+  order: -1;
+}
+g-coolbar > a > i,
+g-coolbar button > i,
+g-coolbar .g-command > i,
+g-coolbar > a e,
+g-coolbar button e,
+g-coolbar .g-command e,
+g-coolbar > a span,
+g-coolbar button span,
+g-coolbar .g-command span,
+g-coolbar > a g-icon,
+g-coolbar button g-icon,
+g-coolbar .g-command g-icon {
   order: 1;
-  color: inherit;
 }
-g-coolbar > :is(a, button) > :is(i, span) {
-  order: 1;
-  display: flex;
-  color: inherit;
-  cursor: inherit;
-  font-size: 12px;
-  margin-left: 4px;
-  align-items: center;
-  justify-content: center;
-}
-g-tabbar > :is(a, button) > :is(i, span) {
+g-tabbar > a > i,
+g-tabbar button > i,
+g-tabbar .g-command > i,
+g-tabbar > a e,
+g-tabbar button e,
+g-tabbar .g-command e,
+g-tabbar > a span,
+g-tabbar button span,
+g-tabbar .g-command span,
+g-tabbar > a g-icon,
+g-tabbar button g-icon,
+g-tabbar .g-command g-icon {
   order: -1;
   display: flex;
-  min-width: 60px;
-  font-size: 16px;
-  margin-bottom: 4px;
+  font-size: 22px;
   align-items: center;
   justify-content: center;
-}
-g-desk-pane > :is(g-desk-pane, a, button) > :is(i, span) {
-  order: -1;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  color: inherit;
-  font-size: 40px;
-  margin-right: 8px;
-  align-items: center;
-  justify-content: center;
-}
-g-desk-pane > :is(g-desk-pane, a, button) > img {
-  order: -1;
-  width: 48px;
-  height: 48px;
-  margin-right: 8px;
 }

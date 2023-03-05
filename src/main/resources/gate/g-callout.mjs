@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div part='bar'>
+	<div>
 	</div>
 	<main part='main'>
 		<slot>
@@ -12,11 +12,15 @@ template.innerHTML = `
 }
 
 :host(*) {
-	display: flex;
+	padding: 1px;
+	display: grid;
+	background-color: #777777;
+	grid-template-columns: 8px 1fr;
 }
 
 div {
-	border-left: 4px solid #777777;
+	flex-basis: 8px;
+	background-color: transparent;
 }
 
 main {
@@ -24,72 +28,87 @@ main {
 	display: flex;
 	font-size: 16px;
 	align-items: center;
-	border: 1px solid #777777;
+	background-color: #FFFFFF;
 }
 
-:host([type='success']) {
-	color: #5cb85c;
+:host(.fill) {
+	color: #FFFFFF;
+	background-color: #666666;
 }
 
-:host([type='success']) div {
-	border-left-color: #5cb85c;
+:host(.fill) > main {
+	background-color: #777777;
 }
 
-:host([type='success']) main {
-	border-color: #5cb85c;
-}
-
-:host([type='primary']) {
+:host(.primary) {
 	color: #428bca;
+	background-color: #428bca;
 }
 
-:host([type='primary']) div {
-	border-left-color: #428bca;
+:host(.primary.fill) {
+	color: #FFFFFF;
+	background-color: #317ab9;
 }
 
-:host([type='primary']) main {
-	border-color: #428bca;
+:host(.primary.fill) > main {
+	background-color: #428bca;
 }
 
-:host([type='info']) {
+:host(.success) {
+	color: #5cb85c;
+	background-color: #5cb85c;
+}
+
+:host(.success.fill) {
+	color: #FFFFFF;
+	background-color: #5cb85c;
+}
+
+:host(.success.fill) > main {
+	background-color: #4ba74b;
+}
+
+:host(.info) {
 	color: #5bc0de;
+	background-color: #5bc0de;
 }
 
-:host([type='info']) div {
-	border-left-color: #5bc0de;
+:host(.info.fill) {
+	color: #FFFFFF;
+	background-color: #4ab9cd;
 }
 
-:host([type='info']) main {
-	border-color: #5bc0de;
+:host(.info.fill) > main {
+	background-color: #5bc0de;
 }
 
-:host([type='warning']) {
+:host(.warning) {
 	color: #f0ad4e;
+	background-color: #f0ad4e;
 }
 
-:host([type='warning']) div {
-	border-left-color: #f0ad4e;
+:host(.warning.fill) {
+	color: #FFFFFF;
+	background-color: #dd8913;
 }
 
-:host([type='warning']) main {
-	border-color: #f0ad4e;
+:host(.warning.fill) > main {
+	background-color: #f0ad4e;
 }
 
-:host([type='danger']) {
+:host(.danger) {
 	color: #d9534f;
+	background-color: #d9534f;
 }
 
-:host([type='danger']) div {
-	border-left-color: #d9534f;
+:host(.danger.fill) {
+	color: #FFFFFF;
+	background-color: #c8423e;
 }
 
-:host([type='danger']) main {
-	border-color: #d9534f;
+:host(.danger.fill) > main {
+	background-color: #d9534f;
 }
-
-
-
-
 </style>`;
 
 /* global customElements, template */

@@ -1,5 +1,6 @@
 fieldset {
   gap: 8px;
+  margin: 0;
   border: none;
   display: grid;
   margin-top: 10px;
@@ -47,9 +48,9 @@ fieldset > legend label {
   align-items: center;
 }
 fieldset > label {
-  padding: 4px;
   display: flex;
   font-size: 14px;
+  text-indent: 4px;
   grid-column: span 16;
   flex-direction: column;
 }
