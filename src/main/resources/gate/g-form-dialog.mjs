@@ -14,11 +14,11 @@ template.innerHTML = `
 			</g-form>
 		</section>
 		<footer>
-			<button class='Commit'>
+			<button class="primary">
 				Concluir<g-icon>&#X1000;</g-icon>
 			</button>
 			<hr/>
-			<button class='Cancel'>
+			<button class="tertiary">
 				Cancelar<g-icon>&#X1001;</g-icon>
 			</button>
 		</footer>

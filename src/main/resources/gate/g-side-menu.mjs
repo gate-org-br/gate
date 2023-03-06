@@ -38,6 +38,7 @@ main
 section
 {
 	width: 0;
+	gap: 4px;
 	padding: 0px;
 	display: flex;
 	max-width: 80%;
@@ -45,20 +46,18 @@ section
 	overflow-y: auto;
 	align-items: stretch;
 	flex-direction: column;
+	background-color: #DDDDDD;
 	justify-content: flex-start;
 }
 
 :host([position='left']) > main > section {
 	width: 280px;
 	padding: 8px;
-	background-image: linear-gradient(to right, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
 }
-
 
 :host([position='right']) > main > section {
 	width: 280px;
 	padding: 8px;
-	background-image: linear-gradient(to left, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
 }
 
 a, button, .g-command
@@ -73,13 +72,14 @@ a, button, .g-command
 	font-weight: bold;
 	align-items: center;
 	text-decoration: none;
+	background-color: #F8F8F8;
 	justify-content: space-between;
 }
 
 
 a:hover, button:hover, .g-command:hover
 {
-	background-color: var(--hovered);
+	background-color: #FFFACD;
 }
 
 
@@ -99,9 +99,7 @@ hr {
 
 br {
 	height: 16px;
-}
-
-</style>`;
+}</style>`;
 
 /* global customElements */
 

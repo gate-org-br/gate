@@ -105,7 +105,6 @@ template.innerHTML = `
 	background-color: #C6445A;
 }
 
-
 ::slotted(a.success),
 ::slotted(button.success),
 ::slotted(.g-command.success) {
@@ -120,16 +119,16 @@ template.innerHTML = `
 	background-color: #008E56;
 }
 
-::slotted(a.light),
-::slotted(button.light),
-::slotted(.g-command.light) {
+::slotted(a.tertiary),
+::slotted(button.tertiary),
+::slotted(.g-command.tertiary) {
 	background-color: #FFFFFF;
 	border: 1px solid #CCCCCC;
 }
 
-::slotted(a.light:hover),
-::slotted(button.light:hover),
-::slotted(.g-command.light:hover) {
+::slotted(a.tertiary:hover),
+::slotted(button.tertiary:hover),
+::slotted(.g-command.tertiary:hover) {
 	border: 1px solid black;
 }
 

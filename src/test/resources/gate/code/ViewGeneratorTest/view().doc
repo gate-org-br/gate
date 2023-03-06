@@ -100,7 +100,7 @@
 		</fieldset>
 
 		<div class='Coolbar'>
-			<g:link class="Action" method="post" module="#" screen="#" tabindex='2'>
+			<g:link class="primary" method="post" module="#" screen="#" tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
 			<g:link target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
