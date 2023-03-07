@@ -1,8 +1,8 @@
 import URL from './url.mjs';
 import resolve from './resolve.mjs';
 import Process from './process.mjs';
-import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
+import GGMessageDialog from './g-message-dialog.mjs';
 
 function processHide(button)
 {
@@ -32,7 +32,7 @@ window.addEventListener("click", function (event)
 
 	if (button.hasAttribute("data-cancel"))
 	{
-		Message.error(event.target.getAttribute("data-cancel"), 2000);
+		GMessageDialog.error(event.target.getAttribute("data-cancel"), 2000);
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		return;
@@ -128,7 +128,7 @@ window.addEventListener("click", function (event)
 						try
 						{
 							status = JSON.parse(status);
-							Message.show(status, 2000);
+							GMessageDialog.show(status, 2000);
 						} finally
 						{
 							button.disabled = false;
@@ -147,7 +147,7 @@ window.addEventListener("click", function (event)
 						{
 							status = JSON.parse(status);
 							if (status.type !== "SUCCESS")
-								Message.show(status, 2000);
+								GMessageDialog.show(status, 2000);
 						} finally
 						{
 							button.disabled = false;
@@ -168,7 +168,7 @@ window.addEventListener("click", function (event)
 							if (status.type === "SUCCESS")
 								button.innerHTML = status.value;
 							else
-								Message.show(status, 2000);
+								GMessageDialog.show(status, 2000);
 						} finally
 						{
 							button.disabled = false;
@@ -304,7 +304,7 @@ window.addEventListener("click", function (event)
 								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
 									.innerHTML = status.message;
 							else
-								Message.show(status, 2000);
+								GMessageDialog.show(status, 2000);
 						} finally
 						{
 							button.style.pointerEvents = "";

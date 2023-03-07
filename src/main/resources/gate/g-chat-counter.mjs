@@ -15,8 +15,8 @@ template.innerHTML = `
 
 /* global customElements */
 
-import Message from './g-message.mjs';
 import GChatService from './g-chat-service.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 customElements.define('g-chat-counter', class extends HTMLElement
 {
@@ -32,7 +32,7 @@ customElements.define('g-chat-counter', class extends HTMLElement
 				if (Number(event.detail.receiver.id) === this.hostId)
 					GChatService.host()
 						.then(response => this.value = response.unread)
-						.catch(error => Message.error(error.message));
+						.catch(error => GMessageDialog.error(error.message));
 			},
 
 			ChatReceivedEvent: event =>
@@ -40,7 +40,7 @@ customElements.define('g-chat-counter', class extends HTMLElement
 				if (Number(event.detail.receiver) === this.hostId)
 					GChatService.host()
 						.then(response => this.value = response.unread)
-						.catch(error => Message.error(error.message));
+						.catch(error => GMessageDialog.error(error.message));
 			}
 		};
 	}
@@ -82,7 +82,7 @@ customElements.define('g-chat-counter', class extends HTMLElement
 	{
 		GChatService.host()
 			.then(response => this.value = response.unread)
-			.catch(error => Message.error(error.message));
+			.catch(error => GMessageDialog.error(error.message));
 	}
 
 	static get observedAttributes()

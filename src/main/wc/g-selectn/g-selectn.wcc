@@ -1,7 +1,7 @@
 /* global customElements */
 
-import Message from './g-message.mjs';
 import GContextMenu from './g-context-menu.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 customElements.define('g-selectn', class extends HTMLElement
 {
@@ -163,13 +163,13 @@ customElements.define('g-selectn', class extends HTMLElement
 			.length;
 
 		if (this.required && !checked)
-			return false & Message.error("Selecione ao menos uma opção");
+			return false & GMessageDialog.error("Selecione ao menos uma opção");
 
 		if (this.min && checked < min)
-			return false & Message.error(`Selecione ao menos ${min} opções`);
+			return false & GMessageDialog.error(`Selecione ao menos ${min} opções`);
 
 		if (this.max && checked > max)
-			return false & Message.error(`Selecione no máximo ${max} opções`);
+			return false & GMessageDialog.error(`Selecione no máximo ${max} opções`);
 
 		return true;
 	}

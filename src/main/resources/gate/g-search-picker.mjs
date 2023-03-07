@@ -42,7 +42,7 @@ main > section
 import './g-icon.mjs';
 import './g-grid.mjs';
 import GWindow from './g-window.mjs';
-import Message from './g-message.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 export default class GSearchPicker extends GWindow
 {
@@ -118,7 +118,7 @@ export default class GSearchPicker extends GWindow
 								alert("Dados inválidos retornados pelo servidor");
 							input.disabled = false;
 							input.focus();
-						}).catch(error => Message.error(error.message));
+						}).catch(error => GMessageDialog.error(error.message));
 				}
 			} else
 			{

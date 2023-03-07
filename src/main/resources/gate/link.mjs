@@ -4,11 +4,11 @@ import URL from './url.mjs';
 import GPopup from './g-popup.mjs';
 import Process from './process.mjs';
 import resolve from './resolve.mjs';
-import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
 import Extractor from './extractor.mjs';
 import GSelectPicker from './g-select-picker.mjs';
 import GSearchPicker from './g-search-picker.mjs';
+import GGGMessageDialogDialogDialog from './g-message-dialog.mjs';
 
 
 function processHide(link)
@@ -39,7 +39,7 @@ window.addEventListener("click", function (event)
 		event.preventDefault();
 		event.stopPropagation();
 		event.stopImmediatePropagation();
-		Message.error(link.getAttribute("data-cancel"), 2000);
+		GGGMessageDialogDialogDialog.error(link.getAttribute("data-cancel"), 2000);
 		return;
 	}
 
@@ -113,7 +113,7 @@ window.addEventListener("click", function (event)
 					try
 					{
 						status = JSON.parse(status);
-						Message.show(status, 2000);
+						GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
@@ -130,7 +130,7 @@ window.addEventListener("click", function (event)
 					{
 						status = JSON.parse(status);
 						if (status.type !== "SUCCESS")
-							Message.show(status, 2000);
+							GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
@@ -149,7 +149,7 @@ window.addEventListener("click", function (event)
 						if (status.type === "SUCCESS")
 							link.innerHTML = status.message;
 						else
-							Message.show(status, 2000);
+							GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
@@ -180,7 +180,7 @@ window.addEventListener("click", function (event)
 										label.value = Extractor.label(object.value);
 										value.value = Extractor.value(object.value);
 									});
-							}).catch(error => Message.error(error.message));
+							}).catch(error => GGGMessageDialogDialogDialog.error(error.message));
 					}
 				} else
 					console.log("label and value inputs not found");
@@ -306,7 +306,7 @@ window.addEventListener("click", function (event)
 								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
 									.innerHTML = status.message;
 							else
-								Message.show(status, 2000);
+								GGGMessageDialogDialogDialog.show(status, 2000);
 						} finally
 						{
 							link.style.pointerEvents = "";

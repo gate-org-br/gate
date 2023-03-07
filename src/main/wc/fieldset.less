@@ -28,7 +28,7 @@ fieldset {
 	> legend {
 		padding: 6px;
 		display: flex;
-		font-size: 16px;
+		font-size: 12px;
 		font-weight: bold;
 		border-radius: 3px;
 		align-items: center;
@@ -100,23 +100,11 @@ fieldset {
 				flex-shrink: 0;
 				min-width: 36px;
 				flex-basis: 36px;
-				border-radius: 3px;
 				position: relative;
 				align-items: stretch;
 				text-decoration: none;
 				justify-content: center;
-				border-top: 1px solid #CCCCCC;
-				border-bottom: 1px solid #CCCCCC;
-
-				&:first-child {
-					border-left: none;
-					border-left: 1px solid #CCCCCC;
-				}
-
-				&:last-child {
-					border-right: none;
-					border-right: 1px solid #CCCCCC;
-				}
+				border: 1px solid #CCCCCC;
 
 				> i, > g-icon {
 					flex-grow: 1;
@@ -130,6 +118,22 @@ fieldset {
 					&:focus {
 					background-color: var(--hovered);
 				}
+			}
+
+			> *:first-child {
+				border-radius: 3px 0 0 3px;
+			}
+
+			> *:last-child {
+				border-radius: 0 3px 3px 0;
+			}
+
+			> *:only-child {
+				border-radius: 3px;
+			}
+
+			input + a {
+				border-left: none;
 			}
 
 			> input[type='checkbox'],

@@ -24,7 +24,7 @@ fieldset > * {
 fieldset > legend {
   padding: 6px;
   display: flex;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
@@ -93,31 +93,11 @@ fieldset > label > form > .g-command {
   flex-shrink: 0;
   min-width: 36px;
   flex-basis: 36px;
-  border-radius: 3px;
   position: relative;
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
-  border-top: 1px solid #CCCCCC;
-  border-bottom: 1px solid #CCCCCC;
-}
-fieldset > label > span > a:first-child,
-fieldset > label > form > a:first-child,
-fieldset > label > span > button:first-child,
-fieldset > label > form > button:first-child,
-fieldset > label > span > .g-command:first-child,
-fieldset > label > form > .g-command:first-child {
-  border-left: none;
-  border-left: 1px solid #CCCCCC;
-}
-fieldset > label > span > a:last-child,
-fieldset > label > form > a:last-child,
-fieldset > label > span > button:last-child,
-fieldset > label > form > button:last-child,
-fieldset > label > span > .g-command:last-child,
-fieldset > label > form > .g-command:last-child {
-  border-right: none;
-  border-right: 1px solid #CCCCCC;
+  border: 1px solid #CCCCCC;
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
@@ -150,6 +130,22 @@ fieldset > label > form > button:focus,
 fieldset > label > span > .g-command:focus,
 fieldset > label > form > .g-command:focus {
   background-color: var(--hovered);
+}
+fieldset > label > span > *:first-child,
+fieldset > label > form > *:first-child {
+  border-radius: 3px 0 0 3px;
+}
+fieldset > label > span > *:last-child,
+fieldset > label > form > *:last-child {
+  border-radius: 0 3px 3px 0;
+}
+fieldset > label > span > *:only-child,
+fieldset > label > form > *:only-child {
+  border-radius: 3px;
+}
+fieldset > label > span input + a,
+fieldset > label > form input + a {
+  border-left: none;
 }
 fieldset > label > span > input[type='checkbox'],
 fieldset > label > form > input[type='checkbox'],

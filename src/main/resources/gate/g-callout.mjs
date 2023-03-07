@@ -24,7 +24,7 @@ div {
 }
 
 main {
-	padding: 16px;
+	padding: 12px;
 	display: flex;
 	font-size: 16px;
 	align-items: center;
@@ -120,15 +120,5 @@ customElements.define('g-callout', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-	}
-
-	set type(value)
-	{
-		this.setAttribute("type", value);
-	}
-
-	get type()
-	{
-		return this.getAtribute("type");
 	}
 });

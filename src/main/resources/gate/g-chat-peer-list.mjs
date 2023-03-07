@@ -69,9 +69,9 @@ g-chat-peer:hover
 /* global customElements */
 
 import './g-chat-peer.mjs';
-import Message from './g-message.mjs';
 import './g-chat-notification-config.mjs';
 import GChatService from './g-chat-service.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 customElements.define('g-chat-peer-list', class extends HTMLElement
 {
@@ -139,7 +139,7 @@ customElements.define('g-chat-peer-list', class extends HTMLElement
 					peer.unread = e.unread;
 					div.appendChild(peer);
 				});
-			}).catch(error => Message.error(error.message));
+			}).catch(error => GMessageDialog.error(error.message));
 		} else
 			Array.from(root.children)
 				.forEach(e => div.appendChild(e));

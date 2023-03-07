@@ -5,7 +5,7 @@ template.innerHTML = `
  <style>:host(*) {
 	height: auto;
 	display: flex;
-	font-size: 12px;
+	font-size: 16px;
 	border-radius: 3px;
 	flex-direction: column;
 	background-color: #FAFAFA;

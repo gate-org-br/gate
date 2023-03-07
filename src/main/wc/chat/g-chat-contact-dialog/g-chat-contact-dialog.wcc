@@ -3,8 +3,8 @@
 import './g-icon.mjs';
 import './g-chat-contact.mjs';
 import GWindow from './g-window.mjs';
-import Message from './g-message.mjs';
 import GChatService from './g-chat-service.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 export default class GChatContactDialog extends GWindow
 {
@@ -102,21 +102,21 @@ customElements.define('g-chat-contact-dialog', GChatContactDialog);
 
 
 window.addEventListener("click", event =>
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("a[target=_chat-contact]");
-	if (action)
 	{
-		event.preventDefault();
-		event.stopPropagation();
-		GChatService.peer(action.getAttribute("data-peer-id"))
-			.then(response => GChatContactDialog
-					.show(action.getAttribute("data-host-id"),
-						action.getAttribute("data-host-name"),
-						action.getAttribute("data-peer-id"),
-						action.getAttribute("data-peer-name"),
-						response.status))
-			.catch(error => Message.error(error.message));
-	}
-});
+		event = event || window.event;
+		let action = event.target || event.srcElement;
+		action = action.closest("a[target=_chat-contact]");
+		if (action)
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			GChatService.peer(action.getAttribute("data-peer-id"))
+				.then(response => GChatContactDialog
+						.show(action.getAttribute("data-host-id"),
+							action.getAttribute("data-host-name"),
+							action.getAttribute("data-peer-id"),
+							action.getAttribute("data-peer-name"),
+							response.status))
+				.catch(error => GMessageDialog.error(error.message));
+		}
+	});

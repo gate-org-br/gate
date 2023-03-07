@@ -5,6 +5,7 @@ nav {
   background-color: transparent;
 }
 nav > a {
+  color: black;
   padding: 8px;
   display: flex;
   font-size: 16px;

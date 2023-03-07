@@ -1,5 +1,5 @@
 /* global customElements, fetch */
-import Message from './g-message.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 import ResponseHandler from './response-handler.mjs';
 
 function path(path)

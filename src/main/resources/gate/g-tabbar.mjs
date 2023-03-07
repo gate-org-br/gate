@@ -28,12 +28,11 @@ template.innerHTML = `
 	gap: 4px;
 	padding: 6px;
 	height: auto;
-	flex-grow: 1;
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
-	font-size: 16px;
-	flex-basis: 120px;
+	font-size: 12px;
+	flex-basis: 140px;
 	border-radius: 5px;
 	white-space: nowrap;
 	align-items: center;

@@ -38,11 +38,12 @@ template.innerHTML = `
 
 :host(*) > g-desk-pane::after
 {
-	top: 4px;
-	right: 4px;
+	right: 8px;
+	bottom: 4px;
+	color: #CCCCCC;
 	font-size: 16px;
 	font-family: gate;
-	content: '\\2181';
+	content: '\\3017';
 	position: absolute;
 }
 

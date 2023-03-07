@@ -22,29 +22,20 @@
 
 		<nav>
 			<g-tabbar>
-				<a href='Gate?MODULE=linq.modulos.configuracoes' title='Configurações'
-					target='_top'>Configurações<i>&#X2020;</i></a>
-
-				<a href='Gate?MODULE=linq.modulos.gerencia' title='Gerência' target='_top'>Gerência<i>&#X2059;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter' title='Call Center' target='_top'>Call
-					Center<i>&#X2155;</i></a>
-				<a href='Gate?MODULE=linq.modulos.ramais' title='Ramais' target='_top'>Ramais<i>&#X2223;</i></a>
-				<a href='Gate?MODULE=linq.modulos.gravacao' title='Gravação' target='_top'>Gravação<i>&#X2087;</i></a>
-				<a href='Gate?MODULE=linq.modulos.tarifacao' title='Tarifação'
-					target='_top'>Tarifação<i>&#X2094;</i></a>
-				<a href='Gate?MODULE=linq.modulos.inventario' title='Inventário'
-					target='_top'>Inventário<i>&#X2090;</i></a>
-				<a href='Gate?MODULE=linq.modulos.relatorios' title='Relatórios'
-					target='_top'>Relatórios<i>&#X2021;</i></a>
-				<a href='Gate?MODULE=linq.modulos.mensageiro' title='Mensageiro'
-					target='_top'>Mensageiro<i>&#X2034;</i></a>
-
-				<a href='Gate?MODULE=linq.modulos.importacao' title='Importação'
-					target='_top'>Importação<i>&#X2181;</i></a>
-
-				<a href='Gate?MODULE=linq.modulos.ajuda' title='Ajuda' target='_top'>Ajuda<i>&#X2122;</i></a>
-				<hr />
-				<a href='Gate'>Sair<i>&#X2007;</i></a>
+				<a href='./message.html' 
+				target='_top'>Mensagens<i>&#X2020;</i></a>
+				<a href='./callout.html'
+					target='_top'>Callouts<i>&#X2020;</i></a>
+				<a href='./coolbar.html' 
+					target='_top'>Coolbar<i>&#X2020;</i></a>
+				<a href='./card.html'
+					target='_top'>Cards<i>&#X2020;</i></a>
+				<a href='./fieldset.html' aria-selected
+					target='_top'>Fieldset<i>&#X2020;</i></a>
+				<a href='./table.html'
+					target='_top'>Table<i>&#X2020;</i></a>
+				<a href='./deskpane.html'
+					target='_top'>Deskpane<i>&#X2020;</i></a>
 			</g-tabbar>
 		</nav>
 
@@ -116,12 +107,12 @@
 							<label data-size="8">
 								Operador:
 								<span>
-									<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
-										title='O campo USUÁRIO é requerido.' type='hidden' />
 									<input data-getter='form.user' maxlength='128' tabindex='1' name='form.user.name'
 										id='form.user.name'
 										title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.'
 										type='text' />
+										<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
+										title='O campo USUÁRIO é requerido.' type='hidden' />
 									<a data-get='form.user.id, form.user.name' id='form.user'
 										href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador&ACTION=Search&form.name=@{form.user.name}'
 										title='Pesquisar'><i>&#X2010;</i></a>
@@ -197,6 +188,33 @@
 									</g-selectn>
 								</span>
 							</label>
+							<label data-size="4">
+								Campo Readonly:
+								<span>
+									Valor
+								</span>
+							</label>
+							<label data-size="4">
+								Campo Readonly:
+								<span>
+									<label>
+										Valor
+									</label>
+								</span>
+							</label>
+							<label data-size="8">
+								Campo Readonly:
+								<span>
+									<label>
+										Valor
+									</label>
+									<a href="#">
+										<i>
+											&#X2003;
+										</i>
+									</a>
+							</span>
+							</label>
 						</fieldset>
 
 						<g-coolbar>
@@ -208,10 +226,9 @@
 								tabindex='2' title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
 						</g-coolbar>
 
-
-						<div class='TEXT'>
-							<h1>Nenhuma jornada cadastrada para os critérios de busca selecionados</h1>
-						</div>
+						<g-message class="warning icon fill">
+							Nenhuma jornada cadastrada para os critérios de busca selecionados
+						</g-message>
 
 					</form>
 

@@ -119,8 +119,8 @@ button
 /* global customElements */
 
 import './g-chat-message-list.mjs';
-import Message from './g-message.mjs';
 import GChatService from './g-chat-service.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 customElements.define('g-chat-contact', class extends HTMLElement
 {
@@ -150,7 +150,7 @@ customElements.define('g-chat-contact', class extends HTMLElement
 							.then(response => {
 							}).catch(error =>
 						{
-							Message.error(error.message);
+							GMessageDialog.error(error.message);
 						});
 					}
 
@@ -196,7 +196,7 @@ customElements.define('g-chat-contact', class extends HTMLElement
 				})
 				.catch(error =>
 				{
-					Message.error(error.message);
+					GMessageDialog.error(error.message);
 					message.enabled = true;
 				});
 		};
@@ -274,7 +274,7 @@ customElements.define('g-chat-contact', class extends HTMLElement
 				{
 					this.peerName = response.name;
 					this.peerStatus = response.status;
-				}).catch(error => Message.error(error.message));
+				}).catch(error => GMessageDialog.error(error.message));
 		}
 
 		GChatService.messages(this.peerId).then(response =>
@@ -292,9 +292,9 @@ customElements.define('g-chat-contact', class extends HTMLElement
 				.then(response => {
 				}).catch(error =>
 			{
-				Message.error(error.message);
+				GMessageDialog.error(error.message);
 			});
-		}).catch(error => Message.error(error.message));
+		}).catch(error => GMessageDialog.error(error.message));
 	}
 
 	disconnectedCallback()
@@ -315,7 +315,7 @@ customElements.define('g-chat-contact', class extends HTMLElement
 				.update('REMOTE', 'RECEIVED');
 		}).catch(error =>
 		{
-			Message.error(error.message);
+			GMessageDialog.error(error.message);
 		});
 	}
 
