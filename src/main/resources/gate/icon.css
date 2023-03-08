@@ -71,7 +71,21 @@ g-tabbar button g-icon,
 g-tabbar .g-command g-icon {
   order: -1;
   display: flex;
-  font-size: 1rem;
+  font-size: 1.25rem;
   align-items: center;
   justify-content: center;
+}
+g-tabbar.inline > a > i,
+g-tabbar.inline button > i,
+g-tabbar.inline .g-command > i,
+g-tabbar.inline > a e,
+g-tabbar.inline button e,
+g-tabbar.inline .g-command e,
+g-tabbar.inline > a span,
+g-tabbar.inline button span,
+g-tabbar.inline .g-command span,
+g-tabbar.inline > a g-icon,
+g-tabbar.inline button g-icon,
+g-tabbar.inline .g-command g-icon {
+  font-size: 1rem;
 }
