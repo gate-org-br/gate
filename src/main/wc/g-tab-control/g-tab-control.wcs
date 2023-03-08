@@ -52,8 +52,8 @@ header
 	color: black;
 	display: flex;
 	cursor: pointer;
-	font-size: 12px;
 	flex-basis: 50%;
+	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
 	background-color: #E8E8E8;

@@ -144,7 +144,9 @@ fieldset > label > form > *:only-child {
   border-radius: 3px;
 }
 fieldset > label > span input + a,
-fieldset > label > form input + a {
+fieldset > label > form input + a,
+fieldset > label > span select + a,
+fieldset > label > form select + a {
   border-left: none;
 }
 fieldset > label > span > input[type='checkbox'],

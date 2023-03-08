@@ -2,6 +2,7 @@ table {
   width: 100%;
   border: none;
   color: black;
+  font-size: 0.75rem;
   font-weight: normal;
   table-layout: fixed;
   border-spacing: 0px;

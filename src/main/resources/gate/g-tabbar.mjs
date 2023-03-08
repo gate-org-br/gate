@@ -31,9 +31,9 @@ template.innerHTML = `
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
-	font-size: 12px;
 	flex-basis: 140px;
 	border-radius: 5px;
+	font-size: 0.75rem;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
