@@ -22,7 +22,7 @@ template.innerHTML = `
 
 :host(:only-child)
 {
-	margin-bottom: 0px;
+	margin-top: 0px;
 	margin-bottom: 0px
 }
 
@@ -209,7 +209,27 @@ template.innerHTML = `
 	flex-grow: 100000;
 	border: none;
 }
-</style>`;
+
+#more {
+	order: 1;
+}
+
+div {
+	order: 2;
+}
+
+:host([reverse]) #more {
+	order: 2;
+}
+
+:host([reverse]) div {
+	order: 1;
+}
+
+:host([reverse]) #container
+{
+	flex-direction: row;
+}</style>`;
 
 /* global customElements, template */
 

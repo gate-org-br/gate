@@ -15,7 +15,9 @@ template.innerHTML = `
 
 div
 {
-	flex-basis: 5px;
+	flex-basis: 4px;
+	margin-left: 4px;
+	margin-right: 4px;
 	cursor: col-resize;
 	background-color: #999999;
 }

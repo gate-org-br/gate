@@ -9,8 +9,8 @@ template.innerHTML = `
 	</a>
  <style>:host(*)
 {
-	display: grid;
-	grid-template-columns: 1fr auto;
+	display: flex;
+	align-items: center;
 }
 
 #container {
@@ -18,6 +18,10 @@ template.innerHTML = `
 	display: flex;
 	overflow: hidden;
 	white-space: nowrap;
+}
+
+div {
+	flex-grow: 1;
 }
 
 #more {
@@ -36,23 +40,7 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-}
-
-:host([reverse]) #container
-{
-	flex-direction: row;
-}
-
-:host([reverse])
-{
-	grid-template-columns: auto 1fr;
-}
-
-:host([reverse]) #more
-{
-	order: -1;
-}
-</style>`;
+}</style>`;
 
 /* global customElements, template */
 
