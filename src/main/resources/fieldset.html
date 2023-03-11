@@ -5,7 +5,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>LinQ - Plataforma de Telefonia</title>
+	<title>Gate</title>
 	<link rel="shortcut icon" href="FavIcon.png" />
 	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
 	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
@@ -23,19 +23,21 @@
 		<nav>
 			<g-tabbar>
 				<a href='./message.html' 
-				target='_top'>Mensagens<i>&#X2020;</i></a>
+				target='_top'>Mensagens<i>&#X2015;</i></a>
 				<a href='./callout.html'
-					target='_top'>Callouts<i>&#X2020;</i></a>
+					target='_top'>Callouts<i>&#X2016;</i></a>
 				<a href='./coolbar.html' 
-					target='_top'>Coolbar<i>&#X2020;</i></a>
-				<a href='./card.html'
-					target='_top'>Cards<i>&#X2020;</i></a>
+					target='_top'>Coolbar<i>&#X1003;</i></a>
+				<a href='./card.html' 
+					target='_top'>Cards<i>&#X2197;</i></a>
 				<a href='./fieldset.html' aria-selected
-					target='_top'>Fieldset<i>&#X2020;</i></a>
+					target='_top'>Fieldset<i>&#X3011;</i></a>
 				<a href='./table.html'
-					target='_top'>Table<i>&#X2020;</i></a>
+					target='_top'>Table<i>&#X2044;</i></a>
 				<a href='./deskpane.html'
-					target='_top'>Deskpane<i>&#X2020;</i></a>
+					target='_top'>Deskpane<i>&#X2270;</i></a>
+				<hr/>
+				<a href='./login.html' target='_top'>Sair<i>&#X2007;</i></a>					
 			</g-tabbar>
 		</nav>
 
@@ -43,60 +45,28 @@
 			<form method="post" action="Gate?MODULE=linq.modulos.callCenter&SCREEN=Change">
 				<fieldset>
 					<legend>
-						Call Center
+						Path
 						<i>&#x2155;</i>
 					</legend>
 					<label>
 						<span>
-							<select maxlength='10' data-method='post' name='callCenter.id' pattern='^[0-9]{1,10}$'
-								data-action='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Change'
-								title='Qual o id do call center?'>
+							<select>
 								<option value=''></option>
-								<option value='0000000091'>Agendamento Indiana Iguatemi</option>
-								<option value='0000000099'>asdfasdfasf asdf</option>
-								<option value='0000000094'>Brione - Itabuna</option>
-								<option value='0000000090' selected='selected'>Durango</option>
-								<option value='0000000095'>Francesa - Itabuna</option>
-								<option value='0000000089'>Pos vendas_16</option>
-								<option value='0000000088'>PosVendas_11</option>
-								<option value='0000000092'>Telepeças Baviera Iguatemi</option>
-								<option value='0000000093'>Telepeças Indiana Iguatemi</option>
-								<option value='0000000086'>Vendas_11</option>
-								<option value='0000000087'>Vendas_16</option>
+								<option value='0000000091'>Opção 1</option>
+								<option value='0000000099'>Opção 2</option>
 							</select>
 
-							<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Configuracao' title='Configurações'
+							<a href='#' title='Configurações'
 								target='_dialog'><i>&#X2020;</i></a>
 						</span>
 					</label>
 				</fieldset>
 			</form>
 
-
-
-
-
 			<g-tab-control type="dummy">
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelOperador' title='Painel Operador'
-					data-selected='false'>Painel Operador<i>&#X2004;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=PainelSupervisor' title='Painel Supervisor'
-					data-selected='false'>Painel Supervisor<i>&#X2059;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador' title='Operadores'
-					data-selected='false'>Operadores<i>&#X2005;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Fila' title='Filas'
-					data-selected='false'>Filas<i>&#X2231;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Campanha' title='Campanhas'
-					data-selected='false'>Campanhas<i>&#X2232;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada' title='Jornadas'
-					data-selected='true'>Jornadas<i>&#X2167;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Recebida' title='Recebidas'
-					data-selected='false'>Recebidas<i>&#X2226;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Efetuada' title='Efetuadas'
-					data-selected='false'>Efetuadas<i>&#X2227;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Sessao' title='Sessões'
-					data-selected='false'>Sessões<i>&#X2016;</i></a>
-				<a href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Pesquisa' title='Pesquisas'
-					data-selected='false'>Pesquisas<i>&#X2146;</i></a>
+				<a href='#' data-selected='true'>Guia 1<i>&#X2004;</i></a>
+				<a href='#' data-selected='false'>Guia 2<i>&#X2005;</i></a>
+				<a href='#' data-selected='false'>Guia 3<i>&#X2006;</i></a>
 				<div>
 
 					<form method="POST" action="#">
@@ -105,16 +75,16 @@
 								<i>&#X2010;</i>Pesquisar
 							</legend>
 							<label data-size="8">
-								Operador:
+								Usuário:
 								<span>
-									<input data-getter='form.user' maxlength='128' tabindex='1' name='form.user.name'
+									<input maxlength='128' tabindex='1' name='form.user.name'
 										id='form.user.name'
 										title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.'
 										type='text' />
 										<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
 										title='O campo USUÁRIO é requerido.' type='hidden' />
 									<a data-get='form.user.id, form.user.name' id='form.user'
-										href='Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador&ACTION=Search&form.name=@{form.user.name}'
+										href='#'
 										title='Pesquisar'><i>&#X2010;</i></a>
 								</span>
 							</label>
@@ -137,20 +107,20 @@
 								</span>
 							</label>
 							<label data-size="2">
-								Linha:
+								Perfil:
 								<span>
-									<input maxlength='14' tabindex='1' name='form.linha.numero'
-										title='O número da linha é obrigatório de deve possuir no máximo 14 caracteres.'
+									<input maxlength='14' tabindex='1' name='form.role.name'
+										title='O perfil deve possuir no máximo 14 caracteres.'
 										type='text' />
 								</span>
 							</label>
 							<label data-size="2">
-								Resgatada:
+								Sexo:
 								<span>
 									<select tabindex='1' name='form.resgatada'>
 										<option></option>
-										<option value='false'>Não</option>
-										<option value='true'>Sim</option>
+										<option value='M'>Masculino</option>
+										<option value='F'>Feminino</option>
 									</select>
 								</span>
 							</label>
@@ -227,7 +197,7 @@
 						</g-coolbar>
 
 						<g-message class="warning icon fill">
-							Nenhuma jornada cadastrada para os critérios de busca selecionados
+							Nenhum registro encontrado
 						</g-message>
 
 					</form>
@@ -239,8 +209,8 @@
 
 		<footer>
 
-			<label>Desenvolvimento</label>
-			<label>Davi Nunes da Silva</label>
+			<label>Homologação</label>
+			<label>Fulano</label>
 		</footer>
 
 	</main>

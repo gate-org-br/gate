@@ -155,6 +155,50 @@ table.c19 > * > tr > *:nth-child(19),
 table.cge19 > * > tr > *:nth-child(n+19) {
   text-align: center;
 }
+table.m1 > * > tr > *:nth-child(1),
+table.m2 > * > tr > *:nth-child(2),
+table.m3 > * > tr > *:nth-child(3),
+table.m4 > * > tr > *:nth-child(4),
+table.m5 > * > tr > *:nth-child(5),
+table.m6 > * > tr > *:nth-child(6),
+table.m7 > * > tr > *:nth-child(7),
+table.m8 > * > tr > *:nth-child(8),
+table.m9 > * > tr > *:nth-child(9),
+table.m10 > * > tr > *:nth-child(10),
+table.m11 > * > tr > *:nth-child(11),
+table.m12 > * > tr > *:nth-child(12),
+table.m13 > * > tr > *:nth-child(13),
+table.m14 > * > tr > *:nth-child(14),
+table.m15 > * > tr > *:nth-child(15),
+table.m16 > * > tr > *:nth-child(16),
+table.m17 > * > tr > *:nth-child(17),
+table.m18 > * > tr > *:nth-child(18),
+table.m19 > * > tr > *:nth-child(19),
+table.m20 > * > tr > *:nth-child(20) {
+  font-family: monospace;
+}
+table.r1 > * > tr > *:nth-child(1),
+table.r2 > * > tr > *:nth-child(2),
+table.r3 > * > tr > *:nth-child(3),
+table.r4 > * > tr > *:nth-child(4),
+table.r5 > * > tr > *:nth-child(5),
+table.r6 > * > tr > *:nth-child(6),
+table.r7 > * > tr > *:nth-child(7),
+table.r8 > * > tr > *:nth-child(8),
+table.r9 > * > tr > *:nth-child(9),
+table.r10 > * > tr > *:nth-child(10),
+table.r11 > * > tr > *:nth-child(11),
+table.r12 > * > tr > *:nth-child(12),
+table.r13 > * > tr > *:nth-child(13),
+table.r14 > * > tr > *:nth-child(14),
+table.r15 > * > tr > *:nth-child(15),
+table.r16 > * > tr > *:nth-child(16),
+table.r17 > * > tr > *:nth-child(17),
+table.r18 > * > tr > *:nth-child(18),
+table.r19 > * > tr > *:nth-child(19),
+table.r20 > * > tr > *:nth-child(20) {
+  text-align: right;
+}
 td > label,
 th > label {
   width: 100%;

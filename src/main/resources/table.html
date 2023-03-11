@@ -5,7 +5,7 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>LinQ - Plataforma de Telefonia</title>
+	<title>Gate</title>
 	<link rel="shortcut icon" href="FavIcon.png" />
 	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
 	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
@@ -23,19 +23,21 @@
 		<nav>
 			<g-tabbar class="inline">
 				<a href='./message.html' 
-				target='_top'>Mensagens<i>&#X2020;</i></a>
+				target='_top'>Mensagens<i>&#X2015;</i></a>
 				<a href='./callout.html'
-					target='_top'>Callouts<i>&#X2020;</i></a>
+					target='_top'>Callouts<i>&#X2016;</i></a>
 				<a href='./coolbar.html' 
-					target='_top'>Coolbar<i>&#X2020;</i></a>
-				<a href='./card.html'
-					target='_top'>Cards<i>&#X2020;</i></a>
-				<a href='./fieldset.html' 
-					target='_top'>Fieldset<i>&#X2020;</i></a>
-				<a href='./table.html' aria-selected
-					target='_top'>Table<i>&#X2020;</i></a>
+					target='_top'>Coolbar<i>&#X1003;</i></a>
+				<a href='./card.html' 
+					target='_top'>Cards<i>&#X2197;</i></a>
+				<a href='./fieldset.html'
+					target='_top'>Fieldset<i>&#X3011;</i></a>
+				<a href='./table.html'  aria-selected
+					target='_top'>Table<i>&#X2044;</i></a>
 				<a href='./deskpane.html'
-					target='_top'>Deskpane<i>&#X2020;</i></a>
+					target='_top'>Deskpane<i>&#X2270;</i></a>
+				<hr/>
+				<a href='./login.html' target='_top'>Sair<i>&#X2007;</i></a>					
 			</g-tabbar>
 		</nav>
 
@@ -57,166 +59,70 @@
 			</fieldset>
 
 			<g-coolbar>
-				<a tabindex='2' class="primary" href='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Insert' title='Novo'
+				<a tabindex='2' class="primary" href='#' title='Novo'
 					target='_stack'>Novo<i>&#X1002;</i></a>
 				<hr />
-				<a class="tertiary" href='Gate?MODULE=linq.modulos.gerencia' title='Gerência'>
+				<a class="tertiary" href='#' title='Gerência'>
 					Retornar<i tabindex='2'>&#x2023;</i>
 				</a>
 			</g-coolbar>
 
-			<table data-collapse='Tablet'>
+			<table data-collapse='Tablet' class="r6 m6 c7">
 
 				<caption>USUÁRIOS ENCONTRADOS: 15</caption>
 
 				<thead>
 					<tr>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=name'>Nome</button>
-						</th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=username'>Login</button>
-						</th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=CPF'>Selecionado</button>
-						</th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=email'>E-Mail</button>
-						</th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=cargo.nome'>Cargo</button>
-						</th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=role.name'>Centro
-								de Custo</button></th>
-						<th><button
-								formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&orderBy=callCenter.nome'>Call
-								Center</button></th>
+						<th>Nome</th>
+						<th>Login</th>
+						<th>Selecionado</th>
+						<th>E-Mail</th>
+						<th>Cargo</th>
+						<th>Salário</th>
+						<th style="width: 48px">Sel</th>
 					</tr>
 				</thead>
 				<tfoot>
 					<tr>
 						<td colspan='7'>
 							<g-paginator><button
-									formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&pageSize=15&pageIndx=0'
+									formaction='#'
 									title='Expandir'>[P&aacute;gina&nbsp;1&nbsp;de&nbsp;2]</button>&nbsp;&nbsp;<button
-									formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&pageSize=10&pageIndx=1'
+									formaction='#'
 									title='Pr&oacute;ximo'>&gt;</button>&nbsp;&nbsp;<button
-									formaction='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&pageSize=10&pageIndx=1'
+									formaction='#'
 									title='&Uacute;ltimo'>&gt;&gt;</button></g-paginator>
 						</td>
 					</tr>
 				</tfoot>
 				<tbody>
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000001'>
-						<td title='Nome'>Davi Nunes da Silva</td>
-						<td title='Login'>davins</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI / Técnico / Desenvolvimento</td>
-						<td title='Call Center'>Durango</td>
+					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+						<td title='Nome'>Fulano da Silva</td>
+						<td title='Login'>fulano.silva</td>
+						<td title='CPF'>000.000.000-00</td>
+						<td title='E-Mail'><input type='text'/></td>
+						<td title='Cargo'>Analista de Análise</td>
+						<td title='Cargo'>16.000</td>
+						<td title='Selecionado'><input type="checkbox"></td>
 					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000002'>
-						<td title='Nome'>Silvio Santana</td>
-						<td title='Login'>silvio</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI</td>
-						<td title='Call Center'>Vendas_16</td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000009'>
-						<td title='Nome'>Jadiel Silva</td>
-						<td title='Login'>jadiel</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI / Técnico</td>
-						<td title='Call Center'>Vendas_11</td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000014'>
-						<td title='Nome'>Sandro Santana</td>
-						<td title='Login'>sandro</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI</td>
-						<td title='Call Center'></td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000346'>
-						<td title='Nome'>Jorge Lukas Bandarra Barbosa</td>
-						<td title='Login'>jorgelukas</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI / Técnico</td>
-						<td title='Call Center'>Vendas_11</td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000000365'>
-						<td title='Nome'>Uiran Oliveira</td>
-						<td title='Login'>uiran</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' value='uiranpassos@qualifyti.com.br' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI / Técnico</td>
-						<td title='Call Center'>Durango</td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000001697'>
-						<td title='Nome'>teste</td>
-						<td title='Login'>teste</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Qualify TI</td>
-						<td title='Call Center'>Vendas_11</td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000001698'>
-						<td title='Nome'>1 teste mesmo nome</td>
-						<td title='Login'>1 teste mesmo nome</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico / Clientes</td>
-						<td title='Call Center'></td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000001702'>
-						<td title='Nome'>1 teste mesmo nome</td>
-						<td title='Login'>mesmo.nome</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'></td>
-						<td title='Centro de Custo'>Publico</td>
-						<td title='Call Center'></td>
-					</tr>
-
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes'
-						data-action='Gate?MODULE=linq.modulos.gerencia&SCREEN=Usuario&ACTION=Select&form.id=0000001704'>
-						<td title='Nome'>valido</td>
-						<td title='Login'>valido</td>
-						<td title='CPF'><input type='checkbox' /></td>
-						<td title='E-Mail'><input type='text' /></td>
-						<td title='Cargo'>Operador</td>
-						<td title='Centro de Custo'>Publico</td>
-						<td title='Call Center'>PosVendas_11</td>
-					</tr>
+					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+						<td title='Nome'>Beltrano de Souza</td>
+						<td title='Login'>beltrano.souza</td>
+						<td title='CPF'>111.111.111-11</td>
+						<td title='E-Mail'><input type='text'/></td>
+						<td title='Cargo'>Analista de Responsabilidades</td>
+						<td title='Cargo'>220.000</td>
+						<td title='Selecionado'><input type="checkbox"></td>
+					</tr>					
+					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+						<td title='Nome'>Cicrano Gusmão</td>
+						<td title='Login'>cicrano.gusmao</td>
+						<td title='CPF'>222.222.222-22</td>
+						<td title='E-Mail'><input type='text'/></td>
+						<td title='Cargo'>Servente</td>
+						<td title='Cargo'>1.380</td>
+						<td title='Selecionado'><input type="checkbox"></td>
+					</tr>					
 				</tbody>
 			</table>
 
@@ -225,9 +131,8 @@
 
 
 		<footer>
-
-			<label>Desenvolvimento</label>
-			<label>Davi Nunes da Silva</label>
+			<label>Homologação</label>
+			<label>Fulano</label>
 		</footer>
 
 	</main>

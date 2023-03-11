@@ -19,6 +19,8 @@ main {
 	padding: 12px;
 	display: flex;
 	font-size: 16px;
+	text-indent: 24px;
+	text-align: justify;
 	align-items: center;
 	background-color: #FFFFFF;
 }

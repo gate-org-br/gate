@@ -22,7 +22,9 @@ public interface Interval<T extends Comparable<? super T>>
 	default boolean intersects(Interval<T> interval)
 	{
 		return contains(interval.getMin())
-			|| contains(interval.getMax());
+			|| contains(interval.getMax())
+			|| interval.contains(getMin())
+			|| interval.contains(getMax());
 	}
 
 }

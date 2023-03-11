@@ -1,11 +1,11 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<link rel='stylesheet'
-	      type='text/css' href='./gate/input.css'/>
+	      type='text/css' href='./gate/style/input.css'/>
 	<link rel='stylesheet'
-	      type='text/css' href='./gate/table.css'/>
+	      type='text/css' href='./gate/style/table.css'/>
 	<link rel='stylesheet'
-	      type='text/css' href='./gate/fieldset.css'/>
+	      type='text/css' href='./gate/style/fieldset.css'/>
  <style>* {
 	box-sizing: border-box
 }
