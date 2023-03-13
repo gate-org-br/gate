@@ -1,0 +1,96 @@
+:host(*)
+{
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#setup-password,
+#reset-password,
+#create-account {
+	display: none;
+}
+
+:host([setup-password]) #setup-password
+{
+	display: flex;
+}
+
+:host([reset-password]) #reset-password
+{
+	display: flex;
+}
+
+:host([create-account]) #create-account
+{
+	display: flex;
+}
+
+main {
+	width: 600px;
+	min-width: 320px;
+	background-color: #F8F8F8;
+	max-width: calc(100% - 16px);
+	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
+}
+
+header
+{
+	gap: 8px;
+	padding: 8px;
+	height: 50px;
+	color: white;
+	display: flex;
+	align-items: stretch;
+	background-color: #3f729b;
+	justify-content: space-around;
+}
+
+::slotted(img) {
+	width: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+::slotted(*:nth-child(2)) {
+	flex-grow: 1;
+	display: flex;
+	font-size: 20px;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+::slotted(*:nth-child(3)) {
+	display: flex;
+	font-size: 12px;
+	align-items: flex-start;
+	justify-content: flex-end;
+}
+
+
+section
+{
+	padding: 10px;
+}
+
+a
+{
+
+	grid-column: span 1;
+
+}
+
+footer
+{
+	padding: 10px;
+}
+
+@media only screen and (min-width: 768px)
+{
+	a {
+		grid-column: span 2;
+	}
+
+}

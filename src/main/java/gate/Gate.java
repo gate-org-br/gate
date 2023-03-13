@@ -174,12 +174,8 @@ public class Gate extends HttpServlet
 					execute(httpServletRequest, response, screen, call.getMethod());
 			}
 
-		} catch (DefaultPasswordException ex)
-		{
-			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
-			Handler handler = handlers.select(HTMLCommandHandler.class).get();
-			handler.handle(httpServletRequest, response, SetupPassword.HTML);
-		} catch (AuthenticatorException
+		} catch (DefaultPasswordException
+			| AuthenticatorException
 			| InvalidUsernameException
 			| InvalidPasswordException
 			| UnauthorizedException

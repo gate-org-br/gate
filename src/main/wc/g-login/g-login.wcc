@@ -1,0 +1,25 @@
+/* global customElements, template */
+
+import './g-icon.mjs';
+import './g-message.mjs';
+
+customElements.define('g-login', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.innerHTML = template.innerHTML;
+	}
+
+	attributeChangedCallback()
+	{
+		this.shadowRoot.querySelector("form")
+			.setAttribute("action", this.getAttribute("action"));
+	}
+
+	static get observedAttributes() {
+		return ['action'];
+	}
+
+});

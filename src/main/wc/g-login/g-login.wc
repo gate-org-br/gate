@@ -1,0 +1,216 @@
+<template>
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/input.css'/>
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/fieldset.css'/>
+
+	<form class="Login" method='POST' target='_top' action='Gate'>
+		<main>
+			<header>
+				<slot>
+				</slot>
+			</header>
+			<section>
+				<g-tab-control>
+					<a href='#' data-selected="true">
+						<g-icon>
+							&#X2000;
+						</g-icon>
+						Fazer Logon
+					</a>
+					<div>
+						<form method="post" action="#">
+							<fieldset>
+								<label>
+									Login:
+									<span>
+										<g-icon>&#X2004;</g-icon>
+										<input type="text" required='required' name='$username' maxlength='64' tabindex="1"
+										       title='Entre com o seu login.' />
+									</span>
+								</label>
+								<label>
+									Senha:
+									<span>
+										<input type="password" required='required' name='$password' maxlength='32'
+										       tabindex="1" title='Entre com a sua senha.' />
+									</span>
+								</label>
+							</fieldset>
+
+							<g-coolbar>
+								<button class="primary">
+									Entrar<g-icon>&#X1000;</g-icon>
+								</button>
+							</g-coolbar>
+						</form>
+					</div>
+					<a id='setup-password' href='#'>
+						<g-icon>
+							&#X2002;
+						</g-icon>
+						Trocar Senha
+					</a>
+					<div>
+						<form method="post" action="SetupPassword">
+							<fieldset>
+								<label data-size="8">
+									Login:
+									<span>
+										<g-icon>
+											&#X2004;
+										</g-icon>
+										<input type='TEXT' required='required' name='user.username' maxlength='64' tabindex='1' title='Entre com o seu login.'/>
+									</span>
+								</label>
+								<label data-size="8">
+									Senha atual:
+									<span>
+										<input type='PASSWORD' required='required' name='user.password' maxlength='64' tabindex='1' title='Entre com a sua senha atual.'/>
+									</span>
+								</label>
+								<label  data-size="8">
+									Nova senha:
+									<span>
+										<input type='PASSWORD' required='required' name='user.change' maxlength='64' tabindex='1' title='Entre com a sua nova senha.'/>
+									</span>
+								</label>
+								<label  data-size="8">
+									Repita a nova senha:
+									<span>
+										<input type='PASSWORD' required='required' name='user.repeat' maxlength='64' tabindex='1' title='Repita sua nova senha.'/>
+									</span>
+								</label>
+							</fieldset>
+
+							<g-coolbar>
+								<button class='primary' tabindex='2'>
+									Trocar
+									<g-icon>&#X1000;</g-icon>
+								</button>
+							</g-coolbar>
+						</form>
+					</div>
+					<a id='reset-password' href='#'>
+						<g-icon>&#X2023;</g-icon>Recuperar Senha
+					</a>
+					<div>
+						<form method="post" action="ResetPassword">
+							<fieldset>
+								<g-message>
+									Entre com o seu login ou email na caixa de texto
+									abaixo e clique em concluir. Uma nova senha será criada
+									e enviada para seu endereço de email. Você
+									poderá então permanecer com ela ou trocá-la por outra
+									de sua escolha.
+								</g-message>
+								<fieldset>
+									<legend>
+										Login ou e-mail
+									</legend>
+									<label>
+										<span>
+											<g-icon>
+												&#X2004;
+											</g-icon>
+											<input type='TEXT' required='required' name='user.username'
+											       maxlength='64' tabindex='1' title='Entre com o seu login.'/>
+										</span>
+									</label>
+								</fieldset>
+							</fieldset>
+
+							<g-coolbar>
+								<button class='primary' tabindex='2'>
+									Recuperar
+									<g-icon>&#X1000;</g-icon>
+								</button>
+							</g-coolbar>
+						</form>
+					</div>
+
+					<a id='create-account' href='#'>
+						<g-icon>&#X2004;</g-icon>Criar Conta
+					</a>
+					<div>
+						<form method="post" action="CreateAccount">
+							<fieldset>
+								<label>
+									Nome:
+									<span>
+										<g-icon>&#X2004</g-icon>
+										<input type='TEXT' required='required' name='user.name'
+										       maxlength='64' tabindex='1' title='Entre com o seu nome.'/>
+									</span>
+								</label>
+								<label>
+									Login:
+									<span>
+										<g-icon>&#X2096</g-icon>
+										<input type='TEXT' required='required' name='user.username'
+										       maxlength='64' tabindex='1' title='Entre com o seu login.'/>
+									</span>
+								</label>
+								<label data-size="8">
+									Senha:
+									<span>
+										<g-icon>&#X2002</g-icon>
+										<input type='PASSWORD' required='required' name='user.password'
+										       maxlength='32' tabindex='1' title='Entre com a sua senha.'/>
+									</span>
+								</label>
+								<label data-size="8">
+									Repita:
+									<span>
+										<g-icon>&#X2002</g-icon>
+										<input type='PASSWORD' required='required' name='user.repeat'
+										       maxlength='32' tabindex='1' title='repita sua senha.'/>
+									</span>
+								</label>
+								<label>
+									Empresa:
+									<span>
+										<g-icon>&#X2048</g-icon>
+										<input type='TEXT' required='required' name='user.description'
+										       maxlength='256' tabindex='1' title='Entre com o nome da empresa onde trabalha.'/>
+									</span>
+								</label>
+								<label>
+									E-Mail:
+									<span>
+										<g-icon>&#X2034</g-icon>
+										<input type='TEXT' required='required' name='user.email'
+										       maxlength='64' tabindex='1' title='Entre com o seu endere&ccedil;o de email.'/>
+									</span>
+								</label>
+								<label data-size="8">
+									Telefone:
+									<span>
+
+										<g-icon>&#X2223</g-icon>
+										<input type='TEXT' name='user.phone'
+										       maxlength='24' tabindex='1' title='Entre com o seu n&uacute;mero de telefone fixo.'/>
+									</span>
+								</label>
+								<label data-size="8">
+									Celular:
+									<span>
+										<g-icon>&#X2145</g-icon>
+										<input type='TEXT' name='user.cellPhone'
+										       maxlength='24' tabindex='1' title='Entre com o seu n&uacute;mero de telefone celular.'/>
+									</span>
+								</label>
+							</fieldset>
+							<g-coolbar>
+								<button class='primary' tabindex='2'>
+									Criar
+									<g-icon>&#X1000;</g-icon>
+								</button>
+							</g-coolbar>
+						</form>
+					</div>
+				</g-tab-control>
+			</section>
+		</main>
+	</form>
+</template>

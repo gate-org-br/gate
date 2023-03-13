@@ -137,7 +137,7 @@ export default class GMessageDialog extends GWindow
 
 	static success(text, timeout)
 	{
-		var message = window.top.document.createElement("g-message");
+		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "SUCCESS";
 		message.text = text;
 		message.title = "Sucesso";
@@ -150,7 +150,7 @@ export default class GMessageDialog extends GWindow
 
 	static warning(text, timeout)
 	{
-		var message = window.top.document.createElement("g-message");
+		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "WARNING";
 		message.text = text;
 		message.title = "Alerta";
@@ -163,7 +163,7 @@ export default class GMessageDialog extends GWindow
 
 	static error(text, timeout)
 	{
-		var message = window.top.document.createElement("g-message");
+		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "ERROR";
 		message.text = text;
 		message.title = "Erro";
@@ -176,7 +176,7 @@ export default class GMessageDialog extends GWindow
 
 	static  info(text, timeout)
 	{
-		var message = window.top.document.createElement("g-message");
+		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "INFO";
 		message.text = text;
 		message.title = "Informação";
@@ -192,16 +192,16 @@ export default class GMessageDialog extends GWindow
 		switch (status.type)
 		{
 			case "SUCCESS":
-				Message.success(status.message, timeout);
+				GMessageDialog.success(status.message, timeout);
 				break;
 			case "WARNING":
-				Message.warning(status.message, timeout);
+				GMessageDialog.warning(status.message, timeout);
 				break;
 			case "ERROR":
-				Message.error(status.message, timeout);
+				GMessageDialog.error(status.message, timeout);
 				break;
 			case "INFO":
-				Message.info(status.message, timeout);
+				GMessageDialog.info(status.message, timeout);
 				break;
 		}
 	}

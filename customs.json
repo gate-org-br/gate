@@ -1,6 +1,9 @@
 {
 	"elements": {
-		"slot": {}
+		"g-icon": {},
+		"g-tab-control": {},
+		"slot": {},
+		"g-coolbar": {}
 	},
 	"attributes": {
 		"part": {

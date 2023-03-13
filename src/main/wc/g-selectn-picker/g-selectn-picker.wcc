@@ -55,17 +55,17 @@ export default class GSelectNPicker extends GWindow
 		return this.shadowRoot.querySelector("g-selectn").value;
 	}
 
-	static pick(caption, options, values)
+	static pick(options, caption, values)
 	{
 		if (typeof options === "string")
 			return fetch(options)
 				.then(response => handle(response))
-				.then(response => GSelectNPicker.pick(caption, response, values));
+				.then(response => GSelectNPicker.pick(response, caption, values));
 
 		if (typeof values === "string")
-			return fetch(options)
+			return fetch(values)
 				.then(response => handle(response))
-				.then(response => GSelectNPicker.pick(caption, options, response));
+				.then(response => GSelectNPicker.pick(options, caption, response));
 
 		let picker = window.top.document.createElement("g-selectn-picker");
 		picker.options = options;

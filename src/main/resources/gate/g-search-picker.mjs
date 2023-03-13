@@ -116,9 +116,12 @@ export default class GSearchPicker extends GWindow
 								this.dispatchEvent(new CustomEvent("update", {detail: null}));
 							} else
 								alert("Dados inválidos retornados pelo servidor");
+						})
+						.catch(error => GMessageDialog.error(error.message))
+						.finally(() => {
 							input.disabled = false;
 							input.focus();
-						}).catch(error => GMessageDialog.error(error.message));
+						})
 				}
 			} else
 			{

@@ -33,8 +33,6 @@ public class ResetPassword extends HttpServlet
 
 	private static final long serialVersionUID = 1L;
 
-	static final String HTML = "/views/ResetPassword.html";
-
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
@@ -42,27 +40,22 @@ public class ResetPassword extends HttpServlet
 		response.setCharacterEncoding("UTF-8");
 		try
 		{
-			if (request.getMethod().equals("POST"))
+			User user = control
+				.select(request.getParameter("user.username"))
+				.setPassword(PasswordGenerator.generate());
+
+			if (user.getEmail() == null)
+				throw new AppException("Você não definiu um email para o qual sua nova senha possa ser enviada");
+
+			messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
+				"Sua senha foi redefinida para " + user.getPassword()));
+
+			control.update(user, user.getPassword());
+
+			request.setAttribute("messages", new String[]
 			{
-				User user = control
-					.select(request.getParameter("user.username"))
-					.setPassword(PasswordGenerator.generate());
-
-				if (user.getEmail() == null)
-					throw new AppException("Você não definiu um email para o qual sua nova senha possa ser enviada");
-
-				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-					"Sua senha foi redefinida para " + user.getPassword()));
-
-				control.update(user, user.getPassword());
-
-				request.setAttribute("messages", new String[]
-				{
-					"Sua senha foi redefinida e enviada para " + user.getEmail()
-				});
-
-				htmlHanlder.handle(request, response, Gate.HTML);
-			}
+				"Sua senha foi redefinida e enviada para " + user.getEmail()
+			});
 		} catch (AppException ex)
 		{
 			request.setAttribute("messages", ex.getMessages());
@@ -71,6 +64,6 @@ public class ResetPassword extends HttpServlet
 			request.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 		}
 
-		htmlHanlder.handle(request, response, HTML);
+		htmlHanlder.handle(request, response, Gate.HTML);
 	}
 }
