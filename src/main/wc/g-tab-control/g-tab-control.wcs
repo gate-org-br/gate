@@ -30,15 +30,18 @@ header
 
 ::slotted(div)
 {
+	gap: 12px;
 	display: none;
 	padding : 12px;
 	overflow: hidden;
+	align-items: stretch;
+	flex-direction: column;
 	background-color: white;
 }
 
 :host([type='dummy']) ::slotted(div)
 {
-	display: block;
+	display: flex;
 }
 
 ::slotted(a),

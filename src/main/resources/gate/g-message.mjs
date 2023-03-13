@@ -20,10 +20,10 @@ template.innerHTML = `
 }
 
 main {
-	margin: 0;
-	padding: 0;
-	text-indent: 12px;
+	display: flex;
 	text-align: justify;
+	align-items: stretch;
+	flex-direction: column;
 }
 
 :host(.icon)::before {

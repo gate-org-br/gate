@@ -13,15 +13,15 @@
 			</g-field-editor>
 		</section>
 		<footer>
-			<button class="primary">
+			<button id='commit' class="primary">
 				Concluir<g-icon>&#X1000;</g-icon>
 			</button>
-			<button class='Delete'>
+			<button id='delete' class='danger'>
 				Remover<g-icon>&#X2026;</g-icon>
 			</button>
 			<hr/>
-			<button class="tertiary">
-				Cancelar<g-icon>&#X1001;</g-icon>
+			<button id='cancel' class="tertiary">
+				Desistir<g-icon>&#X1001;</g-icon>
 			</button>
 		</footer>
 	</main>

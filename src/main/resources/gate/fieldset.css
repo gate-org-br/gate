@@ -3,20 +3,9 @@ fieldset {
   margin: 0;
   border: none;
   display: grid;
-  margin-top: 10px;
   border-radius: 3px;
-  margin-bottom: 10px;
   border: 1px solid #F6F6F6;
   grid-template-columns: repeat(16, 1fr);
-}
-fieldset:first-child {
-  margin-top: 0px;
-}
-fieldset:last-child {
-  margin-bottom: 0px;
-}
-fieldset:only-child {
-  margin-bottom: 0px;
 }
 fieldset > * {
   grid-column: span 16;

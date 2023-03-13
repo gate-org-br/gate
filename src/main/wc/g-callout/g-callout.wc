@@ -1,8 +1,4 @@
 <template>
-	<div>
-	</div>
-	<main part='main'>
-		<slot>
-		</slot>
-	</main>
+	<slot>
+	</slot>
 </template>

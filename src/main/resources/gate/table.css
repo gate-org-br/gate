@@ -8,18 +8,6 @@ table {
   border-spacing: 0px;
   text-decoration: none;
   border-collapse: collapse;
-  margin: 0;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-table:first-child {
-  margin-top: 0px;
-}
-table:last-child {
-  margin-bottom: 0px;
-}
-table:only-child {
-  margin-bottom: 0px;
 }
 table thead,
 table tbody,

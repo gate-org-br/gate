@@ -7,23 +7,6 @@ template.innerHTML = `
 :host(*)
 {
 	width: 100%;
-	flex-grow: 1;
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
-:host(:first-child) {
-	margin-top: 0px;
-}
-
-:host(:last-child) {
-	margin-bottom: 0px;
-}
-
-:host(:only-child)
-{
-	margin-top: 0px;
-	margin-bottom: 0px
 }
 
 #container {

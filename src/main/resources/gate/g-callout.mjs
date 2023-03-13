@@ -1,117 +1,129 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div>
-	</div>
-	<main part='main'>
-		<slot>
-		</slot>
-	</main>
+	<slot>
+	</slot>
  <style>* {
 	box-sizing: border-box;
 
 }
 
 :host(*) {
-	padding: 1px;
-	display: grid;
-	background-color: #777777;
-	grid-template-columns: 8px 1fr;
-}
-
-div {
-	flex-basis: 8px;
-	background-color: transparent;
-}
-
-main {
+	gap: 12px;
 	padding: 12px;
 	display: flex;
 	font-size: 16px;
-	text-indent: 24px;
 	text-align: justify;
-	align-items: center;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: center;
 	background-color: #FFFFFF;
+	border: 1px solid #cccccc;
+	border-radius: 0 3px 3px 0;
+	border-left: 6px solid #BBBBBB;
+}
+
+::slotted(*)
+{
+	margin: 0;
+}
+
+::slotted(hr) {
+	margin: 0;
+	width: 100%;
+	align-self: center;
+	border: 1px solid #F4F4F4;
 }
 
 :host(.fill) {
-	color: #FFFFFF;
-	background-color: #666666;
+	color: #000000;
+	border-color: #888888;
+	background-color: #F4F4F4;
 }
 
-:host(.fill) > main {
-	background-color: #777777;
+:host(.fill) ::slotted(hr)
+{
+	border-color: #dbdbdb;
 }
 
 :host(.primary) {
 	color: #428bca;
-	background-color: #428bca;
+	border-color: #428bca;
 }
 
 :host(.primary.fill) {
 	color: #FFFFFF;
-	background-color: #317ab9;
+	border-color: #346fa1;
+	background-color: #428bca;
 }
 
-:host(.primary.fill) > main {
-	background-color: #428bca;
+:host(.primary.fill) ::slotted(hr)
+{
+	border-color: #5496cf;
 }
 
 :host(.success) {
 	color: #5cb85c;
-	background-color: #5cb85c;
+	border-color: #5cb85c;
 }
 
 :host(.success.fill) {
 	color: #FFFFFF;
+	border-color: #499349;
 	background-color: #5cb85c;
 }
 
-:host(.success.fill) > main {
-	background-color: #4ba74b;
+:host(.success.fill) ::slotted(hr)
+{
+	border-color: #6cbf6c;
 }
 
 :host(.info) {
 	color: #5bc0de;
-	background-color: #5bc0de;
+	border-color: #5bc0de;
 }
 
 :host(.info.fill) {
 	color: #FFFFFF;
-	background-color: #4ab9cd;
-}
-
-:host(.info.fill) > main {
+	border-color: #4899b1;
 	background-color: #5bc0de;
 }
 
+:host(.info.fill) ::slotted(hr)
+{
+	border-color: #6bc6e1;
+}
+
 :host(.warning) {
-	color: #f0ad4e;
-	background-color: #f0ad4e;
+	color: #DAA520;
+	border-color: #DAA520;
 }
 
 :host(.warning.fill) {
 	color: #FFFFFF;
-	background-color: #dd8913;
+	border-color: #ae8419;
+	background-color: #DAA520;
 }
 
-:host(.warning.fill) > main {
-	background-color: #f0ad4e;
+:host(.warning.fill) ::slotted(hr)
+{
+	border-color: #ddae36;
 }
 
 :host(.danger) {
 	color: #d9534f;
-	background-color: #d9534f;
+	border-color: #d9534f;
 }
 
 :host(.danger.fill) {
 	color: #FFFFFF;
-	background-color: #c8423e;
-}
-
-:host(.danger.fill) > main {
+	border-color: #ad423f;
 	background-color: #d9534f;
 }
-</style>`;
+
+:host(.danger.fill) ::slotted(hr)
+{
+	border-color: #dc6460;
+}</style>`;
 
 /* global customElements, template */
 

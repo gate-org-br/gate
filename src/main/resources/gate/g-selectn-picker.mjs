@@ -15,14 +15,14 @@ template.innerHTML = `
 		</section>
 		<footer part='footer'>
 			<g-coolbar>
-				<button class="primary">
+				<button id='commit' class="primary">
 					Concluir
 					<g-icon>
 						&#X1000;
 					</g-icon>
 				</button>
 				<hr/>
-				<button class="tertiary">
+				<button id='cancel' class="tertiary">
 					Cancelar
 					<g-icon>
 						&#X1001;
@@ -62,10 +62,10 @@ export default class GSelectNPicker extends GWindow
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.shadowRoot.getElementById("close").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.querySelector(".Cancel").addEventListener("click",
+		this.shadowRoot.getElementById("cancel").addEventListener("click",
 			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
-		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
+		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
 		{
 			let values = this.shadowRoot.querySelector("g-selectn").value;
 			this.dispatchEvent(new CustomEvent("commit", {"detail": values}));

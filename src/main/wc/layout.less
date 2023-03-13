@@ -1,4 +1,9 @@
 body {
+	gap: 12px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+
 	> main {
 		top: 0;
 		left: 0;
@@ -65,6 +70,11 @@ body {
 		}
 
 		> section {
+			gap: 12px;
+			display: flex;
+			align-items: stretch;
+			flex-direction: column;
+
 			margin: 0;
 			grid-row: 3;
 			padding: 10px;
@@ -91,6 +101,10 @@ body {
 					grid-row: 3;
 					overflow: auto;
 					overflow-x: hidden;
+
+					gap: 12px;
+					display: flex;
+					flex-direction: column;
 				}
 				> footer {
 					grid-row: 4;
@@ -130,6 +144,13 @@ body {
 	}
 }
 
+form {
+	gap: 12px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
 form.Login
 {
 	height: 100vh;
@@ -138,13 +159,16 @@ form.Login
 	justify-content: center;
 
 	> main {
+		width: 600px;
 		min-width: 320px;
-		flex-basis: 600px;
 		background-color: #F8F8F8;
+		max-width: calc(100% - 16px);
 		box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 
 		> header
 		{
+			gap: 8px;
+			padding: 8px;
 			height: 50px;
 			color: white;
 			display: flex;
@@ -153,15 +177,13 @@ form.Login
 			justify-content: space-around;
 
 			> img {
-				width: 48px;
-				margin: 8px;
+				width: 32px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 			}
 
 			> *:nth-child(2) {
-				margin: 8px;
 				flex-grow: 1;
 				display: flex;
 				font-size: 20px;
@@ -170,8 +192,8 @@ form.Login
 			}
 
 			> *:nth-child(3) {
-				margin: 8px;
 				display: flex;
+				font-size: 12px;
 				align-items: flex-start;
 				justify-content: flex-end;
 			}
@@ -180,6 +202,16 @@ form.Login
 		> section
 		{
 			padding: 10px;
+			> g-tab-control {
+				a {
+
+					grid-column: span 1;
+					@media only screen and (min-width: 768px)
+						{
+						grid-column: span 2;
+					}
+				}
+			}
 		}
 
 		> footer

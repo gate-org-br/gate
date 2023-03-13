@@ -31,7 +31,7 @@ template.innerHTML = `
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
-	flex-basis: 140px;
+	flex-basis: 120px;
 	border-radius: 5px;
 	font-size: 0.75rem;
 	white-space: nowrap;
@@ -46,7 +46,7 @@ template.innerHTML = `
 :host(.inline) ::slotted(button),
 :host(.inline) ::slotted(.g-command)
 {
-	min-width: 160px;
+	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }

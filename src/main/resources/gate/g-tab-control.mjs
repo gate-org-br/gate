@@ -40,15 +40,18 @@ header
 
 ::slotted(div)
 {
+	gap: 12px;
 	display: none;
 	padding : 12px;
 	overflow: hidden;
+	align-items: stretch;
+	flex-direction: column;
 	background-color: white;
 }
 
 :host([type='dummy']) ::slotted(div)
 {
-	display: block;
+	display: flex;
 }
 
 ::slotted(a),
@@ -183,7 +186,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 				{
 					pages.forEach(e => e.style.display = "none");
 					links.forEach(e => e.setAttribute("data-selected", "false"));
-					link.nextElementSibling.style.display = "block";
+					link.nextElementSibling.style.display = "flex";
 					link.setAttribute("data-selected", "true");
 
 					if (reload === "always")

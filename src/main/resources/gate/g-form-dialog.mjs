@@ -14,12 +14,12 @@ template.innerHTML = `
 			</g-form>
 		</section>
 		<footer>
-			<button class="primary">
+			<button id='commit' class="primary">
 				Concluir<g-icon>&#X1000;</g-icon>
 			</button>
 			<hr/>
-			<button class="tertiary">
-				Cancelar<g-icon>&#X1001;</g-icon>
+			<button id='cancel' class="tertiary">
+				Desistir<g-icon>&#X1001;</g-icon>
 			</button>
 		</footer>
 	</main>
@@ -58,8 +58,8 @@ export default class GFormDialog extends GWindow
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		let form = this.shadowRoot.querySelector("g-form");
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.querySelector(".Cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
 		{
 			if (form.checkValidity())
 			{

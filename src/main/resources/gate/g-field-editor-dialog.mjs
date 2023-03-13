@@ -14,15 +14,15 @@ template.innerHTML = `
 			</g-field-editor>
 		</section>
 		<footer>
-			<button class="primary">
+			<button id='commit' class="primary">
 				Concluir<g-icon>&#X1000;</g-icon>
 			</button>
-			<button class='Delete'>
+			<button id='delete' class='danger'>
 				Remover<g-icon>&#X2026;</g-icon>
 			</button>
 			<hr/>
-			<button class="tertiary">
-				Cancelar<g-icon>&#X1001;</g-icon>
+			<button id='cancel' class="tertiary">
+				Desistir<g-icon>&#X1001;</g-icon>
 			</button>
 		</footer>
 	</main>
@@ -54,9 +54,9 @@ export default class GFieldEditorDialog extends GWindow
 		let editor = this.shadowRoot.querySelector("g-field-editor");
 
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
-		this.shadowRoot.querySelector(".Cancel").addEventListener("click", () => this.hide());
-		this.shadowRoot.querySelector(".Delete").addEventListener("click", () => this.dispatchEvent(new CustomEvent("delete")) | this.hide());
-		this.shadowRoot.querySelector(".Commit").addEventListener("click", () =>
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
+		this.shadowRoot.getElementById("delete").addEventListener("click", () => this.dispatchEvent(new CustomEvent("delete")) | this.hide());
+		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
 		{
 			if (editor.validate())
 			{
@@ -80,9 +80,9 @@ export default class GFieldEditorDialog extends GWindow
 	{
 		this.shadowRoot.querySelector("g-field-editor").value = value;
 		if (value)
-			this.shadowRoot.querySelector(".Delete").removeAttribute("hidden");
+			this.shadowRoot.getElementById("delete").removeAttribute("hidden");
 		else
-			this.shadowRoot.querySelector(".Delete").setAttribute("hidden", "true");
+			this.shadowRoot.getElementById("delete").setAttribute("hidden", "true");
 
 	}
 
