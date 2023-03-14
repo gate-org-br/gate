@@ -89,8 +89,6 @@ import "./g-splitter.mjs";
 
 import "./g-callout.mjs";
 
-import "./g-login.mjs";
-
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)

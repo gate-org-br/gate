@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value = "/gate/resource/*")
+@WebServlet(value = "/gate/*")
 public class Resource extends HttpServlet
 {
 
@@ -34,8 +34,8 @@ public class Resource extends HttpServlet
 			response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 			response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 
-			try ( OutputStream o = response.getOutputStream();
-				 InputStream i = Resource.class.getResourceAsStream(filename))
+			try (OutputStream o = response.getOutputStream();
+				InputStream i = Resource.class.getResourceAsStream(filename))
 			{
 				for (int b = i.read(); b != -1; b = i.read())
 					o.write(b);

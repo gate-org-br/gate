@@ -19,7 +19,7 @@ public class HideCommandHandler implements Handler
 		HideCommand signal = (HideCommand) value;
 
 		response.setContentType("text/html");
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 
 			writer.write("<!DOCTYPE HTML>");
@@ -30,7 +30,7 @@ public class HideCommandHandler implements Handler
 			writer.write("    </head>");
 			writer.write("    <body>");
 			writer.write("        <script type='module'>");
-			writer.write("                import GDialog from './gate/resource/g-dialog.mjs';");
+			writer.write("                import GDialog from './gate/g-dialog.mjs';");
 
 			CheckedStream.of(IOException.class,
 				signal.getMessages().stream())
