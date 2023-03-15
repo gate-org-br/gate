@@ -5,6 +5,7 @@ template.innerHTML = `
  <style>:host {
 	margin: 4px;
 	float: right;
+	color: inherit;
 }
 
 ::slotted(a),
@@ -13,7 +14,7 @@ template.innerHTML = `
 {
 	border: 0;
 	padding: 0;
-	color: var(--b);
+	color: inherit;
 	font-size: 12px;
 	cursor: pointer;
 	background: none;

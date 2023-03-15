@@ -21,7 +21,7 @@ body > main > header {
   color: white;
   display: flex;
   align-items: center;
-  background-color: #3f729b;
+  background-color: var(--base);
 }
 body > main > header > * {
   margin: 0 8px 0 8px;

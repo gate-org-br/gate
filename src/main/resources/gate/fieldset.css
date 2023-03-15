@@ -18,6 +18,8 @@ fieldset > legend {
   border-radius: 3px;
   align-items: center;
   background-color: #E8E8E8;
+  color: var(--base-shaded);
+  background-color: var(--base-tinted);
 }
 fieldset > legend > i,
 fieldset > legend > g-icon {

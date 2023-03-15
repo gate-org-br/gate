@@ -30,7 +30,7 @@ main {
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
-	font-size: 48px;
+	font-size: 36px;
 	content: '\\2015';
 	align-items: center;
 	font-family: 'gate';
