@@ -1,5 +1,12 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<div id='container'>
+		<slot>
+		</slot>
+	</div>
+	<a id='more' href='#'>
+		&#X3018;
+	</a>
  <style>* {
 	box-sizing: border-box;
 }
@@ -7,14 +14,8 @@ template.innerHTML = `
 :host(*)
 {
 	width: 100%;
-}
-
-#container {
-	gap: 8px;
-	flex-grow: 1;
 	display: flex;
-	align-items: stretch;
-	flex-direction: row-reverse;
+	align-items: center;
 }
 
 ::slotted(a),
@@ -195,36 +196,114 @@ template.innerHTML = `
 
 #more {
 	order: 1;
+	padding: 0;
+	width: 32px;
+	flex-grow: 0;
+	height: 100%;
+	outline: none;
+	display: none;
+	flex-shrink: 0;
+	color: inherit;
+	font-size: 20px;
+	cursor: pointer;
+	font-family: gate;
+	margin-right: auto;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
 }
 
-div {
+#container {
+	gap: 8px;
 	order: 2;
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
+	white-space: nowrap;
+	align-items: stretch;
+	flex-direction: row-reverse;
 }
 
 :host([reverse]) #more {
 	order: 2;
 }
 
-:host([reverse]) div {
+:host([reverse]) #container {
 	order: 1;
 }
 
 :host([reverse]) #container
 {
 	flex-direction: row;
-}</style>`;
+}
+
+</style>`;
 
 /* global customElements, template */
 
-import GOverflow from "./g-overflow.mjs";
+import './g-side-menu.mjs';
+import Proxy from './proxy.mjs';
+import GSelection from './selection.mjs';
 
-export default class GCoolbar extends GOverflow
+customElements.define('g-coolbar', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-	}
-}
+		this.attachShadow({mode: 'open'});
+		this.shadowRoot.innerHTML = template.innerHTML;
+		new ResizeObserver(() => this.update()).observe(this);
+		this.shadowRoot.getElementById("container")
+			.firstChild.addEventListener('slotchange', () => this.update());
 
-customElements.define('g-coolbar', GCoolbar);
+		let more = this.shadowRoot.getElementById("more");
+
+		more.addEventListener("click", () =>
+		{
+			let elements = Array.from(this.children)
+				.filter(e => e.tagName !== "HR")
+				.filter(e => !e.getAttribute("hidden"))
+				.filter(e => e.style.display === "none")
+				.map(element => Proxy.create(element));
+			elements.forEach(e => e.style.display = "");
+
+			let menu = document.createElement("g-side-menu");
+			document.documentElement.appendChild(menu);
+			menu.elements = elements;
+			menu.show(more);
+		});
+	}
+
+	connectedCallback()
+	{
+		setTimeout(() => this.update(), 200);
+	}
+
+	update()
+	{
+		let selected = GSelection.getSelectedLink(this.children);
+		if (selected)
+			selected.setAttribute("aria-selected", "true");
+
+		Array.from(this.children)
+			.filter(e => !e.getAttribute("hidden"))
+			.forEach(e => e.style.display = "");
+
+		this.shadowRoot.getElementById("more")
+			.style.display = this.overflowed ? "flex" : "none";
+
+		for (let e = this.lastElementChild;
+			e && this.overflowed; e = e.previousElementSibling)
+			if (!e.hasAttribute("aria-selected")
+				&& !e.getAttribute("hidden"))
+				e.style.display = "none";
+	}
+
+	get overflowed()
+	{
+		let container = this.shadowRoot.getElementById("container");
+		return container.scrollWidth > container.clientWidth
+			|| container.scrollHeight > container.clientHeight;
+	}
+});
+

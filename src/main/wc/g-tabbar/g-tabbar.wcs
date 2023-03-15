@@ -8,6 +8,8 @@
 	border: none;
 	height: auto;
 	flex-grow: 1;
+	display: flex;
+	align-items: center;
 	background-color: #F8F8F8;
 	justify-content: flex-start;
 }
@@ -16,12 +18,15 @@
 {
 	gap: 8px;
 	padding: 8px;
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
-
-::slotted(a),
-::slotted(button),
-::slotted(.g-command)
+#container a,
+#container button,
+#container .g-command
 {
 	gap: 4px;
 	padding: 6px;
@@ -40,43 +45,80 @@
 	justify-content: space-around;
 }
 
-:host(.inline) ::slotted(a),
-:host(.inline) ::slotted(button),
-:host(.inline) ::slotted(.g-command)
+:host(.inline) #container a,
+:host(.inline) #container button,
+:host(.inline) #container .g-command
 {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-::slotted(a[aria-selected]),
-::slotted(button[aria-selected]),
-::slotted(.g-command[aria-selected])
+#container a[aria-selected],
+#container button[aria-selected],
+#container .g-command[aria-selected]
 {
 	background-color: #E6E6E6;
 }
 
-::slotted(a:hover),
-::slotted(button:hover),
-::slotted(.g-command:hover)
+#container a:hover,
+#container button:hover,
+#container .g-command:hover
 {
 	background-color:  #FFFACD;
 }
 
-::slotted(a:focus),
-::slotted(button:focus),
-::slotted(.g-command:focus)
+#container a:focus,
+#container button:focus,
+#container .g-command:focus
 {
 	outline: none
 }
 
-::slotted(*[hidden="true"])
+#container *[hidden="true"]
 {
 	display: none;
 }
 
-::slotted(hr)
+#container hr
 {
 	border: none;
 	flex-grow: 100000;
+}
+
+#more {
+	padding: 0;
+	width: 32px;
+	flex-grow: 0;
+	height: 100%;
+	outline: none;
+	display: none;
+	flex-shrink: 0;
+	color: inherit;
+	font-size: 20px;
+	cursor: pointer;
+	font-family: gate;
+	margin-right: auto;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}
+
+i, span, g-icon {
+	order: -1;
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	font-style: normal;
+	font-size: 1.25rem;
+	font-family: 'gate';
+	align-items: center;
+	justify-content: center;
+}
+
+:host(.inline) i,
+:host(.inline) span,
+:host(.inline) g-icon
+{
+	font-size: 1.0rem;
 }

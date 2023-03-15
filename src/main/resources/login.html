@@ -11,14 +11,63 @@
 </head>
 
 <body>
-	<g-login action="Gate?MODULE=module&SCREEN=screen&ACTION=action" 
-		setup-password 
-		reset-password 
-		create-account>
-		<img src='Logo.svg' />
-		<label>Gate</label>
-		<label>Versão 1.0.0-SNAPSHOT</label>
-	</g-login>
+	<form class="Login" method='POST' target='_top' action='Gate?MODULE=linq.modulos'>
+		<main>
+			<header>
+				<img src='Logo.svg' />
+				<label>Gate</label>
+				<label>Versão 1.0.0</label>
+			</header>
+			<section>
+				<g-tab-control type="dummy">
+					<a href='#' data-selected="true">
+						Fazer Logon
+						<i>&#X2000;</i>
+					</a>
+					<a href='#'>
+						Trocar Senha
+						<i>&#X2002;</i>
+					</a>
+					<a href='#'>
+						Recuperar Senha
+						<i>&#X2002;</i>
+					</a>
+					<a href='#'>
+						Criar Conta
+						<i>&#X2004;</i>
+					</a>
+					<div>
+						<fieldset>
+							<label>
+								Login:
+								<span>
+									<i>&#X2004;</i>
+									<input type="text" required='required' name='$username' maxlength='64' tabindex="1"
+										title='Entre com o seu login.' />
+								</span>
+							</label>
+							<label>
+								Senha:
+								<span>
+									<input type="password" required='required' name='$password' maxlength='32'
+										tabindex="1" title='Entre com a sua senha.' />
+								</span>
+							</label>
+						</fieldset>
+					</div>
+				</g-tab-control>
+			</section>
+			<footer>
+				<g-coolbar>
+					<a href='message.html' class="primary" tabindex="2">
+						Entrar
+						<i>&#X1000;</i>
+					</a>
+				</g-coolbar>
+			</footer>
+		</main>
+	</form>
+
 </body>
 
 </html>

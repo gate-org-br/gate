@@ -1,10 +1,16 @@
+* {
+	box-sizing: border-box;
+}
+
 :host(*)
 {
+	color: black;
+	border: none;
+	height: auto;
+	flex-grow: 1;
 	display: flex;
-	overflow: hidden;
-	color: var(--g-tabbar-color);
-	background-color:  var(--g-tabbar-background-color);
-	background-image:  var(--g-tabbar-background-image);
+	background-color: #F8F8F8;
+	justify-content: flex-start;
 }
 
 :host([data-overflowing=left])::before,
@@ -39,10 +45,87 @@
 
 div
 {
+	gap: 8px;
 	width: 100%;
+	padding: 8px;
 	height: auto;
 	border: none;
+	flex-grow: 1;
 	display:  flex;
-	overflow-x : hidden;
+	overflow: hidden;
 	white-space:  nowrap;
+}
+
+a,
+button,
+.g-command
+{
+	gap: 4px;
+	padding: 6px;
+	height: auto;
+	display: flex;
+	color: inherit;
+	flex-shrink: 0;
+	flex-basis: 120px;
+	border-radius: 5px;
+	font-size: 0.75rem;
+	white-space: nowrap;
+	align-items: center;
+	text-decoration: none;
+	flex-direction: column;
+	background-color: #F4F4F4;
+	justify-content: space-around;
+}
+
+:host(.inline) a,
+:host(.inline) button,
+:host(.inline) .g-command
+{
+	flex-basis: 160px;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+
+a[aria-selected],
+button[aria-selected],
+.g-command[aria-selected]
+{
+	background-color: #E6E6E6;
+}
+
+a:hover,
+button:hover,
+.g-command:hover
+{
+	background-color:  #FFFACD;
+}
+
+a:focus,
+button:focus,
+.g-command:focus
+{
+	outline: none
+}
+
+*[hidden="true"]
+{
+	display: none;
+}
+
+hr
+{
+	border: none;
+	flex-grow: 100000;
+}
+
+i, g-icon {
+	order: -1;
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	font-style: normal;
+	font-size: 1.25rem;
+	font-family: 'gate';
+	align-items: center;
+	justify-content: center;
 }

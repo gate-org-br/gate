@@ -2,7 +2,6 @@
 @import './link.css';
 @import './button.css';
 @import './treeview.css';
-@import './g-scroll-tabbar.css';
 @import './g-icon-pane.css';
 
 @import './icon.css';
@@ -12,6 +11,7 @@
 @import './div.css';
 @import './nav.css';
 @import './layout.css';
+@import './login.css';
 @import './minibar.css';
 @import './figure.css';
 @import './hmenu.css';
