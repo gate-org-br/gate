@@ -74,11 +74,14 @@ table > caption {
   vertical-align: middle;
   background-color: #E6E6E6;
   border-radius: 3px 3px 0 0;
+  color: var(--base-shaded);
+  background-color: var(--base-tinted);
 }
 table > thead > tr > * {
   font-weight: bold;
   background-color: #F2F2F2;
   border: 1px solid #E6E6E6;
+  color: var(--base-shaded);
 }
 table > tbody > tr:nth-child(even),
 table > tbody > tr.even {
@@ -102,6 +105,7 @@ table > tfoot > tr > * {
   font-weight: bold;
   background-color: #F2F2F2;
   border: 1px solid #E6E6E6;
+  color: var(--base-shaded);
 }
 table.c1 > * > tr > *:nth-child(1),
 table.cge1 > * > tr > *:nth-child(n+1),

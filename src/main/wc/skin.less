@@ -1,6 +1,7 @@
 @main: #CDCAB9;
-@base: #b9c6cd;
 @acent: #c0b9cd;
+
+@base: #3f729b;
 
 :root
 {
@@ -24,6 +25,10 @@
 	--main-shaded20: shade(@main, 20%);
 
 	--base: @base;
+	--base-tinted: tint(@base, 80%);
+	--base-shaded: shade(@base, 20%);
+
+
 	--base-tinted40: tint(@base, 40%);
 	--base-tinted45: tint(@base, 45%);
 	--base-tinted50: tint(@base, 50%);
