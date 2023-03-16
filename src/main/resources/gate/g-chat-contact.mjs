@@ -25,9 +25,9 @@ template.innerHTML = `
 	flex: 1 1 100%;
 	border-radius: 5px;
 	align-items: stretch;
+	background-color: #F8F8F8;
+	border: 1px solid #EEEEEE;
 	grid-template-rows: 40px 1fr 40px;
-	background-color: var(--table-head-background-color);
-	border: 2px solid var(--table-head-background-color);
 }
 
 :host([hidden])
@@ -40,8 +40,7 @@ section
 	display: flex;
 	overflow: auto;
 	align-items: stretch;
-	background-color: white;
-	background-image: var(--noise);
+	background: linear-gradient(to bottom, #EEEEEE 0, #DDDDDD 50%, #EEEEEE 100%);
 }
 
 g-chat-message-list
@@ -55,8 +54,8 @@ header
 	display: grid;
 	flex-basis: 50px;
 	align-items: center;
+	border-bottom: 1px solid #CCCCCC;
 	grid-template-columns: 32px 1fr 32px 128px;
-	background-color: var(--table-head-background-color);
 }
 
 header > i {
@@ -87,6 +86,7 @@ footer
 	display: grid;
 	align-items: stretch;
 	justify-content: center;
+	border-top: 1px solid #CCCCCC;
 	grid-template-columns: 1fr 48px;
 }
 

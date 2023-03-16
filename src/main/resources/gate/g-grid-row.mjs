@@ -8,29 +8,21 @@ template.innerHTML = `
 
 :host(*)
 {
-	height: 32px;
+	height: 38px;
 	cursor: inherit;
 	display: table-row;
 }
 
+:host(.even),
 :host(:nth-child(even))
 {
-	background-color: var(--table-body-background-color-even);
+	background-color: #FFFFFF;
 }
 
+:host(.odd),
 :host(:nth-child(odd))
 {
-	background-color: var(--table-body-background-color-odd);
-}
-
-:host(.even)
-{
-	background-color: var(--table-body-background-color-even);
-}
-
-:host(.odd)
-{
-	background-color: var(--table-body-background-color-odd);
+	background-color: #FAFAFA;
 }
 
 :host(:hover){

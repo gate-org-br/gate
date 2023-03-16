@@ -51,9 +51,9 @@ label {
 	text-align: center;
 	display: table-caption;
 	vertical-align: middle;
-	border-radius: 5px 5px 0px 0px;
-	background-color: var(--table-caption-background-color);
-	background-image: var(--table-caption-background-image);
+	color: var(--base-shaded);
+	border-radius: 3px 3px 0 0;
+	background-color: var(--base-tinted);
 }
 
 label:empty {

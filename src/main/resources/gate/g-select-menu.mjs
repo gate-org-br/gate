@@ -16,8 +16,8 @@ template.innerHTML = `
 	position: relative;
 	align-items: stretch;
 	flex-direction: column;
-	border: 1px solid #999999;
-	background-color: var(--g-select-menu-background-color, #e4e2d9);
+	border: 1px solid #CCCCCC;
+	background-color: #F0F0F0;
 }
 
 header
@@ -49,20 +49,21 @@ header::after
 }
 
 main {
-	left: 0;
+	left: -1px;
+	top: 100%;
 	display: none;
-	top: calc(100%);
 	width: inherit;
-	max-width: 100%;
+	right: -1px;
 	font-size: inherit;
 	position: absolute;
 	flex-direction: column;
-	border-top: 1px solid #CCCCCC;
-	background-color: var(--g-select-menu-background-color, #e4e2d9);
+	background-color: #F0F0F0;
+	border: 1px solid #CCCCCC;
 }
 
 a, .g-command {
 	gap: 8px;
+	color: #000066;
 	padding: 8px;
 	height: 32px;
 	display: grid;

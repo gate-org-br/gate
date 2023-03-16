@@ -41,6 +41,7 @@ template.innerHTML = `
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
+	cursor: pointer;
 	flex-basis: 120px;
 	border-radius: 5px;
 	font-size: 0.75rem;

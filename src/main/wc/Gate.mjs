@@ -65,6 +65,7 @@ import "./password.mjs";
 
 import "./datalist.mjs";
 
+import "./g-chat-button.mjs";
 import "./g-chat-dialog.mjs";
 import "./g-chat-counter.mjs";
 import "./g-chat-notificator.mjs";

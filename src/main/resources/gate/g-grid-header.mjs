@@ -11,7 +11,7 @@ template.innerHTML = `
 	height: 32px;
 	cursor: inherit;
 	display: table-row;
-	background-color: white;
+
 }
 
 :host(:empty)
@@ -23,7 +23,9 @@ template.innerHTML = `
 	top: 0;
 	position: sticky;
 	font-weight: bold;
-	background-color: white;
+	background-color: #F2F2F2;
+	border: 1px solid #E6E6E6;
+	color: var(--base-shaded);
 }</style>`;
 
 import './g-grid-cell.mjs';

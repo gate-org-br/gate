@@ -8,7 +8,7 @@ template.innerHTML = `
 :host(*)
 {
 	width: 100%;
-	padding: 8px;
+	padding: 4px;
 	height: 40px;
 	display: grid;
 	cursor: pointer;

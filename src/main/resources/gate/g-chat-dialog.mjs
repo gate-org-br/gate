@@ -80,18 +80,3 @@ export default class GChatDialog extends GWindow
 }
 
 customElements.define('g-chat-dialog', GChatDialog);
-
-
-window.addEventListener("click", event =>
-	{
-		event = event || window.event;
-		let action = event.target || event.srcElement;
-		action = action.closest("a[target=_chat]");
-		if (action)
-		{
-			event.preventDefault();
-			event.stopPropagation();
-			GChatDialog.show(action.getAttribute("data-host-id"),
-				action.getAttribute("data-host-name"));
-		}
-	});

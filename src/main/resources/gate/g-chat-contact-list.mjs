@@ -8,11 +8,10 @@ template.innerHTML = `
 {
 	display: flex;
 	height: inherit;
-	border-radius: 5px;
+	border-radius: 3px;
 	align-items: stretch;
 	justify-content: center;
-	background-color: white;
-	background-image: var(--noise);
+	background: linear-gradient(to bottom, #EEEEEE 0, #DDDDDD 50%, #EEEEEE 100%);
 }</style>`;
 
 /* global customElements */

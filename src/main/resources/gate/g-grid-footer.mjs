@@ -11,8 +11,6 @@ template.innerHTML = `
 	height: 32px;
 	cursor: inherit;
 	display: table-row;
-	background-color: var(--table-foot-cell-background-color);
-	background-image: var(--table-foot-cell-background-image);
 }
 
 :host(:empty)
@@ -24,8 +22,9 @@ template.innerHTML = `
 	bottom: 0;
 	position: sticky;
 	font-weight: bold;
-	background-color: var(--table-foot-cell-background-color);
-	background-image: var(--table-foot-cell-background-image);
+	background-color: #F2F2F2;
+	border: 1px solid #E6E6E6;
+	color: var(--base-shaded);
 }</style>`;
 
 import './g-grid-cell.mjs';

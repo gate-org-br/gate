@@ -28,7 +28,8 @@ div
 	overflow: auto;
 	flex-direction: column;
 	background-color: white;
-	border: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
 }
 
 footer
@@ -47,18 +48,8 @@ g-chat-notification-config
 input
 {
 	border: none;
-	border: 1px solid #CCCCCC;
-	border-radius: 5px 5px 0 0;
-}
-
-g-chat-peer:first-child
-{
-	border-radius: 5px 5px 0 0;
-}
-
-g-chat-peer:last-child
-{
-	border-radius:  0 0 5px 5px;
+	outline: none;
+	text-indent: 4px;
 }
 
 g-chat-peer:hover
