@@ -63,10 +63,10 @@ main {
 
 a, .g-command {
 	gap: 8px;
-	color: #000066;
 	padding: 8px;
 	height: 32px;
 	display: grid;
+	color: #000066;
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;

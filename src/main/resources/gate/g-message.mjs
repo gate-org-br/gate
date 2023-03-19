@@ -17,6 +17,7 @@ template.innerHTML = `
 	align-items: center;
 	background-color: #FCFCFC;
 	border: 1px solid #f0f0f0;
+	box-shadow: 1px 1px 2px 0px #CCCCCC;
 }
 
 main {
@@ -39,6 +40,7 @@ main {
 
 :host(.fill) {
 	color: #000000;
+	box-shadow: none;
 	background-color: #F0F0F0;
 }
 

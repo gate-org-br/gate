@@ -14,7 +14,10 @@ template.innerHTML = `
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-*[part]
+a,
+button,
+.g-command,
+g-desk-pane
 {
 	gap: 10px;
 	margin: 0;
@@ -34,6 +37,7 @@ template.innerHTML = `
 	justify-items: center;
 	justify-content: center;
 	grid-template-rows: 1fr 1fr;
+
 }
 
 :host(*) > g-desk-pane::after
@@ -48,7 +52,10 @@ template.innerHTML = `
 }
 
 
-*[part]:hover
+a:hover,
+button:hover,
+.g-command:hover,
+g-desk-pane:hover
 {
 	background-color:  #FFFACD;
 }

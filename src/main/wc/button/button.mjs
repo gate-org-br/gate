@@ -25,8 +25,10 @@ window.addEventListener("click", function (event)
 	if (event.button !== 0)
 		return;
 
-	let button = event.target
-		.closest("button");
+	let button = event.composed
+		? event.composedPath()[0].closest("button")
+		: event.target.closest("button");
+
 	if (!button)
 		return;
 

@@ -30,10 +30,14 @@ window.addEventListener("click", function (event)
 {
 	if (event.button !== 0)
 		return;
-	let link = event.target
-		.closest("a");
+
+	let link = event.composed
+		? event.composedPath()[0].closest("a")
+		: event.target.closest("a");
+
 	if (!link)
 		return;
+
 	if (link.hasAttribute("data-cancel"))
 	{
 		event.preventDefault();

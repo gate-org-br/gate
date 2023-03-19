@@ -15,7 +15,6 @@ template.innerHTML = `
 :host(*)
 {
 	display: grid;
-	margin-top: 16px;
 	border: 1px solid #F4F4F4;
 	background-color: #F4F4F4;
 	grid-template-rows: auto 1fr;

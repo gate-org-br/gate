@@ -56,8 +56,9 @@ body > main > nav {
   align-items: center;
   justify-items: stretch;
   grid-template-rows: 1fr;
-  grid-template-columns: 1fr;
   background-color: #F8F8F8;
+  grid-template-columns: 1fr;
+  border-bottom: 1px solid var(--base-tinted);
 }
 body > main > nav {
   grid-row: 2;
@@ -116,13 +117,15 @@ body > main > footer {
   bottom: 0;
   grid-row: 4;
   height: 22px;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   font-size: 12px;
+  font-weight: bold;
   overflow-x: hidden;
   align-items: center;
+  color: var(--base-shaded);
   justify-content: space-between;
-  background-color: #F8F8F8;
+  background-color: var(--base-tinted);
 }
 body > main > footer > label {
   font-size: inherit;

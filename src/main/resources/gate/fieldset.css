@@ -1,10 +1,11 @@
 fieldset {
-  gap: 8px;
+  gap: 12px;
   margin: 0;
   border: none;
+  padding: 12px;
   display: grid;
   border-radius: 3px;
-  border: 1px solid #F6F6F6;
+  border: 2px solid #F8F8F8;
   grid-template-columns: repeat(16, 1fr);
 }
 fieldset > * {
@@ -17,9 +18,9 @@ fieldset > legend {
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
-  background-color: #E8E8E8;
   color: var(--base-shaded);
   background-color: var(--base-tinted);
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
 }
 fieldset > legend > i,
 fieldset > legend > g-icon {
@@ -54,7 +55,16 @@ fieldset > label > form {
   position: relative;
   border-radius: 3px;
   align-items: center;
-  background-color: #F4F4F4;
+  background-color: #f8f8f8;
+  border: 1px solid #DDDDDD;
+}
+fieldset > label > span *,
+fieldset > label > form * {
+  border: none;
+}
+fieldset > label > span * + *,
+fieldset > label > form * + * {
+  border-left: 1px solid #DDDDDD;
 }
 fieldset > label > span > label,
 fieldset > label > form > label {
@@ -88,7 +98,6 @@ fieldset > label > form > .g-command {
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
-  border: 1px solid #CCCCCC;
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
@@ -133,12 +142,6 @@ fieldset > label > form > *:last-child {
 fieldset > label > span > *:only-child,
 fieldset > label > form > *:only-child {
   border-radius: 3px;
-}
-fieldset > label > span input + a,
-fieldset > label > form input + a,
-fieldset > label > span select + a,
-fieldset > label > form select + a {
-  border-left: none;
 }
 fieldset > label > span > input[type='checkbox'],
 fieldset > label > form > input[type='checkbox'],

@@ -1,10 +1,11 @@
 fieldset {
-	gap: 8px;
+	gap: 12px;
 	margin: 0;
 	border: none;
+	padding: 12px;
 	display: grid;
 	border-radius: 3px;
-	border: 1px solid #F6F6F6;
+	border: 2px solid #F8F8F8;
 	grid-template-columns: repeat(16, 1fr);
 
 	> *
@@ -19,10 +20,9 @@ fieldset {
 		font-weight: bold;
 		border-radius: 3px;
 		align-items: center;
-		background-color: #E8E8E8;
-
 		color: var(--base-shaded);
 		background-color: var(--base-tinted);
+		box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.75);
 
 		> i, > g-icon {
 			order: -1;
@@ -60,7 +60,17 @@ fieldset {
 			position: relative;
 			border-radius: 3px;
 			align-items: center;
-			background-color: #F4F4F4;
+			background-color: #f8f8f8;
+			border: 1px solid #DDDDDD;
+
+			* {
+				border: none;
+			}
+
+			* + *
+			{
+				border-left: 1px solid #DDDDDD;
+			}
 
 			> label
 			{
@@ -94,7 +104,6 @@ fieldset {
 				align-items: stretch;
 				text-decoration: none;
 				justify-content: center;
-				border: 1px solid #CCCCCC;
 
 				> i, > g-icon {
 					flex-grow: 1;
@@ -120,12 +129,6 @@ fieldset {
 
 			> *:only-child {
 				border-radius: 3px;
-			}
-
-			input + a,
-			select + a
-			{
-				border-left: none;
 			}
 
 			> input[type='checkbox'],

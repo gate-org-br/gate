@@ -10,6 +10,7 @@ template.innerHTML = `
 	flex-direction: column;
 	background-color: #FAFAFA;
 	border: 1px solid #F8F8F8;
+	box-shadow: 1px 1px 2px 0px #CCCCCC;
 }
 
 ::slotted(i),

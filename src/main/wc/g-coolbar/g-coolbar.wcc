@@ -16,10 +16,11 @@ customElements.define('g-coolbar', class extends HTMLElement
 			.firstChild.addEventListener('slotchange', () => this.update());
 
 		let more = this.shadowRoot.getElementById("more");
+		let container = this.shadowRoot.getElementById("container");
 
 		more.addEventListener("click", () =>
 		{
-			let elements = Array.from(this.children)
+			let elements = Array.from(container.children)
 				.filter(e => e.tagName !== "HR")
 				.filter(e => !e.getAttribute("hidden"))
 				.filter(e => e.style.display === "none")
@@ -35,23 +36,27 @@ customElements.define('g-coolbar', class extends HTMLElement
 
 	connectedCallback()
 	{
-		setTimeout(() => this.update(), 200);
+		let container = this.shadowRoot.getElementById("container");
+		Array.from(this.children).forEach(e => container.appendChild(e));
+		this.update();
 	}
 
 	update()
 	{
-		let selected = GSelection.getSelectedLink(this.children);
+		let container = this.shadowRoot.getElementById("container");
+
+		let selected = GSelection.getSelectedLink(container.children);
 		if (selected)
 			selected.setAttribute("aria-selected", "true");
 
-		Array.from(this.children)
+		Array.from(container.children)
 			.filter(e => !e.getAttribute("hidden"))
 			.forEach(e => e.style.display = "");
 
 		this.shadowRoot.getElementById("more")
 			.style.display = this.overflowed ? "flex" : "none";
 
-		for (let e = this.lastElementChild;
+		for (let e = container.lastElementChild;
 			e && this.overflowed; e = e.previousElementSibling)
 			if (!e.hasAttribute("aria-selected")
 				&& !e.getAttribute("hidden"))
