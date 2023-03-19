@@ -18,6 +18,7 @@ template.innerHTML = `
 	border: 1px solid #F4F4F4;
 	background-color: #F4F4F4;
 	grid-template-rows: auto 1fr;
+	box-shadow: 1px 1px 1px 0px #CCCCCC;
 }
 
 :host(:first-child)
