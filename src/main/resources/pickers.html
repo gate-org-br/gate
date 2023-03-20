@@ -151,15 +151,13 @@
 			{ "label": "Label 10", "value": "Value 10" }
 		];
 
-		const coolbar = document.querySelector("g-coolbar");
-
-		coolbar.shadowRoot.getElementById("success").addEventListener("click", () => GMessageDialog.success("Mensagem de sucesso"));
-		coolbar.shadowRoot.getElementById("error").addEventListener("click", () => GMessageDialog.error("Mensagem de erro"));
-		coolbar.shadowRoot.getElementById("warning").addEventListener("click", () => GMessageDialog.warning("Mensagem de alerta"));
-		coolbar.shadowRoot.getElementById("info").addEventListener("click", () => GMessageDialog.info("Mensagem de informação"));
-		coolbar.shadowRoot.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Mensagem de informação"));
-		coolbar.shadowRoot.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Mensagem de informação"));
-		coolbar.shadowRoot.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Mensagem de informação"));
+		document.getElementById("success").addEventListener("click", () => GMessageDialog.success("Mensagem de sucesso"));
+		document.getElementById("error").addEventListener("click", () => GMessageDialog.error("Mensagem de erro"));
+		document.getElementById("warning").addEventListener("click", () => GMessageDialog.warning("Mensagem de alerta"));
+		document.getElementById("info").addEventListener("click", () => GMessageDialog.info("Mensagem de informação"));
+		document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Mensagem de informação"));
+		document.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Mensagem de informação"));
+		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Mensagem de informação"));
 	</script>
 </body>
 

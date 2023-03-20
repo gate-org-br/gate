@@ -43,3 +43,17 @@ g-tab-control > a g-icon,
 g-tab-control button g-icon {
   order: -1;
 }
+g-coolbar > a > i,
+g-coolbar button > i,
+g-coolbar .g-command > i,
+g-coolbar > a e,
+g-coolbar button e,
+g-coolbar .g-command e,
+g-coolbar > a span,
+g-coolbar button span,
+g-coolbar .g-command span,
+g-coolbar > a g-icon,
+g-coolbar button g-icon,
+g-coolbar .g-command g-icon {
+  order: 1;
+}
