@@ -114,7 +114,7 @@ public class ChatService extends HttpServlet
 									chatControl.insert(peer,
 										message.toString()).toString());
 								break;
-							case "PATH":
+							case "PATCH":
 								chatControl.update(peer);
 								send(response, 200, "text/plain", matcher.group(1));
 								break;

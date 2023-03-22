@@ -1,9 +1,9 @@
 :host(*) {
-	color: black;
+	color: white;
 	display: flex;
 	z-index: 100000;
 	position: fixed;
-	border-radius: 5px;
+	border-radius: 3px;
 	visibility: hidden;
 	align-items: stretch;
 	justify-content: center;
@@ -16,8 +16,8 @@ div {
 	border-radius: 5px;
 	align-items: center;
 	justify-content: center;
-	background-color: #EEEEEE;
-	box-shadow: 6px 6px 6px 0px #CCCCCC;
+	background-color: black;
+	box-shadow: 4px 4px 4px 0px #666666;
 }
 
 div > * {
@@ -36,28 +36,28 @@ div::after {
 	left: 50%;
 	bottom: 100%;
 	margin-left: -6px;
-	border-color: transparent transparent #EEEEEE transparent;
+	border-color: transparent transparent black transparent;
 }
 
 :host([arrow="top"]) > div::after {
 	top: 100%;
 	left: 50%;
 	margin-left: -6px;
-	border-color: #EEEEEE transparent transparent transparent;
+	border-color: black transparent transparent transparent;
 }
 
 :host([arrow="left"]) > div::after {
 	top: 50%;
 	left: 100%;
 	margin-top: -6px;
-	border-color: transparent transparent transparent #EEEEEE;
+	border-color: transparent transparent transparent black;
 }
 
 :host([arrow="right"]) > div::after {
 	top: 50%;
 	right: 100%;
 	margin-top: -6px;
-	border-color: transparent #EEEEEE transparent transparent;
+	border-color: transparent black transparent transparent;
 }
 
 dl {
