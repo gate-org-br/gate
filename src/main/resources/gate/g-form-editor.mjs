@@ -1,10 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<fieldset>
-		<g-form></g-form>
-	</fieldset>
+	<g-form></g-form>
 	<g-coolbar>
-		<a id='new' href='#'>
+		<a class='primary' id='new' href='#'>
 			Novo campo<g-icon>&#X1002;</g-icon>
 		</a>
 	</g-coolbar>
@@ -18,15 +16,9 @@ template.innerHTML = `
 :host(*) {
 	gap: 8px;
 	display: flex;
+	align-items: stretch;
 	flex-direction: column;
-}
 
-fieldset {
-	border: none;
-	padding: 12px;
-	border-radius: 5px;
-	border: 1px solid var(--base);
-	background-color: var(--main-shaded10);
 }</style>`;
 
 /* global customElements */

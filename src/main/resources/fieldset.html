@@ -12,216 +12,167 @@
 </head>
 
 <body>
+	<form method="post" action="Gate?MODULE=linq.modulos.callCenter&SCREEN=Change">
+		<fieldset>
+			<legend>
+				Path
+				<i>&#x2155;</i>
+			</legend>
+			<label>
+				<span>
+					<select>
+						<option value=''></option>
+						<option value='0000000091'>Opção 1</option>
+						<option value='0000000099'>Opção 2</option>
+					</select>
 
-	<main>
-		<header>
-			<img src='Logo.svg' />
-			<label>Gate</label>
-			<label>Versão 1.0.0-SNAPSHOT</label>
-		</header>
+					<a href='#' title='Configurações' target='_dialog'><i>&#X2020;</i></a>
+				</span>
+			</label>
+		</fieldset>
+	</form>
+	<input maxlength='128' tabindex='1' name='form.user.name' id='form.user.name'
+		title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.' type='text' />
+	<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
+		title='O campo USUÁRIO é requerido.' type='hidden' />
+	<g-tab-control type="dummy">
+		<a href='#' data-selected='true'>Guia 1<i>&#X2004;</i></a>
+		<a href='#' data-selected='false'>Guia 2<i>&#X2005;</i></a>
+		<a href='#' data-selected='false'>Guia 3<i>&#X2006;</i></a>
+		<div>
 
-		<nav>
-			<g-tabbar>
-				<a href='./message.html' 
-				target='_top'>Mensagens<i>&#X2015;</i></a>
-				<a href='./callout.html'
-					target='_top'>Callouts<i>&#X2016;</i></a>
-				<a href='./coolbar.html' 
-					target='_top'>Coolbar<i>&#X1003;</i></a>
-				<a href='./card.html' 
-					target='_top'>Cards<i>&#X2197;</i></a>
-				<a href='./fieldset.html' aria-selected
-					target='_top'>Fieldset<i>&#X3011;</i></a>
-				<a href='./table.html'
-					target='_top'>Table<i>&#X2044;</i></a>
-				<a href='./deskpane.html'
-					target='_top'>Deskpane<i>&#X2270;</i></a>
-				<a href='./tab-control.html'>Tab Control<i>&#X3055;</i></a>	
-				<a href='./pickers.html'>Pickers<i>&#X2256;</i></a>
-				<a href='./select-menu.html'>Select menu<i>&#X2272;</i></a>
-				<hr/>
-				<a href='./login.html'>Sair<i>&#X2007;</i></a>					
-			</g-tabbar>
-		</nav>
-
-		<section>
-			<form method="post" action="Gate?MODULE=linq.modulos.callCenter&SCREEN=Change">
+			<form method="POST" action="#">
 				<fieldset>
 					<legend>
-						Path
-						<i>&#x2155;</i>
+						<i>&#X2010;</i>Pesquisar
 					</legend>
-					<label>
+					<label data-size="8">
+						Usuário:
 						<span>
-							<select>
-								<option value=''></option>
-								<option value='0000000091'>Opção 1</option>
-								<option value='0000000099'>Opção 2</option>
+							<input maxlength='128' tabindex='1' name='form.user.name' id='form.user.name'
+								title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.' type='text' />
+							<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
+								title='O campo USUÁRIO é requerido.' type='hidden' />
+							<a data-get='form.user.id, form.user.name' id='form.user' href='#'
+								title='Pesquisar'><i>&#X2010;</i></a>
+						</span>
+					</label>
+					<label data-size="2">
+						Data min:
+						<span>
+							<input maxlength='19' tabindex='1' name='form.ini'
+								pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+								title='Selecione a data e hora de início da jornada.' type='text'
+								data-mask='##/##/#### ##:##' class='DateTime' value='26/02/2023 00:00' />
+						</span>
+					</label>
+					<label data-size="2">
+						Data max:
+						<span>
+							<input maxlength='19' tabindex='1' name='form.fim'
+								pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+								title='Selecione a data e hora de fim da jornada.' type='text'
+								data-mask='##/##/#### ##:##' class='DateTime' />
+						</span>
+					</label>
+					<label data-size="2">
+						Perfil:
+						<span>
+							<input maxlength='14' tabindex='1' name='form.role.name'
+								title='O perfil deve possuir no máximo 14 caracteres.' type='text' />
+						</span>
+					</label>
+					<label data-size="2">
+						Sexo:
+						<span>
+							<select tabindex='1' name='form.resgatada'>
+								<option></option>
+								<option value='M'>Masculino</option>
+								<option value='F'>Feminino</option>
 							</select>
-
-							<a href='#' title='Configurações'
-								target='_dialog'><i>&#X2020;</i></a>
+						</span>
+					</label>
+					<label data-size="8">
+						Fila:
+						<span>
+							<select tabindex='1' name='form.fila'>
+								<option></option>
+								<option value='0000000304'>Assuntos administrativos</option>
+								<option value='0000000305'>Demais Assuntos</option>
+								<option value='0000000297'>Falar com Atendente</option>
+								<option value='0000000301'>Parcelas em Atraso</option>
+								<option value='0000000294'>Plano de Saúde e Odontológico</option>
+								<option value='0000000298'>Recepcionista</option>
+								<option value='0000000296'>Renovação de Seguros</option>
+								<option value='0000000295'>Seguros Novos</option>
+								<option value='0000000299'>Sinistro perda total ou parcial</option>
+								<option value='0000000300'>Substituição de veículos ou alteração nos dados da
+									apólice</option>
+							</select>
+						</span>
+					</label>
+					<label data-size="8">
+						Campanha:
+						<span>
+							<select tabindex='1' name='form.campanha'>
+								<option></option>
+							</select>
+						</span>
+					</label>
+					<label>
+						Testes:
+						<span style="height: 200px">
+							<g-selectn
+								options='[{"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}]'>
+							</g-selectn>
+						</span>
+					</label>
+					<label data-size="4">
+						Campo Readonly:
+						<span>
+							Valor
+						</span>
+					</label>
+					<label data-size="4">
+						Campo Readonly:
+						<span>
+							<label>
+								Valor
+							</label>
+						</span>
+					</label>
+					<label data-size="8">
+						Campo Readonly:
+						<span>
+							<label>
+								Valor
+							</label>
+							<a href="#">
+								<i>
+									&#X2003;
+								</i>
+							</a>
 						</span>
 					</label>
 				</fieldset>
+
+				<g-coolbar>
+					<button class="primary" tabindex="2" data-block='Consultando o banco de dados' title="Jornadas"
+						formaction="Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada">
+						Pesquisar<i>&#X2010;</i>
+					</button>
+					<button formaction='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Report' tabindex='2'
+						title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
+				</g-coolbar>
+
+				<g-message class="warning icon fill">
+					Nenhum registro encontrado
+				</g-message>
+
 			</form>
-			<input maxlength='128' tabindex='1' name='form.user.name'
-			id='form.user.name'
-			title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.'
-			type='text' />
-			<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
-			title='O campo USUÁRIO é requerido.' type='hidden' />
-			<g-tab-control type="dummy">
-				<a href='#' data-selected='true'>Guia 1<i>&#X2004;</i></a>
-				<a href='#' data-selected='false'>Guia 2<i>&#X2005;</i></a>
-				<a href='#' data-selected='false'>Guia 3<i>&#X2006;</i></a>
-				<div>
 
-					<form method="POST" action="#">
-						<fieldset>
-							<legend>
-								<i>&#X2010;</i>Pesquisar
-							</legend>
-							<label data-size="8">
-								Usuário:
-								<span>
-									<input maxlength='128' tabindex='1' name='form.user.name'
-										id='form.user.name'
-										title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.'
-										type='text' />
-										<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
-										title='O campo USUÁRIO é requerido.' type='hidden' />
-									<a data-get='form.user.id, form.user.name' id='form.user'
-										href='#'
-										title='Pesquisar'><i>&#X2010;</i></a>
-								</span>
-							</label>
-							<label data-size="2">
-								Data min:
-								<span>
-									<input maxlength='19' tabindex='1' name='form.ini'
-										pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
-										title='Selecione a data e hora de início da jornada.' type='text'
-										data-mask='##/##/#### ##:##' class='DateTime' value='26/02/2023 00:00' />
-								</span>
-							</label>
-							<label data-size="2">
-								Data max:
-								<span>
-									<input maxlength='19' tabindex='1' name='form.fim'
-										pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
-										title='Selecione a data e hora de fim da jornada.' type='text'
-										data-mask='##/##/#### ##:##' class='DateTime' />
-								</span>
-							</label>
-							<label data-size="2">
-								Perfil:
-								<span>
-									<input maxlength='14' tabindex='1' name='form.role.name'
-										title='O perfil deve possuir no máximo 14 caracteres.'
-										type='text' />
-								</span>
-							</label>
-							<label data-size="2">
-								Sexo:
-								<span>
-									<select tabindex='1' name='form.resgatada'>
-										<option></option>
-										<option value='M'>Masculino</option>
-										<option value='F'>Feminino</option>
-									</select>
-								</span>
-							</label>
-							<label data-size="8">
-								Fila:
-								<span>
-									<select tabindex='1' name='form.fila'>
-										<option></option>
-										<option value='0000000304'>Assuntos administrativos</option>
-										<option value='0000000305'>Demais Assuntos</option>
-										<option value='0000000297'>Falar com Atendente</option>
-										<option value='0000000301'>Parcelas em Atraso</option>
-										<option value='0000000294'>Plano de Saúde e Odontológico</option>
-										<option value='0000000298'>Recepcionista</option>
-										<option value='0000000296'>Renovação de Seguros</option>
-										<option value='0000000295'>Seguros Novos</option>
-										<option value='0000000299'>Sinistro perda total ou parcial</option>
-										<option value='0000000300'>Substituição de veículos ou alteração nos dados da
-											apólice</option>
-									</select>
-								</span>
-							</label>
-							<label data-size="8">
-								Campanha:
-								<span>
-									<select tabindex='1' name='form.campanha'>
-										<option></option>
-									</select>
-								</span>
-							</label>
-							<label>
-								Testes:
-								<span style="height: 200px">
-									<g-selectn options='[{"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}]'>
-									</g-selectn>
-								</span>
-							</label>
-							<label data-size="4">
-								Campo Readonly:
-								<span>
-									Valor
-								</span>
-							</label>
-							<label data-size="4">
-								Campo Readonly:
-								<span>
-									<label>
-										Valor
-									</label>
-								</span>
-							</label>
-							<label data-size="8">
-								Campo Readonly:
-								<span>
-									<label>
-										Valor
-									</label>
-									<a href="#">
-										<i>
-											&#X2003;
-										</i>
-									</a>
-							</span>
-							</label>
-						</fieldset>
-
-						<g-coolbar>
-							<button class="primary" tabindex="2" data-block='Consultando o banco de dados'
-								title="Jornadas" formaction="Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada">
-								Pesquisar<i>&#X2010;</i>
-							</button>
-							<button formaction='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Report'
-								tabindex='2' title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
-						</g-coolbar>
-
-						<g-message class="warning icon fill">
-							Nenhum registro encontrado
-						</g-message>
-
-					</form>
-
-				</div>
-			</g-tab-control>
-		</section>
-
-
-		<footer>
-
-			<label>Homologação</label>
-			<label>Fulano</label>
-		</footer>
-
-	</main>
+		</div>
+	</g-tab-control>
 </body>
 
 </html>

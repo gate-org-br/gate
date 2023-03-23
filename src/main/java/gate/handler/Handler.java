@@ -1,6 +1,7 @@
 package gate.handler;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
@@ -44,6 +45,7 @@ public interface Handler
 			HANDLERS.put(File.class, FileHandler.class);
 			HANDLERS.put(Integer.class, IntegerHandler.class);
 			HANDLERS.put(Enum.class, EnumHandler.class);
+			HANDLERS.put(Path.class, PathHandler.class);
 		}
 	}
 }

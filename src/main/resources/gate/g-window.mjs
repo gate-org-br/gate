@@ -56,6 +56,10 @@ main > section
 	-webkit-overflow-scrolling: touch;
 }
 
+main > section > fieldset:only-child {
+	border: none;
+}
+
 main > header > label
 {
 	order: 1;

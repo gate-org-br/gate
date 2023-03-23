@@ -12,133 +12,87 @@
 </head>
 
 <body>
+	<fieldset>
+		<legend>
+			<g-path><label>Gerência<i>&#X2059;</i></label><label>Usuários<i>&#X2004;</i></label></g-path>
+		</legend>
 
-	<main>
-		<header style="background-color: 0088cc">
-			<img src='Logo.svg' />
-			<label>Gate</label>
-			<label>Versão 1.0.0-SNAPSHOT</label>
-		</header>
+		<label>
+			Filtro:
+			<span>
+				<g-selectn option='[{"label": "Label", "value", "Value"}]'>
 
-		<nav>
-			<g-tabbar class="inline">
-				<a href='./message.html' 
-				target='_top'>Mensagens<i>&#X2015;</i></a>
-				<a href='./callout.html'
-					target='_top'>Callouts<i>&#X2016;</i></a>
-				<a href='./coolbar.html' 
-					target='_top'>Coolbar<i>&#X1003;</i></a>
-				<a href='./card.html' 
-					target='_top'>Cards<i>&#X2197;</i></a>
-				<a href='./fieldset.html'
-					target='_top'>Fieldset<i>&#X3011;</i></a>
-				<a href='./table.html'  aria-selected
-					target='_top'>Table<i>&#X2044;</i></a>
-				<a href='./deskpane.html'
-					target='_top'>Deskpane<i>&#X2270;</i></a>
-				<a href='./tab-control.html'>Tab Control<i>&#X3055;</i></a>
-				<a href='./pickers.html'>Pickers<i>&#X2256;</i></a>
-				<a href='./select-menu.html'>Select menu<i>&#X2272;</i></a>
-				<hr/>
-				<a href='./login.html'>Sair<i>&#X2007;</i></a>					
-			</g-tabbar>
-		</nav>
+				</g-selectn>
+			</span>
+		</label>
 
-		<section>
-			<fieldset>
-				<legend>
-					<g-path><label>Gerência<i>&#X2059;</i></label><label>Usuários<i>&#X2004;</i></label></g-path>
-				</legend>
+	</fieldset>
 
-					<label>
-						Filtro:
-						<span>
-							<g-selectn option='[{"label": "Label", "value", "Value"}]'>
+	<g-coolbar>
+		<a tabindex='2' class="primary" href='#' title='Novo' target='_stack'>Novo<i>&#X1002;</i></a>
+		<hr />
+		<a class="tertiary" href='#' title='Gerência'>
+			Retornar<i tabindex='2'>&#x2023;</i>
+		</a>
+	</g-coolbar>
 
-							</g-selectn>
-						</span>
-					</label>
+	<table data-collapse='Tablet' class="r6 m6 c7">
 
-			</fieldset>
+		<caption>USUÁRIOS ENCONTRADOS: 15</caption>
 
-			<g-coolbar>
-				<a tabindex='2' class="primary" href='#' title='Novo'
-					target='_stack'>Novo<i>&#X1002;</i></a>
-				<hr />
-				<a class="tertiary" href='#' title='Gerência'>
-					Retornar<i tabindex='2'>&#x2023;</i>
-				</a>
-			</g-coolbar>
+		<thead>
+			<tr>
+				<th>Nome</th>
+				<th>Login</th>
+				<th>Selecionado</th>
+				<th>E-Mail</th>
+				<th>Cargo</th>
+				<th>Salário</th>
+				<th style="width: 48px">Sel</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<td colspan='7'>
+					<g-paginator><button formaction='#'
+							title='Expandir'>[P&aacute;gina&nbsp;1&nbsp;de&nbsp;2]</button>&nbsp;&nbsp;<button
+							formaction='#' title='Pr&oacute;ximo'>&gt;</button>&nbsp;&nbsp;<button formaction='#'
+							title='&Uacute;ltimo'>&gt;&gt;</button></g-paginator>
+				</td>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+				<td title='Nome'>Fulano da Silva</td>
+				<td title='Login'>fulano.silva</td>
+				<td title='CPF'>000.000.000-00</td>
+				<td title='E-Mail'><input type='text' /></td>
+				<td title='Cargo'>Analista de Análise</td>
+				<td title='Cargo'>16.000</td>
+				<td title='Selecionado'><input type="checkbox"></td>
+			</tr>
+			<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+				<td title='Nome'>Beltrano de Souza</td>
+				<td title='Login'>beltrano.souza</td>
+				<td title='CPF'>111.111.111-11</td>
+				<td title='E-Mail'><input type='text' /></td>
+				<td title='Cargo'>Analista de Responsabilidades</td>
+				<td title='Cargo'>220.000</td>
+				<td title='Selecionado'><input type="checkbox"></td>
+			</tr>
+			<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
+				<td title='Nome'>Cicrano Gusmão</td>
+				<td title='Login'>cicrano.gusmao</td>
+				<td title='CPF'>222.222.222-22</td>
+				<td title='E-Mail'><input type='text' /></td>
+				<td title='Cargo'>Servente</td>
+				<td title='Cargo'>1.380</td>
+				<td title='Selecionado'><input type="checkbox"></td>
+			</tr>
+		</tbody>
+	</table>
 
-			<table data-collapse='Tablet' class="r6 m6 c7">
-
-				<caption>USUÁRIOS ENCONTRADOS: 15</caption>
-
-				<thead>
-					<tr>
-						<th>Nome</th>
-						<th>Login</th>
-						<th>Selecionado</th>
-						<th>E-Mail</th>
-						<th>Cargo</th>
-						<th>Salário</th>
-						<th style="width: 48px">Sel</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<td colspan='7'>
-							<g-paginator><button
-									formaction='#'
-									title='Expandir'>[P&aacute;gina&nbsp;1&nbsp;de&nbsp;2]</button>&nbsp;&nbsp;<button
-									formaction='#'
-									title='Pr&oacute;ximo'>&gt;</button>&nbsp;&nbsp;<button
-									formaction='#'
-									title='&Uacute;ltimo'>&gt;&gt;</button></g-paginator>
-						</td>
-					</tr>
-				</tfoot>
-				<tbody>
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
-						<td title='Nome'>Fulano da Silva</td>
-						<td title='Login'>fulano.silva</td>
-						<td title='CPF'>000.000.000-00</td>
-						<td title='E-Mail'><input type='text'/></td>
-						<td title='Cargo'>Analista de Análise</td>
-						<td title='Cargo'>16.000</td>
-						<td title='Selecionado'><input type="checkbox"></td>
-					</tr>
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
-						<td title='Nome'>Beltrano de Souza</td>
-						<td title='Login'>beltrano.souza</td>
-						<td title='CPF'>111.111.111-11</td>
-						<td title='E-Mail'><input type='text'/></td>
-						<td title='Cargo'>Analista de Responsabilidades</td>
-						<td title='Cargo'>220.000</td>
-						<td title='Selecionado'><input type="checkbox"></td>
-					</tr>					
-					<tr data-target='_stack' data-on-hide='submit(form)' title='Detalhes' data-action='#'>
-						<td title='Nome'>Cicrano Gusmão</td>
-						<td title='Login'>cicrano.gusmao</td>
-						<td title='CPF'>222.222.222-22</td>
-						<td title='E-Mail'><input type='text'/></td>
-						<td title='Cargo'>Servente</td>
-						<td title='Cargo'>1.380</td>
-						<td title='Selecionado'><input type="checkbox"></td>
-					</tr>					
-				</tbody>
-			</table>
-
-			</form>
-		</section>
-
-
-		<footer>
-			<label>Homologação</label>
-			<label>Fulano</label>
-		</footer>
-
-	</main>
+	</form>
 </body>
 
 </html>

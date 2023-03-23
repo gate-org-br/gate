@@ -1,76 +1,83 @@
 <template>
-	<label data-size="4">
-		Nome:
-		<span>
-			<input required id='name' type='text' tabindex="1"/>
-		</span>
-	</label>
-	<label data-size="4">
-		Máscara:
-		<span>
-			<input id='mask' type='text' tabindex="1"/>
-		</span>
-	</label>
-	<label data-size="2">
-		Colunas:
-		<span>
-			<select id='size' tabindex="1">
-				<option value=""></option>
-				<option value="0">1 Coluna</option>
-				<option value="1">2 Colunas</option>
-				<option value="2">4 Colunas</option>
-				<option value="3">8 Colunas</option>
-			</select>
-		</span>
-	</label>
-	<label data-size="2">
-		Multiplo:
-		<span>
-			<select id='multiple' tabindex="1">
-				<option value=""></option>
-				<option value="true">Sim</option>
-				<option value="false">Não</option>
-			</select>
-		</span>
-	</label>
-	<label data-size="2">
-		Requerido:
-		<span>
-			<select id='required' tabindex="1">
-				<option value=""></option>
-				<option value="true">Sim</option>
-				<option value="false">Não</option>
-			</select>
-		</span>
-	</label>
-	<label data-size="2">
-		Tamanho Max:
-		<span>
-			<input id='maxlength' min='1' type='number' tabindex="1"/>
-		</span>
-	</label>
-	<label data-size="8">
-		Expressão Regular:
-		<span style='flex-basis: 120px;'>
-			<textarea id="pattern" tabindex="1"></textarea>
-		</span>
-	</label>
-	<label data-size="8">
-		Descrição:
-		<span style='flex-basis: 120px;'>
-			<textarea id="description" tabindex="1"></textarea>
-		</span>
-	</label>
-	<label data-size="8">
-		Opções:
-		<span style='flex-basis: 120px;'>
-			<textarea id="options" tabindex="1"></textarea>
-		</span>
-	</label>
-	<label data-size="8">
-		Valor:
-		<span style='flex-basis: 120px;'>
-			<textarea id="value" tabindex="1"></textarea>
-		</span>
-	</label>
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/input.css'/>
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/fieldset.css'/>
+
+	<fieldset>
+		<label data-size="4">
+			Nome:
+			<span>
+				<input required id='name' type='text' tabindex="1"/>
+			</span>
+		</label>
+		<label data-size="4">
+			Máscara:
+			<span>
+				<input id='mask' type='text' tabindex="1"/>
+			</span>
+		</label>
+		<label data-size="2">
+			Colunas:
+			<span>
+				<select id='size' tabindex="1">
+					<option value=""></option>
+					<option value="0">1 Coluna</option>
+					<option value="1">2 Colunas</option>
+					<option value="2">4 Colunas</option>
+					<option value="3">8 Colunas</option>
+				</select>
+			</span>
+		</label>
+		<label data-size="2">
+			Multiplo:
+			<span>
+				<select id='multiple' tabindex="1">
+					<option value=""></option>
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+				</select>
+			</span>
+		</label>
+		<label data-size="2">
+			Requerido:
+			<span>
+				<select id='required' tabindex="1">
+					<option value=""></option>
+					<option value="true">Sim</option>
+					<option value="false">Não</option>
+				</select>
+			</span>
+		</label>
+		<label data-size="2">
+			Tamanho Max:
+			<span>
+				<input id='maxlength' min='1' type='number' tabindex="1"/>
+			</span>
+		</label>
+		<label data-size="8">
+			Expressão Regular:
+			<span style='flex-basis: 120px;'>
+				<textarea id="pattern" tabindex="1"></textarea>
+			</span>
+		</label>
+		<label data-size="8">
+			Descrição:
+			<span style='flex-basis: 120px;'>
+				<textarea id="description" tabindex="1"></textarea>
+			</span>
+		</label>
+		<label data-size="8">
+			Opções:
+			<span style='flex-basis: 120px;'>
+				<textarea id="options" tabindex="1"></textarea>
+			</span>
+		</label>
+		<label data-size="8">
+			Valor:
+			<span style='flex-basis: 120px;'>
+				<textarea id="value" tabindex="1"></textarea>
+			</span>
+		</label>
+	</fieldset>
 </template>

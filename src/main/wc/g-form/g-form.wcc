@@ -129,14 +129,15 @@ customElements.define('g-form', class extends HTMLElement
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("label"))
-			.forEach(e => e.remove());
-		value.forEach(element => this.add(element));
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		Array.from(fieldset.querySelectorAll("label")).forEach(e => e.remove());
+		value.forEach(element => fieldset.appendChild(create(this, element)));
 	}
 
 	get value()
 	{
-		return Array.from(this.shadowRoot.querySelectorAll("label"))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		return Array.from(fieldset.querySelectorAll("label"))
 			.map(label => {
 
 				let object = {};
@@ -207,31 +208,36 @@ customElements.define('g-form', class extends HTMLElement
 
 	add(element)
 	{
-		this.shadowRoot.appendChild(create(this, element));
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.appendChild(create(this, element));
 	}
 
 	set(index, element)
 	{
-		this.shadowRoot.replaceChild(create(this, element),
-			this.shadowRoot.querySelectorAll("label")[index]);
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.replaceChild(create(this, element),
+			fieldset.querySelectorAll("label")[index]);
 	}
 
 	remove(index)
 	{
-		this.shadowRoot.querySelectorAll("label")[index].remove();
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.querySelectorAll("label")[index].remove();
 	}
 
 	move(source, target)
 	{
-		let elements = this.shadowRoot.querySelectorAll("label");
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		let elements = fieldset.querySelectorAll("label");
 		source = elements[source];
 		target = elements[target];
-		this.shadowRoot.insertBefore(source, target);
+		fieldset.insertBefore(source, target);
 	}
 
 	checkValidity()
 	{
-		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		for (let input of Array.from(fieldset.querySelectorAll("input, select, textarea, g-selectn")))
 			if (input.checkValidity && !input.checkValidity())
 				return false;
 		return true;
@@ -239,7 +245,8 @@ customElements.define('g-form', class extends HTMLElement
 
 	reportValidity()
 	{
-		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		for (let input of Array.from(fieldset.querySelectorAll("input, select, textarea, g-selectn")))
 		{
 			if (input.checkValidity && !input.checkValidity())
 			{

@@ -14,16 +14,18 @@ template.innerHTML = `
 			</g-field-editor>
 		</section>
 		<footer>
-			<button id='commit' class="primary">
-				Concluir<g-icon>&#X1000;</g-icon>
-			</button>
-			<button id='delete' class='danger'>
-				Remover<g-icon>&#X2026;</g-icon>
-			</button>
-			<hr/>
-			<button id='cancel' class="tertiary">
-				Desistir<g-icon>&#X1001;</g-icon>
-			</button>
+			<g-coolbar>
+				<button id='commit' class="primary">
+					Concluir<g-icon>&#X1000;</g-icon>
+				</button>
+				<button id='delete' class='danger'>
+					Remover<g-icon>&#X2026;</g-icon>
+				</button>
+				<hr/>
+				<button id='cancel' class="tertiary">
+					Desistir<g-icon>&#X1001;</g-icon>
+				</button>
+			</g-coolbar>
 		</footer>
 	</main>
  <style>main
@@ -40,6 +42,7 @@ g-field-editor {
 /* global customElements, template */
 
 import './g-icon.mjs';
+import './g-coolbar.mjs';
 import './g-field-editor.mjs';
 import GWindow from './g-window.mjs';
 

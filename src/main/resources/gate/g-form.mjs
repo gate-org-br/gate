@@ -1,112 +1,27 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/input.css'/>
+	<link rel='stylesheet'
+	      type='text/css' href='./gate/fieldset.css'/>
+
+	<fieldset>
+	</fieldset>
  <style>* {
 	box-sizing: border-box
 }
 
 :host(*) {
-	display: grid;
-	grid-template-columns: repeat(16, 1fr);
-}
-
-label {
-	padding: 4px;
 	display: flex;
-	font-size: 16px;
-	grid-column: span 16;
+	align-items: stretch;
 	flex-direction: column;
+	justify-content: stretch;
 }
 
-span {
-	flex-grow: 1;
-	display: block;
-	flex-basis: 38px;
-}
-
-input,
-select {
-	padding: 8px 4px 8px 4px;
-}
-
-input,
-textarea,
-select,
-g-selectn {
-	width: 100%;
-	height: 100%;
-	font-size: 16px;
-	border-radius:  3px;
-	border: 1px solid #CCCCCC;
-}
-
-textarea {
-	resize: none
-}
-
-input:invalid,
-select:invalid,
-textarea:invalid
-{
-	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
-}
-
-input:focus,
-select:focus,
-textarea:focus
-{
-	outline: none;
-	background-color: var(--hovered);
-}
-
-@media only screen and (min-width: 576px) {
-	label[data-size="1"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 768px) {
-	label[data-size="1"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 992px) {
-	label[data-size="1"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 8;
-	}
-}
-
-
-@media only screen and (min-width: 1200px) {
-	label[data-size="1"] {
-		grid-column: span 1;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="8"] {
-		grid-column: span 8;
-	}
-}
-</style>`;
+fieldset {
+	padding: 0;
+	border: none;
+}</style>`;
 
 /* global customElements */
 
@@ -239,14 +154,15 @@ customElements.define('g-form', class extends HTMLElement
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("label"))
-			.forEach(e => e.remove());
-		value.forEach(element => this.add(element));
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		Array.from(fieldset.querySelectorAll("label")).forEach(e => e.remove());
+		value.forEach(element => fieldset.appendChild(create(this, element)));
 	}
 
 	get value()
 	{
-		return Array.from(this.shadowRoot.querySelectorAll("label"))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		return Array.from(fieldset.querySelectorAll("label"))
 			.map(label => {
 
 				let object = {};
@@ -317,31 +233,36 @@ customElements.define('g-form', class extends HTMLElement
 
 	add(element)
 	{
-		this.shadowRoot.appendChild(create(this, element));
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.appendChild(create(this, element));
 	}
 
 	set(index, element)
 	{
-		this.shadowRoot.replaceChild(create(this, element),
-			this.shadowRoot.querySelectorAll("label")[index]);
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.replaceChild(create(this, element),
+			fieldset.querySelectorAll("label")[index]);
 	}
 
 	remove(index)
 	{
-		this.shadowRoot.querySelectorAll("label")[index].remove();
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		fieldset.querySelectorAll("label")[index].remove();
 	}
 
 	move(source, target)
 	{
-		let elements = this.shadowRoot.querySelectorAll("label");
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		let elements = fieldset.querySelectorAll("label");
 		source = elements[source];
 		target = elements[target];
-		this.shadowRoot.insertBefore(source, target);
+		fieldset.insertBefore(source, target);
 	}
 
 	checkValidity()
 	{
-		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		for (let input of Array.from(fieldset.querySelectorAll("input, select, textarea, g-selectn")))
 			if (input.checkValidity && !input.checkValidity())
 				return false;
 		return true;
@@ -349,7 +270,8 @@ customElements.define('g-form', class extends HTMLElement
 
 	reportValidity()
 	{
-		for (let input of Array.from(this.shadowRoot.querySelectorAll("input, select, textarea, g-selectn")))
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		for (let input of Array.from(fieldset.querySelectorAll("input, select, textarea, g-selectn")))
 		{
 			if (input.checkValidity && !input.checkValidity())
 			{

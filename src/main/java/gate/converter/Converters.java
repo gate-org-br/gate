@@ -4,6 +4,7 @@ import gate.converter.collections.EnumSetConverter;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -73,6 +74,7 @@ public class Converters
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
 		INSTANCES.put(java.time.Year.class, new YearConverter());
 		INSTANCES.put(EnumSet.class, new EnumSetConverter());
+		INSTANCES.put(Path.class, new PathConverter());
 	}
 
 	public Converter get(Class<?> type)
