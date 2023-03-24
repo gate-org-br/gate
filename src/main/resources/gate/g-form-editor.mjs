@@ -107,6 +107,7 @@ customElements.define('g-form-editor', class extends HTMLElement
 					form.remove(row.index);
 					row.remove();
 				}
+				this.dispatchEvent(new CustomEvent("change"));
 			});
 		});
 
@@ -121,6 +122,7 @@ customElements.define('g-form-editor', class extends HTMLElement
 
 				let row = grid.row();
 				fill(row, campo);
+				this.dispatchEvent(new CustomEvent("change"));
 			});
 		});
 
@@ -144,6 +146,7 @@ customElements.define('g-form-editor', class extends HTMLElement
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.rows.forEach(e => e.remove());
 		Array.from(value).forEach(campo => fill(grid.row(), campo));
+		this.dispatchEvent(new CustomEvent("change"));
 	}
 
 	get value()

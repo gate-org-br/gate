@@ -12,8 +12,21 @@
 </head>
 
 <body>
-	<g-form-editor>
-	</g-form-editor>
+	<fieldset>
+		<g-form-editor>
+		</g-form-editor>
+	</fieldset>
+
+	<fieldset>
+		<g-form-view>
+		</g-form-view>
+	</fieldset>
 </body>
+
+<script type='module'>
+	const editor = document.querySelector("g-form-editor");
+	const view = document.querySelector("g-form-view");
+	editor.addEventListener("change", () => view.value = editor.value);
+</script>
 
 </html>

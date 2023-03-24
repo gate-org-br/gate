@@ -77,6 +77,8 @@ table > caption {
   background-color: var(--base-tinted);
 }
 table > thead > tr > * {
+  top: 0;
+  position: sticky;
   font-weight: bold;
   background-color: #F2F2F2;
   border: 1px solid #E6E6E6;
@@ -101,6 +103,8 @@ table > tbody > tr[data-ret]:hover {
   background-color: #FFFACD;
 }
 table > tfoot > tr > * {
+  bottom: 0;
+  position: sticky;
   font-weight: bold;
   background-color: #F2F2F2;
   border: 1px solid #E6E6E6;

@@ -18,6 +18,11 @@ template.innerHTML = `
 	align-items: center;
 }
 
+::slotted(*)
+{
+	height: 44px;
+}
+
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command)
@@ -80,13 +85,13 @@ template.innerHTML = `
 ::slotted(.g-command.danger) {
 	color: white;
 	border: none;
-	background-color: #b23d51;
+	background-color: #AA2222;
 }
 
 ::slotted(a.danger:hover),
 ::slotted(button.danger:hover),
 ::slotted(.g-command.danger:hover) {
-	background-color: #C6445A;
+	background-color: #882222;
 }
 
 ::slotted(a.success),

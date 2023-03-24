@@ -1,5 +1,6 @@
 body {
   gap: 12px;
+  margin: 0;
   display: flex;
   align-items: stretch;
   flex-direction: column;
@@ -121,7 +122,6 @@ body > main > footer {
   display: flex;
   font-size: 12px;
   font-weight: bold;
-  overflow-x: hidden;
   align-items: center;
   color: var(--base-shaded);
   justify-content: space-between;

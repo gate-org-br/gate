@@ -49,11 +49,13 @@ fieldset > label > span,
 fieldset > label > form {
   flex-grow: 1;
   display: flex;
+  overflow: hidden;
   flex-basis: 38px;
   text-indent: 4px;
   position: relative;
   border-radius: 3px;
   align-items: center;
+  overflow-wrap: break-word;
   background-color: #f8f8f8;
   border: 1px solid #DDDDDD;
 }

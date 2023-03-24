@@ -47,7 +47,8 @@ public class JsonElementHandler implements MessageBodyWriter<JsonElement>, Messa
 	{
 		try (DataInputStream reader = new DataInputStream(in))
 		{
-			return JsonElement.parse(reader.readUTF());
+			String string = new String(reader.readAllBytes(), "UTF-8");
+			return JsonElement.parse(string);
 		}
 	}
 }
