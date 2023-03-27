@@ -35,6 +35,7 @@ public class CreateAccount extends HttpServlet
 	@Inject
 	private HTMLCommandHandler htmlHanlder;
 
+	static final String HTML = "/views/CreateAccount.html";
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -43,54 +44,59 @@ public class CreateAccount extends HttpServlet
 	{
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		try
+		if (request.getMethod().equals("POST"))
 		{
-			ScreenServletRequest req = new ScreenServletRequest(request);
-			gate.entity.User user = new gate.entity.User();
+			try
+			{
+				ScreenServletRequest req = new ScreenServletRequest(request);
+				gate.entity.User user = new gate.entity.User();
 
-			user.setUsername(req.getParameter(String.class, "user.username"));
-			if (user.getUsername() == null)
-				throw new AppException("Entre com o login desejado.");
+				user.setUsername(req.getParameter(String.class, "user.username"));
+				if (user.getUsername() == null)
+					throw new AppException("Entre com o login desejado.");
 
-			user.setName(req.getParameter("user.name"));
-			if (user.getName() == null)
-				throw new AppException("Entre com o seu nome completo.");
+				user.setName(req.getParameter("user.name"));
+				if (user.getName() == null)
+					throw new AppException("Entre com o seu nome completo.");
 
-			user.setPassword(req.getParameter(String.class, "user.password"));
-			if (user.getPassword() == null)
-				throw new AppException("Entre com a sua senha.");
+				user.setPassword(req.getParameter(String.class, "user.password"));
+				if (user.getPassword() == null)
+					throw new AppException("Entre com a sua senha.");
 
-			user.setRepeat(req.getParameter(String.class, "user.repeat"));
-			if (user.getRepeat() == null)
-				throw new AppException("Tecla a sua senha novamente.");
+				user.setRepeat(req.getParameter(String.class, "user.repeat"));
+				if (user.getRepeat() == null)
+					throw new AppException("Tecla a sua senha novamente.");
 
-			if (!user.getPassword().equals(user.getRepeat()))
-				throw new AppException("As senhas digitadas não conferem.");
+				if (!user.getPassword().equals(user.getRepeat()))
+					throw new AppException("As senhas digitadas não conferem.");
 
-			user.setEmail(req.getParameter(String.class, "user.email"));
-			if (user.getEmail() == null)
-				throw new AppException("Informe o seu endereço de email.");
+				user.setEmail(req.getParameter(String.class, "user.email"));
+				if (user.getEmail() == null)
+					throw new AppException("Informe o seu endereço de email.");
 
-			user.setDescription(req.getParameter(String.class, "user.details"));
-			if (user.getDescription() == null)
-				throw new AppException("Informe a empresa onde trabalha.");
+				user.setDescription(req.getParameter(String.class, "user.details"));
+				if (user.getDescription() == null)
+					throw new AppException("Informe a empresa onde trabalha.");
 
-			user.setActive(true);
-			user.setPhone(req.getParameter(Phone.class, "user.phone"));
-			user.setCellPhone(req.getParameter(Phone.class, "user.cellPhone"));
+				user.setActive(true);
+				user.setPhone(req.getParameter(Phone.class, "user.phone"));
+				user.setCellPhone(req.getParameter(Phone.class, "user.cellPhone"));
 
-			control.insert(user);
-			request.setAttribute("messages", "Seu cadastro foi enviado para aprovação. Você será notificado quando aprovado.");
+				control.insert(user);
+				request.setAttribute("messages", "Seu cadastro foi enviado para aprovação. Você será notificado quando aprovado.");
 
-		} catch (AppException e)
-		{
-			request.setAttribute("messages", e.getMessages());
-		} catch (ConversionException ex)
-		{
-			logger.error(ex.getMessage(), ex);
+				htmlHanlder.handle(request, response, Gate.HTML);
+			} catch (AppException e)
+			{
+				request.setAttribute("messages", e.getMessages());
+				htmlHanlder.handle(request, response, HTML);
+			} catch (ConversionException ex)
+			{
+				logger.error(ex.getMessage(), ex);
+			}
 		}
 
-		htmlHanlder.handle(request, response, Gate.HTML);
+		htmlHanlder.handle(request, response, HTML);
 	}
 
 	@Dependent
@@ -102,7 +108,7 @@ public class CreateAccount extends HttpServlet
 			Constraints.validate(value, "active", "username", "name",
 				"email", "details", "phone", "cellPhone", "CPF");
 
-			try ( Dao dao = new Dao())
+			try (Dao dao = new Dao())
 			{
 				dao.insert(value);
 			}

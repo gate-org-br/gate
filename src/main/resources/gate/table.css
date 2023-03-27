@@ -7,7 +7,7 @@ table {
   table-layout: fixed;
   border-spacing: 0px;
   text-decoration: none;
-  border-collapse: collapse;
+  border: 1px solid var(--base-tinted);
 }
 table thead,
 table tbody,
@@ -28,7 +28,10 @@ table tr > * {
   padding: 4px;
   text-align: left;
   vertical-align: middle;
-  border: 1px solid #F6F6F6;
+  border-left: 1px solid;
+}
+table tr > *:first-child {
+  border-left: none;
 }
 table tr > * a,
 table tr > * button,
@@ -80,17 +83,25 @@ table > thead > tr > * {
   top: 0;
   position: sticky;
   font-weight: bold;
-  background-color: #F2F2F2;
-  border: 1px solid #E6E6E6;
+  border-color: #E4E4E4;
+  background-color: #E8E8E8;
   color: var(--base-shaded);
 }
 table > tbody > tr:nth-child(even),
 table > tbody > tr.even {
   background-color: #FFFFFF;
 }
+table > tbody > tr:nth-child(even) > *,
+table > tbody > tr.even > * {
+  border-color: #F6F6F6;
+}
 table > tbody > tr:nth-child(odd),
 table > tbody > tr.odd {
-  background-color: #FAFAFA;
+  background-color: #f6f6f6;
+}
+table > tbody > tr:nth-child(odd) > *,
+table > tbody > tr.odd > * {
+  border-color: #EEEEEE;
 }
 table > tbody > tr[data-action],
 table > tbody > tr[data-value],
@@ -106,8 +117,8 @@ table > tfoot > tr > * {
   bottom: 0;
   position: sticky;
   font-weight: bold;
-  background-color: #F2F2F2;
-  border: 1px solid #E6E6E6;
+  border-color: #E4E4E4;
+  background-color: #E8E8E8;
   color: var(--base-shaded);
 }
 table.c1 > * > tr > *:nth-child(1),

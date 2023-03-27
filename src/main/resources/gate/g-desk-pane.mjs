@@ -21,9 +21,9 @@ g-desk-pane
 {
 	gap: 10px;
 	margin: 0;
-	color: black;
 	padding: 16px;
 	height: 200px;
+	color: inherit;
 	font-size: 18px;
 	position: relative;
 	text-align: center;

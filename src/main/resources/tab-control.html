@@ -12,34 +12,51 @@
 </head>
 
 <body>
+	<fieldset>
+		<label>Nome
+			<span>
+				Fulano da Silva
+			</span>
+		</label>
+	</fieldset>
+
+	<g-coolbar>
+		<a class='primary' href="#" data-icon="&#X2057;">
+			Alterar usuário
+		</a>
+	</g-coolbar>
+
 	<g-tab-control type="dummy">
-		<a href='#' data-selected='true'>Guia 1<i>&#X2004;</i></a>
-		<a href='#' data-selected='false'>Guia 2<i>&#X2059;</i></a>
-		<a href='#' data-selected='false'>Guia 3<i>&#X2005;</i></a>
-		<a href='#' data-selected='false'>Guia 4<i>&#X2231;</i></a>
-		<a href='#' data-selected='false'>Guia 5<i>&#X2232;</i></a>
-		<a href='#' data-selected='false'>Guia 6<i>&#X2167;</i></a>
+		<a href='#' data-selected='true'>Compras<i>&#X2004;</i></a>
 		<div>
-			<g-tab-control type="dummy">
-				<a href='#' data-selected='true'>Guia 1<i>&#X2004;</i></a>
-				<a href='#' data-selected='false'>Guia 2<i>&#X2059;</i></a>
-				<a href='#' data-selected='false'>Guia 3<i>&#X2005;</i></a>
-				<a href='#' data-selected='false'>Guia 4<i>&#X2231;</i></a>
-				<a href='#' data-selected='false'>Guia 5<i>&#X2232;</i></a>
-				<a href='#' data-selected='false'>Guia 6<i>&#X2167;</i></a>
+			<table class="r3 m3">
+				<caption>REGISTROS ENCONTRADOS: 2</caption>
+				<thead>
+					<tr>
+						<th>Número</th>
+						<th>Data</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>0000000000</td>
+						<td>01/01/2000 22:00:00</td>
+						<td>4.500</td>
+					</tr>
+					<tr>
+						<td>0000000001</td>
+						<td>02/01/2000 23:00:00</td>
+						<td>200</td>
+					</tr>
+				</tbody>
+			</table>
 
-				<a href='#' data-selected='false'>Guia 7<i>&#X2168;</i></a>
-				<a href='#' data-selected='false'>Guia 8<i>&#X2169;</i></a>
-				<a href='#' data-selected='false'>Guia 9<i>&#X2170;</i></a>
-				<a href='#' data-selected='false'>Guia 10<i>&#X2171;</i></a>
-
-				<div>
-					<div class='TEXT'>
-						<h1>Entre com os critérios de busca e clique em pesquisar</h1>
-					</div>
-				</div>
-			</g-tab-control>
-			</form>
+			<g-coolbar>
+				<a class='primary' href="#" data-icon="&#X1002;">
+					Nova compra
+				</a>
+			</g-coolbar>
 		</div>
 	</g-tab-control>
 </body>

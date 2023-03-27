@@ -10,6 +10,7 @@ i {
   line-height: 1;
   color: inherit;
   cursor: inherit;
+  font-size: inherit;
   font-style: normal;
   font-weight: normal;
   font-family: 'gate';
@@ -21,6 +22,7 @@ i {
 *[data-icon]::after {
   speak: none;
   line-height: 1;
+  font-size: inherit;
   font-style: normal;
   font-weight: normal;
   font-family: 'gate';

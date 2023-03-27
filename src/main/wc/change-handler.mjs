@@ -78,6 +78,7 @@ window.addEventListener("change", event =>
 		}
 
 		if (source.tagName === "INPUT"
+			&& source.hasAttribute("type")
 			&& source.getAttribute("type").toUpperCase() === "TEXT")
 		{
 			let action = source.parentNode.querySelector("a[target='_search']");

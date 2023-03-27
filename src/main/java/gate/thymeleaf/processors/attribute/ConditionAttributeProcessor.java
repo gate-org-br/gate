@@ -32,7 +32,7 @@ public class ConditionAttributeProcessor extends AttributeProcessor
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");
 			otherwise = Converter.toText(expression.evaluate(otherwise));
-			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
+			otherwise = "<g-message class='warning icon'>" + otherwise + "</g-message>";
 			handler.replaceWith(otherwise, false);
 		} else
 			handler.removeElement();

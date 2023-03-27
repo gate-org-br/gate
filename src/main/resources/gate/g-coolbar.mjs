@@ -18,11 +18,6 @@ template.innerHTML = `
 	align-items: center;
 }
 
-::slotted(*)
-{
-	height: 44px;
-}
-
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command)
@@ -185,6 +180,12 @@ template.innerHTML = `
 ::slotted(*[hidden="true"])
 {
 	display: none;
+}
+
+::slotted(g-progress)
+{
+	height: 44px;
+	flex-grow: 1;
 }
 
 ::slotted(progress)

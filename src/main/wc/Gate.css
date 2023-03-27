@@ -23,6 +23,10 @@
 
 @import './visibility.css';
 
+* {
+	box-sizing: border-box;
+}
+
 body {
 	visibility: hidden;
 }

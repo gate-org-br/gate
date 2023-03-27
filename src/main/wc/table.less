@@ -7,7 +7,7 @@ table {
 	table-layout: fixed;
 	border-spacing: 0px;
 	text-decoration: none;
-	border-collapse: collapse;
+	border: 1px solid var(--base-tinted);
 
 	thead, tbody, tfoot, tr, td
 	{
@@ -27,7 +27,11 @@ table {
 			padding: 4px;
 			text-align: left;
 			vertical-align: middle;
-			border: 1px solid #F6F6F6;
+			border-left: 1px solid;
+
+			&:first-child {
+				border-left: none;
+			}
 
 			a, button, .g-command
 			{
@@ -87,17 +91,25 @@ table {
 		top: 0;
 		position: sticky;
 		font-weight: bold;
-		background-color: #F2F2F2;
-		border: 1px solid #E6E6E6;
+		border-color: #E4E4E4;
+		background-color: #E8E8E8;
 		color: var(--base-shaded);
 	}
 
 	> tbody {
 		> tr:nth-child(even),> tr.even {
 			background-color: #FFFFFF;
+
+			> * {
+				border-color: #F6F6F6;
+			}
 		}
 		> tr:nth-child(odd), > tr.odd {
-			background-color: #FAFAFA;
+			> * {
+				border-color: #EEEEEE;
+			}
+
+			background-color: #f6f6f6;
 		}
 
 		> tr[data-action], > tr[data-value], > tr[data-ret]
@@ -114,8 +126,8 @@ table {
 		bottom: 0;
 		position: sticky;
 		font-weight: bold;
-		background-color: #F2F2F2;
-		border: 1px solid #E6E6E6;
+		border-color: #E4E4E4;
+		background-color: #E8E8E8;
 		color: var(--base-shaded);
 	}
 }
