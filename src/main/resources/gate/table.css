@@ -2,6 +2,8 @@ table {
   width: 100%;
   border: none;
   color: black;
+  border-spacing: 0;
+  position: relative;
   font-size: 0.75rem;
   font-weight: normal;
   table-layout: fixed;
@@ -81,6 +83,7 @@ table > caption {
 }
 table > thead > tr > * {
   top: 0;
+  z-index: 10000;
   position: sticky;
   font-weight: bold;
   border-color: #E4E4E4;
@@ -115,6 +118,7 @@ table > tbody > tr[data-ret]:hover {
 }
 table > tfoot > tr > * {
   bottom: 0;
+  z-index: 10000;
   position: sticky;
   font-weight: bold;
   border-color: #E4E4E4;
