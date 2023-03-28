@@ -98,18 +98,18 @@ table {
 
 	> tbody {
 		> tr:nth-child(even),> tr.even {
+			> * {
+				border-color: #f4f4f4;
+			}
+
+			background-color: #fafafa;
+		}
+		> tr:nth-child(odd), > tr.odd {
 			background-color: #FFFFFF;
 
 			> * {
 				border-color: #F6F6F6;
 			}
-		}
-		> tr:nth-child(odd), > tr.odd {
-			> * {
-				border-color: #EEEEEE;
-			}
-
-			background-color: #f6f6f6;
 		}
 
 		> tr[data-action], > tr[data-value], > tr[data-ret]

@@ -17,9 +17,12 @@ template.innerHTML = `
 	flex-direction: column;
 	justify-content: center;
 	background-color: #FFFFFF;
-	border: 1px solid #cccccc;
 	border-radius: 0 3px 3px 0;
-	border-left: 6px solid #BBBBBB;
+
+	border: 1px solid;
+	border-left: 6px solid;
+	border-color: #CCCCCC;
+
 }
 
 ::slotted(*)
@@ -36,94 +39,66 @@ template.innerHTML = `
 
 :host(.fill) {
 	color: #000000;
-	border-color: #888888;
-	background-color: #F4F4F4;
+	border-color: #BBBBBB;
+	background-color: #EEEEEE;
 }
 
-:host(.fill) ::slotted(hr)
-{
-	border-color: #dbdbdb;
-}
-
-:host(.primary) {
-	color: #428bca;
-	border-color: #428bca;
-}
-
-:host(.primary.fill) {
-	color: #FFFFFF;
-	border-color: #346fa1;
-	background-color: #428bca;
-}
-
-:host(.primary.fill) ::slotted(hr)
-{
-	border-color: #5496cf;
+:host(.fill) ::slotted(hr) {
+	border: 1px solid #E4E4E4;
 }
 
 :host(.success) {
-	color: #5cb85c;
-	border-color: #5cb85c;
+	color: #006600;
+	border-color: #006600;
 }
 
 :host(.success.fill) {
-	color: #FFFFFF;
-	border-color: #499349;
-	background-color: #5cb85c;
+	background-color: #d4edda;
 }
 
-:host(.success.fill) ::slotted(hr)
-{
-	border-color: #6cbf6c;
-}
-
-:host(.info) {
-	color: #5bc0de;
-	border-color: #5bc0de;
-}
-
-:host(.info.fill) {
-	color: #FFFFFF;
-	border-color: #4899b1;
-	background-color: #5bc0de;
-}
-
-:host(.info.fill) ::slotted(hr)
-{
-	border-color: #6bc6e1;
+:host(.success.fill) ::slotted(hr) {
+	border-color: #AADDAA;
 }
 
 :host(.warning) {
-	color: #DAA520;
-	border-color: #DAA520;
+	color: #666600;
+	border-color: #666600;
 }
 
 :host(.warning.fill) {
-	color: #FFFFFF;
-	border-color: #ae8419;
-	background-color: #DAA520;
+	background-color: #fff3cd;
 }
 
-:host(.warning.fill) ::slotted(hr)
-{
-	border-color: #ddae36;
+:host(.warning.fill) ::slotted(hr) {
+	border-color: #DDDDAA;
 }
 
 :host(.danger) {
-	color: #d9534f;
-	border-color: #d9534f;
+	color: #660000;
+	border-color: #660000;
 }
 
 :host(.danger.fill) {
-	color: #FFFFFF;
-	border-color: #ad423f;
-	background-color: #d9534f;
+	background-color: #f8d7da;
 }
 
-:host(.danger.fill) ::slotted(hr)
-{
-	border-color: #dc6460;
-}</style>`;
+:host(.danger.fill) ::slotted(hr) {
+	border-color: #EEBBBB;
+}
+
+:host(.question) {
+	color: #444488;
+	border-color: #444488;
+}
+
+:host(.question.fill) {
+	background-color: #cfdce6;
+}
+
+:host(.question.fill) ::slotted(hr) {
+	border-color: #CCCCFF;
+}
+</style>`;
 
 /* global customElements, template */
 

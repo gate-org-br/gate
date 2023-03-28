@@ -68,7 +68,6 @@ main {
 	content: '\\1000';
 }
 
-
 :host(.warning) {
 	color: #666600;
 }
@@ -79,6 +78,18 @@ main {
 
 :host(.warning.icon)::before {
 	content: '\\1007';
+}
+
+:host(.question) {
+	color: #2f5674;
+}
+
+:host(.question.fill) {
+	background-color: #cfdce6;
+}
+
+:host(.question.icon)::before {
+	content: '\\1006';
 }
 </style>`;
 

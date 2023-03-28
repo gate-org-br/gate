@@ -89,19 +89,19 @@ table > thead > tr > * {
 }
 table > tbody > tr:nth-child(even),
 table > tbody > tr.even {
-  background-color: #FFFFFF;
+  background-color: #fafafa;
 }
 table > tbody > tr:nth-child(even) > *,
 table > tbody > tr.even > * {
-  border-color: #F6F6F6;
+  border-color: #f4f4f4;
 }
 table > tbody > tr:nth-child(odd),
 table > tbody > tr.odd {
-  background-color: #f6f6f6;
+  background-color: #FFFFFF;
 }
 table > tbody > tr:nth-child(odd) > *,
 table > tbody > tr.odd > * {
-  border-color: #EEEEEE;
+  border-color: #F6F6F6;
 }
 table > tbody > tr[data-action],
 table > tbody > tr[data-value],

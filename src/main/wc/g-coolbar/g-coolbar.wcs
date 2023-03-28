@@ -52,45 +52,17 @@
 	background-color: #25608A;
 }
 
-::slotted(a.warning),
-::slotted(button.warning),
-::slotted(.g-command.warning) {
-	color: black;
-	border: none;
-	background-color: #ffc107;
-}
-
-::slotted(a.warning:hover),
-::slotted(button.warning:hover),
-::slotted(.g-command.warning:hover) {
-	background-color: #dfa700;
-}
-
-::slotted(a.danger),
-::slotted(button.danger),
-::slotted(.g-command.danger) {
-	color: white;
-	border: none;
-	background-color: #AA2222;
-}
-
-::slotted(a.danger:hover),
-::slotted(button.danger:hover),
-::slotted(.g-command.danger:hover) {
-	background-color: #882222;
-}
-
-::slotted(a.success),
-::slotted(button.success),
-::slotted(.g-command.success) {
+::slotted(a.alternative),
+::slotted(button.alternative),
+::slotted(.g-command.alternative) {
 	color: white;
 	border: none;
 	background-color: #009E60;
 }
 
-::slotted(a.success:hover),
-::slotted(button.success:hover),
-::slotted(.g-command.success:hover) {
+::slotted(a.alternative:hover),
+::slotted(button.alternative:hover),
+::slotted(.g-command.alternative:hover) {
 	background-color: #008E56;
 }
 
@@ -107,46 +79,18 @@
 	border: 1px solid black;
 }
 
-::slotted(a.dark),
-::slotted(button.dark),
-::slotted(.g-command.dark) {
+::slotted(a.danger),
+::slotted(button.danger),
+::slotted(.g-command.danger) {
 	color: white;
 	border: none;
-	background-color: #000000;
+	background-color: #AA2222;
 }
 
-::slotted(a.dark:hover),
-::slotted(button.dark:hover),
-::slotted(.g-command.dark:hover) {
-	background-color: #222222;
-}
-
-::slotted(a.info),
-::slotted(button.info),
-::slotted(.g-command.info) {
-	color: black;
-	border: none;
-	background-color: #0dcaf0;
-}
-
-::slotted(a.info:hover),
-::slotted(button.info:hover),
-::slotted(.g-command.info:hover) {
-	background-color: #0cbadd;
-}
-
-::slotted(a.link),
-::slotted(button.link),
-::slotted(.g-command.link) {
-	border: none;
-	color: #1371fd;
-	background-color: #FFFFFF;
-}
-
-::slotted(a.link:hover),
-::slotted(button.link:hover),
-::slotted(.g-command.link:hover) {
-	color: #025ee7;
+::slotted(a.danger:hover),
+::slotted(button.danger:hover),
+::slotted(.g-command.danger:hover) {
+	background-color: #882222;
 }
 
 ::slotted(a[disabled]),
