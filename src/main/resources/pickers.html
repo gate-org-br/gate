@@ -73,16 +73,16 @@
 		<a href="#" data-block="Aguarde">
 			Block<i>&#X2256;</i>
 		</a>
-		<a class='success' id='success' href="#">
+		<a id='success' href="#">
 			Success<i>&#X1000;</i>
 		</a>
-		<a class="danger" id='error' href="#">
+		<a id='error' href="#">
 			Error<i>&#X1001;</i>
 		</a>
-		<a class='warning' id='warning' href="#">
+		<a id='warning' href="#">
 			Warning<i>&#X1007;</i>
 		</a>
-		<a class='info' id='info' href="#">
+		<a id='info' href="#">
 			Info<i>&#X2015;</i>
 		</a>
 		<a target='_report' href="http://ipv4.download.thinkbroadband.com/20MB.zip">
@@ -122,9 +122,9 @@
 		document.getElementById("error").addEventListener("click", () => GMessageDialog.error("Mensagem de erro"));
 		document.getElementById("warning").addEventListener("click", () => GMessageDialog.warning("Mensagem de alerta"));
 		document.getElementById("info").addEventListener("click", () => GMessageDialog.info("Mensagem de informação"));
-		document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Mensagem de informação"));
-		document.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Mensagem de informação"));
-		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Mensagem de informação"));
+		document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Select N"));
+		document.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Select 1"));
+		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Search"));
 	</script>
 </body>
 
