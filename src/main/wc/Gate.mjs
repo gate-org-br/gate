@@ -9,6 +9,8 @@ import "./button.mjs";
 import "./treeview.mjs";
 import "./switch.mjs";
 
+import "./g-table-scroll.mjs";
+
 import "./action-handler.mjs";
 import "./change-handler.mjs";
 import "./auto-focus-handler.mjs";

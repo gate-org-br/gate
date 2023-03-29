@@ -59,6 +59,14 @@ fieldset > label > form {
   background-color: #f8f8f8;
   border: 1px solid #DDDDDD;
 }
+fieldset > label > span[style],
+fieldset > label > form[style] {
+  align-items: flex-start;
+}
+fieldset > label > span[style] > label,
+fieldset > label > form[style] > label {
+  align-items: flex-start;
+}
 fieldset > label > span *,
 fieldset > label > form * {
   border: none;
