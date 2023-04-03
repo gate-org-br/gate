@@ -45,15 +45,7 @@ public class JsonFormatter implements AutoCloseable
 	public void format(JsonString value) throws ConversionException
 	{
 		writer.write(JsonToken.Type.STRING,
-			value.toString()
-				.replace("\\", "\\\\")
-				.replace("\r", "\\r")
-				.replace("\n", "\\n")
-				.replace("\t", "\\t")
-				.replace("\b", "\\b")
-				.replace("\f", "\\f")
-				.replace("\'", "\\\'")
-				.replace("\"", "\\\""));
+			value.toString());
 	}
 
 	public void format(JsonBoolean value) throws ConversionException

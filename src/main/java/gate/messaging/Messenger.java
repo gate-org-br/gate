@@ -147,6 +147,12 @@ public class Messenger
 			props.put("mail.smtp.socketFactory.port", server.getPort());
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
+			if (server.getUseTLS())
+				props.put("mail.smtp.starttls.enable", "true");
+
+			if (server.getUseSSL())
+				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
 			javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, new javax.mail.Authenticator()
 			{
 				@Override
@@ -185,7 +191,7 @@ public class Messenger
 			}
 
 			mimeMessage.saveChanges();
-			try ( Transport transport = session.getTransport("smtp"))
+			try (Transport transport = session.getTransport("smtp"))
 			{
 				if (!transport.isConnected())
 					transport.connect();

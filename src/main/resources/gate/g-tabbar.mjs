@@ -112,7 +112,7 @@ template.innerHTML = `
 	justify-content: center;
 }
 
-i, span, g-icon {
+i, e, span, g-icon {
 	order: -1;
 	display: flex;
 	color: inherit;
@@ -125,6 +125,7 @@ i, span, g-icon {
 }
 
 :host(.inline) i,
+:host(.inline) e,
 :host(.inline) span,
 :host(.inline) g-icon
 {

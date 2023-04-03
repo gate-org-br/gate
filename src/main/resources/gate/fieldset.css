@@ -176,6 +176,19 @@ fieldset > label > form > g-icon {
   align-items: center;
   justify-content: center;
 }
+fieldset > label > span[data-icon]::after,
+fieldset > label > form[data-icon]::after {
+  right: 0;
+  width: 32px;
+  border: none;
+  display: flex;
+  color: #999999;
+  font-family: gate;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  content: attr(data-icon);
+}
 fieldset > fieldset {
   margin: 0;
 }
