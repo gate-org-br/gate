@@ -8,13 +8,11 @@
 @import './emoji.css';
 @import './input.css';
 @import './fieldset.css';
-@import './div.css';
 @import './nav.css';
 @import './layout.css';
 @import './login.css';
 @import './minibar.css';
 @import './figure.css';
-@import './hmenu.css';
 
 @import "./sort.css";
 @import "./filter.css";
@@ -62,15 +60,6 @@ form {
 * {
 	box-sizing: border-box;
 	font-family: Arial, Tahoma, Geneva, sans-serif;
-}
-
-body.Panel {
-	background-color: var(--main);
-	background-image: none;
-}
-body.Page {
-	background-color: var(--main-shaded05);
-	background-image: none;
 }
 
 p  {

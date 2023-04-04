@@ -1,6 +1,7 @@
 package gate.entity;
 
 import gate.annotation.Converter;
+import gate.constraint.Min;
 import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
 
@@ -19,6 +20,10 @@ public class Server
 
 	@Required
 	private boolean useSSL;
+
+	@Min(0)
+	private Integer timeout;
+
 	private String username;
 	private String password;
 
@@ -74,6 +79,16 @@ public class Server
 	public String getPassword()
 	{
 		return password;
+	}
+
+	public Integer getTimeout()
+	{
+		return timeout;
+	}
+
+	public void setTimeout(Integer timeout)
+	{
+		this.timeout = timeout;
 	}
 
 	public void setPassword(String password)

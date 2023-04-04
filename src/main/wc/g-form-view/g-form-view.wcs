@@ -21,7 +21,7 @@ span {
 	flex-basis: 32px;
 	border-radius:5px;
 	align-items: center;
-	background-color: var(--main-tinted50);
+	background-color: var(--main-tinted);
 }
 
 span.multiple {

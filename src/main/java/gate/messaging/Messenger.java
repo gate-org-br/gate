@@ -133,74 +133,79 @@ public class Messenger
 
 	private void send(String sender, String receiver, MimeMail<?> mail) throws MessagingException
 	{
-
 		try
 		{
-
-			Server server = control.server();
-			Properties props = new Properties();
-			props.put("mail.smtp.timeout", 30);
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.connectiontimeout", 30);
-			props.put("mail.smtp.port", server.getPort());
-			props.put("mail.smtp.host", server.getHost());
-			props.put("mail.smtp.socketFactory.port", server.getPort());
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-			if (server.getUseTLS())
-				props.put("mail.smtp.starttls.enable", "true");
-
-			if (server.getUseSSL())
-				props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-			javax.mail.Session session = javax.mail.Session.getDefaultInstance(props, new javax.mail.Authenticator()
-			{
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication()
-				{
-					return new PasswordAuthentication(server.getUsername(), server.getPassword());
-				}
-			});
-
-			MimeMessage mimeMessage = new MimeMessage(session);
-			mimeMessage.setFrom(sender);
-			mimeMessage.setSubject(mail.getSubject());
-			mimeMessage.setSentDate(new java.util.Date());
-
-			if (mail.getPriority() == MimeMail.Priority.LOW)
-				mimeMessage.setHeader("X-Priority", "5");
-			else if (mail.getPriority() == MimeMail.Priority.HIGH)
-				mimeMessage.setHeader("X-Priority", "1");
-
-			mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
-
-			if (mail.getContent() instanceof MimeText)
-			{
-				MimeText mimeText = (MimeText) mail.getContent();
-				mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-			} else if (mail.getContent() instanceof DataFile)
-			{
-				DataFile mimeDataFile = (DataFile) mail.getContent();
-				mimeMessage.setDisposition("Attachment");
-				mimeMessage.setFileName(mimeDataFile.getName());
-				mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
-			} else if (mail.getContent() instanceof MimeList)
-			{
-				MimeList mimeList = (MimeList) mail.getContent();
-				mimeMessage.setContent(getMultipart(mimeList));
-			}
-
-			mimeMessage.saveChanges();
-			try (Transport transport = session.getTransport("smtp"))
-			{
-				if (!transport.isConnected())
-					transport.connect();
-				transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-			}
-
+			send(control.server(), sender, receiver, mail);
 		} catch (AppException ex)
 		{
 			throw new MessagingException(ex.getMessage());
+		}
+	}
+
+	public void send(Server server, String sender, String receiver, MimeMail<?> mail) throws MessagingException
+	{
+
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", server.getPort());
+		props.put("mail.smtp.host", server.getHost());
+		props.put("mail.smtp.socketFactory.port", server.getPort());
+
+		if (server.getTimeout() != null)
+		{
+			props.put("mail.smtp.timeout", server.getTimeout());
+			props.put("mail.smtp.connectiontimeout", server.getTimeout());
+		}
+
+		if (server.getUseTLS())
+			props.put("mail.smtp.starttls.enable", "true");
+
+		if (server.getUseSSL())
+			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+		javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator()
+		{
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication()
+			{
+				return new PasswordAuthentication(server.getUsername(), server.getPassword());
+			}
+		});
+
+		MimeMessage mimeMessage = new MimeMessage(session);
+		mimeMessage.setFrom(sender);
+		mimeMessage.setSubject(mail.getSubject());
+		mimeMessage.setSentDate(new java.util.Date());
+
+		if (mail.getPriority() == MimeMail.Priority.LOW)
+			mimeMessage.setHeader("X-Priority", "5");
+		else if (mail.getPriority() == MimeMail.Priority.HIGH)
+			mimeMessage.setHeader("X-Priority", "1");
+
+		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
+
+		if (mail.getContent() instanceof MimeText)
+		{
+			MimeText mimeText = (MimeText) mail.getContent();
+			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
+		} else if (mail.getContent() instanceof DataFile)
+		{
+			DataFile mimeDataFile = (DataFile) mail.getContent();
+			mimeMessage.setDisposition("Attachment");
+			mimeMessage.setFileName(mimeDataFile.getName());
+			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
+		} else if (mail.getContent() instanceof MimeList)
+		{
+			MimeList mimeList = (MimeList) mail.getContent();
+			mimeMessage.setContent(getMultipart(mimeList));
+		}
+
+		mimeMessage.saveChanges();
+		try (Transport transport = session.getTransport("smtp"))
+		{
+			if (!transport.isConnected())
+				transport.connect();
+			transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
 		}
 
 	}

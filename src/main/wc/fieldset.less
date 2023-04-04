@@ -57,22 +57,12 @@ fieldset {
 			overflow: hidden;
 			flex-basis: 38px;
 			text-indent: 4px;
+			line-height: 38px;
 			position: relative;
 			border-radius: 3px;
-			align-items: center;
 			overflow-wrap: break-word;
 			background-color: #f8f8f8;
 			border: 1px solid #DDDDDD;
-
-			&[style]
-			{
-				align-items: flex-start;
-
-				> label
-				{
-					align-items: flex-start;
-				}
-			}
 
 			* {
 				border: none;
@@ -89,6 +79,7 @@ fieldset {
 				flex-grow: 1;
 				display: flex;
 				font-size: 14px;
+				line-height: 38px;
 				align-items: center;
 
 				&[data-icon]
