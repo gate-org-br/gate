@@ -9,5 +9,5 @@
 	border-radius: 3px;
 	align-items: stretch;
 	justify-content: center;
-	background: linear-gradient(to bottom, #EEEEEE 0, #DDDDDD 50%, #EEEEEE 100%);
+	background: linear-gradient(to bottom, var(--main4) 0, var(--main5) 50%, var(--main4) 100%);
 }

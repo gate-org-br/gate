@@ -54,7 +54,7 @@ footer
 :host([type=REMOTE])
 {
 	align-self: flex-start;
-	background-color: #FFFFFF;
+	background-color: var(--main1);
 }
 
 :host([type=LOCAL]) footer::after

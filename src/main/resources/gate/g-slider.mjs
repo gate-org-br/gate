@@ -11,8 +11,8 @@ template.innerHTML = `
 	flex-direction: column;
 	align-content: stretch;
 	justify-content: center;
-	border: 2px solid #CCCCCC;
-	background-image: linear-gradient(to bottom, #CCCCCC 0%, white 50%, #CCCCCC 100%);
+	border: 2px solid var(--main6);
+	background-image: linear-gradient(to bottom, var(--main6) 0%, white 50%, var(--main6) 100%);
 }
 
 :host(:hover) {

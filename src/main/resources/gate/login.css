@@ -7,8 +7,8 @@ form.Login {
 form.Login > main {
   width: 600px;
   min-width: 320px;
-  border: 1px solid #F4F4F4;
-  background-color: #F8F8F8;
+  border: 1px solid var(--main4);
+  background-color: var(--main3);
   max-width: calc(100% - 16px);
   box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
 }
@@ -19,8 +19,8 @@ form.Login > main > header {
   color: white;
   display: flex;
   align-items: stretch;
-  background-color: #3f729b;
   justify-content: space-around;
+  background-color: var(--base2);
 }
 form.Login > main > header > img {
   width: 32px;

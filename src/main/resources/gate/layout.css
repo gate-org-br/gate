@@ -19,10 +19,10 @@ body > main > header {
   grid-row: 1;
   width: 100%;
   height: 50px;
-  color: white;
   display: flex;
+  color: var(--main1);
   align-items: center;
-  background-color: var(--base);
+  background-color: var(--base2);
 }
 body > main > header > * {
   margin: 0 8px 0 8px;
@@ -57,9 +57,9 @@ body > main > nav {
   align-items: center;
   justify-items: stretch;
   grid-template-rows: 1fr;
-  background-color: #F8F8F8;
+  background-color: var(--main3);
   grid-template-columns: 1fr;
-  border-bottom: 1px solid var(--base-tinted);
+  border-bottom: 1px solid var(--base3);
 }
 body > main > nav {
   grid-row: 2;
@@ -75,7 +75,7 @@ body > main > section {
   overflow: auto;
   overflow-x: hidden;
   position: relative;
-  background-color: white;
+  background-color: var(--main1);
 }
 body > main > section > article {
   margin: 0;
@@ -122,10 +122,10 @@ body > main > footer {
   display: flex;
   font-size: 12px;
   font-weight: bold;
+  color: var(--base1);
   align-items: center;
-  color: var(--base-shaded);
+  background-color: var(--base3);
   justify-content: space-between;
-  background-color: var(--base-tinted);
 }
 body > main > footer > label {
   font-size: inherit;

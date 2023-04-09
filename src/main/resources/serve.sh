@@ -1,3 +1,4 @@
 python3 -m http.server
-firefox http://0.0.0.0:8000/
 code .
+firefox http://0.0.0.0:8000/
+

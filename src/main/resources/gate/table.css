@@ -9,7 +9,7 @@ table {
   table-layout: fixed;
   border-spacing: 0px;
   text-decoration: none;
-  border: 1px solid var(--base-tinted);
+  border: 1px solid var(--base3);
 }
 table thead,
 table tbody,
@@ -69,39 +69,39 @@ table tr td > form > input[type='password']:only-child {
   height: 32px;
   text-indent: 4px;
   border-radius: 3px;
-  border: 1px solid #DDDDDD;
+  border: 1px solid var(--main5);
 }
 table > caption {
   height: 32px;
   line-height: 32px;
   font-weight: bold;
   text-align: center;
+  color: var(--base1);
   vertical-align: middle;
-  color: var(--base-shaded);
   border-radius: 3px 3px 0 0;
-  background-color: var(--base-tinted);
+  background-color: var(--base3);
 }
 table > thead > tr > * {
   font-weight: bold;
-  border-color: #E4E4E4;
-  background-color: #E8E8E8;
-  color: var(--base-shaded);
+  color: var(--base1);
+  border-color: var(--base5);
+  background-color: var(--base6);
 }
 table > tbody > tr:nth-child(even),
 table > tbody > tr.even {
-  background-color: #fafafa;
+  background-color: var(--main2);
 }
 table > tbody > tr:nth-child(even) > *,
 table > tbody > tr.even > * {
-  border-color: #f4f4f4;
+  border-color: var(--main1);
 }
 table > tbody > tr:nth-child(odd),
 table > tbody > tr.odd {
-  background-color: #FFFFFF;
+  background-color: var(--main1);
 }
 table > tbody > tr:nth-child(odd) > *,
 table > tbody > tr.odd > * {
-  border-color: #F6F6F6;
+  border-color: var(--main2);
 }
 table > tbody > tr[data-action],
 table > tbody > tr[data-value],
@@ -111,13 +111,13 @@ table > tbody > tr[data-ret] {
 table > tbody > tr[data-action]:hover,
 table > tbody > tr[data-value]:hover,
 table > tbody > tr[data-ret]:hover {
-  background-color: #FFFACD;
+  background-color: var(--hovered);
 }
 table > tfoot > tr > * {
   font-weight: bold;
-  border-color: #E4E4E4;
-  background-color: #E8E8E8;
-  color: var(--base-shaded);
+  color: var(--base1);
+  border-color: var(--base5);
+  background-color: var(--base6);
 }
 table.c1 > * > tr > *:nth-child(1),
 table.cge1 > * > tr > *:nth-child(n+1),
@@ -242,7 +242,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="Phone"] > tbody > tr > td {
@@ -297,7 +297,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="Tablet"] > tbody > tr > td {
@@ -352,7 +352,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="Notebook"] > tbody > tr > td {
@@ -407,7 +407,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="Desktop"] > tbody > tr > td {
@@ -462,7 +462,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="Widescreen"] > tbody > tr > td {
@@ -517,7 +517,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="100px"] > tbody > tr > td {
@@ -572,7 +572,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="200px"] > tbody > tr > td {
@@ -627,7 +627,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="300px"] > tbody > tr > td {
@@ -682,7 +682,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="400px"] > tbody > tr > td {
@@ -737,7 +737,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="500px"] > tbody > tr > td {
@@ -792,7 +792,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="600px"] > tbody > tr > td {
@@ -847,7 +847,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="700px"] > tbody > tr > td {
@@ -902,7 +902,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="800px"] > tbody > tr > td {
@@ -957,7 +957,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="900px"] > tbody > tr > td {
@@ -1012,7 +1012,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1000px"] > tbody > tr > td {
@@ -1067,7 +1067,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1100px"] > tbody > tr > td {
@@ -1122,7 +1122,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1200px"] > tbody > tr > td {
@@ -1177,7 +1177,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1300px"] > tbody > tr > td {
@@ -1232,7 +1232,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1400px"] > tbody > tr > td {
@@ -1287,7 +1287,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1500px"] > tbody > tr > td {
@@ -1342,7 +1342,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1600px"] > tbody > tr > td {
@@ -1397,7 +1397,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1700px"] > tbody > tr > td {
@@ -1452,7 +1452,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1800px"] > tbody > tr > td {
@@ -1507,7 +1507,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="1900px"] > tbody > tr > td {
@@ -1562,7 +1562,7 @@ th > label > span {
     border-radius: 5px;
     align-items: stretch;
     flex-direction: column;
-    border: 2px solid #CCCCCC;
+    border: 2px solid var(--main6);
     justify-content: flex-start;
   }
   table[data-collapse="2000px"] > tbody > tr > td {

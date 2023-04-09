@@ -28,7 +28,7 @@ main {
 	position: fixed;
 	border-radius: 3px;
 	flex-direction: column;
-	background-color: #F8F8F8;
+	background-color: var(--main3);
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
@@ -42,7 +42,7 @@ main > header
 	font-weight: bold;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid #CCCCCC;
+	border-bottom: 1px solid var(--main6);
 }
 
 main > section
@@ -99,7 +99,7 @@ main > footer {
 	align-items: stretch;
 	justify-content: stretch;
 	flex-direction: row-reverse;
-	border-top: 1px solid #CCCCCC;
+	border-top: 1px solid var(--main6);
 }</style>`;
 
 /* global customElements */

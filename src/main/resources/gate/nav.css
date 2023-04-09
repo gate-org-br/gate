@@ -14,5 +14,5 @@ nav > a {
   justify-content: center;
 }
 nav > a:hover {
-  background-color: #F0F0F0;
+  background-color: var(--main4);
 }

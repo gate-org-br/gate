@@ -1,20 +1,19 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<span>
-	</span>
- <style>:host
+ <style>:host(*)
 {
 	width: 100%;
 	flex-grow: 1;
 	display: flex;
 	align-items: stretch;
-	background-color: #CCCCCC;
+	background-color: var(--main6);
 }
 
-span
+:host(*)::before
 {
+	content: "";
 	animation-fill-mode:both;
-	background-color: #778899;
+	background-color: var(--base1);
 	animation: progress 2s infinite ease-in-out;
 }
 

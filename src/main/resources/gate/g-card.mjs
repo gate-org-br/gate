@@ -8,9 +8,9 @@ template.innerHTML = `
 	font-size: 16px;
 	border-radius: 3px;
 	flex-direction: column;
-	background-color: #FAFAFA;
-	border: 1px solid #F8F8F8;
-	box-shadow: 1px 1px 2px 0px #CCCCCC;
+	background-color: var(--main2);
+	border: 1px solid var(--main3);
+	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 
 ::slotted(i),
@@ -34,7 +34,7 @@ template.innerHTML = `
 	font-weight: bold;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid #DDDDDD;
+	border-bottom: 1px solid var(--main5);
 }
 
 ::slotted(nav)
@@ -42,7 +42,7 @@ template.innerHTML = `
 	flex-grow: 1;
 	padding: 0 8px 0 8px;
 	justify-content: flex-end;
-	border-bottom: 1px solid #DDDDDD;
+	border-bottom: 1px solid var(--main5);
 }
 
 ::slotted(section)
@@ -63,7 +63,7 @@ template.innerHTML = `
 	flex-basis: 32px;
 	align-items: center;
 	justify-content: flex-end;
-	border-top: 1px solid #DDDDDD;
+	border-top: 1px solid var(--main5);
 }</style>`;
 
 /* global customElements, template */

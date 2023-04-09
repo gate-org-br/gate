@@ -156,7 +156,8 @@ customElements.define('g-form', class extends HTMLElement
 	{
 		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.querySelectorAll("label")).forEach(e => e.remove());
-		value.forEach(element => fieldset.appendChild(create(this, element)));
+		if (value)
+			value.forEach(element => fieldset.appendChild(create(this, element)));
 	}
 
 	get value()

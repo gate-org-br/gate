@@ -14,6 +14,7 @@ template.innerHTML = `
 :host(*)
 {
 	width: 100%;
+	height: 44px;
 	display: flex;
 	align-items: center;
 }
@@ -78,8 +79,8 @@ template.innerHTML = `
 ::slotted(a.tertiary),
 ::slotted(button.tertiary),
 ::slotted(.g-command.tertiary) {
-	background-color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	background-color: var(--main1);
+	border: 1px solid var(--main6);
 }
 
 ::slotted(a.tertiary:hover),
@@ -112,7 +113,7 @@ template.innerHTML = `
 	color: #AAAAAA;
 	cursor: not-allowed;
 	filter: opacity(40%);
-	background-color: #CCCCCC;
+	background-color: var(--main6);
 }
 
 ::slotted(a:focus),
@@ -187,7 +188,35 @@ template.innerHTML = `
 	flex-direction: row;
 }
 
-</style>`;
+
+:host([disabled])
+{
+	background-color: var(--main6);
+}
+
+:host([disabled]) #container,
+:host([disabled]) #more
+{
+	display: none;
+}
+
+:host([disabled])::before
+{
+	content: "";
+	height: 44px;
+	animation-fill-mode:both;
+	background-color: var(--base1);
+	animation: progress 2s infinite ease-in-out;
+}
+
+@keyframes progress {
+	0% {
+		flex-basis: 0;
+	}
+	100% {
+		flex-basis: 100%;
+	}
+}</style>`;
 
 /* global customElements, template */
 
@@ -247,6 +276,19 @@ customElements.define('g-coolbar', class extends HTMLElement
 			if (!e.hasAttribute("aria-selected")
 				&& !e.getAttribute("hidden"))
 				e.style.display = "none";
+	}
+
+	get disabled()
+	{
+		return this.hasAttribute("disabled");
+	}
+
+	set disabled(value)
+	{
+		if (value)
+			this.setAttribute("disabled", "");
+		else
+			this.removeAttribute("disabled");
 	}
 
 	get overflowed()

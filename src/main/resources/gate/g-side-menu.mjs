@@ -46,20 +46,20 @@ section
 	overflow-y: auto;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: #FAFAFA;
+	background-color: var(--main2);
 	justify-content: flex-start;
 }
 
 :host([position='left']) > main > section {
 	width: 280px;
 	padding: 6px;
-	border-right: 1px solid #EEEEEE;
+	border-right: 1px solid var(--main4);
 }
 
 :host([position='right']) > main > section {
 	width: 280px;
 	padding: 6px;
-	border-left: 1px solid #EEEEEE;
+	border-left: 1px solid var(--main4);
 }
 
 a,
@@ -77,7 +77,7 @@ button,
 	text-decoration: none;
 	background-color: white;
 	justify-content: space-between;
-	box-shadow: 1px 1px 2px 0px #CCCCCC;
+	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 
 a.primary,
@@ -92,7 +92,7 @@ button.tertiary,
 .g-command.tertiary
 {
 	box-shadow: none;
-	background-color: #EEEEEE;
+	background-color: var(--main4);
 }
 
 a.danger,
@@ -157,7 +157,7 @@ button[disabled]:hover,
 	color: #AAAAAA;
 	cursor: not-allowed;
 	filter: opacity(40%);
-	background-color: #CCCCCC;
+	background-color: var(--main6);
 }
 
 a:focus,

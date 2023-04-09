@@ -12,13 +12,13 @@
 :host(.even),
 :host(:nth-child(even))
 {
-	background-color: #FFFFFF;
+	background-color: var(--main1);
 }
 
 :host(.odd),
 :host(:nth-child(odd))
 {
-	background-color: #FAFAFA;
+	background-color: var(--main2);
 }
 
 :host(:hover){

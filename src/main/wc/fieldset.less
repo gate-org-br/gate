@@ -4,7 +4,7 @@ fieldset {
 	padding: 12px;
 	display: grid;
 	border-radius: 3px;
-	border: 1px solid #EEEEEE;
+	border: 1px solid var(--main4);
 	grid-template-columns: repeat(16, 1fr);
 
 	> *
@@ -19,8 +19,8 @@ fieldset {
 		font-weight: bold;
 		border-radius: 3px;
 		align-items: center;
-		color: var(--base-shaded);
-		background-color: var(--base-tinted);
+		color: var(--base1);
+		background-color: var(--base3);
 		box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.75);
 
 		> i, > g-icon {
@@ -61,8 +61,8 @@ fieldset {
 			position: relative;
 			border-radius: 3px;
 			overflow-wrap: break-word;
-			background-color: #f8f8f8;
-			border: 1px solid #DDDDDD;
+			background-color: var(--main3);
+			border: 1px solid var(--main5);
 
 			* {
 				border: none;
@@ -70,7 +70,7 @@ fieldset {
 
 			* + *
 			{
-				border-left: 1px solid #DDDDDD;
+				border-left: 1px solid var(--main5);
 			}
 
 			> label
@@ -148,10 +148,10 @@ fieldset {
 				border: none;
 				height: 100%;
 				display: flex;
-				color: #999999;
 				text-indent: 0;
 				position: absolute;
 				align-items: center;
+				color: var(--main6);
 				justify-content: center;
 			}
 
@@ -163,10 +163,10 @@ fieldset {
 				width: 32px;
 				border: none;
 				display: flex;
-				color: #999999;
 				font-family: gate;
 				position: absolute;
 				align-items: center;
+				color: var(--main6);
 				justify-content: center;
 				content: attr(data-icon);
 			}

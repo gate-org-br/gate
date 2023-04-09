@@ -16,8 +16,8 @@ template.innerHTML = `
 	position: relative;
 	align-items: stretch;
 	flex-direction: column;
-	border: 1px solid #CCCCCC;
-	background-color: #F0F0F0;
+	border: 1px solid var(--main6);
+	background-color: var(--main4);
 }
 
 header
@@ -54,11 +54,12 @@ main {
 	display: none;
 	width: inherit;
 	right: -1px;
+	z-index: 1000;
 	font-size: inherit;
 	position: absolute;
 	flex-direction: column;
-	background-color: #F0F0F0;
-	border: 1px solid #CCCCCC;
+	background-color: var(--main4);
+	border: 1px solid var(--main6);
 }
 
 a, .g-command {

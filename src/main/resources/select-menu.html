@@ -14,35 +14,28 @@
 <body>
 
 	<g-select-menu label='Selecione uma ação'>
-		<a href='#'>
+		<a id="enable" href='#'>
 			<g-icon>&#X2013;</g-icon>
-			Item 1
+			Enable coolbar
 		</a>
-		<a href='#'>
+		<a id='disable' href='#'>
 			<g-icon>&#X2014;</g-icon>
-			Item 2
-		</a>
-		<a href='#'>
-			<g-icon>&#X2015;</g-icon>
-			Item 3
-		</a>
-		<a href='#'>
-			<g-icon>&#X2016;</g-icon>
-			Item 4
-		</a>
-		<a href='#'>
-			<g-icon>&#X2017;</g-icon>
-			Item 5
-		</a>
-		<a href='#'>
-			<g-icon>&#X2018;</g-icon>
-			Item 6
-		</a>
-		<a href='#'>
-			<g-icon>&#X2019;</g-icon>
-			Item 7
+			Disable coolbar
 		</a>
 	</g-select-menu>
+
+	<g-coolbar>
+		<a href="#">
+			Link
+		</a>
+	</g-coolbar>
 </body>
+
+<script type="module">
+	let coolbar = document.querySelector("g-coolbar");
+	let menu = document.querySelector("g-select-menu ");
+	menu.shadowRoot.getElementById("enable").addEventListener("click", () => coolbar.disabled = false);
+	menu.shadowRoot.getElementById("disable").addEventListener("click", () => coolbar.disabled = true);
+</script>
 
 </html>

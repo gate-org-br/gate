@@ -17,7 +17,7 @@ template.innerHTML = `
 	flex-grow: 1;
 	display: flex;
 	align-items: center;
-	background-color: #F8F8F8;
+	background-color: var(--main3);
 	justify-content: flex-start;
 }
 
@@ -49,7 +49,7 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
-	background-color: #F4F4F4;
+	background-color: var(--main4);
 	justify-content: space-around;
 }
 

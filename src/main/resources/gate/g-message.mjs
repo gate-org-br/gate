@@ -17,7 +17,7 @@ template.innerHTML = `
 	align-items: center;
 	background-color: #FCFCFC;
 	border: 1px solid #f0f0f0;
-	box-shadow: 1px 1px 2px 0px #CCCCCC;
+	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 
 main {

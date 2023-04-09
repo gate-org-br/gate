@@ -13,7 +13,7 @@ template.innerHTML = `
 	height: auto;
 	flex-grow: 1;
 	display: flex;
-	background-color: #F8F8F8;
+	background-color: var(--main3);
 	justify-content: flex-start;
 }
 
@@ -77,7 +77,7 @@ button,
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
-	background-color: #F4F4F4;
+	background-color: var(--main4);
 	justify-content: space-around;
 }
 

@@ -31,9 +31,9 @@ public class BlockTag extends AttributeTag
 		{
 			if (!getAttributes().containsKey("class"))
 				getAttributes().put("class", "TEXT");
-			getJspContext().getOut().print("<div " + getAttributes() + ">");
-			getJspContext().getOut().print("<h1>" + otherwise + "</h1>");
-			getJspContext().getOut().print("</div>");
+			getJspContext().getOut().print("<g-callout " + getAttributes() + ">");
+			getJspContext().getOut().print(otherwise);
+			getJspContext().getOut().print("</g-callout>");
 		}
 	}
 }

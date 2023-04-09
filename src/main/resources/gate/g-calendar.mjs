@@ -6,7 +6,7 @@ template.innerHTML = `
 	font-size: 16px;
 	min-width: 240px;
 	grid-auto-rows: 1fr;
-	background-color: #DDDDDD;
+	background-color: var(--main5);
 	grid-template-columns: repeat(7, auto);
 }
 

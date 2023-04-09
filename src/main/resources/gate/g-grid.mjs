@@ -54,7 +54,7 @@ main
 	flex-grow: 1;
 	display: table;
 	border-spacing: 1px;
-	background-color: #EEEEEE;
+	background-color: var(--main4);
 
 	table-layout: fixed;
 }
@@ -65,11 +65,11 @@ label {
 	line-height: 32px;
 	font-weight: bold;
 	text-align: center;
+	color: var(--base1);
 	display: table-caption;
 	vertical-align: middle;
-	color: var(--base-shaded);
 	border-radius: 3px 3px 0 0;
-	background-color: var(--base-tinted);
+	background-color: var(--base3);
 }
 
 label:empty {

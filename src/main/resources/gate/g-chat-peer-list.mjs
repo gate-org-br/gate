@@ -17,7 +17,7 @@ template.innerHTML = `
 	height: inherit;
 	border-radius: 3px;
 	align-items: stretch;
-	border: 1px solid #CCCCCC;
+	border: 1px solid var(--main6);
 	grid-template-rows: 40px 1fr 40px;
 }
 
@@ -28,8 +28,8 @@ div
 	overflow: auto;
 	flex-direction: column;
 	background-color: white;
-	border-top: 1px solid #CCCCCC;
-	border-bottom: 1px solid #CCCCCC;
+	border-top: 1px solid var(--main6);
+	border-bottom: 1px solid var(--main6);
 }
 
 footer

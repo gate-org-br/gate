@@ -4,7 +4,7 @@ fieldset {
   padding: 12px;
   display: grid;
   border-radius: 3px;
-  border: 1px solid #EEEEEE;
+  border: 1px solid var(--main4);
   grid-template-columns: repeat(16, 1fr);
 }
 fieldset > * {
@@ -17,8 +17,8 @@ fieldset > legend {
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
-  color: var(--base-shaded);
-  background-color: var(--base-tinted);
+  color: var(--base1);
+  background-color: var(--base3);
   box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
 }
 fieldset > legend > i,
@@ -56,8 +56,8 @@ fieldset > label > form {
   position: relative;
   border-radius: 3px;
   overflow-wrap: break-word;
-  background-color: #f8f8f8;
-  border: 1px solid #DDDDDD;
+  background-color: var(--main3);
+  border: 1px solid var(--main5);
 }
 fieldset > label > span *,
 fieldset > label > form * {
@@ -65,7 +65,7 @@ fieldset > label > form * {
 }
 fieldset > label > span * + *,
 fieldset > label > form * + * {
-  border-left: 1px solid #DDDDDD;
+  border-left: 1px solid var(--main5);
 }
 fieldset > label > span > label,
 fieldset > label > form > label {
@@ -163,10 +163,10 @@ fieldset > label > form > g-icon {
   border: none;
   height: 100%;
   display: flex;
-  color: #999999;
   text-indent: 0;
   position: absolute;
   align-items: center;
+  color: var(--main6);
   justify-content: center;
 }
 fieldset > label > span[data-icon]::after,
@@ -175,10 +175,10 @@ fieldset > label > form[data-icon]::after {
   width: 32px;
   border: none;
   display: flex;
-  color: #999999;
   font-family: gate;
   position: absolute;
   align-items: center;
+  color: var(--main6);
   justify-content: center;
   content: attr(data-icon);
 }

@@ -9,7 +9,7 @@ table {
 	table-layout: fixed;
 	border-spacing: 0px;
 	text-decoration: none;
-	border: 1px solid var(--base-tinted);
+	border: 1px solid var(--base3);
 
 	thead, tbody, tfoot, tr, td
 	{
@@ -73,7 +73,7 @@ table {
 				height: 32px;
 				text-indent: 4px;
 				border-radius: 3px;
-				border: 1px solid #DDDDDD;
+				border: 1px solid var(--main5);
 			}
 		}
 	}
@@ -83,32 +83,32 @@ table {
 		line-height: 32px;
 		font-weight: bold;
 		text-align: center;
+		color: var(--base1);
 		vertical-align: middle;
-		color: var(--base-shaded);
 		border-radius: 3px 3px 0 0;
-		background-color: var(--base-tinted);
+		background-color: var(--base3);
 	}
 
 	> thead > tr > * {
 		font-weight: bold;
-		border-color: #E4E4E4;
-		background-color: #E8E8E8;
-		color: var(--base-shaded);
+		color: var(--base1);
+		border-color: var(--base5);
+		background-color: var(--base6);
 	}
 
 	> tbody {
 		> tr:nth-child(even),> tr.even {
-			> * {
-				border-color: #f4f4f4;
-			}
+			background-color: var(--main2);
 
-			background-color: #fafafa;
+			> * {
+				border-color: var(--main1);
+			}
 		}
 		> tr:nth-child(odd), > tr.odd {
-			background-color: #FFFFFF;
+			background-color: var(--main1);
 
 			> * {
-				border-color: #F6F6F6;
+				border-color: var(--main2)
 			}
 		}
 
@@ -116,7 +116,7 @@ table {
 		{
 			cursor: pointer;
 			&:hover {
-				background-color: #FFFACD;
+				background-color: var(--hovered);
 			}
 		}
 	}
@@ -124,9 +124,9 @@ table {
 	> tfoot > tr > *
 	{
 		font-weight: bold;
-		border-color: #E4E4E4;
-		background-color: #E8E8E8;
-		color: var(--base-shaded);
+		color: var(--base1);
+		border-color: var(--base5);
+		background-color: var(--base6);
 	}
 }
 
@@ -248,7 +248,7 @@ table.r20 > * > tr > *:nth-child(20)
 			border-radius: 5px;
 			align-items: stretch;
 			flex-direction: column;
-			border: 2px solid #CCCCCC;
+			border: 2px solid var(--main6);
 			justify-content: flex-start;
 
 

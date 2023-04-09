@@ -58,6 +58,19 @@ customElements.define('g-coolbar', class extends HTMLElement
 				e.style.display = "none";
 	}
 
+	get disabled()
+	{
+		return this.hasAttribute("disabled");
+	}
+
+	set disabled(value)
+	{
+		if (value)
+			this.setAttribute("disabled", "");
+		else
+			this.removeAttribute("disabled");
+	}
+
 	get overflowed()
 	{
 		let container = this.shadowRoot.getElementById("container");

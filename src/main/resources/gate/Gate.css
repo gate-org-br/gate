@@ -1,4 +1,4 @@
-@import './skin.css';
+@import './themes.css';
 @import './link.css';
 @import './button.css';
 @import './treeview.css';
@@ -122,7 +122,7 @@ ul.LIST > li > i {
 	font-size: 24px
 }
 ul.LIST > li:focus {
-	background-color: #FFFACD;
+	background-color: var(--hovered);
 	font-weight: bold;
 	color: var(--g)
 }
@@ -136,7 +136,7 @@ input:invalid, select:invalid, textarea:invalid {
 
 
 tr[data-canceled='true'] > td {
-	color: #CCCCCC
+	color: var(--main6)
 }
 
 datalist {

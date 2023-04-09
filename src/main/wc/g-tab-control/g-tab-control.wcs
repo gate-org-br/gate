@@ -5,8 +5,8 @@
 :host(*)
 {
 	display: grid;
-	background-color: #F8F8F8;
-	border: 1px outset #F4F4F4;
+	background-color: var(--main3);
+	border: 1px outset var(--main4);
 	grid-template-rows: auto 1fr;
 }
 

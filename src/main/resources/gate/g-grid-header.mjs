@@ -23,9 +23,9 @@ template.innerHTML = `
 	top: 0;
 	position: sticky;
 	font-weight: bold;
-	background-color: #F2F2F2;
-	border: 1px solid #E6E6E6;
-	color: var(--base-shaded);
+	color: var(--base1);
+	border-color: var(--base5);
+	background-color: var(--base6);
 }</style>`;
 
 import './g-grid-cell.mjs';

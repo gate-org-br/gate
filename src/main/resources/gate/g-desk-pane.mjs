@@ -44,7 +44,7 @@ g-desk-pane
 {
 	right: 8px;
 	bottom: 4px;
-	color: #CCCCCC;
+	color: var(--main6);
 	font-size: 16px;
 	font-family: gate;
 	content: '\\3017';

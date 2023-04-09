@@ -16,12 +16,12 @@ template.innerHTML = `
 	align-items: stretch;
 	flex-direction: column;
 	justify-content: center;
-	background-color: #FFFFFF;
+	background-color: var(--main1);
 	border-radius: 0 3px 3px 0;
 
 	border: 1px solid;
 	border-left: 6px solid;
-	border-color: #CCCCCC;
+	border-color: var(--main6);
 
 }
 
@@ -34,17 +34,17 @@ template.innerHTML = `
 	margin: 0;
 	width: 100%;
 	align-self: center;
-	border: 1px solid #F4F4F4;
+	border: 1px solid var(--main3);
 }
 
 :host(.fill) {
 	color: #000000;
 	border-color: #000000;
-	background-color: #EEEEEE;
+	background-color: var(--main4);
 }
 
 :host(.fill) ::slotted(hr) {
-	border: 1px solid #E4E4E4;
+	border: 1px solid var(--main5);
 }
 
 :host(.success) {
