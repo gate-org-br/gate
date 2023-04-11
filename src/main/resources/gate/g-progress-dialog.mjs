@@ -63,7 +63,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 				return;
 
 			commit.innerHTML = "Ok";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
+			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--question1');
 			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
@@ -73,7 +73,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 				return;
 
 			commit.innerHTML = "OK";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
+			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error1');
 			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 

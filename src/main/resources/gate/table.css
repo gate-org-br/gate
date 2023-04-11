@@ -40,7 +40,7 @@ table tr > * button,
 table tr > * .g-command {
   border: 0;
   padding: 0;
-  color: var(--b);
+  color: var(--question1);
   font-size: 12px;
   cursor: pointer;
   background: none;
@@ -1595,7 +1595,7 @@ th > label > span {
 th[data-chart],
 td[data-chart] {
   cursor: pointer;
-  color: var(--b);
+  color: var(--question1);
 }
 th[data-chart]::before,
 td[data-chart]::before {

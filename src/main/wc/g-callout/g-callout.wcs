@@ -44,53 +44,53 @@
 }
 
 :host(.success) {
-	color: #006600;
-	border-color: #006600;
+	color: var(--success1);
+	border-color: var(--success1);
 }
 
 :host(.success.fill) {
-	background-color: #c7ecc7;
+	background-color: var(--success3);
 }
 
 :host(.success.fill) ::slotted(hr) {
-	border-color: #a3d8a3;
+	border-color: var(--success2);
 }
 
 :host(.warning) {
-	color: #808000;
-	border-color: #808000;
+	color: var(--warning1);
+	border-color: var(--warning1);
 }
 
 :host(.warning.fill) {
-	background-color: #FFFFCC;
+	background-color: var(--warning3);
 }
 
 :host(.warning.fill) ::slotted(hr) {
-	border-color: #EEDD82;
+	border-color: var(--warning2);
 }
 
 :host(.danger) {
-	color: #660000;
-	border-color: #660000;
+	color: var(--error1);
+	border-color: var(--error1);
 }
 
 :host(.danger.fill) {
-	background-color: #FFE4E1  ;
+	background-color: var(--error3);
 }
 
 :host(.danger.fill) ::slotted(hr) {
-	border-color: #EEBBBB;
+	border-color: var(--error2);
 }
 
 :host(.question) {
-	color: #444488;
-	border-color: #444488;
+	color: var(--question1);
+	border-color: var(--question1);
 }
 
 :host(.question.fill) {
-	background-color: #F0F8FF ;
+	background-color: var(--question3);
 }
 
 :host(.question.fill) ::slotted(hr) {
-	border-color: #B0C4DE ;
+	border-color: var(--question2);
 }

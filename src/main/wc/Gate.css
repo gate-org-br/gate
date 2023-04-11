@@ -37,19 +37,6 @@ iframe {
 	background-image: none
 }
 
-.G {
-	color: var(--g)
-}
-.R {
-	color: var(--r)
-}
-.Y {
-	color: var(--y)
-}
-.B {
-	color: var(--b)
-}
-
 
 form {
 	margin: 0;
@@ -124,7 +111,7 @@ ul.LIST > li > i {
 ul.LIST > li:focus {
 	background-color: var(--hovered);
 	font-weight: bold;
-	color: var(--g)
+	color: var(--question1)
 }
 
 input[type='file'] {

@@ -52,21 +52,21 @@ label::first-line  {
 }
 
 :host([type="ERROR"]) {
-	color: var(--r)
+	color: var(--error1)
 }
 :host([type="ERROR"]) > main > section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
-	color: var(--g)
+	color: var(--success1)
 }
 :host([type="SUCCESS"]) > main > section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
-	color: var(--y)
+	color: var(--warning1)
 }
 :host([type="WARNING"]) > main > section::before {
 	content: "\\1007"

@@ -1,6 +1,6 @@
 th[data-sortable] {
   cursor: pointer;
-  color: var(--b);
+  color: var(--question1);
 }
 th[data-sortable]::before {
   font-family: monospace;
