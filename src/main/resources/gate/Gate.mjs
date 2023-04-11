@@ -92,6 +92,9 @@ import "./g-splitter.mjs";
 
 import "./g-callout.mjs";
 
+import "./g-accordion.mjs";
+import "./g-accordion-section.mjs";
+
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)
