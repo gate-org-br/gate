@@ -17,8 +17,8 @@ template.innerHTML = `
 	flex-grow: 1;
 	display: flex;
 	align-items: center;
-	background-color: var(--main3);
 	justify-content: flex-start;
+	background-color: var(--main3);
 }
 
 #container
@@ -49,8 +49,8 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
-	background-color: var(--main4);
 	justify-content: space-around;
+	background-color: var(--main4);
 }
 
 :host(.inline) #container a,
@@ -66,14 +66,15 @@ template.innerHTML = `
 #container button[aria-selected],
 #container .g-command[aria-selected]
 {
-	background-color: #E6E6E6;
+	color: var(--base1);
+	background-color: var(--main5);
 }
 
 #container a:hover,
 #container button:hover,
 #container .g-command:hover
 {
-	background-color:  #FFFACD;
+	background-color:  var(--hovered);
 }
 
 #container a:focus,
