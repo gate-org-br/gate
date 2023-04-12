@@ -4,10 +4,10 @@ export default class Process
 	{
 		this._private = {id: id};
 
-		let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
-		let hostname = location.hostname;
-		let port = location.port ? ':' + location.port : '';
-		let pathname = location.pathname.replace(/\/Gate.*/, "") + "/Progress/";
+		let protocol = window.top.location.protocol === 'https:' ? "wss://" : "ws://";
+		let hostname = window.top.location.hostname;
+		let port = window.top.location.port ? ':' + window.top.location.port : '';
+		let pathname = window.top.location.pathname.replace(/\/Gate.*/, "") + "/Progress/";
 
 		var url = protocol + hostname + port + pathname + id;
 

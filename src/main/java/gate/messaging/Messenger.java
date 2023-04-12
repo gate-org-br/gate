@@ -5,8 +5,8 @@ import gate.entity.App;
 import gate.entity.Mail;
 import gate.entity.Server;
 import gate.error.AppException;
-import gate.type.DataFile;
 import gate.type.mime.Mime;
+import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
 import gate.type.mime.MimeText;
@@ -188,9 +188,9 @@ public class Messenger
 		{
 			MimeText mimeText = (MimeText) mail.getContent();
 			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-		} else if (mail.getContent() instanceof DataFile)
+		} else if (mail.getContent() instanceof MimeDataFile)
 		{
-			DataFile mimeDataFile = (DataFile) mail.getContent();
+			MimeDataFile mimeDataFile = (MimeDataFile) mail.getContent();
 			mimeMessage.setDisposition("Attachment");
 			mimeMessage.setFileName(mimeDataFile.getName());
 			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
@@ -222,9 +222,9 @@ public class Messenger
 			{
 				MimeText mimeText = (MimeText) mime;
 				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-			} else if (mime instanceof DataFile)
+			} else if (mime instanceof MimeDataFile)
 			{
-				DataFile mimeDataFile = (DataFile) mime;
+				MimeDataFile mimeDataFile = (MimeDataFile) mime;
 				mimeBodyPart.setDisposition("Attachment");
 				mimeBodyPart.setFileName(mimeDataFile.getName());
 				mimeBodyPart.setContent(mimeDataFile.getData(), "application/octet-stream");
