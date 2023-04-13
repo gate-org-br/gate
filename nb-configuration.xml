@@ -10,6 +10,11 @@ Without this configuration present, some functionality in the IDE may be limited
         <workdir path="" showSimpleTasks="true"/>
     </grunt-tasks>
     <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>Fetchable</word>
+        <word>fieldset</word>
+        <word>sql</word>
+    </spellchecker-wordlist>
     <properties xmlns="http://www.netbeans.org/ns/maven-properties-data/1">
         <!--
 Properties that influence various parts of the IDE, especially code formatting and the like. 
@@ -17,19 +22,6 @@ You can copy and paste the single properties, into the pom.xml file and the IDE 
 That way multiple projects can share the same settings (useful for formatting rules for example).
 Any value defined here will override the pom.xml file value but is only applicable to the current project.
 -->
-        <org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>ide</org-netbeans-modules-maven-jaxws.rest_2e_config_2e_type>
-        <org-netbeans-modules-css-prep.less_2e_mappings>components/Gate.less:../resources/gate/Gate.css</org-netbeans-modules-css-prep.less_2e_mappings>
-        <org-netbeans-modules-css-prep.less_2e_enabled>true</org-netbeans-modules-css-prep.less_2e_enabled>
         <org-netbeans-modules-css-prep.less_2e_configured>true</org-netbeans-modules-css-prep.less_2e_configured>
-        <org-netbeans-modules-css-prep.sass_2e_enabled>false</org-netbeans-modules-css-prep.sass_2e_enabled>
-        <org-netbeans-modules-css-prep.sass_2e_compiler_2e_options/>
-        <org-netbeans-modules-css-prep.less_2e_compiler_2e_options/>
-        <org-netbeans-modules-css-prep.sass_2e_mappings>/scss:/css</org-netbeans-modules-css-prep.sass_2e_mappings>
-        <org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>WildFly</org-netbeans-modules-maven-j2ee.netbeans_2e_hint_2e_deploy_2e_server>
     </properties>
-    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
-        <word>Fetchable</word>
-        <word>fieldset</word>
-        <word>sql</word>
-    </spellchecker-wordlist>
 </project-shared-configuration>
