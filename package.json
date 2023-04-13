@@ -11,7 +11,7 @@
 	"author": "davins",
 	"contributors": [],
 	"devDependencies": {
-		"grunt": "1.4.0",
+		"grunt": "1.5.3",
 		"less": "^3.13.0",
 		"grunt-import": "1.0.3",
 		"grunt-contrib-watch": "^1.1.0",
