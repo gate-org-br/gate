@@ -28,6 +28,16 @@ public interface Handler
 				return Instances.HANDLERS.get(clazz);
 			else if (clazz.isAnnotationPresent(gate.annotation.Handler.class))
 				return clazz.getAnnotation(gate.annotation.Handler.class).value();
+
+		for (Class<?> clazz = type;
+			clazz != null;
+			clazz = clazz.getSuperclass())
+			for (Class<?> inter : type.getInterfaces())
+				if (Instances.HANDLERS.containsKey(inter))
+					return Instances.HANDLERS.get(inter);
+				else if (inter.isAnnotationPresent(gate.annotation.Handler.class))
+					return inter.getAnnotation(gate.annotation.Handler.class).value();
+
 		return SerializableHandler.class;
 	}
 
@@ -41,7 +51,6 @@ public interface Handler
 		static
 		{
 			HANDLERS.put(String.class, StringHandler.class);
-			HANDLERS.put(Object.class, SerializableHandler.class);
 			HANDLERS.put(File.class, FileHandler.class);
 			HANDLERS.put(Integer.class, IntegerHandler.class);
 			HANDLERS.put(Enum.class, EnumHandler.class);

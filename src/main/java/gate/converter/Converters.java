@@ -60,7 +60,6 @@ public class Converters
 		INSTANCES.put(long.class, new LongConverter());
 		INSTANCES.put(Long.class, new LongConverter());
 		INSTANCES.put(Number.class, new NumberConverter());
-		INSTANCES.put(Object.class, new ObjectConverter());
 		INSTANCES.put(Pattern.class, new PatternConverter());
 		INSTANCES.put(short.class, new ShortConverter());
 		INSTANCES.put(Short.class, new ShortConverter());
@@ -92,13 +91,23 @@ public class Converters
 						return clazz.getAnnotation(gate.annotation.Converter.class)
 							.value().getDeclaredConstructor().newInstance();
 
+				for (Class<?> clazz = e;
+					clazz != null;
+					clazz = clazz.getSuperclass())
+					for (Class<?> inter : clazz.getInterfaces())
+						if (INSTANCES.containsKey(inter))
+							return INSTANCES.get(inter);
+						else if (inter.isAnnotationPresent(gate.annotation.Converter.class))
+							return inter.getAnnotation(gate.annotation.Converter.class)
+								.value().getDeclaredConstructor().newInstance();
+
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{
 				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 
-			return INSTANCES.get(Object.class);
+			return new ObjectConverter();
 		});
 	}
 
