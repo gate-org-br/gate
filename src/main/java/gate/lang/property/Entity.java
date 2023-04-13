@@ -1,10 +1,11 @@
 package gate.lang.property;
 
 import gate.annotation.Name;
-import gate.error.PropertyError;
 import gate.annotation.Schema;
 import gate.annotation.Table;
+import gate.error.PropertyError;
 import gate.sql.condition.Condition;
+import gate.type.ID;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -172,4 +173,11 @@ public class Entity
 		});
 	}
 
+	public static <T extends Object> T create(Class<T> type, String id) throws ReflectiveOperationException
+	{
+		T object = type.getConstructor().newInstance();
+		Property.getProperty(type, Entity.getId(type))
+			.setValue(object, ID.valueOf(id));
+		return object;
+	}
 }

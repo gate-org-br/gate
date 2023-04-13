@@ -342,6 +342,7 @@ template.innerHTML = `
 	<a href='#' data-code='3052'>&#X3052;</a>
 	<a href='#' data-code='3053'>&#X3053;</a>
 	<a href='#' data-code='3054'>&#X3054;</a>
+	<a href='#' data-code='3055'>&#X3055;</a>
  <style>:host(*)
 {
 	width: 100%;
@@ -351,7 +352,6 @@ template.innerHTML = `
 	flex-wrap: wrap;
 	align-items: flex-start;
 	justify-content: flex-start;
-	background-color: var(--main);
 }
 
 a {

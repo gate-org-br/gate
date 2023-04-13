@@ -1,0 +1,15 @@
+/* global customElements */
+
+import GModal from './g-modal.mjs';
+
+export default class GWindow extends GModal
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+};
+
+customElements.define('g-window', GWindow);

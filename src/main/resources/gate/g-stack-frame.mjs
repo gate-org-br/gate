@@ -17,8 +17,6 @@ template.innerHTML = `
 	border-radius: 0;
 	align-items: stretch;
 	justify-content: center;
-	background-color: var(--g-stack-frame-background-color);
-	background-image: var(--g-stack-frame-background-image);
 }
 
 iframe {

@@ -1,0 +1,11 @@
+<template>
+	<g-form></g-form>
+	<g-coolbar>
+		<a class='primary' id='new' href='#'>
+			Novo campo<g-icon>&#X1002;</g-icon>
+		</a>
+	</g-coolbar>
+	<g-grid>
+		Nenhum campo cadastrado
+	</g-grid>
+</template>

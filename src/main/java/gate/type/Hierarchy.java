@@ -1,8 +1,6 @@
 package gate.type;
 
-import gate.error.DuplicateException;
-import gate.error.InvalidCircularRelationException;
-import gate.error.NotFoundException;
+import gate.error.HierarchyException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -23,15 +21,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	T setChildren(List<T> children);
 
 	/**
-	 * Checks if this entity is a parent of the specified entity.
+	 * Checks if this entity is a parent valueOf the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a of setup the specified entity, false
-	 * otherwise
+	 * @return true if this entity is a valueOf setup the specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a
-	 * null id
+	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
 	@SuppressWarnings("unchecked")
 	default boolean isParentOf(T entity)
@@ -41,9 +37,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Returns the root of this entity hierarchy.
+	 * Returns the root valueOf this entity hierarchy.
 	 *
-	 * @return the root of this entity hierarchy
+	 * @return the root valueOf this entity hierarchy
 	 */
 	@SuppressWarnings("unchecked")
 	default T getRoot()
@@ -53,16 +49,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Checks if this entity is equals to or is a parent of the specified
-	 * entity.
+	 * Checks if this entity is equals to or is a parent valueOf the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a parent of the
-	 * specified entity, false otherwise
+	 * @return true if this entity is equals to or is a parent valueOf the specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a
-	 * null id
+	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
 	default boolean contains(T entity)
 	{
@@ -72,15 +65,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Checks if this entity is a child of the specified entity.
+	 * Checks if this entity is a child valueOf the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is a child of the specified entity, false
-	 * otherwise
+	 * @return true if this entity is a child valueOf the specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a
-	 * null id
+	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
 	default boolean isChildOf(T entity)
 	{
@@ -90,16 +81,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Check if this entity is equals to or is a child of the specified
-	 * entity.
+	 * Check if this entity is equals to or is a child valueOf the specified entity.
 	 *
 	 * @param entity the entity to be checked
 	 *
-	 * @return true if this entity is equals to or is a child of the
-	 * specified entity, false otherwise
+	 * @return true if this entity is equals to or is a child valueOf the specified entity, false otherwise
 	 *
-	 * @throws NullPointerException if the specified entity is null or has a
-	 * null id
+	 * @throws NullPointerException if the specified entity is null or has a null id
 	 */
 	default boolean isContainedBy(T entity)
 	{
@@ -109,9 +97,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Create a stream of this element and it's children recursively
+	 * Create a stream valueOf this element and it's children recursively
 	 *
-	 * @return a stream of this element and it's children recursively
+	 * @return a stream valueOf this element and it's children recursively
 	 */
 	@SuppressWarnings("unchecked")
 	default Stream<T> stream()
@@ -131,13 +119,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Creates a list with data extracted of this element and it's children
-	 * recursively
+	 * Creates a list with data extracted valueOf this element and it's children recursively
 	 *
 	 * @param <E> the element data to be extracted
 	 * @param extractor the function to be used to extract data
-	 * @return a list with the data extracted setup this element and it's
-	 * children recursively
+	 * @return a list with the data extracted setup this element and it's children recursively
 	 */
 	default <E> List<E> toList(Function<T, E> extractor)
 	{
@@ -149,10 +135,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	/**
 	 * Searches for the specified id recursively on the hierarchy
 	 *
-	 * @param id the of the entity to be searched for
+	 * @param id the valueOf the entity to be searched for
 	 *
-	 * @return the entity whose id is equals to the specified id or null if
-	 * no such entity if found
+	 * @return the entity whose id is equals to the specified id or null if no such entity if found
 	 */
 	@SuppressWarnings("unchecked")
 	default T select(ID id)
@@ -163,13 +148,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Creates a list with data extracted of this element and it's parents
-	 * recursively
+	 * Creates a list with data extracted valueOf this element and it's parents recursively
 	 *
 	 * @param <E> the element data to be extracted
 	 * @param extractor the function to be used to extract data
-	 * @return a list with the data extracted setup this element and it's
-	 * parents recursively
+	 * @return a list with the data extracted setup this element and it's parents recursively
 	 */
 	default <E> List<E> toParentList(Function<T, E> extractor)
 	{
@@ -189,9 +172,9 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	}
 
 	/**
-	 * Create a stream of this element and it's parents recursively
+	 * Create a stream valueOf this element and it's parents recursively
 	 *
-	 * @return a stream of this element and it's parents recursively
+	 * @return a stream valueOf this element and it's parents recursively
 	 */
 	@SuppressWarnings("unchecked")
 	default Stream<T> parentStream()
@@ -212,30 +195,25 @@ public interface Hierarchy<T extends Hierarchy<T>>
 
 	/**
 	 *
-	 * Create the parent and child relationships setup all elements in the
-	 * specified list.
+	 * Create the parent and child relationships setup all elements in the specified list.
 	 *
-	 * 
+	 *
 	 * @param list the list to be made hierarchical
 	 *
-	 * @return a new list with the root elements of the specified one
+	 * @return a new list with the root elements valueOf the specified one
 	 *
-	 * @throws java.lang.NullPointerException if the specified list is null
-	 * or has any element with a null id
-	 * @throws gate.error.DuplicateException if the specified list contains
-	 * duplicates
-	 * @throws gate.error.InvalidCircularRelationException if the specified
-	 * list contains circular relationships
-	 * @throws gate.error.NotFoundException if any object in the specified
-	 * list references a non existent object
+	 * @throws gate.error.HierarchyException if the specified list contains an invalid hierarchy
+	 * @throws java.lang.NullPointerException if the specified list is null or has any element with a null id
 	 */
 	static <T extends Hierarchy<T>> List<T> setup(List<T> list)
-		throws DuplicateException,
-		InvalidCircularRelationException,
-		NotFoundException
+		throws HierarchyException
 	{
 		Objects.requireNonNull(list);
-		DuplicateException.check(list);
+
+		for (int i = 0; i < list.size(); i++)
+			for (int j = i + 1; j < list.size(); j++)
+				if (list.get(i).equals(list.get(j)))
+					throw new HierarchyException("Registro duplicado: " + list.get(i));
 
 		for (T object : list)
 		{
@@ -246,11 +224,12 @@ public interface Hierarchy<T extends Hierarchy<T>>
 				parent = parent.getParent())
 			{
 				if (parent.equals(object))
-					throw new InvalidCircularRelationException();
+					throw new HierarchyException(String.format("Relação circular encontrada entre %s and %s",
+						parent.getId(), object.getId()));
 
 				final T _parent = parent;
 				parent = list.stream().filter(e -> e.equals(_parent))
-					.findAny().orElseThrow(NotFoundException::new);
+					.findAny().orElseThrow(() -> new HierarchyException("Registro inexistente encontrado ao montar hierarquia: " + _parent.getId()));
 			}
 		}
 

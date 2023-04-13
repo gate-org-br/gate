@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Gate</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+	<fieldset>
+		<g-form-editor>
+		</g-form-editor>
+	</fieldset>
+
+	<fieldset>
+		<g-form-view>
+		</g-form-view>
+	</fieldset>
+</body>
+
+<script type='module'>
+	const editor = document.querySelector("g-form-editor");
+	const view = document.querySelector("g-form-view");
+	editor.addEventListener("change", () => view.value = editor.value);
+</script>
+
+</html>

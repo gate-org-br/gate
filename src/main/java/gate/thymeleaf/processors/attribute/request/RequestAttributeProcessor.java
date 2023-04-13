@@ -4,6 +4,8 @@ import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.entity.User;
+import gate.error.AppError;
+import gate.error.BadRequestException;
 import gate.io.URL;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import gate.util.Parameters;
@@ -42,7 +44,14 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 
-		Call call = Call.of(request, module, screen, action);
+		Call call;
+		try
+		{
+			call = Call.of(request, module, screen, action);
+		} catch (BadRequestException ex)
+		{
+			throw new AppError(ex);
+		}
 
 		User user = CDI.current().select(User.class, Current.LITERAL).get();
 

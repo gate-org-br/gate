@@ -8,7 +8,11 @@ template.innerHTML = `
 	align-items: stretch;
 	align-content: stretch;
 	justify-content: center;
-	border: 1px solid #CCCCCC;
+}
+
+g-calendar
+{
+	flex-grow: 1;
 }</style>`;
 
 /* global customElements, template */

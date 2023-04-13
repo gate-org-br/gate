@@ -1,0 +1,19 @@
+main
+{
+	width: 100%;
+	height: auto;
+	max-height: 100%;
+}
+
+@media only screen and (min-width: 640px)
+{
+	main {
+		border-radius: 3px;
+		width: calc(100% - 80px);
+		max-height: calc(100% - 80px);
+	}
+}
+
+g-form {
+	flex-grow: 1;
+}

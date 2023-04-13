@@ -3,22 +3,16 @@ package gate.sql;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.lang.property.Property;
-import gate.sql.extractor.ArrayExtractor;
-import gate.sql.extractor.EntityExtractor;
-import gate.sql.extractor.Extractor;
-import gate.sql.extractor.MapExtractor;
-import gate.sql.extractor.ObjectExtractor;
-import gate.sql.extractor.TypedArrayExtractor;
-import gate.sql.extractor.TypedMapExtractor;
-import gate.sql.extractor.TypedObjectExtractor;
 import gate.sql.fetcher.ArrayFetcher;
 import gate.sql.fetcher.ArrayListFetcher;
 import gate.sql.fetcher.ArraySetFetcher;
 import gate.sql.fetcher.DataGridFetcher;
 import gate.sql.fetcher.EntityFetcher;
 import gate.sql.fetcher.EntityListFetcher;
+import gate.sql.fetcher.EntityPageFetcher;
 import gate.sql.fetcher.EntitySetFetcher;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.fetcher.IntArrayFetcher;
 import gate.sql.fetcher.JsonArrayFetcher;
 import gate.sql.fetcher.JsonObjectFetcher;
 import gate.sql.fetcher.MapFetcher;
@@ -26,8 +20,7 @@ import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
 import gate.sql.fetcher.ObjectListFetcher;
 import gate.sql.fetcher.ObjectSetFetcher;
-import gate.sql.fetcher.EntityPageFetcher;
-import gate.sql.fetcher.IntArrayFetcher;
+import gate.sql.fetcher.PivotTableFetcher;
 import gate.sql.fetcher.PropertyEntityListFetcher;
 import gate.sql.fetcher.PropertyEntitySetFetcher;
 import gate.sql.fetcher.TypedArrayFetcher;
@@ -41,7 +34,16 @@ import gate.sql.fetcher.TypedObjectFetcher;
 import gate.sql.fetcher.TypedObjectListFetcher;
 import gate.sql.fetcher.TypedObjectSetFetcher;
 import gate.sql.fetcher.ZipPackageFetcher;
+import gate.sql.mapper.ArrayMapper;
+import gate.sql.mapper.EntityMapper;
+import gate.sql.mapper.MapMapper;
+import gate.sql.mapper.Mapper;
+import gate.sql.mapper.ObjectMapper;
+import gate.sql.mapper.TypedArrayMapper;
+import gate.sql.mapper.TypedMapMapper;
+import gate.sql.mapper.TypedObjectMapper;
 import gate.type.DataGrid;
+import gate.type.PivotTable;
 import gate.type.TempFile;
 import gate.util.Page;
 import java.util.List;
@@ -67,14 +69,14 @@ public interface Fetchable
 	<T> T fetch(Fetcher<T> fecher);
 
 	/**
-	 * Fetches results using the specified Extractor.
+	 * Fetches results using the specified Function as a mapper.
 	 *
 	 *
-	 * @param extractor extractor to be used to fetch results
+	 * @param mapper Function to be used to fetch results
 	 *
-	 * @return the results fetched as a java object of the specified type
+	 * @return the results fetched as a stream of java object of the specified type
 	 */
-	<T> Stream<T> stream(Extractor<T> extractor);
+	<T> Stream<T> stream(Mapper<T> mapper);
 
 	/**
 	 * Fetches the first column of the each row as a stream of java objects.
@@ -83,7 +85,7 @@ public interface Fetchable
 	 */
 	default Stream<Object> objectStream()
 	{
-		return stream(new ObjectExtractor());
+		return stream(new ObjectMapper());
 	}
 
 	/**
@@ -95,7 +97,7 @@ public interface Fetchable
 	 */
 	default <T> Stream<T> objectStream(Class<T> type)
 	{
-		return stream(new TypedObjectExtractor(type));
+		return stream(new TypedObjectMapper(type));
 	}
 
 	/**
@@ -194,7 +196,7 @@ public interface Fetchable
 	 */
 	default Stream<Object[]> arrayStream()
 	{
-		return stream(new ArrayExtractor());
+		return stream(new ArrayMapper());
 	}
 
 	/**
@@ -206,7 +208,7 @@ public interface Fetchable
 	 */
 	default Stream<Object[]> arrayStream(Class<?>... types)
 	{
-		return stream(new TypedArrayExtractor(types));
+		return stream(new TypedArrayMapper(types));
 	}
 
 	/**
@@ -272,7 +274,7 @@ public interface Fetchable
 	 */
 	default Stream<Map<String, Object>> mapStream()
 	{
-		return stream(new MapExtractor());
+		return stream(new MapMapper());
 	}
 
 	/**
@@ -283,7 +285,7 @@ public interface Fetchable
 	 */
 	default Stream<Map<String, Object>> mapStream(Class[] types)
 	{
-		return stream(new TypedMapExtractor(types));
+		return stream(new TypedMapMapper(types));
 	}
 
 	/**
@@ -349,14 +351,13 @@ public interface Fetchable
 	/**
 	 * Fetches each row as a a stream of java objects of the specified type with it's properties set to their respective column values.
 	 *
-	 *
 	 * @param type type of the object to be fetched
 	 *
 	 * @return each row as a a stream of java objects of the specified type with it's properties set to their respective column values
 	 */
 	default <T> Stream<T> entityStream(Class<T> type)
 	{
-		return stream(new EntityExtractor<>(type));
+		return stream(new EntityMapper<>(type));
 	}
 
 	/**
@@ -478,6 +479,19 @@ public interface Fetchable
 	default DataGrid fetchDataGrid()
 	{
 		return fetch(new DataGridFetcher());
+	}
+
+	/**
+	 * Fetches each row as a pivot table.
+	 *
+	 * @param <T> type of the pivot table to be fetched
+	 * @param type type of the pivot table to be fetched
+	 *
+	 * @return each row as a pivot table
+	 */
+	default <T> PivotTable<T> fetchPivotTable(Class<T> type)
+	{
+		return fetch(new PivotTableFetcher<>(type));
 	}
 
 	/**

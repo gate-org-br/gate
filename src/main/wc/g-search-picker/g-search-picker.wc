@@ -1,0 +1,20 @@
+<template>
+	<main>
+		<header>
+			<label id='caption'>
+				Selecione um ítem
+			</label>
+			<a id='close' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<input type="TEXT" placeholder="Pesquisar"/>
+			<g-grid>
+				Entre com o critério pesquisa
+			</g-grid>
+		</section>
+	</main>
+</template>

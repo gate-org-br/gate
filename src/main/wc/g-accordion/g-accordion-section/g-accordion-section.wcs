@@ -1,0 +1,55 @@
+:host(*)
+{
+	display: flex;
+	flex-direction: column;
+	background-color: var(--main1);
+	border: 1px solid var(--main3);
+}
+
+header
+{
+	padding: 8px;
+	display: flex;
+	cursor: pointer;
+	font-weight: bold;
+	background-color: var(--main2);
+	justify-content: space-between;
+}
+
+header:hover
+{
+	background-color: var(--hovered);
+}
+
+
+header::after
+{
+	display: flex;
+	font-size: 0.5em;
+	content: '\\2276';
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+}
+
+:host([expanded]) header
+{
+	background-color: var(--main4);
+}
+
+:host([expanded]) header::after
+{
+	content: '\\2278';
+}
+
+section {
+	padding: 8px;
+	display: none;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+:host([expanded]) section
+{
+	display: flex;
+}

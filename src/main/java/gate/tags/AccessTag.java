@@ -1,8 +1,9 @@
 package gate.tags;
 
+import gate.Call;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.Call;
+import gate.error.BadRequestException;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,13 @@ public abstract class AccessTag extends SimpleTagSupport
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		call = Call.of(request, module, screen, action);
+		try
+		{
+			call = Call.of(request, module, screen, action);
+		} catch (BadRequestException ex)
+		{
+			throw new JspException(ex);
+		}
 	}
 
 	public boolean checkAccess()

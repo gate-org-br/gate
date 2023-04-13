@@ -32,16 +32,16 @@ public class PropertyTest
 	public void setUp()
 	{
 		role = new Role();
-		role.setId(new ID(1));
+		role.setId(ID.valueOf(1));
 		role.setName("Role 1");
 
 		User user1 = new User();
-		user1.setId(new ID(1));
+		user1.setId(ID.valueOf(1));
 		user1.setName("Usuário 1");
 		role.getUsers().add(user1);
 
 		User user2 = new User();
-		user2.setId(new ID(2));
+		user2.setId(ID.valueOf(2));
 		user2.setName("Usuário 2");
 		role.getUsers().add(user2);
 
@@ -190,7 +190,7 @@ public class PropertyTest
 		try
 		{
 			Property.getProperty(getClass(), "users.user3")
-				.setValue(this, new User().setId(new ID(3))
+				.setValue(this, new User().setId(ID.valueOf(3))
 					.setName("Usuário 3"));
 
 			String expected = "Usuário 3";
@@ -222,7 +222,7 @@ public class PropertyTest
 		try
 		{
 			Property.getProperty(Role.class, "users[]").setValue(role, new User()
-				.setId(new ID(3)).setName("Usuário 3"));
+				.setId(ID.valueOf(3)).setName("Usuário 3"));
 			assertEquals(role.getUsers().size(), 3);
 		} catch (PropertyError e)
 		{

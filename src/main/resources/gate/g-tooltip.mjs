@@ -2,10 +2,11 @@ let template = document.createElement("template");
 template.innerHTML = `
 <div></div>
  <style>:host(*) {
+	color: white;
 	display: flex;
 	z-index: 100000;
 	position: fixed;
-	border-radius: 5px;
+	border-radius: 3px;
 	visibility: hidden;
 	align-items: stretch;
 	justify-content: center;
@@ -18,13 +19,13 @@ div {
 	border-radius: 5px;
 	align-items: center;
 	justify-content: center;
-	background-color: #feffcd;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	background-color: black;
+	box-shadow: 4px 4px 4px 0px #666666;
 }
 
 div > * {
-	color: black;
-	width: auto
+	width: auto;
+	max-width: 60vw;
 }
 
 div::after {
@@ -38,28 +39,28 @@ div::after {
 	left: 50%;
 	bottom: 100%;
 	margin-left: -6px;
-	border-color: transparent transparent #feffcd transparent;
+	border-color: transparent transparent black transparent;
 }
 
 :host([arrow="top"]) > div::after {
 	top: 100%;
 	left: 50%;
 	margin-left: -6px;
-	border-color: #feffcd transparent transparent transparent;
+	border-color: black transparent transparent transparent;
 }
 
 :host([arrow="left"]) > div::after {
 	top: 50%;
 	left: 100%;
 	margin-top: -6px;
-	border-color: transparent transparent transparent #feffcd;
+	border-color: transparent transparent transparent black;
 }
 
 :host([arrow="right"]) > div::after {
 	top: 50%;
 	right: 100%;
 	margin-top: -6px;
-	border-color: transparent #feffcd transparent transparent;
+	border-color: transparent black transparent transparent;
 }
 
 dl {
@@ -94,6 +95,10 @@ li {
 }</style>`;
 
 /* global customElements, HTMLElement, template */
+
+import './g-properties.mjs';
+
+let instance;
 
 export default class GTooltip extends HTMLElement
 {
@@ -146,12 +151,8 @@ export default class GTooltip extends HTMLElement
 					this.shadowRoot.firstElementChild.appendChild(content);
 				} else
 				{
-					let dd = this.shadowRoot.firstElementChild.appendChild(document.createElement("dl"));
-					for (var key in content)
-					{
-						dd.appendChild(document.createElement("dt")).innerHTML = key;
-						dd.appendChild(document.createElement("dd")).innerHTML = content[key];
-					}
+					this.shadowRoot.firstElementChild.appendChild(document.createElement("g-properties"))
+						.value = content;
 				}
 				break;
 		}
@@ -159,43 +160,54 @@ export default class GTooltip extends HTMLElement
 
 	connectedCallback()
 	{
-		let tooltip = this.getBoundingClientRect();
-		let element = this.element.getBoundingClientRect();
+		const tooltip = this.getBoundingClientRect();
+		const element = this.element.getBoundingClientRect();
 		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
 
+		const left = element.center.x - tooltip.width / 2;
+		const right = element.center.x + tooltip.width / 2;
+		const top = element.center.y - (tooltip.height / 2);
+		const bottom = element.center.y + (tooltip.height / 2);
 
-		let left = element.center.x - tooltip.width / 2;
-		let right = element.center.x + tooltip.width / 2;
-		let top = element.center.y - (tooltip.height / 2);
-		let bottom = element.center.y + (tooltip.height / 2);
+		const vertical = () =>
+		{
+			if (left > 0 && right < window.innerWidth)
+				if (element.center.y >= (window.innerHeight / 2))
+					this.show(left, element.top - tooltip.height - 10, "top");
+				else
+					this.show(left, element.bottom + 10, "bottom");
+			else if (element.center.x >= (window.innerWidth / 2))
+				this.show(element.left - tooltip.width - 10, top, "left");
+			else
+				this.show(element.x + element.width + 10, top, "right");
+		}
+
+		const horizontal = () =>
+		{
+			if (top > 0 && bottom < window.innerHeight)
+				if (element.center.x >= (window.innerWidth / 2))
+					this.show(element.left - tooltip.width - 10, top, "left");
+				else
+					this.show(element.x + element.width + 10, top, "right");
+			else if (element.center.y >= (window.innerHeight / 2))
+				this.show(left, element.top - tooltip.height - 10, "top");
+			else
+				this.show(left, element.bottom + 10, "bottom");
+		}
 
 		switch (this.orientation)
 		{
 			case "vertical":
-
-				if (left > 0 && right < window.innerWidth)
-					if (element.center.y >= (window.innerHeight / 2))
-						this.show(left, element.top - tooltip.height - 10, "top");
-					else
-						this.show(left, element.bottom + 10, "bottom");
-				else if (element.center.x >= (window.innerWidth / 2))
-					this.show(element.left - tooltip.width - 10, top, "left");
-				else
-					this.show(element.x + element.width + 10, top, "right");
-
-				break;
+				if (element.top - tooltip.height - 10 < 0 &&
+					element.bottom + tooltip.height + 10 > window.innerHeight)
+					return horizontal();
+				return vertical();
 
 			case "horizontal":
-
-				if (top > 0 && bottom < window.innerHeight)
-					if (element.center.x >= (window.innerWidth / 2))
-						this.show(element.left - tooltip.width - 10, top, "left");
-					else
-						this.show(element.x + element.width + 10, top, "right");
-				else if (element.center.y >= (window.innerHeight / 2))
-					this.show(left, element.top - tooltip.height - 10, "top");
-				else
-					this.show(left, element.bottom + 10, "bottom");
+				if (element.left - tooltip.width - 10 < 0 &&
+					element.right + tooltip.width + 10 > window.innerWidth)
+					return vertical();
+				horizontal();
 				break;
 		}
 	}
@@ -219,31 +231,43 @@ export default class GTooltip extends HTMLElement
 		tooltip.content = content;
 		tooltip.element = element;
 		tooltip.orientation = orientation;
-		this._private.instance = document.body.appendChild(tooltip);
+		instance = document.body.appendChild(tooltip);
 	}
 
 	static hide()
 	{
-		if (this._private && this._private.instance)
+		if (instance)
 		{
-			this._private.instance.parentNode
-				.removeChild(this._private.instance);
-			this._private.instance = null;
+			instance.remove();
+			instance = null;
 		}
 	}
 }
 
 customElements.define('g-tooltip', GTooltip);
 
-window.addEventListener("mouseover", e => {
-	e = e.target;
-	e = e.closest("*[data-tooltip]");
-	if (e)
-	{
-		var object = e.getAttribute("data-tooltip");
-		if (/ *[{"[].*[}"\]] */.test(object))
-			object = JSON.parse(object);
-		GTooltip.show(e, e.getAttribute("data-tooltip-orientation"), object);
-	} else
-		GTooltip.hide();
+window.addEventListener("mousemove", event => {
+
+	if (instance)
+		return;
+
+	let target = event.composed
+		&& event.composedPath
+		&& event.composedPath().length
+		? event.composedPath()[0]
+		: event.target;
+
+	target = target.closest
+		? target.closest("*[data-tooltip]")
+		: null;
+
+	if (!target)
+		return;
+
+	let object = target.getAttribute("data-tooltip");
+	if (/ *[{"[].*[}"\]] */.test(object))
+		object = JSON.parse(object);
+
+	target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
+	GTooltip.show(target, target.getAttribute("data-tooltip-orientation"), object);
 });

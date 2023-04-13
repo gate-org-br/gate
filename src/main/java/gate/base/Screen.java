@@ -1,8 +1,12 @@
 package gate.base;
 
+import gate.annotation.BodyParameter;
+import gate.annotation.PathParameter;
+import gate.annotation.QueryParameter;
 import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
+import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.util.Page;
@@ -11,8 +15,10 @@ import gate.util.PropertyComparator;
 import gate.util.Reflection;
 import gate.util.ScreenServletRequest;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -71,13 +77,24 @@ public abstract class Screen extends Base
 						if (value instanceof Part)
 						{
 							Part part = (Part) value;
-							value = converter.ofPart(property.getRawType(), part);
-							part.delete();
+							try
+							{
+								value = converter.ofPart(property.getRawType(), part);
+							} finally
+							{
+								try
+								{
+									part.delete();
+								} catch (IOException ex)
+								{
+									throw new UncheckedIOException(ex);
+								}
+							}
 						} else if (value instanceof String)
 							value = converter.ofString(property.getRawType(), (String) value);
 						property.setValue(this, value);
 					}
-				} catch (IOException ex)
+				} catch (ConversionException ex)
 				{
 					getMessages().add(ex.getMessage());
 				}
@@ -87,9 +104,24 @@ public abstract class Screen extends Base
 
 	public Object execute(Method method) throws Throwable
 	{
+		var parameters = new ArrayList<>();
+		for (var parameter : method.getParameters())
+		{
+			Object value;
+
+			if (parameter.isAnnotationPresent(PathParameter.class))
+				value = PathParameter.Extractor.extract(getRequest(), parameter);
+			else if (parameter.isAnnotationPresent(BodyParameter.class))
+				value = BodyParameter.Extractor.extract(getRequest(), parameter);
+			else
+				value = QueryParameter.Extractor.extract(getRequest(), parameter);
+
+			parameters.add(value);
+		}
+
 		try
 		{
-			return method.invoke(this);
+			return method.invoke(this, parameters.toArray());
 		} catch (InvocationTargetException ex)
 		{
 			throw ex.getCause();
@@ -236,7 +268,8 @@ public abstract class Screen extends Base
 			return Optional.of(Thread.currentThread().getContextClassLoader().loadClass(screen != null
 				? module + "." + screen
 				+ "Screen" : module + ".Screen"))
-				.map(e -> e.asSubclass(Screen.class));
+				.map(e -> e.asSubclass(Screen.class
+			));
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();
@@ -245,7 +278,7 @@ public abstract class Screen extends Base
 
 	public static Optional<Method> getAction(Class<Screen> clazz, String action)
 	{
-		return Reflection.findMethod(clazz, action != null ? "call" + action : "call");
+		return Reflection.findMethodByName(clazz, action != null ? "call" + action : "call");
 	}
 
 	public static Optional<Method> getAction(String module, String screen, String action)

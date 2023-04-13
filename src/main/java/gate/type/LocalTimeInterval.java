@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.annotation.Icon;
+import gate.annotation.Name;
 import gate.converter.custom.LocalTimeIntervalConverter;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -126,8 +127,21 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	public static class Mutable
 	{
 
+		@Name("Hora mínima")
 		private LocalTime min;
+
+		@Name("Hora máxima")
 		private LocalTime max;
+
+		public Mutable()
+		{
+		}
+
+		public Mutable(LocalTime min, LocalTime max)
+		{
+			this.min = min;
+			this.max = max;
+		}
 
 		public LocalTime getMin()
 		{

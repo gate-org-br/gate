@@ -43,7 +43,7 @@ public class EnumConverter implements Converter
 			return type.getEnumConstants()[Integer.parseInt(string)];
 
 		for (Object obj : type.getEnumConstants())
-			if (((Enum) obj).name().equals(string))
+			if (((Enum<?>) obj).name().equals(string))
 				return obj;
 		throw new ConversionException("Invalid enum constant: " + string);
 	}

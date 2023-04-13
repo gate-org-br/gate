@@ -2,7 +2,9 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -11,6 +13,9 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 public abstract class AbstractPropertyAttributeProcessor extends AttributeProcessor
 {
+
+	@Inject
+	ELExpression expression;
 
 	public AbstractPropertyAttributeProcessor(String element)
 	{
@@ -24,8 +29,11 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 	{
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		Screen screen = (Screen) request.getAttribute("screen");
-		Property property = Property.getProperty(screen.getClass(),
-			element.getAttributeValue("g:property"));
+
+		var name = element.getAttributeValue("g:property");
+		name = (String) expression.evaluate(name);
+		Property property = Property.getProperty(screen.getClass(), name);
+
 		handler.removeAttribute("g:property");
 		process(context, element, handler, screen, property);
 	}

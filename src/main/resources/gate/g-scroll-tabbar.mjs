@@ -1,16 +1,20 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<div>
-		<slot>
-		</slot>
 	</div>
- <style>:host(*)
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*)
 {
+	color: black;
+	border: none;
+	height: auto;
+	flex-grow: 1;
 	display: flex;
-	overflow: hidden;
-	color: var(--g-tabbar-color);
-	background-color:  var(--g-tabbar-background-color);
-	background-image:  var(--g-tabbar-background-image);
+	background-color: var(--main3);
+	justify-content: flex-start;
 }
 
 :host([data-overflowing=left])::before,
@@ -45,40 +49,93 @@ template.innerHTML = `
 
 div
 {
+	gap: 8px;
 	width: 100%;
+	padding: 8px;
 	height: auto;
 	border: none;
+	flex-grow: 1;
 	display:  flex;
-	overflow-x : hidden;
+	overflow: hidden;
 	white-space:  nowrap;
-}</style>`;
+}
+
+a,
+button,
+.g-command
+{
+	gap: 4px;
+	padding: 6px;
+	height: auto;
+	display: flex;
+	color: inherit;
+	flex-shrink: 0;
+	flex-basis: 120px;
+	border-radius: 5px;
+	font-size: 0.75rem;
+	white-space: nowrap;
+	align-items: center;
+	text-decoration: none;
+	flex-direction: column;
+	background-color: var(--main4);
+	justify-content: space-around;
+}
+
+:host(.inline) a,
+:host(.inline) button,
+:host(.inline) .g-command
+{
+	flex-basis: 160px;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+
+a[aria-selected],
+button[aria-selected],
+.g-command[aria-selected]
+{
+	background-color: #E6E6E6;
+}
+
+a:hover,
+button:hover,
+.g-command:hover
+{
+	background-color:  #FFFACD;
+}
+
+a:focus,
+button:focus,
+.g-command:focus
+{
+	outline: none
+}
+
+*[hidden="true"]
+{
+	display: none;
+}
+
+hr
+{
+	border: none;
+	flex-grow: 100000;
+}
+
+i, g-icon {
+	order: -1;
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	font-style: normal;
+	font-size: 1.25rem;
+	font-family: 'gate';
+	align-items: center;
+	justify-content: center;
+}
+</style>`;
 
 /* global customElements */
-
-const determineOverflow = function (component, container)
-{
-	container = container || component;
-
-	if (!component.firstElementChild)
-		return "none";
-
-	let containerMetrics = container.getBoundingClientRect();
-	let containerMetricsRight = Math.floor(containerMetrics.right);
-	let containerMetricsLeft = Math.floor(containerMetrics.left);
-
-	let left = Math.floor(component.firstElementChild.getBoundingClientRect().left);
-	let right = Math.floor(component.lastElementChild.getBoundingClientRect().right);
-
-	if (containerMetricsLeft > left
-		&& containerMetricsRight < right)
-		return "both";
-	else if (left < containerMetricsLeft)
-		return "left";
-	else if (right > containerMetricsRight)
-		return "right";
-	else
-		return "none";
-};
 
 customElements.define("g-scroll-tabbar", class extends HTMLElement
 {
@@ -89,29 +146,50 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.firstElementChild;
-
 		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
 		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
 		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
-		div.appendChild(document.createElement("slot"));
 
-		div.addEventListener("scroll", () => this.setAttribute("data-overflowing",
-				determineOverflow(this, this.shadowRoot.firstElementChild)));
-	}
-
-	update()
-	{
-		this.setAttribute("data-overflowing", determineOverflow(this, this.shadowRoot.firstElementChild));
-		Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
-			.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
+		div.addEventListener("scroll", () => this.update());
 	}
 
 	connectedCallback()
 	{
+		let div = this.shadowRoot.querySelector("div");
+		Array.from(this.children).forEach(e => div.appendChild(e));
 		window.setTimeout(() => this.update(), 0);
 		window.addEventListener("resize", () => this.update());
+	}
+
+	update()
+	{
+		let div = this.shadowRoot.querySelector("div");
+		this.setAttribute("data-overflowing", "none");
+
+		if (div.firstElementChild)
+		{
+			let containerMetrics = div.getBoundingClientRect();
+			let containerMetricsRight = Math.floor(containerMetrics.right);
+			let containerMetricsLeft = Math.floor(containerMetrics.left);
+
+			let left = Math.floor(div.firstElementChild.getBoundingClientRect().left);
+			let right = Math.floor(div.lastElementChild.getBoundingClientRect().right);
+
+			if (containerMetricsLeft > left
+				&& containerMetricsRight < right)
+				this.setAttribute("data-overflowing", "both");
+			else if (left < containerMetricsLeft)
+				this.setAttribute("data-overflowing", "left");
+			else if (right > containerMetricsRight)
+				this.setAttribute("data-overflowing", "right");
+			else
+				this.setAttribute("data-overflowing", "none");
+		}
+
+		Array.from(div.children).filter(e => e.getAttribute("aria-selected"))
+			.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
 	}
 
 	disconnectedCallback()

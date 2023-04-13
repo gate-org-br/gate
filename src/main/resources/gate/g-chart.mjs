@@ -4,10 +4,10 @@ import URL from './url.mjs';
 import Dataset from './dataset.mjs';
 import * as echarts from './echarts.mjs';
 
-let grid = {top: '80px', left: '80px', right: '80px', bottom: '80px', containLabel: true}
-let category = {type: 'category', axisLabel: {width: "100", interval: 0, overflow: "break"}};
-let toolbox = {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}};
-
+const locale = document.documentElement.lang || navigator.language;
+const grid = {top: '80px', left: '80px', right: '80px', bottom: '80px', containLabel: true};
+const category = {type: 'category', axisLabel: {width: "100", interval: 0, overflow: "break"}};
+const toolbox = {show: true, feature: {restore: {show: true, title: 'Restaurar'}, saveAsImage: {show: true, title: 'Salvar'}}};
 customElements.define('g-chart', class extends HTMLElement
 {
 	constructor()
@@ -19,8 +19,7 @@ customElements.define('g-chart', class extends HTMLElement
 	set data(data)
 	{
 		this._private.data = data;
-		if (this.type && this.title && this.data)
-			this.draw(this.type, this.title, this.dataset);
+		this.refresh();
 	}
 
 	get data()
@@ -30,55 +29,87 @@ customElements.define('g-chart', class extends HTMLElement
 
 	set type(type)
 	{
-		this._private.type = type;
-		if (this.type && this.title && this.data)
-			this.draw(this.type, this.title, this.dataset);
+		this.setAttribute("type", type);
 	}
 
 	get type()
 	{
-		return this._private.type;
+		return this.getAttribute("type");
 	}
 
 	set title(title)
 	{
-		this._private.title = title;
-		if (this.type && this.title && this.data)
-			this.draw(this.type, this.title, this.dataset);
+		this.setAttribute("title", title);
 	}
 
 	get title()
 	{
-		return this._private.title;
+		return this.getAttribute("title");
 	}
 
-	get dataset()
+	parse(type, value)
 	{
-		if (typeof this.data === 'object')
-			return this.data;
-		else if (typeof this.data === 'string')
-			if (this.data.length && this.data[0] === "#")
-				return Dataset.fromTable(document.getElementById(this.data.substring(1)));
-			else if (this.data.includes("[") && this.data.includes("]"))
-				return JSON.parse(this.data);
-			else
-				return JSON.parse(new URL(this.data).get());
-	}
-
-	attributeChangedCallback(name)
-	{
-		switch (name)
+		switch (type)
 		{
-			case 'type':
-				this.type = this.getAttribute("type");
+			case 'table':
+				let matcher = value.match(/^(#[a-z]+)(\(([^)]*)\))?$/i);
+				if (!matcher)
+					throw new Error("Invalid table id");
+				let table = document.querySelector(matcher[1]);
+				let options = matcher[3] ? JSON.parse(matcher[3]) : {};
+				this.data = Dataset.fromTable(table, options);
 				break;
-			case 'title':
-				this.title = this.getAttribute("title");
+			case 'url':
+				fetch(value).then(e => e.json()).then(e => this.data = e);
 				break;
-			case 'data':
-				this.data = this.getAttribute("data");
+			case 'array':
+				this.data = JSON.parse(value);
 				break;
 		}
+
+	}
+
+	set array(value)
+	{
+		this.data = JSON.parse(value);
+	}
+
+	set url(value)
+	{
+		fetch(value).then(e => e.json()).then(e => this.data = e);
+	}
+
+	attributeChangedCallback(name, _, value)
+	{
+		setTimeout(() =>
+		{
+			switch (name)
+			{
+				case 'url':
+					Dataset.parse('url', value).then(e => this.data = e);
+					break;
+				case 'table':
+					Dataset.parse('table', value).then(e => this.data = e);
+					break;
+				case 'array':
+					Dataset.parse('array', value).then(e => this.data = e);
+					break;
+				case 'title':
+					this.refresh();
+					break;
+				case 'type':
+					this.refresh();
+					break;
+			}
+		}, 0);
+	}
+
+	refresh()
+	{
+		if (this.type && this.title && this.data)
+			this.draw(this.type, this.title, this.data);
+		else
+			echarts.init(this).clear();
 	}
 
 	draw(type, title, data)
@@ -114,12 +145,12 @@ customElements.define('g-chart', class extends HTMLElement
 			legend: {show: data[0].length > 2, y: 'bottom'},
 			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
 			xAxis: category,
-			yAxis: {},
+			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
 			series: Array(data[0].length - 1)
 				.fill({type: 'bar',
 					barGap: 0,
 					seriesLayoutBy: 'column',
-					itemStyle: {normal: {label: {show: true, position: 'top'}}}})
+					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
 		});
 	}
 
@@ -135,12 +166,12 @@ customElements.define('g-chart', class extends HTMLElement
 			legend: {show: data[0].length > 2, y: 'bottom'},
 			dataZoom: {right: 40, width: 12, endValue: 9, startValue: 0, orient: 'vertical', filterMode: 'empty'},
 			yAxis: category,
-			xAxis: {},
+			xAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
 			series: Array(data[0].length - 1)
 				.fill({type: 'bar',
 					barGap: 0,
 					seriesLayoutBy: 'column',
-					itemStyle: {normal: {label: {show: true, position: 'right'}}}})
+					label: {show: true, position: 'right', formatter: e => e.value[e.encode.x].toLocaleString(locale)}})
 		});
 	}
 
@@ -156,11 +187,11 @@ customElements.define('g-chart', class extends HTMLElement
 			legend: {show: data[0].length > 2, y: 'bottom'},
 			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
 			xAxis: category,
-			yAxis: {},
+			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
 			series: Array(data[0].length - 1)
 				.fill({type: 'line',
 					seriesLayoutBy: 'column',
-					itemStyle: {normal: {label: {show: true, position: 'top'}}}})
+					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
 		});
 	}
 
@@ -176,11 +207,12 @@ customElements.define('g-chart', class extends HTMLElement
 			legend: {show: data[0].length > 2, y: 'bottom'},
 			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
 			xAxis: category,
-			yAxis: {},
+			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
 			series: Array(data[0].length - 1)
 				.fill({type: 'line',
 					seriesLayoutBy: 'column',
-					itemStyle: {normal: {label: {show: true, position: 'top'}, areaStyle: {type: 'default'}}}})
+					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)},
+					areaStyle: {type: 'default'}})
 		});
 	}
 
@@ -188,15 +220,28 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		let chart = echarts.init(this);
 		chart.clear();
+
+		let width = 100 / (data[0].length - 1);
+
 		chart.setOption({
 			toolbox: toolbox,
-			tooltip: {show: true},
+			legend: {bottom: 0},
 			dataset: {source: data},
-			legend: {show: true, y: 'bottom'},
 			title: {x: 'center', text: title},
-			xAxis: {type: 'category', gridIndex: 0},
-			yAxis: {type: 'value', gridIndex: 0},
-			series: {type: 'pie', itemStyle: {normal: {label: {show: false}}}}
+			tooltip: {valueFormatter: (value) => value.toLocaleString(locale)},
+
+			series: data[0].slice(1).map((value, index) =>
+				({
+					type: 'pie',
+					top: 'center',
+					height: '100%',
+					width: width + '%',
+					name: data[0][index + 1],
+					left: (index * width) + '%',
+					encode: {itemName: data[0][0], value: data[0][index + 1]},
+					label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
+				})
+			)
 		});
 	}
 
@@ -204,15 +249,28 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		let chart = echarts.init(this);
 		chart.clear();
+
+		let width = 100 / (data[0].length - 1);
+
 		chart.setOption({
 			toolbox: toolbox,
-			tooltip: {show: true},
+			legend: {bottom: 0},
 			dataset: {source: data},
-			legend: {show: true, y: 'bottom'},
 			title: {x: 'center', text: title},
-			xAxis: {type: 'category', gridIndex: 0},
-			yAxis: {type: 'value', gridIndex: 0},
-			series: {type: 'pie', radius: ['40%', '60%'], itemStyle: {normal: {label: {show: false}}}}
+			tooltip: {valueFormatter: (value) => value.toLocaleString(locale)},
+
+			series: data[0].slice(1).map((value, index) =>
+				({
+					type: 'pie',
+					top: 'center',
+					height: '100%',
+					width: width + '%',
+					radius: ['40%', '60%'],
+					name: data[0][index + 1],
+					left: (index * width) + '%',
+					encode: {itemName: data[0][0], value: data[0][index + 1]},
+					label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
+				}))
 		});
 	}
 
@@ -220,20 +278,33 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		let chart = echarts.init(this);
 		chart.clear();
+
+		let width = 100 / (data[0].length - 1);
+
 		chart.setOption({
 			toolbox: toolbox,
-			tooltip: {show: true},
+			legend: {bottom: 0},
 			dataset: {source: data},
-			legend: {show: true, y: 'bottom'},
 			title: {x: 'center', text: title},
-			xAxis: {type: 'category', gridIndex: 0},
-			yAxis: {type: 'value', gridIndex: 0},
-			series: {type: 'pie', roseType: 'area', itemStyle: {normal: {label: {show: false}}}}
+			tooltip: {valueFormatter: (value) => value.toLocaleString(locale)},
+
+			series: data[0].slice(1).map((value, index) =>
+				({
+					type: 'pie',
+					top: 'center',
+					height: '100%',
+					roseType: 'area',
+					width: width + '%',
+					name: data[0][index + 1],
+					left: (index * width) + '%',
+					encode: {itemName: data[0][0], value: data[0][index + 1]},
+					label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
+				}))
 		});
 	}
 
 	static get observedAttributes()
 	{
-		return ['type', 'data', 'title'];
+		return ['type', 'title', 'table', 'array', 'fetch'];
 	}
 });

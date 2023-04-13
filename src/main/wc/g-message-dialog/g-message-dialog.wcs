@@ -1,0 +1,58 @@
+main
+{
+	width: 100%;
+	min-width: 320px;
+	max-width: 800px;
+}
+
+main > section {
+	padding: 8px;
+	display: flex;
+	color: inherit;
+	font-size: 20px;
+	flex-basis: 200px;
+	align-items: center;
+}
+
+section::before {
+	display: flex;
+	color: inherit;
+	flex-shrink: 0;
+	font-size: 80px;
+	flex-basis: 160px;
+	align-items: center;
+	font-family: 'gate';
+	justify-content: center;
+}
+
+label::first-line  {
+	text-indent: 40px;
+}
+
+:host([type="INFO"]) {
+	color: black
+}
+:host([type="INFO"]) > main > section::before {
+	content: "\\2015"
+}
+
+:host([type="ERROR"]) {
+	color: var(--error1)
+}
+:host([type="ERROR"]) > main > section::before {
+	content: "\\1001"
+}
+
+:host([type="SUCCESS"]) {
+	color: var(--success1)
+}
+:host([type="SUCCESS"]) > main > section::before {
+	content: "\\1000"
+}
+
+:host([type="WARNING"]) {
+	color: var(--warning1)
+}
+:host([type="WARNING"]) > main > section::before {
+	content: "\\1007"
+}

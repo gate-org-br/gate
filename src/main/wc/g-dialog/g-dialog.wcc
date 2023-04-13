@@ -3,35 +3,18 @@
 import './g-navbar.mjs';
 import CSV from './csv.mjs';
 import './g-dialog-commands.mjs';
-import GModal from './g-modal.mjs';
 import resolve from './resolve.mjs';
+import GWindow from './g-window.mjs';
 import FullScreen from './fullscreen.mjs';
 
 const ESC = 27;
 const ENTER = 13;
 
-const resize = function (iframe)
-{
-	if (iframe.contentWindow
-		&& !iframe.contentWindow.document
-		&& iframe.contentWindow.document.body
-		&& iframe.contentWindow.document.body.scrollHeight)
-	{
-		let height = Math.max(iframe.contentWindow.document.body.scrollHeight,
-			iframe.parentNode.offsetHeight) + "px";
-		if (iframe.height !== height)
-		{
-			this.iframe.height = "0";
-			this.iframe.height = height;
-		}
-	}
-};
-export default class GDialog extends GModal
+export default class GDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let main = this.shadowRoot.querySelector("main");
 		let head = this.shadowRoot.querySelector("header");
@@ -65,13 +48,7 @@ export default class GDialog extends GModal
 		});
 		iframe.dialog = this;
 		iframe.onmouseenter = () => iframe.focus();
-		iframe.addEventListener("load", () =>
-		{
-			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-			resize(iframe);
-			window.addEventListener("refresh_size", () => resize(iframe));
-			iframe.backgroundImage = "none";
-		});
+		iframe.addEventListener("load", () => iframe.backgroundImage = "none");
 		navbar.addEventListener("update", event =>
 		{
 			let iframe = this.shadowRoot.querySelector("iframe");
@@ -145,7 +122,7 @@ export default class GDialog extends GModal
 			throw new Error(value + " is not a valid size");
 		let main = this.shadowRoot.querySelector("main");
 		main.style.maxWidth = size[1] + "px";
-		main.style.maxHeight = (size[4] || size[1]) + "px";
+		main.style.maxHeight = (size[3] || size[1]) + "px";
 
 		this.shadowRoot.getElementById("minimize").style.display = "none";
 		this.shadowRoot.getElementById("fullscreen").style.display = "none";

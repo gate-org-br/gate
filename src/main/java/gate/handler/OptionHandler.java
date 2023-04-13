@@ -1,12 +1,11 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.converter.Converter;
+import gate.error.AppError;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
 import java.io.IOException;
-
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
@@ -14,7 +13,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
-
 import javax.servlet.http.HttpServletResponse;
 
 @ApplicationScoped

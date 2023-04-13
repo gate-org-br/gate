@@ -6,9 +6,8 @@ template.innerHTML = `
 	</g-time-selector>
  <style>:host(*)
 {
-	flex-grow: 1;
-	display:grid;
-	border: 1px solid #CCCCCC;
+	gap: 4px;
+	display: grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
 

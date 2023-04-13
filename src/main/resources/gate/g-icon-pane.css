@@ -12,8 +12,8 @@ g-icon-pane g-icon-pane :is(g-icon-pane, a, button, hr) {
   display: none;
 }
 g-icon-pane > hr {
-  border: solid 4px #BBBBBB;
   flex-basis: calc(100% - 8px);
+  border: solid 4px var(--main6);
 }
 g-icon-pane > hr:first-child,
 g-icon-pane > hr:last-child,
@@ -24,6 +24,7 @@ g-icon-pane > :is(g-icon-pane, a, button) {
   order: 1;
   margin: 4px;
   padding: 4px;
+  color: black;
   height: 100px;
   display: flex;
   cursor: pointer;
@@ -51,5 +52,5 @@ g-icon-pane > :is(g-icon-pane, a, button) > img {
   margin-right: 8px;
 }
 g-icon-pane > :is(g-icon-pane, a, button):hover {
-  border-color: #FFFACD;
+  border-color: var(--hovered);
 }

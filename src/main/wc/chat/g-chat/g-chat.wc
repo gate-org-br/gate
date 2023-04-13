@@ -1,0 +1,6 @@
+<template>
+	<g-chat-peer-list>
+	</g-chat-peer-list>
+	<g-chat-contact-list>
+	</g-chat-contact-list>
+</template>

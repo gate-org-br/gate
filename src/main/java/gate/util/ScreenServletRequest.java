@@ -7,7 +7,10 @@ import gate.error.ConversionException;
 import gate.error.InvalidCredentialsException;
 import gate.io.Credentials;
 import gate.policonverter.Policonverter;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -132,4 +135,23 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return Credentials.of(this);
 	}
 
+	public String getBody()
+	{
+		try ( BufferedReader reader = this.getReader();
+			 StringWriter string = new StringWriter())
+		{
+			for (int c = reader.read(); c != -1; c = reader.read())
+				string.write(c);
+			return string.toString();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	public <T> T getBody(Class<T> type) throws ConversionException
+	{
+		return (T) Converter.getConverter(type)
+			.ofString(type, ScreenServletRequest.this.getBody());
+	}
 }

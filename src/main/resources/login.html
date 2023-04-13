@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Gate</title>
+	<link rel="shortcut icon" href="FavIcon.png" />
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
+</head>
+
+<body>
+	<form class="Login" method='POST' action='Gate?MODULE=linq.modulos'>
+		<main>
+			<header>
+				<img src='Logo.svg' />
+				<label>Gate</label>
+				<label>Versão 1.0.0</label>
+			</header>
+			<section>
+				<g-tab-control type="dummy">
+					<a href='#' data-selected="true">
+						Fazer Logon
+						<i>&#X2000;</i>
+					</a>
+					<a href='#'>
+						Trocar Senha
+						<i>&#X2002;</i>
+					</a>
+					<a href='#'>
+						Recuperar Senha
+						<i>&#X2002;</i>
+					</a>
+					<a href='#'>
+						Criar Conta
+						<i>&#X2004;</i>
+					</a>
+					<div>
+						<fieldset>
+							<label>
+								Login:
+								<span>
+									<i>&#X2004;</i>
+									<input type="text" required='required' name='$username' maxlength='64' tabindex="1"
+										title='Entre com o seu login.' />
+								</span>
+							</label>
+							<label>
+								Senha:
+								<span>
+									<input type="password" required='required' name='$password' maxlength='32'
+										tabindex="1" title='Entre com a sua senha.' />
+								</span>
+							</label>
+						</fieldset>
+					</div>
+				</g-tab-control>
+			</section>
+			<footer>
+				<g-coolbar>
+					<a href='message.html' class="primary" tabindex="2">
+						Entrar
+						<i>&#X1000;</i>
+					</a>
+				</g-coolbar>
+			</footer>
+		</main>
+	</form>
+
+</body>
+
+</html>

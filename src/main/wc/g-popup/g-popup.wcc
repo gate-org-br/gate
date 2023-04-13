@@ -1,13 +1,13 @@
 /* global customElements, template */
 
-import GModal from './g-modal.mjs';
+import './g-icon.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GPopup extends GModal
+export default class GPopup extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
@@ -34,6 +34,16 @@ export default class GPopup extends GModal
 		popup.addEventListener("hide", () => parent.appendChild(popup.firstElementChild));
 		popup.show();
 		popup.appendChild(template);
+	}
+
+	static get observedAttributes()
+	{
+		return ["caption"];
+	}
+
+	attributeChangedCallback()
+	{
+		this.caption = this.getAttribute("caption") || "";
 	}
 }
 

@@ -16,37 +16,37 @@ public class RoleTest
 
 	Role master1 = new Role()
 		.setMaster(true)
-		.setId(new ID(1))
+		.setId(ID.valueOf(1))
 		.setName("Master 1");
 
 	Role master11 = new Role()
 		.setParent(master1)
 		.setMaster(true)
-		.setId(new ID(11))
+		.setId(ID.valueOf(11))
 		.setName("Master 11");
 
 	Role master111 = new Role()
 		.setParent(master11)
 		.setMaster(true)
-		.setId(new ID(111))
+		.setId(ID.valueOf(111))
 		.setName("Master 111");
 
 	Role master112 = new Role()
 		.setParent(master1)
 		.setMaster(true)
-		.setId(new ID(112))
+		.setId(ID.valueOf(112))
 		.setName("Master 112");
 
 	Role detail12 = new Role()
 		.setParent(master1)
 		.setMaster(false)
-		.setId(new ID(12))
+		.setId(ID.valueOf(12))
 		.setName("Detail 12");
 
 	Role detail121 = new Role()
 		.setParent(detail12)
 		.setMaster(false)
-		.setId(new ID(121))
+		.setId(ID.valueOf(121))
 		.setName("Detail 121");
 
 	List<Role> roles = new ArrayList<>();

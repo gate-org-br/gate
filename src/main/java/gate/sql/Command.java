@@ -3,8 +3,8 @@ package gate.sql;
 import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
 import gate.error.DatabaseException;
-import gate.sql.extractor.Extractor;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.mapper.Mapper;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -133,7 +133,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public <T> Optional<T> getGeneratedKey(Class<T> type)
 	{
-		try (Cursor cursor = getGeneratedKeys())
+		try ( Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next()
 				? Optional.of(cursor.getCurrentValue(type))
@@ -143,7 +143,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public <T> List<T> getGeneratedKeys(Class<T> type)
 	{
-		try (Cursor cursor = getGeneratedKeys())
+		try ( Cursor cursor = getGeneratedKeys())
 		{
 			List<T> keys = new ArrayList<>();
 			while (cursor.next())
@@ -328,25 +328,23 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public <T> T fetch(Fetcher<T> fecher)
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetch(fecher);
 		}
 	}
 
 	@Override
-	public <T> Stream<T> stream(Extractor<T> extractor)
+	public <T> Stream<T> stream(Mapper<T> mapper)
 	{
-		try (Cursor cursor = getCursor())
-		{
-			return extractor.extract(cursor);
-		}
+		Cursor cursor = getCursor();
+		return cursor.stream(mapper).onClose(() -> cursor.close());
 	}
 
 	@Override
 	public char fetchChar()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchChar();
 		}
@@ -355,7 +353,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public boolean fetchBoolean()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchBoolean();
 		}
@@ -364,7 +362,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public byte fetchByte()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchByte();
 		}
@@ -373,7 +371,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public short fetchShort()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchShort();
 		}
@@ -382,7 +380,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public int fetchInt()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchInt();
 		}
@@ -391,7 +389,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public long fetchLong()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchInt();
 		}
@@ -400,7 +398,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public float fetchFloat()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchFloat();
 		}
@@ -409,7 +407,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public double fetchDouble()
 	{
-		try (Cursor cursor = getCursor())
+		try ( Cursor cursor = getCursor())
 		{
 			return cursor.fetchDouble();
 		}

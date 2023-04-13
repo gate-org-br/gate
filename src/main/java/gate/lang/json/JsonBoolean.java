@@ -69,12 +69,12 @@ public class JsonBoolean implements JsonElement
 		return value ? "true" : "false";
 	}
 
-	public static JsonBoolean of(boolean value)
+	public static JsonBoolean parse(boolean value)
 	{
 		return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;
 	}
 
-	public static JsonBoolean of(Boolean value)
+	public static JsonBoolean parse(Boolean value)
 	{
 		return Boolean.TRUE.equals(value)
 			? JsonBoolean.TRUE
@@ -89,7 +89,7 @@ public class JsonBoolean implements JsonElement
 	 * @return a JsonBoolean object representing the JSON formatted string specified
 	 *
 	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
-	 * @throws NullPointerException if any of the parameters is null
+	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonBoolean parse(String json) throws ConversionException
 	{

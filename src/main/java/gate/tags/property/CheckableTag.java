@@ -13,8 +13,6 @@ import javax.servlet.jsp.JspException;
 public abstract class CheckableTag extends SelectorTag
 {
 
-	private String style;
-
 	@Override
 	public void doTag() throws JspException, IOException
 	{
@@ -40,31 +38,19 @@ public abstract class CheckableTag extends SelectorTag
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
-		Attributes attributes = new Attributes();
-		attributes.put("class", "Checkable");
-		if (style != null)
-			attributes.put("style", style);
-
-		getJspContext().getOut().print("<ul " + attributes + ">");
+		getJspContext().getOut().print("<g-selectn " + getAttributes() + ">");
 
 		if (groups != null)
-		{
-
 			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
 				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
-			{
-				getJspContext().getOut().print("<li>");
-				getJspContext().getOut().print(Converter.toText(group.getKey()));
-				print(group.getValue());
-				getJspContext().getOut().print("</li>");
-			}
-		} else
-			print(options);
+				print(group.getValue(), 0);
+		else
+			print(options, 0);
 
-		getJspContext().getOut().print("</ul>");
+		getJspContext().getOut().print("</g-selectn>");
 	}
 
-	private void print(Iterable<?> options) throws IOException, JspException
+	private void print(Iterable<?> options, int depth) throws IOException, JspException
 	{
 
 		for (Object option : options)
@@ -74,7 +60,6 @@ public abstract class CheckableTag extends SelectorTag
 				value = values.invoke(EL_CONTEXT, option);
 
 			Attributes attributes = new Attributes();
-			attributes.putAll(getAttributes());
 			attributes.put("type", getComponentType());
 			attributes.put("name", getName());
 
@@ -83,9 +68,8 @@ public abstract class CheckableTag extends SelectorTag
 
 			attributes.put("value", Converter.toString(value));
 
-			getJspContext().getOut().print("<li>");
-			getJspContext().getOut().print("<label>");
 			getJspContext().getOut().print(String.format("<input %s/>", attributes.toString()));
+			getJspContext().getOut().print("<label>");
 
 			if (getJspBody() != null)
 			{
@@ -102,19 +86,8 @@ public abstract class CheckableTag extends SelectorTag
 			getJspContext().getOut().print("</label>");
 
 			if (children != null)
-			{
-				getJspContext().getOut().print("<ul>");
-				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)));
-				getJspContext().getOut().print("</ul>");
-			}
-
-			getJspContext().getOut().print("</li>");
+				print(Toolkit.iterable(children.invoke(EL_CONTEXT, option)), depth + 1);
 		}
-	}
-
-	public void setStyle(String style)
-	{
-		this.style = style;
 	}
 
 	protected abstract String getComponentType();

@@ -1,19 +1,17 @@
 /* global customElements */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
+import './g-icon.mjs';
 import './g-download-status.mjs';
 import './g-report-selector.mjs';
-import GModal from './g-modal.mjs';
+import GWindow from './g-window.mjs';
 import Command from './command.mjs';
 
 
-customElements.define('g-report-dialog', class extends GModal
+customElements.define('g-report-dialog', class extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());

@@ -1,67 +1,50 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<main>
-		<g-window-header>
+		<header>
 			Selecione uma data e uma hora
 			<a id='close' href="#">
-				&#X1011;
+				<g-icon>
+					&#X1011;
+				</g-icon>
 			</a>
-		</g-window-header>
-		<g-window-section>
+		</header>
+		<section>
 			<g-date-time-selector>
 			</g-date-time-selector>
-		</g-window-section>
-		<g-window-footer>
-			<a id='commit' href='#'>
-			</a>
-		</g-window-footer>
+		</section>
+		<footer>
+			<button id='commit'>
+			</button>
+		</footer>
 	</main>
- <style>* {
-	box-sizing: border-box
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	display: flex;
-	position: fixed;
-	align-items: center;
-	justify-content: center;
-}
-
-main
+ <style>main
 {
-	height: auto;
-	display: grid;
-	position: fixed;
 	min-width: 320px;
 	max-width: 600px;
-	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
 	width: calc(100% - 40px);
-	grid-template-rows: 40px 360px 40px;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
-	border: 4px solid var(--g-window-border-color);
+}
+
+g-date-time-selector {
+	flex-grow: 1;
+}
+
+main > footer > button {
+	flex-grow: 1;
+	justify-content: center;
 }</style>`;
 
 /* global customElements */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import './g-window-footer.mjs';
-import GModal from './g-modal.mjs';
+import './g-icon.mjs';
 import './g-date-time-selector.mjs';
+import GWindow from './g-window.mjs';
 
-customElements.define('g-date-time-picker', class extends GModal
+customElements.define('g-date-time-picker', class extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("click", event => event.target === this && this.hide());
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());

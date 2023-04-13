@@ -7,7 +7,6 @@ template.innerHTML = `
  <style>:host(*)
 {
 	display:grid;
-	border: 1px solid #CCCCCC;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
 

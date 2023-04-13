@@ -1,0 +1,10 @@
+main
+{
+	min-width: 320px;
+	max-width: 1200px;
+	width: calc(100% - 40px);
+}
+
+g-field-editor {
+	flex-grow: 1;
+}

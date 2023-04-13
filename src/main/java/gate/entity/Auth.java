@@ -235,4 +235,13 @@ public class Auth implements Serializable
 			&& (screen == null || this.screen == null || this.screen.equals(screen))
 			&& (action == null || this.action == null || this.action.equals(action));
 	}
+
+	public boolean equals(String module, String screen, String action)
+	{
+		return this.access == Access.GRANT
+			&& Objects.equals(module, this.module)
+			&& Objects.equals(screen, this.screen)
+			&& Objects.equals(action, this.action);
+	}
+
 }

@@ -76,7 +76,7 @@ public class DeleteTest
 					.execute();
 
 				Assert.assertEquals(0, (int) Select.expression("count(*)").from("Person")
-					.where(Condition.of("id").isEq(new ID(1).toString())).build()
+					.where(Condition.of("id").isEq(ID.valueOf(1).toString())).build()
 					.connect(link).fetchObject(Integer.class).get());
 			} catch (NullPointerException e)
 			{

@@ -1,6 +1,6 @@
 th[data-sortable] {
   cursor: pointer;
-  color: var(--b);
+  color: var(--question1);
 }
 th[data-sortable]::before {
   font-family: monospace;
@@ -10,9 +10,9 @@ th[data-sortable]::before {
 }
 th[data-sortable="A"]::before {
   content: "\2191 ";
-  color: #000000;
+  color: var(--base);
 }
 th[data-sortable="D"]::before {
   content: "\2193 ";
-  color: #000000;
+  color: var(--base);
 }

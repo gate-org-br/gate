@@ -1,0 +1,17 @@
+/* global customElements, template */
+
+customElements.define('g-path', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+
+	connectedCallback()
+	{
+		Array.from(this.children)
+			.forEach(e => this.shadowRoot.appendChild(e));
+	}
+});

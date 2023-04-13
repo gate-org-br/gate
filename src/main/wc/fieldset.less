@@ -1,298 +1,113 @@
-legend + fieldset {
-	margin: 0
-}
-
-fieldset
-{
+fieldset {
+	gap: 12px;
 	margin: 0;
-	margin-top: 10px;
-	margin-bottom: 10px;
-	&:first-child {
-		margin-top: 0px;
-	}
-	&:last-child {
-		margin-bottom: 0px;
-	}
-
-	&:only-child {
-		margin-bottom: 0px;
-		margin-bottom: 0px
-	}
-
-	border: none;
 	padding: 12px;
-	border-radius: 5px;
-	border: 1px solid var(--base);
-	background-color: var(--main-shaded10);
+	display: grid;
+	border-radius: 3px;
+	border: 1px solid var(--main4);
+	grid-template-columns: repeat(16, 1fr);
 
-	> input,
-	> select {
-		width: 100%;
-		height: 32px;
-		padding: 8px 4px 8px 4px;
-	}
-	> input[type="FILE"] {
-		padding: 0
-	}
-
-	* {
-		font-size: 16px
-	}
-	@media only screen and (min-width: 768px) {
-		* {
-			font-size: 12px
-		}
-	}
-
-	> legend
+	> *
 	{
-		padding: 6px;
-		color: black;
-		display: flex;
-		font-weight: bold;
-		border-radius: 5px;
-		align-items: center;
-		background-color: var(--base);
-		justify-content: flex-start;
-		box-shadow: 2px 2px 0px 0px rgba(0,0,0,0.4);
+		grid-column: span 16;
+	}
 
-		> i {
+	> legend {
+		padding: 6px;
+		display: flex;
+		font-size: 12px;
+		font-weight: bold;
+		border-radius: 3px;
+		align-items: center;
+		color: var(--base1);
+		background-color: var(--base3);
+		box-shadow: 1px 1px 1px 0px rgba(0,0,0,0.75);
+
+		> i, > g-icon {
 			order: -1;
-			float: left;
-			margin-right: 4px
+			margin-right: 4px;
+			font-size: inherit;
 		}
 
 		> img {
 			order: -1;
-			float: left;
 			width: 20px;
 			height: 20px;
 			margin-right: 4px;
 		}
 
-		> label {
-			float: left;
+		label {
 			height: 20px;
 			display: flex;
 			align-items: center;
 		}
 	}
 
-	fieldset
-	{
-		float: left;
-		width: 100%;
-		padding: 4px;
-		box-shadow: none;
-		border: 4px solid var(--main-shaded10);
-		background-color: var(--main-shaded05);
-
-		fieldset
-		{
-			border: 4px solid var(--main-shaded05);
-			background-color: var(--main-shaded10);
-
-			fieldset
-			{
-				border: 4px solid var(--main-shaded10);
-				background-color: var(--main-shaded05);
-
-				fieldset
-				{
-					border: 4px solid var(--main-shaded05);
-					background-color: var(--main-shaded10);
-				}
-
-			}
-
-		}
-
-		&:only-child {
-			margin: 0
-		}
-	}
-
-	> div {
-		width: 100%;
-		margin: 0px;
-		padding: 10px;
-		border-radius: 10px;
-		background-color: white;
-		border: 4px solid var(--main-shaded10);
-	}
-
-	> label, > fieldset
-	{
-		&.x1, &[x1], &[data-size="1"] {
-			width: 100%;
-			@media only screen and (min-width: 576px) {
-				width: 50%;
-			}
-			@media only screen and (min-width: 768px) {
-				width: 25%;
-			}
-			@media only screen and (min-width: 992px) {
-				width: 12.5%;
-			}
-			@media only screen and (min-width: 1200px) {
-				width: 6.25%;
-			}
-		}
-		&.x2, &[x2], &[data-size="2"] {
-			width: 100%;
-			@media only screen and (min-width: 768px) {
-				width: 50%;
-			}
-			@media only screen and (min-width: 992px) {
-				width: 25%;
-			}
-			@media only screen and (min-width: 1200px) {
-				width: 12.5%;
-			}
-		}
-		&.x4, &[x4], &[data-size="4"] {
-			width: 100%;
-			@media only screen and (min-width: 992px) {
-				width: 50%;
-			}
-			@media only screen and (min-width: 1200px) {
-				width: 25%;
-			}
-		}
-		&.x8, &[x8], &[data-size="8"] {
-			width: 100%;
-			@media only screen and (min-width: 1200px) {
-				width: 50%;
-			}
-		}
-	}
-
-	> label
-	{
-		float: left;
-		width: 100%;
-		padding: 4px;
+	> label {
 		display: flex;
-		align-items: stretch;
+		font-size: 14px;
+		text-indent: 4px;
+		grid-column: span 16;
 		flex-direction: column;
 
-		> input,
-		> select,
-		> label {
-			flex-basis: 32px;
-			padding: 8px 4px 8px 4px;
-		}
-		> input[type="FILE"] {
-			padding: 0
-		}
-
-		> span, > form
-		{
-			margin: 0px;
+		> span,
+		> form {
 			flex-grow: 1;
-			border: none;
-			padding: 0px;
-			color: black;
 			display: flex;
-			flex-basis: 32px;
-			text-indent: 4px;
-			line-height: 32px;
 			overflow: hidden;
-			border-radius:5px;
+			min-height: 38px;
+			text-indent: 4px;
+			line-height: 38px;
 			position: relative;
-			white-space: nowrap;
-			align-items: stretch;
-			text-overflow: ellipsis;
-			justify-content: flex-start;
-			background-color: var(--main-tinted50);
+			border-radius: 3px;
+			overflow-wrap: break-word;
+			background-color: var(--main3);
+			border: 1px solid var(--main5);
 
-			> * {
-				margin: 0px;
-				padding: 0px;
-				color: black;
-				border: 1px solid #CCCCCC;
+			* {
+				border: none;
 			}
 
-			> *:first-child
-				{
-				border-radius:  5px 0 0 5px;
-				> * {
-					border-radius:  5px 0 0 5px;
-				}
-			}
-			> *:last-child
-				{
-				border-radius: 0 5px 5px 0;
-				> * {
-					border-radius: 0 5px 5px 0;
-				}
-			}
-
-			> *:only-child
-				{
-				border-radius: 5px;
-				> * {
-					border-radius: 5px;
-				}
-			}
-
-			> input,
-			> label,
-			> select {
-				flex-grow: 1;
-				text-indent: 4px;
-				line-height: 32px;
-			}
-
-
-			&[style] {
-				> textarea {
-					flex-grow: 1;
-					padding: 4px;
-					text-indent: 0;
-					line-height: 16px;
-					overflow: auto;
-					white-space: pre-line;
-				}
-
-
-				> label {
-					padding: 4px;
-					flex-grow: 1;
-					overflow: auto;
-					text-indent: 0;
-					line-height: 16px;
-					white-space: normal;
-				}
-			}
-
-			> input[type="file"],
-			> input[type="FILE"] {
-				padding: 0
-			}
-
-			> input[type="radio"],
-			> input[type="checkbox"],
-			> input[type="RADIO"],
-			> input[type="CHECKBOX"] {
-				margin: 8px;
-				flex-grow: 0;
-				flex-shrink: 0;
-				flex-basis: 16px
-			}
-			> a,
-			> button
+			* + *
 			{
+				border-left: 1px solid var(--main5);
+			}
+
+			> label
+			{
+				height: 100%;
+				flex-grow: 1;
+				display: flex;
+				font-size: 14px;
+				line-height: 38px;
+				align-items: center;
+
+				&[data-icon]
+				{
+					margin: 0;
+					width: 100%;
+					height: 100%;
+				}
+			}
+
+			> a,
+			> button,
+			> .g-command
+			{
+				color: black;
+				height: 100%;
 				flex-grow: 0;
 				display: flex;
 				text-indent: 0;
 				flex-shrink: 0;
-				min-width: 32px;
-				flex-basis: 32px;
+				min-width: 36px;
+				flex-basis: 36px;
+				position: relative;
 				align-items: stretch;
+				text-decoration: none;
 				justify-content: center;
 
-				> i {
+				> i, > g-icon {
 					flex-grow: 1;
 					display: flex;
 					text-indent: 0;
@@ -300,68 +115,115 @@ fieldset
 					justify-content: center;
 				}
 
-				&:hover {
-					background-color: var(--acent);
-				}
-				&:focus {
+				&:hover,
+					&:focus {
 					background-color: var(--hovered);
 				}
 			}
 
-			> i {
-				right: 0px;
+			> *:first-child {
+				border-radius: 3px 0 0 3px;
+			}
+
+			> *:last-child {
+				border-radius: 0 3px 3px 0;
+			}
+
+			> *:only-child {
+				border-radius: 3px;
+			}
+
+			> input[type='checkbox'],
+			> input[type='radio']
+			{
+				flex-basis: 16px;
+				margin-left: 16px;
+				margin-right: 16px;
+			}
+
+			> i, > g-icon {
+				right: 0;
+				order: 1000;
 				width: 32px;
+				border: none;
 				height: 100%;
 				display: flex;
-				color: #999999;
 				text-indent: 0;
 				position: absolute;
 				align-items: center;
+				color: var(--main6);
 				justify-content: center;
-				background-color: transparent;
-				border: 1px solid transparent;
 			}
+
+
+
+			&[data-icon]::after
+			{
+				right: 0;
+				width: 32px;
+				border: none;
+				display: flex;
+				font-family: gate;
+				position: absolute;
+				align-items: center;
+				color: var(--main6);
+				justify-content: center;
+				content: attr(data-icon);
+			}
+
 		}
 	}
 
-	> ul,
-	> div > ul
-	{
-		margin: 4px;
-		padding: 6px;
-		flex-grow: 1;
-		overflow: auto;
-		border-radius: 5px;
-		list-style-type: none;
-		background-color: white;
+	> fieldset {
+		margin: 0;
+	}
+}
 
-		ul {
-			list-style-type: none;
-		}
 
-		li
-		{
-			cursor: pointer;
+@media only screen and (min-width: 576px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 8;
+	}
+}
 
-			> label
-			{
-				height: 24px;
-				display: flex;
-				font-size: 12px;
-				cursor: inherit;
-				align-items: center;
-				justify-content: flex-start;
-				&:hover {
-					background-color: var(--hovered)
-				}
+@media only screen and (min-width: 768px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 4;
+	}
 
-				> input {
-					order: -1;
-					cursor: inherit;
-					margin-top: -1px
-				}
-			}
-		}
+	fieldset > *[data-size="2"] {
+		grid-column: span 8;
+	}
+}
 
+@media only screen and (min-width: 992px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[data-size="2"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[data-size="4"] {
+		grid-column: span 8;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	fieldset > *[data-size="1"] {
+		grid-column: span 1;
+	}
+
+	fieldset > *[data-size="2"] {
+		grid-column: span 2;
+	}
+
+	fieldset > *[data-size="4"] {
+		grid-column: span 4;
+	}
+
+	fieldset > *[data-size="8"] {
+		grid-column: span 8;
 	}
 }

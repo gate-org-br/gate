@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.tags.TagLib;
 import gate.thymeleaf.ELExpression;
+import gate.util.Toolkit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -29,7 +29,7 @@ public class StacktraceAttributeProcessor extends AttributeProcessor
 			.map(expression::evaluate)
 			.filter(object -> object instanceof Throwable)
 			.map(throwable -> (Throwable) throwable)
-			.map(TagLib::format)
+			.map(Toolkit::format)
 			.ifPresentOrElse(exception -> handler.setBody(exception, false), handler::removeElement);
 	}
 }

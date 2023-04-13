@@ -10,6 +10,12 @@ alter table gate.Uzer add description VARCHAR(1024) after email;
 update gate.Uzer set description = details;
 ALTER TABLE gate.Uzer ADD details VARCHAR(1024) GENERATED ALWAYS AS (description) VIRTUAL;
 
+ALTER TABLE gate.Uzer 
+ADD UNIQUE INDEX Uzer$fk$username (username ASC) VISIBLE;
+
+ALTER TABLE `gate`.`Uzer` 
+ADD UNIQUE INDEX `Uzer$uk$email` (`email` ASC) VISIBLE;
+
 DELIMITER $$
 USE `gate`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `gate`.`Uzer_BEFORE_INSERT` BEFORE INSERT ON `Uzer` FOR EACH ROW
@@ -152,3 +158,32 @@ CREATE TABLE `Server` (
   `password` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+USE `gate`;
+DROP function IF EXISTS `gate`.`fullname`;
+
+DELIMITER $$
+USE `gate`$$
+CREATE DEFINER=`root`@`localhost` FUNCTION `fullname`(parameter integer) RETURNS text CHARSET utf8mb4
+    READS SQL DATA
+    DETERMINISTIC
+BEGIN
+	declare fullname  text;
+    declare parent integer;
+    declare simplename varchar(64); 
+
+  	SELECT Role$id, coalesce(rolename, name) INTO parent, fullname FROM Role WHERE  id = parameter;
+
+	REPEAT
+		SELECT Role$id, coalesce(rolename, name) INTO parent, simplename FROM Role WHERE  id = parent;
+        IF simplename is not null THEN
+			set fullname = concat(simplename, ' / ', fullname);
+		END IF;
+	UNTIL parent is null
+	END REPEAT;
+
+	return fullname;
+END$$
+DELIMITER ;

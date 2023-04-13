@@ -3,12 +3,12 @@
 	gap: 4px;
 	padding: 8px;
 	display: grid;
+	overflow: auto;
 	overflow-y: auto;
-	border-radius: 5px;
-	align-items: center;
-	justify-items: stretch;
+	border-radius: 3px;
+	align-content: start;
 	background-color: white;
-	grid-template-columns: 32px 1fr;
+	grid-template-columns: 24px 1fr;
 }
 
 :host([columns='1'])  {
@@ -36,6 +36,8 @@
 	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
 }
 
-::slotted(*) {
-	cursor: pointer
+label {
+	display: flex;
+	cursor: pointer;
+	align-items: center;
 }

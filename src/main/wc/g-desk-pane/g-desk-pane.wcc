@@ -1,0 +1,56 @@
+/* global customElements */
+
+customElements.define('g-desk-pane', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.addEventListener("click", function (e)
+		{
+			let target = this.getRootNode().host;
+			if (target)
+			{
+				let backup = target.buttons;
+				backup.forEach(e => e.remove());
+				this.buttons.forEach(e => target.shadowRoot.appendChild(e));
+
+				let reset = target.shadowRoot.appendChild(document.createElement("a"));
+				reset.href = "#";
+				reset.innerText = "Retornar";
+				reset.style.color = "#660000";
+				reset.setAttribute("part", "button");
+				reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
+
+				reset.addEventListener("click", () =>
+				{
+					reset.remove();
+					target.buttons.forEach(e => this.shadowRoot.appendChild(e));
+					backup.forEach(e => target.shadowRoot.appendChild(e));
+					e.preventDefault();
+					e.stopPropagation();
+				});
+
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+		}, true);
+	}
+
+	get buttons()
+	{
+		return Array.from(this.shadowRoot.querySelectorAll("a, button, g-command, g-desk-pane"));
+	}
+
+	connectedCallback()
+	{
+		Array.from(this.childNodes)
+			.forEach(e => this.shadowRoot.appendChild(e));
+		if (this.getRootNode().host)
+			this.classList = this.getRootNode().host.classList;
+		this.buttons.forEach(e => e.setAttribute("part", "button"));
+	}
+});

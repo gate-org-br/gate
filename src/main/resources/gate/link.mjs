@@ -1,9 +1,15 @@
+/* global fetch */
+
 import URL from './url.mjs';
 import GPopup from './g-popup.mjs';
 import Process from './process.mjs';
 import resolve from './resolve.mjs';
-import Message from './g-message.mjs';
 import GLoading from './g-loading.mjs';
+import Extractor from './extractor.mjs';
+import GSelectPicker from './g-select-picker.mjs';
+import GSearchPicker from './g-search-picker.mjs';
+import GGGMessageDialogDialogDialog from './g-message-dialog.mjs';
+
 
 function processHide(link)
 {
@@ -24,16 +30,20 @@ window.addEventListener("click", function (event)
 {
 	if (event.button !== 0)
 		return;
-	let link = event.target
-		.closest("a");
+
+	let link = event.composed
+		? event.composedPath()[0].closest("a")
+		: event.target.closest("a");
+
 	if (!link)
 		return;
+
 	if (link.hasAttribute("data-cancel"))
 	{
 		event.preventDefault();
 		event.stopPropagation();
 		event.stopImmediatePropagation();
-		Message.error(link.getAttribute("data-cancel"), 2000);
+		GGGMessageDialogDialogDialog.error(link.getAttribute("data-cancel"), 2000);
 		return;
 	}
 
@@ -107,7 +117,7 @@ window.addEventListener("click", function (event)
 					try
 					{
 						status = JSON.parse(status);
-						Message.show(status, 2000);
+						GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
@@ -124,7 +134,7 @@ window.addEventListener("click", function (event)
 					{
 						status = JSON.parse(status);
 						if (status.type !== "SUCCESS")
-							Message.show(status, 2000);
+							GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
@@ -143,13 +153,69 @@ window.addEventListener("click", function (event)
 						if (status.type === "SUCCESS")
 							link.innerHTML = status.message;
 						else
-							Message.show(status, 2000);
+							GGGMessageDialogDialogDialog.show(status, 2000);
 					} finally
 					{
 						link.style.pointerEvents = "";
 					}
 				});
 				break;
+			case "_select":
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				let label = link.parentNode.querySelector("input[type=text]");
+				let value = link.parentNode.querySelector("input[type=hidden]");
+				if (label && value)
+				{
+					if (label.value || value.value)
+					{
+						label.value = '';
+						value.value = '';
+					} else
+					{
+						fetch(link.href)
+							.then(options => options.json())
+							.then(options =>
+							{
+								GSelectPicker.pick(options, link.title)
+									.then(object =>
+									{
+										label.value = Extractor.label(object.value);
+										value.value = Extractor.value(object.value);
+									});
+							}).catch(error => GGGMessageDialogDialogDialog.error(error.message));
+					}
+				} else
+					console.log("label and value inputs not found");
+				break;
+			}
+			case "_search":
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				let label = link.parentNode.querySelector("input[type=text]");
+				let value = link.parentNode.querySelector("input[type=hidden]");
+				if (label && value)
+				{
+					if (label.value || value.value)
+					{
+						label.value = '';
+						value.value = '';
+					} else
+					{
+						GSearchPicker.pick(link.href, link.title)
+							.then(object =>
+							{
+								label.value = Extractor.label(object.value);
+								value.value = Extractor.value(object.value);
+							});
+
+					}
+				} else
+					console.log("label and value inputs not found");
+				break;
+			}
 			case "_alert":
 				event.preventDefault();
 				event.stopPropagation();
@@ -187,7 +253,6 @@ window.addEventListener("click", function (event)
 					let dialog = window.top.document.createElement("g-progress-dialog");
 					dialog.process = process.id;
 					dialog.caption = link.getAttribute("title") || "Progresso";
-					dialog.target = link.getAttribute("data-redirect") || "_self";
 					dialog.addEventListener("show", () => link.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
 					dialog.addEventListener("hide", () => link.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
 					if (link.getAttribute("data-on-hide"))
@@ -245,7 +310,7 @@ window.addEventListener("click", function (event)
 								document.getElementById(/^_id\(([a-zA-Z0-9]+)\)$/g.exec(target)[1])
 									.innerHTML = status.message;
 							else
-								Message.show(status, 2000);
+								GGGMessageDialogDialogDialog.show(status, 2000);
 						} finally
 						{
 							link.style.pointerEvents = "";

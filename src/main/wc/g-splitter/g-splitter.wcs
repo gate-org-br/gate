@@ -1,0 +1,24 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	height: 100%;
+	display: flex;
+	align-items: stretch;
+}
+
+div
+{
+	flex-basis: 4px;
+	margin-left: 4px;
+	margin-right: 4px;
+	cursor: col-resize;
+	background-color: #999999;
+}
+
+::slotted(*)
+{
+	flex-basis: 50%;
+}
+

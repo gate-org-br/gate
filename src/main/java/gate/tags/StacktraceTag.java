@@ -1,5 +1,6 @@
 package gate.tags;
 
+import gate.util.Toolkit;
 import java.io.IOException;
 
 public class StacktraceTag extends AttributeTag
@@ -15,6 +16,6 @@ public class StacktraceTag extends AttributeTag
 	@Override
 	public void doTag() throws IOException
 	{
-		getJspContext().getOut().println(TagLib.format(exception));
+		getJspContext().getOut().println(Toolkit.format(exception));
 	}
 }

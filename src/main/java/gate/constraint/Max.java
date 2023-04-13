@@ -36,7 +36,7 @@ public @interface Max
 				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
-				throw new AppException("O campo %s deve ser menor do que %s.", name, Converter.toText(getValue()));
+				throw new AppException(String.format("O campo %s deve ser menor do que %s.", name, Converter.toText(getValue())));
 			}
 		}
 

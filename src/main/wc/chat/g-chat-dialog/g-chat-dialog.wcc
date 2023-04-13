@@ -1,0 +1,54 @@
+/* global customElements, template, GChatContactDialog */
+
+import './g-icon.mjs';
+import './g-chat.mjs';
+import GWindow from './g-window.mjs';
+
+export default class GChatDialog extends GWindow
+{
+	constructor()
+	{
+		super();
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", event => event.target === this && this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+	}
+
+	set hostId(hostId)
+	{
+		this.setAttribute("host-id", hostId);
+	}
+
+	get hostId()
+	{
+		return Number(this.getAttribute("host-id"));
+	}
+
+	set hostName(hostName)
+	{
+		this.setAttribute("host-name", hostName);
+	}
+
+	get hostName()
+	{
+		return this.getAttribute("host-name");
+	}
+
+	connectedCallback()
+	{
+		let contact = this.shadowRoot.querySelector("g-chat");
+		contact.hostId = this.hostId;
+		contact.hostName = this.hostName;
+	}
+
+	static show(hostId, hostName)
+	{
+		let dialog = window.top.document.createElement("g-chat-dialog");
+		dialog.hostId = hostId;
+		dialog.hostName = hostName;
+		dialog.show();
+	}
+}
+
+customElements.define('g-chat-dialog', GChatDialog);

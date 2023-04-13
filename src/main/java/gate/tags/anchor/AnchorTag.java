@@ -4,6 +4,7 @@ import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.entity.User;
+import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.io.URL;
 import gate.tags.ParameterTag;
@@ -111,7 +112,13 @@ public abstract class AnchorTag extends ParameterTag
 	{
 		super.doTag();
 
-		call = Call.of(request, module, screen, action);
+		try
+		{
+			call = Call.of(request, module, screen, action);
+		} catch (BadRequestException ex)
+		{
+			throw new JspException(ex);
+		}
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 			target = "_progress-dialog";

@@ -1,9 +1,12 @@
 package gate.type;
 
 import gate.annotation.Converter;
+import gate.annotation.Handler;
 import gate.converter.custom.IDConverter;
+import gate.handler.IDHandler;
 import java.io.Serializable;
 
+@Handler(IDHandler.class)
 @Converter(IDConverter.class)
 public class ID implements Serializable, Comparable<ID>
 {
@@ -12,14 +15,14 @@ public class ID implements Serializable, Comparable<ID>
 
 	private final int value;
 
-	public ID(int value)
+	private ID(int value)
 	{
 		if (value < 0)
 			throw new IllegalArgumentException("value");
 		this.value = value;
 	}
 
-	public ID(String string)
+	private ID(String string)
 	{
 		this(Integer.parseInt(string));
 	}
@@ -51,5 +54,15 @@ public class ID implements Serializable, Comparable<ID>
 	public int compareTo(ID id)
 	{
 		return this.value - id.value;
+	}
+
+	public static ID valueOf(int value)
+	{
+		return new ID(value);
+	}
+
+	public static ID valueOf(String value)
+	{
+		return new ID(value);
 	}
 }

@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import javax.enterprise.inject.spi.CDI;
 import javax.servlet.http.Part;
 import org.slf4j.LoggerFactory;
@@ -46,38 +48,42 @@ public class TempFile implements AutoCloseable
 	 * Creates an input stream to read the temporary file data.
 	 *
 	 * @return an input stream to read the temporary file data
+	 * @throws java.io.IOException if an IOException occurs when trying to open the stream
 	 */
-	public InputStream getInputStream()
+	public InputStream getInputStream() throws IOException
 	{
-		try
-		{
-			if (inputStream != null)
-				inputStream.close();
-			inputStream = new FileInputStream(file);
-			return inputStream;
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+
+		if (inputStream != null)
+			inputStream.close();
+		inputStream = new FileInputStream(file);
+		return inputStream;
+
 	}
 
 	/**
 	 * Creates an output stream to write data into the temporary file.
 	 *
 	 * @return an output stream to write data into the temporary file.
+	 * @throws java.io.IOException if an IOException occurs when trying to open the stream
 	 */
-	public OutputStream getOutputStream()
+	public OutputStream getOutputStream() throws IOException
 	{
-		try
-		{
-			if (outputStream != null)
-				outputStream.close();
-			outputStream = new FileOutputStream(file);
-			return outputStream;
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		if (outputStream != null)
+			outputStream.close();
+		outputStream = new FileOutputStream(file);
+		return outputStream;
+
+	}
+
+	/**
+	 * Reads all the bytes from the file into a byte array
+	 *
+	 * @return a byte array containing the file bytes
+	 * @throws java.io.IOException if an IOException occurs when trying to read the bytes
+	 */
+	public byte[] getBytes() throws IOException
+	{
+		return Files.readAllBytes(file.toPath());
 	}
 
 	/**
@@ -100,13 +106,17 @@ public class TempFile implements AutoCloseable
 		return file.exists();
 	}
 
+	public Path getPath()
+	{
+		return file.toPath();
+	}
+
 	/**
 	 * Applies a name to the temporary file.
 	 *
 	 * @param name the name to be applied to the temporary file
 	 *
-	 * @return a NamedTempFile describing this temporary file and the given
-	 * name
+	 * @return a NamedTempFile describing this temporary file and the given name
 	 */
 	public NamedTempFile named(String name)
 	{
@@ -135,8 +145,8 @@ public class TempFile implements AutoCloseable
 		TempFile tempFile = TempFile.empty()
 			.named(part.getSubmittedFileName());
 
-		try (InputStream inputStream = part.getInputStream();
-			OutputStream outputStream = tempFile.getOutputStream())
+		try ( InputStream inputStream = part.getInputStream();
+			 OutputStream outputStream = tempFile.getOutputStream())
 		{
 			inputStream.transferTo(outputStream);
 			return tempFile;
@@ -147,11 +157,31 @@ public class TempFile implements AutoCloseable
 	}
 
 	/**
-	 * Creates a new temporary file with the contents of the specified
-	 * InputStream.
+	 * Creates a new temporary file with the contents of a byte array.
 	 *
-	 * @param inputStream the InputStream object from where to get the
-	 * temporary file data
+	 * @param bytes a byte array with the temporary file data
+	 *
+	 * @return the temporary file created
+	 */
+	public static TempFile of(byte[] bytes)
+	{
+		TempFile tempFile = TempFile.empty();
+
+		try ( OutputStream outputStream = tempFile.getOutputStream())
+		{
+			outputStream.write(bytes);
+			return tempFile;
+		} catch (IOException ex)
+		{
+			tempFile.close();
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	/**
+	 * Creates a new temporary file with the contents of the specified InputStream.
+	 *
+	 * @param inputStream the InputStream object from where to get the temporary file data
 	 *
 	 * @return the temporary file created
 	 */
@@ -159,7 +189,7 @@ public class TempFile implements AutoCloseable
 	{
 		TempFile tempFile = TempFile.empty();
 
-		try (OutputStream outputStream = tempFile.getOutputStream())
+		try ( OutputStream outputStream = tempFile.getOutputStream())
 		{
 			inputStream.transferTo(outputStream);
 			return tempFile;

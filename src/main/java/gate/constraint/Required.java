@@ -8,7 +8,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint
-@Target(ElementType.FIELD)
+@Target(
+	{
+		ElementType.FIELD, ElementType.PARAMETER
+	})
 @Retention(RetentionPolicy.RUNTIME)
 @Implementation(Required.Implementation.class)
 public @interface Required
@@ -34,7 +37,7 @@ public @interface Required
 				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
-				throw new AppException("O campo %s é requerido.", name);
+				throw new AppException(String.format("O campo %s é requerido.", name));
 			}
 		}
 

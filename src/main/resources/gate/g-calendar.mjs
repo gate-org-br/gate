@@ -1,102 +1,71 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div>
-	</div>
  <style>:host(*)
 {
-	display: flex;
+	display: grid;
 	font-size: 16px;
 	min-width: 240px;
-	align-items: center;
-	align-content: center;
-	flex-direction: column;
-	justify-content: center;
-	border: 2px solid #CCCCCC;
-	background-color: #CCCCCC;
-}
-
-a {
-	color: black;
-	display: flex;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-}
-
-label {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	grid-auto-rows: 1fr;
+	background-color: var(--main5);
+	grid-template-columns: repeat(7, auto);
 }
 
 :host(*):hover {
 	border-color: var(--hovered);
 }
 
-:host(*) > div
-{
-	flex-grow: 1;
-	width:  100%;
+label {
 	display: flex;
-	flex-wrap: wrap;
-	align-content: stretch;
-	justify-content: space-around;
+	font-size: inherit;
+	align-items: center;
+	font-weight: bolder;
+	justify-content: center;
 }
 
-:host(*) > div > label {
-	flex-grow: 1;
-	flex-shrink: 0;
-	flex-basis: 14%;
-	font-size: 16px;
-	background-color: var(--base);
-}
-
-:host(*) > div > a {
-	flex-grow: 1;
-	flex-shrink: 0;
-	font-size: 16px;
-	flex-basis: 14%;
+a {
+	color: black;
+	display: flex;
+	font-size: inherit;
+	align-items: center;
+	text-decoration: none;
 	background-color: white;
+	justify-content: center;
 }
 
-:host(*) > div > a.current {
+a.current {
 	font-weight: bold;
 	text-decoration: underline
 }
-:host(*) > div > a.disabled {
+a.disabled {
 	color: #AAAAAA;
 }
-:host(*) > div > a.selected {
+a.selected {
 	background-color: var(--acent);
 }
-
-:host(*) > div > a:hover {
+a:hover {
 	background-color: var(--hovered)
 }
 
-:host(*) > div > div:last-child {
+span {
+	padding: 4px;
 	display: flex;
-	font-size: 16px;
-	flex-basis: 100%;
-	padding-left: 4px;
-	padding-right: 4px;
+	font-size: inherit;
 	font-weight: bolder;
+	grid-column: span 7;
 	align-items:  center;
 	align-content: space-around;
 	justify-content: space-around;
-	background-image: linear-gradient(to bottom, var(--base-tinted40) 0%, var(--base-shaded20) 100% );
 }
 
-:host(*) > div > div:last-child	> a {
-	flex-basis: 48px;
+button {
+	border: none;
+	display: flex;
+	cursor: pointer;
 	font-size: inherit;
+	align-items: center;
 	font-weight: bolder;
-}
-
-:host(*) > div > div:last-child	> label {
-	flex-grow: 1;
-	font-size: inherit;
-	font-weight: bolder;
+	justify-content: center;
+	background-color: transparent;
 }</style>`;
 
 /* global customElements */
@@ -117,9 +86,8 @@ customElements.define('g-calendar', class extends HTMLElement
 
 		var update = () =>
 		{
-			let body = this.shadowRoot.firstElementChild;
-			while (body.firstChild)
-				body.removeChild(body.firstChild);
+			let body = this.shadowRoot;
+			Array.from(body.querySelectorAll("label, a, span")).forEach(e => e.remove());
 
 			body.appendChild(document.createElement("label")).innerText = "Dom";
 			body.appendChild(document.createElement("label")).innerText = "Seg";
@@ -164,27 +132,23 @@ customElements.define('g-calendar', class extends HTMLElement
 					link.classList.add("selected");
 			});
 
-			var foot = body.appendChild(document.createElement("div"));
+			var foot = body.appendChild(document.createElement("span"));
 
-			var prevYear = foot.appendChild(document.createElement("a"));
-			prevYear.setAttribute("href", "#");
+			var prevYear = foot.appendChild(document.createElement("button"));
 			prevYear.innerText = "<<";
 			prevYear.onclick = () => month.setFullYear(month.getFullYear() - 1) | update();
 
-			var prevMonth = foot.appendChild(document.createElement("a"));
-			prevMonth.setAttribute("href", "#");
+			var prevMonth = foot.appendChild(document.createElement("button"));
 			prevMonth.innerText = "<";
 			prevMonth.onclick = () => month.setMonth(month.getMonth() - 1) | update();
 
 			foot.appendChild(document.createElement("label")).innerText = DateFormat.MONTH.format(month);
 
-			var nextMonth = foot.appendChild(document.createElement("a"));
-			nextMonth.setAttribute("href", "#");
+			var nextMonth = foot.appendChild(document.createElement("button"));
 			nextMonth.innerText = ">";
 			nextMonth.onclick = () => month.setMonth(month.getMonth() + 1) | update();
 
-			var nextYear = foot.appendChild(document.createElement("a"));
-			nextYear.setAttribute("href", "#");
+			var nextYear = foot.appendChild(document.createElement("button"));
 			nextYear.innerText = ">>";
 			nextYear.onclick = () => month.setFullYear(month.getFullYear() + 1) | update();
 		};

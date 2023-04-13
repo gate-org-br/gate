@@ -1,0 +1,19 @@
+:host(*) {
+	display: inline-grid;
+	grid-template-columns: auto auto;
+}
+
+label {
+	padding: 4px;
+	display: flex;
+	font-weight: bold;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+span {
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}

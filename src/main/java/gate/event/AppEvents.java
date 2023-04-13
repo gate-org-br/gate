@@ -3,6 +3,7 @@ package gate.event;
 import gate.entity.User;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 
+@ApplicationScoped
 @ServerEndpoint(value = "/AppEvents",
 	configurator = AppEvents.Configurator.class)
 public class AppEvents
@@ -44,6 +46,7 @@ public class AppEvents
 
 	public void onEventoAsync(@ObservesAsync AppEvent event)
 	{
+
 		sessions.stream()
 			.filter(e -> event.checkAccess(e.user))
 			.forEach(e -> e.session.getAsyncRemote().sendText(event.toString()));
@@ -55,8 +58,9 @@ public class AppEvents
 		@Override
 		public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response)
 		{
-			config.getUserProperties().put(User.class.getName(),
-				((HttpSession) request.getHttpSession()).getAttribute(User.class.getName()));
+			HttpSession session = (HttpSession) request.getHttpSession();
+			User user = session != null ? (User) session.getAttribute(User.class.getName()) : null;
+			config.getUserProperties().put(User.class.getName(), user);
 		}
 	}
 

@@ -99,12 +99,12 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	{
 		while (scanner.getCurrent().getType() == JsonToken.Type.EOF)
 			try
-			{
-				action.accept(parse().get());
-			} catch (ConversionException ex)
-			{
-				throw new AppError(ex);
-			}
+		{
+			action.accept(parse().get());
+		} catch (ConversionException ex)
+		{
+			throw new AppError(ex);
+		}
 	}
 
 	@Override
@@ -137,7 +137,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			case OPEN_OBJECT:
 				return object();
 			case NULL:
-				return JsonNull.INSTANCE;
+				return jsonNull();
 			case OPEN_ARRAY:
 				return array();
 			default:
@@ -207,9 +207,23 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		return value;
 	}
 
+	private JsonNull jsonNull() throws ConversionException
+	{
+		scanner.scan();
+		return JsonNull.INSTANCE;
+	}
+
 	private JsonString string() throws ConversionException
 	{
-		JsonString value = JsonString.of(scanner.getCurrent().toString());
+		JsonString value = JsonString.of(scanner.getCurrent().toString()
+			.replace("\\r", "\r")
+			.replace("\\n", "\n")
+			.replace("\\t", "\t")
+			.replace("\\b", "\b")
+			.replace("\\f", "\f")
+			.replace("\\\'", "\'")
+			.replace("\\\"", "\"")
+			.replace("\\\\", "\\"));
 		scanner.scan();
 		return value;
 	}
@@ -253,12 +267,12 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			while (scanner.getCurrent().getType()
 				!= JsonToken.Type.EOF)
 				try
-				{
-					parse().ifPresent(action);
-				} catch (ConversionException ex)
-				{
-					throw new AppError(ex);
-				}
+			{
+				parse().ifPresent(action);
+			} catch (ConversionException ex)
+			{
+				throw new AppError(ex);
+			}
 		}
 
 		@Override
@@ -296,12 +310,12 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			while (scanner.getCurrent().getType()
 				!= JsonToken.Type.EOF)
 				try
-				{
-					parse().ifPresent(action);
-				} catch (ConversionException ex)
-				{
-					throw new AppError(ex);
-				}
+			{
+				parse().ifPresent(action);
+			} catch (ConversionException ex)
+			{
+				throw new AppError(ex);
+			}
 		}
 
 		@Override

@@ -4,8 +4,8 @@ import colorize from './colorize.mjs';
 
 export default function filter(elements, value)
 {
-	elements.forEach(row => row.style.display = !value
-			|| row.innerHTML.toUpperCase().indexOf(value.toUpperCase()) !== -1 ? "" : "none");
+	value = value ? value.toUpperCase() : "";
+	elements.forEach(row => row.style.display = row.innerHTML.toUpperCase().indexOf(value) !== -1 ? "" : "none");
 }
 
 function process(input)
@@ -19,7 +19,7 @@ function process(input)
 		.flatMap(e => Array.from(e.children));
 
 	filter(elements, input.value);
-	colorize(table);
+	colorize(elements);
 }
 
 window.addEventListener("input", function (event)

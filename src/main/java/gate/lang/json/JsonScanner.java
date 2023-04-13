@@ -28,8 +28,7 @@ public final class JsonScanner implements AutoCloseable
 	 *
 	 * @param string the string to be scanned for JSON tokens
 	 *
-	 * @throws gate.error.ConversionException if any Exception occurs while
-	 * parsing the string
+	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
 	 */
 	public JsonScanner(String string) throws ConversionException
 	{
@@ -51,8 +50,7 @@ public final class JsonScanner implements AutoCloseable
 	 *
 	 * @return the next JSON token scanned
 	 *
-	 * @throws gate.error.ConversionException if any Exception occurs while
-	 * parsing the string
+	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
 	 */
 	public JsonToken scan() throws ConversionException
 	{
@@ -200,7 +198,14 @@ public final class JsonScanner implements AutoCloseable
 							return current = JsonToken.NULL;
 
 						default:
-							return current = new JsonToken(JsonToken.Type.STRING, name);
+							return current = new JsonToken(JsonToken.Type.STRING,
+								name.replace("\\\\", "\\")
+									.replace("\\r", "\r")
+									.replace("\\n", "\n")
+									.replace("\\t", "\t")
+									.replace("\\b", "\b")
+									.replace("\\f", "\f")
+									.replace("\\\"", "\""));
 					}
 			}
 		} catch (IOException ex)

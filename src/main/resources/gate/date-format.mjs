@@ -48,6 +48,7 @@ export default function DateFormat(format)
 
 	this.parse = function (string)
 	{
+		let e;
 		var d = 0;
 		var M = 0;
 		var y = 0;

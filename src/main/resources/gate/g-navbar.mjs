@@ -12,13 +12,12 @@ template.innerHTML = `
 	display: flex;
 	cursor: pointer;
 	font-size: 12px;
+	color: var(--main);
 	border-radius: 5px;
 	align-items: center;
 	justify-content: center;
-	color: var(--g-navbar-color);
-	border: 1px solid var(--g-navbar-border-color);
-	background-color: var(--g-navbar-background-color);
-	background-image: var(--g-navbar-background-image);
+	border: 1px solid var(--base3);
+	background-color: var(--base2);
 }
 
 label {

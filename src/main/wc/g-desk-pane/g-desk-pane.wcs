@@ -1,0 +1,119 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*)
+{
+	gap: 16px;
+	width: 100%;
+	color: black;
+	display: grid;
+	background-color: transparent;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+a,
+button,
+.g-command,
+g-desk-pane
+{
+	gap: 10px;
+	margin: 0;
+	padding: 16px;
+	height: 200px;
+	color: inherit;
+	font-size: 18px;
+	position: relative;
+	text-align: center;
+	border-radius: 3px;
+	font-style: normal;
+	text-decoration: none;
+	border: 1px solid #F0F0F0;
+
+	display: grid;
+	align-items: center;
+	justify-items: center;
+	justify-content: center;
+	grid-template-rows: 1fr 1fr;
+
+}
+
+:host(*) > g-desk-pane::after
+{
+	right: 8px;
+	bottom: 4px;
+	color: var(--main6);
+	font-size: 16px;
+	font-family: gate;
+	content: '\\3017';
+	position: absolute;
+}
+
+
+a:hover,
+button:hover,
+.g-command:hover,
+g-desk-pane:hover
+{
+	background-color:  #FFFACD;
+}
+
+i,
+e,
+span,
+g-icon
+{
+	order: -1;
+	width: 80px;
+	height: 80px;
+	display: flex;
+	font-size: 36px;
+	font-family: gate;
+	font-style: normal;
+	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
+	background-color: #F6F6F6;
+}
+
+img
+{
+	order: -1;
+	width: 48px;
+	height: 48px;
+	margin-right: 8px;
+}
+
+:host(*) > g-desk-pane
+{
+	cursor: pointer;
+}
+
+:host(*) > g-desk-pane::part(button)
+{
+	display: none;
+}
+
+:host(.inline)
+{
+	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+
+:host(.inline) > *[part]
+
+{
+	height: 80px;
+	display: flex;
+	text-align: left;
+	justify-content: flex-start;
+}
+
+:host(.inline) i,
+:host(.inline) e,
+:host(.inline) span,
+:host(.inline) g-icon
+{
+	width: 36px;
+	background-color: transparent;
+}

@@ -1,0 +1,64 @@
+/* global customElements */
+
+customElements.define('g-chat-message', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener("click", e => this.getRootNode().host
+				.dispatchEvent(new CustomEvent('selected', {detail: this})));
+	}
+
+	set type(type)
+	{
+		this.setAttribute("type", type);
+	}
+
+	get type()
+	{
+		return this.getAttribute("type");
+	}
+
+	set text(text)
+	{
+		this.innerText = text;
+	}
+
+	get text()
+	{
+		return this.innerText;
+	}
+
+	set date(date)
+	{
+		this.setAttribute("date", date);
+	}
+
+	get date()
+	{
+		return this.getAttribute("date");
+	}
+
+	set status(status)
+	{
+		this.setAttribute("status", status);
+	}
+
+	get status()
+	{
+		return this.getAttribute("status");
+	}
+
+	attributeChangedCallback()
+	{
+		this.shadowRoot.querySelector("footer")
+			.innerText = this.date;
+	}
+
+	static get observedAttributes()
+	{
+		return ['date'];
+	}
+});

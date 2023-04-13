@@ -9,8 +9,7 @@
 		"browser"
 	],
 	"author": "davins",
-	"contributors": [
-	],
+	"contributors": [],
 	"devDependencies": {
 		"grunt": "1.4.0",
 		"less": "^3.13.0",

@@ -1,0 +1,16 @@
+<template>
+	<nav>
+		<input id="input" type="text" placeholder="Filtrar"/>
+	</nav>
+	<div>
+		<main>
+			<label></label>
+			<header><g-grid-header></g-grid-header></header>
+			<section></section>
+			<footer><g-grid-footer></g-grid-footer></footer>
+		</main>
+	</div>
+	<aside>
+		<slot></slot>
+	</aside>
+</template>

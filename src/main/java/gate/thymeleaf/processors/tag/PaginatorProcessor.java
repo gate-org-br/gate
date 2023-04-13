@@ -3,9 +3,12 @@ package gate.thymeleaf.processors.tag;
 import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
+import gate.type.Attributes;
 import gate.util.Page;
 import gate.util.Parameters;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +44,15 @@ public class PaginatorProcessor extends TagProcessor
 			? (Page<?>) expression.evaluate(element.getAttributeValue("page"))
 			: (Page<?>) Property.getValue(screen, "page");
 
+		Attributes attributes = Stream.of(element.getAllAttributes())
+			.filter(e -> !e.getAttributeCompleteName().equals("page"))
+			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+				e -> e.getValue(), (a, b) -> a, Attributes::new));
+
 		StringJoiner string = new StringJoiner(System.lineSeparator());
+
+		string.add(String.format("<g-paginator %s>", attributes.toString()));
+
 		if (screen.isPOST())
 		{
 			if (!page.isFrst())
@@ -83,6 +94,8 @@ public class PaginatorProcessor extends TagProcessor
 					.add(String.format("&nbsp;&nbsp;<a href='%s&pageSize=%d&pageIndx=%d' title='&Uacute;ltimo'>&gt;&gt;</a>",
 						url, page.getPaginator().getPageSize(), page.getPaginator().getLastPageIndx()));
 		}
+
+		string.add(String.format("</g-paginator>", attributes.toString()));
 
 		handler.replaceWith(string.toString(), false);
 	}

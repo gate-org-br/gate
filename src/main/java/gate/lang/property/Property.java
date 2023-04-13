@@ -402,7 +402,7 @@ public class Property
 	 */
 	public boolean isEmpty(Object object)
 	{
-		return getValue(object) != null;
+		return getValue(object) == null;
 	}
 
 	/**

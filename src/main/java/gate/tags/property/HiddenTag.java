@@ -1,6 +1,5 @@
 package gate.tags.property;
 
-import gate.converter.Converter;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
@@ -14,7 +13,7 @@ public class HiddenTag extends PropertyTag
 		if (!getAttributes().containsKey("type"))
 			getAttributes().put("type", "hidden");
 		if (!getAttributes().containsKey("value"))
-			getAttributes().put("value", getName().endsWith("[]") ? "" : Converter.toString(getValue()));
+			getAttributes().put("value", getName().endsWith("[]") ? "" : getConverter().toString(getType(), getValue()));
 		getJspContext().getOut().print(String.format("<input %s/>", getAttributes().toString()));
 	}
 }

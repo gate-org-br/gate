@@ -1,0 +1,14 @@
+main
+{
+	min-width: 320px;
+	max-width: 600px;
+	width: calc(100% - 40px);
+}
+
+section {
+	flex-basis: 400px;
+}
+
+g-selectn {
+	flex-grow: 1;
+}

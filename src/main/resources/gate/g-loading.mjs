@@ -11,7 +11,6 @@ template.innerHTML = `
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-image: var(--loading);
-	background-color: var(--main-shaded05);
 }</style>`;
 
 /* global customElements, template */

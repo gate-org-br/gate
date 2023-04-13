@@ -13,25 +13,14 @@
 i {
 	speak: none;
 	line-height: 1;
+	color: inherit;
+	cursor: inherit;
+	font-size: inherit;
 	font-style: normal;
 	font-weight: normal;
 	font-family: 'gate';
 	font-variant: normal;
 	text-transform: none;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-}
-
-
-*[data-icon]::after {
-	speak: none;
-	line-height: 1;
-	font-style: normal;
-	font-weight: normal;
-	font-family: 'gate';
-	font-variant: normal;
-	text-transform: none;
-	content: attr(data-icon);
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 }
@@ -40,9 +29,24 @@ i[c] {
 	font-family: arial
 }
 
-
-g-tab-control > :is(a, button) > :is(i, span)
+g-tab-control
 {
-	order: 1;
-	color: inherit;
+	> a, button
+	{
+		> i, e, span, g-icon
+		{
+			order: -1;
+		}
+	}
+}
+
+g-coolbar
+{
+	> a, button, .g-command
+	{
+		> i, e, span, g-icon
+		{
+			order: 1;
+		}
+	}
 }

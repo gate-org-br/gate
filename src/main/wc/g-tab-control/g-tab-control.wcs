@@ -1,11 +1,13 @@
+* {
+	box-sizing: border-box;
+}
+
 :host(*)
 {
 	display: grid;
-	margin-top: 16px;
-	border-radius: 8px 8px 0 0;
+	background-color: var(--main3);
+	border: 1px outset var(--main4);
 	grid-template-rows: auto 1fr;
-	background-color: var(--g-tab-control-background-color) !important;
-	border: 4px solid var(--g-tab-control-background-color) !important;
 }
 
 :host(:first-child)
@@ -13,112 +15,116 @@
 	margin-top: 0
 }
 
+:host(:last-child)
+{
+	margin-bottom: 0
+}
+
 header
 {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	flex-wrap: wrap
+	gap: 1px;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
 }
 
 ::slotted(div)
 {
+	gap: 12px;
 	display: none;
-	padding : 10px;
+	padding : 18px;
 	overflow: hidden;
-	background-color: var(--g-tab-control-tab-background-color) !important;
-	background-image: var(--g-tab-control-tab-background-image) !important;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: white;
 }
 
 :host([type='dummy']) ::slotted(div)
 {
-	display: block;
+	display: flex;
 }
 
-::slotted(:is(a, button))
+::slotted(a),
+::slotted(button)
 {
-	width: 50%;
+	gap: 8px;
+	width: 100%;
+	height: 32px;
 	border: none;
 	padding: 5px;
+	color: black;
 	display: flex;
 	cursor: pointer;
-	font-size: 12px;
 	flex-basis: 50%;
+	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
-	border-radius: 8px 8px 0 0;
-	justify-content: space-between;
-	color: var(--g-tab-control-button-color) !important;
-	background-color: var(--g-tab-control-button-background-color) !important;
-	background-image: var(--g-tab-control-button-background-image) !important;
+	background-color: #E8E8E8;
+	justify-content: flex-start;
 }
 
-::slotted(:is(a, button):hover)
+::slotted(a:hover),
+::slotted(button:hover)
 {
-	color: var(--g-tab-control-hovered-button-color) !important;
+	background-color:  #FFFACD;
 }
 
-::slotted(:is(a, button):focus)
+::slotted(a:focus),
+::slotted(button:focus)
 {
-	border: none !important;
-	outline: none !important;
+	border: none;
+	outline: none;
 }
 
-::slotted(:is(a, button)[data-selected=true])
+::slotted(a[data-selected=true]),
+::slotted(button[data-selected=true])
 {
-	font-weight: bold !important;
-	background-color: var(--g-tab-control-tab-background-color) !important;
-	background-image: var(--g-tab-control-tab-background-image) !important;
+	color: black;
+	font-weight: bold;
+	background-color: white;
 }
 
 @media only screen and (min-width: 768px)
 {
-	::slotted(a),
-	::slotted(button)
+	header
 	{
-		width: 25%;
-		flex-basis: 25%;
+		grid-template-columns: repeat(4, 1fr);
 	}
 
-	:host([size='9']) ::slotted(:is(a, button)),
-	:host([size='10']) ::slotted(:is(a, button)),
-	:host([size='20']) ::slotted(:is(a, button)),
-	:host([size='30']) ::slotted(:is(a, button)),
-	:host([size='40']) ::slotted(:is(a, button)),
-	:host([size='50']) ::slotted(:is(a, button)),
-	:host([size='60']) ::slotted(:is(a, button)),
-	:host([size='70']) ::slotted(:is(a, button)),
-	:host([size='80']) ::slotted(:is(a, button)),
-	:host([size='90']) ::slotted(:is(a, button)),
-	:host([size='100']) ::slotted(:is(a, button))
+	:host([size='9']) > header,
+	:host([size='10']) > header,
+	:host([size='20']) > header,
+	:host([size='30']) > header,
+	:host([size='40']) > header,
+	:host([size='50']) > header,
+	:host([size='60']) > header,
+	:host([size='70']) > header,
+	:host([size='80']) > header,
+	:host([size='90']) > header,
+	:host([size='100']) > header
 	{
-		width: 20%;
-		flex-basis: 20%;
+		grid-template-columns: repeat(5, 1fr);
 	}
 }
 
 @media only screen and (min-width: 1200px)
 {
-	::slotted(a),
-	::slotted(button)
+	header
 	{
-		width: 12.5%;
-		flex-basis: 12.5%;
+		grid-template-columns: repeat(8, 1fr);
 	}
 
-	:host([size='9']) ::slotted(:is(a, button)),
-	:host([size='10']) ::slotted(:is(a, button)),
-	:host([size='20']) ::slotted(:is(a, button)),
-	:host([size='30']) ::slotted(:is(a, button)),
-	:host([size='40']) ::slotted(:is(a, button)),
-	:host([size='50']) ::slotted(:is(a, button)),
-	:host([size='60']) ::slotted(:is(a, button)),
-	:host([size='70']) ::slotted(:is(a, button)),
-	:host([size='80']) ::slotted(:is(a, button)),
-	:host([size='90']) ::slotted(:is(a, button)),
-	:host([size='100']) ::slotted(:is(a, button))
+	:host([size='9']) > header,
+	:host([size='10']) > header,
+	:host([size='20']) > header,
+	:host([size='30']) > header,
+	:host([size='40']) > header,
+	:host([size='50']) > header,
+	:host([size='60']) > header,
+	:host([size='70']) > header,
+	:host([size='80']) > header,
+	:host([size='90']) > header,
+	:host([size='100']) > header
 	{
-		width: 10%;
-		flex-basis: 10%;
+		grid-template-columns: repeat(10, 1fr);
 	}
 }

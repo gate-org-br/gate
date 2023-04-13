@@ -1,4 +1,4 @@
-function mask(element)
+export default function mask(element)
 {
 	var changed = false;
 	element.style.fontFamily = 'monospace';

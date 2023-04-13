@@ -1,0 +1,25 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	height: 32px;
+	cursor: inherit;
+	display: table-row;
+
+}
+
+:host(:empty)
+{
+	display: none;
+}
+
+::slotted(g-grid-cell) {
+	top: 0;
+	position: sticky;
+	font-weight: bold;
+	color: var(--base1);
+	border-color: var(--base5);
+	background-color: var(--base6);
+}

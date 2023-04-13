@@ -3,19 +3,24 @@ export default class Process
 	constructor(id)
 	{
 		this._private = {id: id};
-		let protocol = location.protocol === "https:" ? "wss://" : "ws://";
 
-		let pathname = location.pathname.replace(/\/Gate$/, "/Progress/");
-		let ws = new WebSocket(protocol + location.host + pathname + id);
+		let protocol = window.top.location.protocol === 'https:' ? "wss://" : "ws://";
+		let hostname = window.top.location.hostname;
+		let port = window.top.location.port ? ':' + window.top.location.port : '';
+		let pathname = window.top.location.pathname.replace(/\/Gate.*/, "") + "/Progress/";
 
-		ws.onerror = e => window.top.dispatchEvent(new CustomEvent('ProcessError',
-				{detail: {process: id, text: e.data | "Conexão perdida com o servidor"}}));
+		var url = protocol + hostname + port + pathname + id;
+
+		let ws = new WebSocket(url);
+
+		ws.onerror = () => window.top.dispatchEvent(new CustomEvent('ProcessError',
+				{detail: {process: id, text: "Conexão perdida com o servidor"}}));
 
 		ws.onclose = e =>
 		{
 			if (e.code !== 1000)
 				window.top.dispatchEvent(new CustomEvent('ProcessError',
-					{detail: {process: id, text: e.reason | "Conexão perdida com o servidor"}}));
+					{detail: {process: id, text: "Conexão perdida com o servidor"}}));
 		};
 
 		ws.onmessage = (event) =>

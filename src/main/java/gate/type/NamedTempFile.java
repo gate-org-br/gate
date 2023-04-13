@@ -33,4 +33,9 @@ public class NamedTempFile extends TempFile
 		return name;
 	}
 
+	public static NamedTempFile of(String name, File file)
+	{
+		return new NamedTempFile(file, name);
+	}
+
 }

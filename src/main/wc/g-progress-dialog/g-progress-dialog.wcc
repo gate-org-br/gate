@@ -1,19 +1,18 @@
 /* global customElements */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import './g-window-footer.mjs';
+import './g-icon.mjs';
 import './g-progress-status.mjs';
-import Scroll from './scroll.mjs';
+import GWindow from './g-window.mjs';
 
-customElements.define('g-progress-dialog', class extends HTMLElement
+customElements.define('g-progress-dialog', class extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.getElementById("close").addEventListener("click",
+			() => confirm("Tem certeza de que deseja fechar o progresso?")
+				&& this.hide());
 
 		let commit = this.shadowRoot.getElementById("commit");
 
@@ -31,7 +30,7 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 				return;
 
 			commit.innerHTML = "Ok";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--g');
+			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--question1');
 			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
@@ -41,7 +40,7 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 				return;
 
 			commit.innerHTML = "OK";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r');
+			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error1');
 			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
 		});
 
@@ -59,16 +58,6 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 		});
 	}
 
-	set target(target)
-	{
-		this.setAttribute("target", target);
-	}
-
-	get target()
-	{
-		return this.getAttribute("target") || "_self";
-	}
-
 	set process(process)
 	{
 		this.setAttribute("process", process);
@@ -81,36 +70,12 @@ customElements.define('g-progress-dialog', class extends HTMLElement
 
 	attributeChangedCallback(name)
 	{
-		switch (name)
-		{
-			case "process":
-				this.shadowRoot.querySelector("g-progress-status")
-					.process = this.process;
-				break;
-			case "target":
-				this.shadowRoot.getElementById("commit")
-					.setAttribute("target", this.target);
-				break;
-		}
-
-	}
-
-	show()
-	{
-		Scroll.disable(window.top.document.documentElement);
-		window.top.document.documentElement.appendChild(this);
-		return this;
-	}
-
-	hide()
-	{
-		Scroll.enable(window.top.document.documentElement);
-		this.parentNode.removeChild(this);
-		return this;
+		this.shadowRoot.querySelector("g-progress-status")
+			.process = this.process;
 	}
 
 	static get observedAttributes()
 	{
-		return ["process", "target"];
+		return ["process"];
 	}
 });

@@ -1,6 +1,5 @@
 package gate.tags.property;
 
-import gate.converter.Converter;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -54,7 +53,7 @@ public class TextTag extends PropertyTag
 					if (getJspBody() != null)
 					{
 						getJspContext().getOut()
-							.print("<option data-value='" + Converter.toString(optionValue) + "'>");
+							.print("<option data-value='" + getConverter().toString(getType(), optionValue) + "'>");
 
 						getJspContext().setAttribute("option", option);
 						getJspBody().invoke(null);
@@ -63,7 +62,7 @@ public class TextTag extends PropertyTag
 						getJspContext().getOut().print("</option>");
 					} else
 						getJspContext().getOut().println(String.format("<option data-value='%s'>%s</option>",
-							Converter.toString(optionValue), Converter.toText(optionLabel)));
+							getConverter().toString(getType(), optionValue), getConverter().toText(getType(), optionLabel)));
 
 				}
 				getJspContext().getOut().println("</datalist>");
@@ -73,7 +72,7 @@ public class TextTag extends PropertyTag
 		if (!getAttributes().containsKey("type"))
 			getAttributes().put("type", "text");
 		if (!getAttributes().containsKey("value"))
-			getAttributes().put("value", getName().endsWith("[]") ? "" : Converter.toString(getValue()));
+			getAttributes().put("value", getName().endsWith("[]") ? "" : getConverter().toString(getType(), getValue()));
 		getJspContext().getOut().print("<input " + getAttributes().toString() + " />");
 
 	}

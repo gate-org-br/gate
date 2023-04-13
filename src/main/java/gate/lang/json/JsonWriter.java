@@ -32,8 +32,7 @@ public class JsonWriter implements AutoCloseable
 	 * @param type type of the token to be written
 	 * @param value value of the token to be written
 	 *
-	 * @throws gate.error.ConversionException if an error occurs white
-	 * trying to write the token
+	 * @throws gate.error.ConversionException if an error occurs white trying to write the token
 	 */
 	public void write(JsonToken.Type type, String value)
 		throws ConversionException
@@ -77,14 +76,17 @@ public class JsonWriter implements AutoCloseable
 					writer.write(value);
 					break;
 				case STRING:
+					value = value.replace("\\", "\\\\")
+						.replace("\r", "\\r")
+						.replace("\n", "\\n")
+						.replace("\t", "\\t")
+						.replace("\b", "\\b")
+						.replace("\f", "\\f")
+						.replace("\"", "\\\"");
 					Objects.requireNonNull(value, "String not specified");
 					writer.write("\"");
 					for (int i = 0; i < value.length(); i++)
-					{
-						if (value.charAt(i) == '"')
-							writer.write('\\');
 						writer.write(value.charAt(i));
-					}
 					writer.write("\"");
 			}
 		} catch (IOException ex)
@@ -92,6 +94,18 @@ public class JsonWriter implements AutoCloseable
 			throw new ConversionException(ex.getMessage());
 		}
 
+	}
+
+	public void write(String value)
+		throws ConversionException
+	{
+		try
+		{
+			writer.write(value);
+		} catch (IOException ex)
+		{
+			throw new ConversionException(ex.getMessage());
+		}
 	}
 
 	@Override

@@ -1,28 +1,22 @@
 nav
 {
 	width: auto;
-	border: none;
 	display: flex;
-	margin: 0 2px 0 2px;
-	align-items: stretch;
-	align-content: stretch;
-	justify-content: center;
+	align-items: center;
 	background-color: transparent;
 
 	> a
 	{
-		width: 40px;
-		flex-grow: 1;
+		color: black;
+		padding: 8px;
 		display: flex;
+		font-size: 16px;
+		border-radius: 3px;
 		align-items: center;
 		justify-content: center;
-		background-color: var(--main-tinted50);
 
-		> i { font-size: 16px }
-		&:hover > i { font-size: 18px }
-		&:last-of-type { border-radius: 0 5px 5px 0 }
-		&:first-of-type { border-radius: 5px 0 0 5px }
-		&:only-of-type { border-radius: 5px 5px 5px 5px }
-		&:hover { background-image: linear-gradient(to bottom, var(--main-tinted45) 0%, var(--main-shaded20) 100%); }
+		&:hover {
+			background-color: var(--main4);
+		}
 	}
 }

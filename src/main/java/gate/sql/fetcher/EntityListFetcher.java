@@ -4,6 +4,7 @@ import gate.lang.property.Property;
 import gate.sql.Cursor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -68,6 +69,8 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 							e.setFloat(entity, cursor.getCurrentFloatValue());
 						else if (clazz == double.class)
 							e.setDouble(entity, cursor.getCurrentDoubleValue());
+						else if (Collection.class.isAssignableFrom(clazz))
+							e.setValue(entity, cursor.getCurrentValue(clazz, e.getElementRawType()));
 						else
 							e.setValue(entity, cursor.getCurrentValue(clazz));
 					} catch (Exception ex)

@@ -14,6 +14,7 @@ import gate.util.Toolkit;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +55,7 @@ public class CSV extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try (PrintWriter writer = new PrintWriter(os))
+		try ( PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
 		{
 			for (ReportElement element : getReport().getElements())
 				if (element instanceof Grid)

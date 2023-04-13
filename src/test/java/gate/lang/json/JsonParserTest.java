@@ -5,8 +5,6 @@
  */
 package gate.lang.json;
 
-import gate.lang.json.JsonParser;
-import gate.lang.json.JsonElement;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;

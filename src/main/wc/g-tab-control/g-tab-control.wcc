@@ -44,7 +44,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 				{
 					pages.forEach(e => e.style.display = "none");
 					links.forEach(e => e.setAttribute("data-selected", "false"));
-					link.nextElementSibling.style.display = "block";
+					link.nextElementSibling.style.display = "flex";
 					link.setAttribute("data-selected", "true");
 
 					if (reload === "always")

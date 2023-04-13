@@ -110,17 +110,17 @@ public class Result implements Serializable
 
 	public static Result success(String message, boolean data)
 	{
-		return new Result(Type.SUCCESS, message, JsonBoolean.of(data));
+		return new Result(Type.SUCCESS, message, JsonBoolean.parse(data));
 	}
 
 	public static Result warning(String message, boolean data)
 	{
-		return new Result(Type.WARNING, message, JsonBoolean.of(data));
+		return new Result(Type.WARNING, message, JsonBoolean.parse(data));
 	}
 
 	public static Result error(String message, boolean data)
 	{
-		return new Result(Type.ERROR, message, JsonBoolean.of(data));
+		return new Result(Type.ERROR, message, JsonBoolean.parse(data));
 	}
 
 	public static Result success(String message, Object data)

@@ -1,0 +1,18 @@
+main
+{
+	min-width: 320px;
+	max-width: 600px;
+	width: calc(100% - 40px);
+}
+
+main > section
+{
+	gap: 4px;
+	padding: 4px;
+	display: grid;
+	align-items: stretch;
+	justify-items:stretch;
+	align-content: stretch;
+	justify-content: stretch;
+	grid-template-rows: 40px 400px;
+}

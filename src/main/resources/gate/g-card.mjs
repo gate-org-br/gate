@@ -1,92 +1,69 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div id="icon"></div>
-	<header id="head"></header>
-	<section id="body"></section>
-	<footer id="foot"></footer>
-	<nav><slot name="links"></slot></nav>
+	<slot>
+	</slot>
  <style>:host(*) {
-	border: none;
-	width: 200px;
+	height: auto;
 	display: flex;
 	font-size: 16px;
-	flex-basis: 200px;
-	text-align: center;
-	border-radius: 5px;
-	visibility: hidden;
+	border-radius: 3px;
 	flex-direction: column;
-	background-color: white;
-	justify-content: space-between;
+	background-color: var(--main2);
+	border: 1px solid var(--main3);
+	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 
-::slotted(a)
+::slotted(i),
+::slotted(e),
+::slotted(g-icon),
+::slotted(picture)
 {
-	flex-grow: 1;
+	padding: 8px;
 	display: flex;
-	font-size: 16px;
 	align-items: center;
 	justify-content: center;
 }
 
-::slotted(a:first-child)
+::slotted(header)
 {
-	border-radius: 0 0 0 5px
-}
-
-::slotted(a:last-child)
-{
-	border-radius: 0 0 5px 0
-}
-
-::slotted(a:hover)
-{
-	background-color: rgba(256, 256, 256, 0.2);
-	color: #660000
-}
-
-div {
-	padding: 5px;
+	gap: 8px;
+	padding: 8px;
 	display: flex;
-	font-size: 250%;
-	font-family: gate;
-	align-tems: center;
-	justify-content: center
+	font-size: 1.2em;
+	flex-basis: 32px;
+	font-weight: bold;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--main5);
 }
-header {
-	padding: 5px;
-	font-size: 150%;
-	text-align: center
+
+::slotted(nav)
+{
+	flex-grow: 1;
+	padding: 0 8px 0 8px;
+	justify-content: flex-end;
+	border-bottom: 1px solid var(--main5);
 }
-section {
-	padding: 5px;
-	text-align: inherit
+
+::slotted(section)
+{
+	padding: 8px;
+	flex-grow: 1;
+	font-size: 1em;
+	overflow: auto;
+	text-align: justify;
 }
-footer {
-	padding: 5px;
-	font-size: 80%;
-	text-align: center
-}
-nav {
-	height: 40px;
+
+::slotted(footer) {
+	gap: 4px;
+	padding: 8px;
+	color: black;
 	display: flex;
-	align-items: stretch;
-	border-radius: 0 0 5px 5px;
-	background-image: var(--g-coolbar-background-image)
-}
-div:empty {
-	display: none
-}
-header:empty {
-	display: none
-}
-section:empty {
-	display: none
-}
-footer:empty {
-	display: none
-}
-nav:empty {
-	display: none
+	font-size: 1.2em;
+	flex-basis: 32px;
+	align-items: center;
+	justify-content: flex-end;
+	border-top: 1px solid var(--main5);
 }</style>`;
 
 /* global customElements, template */
@@ -98,78 +75,5 @@ customElements.define('g-card', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		Array.from(this.children)
-			.filter(e => e.tagName === "A" || e.tagName === "button")
-			.forEach(e => e.setAttribute("slot", "links"));
-
-		this.style.visibility = "visible";
-
-	}
-
-	set icon(value)
-	{
-		this.setAttribute("icon", value);
-	}
-
-	get icon()
-	{
-		return this.getAtribute("icon");
-	}
-
-	set head(value)
-	{
-		this.setAttribute("head", value);
-	}
-
-	get head()
-	{
-		return this.getAtribute("head");
-	}
-
-	set body(value)
-	{
-		this.setAttribute("body", value);
-	}
-
-	get body()
-	{
-		return this.getAtribute("body");
-	}
-
-	set foot(value)
-	{
-		this.setAttribute("foot", value);
-	}
-
-	get foot()
-	{
-		return this.getAtribute("foot");
-	}
-
-	attributeChangedCallback(name, ignore, value)
-	{
-		switch (name)
-		{
-			case "head":
-			case "foot":
-			case "body":
-				this.shadowRoot.getElementById(name).innerText = value;
-				break;
-			case "icon":
-				this.shadowRoot.getElementById(name).innerHTML = "&#X" + value + ";";
-				break;
-
-		}
-	}
-
-	connectedCallback()
-	{
-		this.classList.add(".g-card");
-	}
-
-	static get observedAttributes()
-	{
-		return ["head", "body", "foot", "icon"];
 	}
 });

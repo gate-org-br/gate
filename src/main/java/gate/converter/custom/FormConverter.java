@@ -1,9 +1,14 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
+import gate.converter.CollectionConverter;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.json.JsonScanner;
+import gate.lang.json.JsonToken;
+import gate.lang.json.JsonWriter;
 import gate.type.Form;
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FormConverter implements Converter
+public class FormConverter extends CollectionConverter
 {
 
 	@Override
@@ -65,7 +70,7 @@ public class FormConverter implements Converter
 		try
 		{
 			return string != null && string.trim().length() > 0
-				? Form.parse(string) : null;
+				? Form.valueOf(string) : null;
 		} catch (IllegalArgumentException e)
 		{
 			throw new ConversionException(string.concat(" não é um Formulário válido."));
@@ -76,14 +81,14 @@ public class FormConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		return rs.wasNull() ? null : Form.parse(string);
+		return rs.wasNull() ? null : Form.valueOf(string);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String string = rs.getString(fields);
-		return rs.wasNull() ? null : Form.parse(string);
+		return rs.wasNull() ? null : Form.valueOf(string);
 	}
 
 	@Override
@@ -94,6 +99,44 @@ public class FormConverter implements Converter
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;
+	}
+
+	@Override
+	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	{
+		writer.write(object.toString());
+	}
+
+	@Override
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	{
+		if (scanner.getCurrent().getType() != JsonToken.Type.OPEN_ARRAY)
+			throw new ConversionException(scanner.getCurrent() + " is not a form");
+
+		Form form = new Form();
+		Converter converter = Converter.getConverter(gate.type.Field.class);
+
+		do
+		{
+			scanner.scan();
+			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
+				form.getFields().add((gate.type.Field) converter.ofJson(scanner, gate.type.Field.class, null));
+			else if (!form.getFields().isEmpty())
+				throw new ConversionException(scanner.getCurrent() + " is not a form");
+		} while (JsonToken.Type.COMMA == scanner.getCurrent().getType());
+
+		if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
+			throw new ConversionException(scanner.getCurrent() + " is not a form");
+
+		scanner.scan();
+		return form;
+
+	}
+
+	@Override
+	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	{
+		writer.write(object.toString());
 	}
 
 }

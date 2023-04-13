@@ -1,0 +1,68 @@
+:host(*)
+{
+	height: 24px;
+	color: white;
+	outline: none;
+	display: flex;
+	overflow: hidden;
+	border-radius: 5px;
+	font-size: inherit;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: row-reverse;
+}
+
+:host(:empty) {
+	display: none
+}
+
+::slotted(a),
+::slotted(button)
+{
+	padding: 0;
+	width: 24px;
+	font-size: 0;
+	height: 24px;
+	display: flex;
+	color: inherit;
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+}
+
+::slotted(a:hover),
+::slotted(button:hover) {
+	color: var(--hovered);
+}
+
+::slotted(a[hidden="true"]),
+::slotted(button[hidden="true"])
+{
+	display: none;
+}
+
+#container {
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
+	white-space: nowrap;
+	flex-direction: row-reverse;
+}
+
+#more {
+	padding: 0;
+	width: 32px;
+	flex-grow: 0;
+	height: 100%;
+	outline: none;
+	display: none;
+	flex-shrink: 0;
+	color: inherit;
+	font-size: 20px;
+	cursor: pointer;
+	font-family: gate;
+	margin-right: auto;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}

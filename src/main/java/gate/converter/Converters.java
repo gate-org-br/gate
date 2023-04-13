@@ -1,8 +1,10 @@
 package gate.converter;
 
+import gate.converter.collections.EnumSetConverter;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -13,6 +15,7 @@ import java.time.YearMonth;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,7 +60,6 @@ public class Converters
 		INSTANCES.put(long.class, new LongConverter());
 		INSTANCES.put(Long.class, new LongConverter());
 		INSTANCES.put(Number.class, new NumberConverter());
-		INSTANCES.put(Object.class, new ObjectConverter());
 		INSTANCES.put(Pattern.class, new PatternConverter());
 		INSTANCES.put(short.class, new ShortConverter());
 		INSTANCES.put(Short.class, new ShortConverter());
@@ -70,6 +72,8 @@ public class Converters
 		INSTANCES.put(File.class, new FileConverter());
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
 		INSTANCES.put(java.time.Year.class, new YearConverter());
+		INSTANCES.put(EnumSet.class, new EnumSetConverter());
+		INSTANCES.put(Path.class, new PathConverter());
 	}
 
 	public Converter get(Class<?> type)
@@ -87,13 +91,23 @@ public class Converters
 						return clazz.getAnnotation(gate.annotation.Converter.class)
 							.value().getDeclaredConstructor().newInstance();
 
+				for (Class<?> clazz = e;
+					clazz != null;
+					clazz = clazz.getSuperclass())
+					for (Class<?> inter : clazz.getInterfaces())
+						if (INSTANCES.containsKey(inter))
+							return INSTANCES.get(inter);
+						else if (inter.isAnnotationPresent(gate.annotation.Converter.class))
+							return inter.getAnnotation(gate.annotation.Converter.class)
+								.value().getDeclaredConstructor().newInstance();
+
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{
 				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
 
-			return INSTANCES.get(Object.class);
+			return new ObjectConverter();
 		});
 	}
 

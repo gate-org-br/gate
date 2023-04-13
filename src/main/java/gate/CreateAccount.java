@@ -78,7 +78,7 @@ public class CreateAccount extends HttpServlet
 				if (user.getDescription() == null)
 					throw new AppException("Informe a empresa onde trabalha.");
 
-				user.setActive(Boolean.TRUE);
+				user.setActive(true);
 				user.setPhone(req.getParameter(Phone.class, "user.phone"));
 				user.setCellPhone(req.getParameter(Phone.class, "user.cellPhone"));
 
@@ -108,7 +108,7 @@ public class CreateAccount extends HttpServlet
 			Constraints.validate(value, "active", "username", "name",
 				"email", "details", "phone", "cellPhone", "CPF");
 
-			try ( Dao dao = new Dao())
+			try (Dao dao = new Dao())
 			{
 				dao.insert(value);
 			}

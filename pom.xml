@@ -6,7 +6,7 @@
 
 	<groupId>io.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>10.0.5</version>
+	<version>11.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>gate</name>
@@ -53,7 +53,7 @@
 			<groupId>mysql</groupId>
 			<scope>test</scope>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>8.0.27</version>
+			<version>8.0.30</version>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>javax.enterprise.concurrent</groupId>
 			<artifactId>javax.enterprise.concurrent-api</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -80,34 +80,32 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>5.1.0</version>
+			<version>5.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>5.1.0</version>
+			<version>5.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.5.13</version>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.3.30</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.11.2</version>
+			<version>0.11.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.11.2</version>
-			<scope>runtime</scope>
+			<version>0.11.5</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.11.2</version>
-			<scope>runtime</scope>
+			<version>0.11.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -115,14 +113,14 @@
 			<version>1.7.36</version>
 		</dependency>
 		<dependency>
-           		<groupId>org.apache.logging.log4j</groupId>
-            		<artifactId>log4j-api</artifactId>
-            		<version>2.17.2</version>
-        	</dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.17.2</version>
+		</dependency>
 		<dependency>
 			<groupId>org.thymeleaf</groupId>
 			<artifactId>thymeleaf</artifactId>
-			<version>3.0.14.RELEASE</version>
+			<version>3.0.15.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.el</groupId>
@@ -147,20 +145,23 @@
 		<dependency>
 			<groupId>com.hierynomus</groupId>
 			<artifactId>sshj</artifactId>
-			<version>0.32.0</version>
+			<version>0.33.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.5.2</version>
 		</dependency>
 	</dependencies>
 
 	<distributionManagement>
-		<snapshotRepository>
-			<id>ossrh</id>
-			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-		</snapshotRepository>
 		<repository>
-			<id>ossrh</id>
-			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>github</id>
+			<name>GitHub OWNER Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/gate-org-br/gate</url>
 		</repository>
 	</distributionManagement>
+
 
 	<build>
 		<resources>
@@ -169,12 +170,11 @@
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.8</version>
+				<version>1.6.13</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>ossrh</serverId>
@@ -185,7 +185,7 @@
 					<dependency>
 						<groupId>com.thoughtworks.xstream</groupId>
 						<artifactId>xstream</artifactId>
-						<version>1.4.15</version>
+						<version>1.4.19</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -205,7 +205,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>3.4.1</version>
 				<configuration>
 					<doclint>all,-missing</doclint>
 				</configuration>
@@ -220,8 +220,22 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>3.10.1</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>
@@ -235,7 +249,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<phase>validate</phase>
@@ -260,7 +274,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<phase>install</phase>
@@ -279,11 +293,10 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.2</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>deploy</phase>
@@ -297,15 +310,16 @@
 							<artifactId>${project.artifactId}</artifactId>
 							<groupId>${project.groupId}</groupId>
 							<version>${project.version}</version>
-							<file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
+							<file>
+								${project.build.directory}/${project.artifactId}-${project.version}.jar
+							</file>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>

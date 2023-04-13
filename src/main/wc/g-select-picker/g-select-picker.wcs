@@ -1,0 +1,15 @@
+main
+{
+	min-width: 320px;
+	max-width: 800px;
+	width: calc(100% - 40px);
+}
+
+section {
+	overflow: auto;
+	flex-basis: 400px;
+}
+
+g-grid {
+	flex-grow: 1;
+}

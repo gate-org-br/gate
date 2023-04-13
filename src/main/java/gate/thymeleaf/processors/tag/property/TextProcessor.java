@@ -1,7 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
-import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Sequence;
@@ -45,9 +44,9 @@ public class TextProcessor extends PropertyProcessor
 		}
 
 		if (attributes.containsKey("value"))
-			attributes.put("value", Converter.toString(expression.evaluate((String) attributes.get("value"))));
+			attributes.put("value", property.getConverter().toString(property.getRawType(), expression.evaluate((String) attributes.get("value"))));
 		else if (!property.toString().endsWith("[]"))
-			attributes.put("value", Converter.toString(property.getValue(screen)));
+			attributes.put("value", property.getConverter().toString(property.getRawType(), property.getValue(screen)));
 
 		if (attributes.containsKey("options"))
 		{
@@ -65,8 +64,8 @@ public class TextProcessor extends PropertyProcessor
 
 			for (Object option : Toolkit.iterable(options))
 			{
-				var label = Converter.toText(labels.apply(option));
-				var value = Converter.toString(values.apply(option));
+				var label = property.getConverter().toText(property.getRawType(), labels.apply(option));
+				var value = property.getConverter().toString(property.getRawType(), values.apply(option));
 				string.add(String.format("<option data-value='%s'>%s</option>", value, label));
 			}
 

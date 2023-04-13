@@ -1,9 +1,7 @@
-export default function colorize(table)
+export default function colorize(rows)
 {
 	let type = "odd";
-	Array.from(table.children)
-		.filter(e => e.tagName.toUpperCase() === "TBODY")
-		.flatMap(e => Array.from(e.children)).forEach(row =>
+	rows.forEach(row =>
 	{
 		row.classList.remove("odd");
 		row.classList.remove("even");

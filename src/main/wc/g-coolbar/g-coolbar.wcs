@@ -1,0 +1,210 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	width: 100%;
+	height: 44px;
+	display: flex;
+	align-items: center;
+}
+
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
+{
+	gap: 8px;
+	width: auto;
+	height: 44px;
+	color: black;
+	padding: 8px;
+	color: black;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	font-size: 16px;
+	min-width: 140px;
+	border-radius: 3px;
+	align-items: center;
+	text-decoration: none;
+	background-color: #E8E8E8;
+	justify-content: space-between;
+}
+
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
+{
+	background-color: #D0D0D0;
+}
+
+::slotted(a.primary),
+::slotted(button.primary),
+::slotted(.g-command.primary) {
+	color: white;
+	border: none;
+	background-color: #2A6B9A;
+}
+
+::slotted(a.primary:hover),
+::slotted(button.primary:hover),
+::slotted(.g-command.primary:hover) {
+	background-color: #25608A;
+}
+
+::slotted(a.alternative),
+::slotted(button.alternative),
+::slotted(.g-command.alternative) {
+	color: white;
+	border: none;
+	background-color: #009E60;
+}
+
+::slotted(a.alternative:hover),
+::slotted(button.alternative:hover),
+::slotted(.g-command.alternative:hover) {
+	background-color: #008E56;
+}
+
+::slotted(a.tertiary),
+::slotted(button.tertiary),
+::slotted(.g-command.tertiary) {
+	background-color: var(--main1);
+	border: 1px solid var(--main6);
+}
+
+::slotted(a.tertiary:hover),
+::slotted(button.tertiary:hover),
+::slotted(.g-command.tertiary:hover) {
+	border: 1px solid black;
+}
+
+::slotted(a.danger),
+::slotted(button.danger),
+::slotted(.g-command.danger) {
+	color: white;
+	border: none;
+	background-color: #AA2222;
+}
+
+::slotted(a.danger:hover),
+::slotted(button.danger:hover),
+::slotted(.g-command.danger:hover) {
+	background-color: #882222;
+}
+
+::slotted(a[disabled]),
+::slotted(a[disabled]:hover),
+::slotted(button[disabled]),
+::slotted(button[disabled]:hover),
+::slotted(.g-command[disabled]:hover),
+::slotted(.g-command[disabled]:hover) {
+
+	color: #AAAAAA;
+	cursor: not-allowed;
+	filter: opacity(40%);
+	background-color: var(--main6);
+}
+
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus){
+	outline: 4px solid var(--hovered);
+}
+
+::slotted(*[hidden="true"])
+{
+	display: none;
+}
+
+::slotted(g-progress)
+{
+	height: 44px;
+	flex-grow: 1;
+}
+
+::slotted(progress)
+{
+	margin: 4px;
+	flex-grow: 100000;
+}
+
+::slotted(hr)
+{
+	flex-grow: 100000;
+	border: none;
+}
+
+#more {
+	order: 1;
+	padding: 0;
+	width: 32px;
+	flex-grow: 0;
+	height: 100%;
+	outline: none;
+	display: none;
+	flex-shrink: 0;
+	color: inherit;
+	font-size: 20px;
+	cursor: pointer;
+	font-family: gate;
+	margin-right: auto;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}
+
+#container {
+	gap: 8px;
+	order: 2;
+	flex-grow: 1;
+	display: flex;
+	overflow: hidden;
+	white-space: nowrap;
+	align-items: stretch;
+	flex-direction: row-reverse;
+}
+
+:host([reverse]) #more {
+	order: 2;
+}
+
+:host([reverse]) #container {
+	order: 1;
+}
+
+:host([reverse]) #container
+{
+	flex-direction: row;
+}
+
+
+:host([disabled])
+{
+	background-color: var(--main6);
+}
+
+:host([disabled]) #container,
+:host([disabled]) #more
+{
+	display: none;
+}
+
+:host([disabled])::before
+{
+	content: "";
+	height: 44px;
+	animation-fill-mode:both;
+	background-color: var(--base1);
+	animation: progress 2s infinite ease-in-out;
+}
+
+@keyframes progress {
+	0% {
+		flex-basis: 0;
+	}
+	100% {
+		flex-basis: 100%;
+	}
+}

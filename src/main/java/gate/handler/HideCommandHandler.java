@@ -30,7 +30,7 @@ public class HideCommandHandler implements Handler
 			writer.write("    </head>");
 			writer.write("    <body>");
 			writer.write("        <script type='module'>");
-			writer.write("                import GDialog from './gate/script/g-dialog.mjs';");
+			writer.write("                import GDialog from './gate/g-dialog.mjs';");
 
 			CheckedStream.of(IOException.class,
 				signal.getMessages().stream())

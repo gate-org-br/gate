@@ -1,0 +1,86 @@
+/* global customElements */
+
+import './g-chat-peer.mjs';
+import './g-chat-notification-config.mjs';
+import GChatService from './g-chat-service.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
+
+customElements.define('g-chat-peer-list', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let div = this.shadowRoot.querySelector("div");
+		let input = this.shadowRoot.querySelector("input");
+		input.addEventListener("input", () =>
+		{
+			let value = input.value.toUpperCase();
+			Array.from(div.children)
+				.forEach(peer => peer.style.display = !value
+						|| peer.peerName.toUpperCase()
+						.indexOf(value.toUpperCase()) !== -1 ? "" : "none");
+		});
+
+		this.addEventListener("selected", () =>
+		{
+			input.value = "";
+			Array.from(div.children).forEach(row =>
+			{
+				row.style.display = "";
+				row.style.backgoundColor = "";
+			});
+		});
+	}
+
+	get hostId()
+	{
+		return this.getRootNode().host.hostId;
+	}
+
+	select(peer)
+	{
+		setTimeout(() =>
+		{
+			peer = Number(peer);
+			let div = this.shadowRoot.querySelector("div");
+			Array.from(div.children)
+				.filter(e => e.peerId === peer)
+				.forEach(e => e.click());
+		}, 500);
+	}
+
+	connectedCallback()
+	{
+		let root = this.getRootNode().host;
+		let div = this.shadowRoot.querySelector("div");
+
+		if (!root.children.length)
+		{
+			GChatService.peers().then(response =>
+			{
+				response.forEach(e =>
+				{
+					let peer = document.createElement("g-chat-peer");
+					peer.hostId = this.hostId;
+					peer.peerId = e.id;
+					peer.peerName = e.name;
+					peer.peerStatus = e.status;
+					peer.unread = e.unread;
+					div.appendChild(peer);
+				});
+			}).catch(error => GMessageDialog.error(error.message));
+		} else
+			Array.from(root.children)
+				.forEach(e => div.appendChild(e));
+	}
+
+	disconnectedCallback()
+	{
+		let div = this.shadowRoot.querySelector("div");
+		while (div.firstChild)
+			div.removeChild(div.firstChild);
+	}
+});

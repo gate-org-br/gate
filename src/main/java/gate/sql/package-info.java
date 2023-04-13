@@ -36,13 +36,13 @@
  * {
  *		Integer count = link
  *		.from("select count(*) from User where Role$id = ?")
- *			.parameters(new ID(1))
+ *			.parameters(ID.of(1))
  *			.fetchObject(Integer.class)
  *			.get();
  *
  *		Query.Connected.Compiled query = link
  *		.from("select id, name from User where Role$id = ?")
- *		.parameters(new ID(1));
+ *		.parameters(ID.of(1));
  *
  *		List<User> users = query.fetchEntityList(User.class);
  *		for (User user : users)
@@ -69,7 +69,7 @@
  * {
  *	link.prepare(Insert
  *		.into("Person")
- *		.set(ID.class, "id", new ID(1))
+ *		.set(ID.class, "id", ID.of(1))
  *		.set(String.class, "name", "Jonh")
  *		.set(Date.class, "birthdate", new Date('01/01/2000'))
  *	.execute();
@@ -77,13 +77,13 @@
  *	link.prepare(Update
  *		.table("Uzer")
  * 		.set("name", "Paul")
- * 		.where(Condition.of("id").eq(new ID(1))))
+ * 		.where(Condition.of("id").eq(ID.of(1))))
  *		.execute();
  *
  *	link.prepare(Delete
  *		.from("Uzer")
  * 		.where(Condition.of("id").eq()))
- *		.parameters(new ID(1))
+ *		.parameters(ID.of(1))
  *		.execute();
  * }
  * }</pre>
@@ -93,7 +93,7 @@
  * try (Link link = new Link("datasourcename"))
  * {
  *	Person person = new Person();
- *	person.setId(new ID(1));
+ *	person.setId(ID.of(1));
  *	person.setName("Jonh");
  *
  *	link.prepare(Insert

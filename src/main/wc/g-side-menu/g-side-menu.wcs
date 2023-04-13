@@ -31,6 +31,7 @@ main
 
 section
 {
+	gap: 6px;
 	width: 0;
 	padding: 0px;
 	display: flex;
@@ -39,45 +40,135 @@ section
 	overflow-y: auto;
 	align-items: stretch;
 	flex-direction: column;
+	background-color: var(--main2);
 	justify-content: flex-start;
 }
 
 :host([position='left']) > main > section {
 	width: 280px;
-	padding: 8px;
-	background-image: linear-gradient(to right, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
+	padding: 6px;
+	border-right: 1px solid var(--main4);
 }
-
 
 :host([position='right']) > main > section {
 	width: 280px;
-	padding: 8px;
-	background-image: linear-gradient(to left, var(--main-shaded20) 0%, var(--main-tinted20) 100%);
+	padding: 6px;
+	border-left: 1px solid var(--main4);
 }
 
-a, button, .g-command
+a,
+button,
+.g-command
 {
-	color: black;
+	border: none;
 	padding: 8px;
-	height: 40px;
 	display: flex;
-	font-size: 16px;
-	min-height: 40px;
-	overflow: hidden;
-	font-weight: bold;
+	color: inherit;
+	cursor: pointer;
+	flex-basis: 24px;
+	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
+	background-color: white;
+	justify-content: space-between;
+	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 
-
-a:hover, button:hover, .g-command:hover
+a.primary,
+button.primary,
+.g-command.primary
 {
-	background-color: var(--hovered);
+	color: #000066;
 }
 
+a.tertiary,
+button.tertiary,
+.g-command.tertiary
+{
+	box-shadow: none;
+	background-color: var(--main4);
+}
+
+a.danger,
+button.danger,
+.g-command.danger
+{
+	color: #660000;
+}
+
+
+a.warning,
+button.warning,
+.g-command.warning
+{
+	color: #666600;
+}
+
+a.success,
+button.success,
+.g-command.success
+{
+	color: #006600;
+}
+
+a.info,
+button.info,
+.g-command.info
+{
+	color: #4444FF;
+}
+
+a.link,
+button.link,
+.g-command.link
+{
+	box-shadow: none;
+	background-color: transparent;
+}
+
+a.dark,
+button.dark,
+.g-command.dark
+{
+	color: white;
+	background-color: black;
+}
+
+a.dark:hover,
+button.dark:hover,
+.g-command.dark:hover
+{
+	color: black;
+}
+
+a[disabled],
+a[disabled]:hover,
+button[disabled],
+button[disabled]:hover,
+.g-command[disabled],
+.g-command[disabled]:hover {
+
+	color: #AAAAAA;
+	cursor: not-allowed;
+	filter: opacity(40%);
+	background-color: var(--main6);
+}
+
+a:focus,
+button:focus,
+.g-command:focus{
+	outline: 4px solid var(--hovered);
+}
+
+a:hover,
+button:hover,
+.g-command:hover
+{
+	background-color: #FFFACD;
+}
 
 i {
-	order: -1;
+	order: 1;
 	font-family: gate;
 	margin-right: 8px;
 	font-size: inherit;
@@ -93,4 +184,3 @@ hr {
 br {
 	height: 16px;
 }
-

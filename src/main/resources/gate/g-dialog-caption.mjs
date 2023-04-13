@@ -21,6 +21,6 @@ customElements.define('g-dialog-caption', class extends HTMLElement
 
 	connectedCallback()
 	{
-		GDialog.caption = this.innerText;
+		GDialog.caption = this.innerText ? this.innerText.trim() : "";
 	}
 });

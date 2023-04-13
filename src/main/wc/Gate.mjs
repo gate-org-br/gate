@@ -9,6 +9,8 @@ import "./button.mjs";
 import "./treeview.mjs";
 import "./switch.mjs";
 
+import "./g-table-scroll.mjs";
+
 import "./action-handler.mjs";
 import "./change-handler.mjs";
 import "./auto-focus-handler.mjs";
@@ -19,8 +21,6 @@ import "./g-message.mjs";
 import "./g-block.mjs";
 
 import "./g-event-source.mjs";
-import "./g-select.mjs";
-import "./g-selectn.mjs";
 import "./g-digital-clock.mjs";
 import "./g-card.mjs";
 import "./g-card-pane.mjs";
@@ -35,8 +35,6 @@ import "./g-dialog.mjs";
 import "./g-dialog-caption.mjs";
 import "./g-stack-frame.mjs";
 import "./g-context-menu.mjs";
-import "./g-action-context-menu.mjs";
-import "./g-checkable-context-menu.mjs";
 
 import "./g-text-editor.mjs";
 import "./g-report-dialog.mjs";
@@ -68,6 +66,34 @@ import "./validation.mjs";
 import "./password.mjs";
 
 import "./datalist.mjs";
+
+import "./g-chat-button.mjs";
+import "./g-chat-dialog.mjs";
+import "./g-chat-counter.mjs";
+import "./g-chat-notificator.mjs";
+import "./g-chat-contact-dialog.mjs";
+
+import "./g-select-picker.mjs";
+import "./g-search-picker.mjs";
+
+
+import "./g-icon.mjs";
+import "./g-form.mjs";
+import "./g-selectn.mjs";
+import "./g-form-view.mjs";
+import "./g-form-editor.mjs";
+import "./g-form-dialog.mjs";
+
+import "./g-select-menu.mjs";
+
+import "./g-selectn-picker.mjs";
+
+import "./g-splitter.mjs";
+
+import "./g-callout.mjs";
+
+import "./g-accordion.mjs";
+import "./g-accordion-section.mjs";
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {

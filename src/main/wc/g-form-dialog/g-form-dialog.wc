@@ -1,0 +1,25 @@
+<template>
+	<main>
+		<header>
+			<label id='caption'></label>
+			<a id='close' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<g-form>
+			</g-form>
+		</section>
+		<footer>
+			<button id='commit' class="primary">
+				Concluir<g-icon>&#X1000;</g-icon>
+			</button>
+			<hr/>
+			<button id='cancel' class="tertiary">
+				Desistir<g-icon>&#X1001;</g-icon>
+			</button>
+		</footer>
+	</main>
+</template>

@@ -76,4 +76,9 @@ public class Phone implements Serializable, Comparable<Phone>
 			return matcher.group(3);
 		return null;
 	}
+
+	public static Phone valueOf(String string)
+	{
+		return new Phone(string);
+	}
 }

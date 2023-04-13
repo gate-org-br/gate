@@ -36,7 +36,7 @@ public @interface Pattern
 				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
-				throw new AppException("O campo %s deve estar no formato %s.", name, getValue());
+				throw new AppException(String.format("O campo %s deve estar no formato %s.", name, getValue()));
 			}
 
 		}

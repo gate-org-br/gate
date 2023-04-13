@@ -102,7 +102,7 @@ template.innerHTML = `
 	display: flex;
 	overflow: auto;
 	align-items: center;
-	background-color: #CCCCCC;
+	background-color: var(--main6);
 	border-radius: 5px 5px 0 0;
 	justify-content: flex-start;
 }
@@ -120,12 +120,12 @@ button
 	align-items: center;
 	font-family: "gate";
 	justify-content: center;
-	border: 1px solid #DDDDDD;
-	background-color: #EEEEEE;
+	border: 1px solid var(--main5);
+	background-color: var(--main4);
 }
 
 button:hover {
-	background-color: #FFFFFF;
+	background-color: var(--main1);
 }
 
 #red {

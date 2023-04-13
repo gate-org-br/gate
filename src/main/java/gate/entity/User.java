@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 /**
  * A User on the organization structure.
  * <p>
- * A User can have a Role and a list of authorizations
+ * A User can have a Role and a list valueOf authorizations
  */
 @Entity
 @Icon("2004")
@@ -385,17 +385,24 @@ public class User implements Serializable
 		return computedAuthStream().anyMatch(Auth::isSuperAuth);
 	}
 
-	public boolean checkBlock(String module, String screen, String action)
-	{
-		return computedAuthStream()
-			.anyMatch(e -> e.blocked(module, screen, action));
-	}
-
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
 			.noneMatch(e -> e.blocked(module, screen, action))
 			&& computedAuthStream()
 				.anyMatch(e -> e.granted(module, screen, action));
+	}
+
+	public boolean checkSpecificAccess(String module, String screen, String action)
+	{
+		return computedAuthStream()
+			.noneMatch(e -> e.blocked(module, screen, action))
+			&& computedAuthStream()
+				.anyMatch(e -> e.equals(module, screen, action));
+	}
+
+	public static User valueOf(String string)
+	{
+		return new User().setId(ID.valueOf(string));
 	}
 }

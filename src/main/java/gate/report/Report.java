@@ -1,12 +1,16 @@
 package gate.report;
 
+import gate.annotation.Converter;
 import gate.annotation.Handler;
+import gate.annotation.Name;
+import gate.converter.EnumStringConverter;
 import gate.handler.ReportHandler;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -188,6 +192,14 @@ public class Report
 		return image;
 	}
 
+	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
+		Chart.Format format)
+	{
+		Chart chart = new Chart(type, dataset, format);
+		elements.add(chart);
+		return chart;
+	}
+
 	/**
 	 * Remove empty information from the report.
 	 *
@@ -200,8 +212,12 @@ public class Report
 		return this;
 	}
 
+	@Converter(EnumStringConverter.class)
 	public enum Orientation
 	{
-		PORTRAIT, LANDSCAPE
+		@Name("Retrato")
+		PORTRAIT,
+		@Name("Paisagem")
+		LANDSCAPE
 	}
 }

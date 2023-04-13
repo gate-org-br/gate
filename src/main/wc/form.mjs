@@ -1,5 +1,5 @@
 import './g-dialog.mjs';
-import Message from './g-message.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 const ESC = 27;
 const ENTER = 13;
@@ -10,7 +10,7 @@ Array.from(document.getElementsByTagName("form")).forEach(function (form)
 	{
 		if (this.hasAttribute("data-cancel"))
 		{
-			Message.error(this.getAttribute("data-cancel"), 2000);
+			GMessageDialog.error(this.getAttribute("data-cancel"), 2000);
 			e.preventDefault();
 			e.stopImmediatePropagation();
 

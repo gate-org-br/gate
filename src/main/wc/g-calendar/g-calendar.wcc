@@ -16,9 +16,8 @@ customElements.define('g-calendar', class extends HTMLElement
 
 		var update = () =>
 		{
-			let body = this.shadowRoot.firstElementChild;
-			while (body.firstChild)
-				body.removeChild(body.firstChild);
+			let body = this.shadowRoot;
+			Array.from(body.querySelectorAll("label, a, span")).forEach(e => e.remove());
 
 			body.appendChild(document.createElement("label")).innerText = "Dom";
 			body.appendChild(document.createElement("label")).innerText = "Seg";
@@ -63,27 +62,23 @@ customElements.define('g-calendar', class extends HTMLElement
 					link.classList.add("selected");
 			});
 
-			var foot = body.appendChild(document.createElement("div"));
+			var foot = body.appendChild(document.createElement("span"));
 
-			var prevYear = foot.appendChild(document.createElement("a"));
-			prevYear.setAttribute("href", "#");
+			var prevYear = foot.appendChild(document.createElement("button"));
 			prevYear.innerText = "<<";
 			prevYear.onclick = () => month.setFullYear(month.getFullYear() - 1) | update();
 
-			var prevMonth = foot.appendChild(document.createElement("a"));
-			prevMonth.setAttribute("href", "#");
+			var prevMonth = foot.appendChild(document.createElement("button"));
 			prevMonth.innerText = "<";
 			prevMonth.onclick = () => month.setMonth(month.getMonth() - 1) | update();
 
 			foot.appendChild(document.createElement("label")).innerText = DateFormat.MONTH.format(month);
 
-			var nextMonth = foot.appendChild(document.createElement("a"));
-			nextMonth.setAttribute("href", "#");
+			var nextMonth = foot.appendChild(document.createElement("button"));
 			nextMonth.innerText = ">";
 			nextMonth.onclick = () => month.setMonth(month.getMonth() + 1) | update();
 
-			var nextYear = foot.appendChild(document.createElement("a"));
-			nextYear.setAttribute("href", "#");
+			var nextYear = foot.appendChild(document.createElement("button"));
 			nextYear.innerText = ">>";
 			nextYear.onclick = () => month.setFullYear(month.getFullYear() + 1) | update();
 		};

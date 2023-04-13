@@ -1,16 +1,31 @@
 package gate.entity;
 
 import gate.annotation.Converter;
+import gate.constraint.Min;
+import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
 
 public class Server
 {
 
-	Type type;
-	String host;
-	String port;
-	String username;
-	String password;
+	@Required
+	private Type type;
+
+	@Required
+	private String host;
+	private String port;
+
+	@Required
+	private boolean useTLS;
+
+	@Required
+	private boolean useSSL;
+
+	@Min(0)
+	private Integer timeout;
+
+	private String username;
+	private String password;
 
 	public Server()
 	{
@@ -66,9 +81,39 @@ public class Server
 		return password;
 	}
 
+	public Integer getTimeout()
+	{
+		return timeout;
+	}
+
+	public void setTimeout(Integer timeout)
+	{
+		this.timeout = timeout;
+	}
+
 	public void setPassword(String password)
 	{
 		this.password = password;
+	}
+
+	public boolean getUseTLS()
+	{
+		return useTLS;
+	}
+
+	public void setUseTLS(boolean useTLS)
+	{
+		this.useTLS = useTLS;
+	}
+
+	public boolean getUseSSL()
+	{
+		return useSSL;
+	}
+
+	public void setUseSSL(boolean useSSL)
+	{
+		this.useSSL = useSSL;
 	}
 
 	@Converter(EnumStringConverter.class)

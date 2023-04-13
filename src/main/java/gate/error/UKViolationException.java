@@ -18,11 +18,11 @@ public class UKViolationException extends ConstraintViolationException
 	 */
 	UKViolationException(SQLException cause)
 	{
-		super(cause, "Tentativa de inserir registro duplicado");
+		super("Tentativa de inserir registro duplicado", cause);
 	}
 
 	UKViolationException(SQLException cause, String message)
 	{
-		super(cause, message);
+		super(message, cause);
 	}
 }

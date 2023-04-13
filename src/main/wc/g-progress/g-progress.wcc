@@ -1,0 +1,11 @@
+/* global customElements, template */
+
+customElements.define('g-progress', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+});

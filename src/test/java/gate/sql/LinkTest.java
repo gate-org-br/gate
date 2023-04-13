@@ -34,7 +34,7 @@ public class LinkTest
 			Person person = link
 				.select(Person.class)
 				.properties("=id", "name")
-				.parameters(new ID(1))
+				.parameters(ID.valueOf(1))
 				.orElseThrow(NotFoundException::new);
 
 			Assert.assertEquals("Person 1", person.getName());

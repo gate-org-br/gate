@@ -1,25 +1,18 @@
-@import './skin.css';
+@import './themes.css';
 @import './link.css';
 @import './button.css';
 @import './treeview.css';
-@import './g-path.css';
-@import './g-coolbar.css';
-@import './g-tabbar.css';
-@import './g-scroll-tabbar.css';
-@import './g-dialog-commands.css';
-@import './g-desk-pane.css';
 @import './g-icon-pane.css';
-@import './g-select.css';
 
 @import './icon.css';
 @import './emoji.css';
+@import './input.css';
 @import './fieldset.css';
-@import './div.css';
 @import './nav.css';
 @import './layout.css';
+@import './login.css';
 @import './minibar.css';
 @import './figure.css';
-@import './hmenu.css';
 
 @import "./sort.css";
 @import "./filter.css";
@@ -27,6 +20,10 @@
 @import './table.css';
 
 @import './visibility.css';
+
+* {
+	box-sizing: border-box;
+}
 
 body {
 	visibility: hidden;
@@ -40,19 +37,6 @@ iframe {
 	background-image: none
 }
 
-.G {
-	color: var(--g)
-}
-.R {
-	color: var(--r)
-}
-.Y {
-	color: var(--y)
-}
-.B {
-	color: var(--b)
-}
-
 
 form {
 	margin: 0;
@@ -61,19 +45,8 @@ form {
 }
 
 * {
-	font-size: 12px;
-	box-shadow: none;
 	box-sizing: border-box;
 	font-family: Arial, Tahoma, Geneva, sans-serif;
-}
-
-body.Panel {
-	background-color: var(--main);
-	background-image: none;
-}
-body.Page {
-	background-color: var(--main-shaded05);
-	background-image: none;
 }
 
 p  {
@@ -136,9 +109,9 @@ ul.LIST > li > i {
 	font-size: 24px
 }
 ul.LIST > li:focus {
-	background-color: #FFFACD;
+	background-color: var(--hovered);
 	font-weight: bold;
-	color: var(--g)
+	color: var(--question1)
 }
 
 input[type='file'] {
@@ -148,91 +121,9 @@ input:invalid, select:invalid, textarea:invalid {
 	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
 }
 
-textarea {
-	resize: none;
-	padding: 4px;
-	margin: 0px
-}
-
-label[data-icon], span[data-icon]
-{
-	margin: 4px;
-	height: 32px;
-	cursor: inherit;
-	font-size: 16px;
-	overflow: hidden;
-	text-align: left;
-	border-radius: 5px;
-	display: inline-flex;
-	align-items: center;
-	width: calc(100% - 8px);
-	background-color: #8899AA;
-}
-
-fieldset > label > span > label[data-icon]
-{
-	margin: 0;
-	width: 100%;
-	height: 100%;
-}
-
-label[data-icon]::before, span[data-icon]::before
-{
-	width: 32px;
-	height: 100%;
-	color: inherit;
-	margin-right: 8px;
-	font-family: gate;
-	font-size: inherit;
-	align-items: center;
-	display: inline-flex;
-	justify-content: center;
-	content: attr(data-icon);
-	border-right: 1px solid #DDDDDD;
-}
-
-i[data-text], a[data-text]
-{
-	display: flex;
-	font-family: gate;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
-}
-
-i[data-text]::after, a[data-text]::after
-{
-	display: block;
-	font-size: 40%;
-	font-family: gate;
-	text-align: center;
-	content: attr(data-text);
-}
-
-li[data-icon]::before
-{
-	float: left;
-	display: flex;
-	color: inherit;
-	margin-right: 8px;
-	font-family: gate;
-	align-items: center;
-	font-weight: inherit;
-	justify-content: center;
-	content: attr(data-icon);
-}
-
-li[data-text]::after
-{
-	float: right;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	content: attr(data-text);
-}
 
 tr[data-canceled='true'] > td {
-	color: #CCCCCC
+	color: var(--main6)
 }
 
 datalist {
@@ -254,32 +145,4 @@ small {
 *[data-disabled] {
 	opacity: 0.5;
 	pointer-events: none;
-}
-
-input[type='text'],
-input[type='password'],
-input[type='file'],
-textarea,
-select {
-	width: 100%;
-	background-color: white;
-	border: 1px solid #CCCCCC;
-}
-
-input[type='text']:focus,
-input[type='password']:focus,
-input[type='file']:focus,
-textarea:focus,
-select:focus {
-	outline: none;
-	background-color: var(--hovered);
-}
-
-input[type='text']:hover,
-input[type='password']:hover,
-input[type='file']:hover,
-textarea:hover,
-select:focus {
-	outline: none;
-	border-color: var(--hovered);
 }

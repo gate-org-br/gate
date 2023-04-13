@@ -1,26 +1,24 @@
 /* global customElements, template */
 
-import './g-window-header.mjs';
-import './g-window-section.mjs';
-import GModal from './g-modal.mjs';
+import './g-progress.mjs';
+import GWindow from './g-window.mjs';
 
-export default class GBlock extends GModal
+export default class GBlock extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set caption(text)
 	{
-		this.shadowRoot.querySelector("g-window-header").innerText = text;
+		this.shadowRoot.querySelector("header").innerText = text;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.querySelector("g-window-header").innerText;
+		return this.shadowRoot.querySelector("header").innerText;
 	}
 
 	static show(text)
@@ -54,16 +52,12 @@ Array.from(document.querySelectorAll("a[data-block]"))
 	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
 
 Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
+{
+	e.addEventListener("click", () =>
 	{
-		e.addEventListener("click", () =>
-		{
-			if (e.form)
-				e.form.addEventListener("submit", () =>
-				{
-					GBlock.show(e.getAttribute("data-block"));
-					e.form.removeEventListener(event.type, arguments.callee);
-				});
-			else
-				GBlock.show(e.getAttribute("data-block"));
-		});
+		if (e.form)
+			e.form.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"), {once: true}));
+		else
+			GBlock.show(e.getAttribute("data-block"));
 	});
+});

@@ -44,7 +44,8 @@ public class JsonFormatter implements AutoCloseable
 
 	public void format(JsonString value) throws ConversionException
 	{
-		writer.write(JsonToken.Type.STRING, value.toString());
+		writer.write(JsonToken.Type.STRING,
+			value.toString());
 	}
 
 	public void format(JsonBoolean value) throws ConversionException

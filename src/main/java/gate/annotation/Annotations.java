@@ -31,7 +31,7 @@ public class Annotations
 		return exists(annotation, screen != null ? module + "." + screen + "Screen" : module + ".Screen", action != null ? "call" + action : "call");
 	}
 
-	public static Optional<Annotation> search(Class<? extends Annotation> annotation,
+	public static <T extends Annotation> Optional<T> search(Class<T> annotation,
 		Class<?> clazz, Method method)
 	{
 		if (method.isAnnotationPresent(annotation))
@@ -43,7 +43,7 @@ public class Annotations
 		return Optional.empty();
 	}
 
-	public static Optional<Annotation> search(Class<? extends Annotation> annotation,
+	public static <T extends Annotation> Optional<T> search(Class<T> annotation,
 		String className,
 		String methodName) throws ClassNotFoundException, NoSuchMethodException
 	{
@@ -51,7 +51,7 @@ public class Annotations
 		return search(annotation, clazz, clazz.getMethod(methodName));
 	}
 
-	public static Optional<Annotation> search(Class<? extends Annotation> annotation,
+	public static <T extends Annotation> Optional<T> search(Class<T> annotation,
 		String module,
 		String screen,
 		String action) throws ClassNotFoundException, NoSuchMethodException

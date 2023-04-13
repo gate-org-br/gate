@@ -31,13 +31,14 @@ a {
 	border: 0px solid transparent;
 	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
 
-	color: var(--g-window-list-color);
-	background-color: var(--g-window-list-background-color);
-	background-image: var(--g-window-list-background-image);
+	color: black;
+	background-color: #788185;
+	background-image: linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%);
 }
 
 a:hover {
-	color: var(--g-window-list-hovered-color);
-	background-color: var(--g-window-list-hovered-background-color);
-	background-image: var(--g-window-list-hovered-background-image);
+	color: #FFFACD;
+	;
+	background-color: #788185;
+	background-image: linear-gradient(to bottom, #788185 0%, #828b90 50%, #788185 100%);
 }

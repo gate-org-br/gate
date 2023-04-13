@@ -43,6 +43,10 @@ public abstract class CheckableProcessor extends PropertyProcessor
 			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
+		else if (property.getElementType() != null && Enum.class.isAssignableFrom(property.getElementRawType()))
+			options = Arrays.asList(property.getElementRawType().getEnumConstants());
+		else if (property.getElementType() != null && Boolean.class.isAssignableFrom(property.getElementRawType()))
+			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 
@@ -64,7 +68,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add("<ul " + attributes + ">");
+		string.add("<g-selectn " + attributes + ">");
 
 		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
 		if (groups != null)
@@ -74,29 +78,16 @@ public abstract class CheckableProcessor extends PropertyProcessor
 					LinkedHashMap::new,
 					Collectors.toList()))
 				.entrySet()
-				.forEach(group ->
-				{
-					string.add("<li>");
-
-					string.add("<label>");
-					string.add(Converter.toText(group.getKey()));
-					string.add("</label>");
-
-					string.add("<ul>");
-					print(string, group.getValue(), labels, values, children, property.toString(), value);
-					string.add("</ul>");
-
-					string.add("</li>");
-				});
+				.forEach(group -> print(string, group.getValue(), labels, values, children, property.toString(), value, 0));
 		} else
-			print(string, Toolkit.iterable(options), labels, values, children, property.toString(), property.getValue(screen));
+			print(string, Toolkit.iterable(options), labels, values, children, property.toString(), value, 0);
 
-		string.add("</ul>");
+		string.add("</g-selectn>");
 		handler.replaceWith(string.toString(), false);
 	}
 
 	private void print(StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values,
-		Function<Object, Object> children, String name, Object value)
+		Function<Object, Object> children, String name, Object value, int depth)
 	{
 		for (Object option : options)
 		{
@@ -107,17 +98,14 @@ public abstract class CheckableProcessor extends PropertyProcessor
 				attributes.put("checked", "checked");
 			attributes.put("value", Converter.toString(values.apply(option)));
 
-			string.add(String.format("<li><label><input %s/>%s</label></li>",
+			string.add(String.format("<input %s/><label style='padding-left: %dpx'>%s</label>",
 				attributes.toString(),
+				depth * 40,
 				Converter.toText(labels.apply(option))));
 
 			if (children != null)
-			{
-				string.add("<ul>");
 				print(string, Toolkit.iterable(children.apply(option)),
-					labels, values, children, name, value);
-				string.add("</ul>");
-			}
+					labels, values, children, name, value, depth + 1);
 		}
 	}
 

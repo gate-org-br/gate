@@ -1,4 +1,4 @@
-import Message from './g-message.mjs';
+import GMessageDialog from './g-message-dialog.mjs';
 
 export default class Clipboard
 {
@@ -14,7 +14,7 @@ export default class Clipboard
 		document.execCommand('copy');
 		document.body.removeChild(textarea);
 		if (!silent)
-			Message.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
+			GMessageDialog.success("O texto " + data + " foi copiado com sucesso para a área de transferência.", 1000);
 	}
 }
 

@@ -15,9 +15,9 @@ public class CredentialsTest
 	public void test1() throws InvalidCredentialsException
 	{
 		User user = new User();
-		user.setId(new ID(1));
+		user.setId(ID.valueOf(1));
 		user.setName("User 1");
-		user.getRole().setId(new ID(1));
+		user.getRole().setId(ID.valueOf(1));
 		user.getRole().setName("Role 1");
 		user.getAuths().add(new Auth()
 			.setAccess(Auth.Access.GRANT).setScope(Auth.Scope.PUBLIC)

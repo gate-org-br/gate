@@ -1,9 +1,8 @@
 package gate.type;
 
 import gate.annotation.Converter;
-import gate.converter.custom.IDSConverter;
 import gate.annotation.ElementType;
-
+import gate.converter.custom.IDSConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +23,7 @@ public class IDS extends ArrayList<ID>
 	{
 		for (String id : values.split(","))
 			if (!id.trim().isEmpty())
-				add(new ID(id.trim()));
+				add(ID.valueOf(id.trim()));
 	}
 
 	public IDS(ID... values)

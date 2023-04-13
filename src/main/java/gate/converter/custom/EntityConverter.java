@@ -2,6 +2,7 @@ package gate.converter.custom;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
+import gate.converter.ObjectConverter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.property.Entity;
@@ -14,7 +15,7 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 
-public class EntityConverter implements Converter
+public class EntityConverter extends ObjectConverter
 {
 
 	@Override
