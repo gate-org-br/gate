@@ -6,6 +6,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.ListItem;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -37,6 +38,7 @@ import gate.report.Report;
 import static gate.report.Report.Orientation.LANDSCAPE;
 import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
+import gate.report.ReportList;
 import gate.report.Style;
 import gate.util.Toolkit;
 import java.awt.Color;
@@ -139,6 +141,8 @@ public class PDF extends Doc
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid)
 					document.add(printGrid((Grid) element));
+				else if (element instanceof ReportList)
+					document.add(printList((ReportList) element));
 				else if (element instanceof Image && ((Image) element).getSource() != null)
 					document.add(printImage((Image) element));
 				else if (element instanceof Chart<?>)
@@ -480,6 +484,44 @@ public class PDF extends Doc
 			pages.showText(String.valueOf(writer.getPageNumber()));
 			pages.endText();
 		}
+	}
+
+	private Element printList(ReportList reportList)
+	{
+		com.lowagie.text.List list
+			= new com.lowagie.text.List();
+
+		if (reportList.getType() == null)
+			throw new IllegalArgumentException("Report list type can't be null");
+
+		switch (reportList.getType())
+		{
+			case NUMBER:
+				list.setNumbered(true);
+				break;
+			case LETTER:
+				list.setLettered(true);
+				break;
+			case SYMBOL:
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid report list type: " + reportList.getType().name());
+		}
+
+		reportList.getElements().stream().forEach(e ->
+		{
+			if (e instanceof String)
+			{
+				list.add(new ListItem(e.toString()));
+			} else if (e instanceof ReportList)
+			{
+				ListItem item = new ListItem();
+				item.add(printList((ReportList) e));
+				list.add(item);
+			}
+		});
+
+		return list;
 	}
 
 	private Color getColor(Style style)

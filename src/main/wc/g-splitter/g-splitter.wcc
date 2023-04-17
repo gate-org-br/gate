@@ -16,22 +16,15 @@ customElements.define('g-splitter', class extends HTMLElement
 		let initialFlexBasis;
 		let isDragging = false;
 
-		this.shadowRoot.querySelector('div').addEventListener('mousedown', event =>
-		{
-			event.preventDefault();
-			event.stopPropagation();
-
-			if (event.detail === 2)
+		this.shadowRoot.querySelector('div')
+			.addEventListener('mousedown', event =>
 			{
-				panel1.style.flexBasis = '50%';
-				panel2.style.flexBasis = '50%';
-			} else
-			{
+				event.preventDefault();
+				event.stopPropagation();
 				isDragging = true;
 				currentX = event.clientX;
 				initialFlexBasis = panel1.offsetWidth / this.offsetWidth;
-			}
-		});
+			});
 
 		window.addEventListener('mouseup', () => isDragging = false);
 		window.addEventListener('mousemove', event =>
@@ -44,7 +37,30 @@ customElements.define('g-splitter', class extends HTMLElement
 				const flexBasis = initialFlexBasis * this.offsetWidth + deltaX;
 				panel1.style.flexBasis = `${flexBasis}px`;
 				panel2.style.flexBasis = `${this.offsetWidth - flexBasis}px`;
+
+				panel1.removeAttribute("hidden");
+				panel2.removeAttribute("hidden");
 			}
+		});
+
+		this.shadowRoot.getElementById("E").addEventListener("click", () =>
+		{
+			panel1.style.flexBasis = "50%";
+			panel1.removeAttribute("hidden");
+			panel2.style.flexBasis = "50%";
+			panel2.removeAttribute("hidden", "");
+		});
+
+		this.shadowRoot.getElementById("L").addEventListener("click", () =>
+		{
+			panel2.removeAttribute("hidden");
+			panel1.setAttribute("hidden", "");
+		});
+
+		this.shadowRoot.getElementById("R").addEventListener("click", () =>
+		{
+			panel1.removeAttribute("hidden");
+			panel2.setAttribute("hidden", "");
 		});
 	}
 

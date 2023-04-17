@@ -97,6 +97,13 @@ public class Report
 		return grid;
 	}
 
+	public final ReportList addList(ReportList.Type type)
+	{
+		ReportList list = new ReportList(type);
+		elements.add(list);
+		return list;
+	}
+
 	public final Form addForm(int columns)
 	{
 		Form form = new Form(columns);

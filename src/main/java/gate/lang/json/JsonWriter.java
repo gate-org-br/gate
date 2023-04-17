@@ -82,7 +82,7 @@ public class JsonWriter implements AutoCloseable
 						.replace("\t", "\\t")
 						.replace("\b", "\\b")
 						.replace("\f", "\\f")
-						.replace("\"", "\\\"");
+						.replace("\"", "'");
 					Objects.requireNonNull(value, "String not specified");
 					writer.write("\"");
 					for (int i = 0; i < value.length(); i++)

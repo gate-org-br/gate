@@ -62,7 +62,7 @@ public class ReportTest
 		grid.setChildren(Role::getRoles);
 
 		XLS doc = new XLS(report);
-		try ( BufferedOutputStream stream = new BufferedOutputStream(new ByteArrayOutputStream()))
+		try (BufferedOutputStream stream = new BufferedOutputStream(new ByteArrayOutputStream()))
 		{
 			doc.print(stream);
 		}
@@ -120,7 +120,58 @@ public class ReportTest
 
 		report.compact();
 		PDF doc = new PDF(report);
-		try ( BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("/home/davins/Desktop/test.pdf")))
+		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("/home/davins/Desktop/test.pdf")))
+		{
+			doc.print(stream);
+		}
+	}
+
+	@Test
+	public void testList() throws FileNotFoundException, IOException
+	{
+		Report report = new Report(Orientation.LANDSCAPE);
+
+		report.addHeader(LocalDateTime.now());
+		report.addHeader("Report Header");
+
+		report.addLineBreak();
+
+		report.addList(ReportList.Type.NUMBER)
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item");
+
+		report.addList(ReportList.Type.LETTER)
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item");
+
+		report.addList(ReportList.Type.SYMBOL)
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item");
+
+		report.addList(ReportList.Type.NUMBER)
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add(report.addList(ReportList.Type.LETTER)
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add(report.addList(ReportList.Type.SYMBOL)
+					.add("Item")
+					.add("Item")
+					.add("Item")
+					.add("Item")));
+
+		PDF doc = new PDF(report);
+		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("/home/davinunesdasilva/Desktop/test.pdf")))
 		{
 			doc.print(stream);
 		}
