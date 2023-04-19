@@ -512,7 +512,7 @@ public class PDF extends Doc
 		{
 			if (e instanceof String)
 			{
-				list.add(new ListItem(e.toString()));
+				list.add(new ListItem(e.toString(), getFont(reportList.style())));
 			} else if (e instanceof ReportList)
 			{
 				ListItem item = new ListItem();
