@@ -4,7 +4,7 @@ ADD COLUMN `useSSL` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `useTLS`,
 ADD COLUMN `timeout` INT UNSIGNED NULL AFTER `useSSL`;
 
 DELIMITER ;;
-CREATE PROCEDURE `auths`(user_id INT)
+CREATE PROCEDURE `gate`.`auths`(user_id INT)
 BEGIN
     declare role_id int;
     drop TEMPORARY TABLE if exists resultset;
