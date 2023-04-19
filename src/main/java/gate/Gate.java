@@ -75,8 +75,8 @@ public class Gate extends HttpServlet
 	Instance<Catcher> catchers;
 
 	@Inject
-	@ConfigProperty(name = "gate.denveloper")
-	Optional<String> denveloper;
+	@ConfigProperty(name = "gate.developer")
+	Optional<String> developer;
 
 	static
 	{
@@ -123,26 +123,33 @@ public class Gate extends HttpServlet
 				{
 					user = Credentials.of(request).orElseThrow();
 					request.setAttribute(User.class.getName(), user);
-				} else if (Toolkit.notEmpty(request.getParameter("$username"),
-					request.getParameter("$password")))
+				}
+
+				if (user == null && Toolkit.notEmpty(request.getParameter("$username"), request.getParameter("$password")))
 				{
 					user = control.select(org, request.getParameter("$username"),
 						request.getParameter("$password"));
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
-				} else if (httpServletRequest.getUserPrincipal() != null
+				}
+
+				if (user == null && httpServletRequest.getUserPrincipal() != null
 					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
 				{
 					user = control.select(httpServletRequest.getUserPrincipal().getName());
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
-				} else if (request.getSession(false) != null)
+				}
+
+				if (user == null && request.getSession(false) != null)
 				{
 					user = (User) request.getSession()
 						.getAttribute(User.class.getName());
-				} else if (denveloper.isPresent())
+				}
+
+				if (user == null && developer.isPresent())
 				{
-					user = control.select(denveloper.orElseThrow());
+					user = control.select(developer.orElseThrow());
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
 				}
