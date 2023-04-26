@@ -24,7 +24,7 @@ template.innerHTML = `
 ::slotted(.g-command)
 {
 	gap: 8px;
-	width: auto;
+	width: 140px;
 	height: 44px;
 	color: black;
 	padding: 8px;
@@ -33,10 +33,10 @@ template.innerHTML = `
 	display: flex;
 	cursor: pointer;
 	font-size: 16px;
-	min-width: 140px;
 	border-radius: 3px;
 	align-items: center;
 	text-decoration: none;
+	min-width: fit-content;
 	background-color: #E8E8E8;
 	justify-content: space-between;
 }
@@ -273,8 +273,7 @@ customElements.define('g-coolbar', class extends HTMLElement
 
 		for (let e = this.lastElementChild;
 			e && this.overflowed; e = e.previousElementSibling)
-			if (!e.hasAttribute("aria-selected")
-				&& !e.getAttribute("hidden"))
+			if (!e.getAttribute("hidden"))
 				e.style.display = "none";
 	}
 

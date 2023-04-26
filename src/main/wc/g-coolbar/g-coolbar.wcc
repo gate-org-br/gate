@@ -53,8 +53,7 @@ customElements.define('g-coolbar', class extends HTMLElement
 
 		for (let e = this.lastElementChild;
 			e && this.overflowed; e = e.previousElementSibling)
-			if (!e.hasAttribute("aria-selected")
-				&& !e.getAttribute("hidden"))
+			if (!e.getAttribute("hidden"))
 				e.style.display = "none";
 	}
 

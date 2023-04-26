@@ -43,13 +43,11 @@ customElements.define('g-progress-dialog', class extends GWindow
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => confirm("Tem certeza de que deseja fechar o progresso?")
-				&& this.hide());
 
+		let close = this.shadowRoot.getElementById("close");
 		let commit = this.shadowRoot.getElementById("commit");
 
-		commit.onclick = event =>
+		commit.onclick = close.onclick = event =>
 		{
 			event.preventDefault();
 			event.stopPropagation();
@@ -64,7 +62,12 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 			commit.innerHTML = "Ok";
 			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--question1');
-			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+			commit.onclick = close.onclick = event =>
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.hide();
+			};
 		});
 
 		window.addEventListener("ProcessCanceled", event =>
@@ -74,7 +77,12 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 			commit.innerHTML = "OK";
 			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error1');
-			commit.onclick = event => event.preventDefault() | event.stopPropagation() | this.hide();
+			commit.onclick = close.onclick = event =>
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				this.hide();
+			};
 		});
 
 		window.addEventListener("ProcessRedirect", event =>
@@ -83,8 +91,11 @@ customElements.define('g-progress-dialog', class extends GWindow
 				return;
 
 			commit.innerHTML = "Ok";
-			commit.onclick = () =>
+			commit.onclick = close.onclick = event =>
 			{
+				event.preventDefault();
+				event.stopPropagation();
+
 				this.hide();
 				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
 			};
