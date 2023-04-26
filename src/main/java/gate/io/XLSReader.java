@@ -5,11 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -18,6 +18,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class XLSReader extends AbstractReader<List<List<Object>>>
 {
+
+	private static DataFormatter FORMATTER = new DataFormatter();
 
 	private XLSReader()
 	{
@@ -43,6 +45,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	private Object getValue(Cell cell)
 	{
+
 		if (cell != null)
 			switch (cell.getCellType())
 			{
@@ -51,7 +54,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 				case NUMERIC:
 					if (DateUtil.isCellDateFormatted(cell))
 						return cell.getLocalDateTimeCellValue();
-					return BigDecimal.valueOf(cell.getNumericCellValue());
+					return getNumber(cell);
 				case BOOLEAN:
 					return cell.getBooleanCellValue();
 				case BLANK:
@@ -66,7 +69,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 						case NUMERIC:
 							if (DateUtil.isCellDateFormatted(cell))
 								return cell.getLocalDateTimeCellValue();
-							return BigDecimal.valueOf(cell.getNumericCellValue());
+							return getNumber(cell);
 						case BOOLEAN:
 							return cell.getBooleanCellValue();
 						case BLANK:
@@ -78,6 +81,11 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 		return "";
 	}
 
+	private String getNumber(Cell cell)
+	{
+		return FORMATTER.formatCellValue(cell);
+	}
+
 	public static XLSReader getInstance()
 	{
 		return Instance.VALUE;
@@ -85,7 +93,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	public static List<List<Object>> load(byte[] bytes) throws IOException
 	{
-		try ( ByteArrayInputStream is = new ByteArrayInputStream(bytes))
+		try (ByteArrayInputStream is = new ByteArrayInputStream(bytes))
 		{
 			return XLSReader.getInstance().read(is);
 		}
@@ -93,7 +101,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	public static List<List<Object>> load(File file) throws IOException
 	{
-		try ( FileInputStream is = new FileInputStream(file))
+		try (FileInputStream is = new FileInputStream(file))
 		{
 			return XLSReader.getInstance().read(is);
 		}
@@ -101,7 +109,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	public static List<List<Object>> load(URL url) throws IOException
 	{
-		try ( InputStream is = url.openStream())
+		try (InputStream is = url.openStream())
 		{
 			return XLSReader.getInstance().read(is);
 		}
@@ -109,7 +117,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	public static List<List<Object>> load(String string) throws IOException
 	{
-		try ( ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
+		try (ByteArrayInputStream is = new ByteArrayInputStream(string.getBytes()))
 		{
 			return XLSReader.getInstance().read(is);
 		}
