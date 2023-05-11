@@ -3,10 +3,12 @@ package gate.catcher;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import javax.enterprise.context.ApplicationScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
 
+@ApplicationScoped
 public abstract class HttpExceptionCatcher implements Catcher
 {
 
@@ -24,7 +26,7 @@ public abstract class HttpExceptionCatcher implements Catcher
 		response.setStatus(status);
 		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(exception.getMessage());
 			writer.flush();

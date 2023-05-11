@@ -1,5 +1,8 @@
 package gate.catcher;
 
+import javax.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
 public class NotFoundExceptionCatcher extends HttpExceptionCatcher
 {
 
