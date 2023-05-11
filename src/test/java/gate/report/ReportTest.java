@@ -9,7 +9,6 @@ import gate.type.ID;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -120,10 +119,6 @@ public class ReportTest
 
 		report.compact();
 		PDF doc = new PDF(report);
-		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("/home/davins/Desktop/test.pdf")))
-		{
-			doc.print(stream);
-		}
 	}
 
 	@Test
@@ -171,9 +166,5 @@ public class ReportTest
 					.add("Item")));
 
 		PDF doc = new PDF(report);
-		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream("/home/davinunesdasilva/Desktop/test.pdf")))
-		{
-			doc.print(stream);
-		}
 	}
 }
