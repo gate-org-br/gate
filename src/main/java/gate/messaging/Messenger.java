@@ -27,10 +27,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 
 @ApplicationScoped
-public class Messenger
+public class Messenger implements ServletContextListener
 {
 
 	@Inject
@@ -66,7 +67,7 @@ public class Messenger
 						control.update(mail);
 					}
 				}
-			} catch (AppException ex)
+			} catch (AppException | RuntimeException ex)
 			{
 				logger.error(ex.getMessage(), ex);
 			}
