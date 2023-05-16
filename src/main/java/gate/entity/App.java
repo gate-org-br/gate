@@ -72,6 +72,7 @@ public class App implements Serializable
 			module.id = pack.getName();
 
 			screens.stream()
+				.filter(e -> e.getPackage().getName().equals(pack.getName()))
 				.filter(type -> !Modifier.isAbstract(type.getModifiers()))
 				.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
 			{

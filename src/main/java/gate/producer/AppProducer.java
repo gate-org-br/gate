@@ -63,7 +63,7 @@ public class AppProducer implements Serializable
 			.findFirst().orElseThrow(),
 			servletContext.getInitParameter("name"),
 			servletContext.getInitParameter("description"),
-			instances.stream().map(e -> (Class<Screen>) e.getClass().getSuperclass())
+			instances.stream().map(e -> (Class<Screen>) e.getClass())
 				.collect(Collectors.toList()));
 
 		try
@@ -94,8 +94,8 @@ public class AppProducer implements Serializable
 		public void update(App app)
 			throws ConstraintViolationException
 		{
-			try ( Link link = linksource.getLink();
-				 AppDao dao = new AppDao(link))
+			try (Link link = linksource.getLink();
+				AppDao dao = new AppDao(link))
 			{
 				link.beginTran();
 				dao.delete(app);
