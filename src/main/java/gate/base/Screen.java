@@ -6,7 +6,9 @@ import gate.annotation.QueryParameter;
 import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
+import gate.error.BadRequestException;
 import gate.error.ConversionException;
+import gate.error.UncheckedConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.util.Page;
@@ -51,55 +53,59 @@ public abstract class Screen extends Base
 		}
 	}
 
-	public void prepare(HttpServletRequest request,
-		HttpServletResponse response)
-		throws RuntimeException
+	public void prepare(HttpServletRequest request, HttpServletResponse response) throws BadRequestException
 	{
 		this.request = request;
 		this.response = response;
 
-		getRequest().getParameterList().stream().sorted().forEach(name ->
+		try
 		{
-			Property property = Property.parse(getClass(), name);
-			if (property != null)
+			getRequest().getParameterList().stream().sorted().forEach(name ->
 			{
-				try
+				Property property = Property.parse(getClass(), name);
+				if (property != null)
 				{
-					if (property.getLastAttribute() instanceof CollectionAttribute)
+					try
 					{
-						Property previous = property.getPreviousProperty();
-						previous.setValue(this, getRequest()
-							.getParameterValues(previous.getRawType(), property.getRawType(), name));
-					} else
-					{
-						Converter converter = property.getConverter();
-						Object value = getRequest().getParameterValue(name);
-						if (value instanceof Part)
+						if (property.getLastAttribute() instanceof CollectionAttribute)
 						{
-							Part part = (Part) value;
-							try
+							Property previous = property.getPreviousProperty();
+							previous.setValue(this, getRequest()
+								.getParameterValues(previous.getRawType(), property.getRawType(), name));
+						} else
+						{
+							Converter converter = property.getConverter();
+							Object value = getRequest().getParameterValue(name);
+							if (value instanceof Part)
 							{
-								value = converter.ofPart(property.getRawType(), part);
-							} finally
-							{
+								Part part = (Part) value;
 								try
 								{
-									part.delete();
-								} catch (IOException ex)
+									value = converter.ofPart(property.getRawType(), part);
+								} finally
 								{
-									throw new UncheckedIOException(ex);
+									try
+									{
+										part.delete();
+									} catch (IOException ex)
+									{
+										throw new UncheckedIOException(ex);
+									}
 								}
-							}
-						} else if (value instanceof String)
-							value = converter.ofString(property.getRawType(), (String) value);
-						property.setValue(this, value);
+							} else if (value instanceof String)
+								value = converter.ofString(property.getRawType(), (String) value);
+							property.setValue(this, value);
+						}
+					} catch (ConversionException ex)
+					{
+						throw new UncheckedConversionException(ex);
 					}
-				} catch (ConversionException ex)
-				{
-					getMessages().add(ex.getMessage());
 				}
-			}
-		});
+			});
+		} catch (UncheckedConversionException ex)
+		{
+			throw new BadRequestException(ex.getCause().getMessage());
+		}
 	}
 
 	public Object execute(Method method) throws Throwable

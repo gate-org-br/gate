@@ -30,7 +30,7 @@ public class ThrowableCatcher implements Catcher
 		response.setStatus(500);
 		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 
-		try ( PrintWriter writer = response.getWriter())
+		try (PrintWriter writer = response.getWriter())
 		{
 			if (user != null && user.isSuperUser())
 				exception.printStackTrace(writer);

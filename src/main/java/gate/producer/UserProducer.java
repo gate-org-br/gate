@@ -3,6 +3,7 @@ package gate.producer;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.InvalidCredentialsException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -17,6 +18,7 @@ public class UserProducer
 
 	@Current
 	@Produces
+	@RequestScoped
 	@Named(value = "user")
 	public User getUser() throws InvalidCredentialsException
 	{
