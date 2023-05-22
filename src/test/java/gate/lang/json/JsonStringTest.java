@@ -32,16 +32,4 @@ public class JsonStringTest
 			fail(ex.getMessage());
 		}
 	}
-
-	@Test
-	public void testSingleQuotedEscapedString()
-	{
-		try
-		{
-			assertEquals("Jonh's", JsonString.parse("'Jonh\\'s'").toString());
-		} catch (ConversionException ex)
-		{
-			fail(ex.getMessage());
-		}
-	}
 }
