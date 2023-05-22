@@ -99,6 +99,33 @@ public final class JsonScanner implements AutoCloseable
 							c = reader.read();
 							if (c == -1)
 								throw new ConversionException("Expected char and found EOF");
+
+							switch (c)
+							{
+								case 'b':
+									c = '\b';
+									break;
+								case 'f':
+									c = '\f';
+									break;
+								case 'n':
+									c = '\n';
+									break;
+								case 'r':
+									c = '\r';
+									break;
+								case 't':
+									c = '\t';
+									break;
+								case '"':
+									c = '"';
+									break;
+								case '\\':
+									c = '\\';
+									break;
+								default:
+									string.append('\\');
+							}
 						}
 
 						string.append((char) c);

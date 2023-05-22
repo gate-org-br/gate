@@ -101,4 +101,13 @@ public class JsonParserTest
 			}
 		}
 	}
+
+	@Test
+	public void testLineBreak() throws Exception
+	{
+		var string = JsonString.of("Line 1\nLine 2");
+		String json = JsonElement.format(string);
+		Assert.assertEquals("Line 1\nLine 2", JsonElement.parse(json).toString());
+	}
+
 }

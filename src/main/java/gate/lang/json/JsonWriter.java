@@ -76,17 +76,37 @@ public class JsonWriter implements AutoCloseable
 					writer.write(value);
 					break;
 				case STRING:
-					value = value.replace("\\", "\\\\")
-						.replace("\r", "\\r")
-						.replace("\n", "\\n")
-						.replace("\t", "\\t")
-						.replace("\b", "\\b")
-						.replace("\f", "\\f")
-						.replace("\"", "'");
 					Objects.requireNonNull(value, "String not specified");
 					writer.write("\"");
 					for (int i = 0; i < value.length(); i++)
-						writer.write(value.charAt(i));
+					{
+						switch (value.charAt(i))
+						{
+							case '\n':
+								writer.write("\\n");
+								break;
+							case '\r':
+								writer.write("\\r");
+								break;
+							case '\t':
+								writer.write("\\t");
+								break;
+							case '\b':
+								writer.write("\\b");
+								break;
+							case '\f':
+								writer.write("\\f");
+								break;
+							case '\\':
+								writer.write("\\\\");
+								break;
+							case '\"':
+								writer.write("\\\"");
+								break;
+							default:
+								writer.write((char) value.charAt(i));
+						}
+					}
 					writer.write("\"");
 			}
 		} catch (IOException ex)
