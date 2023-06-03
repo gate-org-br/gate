@@ -110,4 +110,18 @@ public class JsonParserTest
 		Assert.assertEquals("Line 1\nLine 2", JsonElement.parse(json).toString());
 	}
 
+	@Test
+	public void testEscape() throws Exception
+	{
+		String json = "\"https:\\/\\/lookaside.fbsbx.com\\/whatsapp_business\\/attachments\\/?mid=617319183675655&ext=1685814659&hash=ATsrtlfji5Gfeb4njsWKBRZW1tVVjgfAKlpKRM16NeQIRQ\"";
+		try (StringReader reader = new StringReader(json))
+		{
+			try (JsonParser parser = new JsonParser(reader))
+			{
+				var object = (JsonString) parser.parse().orElseThrow();
+				var result = object.toString();
+				Assert.assertEquals("https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=617319183675655&ext=1685814659&hash=ATsrtlfji5Gfeb4njsWKBRZW1tVVjgfAKlpKRM16NeQIRQ", result);
+			}
+		}
+	}
 }

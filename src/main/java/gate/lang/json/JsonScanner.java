@@ -123,6 +123,9 @@ public final class JsonScanner implements AutoCloseable
 								case '\\':
 									c = '\\';
 									break;
+								case '/':
+									c = '/';
+									break;
 								default:
 									string.append('\\');
 							}
@@ -225,14 +228,7 @@ public final class JsonScanner implements AutoCloseable
 							return current = JsonToken.NULL;
 
 						default:
-							return current = new JsonToken(JsonToken.Type.STRING,
-								name.replace("\\\\", "\\")
-									.replace("\\r", "\r")
-									.replace("\\n", "\n")
-									.replace("\\t", "\t")
-									.replace("\\b", "\b")
-									.replace("\\f", "\f")
-									.replace("\\\"", "\""));
+							return current = new JsonToken(JsonToken.Type.STRING, name);
 					}
 			}
 		} catch (IOException ex)
