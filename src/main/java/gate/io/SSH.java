@@ -259,6 +259,18 @@ public class SSH implements AutoCloseable
 				{
 					return stream;
 				}
+
+				@Override
+				public OutputStream getOutputStream(boolean bln) throws IOException
+				{
+					return stream;
+				}
+
+				@Override
+				public long getLength()
+				{
+					return -1;
+				}
 			});
 
 			stream.flush();

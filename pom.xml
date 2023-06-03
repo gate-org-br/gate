@@ -6,7 +6,7 @@
 
 	<groupId>io.github.gate-org-br</groupId>
 	<artifactId>gate</artifactId>
-	<version>11.0.3</version>
+	<version>11.0.4</version>
 	<packaging>jar</packaging>
 
 	<name>gate</name>
@@ -140,12 +140,12 @@
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>3.8.0</version>
+			<version>3.9.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.hierynomus</groupId>
 			<artifactId>sshj</artifactId>
-			<version>0.33.0</version>
+			<version>0.35.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jfree</groupId>

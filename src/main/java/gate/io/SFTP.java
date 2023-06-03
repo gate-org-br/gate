@@ -151,6 +151,19 @@ public class SFTP implements AutoCloseable
 				{
 					return out;
 				}
+
+				@Override
+				public OutputStream getOutputStream(boolean bln) throws IOException
+				{
+					return out;
+				}
+
+				@Override
+				public long getLength()
+				{
+					return -1;
+				}
+
 			});
 
 			return new DataFile(out.toByteArray(), Path.of(filename).getFileName().toString());
