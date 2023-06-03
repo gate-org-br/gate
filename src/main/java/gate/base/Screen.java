@@ -8,6 +8,7 @@ import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
+import gate.error.NoSuchPropertyError;
 import gate.error.UncheckedConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
@@ -102,7 +103,7 @@ public abstract class Screen extends Base
 					}
 				}
 			});
-		} catch (UncheckedConversionException ex)
+		} catch (UncheckedConversionException | NoSuchPropertyError ex)
 		{
 			throw new BadRequestException(ex.getCause().getMessage());
 		}
