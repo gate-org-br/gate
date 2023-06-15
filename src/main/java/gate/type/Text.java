@@ -6,25 +6,25 @@ import gate.language.Language;
 import java.util.regex.Pattern;
 
 @Converter(PortugueseNameConverter.class)
-public class PortugueseName
+public class Text
 {
 
 	private final String value;
 	public static final Pattern PATTERN
-		= Pattern.compile("^[0123456789ºªa-zA-ZàÀáÁâÂãÃéÉêÊíÍóÓôÔõÕúÚçÇ&. ]*$");
+		= Pattern.compile("^[a-zA-ZàÀáÁâÂãÃéÉêÊíÍóÓôÔõÕúÚçÇ&. ]*$");
 
-	private PortugueseName(String value)
+	private Text(String value)
 	{
 		this.value = value;
 	}
 
-	public static PortugueseName of(String value)
+	public static Text of(String value)
 	{
 		if (value == null)
 			throw new IllegalArgumentException(value + " is not a valid portuguese name");
 		if (!PATTERN.matcher(value).matches())
 			throw new IllegalArgumentException(value + " is not a valid portuguese name");
-		return new PortugueseName(Language.PORTUGUESE.capitalize(value));
+		return new Text(Language.PORTUGUESE.capitalize(value));
 	}
 
 	public String getValue()
@@ -41,8 +41,8 @@ public class PortugueseName
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof PortugueseName
-			&& ((PortugueseName) obj).value.equals(value);
+		return obj instanceof Text
+			&& ((Text) obj).value.equals(value);
 	}
 
 	@Override

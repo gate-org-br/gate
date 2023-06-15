@@ -40,7 +40,7 @@ public class Auth extends HttpServlet
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			try
 			{
@@ -66,7 +66,7 @@ public class Auth extends HttpServlet
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 
 			String authHeader = request.getHeader("Authorization");
