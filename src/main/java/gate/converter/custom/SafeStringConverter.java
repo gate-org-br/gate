@@ -4,7 +4,7 @@ import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.PortugueseName;
+import gate.type.SafeString;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +12,11 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PortugueseNameConverter implements Converter
+public class SafeStringConverter implements Converter
 {
+
+	public static final java.util.regex.Pattern PATTERN
+		= java.util.regex.Pattern.compile("^[^<>\"'\\\\]*$");
 
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
@@ -27,7 +30,7 @@ public class PortugueseNameConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			return PortugueseName.valueOf(string);
+			return SafeString.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(ex, ex.getMessage());
@@ -61,14 +64,14 @@ public class PortugueseNameConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Nome válido.";
+		return "Safe string to avoid injection attacks.";
 	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(PortugueseName.PATTERN.toString()));
+		constraints.add(new Pattern.Implementation(PATTERN));
 		return constraints;
 	}
 
@@ -76,21 +79,21 @@ public class PortugueseNameConverter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseName.valueOf(value);
+		return rs.wasNull() ? null : SafeString.valueOf(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseName.valueOf(value);
+		return rs.wasNull() ? null : SafeString.valueOf(value);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, ((PortugueseName) value).getValue());
+			ps.setString(fields++, ((SafeString) value).toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;

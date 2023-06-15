@@ -18,7 +18,7 @@ public class PortugueseName
 		this.value = value;
 	}
 
-	public static PortugueseName of(String value)
+	public static PortugueseName valueOf(String value)
 	{
 		if (value == null)
 			throw new IllegalArgumentException(value + " is not a valid portuguese name");
