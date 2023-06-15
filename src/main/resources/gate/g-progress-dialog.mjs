@@ -62,10 +62,10 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 			commit.innerHTML = "Ok";
 			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--question1');
-			commit.onclick = close.onclick = event =>
+			commit.onclick = close.onclick = click =>
 			{
-				event.preventDefault();
-				event.stopPropagation();
+				click.preventDefault();
+				click.stopPropagation();
 				this.hide();
 			};
 		});
@@ -77,10 +77,10 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 			commit.innerHTML = "OK";
 			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--error1');
-			commit.onclick = close.onclick = event =>
+			commit.onclick = close.onclick = click =>
 			{
-				event.preventDefault();
-				event.stopPropagation();
+				click.preventDefault();
+				click.stopPropagation();
 				this.hide();
 			};
 		});
@@ -91,10 +91,10 @@ customElements.define('g-progress-dialog', class extends GWindow
 				return;
 
 			commit.innerHTML = "Ok";
-			commit.onclick = close.onclick = event =>
+			commit.onclick = close.onclick = click =>
 			{
-				event.preventDefault();
-				event.stopPropagation();
+				click.preventDefault();
+				click.stopPropagation();
 
 				this.hide();
 				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
