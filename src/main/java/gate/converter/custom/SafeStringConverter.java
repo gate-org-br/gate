@@ -15,9 +15,6 @@ import java.util.List;
 public class SafeStringConverter implements Converter
 {
 
-	public static final java.util.regex.Pattern PATTERN
-		= java.util.regex.Pattern.compile("^[^<>\"'\\\\]*$");
-
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
@@ -71,7 +68,7 @@ public class SafeStringConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(PATTERN));
+		constraints.add(new Pattern.Implementation("^[^<>\"'\\\\]*$"));
 		return constraints;
 	}
 

@@ -1,7 +1,6 @@
 package gate.lang.csv;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.Assert;
@@ -137,24 +136,4 @@ public class CSVParserTest
 			Assert.assertEquals(List.of("Marie", "Anderson", "true"), lines.get(index++));
 		}
 	}
-
-	@Test
-	public void testCSVIterator() throws IOException
-	{
-		try (CSVParser parser = CSVParser.of(getClass().getResource("CSVParserTest/csv.csv")))
-		{
-			List<List<String>> lines
-				= new ArrayList<>();
-			for (List<String> line : parser)
-				lines.add(line);
-
-			Assert.assertEquals(3, lines.size());
-
-			int index = 0;
-			Assert.assertEquals(List.of("Jonh Matheus", "Davis", "true"), lines.get(index++));
-			Assert.assertEquals(List.of("Paul", "Richard\"", "false"), lines.get(index++));
-			Assert.assertEquals(List.of("Marie", "Anderson", "true"), lines.get(index++));
-		}
-	}
-
 }
