@@ -61,7 +61,13 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
 
 		StringJoiner body = new StringJoiner(System.lineSeparator());
-		body.add("<option></option>");
+
+		if (element.hasAttribute("g:empty"))
+		{
+			Object empty = expression.evaluate(element.getAttributeValue("g:empty"));
+			body.add("<option value=''>" + empty + "</option>");
+		} else
+			body.add("<option></option>");
 
 		Function<Object, Object> groups = extract(element, handler, "g:groups").map(expression::function).orElse(null);
 		if (groups != null)

@@ -68,7 +68,13 @@ public class SelectProcessor extends PropertyProcessor
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");
-		string.add("<option></option>");
+
+		Object empty = attributes.remove("empty");
+		if (empty == null)
+			empty = "";
+		else
+			empty = expression.evaluate((String) empty);
+		string.add("<option value=''>" + empty + "</option>");
 
 		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
 		if (groups != null)
