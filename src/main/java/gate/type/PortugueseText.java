@@ -1,32 +1,31 @@
 package gate.type;
 
 import gate.annotation.Converter;
-import gate.converter.custom.PortugueseNameConverter;
-import gate.language.Language;
+import gate.converter.custom.PortugueseTextConverter;
 import java.util.regex.Pattern;
 
-@Converter(PortugueseNameConverter.class)
-public class PortugueseName implements Comparable<PortugueseName>
+@Converter(PortugueseTextConverter.class)
+public class PortugueseText
 {
 
 	private final String value;
-	public static final Pattern PATTERN = Pattern.compile("^[0123456789ºªa-zA-ZàÀáÁâÂãÃéÉêÊíÍóÓôÔõÕúÚçÇ&., ]*$");
+	public static final Pattern PATTERN
+		= Pattern.compile("^[0123456789ºªa-zA-ZàÀáÁâÂãÃéÉêÊíÍóÓôÔõÕúÚçÇ&., \n\r\t]*$");
 
-	private PortugueseName(String value)
+	private PortugueseText(String value)
 	{
 		this.value = value;
 	}
 
-	public static PortugueseName valueOf(String value)
+	public static PortugueseText valueOf(String value)
 	{
-
 		if (value == null)
-			throw new IllegalArgumentException(value + " is not a valid portuguese name");
+			throw new IllegalArgumentException(value + " is not a valid portuguese  text");
 		value = value.chars()
-			.filter(e -> PortugueseName.validate(e))
+			.filter(e -> PortugueseText.validate(e))
 			.collect(StringBuilder::new, StringBuilder::appendCodePoint,
 				StringBuilder::append).toString();
-		return new PortugueseName(Language.PORTUGUESE.capitalize(value));
+		return new PortugueseText(value);
 	}
 
 	public String getValue()
@@ -43,20 +42,14 @@ public class PortugueseName implements Comparable<PortugueseName>
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof PortugueseName
-			&& ((PortugueseName) obj).value.equals(value);
+		return obj instanceof PortugueseText
+			&& ((PortugueseText) obj).value.equals(value);
 	}
 
 	@Override
 	public String toString()
 	{
 		return value;
-	}
-
-	@Override
-	public int compareTo(PortugueseName o)
-	{
-		return value.compareTo(o.value);
 	}
 
 	private static boolean validate(int c)
@@ -152,6 +145,9 @@ public class PortugueseName implements Comparable<PortugueseName>
 			|| c == 'º'
 			|| c == 'ª'
 			|| c == '.'
-			|| c == ',';
+			|| c == ','
+			|| c == '\n'
+			|| c == '\r'
+			|| c == '\t';
 	}
 }
