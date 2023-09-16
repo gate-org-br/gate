@@ -41,7 +41,7 @@ class Column
 	}
 }
 
-customElements.define('g-grid', class extends HTMLElement
+export default class GGrid extends HTMLElement
 {
 	constructor()
 	{
@@ -58,7 +58,6 @@ customElements.define('g-grid', class extends HTMLElement
 		this.addEventListener("change", () => this.connectedCallback());
 
 		let input = this.shadowRoot.getElementById("input");
-		let section = this.shadowRoot.querySelector("section");
 		input.addEventListener("input", () =>
 		{
 			let rows = this.rows;
@@ -76,6 +75,17 @@ customElements.define('g-grid', class extends HTMLElement
 	get columns()
 	{
 		return Array.from(this._private.columns.values());
+	}
+
+	set columns(values)
+	{
+		let header = this.shadowRoot
+			.querySelector("g-grid-header");
+		while (header.firstChild)
+			header.firstChild.remove();
+
+		values.forEach((header, index) =>
+			this.column(index).header.value = header);
 	}
 
 	column(index)
@@ -117,6 +127,48 @@ customElements.define('g-grid', class extends HTMLElement
 			this.setAttribute("movable", "");
 		else
 			this.removeAttribute("movable");
+	}
+
+	set rows(values)
+	{
+		let section = this.shadowRoot.querySelector("section");
+		while (section.firstChild)
+			section.firstChild.remove();
+
+		if (values.length)
+			if (Array.isArray(values[0]))
+			{
+				values.forEach(value =>
+				{
+					let row = this.row();
+					row.value = value;
+					value.forEach(e => row.cell().value = e);
+				});
+			} else
+			{
+				values.forEach(value =>
+				{
+					let row = this.row();
+					row.value = value;
+
+					let keys = Object.keys(value);
+					if (keys.length === 2
+						&& keys.includes("label")
+						&& keys.includes("value"))
+						row.cell().value = value.label;
+					else if (keys.length === 3
+						&& keys.includes("label")
+						&& keys.includes("value")
+						&& keys.includes("properties"))
+						row.cell().value = value.properties;
+					else
+						row.cell().value = keys.reduce((val, key) =>
+						{
+							val[key] = value[key];
+							return val;
+						}, {});
+				});
+			}
 	}
 
 	set dataset(values)
@@ -190,4 +242,6 @@ customElements.define('g-grid', class extends HTMLElement
 			this.shadowRoot.querySelector("aside").style.display = "";
 		}
 	}
-});
+}
+
+customElements.define('g-grid', GGrid);
