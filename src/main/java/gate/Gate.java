@@ -3,9 +3,9 @@ package gate;
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
+import gate.authenticator.Authenticator;
 import gate.base.Screen;
 import gate.catcher.Catcher;
-import gate.entity.Org;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.AuthenticationException;
@@ -30,7 +30,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -42,7 +41,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -52,10 +50,6 @@ public class Gate extends HttpServlet
 
 	static final String HTML = "/views/Gate.html";
 	private static final long serialVersionUID = 1L;
-
-	@Inject
-	@Current
-	Org org;
 
 	@Inject
 	Logger logger;
@@ -75,8 +69,10 @@ public class Gate extends HttpServlet
 	Instance<Catcher> catchers;
 
 	@Inject
-	@ConfigProperty(name = "gate.developer")
-	Optional<String> developer;
+	@Current
+	private Authenticator authenticator;
+
+	final String developer = System.getProperty("gate.developer");
 
 	static
 	{
@@ -108,6 +104,32 @@ public class Gate extends HttpServlet
 			request.setAttribute("MODULE", MODULE);
 			request.setAttribute("SCREEN", SCREEN);
 
+			User user = null;
+
+			if (Credentials.isPresent(httpServletRequest))
+			{
+				user = Credentials.of(request).orElseThrow();
+				request.setAttribute(User.class.getName(), user);
+			} else if (request.getSession(false) != null)
+			{
+				user = (User) request.getSession()
+					.getAttribute(User.class.getName());
+			} else
+			{
+				Object result = authenticator
+					.authenticate(httpServletRequest, response);
+				if (result instanceof User)
+				{
+					user = (User) result;
+					event.fireAsync(new LoginEvent(user));
+					request.getSession().setAttribute(User.class.getName(), user);
+				} else if (result instanceof String)
+				{
+					response.sendRedirect((String) result);
+					return;
+				}
+			}
+
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
 
 			{
@@ -117,39 +139,9 @@ public class Gate extends HttpServlet
 					.handle(httpServletRequest, response, HTML);
 			} else
 			{
-				User user = null;
-
-				if (Credentials.isPresent(httpServletRequest))
+				if (user == null && developer != null)
 				{
-					user = Credentials.of(request).orElseThrow();
-					request.setAttribute(User.class.getName(), user);
-				}
-
-				if (user == null && Toolkit.notEmpty(request.getParameter("$username"), request.getParameter("$password")))
-				{
-					user = control.select(org, request.getParameter("$username"),
-						request.getParameter("$password"));
-					request.getSession().setAttribute(User.class.getName(), user);
-					event.fireAsync(new LoginEvent(user));
-				}
-
-				if (user == null && httpServletRequest.getUserPrincipal() != null
-					&& !Toolkit.isEmpty(httpServletRequest.getUserPrincipal().getName()))
-				{
-					user = control.select(httpServletRequest.getUserPrincipal().getName());
-					request.getSession().setAttribute(User.class.getName(), user);
-					event.fireAsync(new LoginEvent(user));
-				}
-
-				if (user == null && request.getSession(false) != null)
-				{
-					user = (User) request.getSession()
-						.getAttribute(User.class.getName());
-				}
-
-				if (user == null && developer.isPresent())
-				{
-					user = control.select(developer.orElseThrow());
+					user = control.select(developer);
 					request.getSession().setAttribute(User.class.getName(), user);
 					event.fireAsync(new LoginEvent(user));
 				}

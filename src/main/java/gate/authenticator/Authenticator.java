@@ -1,43 +1,22 @@
 package gate.authenticator;
 
 import gate.error.AuthenticatorException;
+import gate.error.DefaultPasswordException;
+import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
-import gate.type.collections.StringList;
-import java.util.Iterator;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface Authenticator
 {
 
-	void authenticate(String server,
-		String username,
-		String password) throws
-		InvalidUsernameException,
+	public Object authenticate(HttpServletRequest request,
+		HttpServletResponse response)
+		throws AuthenticatorException,
 		InvalidPasswordException,
-		AuthenticatorException;
-
-	default void authenticate(StringList servers, String username,
-		String password) throws
 		InvalidUsernameException,
-		InvalidPasswordException,
-		AuthenticatorException
-	{
-		Iterator<String> iter
-			= servers.iterator();
+		DefaultPasswordException,
+		HierarchyException;
 
-		while (iter.hasNext())
-		{
-			String server = iter.next();
-			try
-			{
-				authenticate(server, username, password);
-				return;
-			} catch (AuthenticatorException ex)
-			{
-				if (!iter.hasNext())
-					throw ex;
-			}
-
-		}
-	}
 }
