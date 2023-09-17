@@ -104,46 +104,43 @@ public class Gate extends HttpServlet
 			request.setAttribute("MODULE", MODULE);
 			request.setAttribute("SCREEN", SCREEN);
 
-			User user = null;
-
-			if (Credentials.isPresent(httpServletRequest))
-			{
-				user = Credentials.of(request).orElseThrow();
-				request.setAttribute(User.class.getName(), user);
-			} else if (request.getSession(false) != null)
-			{
-				user = (User) request.getSession()
-					.getAttribute(User.class.getName());
-			} else
-			{
-				Object result = authenticator
-					.authenticate(httpServletRequest, response);
-				if (result instanceof User)
-				{
-					user = (User) result;
-					event.fireAsync(new LoginEvent(user));
-					request.getSession().setAttribute(User.class.getName(), user);
-				} else if (result instanceof String)
-				{
-					response.sendRedirect((String) result);
-					return;
-				}
-			}
-
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
-
 			{
 				if (request.getSession(false) != null)
 					request.getSession().invalidate();
-				handlers.select(HTMLCommandHandler.class).get()
-					.handle(httpServletRequest, response, HTML);
+
+				String provider = authenticator
+					.provider(httpServletRequest, response);
+				if (provider != null)
+					response.sendRedirect(provider);
+				else
+					handlers.select(HTMLCommandHandler.class).get()
+						.handle(httpServletRequest, response, HTML);
 			} else
 			{
-				if (user == null && developer != null)
+				User user;
+
+				if (Credentials.isPresent(httpServletRequest))
 				{
-					user = control.select(developer);
-					request.getSession().setAttribute(User.class.getName(), user);
-					event.fireAsync(new LoginEvent(user));
+					user = Credentials.of(request).orElseThrow();
+					request.setAttribute(User.class.getName(), user);
+				} else if (request.getSession(false) != null)
+				{
+					user = (User) request.getSession()
+						.getAttribute(User.class.getName());
+				} else
+				{
+					user = authenticator.authenticate(httpServletRequest, response);
+					if (user != null)
+					{
+						event.fireAsync(new LoginEvent(user));
+						request.getSession().setAttribute(User.class.getName(), user);
+					} else if (developer != null)
+					{
+						user = control.select(developer);
+						event.fireAsync(new LoginEvent(user));
+						request.getSession().setAttribute(User.class.getName(), user);
+					}
 				}
 
 				Call call = Call.of(MODULE, SCREEN, ACTION);

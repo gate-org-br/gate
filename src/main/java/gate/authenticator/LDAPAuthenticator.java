@@ -50,7 +50,13 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public Object authenticate(HttpServletRequest request, HttpServletResponse response)
+	public String provider(HttpServletRequest request, HttpServletResponse response)
+	{
+		return null;
+	}
+
+	@Override
+	public User authenticate(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException
 	{
 

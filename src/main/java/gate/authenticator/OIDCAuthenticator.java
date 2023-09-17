@@ -1,6 +1,7 @@
 package gate.authenticator;
 
 import gate.GateControl;
+import gate.entity.User;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
@@ -31,6 +32,12 @@ public class OIDCAuthenticator implements Authenticator
 		this.client_secret = client_secret;
 	}
 
+	@Override
+	public String provider(HttpServletRequest request, HttpServletResponse response)
+	{
+		return null;
+	}
+
 	public static OIDCAuthenticator of(GateControl control)
 	{
 		String provider = System.getProperty("gate.auth.oidc.provider", System.getenv("gate.auth.oidc.provider"));
@@ -53,7 +60,7 @@ public class OIDCAuthenticator implements Authenticator
 	}
 
 	@Override
-	public Object authenticate(HttpServletRequest request, HttpServletResponse response)
+	public User authenticate(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticatorException, InvalidPasswordException,
 		InvalidUsernameException, HierarchyException, DefaultPasswordException
 	{

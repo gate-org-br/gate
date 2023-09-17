@@ -29,7 +29,13 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
-	public Object authenticate(HttpServletRequest request,
+	public String provider(HttpServletRequest request, HttpServletResponse response)
+	{
+		return null;
+	}
+
+	@Override
+	public User authenticate(HttpServletRequest request,
 		HttpServletResponse response)
 		throws AuthenticatorException,
 		InvalidPasswordException,
