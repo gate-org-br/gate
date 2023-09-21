@@ -171,17 +171,20 @@ public class Gate extends HttpServlet
 			}
 
 		} catch (DefaultPasswordException
-			| AuthenticatorException
 			| InvalidUsernameException
-			| InvalidPasswordException
-			| UnauthorizedException
-			| ForbiddenException ex)
+			| InvalidPasswordException ex)
 		{
-			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
+			httpServletRequest.setAttribute("messages",
+				Collections.singletonList(ex.getMessage()));
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, HTML);
-		} catch (HierarchyException | BadRequestException
-			| UnsupportedEncodingException | AuthenticationException
+		} catch (HierarchyException
+			| BadRequestException
+			| AuthenticatorException
+			| UnsupportedEncodingException
+			| AuthenticationException
+			| UnauthorizedException
+			| ForbiddenException
 			| RuntimeException ex)
 		{
 			var type = Catcher.getCatcher(ex.getClass());

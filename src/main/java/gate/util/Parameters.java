@@ -80,6 +80,12 @@ public class Parameters extends LinkedHashMap<String, Object>
 		return this;
 	}
 
+	public Parameters set(String name, Object value)
+	{
+		put(name, value);
+		return this;
+	}
+
 	public static Parameters parse(String string)
 	{
 		return new Parameters().put(string);

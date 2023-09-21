@@ -18,30 +18,24 @@ public class SecuritySessionsTest
 	@Test
 	public void testCreateAndCheckSession()
 	{
-		SecuritySessions.SecuritySession session = securitySessions.create();
+		String session = securitySessions.create();
 		Assert.assertNotNull(session);
-		Assert.assertTrue(securitySessions.check(session.state().toString(),
-			session.nonce().toString()));
-		Assert.assertFalse(securitySessions.check(session.state().toString(),
-			session.nonce().toString()));
+		Assert.assertTrue(securitySessions.check(session));
 	}
 
 	@Test
 	public void testCreateAndCheckInvalidSession()
 	{
-		SecuritySessions.SecuritySession session = securitySessions.create();
-
+		String session = securitySessions.create();
 		Assert.assertNotNull(session);
-		Assert.assertFalse(securitySessions.check(session.state().toString(),
-			session.state().toString()));
+		Assert.assertFalse(securitySessions.check("invalid"));
 	}
 
 	@Test
 	public void testTimeout() throws InterruptedException
 	{
-		SecuritySessions.SecuritySession session = securitySessions.create();
+		String session = securitySessions.create();
 		Thread.sleep(200);
-		Assert.assertFalse(securitySessions.check(session.state().toString(),
-			session.nonce().toString()));
+		Assert.assertFalse(securitySessions.check(session));
 	}
 }

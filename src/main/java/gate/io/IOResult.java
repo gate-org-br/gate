@@ -1,6 +1,8 @@
 package gate.io;
 
+import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
 import gate.stream.CheckedConsumer;
 import gate.stream.CheckedPredicate;
 import java.io.IOException;
@@ -69,6 +71,16 @@ public interface IOResult
 	default Optional<JsonElement> readJsonElement() throws IOException
 	{
 		return read(JsonElementReader.getInstance());
+	}
+
+	default Optional<JsonObject> readJsonObject() throws IOException
+	{
+		return read(JsonObjectReader.getInstance());
+	}
+
+	default Optional<JsonArray> readJsonArray() throws IOException
+	{
+		return read(JsonArrayReader.getInstance());
 	}
 
 	default String readString() throws IOException

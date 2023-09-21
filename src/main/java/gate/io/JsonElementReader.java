@@ -18,8 +18,7 @@ public class JsonElementReader extends AbstractReader<Optional<JsonElement>>
 {
 
 	private static final JsonElementReader INSTANCE = new JsonElementReader();
-	private static final ConcurrentMap<String, JsonElementReader> INSTANCES
-		= new ConcurrentHashMap<String, JsonElementReader>();
+	private static final ConcurrentMap<String, JsonElementReader> INSTANCES = new ConcurrentHashMap<>();
 
 	private JsonElementReader()
 	{

@@ -169,20 +169,6 @@ public class URL
 		return this;
 	}
 
-	private static byte[] getBytes(List<Parameter> parameters) throws IOException
-	{
-		StringBuilder string = new StringBuilder();
-		for (Parameter parameter : parameters)
-		{
-			if (string.length() != 0)
-				string.append("&");
-			string.append(URLEncoder.encode(parameter.getName(), "UTF-8"));
-			string.append("=");
-			string.append(URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8"));
-		}
-		return string.toString().getBytes("UTF-8");
-	}
-
 	public URLResult get() throws IOException
 	{
 		java.net.URL url = new java.net.URL(toString());
@@ -203,7 +189,7 @@ public class URL
 		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
-			try ( BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
 					line != null;
@@ -218,7 +204,24 @@ public class URL
 
 	public URLResult post(List<Parameter> parameters) throws IOException
 	{
-		byte[] bytes = getBytes(parameters);
+		StringJoiner string = new StringJoiner("&");
+		for (Parameter parameter : parameters)
+		{
+			String key = URLEncoder.encode(parameter.getName(), "UTF-8");
+			String val = URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8");
+			string.add(key + "=" + val);
+		}
+
+		return post("application/x-www-form-urlencoded", string.toString().getBytes("UTF-8"));
+	}
+
+	public URLResult post(Parameters parameters) throws IOException
+	{
+		return post("application/x-www-form-urlencoded", parameters.toEncodedString().getBytes());
+	}
+
+	public URLResult post(String contentType, byte[] bytes) throws IOException
+	{
 
 		java.net.URL url = new java.net.URL(toString());
 
@@ -233,13 +236,13 @@ public class URL
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
-		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		connection.setRequestProperty("Content-Type", contentType);
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
 
 		connection.connect();
 
-		try ( DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
+		try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
 		{
 			wr.write(bytes);
 			wr.flush();
@@ -248,7 +251,7 @@ public class URL
 		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
-			try ( BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
 			{
 				for (String line = in.readLine();
 					line != null;
@@ -321,7 +324,7 @@ public class URL
 		@Override
 		public <T> T read(Reader<T> loader) throws IOException
 		{
-			try ( InputStream stream = connection.getInputStream())
+			try (InputStream stream = connection.getInputStream())
 			{
 				return loader.read(stream);
 			}
@@ -330,7 +333,7 @@ public class URL
 		@Override
 		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
 		{
-			try ( InputStream stream = connection.getInputStream())
+			try (InputStream stream = connection.getInputStream())
 			{
 				return processor.process(stream);
 			}

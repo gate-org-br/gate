@@ -5,6 +5,7 @@ import gate.authenticator.Authenticator;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
+import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.io.Credentials;
 import java.io.IOException;
@@ -48,7 +49,8 @@ public class Auth extends HttpServlet
 						"Attempt to login without provinding valid credentials"));
 			} catch (AuthenticationException
 				| AuthenticatorException
-				| HierarchyException ex)
+				| HierarchyException
+				| BadRequestException ex)
 			{
 				writer.write(String.format("{status: 'error', value: '%s'}",
 					ex.getMessage()));
@@ -76,7 +78,7 @@ public class Auth extends HttpServlet
 					writer.write(credentials);
 				} else
 					throw new AuthenticationException("Attempt to login without provinding valid credentials");
-			} catch (AuthenticationException ex)
+			} catch (AuthenticationException | BadRequestException ex)
 			{
 				response.setStatus(400);
 				writer.write(ex.getMessage());

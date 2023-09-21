@@ -9,7 +9,7 @@ public class SecuritySessions
 {
 
 	private final long timeout;
-	private final Map<String, SecuritySession> sessions = new ConcurrentHashMap<>();
+	private final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
 	private SecuritySessions(long timeout)
 	{
@@ -21,99 +21,67 @@ public class SecuritySessions
 		return new SecuritySessions(timeout);
 	}
 
-	public SecuritySession create()
+	public String create()
 	{
 		timeout();
-		SecuritySession securitySession = SecuritySession.create();
-		sessions.put(securitySession.state().toString(), securitySession);
-		return securitySession;
+		Session session = Session.create();
+		String token = session.toString();
+		sessions.put(token, session);
+		return token;
 	}
 
-	public boolean check(String state, String nonce)
+	public boolean check(String token)
 	{
 		timeout();
-		SecuritySession session = sessions.remove(state);
-		return session != null && session.nonce().toString().equals(nonce);
+		return sessions.remove(token) != null;
 	}
 
 	public void timeout()
 	{
 		long timestamp = System.currentTimeMillis();
-		sessions.entrySet().removeIf(e -> timestamp - e.getValue().state().timestamp() > timeout);
+		sessions.entrySet().removeIf(e -> timestamp - e.getValue().timestamp() > timeout);
 	}
 
-	public static class SecuritySession
+	public static class Session
 	{
 
-		private final Token state;
-		private final Token nonce;
+		private final String uuid;
+		private final long timestamp;
+		private final long sequence;
+		private final static AtomicLong SEQUENCER = new AtomicLong();
 
-		private static final AtomicLong sequencer = new AtomicLong();
-
-		private SecuritySession(Token state, Token nonce)
+		public static Session create()
 		{
-			this.state = state;
-			this.nonce = nonce;
+			return new Session(UUID.randomUUID().toString(),
+				System.currentTimeMillis(), SEQUENCER.incrementAndGet());
 		}
 
-		public static SecuritySession create()
+		private Session(String uuid, long timestamp, long sequence)
 		{
-			long sequence = sequencer.incrementAndGet();
-			long timestamp = System.currentTimeMillis();
-			return new SecuritySession(Token.create(timestamp, sequence),
-				Token.create(timestamp, sequence));
+			this.uuid = uuid;
+			this.timestamp = timestamp;
+			this.sequence = sequence;
 		}
 
-		public Token state()
+		public String uuid()
 		{
-			return state;
+			return uuid;
 		}
 
-		public Token nonce()
+		public long timestamp()
 		{
-			return nonce;
+			return timestamp;
 		}
 
-		public static class Token
+		public long sequence()
 		{
+			return sequence;
+		}
 
-			private final String uuid;
-			private final long timestamp;
-			private final long sequence;
-
-			private Token(String uuid, long timestamp, long sequence)
-			{
-				this.uuid = uuid;
-				this.timestamp = timestamp;
-				this.sequence = sequence;
-			}
-
-			private static Token create(long timestamp, long sequence)
-			{
-				return new Token(UUID.randomUUID().toString(),
-					timestamp, sequence);
-			}
-
-			public String uuid()
-			{
-				return uuid;
-			}
-
-			public long timestamp()
-			{
-				return timestamp;
-			}
-
-			public long sequence()
-			{
-				return sequence;
-			}
-
-			@Override
-			public String toString()
-			{
-				return String.format("%s-%d-%d", uuid, timestamp, sequence);
-			}
+		@Override
+		public String toString()
+		{
+			return String.format("%s-%d-%d", uuid, timestamp, sequence);
 		}
 	}
 }
