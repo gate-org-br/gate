@@ -1,9 +1,9 @@
 package gate.annotation;
 
 import gate.constraint.Required;
-import gate.error.ConversionException;
 import gate.error.BadRequestException;
-import gate.util.ScreenServletRequest;
+import gate.error.ConversionException;
+import gate.http.ScreenServletRequest;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.annotation.ElementType;

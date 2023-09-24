@@ -10,13 +10,13 @@ import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.error.NoSuchPropertyError;
 import gate.error.UncheckedConversionException;
+import gate.http.ScreenServletRequest;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
 import gate.util.Reflection;
-import gate.util.ScreenServletRequest;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.inject.spi.Unmanaged;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
@@ -37,7 +36,7 @@ public abstract class Screen extends Base
 	private Integer pageSize;
 	private Integer pageIndx;
 	private List<String> messages;
-	private HttpServletRequest request;
+	private ScreenServletRequest request;
 	private HttpServletResponse response;
 
 	public static Screen create(Class<Screen> clazz)
@@ -54,7 +53,7 @@ public abstract class Screen extends Base
 		}
 	}
 
-	public void prepare(HttpServletRequest request, HttpServletResponse response) throws BadRequestException
+	public void prepare(ScreenServletRequest request, HttpServletResponse response) throws BadRequestException
 	{
 		this.request = request;
 		this.response = response;
@@ -157,7 +156,7 @@ public abstract class Screen extends Base
 
 	public ScreenServletRequest getRequest()
 	{
-		return (ScreenServletRequest) request;
+		return request;
 	}
 
 	public HttpServletResponse getResponse()

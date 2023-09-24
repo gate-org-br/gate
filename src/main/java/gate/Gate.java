@@ -21,8 +21,8 @@ import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.handler.IntegerHandler;
+import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.util.ScreenServletRequest;
 import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -107,10 +107,18 @@ public class Gate extends HttpServlet
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
 			{
 				if (request.getSession(false) != null)
+				{
 					request.getSession().invalidate();
+					String logoutUri = authenticator.logoutUri(request);
+					if (logoutUri != null)
+					{
+						response.sendRedirect(logoutUri);
+						return;
+					}
+				}
 
 				String provider = authenticator
-					.provider(httpServletRequest, response);
+					.provider(request, response);
 				if (provider != null)
 					response.sendRedirect(provider);
 				else
@@ -131,14 +139,9 @@ public class Gate extends HttpServlet
 						.getAttribute(User.class.getName());
 				} else if (!call.isPublic())
 				{
-					user = authenticator.authenticate(httpServletRequest, response);
+					user = authenticator.authenticate(request, response);
 					if (user != null)
 					{
-						event.fireAsync(new LoginEvent(user));
-						request.getSession().setAttribute(User.class.getName(), user);
-					} else if (developer != null)
-					{
-						user = control.select(developer);
 						event.fireAsync(new LoginEvent(user));
 						request.getSession().setAttribute(User.class.getName(), user);
 					}

@@ -7,10 +7,9 @@ import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
+import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import gate.util.SystemProperty;
-import java.nio.charset.Charset;
-import java.util.Base64;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
@@ -21,7 +20,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class LDAPAuthenticator implements Authenticator
@@ -29,6 +27,7 @@ public class LDAPAuthenticator implements Authenticator
 
 	private final String server;
 	private final GateControl control;
+	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	private LDAPAuthenticator(GateControl control, String server)
 	{
@@ -48,40 +47,22 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public String provider(HttpServletRequest request, HttpServletResponse response)
+	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
 		return null;
 	}
 
 	@Override
-	public User authenticate(HttpServletRequest request, HttpServletResponse response)
-		throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException
+	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
+		throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException, gate.error.AuthenticationException
 	{
 
-		String username = request.getParameter("$username");
-		String password = request.getParameter("$password");
+		var authorization = request.getBasicAuthorization().orElse(null);
 
-		if (username == null && password == null)
-		{
-			String authHeader = request.getHeader("Authorization");
-			if (authHeader != null && authHeader.startsWith("Basic"))
-			{
-				String encoded = authHeader.substring("Basic".length()).trim();
-				String decoded = new String(Base64.getDecoder().decode(encoded),
-					Charset.forName("UTF-8"));
-				int index = decoded.indexOf(":");
-				username = decoded.substring(0, index);
-				password = decoded.substring(index + 1);
-			}
-		}
+		if (authorization == null)
+			return developer != null ? control.select(developer) : null;
 
-		if (username == null || username.isBlank())
-			throw new InvalidUsernameException();
-
-		if (password == null || password.isBlank())
-			throw new InvalidPasswordException();
-
-		User user = control.select(username);
+		User user = control.select(authorization.username());
 
 		try
 		{
@@ -98,7 +79,7 @@ public class LDAPAuthenticator implements Authenticator
 				NamingEnumeration<SearchResult> enumeration
 					= serverContext.search("", "(|(cn={0})(mail={1}))", new Object[]
 					{
-						username, username
+						authorization.username(), authorization.username()
 				}, controls);
 
 				if (enumeration.hasMore())
@@ -107,7 +88,7 @@ public class LDAPAuthenticator implements Authenticator
 					{
 						String dn = enumeration.next().getNameInNamespace();
 						parameters.put(Context.SECURITY_PRINCIPAL, dn);
-						parameters.put(Context.SECURITY_CREDENTIALS, password);
+						parameters.put(Context.SECURITY_CREDENTIALS, authorization.password());
 						parameters.put(Context.SECURITY_AUTHENTICATION, "simple");
 						DirContext authContext = new InitialDirContext(parameters);
 						authContext.close();
@@ -117,11 +98,11 @@ public class LDAPAuthenticator implements Authenticator
 					}
 				} else
 				{
-					if (username.equals(password))
+					if (authorization.username().equals(authorization.password()))
 						throw new DefaultPasswordException();
 
-					password = MD5.digest(password).toString();
-					if (!password.equals(user.getPassword()))
+					if (!MD5.digest(authorization.password())
+						.toString().equals(user.getPassword()))
 						throw new InvalidPasswordException();
 				}
 
@@ -142,5 +123,11 @@ public class LDAPAuthenticator implements Authenticator
 			else
 				throw new AuthenticatorException(ex);
 		}
+	}
+
+	@Override
+	public String logoutUri(gate.http.ScreenServletRequest request)
+	{
+		return null;
 	}
 }

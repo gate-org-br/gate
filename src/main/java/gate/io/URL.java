@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.handler.URLHandler;
+import gate.http.Authorization;
 import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
@@ -47,6 +48,7 @@ public class URL
 	private boolean trust = false;
 	private int timeout = INFINITE;
 	private final Parameters parameters;
+	private Authorization authorization;
 
 	private static final TrustManager[] TRUST_MANAGERS = new TrustManager[]
 	{
@@ -169,6 +171,12 @@ public class URL
 		return this;
 	}
 
+	public URL setAuthorization(Authorization authorization)
+	{
+		this.authorization = authorization;
+		return this;
+	}
+
 	public URLResult get() throws IOException
 	{
 		java.net.URL url = new java.net.URL(toString());
@@ -178,6 +186,8 @@ public class URL
 
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
+		else if (authorization != null)
+			connection.setRequestProperty("Authorization", authorization.toString());
 
 		connection.setConnectTimeout(timeout);
 		connection.setReadTimeout(timeout);
@@ -186,7 +196,7 @@ public class URL
 		connection.setRequestMethod("GET");
 
 		connection.connect();
-		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
+		if (connection.getResponseCode() < 200 || connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
@@ -239,6 +249,8 @@ public class URL
 		connection.setRequestProperty("Content-Type", contentType);
 		if (credentials != null)
 			connection.setRequestProperty("Authorization", "Bearer " + credentials);
+		else if (authorization != null)
+			connection.setRequestProperty("Authorization", authorization.toString());
 
 		connection.connect();
 
@@ -248,7 +260,7 @@ public class URL
 			wr.flush();
 		}
 
-		if (connection.getResponseCode() < 200 && connection.getResponseCode() > 299)
+		if (connection.getResponseCode() < 200 || connection.getResponseCode() > 299)
 		{
 			StringBuilder response = new StringBuilder();
 			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))

@@ -8,16 +8,16 @@ import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
-import javax.servlet.http.HttpServletRequest;
+import gate.http.ScreenServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface Authenticator
 {
 
-	public String provider(HttpServletRequest request,
+	public String provider(ScreenServletRequest request,
 		HttpServletResponse response) throws AuthenticatorException;
 
-	public User authenticate(HttpServletRequest request,
+	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
 		throws AuthenticationException,
 		InvalidPasswordException,
@@ -26,4 +26,5 @@ public interface Authenticator
 		HierarchyException,
 		BadRequestException;
 
+	public String logoutUri(ScreenServletRequest request);
 }

@@ -1,9 +1,9 @@
 package gate.annotation;
 
 import gate.constraint.Required;
-import gate.error.ConversionException;
 import gate.error.BadRequestException;
-import gate.util.ScreenServletRequest;
+import gate.error.ConversionException;
+import gate.http.ScreenServletRequest;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

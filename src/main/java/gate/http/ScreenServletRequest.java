@@ -1,10 +1,13 @@
-package gate.util;
+package gate.http;
 
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
+import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.error.InvalidCredentialsException;
+import gate.error.InvalidPasswordException;
+import gate.error.InvalidUsernameException;
 import gate.io.Credentials;
 import gate.policonverter.Policonverter;
 import java.io.BufferedReader;
@@ -14,6 +17,7 @@ import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -21,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +37,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 {
 
 	private Collection<Part> parts;
+	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
+	private static final Pattern BASIC_AUTHORIZATION = Pattern.compile("(.*)[:](.*)");
 
 	public ScreenServletRequest(HttpServletRequest request)
 	{
@@ -137,8 +145,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public String getBody()
 	{
-		try ( BufferedReader reader = this.getReader();
-			 StringWriter string = new StringWriter())
+		try (BufferedReader reader = this.getReader();
+			StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -147,11 +155,60 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		{
 			throw new UncheckedIOException(ex);
 		}
+
 	}
 
 	public <T> T getBody(Class<T> type) throws ConversionException
 	{
 		return (T) Converter.getConverter(type)
 			.ofString(type, ScreenServletRequest.this.getBody());
+	}
+
+	public Optional<Authorization> getAuthorization() throws AuthenticationException
+	{
+		String header = getHeader("Authorization");
+		if (header == null)
+			return Optional.empty();
+
+		Matcher authorization = AUTHORIZATION.matcher(header);
+		if (!authorization.matches())
+			throw new AuthenticationException("Invalid authorization header");
+
+		String type = authorization.group(1);
+		switch (type.toUpperCase())
+		{
+			case "BEARER":
+				return Optional.of(new BearerAuthorization(authorization.group(2)));
+			case "BASIC":
+				String value = authorization.group(2);
+				value = new String(Base64.getDecoder().decode(value));
+				Matcher basic = BASIC_AUTHORIZATION.matcher(value);
+				if (!basic.matches())
+					throw new AuthenticationException("Invalid basic authorization header");
+				return Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
+			default:
+				throw new AuthenticationException("Authorization type not supported: " + type);
+		}
+
+	}
+
+	public Optional<BasicAuthorization> getBasicAuthorization()
+		throws AuthenticationException
+	{
+		String username = getParameter("$username");
+		String password = getParameter("$password");
+		if (username == null && password == null)
+			return getAuthorization()
+				.filter(e -> e instanceof BasicAuthorization)
+				.map(e -> (BasicAuthorization) e);
+
+		if (username == null || username.isBlank())
+			throw new InvalidUsernameException();
+
+		if (password == null || password.isBlank())
+			throw new InvalidPasswordException();
+
+		return Optional.of(new BasicAuthorization(username, password));
+
 	}
 }

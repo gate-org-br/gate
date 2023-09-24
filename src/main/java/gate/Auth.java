@@ -7,6 +7,7 @@ import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
 import gate.error.BadRequestException;
 import gate.error.HierarchyException;
+import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
 import java.io.IOException;
 import java.io.Writer;
@@ -27,26 +28,23 @@ public class Auth extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void doGet(HttpServletRequest request,
+	public void doGet(HttpServletRequest httpServletRequest,
 		HttpServletResponse response)
 		throws IOException
 	{
-		request.setCharacterEncoding("UTF-8");
+		httpServletRequest.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
+
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 		try (Writer writer = response.getWriter())
 		{
 			try
 			{
-				Object result = authenticator.authenticate(request, response);
-				if (result instanceof User)
-				{
-					String credentials = Credentials.create((User) result);
-					writer.write(String.format("{status: 'success', value: '%s'}",
-						credentials));
-				} else
-					writer.write(String.format("{status: 'error', value: '%s'}",
-						"Attempt to login without provinding valid credentials"));
+				User user = authenticator.authenticate(request, response);
+				if (user == null)
+					throw new AuthenticatorException("Attempt to login without provinding valid credentials");
+				writer.write(String.format("{status: 'success', value: '%s'}", Credentials.create(user)));
 			} catch (AuthenticationException
 				| AuthenticatorException
 				| HierarchyException
@@ -59,25 +57,23 @@ public class Auth extends HttpServlet
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request,
+	public void doPost(HttpServletRequest httpServletRequest,
 		HttpServletResponse response)
 		throws IOException
 	{
-		request.setCharacterEncoding("UTF-8");
+		httpServletRequest.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 		try (Writer writer = response.getWriter())
 		{
 
 			try
 			{
-				Object result = authenticator.authenticate(request, response);
-				if (result instanceof User)
-				{
-					String credentials = Credentials.create((User) result);
-					writer.write(credentials);
-				} else
+				User user = authenticator.authenticate(request, response);
+				if (user == null)
 					throw new AuthenticationException("Attempt to login without provinding valid credentials");
+				writer.write(Credentials.create(user));
 			} catch (AuthenticationException | BadRequestException ex)
 			{
 				response.setStatus(400);
