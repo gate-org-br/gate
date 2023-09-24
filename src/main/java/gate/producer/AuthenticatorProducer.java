@@ -7,6 +7,7 @@ import gate.authenticator.DatabaseAuthenticator;
 import gate.authenticator.LDAPAuthenticator;
 import gate.authenticator.OIDCAuthenticator;
 import gate.entity.Org;
+import gate.util.SystemProperty;
 import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
@@ -31,27 +32,25 @@ public class AuthenticatorProducer implements Serializable
 	@ApplicationScoped
 	public Authenticator get()
 	{
-		String type = System.getProperty("gate.auth.type",
-			System.getenv("gate.auth.type"));
+		switch (SystemProperty.get("gate.auth.type").orElse("default"))
+		{
+			case "db":
+				return DatabaseAuthenticator.of(control);
 
-		if (type != null)
-			switch (type)
-			{
-				case "db":
+			case "ldap":
+				return LDAPAuthenticator.of(control);
+
+			case "oidc":
+				return OIDCAuthenticator.of(control);
+
+			default:
+			case "default":
+				if (org.getAuthenticators() != null
+					&& !org.getAuthenticators().isEmpty())
+					return LDAPAuthenticator.of(control,
+						org.getAuthenticators().get(0));
+				else
 					return DatabaseAuthenticator.of(control);
-
-				case "ldap":
-					return LDAPAuthenticator.of(control);
-
-				case "oidc":
-					return OIDCAuthenticator.of(control);
-			}
-
-		if (org.getAuthenticators() != null
-			&& !org.getAuthenticators().isEmpty())
-			return LDAPAuthenticator.of(control,
-				org.getAuthenticators().get(0));
-		else
-			return DatabaseAuthenticator.of(control);
+		}
 	}
 }

@@ -19,8 +19,7 @@ public interface Authenticator
 
 	public User authenticate(HttpServletRequest request,
 		HttpServletResponse response)
-		throws AuthenticatorException,
-		AuthenticationException,
+		throws AuthenticationException,
 		InvalidPasswordException,
 		InvalidUsernameException,
 		DefaultPasswordException,

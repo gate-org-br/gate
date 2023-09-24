@@ -144,6 +144,11 @@ public class Call
 		return method;
 	}
 
+	public boolean isPublic()
+	{
+		return Annotations.exists(Public.class, type, method);
+	}
+
 	public boolean checkAccess(User user)
 	{
 

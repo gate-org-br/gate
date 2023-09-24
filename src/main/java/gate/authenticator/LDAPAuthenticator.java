@@ -8,6 +8,7 @@ import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
 import gate.type.MD5;
+import gate.util.SystemProperty;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Hashtable;
@@ -42,11 +43,8 @@ public class LDAPAuthenticator implements Authenticator
 
 	public static LDAPAuthenticator of(GateControl control)
 	{
-		String server = System.getProperty("gate.auth.ldap.server",
-			System.getenv("gate.auth.ldap.server"));
-		if (server == null)
-			throw new java.lang.IllegalArgumentException("Missing gate.auth.ldap.server system property");
-		return new LDAPAuthenticator(control, server);
+		return new LDAPAuthenticator(control, SystemProperty.get("gate.auth.ldap.server")
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.ldap.server system property")));
 	}
 
 	@Override

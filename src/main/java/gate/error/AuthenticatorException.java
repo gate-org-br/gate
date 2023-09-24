@@ -3,7 +3,7 @@ package gate.error;
 /**
  * Signals an error on the authentication service.
  */
-public class AuthenticatorException extends Exception
+public class AuthenticatorException extends RuntimeException
 {
 
 	private static final long serialVersionUID = 1L;

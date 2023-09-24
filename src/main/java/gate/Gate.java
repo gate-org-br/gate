@@ -23,9 +23,9 @@ import gate.handler.Handler;
 import gate.handler.IntegerHandler;
 import gate.io.Credentials;
 import gate.util.ScreenServletRequest;
+import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +72,7 @@ public class Gate extends HttpServlet
 	@Current
 	private Authenticator authenticator;
 
-	final String developer = System.getProperty("gate.developer");
+	final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	static
 	{
@@ -118,7 +118,8 @@ public class Gate extends HttpServlet
 						.handle(httpServletRequest, response, HTML);
 			} else
 			{
-				User user;
+				User user = null;
+				Call call = Call.of(MODULE, SCREEN, ACTION);
 
 				if (Credentials.isPresent(httpServletRequest))
 				{
@@ -128,7 +129,7 @@ public class Gate extends HttpServlet
 				{
 					user = (User) request.getSession()
 						.getAttribute(User.class.getName());
-				} else
+				} else if (!call.isPublic())
 				{
 					user = authenticator.authenticate(httpServletRequest, response);
 					if (user != null)
@@ -143,7 +144,6 @@ public class Gate extends HttpServlet
 					}
 				}
 
-				Call call = Call.of(MODULE, SCREEN, ACTION);
 				if (!call.checkAccess(user))
 					if (user != null)
 						throw new ForbiddenException();
@@ -178,14 +178,18 @@ public class Gate extends HttpServlet
 				Collections.singletonList(ex.getMessage()));
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, HTML);
-		} catch (HierarchyException
-			| BadRequestException
+		} catch (AuthenticationException
 			| AuthenticatorException
-			| UnsupportedEncodingException
-			| AuthenticationException
-			| UnauthorizedException
+			| BadRequestException
 			| ForbiddenException
-			| RuntimeException ex)
+			| HierarchyException
+			| UnauthorizedException
+			| IOException ex)
+		{
+			var type = Catcher.getCatcher(ex.getClass());
+			Catcher catcher = catchers.select(type).get();
+			catcher.catches(httpServletRequest, response, ex);
+		} catch (RuntimeException ex)
 		{
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
