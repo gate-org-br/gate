@@ -3,8 +3,8 @@ package gate.code;
 import gate.entity.User;
 import gate.io.StringReader;
 import java.io.IOException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class ViewGeneratorTest
 {
@@ -14,7 +14,7 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/view().doc"));
 		String result = new ViewGenerator(User.class).view();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -22,7 +22,7 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/viewSelect().doc"));
 		String result = new ViewGenerator(User.class).viewSelect();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/viewSearch().doc"));
 		String result = new ViewGenerator(User.class).viewSearch();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/viewInsert().doc"));
 		String result = new ViewGenerator(User.class).viewInsert();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/viewUpdate().doc"));
 		String result = new ViewGenerator(User.class).viewUpdate();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -54,6 +54,6 @@ public class ViewGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ViewGeneratorTest/viewResult().doc"));
 		String result = new ViewGenerator(User.class).viewResult();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

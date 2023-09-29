@@ -3,23 +3,23 @@ package gate.sql.fetcher;
 import gate.Person;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
-import gate.sql.select.Select;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
+import gate.sql.select.Select;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class MapListFetcherTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
@@ -37,12 +37,12 @@ public class MapListFetcherTest
 					.where(Condition.TRUE))
 				.fetchMapList();
 
-			results.forEach(e -> Assert.assertEquals(e.get("name"), String.format("Person %s", e.get("id").toString())));
+			results.forEach(e -> assertEquals(e.get("name"), String.format("Person %s", e.get("id").toString())));
 
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void clean()
 	{
 		TestDataSource.getInstance().clean();

@@ -5,13 +5,13 @@ import gate.error.ConstraintViolationException;
 import gate.error.NotFoundException;
 import gate.type.ID;
 import java.sql.SQLException;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class LinkTest
 {
 
@@ -19,7 +19,7 @@ public class LinkTest
 	{
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
@@ -37,11 +37,11 @@ public class LinkTest
 				.parameters(ID.valueOf(1))
 				.orElseThrow(NotFoundException::new);
 
-			Assert.assertEquals("Person 1", person.getName());
+			assertEquals("Person 1", person.getName());
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void clean()
 	{
 		TestDataSource.getInstance().clean();

@@ -8,17 +8,17 @@ import gate.error.NotFoundException;
 import gate.type.ID;
 import java.sql.SQLException;
 import java.text.ParseException;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertEquals;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class EntityUpdateTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
@@ -56,7 +56,7 @@ public class EntityUpdateTest
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void clean()
 	{
 		TestDataSource.getInstance().clean();

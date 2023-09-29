@@ -1,16 +1,18 @@
 package gate.util;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SecuritySessionsTest
 {
 
-	private SecuritySessions securitySessions;
+	private static SecuritySessions securitySessions;
 
-	@Before
-	public void setUp()
+	@BeforeAll
+	public static void setUp()
 	{
 		securitySessions = SecuritySessions.of(100);
 	}
@@ -19,16 +21,16 @@ public class SecuritySessionsTest
 	public void testCreateAndCheckSession()
 	{
 		String session = securitySessions.create();
-		Assert.assertNotNull(session);
-		Assert.assertTrue(securitySessions.check(session));
+		assertNotNull(session);
+		assertTrue(securitySessions.check(session));
 	}
 
 	@Test
 	public void testCreateAndCheckInvalidSession()
 	{
 		String session = securitySessions.create();
-		Assert.assertNotNull(session);
-		Assert.assertFalse(securitySessions.check("invalid"));
+		assertNotNull(session);
+		assertFalse(securitySessions.check("invalid"));
 	}
 
 	@Test
@@ -36,6 +38,6 @@ public class SecuritySessionsTest
 	{
 		String session = securitySessions.create();
 		Thread.sleep(200);
-		Assert.assertFalse(securitySessions.check(session));
+		assertFalse(securitySessions.check(session));
 	}
 }

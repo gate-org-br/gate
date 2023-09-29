@@ -1,8 +1,8 @@
 package gate.io;
 
 import gate.error.ConversionException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class EncoderTest
 {
@@ -13,7 +13,7 @@ public class EncoderTest
 
 		String string = "1234567890";
 		Encoder<String> encoder = Encoder.of(String.class);
-		Assert.assertEquals(string, encoder.decode(encoder.encode(string)));
+		assertEquals(string, encoder.decode(encoder.encode(string)));
 	}
 
 	@Test
@@ -22,6 +22,6 @@ public class EncoderTest
 
 		String string = "1234567890";
 		Encoder<String> encoder = Encoder.of(String.class, "/zgq2IL4H6tN4kRrzybBQA==");
-		Assert.assertEquals(string, encoder.decode(encoder.encode(string)));
+		assertEquals(string, encoder.decode(encoder.encode(string)));
 	}
 }

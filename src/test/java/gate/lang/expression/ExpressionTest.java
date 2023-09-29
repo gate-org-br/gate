@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 public class ExpressionTest
 {
@@ -40,49 +41,49 @@ public class ExpressionTest
 	@Test
 	public void test1() throws ExpressionException
 	{
-		Assert.assertEquals(Expression.of("age > 50").evaluate(person), Boolean.TRUE);
+		assertEquals(Expression.of("age > 50").evaluate(person), Boolean.TRUE);
 	}
 
 	@Test
 	public void test2() throws ExpressionException
 	{
-		Assert.assertEquals(Expression.of("relationships.wife.age > 60").evaluate(person), Boolean.FALSE);
+		assertEquals(Expression.of("relationships.wife.age > 60").evaluate(person), Boolean.FALSE);
 	}
 
 	@Test
 	public void test3() throws ExpressionException
 	{
-		Assert.assertEquals(Expression.of("relationships.wife.getAge() > 60").evaluate(person), Boolean.FALSE);
+		assertEquals(Expression.of("relationships.wife.getAge() > 60").evaluate(person), Boolean.FALSE);
 	}
 
 	@Test
 	public void test4() throws ExpressionException
 	{
-		Assert.assertEquals(Expression.of("age + relationships.wife.age == 120").evaluate(person), Boolean.TRUE);
+		assertEquals(Expression.of("age + relationships.wife.age == 120").evaluate(person), Boolean.TRUE);
 	}
 
 	@Test
 	public void test5() throws ExpressionException
 	{
-		Assert.assertEquals(2, (int) Expression.of("size children").evaluate(person));
+		assertEquals(2, (int) Expression.of("size children").evaluate(person));
 	}
 
 	@Test
 	public void test6() throws ExpressionException
 	{
-		Assert.assertEquals(60, (int) Expression.of("children[0].age + children[1].age").evaluate(person));
+		assertEquals(60, (int) Expression.of("children[0].age + children[1].age").evaluate(person));
 	}
 
 	@Test
 	public void test7() throws ExpressionException
 	{
-		Assert.assertEquals(60, (int) Expression.of("(age + relationships.wife.age) / 2").evaluate(person));
+		assertEquals(60, (int) Expression.of("(age + relationships.wife.age) / 2").evaluate(person));
 	}
 
 	@Test
 	public void test8() throws ExpressionException
 	{
-		Assert.assertEquals(Boolean.TRUE, Expression.of(
+		assertEquals(Boolean.TRUE, Expression.of(
 			"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
 			.evaluate(person));
 	}
@@ -90,14 +91,14 @@ public class ExpressionTest
 	@Test
 	public void test9() throws ExpressionException
 	{
-		Assert.assertEquals(1, (int) Expression.of("@idade").evaluate(context, parameters));
+		assertEquals(1, (int) Expression.of("@idade").evaluate(context, parameters));
 	}
 
 	@Test
 	public void test11() throws ExpressionException
 	{
 		Object result = Expression.of("multiply(getAge() + 1)").evaluate(context, parameters);
-		Assert.assertEquals(130, (int) result);
+		assertEquals(130, (int) result);
 	}
 
 	@Test
@@ -105,23 +106,24 @@ public class ExpressionTest
 	{
 		Object result = Expression.of("(size children + 5) * 2")
 			.evaluate(context, parameters);
-		Assert.assertEquals(14, (int) result);
+		assertEquals(14, (int) result);
 	}
 
 	@Test
 	public void testRx() throws ExpressionException
 	{
-		Assert.assertEquals(Boolean.TRUE,
+		assertEquals(Boolean.TRUE,
 			Expression.of("this rx '^[0-9]{3}$'")
 				.evaluate("123"));
 	}
-	
-	@Test(expected = ExpressionException.class)
-	public void testRxError() throws ExpressionException
+
+	@Test
+	public void testRxError()
 	{
-		Assert.assertEquals(Boolean.TRUE,
-			Expression.of("this rx 123")
-				.evaluate("123"));
+		assertThrows(ExpressionException.class, () ->
+		{
+			Expression.of("this rx 123").evaluate("123");
+		});
 	}
 
 	public static class Person

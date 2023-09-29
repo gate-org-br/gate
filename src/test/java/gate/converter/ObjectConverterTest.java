@@ -6,14 +6,15 @@ import gate.error.ConversionException;
 import gate.type.ID;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ObjectConverterTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp()
 	{
 		Locale.setDefault(new Locale("pt", "br"));
@@ -31,8 +32,8 @@ public class ObjectConverterTest
 		String string = converter.toString(User.class, user);
 		user = (User) converter.ofString(User.class, string);
 
-		Assert.assertEquals(ID.valueOf(1), user.getId());
-		Assert.assertEquals("User 1", user.getName());
+		assertEquals(ID.valueOf(1), user.getId());
+		assertEquals("User 1", user.getName());
 	}
 
 	@Test
@@ -47,8 +48,8 @@ public class ObjectConverterTest
 		String string = converter.toString(ClassifiedUser.class, user);
 		user = (ClassifiedUser) converter.ofString(ClassifiedUser.class, string);
 
-		Assert.assertEquals(ID.valueOf(1), user.getId());
-		Assert.assertEquals("User 1", user.getName());
+		assertEquals(ID.valueOf(1), user.getId());
+		assertEquals("User 1", user.getName());
 
 	}
 
@@ -56,8 +57,8 @@ public class ObjectConverterTest
 	public void testNull() throws ConversionException
 	{
 		Converter converter = Converter.getConverter(Object.class);
-		Assert.assertEquals("", converter.toString(Object.class, null));
-		Assert.assertNull(converter.ofString(Object.class, ""));
+		assertEquals("", converter.toString(Object.class, null));
+		assertNull(converter.ofString(Object.class, ""));
 	}
 
 	@SecurityKey("/zgq2IL4H6tN4kRrzybBQA==")

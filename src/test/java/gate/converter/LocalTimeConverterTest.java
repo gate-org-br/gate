@@ -2,8 +2,8 @@ package gate.converter;
 
 import gate.error.ConversionException;
 import java.time.LocalTime;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class LocalTimeConverterTest
 {
@@ -14,12 +14,12 @@ public class LocalTimeConverterTest
 	@Test
 	public void testOfString() throws ConversionException
 	{
-		Assert.assertEquals(OBJECT, Converter.fromString(LocalTime.class, STRING));
+		assertEquals(OBJECT, Converter.fromString(LocalTime.class, STRING));
 	}
 
 	@Test
 	public void testOfObject() throws ConversionException
 	{
-		Assert.assertEquals(STRING, Converter.toString(OBJECT));
+		assertEquals(STRING, Converter.toString(OBJECT));
 	}
 }

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Assert;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  *
@@ -104,7 +104,7 @@ public class TestDataSource
 			link.prepare("delete from Person").execute();
 		} catch (SQLException | ConstraintViolationException ex)
 		{
-			Assert.fail(ex.getMessage());
+			fail(ex.getMessage());
 		}
 	}
 }

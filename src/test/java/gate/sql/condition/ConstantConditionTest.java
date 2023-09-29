@@ -8,9 +8,10 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class ConstantConditionTest
 {
@@ -29,7 +30,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 is null and not column2 is null and column3 is null and not column4 is null and column7 is null",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
 
@@ -47,7 +48,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 = value1 and not column2 = value2 and column3 = value3 and not column4 = value4 and column7 = value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
 
@@ -65,7 +66,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 <> value1 and not column2 <> value2 and column3 <> value3 and not column4 <> value4 and column7 <> value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
 	@Test
@@ -82,7 +83,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 < value1 and not column2 < value2 and column3 < value3 and not column4 < value4 and column7 < value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
 
@@ -100,7 +101,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 <= value1 and not column2 <= value2 and column3 <= value3 and not column4 <= value4 and column7 <= value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
 
@@ -118,7 +119,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 > value1 and not column2 > value2 and column3 > value3 and not column4 > value4 and column7 > value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
 
@@ -136,7 +137,7 @@ public class ConstantConditionTest
 
 		assertEquals("column1 >= value1 and not column2 >= value2 and column3 >= value3 and not column4 >= value4 and column7 >= value7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
 	@Test
@@ -152,7 +153,7 @@ public class ConstantConditionTest
 			.and("column7").isBw("ge7", "le7");
 		assertEquals("column1 between ge1 and le1 and not column2 between ge2 and le2 and column3 between ge3 and le3 and not column4 between ge4 and le4 and column7 between ge7 and le7",
 			condition.toString());
-		Assert.assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
 	@Test
@@ -161,7 +162,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").eq(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").eq(Integer.class, 1);
@@ -192,7 +193,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").ne(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").ne(Integer.class, 1);
@@ -223,7 +224,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").lt(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").lt(Integer.class, 1);
@@ -267,7 +268,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").le(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").le(Integer.class, 1);
@@ -298,7 +299,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").gt(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").gt(Integer.class, 1);
@@ -342,7 +343,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").ge(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").ge(Integer.class, 1);
@@ -398,7 +399,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").bw(Integer.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			DateTime min = DateTime.of("22/04/1500 00:00:00");
@@ -434,7 +435,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").bw(DateTime.class, null, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			DateTime min = DateTime.of("22/04/1500 00:00:00");
@@ -464,7 +465,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").in(String.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			List<String> values = Arrays.asList("value1", "value2", "value2");
@@ -488,7 +489,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").lk(String.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").lk(String.class, "value1");
@@ -503,7 +504,7 @@ public class ConstantConditionTest
 		try
 		{
 			Condition.of("column1").rx(String.class, null);
-			Assert.fail();
+			fail();
 		} catch (NullPointerException ex)
 		{
 			Condition condition = Condition.of("column1").rx(String.class, "value1");
@@ -521,7 +522,7 @@ public class ConstantConditionTest
 				.from("Cliente")
 				.where(Condition
 					.of("id").isEq("1")));
-		Assert.assertEquals("Role.id = ? and exists (select id from Cliente where id = 1)", condition.toString());
+		assertEquals("Role.id = ? and exists (select id from Cliente where id = 1)", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
 
@@ -535,7 +536,7 @@ public class ConstantConditionTest
 				.expression("id")
 				.from("Cliente")
 				.where(Condition.of("id").isEq("1"))).eq(2);
-		Assert.assertEquals("Role.id = ? and (select id from Cliente where id = 1) = ?", condition.toString());
+		assertEquals("Role.id = ? and (select id from Cliente where id = 1) = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 
 		condition = Condition.of("Role.id").eq(1)
@@ -544,7 +545,7 @@ public class ConstantConditionTest
 			.from("Cliente")
 			.where(Condition
 				.of("id").isEq("1"))).eq(2);
-		Assert.assertEquals("Role.id = ?", condition.toString());
+		assertEquals("Role.id = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
 
@@ -558,7 +559,7 @@ public class ConstantConditionTest
 			.from("Cliente")
 			.where(Condition.of("id").isEq("1"))).isEq("1")
 			.toString();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -567,6 +568,6 @@ public class ConstantConditionTest
 		String expected = "Role.id = ?";
 		String result = Condition.from(Role.class).expression("Role.id").eq(Role::getId)
 			.toString();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

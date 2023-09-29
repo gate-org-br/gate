@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gate.util;
 
 import gate.Doctor;
@@ -13,20 +8,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.time.Month;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- * @author davins
- */
 public class ReflectionTest
 {
 
 	private Doctor doctor;
 
-	@Before
+	@BeforeEach
 	public void startup()
 	{
 		doctor = new Doctor();
@@ -44,7 +35,7 @@ public class ReflectionTest
 			.findField(Doctor.class, "id")
 			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(1, field.getInt(doctor));
+		assertEquals(1, field.getInt(doctor));
 	}
 
 	@Test
@@ -56,7 +47,7 @@ public class ReflectionTest
 			.findMethod(Doctor.class, "getId")
 			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(1, (int) method.invoke(doctor));
+		assertEquals(1, (int) method.invoke(doctor));
 	}
 
 	@Test
@@ -70,7 +61,7 @@ public class ReflectionTest
 		Method method = Reflection.findGetter(field)
 			.orElseThrow(NotFoundException::new);
 
-		Assert.assertEquals(1, (int) method.invoke(doctor));
+		assertEquals(1, (int) method.invoke(doctor));
 	}
 
 	@Test
@@ -87,15 +78,15 @@ public class ReflectionTest
 
 		setter.invoke(doctor, 2);
 
-		Assert.assertEquals(2, field.getInt(doctor));
+		assertEquals(2, field.getInt(doctor));
 	}
 
 	@Test
 	public void testFind() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException
 	{
-		Assert.assertEquals(gate.entity.User.class, Reflection.find("gate.entity.User").get());
+		assertEquals(gate.entity.User.class, Reflection.find("gate.entity.User").get());
 
-		Assert.assertEquals(gate.entity.User.class.getDeclaredField("name"), Reflection.find("gate.entity.User:name").get());
-		Assert.assertEquals(gate.entity.User.class.getDeclaredMethod("getName"), Reflection.find("gate.entity.User:getName()").get());
+		assertEquals(gate.entity.User.class.getDeclaredField("name"), Reflection.find("gate.entity.User:name").get());
+		assertEquals(gate.entity.User.class.getDeclaredMethod("getName"), Reflection.find("gate.entity.User:getName()").get());
 	}
 }

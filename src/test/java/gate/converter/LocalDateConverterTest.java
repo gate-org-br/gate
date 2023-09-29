@@ -3,8 +3,8 @@ package gate.converter;
 import gate.error.ConversionException;
 import java.time.LocalDate;
 import java.time.Month;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateConverterTest
 {
@@ -16,24 +16,24 @@ public class LocalDateConverterTest
 	@Test
 	public void testOfString() throws ConversionException
 	{
-		Assert.assertEquals(OBJECT, Converter.fromString(LocalDate.class, STRING));
+		assertEquals(OBJECT, Converter.fromString(LocalDate.class, STRING));
 	}
 
 	@Test
 	public void testOfISOString() throws ConversionException
 	{
-		Assert.assertEquals(OBJECT, Converter.fromString(LocalDate.class, "2012-03-01"));
+		assertEquals(OBJECT, Converter.fromString(LocalDate.class, "2012-03-01"));
 	}
 
 	@Test
 	public void testOfObject() throws ConversionException
 	{
-		Assert.assertEquals(STRING, Converter.toString(OBJECT));
+		assertEquals(STRING, Converter.toString(OBJECT));
 	}
 
 	@Test
 	public void testISOObject() throws ConversionException
 	{
-		Assert.assertEquals(ISO_STRING, Converter.toISOString(OBJECT));
+		assertEquals(ISO_STRING, Converter.toISOString(OBJECT));
 	}
 }

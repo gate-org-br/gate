@@ -1,8 +1,8 @@
 package gate.type;
 
 import java.text.ParseException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class DateIntervalTest
 {
@@ -10,7 +10,7 @@ public class DateIntervalTest
 	@Test
 	public void testParse() throws ParseException
 	{
-		Assert.assertEquals(DateInterval.of(2020, 0), DateInterval.of("01/01/2020 - 31/01/2020"));
+		assertEquals(DateInterval.of(2020, 0), DateInterval.of("01/01/2020 - 31/01/2020"));
 	}
 
 }

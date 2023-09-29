@@ -2,8 +2,8 @@ package gate.util;
 
 import gate.error.AppException;
 import java.text.ParseException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class ConsoleParametersTest
 {
@@ -35,9 +35,9 @@ public class ConsoleParametersTest
 	{
 		ConsoleParameters parameters = ConsoleParameters.parse(ARGS, DAO, VIEW, ENTITY);
 
-		Assert.assertEquals("gate.entity.User", parameters.get(ENTITY).orElseThrow());
-		Assert.assertEquals("_generate", parameters.get(DAO).orElseThrow());
-		Assert.assertEquals("gate.modulos", parameters.get(VIEW).orElseThrow());
+		assertEquals("gate.entity.User", parameters.get(ENTITY).orElseThrow());
+		assertEquals("_generate", parameters.get(DAO).orElseThrow());
+		assertEquals("gate.modulos", parameters.get(VIEW).orElseThrow());
 	}
 
 	@Test
@@ -45,6 +45,6 @@ public class ConsoleParametersTest
 	{
 		String expected = "-d, --dao: Dao = _generate";
 		String result = DAO.toString();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

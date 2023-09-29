@@ -2,9 +2,8 @@ package gate.lang.dataurl;
 
 import java.io.IOException;
 import java.io.StringReader;
-import org.junit.Assert;
-
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class DataURLScannerTest
 {
@@ -20,31 +19,31 @@ public class DataURLScannerTest
 		try (DataURLScanner scanner = new DataURLScanner(new StringReader(url)))
 		{
 			if (!scanner.scan().equals("data"))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals(':'))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals("image"))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals('/'))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals("gif"))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals(';'))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals("base64"))
-				Assert.fail();
+				fail();
 
 			if (!scanner.scan().equals(','))
-				Assert.fail();
+				fail();
 
 			if (!scanner.finish().equals("R0lGODlhyAAiALM...DfD0QAADs="))
-				Assert.fail();
+				fail();
 
 		}
 	}

@@ -14,15 +14,15 @@ import gate.type.Date;
 import gate.type.DateInterval;
 import java.time.LocalDate;
 import java.util.Locale;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ConverterTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp()
 	{
 		Locale.setDefault(new Locale("pt", "br"));

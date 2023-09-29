@@ -1,8 +1,8 @@
 package gate.type;
 
 import java.text.ParseException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class TimeTest
 {
@@ -10,6 +10,6 @@ public class TimeTest
 	@Test
 	public void testParse() throws ParseException
 	{
-		Assert.assertEquals(Time.of(1, 2), Time.of("01:02"));
+		assertEquals(Time.of(1, 2), Time.of("01:02"));
 	}
 }

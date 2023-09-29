@@ -1,8 +1,8 @@
 package gate.lang.dataurl;
 
 import java.text.ParseException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class DataURLTest
 {
@@ -16,7 +16,7 @@ public class DataURLTest
 	{
 		String expected = "data:image+/gif;filename=image.png;charset=utf-8;base64,R0lGODlhyAAiALM...DfD0QAADs=";
 		String result = DataURL.parse(expected).toString();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 }

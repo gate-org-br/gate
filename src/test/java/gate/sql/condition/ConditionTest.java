@@ -1,7 +1,7 @@
 package gate.sql.condition;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class ConditionTest
 {
@@ -10,9 +10,9 @@ public class ConditionTest
 	public void testNot()
 	{
 		Condition condition = Condition
-				.not().when(false).expression("column1").isNull()
-				.not().when(true).expression("column2").isNull();
-		Assert.assertEquals("not column2 is null", condition.toString());
+			.not().when(false).expression("column1").isNull()
+			.not().when(true).expression("column2").isNull();
+		assertEquals("not column2 is null", condition.toString());
 	}
 
 }

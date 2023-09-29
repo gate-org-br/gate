@@ -5,10 +5,12 @@
  */
 package gate.lang.json;
 
+import gate.entity.User;
 import gate.error.ConversionException;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import org.junit.Test;
+import gate.type.ID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class JsonObjectTest
 {
@@ -74,5 +76,27 @@ public class JsonObjectTest
 		{
 			fail(ex.getMessage());
 		}
+	}
+
+	@Test
+	public void testJsonObjectToJavaObject()
+	{
+		JsonObject object = new JsonObject()
+			.setString("id", "1")
+			.setString("name", "User 1")
+			.set("role", new JsonObject()
+				.setString("id", "2")
+				.setString("name", "Role 2"))
+			.set("auths", JsonArray.of(new JsonObject().setString("id", "3")));
+		User user = object.toObject(User.class);
+
+		assertEquals("User 1", user.getName());
+		assertEquals(ID.valueOf(1), user.getId());
+		assertEquals("Role 2", user.getRole().getName());
+		assertEquals(ID.valueOf(2), user.getRole().getId());
+
+		assertEquals(ID.valueOf(3),
+			user.getAuths().stream().findAny().orElseThrow().getId());
+
 	}
 }

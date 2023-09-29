@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -29,23 +30,23 @@ public class JsonParserTest
 			try (JsonParser parser = new JsonParser(reader))
 			{
 				Optional<JsonElement> object = parser.parse();
-				Assert.assertEquals(JsonElement.Type.OBJECT,
+				assertEquals(JsonElement.Type.OBJECT,
 					object.get().getType());
 
 				Optional<JsonElement> array = parser.parse();
-				Assert.assertEquals(JsonElement.Type.ARRAY,
+				assertEquals(JsonElement.Type.ARRAY,
 					array.get().getType());
 
 				Optional<JsonElement> bool = parser.parse();
-				Assert.assertEquals(JsonElement.Type.BOOLEAN,
+				assertEquals(JsonElement.Type.BOOLEAN,
 					bool.get().getType());
 
 				Optional<JsonElement> string = parser.parse();
-				Assert.assertEquals(JsonElement.Type.STRING,
+				assertEquals(JsonElement.Type.STRING,
 					string.get().getType());
 
 				Optional<JsonElement> empty = parser.parse();
-				Assert.assertFalse(empty.isPresent());
+				assertFalse(empty.isPresent());
 			}
 		}
 	}
@@ -63,14 +64,14 @@ public class JsonParserTest
 				for (JsonElement element : parser)
 					elements.add(element);
 
-				Assert.assertEquals(4, elements.size());
-				Assert.assertEquals(JsonElement.Type.OBJECT,
+				assertEquals(4, elements.size());
+				assertEquals(JsonElement.Type.OBJECT,
 					elements.get(0).getType());
-				Assert.assertEquals(JsonElement.Type.ARRAY,
+				assertEquals(JsonElement.Type.ARRAY,
 					elements.get(1).getType());
-				Assert.assertEquals(JsonElement.Type.BOOLEAN,
+				assertEquals(JsonElement.Type.BOOLEAN,
 					elements.get(2).getType());
-				Assert.assertEquals(JsonElement.Type.STRING,
+				assertEquals(JsonElement.Type.STRING,
 					elements.get(3).getType());
 			}
 		}
@@ -89,14 +90,14 @@ public class JsonParserTest
 						.map(e -> e.getType())
 						.collect(Collectors.toList());
 
-				Assert.assertEquals(4, elements.size());
-				Assert.assertEquals(JsonElement.Type.OBJECT,
+				assertEquals(4, elements.size());
+				assertEquals(JsonElement.Type.OBJECT,
 					elements.get(0));
-				Assert.assertEquals(JsonElement.Type.ARRAY,
+				assertEquals(JsonElement.Type.ARRAY,
 					elements.get(1));
-				Assert.assertEquals(JsonElement.Type.BOOLEAN,
+				assertEquals(JsonElement.Type.BOOLEAN,
 					elements.get(2));
-				Assert.assertEquals(JsonElement.Type.STRING,
+				assertEquals(JsonElement.Type.STRING,
 					elements.get(3));
 			}
 		}
@@ -107,7 +108,7 @@ public class JsonParserTest
 	{
 		var string = JsonString.of("Line 1\nLine 2");
 		String json = JsonElement.format(string);
-		Assert.assertEquals("Line 1\nLine 2", JsonElement.parse(json).toString());
+		assertEquals("Line 1\nLine 2", JsonElement.parse(json).toString());
 	}
 
 	@Test
@@ -120,7 +121,7 @@ public class JsonParserTest
 			{
 				var object = (JsonString) parser.parse().orElseThrow();
 				var result = object.toString();
-				Assert.assertEquals("https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=617319183675655&ext=1685814659&hash=ATsrtlfji5Gfeb4njsWKBRZW1tVVjgfAKlpKRM16NeQIRQ", result);
+				assertEquals("https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=617319183675655&ext=1685814659&hash=ATsrtlfji5Gfeb4njsWKBRZW1tVVjgfAKlpKRM16NeQIRQ", result);
 			}
 		}
 	}

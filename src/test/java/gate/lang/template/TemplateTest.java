@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public final class TemplateTest
 {
@@ -52,7 +52,7 @@ public final class TemplateTest
 	{
 		String expected = getFile("Document.html");
 		String result = Template.compile(getFile("Template.xml")).evaluate(this);
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	public List<Role> getRoles()

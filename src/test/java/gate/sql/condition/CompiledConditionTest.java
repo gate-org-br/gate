@@ -8,9 +8,9 @@ import gate.type.ID;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class CompiledConditionTest
 {
@@ -158,7 +158,7 @@ public class CompiledConditionTest
 			.eq(1).and("name").eq("Person 1").and("birthdate").gt(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
-		Assert.assertEquals("id = ? and name = ?", condition.toString());
+		assertEquals("id = ? and name = ?", condition.toString());
 		assertEquals(2, parameters.size());
 		assertEquals(1, parameters.get(0));
 		assertEquals("Person 1", parameters.get(1));
@@ -171,7 +171,7 @@ public class CompiledConditionTest
 			.eq(1).or("name").eq("Person 1").or("birthdate").gt(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
-		Assert.assertEquals("id = ? or name = ?", condition.toString());
+		assertEquals("id = ? or name = ?", condition.toString());
 		assertEquals(2, parameters.size());
 		assertEquals(1, parameters.get(0));
 		assertEquals("Person 1", parameters.get(1));
@@ -185,7 +185,7 @@ public class CompiledConditionTest
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(ID.valueOf(2))
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
-		Assert.assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
+		assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
 	}
 
@@ -197,7 +197,7 @@ public class CompiledConditionTest
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "name"))).eq("Person 1")
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.id"))).eq(ID.valueOf(2))
 			.or(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
-		Assert.assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
+		assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
 	}
 
@@ -214,7 +214,7 @@ public class CompiledConditionTest
 		String result = condition.toString();
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 		assertEquals(2, parameters.size());
 		assertEquals(parameters.get(0), ID.valueOf(1));
 		assertEquals("%Person 1%", parameters.get(1));
@@ -226,7 +226,7 @@ public class CompiledConditionTest
 		try
 		{
 			Condition.of("name").eq(User.class, null);
-			Assert.fail();
+			fail();
 		} catch (Exception e)
 		{
 		}
@@ -242,7 +242,7 @@ public class CompiledConditionTest
 				.and("birthdate").gt(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
-		Assert.assertEquals("name = ?", condition.toString());
+		assertEquals("name = ?", condition.toString());
 		assertEquals(1, parameters.size());
 		assertEquals("Person 1", parameters.get(0));
 	}
@@ -257,7 +257,7 @@ public class CompiledConditionTest
 			.and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name"))).eq(null);
 
 		List<Object> parameters = condition.getParameters().collect(Collectors.toList());
-		Assert.assertEquals("Uzer.id = ? and Uzer$Role.id = ?",
+		assertEquals("Uzer.id = ? and Uzer$Role.id = ?",
 			condition.toString());
 		assertEquals(2, parameters.size());
 		assertEquals(parameters.get(0), ID.valueOf(1));

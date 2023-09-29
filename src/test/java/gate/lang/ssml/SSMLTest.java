@@ -1,7 +1,7 @@
 package gate.lang.ssml;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class SSMLTest
 {
@@ -11,7 +11,7 @@ public class SSMLTest
 	{
 		String expected = "<speak>Word with dot.<break strength='strong'/> Word with dot.<break strength='strong'/></speak>";
 		String result = SSML.generate("Word with dot. Word with dot.");
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -19,7 +19,7 @@ public class SSMLTest
 	{
 		String expected = "<speak>Word with dot.\n<break strength='x-strong'/> Word with dot.<break strength='strong'/></speak>";
 		String result = SSML.generate("Word with dot.\n Word with dot.");
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -27,6 +27,6 @@ public class SSMLTest
 	{
 		String expected = "<speak>Word with dot.\r\n<break strength='x-strong'/> Word with dot.<break strength='strong'/></speak>";
 		String result = SSML.generate("Word with dot.\r\n Word with dot.");
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

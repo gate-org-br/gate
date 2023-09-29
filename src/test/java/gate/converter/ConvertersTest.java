@@ -2,14 +2,14 @@ package gate.converter;
 
 import gate.entity.User;
 import java.util.Locale;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ConvertersTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp()
 	{
 		Locale.setDefault(new Locale("pt", "br"));
@@ -19,7 +19,7 @@ public class ConvertersTest
 	public void test01()
 	{
 		Converter converter = Converters.INSTANCE.get(ExtendedExtendedUser.class);
-		Assert.assertEquals("gate.converter.ObjectConverter", converter.getClass().getName());
+		assertEquals("gate.converter.ObjectConverter", converter.getClass().getName());
 	}
 
 	public class ExtendedUser extends User

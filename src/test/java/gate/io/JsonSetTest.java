@@ -5,11 +5,11 @@ import gate.type.ID;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Iterator;
-import org.junit.After;
-import org.junit.Assert;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JsonSetTest
 {
@@ -29,7 +29,7 @@ public class JsonSetTest
 	private static final User USER10 = new User().setId(ID.valueOf(10)).setName("User 10");
 	private static final User USER11 = new User().setId(ID.valueOf(11)).setName("User 11");
 
-	@Before
+	@BeforeEach
 	public void setUp()
 	{
 		table = PersistentSet.of(User.class, USERS);
@@ -46,7 +46,7 @@ public class JsonSetTest
 		table.commit();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown()
 	{
 		table.clear();
@@ -69,7 +69,7 @@ public class JsonSetTest
 		table.commit();
 		table.rollback();
 		assertEquals(table.size(), 0);
-		Assert.assertFalse(USERS.exists());
+		assertFalse(USERS.exists());
 	}
 
 	@Test

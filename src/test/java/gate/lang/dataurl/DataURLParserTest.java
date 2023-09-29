@@ -3,8 +3,8 @@ package gate.lang.dataurl;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class DataURLParserTest
 {
@@ -17,22 +17,22 @@ public class DataURLParserTest
 		{
 			DataURL dataURL = parser.parse();
 			if (!"image+".equals(dataURL.getType()))
-				Assert.fail();
+				fail();
 
 			if (!"gif".equals(dataURL.getSubtype()))
-				Assert.fail();
+				fail();
 
 			if (!"image.png".equals(dataURL.getParameters().get("filename")))
-				Assert.fail();
+				fail();
 
 			if (!"utf-8".equals(dataURL.getParameters().get("charset")))
-				Assert.fail();
+				fail();
 
 			if (!dataURL.isBase64())
-				Assert.fail();
+				fail();
 
 			if (!"R0lGODlhyAAiALM...DfD0QAADs=".equals(dataURL.getData()))
-				Assert.fail();
+				fail();
 		}
 	}
 }

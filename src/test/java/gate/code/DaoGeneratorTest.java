@@ -3,8 +3,8 @@ package gate.code;
 import gate.entity.User;
 import gate.io.StringReader;
 import java.io.IOException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class DaoGeneratorTest
 {
@@ -14,7 +14,7 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/dao().doc"));
 		String result = new DaoGenerator(User.class).dao();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -22,7 +22,7 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/select().doc"));
 		String result = new DaoGenerator(User.class).select();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/search().doc"));
 		String result = new DaoGenerator(User.class).search();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/insert().doc"));
 		String result = new DaoGenerator(User.class).insert();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/update().doc"));
 		String result = new DaoGenerator(User.class).update();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -54,6 +54,6 @@ public class DaoGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DaoGeneratorTest/delete().doc"));
 		String result = new DaoGenerator(User.class).delete();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

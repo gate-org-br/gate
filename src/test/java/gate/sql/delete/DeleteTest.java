@@ -10,17 +10,18 @@ import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class DeleteTest
 {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
 		TestDataSource.getInstance().setUp();
@@ -37,7 +38,7 @@ public class DeleteTest
 			.build()
 			.toString();
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -51,7 +52,7 @@ public class DeleteTest
 			.build()
 			.toString();
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -60,7 +61,7 @@ public class DeleteTest
 		String expected = "delete from Mock where id = ?";
 		String result = Delete.from(Mock.class).build().toString();
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -75,12 +76,12 @@ public class DeleteTest
 					.value(new Person().setId(1))
 					.execute();
 
-				Assert.assertEquals(0, (int) Select.expression("count(*)").from("Person")
+				assertEquals(0, (int) Select.expression("count(*)").from("Person")
 					.where(Condition.of("id").isEq(ID.valueOf(1).toString())).build()
 					.connect(link).fetchObject(Integer.class).get());
 			} catch (NullPointerException e)
 			{
-				Assert.fail();
+				fail();
 			}
 		}
 	}
@@ -91,10 +92,10 @@ public class DeleteTest
 		String expected = "delete from Contact where 0 = 0 and Person$id = ?";
 		String result = Delete.of(Contact.class, "=person.id").toString();
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void clean()
 	{
 		TestDataSource.getInstance().clean();

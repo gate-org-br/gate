@@ -2,16 +2,17 @@ package gate.property;
 
 import gate.entity.Role;
 import gate.entity.User;
-import gate.lang.property.Property;
 import gate.error.PropertyError;
+import gate.lang.property.Property;
 import gate.type.ID;
 import gate.type.Sex;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PropertyTest
 {
@@ -28,7 +29,7 @@ public class PropertyTest
 		return users;
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp()
 	{
 		role = new Role();

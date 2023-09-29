@@ -4,8 +4,8 @@ import gate.error.AppException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class HierarchyTest
 {
@@ -45,14 +45,14 @@ public class HierarchyTest
 	private static final Mock MOCK233 = new Mock(ID.valueOf(233)).setParent(MOCK23);
 
 	private final List<Mock> MOCKS = Arrays.asList(
-			MOCK1,
-			MOCK11, MOCK111, MOCK112, MOCK113,
-			MOCK12, MOCK121, MOCK122, MOCK123,
-			MOCK13, MOCK131, MOCK132, MOCK133,
-			MOCK2,
-			MOCK21, MOCK211, MOCK212, MOCK213,
-			MOCK22, MOCK221, MOCK222, MOCK223,
-			MOCK23, MOCK231, MOCK232, MOCK233);
+		MOCK1,
+		MOCK11, MOCK111, MOCK112, MOCK113,
+		MOCK12, MOCK121, MOCK122, MOCK123,
+		MOCK13, MOCK131, MOCK132, MOCK133,
+		MOCK2,
+		MOCK21, MOCK211, MOCK212, MOCK213,
+		MOCK22, MOCK221, MOCK222, MOCK223,
+		MOCK23, MOCK231, MOCK232, MOCK233);
 
 	@Test
 	public void testValid() throws AppException
@@ -67,16 +67,16 @@ public class HierarchyTest
 	public void testToList() throws AppException
 	{
 		Hierarchy.setup(MOCKS);
-		Assert.assertEquals(Arrays.asList(MOCK1,
-				MOCK11, MOCK111, MOCK112, MOCK113, MOCK12, MOCK121, MOCK122, MOCK123,
-				MOCK13, MOCK131, MOCK132, MOCK133), MOCK1.toList());
+		assertEquals(Arrays.asList(MOCK1,
+			MOCK11, MOCK111, MOCK112, MOCK113, MOCK12, MOCK121, MOCK122, MOCK123,
+			MOCK13, MOCK131, MOCK132, MOCK133), MOCK1.toList());
 	}
 
 	@Test
 	public void testToParentList() throws AppException
 	{
 		Hierarchy.setup(MOCKS);
-		Assert.assertEquals(Arrays.asList(MOCK121, MOCK12, MOCK1), MOCK121.toParentList());
+		assertEquals(Arrays.asList(MOCK121, MOCK12, MOCK1), MOCK121.toParentList());
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class HierarchyTest
 	{
 		Hierarchy.setup(MOCKS);
 		MOCK123.getRoot().select(MOCK111.getId())
-				.equals(MOCK111);
+			.equals(MOCK111);
 	}
 
 	private static class Mock implements Hierarchy<Mock>

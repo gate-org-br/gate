@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class RoleTest
 {
@@ -51,7 +53,7 @@ public class RoleTest
 
 	List<Role> roles = new ArrayList<>();
 
-	@Before
+	@BeforeEach
 	public void setUp() throws AppException
 	{
 		roles.add(master1);
@@ -72,7 +74,7 @@ public class RoleTest
 	@Test
 	public void testMasters()
 	{
-		Assert.assertEquals(Arrays.asList(master1,
+		assertEquals(Arrays.asList(master1,
 			master11,
 			master111,
 			master112),
@@ -82,7 +84,7 @@ public class RoleTest
 	@Test
 	public void testSlaves()
 	{
-		Assert.assertEquals(Arrays.asList(master1, detail12,
+		assertEquals(Arrays.asList(master1, detail12,
 			detail121),
 			master1.slaveStream().collect(Collectors.toList()));
 	}
@@ -90,22 +92,22 @@ public class RoleTest
 	@Test
 	public void testIsMasterOf()
 	{
-		Assert.assertTrue(master1.isMasterOf(detail12));
-		Assert.assertTrue(master1.isMasterOf(detail121));
-		Assert.assertFalse(master1.isMasterOf(master11));
-		Assert.assertFalse(master1.isMasterOf(master111));
-		Assert.assertFalse(master1.isMasterOf(master112));
+		assertTrue(master1.isMasterOf(detail12));
+		assertTrue(master1.isMasterOf(detail121));
+		assertFalse(master1.isMasterOf(master11));
+		assertFalse(master1.isMasterOf(master111));
+		assertFalse(master1.isMasterOf(master112));
 
 	}
 
 	@Test
 	public void testIsSlaveOf()
 	{
-		Assert.assertTrue(detail12.isSlaveOf(master1));
-		Assert.assertTrue(detail121.isSlaveOf(master1));
-		Assert.assertFalse(master11.isSlaveOf(master1));
-		Assert.assertFalse(master111.isSlaveOf(master1));
-		Assert.assertFalse(master112.isSlaveOf(master1));
+		assertTrue(detail12.isSlaveOf(master1));
+		assertTrue(detail121.isSlaveOf(master1));
+		assertFalse(master11.isSlaveOf(master1));
+		assertFalse(master111.isSlaveOf(master1));
+		assertFalse(master112.isSlaveOf(master1));
 	}
 
 }

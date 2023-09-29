@@ -10,9 +10,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -22,7 +22,7 @@ public class GateDialectTest
 {
 
 	@Test
-	@Ignore
+	@Disabled
 	public void test() throws URISyntaxException, IOException
 	{
 		TemplateEngine engine = new TemplateEngine();
@@ -37,7 +37,7 @@ public class GateDialectTest
 
 		String expected = Files.readString(Path.of(getClass().getResource("GateDialectTestResult.html").toURI()));
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	public static class GateDialectScreen

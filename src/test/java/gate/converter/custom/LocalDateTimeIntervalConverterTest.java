@@ -5,8 +5,8 @@ import gate.error.ConversionException;
 import gate.type.LocalDateTimeInterval;
 import java.time.LocalDateTime;
 import java.time.Month;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeIntervalConverterTest
 {
@@ -18,12 +18,12 @@ public class LocalDateTimeIntervalConverterTest
 	@Test
 	public void testOfString() throws ConversionException
 	{
-		Assert.assertEquals(OBJECT, Converter.fromString(LocalDateTimeInterval.class, STRING));
+		assertEquals(OBJECT, Converter.fromString(LocalDateTimeInterval.class, STRING));
 	}
 
 	@Test
 	public void testOfObject() throws ConversionException
 	{
-		Assert.assertEquals(STRING, Converter.toString(OBJECT));
+		assertEquals(STRING, Converter.toString(OBJECT));
 	}
 }

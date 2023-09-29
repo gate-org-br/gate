@@ -3,8 +3,8 @@ package gate.code;
 import gate.entity.User;
 import gate.io.StringReader;
 import java.io.IOException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class DMLGeneratorTest
 {
@@ -14,7 +14,7 @@ public class DMLGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DMLGeneratorTest/search().doc"));
 		String result = new DMLGenerator(User.class).search();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -22,6 +22,6 @@ public class DMLGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("DMLGeneratorTest/select().doc"));
 		String result = new DMLGenerator(User.class).select();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }

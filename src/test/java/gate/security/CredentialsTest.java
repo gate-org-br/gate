@@ -5,8 +5,10 @@ import gate.entity.User;
 import gate.error.InvalidCredentialsException;
 import gate.io.Credentials;
 import gate.type.ID;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class CredentialsTest
 {
@@ -24,10 +26,10 @@ public class CredentialsTest
 			.setModule("gateconsole.screen"));
 
 		String credentials = Credentials.create(user);
-		Assert.assertEquals(user, Credentials.of(credentials));
+		assertEquals(user, Credentials.of(credentials));
 
-		Assert.assertFalse(user.checkAccess("gate.modulos", null, null));
-		Assert.assertTrue(user.checkAccess("gateconsole.screen", null, null));
+		assertFalse(user.checkAccess("gate.modulos", null, null));
+		assertTrue(user.checkAccess("gateconsole.screen", null, null));
 	}
 
 }

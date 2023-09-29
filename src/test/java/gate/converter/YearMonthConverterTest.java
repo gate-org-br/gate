@@ -3,8 +3,8 @@ package gate.converter;
 import gate.error.ConversionException;
 import java.time.Month;
 import java.time.YearMonth;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class YearMonthConverterTest
 {
@@ -15,12 +15,12 @@ public class YearMonthConverterTest
 	@Test
 	public void testOfString() throws ConversionException
 	{
-		Assert.assertEquals(OBJECT, Converter.fromString(YearMonth.class, STRING));
+		assertEquals(OBJECT, Converter.fromString(YearMonth.class, STRING));
 	}
 
 	@Test
 	public void testOfObject() throws ConversionException
 	{
-		Assert.assertEquals(STRING, Converter.toString(OBJECT));
+		assertEquals(STRING, Converter.toString(OBJECT));
 	}
 }

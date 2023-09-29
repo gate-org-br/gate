@@ -1,8 +1,8 @@
 package gate.sql.condition;
 
 import gate.entity.User;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class ExtractorConditionTest
 {
@@ -13,6 +13,6 @@ public class ExtractorConditionTest
 		Condition condition = Condition.from(User.class)
 			.expression("id").eq(User::getId);
 
-		Assert.assertEquals("id = ?", condition.toString());
+		assertEquals("id = ?", condition.toString());
 	}
 }

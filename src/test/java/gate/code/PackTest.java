@@ -1,10 +1,10 @@
 package gate.code;
 
-import gate.code.PackageName;
 import gate.entity.User;
 import java.net.URISyntaxException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 public class PackTest
 {
@@ -13,27 +13,27 @@ public class PackTest
 	public void testGetParent() throws URISyntaxException
 	{
 		PackageName pack = PackageName.of(User.class);
-		Assert.assertEquals("gate", pack.getParent().toString());
+		assertEquals("gate", pack.getParent().toString());
 	}
 
 	@Test
 	public void testResolve() throws URISyntaxException
 	{
 		PackageName pack = PackageName.of(User.class);
-		Assert.assertEquals("gate.dao", pack.getParent().resolve("dao").toString());
+		assertEquals("gate.dao", pack.getParent().resolve("dao").toString());
 	}
 
 	@Test
 	public void testResolveSibling() throws URISyntaxException
 	{
 		PackageName pack = PackageName.of(User.class);
-		Assert.assertEquals("gate.dao", pack.resolveSibling("dao").toString());
+		assertEquals("gate.dao", pack.resolveSibling("dao").toString());
 	}
 
 	@Test
 	public void testSize() throws URISyntaxException
 	{
 		PackageName pack = PackageName.of(User.class);
-		Assert.assertTrue(pack.size() == 2);
+		assertTrue(pack.size() == 2);
 	}
 }

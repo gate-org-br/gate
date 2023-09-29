@@ -3,8 +3,8 @@ package gate.code;
 import gate.entity.User;
 import gate.io.StringReader;
 import java.io.IOException;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class ControlGeneratorTest
 {
@@ -14,7 +14,7 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/control().doc"));
 		String result = new ControlGenerator(User.class).control();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -22,7 +22,7 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/select().doc"));
 		String result = new ControlGenerator(User.class).select();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/search().doc"));
 		String result = new ControlGenerator(User.class).search();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -38,7 +38,7 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/insert().doc"));
 		String result = new ControlGenerator(User.class).insert();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/update().doc"));
 		String result = new ControlGenerator(User.class).update();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -54,6 +54,6 @@ public class ControlGeneratorTest
 	{
 		String expected = StringReader.read(getClass().getResource("ControlGeneratorTest/delete().doc"));
 		String result = new ControlGenerator(User.class).delete();
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 }
