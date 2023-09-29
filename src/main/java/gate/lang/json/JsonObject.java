@@ -7,6 +7,9 @@ import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
+import gate.util.Reflection;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -351,6 +354,44 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	{
 		Objects.requireNonNull(jsonObject);
 		return JsonElement.format(jsonObject);
+	}
+
+	@Override
+	public <T> T toObject(Class<T> type)
+	{
+		try
+		{
+
+			T object = type.getConstructor().newInstance();
+
+			for (Map.Entry<String, JsonElement> entry : entrySet())
+			{
+				if (entry.getValue() != null)
+				{
+					Field field = type.getDeclaredField(entry.getKey());
+					field.setAccessible(true);
+					field.set(object, entry.getValue().toObject(field.getType(),
+						Reflection.getElementType(field.getGenericType())));
+				}
+			}
+
+			return object;
+		} catch (NoSuchMethodException
+			| NoSuchFieldException
+			| InstantiationException
+			| IllegalAccessException
+			| InvocationTargetException
+			| SecurityException ex)
+		{
+			throw new UncheckedConversionException(ex.getMessage());
+		}
+	}
+
+	@Override
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
+	{
+		return toObject((Class<T>) type);
 	}
 
 	@Override

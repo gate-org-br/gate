@@ -8,6 +8,7 @@ import gate.handler.JsonElementHandler;
 import gate.type.Money;
 import gate.type.Percentage;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -69,6 +70,32 @@ public class JsonNumber extends Number implements JsonElement
 	public float floatValue()
 	{
 		return value.floatValue();
+	}
+
+	@Override
+	public <T> T toObject(Class<T> type)
+	{
+
+		if (type == Short.class)
+			return (T) (Short) value.shortValue();
+		if (type == Integer.class)
+			return (T) (Integer) value.intValue();
+		if (type == Long.class)
+			return (T) (Long) value.longValue();
+		if (type == Float.class)
+			return (T) (Float) value.floatValue();
+		if (type == Double.class)
+			return (T) (Double) value.doubleValue();
+		if (type.isAssignableFrom(BigInteger.class))
+			return (T) value.toBigInteger();
+		return (T) value;
+	}
+
+	@Override
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
+	{
+		return toObject((Class<T>) type);
 	}
 
 	/**

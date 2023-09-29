@@ -6,7 +6,6 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import java.lang.reflect.Type;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

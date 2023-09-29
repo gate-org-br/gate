@@ -48,6 +48,19 @@ public class JsonNull implements JsonElement
 		return "null";
 	}
 
+	@Override
+	public <T> T toObject(Class<T> type)
+	{
+		return null;
+	}
+
+	@Override
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
+	{
+		return toObject((Class< T>) type);
+	}
+
 	/**
 	 * Parses a JSON formatted string into a JsonNull object.
 	 *

@@ -6,6 +6,7 @@ import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
+import gate.util.Reflection;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,6 +65,28 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	public String toString()
 	{
 		return JsonArray.format(this);
+	}
+
+	@Override
+	public <T> T toObject(Class<T> type)
+	{
+		throw new UnsupportedOperationException("Can't create java object from json array without element type");
+	}
+
+	@Override
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
+	{
+
+		Class<T> clazz = (Class) type;
+
+		if (clazz.isAssignableFrom(Set.class))
+			return (T) stream().map(e -> e.toObject(Reflection.getRawType(elementType),
+				Reflection.getElementType(elementType))).collect(Collectors.toSet());
+
+		return (T) stream().map(e -> e.toObject(Reflection.getRawType(elementType),
+			Reflection.getElementType(elementType))).collect(Collectors.toList());
+
 	}
 
 	/**

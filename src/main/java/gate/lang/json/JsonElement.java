@@ -7,10 +7,14 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
+import gate.util.Reflection;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -108,13 +112,18 @@ public interface JsonElement extends Serializable
 		}
 	}
 
+	public <T> T toObject(Class<T> type);
+
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType);
+
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
 	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean, JsonNumber, JsonString, JsonArray,
 	 * JsonArray and JsonNull objects.
 	 * <p>
-	 * Other object types will be formatted as JsonString objects using the associated Converter.toString method
+	 * Other object types will be converted as JsonObjects
 	 *
 	 * @param obj the object to be formatted
 	 *
@@ -135,6 +144,32 @@ public interface JsonElement extends Serializable
 			return JsonArray.of((Collection<?>) obj);
 		if (obj instanceof Object[])
 			return JsonArray.of((Object[]) obj);
+
+		for (Constructor<?> constructor
+			: obj.getClass().getDeclaredConstructors())
+		{
+			if (constructor.getParameterCount() == 0)
+			{
+				JsonObject result = new JsonObject();
+				for (Field field : Reflection.getFields(Reflection.getRawType(obj.getClass())))
+				{
+					if (!Modifier.isStatic(field.getModifiers()))
+					{
+						try
+						{
+							field.setAccessible(true);
+							Object value = field.get(obj);
+							if (value != null)
+								result.put(field.getName(), JsonElement.of(value));
+						} catch (IllegalAccessException ex)
+						{
+							throw new UncheckedConversionException(ex.getMessage());
+						}
+					}
+				}
+				return result;
+			}
+		}
 
 		return JsonString.of(gate.converter.Converter.toString(obj));
 	}

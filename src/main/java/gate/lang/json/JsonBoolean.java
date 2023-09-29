@@ -69,6 +69,19 @@ public class JsonBoolean implements JsonElement
 		return value ? "true" : "false";
 	}
 
+	@Override
+	public <T> T toObject(Class<T> type)
+	{
+		return (T) (Boolean) value;
+	}
+
+	@Override
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
+	{
+		return (T) (Boolean) value;
+	}
+
 	public static JsonBoolean parse(boolean value)
 	{
 		return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;
