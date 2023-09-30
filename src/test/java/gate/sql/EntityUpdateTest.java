@@ -8,58 +8,49 @@ import gate.error.NotFoundException;
 import gate.type.ID;
 import java.sql.SQLException;
 import java.text.ParseException;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class EntityUpdateTest
 {
 
 	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
 	public void test() throws ConstraintViolationException, ParseException, SQLException, NotFoundException, AppException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Contact expected
 				= new Contact()
 					.setId(ID.valueOf(1))
 					.setType(Contact.Type.PHONE)
-					.setValue("99999999")
+					.setVal("99999999")
 					.setPerson(new Person()
 						.setId(1));
 
 			new ContactUpdate(link, ID.valueOf(1))
 				.setType(expected.getType())
 				.setPerson(expected.getPerson())
-				.setValue(expected.getValue())
+				.setVal(expected.getVal())
 				.execute();
 
 			Contact result = link
 				.select(Contact.class)
-				.properties("=id", "type", "value", "person.id")
+				.properties("=id", "type", "val", "person.id")
 				.matching(expected)
 				.orElseThrow(NotFoundException::new);
 
-			assertEquals(expected.getValue(), result.getValue());
+			assertEquals(expected.getVal(), result.getVal());
 			assertEquals(expected.getType(), result.getType());
 			assertEquals(expected.getId(), result.getId());
 			assertEquals(expected.getPerson().getId(), result.getPerson().getId());
 		}
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 
 	public static class ContactUpdate extends EntityUpdate
@@ -75,9 +66,9 @@ public class EntityUpdateTest
 			return (ContactUpdate) set("type", type);
 		}
 
-		public ContactUpdate setValue(String value)
+		public ContactUpdate setVal(String val)
 		{
-			return (ContactUpdate) set("value", value);
+			return (ContactUpdate) set("val", val);
 		}
 
 		public ContactUpdate setPerson(Person person)

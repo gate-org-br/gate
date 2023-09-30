@@ -2,7 +2,8 @@ package gate.io;
 
 import gate.entity.User;
 import gate.type.ID;
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 import org.junit.jupiter.api.AfterEach;
@@ -10,12 +11,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-public class JsonSetTest
+public class PersistentSetTest
 {
 
-	private PersistentSet<User> table;
-	private static final File USERS = new File("Users");
+	@TempDir
+	Path TEMP_DIR;
+
+	private PersistentSet<User> persistentSet;
 	private static final User USER0 = new User().setId(ID.valueOf(0)).setName("User 0");
 	private static final User USER1 = new User().setId(ID.valueOf(1)).setName("User 1");
 	private static final User USER2 = new User().setId(ID.valueOf(2)).setName("User 2");
@@ -32,64 +36,54 @@ public class JsonSetTest
 	@BeforeEach
 	public void setUp()
 	{
-		table = PersistentSet.of(User.class, USERS);
-		table.add(USER0);
-		table.add(USER1);
-		table.add(USER2);
-		table.add(USER3);
-		table.add(USER4);
-		table.add(USER5);
-		table.add(USER6);
-		table.add(USER7);
-		table.add(USER8);
-		table.add(USER9);
-		table.commit();
+		persistentSet = PersistentSet.of(User.class, TEMP_DIR.resolve("test-persistent-set.json"));
+		persistentSet.add(USER0);
+		persistentSet.add(USER1);
+		persistentSet.add(USER2);
+		persistentSet.add(USER3);
+		persistentSet.add(USER4);
+		persistentSet.add(USER5);
+		persistentSet.add(USER6);
+		persistentSet.add(USER7);
+		persistentSet.add(USER8);
+		persistentSet.add(USER9);
 	}
 
 	@AfterEach
 	public void tearDown()
 	{
-		table.clear();
-		table.commit();
+		persistentSet.clear();
 	}
 
 	@Test
 	public void testAdd_Collection()
 	{
-		table.addAll(Arrays.asList(USER10, USER11));
-		table.commit();
-		table.rollback();
-		assertEquals(table.size(), 12);
+		persistentSet.addAll(Arrays.asList(USER10, USER11));
+		assertEquals(persistentSet.size(), 12);
 	}
 
 	@Test
 	public void testClear()
 	{
-		table.clear();
-		table.commit();
-		table.rollback();
-		assertEquals(table.size(), 0);
-		assertFalse(USERS.exists());
+		persistentSet.clear();
+		assertEquals(persistentSet.size(), 0);
+		assertFalse(Files.exists(TEMP_DIR.resolve("test-persistent-set.json")));
 	}
 
 	@Test
 	public void testIterator()
 	{
-		Iterator iterator = table.iterator();
+		Iterator iterator = persistentSet.iterator();
 		iterator.next();
 		iterator.remove();
-		table.commit();
-		table.rollback();
-		assertEquals(table.size(), 9);
+		assertEquals(persistentSet.size(), 9);
 	}
 
 	@Test
 	public void testRemoveIf()
 	{
-		table.removeIf(e -> e.getName().equals("User 0"));
-		table.commit();
-		table.rollback();
-		assertEquals(table.size(), 9);
+		persistentSet.removeIf(e -> e.getName().equals("User 0"));
+		assertEquals(persistentSet.size(), 9);
 	}
 
 }

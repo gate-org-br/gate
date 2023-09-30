@@ -15,27 +15,24 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Optional;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class UpdateTest
 {
 
 	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
 	public void testString() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(1);
 			String name = "Jonh";
@@ -65,7 +62,7 @@ public class UpdateTest
 	@Test
 	public void testResourceFile() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(2);
 			String name = "Paul";
@@ -97,7 +94,7 @@ public class UpdateTest
 	@Test
 	public void testCompiledTableBuilder() throws ConstraintViolationException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(3);
 			String name = "Richard";
@@ -133,7 +130,7 @@ public class UpdateTest
 	@Test
 	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(4);
 			String name = "Thomas";
@@ -170,7 +167,7 @@ public class UpdateTest
 	@Test
 	public void testTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 5;
 			String name = "Maria";
@@ -210,7 +207,7 @@ public class UpdateTest
 	@Test
 	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 6;
 			String name = "Newton";
@@ -249,7 +246,7 @@ public class UpdateTest
 	@Test
 	public void testGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 7;
 			String name = "Fred";
@@ -287,7 +284,7 @@ public class UpdateTest
 	@Test
 	public void testFullGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 8;
 			String name = "Alfred";
@@ -324,37 +321,31 @@ public class UpdateTest
 	@Test
 	public void testGQN2() throws ConstraintViolationException, ParseException, SQLException, NotFoundException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Contact expected
 				= new Contact()
 					.setId(ID.valueOf(1))
 					.setType(Contact.Type.PHONE)
-					.setValue("99999999")
+					.setVal("99999999")
 					.setPerson(new Person()
 						.setId(1));
 
 			assertEquals(1, link
 				.update(Contact.class)
-				.properties("=id", "type", "value", "person.id")
+				.properties("=id", "type", "val", "person.id")
 				.execute(expected));
 
 			Contact result = link
 				.select(Contact.class)
-				.properties("=id", "type", "value", "person.id")
+				.properties("=id", "type", "val", "person.id")
 				.matching(expected)
 				.orElseThrow(NotFoundException::new);
 
-			assertEquals(expected.getValue(), result.getValue());
+			assertEquals(expected.getVal(), result.getVal());
 			assertEquals(expected.getType(), result.getType());
 			assertEquals(expected.getId(), result.getId());
 			assertEquals(expected.getPerson().getId(), result.getPerson().getId());
 		}
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 }

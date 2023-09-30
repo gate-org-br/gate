@@ -15,27 +15,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class InsertTest
 {
 
 	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
 	public void testString() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(40);
 			String name = "Jonh";
@@ -67,7 +64,7 @@ public class InsertTest
 	@Test
 	public void testResourceFile() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(140);
 			String name = "Mary";
@@ -98,7 +95,7 @@ public class InsertTest
 	@Test
 	public void testCompiledTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(41);
 			String name = "Paul";
@@ -134,7 +131,7 @@ public class InsertTest
 	@Test
 	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			ID id = ID.valueOf(42);
 			String name = "Richard";
@@ -172,7 +169,7 @@ public class InsertTest
 	@Test
 	public void testTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 43;
 			String name = "Richard";
@@ -212,7 +209,7 @@ public class InsertTest
 	@Test
 	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			String name = "Bill Gates";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
@@ -223,9 +220,7 @@ public class InsertTest
 				.setBirthdate(birthdate)
 				.setContract(contract);
 
-			link
-				.prepare(Insert
-					.into(Person.class))
+			link.prepare(Insert.into(Person.class))
 				.value(person)
 				.execute();
 
@@ -249,7 +244,7 @@ public class InsertTest
 	@Test
 	public void testGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			int id = 100;
 			String name = "Fred";
@@ -287,7 +282,7 @@ public class InsertTest
 	@Test
 	public void testFullGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			String name = "Jobs";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
@@ -320,7 +315,7 @@ public class InsertTest
 	@Test
 	public void testPreparedInsert() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			List<Person> expected = new ArrayList<>();
 			for (int i = 1000; i < 1010; i++)
@@ -352,11 +347,5 @@ public class InsertTest
 				result.stream().map(e -> e.getId()).collect(Collectors.toList()));
 
 		}
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 }

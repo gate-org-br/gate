@@ -5,106 +5,33 @@
  */
 package gate.sql;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
-import gate.Contact;
-import gate.Person;
 import gate.error.ConstraintViolationException;
-import gate.sql.insert.Insert;
-import gate.type.ID;
-import gate.type.LocalDateInterval;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.h2.jdbcx.JdbcDataSource;
 
-/**
- *
- * @author davins
- */
 public class TestDataSource
 {
 
-	private static volatile TestDataSource instance;
+	public static volatile LinkSource INSTANCE;
 
-	public static TestDataSource getInstance()
+	static
 	{
-		TestDataSource testDataSource = TestDataSource.instance;
-		if (testDataSource == null)
-			synchronized (TestDataSource.class)
+		JdbcDataSource dataSource = new JdbcDataSource();
+		dataSource.setURL("jdbc:h2:mem:gate;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
+		dataSource.setUser("sa");
+		dataSource.setPassword("");
+		INSTANCE = LinkSource.of(dataSource);
+
+	}
+
+	public static void setUp() throws ConstraintViolationException, SQLException, ConstraintViolationException
+	{
+
+		try (Link link = INSTANCE.getLink())
 		{
-			testDataSource = TestDataSource.instance;
-			if (testDataSource == null)
-				TestDataSource.instance = testDataSource = new TestDataSource();
-		}
-		return testDataSource;
-	}
-
-	private final MysqlDataSource DATA_SOURCE
-		= new MysqlDataSource();
-
-	private TestDataSource()
-	{
-		DATA_SOURCE.setDatabaseName("gatetest");
-		DATA_SOURCE.setServerName("localhost");
-	}
-
-	public Link getLink() throws SQLException
-	{
-		return new Link(DATA_SOURCE.getConnection("gatetest", "gatetest"));
-	}
-
-	public void setUp() throws ConstraintViolationException, SQLException
-	{
-		try (Link link = getLink())
-		{
-			link.prepare("delete from Contact").execute();
-
-			link.prepare("delete from Person").execute();
-
-			List<Person> persons = new ArrayList<>();
-			for (int i = 1; i <= 31; i++)
-			{
-				Person person = new Person();
-				person.setId(i);
-				person.setName("Person " + i);
-				person.setBirthdate(LocalDate.of(2000, 12, i));
-				person.setContract(LocalDateInterval.of(LocalDate.of(2000, 12, i), LocalDate.of(2020, 12, i)));
-
-				Contact contact = new Contact();
-				contact.setId(ID.valueOf(i));
-				contact.setPerson(person);
-				contact.setType(Contact.Type.PHONE);
-				contact.setValue(String.valueOf(i));
-
-				person.getContacts().add(contact);
-
-				persons.add(person);
-			}
-
-			link
-				.prepare(Insert.into(Person.class).set("id", "name", "birthdate", "contract"))
-				.values(persons)
+			link.prepare(TestDataSource.class.getResource("TestDataSource.sql"))
 				.execute();
-
-			link.prepare(Insert.into(Contact.class).set("id", "person.id", "type", "value"))
-				.values(persons.stream().flatMap(e -> e.getContacts().stream()).collect(Collectors.toList()))
-				.execute();
-
 		}
-	}
 
-	public void clean()
-	{
-		try (Link link = getLink())
-		{
-			link.prepare("delete from Contact").execute();
-
-			link.prepare("delete from Person").execute();
-		} catch (SQLException | ConstraintViolationException ex)
-		{
-			fail(ex.getMessage());
-		}
 	}
 }

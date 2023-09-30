@@ -16,21 +16,18 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class SelectTest
 {
 
 	@BeforeAll
 	public static void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
@@ -284,7 +281,7 @@ public class SelectTest
 			.join("Role").on(Condition.of("Uzer.Role$id").isEq("Role.id"))
 			.build();
 
-		assertEquals("select Uzer.id as 'id', Uzer.name as 'name', Role.id as 'role.id', Role.name as 'role.name' from Uzer join Role on Uzer.Role$id = Role.id", query.toString());
+		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = Role.id", query.toString());
 		assertEquals(query.getParameters(), Collections.emptyList());
 	}
 
@@ -300,7 +297,7 @@ public class SelectTest
 			.join("Role").on(Condition.of("Uzer.Role$id").eq())
 			.build();
 
-		assertEquals("select Uzer.id as 'id', Uzer.name as 'name', Role.id as 'role.id', Role.name as 'role.name' from Uzer join Role on Uzer.Role$id = ?", query.toString());
+		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
 		assertEquals(query.getParameters(), Collections.emptyList());
 	}
 
@@ -316,7 +313,7 @@ public class SelectTest
 			.join("Role").on(Condition.of("Uzer.Role$id").eq(1))
 			.build();
 
-		assertEquals("select Uzer.id as 'id', Uzer.name as 'name', Role.id as 'role.id', Role.name as 'role.name' from Uzer join Role on Uzer.Role$id = ?", query.toString());
+		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
 		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
 	}
 
@@ -334,7 +331,7 @@ public class SelectTest
 			.from("Role")
 			.build();
 
-		assertEquals("select Role.id as 'id', Role.name as 'name', (select count(*) from Uzer where Role$id = Role.id) as 'users' from Role", query.toString());
+		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id) as \"users\" from Role", query.toString());
 		assertEquals(query.getParameters(), Collections.emptyList());
 	}
 
@@ -352,7 +349,7 @@ public class SelectTest
 			.where(Condition.of("Role.id").eq())
 			.build();
 
-		assertEquals("select Role.id as 'id', Role.name as 'name', (select count(*) from Uzer where Role$id = Role.id and active = ?) as 'users' from Role where Role.id = ?", query.toString());
+		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id and active = ?) as \"users\" from Role where Role.id = ?", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -373,19 +370,20 @@ public class SelectTest
 				.of("Role.id").eq(1))
 			.build();
 
-		assertEquals("select Role.id as 'id', Role.name as 'name', (select count(*) from Uzer where Role$id = Role.id and active = ?) as 'users' from Role where Role.id = ?", query.toString());
+		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id and active = ?) as \"users\" from Role where Role.id = ?", query.toString());
 		assertEquals(query.getParameters(), Arrays.asList((Object) Boolean.TRUE, (Object) 1));
 	}
 
 	@Test
 	public void testFetchEntityFromString() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
 				.parameters(1)
-				.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
+				.fetchEntity(Person.class)
+				.orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
 			assertEquals("Person 1", person.getName());
 			assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
@@ -397,7 +395,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromResource() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from(getClass().getResource("SelectTest/Select.sql"))
@@ -414,7 +412,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityListFiltering() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			List<Person> persons = link
 				.from(Select.of(
@@ -423,14 +421,14 @@ public class SelectTest
 						.of("id").eq(null)
 						.and("name").lk("1")))
 				.fetchEntityList(Person.class);
-			assertEquals(13, persons.size());
+			assertEquals(12, persons.size());
 		}
 	}
 
 	@Test
 	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -454,7 +452,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -478,7 +476,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromTypedBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -497,7 +495,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.from(Select.from(Person.class))
@@ -515,7 +513,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromGQNWithParameter() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Person person = link
 				.select(Person.class)
@@ -533,7 +531,8 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			Contact contact = new Contact();
 			contact.getPerson().setId(1);
@@ -604,11 +603,5 @@ public class SelectTest
 
 		assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
 		assertTrue(query.getParameters().isEmpty());
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 }

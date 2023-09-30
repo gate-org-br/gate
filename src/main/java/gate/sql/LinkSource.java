@@ -23,6 +23,11 @@ public interface LinkSource
 		return new LinkSourceImpl(getNamedDataSource(name));
 	}
 
+	static LinkSource of(DataSource datasource)
+	{
+		return new LinkSourceImpl(datasource);
+	}
+
 	static DataSource getDefaultDataSource()
 	{
 		var beanManager = CDI.current().getBeanManager();

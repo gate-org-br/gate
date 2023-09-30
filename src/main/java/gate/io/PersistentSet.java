@@ -1,169 +1,310 @@
 package gate.io;
 
-import gate.annotation.SecurityKey;
-import gate.converter.Converter;
-import java.io.File;
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.AbstractSet;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-public class PersistentSet<T> extends AbstractSet<T> implements Observable<T>
+public class PersistentSet<T> implements Set<T>
 {
 
-	private final File file;
+	private long log;
+	private final Path path;
 	private final Class<T> type;
 	private final Set<T> values;
-	private static final String ALGORITHM = "AES";
-	private final List<Observer<T>> observers = new CopyOnWriteArrayList<>();
 
-	private PersistentSet(Class<T> type, File file, Set<T> values)
+	private PersistentSet(Class<T> type, Path path, Set<T> values, long log)
 	{
-		this.file = file;
+		this.log = log;
+		this.path = path;
 		this.type = type;
 		this.values = values;
 	}
 
-	public File getFile()
+	public Path getPath()
 	{
-		return file;
+		return path;
 	}
 
 	@Override
-	public boolean add(T e)
+	public boolean add(T value)
 	{
-		if (values.add(e))
+		if (!values.contains(value))
 		{
-			observers.forEach(Observer::onUpdate);
+			log += PersistentSet.persist(List.of(value), "+", path);
+			values.add(value);
+			compact();
 			return true;
 		}
+
 		return false;
 	}
 
 	@Override
-	public void addObserver(Observer<T> observer)
+	public boolean addAll(Collection<? extends T> collection)
 	{
-		observers.add(observer);
+		var elements = collection.stream().filter(e -> !values.contains(e)).toList();
+		if (!elements.isEmpty())
+		{
+			log += PersistentSet.persist(elements, "+", path);
+			values.addAll(elements);
+			compact();
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
-	public void remObserver(Observer<T> observer)
+	public boolean remove(Object value)
 	{
-		observers.remove(observer);
+		if (type.isAssignableFrom(value.getClass())
+			&& values.contains((T) value))
+		{
+			log += PersistentSet.persist(List.of(value), "-", path);
+			values.remove(value);
+			compact();
+			return true;
+		}
+
+		return false;
 	}
 
 	@Override
-	public java.util.Iterator<T> iterator()
+	public boolean removeAll(Collection<?> collection)
 	{
-		return new Iterator();
+		var elements = collection.stream()
+			.filter(e -> type.isAssignableFrom(e.getClass()))
+			.filter(e -> values.contains((T) e)).toList();
+
+		if (!elements.isEmpty())
+		{
+			log += PersistentSet.persist(elements, "-", path);
+			values.removeAll(elements);
+			compact();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> collection)
+	{
+		var elements = values.stream()
+			.filter(e -> !collection.contains(e)).toList();
+
+		if (!elements.isEmpty())
+		{
+			log += PersistentSet.persist(elements, "-", path);
+			values.removeAll(elements);
+			compact();
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public void clear()
+	{
+		try
+		{
+			Files.deleteIfExists(path);
+			log = 0;
+			values.clear();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	@Override
+	public Iterator<T> iterator()
+	{
+		var iterator = values.iterator();
+		return new Iterator<T>()
+		{
+
+			private T value;
+
+			@Override
+			public boolean hasNext()
+			{
+				return iterator.hasNext();
+			}
+
+			@Override
+			public T next()
+			{
+				return value = iterator.next();
+			}
+
+			@Override
+			public void remove()
+			{
+
+				log += PersistentSet.persist(List.of(value), "-", path);
+				iterator.remove();
+				compact();
+			}
+
+			@Override
+			public void forEachRemaining(Consumer<? super T> action)
+			{
+				iterator.forEachRemaining(action);
+			}
+		};
 	}
 
 	@Override
 	public int size()
 	{
 		return values.size();
+
 	}
 
-	public class Iterator implements java.util.Iterator<T>
+	@Override
+	public boolean isEmpty()
 	{
-
-		private final java.util.Iterator<T> iterator;
-
-		public Iterator()
-		{
-			this.iterator = values.iterator();
-		}
-
-		@Override
-		public boolean hasNext()
-		{
-			return iterator.hasNext();
-		}
-
-		@Override
-		public T next()
-		{
-			return iterator.next();
-		}
-
-		@Override
-		public void remove()
-		{
-			iterator.remove();
-			observers.forEach(Observer::onUpdate);
-		}
-
-		@Override
-		public void forEachRemaining(Consumer<? super T> action)
-		{
-			iterator.forEachRemaining(action);
-		}
+		return values.isEmpty();
 	}
 
-	public static <T> PersistentSet<T> of(Class<T> type, File file)
+	@Override
+	public boolean contains(Object o
+	)
 	{
-		if (!file.exists() || file.length() == 0)
-			return new PersistentSet<>(type, file, new HashSet<>());
-
-		try
-		{
-			byte[] bytes = Files.readAllBytes(file.toPath());
-
-			if (type.isAnnotationPresent(SecurityKey.class))
-				bytes = Encryptor.of(ALGORITHM, type.getAnnotation(SecurityKey.class).value()).decrypt(bytes);
-
-			Set<T> values = Converter.fromJson(Set.class, type, new String(bytes));
-			return new PersistentSet<>(type, file, values != null ? values : new HashSet<>());
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return values.contains(o);
 	}
 
-	public void commit()
+	@Override
+	public Object[] toArray()
+	{
+		return values.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a
+	)
+	{
+		return values.toArray(a);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c)
+	{
+		return values.containsAll(c);
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		return o instanceof PersistentSet && values.equals(o);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return values.hashCode();
+	}
+
+	private void compact()
 	{
 		try
 		{
-			if (!values.isEmpty())
+			if (log >= values.size() * 2)
 			{
-				if (file.getParentFile() != null)
-					file.getParentFile().mkdirs();
+				Path backup = path.resolveSibling(path.getFileName() + ".backup");
+				Files.deleteIfExists(backup);
 
-				byte[] bytes = Converter.toJson(values).getBytes();
-
-				if (type.isAnnotationPresent(SecurityKey.class))
-					bytes = Encryptor.of(ALGORITHM, type.getAnnotation(SecurityKey.class).value()).encrypt(bytes);
-
-				Files.write(file.toPath(), bytes, StandardOpenOption.CREATE);
-			} else
-				file.delete();
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
-	}
-
-	public void rollback()
-	{
-		this.values.clear();
-		if (file.exists() && file.length() > 0)
-		{
-			try
-			{
-				byte[] bytes = Files.readAllBytes(file.toPath());
-				if (type.isAnnotationPresent(SecurityKey.class))
-					bytes = Encryptor.of(ALGORITHM, type.getAnnotation(SecurityKey.class).value()).decrypt(bytes);
-				this.values.addAll(Converter.fromJson(Set.class, type, new String(bytes)));
-			} catch (IOException ex)
-			{
-				throw new UncheckedIOException(ex);
+				if (!values.isEmpty())
+				{
+					PersistentSet.persist(values, "+", backup);
+					Files.move(backup, path, StandardCopyOption.REPLACE_EXISTING);
+				} else
+					Files.deleteIfExists(path);
 			}
+
+			log = values.size();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
 		}
 	}
+
+	public static <T> PersistentSet<T> of(Class<T> type, Path path)
+	{
+		try
+		{
+			int log = 0;
+			var values = new HashSet<T>();
+			if (Files.exists(path))
+			{
+				try (BufferedReader reader = Files.newBufferedReader(path))
+				{
+					for (String line = reader.readLine(); line != null; line = reader.readLine())
+					{
+						log++;
+						JsonObject entry = JsonObject.parse(line);
+						var value = entry.get("v").toObject(type);
+						switch (entry.getString("action").orElseThrow())
+						{
+							case "+":
+								values.add(value);
+								break;
+							case "-":
+								values.remove(value);
+								break;
+							default:
+								throw new IOException("File is corrupted");
+						}
+					}
+				}
+			}
+
+			return new PersistentSet<>(type, path, values, log);
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
+	private static long persist(Collection<?> values, String action, Path path)
+	{
+		try
+		{
+			if (!Files.exists(path))
+				Files.createFile(path);
+
+			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND))
+			{
+				for (Object value : values)
+				{
+					JsonObject line = new JsonObject()
+						.setString("a", action)
+						.set("v", JsonElement.of(value));
+					writer.append(line.toString());
+					writer.newLine();
+				}
+			}
+
+			return values.size();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
+
 }

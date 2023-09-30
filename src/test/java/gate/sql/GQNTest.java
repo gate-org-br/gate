@@ -7,13 +7,10 @@ import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class GQNTest
 {
 
@@ -21,10 +18,10 @@ public class GQNTest
 	{
 	}
 
-	@BeforeAll
-	public static void setUp() throws ConstraintViolationException, SQLException
+	@BeforeEach
+	public void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
@@ -33,14 +30,14 @@ public class GQNTest
 		String result = Select
 			.of(User.class, "=id", "%name", "role.name")
 			.toString();
-		String expected = "select Uzer.id as 'id', Uzer.name as 'name', Uzer$Role.name as 'role.name' from gate.Uzer left join gate.Role as Uzer$Role on Uzer.Role$id = Uzer$Role.id where 0 = 0 and Uzer.id = ? and Uzer.name like ?";
+		String expected = "select Uzer.id as \"id\", Uzer.name as \"name\", Uzer$Role.name as \"role.name\" from gate.Uzer left join gate.Role as Uzer$Role on Uzer.Role$id = Uzer$Role.id where 0 = 0 and Uzer.id = ? and Uzer.name like ?";
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void test02() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			link.delete(Person.class)
 				.execute(new Person().setId(1));
@@ -52,14 +49,14 @@ public class GQNTest
 				.connect(link)
 				.fetchObject(Integer.class)
 				.get();
-			assertEquals(30, result);
+			assertEquals(29, result);
 		}
 	}
 
 	@Test
 	public void test03() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.getInstance().getLink())
+		try (Link connection = TestDataSource.INSTANCE.getLink())
 		{
 			connection
 				.delete(Person.class)
@@ -74,7 +71,7 @@ public class GQNTest
 	@Test
 	public void test04() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.getInstance().getLink())
+		try (Link connection = TestDataSource.INSTANCE.getLink())
 		{
 			connection.update(Person.class)
 				.properties("=id", "name")
@@ -92,7 +89,7 @@ public class GQNTest
 	@Test
 	public void test05() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.getInstance().getLink())
+		try (Link connection = TestDataSource.INSTANCE.getLink())
 		{
 
 			connection.update(Person.class)
@@ -109,11 +106,5 @@ public class GQNTest
 			assertEquals("Nome Modificado da Pessoa 6", result2);
 
 		}
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 }

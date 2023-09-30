@@ -9,26 +9,23 @@ import gate.sql.select.Select;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class MapListFetcherTest
 {
 
-	@BeforeAll
-	public static void setUp() throws ConstraintViolationException, SQLException
+	@BeforeEach
+	public void setUp() throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
 	public void test01() throws SQLException
 	{
-		try (Link connection = TestDataSource.getInstance().getLink())
+		try (Link connection = TestDataSource.INSTANCE.getLink())
 		{
 
 			List<Map<String, Object>> results = connection
@@ -40,12 +37,6 @@ public class MapListFetcherTest
 			results.forEach(e -> assertEquals(e.get("name"), String.format("Person %s", e.get("id").toString())));
 
 		}
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 
 }

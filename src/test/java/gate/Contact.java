@@ -1,6 +1,8 @@
 package gate;
 
+import gate.annotation.Converter;
 import gate.annotation.Entity;
+import gate.converter.EnumStringConverter;
 import gate.type.ID;
 
 @Entity
@@ -10,7 +12,7 @@ public class Contact
 	private ID id;
 	private Person person;
 	private Type type;
-	private String value;
+	private String val;
 
 	public ID getId()
 	{
@@ -47,17 +49,18 @@ public class Contact
 		return this;
 	}
 
-	public String getValue()
+	public String getVal()
 	{
-		return value;
+		return val;
 	}
 
-	public Contact setValue(String value)
+	public Contact setVal(String val)
 	{
-		this.value = value;
+		this.val = val;
 		return this;
 	}
 
+	@Converter(EnumStringConverter.class)
 	public enum Type
 	{
 		PHONE, EMAIL

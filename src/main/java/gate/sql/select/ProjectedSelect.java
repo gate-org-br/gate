@@ -19,8 +19,8 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 	}
 
 	public abstract static class Constant extends ProjectedSelect implements
-			Projectable.Constant,
-			Selectable.Constant
+		Projectable.Constant,
+		Selectable.Constant
 	{
 
 		public Constant(Clause clause)
@@ -36,15 +36,15 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 				@Override
 				public String toString()
 				{
-					return getClause() + " as '" + alias + "'";
+					return getClause() + " as \"" + alias + "\"";
 				}
 			};
 		}
 	}
 
 	public abstract static class Generic extends ProjectedSelect implements
-			Projectable.Generic,
-			Selectable.Generic
+		Projectable.Generic,
+		Selectable.Generic
 	{
 
 		public Generic(Clause clause)
@@ -60,15 +60,15 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 				@Override
 				public String toString()
 				{
-					return getClause() + " as '" + alias + "'";
+					return getClause() + " as \"" + alias + "\"";
 				}
 			};
 		}
 	}
 
 	public abstract static class Compiled extends ProjectedSelect implements
-			Projectable.Compiled,
-			Selectable.Compiled
+		Projectable.Compiled,
+		Selectable.Compiled
 	{
 
 		public Compiled(Clause clause)
@@ -84,7 +84,7 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 				@Override
 				public String toString()
 				{
-					return getClause() + " as '" + alias + "'";
+					return getClause() + " as \"" + alias + "\"";
 				}
 			};
 		}
@@ -107,8 +107,8 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 		}
 
 		public abstract static class Constant extends Aliased implements
-				Projectable.Constant,
-				Selectable.Constant
+			Projectable.Constant,
+			Selectable.Constant
 		{
 
 			public Constant(Clause clause)
@@ -118,8 +118,8 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 		}
 
 		public abstract static class Generic extends Aliased implements
-				Projectable.Generic,
-				Selectable.Generic
+			Projectable.Generic,
+			Selectable.Generic
 		{
 
 			public Generic(Clause clause)
@@ -129,8 +129,8 @@ public abstract class ProjectedSelect implements Clause, Aliasable, Projectable,
 		}
 
 		public abstract static class Compiled extends Aliased implements
-				Projectable.Compiled,
-				Selectable.Compiled
+			Projectable.Compiled,
+			Selectable.Compiled
 		{
 
 			public Compiled(Clause clause)

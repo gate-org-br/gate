@@ -10,21 +10,19 @@ import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
-import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-@Disabled
 public class DeleteTest
 {
 
 	@BeforeAll
-	public static void setUp() throws ConstraintViolationException, SQLException
+	public static void setUp()
+		throws ConstraintViolationException, SQLException
 	{
-		TestDataSource.getInstance().setUp();
+		TestDataSource.setUp();
 	}
 
 	@Test
@@ -67,10 +65,12 @@ public class DeleteTest
 	@Test
 	public void test4() throws ConstraintViolationException, SQLException
 	{
-		try (Link link = TestDataSource.getInstance().getLink())
+
+		try (Link link = TestDataSource.INSTANCE.getLink())
 		{
 			try
 			{
+
 				link
 					.prepare(Delete.from(Person.class))
 					.value(new Person().setId(1))
@@ -93,11 +93,5 @@ public class DeleteTest
 		String result = Delete.of(Contact.class, "=person.id").toString();
 
 		assertEquals(expected, result);
-	}
-
-	@AfterAll
-	public static void clean()
-	{
-		TestDataSource.getInstance().clean();
 	}
 }
