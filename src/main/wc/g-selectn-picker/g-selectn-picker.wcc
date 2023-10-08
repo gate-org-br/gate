@@ -1,10 +1,10 @@
 /* global customElements, template, fetch */
 
-import './g-icon.mjs';
-import './g-selectn.mjs';
-import './g-coolbar.mjs';
-import GWindow from './g-window.mjs';
-import handle from './response-handler.mjs';
+import './g-icon.js';
+import './g-selectn.js';
+import './g-coolbar.js';
+import GWindow from './g-window.js';
+import handle from './response-handler.js';
 
 export default class GSelectNPicker extends GWindow
 {

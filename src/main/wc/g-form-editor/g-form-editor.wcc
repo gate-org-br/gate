@@ -1,9 +1,9 @@
 /* global customElements */
 
-import './g-form.mjs';
-import './g-grid.mjs';
-import './g-field-editor.mjs';
-import GFieldEditorDialog from './g-field-editor-dialog.mjs';
+import './g-form.js';
+import './g-grid.js';
+import './g-field-editor.js';
+import GFieldEditorDialog from './g-field-editor-dialog.js';
 
 function fill(row, campo)
 {

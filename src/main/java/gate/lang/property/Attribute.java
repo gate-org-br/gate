@@ -3,7 +3,8 @@ package gate.lang.property;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
-import gate.util.Icons;
+import gate.icon.Icon;
+import gate.icon.Icons;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
@@ -177,7 +178,7 @@ public interface Attribute
 		return null;
 	}
 
-	default Icons.Icon getIcon()
+	default Icon getIcon()
 	{
 		return null;
 	}

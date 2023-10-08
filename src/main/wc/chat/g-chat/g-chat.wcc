@@ -1,7 +1,7 @@
 /* global customElements */
 
-import './g-chat-peer-list.mjs';
-import './g-chat-contact-list.mjs';
+import './g-chat-peer-list.js';
+import './g-chat-contact-list.js';
 
 customElements.define('g-chat', class extends HTMLElement
 {

@@ -2,9 +2,9 @@ package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Color;
 import gate.annotation.Icon;
+import gate.icon.Icons;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
-import gate.util.Icons;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +43,7 @@ public class IconProcessor extends TagProcessor
 			Color.Extractor.extract(type)
 				.ifPresent(e -> attributes.put("style", "color: " + e));
 
-		Icons.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
+		gate.icon.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
 
 		if (icon.getCode().length() == 1)
 			attributes.put("c", "c");

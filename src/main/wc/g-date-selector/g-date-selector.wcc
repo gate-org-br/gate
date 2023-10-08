@@ -1,7 +1,7 @@
 /* global customElements, template */
 
-import './g-calendar.mjs';
-import DateFormat from './date-format.mjs';
+import './g-calendar.js';
+import DateFormat from './date-format.js';
 
 customElements.define('g-date-selector', class extends HTMLElement
 {

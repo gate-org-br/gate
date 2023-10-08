@@ -1,7 +1,8 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.icon.Icon;
+import gate.icon.Icons;
 import gate.thymeleaf.TextEngine;
-import gate.util.Icons;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -37,7 +38,7 @@ public class IconsProcessor extends TagModelProcessor
 
 		var request = ((IWebContext) context).getRequest();
 
-		for (Icons.Icon icon : Icons.getInstance().get())
+		for (Icon icon : Icons.getInstance().get())
 		{
 			request.setAttribute(name, icon);
 			add(context, model, handler, engine.process(content, context));

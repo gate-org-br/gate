@@ -1,4 +1,4 @@
-import './g-properties.mjs';
+import './g-properties.js';
 
 function element(content)
 {

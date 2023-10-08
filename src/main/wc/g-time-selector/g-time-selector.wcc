@@ -1,6 +1,6 @@
 /* global customElements */
 
-import './g-slider.mjs';
+import './g-slider.js';
 
 customElements.define('g-time-selector', class extends HTMLElement
 {

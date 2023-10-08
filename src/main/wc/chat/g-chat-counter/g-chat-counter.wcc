@@ -1,7 +1,7 @@
 /* global customElements */
 
-import GChatService from './g-chat-service.mjs';
-import GMessageDialog from './g-message-dialog.mjs';
+import GChatService from './g-chat-service.js';
+import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-chat-counter', class extends HTMLElement
 {

@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.icon.Emojis;
 import gate.thymeleaf.Precedence;
-import gate.util.Emojis;
 import javax.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;

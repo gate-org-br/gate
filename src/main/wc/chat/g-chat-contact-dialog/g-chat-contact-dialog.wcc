@@ -1,10 +1,10 @@
 /* global customElements, template */
 
-import './g-icon.mjs';
-import './g-chat-contact.mjs';
-import GWindow from './g-window.mjs';
-import GChatService from './g-chat-service.mjs';
-import GMessageDialog from './g-message-dialog.mjs';
+import './g-icon.js';
+import './g-chat-contact.js';
+import GWindow from './g-window.js';
+import GChatService from './g-chat-service.js';
+import GMessageDialog from './g-message-dialog.js';
 
 export default class GChatContactDialog extends GWindow
 {

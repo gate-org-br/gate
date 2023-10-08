@@ -1,10 +1,10 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
+import gate.icon.Icon;
+import gate.icon.Icons;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
-import gate.util.Icons;
-import gate.util.Icons.Icon;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

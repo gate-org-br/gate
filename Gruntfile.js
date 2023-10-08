@@ -1,55 +1,54 @@
 module.exports = function (grunt)
 {
+	const resources = "src/main/resources/META-INF/resources/gate";
+
 	grunt.initConfig({
 
-		clean: ['src/main/resources/gate/Gate.js',
-			'src/main/resources/gate/*.mjs',
-			'src/main/resources/gate/*.css'],
+		clean: [`${resources}/*.mjs`,
+			`${resources}/*.js`,
+			`${resources}/*.css`],
 
 		copy: {
 			styles: {
-				files: [
-					{expand: true,
+				files: [{expand: true,
 						flatten: true,
 						filter: 'isFile',
-						dest: 'src/main/resources/gate',
-						src: ['src/main/wc/**/*.css']}
-				]
+						dest: resources,
+						src: ['src/main/wc/**/*.css']}]
 			},
 			modules: {
-				files: [
-					{expand: true,
+				files: [{expand: true,
 						flatten: true,
 						filter: 'isFile',
-						dest: 'src/main/resources/gate',
+						dest: resources,
 						src: ['src/main/wc/**/*.mjs'],
-						rename: (dest, src) => dest + '/' + src.replace('.mjs', '.mjs')}
-				]
+						rename: (dest, src) => dest + '/' + src.replace('.mjs', '.js')}]
 			},
 			classes: {
-				files: [
-					{expand: true,
+				files: [{expand: true,
 						flatten: true,
 						filter: 'isFile',
-						dest: 'src/main/resources/gate',
+						dest: resources,
 						src: ['src/main/wc/**/*.wc'],
-						rename: (dest, src) => dest + '/' + src.replace('.wc', '.mjs')}
-				]
+						rename: (dest, src) => dest + '/' + src.replace('.wc', '.js')}]
 			},
 			options: {
 				process: function (data, name)
 				{
 					if (!name.endsWith("wc"))
 						return data;
+
 					let template = /<template>([\s\S]*?)<\/template>/g.exec(data);
 					if (template && template.length === 2)
 						template = template = template[1];
+
 					let script = "";
 					let scriptTag = /<script>([\s\S]*?)<\/script>/g.exec(data);
 					if (scriptTag && scriptTag.length === 2)
 						script = scriptTag[1];
 					else if (grunt.file.exists(name + 'c'))
 						script = grunt.file.read(name + 'c');
+
 					let style = "";
 					let styleTag = /<style>([\s\S]*?)<\/style>/g.exec(data);
 					if (styleTag && styleTag.length === 2)
@@ -83,7 +82,7 @@ ${script}`;
 					{
 						expand: true,
 						src: ['src/main/wc/**/*.less'],
-						dest: 'src/main/resources/gate',
+						dest: resources,
 						ext: '.css',
 						flatten: true
 					}]
@@ -102,5 +101,38 @@ ${script}`;
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.registerTask('default', ['clean', 'copy', "less"]);
+
+	grunt.registerTask('create-icon-list', () =>
+	{
+		let icons = [];
+		grunt.file.recurse(`${resources}/icon`, function (path, root, sub, filename)
+		{
+			if (grunt.file.isFile(path))
+				icons.push(filename.replace('.svg', ''));
+		});
+
+		grunt.file.write(`${resources}/icon-list.js`, `export default ${JSON.stringify(icons)};`);
+		console.log('icon-list.mjs sucessfully created.');
+	});
+
+	grunt.registerTask('create-icon-data', () =>
+	{
+		let content = "let icons = new Map();\n";
+		grunt.file.recurse(`${resources}/icon`, function (path, root, sub, filename)
+		{
+			if (grunt.file.isFile(path))
+			{
+				const code = filename.replace('.svg', '');
+				const data = grunt.file.read(path, {encoding: 'utf8'});
+				content += `icons.set("${code}", "data:image/svg+xml;base64,${btoa(data)}");\n`;
+			}
+		});
+		content += "export default icons;";
+
+		grunt.file.write(`${resources}/icon-data.js`, content);
+		console.log('icon-data.mjs sucessfully created.');
+	});
+
+
+	grunt.registerTask('default', ['clean', 'copy', "less", 'create-icon-list', 'create-icon-data']);
 };

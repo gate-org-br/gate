@@ -1,8 +1,8 @@
 /* global customElements, template, fetch */
 
-import  './g-icon.mjs';
-import Dataset from './dataset.mjs';
-import GWindow from './g-window.mjs';
+import  './g-icon.js';
+import Dataset from './dataset.js';
+import GWindow from './g-window.js';
 
 
 export default class GChartDialog extends GWindow

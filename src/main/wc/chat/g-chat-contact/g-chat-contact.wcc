@@ -1,8 +1,8 @@
 /* global customElements */
 
-import './g-chat-message-list.mjs';
-import GChatService from './g-chat-service.mjs';
-import GMessageDialog from './g-message-dialog.mjs';
+import './g-chat-message-list.js';
+import GChatService from './g-chat-service.js';
+import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-chat-contact', class extends HTMLElement
 {

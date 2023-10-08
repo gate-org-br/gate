@@ -1,9 +1,9 @@
 /* global customElements, template, fetch, Promise */
 
-import './g-form.mjs';
-import './g-icon.mjs';
-import GWindow from './g-window.mjs';
-import ResponseHandler from './response-handler.mjs';
+import './g-form.js';
+import './g-icon.js';
+import GWindow from './g-window.js';
+import ResponseHandler from './response-handler.js';
 
 export default class GFormDialog extends GWindow
 {

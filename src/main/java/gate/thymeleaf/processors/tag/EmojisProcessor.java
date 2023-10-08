@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.icon.Emojis;
 import gate.thymeleaf.TextEngine;
-import gate.util.Emojis;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -37,7 +37,7 @@ public class EmojisProcessor extends TagModelProcessor
 
 		var request = ((IWebContext) context).getRequest();
 
-		for (Emojis.Emoji emoji : Emojis.getInstance().get())
+		for (gate.icon.Emoji emoji : Emojis.getInstance().get())
 		{
 			request.setAttribute(name, emoji);
 			add(context, model, handler, engine.process(content, context));

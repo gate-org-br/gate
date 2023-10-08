@@ -9,7 +9,7 @@ import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
-import gate.util.Icons;
+import gate.icon.Icons;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;

@@ -1,6 +1,6 @@
 /* global customElements */
 
-import GModal from './g-modal.mjs';
+import GModal from './g-modal.js';
 
 export default class GWindow extends GModal
 {

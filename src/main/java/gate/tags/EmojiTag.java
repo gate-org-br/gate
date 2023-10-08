@@ -3,7 +3,7 @@ package gate.tags;
 import gate.annotation.Color;
 import gate.annotation.Emoji;
 import gate.error.AppError;
-import gate.util.Emojis;
+import gate.icon.Emojis;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 

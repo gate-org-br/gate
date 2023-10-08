@@ -6,14 +6,13 @@ import gate.annotation.Column;
 import gate.annotation.Description;
 import gate.annotation.ElementType;
 import gate.annotation.Entity;
-import gate.annotation.Icon;
 import gate.annotation.Mask;
 import gate.annotation.Name;
 import gate.annotation.Placeholder;
 import gate.annotation.Tooltip;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.util.Icons;
+import gate.icon.Icon;
 import gate.util.Reflection;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,7 +33,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 {
 
 	private final Type genericType;
-	private final Icons.Icon icon;
+	private final Icon icon;
 	private final String color;
 	private final Field field;
 	private final String mask;
@@ -100,7 +99,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			constraints = Collections.unmodifiableList(cons);
 
 			name = Name.Extractor.extract(field).orElse(null);
-			icon = Icon.Extractor.extract(field).orElse(null);
+			icon = gate.annotation.Icon.Extractor.extract(field).orElse(null);
 			code = Code.Extractor.extract(field).orElse(null);
 			color = Color.Extractor.extract(field).orElse(null);
 			tooltip = Tooltip.Extractor.extract(field).orElse(null);
@@ -167,7 +166,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public Icons.Icon getIcon()
+	public Icon getIcon()
 	{
 		return icon;
 	}

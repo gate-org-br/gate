@@ -1,4 +1,6 @@
-/* global DateFormat, customElements */
+/* global customElements */
+
+import icons from './icon-list.js';
 
 customElements.define('g-icon-selector', class extends HTMLElement
 {
@@ -8,15 +10,17 @@ customElements.define('g-icon-selector', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		Array.from(this.shadowRoot.children).forEach(icon =>
+		icons.forEach(icon =>
 		{
-			icon.addEventListener("click", event =>
+			let link = document.createElement("a");
+			link.innerHTML = `&#X${icon};`;
+			link.addEventListener("click", event =>
 			{
 				event.preventDefault();
-				let code = icon.getAttribute("data-code");
 				this.dispatchEvent(new CustomEvent('selected',
-					{detail: {selector: this, icon: code}}));
+					{detail: {selector: this, icon: icon}}));
 			});
+			this.shadowRoot.appendChild(link);
 		});
 	}
 });

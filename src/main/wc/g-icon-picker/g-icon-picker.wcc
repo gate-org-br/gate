@@ -1,8 +1,8 @@
 /* global customElements */
 
-import './g-icon.mjs';
-import './g-icon-selector.mjs';
-import GWindow from './g-window.mjs';
+import './g-icon.js';
+import './g-icon-selector.js';
+import GWindow from './g-window.js';
 
 customElements.define('g-icon-picker', class extends GWindow
 {

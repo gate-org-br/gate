@@ -1,8 +1,8 @@
 /* global customElements */
 
-import './g-icon.mjs';
-import './g-progress-status.mjs';
-import GWindow from './g-window.mjs';
+import './g-icon.js';
+import './g-progress-status.js';
+import GWindow from './g-window.js';
 
 customElements.define('g-progress-dialog', class extends GWindow
 {

@@ -1,6 +1,6 @@
 /* global customElements */
 
-import GDialog from './g-dialog.mjs';
+import GDialog from './g-dialog.js';
 
 customElements.define('g-dialog-caption', class extends HTMLElement
 {

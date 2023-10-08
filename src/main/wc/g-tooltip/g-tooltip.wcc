@@ -1,6 +1,6 @@
 /* global customElements, HTMLElement, template */
 
-import './g-properties.mjs';
+import './g-properties.js';
 
 let instance;
 

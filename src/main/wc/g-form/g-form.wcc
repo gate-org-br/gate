@@ -1,7 +1,7 @@
 /* global customElements */
 
-import './g-selectn.mjs';
-import mask from './mask.mjs';
+import './g-selectn.js';
+import mask from './mask.js';
 
 function create(form, element)
 {

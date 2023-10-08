@@ -1,6 +1,6 @@
 /* global customElements */
 
-import './g-slider.mjs';
+import './g-slider.js';
 
 let months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 

@@ -3,145 +3,145 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel="shortcut icon" href="FavIcon.png" />
-	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
-	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel="shortcut icon" href="FavIcon.png" />
+		<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+		<script type='module' src='./gate/Gate.js?version=0.0.0' charset="utf-8"></script>
+	</head>
 
-<body>
-	<form method="POST" action="#">
-		<fieldset>
-			<legend>
-				<i>&#X2010;</i>Pesquisar
-			</legend>
+	<body>
+		<form method="POST" action="#">
+			<fieldset>
+				<legend>
+					<i>&#X2010;</i>Pesquisar
+				</legend>
 
-			<label data-size="8">
-				Usuário:
-				<span data-icon="&#X2010;">
-					<input name='form.user.name' type='text' />
-				</span>
-			</label>
+				<label data-size="8">
+					Usuário:
+					<span data-icon="&#X2010;">
+						<input name='form.user.name' type='text' />
+					</span>
+				</label>
 
-			<label data-size="8">
-				Usuário:
-				<span>
-					<input maxlength='128' tabindex='1' name='form.user.name' id='form.user.name'
-						title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.' type='text' />
-					<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
-						title='O campo USUÁRIO é requerido.' type='hidden' />
-					<a data-get='form.user.id, form.user.name' id='form.user' href='#'
-						title='Pesquisar'><i>&#X2010;</i></a>
-				</span>
-			</label>
-			<label data-size="2">
-				Data min:
-				<span>
-					<input maxlength='19' tabindex='1' name='form.ini'
-						pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
-						title='Selecione a data e hora de início da jornada.' type='text' data-mask='##/##/#### ##:##'
-						class='DateTime' value='26/02/2023 00:00' />
-				</span>
-			</label>
-			<label data-size="2">
-				Data max:
-				<span>
-					<input maxlength='19' tabindex='1' name='form.fim'
-						pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
-						title='Selecione a data e hora de fim da jornada.' type='text' data-mask='##/##/#### ##:##'
-						class='DateTime' />
-				</span>
-			</label>
-			<label data-size="2">
-				Perfil:
-				<span>
-					<input maxlength='14' tabindex='1' name='form.role.name' required
-						title='O perfil deve possuir no máximo 14 caracteres.' type='text' />
-				</span>
-			</label>
-			<label data-size="2">
-				Sexo:
-				<span>
-					<select tabindex='1' name='form.resgatada'>
-						<option></option>
-						<option value='M'>Masculino</option>
-						<option value='F'>Feminino</option>
-					</select>
-				</span>
-			</label>
-			<label data-size="8">
-				Fila:
-				<span>
-					<select tabindex='1' name='form.fila'>
-						<option></option>
-						<option value='0000000304'>Assuntos administrativos</option>
-						<option value='0000000305'>Demais Assuntos</option>
-						<option value='0000000297'>Falar com Atendente</option>
-						<option value='0000000301'>Parcelas em Atraso</option>
-						<option value='0000000294'>Plano de Saúde e Odontológico</option>
-						<option value='0000000298'>Recepcionista</option>
-						<option value='0000000296'>Renovação de Seguros</option>
-						<option value='0000000295'>Seguros Novos</option>
-						<option value='0000000299'>Sinistro perda total ou parcial</option>
-						<option value='0000000300'>Substituição de veículos ou alteração nos dados da
-							apólice</option>
-					</select>
-				</span>
-			</label>
-			<label data-size="8">
-				Campanha:
-				<span>
-					<select tabindex='1' name='form.campanha'>
-						<option></option>
-					</select>
-				</span>
-			</label>
-			<label>
-				Testes:
-				<span style="flex-basis: 100px">
-					<g-selectn
-						options='[{"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}]'>
-					</g-selectn>
-				</span>
-			</label>
-			<label data-size="4">
-				Campo Readonly:
-				<span>
-					Valor
-				</span>
-			</label>
-			<label data-size="4">
-				Campo Readonly:
-				<span>
-					<label>
+				<label data-size="8">
+					Usuário:
+					<span>
+						<input maxlength='128' tabindex='1' name='form.user.name' id='form.user.name'
+						       title='O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.' type='text' />
+						<input maxlength='10' name='form.user.id' pattern='^[0-9]{1,10}$' id='form.user.id'
+						       title='O campo USUÁRIO é requerido.' type='hidden' />
+						<a data-get='form.user.id, form.user.name' id='form.user' href='#'
+						   title='Pesquisar'><i>&#X2010;</i></a>
+					</span>
+				</label>
+				<label data-size="2">
+					Data min:
+					<span>
+						<input maxlength='19' tabindex='1' name='form.ini'
+						       pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+						       title='Selecione a data e hora de início da jornada.' type='text' data-mask='##/##/#### ##:##'
+						       class='DateTime' value='26/02/2023 00:00' />
+					</span>
+				</label>
+				<label data-size="2">
+					Data max:
+					<span>
+						<input maxlength='19' tabindex='1' name='form.fim'
+						       pattern='^[0-9]{12}|[0-9]{2}\/[0-9]{2}\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$'
+						       title='Selecione a data e hora de fim da jornada.' type='text' data-mask='##/##/#### ##:##'
+						       class='DateTime' />
+					</span>
+				</label>
+				<label data-size="2">
+					Perfil:
+					<span>
+						<input maxlength='14' tabindex='1' name='form.role.name' required
+						       title='O perfil deve possuir no máximo 14 caracteres.' type='text' />
+					</span>
+				</label>
+				<label data-size="2">
+					Sexo:
+					<span>
+						<select tabindex='1' name='form.resgatada'>
+							<option></option>
+							<option value='M'>Masculino</option>
+							<option value='F'>Feminino</option>
+						</select>
+					</span>
+				</label>
+				<label data-size="8">
+					Fila:
+					<span>
+						<select tabindex='1' name='form.fila'>
+							<option></option>
+							<option value='0000000304'>Assuntos administrativos</option>
+							<option value='0000000305'>Demais Assuntos</option>
+							<option value='0000000297'>Falar com Atendente</option>
+							<option value='0000000301'>Parcelas em Atraso</option>
+							<option value='0000000294'>Plano de Saúde e Odontológico</option>
+							<option value='0000000298'>Recepcionista</option>
+							<option value='0000000296'>Renovação de Seguros</option>
+							<option value='0000000295'>Seguros Novos</option>
+							<option value='0000000299'>Sinistro perda total ou parcial</option>
+							<option value='0000000300'>Substituição de veículos ou alteração nos dados da
+								apólice</option>
+						</select>
+					</span>
+				</label>
+				<label data-size="8">
+					Campanha:
+					<span>
+						<select tabindex='1' name='form.campanha'>
+							<option></option>
+						</select>
+					</span>
+				</label>
+				<label>
+					Testes:
+					<span style="flex-basis: 100px">
+						<g-selectn
+							options='[{"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}, {"label": "Label", "value": "Value"}]'>
+						</g-selectn>
+					</span>
+				</label>
+				<label data-size="4">
+					Campo Readonly:
+					<span>
 						Valor
-					</label>
-				</span>
-			</label>
-			<label data-size="8">
-				Campo Readonly:
-				<span data-icon="&#X2003;">
-					Valor
-				</span>
-			</label>
-		</fieldset>
+					</span>
+				</label>
+				<label data-size="4">
+					Campo Readonly:
+					<span>
+						<label>
+							Valor
+						</label>
+					</span>
+				</label>
+				<label data-size="8">
+					Campo Readonly:
+					<span data-icon="&#X2003;">
+						Valor
+					</span>
+				</label>
+			</fieldset>
 
-		<g-coolbar>
-			<button class="primary" tabindex="2" data-block='Consultando o banco de dados' title="Jornadas"
-				formaction="Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada">
-				Pesquisar<i>&#X2010;</i>
-			</button>
-			<button formaction='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Report' tabindex='2'
-				title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
-		</g-coolbar>
+			<g-coolbar>
+				<button class="primary" tabindex="2" data-block='Consultando o banco de dados' title="Jornadas"
+					formaction="Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada">
+					Pesquisar<i>&#X2010;</i>
+				</button>
+				<button formaction='Gate?MODULE=linq.modulos.callCenter&SCREEN=Jornada&ACTION=Report' tabindex='2'
+					title='Imprimir' formtarget='_report'>Imprimir<i>&#X2021;</i></button>
+			</g-coolbar>
 
-		<g-message class="warning icon fill">
-			Nenhum registro encontrado
-		</g-message>
+			<g-message class="warning icon fill">
+				Nenhum registro encontrado
+			</g-message>
 
-	</form>
-</body>
+		</form>
+	</body>
 
 </html>

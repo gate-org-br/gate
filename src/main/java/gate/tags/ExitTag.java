@@ -1,6 +1,6 @@
 package gate.tags;
 
-import gate.util.Icons;
+import gate.icon.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 

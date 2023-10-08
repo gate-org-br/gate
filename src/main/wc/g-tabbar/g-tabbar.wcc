@@ -1,8 +1,8 @@
 /* global customElements, template */
 
-import './g-side-menu.mjs';
-import Proxy from './proxy.mjs';
-import GSelection from './selection.mjs';
+import './g-side-menu.js';
+import Proxy from './proxy.js';
+import GSelection from './selection.js';
 
 customElements.define('g-tabbar', class extends HTMLElement
 {

@@ -1,11 +1,11 @@
 /* global customElements, template */
 
-import './g-navbar.mjs';
-import CSV from './csv.mjs';
-import './g-dialog-commands.mjs';
-import resolve from './resolve.mjs';
-import GWindow from './g-window.mjs';
-import FullScreen from './fullscreen.mjs';
+import './g-navbar.js';
+import CSV from './csv.js';
+import './g-dialog-commands.js';
+import resolve from './resolve.js';
+import GWindow from './g-window.js';
+import FullScreen from './fullscreen.js';
 
 const ESC = 27;
 const ENTER = 13;

@@ -17,8 +17,6 @@ import gate.annotation.Tooltip;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.error.BadRequestException;
-import gate.util.Emojis;
-import gate.util.Icons;
 import gate.util.Toolkit;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -94,12 +92,12 @@ public class Call
 		return action;
 	}
 
-	public Optional<Icons.Icon> getIcon()
+	public Optional<gate.icon.Icon> getIcon()
 	{
 		return action != null ? Icon.Extractor.extract(method) : Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
 	}
 
-	public Optional<Emojis.Emoji> getEmoji()
+	public Optional<gate.icon.Emoji> getEmoji()
 	{
 		return action != null ? Emoji.Extractor.extract(method) : Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
 	}

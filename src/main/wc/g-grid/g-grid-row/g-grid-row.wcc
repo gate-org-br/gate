@@ -1,4 +1,4 @@
-import './g-grid-cell.mjs';
+import './g-grid-cell.js';
 
 customElements.define('g-grid-row', class extends HTMLElement
 {

@@ -1,6 +1,6 @@
 /* global customElements */
 
-import GChatNotificatorStatus from './g-chat-notification-status.mjs';
+import GChatNotificatorStatus from './g-chat-notification-status.js';
 
 customElements.define('g-chat-notification-config', class extends HTMLElement
 {

@@ -1,7 +1,7 @@
 /* global customElements */
 
-import GDialog from './g-dialog.mjs';
-import GSelection from './selection.mjs';
+import GDialog from './g-dialog.js';
+import GSelection from './selection.js';
 
 customElements.define('g-dialog-commands', class extends HTMLElement
 {

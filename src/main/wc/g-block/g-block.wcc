@@ -1,7 +1,7 @@
 /* global customElements, template */
 
-import './g-progress.mjs';
-import GWindow from './g-window.mjs';
+import './g-progress.js';
+import GWindow from './g-window.js';
 
 export default class GBlock extends GWindow
 {

@@ -1,9 +1,9 @@
 package gate.tags;
 
 import gate.annotation.Color;
-import gate.annotation.Icon;
 import gate.error.AppError;
-import gate.util.Icons;
+import gate.icon.Icon;
+import gate.icon.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
@@ -37,7 +37,7 @@ public class IconTag extends AttributeTag
 				Color.Extractor.extract(type)
 					.ifPresent(e -> getAttributes().put("style", "color: " + e));
 
-			Icons.Icon icon = Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
+			Icon icon = gate.annotation.Icon.Extractor.extract(type).orElse(Icons.UNKNOWN);
 
 			if (icon.getCode().length() == 1)
 				getJspContext().getOut().print(String.format("<i c %s>%s</i>",

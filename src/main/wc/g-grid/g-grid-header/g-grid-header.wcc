@@ -1,5 +1,5 @@
-import './g-grid-cell.mjs';
-import colorize from './colorize.mjs';
+import './g-grid-cell.js';
+import colorize from './colorize.js';
 
 customElements.define('g-grid-header', class extends HTMLElement
 {

@@ -1,0 +1,48 @@
+@font-face {
+  font-family: 'gate';
+  src: local(gate), url('Gate.ttf');
+  src: local(gate), url('../fontGate.eot') format('embedded-opentype'), url('Gate.woff') format('woff'), url('Gate.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+i {
+  speak: none;
+  line-height: 1;
+  color: inherit;
+  cursor: inherit;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: normal;
+  font-family: 'gate';
+  font-variant: normal;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+i[c] {
+  font-family: arial;
+}
+g-tab-control > a > i,
+g-tab-control button > i,
+g-tab-control > a e,
+g-tab-control button e,
+g-tab-control > a span,
+g-tab-control button span,
+g-tab-control > a g-icon,
+g-tab-control button g-icon {
+  order: -1;
+}
+g-coolbar > a > i,
+g-coolbar button > i,
+g-coolbar .g-command > i,
+g-coolbar > a e,
+g-coolbar button e,
+g-coolbar .g-command e,
+g-coolbar > a span,
+g-coolbar button span,
+g-coolbar .g-command span,
+g-coolbar > a g-icon,
+g-coolbar button g-icon,
+g-coolbar .g-command g-icon {
+  order: 1;
+}

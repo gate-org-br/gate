@@ -1,9 +1,9 @@
 /* global customElements, template, fetch */
 
-import './g-icon.mjs';
-import './g-grid.mjs';
-import GWindow from './g-window.mjs';
-import GMessageDialog from './g-message-dialog.mjs';
+import './g-icon.js';
+import './g-grid.js';
+import GWindow from './g-window.js';
+import GMessageDialog from './g-message-dialog.js';
 
 export default class GSearchPicker extends GWindow
 {

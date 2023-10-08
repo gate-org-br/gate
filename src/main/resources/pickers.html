@@ -3,71 +3,71 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel="shortcut icon" href="FavIcon.png" />
-	<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
-	<script type='module' src='./gate/Gate.mjs?version=0.0.0' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel="shortcut icon" href="FavIcon.png" />
+		<link rel='stylesheet' type='text/css' href='./gate/Gate.css?version=0.0.0' />
+		<script type='module' src='./gate/Gate.js?version=0.0.0' charset="utf-8"></script>
+	</head>
 
-<body>
-	<fieldset>
-		<label data-size="4">
-			Date:
-			<span>
-				<input class='Date' />
-			</span>
-		</label>
-		<label data-size="4">
-			Time:
-			<span>
-				<input class='Time' />
-			</span>
-		</label>
-		<label data-size="4">
-			Date Time:
-			<span>
-				<input class='DateTime' />
-			</span>
-		</label>
-		<label data-size="4">
-			Month:
-			<span>
-				<input class='Month' />
-			</span>
-		</label>
-		<label data-size="4">
-			Date Interval:
-			<span>
-				<input class='DateInterval' />
-			</span>
-		</label>
-		<label data-size="4">
-			Time Interval:
-			<span>
-				<input class='TimeInterval' />
-			</span>
-		</label>
-		<label data-size="4">
-			Date Time Interval:
-			<span>
-				<input class='DateTimeInterval' />
-			</span>
-		</label>
-		<label data-size="4">
-			Month Interval:
-			<span>
-				<input class='MonthInterval' />
-			</span>
-		</label>
-		<label>
-			Icon:
-			<span>
-				<input class='Icon' />
-			</span>
-		</label>
-	</fieldset>
+	<body>
+		<fieldset>
+			<label data-size="4">
+				Date:
+				<span>
+					<input class='Date' />
+				</span>
+			</label>
+			<label data-size="4">
+				Time:
+				<span>
+					<input class='Time' />
+				</span>
+			</label>
+			<label data-size="4">
+				Date Time:
+				<span>
+					<input class='DateTime' />
+				</span>
+			</label>
+			<label data-size="4">
+				Month:
+				<span>
+					<input class='Month' />
+				</span>
+			</label>
+			<label data-size="4">
+				Date Interval:
+				<span>
+					<input class='DateInterval' />
+				</span>
+			</label>
+			<label data-size="4">
+				Time Interval:
+				<span>
+					<input class='TimeInterval' />
+				</span>
+			</label>
+			<label data-size="4">
+				Date Time Interval:
+				<span>
+					<input class='DateTimeInterval' />
+				</span>
+			</label>
+			<label data-size="4">
+				Month Interval:
+				<span>
+					<input class='MonthInterval' />
+				</span>
+			</label>
+			<label>
+				Icon:
+				<span>
+					<input class='Icon' />
+				</span>
+			</label>
+		</fieldset>
 
 	<g-coolbar>
 		<a href="#" data-block="Aguarde">
@@ -100,22 +100,22 @@
 	</g-coolbar>
 
 	<script type="module">
-		import GMessageDialog from './gate/g-message-dialog.mjs';
-		import GSelectPicker from './gate/g-select-picker.mjs';
-		import GSelectNPicker from './gate/g-selectn-picker.mjs';
-		import GSearchPicker from './gate/g-search-picker.mjs';
+		import GMessageDialog from './gate/g-message-dialog.js';
+		import GSelectPicker from './gate/g-select-picker.js';
+		import GSelectNPicker from './gate/g-selectn-picker.js';
+		import GSearchPicker from './gate/g-search-picker.js';
 
 		let options = [
-			{ "label": "Label 1", "value": "Value 1" },
-			{ "label": "Label 2", "value": "Value 2" },
-			{ "label": "Label 3", "value": "Value 3" },
-			{ "label": "Label 4", "value": "Value 4" },
-			{ "label": "Label 5", "value": "Value 5" },
-			{ "label": "Label 6", "value": "Value 6" },
-			{ "label": "Label 7", "value": "Value 7" },
-			{ "label": "Label 8", "value": "Value 8" },
-			{ "label": "Label 9", "value": "Value 9" },
-			{ "label": "Label 10", "value": "Value 10" }
+			{"label": "Label 1", "value": "Value 1"},
+			{"label": "Label 2", "value": "Value 2"},
+			{"label": "Label 3", "value": "Value 3"},
+			{"label": "Label 4", "value": "Value 4"},
+			{"label": "Label 5", "value": "Value 5"},
+			{"label": "Label 6", "value": "Value 6"},
+			{"label": "Label 7", "value": "Value 7"},
+			{"label": "Label 8", "value": "Value 8"},
+			{"label": "Label 9", "value": "Value 9"},
+			{"label": "Label 10", "value": "Value 10"}
 		];
 
 		document.getElementById("success").addEventListener("click", () => GMessageDialog.success("Mensagem de sucesso"));

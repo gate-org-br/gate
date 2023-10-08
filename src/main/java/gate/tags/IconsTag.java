@@ -1,6 +1,7 @@
 package gate.tags;
 
-import gate.util.Icons;
+import gate.icon.Icon;
+import gate.icon.Icons;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -15,7 +16,7 @@ public class IconsTag extends SimpleTagSupport
 	public void doTag() throws JspException, IOException
 	{
 		super.doTag();
-		for (Icons.Icon icon : Icons.getInstance().get())
+		for (Icon icon : Icons.getInstance().get())
 		{
 			getJspContext().setAttribute(getName(), icon, PageContext.REQUEST_SCOPE);
 			getJspBody().invoke(null);

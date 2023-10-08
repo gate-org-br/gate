@@ -1,7 +1,7 @@
 /* global customElements, template */
 
-import './g-icon.mjs';
-import GWindow from './g-window.mjs';
+import './g-icon.js';
+import GWindow from './g-window.js';
 
 export default class GPopup extends GWindow
 {

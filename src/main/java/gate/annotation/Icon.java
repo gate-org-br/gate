@@ -1,6 +1,6 @@
 package gate.annotation;
 
-import gate.util.Icons;
+import gate.icon.Icons;
 import gate.util.Reflection;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -23,7 +23,7 @@ public @interface Icon
 	class Extractor
 	{
 
-		public static Optional<Icons.Icon> extract(Object element)
+		public static Optional<gate.icon.Icon> extract(Object element)
 		{
 			try
 			{
@@ -31,7 +31,7 @@ public @interface Icon
 				{
 					String string = (String) element;
 
-					Optional<Icons.Icon> icon = Icons.getInstance().get(string);
+					Optional<gate.icon.Icon> icon = Icons.getInstance().get(string);
 					if (icon.isPresent())
 						return icon;
 

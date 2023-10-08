@@ -1,8 +1,8 @@
-import './g-grid-row.mjs';
-import './g-grid-header.mjs';
-import './g-grid-footer.mjs';
-import filter from './filter.mjs';
-import colorize from './colorize.mjs';
+import './g-grid-row.js';
+import './g-grid-header.js';
+import './g-grid-footer.js';
+import filter from './filter.js';
+import colorize from './colorize.js';
 
 class Column
 {

@@ -1,8 +1,8 @@
 /* global customElements */
 
-import './g-icon.mjs';
-import './g-date-time-selector.mjs';
-import GWindow from './g-window.mjs';
+import './g-icon.js';
+import './g-date-time-selector.js';
+import GWindow from './g-window.js';
 
 customElements.define('g-date-time-picker', class extends GWindow
 {

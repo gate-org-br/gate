@@ -1,6 +1,6 @@
 /* global customElements */
 
-import GModal from './g-modal.mjs';
+import GModal from './g-modal.js';
 
 customElements.define('g-side-menu', class extends GModal
 {

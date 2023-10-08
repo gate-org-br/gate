@@ -2,9 +2,9 @@ package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Color;
 import gate.annotation.Emoji;
+import gate.icon.Emojis;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
-import gate.util.Emojis;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +43,7 @@ public class EmojiProcessor extends TagProcessor
 			Color.Extractor.extract(type)
 				.ifPresent(e -> attributes.put("style", "color: " + e));
 
-		Emojis.Emoji emoji = Emoji.Extractor.extract(type).orElse(Emojis.UNKNOWN);
+		gate.icon.Emoji emoji = Emoji.Extractor.extract(type).orElse(Emojis.UNKNOWN);
 
 		handler.replaceWith("<e " + attributes + ">" + emoji + "</e>", false);
 	}

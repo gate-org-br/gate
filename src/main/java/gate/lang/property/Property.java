@@ -3,7 +3,8 @@ package gate.lang.property;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.NoSuchPropertyError;
-import gate.util.Icons;
+import gate.icon.Icon;
+import gate.icon.Icons;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -421,7 +422,7 @@ public class Property
 		return lastAttribute.getColor();
 	}
 
-	public Icons.Icon getIcon()
+	public Icon getIcon()
 	{
 		return lastAttribute.getIcon();
 	}

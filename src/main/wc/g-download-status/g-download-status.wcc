@@ -1,7 +1,7 @@
 /* global customElements */
 
-import resolve from './resolve.mjs';
-import DataFormat from './data-format.mjs';
+import resolve from './resolve.js';
+import DataFormat from './data-format.js';
 
 customElements.define('g-download-status', class extends HTMLElement
 {

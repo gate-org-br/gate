@@ -1,6 +1,6 @@
 /* global customElements */
 
-import GChatDialog from './g-chat-dialog.mjs';
+import GChatDialog from './g-chat-dialog.js';
 
 customElements.define('g-chat-button', class extends HTMLElement
 {

@@ -1,6 +1,6 @@
 package gate.annotation;
 
-import gate.util.Emojis;
+import gate.icon.Emojis;
 import gate.util.Reflection;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,7 +26,7 @@ public @interface Emoji
 	class Extractor
 	{
 
-		public static Optional<Emojis.Emoji> extract(Object element)
+		public static Optional<gate.icon.Emoji> extract(Object element)
 		{
 			try
 			{
