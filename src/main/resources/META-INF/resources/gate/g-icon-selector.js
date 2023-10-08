@@ -48,6 +48,7 @@ customElements.define('g-icon-selector', class extends HTMLElement
 		icons.forEach(icon =>
 		{
 			let link = document.createElement("a");
+			link.href = "#";
 			link.innerHTML = `&#X${icon};`;
 			link.addEventListener("click", event =>
 			{
