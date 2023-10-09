@@ -9,6 +9,8 @@ import "./button.js";
 import "./treeview.js";
 import "./switch.js";
 
+import "./clipboard.js";
+
 import "./g-table-scroll.js";
 
 import "./action-handler.js";

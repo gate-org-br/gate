@@ -22,6 +22,7 @@ public class AuthenticatorProducer implements Serializable
 {
 
 	@Inject
+	@Current
 	Org org;
 
 	@Inject
