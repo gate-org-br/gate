@@ -4,14 +4,12 @@ import gate.annotation.Converter;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
-import gate.base.Screen;
 import gate.converter.AppConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,7 +53,7 @@ public class App implements Serializable
 	}
 
 	public static App getInstance(String id, String name, String description,
-		List<Class<? extends Screen>> screens)
+		List<Class<?>> screens)
 	{
 		App app = new App();
 		app.id = id;
@@ -64,8 +62,6 @@ public class App implements Serializable
 
 		app.modules = screens.stream()
 			.filter(type -> type.getSimpleName().length() > 6)
-			.filter(type -> type.getSimpleName().endsWith("Screen"))
-			.filter(type -> !Modifier.isAbstract(type.getModifiers()))
 			.map(type -> type.getPackage()).distinct().map(pack ->
 		{
 			Module module = new Module();
@@ -73,7 +69,6 @@ public class App implements Serializable
 
 			screens.stream()
 				.filter(e -> e.getPackage().getName().equals(pack.getName()))
-				.filter(type -> !Modifier.isAbstract(type.getModifiers()))
 				.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
 			{
 				Name.Extractor.extract(type).ifPresent(e -> module.name = e);
@@ -83,9 +78,8 @@ public class App implements Serializable
 
 			module.screens = screens.stream()
 				.filter(e -> e.getPackage().getName().equals(pack.getName()))
-				.filter(e -> e.getSimpleName().endsWith("Screen"))
 				.map(Module.Screen::of)
-				.collect(Collectors.toList());
+				.toList();
 
 			return module;
 		}).collect(Collectors.toList());

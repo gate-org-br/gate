@@ -13,9 +13,8 @@ import gate.sql.condition.Condition;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
 import java.io.Serializable;
+import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
@@ -58,13 +57,16 @@ public class AppProducer implements Serializable
 	@PostConstruct
 	public void prepare()
 	{
-		app = App.getInstance(Stream.of(servletContext.getServletContextName(),
-			servletContext.getInitParameter("id")).filter(Objects::nonNull)
-			.findFirst().orElseThrow(),
-			servletContext.getInitParameter("name"),
-			servletContext.getInitParameter("description"),
-			instances.stream().map(e -> (Class<Screen>) e.getClass())
-				.collect(Collectors.toList()));
+		String id = Objects.requireNonNullElse(servletContext.getServletContextName(), servletContext.getInitParameter("id"));
+
+		var types = instances.stream()
+			.map(e -> (Class<Screen>) e.getClass())
+			.map(e -> e.isSynthetic() ? e.getSuperclass() : e)
+			.filter(type -> !Modifier.isAbstract(type.getModifiers()))
+			.filter(type -> type.getSimpleName().endsWith("Screen"))
+			.toList();
+
+		app = App.getInstance(id, servletContext.getInitParameter("name"), servletContext.getInitParameter("description"), types);
 
 		try
 		{
