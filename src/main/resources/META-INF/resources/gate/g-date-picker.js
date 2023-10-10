@@ -36,7 +36,7 @@ import './g-icon.js';
 import './g-date-selector.js';
 import GWindow from './g-window.js';
 
-customElements.define('g-date-picker', class extends GWindow
+export default class GDatePicker extends GWindow
 {
 	constructor()
 	{
@@ -48,35 +48,52 @@ customElements.define('g-date-picker', class extends GWindow
 		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
 		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent('picked', {detail: e.detail})) | this.hide());
 	}
-});
 
-Array.from(document.querySelectorAll("input.Date")).forEach(function (input)
-{
-	var link = input.parentNode.appendChild(document.createElement("a"));
-	link.href = "#";
-	link.setAttribute("tabindex", input.getAttribute('tabindex'));
-	link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-
-	link.addEventListener("click", function (event)
+	static pick()
 	{
-		event.preventDefault();
+		let picker = window.top.document.createElement("g-date-picker");
+		picker.show();
 
-		if (input.value)
+		return new Promise(resolve =>
 		{
-			input.value = '';
-			input.dispatchEvent(new Event('change', {bubbles: true}));
-		} else
-			window.top.document.createElement("g-date-picker")
-				.show().addEventListener("picked", e =>
+			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("picked", e => resolve(e.detail));
+		});
+	}
+
+	static register(input)
+	{
+		let link = input.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+
+		link.addEventListener("click", function (event)
+		{
+			event.preventDefault();
+
+			if (input.value)
 			{
-				input.value = e.detail;
+				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
-			});
+			} else
+				GDatePicker.pick().then(value =>
+				{
+					if (value)
+					{
+						input.value = value;
+						input.dispatchEvent(new Event('change', {bubbles: true}));
+					}
+				});
 
+			input.dispatchEvent(new Event('change', {bubbles: true}));
+			link.focus();
+			link.blur();
+		});
+	}
+};
 
-		input.dispatchEvent(new Event('change', {bubbles: true}));
-		link.focus();
-		link.blur();
-	});
-});
+customElements.define('g-date-picker', GDatePicker);
+
+Array.from(document.querySelectorAll("input.Date")).forEach(input => GDatePicker.register(input));
 

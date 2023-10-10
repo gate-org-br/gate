@@ -78,7 +78,6 @@ import "./g-chat-contact-dialog.js";
 import "./g-select-picker.js";
 import "./g-search-picker.js";
 
-
 import "./g-icon.js";
 import "./g-form.js";
 import "./g-selectn.js";

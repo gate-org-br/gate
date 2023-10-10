@@ -1,3 +1,7 @@
+@import './gate/input.css';
+@import './gate/table.css';
+@import './gate/fieldset.css';
+
 * {
 	box-sizing: border-box
 }

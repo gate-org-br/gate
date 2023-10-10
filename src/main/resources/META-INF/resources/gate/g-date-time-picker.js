@@ -34,13 +34,14 @@ main > footer > button {
 	justify-content: center;
 }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
 import './g-icon.js';
 import './g-date-time-selector.js';
 import GWindow from './g-window.js';
 
-customElements.define('g-date-time-picker', class extends GWindow
+
+export default class GDateTimePicker extends GWindow
 {
 	constructor()
 	{
@@ -64,33 +65,52 @@ customElements.define('g-date-time-picker', class extends GWindow
 
 		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: commit.innerText})) | this.hide());
 	}
-});
 
-Array.from(document.querySelectorAll("input.DateTime")).forEach(function (input)
-{
-	var link = input.parentNode.appendChild(document.createElement("a"));
-	link.href = "#";
-	link.setAttribute("tabindex", input.getAttribute('tabindex'));
-	link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-
-	link.addEventListener("click", function (event)
+	static pick()
 	{
-		event.preventDefault();
+		let picker = window.top.document.createElement("g-date-time-picker");
+		picker.show();
 
-		if (input.value)
+		return new Promise(resolve =>
 		{
-			input.value = '';
-			input.dispatchEvent(new Event('change', {bubbles: true}));
-		} else
-			window.top.document.createElement("g-date-time-picker")
-				.show().addEventListener("picked", e =>
+			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("picked", e => resolve(e.detail));
+		});
+	}
+
+	static register(input)
+	{
+		let link = input.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+
+		link.addEventListener("click", function (event)
+		{
+			event.preventDefault();
+
+			if (input.value)
 			{
-				input.value = e.detail;
+				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
-			});
+			} else
+				GDateTimePicker.pick().then(value =>
+				{
+					if (value)
+					{
+						input.value = value;
+						input.dispatchEvent(new Event('change', {bubbles: true}));
+					}
+				});
 
 
-		link.focus();
-		link.blur();
-	});
-});
+			link.focus();
+			link.blur();
+		});
+	}
+};
+
+
+customElements.define('g-date-time-picker', GDateTimePicker);
+
+Array.from(document.querySelectorAll("input.DateTime")).forEach(input => GDateTimePicker.register(input));

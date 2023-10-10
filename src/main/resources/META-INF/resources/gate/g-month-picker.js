@@ -40,7 +40,7 @@ import './g-icon.js';
 import './g-month-selector.js';
 import GWindow from './g-window.js';
 
-customElements.define('g-month-picker', class extends GWindow
+export default class GMonthPicker extends GWindow
 {
 	constructor()
 	{
@@ -58,33 +58,51 @@ customElements.define('g-month-picker', class extends GWindow
 
 		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: commit.innerText})) | this.hide());
 	}
-});
 
-Array.from(document.querySelectorAll("input.Month")).forEach(function (input)
-{
-	var link = input.parentNode.appendChild(document.createElement("a"));
-	link.href = "#";
-	link.setAttribute("tabindex", input.getAttribute('tabindex'));
-	link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
-
-	link.addEventListener("click", function (event)
+	static pick()
 	{
-		event.preventDefault();
+		let picker = window.top.document.createElement("g-month-picker");
+		picker.show();
 
-		if (input.value)
+		return new Promise(resolve =>
 		{
-			input.value = '';
-			input.dispatchEvent(new Event('change', {bubbles: true}));
-		} else
-			window.top.document.createElement("g-month-picker")
-				.show().addEventListener("picked", e =>
+			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("picked", e => resolve(e.detail));
+		});
+	}
+
+	static register(input)
+	{
+		var link = input.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+
+		link.addEventListener("click", function (event)
+		{
+			event.preventDefault();
+
+			if (input.value)
 			{
-				input.value = e.detail;
+				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
-			});
+			} else
+				GMonthPicker.pick().then(value =>
+				{
+					if (value)
+					{
+						input.value = value;
+						input.dispatchEvent(new Event('change', {bubbles: true}));
+					}
+				});
 
 
-		link.focus();
-		link.blur();
-	});
-});
+			link.focus();
+			link.blur();
+		});
+	}
+}
+
+customElements.define('g-month-picker', GMonthPicker);
+
+Array.from(document.querySelectorAll("input.Month")).forEach(input => GMonthPicker.register(input));
