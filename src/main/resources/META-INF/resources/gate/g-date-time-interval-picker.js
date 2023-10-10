@@ -84,7 +84,7 @@ export default class GDateTimeIntervalPicker extends GWindow
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+		link.appendChild(document.createElement("g-icon")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{

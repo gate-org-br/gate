@@ -34,7 +34,7 @@ main > footer > button {
 	justify-content: center;
 }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
 import './g-icon.js';
 import './g-month-selector.js';
@@ -76,7 +76,7 @@ export default class GMonthPicker extends GWindow
 		var link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+		link.appendChild(document.createElement("g-icon")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{

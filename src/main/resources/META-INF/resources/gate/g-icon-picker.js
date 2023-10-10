@@ -66,7 +66,7 @@ export default class GIconPicker extends GWindow
 		let link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2009;";
+		link.appendChild(document.createElement("g-icon")).innerHTML = "&#x2009;";
 
 		link.addEventListener("click", function (event)
 		{

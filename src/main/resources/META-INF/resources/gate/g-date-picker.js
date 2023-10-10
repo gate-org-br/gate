@@ -30,7 +30,7 @@ g-date-selector {
 	flex-grow: 1;
 }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
 import './g-icon.js';
 import './g-date-selector.js';
@@ -66,7 +66,7 @@ export default class GDatePicker extends GWindow
 		let link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("i")).innerHTML = "&#x2003;";
+		link.appendChild(document.createElement("g-icon")).innerHTML = "&#x2003;";
 
 		link.addEventListener("click", function (event)
 		{
