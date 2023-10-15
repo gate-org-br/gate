@@ -1,0 +1,4 @@
+<template>
+	<g-text-editor hidden>
+	</g-text-editor>
+</template>

@@ -1,0 +1,7 @@
+:host(*)
+{
+	gap: 4px;
+	padding: 4px;
+	display: grid;
+	grid-template-columns: auto 1fr;
+}

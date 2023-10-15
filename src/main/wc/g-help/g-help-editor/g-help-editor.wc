@@ -1,0 +1,6 @@
+<template>
+	<g-help-editor-index>
+	</g-help-editor-index>
+	<g-help-editor-panel>
+	</g-help-editor-panel>
+</template>

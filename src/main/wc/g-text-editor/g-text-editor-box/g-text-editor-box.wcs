@@ -1,0 +1,20 @@
+:host(*){
+	width: 100%;
+	display: flex;
+	overflow: auto;
+	resize: vertical;
+	height: fit-content;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #CCCCCC;
+	background-color: #EFEFEF;
+}
+
+:host(:focus)
+{
+	background-color: var(--hovered);
+}
+
+* {
+	height: 100%;
+}

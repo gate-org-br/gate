@@ -1,8 +1,5 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<link rel='stylesheet' type='text/css' href='./gate/input.css'/>
-	<link rel='stylesheet' type='text/css' href='./gate/table.css'/>
-	<link rel='stylesheet' type='text/css' href='./gate/fieldset.css'/>
  <style>* {
 	box-sizing: border-box
 }
@@ -99,10 +96,10 @@ main > footer {
 	border-top: 1px solid var(--main6);
 }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
 import GModal from './g-modal.js';
-
+import stylesheets from './stylesheets.js';
 export default class GWindow extends GModal
 {
 	constructor()
@@ -110,7 +107,8 @@ export default class GWindow extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		stylesheets('table.css', 'input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 };
-
 customElements.define('g-window', GWindow);

@@ -1,0 +1,18 @@
+:host(*)
+{
+	padding: 4px;
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+}
+
+:host([selected])
+{
+	color: #000066;
+	font-weight: bold;
+}
+
+:host(*):before
+{
+	content: attr(text);
+}

@@ -1,0 +1,23 @@
+<template>
+	<div>
+		<button id="insert" title='Inserir tópico'>
+			<g-icon>
+				&#X1002;
+			</g-icon>
+		</button>
+
+		<button id="update" title='Alterar tópico'>
+			<g-icon>
+				&#X2057;
+			</g-icon>
+		</button>
+
+		<button id="delete" title='Remover tópico'>
+			<g-icon>
+				&#X1001;
+			</g-icon>
+		</button>
+	</div>
+	<ul id='root'>
+	</ul>
+</template>

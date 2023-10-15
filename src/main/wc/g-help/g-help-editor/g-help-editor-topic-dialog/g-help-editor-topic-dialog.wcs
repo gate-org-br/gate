@@ -1,0 +1,10 @@
+main
+{
+	min-width: 320px;
+	max-width: 600px;
+	width: calc(100% - 40px);
+}
+
+fieldset {
+	flex-grow: 1
+}

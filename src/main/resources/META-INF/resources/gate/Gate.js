@@ -96,6 +96,8 @@ import "./g-callout.js";
 import "./g-accordion.js";
 import "./g-accordion-section.js";
 
+import "./g-help-editor.js";
+
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {
 	element.onclick = function (event)

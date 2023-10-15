@@ -1,0 +1,23 @@
+/* global customElements */
+
+customElements.define('g-text-editor-box', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.tabindex = 1;
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.addEventListener('click', event => event.stopPropagation() & this.focus());
+		this.addEventListener('keydown', event => event.key === 'Delete' && this.remove());
+	}
+
+	connectedCallback()
+	{
+		if (this.firstElementChild)
+		{
+			this.firstElementChild.tabIndex = 1;
+			this.shadowRoot.appendChild(this.firstElementChild);
+		}
+	}
+});

@@ -1,0 +1,37 @@
+<template>
+	<main>
+		<header>
+			<label id='caption'>
+			</label>
+			<a id='close' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<fieldset>
+				<label>
+					Nome
+					<input required type="text" id='name'>
+				</label>
+
+				<label>
+					Texto
+					<input required type="text" id='text'>
+				</label>
+			</fieldset>
+		</section>
+		<footer>
+			<g-coolbar>
+				<button class='primary' id='commit'>
+					Concluir<g-icon>&#X1000;</g-icon>
+				</button>
+				<hr/>
+				<button class='tertiary' id='cancel'>
+					Desistir<g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
+	</main>
+</template>

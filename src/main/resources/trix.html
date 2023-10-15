@@ -1,0 +1,70 @@
+<html>
+
+<head>
+    <script type="module" src="./trix.esm.min.js"></script>
+    <link rel='stylesheet' type='text/css' href='./trix.css' />
+</head>
+
+<body>
+    <div>
+        <trix-editor></trix-editor>
+    </div>
+</body>
+
+<script type="module">
+    document.addEventListener("trix-initialize", function (event) {
+        var editor = event.target;
+
+        const button = {
+            label: 'Meu botão',
+            icon: 'fa-star',
+            callback: () => {
+                let blob = document.createElement("input");
+                blob.setAttribute("type", "file");
+                blob.addEventListener("change", () => {
+                    let file = blob.files[0];
+                    let reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = () => {
+                        this.shadowRoot.getElementById("editor").focus();
+
+                        switch (file.type) {
+                            case "image/jpeg":
+                            case "image/png":
+                            case "image/svg+xml":
+                                document.execCommand("insertHTML", null,
+                                    `<img src="${reader.result}"/>`);
+                                break;
+                            case "video/mp4":
+                            case "video/webm":
+                            case "video/ogg":
+                                document.execCommand("insertHTML", null,
+                                    `<video src="${reader.result}" controls />`);
+                                break;
+                            case "audio/mp3":
+                            case "audio/ogg":
+                            case "audio/wav":
+                                document.execCommand("insertHTML", null,
+                                    `<audio src="${reader.result}" controls />`);
+                                break;
+                            default:
+                                document.execCommand("insertHTML", null,
+                                    `<a href="${reader.result}" download="${file.name}">${file.name}</a>`);
+                        }
+                    };
+                });
+                blob.click();
+            },
+        };
+
+        // Adiciona o botão ao editor
+        document.querySelector("trix-editor").plugins.push({
+            name: 'meu-plugin',
+            button,
+        });
+
+
+    });
+</script>
+
+</html>

@@ -12,24 +12,18 @@
 		<button tabindex='-1' id='strikeThrough' title='Riscado'>
 			&#X3029;
 		</button>
-		<span></span>
-		<button tabindex='-1' id='red' title='Vermelho'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='green' title='Verde'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='blue' title='Azul'>
-			&#X3025;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='increaseFontSize' title='Aumentar fonte'>
-			&#X1012;
-		</button>
-		<button tabindex='-1' id='decreaseFontSize' title='Reduzir fonte'>
-			&#X1013;
-		</button>
-		<span></span>
+		<input id='foreColor' type="color"
+		       value='#FFFFFF' title='Cor do texto'/>
+		<select id="fontSize" title='Tamanho da fonte'>
+			<option value="">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+		</select>
 		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
 			&#X3030;
 		</button>
@@ -78,10 +72,13 @@
 			&#X3017;
 		</button>
 		<span></span>
-		<button tabindex='-1' id='insertImage' title='Inserir imagem'>
-			&#X2009;
+		<button tabindex='-1' id='attach' title='Anexar arquivo'>
+			&#X2079;
 		</button>
 	</div>
-	<div id='editor' tabindex="0" contentEditable='true'>
+	<div id='scroll'>
+		<div id='editor' tabindex="0" contentEditable='true'>
+		</div>
 	</div>
+	<input id='value' type="hidden"/>
 </template>

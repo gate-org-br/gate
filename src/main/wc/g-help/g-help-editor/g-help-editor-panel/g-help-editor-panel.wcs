@@ -1,0 +1,9 @@
+:host(*)
+{
+	border-radius: 5px;
+	border: 1px solid var(--main6);
+}
+
+g-text-editor {
+	height: 100%;
+}

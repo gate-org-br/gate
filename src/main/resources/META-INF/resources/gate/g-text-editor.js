@@ -13,24 +13,18 @@ template.innerHTML = `
 		<button tabindex='-1' id='strikeThrough' title='Riscado'>
 			&#X3029;
 		</button>
-		<span></span>
-		<button tabindex='-1' id='red' title='Vermelho'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='green' title='Verde'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='blue' title='Azul'>
-			&#X3025;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='increaseFontSize' title='Aumentar fonte'>
-			&#X1012;
-		</button>
-		<button tabindex='-1' id='decreaseFontSize' title='Reduzir fonte'>
-			&#X1013;
-		</button>
-		<span></span>
+		<input id='foreColor' type="color"
+		       value='#FFFFFF' title='Cor do texto'/>
+		<select id="fontSize" title='Tamanho da fonte'>
+			<option value="">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+		</select>
 		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
 			&#X3030;
 		</button>
@@ -79,25 +73,61 @@ template.innerHTML = `
 			&#X3017;
 		</button>
 		<span></span>
-		<button tabindex='-1' id='insertImage' title='Inserir imagem'>
-			&#X2009;
+		<button tabindex='-1' id='attach' title='Anexar arquivo'>
+			&#X2079;
 		</button>
 	</div>
-	<div id='editor' tabindex="0" contentEditable='true'>
+	<div id='scroll'>
+		<div id='editor' tabindex="0" contentEditable='true'>
+		</div>
 	</div>
+	<input id='value' type="hidden"/>
  <style>:host(*)
 {
 	width: 100%;
 	height: 100%;
-	display: grid;
+	display: flex;
+	position: relative;
 	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
-	grid-template-rows: auto 1fr;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+:host([hidden])
+{
+	display:  none;
+}
+
+#scroll {
+	top: 40px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	overflow: auto;
+	position: absolute;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+#editor picture {
+	padding: 8px;
+	resize: both;
+	display: flex;
+	overflow: auto;
+	max-width: 100%;
+	width: fit-content;
+	height: fit-content;
+	align-items: stretch;
+	justify-content: stretch;
+	border: 1px solid #CCCCCC;
+	background-color: #EFEFEF;
 }
 
 #toolbar
 {
+	gap: 4px;
 	padding: 4px;
 	display: flex;
 	overflow: auto;
@@ -109,7 +139,6 @@ template.innerHTML = `
 
 button
 {
-	margin: 2px;
 	color: black;
 	height: 32px;
 	display: flex;
@@ -128,18 +157,13 @@ button:hover {
 	background-color: var(--main1);
 }
 
-#red {
-	color: #660000
-}
-#green {
-	color: #006600
-}
-#blue {
-	color: #000066
+#toolbar > span  {
+	flex: 0 0 8px;
+	display: block;
 }
 
-span  {
-	flex: 0 0 8px;
+#toolbar > div {
+	flex-grow: 1;
 	display: block;
 }
 
@@ -156,20 +180,31 @@ span  {
 
 #editor:focus {
 	outline: none;
-	background-color: var(--hovered);
 }
 
-i {
-	font-family: gate;
-	font-style: normal;
-	text-decoration: none;
-}
-
-img {
-	max-width: 100%;
+#foreColor, #fontSize
+{
+	width: 64px;
+	height: 32px;
+	border-radius: 5px;
+	border: 1px solid var(--main5);
 }</style>`;
 
 /* global customElements */
+
+import './g-icon.js';
+import './g-text-editor-box.js';
+
+function ensureBoxSpaces(editor)
+{
+	Array.from(editor.querySelectorAll('g-text-editor-box')).forEach(box =>
+	{
+		if (!box.previousElementSibling)
+			box.parentNode.insertBefore(document.createElement("br"), box);
+		if (!box.nextElementSibling)
+			box.parentNode.appendChild(document.createElement("br"));
+	});
+}
 
 customElements.define('g-text-editor', class extends HTMLElement
 {
@@ -179,20 +214,19 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.tabindex = 0;
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this._private = {"input": document.createElement("input")};
-		this._private.input.setAttribute("type", "hidden");
 
 		this.shadowRoot.getElementById("bold").addEventListener("click", () => this.bold());
 		this.shadowRoot.getElementById("italic").addEventListener("click", () => this.italic());
 		this.shadowRoot.getElementById("underline").addEventListener("click", () => this.underline());
 		this.shadowRoot.getElementById("strikeThrough").addEventListener("click", () => this.strikeThrough());
 
-		this.shadowRoot.getElementById("red").addEventListener("click", () => this.redFont());
-		this.shadowRoot.getElementById("green").addEventListener("click", () => this.greenFont());
-		this.shadowRoot.getElementById("blue").addEventListener("click", () => this.blueFont());
+		this.shadowRoot.getElementById("foreColor").addEventListener("change",
+			e => this.foreColor(e.target.value) & (e.target.value = "#FFFFFF"));
 
-		this.shadowRoot.getElementById("increaseFontSize").addEventListener("click", () => this.increaseFontSize());
-		this.shadowRoot.getElementById("decreaseFontSize").addEventListener("click", () => this.decreaseFontSize());
+		this.shadowRoot.getElementById("fontSize")
+			.addEventListener("change", e => e.target.value
+					&& this.fontSize(e.target.value)
+					& (e.target.value = ""));
 
 		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => this.removeFormat());
 
@@ -214,9 +248,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.shadowRoot.getElementById("sadFace").addEventListener("click", () => this.sadFace());
 		this.shadowRoot.getElementById("insertIcon").addEventListener("click", () => this.insertIcon());
 
-		this.shadowRoot.getElementById("insertImage").addEventListener("click", () => this.insertImage());
+		this.shadowRoot.getElementById("attach").addEventListener("click", () => this.attach());
 
 		let editor = this.shadowRoot.getElementById("editor");
+		editor.addEventListener('input', event => ensureBoxSpaces(editor));
+		editor.addEventListener('click', event => ensureBoxSpaces(editor));
+
 		this.addEventListener("focus", () =>
 		{
 			let range = document.createRange();
@@ -227,13 +264,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 			selection.removeAllRanges();
 			selection.addRange(range);
 		});
-		editor.addEventListener("input", () => this._private.input.value = editor.innerHTML);
 	}
 
 	bold()
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("bold");
+		document.execCommand("bold", false, null);
 	}
 
 	italic()
@@ -254,22 +290,17 @@ customElements.define('g-text-editor', class extends HTMLElement
 		document.execCommand("strikeThrough");
 	}
 
-	redFont()
+	fontSize(value)
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#660000");
+		document.execCommand("fontSize", null, value);
 	}
 
-	greenFont()
+	foreColor(value)
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#006600");
-	}
+		document.execCommand("foreColor", null, value);
 
-	blueFont()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#000066");
 	}
 
 	removeFormat()
@@ -350,39 +381,64 @@ customElements.define('g-text-editor', class extends HTMLElement
 		document.execCommand("insertHTML", null, `<i>&#X2106</i>`);
 	}
 
-	increaseFontSize()
+	set hidden(value)
 	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("increaseFontSize");
+		if (value)
+			this.setAttribute("hidden", "true");
+		else
+			this.removeAttribute("hidden");
 	}
 
-	decreaseFontSize()
+	get hidden()
 	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("decreaseFontSize");
+		return this.hasAtribute("hidden");
 	}
 
 	insertIcon()
 	{
 		this.shadowRoot.getElementById("editor").focus();
 		let picker = window.top.document.createElement("g-icon-picker");
-		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<i>&#X${e.detail}</i>`));
+		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<g-icon>&#X${e.detail}</g-icon>`));
 		picker.show();
 	}
 
-	insertImage()
+	attach()
 	{
 		let blob = document.createElement("input");
 		blob.setAttribute("type", "file");
-		blob.setAttribute("accept", ".jpg, .png, .svg, .jpeg, .gif, .bmp, .tif, .tiff|image/*");
 		blob.addEventListener("change", () =>
 		{
+			let file = blob.files[0];
 			let reader = new FileReader();
-			reader.readAsDataURL(blob.files[0]);
+			reader.readAsDataURL(file);
 			reader.onloadend = () =>
 			{
 				this.shadowRoot.getElementById("editor").focus();
-				document.execCommand("insertImage", null, reader.result);
+
+				switch (file.type)
+				{
+					case "image/jpeg":
+					case "image/png":
+					case "image/svg+xml":
+						document.execCommand("insertHTML", null,
+							`<g-text-editor-box><img src="${reader.result}"/></g-text-editor-box>`);
+						break;
+					case "video/mp4":
+					case "video/webm":
+					case "video/ogg":
+						document.execCommand("insertHTML", null,
+							`<g-text-editor-box><video src="${reader.result}" controls /></g-text-editor-box>`);
+						break;
+					case "audio/mp3":
+					case "audio/ogg":
+					case "audio/wav":
+						document.execCommand("insertHTML", null,
+							`<audio src="${reader.result}" controls />`);
+						break;
+					default:
+						document.execCommand("insertHTML", null,
+							`<a href="${reader.result}" download="${file.name}">${file.name}</a>`);
+				}
 			};
 		});
 		blob.click();
@@ -390,18 +446,43 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	connectedCallback()
 	{
-		this.appendChild(this._private.input);
-		document.execCommand("styleWithCSS", null, true);
+		let form = this.closest("form");
+		if (form)
+		{
+			form.addEventListener("submit", event =>
+			{
+				if (this.required && !this.value)
+					this.setCustomValidity("Please fill out this field");
+				else if (this.maxlength && this.value.length > this.maxlength)
+					this.setCustomValidity("The specified value exceeds max length");
+				else if (this.pattern && this.value && !this.value.match(this.pattern))
+					this.setCustomValidity("The specified value is not valid");
+				else
+					this.setCustomValidity("");
+
+				if (!this.reportValidity())
+					event.preventDefault();
+			});
+
+			form.addEventListener("formdata", event => event.formData.set(this.name, this.value));
+		}
+
+
+
+		document.execCommand("insertBrOnReturn", null, true);
+		document.execCommand("enableObjectResizing", null, true);
+		document.execCommand("enableAbsolutePositionEditor", null, true);
+
 	}
 
 	get value()
 	{
-		return this.getAttribute("value");
+		return this.shadowRoot.getElementById("editor").innerHTML;
 	}
 
 	set value(value)
 	{
-		this.setAttribute("value", value);
+		return this.shadowRoot.getElementById("editor").innerHTML = value;
 	}
 
 	get name()
@@ -426,7 +507,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	get maxlength()
 	{
-		return this.getAttribute("maxlength");
+		return Number(this.getAttribute("maxlength"));
 	}
 
 	set maxlength(maxlength)
@@ -454,31 +535,37 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.setAttribute("tabindex", tabindex);
 	}
 
-	attributeChangedCallback(atrribute)
+	separator()
 	{
-		switch (atrribute)
-		{
-			case "name":
-				this._private.input.setAttribute("name", this.name);
-				break;
-			case "value":
-				this.shadowRoot.getElementById("editor").innerHTML = this.value;
-				this._private.input.setAttribute("value", this.value);
-				break;
-			case "required":
-				this._private.input.setAttribute("required", this.required);
-				break;
-			case "maxlength":
-				this._private.input.setAttribute("maxlength", this.maxlength);
-				break;
-			case "pattern":
-				this._private.input.setAttribute("pattern", this.pattern);
-				break;
-		}
+		this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("span"));
+		return this;
+	}
+
+	spacer()
+	{
+		this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("div"));
+		return this;
+	}
+
+	command(icon, title, action)
+	{
+		let button = this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("button"));
+		button.title = title;
+		button.innerHTML = `&#X${icon}`;
+		button.addEventListener("click", action);
+		return this;
+	}
+
+	attributeChangedCallback()
+	{
+		this.value = this.getAttribute("value");
 	}
 
 	static get observedAttributes()
 	{
-		return ["name", "value", "required", "maxlength", "pattern", "tabindex"];
+		return ["value"];
 	}
 });

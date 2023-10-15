@@ -1,5 +1,19 @@
 /* global customElements */
 
+import './g-icon.js';
+import './g-text-editor-box.js';
+
+function ensureBoxSpaces(editor)
+{
+	Array.from(editor.querySelectorAll('g-text-editor-box')).forEach(box =>
+	{
+		if (!box.previousElementSibling)
+			box.parentNode.insertBefore(document.createElement("br"), box);
+		if (!box.nextElementSibling)
+			box.parentNode.appendChild(document.createElement("br"));
+	});
+}
+
 customElements.define('g-text-editor', class extends HTMLElement
 {
 	constructor()
@@ -8,20 +22,19 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.tabindex = 0;
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this._private = {"input": document.createElement("input")};
-		this._private.input.setAttribute("type", "hidden");
 
 		this.shadowRoot.getElementById("bold").addEventListener("click", () => this.bold());
 		this.shadowRoot.getElementById("italic").addEventListener("click", () => this.italic());
 		this.shadowRoot.getElementById("underline").addEventListener("click", () => this.underline());
 		this.shadowRoot.getElementById("strikeThrough").addEventListener("click", () => this.strikeThrough());
 
-		this.shadowRoot.getElementById("red").addEventListener("click", () => this.redFont());
-		this.shadowRoot.getElementById("green").addEventListener("click", () => this.greenFont());
-		this.shadowRoot.getElementById("blue").addEventListener("click", () => this.blueFont());
+		this.shadowRoot.getElementById("foreColor").addEventListener("change",
+			e => this.foreColor(e.target.value) & (e.target.value = "#FFFFFF"));
 
-		this.shadowRoot.getElementById("increaseFontSize").addEventListener("click", () => this.increaseFontSize());
-		this.shadowRoot.getElementById("decreaseFontSize").addEventListener("click", () => this.decreaseFontSize());
+		this.shadowRoot.getElementById("fontSize")
+			.addEventListener("change", e => e.target.value
+					&& this.fontSize(e.target.value)
+					& (e.target.value = ""));
 
 		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => this.removeFormat());
 
@@ -43,9 +56,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.shadowRoot.getElementById("sadFace").addEventListener("click", () => this.sadFace());
 		this.shadowRoot.getElementById("insertIcon").addEventListener("click", () => this.insertIcon());
 
-		this.shadowRoot.getElementById("insertImage").addEventListener("click", () => this.insertImage());
+		this.shadowRoot.getElementById("attach").addEventListener("click", () => this.attach());
 
 		let editor = this.shadowRoot.getElementById("editor");
+		editor.addEventListener('input', event => ensureBoxSpaces(editor));
+		editor.addEventListener('click', event => ensureBoxSpaces(editor));
+
 		this.addEventListener("focus", () =>
 		{
 			let range = document.createRange();
@@ -56,13 +72,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 			selection.removeAllRanges();
 			selection.addRange(range);
 		});
-		editor.addEventListener("input", () => this._private.input.value = editor.innerHTML);
 	}
 
 	bold()
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("bold");
+		document.execCommand("bold", false, null);
 	}
 
 	italic()
@@ -83,22 +98,17 @@ customElements.define('g-text-editor', class extends HTMLElement
 		document.execCommand("strikeThrough");
 	}
 
-	redFont()
+	fontSize(value)
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#660000");
+		document.execCommand("fontSize", null, value);
 	}
 
-	greenFont()
+	foreColor(value)
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#006600");
-	}
+		document.execCommand("foreColor", null, value);
 
-	blueFont()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#000066");
 	}
 
 	removeFormat()
@@ -179,39 +189,64 @@ customElements.define('g-text-editor', class extends HTMLElement
 		document.execCommand("insertHTML", null, `<i>&#X2106</i>`);
 	}
 
-	increaseFontSize()
+	set hidden(value)
 	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("increaseFontSize");
+		if (value)
+			this.setAttribute("hidden", "true");
+		else
+			this.removeAttribute("hidden");
 	}
 
-	decreaseFontSize()
+	get hidden()
 	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("decreaseFontSize");
+		return this.hasAtribute("hidden");
 	}
 
 	insertIcon()
 	{
 		this.shadowRoot.getElementById("editor").focus();
 		let picker = window.top.document.createElement("g-icon-picker");
-		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<i>&#X${e.detail}</i>`));
+		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<g-icon>&#X${e.detail}</g-icon>`));
 		picker.show();
 	}
 
-	insertImage()
+	attach()
 	{
 		let blob = document.createElement("input");
 		blob.setAttribute("type", "file");
-		blob.setAttribute("accept", ".jpg, .png, .svg, .jpeg, .gif, .bmp, .tif, .tiff|image/*");
 		blob.addEventListener("change", () =>
 		{
+			let file = blob.files[0];
 			let reader = new FileReader();
-			reader.readAsDataURL(blob.files[0]);
+			reader.readAsDataURL(file);
 			reader.onloadend = () =>
 			{
 				this.shadowRoot.getElementById("editor").focus();
-				document.execCommand("insertImage", null, reader.result);
+
+				switch (file.type)
+				{
+					case "image/jpeg":
+					case "image/png":
+					case "image/svg+xml":
+						document.execCommand("insertHTML", null,
+							`<g-text-editor-box><img src="${reader.result}"/></g-text-editor-box>`);
+						break;
+					case "video/mp4":
+					case "video/webm":
+					case "video/ogg":
+						document.execCommand("insertHTML", null,
+							`<g-text-editor-box><video src="${reader.result}" controls /></g-text-editor-box>`);
+						break;
+					case "audio/mp3":
+					case "audio/ogg":
+					case "audio/wav":
+						document.execCommand("insertHTML", null,
+							`<audio src="${reader.result}" controls />`);
+						break;
+					default:
+						document.execCommand("insertHTML", null,
+							`<a href="${reader.result}" download="${file.name}">${file.name}</a>`);
+				}
 			};
 		});
 		blob.click();
@@ -219,18 +254,43 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	connectedCallback()
 	{
-		this.appendChild(this._private.input);
-		document.execCommand("styleWithCSS", null, true);
+		let form = this.closest("form");
+		if (form)
+		{
+			form.addEventListener("submit", event =>
+			{
+				if (this.required && !this.value)
+					this.setCustomValidity("Please fill out this field");
+				else if (this.maxlength && this.value.length > this.maxlength)
+					this.setCustomValidity("The specified value exceeds max length");
+				else if (this.pattern && this.value && !this.value.match(this.pattern))
+					this.setCustomValidity("The specified value is not valid");
+				else
+					this.setCustomValidity("");
+
+				if (!this.reportValidity())
+					event.preventDefault();
+			});
+
+			form.addEventListener("formdata", event => event.formData.set(this.name, this.value));
+		}
+
+
+
+		document.execCommand("insertBrOnReturn", null, true);
+		document.execCommand("enableObjectResizing", null, true);
+		document.execCommand("enableAbsolutePositionEditor", null, true);
+
 	}
 
 	get value()
 	{
-		return this.getAttribute("value");
+		return this.shadowRoot.getElementById("editor").innerHTML;
 	}
 
 	set value(value)
 	{
-		this.setAttribute("value", value);
+		return this.shadowRoot.getElementById("editor").innerHTML = value;
 	}
 
 	get name()
@@ -255,7 +315,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	get maxlength()
 	{
-		return this.getAttribute("maxlength");
+		return Number(this.getAttribute("maxlength"));
 	}
 
 	set maxlength(maxlength)
@@ -283,31 +343,37 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.setAttribute("tabindex", tabindex);
 	}
 
-	attributeChangedCallback(atrribute)
+	separator()
 	{
-		switch (atrribute)
-		{
-			case "name":
-				this._private.input.setAttribute("name", this.name);
-				break;
-			case "value":
-				this.shadowRoot.getElementById("editor").innerHTML = this.value;
-				this._private.input.setAttribute("value", this.value);
-				break;
-			case "required":
-				this._private.input.setAttribute("required", this.required);
-				break;
-			case "maxlength":
-				this._private.input.setAttribute("maxlength", this.maxlength);
-				break;
-			case "pattern":
-				this._private.input.setAttribute("pattern", this.pattern);
-				break;
-		}
+		this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("span"));
+		return this;
+	}
+
+	spacer()
+	{
+		this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("div"));
+		return this;
+	}
+
+	command(icon, title, action)
+	{
+		let button = this.shadowRoot.getElementById("toolbar")
+			.appendChild(document.createElement("button"));
+		button.title = title;
+		button.innerHTML = `&#X${icon}`;
+		button.addEventListener("click", action);
+		return this;
+	}
+
+	attributeChangedCallback()
+	{
+		this.value = this.getAttribute("value");
 	}
 
 	static get observedAttributes()
 	{
-		return ["name", "value", "required", "maxlength", "pattern", "tabindex"];
+		return ["value"];
 	}
 });

@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Gate</title>
+	<link rel='stylesheet' type='text/css' href='./META-INF/resources/gate/Gate.css' />
+	<script type='module' src='./META-INF/resources/gate/Gate.js' charset="utf-8"></script>
+</head>
+
+<body>
+	<main>
+		<section>
+			<article>
+				<section>
+					<g-help-editor style="height: 100%;">
+
+					</g-help-editor>
+				</section>
+				<footer>
+					<g-coolbar>
+						<a id='export' href="#" class="primary">
+							Exportar <g-icon>&#X2035;</g-icon>
+						</a>
+						<a href="#" class="alternative">
+							Importar <g-icon>&#X2036;</g-icon>
+						</a>
+					</g-coolbar>
+				</footer>
+			</article>
+		</section>
+	</main>
+
+	<script type="module">
+		let value = [{ "name": "nexus", "text": "Nexus", "value": "PGRpdiBhbGlnbj0iY2VudGVyIj48Zm9udCBzaXplPSI2Ij48Yj5OZXh1czwvYj48L2ZvbnQ+PGJyPjwvZGl2PjxkaXY+PGJyPk8gbmV4dXMg6SB1bWEgZmVycmFtZW50YSBkZSBwZXNxdWlzYSBlIGFu4Wxpc2UgYmFzZWFkYSBlbSBncmFmb3MuPGJyPjwvZGl2Pg==", "topics": [{ "name": "grafos", "text": "Grafos", "value": "PGRpdj48ZGl2IGFsaWduPSJjZW50ZXIiPjxmb250IHNpemU9IjYiPjxiPkdyYWZvczwvYj48L2ZvbnQ+PGJyPjwvZGl2Pjxicj48L2Rpdj48ZGl2PkVzdGEgdGVsYSBwZXJtaXRlIGUgZXhpYmnn428gZSBlZGnn428gZG9zIGdyYWZvcyBnZXJhZG9zIHBlbG8gc2lzdGVtYSBuZXh1czwvZGl2Pg==", "topics": [{ "name": "compartilhamento", "text": "Compartilhamento de grafos com outros usuários", "value": "", "topics": [] }] }] }];
+		let editor = document.querySelector("g-help-editor ");
+		editor.value = value;
+		document.getElementById("export").addEventListener("click", () => alert(JSON.stringify(editor.value)));
+	</script>
+</body>
+
+</html>
