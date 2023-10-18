@@ -6,7 +6,7 @@ template.innerHTML = `
 	<button tabindex='-1' id='italic' title='Itálico'>
 		&#X3027;
 	</button>
-
+	<span></span>
 	<select id="textDecoration" title='Decoração do texto'>
 		<option value="">Estilo</option>
 		<option value="none">Nenhum</option>
@@ -14,9 +14,7 @@ template.innerHTML = `
 		<option value="line-through">Riscado</option>
 		<option value="overline">Sobrelinhado</option>
 	</select>
-
 	<input id='foreColor' type="color" value='#FFFFFF' title='Cor do texto'/>
-
 	<select id="fontSize" title='Tamanho da fonte'>
 		<option value="">Tamanho</option>
 		<option value="1px">1</option>
@@ -50,10 +48,6 @@ template.innerHTML = `
 		<option value="29px">29</option>
 		<option value="30px">30</option>
 	</select>
-
-	<button tabindex='-1' id='removeFormat' title='Remover formatação'>
-		&#X3030;
-	</button>
 	<span></span>
 	<button tabindex='-1' id='justifyCenter' title='Centralizar'>
 		&#X3034;
@@ -66,6 +60,10 @@ template.innerHTML = `
 	</button>
 	<button tabindex='-1' id='justifyFull' title='Justificar'>
 		&#X3031;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='removeFormat' title='Remover formatação'>
+		&#X3030;
 	</button>
 	<span></span>
 	<button tabindex='-1' id='indent' title='Indentar'>
