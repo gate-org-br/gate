@@ -1,0 +1,104 @@
+<template>
+	<button tabindex='-1' id='bold' title='Negrito'>
+		&#X3026;
+	</button>
+	<button tabindex='-1' id='italic' title='Itálico'>
+		&#X3027;
+	</button>
+
+	<select id="textDecoration" title='Decoração do texto'>
+		<option value="">Estilo</option>
+		<option value="none">Nenhum</option>
+		<option value="underline">Sublinhado</option>
+		<option value="line-through">Riscado</option>
+		<option value="overline">Sobrelinhado</option>
+	</select>
+
+	<input id='foreColor' type="color" value='#FFFFFF' title='Cor do texto'/>
+
+	<select id="fontSize" title='Tamanho da fonte'>
+		<option value="">Tamanho</option>
+		<option value="1px">1</option>
+		<option value="2px">2</option>
+		<option value="3px">3</option>
+		<option value="4px">4</option>
+		<option value="5px">5</option>
+		<option value="6px">6</option>
+		<option value="7px">7</option>
+		<option value="8px">8</option>
+		<option value="9px">9</option>
+		<option value="10px">10</option>
+		<option value="11px">11</option>
+		<option value="12px">12</option>
+		<option value="13px">13</option>
+		<option value="14px">14</option>
+		<option value="15px">15</option>
+		<option value="16px">16</option>
+		<option value="17px">17</option>
+		<option value="18px">18</option>
+		<option value="19px">19</option>
+		<option value="20px">20</option>
+		<option value="21px">21</option>
+		<option value="22px">22</option>
+		<option value="23px">23</option>
+		<option value="24px">24</option>
+		<option value="25px">25</option>
+		<option value="26px">26</option>
+		<option value="27px">27</option>
+		<option value="28px">28</option>
+		<option value="29px">29</option>
+		<option value="30px">30</option>
+	</select>
+
+	<button tabindex='-1' id='removeFormat' title='Remover formatação'>
+		&#X3030;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='justifyCenter' title='Centralizar'>
+		&#X3034;
+	</button>
+	<button tabindex='-1' id='justifyLeft' title='Alinha à esquerda'>
+		&#X3032;
+	</button>
+	<button tabindex='-1' id='justifyRight' title='Alinha à direita'>
+		&#X3033;
+	</button>
+	<button tabindex='-1' id='justifyFull' title='Justificar'>
+		&#X3031;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='indent' title='Indentar'>
+		&#X3039;
+	</button>
+	<button tabindex='-1' id='outdent' title='Remover indentação'>
+		&#X3040;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='insertUnorderedList' title='Criar lista'>
+		&#X3035;
+	</button>
+	<button tabindex='-1' id='insertOrderedList' title='Criar lista ordenada'>
+		&#X3038;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='createLink' title='Criar link'>
+		&#X2076;
+	</button>
+	<button tabindex='-1' id='unlink' title='Remover link'>
+		&#X2233;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='happyFace' title='Carinha feliz"'>
+		&#X2104;
+	</button>
+	<button tabindex='-1' id='sadFace' title='Carinha triste"'>
+		&#X2106;
+	</button>
+	<button tabindex='-1' id='insertIcon' title='Inserir ícone'>
+		&#X3017;
+	</button>
+	<span></span>
+	<button tabindex='-1' id='attach' title='Anexar arquivo'>
+		&#X2079;
+	</button>
+</template>

@@ -1,0 +1,71 @@
+/* global customElements */
+
+customElements.define('g-text-editor-toolbar', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.tabindex = 1;
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let editor = this.editor;
+
+		this.shadowRoot.getElementById("bold").addEventListener("click", () => editor.bold());
+		this.shadowRoot.getElementById("italic").addEventListener("click", () => editor.italic());
+
+		this.shadowRoot.getElementById("textDecoration").addEventListener("change", e => e.target.value && editor.textDecoration(e.target.value) & (e.target.value = ""));
+
+		this.shadowRoot.getElementById("foreColor").addEventListener("change", e => editor.foreColor(e.target.value) & (e.target.value = "#FFFFFF"));
+
+		this.shadowRoot.getElementById("fontSize").addEventListener("change", e => e.target.value && editor.fontSize(e.target.value) & (e.target.value = ""));
+
+		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => editor.removeFormat());
+
+		this.shadowRoot.getElementById("justifyCenter").addEventListener("click", () => editor.justifyCenter());
+		this.shadowRoot.getElementById("justifyLeft").addEventListener("click", () => editor.justifyLeft());
+		this.shadowRoot.getElementById("justifyRight").addEventListener("click", () => editor.justifyRight());
+		this.shadowRoot.getElementById("justifyFull").addEventListener("click", () => editor.justifyFull());
+
+		this.shadowRoot.getElementById("indent").addEventListener("click", () => editor.indent());
+		this.shadowRoot.getElementById("outdent").addEventListener("click", () => editor.outdent());
+
+		this.shadowRoot.getElementById("insertUnorderedList").addEventListener("click", () => editor.insertUnorderedList());
+		this.shadowRoot.getElementById("insertOrderedList").addEventListener("click", () => editor.insertOrderedList());
+
+		this.shadowRoot.getElementById("createLink").addEventListener("click", () => editor.createLink());
+		this.shadowRoot.getElementById("unlink").addEventListener("click", () => editor.unlink());
+
+		this.shadowRoot.getElementById("happyFace").addEventListener("click", () => editor.happyFace());
+		this.shadowRoot.getElementById("sadFace").addEventListener("click", () => editor.sadFace());
+		this.shadowRoot.getElementById("insertIcon").addEventListener("click", () => editor.insertIcon());
+
+		this.shadowRoot.getElementById("attach").addEventListener("click", () => editor.attach());
+	}
+
+	separator()
+	{
+		this.shadowRoot.appendChild(document.createElement("span"));
+		return this;
+	}
+
+	spacer()
+	{
+		this.shadowRoot.appendChild(document.createElement("div"));
+		return this;
+	}
+
+	command(icon, title, action)
+	{
+		let button = this.appendChild(document.createElement("button"));
+		button.title = title;
+		button.innerHTML = `&#X${icon}`;
+		button.addEventListener("click", action);
+		return this;
+	}
+
+	get editor()
+	{
+		return this.getRootNode().host;
+	}
+});

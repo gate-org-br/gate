@@ -10,8 +10,7 @@ customElements.define('g-help-editor-panel', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let editor = this.shadowRoot.querySelector("g-text-editor");
-		editor.spacer().command("3020", "Salvar",
-			() => this.dispatchEvent(new CustomEvent("commited")));
+		editor.toolbar.spacer().command("3020", "Salvar", () => this.dispatchEvent(new CustomEvent("commited")));
 	}
 
 	set hidden(value)

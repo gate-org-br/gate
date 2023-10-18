@@ -1,0 +1,46 @@
+:host(*) {
+	gap: 8px;
+	padding: 8px;
+	display: flex;
+	overflow: auto;
+	align-items: center;
+	background-color: #f2f2f2;
+	border-radius: 5px 5px 0 0;
+	justify-content: flex-start;
+	box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+button {
+	color: #333;
+	height: 40px;
+	min-width: 40px;
+	font-size: 18px;
+	background: #ddd;
+	border: none;
+	border-radius: 5px;
+	font-family: "gate";
+	cursor: pointer; /* Add a pointer cursor on hover */
+	transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+button:hover {
+	background-color: #ccc;  /* Darker background on hover */
+}
+
+span  {
+	flex: 0 0 8px;
+	display: block;
+}
+
+div {
+	flex-grow: 1;
+	display: block;
+}
+
+#foreColor, #fontSize, #textDecoration
+{
+	width: 80px;
+	height: 40px;
+	border-radius: 5px;
+	border: 1px solid var(--main5);
+}

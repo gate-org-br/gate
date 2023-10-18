@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gate</title>
+    <link rel='stylesheet' type='text/css' href='./META-INF/resources/gate/Gate.css' />
+    <script type='module' src='./META-INF/resources/gate/Gate.js' charset="utf-8"></script>
+
+    <script type="module">
+
+
+        function getAllTextNodes(fragment) {
+            fragment.normalize();
+
+            if (fragment.nodeType === Node.TEXT_NODE)
+                return [fragment];
+
+            return Array.from(fragment.childNodes).flatMap(e => {
+                if (e.nodeType === Node.TEXT_NODE)
+                    return [e];
+                else
+                    return getAllTextNodes(e);
+            });
+        }
+
+        function getAllTextStyles(fragment) {
+            return getAllTextNodes(fragment).map(text => {
+                if (text.parentNode.tagName === "SPAN")
+                    return text.parentNode;
+
+                let style = document.createElement("span");
+                text.replaceWith(style);
+                style.appendChild(text);
+                return style;
+            });
+        }
+
+        function toggle(style, apply, clear) {
+            let selection = window.getSelection();
+            if (selection.rangeCount) {
+                let range = selection.getRangeAt(0);
+                let fragment = range.extractContents();
+                let styles = getAllTextStyles(fragment);
+                range.insertNode(fragment);
+
+                if (styles.every(e => window.getComputedStyle(e)[style] === apply))
+                    styles.forEach(e => e.style[style] = clear)
+                else
+                    styles.forEach(e => e.style[style] = apply)
+
+            }
+        }
+
+        document.getElementById("execute").addEventListener("click", () => toggle("font-weight", "700", "400"));
+    </script>
+</head>
+
+<body>
+    <main>
+        <section>
+            <article>
+                <section>
+                    <div id="editor" contenteditable="true" style="height: 100%;">
+                        Eu sou lindo <em>eu sou lindo em itálico</em>
+                    </div>
+                </section>
+                <footer>
+                    <g-coolbar>
+                        <a id='execute' href="#" class="primary">
+                            Bold <g-icon>&#X2035;</g-icon>
+                        </a>
+                    </g-coolbar>
+                </footer>
+            </article>
+        </section>
+    </main>
+
+
+</body>
+
+</html>
