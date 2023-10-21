@@ -34,7 +34,9 @@
 	padding: 8px;
 	outline: none;
 	overflow: auto;
-	line-height: 18px;
+	font-size: 16px;
+	line-height: 20px;
+	white-space: pre-wrap;
 	background-color: white;
 	border-radius: 0 0 5px 5px;
 }
@@ -47,3 +49,80 @@ i {
 	font-family: gate;
 	font-style: normal;
 }
+
+
+span.callout
+{
+	gap: 12px;
+	display: flex;
+	align-items: center;
+
+	padding: 12px;
+	font-size: 16px;
+	text-align: justify;
+
+	border-radius: 0 3px 3px 0;
+	background-color: var(--main1);
+
+	border: 1px solid;
+	border-left: 6px solid;
+	border-color: var(--main6);
+}
+
+span.callout.fill {
+	color: #000000;
+	border-color: #000000;
+	background-color: var(--main4);
+}
+
+
+span.warning
+{
+	color: var(--warning1);
+	border-color: var(--warning1);
+}
+
+span.warning.fill {
+	background-color: var(--warning3);
+}
+
+span.danger
+{
+	color: var(--error1);
+	border-color: var(--error1);
+}
+
+span.danger.fill {
+	background-color: var(--error3);
+}
+
+span.success {
+	color: var(--success1);
+	border-color: var(--success1);
+}
+
+span.success.fill {
+	background-color: var(--success3);
+}
+
+span.question {
+	color: var(--question1);
+	border-color: var(--question1);
+}
+
+span.question.fill {
+	background-color: var(--question3);
+}
+
+span.title {
+	display: block;
+	font-size: 32px;
+	text-align: center
+}
+
+span.subtitle {
+	display: block;
+	font-size: 24px;
+	text-align: center
+}
+

@@ -3,8 +3,7 @@ template.innerHTML = `
 	<g-text-editor-toolbar id='toolbar'>
 	</g-text-editor-toolbar>
 	<div id='scroll'>
-		<div id='editor' tabindex="0" contentEditable='true'>
-		</div>
+		<div id='editor' tabindex="0" contentEditable='true'></div>
 	</div>
 	<input id='value' type="hidden"/>
  <style>:host(*)
@@ -43,7 +42,9 @@ template.innerHTML = `
 	padding: 8px;
 	outline: none;
 	overflow: auto;
-	line-height: 18px;
+	font-size: 16px;
+	line-height: 20px;
+	white-space: pre-wrap;
 	background-color: white;
 	border-radius: 0 0 5px 5px;
 }
@@ -55,15 +56,112 @@ template.innerHTML = `
 i {
 	font-family: gate;
 	font-style: normal;
-}</style>`;
+}
+
+
+span.callout
+{
+	gap: 12px;
+	display: flex;
+	align-items: center;
+
+	padding: 12px;
+	font-size: 16px;
+	text-align: justify;
+
+	border-radius: 0 3px 3px 0;
+	background-color: var(--main1);
+
+	border: 1px solid;
+	border-left: 6px solid;
+	border-color: var(--main6);
+}
+
+span.callout.fill {
+	color: #000000;
+	border-color: #000000;
+	background-color: var(--main4);
+}
+
+
+span.warning
+{
+	color: var(--warning1);
+	border-color: var(--warning1);
+}
+
+span.warning.fill {
+	background-color: var(--warning3);
+}
+
+span.danger
+{
+	color: var(--error1);
+	border-color: var(--error1);
+}
+
+span.danger.fill {
+	background-color: var(--error3);
+}
+
+span.success {
+	color: var(--success1);
+	border-color: var(--success1);
+}
+
+span.success.fill {
+	background-color: var(--success3);
+}
+
+span.question {
+	color: var(--question1);
+	border-color: var(--question1);
+}
+
+span.question.fill {
+	background-color: var(--question3);
+}
+
+span.title {
+	display: block;
+	font-size: 32px;
+	text-align: center
+}
+
+span.subtitle {
+	display: block;
+	font-size: 24px;
+	text-align: center
+}
+
+</style>`;
 
 /* global customElements */
 
 import './g-icon.js';
 import './g-text-editor-box.js';
 import './g-text-editor-toolbar.js';
-import GIconPicker from './g-icon-picker.js';
-import * as processor from './g-text-processor.js';
+import GTextSelection from './g-text-selection.js';
+
+function compareStyles(element1, element2)
+{
+	if (!element1 || !element2)
+		return false;
+	if (element1.tagName !== element2.tagName)
+		return false;
+
+	const style1 = element1.getAttribute("style");
+	const style2 = element2.getAttribute("style");
+
+	if (style1 === null)
+		return style2 === null;
+	if (style2 === null)
+		return style1 === null;
+
+	const sortedStyle1 = style1.split(";").map(style => style.trim()).filter(Boolean).sort().join(";");
+	const sortedStyle2 = style2.split(";").map(style => style.trim()).filter(Boolean).sort().join(";");
+	return sortedStyle1 === sortedStyle2;
+}
 
 customElements.define('g-text-editor', class extends HTMLElement
 {
@@ -74,110 +172,88 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let editor = this.shadowRoot.getElementById("editor");
-
 		this.addEventListener("focus", () =>
 		{
 			let range = document.createRange();
 			range.setStart(editor, 0);
 			range.setEnd(editor, 0);
-
 			let selection = window.getSelection();
 			selection.removeAllRanges();
 			selection.addRange(range);
 		});
-	}
 
-	bold()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.toggle(editor, "font-weight", "700", "400");
-	}
+		editor.addEventListener('beforeinput', (event) => {
+			if (event.inputType === 'insertParagraph')
+			{
+				event.preventDefault();
 
-	italic()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.toggle(editor, "font-style", "italic", "normal");
-	}
+				const selection = this.shadowRoot.getSelection ?
+					this.shadowRoot.getSelection() : window.getSelection();
 
-	textDecoration(value)
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "text-decoration-line", value);
-	}
+				if (selection.rangeCount > 0)
+				{
+					const range = selection.getRangeAt(0);
+					range.deleteContents();
+					const textNode = document.createTextNode('\n\u200B');
+					range.insertNode(textNode);
+					range.setStartAfter(textNode);
+					range.setEndAfter(textNode);
+					selection.removeAllRanges();
+					selection.addRange(range);
+				}
+			}
+		});
 
-	fontSize(value)
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "font-size", value);
-	}
+		this.editor.addEventListener('keydown', event =>
+		{
+			if (event.key === 'ArrowDown'
+				|| event.key === 'ArrowRight'
+				|| event.key === 'ArrowUp'
+				|| event.key === 'ArrowLeft')
+			{
+				const selection = this.shadowRoot.getSelection ?
+					this.shadowRoot.getSelection() : window.getSelection();
 
-	foreColor(value)
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "color", value);
-	}
+				let range = selection.getRangeAt(0);
+				let content = range.commonAncestorContainer;
+				if (content.nodeType === Node.TEXT_NODE)
+					content = content.parentNode;
 
-	removeFormat()
-	{
+				if (content.tagName === "SPAN")
+				{
 
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.removeSytles(editor);
-	}
+					let text;
+					content.normalize();
+					if ((event.key === 'ArrowUp' || event.key === 'ArrowLeft') && range.endOffset === 0)
+					{
+						if (content.previousSibling && content.previousSibling.nodeType === Node.TEXT_NODE)
+							text = content.previousSibling;
+						else
+							text = content.parentNode.insertBefore(document.createTextNode("\u200B"), content);
+					} else if ((event.key === 'ArrowDown' || event.key === 'ArrowRight')
+						&& (!content.firstChild || content.firstChild.textContent.length === range.endOffset))
+					{
+						if (!content.nextSibling)
+							text = content.parentNode.appendChild(document.createTextNode("\u200B"));
+						else if (content.nextSibling.nodeType === Node.TEXT_NODE)
+							text = content.nextSibling;
+						else
+							text = content.parentNode.insertBefore(document.createTextNode("\u200B"), content.nextSibling);
+					}
 
-	justifyCenter()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "display", "block");
-		processor.apply(editor, "text-align", "center");
-	}
-
-	justifyLeft()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "display", "block");
-		processor.apply(editor, "text-align", "left");
-	}
-
-	justifyRight()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "display", "block");
-		processor.apply(editor, "text-align", "right");
-	}
-
-	justifyFull()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.apply(editor, "display", "block");
-		processor.apply(editor, "text-align", "justify");
-	}
-
-	indent()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("indent");
-	}
-
-	outdent()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("outdent");
+					range.setStart(text, 0);
+					range.setEnd(text, 0);
+				}
+			}
+		});
 	}
 
 	insertUnorderedList()
 	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertUnorderedList");
+		this.processor.list();
+
+//		this.shadowRoot.getElementById("editor").focus();
+//		document.execCommand("insertUnorderedList");
 	}
 
 	insertOrderedList()
@@ -196,27 +272,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 	{
 		this.shadowRoot.getElementById("editor").focus();
 		document.execCommand("unlink");
-	}
-
-	happyFace()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.insertIcon(editor, "2104");
-	}
-
-	sadFace()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		processor.insertIcon(editor, "2106");
-	}
-
-	insertIcon()
-	{
-		let editor = this.shadowRoot.getElementById("editor");
-		editor.focus();
-		GIconPicker.pick().then(e => e && processor.insertIcon(editor, e));
 	}
 
 	set hidden(value)
@@ -244,7 +299,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 			reader.onloadend = () =>
 			{
 				this.shadowRoot.getElementById("editor").focus();
-
 				switch (file.type)
 				{
 					case "image/jpeg":
@@ -289,20 +343,11 @@ customElements.define('g-text-editor', class extends HTMLElement
 					this.setCustomValidity("The specified value is not valid");
 				else
 					this.setCustomValidity("");
-
 				if (!this.reportValidity())
 					event.preventDefault();
 			});
-
 			form.addEventListener("formdata", event => event.formData.set(this.name, this.value));
 		}
-
-
-
-		document.execCommand("insertBrOnReturn", null, true);
-		document.execCommand("enableObjectResizing", null, true);
-		document.execCommand("enableAbsolutePositionEditor", null, true);
-
 	}
 
 	get value()
@@ -368,6 +413,50 @@ customElements.define('g-text-editor', class extends HTMLElement
 	get toolbar()
 	{
 		return this.shadowRoot.getElementById("toolbar");
+	}
+
+	get editor()
+	{
+		return this.shadowRoot.getElementById("editor");
+	}
+
+	get selection()
+	{
+		this.editor.focus();
+		let selection = this.shadowRoot.getSelection ?
+			this.shadowRoot.getSelection()
+			: window.getSelection();
+		if (selection.rangeCount)
+		{
+			let range = selection.getRangeAt(0);
+			if (this.editor.contains(range.commonAncestorContainer))
+			{
+				if (range.commonAncestorContainer.tagName === "SPAN"
+					&& range.commonAncestorContainer.childNodes.length === 1)
+					range.selectNode(range.commonAncestorContainer);
+				else if (range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+					&& range.commonAncestorContainer.parentNode.tagName === "SPAN"
+					&& range.commonAncestorContainer.parentNode.childNodes.length === 1)
+					range.selectNode(range.commonAncestorContainer.parentNode);
+				return new GTextSelection(this, range);
+			}
+		}
+
+		return new GTextSelection(this, null);
+	}
+
+	compact()
+	{
+		Array.from(this.editor.querySelectorAll("span"))
+			.filter(e => compareStyles(e, e.nextElementSibling))
+			.forEach(e => e.childNodes.forEach(node => e.nextElementSibling.appendChild(node)));
+
+		Array.from(this.editor.querySelectorAll("span"))
+			.filter(e => e.innerText.trim() === "")
+			.forEach(e => e.remove());
+
+		this.editor.normalize();
+		return this;
 	}
 
 	attributeChangedCallback()

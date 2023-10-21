@@ -2,8 +2,7 @@
 	<g-text-editor-toolbar id='toolbar'>
 	</g-text-editor-toolbar>
 	<div id='scroll'>
-		<div id='editor' tabindex="0" contentEditable='true'>
-		</div>
+		<div id='editor' tabindex="0" contentEditable='true'></div>
 	</div>
 	<input id='value' type="hidden"/>
 </template>

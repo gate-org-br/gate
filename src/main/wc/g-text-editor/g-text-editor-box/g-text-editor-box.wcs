@@ -1,20 +1,24 @@
 :host(*){
-	width: 100%;
+	padding: 8px;
 	display: flex;
 	overflow: auto;
-	resize: vertical;
 	height: fit-content;
-	align-items: center;
+	align-items: stretch;
 	justify-content: center;
-	border: 1px solid #CCCCCC;
-	background-color: #EFEFEF;
+}
+
+:host(:focus), :host(:hover)
+{
+}
+
+:host(:hover)
+{
+	resize: vertical;
+	border: 1px solid #EFEFEF;
+	background-color: var(--hovered);
 }
 
 :host(:focus)
 {
-	background-color: var(--hovered);
-}
-
-* {
-	height: 100%;
+	outline: dotted;
 }

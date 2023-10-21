@@ -1,107 +1,197 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<button tabindex='-1' id='bold' title='Negrito'>
-		&#X3026;
+		<g-icon>&#X3026;</g-icon>
 	</button>
 	<button tabindex='-1' id='italic' title='Itálico'>
-		&#X3027;
+		<g-icon>&#X3027;</g-icon>
 	</button>
-	<span></span>
-	<select id="textDecoration" title='Decoração do texto'>
-		<option value="">Estilo</option>
-		<option value="none">Nenhum</option>
+
+	<button tabindex='-1' title='Cor do texto' style='color: #006600'>
+		<g-icon>&#X3025;</g-icon>
+		<input id='color' type="color" value='#FFFFFF' title='Cor do texto'/>
+	</button>
+	<button tabindex='-1' title='Cor do fundo' style='color: #006600'>
+		<g-icon>&#X3067;</g-icon>
+		<input id='background-color' type="color" value='#FFFFFF' title='Cor do fundo'/>
+	</button>
+	<button tabindex='-1' title='Cor da borda' style='color: #006600'>
+		<g-icon>&#X2057;</g-icon>
+		<input id='border-color' type="color" value='#FFFFFF' title='Cor da borda'/>
+	</button>
+
+	<button tabindex='-1' id='text-align-left' title='Alinha à esquerda' style='color: #000066'>
+		<g-icon>&#X3032;</g-icon>
+	</button>
+	<button tabindex='-1' id='text-align-center' title='Centralizar' style='color: #000066'>
+		<g-icon>&#X3034;</g-icon>
+	</button>
+	<button tabindex='-1' id='text-align-right' title='Alinha à direita' style='color: #000066'>
+		<g-icon>&#X3033;</g-icon>
+	</button>
+	<button tabindex='-1' id='text-align-justify' title='Justificar' style='color: #000066'>
+		<g-icon>&#X3031;</g-icon>
+	</button>
+
+	<select id="text-decoration" title='Decoração do texto'>
+		<option value="" disabled hidden selected>Linha</option>
+		<option value="none">Nenhuma</option>
 		<option value="underline">Sublinhado</option>
 		<option value="line-through">Riscado</option>
 		<option value="overline">Sobrelinhado</option>
 	</select>
-	<input id='foreColor' type="color" value='#FFFFFF' title='Cor do texto'/>
-	<select id="fontSize" title='Tamanho da fonte'>
-		<option value="">Tamanho</option>
-		<option value="1px">1</option>
-		<option value="2px">2</option>
-		<option value="3px">3</option>
-		<option value="4px">4</option>
-		<option value="5px">5</option>
-		<option value="6px">6</option>
-		<option value="7px">7</option>
-		<option value="8px">8</option>
-		<option value="9px">9</option>
-		<option value="10px">10</option>
-		<option value="11px">11</option>
-		<option value="12px">12</option>
-		<option value="13px">13</option>
-		<option value="14px">14</option>
-		<option value="15px">15</option>
-		<option value="16px">16</option>
-		<option value="17px">17</option>
-		<option value="18px">18</option>
-		<option value="19px">19</option>
-		<option value="20px">20</option>
-		<option value="21px">21</option>
-		<option value="22px">22</option>
-		<option value="23px">23</option>
-		<option value="24px">24</option>
-		<option value="25px">25</option>
-		<option value="26px">26</option>
-		<option value="27px">27</option>
-		<option value="28px">28</option>
-		<option value="29px">29</option>
-		<option value="30px">30</option>
+
+	<select id="font-size" title='Tamanho da fonte'>
+		<option value="" disabled hidden selected>Tamanho</option>
+		<option value="10px">10 Pixels</option>
+		<option value="11px">11 Pixels</option>
+		<option value="12px">12 Pixels</option>
+		<option value="13px">13 Pixels</option>
+		<option value="14px">14 Pixels</option>
+		<option value="15px">15 Pixels</option>
+		<option value="16px">16 Pixels</option>
+		<option value="17px">17 Pixels</option>
+		<option value="18px">18 Pixels</option>
+		<option value="19px">19 Pixels</option>
+		<option value="20px">20 Pixels</option>
+		<option value="21px">21 Pixels</option>
+		<option value="22px">22 Pixels</option>
+		<option value="23px">23 Pixels</option>
+		<option value="24px">24 Pixels</option>
+		<option value="25px">25 Pixels</option>
+		<option value="26px">26 Pixels</option>
+		<option value="27px">27 Pixels</option>
+		<option value="28px">28 Pixels</option>
+		<option value="29px">29 Pixels</option>
+		<option value="30px">30 Pixels</option>
+		<option value="31px">31 Pixels</option>
+		<option value="32px">32 Pixels</option>
+		<option value="33px">33 Pixels</option>
+		<option value="34px">34 Pixels</option>
+		<option value="35px">35 Pixels</option>
+		<option value="36px">36 Pixels</option>
+		<option value="37px">37 Pixels</option>
+		<option value="38px">38 Pixels</option>
+		<option value="39px">39 Pixels</option>
+		<option value="40px">40 Pixels</option>
 	</select>
-	<span></span>
-	<button tabindex='-1' id='justifyCenter' title='Centralizar'>
-		&#X3034;
+
+	<select id="padding" title='Enchimento'>
+		<option value="" disabled hidden selected>Enchimento</option>
+		<option value="0">Nenhum</option>
+		<option value="1px">1 Pixels</option>
+		<option value="2px">2 Pixels</option>
+		<option value="3px">3 Pixels</option>
+		<option value="4px">4 Pixels</option>
+		<option value="5px">5 Pixels</option>
+		<option value="6px">6 Pixels</option>
+		<option value="7px">7 Pixels</option>
+		<option value="8px">8 Pixels</option>
+		<option value="9px">9 Pixels</option>
+		<option value="10px">10 Pixels</option>
+		<option value="11px">11 Pixels</option>
+		<option value="12px">12 Pixels</option>
+		<option value="13px">13 Pixels</option>
+		<option value="14px">14 Pixels</option>
+		<option value="15px">15 Pixels</option>
+		<option value="16px">16 Pixels</option>
+		<option value="17px">17 Pixels</option>
+		<option value="18px">18 Pixels</option>
+		<option value="19px">19 Pixels</option>
+		<option value="20px">20 Pixels</option>
+		<option value="21px">21 Pixels</option>
+		<option value="22px">22 Pixels</option>
+		<option value="23px">23 Pixels</option>
+		<option value="24px">24 Pixels</option>
+		<option value="25px">25 Pixels</option>
+		<option value="26px">26 Pixels</option>
+		<option value="27px">27 Pixels</option>
+		<option value="28px">28 Pixels</option>
+		<option value="29px">29 Pixels</option>
+		<option value="30px">30 Pixels</option>
+		<option value="31px">31 Pixels</option>
+		<option value="32px">32 Pixels</option>
+		<option value="33px">33 Pixels</option>
+		<option value="34px">34 Pixels</option>
+		<option value="35px">35 Pixels</option>
+		<option value="36px">36 Pixels</option>
+		<option value="37px">37 Pixels</option>
+		<option value="38px">38 Pixels</option>
+		<option value="39px">39 Pixels</option>
+		<option value="40px">40 Pixels</option>
+	</select>
+
+	<select id="margin" title='Margem'>
+		<option value="" disabled hidden selected>Margem</option>
+		<option value="10px">10 Pixels</option>
+		<option value="11px">11 Pixels</option>
+		<option value="12px">12 Pixels</option>
+		<option value="13px">13 Pixels</option>
+		<option value="14px">14 Pixels</option>
+		<option value="15px">15 Pixels</option>
+		<option value="16px">16 Pixels</option>
+		<option value="17px">17 Pixels</option>
+		<option value="18px">18 Pixels</option>
+		<option value="19px">19 Pixels</option>
+		<option value="20px">20 Pixels</option>
+		<option value="21px">21 Pixels</option>
+		<option value="22px">22 Pixels</option>
+		<option value="23px">23 Pixels</option>
+		<option value="24px">24 Pixels</option>
+		<option value="25px">25 Pixels</option>
+		<option value="26px">26 Pixels</option>
+		<option value="27px">27 Pixels</option>
+		<option value="28px">28 Pixels</option>
+		<option value="29px">29 Pixels</option>
+		<option value="30px">30 Pixels</option>
+		<option value="31px">31 Pixels</option>
+		<option value="32px">32 Pixels</option>
+		<option value="33px">33 Pixels</option>
+		<option value="34px">34 Pixels</option>
+		<option value="35px">35 Pixels</option>
+		<option value="36px">36 Pixels</option>
+		<option value="37px">37 Pixels</option>
+		<option value="38px">38 Pixels</option>
+		<option value="39px">39 Pixels</option>
+		<option value="40px">40 Pixels</option>
+	</select>
+
+	<button tabindex='-1' id='class' title='Estilo predefinido'>
+		<g-icon>&#X2044;</g-icon>
 	</button>
-	<button tabindex='-1' id='justifyLeft' title='Alinha à esquerda'>
-		&#X3032;
+
+	<button tabindex='-1' id='remove-format' title='Remover formatação' style='color: #660000'>
+		<g-icon>&#X3030;</g-icon>
 	</button>
-	<button tabindex='-1' id='justifyRight' title='Alinha à direita'>
-		&#X3033;
+
+	<br/>
+	<select id="emoji">
+		<option value="" disabled selected hidden>Emoji</option>
+		<option value="&#128578;">&#128578; Felicidade</option>
+		<option value="&#128550;">&#128550; Tristeza</option>
+		<option value="&#128552;">&#128552; Medo</option>
+		<option value="&#128544;">&#128544; Raiva</option>
+	</select>
+	<br/>
+	<button tabindex='-1' id='attach' title='Anexar arquivo'>
+		<g-icon>&#X2079;</g-icon>
 	</button>
-	<button tabindex='-1' id='justifyFull' title='Justificar'>
-		&#X3031;
-	</button>
-	<span></span>
-	<button tabindex='-1' id='removeFormat' title='Remover formatação'>
-		&#X3030;
-	</button>
-	<span></span>
-	<button tabindex='-1' id='indent' title='Indentar'>
-		&#X3039;
-	</button>
-	<button tabindex='-1' id='outdent' title='Remover indentação'>
-		&#X3040;
-	</button>
-	<span></span>
-	<button tabindex='-1' id='insertUnorderedList' title='Criar lista'>
-		&#X3035;
-	</button>
-	<button tabindex='-1' id='insertOrderedList' title='Criar lista ordenada'>
-		&#X3038;
-	</button>
-	<span></span>
+	<hr/>
 	<button tabindex='-1' id='createLink' title='Criar link'>
-		&#X2076;
+		<g-icon>
+			&#X2076;
+		</g-icon>
 	</button>
 	<button tabindex='-1' id='unlink' title='Remover link'>
-		&#X2233;
+		<g-icon>
+			&#X2233;
+		</g-icon>
 	</button>
-	<span></span>
-	<button tabindex='-1' id='happyFace' title='Carinha feliz"'>
-		&#X2104;
-	</button>
-	<button tabindex='-1' id='sadFace' title='Carinha triste"'>
-		&#X2106;
-	</button>
-	<button tabindex='-1' id='insertIcon' title='Inserir ícone'>
-		&#X3017;
-	</button>
-	<span></span>
-	<button tabindex='-1' id='attach' title='Anexar arquivo'>
-		&#X2079;
-	</button>
- <style>:host(*) {
-	gap: 8px;
+ <style>* {
+	box-sizing: border-box;
+}
+:host(*) {
+	gap: 4px;
 	padding: 8px;
 	display: flex;
 	overflow: auto;
@@ -115,39 +205,108 @@ template.innerHTML = `
 button {
 	color: #333;
 	height: 40px;
+	border: none;
+	cursor: pointer;
 	min-width: 40px;
 	font-size: 18px;
 	background: #ddd;
-	border: none;
 	border-radius: 5px;
-	font-family: "gate";
-	cursor: pointer; /* Add a pointer cursor on hover */
-	transition: background-color 0.3s; /* Smooth transition for background color */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s;
 }
 
-button:hover {
-	background-color: #ccc;  /* Darker background on hover */
+label:hover, button:hover {
+	background-color: #ccc;
 }
 
-span  {
+br  {
 	flex: 0 0 8px;
 	display: block;
+	min-width: 8px;
 }
 
-div {
+hr {
+	border: none;
 	flex-grow: 1;
 	display: block;
 }
 
-#foreColor, #fontSize, #textDecoration
+select
 {
-	width: 80px;
+	width: 100px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid var(--main5);
-}</style>`;
+}
+
+#emoji option {
+	font-size: 18px
+}
+
+span {
+	width: 100px;
+	height: 40px;
+	padding: 4px;
+
+	font-size: 12px;
+
+	gap: 4px;
+	display: grid;
+	align-items: center;
+	justify-content: stretch;
+	grid-template-columns: 16px 46px;
+
+	background: #ddd;
+
+	border-radius: 5px;
+	border: 1px solid var(--main5);
+
+	transition: background-color 0.3s;
+}
+
+input[type='color']
+{
+	display: none;
+}
+</style>`;
 
 /* global customElements */
+import './g-icon.js';
+import GHierarchicalOptionPicker from './g-hierarchical-option-picker.js';
+
+const classes =
+	[{
+			label: "Título",
+			title: "Título",
+			value: "title"
+		},
+		{
+			label: "Subtítulo",
+			title: "Subtítulo",
+			value: "subtitle"
+		}, {
+			label: "Chamada",
+			title: "Chamada",
+			value: [{
+					label: "Sólida",
+					title: "Chamada sólida",
+					value: [{label: "Alerta", title: "Chamada sólida de alerta", value: "callout warning fill"},
+						{label: "Informação", title: "Chamada sólida de informação", value: "callout fill"},
+						{label: "Perigo", title: "Chamada sólida de perigo", value: "callout danger fill"},
+						{label: "Questionamento", title: "Chamada sólida de questionamento", value: "callout question fill"},
+						{label: "Sucesso", title: "Chamada sólida de sucesso", value: "callout success fill"}]
+				}, {
+					label: "Transparente",
+					title: "Chamada transparente",
+					value: [{label: "Alerta", title: "Chamada transparente de alerta", value: "callout warning"},
+						{label: "Informação", title: "Chamada transparente de informação", value: "callout"},
+						{label: "Perigo", title: "Chamada transparente de perigo", value: "callout danger"},
+						{label: "Questionamento", title: "Chamada transparente de questionamento", value: "callout question"},
+						{label: "Sucesso", title: "Chamada transparente de sucesso", value: "callout success"}]
+				}]
+		}];
 
 customElements.define('g-text-editor-toolbar', class extends HTMLElement
 {
@@ -160,24 +319,37 @@ customElements.define('g-text-editor-toolbar', class extends HTMLElement
 
 		let editor = this.editor;
 
-		this.shadowRoot.getElementById("bold").addEventListener("click", () => editor.bold());
-		this.shadowRoot.getElementById("italic").addEventListener("click", () => editor.italic());
+		Array.from(this.shadowRoot.querySelectorAll("button > input")).forEach(e => e.parentNode.addEventListener("click", () => e.click()));
 
-		this.shadowRoot.getElementById("textDecoration").addEventListener("change", e => e.target.value && editor.textDecoration(e.target.value) & (e.target.value = ""));
+		this.shadowRoot.getElementById("bold").addEventListener("click", () => editor.selection.toggleStyle("font-weight", "700", "400"));
+		this.shadowRoot.getElementById("italic").addEventListener("click", () => editor.selection.toggleStyle("font-style", "italic", "normal"));
 
-		this.shadowRoot.getElementById("foreColor").addEventListener("change", e => editor.foreColor(e.target.value) & (e.target.value = "#FFFFFF"));
+		this.shadowRoot.getElementById("text-decoration").addEventListener("change", e => editor.selection.updateStyle("text-decoration-line", e.target.value));
 
-		this.shadowRoot.getElementById("fontSize").addEventListener("change", e => e.target.value && editor.fontSize(e.target.value) & (e.target.value = ""));
+		this.shadowRoot.getElementById("color").addEventListener("change", e => editor.selection.updateStyle("color", e.target.value));
+		this.shadowRoot.getElementById("background-color").addEventListener("change", e => editor.selection.updateStyle("background-color", e.target.value));
+		this.shadowRoot.getElementById("border-color").addEventListener("change", e => editor.selection.updateStyle("border", value && value !== '#FFFFFF' ? `1px solid ${value}` : 'none'));
 
-		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => editor.removeFormat());
+		this.shadowRoot.getElementById("font-size").addEventListener("change", e => editor.selection.updateStyle('font-size', e.target.value));
+		this.shadowRoot.getElementById("padding").addEventListener("change", e => editor.selection.updateStyle('padding', e.target.value));
+		this.shadowRoot.getElementById("margin").addEventListener("change", e => editor.selection.updateStyle('margin', e.target.value));
 
-		this.shadowRoot.getElementById("justifyCenter").addEventListener("click", () => editor.justifyCenter());
-		this.shadowRoot.getElementById("justifyLeft").addEventListener("click", () => editor.justifyLeft());
-		this.shadowRoot.getElementById("justifyRight").addEventListener("click", () => editor.justifyRight());
-		this.shadowRoot.getElementById("justifyFull").addEventListener("click", () => editor.justifyFull());
+		this.shadowRoot.getElementById("class")
+			.addEventListener("click", e =>
+			{
+				let selection = editor.selection;
+				GHierarchicalOptionPicker.pick(classes, "Selecione um estilo")
+					.then(value => value && selection.updateClass(value))
+			});
 
-		this.shadowRoot.getElementById("indent").addEventListener("click", () => editor.indent());
-		this.shadowRoot.getElementById("outdent").addEventListener("click", () => editor.outdent());
+		this.shadowRoot.getElementById("remove-format").addEventListener("click", () => editor.selection.clearStyles());
+
+		this.shadowRoot.getElementById("emoji").addEventListener("change", e => editor.selection.appendText(e.target.value));
+
+		this.shadowRoot.getElementById("text-align-center").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "center"));
+		this.shadowRoot.getElementById("text-align-left").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "left"));
+		this.shadowRoot.getElementById("text-align-right").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "right"));
+		this.shadowRoot.getElementById("text-align-justify").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "justify"));
 
 		this.shadowRoot.getElementById("insertUnorderedList").addEventListener("click", () => editor.insertUnorderedList());
 		this.shadowRoot.getElementById("insertOrderedList").addEventListener("click", () => editor.insertOrderedList());
@@ -185,11 +357,9 @@ customElements.define('g-text-editor-toolbar', class extends HTMLElement
 		this.shadowRoot.getElementById("createLink").addEventListener("click", () => editor.createLink());
 		this.shadowRoot.getElementById("unlink").addEventListener("click", () => editor.unlink());
 
-		this.shadowRoot.getElementById("happyFace").addEventListener("click", () => editor.happyFace());
-		this.shadowRoot.getElementById("sadFace").addEventListener("click", () => editor.sadFace());
-		this.shadowRoot.getElementById("insertIcon").addEventListener("click", () => editor.insertIcon());
-
 		this.shadowRoot.getElementById("attach").addEventListener("click", () => editor.attach());
+
+		Array.from(this.shadowRoot.querySelectorAll("select")).forEach(e => e.addEventListener("change", () => e.value = ""));
 	}
 
 	separator()

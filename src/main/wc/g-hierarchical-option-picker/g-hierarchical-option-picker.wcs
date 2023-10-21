@@ -1,0 +1,43 @@
+* {
+	box-sizing: border-box;
+}
+
+main
+{
+	padding: 0;
+	min-width: 200px;
+	max-width: 400px;
+	width: calc(100% - 40px);
+}
+
+main > section {
+	flex-basis: 300px;
+}
+
+div {
+	flex-grow: 1;
+	display: flex;
+	overflow: auto;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+button {
+	color: #333;
+	height: 48px;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	font-size: 16px;
+	min-width: 128px;
+	align-items: center;
+	background: #FFFFFF;
+	transition: background-color 0.3s;
+	border-bottom: 1px solid var(--main6);
+
+}
+
+button:hover {
+	background-color: var(--hovered);
+}

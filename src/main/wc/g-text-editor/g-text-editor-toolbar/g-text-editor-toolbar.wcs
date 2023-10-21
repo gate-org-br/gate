@@ -1,5 +1,8 @@
+* {
+	box-sizing: border-box;
+}
 :host(*) {
-	gap: 8px;
+	gap: 4px;
 	padding: 8px;
 	display: flex;
 	overflow: auto;
@@ -13,34 +16,68 @@
 button {
 	color: #333;
 	height: 40px;
+	border: none;
+	cursor: pointer;
 	min-width: 40px;
 	font-size: 18px;
 	background: #ddd;
-	border: none;
 	border-radius: 5px;
-	font-family: "gate";
-	cursor: pointer; /* Add a pointer cursor on hover */
-	transition: background-color 0.3s; /* Smooth transition for background color */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s;
 }
 
-button:hover {
-	background-color: #ccc;  /* Darker background on hover */
+label:hover, button:hover {
+	background-color: #ccc;
 }
 
-span  {
+br  {
 	flex: 0 0 8px;
 	display: block;
+	min-width: 8px;
 }
 
-div {
+hr {
+	border: none;
 	flex-grow: 1;
 	display: block;
 }
 
-#foreColor, #fontSize, #textDecoration
+select
 {
-	width: 80px;
+	width: 100px;
 	height: 40px;
 	border-radius: 5px;
 	border: 1px solid var(--main5);
+}
+
+#emoji option {
+	font-size: 18px
+}
+
+span {
+	width: 100px;
+	height: 40px;
+	padding: 4px;
+
+	font-size: 12px;
+
+	gap: 4px;
+	display: grid;
+	align-items: center;
+	justify-content: stretch;
+	grid-template-columns: 16px 46px;
+
+	background: #ddd;
+
+	border-radius: 5px;
+	border: 1px solid var(--main5);
+
+	transition: background-color 0.3s;
+}
+
+input[type='color']
+{
+	display: none;
 }
