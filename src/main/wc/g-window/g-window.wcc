@@ -1,7 +1,7 @@
-/* global customElements */
+/* global customElements, template */
 
 import GModal from './g-modal.js';
-
+import stylesheets from './stylesheets.js';
 export default class GWindow extends GModal
 {
 	constructor()
@@ -9,7 +9,8 @@ export default class GWindow extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		stylesheets('table.css', 'input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 };
-
 customElements.define('g-window', GWindow);
