@@ -2,13 +2,10 @@
 {
 	width: 100%;
 	height: 100%;
-	display: flex;
-	position: relative;
+	display: grid;
 	border-radius: 5px;
-	align-items: stretch;
-	flex-direction: column;
-	justify-content: stretch;
 	border: 1px solid #f2f2f2;
+	grid-template-rows: 60px 1fr;
 }
 
 :host([hidden])
@@ -17,13 +14,8 @@
 }
 
 #scroll {
-	top: 60px;
-	left: 0;
-	right: 0;
-	bottom: 0;
 	display: flex;
 	overflow: auto;
-	position: absolute;
 	align-items: stretch;
 	justify-content: stretch;
 }
@@ -31,11 +23,10 @@
 #editor
 {
 	flex-grow: 1;
-	padding: 8px;
+	padding: 12px;
 	outline: none;
 	overflow: auto;
 	font-size: 16px;
-	line-height: 20px;
 	white-space: pre-wrap;
 	background-color: white;
 	border-radius: 0 0 5px 5px;
@@ -45,84 +36,29 @@
 	outline: none;
 }
 
-i {
-	font-family: gate;
-	font-style: normal;
-}
 
-
-span.callout
-{
-	gap: 12px;
+#editor > div {
+	padding: 8px;
 	display: flex;
-	align-items: center;
-
-	padding: 12px;
-	font-size: 16px;
-	text-align: justify;
-
-	border-radius: 0 3px 3px 0;
-	background-color: var(--main1);
-
-	border: 1px solid;
-	border-left: 6px solid;
-	border-color: var(--main6);
+	overflow: auto;
+	height: fit-content;
+	align-items: stretch;
+	justify-content: center;
 }
 
-span.callout.fill {
-	color: #000000;
-	border-color: #000000;
-	background-color: var(--main4);
-}
-
-
-span.warning
+#editor > div:hover
 {
-	color: var(--warning1);
-	border-color: var(--warning1);
+	resize: vertical;
+	border: 1px solid #EFEFEF;
+	background-color: var(--hovered);
 }
 
-span.warning.fill {
-	background-color: var(--warning3);
-}
-
-span.danger
+#editor > div:focus
 {
-	color: var(--error1);
-	border-color: var(--error1);
+	outline: dotted;
 }
 
-span.danger.fill {
-	background-color: var(--error3);
+#editor > div > *
+{
+	height: 100%;
 }
-
-span.success {
-	color: var(--success1);
-	border-color: var(--success1);
-}
-
-span.success.fill {
-	background-color: var(--success3);
-}
-
-span.question {
-	color: var(--question1);
-	border-color: var(--question1);
-}
-
-span.question.fill {
-	background-color: var(--question3);
-}
-
-span.title {
-	display: block;
-	font-size: 32px;
-	text-align: center
-}
-
-span.subtitle {
-	display: block;
-	font-size: 24px;
-	text-align: center
-}
-

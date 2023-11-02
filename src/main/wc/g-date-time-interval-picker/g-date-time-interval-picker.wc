@@ -2,7 +2,7 @@
 	<main>
 		<header>
 			Selecione um período
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>

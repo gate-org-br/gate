@@ -26,7 +26,8 @@ customElements.define('g-date-selector', class extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = template.innerHTML;
+
 		let calendar = this.shadowRoot.firstElementChild;
 		calendar.addEventListener("remove", event => event.preventDefault());
 		calendar.addEventListener("update", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));

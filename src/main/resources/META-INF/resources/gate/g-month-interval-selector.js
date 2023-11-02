@@ -19,11 +19,11 @@ customElements.define('g-month-interval-selector', class extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = template.innerHTML;
 
 		let min = this.shadowRoot.getElementById("min");
 		min.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
-		
+
 		let max = this.shadowRoot.getElementById("max");
 		max.addEventListener("selected", () => this.dispatchEvent(new CustomEvent('selected', {detail: this.selection})));
 	}

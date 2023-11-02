@@ -1,46 +1,29 @@
 <template>
-	<button tabindex='-1' id='bold' title='Negrito'>
-		<g-icon>&#X3026;</g-icon>
-	</button>
-	<button tabindex='-1' id='italic' title='Itálico'>
-		<g-icon>&#X3027;</g-icon>
-	</button>
-
-	<button tabindex='-1' title='Cor do texto' style='color: #006600'>
-		<g-icon>&#X3025;</g-icon>
-		<input id='color' type="color" value='#FFFFFF' title='Cor do texto'/>
-	</button>
-	<button tabindex='-1' title='Cor do fundo' style='color: #006600'>
-		<g-icon>&#X3067;</g-icon>
-		<input id='background-color' type="color" value='#FFFFFF' title='Cor do fundo'/>
-	</button>
-	<button tabindex='-1' title='Cor da borda' style='color: #006600'>
-		<g-icon>&#X2057;</g-icon>
-		<input id='border-color' type="color" value='#FFFFFF' title='Cor da borda'/>
-	</button>
-
-	<button tabindex='-1' id='text-align-left' title='Alinha à esquerda' style='color: #000066'>
-		<g-icon>&#X3032;</g-icon>
-	</button>
-	<button tabindex='-1' id='text-align-center' title='Centralizar' style='color: #000066'>
-		<g-icon>&#X3034;</g-icon>
-	</button>
-	<button tabindex='-1' id='text-align-right' title='Alinha à direita' style='color: #000066'>
-		<g-icon>&#X3033;</g-icon>
-	</button>
-	<button tabindex='-1' id='text-align-justify' title='Justificar' style='color: #000066'>
-		<g-icon>&#X3031;</g-icon>
-	</button>
-
-	<select id="text-decoration" title='Decoração do texto'>
-		<option value="" disabled hidden selected>Linha</option>
-		<option value="none">Nenhuma</option>
-		<option value="underline">Sublinhado</option>
-		<option value="line-through">Riscado</option>
-		<option value="overline">Sobrelinhado</option>
+	<select id="formatFontName" title='Fonte'>
+		<option value="" disabled hidden selected>Fonte</option>
+		<option value="Andalé Mono">Andalé Mono</option>
+		<option value="Arial">Arial</option>
+		<option value="Arial Black">Arial Black</option>
+		<option value="Baskerville">Baskerville</option>
+		<option value="Bradley Hand">Bradley Hand</option>
+		<option value="Brush Script MT">Brush Script MT</option>
+		<option value="Comic Sans MS">Comic Sans MS</option>
+		<option value="Courier">Courier</option>
+		<option value="Georgia">Georgia</option>
+		<option value="Gill Sans">Gill Sans</option>
+		<option value="Helvetica">Helvetica</option>
+		<option value="Impact">Impact</option>
+		<option value="Lucida">Lucida</option>
+		<option value="Luminari">Luminari</option>
+		<option value="Monaco">Monaco</option>
+		<option value="Palatino">Palatino</option>
+		<option value="Tahoma">Tahoma</option>
+		<option value="Times New Roman">Times New Roman</option>
+		<option value="Trebuchet MS">Trebuchet MS</option>
+		<option value="Verdana">Verdana</option>
 	</select>
 
-	<select id="font-size" title='Tamanho da fonte'>
+	<select id="formatFontSize" title='Tamanho da fonte'>
 		<option value="" disabled hidden selected>Tamanho</option>
 		<option value="10px">10 Pixels</option>
 		<option value="11px">11 Pixels</option>
@@ -73,97 +56,84 @@
 		<option value="38px">38 Pixels</option>
 		<option value="39px">39 Pixels</option>
 		<option value="40px">40 Pixels</option>
+		<option value="41px">41 Pixels</option>
+		<option value="42px">42 Pixels</option>
+		<option value="43px">43 Pixels</option>
+		<option value="44px">44 Pixels</option>
+		<option value="45px">45 Pixels</option>
+		<option value="46px">46 Pixels</option>
+		<option value="47px">47 Pixels</option>
+		<option value="48px">48 Pixels</option>
+		<option value="49px">49 Pixels</option>
+		<option value="50px">50 Pixels</option>
 	</select>
 
-	<select id="padding" title='Enchimento'>
-		<option value="" disabled hidden selected>Enchimento</option>
-		<option value="0">Nenhum</option>
-		<option value="1px">1 Pixels</option>
-		<option value="2px">2 Pixels</option>
-		<option value="3px">3 Pixels</option>
-		<option value="4px">4 Pixels</option>
-		<option value="5px">5 Pixels</option>
-		<option value="6px">6 Pixels</option>
-		<option value="7px">7 Pixels</option>
-		<option value="8px">8 Pixels</option>
-		<option value="9px">9 Pixels</option>
-		<option value="10px">10 Pixels</option>
-		<option value="11px">11 Pixels</option>
-		<option value="12px">12 Pixels</option>
-		<option value="13px">13 Pixels</option>
-		<option value="14px">14 Pixels</option>
-		<option value="15px">15 Pixels</option>
-		<option value="16px">16 Pixels</option>
-		<option value="17px">17 Pixels</option>
-		<option value="18px">18 Pixels</option>
-		<option value="19px">19 Pixels</option>
-		<option value="20px">20 Pixels</option>
-		<option value="21px">21 Pixels</option>
-		<option value="22px">22 Pixels</option>
-		<option value="23px">23 Pixels</option>
-		<option value="24px">24 Pixels</option>
-		<option value="25px">25 Pixels</option>
-		<option value="26px">26 Pixels</option>
-		<option value="27px">27 Pixels</option>
-		<option value="28px">28 Pixels</option>
-		<option value="29px">29 Pixels</option>
-		<option value="30px">30 Pixels</option>
-		<option value="31px">31 Pixels</option>
-		<option value="32px">32 Pixels</option>
-		<option value="33px">33 Pixels</option>
-		<option value="34px">34 Pixels</option>
-		<option value="35px">35 Pixels</option>
-		<option value="36px">36 Pixels</option>
-		<option value="37px">37 Pixels</option>
-		<option value="38px">38 Pixels</option>
-		<option value="39px">39 Pixels</option>
-		<option value="40px">40 Pixels</option>
-	</select>
+	<br/>
 
-	<select id="margin" title='Margem'>
-		<option value="" disabled hidden selected>Margem</option>
-		<option value="10px">10 Pixels</option>
-		<option value="11px">11 Pixels</option>
-		<option value="12px">12 Pixels</option>
-		<option value="13px">13 Pixels</option>
-		<option value="14px">14 Pixels</option>
-		<option value="15px">15 Pixels</option>
-		<option value="16px">16 Pixels</option>
-		<option value="17px">17 Pixels</option>
-		<option value="18px">18 Pixels</option>
-		<option value="19px">19 Pixels</option>
-		<option value="20px">20 Pixels</option>
-		<option value="21px">21 Pixels</option>
-		<option value="22px">22 Pixels</option>
-		<option value="23px">23 Pixels</option>
-		<option value="24px">24 Pixels</option>
-		<option value="25px">25 Pixels</option>
-		<option value="26px">26 Pixels</option>
-		<option value="27px">27 Pixels</option>
-		<option value="28px">28 Pixels</option>
-		<option value="29px">29 Pixels</option>
-		<option value="30px">30 Pixels</option>
-		<option value="31px">31 Pixels</option>
-		<option value="32px">32 Pixels</option>
-		<option value="33px">33 Pixels</option>
-		<option value="34px">34 Pixels</option>
-		<option value="35px">35 Pixels</option>
-		<option value="36px">36 Pixels</option>
-		<option value="37px">37 Pixels</option>
-		<option value="38px">38 Pixels</option>
-		<option value="39px">39 Pixels</option>
-		<option value="40px">40 Pixels</option>
-	</select>
-
-	<button tabindex='-1' id='class' title='Estilo predefinido'>
-		<g-icon>&#X2044;</g-icon>
+	<button tabindex='-1' id='formatBold' title='Negrito'>
+		<g-icon>&#X3026;</g-icon>
+	</button>
+	<button tabindex='-1' id='formatItalic' title='Itálico'>
+		<g-icon>&#X3027;</g-icon>
 	</button>
 
-	<button tabindex='-1' id='remove-format' title='Remover formatação' style='color: #660000'>
+	<button tabindex='-1' id='formatUnderline' title='Sublinhado'>
+		<g-icon>&#X3028;</g-icon>
+	</button>
+	<button tabindex='-1' id='formatStrikeThrough' title='Riscado'>
+		<g-icon>&#X3029;</g-icon>
+	</button>
+
+	<br/>
+	<label tabindex='-1' title='Cor do texto' style="color: #006600">
+		<g-icon>&#X3025;</g-icon>
+		<input id='formatFontColor' type="color" value='#CCCCCC' title='Cor do texto'/>
+	</label>
+	<label tabindex='-1' title='Cor do fundo' style="color: #006600">
+		<g-icon>&#X3067;</g-icon>
+		<input id='formatBackColor' type="color" value='#CCCCCC' title='Cor do fundo'/>
+	</label>
+	<br/>
+	<button tabindex='-1' id='formatJustifyLeft' title='Alinha à esquerda'>
+		<g-icon>&#X3032;</g-icon>
+	</button>
+	<button tabindex='-1' id='formatJustifyCenter' title='Centralizar'>
+		<g-icon>&#X3034;</g-icon>
+	</button>
+	<button tabindex='-1' id='formatJustifyRight' title='Alinha à direita'>
+		<g-icon>&#X3033;</g-icon>
+	</button>
+	<button tabindex='-1' id='formatJustifyFull' title='Justificar'>
+		<g-icon>&#X3031;</g-icon>
+	</button>
+
+	<br/>
+
+	<button tabindex='-1' id='formatRemove' title='Remover formatação' style='color: #660000'>
 		<g-icon>&#X3030;</g-icon>
 	</button>
 
 	<br/>
+
+	<button tabindex='-1' id='attach' title='Anexar arquivo'>
+		<g-icon>&#X2079;</g-icon>
+	</button>
+
+	<br/>
+	<button tabindex='-1' id='undo' title='Desfazer'>
+		<g-icon>&#X2023;</g-icon>
+	</button>
+	<button tabindex='-1' id='redo' title='Refazer'>
+		<g-icon>&#X2024;</g-icon>
+	</button>
+
+	<hr/>
+	<button tabindex='-1' id='class' title='Estilo predefinido'>
+		<g-icon>&#X2044;</g-icon>
+	</button>
+	<button tabindex='-1' id='link' title='Link'>
+		<g-icon>&#X2159;</g-icon>
+	</button>
 	<select id="emoji">
 		<option value="" disabled selected hidden>Emoji</option>
 		<option value="&#128578;">&#128578; Felicidade</option>
@@ -171,19 +141,4 @@
 		<option value="&#128552;">&#128552; Medo</option>
 		<option value="&#128544;">&#128544; Raiva</option>
 	</select>
-	<br/>
-	<button tabindex='-1' id='attach' title='Anexar arquivo'>
-		<g-icon>&#X2079;</g-icon>
-	</button>
-	<hr/>
-	<button tabindex='-1' id='createLink' title='Criar link'>
-		<g-icon>
-			&#X2076;
-		</g-icon>
-	</button>
-	<button tabindex='-1' id='unlink' title='Remover link'>
-		<g-icon>
-			&#X2233;
-		</g-icon>
-	</button>
 </template>

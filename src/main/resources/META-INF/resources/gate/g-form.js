@@ -1,10 +1,5 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/input.css'/>
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/fieldset.css'/>
-
 	<fieldset>
 	</fieldset>
  <style>* {
@@ -27,12 +22,14 @@ fieldset {
 
 import './g-selectn.js';
 import mask from './mask.js';
+import stylesheets from './stylesheets.js';
 
 function create(form, element)
 {
 	let label = document.createElement("label");
 
 	if (element.size)
+	{
 		switch (Number(element.size))
 		{
 			case 0:
@@ -48,12 +45,14 @@ function create(form, element)
 				label.setAttribute("data-size", 8);
 				break;
 		}
+	} else if (element.columns)
+		label.setAttribute("data-size", element.columns);
 
 	label.innerText = element.name + ': ';
 
 	let span = label.appendChild(document.createElement("span"));
 	if (element.multiple)
-		span.style.flexBasis = "80px";
+		span.style.flexBasis = "128px";
 
 	let input;
 	if (element.options)
@@ -114,6 +113,8 @@ function create(form, element)
 
 	input.name = element.name;
 
+	if (element.placeholder)
+		input.setAttribute("placeholder", element.placeholder);
 	if (element.required)
 		input.setAttribute("required", "required");
 	if (element.description)
@@ -140,6 +141,8 @@ customElements.define('g-form', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
+		stylesheets('input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	get name()

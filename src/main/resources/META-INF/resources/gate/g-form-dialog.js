@@ -14,13 +14,15 @@ template.innerHTML = `
 			</g-form>
 		</section>
 		<footer>
-			<button id='commit' class="primary">
-				Concluir<g-icon>&#X1000;</g-icon>
-			</button>
-			<hr/>
-			<button id='cancel' class="tertiary">
-				Desistir<g-icon>&#X1001;</g-icon>
-			</button>
+			<g-coolbar>
+				<button id='commit' class="primary">
+					Concluir<g-icon>&#X1000;</g-icon>
+				</button>
+				<hr/>
+				<button id='cancel' class="tertiary">
+					Desistir<g-icon>&#X1001;</g-icon>
+				</button>
+			</g-coolbar>
 		</footer>
 	</main>
  <style>main
@@ -47,26 +49,26 @@ g-form {
 
 import './g-form.js';
 import './g-icon.js';
+import './g-coolbar.js';
 import GWindow from './g-window.js';
 import ResponseHandler from './response-handler.js';
-
 export default class GFormDialog extends GWindow
 {
 	constructor()
 	{
 		super();
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
+		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
+
 		let form = this.shadowRoot.querySelector("g-form");
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
-		{
-			if (form.checkValidity())
-			{
-				this.dispatchEvent(new CustomEvent("commit", {detail: form.value}));
-				this.hide();
-			}
-		});
+		this.shadowRoot.getElementById("commit")
+			.addEventListener("click", () => form.reportValidity()
+					&& this.dispatchEvent(new CustomEvent("commit", {detail: form.value})));
 	}
 
 	set caption(caption)
@@ -89,12 +91,36 @@ export default class GFormDialog extends GWindow
 		this.shadowRoot.querySelector("g-form").value;
 	}
 
-	static edit(value, caption)
+	set width(value)
+	{
+		this.shadowRoot.querySelector("main").style.width = value;
+	}
+
+	set height(value)
+	{
+		this.shadowRoot.querySelector("main").style.height = value;
+	}
+
+	static pick(value, options)
+	{
+		return GFormDialog.edit(value.map(e => typeof e === 'string' ? {name: e, required: true} : e), options)
+			.then(fields => fields.map(field => field.multiple || !field.value ? field.value : field.value[0]));
+	}
+
+	static edit(value, options)
 	{
 		let dialog = window.top.document.createElement("g-form-dialog");
 		dialog.value = value;
-		if (caption)
-			dialog.caption = caption;
+		if (typeof options === 'object')
+		{
+			if (options.caption)
+				dialog.caption = options.caption;
+			if (options.width)
+				dialog.width = options.width;
+			if (options.height)
+				dialog.height = options.height;
+		} else if (typeof options === 'string')
+			dialog.caption = options;
 		dialog.show();
 		let promise = new Promise(resolve =>
 		{
@@ -104,21 +130,14 @@ export default class GFormDialog extends GWindow
 		return promise;
 	}
 
-	static update(url, caption)
+	static update(url, options)
 	{
 		return fetch(url)
 			.then(response => ResponseHandler.json(response))
-			.then(form => GFormDialog.edit(form, caption))
-			.then(result =>
-			{
-				if (!result)
-					return Promise.resolve({"ok": true});
-
-				return fetch(url,
-					{method: "post",
-						headers: {'Content-Type': 'application/json'},
-						body: JSON.stringify(result)});
-			})
+			.then(form => GFormDialog.edit(form, options))
+			.then(result => result
+					? fetch(url, {method: "post", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(result)})
+					: Promise.resolve({"ok": true}))
 			.then(response => ResponseHandler.json(response));
 	}
 }

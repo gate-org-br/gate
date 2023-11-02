@@ -1,38 +1,7 @@
 /* global customElements */
 import './g-icon.js';
-import GHierarchicalOptionPicker from './g-hierarchical-option-picker.js';
-
-const classes =
-	[{
-			label: "Título",
-			title: "Título",
-			value: "title"
-		},
-		{
-			label: "Subtítulo",
-			title: "Subtítulo",
-			value: "subtitle"
-		}, {
-			label: "Chamada",
-			title: "Chamada",
-			value: [{
-					label: "Sólida",
-					title: "Chamada sólida",
-					value: [{label: "Alerta", title: "Chamada sólida de alerta", value: "callout warning fill"},
-						{label: "Informação", title: "Chamada sólida de informação", value: "callout fill"},
-						{label: "Perigo", title: "Chamada sólida de perigo", value: "callout danger fill"},
-						{label: "Questionamento", title: "Chamada sólida de questionamento", value: "callout question fill"},
-						{label: "Sucesso", title: "Chamada sólida de sucesso", value: "callout success fill"}]
-				}, {
-					label: "Transparente",
-					title: "Chamada transparente",
-					value: [{label: "Alerta", title: "Chamada transparente de alerta", value: "callout warning"},
-						{label: "Informação", title: "Chamada transparente de informação", value: "callout"},
-						{label: "Perigo", title: "Chamada transparente de perigo", value: "callout danger"},
-						{label: "Questionamento", title: "Chamada transparente de questionamento", value: "callout question"},
-						{label: "Sucesso", title: "Chamada transparente de sucesso", value: "callout success"}]
-				}]
-		}];
+import GMenuPicker from './g-menu-picker.js';
+import GFormDialog from './g-form-dialog.js';
 
 customElements.define('g-text-editor-toolbar', class extends HTMLElement
 {
@@ -47,45 +16,56 @@ customElements.define('g-text-editor-toolbar', class extends HTMLElement
 
 		Array.from(this.shadowRoot.querySelectorAll("button > input")).forEach(e => e.parentNode.addEventListener("click", () => e.click()));
 
-		this.shadowRoot.getElementById("bold").addEventListener("click", () => editor.selection.toggleStyle("font-weight", "700", "400"));
-		this.shadowRoot.getElementById("italic").addEventListener("click", () => editor.selection.toggleStyle("font-style", "italic", "normal"));
+		this.shadowRoot.getElementById("formatFontName").addEventListener("change", e => editor.formatFontName(e.target.value));
+		this.shadowRoot.getElementById("formatFontSize").addEventListener("change", e => editor.formatFontSize(e.target.value));
 
-		this.shadowRoot.getElementById("text-decoration").addEventListener("change", e => editor.selection.updateStyle("text-decoration-line", e.target.value));
+		this.shadowRoot.getElementById("formatBold").addEventListener("click", () => editor.formatBold());
+		this.shadowRoot.getElementById("formatItalic").addEventListener("click", () => editor.formatItalic());
 
-		this.shadowRoot.getElementById("color").addEventListener("change", e => editor.selection.updateStyle("color", e.target.value));
-		this.shadowRoot.getElementById("background-color").addEventListener("change", e => editor.selection.updateStyle("background-color", e.target.value));
-		this.shadowRoot.getElementById("border-color").addEventListener("change", e => editor.selection.updateStyle("border", value && value !== '#FFFFFF' ? `1px solid ${value}` : 'none'));
+		this.shadowRoot.getElementById("formatUnderline").addEventListener("click", () => editor.formatUnderline());
+		this.shadowRoot.getElementById("formatStrikeThrough").addEventListener("click", () => editor.formatStrikeThrough());
 
-		this.shadowRoot.getElementById("font-size").addEventListener("change", e => editor.selection.updateStyle('font-size', e.target.value));
-		this.shadowRoot.getElementById("padding").addEventListener("change", e => editor.selection.updateStyle('padding', e.target.value));
-		this.shadowRoot.getElementById("margin").addEventListener("change", e => editor.selection.updateStyle('margin', e.target.value));
+		this.shadowRoot.getElementById("formatFontColor").addEventListener("change", e => editor.formatFontColor(e.target.value));
+		this.shadowRoot.getElementById("formatBackColor").addEventListener("change", e => editor.formatBackColor(e.target.value));
 
-		this.shadowRoot.getElementById("class")
-			.addEventListener("click", e =>
-			{
-				let selection = editor.selection;
-				GHierarchicalOptionPicker.pick(classes, "Selecione um estilo")
-					.then(value => value && selection.updateClass(value))
-			});
+		this.shadowRoot.getElementById("formatJustifyLeft").addEventListener("click", () => editor.formatJustifyLeft());
+		this.shadowRoot.getElementById("formatJustifyCenter").addEventListener("click", () => editor.formatJustifyCenter());
+		this.shadowRoot.getElementById("formatJustifyRight").addEventListener("click", () => editor.formatJustifyRight());
+		this.shadowRoot.getElementById("formatJustifyFull").addEventListener("click", () => editor.formatJustifyFull());
 
-		this.shadowRoot.getElementById("remove-format").addEventListener("click", () => editor.selection.clearStyles());
+		this.shadowRoot.getElementById("formatRemove").addEventListener("click", () => editor.formatRemove());
 
-		this.shadowRoot.getElementById("emoji").addEventListener("change", e => editor.selection.appendText(e.target.value));
-
-		this.shadowRoot.getElementById("text-align-center").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "center"));
-		this.shadowRoot.getElementById("text-align-left").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "left"));
-		this.shadowRoot.getElementById("text-align-right").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "right"));
-		this.shadowRoot.getElementById("text-align-justify").addEventListener("click", () => editor.selection.updateStyle("display", "block").updateStyle("text-align", "justify"));
-
-		this.shadowRoot.getElementById("insertUnorderedList").addEventListener("click", () => editor.insertUnorderedList());
-		this.shadowRoot.getElementById("insertOrderedList").addEventListener("click", () => editor.insertOrderedList());
-
-		this.shadowRoot.getElementById("createLink").addEventListener("click", () => editor.createLink());
-		this.shadowRoot.getElementById("unlink").addEventListener("click", () => editor.unlink());
+		this.shadowRoot.getElementById("undo").addEventListener("click", () => editor.undo());
+		this.shadowRoot.getElementById("redo").addEventListener("click", () => editor.redo());
 
 		this.shadowRoot.getElementById("attach").addEventListener("click", () => editor.attach());
 
+		this.shadowRoot.getElementById("class").addEventListener("click", e =>
+		{
+			let selection = editor.selection;
+			GMenuPicker.pick([
+				{label: "Título", value: "title"},
+				{label: "Subtítulo", value: "subtitle"},
+				{label: "Chamada", value: [
+						{label: "Sólida", value: [
+								{label: "Alerta", value: "callout warning fill"},
+								{label: "Informação", value: "callout fill"},
+								{label: "Perigo", value: "callout danger fill"},
+								{label: "Questionamento", value: "callout question fill"},
+								{label: "Sucesso", value: "callout success fill"}]},
+						{label: "Transparente", value: [
+								{label: "Alerta", value: "callout warning"},
+								{label: "Informação", value: "callout"},
+								{label: "Perigo", value: "callout danger"},
+								{label: "Questionamento", value: "callout question"},
+								{label: "Sucesso", value: "callout success"}]}]}],
+				"Selecione um estilo")
+				.then(value => value && selection.updateClass(value));
+		});
+		this.shadowRoot.getElementById("emoji").addEventListener("change", e => editor.selection.appendText(e.target.value));
+		this.shadowRoot.getElementById("link").addEventListener("click", e => editor.selection.link(prompt("Editar URL")));
 		Array.from(this.shadowRoot.querySelectorAll("select")).forEach(e => e.addEventListener("change", () => e.value = ""));
+		Array.from(this.shadowRoot.querySelectorAll("input[type='color']")).forEach(e => e.addEventListener("change", () => e.value = "#CCCCCC"));
 	}
 
 	separator()

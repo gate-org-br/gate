@@ -3,7 +3,7 @@ template.innerHTML = `
 	<main>
 		<header>
 			Selecione um período
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -45,26 +45,24 @@ export default class GDateTimeIntervalPicker extends GWindow
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let commit = this.shadowRoot.getElementById("commit");
 		let selector = this.shadowRoot.querySelector("g-date-time-interval-selector");
 
-		setTimeout(() =>
-		{
-			let dateTime = new Date();
-			selector.min = dateTime;
-			selector.max = dateTime;
-			commit.innerText = selector.selection;
-		}, 0);
+		let dateTime = new Date();
+		selector.min = dateTime;
+		selector.max = dateTime;
+		commit.innerText = selector.selection;
 
-		setTimeout(() => commit.innerText = selector.selection, 0);
 		selector.addEventListener("selected", () => commit.innerText = selector.selection);
 
-		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("picked", {detail: commit.innerText})) | this.hide());
+		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: commit.innerText})) | this.hide());
 	}
 
 	static pick()
@@ -75,7 +73,7 @@ export default class GDateTimeIntervalPicker extends GWindow
 		return new Promise(resolve =>
 		{
 			picker.addEventListener("cancel", () => resolve());
-			picker.addEventListener("picked", e => resolve(e.detail));
+			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
 

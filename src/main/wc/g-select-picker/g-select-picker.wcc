@@ -9,12 +9,13 @@ export default class GSelectPicker extends GWindow
 	constructor()
 	{
 		super();
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 	}
 
 	set caption(caption)
@@ -55,7 +56,7 @@ export default class GSelectPicker extends GWindow
 		return new Promise(resolve =>
 		{
 			picker.addEventListener("cancel", () => resolve());
-			picker.addEventListener("select", e => resolve(e.detail));
+			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
 };

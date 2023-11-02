@@ -1,9 +1,4 @@
 <template>
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/input.css'/>
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/fieldset.css'/>
-
 	<fieldset>
 		<label data-size="4">
 			Nome:
