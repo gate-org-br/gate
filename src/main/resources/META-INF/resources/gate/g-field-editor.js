@@ -1,10 +1,5 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/input.css'/>
-	<link rel='stylesheet'
-	      type='text/css' href='./gate/fieldset.css'/>
-
 	<fieldset>
 		<label data-size="4">
 			Nome:
@@ -99,6 +94,8 @@ fieldset {
 
 /* global customElements */
 
+import stylesheets from './stylesheets.js';
+
 customElements.define('g-field-editor', class extends HTMLElement
 {
 	constructor()
@@ -106,6 +103,7 @@ customElements.define('g-field-editor', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		stylesheets('input.css', 'fieldset.css').forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	set value(value)
