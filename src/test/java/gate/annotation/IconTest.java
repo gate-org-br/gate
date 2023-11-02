@@ -48,7 +48,7 @@ public class IconTest
 	}
 
 	@Test
-	@Icon("gate.util.IconsTest")
+	@Icon("gate.icon.IconsTest")
 	public void testRecursive()
 	{
 		assertEquals("2003", Icon.Extractor.extract("gate.annotation.IconTest").get().getCode());
