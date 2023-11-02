@@ -1,19 +1,23 @@
 let template = document.createElement("template");
-template.innerHTML = `
-	<slot>
-	</slot>
- <style>* {
+template.innerHTML = `<i><slot></slot></i> <style>* {
 	box-sizing: border-box;
 }
 
 :host(*)
 {
 	display: flex;
+	cursor: inherit;
+	font-size: inherit;
+	align-items: center;
+	justify-content: center;
+}
+
+i
+{
+	cursor: inherit;
 	font-family: gate;
 	font-size: inherit;
 	font-style: normal;
-	align-items: center;
-	justify-content: center;
 }</style>`;
 
 /* global customElements, template */
