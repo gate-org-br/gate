@@ -115,9 +115,21 @@
 
 	<br/>
 
-	<button tabindex='-1' id='attach' title='Anexar arquivo'>
-		<g-icon>&#X2079;</g-icon>
-	</button>
+	<select id="file">
+		<option value="" disabled selected hidden>Arquivo</option>
+		<option value="image">Imagem</option>
+		<option value="video">Vídeo</option>
+		<option value="audio">Áudio</option>
+		<option value="local">Selecionar</option>
+	</select>
+
+	<select id="emoji">
+		<option value="" disabled selected hidden>Emoji</option>
+		<option value="&#128578;">&#128578; Felicidade</option>
+		<option value="&#128550;">&#128550; Tristeza</option>
+		<option value="&#128552;">&#128552; Medo</option>
+		<option value="&#128544;">&#128544; Raiva</option>
+	</select>
 
 	<br/>
 	<button tabindex='-1' id='undo' title='Desfazer'>
@@ -134,11 +146,4 @@
 	<button tabindex='-1' id='link' title='Link'>
 		<g-icon>&#X2159;</g-icon>
 	</button>
-	<select id="emoji">
-		<option value="" disabled selected hidden>Emoji</option>
-		<option value="&#128578;">&#128578; Felicidade</option>
-		<option value="&#128550;">&#128550; Tristeza</option>
-		<option value="&#128552;">&#128552; Medo</option>
-		<option value="&#128544;">&#128544; Raiva</option>
-	</select>
 </template>

@@ -116,9 +116,21 @@ template.innerHTML = `
 
 	<br/>
 
-	<button tabindex='-1' id='attach' title='Anexar arquivo'>
-		<g-icon>&#X2079;</g-icon>
-	</button>
+	<select id="file">
+		<option value="" disabled selected hidden>Arquivo</option>
+		<option value="image">Imagem</option>
+		<option value="video">Vídeo</option>
+		<option value="audio">Áudio</option>
+		<option value="local">Selecionar</option>
+	</select>
+
+	<select id="emoji">
+		<option value="" disabled selected hidden>Emoji</option>
+		<option value="&#128578;">&#128578; Felicidade</option>
+		<option value="&#128550;">&#128550; Tristeza</option>
+		<option value="&#128552;">&#128552; Medo</option>
+		<option value="&#128544;">&#128544; Raiva</option>
+	</select>
 
 	<br/>
 	<button tabindex='-1' id='undo' title='Desfazer'>
@@ -135,13 +147,6 @@ template.innerHTML = `
 	<button tabindex='-1' id='link' title='Link'>
 		<g-icon>&#X2159;</g-icon>
 	</button>
-	<select id="emoji">
-		<option value="" disabled selected hidden>Emoji</option>
-		<option value="&#128578;">&#128578; Felicidade</option>
-		<option value="&#128550;">&#128550; Tristeza</option>
-		<option value="&#128552;">&#128552; Medo</option>
-		<option value="&#128544;">&#128544; Raiva</option>
-	</select>
  <style>* {
 	box-sizing: border-box;
 }
@@ -250,7 +255,30 @@ customElements.define('g-text-editor-toolbar', class extends HTMLElement
 		this.shadowRoot.getElementById("undo").addEventListener("click", () => editor.undo());
 		this.shadowRoot.getElementById("redo").addEventListener("click", () => editor.redo());
 
-		this.shadowRoot.getElementById("attach").addEventListener("click", () => editor.attach());
+		this.shadowRoot.getElementById("file").addEventListener("change", e =>
+		{
+			if (e.target.value === "local")
+			{
+				let blob = document.createElement("input");
+				blob.setAttribute("type", "file");
+
+				blob.addEventListener("change", () =>
+				{
+					let file = blob.files[0];
+					let reader = new FileReader();
+					reader.readAsDataURL(file);
+					reader.onloadend = () => editor.attach(file.type, file.name, reader.result);
+				});
+
+				blob.click();
+			} else
+			{
+				let url = prompt("Entre com a url");
+				if (url)
+					editor.attach(e.target.value, null, url);
+			}
+		});
+		this.shadowRoot.getElementById("emoji").addEventListener("change", e => editor.input(e.target.value));
 
 		this.shadowRoot.getElementById("class").addEventListener("click", e =>
 		{
@@ -274,7 +302,6 @@ customElements.define('g-text-editor-toolbar', class extends HTMLElement
 				"Selecione um estilo")
 				.then(value => value && selection.updateClass(value));
 		});
-		this.shadowRoot.getElementById("emoji").addEventListener("change", e => editor.selection.appendText(e.target.value));
 		this.shadowRoot.getElementById("link").addEventListener("click", e => editor.selection.link(prompt("Editar URL")));
 		Array.from(this.shadowRoot.querySelectorAll("select")).forEach(e => e.addEventListener("change", () => e.value = ""));
 		Array.from(this.shadowRoot.querySelectorAll("input[type='color']")).forEach(e => e.addEventListener("change", () => e.value = "#CCCCCC"));

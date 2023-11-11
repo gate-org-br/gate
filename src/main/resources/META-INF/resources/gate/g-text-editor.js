@@ -75,6 +75,8 @@ template.innerHTML = `
 
 import './g-text-editor-toolbar.js';
 
+const LINE_BREAK = '\n\u200B';
+
 customElements.define('g-text-editor', class extends HTMLElement
 {
 	constructor()
@@ -86,81 +88,69 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		const editor = this.shadowRoot.getElementById("editor");
 
-		this.addEventListener("focus", () => this.getSelection().collapse(editor));
+		editor.addEventListener('focusout', event => this._private.selection = this.getSelection());
+
+		editor.addEventListener('focusin', event =>
+		{
+			let selection = this.getSelection();
+			if (this._private.selection)
+				this.setSelection(this._private.selection);
+		});
 
 		editor.addEventListener('beforeinput', event =>
 		{
-			const selection = this.getSelection();
-			if (!selection || !selection.rangeCount)
-				return;
-
-			let range = selection.getRangeAt(0);
-			if (!this.editor.contains(range.commonAncestorContainer))
-				return;
-
 			event.preventDefault();
-			if (event.inputType === 'insertParagraph')
+			if (event.inputType === 'deleteContentForward')
 			{
-				this._private.undo.push(this.editor.innerHTML);
-
-				const textNode = document.createTextNode('\n\u200B');
-				range.insertNode(textNode);
-				range.setStartAfter(textNode);
-				range.setEndAfter(textNode);
-				selection.removeAllRanges();
-				selection.addRange(range);
-			} else if (event.inputType === 'insertText')
-			{
-				if (!this.editor.innerHTML || event.data === " ")
-					this._private.undo.push(this.editor.innerHTML);
-
-				const textNode = document.createTextNode(event.data);
-				range.insertNode(textNode);
-				range.setStart(textNode, event.data.length);
-				range.setEnd(textNode, event.data.length);
-				selection.removeAllRanges();
-				selection.addRange(range);
-				event.currentTarget.normalize();
-			} else if (event.inputType === 'deleteContentForward')
-			{
-				this._private.undo.push(this.editor.innerHTML);
-
+				this.mark();
+				let range = this.getSelection();
 				if (range.collapsed && range.endOffset < event.currentTarget.innerText.length)
 					range.setEnd(range.startContainer, range.endOffset + 1);
 				range.deleteContents();
 			} else if (event.inputType === 'deleteContentBackward')
 			{
-				this._private.undo.push(this.editor.innerHTML);
-
+				this.mark();
+				let range = this.getSelection();
 				if (range.collapsed && range.startOffset)
 					range.setStart(range.startContainer, range.startOffset - 1);
 				range.deleteContents();
-			}
+			} else if (event.inputType === 'insertParagraph')
+				this.input(LINE_BREAK);
+			else if (event.inputType === 'insertText')
+				this.input(event.data);
+
+		});
+
+		editor.addEventListener("paste", (event) =>
+		{
+			event.preventDefault();
+			this.input(event.clipboardData.getData("text/plain"));
 		});
 
 		editor.addEventListener('keydown', event =>
 		{
 			if (event.ctrlKey)
 			{
+				if (event.key === "y" || event.key === "Y")
+					this.redo();
+				else if (event.key === "z" || event.key === "Z")
+					this.undo();
+				else if (event.key === "c" || event.key === "C")
+					return;
+				else if (event.key === "v" || event.key === "V")
+					return;
+
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-				switch (event.key)
-				{
-					case "y":
-						this.redo();
-						break;
-					case "z":
-						this.undo();
-						break;
-				}
 			}
 
 		});
 
 		editor.addEventListener('keydown', event =>
 		{
-			if (event.target.tagName === "DIV" && event.target.parentNode === editor)
+			if (event.target.tagName === "DIV"
+				&& event.target.parentNode === editor)
 			{
 				event.preventDefault();
 				event.stopPropagation();
@@ -170,37 +160,42 @@ customElements.define('g-text-editor', class extends HTMLElement
 				switch (event.key)
 				{
 					case "Enter":
+						this.mark();
 						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
-							target.previousSibling.textContent += "\n";
+							target.previousSibling.textContent += LINE_BREAK;
 						else
-							target.parentNode.insertBefore(document.createTextNode("\n"), target);
+							target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target);
 						break;
 					case "Delete":
+						this.mark();
 						target.remove();
 						break;
 					case "Backspace":
 						let prev = target.previousSibling;
 						if (prev.tagName === "SPAN" && prev.lastChild)
 							prev = prev.lastChild;
-						if (prev && prev.nodeType === Node.TEXT_NODE && prev.textContent.endsWith("\n"))
-							prev.textContent = prev.textContent.slice(0, -1);
+						if (prev && prev.nodeType === Node.TEXT_NODE)
+							if (prev.textContent.endsWith(LINE_BREAK))
+								prev.textContent = prev.textContent.slice(0, -2);
+							else if (prev.textContent.endsWith("\n"))
+								prev.textContent = prev.textContent.slice(0, -1);
 						break;
 					case 'ArrowLeft':
 					case 'ArrowUp':
 						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
-							select(target.previousSibling);
+							this.setSelection(target.previousSibling);
 						else
-							select(target.parentNode.insertBefore(document.createTextNode("\u200B"), target));
+							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target));
 						break;
 
 					case 'ArrowRight':
 					case 'ArrowDown':
 						if (!target.nextSibling)
-							select(target.parentNode.appendChild(document.createTextNode("\u200B")));
+							this.setSelection(target.parentNode.appendChild(document.createTextNode(LINE_BREAK)));
 						else if (target.nextSibling.nodeType === Node.TEXT_NODE)
-							select(target.nextSibling);
+							this.setSelection(target.nextSibling);
 						else
-							select(target.parentNode.insertBefore(document.createTextNode("\u200B"), target.nextSibling));
+							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK, target.nextSibling)));
 						break;
 
 				}
@@ -209,17 +204,21 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 		editor.addEventListener('keydown', event =>
 		{
-			const selection = this.getSelection();
-			if (!selection || !selection.rangeCount)
-				return;
-
-			let range = selection.getRangeAt(0);
-			if (!this.editor.contains(range.commonAncestorContainer))
-				return;
-
+			let range = this.getSelection();
 			let content = range.commonAncestorContainer;
 			switch (event.key)
 			{
+				case "Tab":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (content === editor
+						|| content.tagName === "A"
+						|| content.tagName === "SPAN"
+						|| content.nodeType === Node.TEXT_NODE)
+						this.input("\t");
+					break;
 				case 'ArrowUp':
 				case 'ArrowLeft':
 					if (content.nodeType === Node.TEXT_NODE)
@@ -231,7 +230,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 						if (content.previousSibling && content.previousSibling.nodeType === Node.TEXT_NODE)
 							text = content.previousSibling;
 						else
-							text = content.parentNode.insertBefore(document.createTextNode("\u200B"), content);
+							text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content);
 						range.setStart(text, 0);
 						range.setEnd(text, 0);
 					}
@@ -247,42 +246,25 @@ customElements.define('g-text-editor', class extends HTMLElement
 						if (!content.firstChild || content.firstChild.textContent.length === range.endOffset)
 						{
 							if (!content.nextSibling)
-								text = content.parentNode.appendChild(document.createTextNode("\u200B"));
+								text = content.parentNode.appendChild(document.createTextNode(LINE_BREAK));
 							else if (content.nextSibling.nodeType === Node.TEXT_NODE)
 								text = content.nextSibling;
 							else
-								text = content.parentNode.insertBefore(document.createTextNode("\u200B"), content.nextSibling);
+								text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content.nextSibling);
 						}
 
 						range.setStart(text, 0);
 						range.setEnd(text, 0);
 					}
 					break;
-				case "Tab":
-					event.preventDefault();
-					event.stopPropagation();
-					event.stopImmediatePropagation();
 
-					if (content === editor
-						|| content.tagName === "A"
-						|| content.tagName === "SPAN"
-						|| content.nodeType === Node.TEXT_NODE)
-					{
-						this._private.undo.push(this.editor.innerHTML);
-
-						range.insertNode(document.createTextNode("\t"));
-						range.collapse();
-						selection.removeAllRanges();
-						selection.addRange(range);
-					}
-					break;
 			}
 		});
 	}
 
 	formatBold()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		let selection = this.getSelectedNodes();
 		if (selection.every(e => e.style.fontWeight === "700"))
 			selection.forEach(e => e.style.fontWeight = "400");
@@ -293,7 +275,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatItalic()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		let selection = this.getSelectedNodes();
 		if (selection.every(e => e.style.fontStyle === "italic"))
 			selection.forEach(e => e.style.fontStyle = "normal");
@@ -304,7 +286,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatUnderline()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		let selection = this.getSelectedNodes();
 		if (selection.every(e => e.style.textDecoration === "underline"))
 			selection.forEach(e => e.style.textDecoration = "");
@@ -315,7 +297,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatStrikeThrough()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		let selection = this.getSelectedNodes();
 		if (selection.every(e => e.style.textDecoration === "line-through"))
 			selection.forEach(e => e.style.textDecoration = "");
@@ -326,24 +308,24 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatFontColor(value)
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e => e.style.color = value);
 		this.compact();
 	}
 
 	formatBackColor(value)
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e => e.style.backgroundColor = value);
 		this.compact();
 	}
 
 	formatJustifyLeft()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e =>
 		{
-			e.style.display = "block";
+			e.style.display = "inline-block";
 			e.style.textAlign = "left";
 		});
 		this.compact();
@@ -351,10 +333,10 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatJustifyCenter()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e =>
 		{
-			e.style.display = "block";
+			e.style.display = "inline-block";
 			e.style.textAlign = "center";
 		});
 		this.compact();
@@ -362,10 +344,10 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatJustifyRight()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e =>
 		{
-			e.style.display = "block";
+			e.style.display = "inline-block";
 			e.style.textAlign = "right";
 		});
 		this.compact();
@@ -373,10 +355,10 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatJustifyFull()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e =>
 		{
-			e.style.display = "block";
+			e.style.display = "inline-block";
 			e.style.textAlign = "justify";
 		});
 		this.compact();
@@ -384,14 +366,14 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatRemove()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e => e.style = "");
 		this.compact();
 	}
 
 	formatFontSize(value)
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e => e.style.fontSize = value);
 		this.compact();
 
@@ -399,59 +381,66 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	formatFontName(value)
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.mark();
 		this.getSelectedNodes().forEach(e => e.style.fontFamily = value);
 		this.compact();
 	}
 
-	attach()
+	input(text)
 	{
-		const selection = this.getSelection();
-		if (!selection || !selection.rangeCount)
-			return;
+		if (!this.editor.innerHTML
+			|| text.length > 1
+			|| text === " "
+			|| text === "\t"
+			|| text === "\n")
+			this.mark();
 
-		let range = selection.getRangeAt(0);
-		if (!this.editor.contains(range.commonAncestorContainer))
-			return;
+		let range = this.getSelection();
+		const textNode = document.createTextNode(text);
+		range.insertNode(textNode);
+		range.setStart(textNode, text.length);
+		range.setEnd(textNode, text.length);
+		this.setSelection(range);
+		this.editor.normalize();
+	}
 
-		this._private.undo.push(this.editor.innerHTML);
+	attach(type, name, url)
+	{
+		this.mark();
 
-		let blob = document.createElement("input");
-		blob.setAttribute("type", "file");
+		let range = this.getSelection();
 
-		blob.addEventListener("change", () =>
+		let html = null;
+		if (type.startsWith("image"))
+			html = `<div tabindex='1' contenteditable='false'><img src="${url}"/></div>`;
+		else if (type.startsWith("video"))
+			html = `<div tabindex='1' contenteditable='false'><video src="${url}" controls/></div>`;
+		else if (type.startsWith("audio"))
+			html = `<div tabindex='1' contenteditable='false'><audio src="${url}" controls/></div>`;
+		else
+			html = `<a href="${reader.result}" download="${file.name}">${file.name}</a>`;
+
+		let element = range.createContextualFragment(html).childNodes[0];
+
+		range.insertNode(element);
+		if (element.parentNode !== this.editor)
 		{
-			let file = blob.files[0];
-			let reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.onloadend = () =>
+			element.parentNode.normalize();
+			if (element.previousSibling)
 			{
-				this.shadowRoot.getElementById("editor").focus();
-				switch (file.type)
-				{
-					case "image/jpeg":
-					case "image/png":
-					case "image/svg+xml":
-						range.insertNode(range.createContextualFragment(`<div tabindex='1' contenteditable='false'><img src="${reader.result}"/></div>`));
-						break;
-					case "video/mp4":
-					case "video/webm":
-					case "video/ogg":
-						range.insertNode(range.createContextualFragment(`<div tabindex='1' contenteditable='false'><video src="${reader.result}" controls/></div>`));
-						break;
-					case "audio/mp3":
-					case "audio/ogg":
-					case "audio/wav":
-						range.insertNode(range.createContextualFragment(`<div tabindex='1' contenteditable='false'><audio src="${reader.result}" controls/></div>`));
-						break;
-					default:
-						range.insertNode(range.createContextualFragment(`<a href="${reader.result}" download="${file.name}">${file.name}</a>`));
-						break;
-				}
-			};
-		});
+				let span = element.parentNode.cloneNode(false);
+				span.appendChild(element.previousSibling);
+				this.editor.insertBefore(span, element.parentNode);
+			}
+			this.editor.insertBefore(element, element.parentNode);
+		}
 
-		blob.click();
+		this.compact();
+	}
+
+	mark()
+	{
+		this._private.undo.push(this.editor.innerHTML);
 	}
 
 	undo()
@@ -469,7 +458,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 		let value = this._private.redo.pop();
 		if (value !== undefined)
 		{
-			this._private.undo.push(this.editor.innerHTML);
+			this.mark();
 			this.editor.innerHTML = value;
 		}
 	}
@@ -511,23 +500,45 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	getSelection()
 	{
-		this.editor.focus();
-		this.editor.normalize();
-		return this.shadowRoot.getSelection
+		let selection = this.shadowRoot.getSelection
 			? this.shadowRoot.getSelection()
 			: window.getSelection();
+
+		if (selection
+			&& selection.rangeCount
+			&& this.editor.contains(selection.getRangeAt(0).commonAncestorContainer))
+			return selection.getRangeAt(0);
+
+		let range = document.createRange();
+		range.setStart(this.editor, 0);
+		range.setEnd(this.editor, 0);
+		return range;
+	}
+
+	setSelection(range)
+	{
+		let selection = this.shadowRoot.getSelection
+			? this.shadowRoot.getSelection()
+			: window.getSelection();
+
+		if (range.nodeType === Node.TEXT_NODE)
+		{
+			let element = range;
+			range = document.createRange();
+			range.setStart(element, 0);
+			range.setEnd(element, 0);
+		}
+
+		selection.removeAllRanges();
+		selection.addRange(range);
 	}
 
 	getSelectedNodes()
 	{
-		const selection = this.getSelection();
-		if (!selection || !selection.rangeCount)
-			return [];
+		this.editor.focus();
+		this.editor.normalize();
 
-		let range = selection.getRangeAt(0);
-		if (!this.editor.contains(range.commonAncestorContainer))
-			return [];
-
+		let range = this.getSelection();
 		let fragment = range.extractContents();
 		let textNodes = Array.from(fragment.childNodes)
 			.filter(e => e.nodeType === Node.TEXT_NODE || e.tagName === "SPAN" || e.tagName === "A")
