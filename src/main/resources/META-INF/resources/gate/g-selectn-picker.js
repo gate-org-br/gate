@@ -10,7 +10,7 @@ template.innerHTML = `
 			</a>
 		</header>
 		<section part='section'>
-			<g-selectn part='selector'>
+			<g-selectn id='select' part='selector'>
 			</g-selectn>
 		</section>
 		<footer part='footer'>
@@ -59,18 +59,17 @@ export default class GSelectNPicker extends GWindow
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
-		this.shadowRoot.getElementById("cancel").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
 
-		this.shadowRoot.getElementById("commit").addEventListener("click", () =>
-		{
-			let values = this.shadowRoot.querySelector("g-selectn").value;
-			this.dispatchEvent(new CustomEvent("commit", {"detail": values}));
-			this.hide();
-		});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+
+		let commit = this.shadowRoot.getElementById("commit");
+		let select = this.shadowRoot.getElementById("select");
+
+		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {"detail": select.value})));
 	}
 
 	set caption(caption)
@@ -123,10 +122,10 @@ export default class GSelectNPicker extends GWindow
 			picker.caption = caption;
 		picker.show();
 
-		return new Promise(resolve =>
+		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => resolve());
 			picker.addEventListener("commit", e => resolve(e.detail));
+			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 		});
 	}
 };

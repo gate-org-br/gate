@@ -9,7 +9,7 @@
 			</a>
 		</header>
 		<section part='section'>
-			<g-selectn part='selector'>
+			<g-selectn id='select' part='selector'>
 			</g-selectn>
 		</section>
 		<footer part='footer'>

@@ -11,7 +11,7 @@ customElements.define('g-month-selector', class extends HTMLElement
 		super();
 		let date = new Date();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = template.innerHTML;
 
 		let m = this.shadowRoot.getElementById("m");
 		m.value = date.getMonth();

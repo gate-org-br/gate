@@ -21,49 +21,49 @@
 			<label data-size="4">
 				Time:
 				<span>
-					<input class='Time' />
+					<input class='Time' data-mask="##:##"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Date Time:
 				<span>
-					<input class='DateTime' />
+					<input class='DateTime' data-mask="##/##/#### ##:##"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Month:
 				<span>
-					<input class='Month' />
+					<input class='Month' data-mask="##/####"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Date Interval:
 				<span>
-					<input class='DateInterval' />
+					<input class='DateInterval' data-mask="##/##/#### - ##/##/####"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Time Interval:
 				<span>
-					<input class='TimeInterval' />
+					<input class='TimeInterval' data-mask="##:## - ##:##"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Date Time Interval:
 				<span>
-					<input class='DateTimeInterval' />
+					<input class='DateTimeInterval' data-mask="##/##/#### ##:## - ##/##/#### ##:##"/>
 				</span>
 			</label>
 			<label data-size="4">
 				Month Interval:
 				<span>
-					<input class='MonthInterval' />
+					<input class='MonthInterval' data-mask="##/#### - ##/####"/>
 				</span>
 			</label>
 			<label>
 				Icon:
 				<span>
-					<input class='Icon' />
+					<input class='Icon' data-mask="####"/>
 				</span>
 			</label>
 		</fieldset>
@@ -132,7 +132,9 @@
 		document.getElementById("warning").addEventListener("click", () => GMessageDialog.warning("Mensagem de alerta"));
 		document.getElementById("info").addEventListener("click", () => GMessageDialog.info("Mensagem de informação"));
 
-		document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Select N"));
+		document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Select N")
+				.then(e => GMessageDialog.success(JSON.stringify(e)))
+				.catch(e => GMessageDialog.error(e.message, 1000)));
 
 		document.getElementById("select1").addEventListener("click", () => GSelectPicker.pick(options, "Select 1")
 				.then(e => GMessageDialog.success(JSON.stringify(e)))

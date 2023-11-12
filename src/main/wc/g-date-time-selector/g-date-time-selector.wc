@@ -2,5 +2,5 @@
 	<g-date-selector id='date'>
 	</g-date-selector>
 	<g-time-selector id='time'>
-	</g-date-selector>
+	</g-time-selector>
 </template>

@@ -3,7 +3,7 @@ template.innerHTML = `
 	<main>
 		<header>
 			Selecione um ícone
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -41,12 +41,15 @@ export default class GIconPicker extends GWindow
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		let selector = this.shadowRoot.querySelector("g-icon-selector");
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent("picked", {detail: e.detail.icon})) | this.hide());
+		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
+
+		let selector = this.shadowRoot.querySelector("g-icon-selector");
+		selector.addEventListener("selected", e => this.dispatchEvent(new CustomEvent("commit", {detail: e.detail.icon})));
 	}
 
 	static pick()
@@ -57,7 +60,7 @@ export default class GIconPicker extends GWindow
 		return new Promise((resolve, reject) =>
 		{
 			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
-			picker.addEventListener("picked", e => resolve(e.detail));
+			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
 
