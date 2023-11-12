@@ -101,6 +101,9 @@
 				 style="height: 24px; width: 24px"/>
 		</a>
 
+		<a href="#" id='form'>
+			Form<g-icon>&#X2044;</g-icon>
+		</a>
 	</g-coolbar>
 
 	<script type="module">
@@ -109,6 +112,7 @@
 		import GSelectNPicker from './META-INF/resources/gate/g-selectn-picker.js';
 		import GSearchPicker from './META-INF/resources/gate/g-search-picker.js';
 		import GFilePicker from './META-INF/resources/gate/g-file-picker.js';
+		import GFormDialog from './META-INF/resources/gate/g-form-dialog.js';
 
 		let options = [
 			{"label": "Label 1", "value": "Value 1"},
@@ -139,7 +143,20 @@
 		document.getElementById("image").addEventListener("click", () => GFilePicker.pick("image/*")
 				.then(result => result.dataURL())
 				.then(result => document.getElementById("image").lastElementChild.src = result)
-				.catch(() => console.log("cancelled"))
+				.catch(e => GMessageDialog.error(e.message, 1000))
+				.finally(() => console.log("finish")));
+
+		document.getElementById("form").addEventListener("click", () => GFormDialog
+				.pick(["Field 0",
+					{name: "Field 1", required: true, columns: 8},
+					{name: "Field 2", columns: 8, maxlength: 4},
+					{name: "Field 3", columns: 8, mask: "##/##/####"},
+					{name: "Field 4", columns: 8, options: ["Option 1", "Option 2", "Option 3"]},
+					{name: "Field 5", options: ["Option 1", "Option 2", "Option 3"], multiple: true, columns: 8},
+					{name: "Field 6", multiple: true, columns: 8}],
+					{caption: "Form", width: "min(600px, 100%)"})
+				.then(e => GMessageDialog.success(JSON.stringify(e)))
+				.catch(e => GMessageDialog.error(e.message, 1000))
 				.finally(() => console.log("finish")));
 	</script>
 </body>
