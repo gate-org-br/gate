@@ -5,7 +5,7 @@ template.innerHTML = `
 			<label id='caption'>
 				Selecione um ítem
 			</label>
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -49,14 +49,16 @@ export default class GSearchPicker extends GWindow
 	constructor()
 	{
 		super();
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+
 		let prev = "";
 		let result = null;
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("close").addEventListener("click",
-			() => this.dispatchEvent(new CustomEvent("cancel")) | this.hide());
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("select", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () =>
@@ -175,7 +177,7 @@ export default class GSearchPicker extends GWindow
 			let promise = new Promise(resolve =>
 			{
 				picker.addEventListener("cancel", () => reject(new Error("Cancel")));
-				picker.addEventListener("select", e => resolve(e.detail));
+				picker.addEventListener("commit", e => resolve(e.detail));
 				picker.addEventListener("update", e =>
 				{
 					if (e.detail && e.detail.length === 1)
@@ -191,7 +193,7 @@ export default class GSearchPicker extends GWindow
 			return new Promise((resolve, reject) =>
 			{
 				picker.addEventListener("cancel", () => reject(new Error("Cancel")));
-				picker.addEventListener("select", e => resolve(e.detail));
+				picker.addEventListener("commit", e => resolve(e.detail));
 			});
 	}
 };

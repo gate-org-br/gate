@@ -66,9 +66,8 @@ export default class GFormDialog extends GWindow
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let form = this.shadowRoot.querySelector("g-form");
-		this.shadowRoot.getElementById("commit")
-			.addEventListener("click", () => form.reportValidity()
-					&& this.dispatchEvent(new CustomEvent("commit", {detail: form.value})));
+		let commit = this.shadowRoot.getElementById("commit");
+		commit.addEventListener("click", () => form.reportValidity() && this.dispatchEvent(new CustomEvent("commit", {detail: form.value})));
 	}
 
 	set caption(caption)
