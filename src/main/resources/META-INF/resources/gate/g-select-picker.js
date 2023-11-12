@@ -46,7 +46,7 @@ export default class GSelectPicker extends GWindow
 		super();
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
@@ -65,7 +65,7 @@ export default class GSelectPicker extends GWindow
 
 	set options(options)
 	{
-		setTimeout(() => this.shadowRoot.querySelector("g-grid").dataset = options, 0);
+		this.shadowRoot.querySelector("g-grid").dataset = options;
 	}
 
 	static pick(options, caption)
