@@ -138,7 +138,9 @@
 				.then(e => GMessageDialog.success(JSON.stringify(e)))
 				.catch(e => GMessageDialog.error(e.message, 1000)));
 
-		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://dummyjson.com/products", "Search"));
+		document.getElementById("search").addEventListener("click", () => GSearchPicker.pick("https://gateapi.free.beeceptor.com/", "Search")
+				.then(e => GMessageDialog.success(JSON.stringify(e)))
+				.catch(e => GMessageDialog.error(e.message, 1000)));
 
 		document.getElementById("image").addEventListener("click", () => GFilePicker.pick("image/*")
 				.then(result => result.dataURL())
