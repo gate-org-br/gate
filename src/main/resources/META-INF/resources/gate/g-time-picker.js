@@ -64,9 +64,9 @@ export default class GTimePicker extends GWindow
 		let picker = window.top.document.createElement("g-time-picker");
 		picker.show();
 
-		return new Promise(resolve =>
+		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 			picker.addEventListener("picked", e => resolve(e.detail));
 		});
 	}
@@ -76,7 +76,11 @@ export default class GTimePicker extends GWindow
 		let link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
 		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-		link.appendChild(document.createElement("g-icon")).innerHTML = "&#x2003;";
+		let icon = link.appendChild(document.createElement("g-icon"));
+
+		icon.innerHTML = input.value ? "&#x1001;" : "&#x2167;";
+		input.addEventListener("input", () => icon.innerHTML = input.value ? "&#x1001;" : "&#x2167;");
+		input.addEventListener("change", () => icon.innerHTML = input.value ? "&#x1001;" : "&#x2167;");
 
 		link.addEventListener("click", function (event)
 		{
@@ -89,12 +93,9 @@ export default class GTimePicker extends GWindow
 			} else
 				GTimePicker.pick().then(value =>
 				{
-					if (value)
-					{
-						input.value = value;
-						input.dispatchEvent(new Event('change', {bubbles: true}));
-					}
-				});
+					input.value = value;
+					input.dispatchEvent(new Event('change', {bubbles: true}));
+				}).catch(() => undefined);
 
 
 			link.focus();

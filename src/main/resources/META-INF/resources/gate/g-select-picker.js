@@ -87,9 +87,9 @@ export default class GSelectPicker extends GWindow
 			picker.caption = caption;
 		picker.show();
 
-		return new Promise(resolve =>
+		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => resolve());
+			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 			picker.addEventListener("select", e => resolve(e.detail));
 		});
 	}

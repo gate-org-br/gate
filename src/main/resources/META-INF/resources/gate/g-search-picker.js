@@ -174,7 +174,7 @@ export default class GSearchPicker extends GWindow
 		{
 			let promise = new Promise(resolve =>
 			{
-				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 				picker.addEventListener("select", e => resolve(e.detail));
 				picker.addEventListener("update", e =>
 				{
@@ -188,9 +188,9 @@ export default class GSearchPicker extends GWindow
 			picker.text = text;
 			return promise;
 		} else
-			return  new Promise(resolve =>
+			return new Promise((resolve, reject) =>
 			{
-				picker.addEventListener("cancel", () => resolve());
+				picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 				picker.addEventListener("select", e => resolve(e.detail));
 			});
 	}
