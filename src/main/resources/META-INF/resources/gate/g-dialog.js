@@ -80,6 +80,9 @@ dialog {
 iframe {
 	width: 100%;
 	overflow:  hidden;
+}
+
+iframe[name] {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-position-y: center;
@@ -90,6 +93,7 @@ iframe {
 
 import './g-navbar.js';
 import CSV from './csv.js';
+import hide from './hide.js';
 import './g-dialog-commands.js';
 import resolve from './resolve.js';
 import GWindow from './g-window.js';
@@ -110,6 +114,7 @@ export default class GDialog extends GWindow
 		let minimize = this.shadowRoot.getElementById("minimize");
 		let hide = this.shadowRoot.getElementById("hide");
 		let iframe = this.shadowRoot.querySelector("iframe");
+		iframe.name = "_dialog";
 		let navbar = this.shadowRoot.querySelector("g-navbar");
 		navbar.style.display = "none";
 		main.addEventListener("click", e => e.stopPropagation());
@@ -136,11 +141,12 @@ export default class GDialog extends GWindow
 		});
 		iframe.dialog = this;
 		iframe.onmouseenter = () => iframe.focus();
-		iframe.addEventListener("load", () => iframe.backgroundImage = "none");
+
+		iframe.addEventListener("load", () => iframe.removeAttribute("name"));
+
 		navbar.addEventListener("update", event =>
 		{
 			let iframe = this.shadowRoot.querySelector("iframe");
-			iframe.backgroundImage = "";
 			iframe.contentWindow.document.open();
 			iframe.contentWindow.document.write("");
 			iframe.contentWindow.document.close();
@@ -315,6 +321,7 @@ window.addEventListener("keydown", function (event)
 	if (event.keyCode === 13)
 		action.click();
 });
+
 window.addEventListener("change", function (event)
 {
 	event = event || window.event;
@@ -339,20 +346,27 @@ window.addEventListener("change", function (event)
 			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
 	}
 });
-window.addEventListener("click", function (event)
+
+
+window.addEventListener("trigger", function (event)
 {
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("a.Hide");
-	if (action)
+	if (event.detail.type === "_dialog")
 	{
-		event.preventDefault();
-		event.stopPropagation();
-		if (window.frameElement
-			&& window.frameElement.dialog
-			&& window.frameElement.dialog.hide)
-			window.frameElement.dialog.hide();
-		else
-			window.close();
+		let target = event.detail.target;
+		let dialog = window.top.document.createElement("g-dialog");
+		dialog.navigator = target.navigator;
+		dialog.caption = target.getAttribute("title");
+		dialog.blocked = Boolean(target.getAttribute("data-blocked"));
+		if (event.detail.parameters[0])
+			dialog.size = event.detail.parameters[0];
+		dialog.addEventListener("show", () => target.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
+		dialog.addEventListener("hide", () => target.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
+		if (target.getAttribute("data-on-hide"))
+			dialog.addEventListener("hide", () => hide(target));
+
+		dialog.iframe.name = target.target
+			|| target.submitter.getAttribute("formtarget");
+		dialog.show();
 	}
 });
+

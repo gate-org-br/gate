@@ -1,0 +1,37 @@
+dialog {
+	min-width: 100vw;
+	min-height: 100vh;
+	border-radius: 0;
+}
+
+@media only screen and (min-width: 640px)
+{
+	dialog{
+		min-width: unset;
+		min-height: unset;
+		border-radius: 3px;
+		width: calc(100% - 80px);
+		height: calc(100% - 80px);
+	}
+}
+
+dialog > section {
+	padding: 0;
+	align-items: stretch;
+}
+
+iframe {
+	margin: 0;
+	width: 100%;
+	border: none;
+	padding: 0px;
+	flex-grow: 1;
+	overflow: hidden
+}
+
+iframe[name] {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
+}

@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			<label id='caption'>
 				Selecione um ítem
@@ -12,25 +12,30 @@ template.innerHTML = `
 			</a>
 		</header>
 		<section>
-			<g-grid filter>
+			<input type="TEXT" placeholder="Pesquisar"/>
+			<g-grid>
 				Nenhum registro encontrado
 			</g-grid>
 		</section>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
 	min-width: 320px;
 	max-width: 800px;
+	height: fit-content;
 	width: calc(100% - 40px);
 }
 
-section {
-	overflow: auto;
-	flex-basis: 400px;
-}
-
-g-grid {
-	flex-grow: 1;
+dialog > section
+{
+	gap: 4px;
+	padding: 4px;
+	display: grid;
+	align-items: stretch;
+	justify-items:stretch;
+	align-content: stretch;
+	justify-content: stretch;
+	grid-template-rows: 40px 400px;
 }</style>`;
 
 /* global customElements, template, fetch */
@@ -38,12 +43,17 @@ g-grid {
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
+import Extractor from './extractor.js';
+import ObjectFilter from './object-filter.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
 export default class GSelectPicker extends GWindow
 {
 	constructor()
 	{
 		super();
+		this._private = {};
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
@@ -51,6 +61,10 @@ export default class GSelectPicker extends GWindow
 
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
+
+
+		let input = this.shadowRoot.querySelector("input");
+		input.addEventListener("input", () => grid.dataset = ObjectFilter.filter(this.options, input.value));
 	}
 
 	set caption(caption)
@@ -63,8 +77,14 @@ export default class GSelectPicker extends GWindow
 		return this.shadowRoot.getElementById("caption").innerHTML;
 	}
 
+	get options()
+	{
+		return this._private.options || [];
+	}
+
 	set options(options)
 	{
+		this._private.options = options;
 		this.shadowRoot.querySelector("g-grid").dataset = options;
 	}
 
@@ -95,5 +115,45 @@ export default class GSelectPicker extends GWindow
 		});
 	}
 };
+
+window.addEventListener("click", function (event)
+{
+	if (event.button !== 0)
+		return;
+
+	let link = event.target.closest("a[target='@select']");
+	if (!link && event.composed)
+		link = event.composedPath()[0].closest("a[target='@select']");
+
+	if (link)
+	{
+		event.preventDefault();
+		event.stopPropagation();
+
+		let label = link.parentNode.querySelector("input[type=text]");
+		if (!label)
+			throw new Error("Label input not found");
+
+		let value = link.parentNode.querySelector("input[type=hidden]");
+		if (!value)
+			throw new Error("Value input not found");
+
+		if (label.value || value.value)
+			return label.value = value.value = '';
+
+		link.style.pointerEvents = "none";
+		fetch(link.href)
+			.then(options => ResponseHandler.json(options))
+			.catch(error => GMessageDialog.error(error.message))
+			.then(options => GSelectPicker.pick(options, link.title))
+			.then(object =>
+			{
+				label.value = Extractor.label(object.value);
+				value.value = Extractor.value(object.value);
+			})
+			.catch(() => undefined)
+			.finally(() => link.style.pointerEvents = "");
+	}
+});
 
 customElements.define('g-select-picker', GSelectPicker);

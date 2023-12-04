@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 		</header>
 		<section>
@@ -10,5 +10,5 @@
 			<g-digital-clock>
 			</g-digital-clock>
 		</footer>
-	</main>
+	</dialog>
 </template>

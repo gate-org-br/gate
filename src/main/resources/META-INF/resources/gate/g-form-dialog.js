@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			<label id='caption'></label>
 			<a id='close' href="#">
@@ -24,17 +24,17 @@ template.innerHTML = `
 				</button>
 			</g-coolbar>
 		</footer>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
 	width: 100%;
-	height: auto;
 	max-height: 100%;
+	height: fit-content;
 }
 
 @media only screen and (min-width: 640px)
 {
-	main {
+	dialog {
 		border-radius: 3px;
 		width: calc(100% - 80px);
 		max-height: calc(100% - 80px);
@@ -60,8 +60,6 @@ export default class GFormDialog extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
@@ -92,12 +90,12 @@ export default class GFormDialog extends GWindow
 
 	set width(value)
 	{
-		this.shadowRoot.querySelector("main").style.width = value;
+		this.shadowRoot.querySelector("dialog").style.width = value;
 	}
 
 	set height(value)
 	{
-		this.shadowRoot.querySelector("main").style.height = value;
+		this.shadowRoot.querySelector("dialog").style.height = value;
 	}
 
 	static pick(value, options)

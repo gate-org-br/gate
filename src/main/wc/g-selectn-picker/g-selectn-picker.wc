@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header part='header'>
 			<label>
 				Selecione
@@ -29,5 +29,5 @@
 				</button>
 			</g-coolbar>
 		</footer>
-	</main>
+	</dialog>
 </template>

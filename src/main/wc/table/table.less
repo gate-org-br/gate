@@ -96,15 +96,11 @@ table {
 		background-color: var(--base6);
 	}
 
-	> tbody {
-		> tr:nth-child(even),> tr.even {
-			background-color: var(--main2);
+	> tbody	> tr
+	{
+		outline: none;
 
-			> * {
-				border-color: var(--main1);
-			}
-		}
-		> tr:nth-child(odd), > tr.odd {
+		&.odd, &:nth-child(odd) {
 			background-color: var(--main1);
 
 			> * {
@@ -112,14 +108,31 @@ table {
 			}
 		}
 
-		> tr[data-action], > tr[data-value], > tr[data-ret]
+		&.even, &:nth-child(even) {
+			background-color: var(--main2);
+
+			> * {
+				border-color: var(--main1);
+			}
+		}
+
+		&[tabindex]
 		{
+			cursor: pointer;
+			&:focus {
+				background-color: var(--hovered);
+			}
+		}
+
+		&:not([tabindex])[data-action]
+			{
 			cursor: pointer;
 			&:hover {
 				background-color: var(--hovered);
 			}
 		}
 	}
+
 
 	> tfoot > tr > *
 	{

@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			<label id='caption'></label>
 			<a id='close' href="#">
@@ -23,5 +23,5 @@
 				</button>
 			</g-coolbar>
 		</footer>
-	</main>
+	</dialog>
 </template>

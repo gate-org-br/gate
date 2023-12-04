@@ -1,7 +1,7 @@
 a {
   text-decoration: none;
 }
-a[target='_popup'] > div {
+a[target="@popup"] > div {
   display: none;
 }
 [data-popup]:not(:only-child) {

@@ -15,12 +15,14 @@ export default class GModal extends HTMLElement
 
 	show()
 	{
-
 		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
 		{
 			Scroll.disable(window.top.document.documentElement);
-
 			window.top.document.documentElement.appendChild(this);
+
+			let dialog = this.shadowRoot.querySelector("dialog");
+			if (dialog)
+				dialog.showModal();
 
 			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
@@ -35,6 +37,9 @@ export default class GModal extends HTMLElement
 			&& this.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
 		{
 			Scroll.enable(window.top.document.documentElement);
+			let dialog = this.shadowRoot.querySelector("dialog");
+			if (dialog)
+				this.shadowRoot.querySelector("dialog").close();
 			this.parentNode.removeChild(this);
 		}
 

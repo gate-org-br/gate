@@ -12,8 +12,6 @@ export default class GMonthIntervalPicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let commit = this.shadowRoot.getElementById("commit");

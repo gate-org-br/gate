@@ -1,13 +1,9 @@
-main
+dialog
 {
+	height: 600px;
 	min-width: 320px;
 	max-width: 600px;
 	width: calc(100% - 40px);
-}
-
-section {
-	overflow: auto;
-	flex-basis: 600px;
 }
 
 g-icon-selector {

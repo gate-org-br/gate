@@ -1,11 +1,12 @@
-main
+dialog
 {
 	min-width: 320px;
-	max-width: 600px;
+	max-width: 800px;
+	height: fit-content;
 	width: calc(100% - 40px);
 }
 
-main > section
+dialog > section
 {
 	gap: 4px;
 	padding: 4px;

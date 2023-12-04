@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			Selecione uma data
 			<a id='cancel' href="#">
@@ -12,5 +12,5 @@
 			<g-date-selector>
 			</g-date-selector>
 		</section>
-	</main>
+	</dialog>
 </template>

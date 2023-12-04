@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header part='header'>
 			<label>
 				Selecione
@@ -30,11 +30,12 @@ template.innerHTML = `
 				</button>
 			</g-coolbar>
 		</footer>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
 	min-width: 320px;
-	max-width: 600px;
+	max-width: 800px;
+	height: fit-content;
 	width: calc(100% - 40px);
 }
 

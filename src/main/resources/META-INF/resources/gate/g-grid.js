@@ -1,8 +1,5 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<nav>
-		<input id="input" type="text" placeholder="Filtrar"/>
-	</nav>
 	<div>
 		<main>
 			<label></label>
@@ -11,9 +8,9 @@ template.innerHTML = `
 			<footer><g-grid-footer></g-grid-footer></footer>
 		</main>
 	</div>
-	<aside>
+	<g-callout class='fill'>
 		<slot></slot>
-	</aside>
+	</g-callout>
  <style>* {
 	box-sizing: border-box;
 }
@@ -23,19 +20,6 @@ template.innerHTML = `
 	gap: 4px;
 	display: flex;
 	flex-direction: column;
-}
-
-nav {
-	height: 32px;
-	display: none;
-	min-height: 32px;
-	align-items: stretch;
-	justify-content: stretch;
-}
-
-:host([filter]) nav
-{
-	display: flex;
 }
 
 input {
@@ -88,26 +72,15 @@ section
 	display: table-row-group;
 }
 
-aside {
-	padding: 12px;
-	display: flex;
-	font-size: 20px;
-	border-radius: 5px;
-	align-items: center;
-	justify-content: center;
-	background-color: white;
-}
-
 footer
 {
 	display: table-footer-group;
 }</style>`;
 
+import './g-callout.js';
 import './g-grid-row.js';
 import './g-grid-header.js';
 import './g-grid-footer.js';
-import filter from './filter.js';
-import colorize from './colorize.js';
 
 class Column
 {
@@ -157,18 +130,8 @@ export default class GGrid extends HTMLElement
 		this._private = {};
 		this._private.columns = new Map();
 		this._private.stylesheet = new CSSStyleSheet();
-
 		this.shadowRoot.adoptedStyleSheets = [this._private.stylesheet];
-
 		this.addEventListener("change", () => this.connectedCallback());
-
-		let input = this.shadowRoot.getElementById("input");
-		input.addEventListener("input", () =>
-		{
-			let rows = this.rows;
-			filter(rows, input.value);
-			colorize(rows);
-		});
 	}
 
 	set caption(value)
@@ -335,17 +298,8 @@ export default class GGrid extends HTMLElement
 
 	connectedCallback()
 	{
-		if (this.length)
-		{
-			this.shadowRoot.querySelector("div").style.display = "";
-			this.shadowRoot.querySelector("nav").style.display = "";
-			this.shadowRoot.querySelector("aside").style.display = "none";
-		} else
-		{
-			this.shadowRoot.querySelector("nav").style.display = "none";
-			this.shadowRoot.querySelector("div").style.display = "none";
-			this.shadowRoot.querySelector("aside").style.display = "";
-		}
+		this.shadowRoot.querySelector("div").style.display = this.length ? "" : "none";
+		this.shadowRoot.querySelector("g-callout").style.display = this.length ? "none" : "";
 	}
 }
 

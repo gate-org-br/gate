@@ -1,3 +1,4 @@
-main {
+dialog {
 	width: 600px;
+	height: fit-content;
 }

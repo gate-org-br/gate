@@ -16,8 +16,11 @@ template.innerHTML = `
 	justify-content: center;
 }
 
-main {
+main,
+dialog {
+	padding: 0;
 	height: auto;
+	border: none;
 	display: flex;
 	position: fixed;
 	border-radius: 3px;
@@ -26,7 +29,8 @@ main {
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
-main > header
+main > header,
+dialog > header
 {
 	gap: 8px;
 	padding: 8px;
@@ -39,7 +43,8 @@ main > header
 	border-bottom: 1px solid var(--main6);
 }
 
-main > section
+main > section,
+dialog > section
 {
 	padding: 8px;
 	flex-grow: 1;
@@ -50,11 +55,13 @@ main > section
 	-webkit-overflow-scrolling: touch;
 }
 
-main > section > fieldset:only-child {
+main > section > fieldset:only-child,
+dialog > section > fieldset:only-child {
 	border: none;
 }
 
-main > header > label
+main > header > label,
+dialog > header > label
 {
 	order: 1;
 	flex-grow: 1;
@@ -66,7 +73,9 @@ main > header > label
 }
 
 main > header > a,
-main > header > button
+main > header > button,
+dialog > header > a,
+dialog > header > button
 {
 	order: 2;
 	border:none;
@@ -81,11 +90,15 @@ main > header > button
 }
 
 main > header > a > g-icon,
-main > header > button > g-icon {
+main > header > button > g-icon
+dialog > header > a > g-icon,
+dialog > header > button > g-icon
+{
 	line-height: 16px;
 }
 
-main > footer {
+main > footer,
+dialog > footer {
 	gap: 4px;
 	padding: 8px;
 	display: flex;

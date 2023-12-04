@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			Selecione uma data
 			<a id='cancel' href="#">
@@ -13,16 +13,16 @@ template.innerHTML = `
 			<g-date-selector>
 			</g-date-selector>
 		</section>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
+	height: 440px;
 	min-width: 320px;
 	max-width: 600px;
 	width: calc(100% - 40px);
 }
 
-main > section {
-	flex-basis: 400px;
+dialog > section {
 	align-items: stretch;
 }
 
@@ -44,10 +44,7 @@ export default class GDatePicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
-
 		this.shadowRoot.querySelector("g-date-selector").addEventListener("selected", e => this.dispatchEvent(new CustomEvent('commit', {detail: e.detail})));
 	}
 

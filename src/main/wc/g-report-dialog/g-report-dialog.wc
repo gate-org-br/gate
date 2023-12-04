@@ -1,8 +1,8 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			Selecione um tipo de relatório
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -14,5 +14,5 @@
 			<g-download-status>
 			</g-download-status>
 		</footer>
-	</main>
+	</dialog>
 </template>

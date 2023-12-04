@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='../META-INF/resources/gate/Gate.css' />
+		<script type='module' src='../META-INF/resources/gate/Gate.js' charset="utf-8"></script>
+	</head>
+
+	<body>
+		<form method="POST" action="#">
+			<fieldset>
+				<legend>
+					<i>&#X2010;</i>Search
+				</legend>
+
+				<label>
+					Name:
+					<span>
+						<input name='name' type='text' />
+					</span>
+				</label>
+			</fieldset>
+
+			<g-coolbar>
+				<button class="primary"
+					tabindex="2"
+					title="Search"
+					formaction="page.html"
+					formtarget="@outerHTML(page, 'Pesquisando banco de dados')">
+					Search<g-icon>
+						&#X2010;
+					</g-icon>
+				</button>
+			</g-coolbar>
+
+			<g-callout id='page' class="warning icon fill">
+				Enter with the search criteria and click on the search button
+			</g-callout>
+		</form>
+	</body>
+
+</html>

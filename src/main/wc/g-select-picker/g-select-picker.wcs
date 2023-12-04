@@ -1,15 +1,19 @@
-main
+dialog
 {
 	min-width: 320px;
 	max-width: 800px;
+	height: fit-content;
 	width: calc(100% - 40px);
 }
 
-section {
-	overflow: auto;
-	flex-basis: 400px;
-}
-
-g-grid {
-	flex-grow: 1;
+dialog > section
+{
+	gap: 4px;
+	padding: 4px;
+	display: grid;
+	align-items: stretch;
+	justify-items:stretch;
+	align-content: stretch;
+	justify-content: stretch;
+	grid-template-rows: 40px 400px;
 }

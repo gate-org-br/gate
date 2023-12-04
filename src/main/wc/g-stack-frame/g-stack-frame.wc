@@ -1,4 +1,6 @@
 <template>
-	<iframe>
-	</iframe>
+	<dialog>
+		<iframe name="@stack" scrolling="no">
+		</iframe>
+	</dialog>
 </template>

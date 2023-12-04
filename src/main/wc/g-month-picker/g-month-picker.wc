@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			Selecione um mês
 			<a id='cancel' href="#">
@@ -16,5 +16,5 @@
 			<button id='commit'>
 			</button>
 		</footer>
-	</main>
+	</dialog>
 </template>

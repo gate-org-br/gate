@@ -9,8 +9,7 @@ export default class GMessageDialog extends GWindow
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
 	}
 
 	set type(type)

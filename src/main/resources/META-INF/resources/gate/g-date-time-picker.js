@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			Selecione uma data e uma hora
 			<a id='cancel' href="#">
@@ -17,19 +17,24 @@ template.innerHTML = `
 			<button id='commit'>
 			</button>
 		</footer>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
+	height: 440px;
 	min-width: 320px;
 	max-width: 600px;
 	width: calc(100% - 40px);
+}
+
+dialog > section {
+	align-items: stretch;
 }
 
 g-date-time-selector {
 	flex-grow: 1;
 }
 
-main > footer > button {
+dialog > footer > button {
 	flex-grow: 1;
 	justify-content: center;
 }</style>`;
@@ -49,8 +54,6 @@ export default class GDateTimePicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let commit = this.shadowRoot.getElementById("commit");

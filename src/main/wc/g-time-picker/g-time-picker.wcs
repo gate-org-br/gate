@@ -1,15 +1,20 @@
-main
+dialog
 {
+	height: 440px;
 	min-width: 320px;
 	max-width: 600px;
 	width: calc(100% - 40px);
+}
+
+dialog > section {
+	align-items: stretch;
 }
 
 g-time-selector {
 	flex-grow: 1;
 }
 
-main > footer > button {
+dialog > footer > button {
 	flex-grow: 1;
 	justify-content: center;
 }

@@ -1,17 +1,18 @@
 <template>
-	<main>
+	<dialog>
 		<header>
-			<label id='caption'>
-			</label>
+			<div id='caption'>
+			</div>
 			<a id='close' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
 			</a>
+
 		</header>
 		<section>
 			<slot>
 			</slot>
 		</section>
-	</main>
+	</dialog>
 </template>

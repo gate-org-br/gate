@@ -1,16 +1,17 @@
-main
+dialog
 {
 	width: 100%;
+	height: 240px;
+	color: inherit;
 	min-width: 320px;
 	max-width: 800px;
 }
 
-main > section {
+dialog > section {
 	padding: 8px;
 	display: flex;
 	color: inherit;
 	font-size: 20px;
-	flex-basis: 200px;
 	align-items: center;
 }
 
@@ -32,27 +33,27 @@ label::first-line  {
 :host([type="INFO"]) {
 	color: black
 }
-:host([type="INFO"]) > main > section::before {
+:host([type="INFO"]) > dialog > section::before {
 	content: "\\2015"
 }
 
 :host([type="ERROR"]) {
 	color: var(--error1)
 }
-:host([type="ERROR"]) > main > section::before {
+:host([type="ERROR"]) > dialog > section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
 	color: var(--success1)
 }
-:host([type="SUCCESS"]) > main > section::before {
+:host([type="SUCCESS"]) > dialog > section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
 	color: var(--warning1)
 }
-:host([type="WARNING"]) > main > section::before {
+:host([type="WARNING"]) > dialog > section::before {
 	content: "\\1007"
 }

@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			<label id='caption'>
 				Selecione um ítem
@@ -11,9 +11,10 @@
 			</a>
 		</header>
 		<section>
-			<g-grid filter>
+			<input type="TEXT" placeholder="Pesquisar"/>
+			<g-grid>
 				Nenhum registro encontrado
 			</g-grid>
 		</section>
-	</main>
+	</dialog>
 </template>

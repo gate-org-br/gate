@@ -8,7 +8,7 @@ export default class GBlock extends GWindow
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML += template.innerHTML;
 	}
 
 	set caption(text)

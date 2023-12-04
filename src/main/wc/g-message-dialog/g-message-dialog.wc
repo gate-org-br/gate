@@ -1,9 +1,9 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			<label id='title'>
 			</label>
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -11,5 +11,5 @@
 		</header>
 		<section>
 		</section>
-	</main>
+	</dialog>
 </template>

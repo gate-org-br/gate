@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			Selecione um ícone
 			<a id='cancel' href="#">
@@ -12,5 +12,5 @@
 			<g-icon-selector>
 			</g-icon-selector>
 		</section>
-	</main>
+	</dialog>
 </template>

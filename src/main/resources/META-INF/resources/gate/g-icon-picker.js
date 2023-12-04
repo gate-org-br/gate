@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			Selecione um ícone
 			<a id='cancel' href="#">
@@ -13,17 +13,13 @@ template.innerHTML = `
 			<g-icon-selector>
 			</g-icon-selector>
 		</section>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
+	height: 600px;
 	min-width: 320px;
 	max-width: 600px;
 	width: calc(100% - 40px);
-}
-
-section {
-	overflow: auto;
-	flex-basis: 600px;
 }
 
 g-icon-selector {
@@ -44,8 +40,6 @@ export default class GIconPicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
-		this.addEventListener("click", event => event.target === this && this.dispatchEvent(new CustomEvent('cancel')));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let selector = this.shadowRoot.querySelector("g-icon-selector");

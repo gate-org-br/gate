@@ -103,7 +103,7 @@
 			<g:link class="primary" method="post" module="#" screen="#" tabindex='2'>
 				Pesquisar<g:icon type="search"/>
 			</g:link>
-			<g:link target="_dialog" module="#" screen="#" action="Insert" tabindex='2'/>
+			<g:link target="@dialog" module="#" screen="#" action="Insert" tabindex='2'/>
 		</div>
 	</form>
 
@@ -129,7 +129,7 @@
 		</thead>
 		<tbody>
 			<g:iterator source="${screen.page}">
-				<tr data-target="_dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}">
+				<tr data-target="@dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}">
 					<td title="Ativo"><g:print value="${target.active}"/></td>
 					<td title="Login do Usuário"><g:print value="${target.username}"/></td>
 					<td title="Senha do Usuário"><g:print value="${target.password}"/></td>

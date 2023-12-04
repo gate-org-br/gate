@@ -13,9 +13,7 @@ customElements.define('g-report-dialog', class extends GWindow
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
 		this.shadowRoot.querySelector("g-download-status").addEventListener("done", () => this.hide());
 	}
 

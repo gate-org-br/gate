@@ -1,9 +1,9 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			Selecione um tipo de relatório
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -15,9 +15,10 @@ template.innerHTML = `
 			<g-download-status>
 			</g-download-status>
 		</footer>
-	</main>
- <style>main {
+	</dialog>
+ <style>dialog {
 	width: 600px;
+	height: fit-content;
 }</style>`;
 
 /* global customElements */
@@ -35,9 +36,7 @@ customElements.define('g-report-dialog', class extends GWindow
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
-		this.shadowRoot.querySelector("main").addEventListener("click", e => e.stopPropagation());
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
 		this.shadowRoot.querySelector("g-download-status").addEventListener("done", () => this.hide());
 	}
 

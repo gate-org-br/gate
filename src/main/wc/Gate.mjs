@@ -13,8 +13,6 @@ import "./clipboard.js";
 
 import "./g-table-scroll.js";
 
-import "./action-handler.js";
-import "./change-handler.js";
 import "./auto-focus-handler.js";
 import "./auto-click-handler.js";
 
@@ -54,6 +52,7 @@ import "./g-date-interval-picker.js";
 import "./g-time-interval-picker.js";
 import "./g-month-interval-picker.js";
 import "./g-date-time-interval-picker.js";
+import "./g-url-picker.js";
 
 import "./g-progress-dialog.js";
 
@@ -95,6 +94,10 @@ import "./g-callout.js";
 
 import "./g-accordion.js";
 import "./g-accordion-section.js";
+
+import './spa.js';
+
+import './table.js';
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {

@@ -1,10 +1,10 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			<label id='title'>
 			</label>
-			<a id='close' href="#">
+			<a id='cancel' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -12,20 +12,21 @@ template.innerHTML = `
 		</header>
 		<section>
 		</section>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
 	width: 100%;
+	height: 240px;
+	color: inherit;
 	min-width: 320px;
 	max-width: 800px;
 }
 
-main > section {
+dialog > section {
 	padding: 8px;
 	display: flex;
 	color: inherit;
 	font-size: 20px;
-	flex-basis: 200px;
 	align-items: center;
 }
 
@@ -47,28 +48,28 @@ label::first-line  {
 :host([type="INFO"]) {
 	color: black
 }
-:host([type="INFO"]) > main > section::before {
+:host([type="INFO"]) > dialog > section::before {
 	content: "\\2015"
 }
 
 :host([type="ERROR"]) {
 	color: var(--error1)
 }
-:host([type="ERROR"]) > main > section::before {
+:host([type="ERROR"]) > dialog > section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
 	color: var(--success1)
 }
-:host([type="SUCCESS"]) > main > section::before {
+:host([type="SUCCESS"]) > dialog > section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
 	color: var(--warning1)
 }
-:host([type="WARNING"]) > main > section::before {
+:host([type="WARNING"]) > dialog > section::before {
 	content: "\\1007"
 }</style>`;
 
@@ -83,8 +84,7 @@ export default class GMessageDialog extends GWindow
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", event => event.target === this && this.hide());
-		this.shadowRoot.getElementById("close").addEventListener("click", () => this.hide());
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
 	}
 
 	set type(type)

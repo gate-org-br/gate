@@ -1,7 +1,4 @@
 <template>
-	<nav>
-		<input id="input" type="text" placeholder="Filtrar"/>
-	</nav>
 	<div>
 		<main>
 			<label></label>
@@ -10,7 +7,7 @@
 			<footer><g-grid-footer></g-grid-footer></footer>
 		</main>
 	</div>
-	<aside>
+	<g-callout class='fill'>
 		<slot></slot>
-	</aside>
+	</g-callout>
 </template>

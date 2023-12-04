@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 		</header>
 		<section>
@@ -11,19 +11,20 @@ template.innerHTML = `
 			<g-digital-clock>
 			</g-digital-clock>
 		</footer>
-	</main>
- <style>main
+	</dialog>
+ <style>dialog
 {
+	height: fit-content;
 	min-width: 320px;
 	max-width: 800px;
 	width: calc(100% - 40px);
 }
 
 
-main > footer {
+dialog > footer
+{
 	flex-basis: 40px;
 	align-items: center;
-	justify-content: flex-end;
 }
 
 g-progress
@@ -47,7 +48,7 @@ export default class GBlock extends GWindow
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.innerHTML += template.innerHTML;
 	}
 
 	set caption(text)

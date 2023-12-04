@@ -51,6 +51,9 @@ dialog {
 iframe {
 	width: 100%;
 	overflow:  hidden;
+}
+
+iframe[name] {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-position-y: center;

@@ -2,7 +2,7 @@ import URL from './url.js';
 import resolve from './resolve.js';
 import Process from './process.js';
 import GLoading from './g-loading.js';
-import GGMessageDialog from './g-message-dialog.js';
+import GMessageDialog from './g-message-dialog.js';
 
 function processHide(button)
 {
@@ -86,39 +86,6 @@ window.addEventListener("click", function (event)
 	{
 		switch (target)
 		{
-			case "_stack":
-				if (button.form.checkValidity())
-				{
-					if (event.ctrlKey)
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						button.setAttribute("formtarget", "_blank");
-						button.click();
-						button.setAttribute("formtarget", "_stack");
-					} else if (event.target.form.getAttribute("target") !== "_stack")
-					{
-						event.preventDefault();
-						event.stopPropagation();
-
-						let dialog = window.top.document.createElement("g-stack-frame");
-
-						dialog.addEventListener("show", () => button.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-						dialog.addEventListener("hide", () => button.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-
-						if (button.getAttribute("data-on-hide"))
-							dialog.addEventListener("hide", () => processHide(button));
-
-						dialog.show();
-
-						window.fetch(button.getAttribute("formaction") || button.form.getAttribute("action"),
-							{method: 'post', body: new URLSearchParams(new FormData(button.form))})
-							.then(e => e.text())
-							.then(e => dialog.iframe.setAttribute("srcdoc", e));
-					}
-				}
-				break;
 			case "_message":
 				event.preventDefault();
 				event.stopPropagation();
