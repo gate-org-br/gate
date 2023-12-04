@@ -2,7 +2,6 @@ package gate.producer;
 
 import gate.annotation.Current;
 import gate.entity.Org;
-import gate.sql.Link;
 import gate.sql.select.Select;
 import java.io.Serializable;
 import java.util.Optional;
@@ -44,7 +43,7 @@ public class OrgProducer implements Serializable
 
 		public Optional<Org> select()
 		{
-			try ( Dao dao = new Dao())
+			try (Dao dao = new Dao())
 			{
 				return dao.select();
 			}
@@ -53,33 +52,35 @@ public class OrgProducer implements Serializable
 		public static class Dao extends gate.base.Dao
 		{
 
+			public Dao()
+			{
+				super("Gate");
+			}
+
 			public Optional<Org> select()
 			{
-				try ( Link link = new Link("Gate"))
-				{
-					return Select.expression("orgID")
-						.expression("name")
-						.expression("description")
-						.expression("authenticators")
-						.expression("sun__min")
-						.expression("sun__max")
-						.expression("mon__min")
-						.expression("mon__max")
-						.expression("tue__min")
-						.expression("tue__max")
-						.expression("wed__min")
-						.expression("wed__max")
-						.expression("thu__min")
-						.expression("thu__max")
-						.expression("fri__min")
-						.expression("fri__max")
-						.expression("sat__min")
-						.expression("sat__max")
-						.from("Org")
-						.build()
-						.connect(link)
-						.fetchEntity(Org.class);
-				}
+				return Select.expression("orgID")
+					.expression("name")
+					.expression("description")
+					.expression("authenticators")
+					.expression("sun__min")
+					.expression("sun__max")
+					.expression("mon__min")
+					.expression("mon__max")
+					.expression("tue__min")
+					.expression("tue__max")
+					.expression("wed__min")
+					.expression("wed__max")
+					.expression("thu__min")
+					.expression("thu__max")
+					.expression("fri__min")
+					.expression("fri__max")
+					.expression("sat__min")
+					.expression("sat__max")
+					.from("Org")
+					.build()
+					.connect(getLink())
+					.fetchEntity(Org.class);
 			}
 		}
 	}
