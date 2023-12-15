@@ -1,159 +1,157 @@
 import CSV from './csv.js';
+import resolve from './resolve.js';
+import navigate from './navigate.js';
 
-let causes = new WeakMap();
+const DEFAULT = new Map()
+	.set("DIV", "load")
+	.set("SPAN", "load")
+	.set("LABEL", "load")
+	.set("TR", "click")
+	.set("TD", "click")
+	.set("LI", "click")
+	.set("INPUT", "change")
+	.set("SELECT", "change")
+	.set("TEXTAREA", "change");
 
-//function dispatch(cause, target, trigger)
-//{
-//	let method = /^([@][a-zA-Z]+)(\(([^)]+)\))?$/g.exec(trigger);
-//	let type = method[1];
-//	let parameters = method[3] ? CSV.parse(method[3]) : [];
-//	let rootCause = causes.get(target) || cause;
-//	window.dispatchEvent(new CustomEvent("trigger", {detail: {rootCause, cause, target, type, parameters}}));
-//}
-
-function dispatch(event, element, method, action, target)
+function validate(element)
 {
-	let cause = causes.get(event.target) || event;
+	if (element.hasAttribute("data-disabled"))
+		return false;
 
-	let trigger = /^([@][a-zA-Z]+)(\(([^)]+)\))?$/g.exec(target);
-	target = trigger[1];
-	let parameters = trigger[3] ? CSV.parse(trigger[3]) : [];
+	if (element.hasAttribute("data-cancel"))
+		return alert(element.getAttribute("data-cancel"), 2000) && false;
 
-	if (!window.dispatchEvent(new CustomEvent("trigger", {cancelable: true, detail: {cause, element, method, action, target, parameters}})))
-		event.preventDefault();
+	if (element.hasAttribute("data-confirm"))
+		return confirm(element.getAttribute("data-confirm"));
+
+	if (element.hasAttribute("data-alert"))
+		return alert(element.getAttribute("data-alert")) || true;
+
+	return true;
 }
 
-window.addEventListener("click", function (event)
+function dispatch(cause, element, method, action, target)
 {
-	if (!event.controlKey)
+	if (validate(element))
 	{
-		let element = event.composedPath()
-			.find(e => e.tagName === "A"
-					&& e.target && e.target.startsWith("@"));
-		if (element)
-			return dispatch(event, element, "get", element.href, element.target);
-	}
-}, true);
+		method = (method || "get").trim();
+		action = resolve((action || "").trim());
+		target = (target || "_self").trim();
 
-window.addEventListener("submit", function (event)
-{
-	let element = event.target;
-	let method = event.submitter.getAttribute("formmethod") || element.method;
-	let target = event.submitter.getAttribute("formtarget") || element.target;
-	let action = event.submitter.getAttribute("formaction") || element.action;
-	if (target && target.startsWith("@"))
-		dispatch(event, element, method, action, target);
-}, true);
-
-function get(target, ctrlKey)
-{
-	let link = document.createElement("a");
-	causes.set(link, event);
-
-	if (ctrlKey)
-		link.setAttribute("target", "_blank");
-	else if (target.hasAttribute("data-target"))
-		link.setAttribute("target", target.getAttribute("data-target"));
-
-	if (target.hasAttribute("data-action"))
-		link.setAttribute("href", target.getAttribute("data-action"));
-
-	if (target.hasAttribute("data-on-hide"))
-		link.setAttribute("data-on-hide", target.getAttribute("data-on-hide"));
-
-	if (target.hasAttribute("title"))
-		link.setAttribute("title", target.getAttribute("title"));
-
-	if (target.hasAttribute("data-block"))
-		link.setAttribute("data-block", target.getAttribute("data-block"));
-
-	if (target.hasAttribute("data-alert"))
-		link.setAttribute("data-alert", target.getAttribute("data-alert"));
-
-	if (target.hasAttribute("data-confirm"))
-		link.setAttribute("data-confirm", target.getAttribute("data-confirm"));
-
-	document.body.appendChild(link);
-	link.click();
-	document.body.removeChild(link);
-}
-
-function post(target, ctrlKey)
-{
-	let button = document.createElement("button");
-	causes.button(button, event);
-
-	if (ctrlKey)
-		button.setAttribute("target", "_blank");
-	else if (target.hasAttribute("data-target"))
-		button.setAttribute("formtarget", target.getAttribute("data-target"));
-
-	if (target.hasAttribute("data-action"))
-		button.setAttribute("formaction", target.getAttribute("data-action"));
-
-	if (target.hasAttribute("data-on-hide"))
-		button.setAttribute("data-on-hide", target.getAttribute("data-on-hide"));
-
-	if (target.hasAttribute("title"))
-		button.setAttribute("title", target.getAttribute("title"));
-
-	if (target.hasAttribute("data-block"))
-		button.setAttribute("data-block", target.getAttribute("data-block"));
-
-	if (target.hasAttribute("data-alert"))
-		button.setAttribute("data-alert", target.getAttribute("data-alert"));
-
-	if (target.hasAttribute("data-confirm"))
-		button.setAttribute("data-confirm", target.getAttribute("data-confirm"));
-
-
-	let form = target.closest("form");
-	form.appendChild(button);
-	button.click();
-	form.removeChild(button);
-}
-
-window.addEventListener("change", function (event)
-{
-	let target = event.target;
-
-	if (target.dataset.method || target.dataset.action || target.dataset.target)
-	{
-		target.blur();
-		switch ((target.dataset.method || "get").toLowerCase())
+		let type = target;
+		let parameters = [];
+		let parentesis = target.indexOf("(");
+		if (parentesis > 0)
 		{
-			case "get":
-				return get(target);
-			case "post":
-				return post(target);
+			if (!target.endsWith(")"))
+				throw new Error(`${target} is not a valid target`);
+			type = target.substring(0, parentesis);
+			parameters = CSV.parse(target.slice(parentesis + 1, -1));
 		}
+
+		let form = null;
+		if (method === "post"
+			|| method === "put"
+			|| method === "path")
+		{
+			form = element.form
+				|| element.closest("form");
+			if (element.hasAttribute("data-form"))
+			{
+				form = element.getRootNode()
+					.getElementById(element.getAttribute("data-form"));
+				if (!form)
+					throw new Error(`${element.getAttribute("data-form")} is not a valid id`);
+			}
+		}
+
+		element.dispatchEvent(new CustomEvent(type,
+			{bubbles: true,
+				composed: true,
+				detail: {cause, method, action, target, parameters, form}}));
 	}
-});
+}
+
 
 window.addEventListener("click", function (event)
 {
 	if (!event.button)
 	{
-		let target = event.target;
-
-		if (!target.onclick && !target.closest("a, button, input, select, textarea"))
+		for (let element of event.composedPath())
 		{
-			target = target.closest("tr[data-action], td[data-action], li[data-action], div[data-action]");
-			if (target)
+			if (element.hasAttribute)
 			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				target.blur();
-				switch ((target.dataset.method || "get").toLowerCase())
+				if (element.tagName === "A")
 				{
-					case "get":
-						return get(target, event.ctrlKey);
-					case "post":
-						return post(target, event.ctrlKey);
+					if (element.target && element.target.startsWith("@"))
+					{
+						event.preventDefault();
+						dispatch(event, element, "get", element.href, element.target);
+					} else if (!validate(element))
+						event.preventDefault();
+					return;
+				} else if ((element.hasAttribute("data-trigger")
+					|| element.hasAttribute("data-method")
+					|| element.hasAttribute("data-action")
+					|| element.hasAttribute("data-target"))
+					&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
+				{
+					event.preventDefault();
+					dispatch(event,
+						element,
+						element.getAttribute("data-method"),
+						element.getAttribute("data-action"),
+						element.getAttribute("data-target"));
+					return;
 				}
 			}
 		}
 	}
+});
+
+window.addEventListener("submit", function (event)
+{
+	let submiter = event.submitter;
+	let element = event.composedPath()[0] || event.target;
+	let method = submiter.getAttribute("formmethod") || element.method;
+	let target = submiter.getAttribute("formtarget") || element.target;
+	let action = submiter.getAttribute("formaction") || element.action;
+	if (target && target.startsWith("@"))
+	{
+		event.preventDefault();
+		dispatch(event, submiter, method, action, target);
+	} else if (!validate(submiter) || !validate(element))
+		event.preventDefault();
+});
+
+window.addEventListener("change", function (event)
+{
+	let element = event.target || event.composedPath()[0];
+	if ((element.hasAttribute("data-trigger")
+		|| element.hasAttribute("data-method")
+		|| element.hasAttribute("data-action")
+		|| element.hasAttribute("data-target"))
+		&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "change")
+		dispatch(event, element, element.dataset.method, element.dataset.action, element.dataset.target);
+});
+
+window.addEventListener("load", event => Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.getAttribute("data-trigger") || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => dispatch(event, e, e.dataset.method, e.dataset.action, e.dataset.target)));
+
+window.addEventListener("@trigger", function (event)
+{
+	let path = event.detail.parameters[0];
+	let source = event.composedPath()[0] || event.target;
+	let element = navigate(source, path).orElseThrow("Invalid target element");
+
+	let method = element.method || element.getAttribute("formmethod") || element.getAttribute("data-method");
+	let action = element.action || element.href || element.getAttribute("formaction") || element.getAttribute("data-action");
+	let target = element.target || element.getAttribute("formtarget") || element.getAttribute("data-target");
+
+	dispatch(event, element, method, action, target);
 });

@@ -1,66 +1,29 @@
 /* global customElements, template */
 
 import './g-navbar.js';
-import CSV from './csv.js';
-import hide from './hide.js';
-import './g-dialog-commands.js';
-import resolve from './resolve.js';
 import GWindow from './g-window.js';
-import FullScreen from './fullscreen.js';
-
-const ESC = 27;
-const ENTER = 13;
+import "./g-dialog-configuration.js";
+import RequestBuilder from './request-builder.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
 export default class GDialog extends GWindow
 {
 	constructor()
 	{
 		super();
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		let main = this.shadowRoot.querySelector("main");
-		let head = this.shadowRoot.querySelector("header");
-		let fullscreen = this.shadowRoot.getElementById("fullscreen");
-		let minimize = this.shadowRoot.getElementById("minimize");
-		let hide = this.shadowRoot.getElementById("hide");
-		let iframe = this.shadowRoot.querySelector("iframe");
-		iframe.name = "_dialog";
-		let navbar = this.shadowRoot.querySelector("g-navbar");
-		navbar.style.display = "none";
-		main.addEventListener("click", e => e.stopPropagation());
-		hide.addEventListener("click", event => event.preventDefault() | this.hide());
-		this.addEventListener("click", event => event.target === this && this.hide());
-		fullscreen.addEventListener("click", () => fullscreen.innerHTML = (FullScreen.switch(main) ? "&#x3015;" : "&#x3016;"));
-		minimize.addEventListener("click", event => event.preventDefault() | this.minimize());
-		head.focus();
-		head.addEventListener("keydown", event =>
-		{
-			event = event ? event : window.event;
-			switch (event.keyCode)
-			{
-				case ESC:
-					this.hide();
-					break;
-				case ENTER:
-					this.focus();
-					break;
-			}
+		this.shadowRoot.innerHTML += template.innerHTML;
+		this.shadowRoot.getElementById("hide").addEventListener("click", () => this.hide());
 
-			event.preventDefault();
-			event.stopPropagation();
-		});
+		let iframe = this.shadowRoot.querySelector("iframe");
 		iframe.dialog = this;
 		iframe.onmouseenter = () => iframe.focus();
-
 		iframe.addEventListener("load", () => iframe.removeAttribute("name"));
 
-		navbar.addEventListener("update", event =>
-		{
-			let iframe = this.shadowRoot.querySelector("iframe");
-			iframe.contentWindow.document.open();
-			iframe.contentWindow.document.write("");
-			iframe.contentWindow.document.close();
-			iframe.setAttribute('src', event.detail.target)
-		});
+		let navbar = this.shadowRoot.querySelector("g-navbar");
+		navbar.style.display = "none";
+		navbar.addEventListener("update", event => iframe.src = event.detail);
+		iframe.addEventListener("load", () => navbar.target = iframe.contentWindow.location.href);
 	}
 
 	get caption()
@@ -75,16 +38,9 @@ export default class GDialog extends GWindow
 			.innerText = caption;
 	}
 
-	set navigator(navigator)
+	get navbar()
 	{
-		if (!navigator || !navigator.length)
-			return;
-		setTimeout(() =>
-		{
-			let navbar = this.shadowRoot.querySelector("g-navbar");
-			navbar.links = navigator;
-			navbar.style.display = "";
-		}, 0);
+		return this.shadowRoot.querySelector("g-navbar");
 	}
 
 	get iframe()
@@ -94,28 +50,7 @@ export default class GDialog extends GWindow
 
 	set target(target)
 	{
-		setTimeout(() => this.shadowRoot.querySelector("g-navbar").url = target, 0);
-	}
-
-	get()
-	{
-		this.arguments = arguments;
-		this.show();
-	}
-
-	ret()
-	{
-		let size = Math.min(arguments.length, this.arguments.length);
-		for (var i = 0; i < size; i++)
-			if (this.arguments[i])
-				if (this.arguments[i].tagName.toLowerCase() === "textarea")
-					this.arguments[i].innerHTML = arguments[i];
-				else
-					this.arguments[i].value = arguments[i];
-		for (var i = 0; i < size; i++)
-			if (this.arguments[i])
-				this.arguments[i].dispatchEvent(new CustomEvent('changed', {bubbles: true}));
-		this.hide();
+		this.iframe.src = target;
 	}
 
 	set size(value)
@@ -123,12 +58,13 @@ export default class GDialog extends GWindow
 		let size = /^([0-9]+)(\/([0-9]+))?$/g.exec(value);
 		if (!size)
 			throw new Error(value + " is not a valid size");
-		let main = this.shadowRoot.querySelector("main");
-		main.style.maxWidth = size[1] + "px";
-		main.style.maxHeight = (size[3] || size[1]) + "px";
+		let dialog = this.shadowRoot.querySelector("dialog");
 
-		this.shadowRoot.getElementById("minimize").style.display = "none";
-		this.shadowRoot.getElementById("fullscreen").style.display = "none";
+		let width = size[1];
+		let height = size[3] || size[1];
+		dialog.style.width = width + "px";
+		dialog.style.height = height + "px";
+
 	}
 
 	static hide()
@@ -148,134 +84,35 @@ export default class GDialog extends GWindow
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.caption;
 	}
-
-	static set commands(commands)
-	{
-		if (window.frameElement && window.frameElement.dialog)
-			window.frameElement.dialog.commands = commands;
-	}
-
-	static get commands()
-	{
-		if (window.frameElement && window.frameElement.dialog)
-			return window.frameElement.dialog.commands;
-	}
 };
+
 customElements.define('g-dialog', GDialog);
-window.addEventListener("click", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-get]");
-	if (action)
-	{
-		event.preventDefault();
-		event.stopPropagation();
-		var parameters = CSV.parse(action.getAttribute('data-get')).map(e => e.trim())
-			.map(e => e !== null ? document.getElementById(e) : null);
-		if (parameters.some(e => e && e.value))
-		{
-			parameters = parameters.filter(e => e && e.value);
-			parameters.forEach(e => e.value = "");
-			parameters.forEach(e => e.dispatchEvent(new CustomEvent('changed', {bubbles: true})));
-		} else
-		{
-			let dialog = window.top.document.createElement("g-dialog");
-			dialog.target = action.href;
-			dialog.caption = action.getAttribute("title");
-			dialog.get.apply(dialog, parameters);
-		}
-	}
-});
-window.addEventListener("click", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
-	if (action)
-	{
-		event.preventDefault();
-		event.stopPropagation();
-		var ret = CSV.parse(action.getAttribute("data-ret")).map(e => e.trim());
-		window.frameElement.dialog.ret.apply(window.frameElement.dialog, ret);
-	}
-});
-window.addEventListener("mouseover", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
-	if (!action)
-		return;
-	if (!action.hasAttribute("tabindex"))
-		action.setAttribute("tabindex", 1000);
-	action.focus();
-});
-window.addEventListener("mouseout", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
-	if (!action)
-		return;
-	action.blur();
-});
-window.addEventListener("keydown", function (event)
-{
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("[data-ret]");
-	if (!action)
-		return;
-	if (event.keyCode === 13)
-		action.click();
-});
 
-window.addEventListener("change", function (event)
+window.addEventListener("@dialog", function (event)
 {
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	if (action.tagName === "INPUT" && action.hasAttribute("data-getter"))
-	{
-		event.preventDefault();
-		event.stopPropagation();
-		var getter = document.getElementById(action.getAttribute("data-getter"));
-		var url = resolve(getter.href);
-		var parameters = CSV.parse(getter.getAttribute('data-get')).map(id => id.trim())
-			.map(id => id !== null ? document.getElementById(id) : null);
-		if (action.value)
-		{
-			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
-			let dialog = window.top.document.createElement("g-dialog");
-			dialog.target = url;
-			dialog.caption = getter.getAttribute("title");
-			dialog.get.apply(dialog, parameters);
-			dialog.get.apply(dialog, parameters);
-		} else
-			parameters.filter(e => e).filter(e => e.value).forEach(e => e.value = "");
-	}
-});
+	let trigger = event.composedPath()[0] || event.target;
 
+	let dialog = window.top.document.createElement("g-dialog");
+	dialog.caption = trigger.getAttribute("title");
+	dialog.addEventListener("show", () => trigger.dispatchEvent(new CustomEvent('show', {bubbles: true, detail: {modal: dialog}})));
+	dialog.addEventListener("hide", () => trigger.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: dialog}})));
 
-window.addEventListener("trigger", function (event)
-{
-	if (event.detail.type === "_dialog")
-	{
-		let target = event.detail.target;
-		let dialog = window.top.document.createElement("g-dialog");
-		dialog.navigator = target.navigator;
-		dialog.caption = target.getAttribute("title");
-		dialog.blocked = Boolean(target.getAttribute("data-blocked"));
-		if (event.detail.parameters[0])
-			dialog.size = event.detail.parameters[0];
-		dialog.addEventListener("show", () => target.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-		dialog.addEventListener("hide", () => target.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-		if (target.getAttribute("data-on-hide"))
-			dialog.addEventListener("hide", () => hide(target));
+	if (event.detail.parameters[0])
+		dialog.size = event.detail.parameters[0];
 
-		dialog.iframe.name = target.target
-			|| target.submitter.getAttribute("formtarget");
-		dialog.show();
-	}
+	if (trigger.hasAttribute("data-navigator")
+		|| trigger.parentNode.hasAttribute("data-navigator"))
+		dialog.navbar.targets = Array.from(trigger.parentNode.children)
+			.map(e => e.href || e.formaction || e.getAttribute("data-action"));
+
+	dialog.show();
+	if (event.detail.method === "get")
+		dialog.iframe.src = event.detail.action;
+	else
+		fetch(RequestBuilder.build(event.detail.action, event.detail.method, event.detail.form))
+			.then(ResponseHandler.text)
+			.then(html => dialog.iframe.srcDoc = html)
+			.catch(GMessageDialog.error);
+
 });
 

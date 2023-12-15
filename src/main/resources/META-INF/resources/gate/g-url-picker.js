@@ -16,16 +16,16 @@ template.innerHTML = `
 		</section>
 	</dialog>
  <style>dialog {
-	min-width: 100vw;
-	min-height: 100vh;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	max-height: none;
 	border-radius: 0;
 }
 
 @media only screen and (min-width: 640px)
 {
 	dialog{
-		min-width: unset;
-		min-height: unset;
 		border-radius: 3px;
 		width: calc(100% - 80px);
 		height: calc(100% - 80px);
@@ -109,45 +109,43 @@ export default class GURLPicker extends GWindow
 
 customElements.define('g-url-picker', GURLPicker);
 
-window.addEventListener("trigger", function (event)
+window.addEventListener("@pick", function (event)
 {
-	if (event.detail.target === "@pick")
-	{
-		let cause = event.detail.cause;
-		let element = event.detail.element;
-		let parameters = event.detail.parameters
-			.map(e => e ? document.getElementById(e) : e);
+	let trigger = event.composedPath()[0] || event.target;
+	let parameters = event.detail.parameters
+		.map(e => e ? document.getElementById(e) : e);
 
-		if (cause.type === "change")
+	if (event.detail.cause.type === "change")
+	{
+		GURLPicker.pick(dialog =>
 		{
-			GURLPicker.pick(dialog =>
-			{
-				dialog.iframe.name = element.target;
-				dialog.caption = element.title || "";
-			})
-				.then(values => update(parameters, values))
-				.catch(() => parameters.forEach(e => e.value = ""));
-		} else if (parameters.every(e => !e.value))
+			dialog.caption = trigger.title || "";
+			dialog.iframe.name = event.detail.target;
+		})
+			.then(values => update(parameters, values))
+			.catch(() => parameters.forEach(e => e.value = ""));
+	} else if (parameters.every(e => !e.value))
+	{
+		trigger.style.pointerEvents = "none";
+		GURLPicker.pick(dialog =>
 		{
-			element.style.pointerEvents = "none";
-			GURLPicker.pick(dialog =>
-			{
-				dialog.iframe.name = element.target;
-				dialog.caption = element.title || "";
-			})
-				.then(values => update(parameters, values))
-				.catch(() => undefined)
-				.finally(() => element.style.pointerEvents = "");
-		} else
-		{
-			event.preventDefault();
-			parameters.forEach(e => e.value = "");
-		}
-	} else if (event.detail.target === "@return")
+			dialog.caption = trigger.title || "";
+			dialog.iframe.name = event.detail.target;
+		})
+			.then(values => update(parameters, values))
+			.catch(() => undefined)
+			.finally(() => trigger.style.pointerEvents = "");
+	} else
 	{
 		event.preventDefault();
-		window.frameElement.dialog.dispatchEvent(new CustomEvent('commit', {detail: event.detail.parameters}));
+		parameters.forEach(e => e.value = "");
 	}
+});
+
+window.addEventListener("@return", function (event)
+{
+	event.preventDefault();
+	window.frameElement.dialog.dispatchEvent(new CustomEvent('commit', {detail: event.detail.parameters}));
 });
 
 function update(parameters, values)

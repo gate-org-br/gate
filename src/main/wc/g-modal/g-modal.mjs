@@ -1,7 +1,6 @@
 /* global customElements */
 
 import Scroll from './scroll.js';
-import WindowList from './g-window-list.js';
 
 export default class GModal extends HTMLElement
 {
@@ -15,16 +14,15 @@ export default class GModal extends HTMLElement
 
 	show()
 	{
-		if (window.dispatchEvent(new CustomEvent('show', {cancelable: true, detail: {modal: this}})))
-		{
-			Scroll.disable(window.top.document.documentElement);
+		if (!this.parentNode)
 			window.top.document.documentElement.appendChild(this);
 
+		if (this.dispatchEvent(new CustomEvent('show', {cancelable: true, bubbles: true, detail: {modal: this}})))
+		{
+			Scroll.disable(window.top.document.documentElement);
 			let dialog = this.shadowRoot.querySelector("dialog");
 			if (dialog)
 				dialog.showModal();
-
-			this.dispatchEvent(new CustomEvent('show', {detail: {modal: this}}));
 		}
 
 		return this;
@@ -32,9 +30,7 @@ export default class GModal extends HTMLElement
 
 	hide()
 	{
-		if (this.parentNode
-			&& window.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}}))
-			&& this.dispatchEvent(new CustomEvent('hide', {cancelable: true, detail: {modal: this}})))
+		if (this.parentNode && this.dispatchEvent(new CustomEvent('hide', {cancelable: true, bubbles: true, detail: {modal: this}})))
 		{
 			Scroll.enable(window.top.document.documentElement);
 			let dialog = this.shadowRoot.querySelector("dialog");
@@ -45,23 +41,6 @@ export default class GModal extends HTMLElement
 
 		return this;
 	}
-
-	minimize()
-	{
-		if (!this.parentNode)
-			return;
-
-		this.style.display = "none";
-		WindowList.instance.add(this);
-		Scroll.enable(window.top.document.documentElement);
-	}
-
-	maximize()
-	{
-		this.style.display = "";
-		Scroll.disable(window.top.document.documentElement);
-	}
-
 }
 
 customElements.define('g-modal', GModal);

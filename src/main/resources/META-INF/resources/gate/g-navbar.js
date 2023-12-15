@@ -8,7 +8,7 @@ template.innerHTML = `
 	<a id='last' href='#'>&#x2279;</a>
  <style>:host(*) {
 	width: auto;
-	padding: 4px;
+	padding: 8px;
 	display: flex;
 	cursor: pointer;
 	font-size: 12px;
@@ -16,8 +16,7 @@ template.innerHTML = `
 	border-radius: 5px;
 	align-items: center;
 	justify-content: center;
-	border: 1px solid var(--base3);
-	background-color: var(--base2);
+	background-color: var(--main4);
 }
 
 label {
@@ -56,13 +55,50 @@ customElements.define('g-navbar', class extends HTMLElement
 		super();
 		this._private = {};
 		this._private.index = 0;
+		this.style.display = "none";
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.shadowRoot.getElementById("first").addEventListener("click", () => this.url = this.links[0]);
-		this.shadowRoot.getElementById("prev").addEventListener("click", () => this.url = this.links[this._private.index - 1]);
-		this.shadowRoot.getElementById("label").addEventListener("click", () => this.url = this.links[this._private.index]);
-		this.shadowRoot.getElementById("next").addEventListener("click", () => this.url = this.links[this._private.index + 1]);
-		this.shadowRoot.getElementById("last").addEventListener("click", () => this.url = this.links[this._private.links.length - 1]);
+		this.shadowRoot.innerHTML = template.innerHTML;
+		this.addEventListener("click", event => event.stopPropagation());
+		this.shadowRoot.getElementById("first").addEventListener("click", () => this.first());
+		this.shadowRoot.getElementById("prev").addEventListener("click", () => this.previous());
+		this.shadowRoot.getElementById("label").addEventListener("click", () => this.current());
+		this.shadowRoot.getElementById("next").addEventListener("click", () => this.next());
+		this.shadowRoot.getElementById("last").addEventListener("click", () => this.last());
+	}
+
+	first()
+	{
+		const detail = this.targets[0];
+		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.target = detail;
+	}
+
+	previous()
+	{
+		const detail = this.targets[this.index - 1];
+		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.target = detail;
+	}
+
+	current()
+	{
+		const detail = this.targets[this.index];
+		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.target = detail;
+	}
+
+	next()
+	{
+		const detail = this.targets[this.index + 1];
+		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.target = detail;
+	}
+
+	last()
+	{
+		const detail = this.targets[this.targets.length - 1];
+		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.target = detail;
 	}
 
 	get index()
@@ -70,31 +106,32 @@ customElements.define('g-navbar', class extends HTMLElement
 		return this._private.index;
 	}
 
-	get links()
+	get targets()
 	{
-		return this._private.links;
+		return this._private.targets || [];
 	}
 
-	set links(links)
+	set targets(targets)
 	{
 		this._private.index = 0;
-		this._private.links = links;
-		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
+		this._private.targets = targets;
+		this.style.display = this.targets.length ? "" : "none";
+		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.targets.length}`;
 	}
 
-	set url(url)
+	set target(value)
 	{
-		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail: {navbar: this, target: url}})))
-			return this;
-
-		if (this._private.links)
+		for (let index = 0; index < this.targets.length; index++)
 		{
-			this._private.index = Math.max(this._private.links.indexOf(url), 0);
-			this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(this.index === 0));
-			this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(this.index === 0));
-			this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.links.length}`;
-			this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
-			this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(this.index === this.links.length - 1));
+			if (value.endsWith(this.targets[index]))
+			{
+				this._private.index = index;
+				this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(index === 0));
+				this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(index === 0));
+				this.shadowRoot.getElementById("label").innerHTML = `${index + 1} de ${this.targets.length}`;
+				this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(index === this.targets.length - 1));
+				this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(index === this.targets.length - 1));
+			}
 		}
 	}
 });

@@ -1,34 +1,64 @@
+const RESOLVE_REGEX = /[@!?]\{([^}]*)\}/g;
 export default function resolve(string)
 {
-	var result = string;
-
-	var parameters = string.match(/([@][{][^}]*[}])/g);
-	if (parameters)
-		parameters.forEach(function (e)
+	var result = decodeURI(string);
+	result = result.replace(RESOLVE_REGEX,
+		function (method, value)
 		{
-			var parameter = document.getElementById(e.substring(2, e.length - 1));
-			result = result.replace(e, parameter ? encodeURIComponent(parameter.value) : "");
+			value = decodeURIComponent(value);
+			switch (method[0])
+			{
+				case '@':
+					let element = document.getElementById(value);
+					if (element)
+						return encodeURIComponent(element.value || "");
+					else
+						throw new Error(`${value} is not a valid element id`)
+				case '!':
+					return confirm(value) ? "true" : "false";
+				case '?':
+					return encodeURIComponent(prompt(value) || "");
+			}
 		});
-
-	var parameters = string.match(/([!][{][^}]*[}])/g);
-	if (parameters)
-		for (var i = 0; i < parameters.length; i++)
-		{
-			var parameter = confirm(decodeURIComponent(parameters[i]
-				.substring(2, parameters[i].length - 1)));
-			result = result.replace(parameters[i], parameter ? "true" : "false");
-		}
-
-	var parameters = string.match(/([?][{][^}]*[}])/g);
-	if (parameters)
-		for (var i = 0; i < parameters.length; i++)
-		{
-			var parameter = prompt(decodeURIComponent(parameters[i]
-				.substring(2, parameters[i].length - 1)));
-			if (parameter === null)
-				return null;
-			result = result.replace(parameters[i], encodeURIComponent(parameter));
-		}
-
-	return result;
+	return encodeURI(result);
 }
+
+window.addEventListener("click", function (event)
+{
+	if (event.button)
+		return;
+
+	for (let element of event.composedPath())
+	{
+		if (element.tagName === "A")
+		{
+			if (element.href.match(RESOLVE_REGEX))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				let clone = element.cloneNode(false);
+				clone.href = resolve(element.href);
+				clone.click();
+			}
+			return;
+		} else if (element.tagName === "BUTTON")
+		{
+			let action = element.getAttribute("formaction");
+			if (!action && element.form)
+				action = element.form.action;
+			if (action && action.match(RESOLVE_REGEX))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				let clone = element.cloneNode(false);
+				clone.setAttribute("formaction", resolve(action));
+				clone.click();
+			}
+			return;
+		}
+	}
+});

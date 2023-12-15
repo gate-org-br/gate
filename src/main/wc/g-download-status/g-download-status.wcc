@@ -3,6 +3,20 @@
 import resolve from './resolve.js';
 import DataFormat from './data-format.js';
 
+function getFileName(request)
+{
+	let disposition = /^attachment;.*filename="([^"]*)"$/
+		.exec(request.getResponseHeader('content-disposition'));
+	if (disposition)
+		return disposition[1];
+
+	let contentType = request.getResponseHeader('content-type');
+	if (contentType)
+		return contentType.replace("/", ".");
+
+	return "file";
+}
+
 customElements.define('g-download-status', class extends HTMLElement
 {
 	constructor()
@@ -18,7 +32,7 @@ customElements.define('g-download-status', class extends HTMLElement
 		let progress = this.shadowRoot.querySelector("progress");
 		let clock = this.shadowRoot.querySelector("g-digital-clock");
 		let counter = this.shadowRoot.querySelector("span");
-		
+
 		this.request = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		this.request.addEventListener("load", () =>
 		{
@@ -29,13 +43,11 @@ customElements.define('g-download-status', class extends HTMLElement
 					progress.max = progress.value = 100;
 				title.style.color = "#006600";
 				title.innerHTML = "Download efetuado com sucesso";
-				var disposition = this.request.getResponseHeader('content-disposition');
-				var matches = /"([^"]*)"/.exec(disposition);
-				var filename = (matches !== null && matches[1] ? matches[1] : 'file');
+
 				var blob = new Blob([this.request.response], {type: 'application/octet-stream'});
 				var link = document.createElement('a');
 				link.href = window.URL.createObjectURL(blob);
-				link.download = filename;
+				link.download = getFileName(this.request);
 				document.body.appendChild(link);
 				link.click();
 				document.body.removeChild(link);
@@ -48,12 +60,12 @@ customElements.define('g-download-status', class extends HTMLElement
 				{
 					title.style.color = "#660000";
 					title.innerHTML = reader.result;
-					this.dispatchEvent(new CustomEvent('error', {cancelable: false, 'detail': reader.result}));
+					this.dispatchEvent(new CustomEvent('error', {'detail': reader.result}));
 				});
 				reader.readAsText(new Blob([this.request.response], {type: 'application/octet-stream'}));
 			}
 		});
-		this.request.addEventListener("loadend", () => this.request = null);
+
 		this.request.addEventListener("progress", event =>
 		{
 			title.innerHTML = "Efetuando download";
@@ -68,13 +80,17 @@ customElements.define('g-download-status', class extends HTMLElement
 				}
 			}
 		});
+
 		this.request.addEventListener("error", () =>
 		{
 			clock.setAttribute("paused", "paused");
 			title.style.color = "#660000";
 			title.innerHTML = "Erro ao efetuar download";
-			this.dispatchEvent(new CustomEvent('error', {cancelable: false}));
+			this.dispatchEvent(new CustomEvent('error'));
 		});
+
+		this.request.addEventListener("loadend", () => this.request = null);
+
 		title.innerHTML = "Conectando ao servidor";
 		this.request.responseType = 'blob';
 		this.request.open(method, resolve(url), true);

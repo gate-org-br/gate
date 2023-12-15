@@ -162,7 +162,7 @@ export default class GSearchPicker extends GWindow
 				{
 					if (e.detail && e.detail.length === 1)
 					{
-						resolve(e.detail[0]);
+						resolve({index: 0, value: e.detail[0]});
 						picker.hide();
 					}
 				});
@@ -181,66 +181,38 @@ export default class GSearchPicker extends GWindow
 
 customElements.define('g-search-picker', GSearchPicker);
 
-window.addEventListener("click", function (event)
+window.addEventListener("@search", function (event)
 {
-	if (event.button !== 0)
-		return;
+	event.preventDefault();
+	event.stopPropagation();
 
-	let link = event.target.closest("a[target='@search']");
-	if (!link && event.composed)
-		link = event.composedPath()[0].closest("a[target='@search']");
-	if (link)
+	let trigger = event.composedPath()[0] || event.target;
+
+	let label = trigger.parentNode.querySelector("input[type=text]");
+	if (!label)
+		throw new Error("Label input not found");
+
+	let value = trigger.parentNode.querySelector("input[type=hidden]");
+	if (!value)
+		throw new Error("Value input not found");
+
+	if (trigger === label)
 	{
-		event.preventDefault();
-		event.stopPropagation();
-
-		let label = link.parentNode.querySelector("input[type=text]");
-		if (!label)
-			throw new Error("Label input not found");
-
-		let value = link.parentNode.querySelector("input[type=hidden]");
-		if (!value)
-			throw new Error("Value input not found");
-
-		if (label.value || value.value)
-			return label.value = value.value = '';
-
-		link.style.pointerEvents = "none";
-		GSearchPicker.pick(link.href, link.title)
+		GSearchPicker.pick(event.detail.action, trigger.title, label.value)
 			.then(object =>
 			{
 				label.value = Extractor.label(object.value);
 				value.value = Extractor.value(object.value);
 			})
-			.catch(() => undefined)
-			.finally(() => link.style.pointerEvents = "");
-	}
-});
-
-window.addEventListener("change", function (event)
-{
-	let input = event.target || event.srcElement;
-
-	if (input.tagName === "INPUT"
-		&& input.hasAttribute("type")
-		&& input.getAttribute("type").toUpperCase() === "TEXT")
-	{
-		let link = input.parentNode.querySelector("a[target='@search']");
-		let hidden = input.parentNode.querySelector("input[type='hidden']");
-		if (link && hidden)
-			if (input.value)
+			.catch(() => label.value = value.value = "");
+	} else if (!label.value && !value.value)
+		GSearchPicker.pick(event.detail.action, trigger.title)
+			.then(object =>
 			{
-				link.style.pointerEvents = "none";
-				GSearchPicker.pick(link.href, link.title, input.value)
-					.then(object =>
-					{
-						input.value = Extractor.label(object.value);
-						hidden.value = Extractor.value(object.value);
-					})
-					.catch(() => undefined)
-					.finally(() => link.style.pointerEvents = "");
-			} else
-				hidden.value = '';
-	}
+				label.value = Extractor.label(object.value);
+				value.value = Extractor.value(object.value);
+			})
+			.catch(() => undefined);
+	else
+		label.value = value.value = '';
 });
-

@@ -1,0 +1,78 @@
+<table id="page" class="c2">
+	<caption>
+		ACTIONS FOUND: 3
+	</caption>
+	<thead>
+		<tr>
+			<th>Action</th>
+			<th style="width: 64px">Remove</th>
+		</tr>
+	</thead>
+	<tbody data-navigator>
+		<tr tabindex="1" data-target='_self' data-action="/crud/self.html" data-on-hide="submit(form)">
+			<td>
+				Self
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-target="_parent" data-action="/crud/parent.html">
+			<td>
+				Parent
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-target="_top" data-action="/crud/top.html">
+			<td>
+				Top
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-target="_blank" data-action="/crud/blank.html">
+			<td>
+				Blank
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-target="@dialog" data-action="/crud/dialog.html" data-on-hide="submit(form)">
+			<td>
+				Dialog
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-target="@stack" data-action="/crud/stack.html" data-on-hide="submit(form)">
+			<td>
+				Stack
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-confirm="Are you sure?">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+
+		<tr tabindex="1" data-action="/crud/alert.html" data-alert="Alerta">
+			<td>
+				Alert
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-alert="Alert">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+		<tr tabindex="1" data-action="/crud/cancel.html" data-cancel="Cancel">
+			<td>
+				Cancel
+			</td>
+			<td data-action="/crud/delete.html" data-target="@remove(this/parentNode)" data-cancel="Canceled">
+				<i>&#X1001;</i>
+			</td>
+		</tr>
+	</tbody>
+</table>

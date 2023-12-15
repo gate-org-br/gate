@@ -8,15 +8,16 @@
 :host(*) {
 	width: 0;
 	height: 0;
+	max-width: unset;
 }
 
 dialog {
-	width: 100vw;
-	height: 100vh;
-	min-width: 100vw;
-	min-height: 100vh;
+	width: 100%;
+	height: 100%;
 	display:  flex;
 	overflow: auto;
+	max-width: unset;
+	max-height: unset;
 	align-items: stretch;
 	justify-content: center;
 }

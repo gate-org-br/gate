@@ -1,39 +1,50 @@
-import GLoading from './g-loading.js';
+import GBlock from './g-block.js';
 
-export default function hide(link)
-{
-	GLoading.show();
-	setTimeout(() =>
-	{
-		let type = link.getAttribute("data-on-hide");
-		if (type === "reload")
-			window.location.reload();
-		else if (type === "submit")
-			return link.closest("form").submit();
-		else if (type.match(/submit\([^)]+\)/))
-			document.getElementById(/submit\(([^)]+)\)/.exec(type)[1]).submit();
-	}, 0);
-}
 
-window.addEventListener("click", function (event)
+window.addEventListener("@hide", function (event)
 {
-	event = event || window.event;
-	let action = event.target || event.srcElement;
-	action = action.closest("a.Hide");
-	if (action)
-		hide(action);
+	event.preventDefault();
+	if (window.frameElement
+		&& window.frameElement.dialog
+		&& window.frameElement.dialog.hide)
+		window.frameElement.dialog.hide();
+	else
+		window.close();
 });
 
-window.addEventListener("trigger", function (event)
+window.addEventListener("hide", function (event)
 {
-	if (event.detail.target === "@hide")
+	let trigger = event.composedPath()[0] || event.target;
+	if (trigger.hasAttribute("data-on-hide"))
 	{
-		event.preventDefault();
-		if (window.frameElement
-			&& window.frameElement.dialog
-			&& window.frameElement.dialog.hide)
-			window.frameElement.dialog.hide();
-		else
-			window.close();
+		GBlock.show("...");
+		let type = trigger.getAttribute("data-on-hide");
+		let parameter = null;
+		let parentesis = type.indexOf("(");
+		if (parentesis > 0)
+		{
+			if (!type.endsWith(")"))
+				throw new Error(`${type} is not a valid data-on-hide value`);
+			parameter = type.slice(parentesis + 1, -1);
+			type = type.slice(0, parentesis);
+		}
+
+		switch (type)
+		{
+			case "submit":
+				let form = trigger.closest("form");
+				if (parameter)
+					form = trigger.getRootNode().getElementById(parameter);
+				else if (trigger.hasAttribute("data-form"))
+					form = trigger.getRootNode().getElementById(trigger.getAttribute("data-form"));
+				form.dispatchEvent(new SubmitEvent('submit', {bubbles: true, cancelable: true, submitter: trigger}));
+				break;
+			case "click":
+				trigger.getRootNode().getElementById(parameter).click();
+				break;
+			case "reload":
+				window.location.reload();
+				break;
+		}
 	}
 });

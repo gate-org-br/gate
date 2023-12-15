@@ -1,8 +1,10 @@
 /* global customElements, template */
 
 import './trigger.js';
-import hide from './hide.js';
 import GModal from './g-modal.js';
+import RequestBuilder from './request-builder.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
 customElements.define('g-stack-frame', class GStackFrame extends GModal
 {
@@ -15,13 +17,8 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 		let iframe = this.iframe;
 
 		iframe.dialog = this;
-		iframe.onmouseenter = () => this.iframe.focus();
-
-		iframe.addEventListener("load", () =>
-		{
-			iframe.removeAttribute("name");
-			iframe.addEventListener("focus", () => autofocus(iframe.contentWindow.document));
-		});
+		iframe.addEventListener("load", () => iframe.focus());
+		iframe.addEventListener("mouseenter", () => iframe.focus());
 	}
 
 	get iframe()
@@ -35,15 +32,20 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 	}
 });
 
-window.addEventListener("trigger", function (event)
+window.addEventListener("@stack", function (event)
 {
-	if (event.detail.target === "@stack")
-	{
-		let stack = window.top.document.createElement("g-stack-frame");
-		stack.addEventListener("show", () => event.detail.element.dispatchEvent(new CustomEvent('show', {detail: {modal: stack}})));
-		stack.addEventListener("hide", () => event.detail.element.dispatchEvent(new CustomEvent('hide', {detail: {modal: stack}})));
-		if (event.detail.element.hasAttribute("data-on-hide"))
-			stack.addEventListener("hide", () => hide(event.detail.element));
-		stack.show();
-	}
+	let trigger = event.composedPath()[0] || event.target;
+	let stack = window.top.document.createElement("g-stack-frame");
+	stack.addEventListener("show", () => trigger.dispatchEvent(new CustomEvent('show', {bubbles: true, detail: {modal: stack}})));
+	stack.addEventListener("hide", () => trigger.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: stack}})));
+
+
+	stack.show();
+	if (event.detail.method === "get")
+		stack.iframe.src = event.detail.action;
+	else
+		fetch(RequestBuilder.build(event.detail.action, event.detail.method, event.detail.form))
+			.then(ResponseHandler.text)
+			.then(html => stack.iframe.srcDoc = html)
+			.catch(GMessageDialog.error);
 });

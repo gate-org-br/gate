@@ -75,3 +75,25 @@ customElements.define('g-report-dialog', class extends GWindow
 		this.show();
 	}
 });
+
+window.addEventListener("@report", function (event)
+{
+	event.preventDefault();
+	event.stopPropagation();
+	let trigger = event.composedPath()[0] || event.target;
+	let dialog = window.top.document.createElement("g-report-dialog");
+
+	dialog.caption = trigger.getAttribute("title") || "Imprimir";
+
+	if (event.detail.method === "post")
+	{
+		let form = trigger.closest("form");
+		if (trigger.form)
+			form = trigger.form;
+		else if (trigger.hasAttribute("data-form"))
+			form = trigger.getRootNode().getElementById(trigger.getAttribute("data-form"));
+
+		dialog.post(event.detail.action, new FormData(form));
+	} else if (event.detail.method === "get")
+		dialog.get(event.detail.action);
+});

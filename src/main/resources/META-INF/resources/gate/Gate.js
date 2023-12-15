@@ -1,8 +1,6 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
-import "./g-loading.js";
-
 import "./link.js";
 import "./mask.js";
 import "./button.js";
@@ -32,7 +30,6 @@ import "./g-scroll-tabbar.js";
 import "./g-tab-control.js";
 import "./g-navbar.js";
 import "./g-dialog.js";
-import "./g-dialog-caption.js";
 import "./g-stack-frame.js";
 import "./g-context-menu.js";
 
@@ -95,9 +92,11 @@ import "./g-callout.js";
 import "./g-accordion.js";
 import "./g-accordion-section.js";
 
-import './spa.js';
+import './hateoas.js';
 
 import './table.js';
+import './hide.js';
+import "./populator.js";
 
 Array.from(document.getElementsByTagName("select")).forEach(function (element)
 {

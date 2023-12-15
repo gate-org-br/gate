@@ -1,20 +1,13 @@
 <template>
-	<main part='main'>
+	<dialog part='dialog'>
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
-			<g-dialog-commands></g-dialog-commands>
-			<g-navbar></g-navbar>
-			<a id='minimize' href='#'>
-				<g-icon>
-					&#x3019;
-				</g-icon>
-			</a>
-			<a id='fullscreen' href='#'>
-				<g-icon>
-					&#x3016;
-				</g-icon>
-			</a>
+			<nav>
+				<slot></slot>
+			</nav>
+			<g-navbar>
+			</g-navbar>
 			<a id='hide' href='#'>
 				<g-icon>
 					&#x1011;
@@ -22,8 +15,8 @@
 			</a>
 		</header>
 		<section part='section'>
-			<iframe scrolling="no">
+			<iframe name="@dialog" scrolling="no">
 			</iframe>
 		</section>
-	</main>
+	</dialog>
 </template>

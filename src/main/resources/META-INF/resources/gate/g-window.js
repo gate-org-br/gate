@@ -18,11 +18,13 @@ template.innerHTML = `
 
 main,
 dialog {
+	max-width: none;
+	max-height: none;
+	margin: auto;
 	padding: 0;
 	height: auto;
 	border: none;
 	display: flex;
-	position: fixed;
 	border-radius: 3px;
 	flex-direction: column;
 	background-color: var(--main3);
@@ -63,7 +65,6 @@ dialog > section > fieldset:only-child {
 main > header > label,
 dialog > header > label
 {
-	order: 1;
 	flex-grow: 1;
 	display: flex;
 	color: inherit;
@@ -77,7 +78,6 @@ main > header > button,
 dialog > header > a,
 dialog > header > button
 {
-	order: 2;
 	border:none;
 	color: black;
 	display: flex;
