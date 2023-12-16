@@ -30,20 +30,7 @@ window.addEventListener("click", function (event)
 
 	for (let element of event.composedPath())
 	{
-		if (element.tagName === "A")
-		{
-			if (element.href.match(RESOLVE_REGEX))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				let clone = element.cloneNode(false);
-				clone.href = resolve(element.href);
-				clone.click();
-			}
-			return;
-		} else if (element.tagName === "BUTTON")
+		if (element.tagName === "BUTTON")
 		{
 			let action = element.getAttribute("formaction");
 			if (!action && element.form)

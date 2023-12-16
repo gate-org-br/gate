@@ -1,13 +1,17 @@
 import Optional from './optional.js';
 export default function navigate(source, path)
 {
+	if (source instanceof Event)
+		source = source.composedPath()[0] || source.target;
+
 	path = (path || "").trim();
 
 	if (!path)
 		return new Optional(source);
 
 	if (!path.startsWith("this"))
-		return new Optional(source.getRootNode().querySelector(path));
+		return new Optional(source.getRootNode().querySelector(path)
+			|| document.querySelector(path));
 
 	for (let step of path.split("/"))
 	{

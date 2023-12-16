@@ -38,6 +38,9 @@ function dispatch(cause, element, method, action, target)
 		action = resolve((action || "").trim());
 		target = (target || "_self").trim();
 
+		if (!target.startsWith("_") && !target.startsWith("@"))
+			target = `@frame(${target})`;
+
 		let type = target;
 		let parameters = [];
 		let parentesis = target.indexOf("(");
@@ -83,12 +86,8 @@ window.addEventListener("click", function (event)
 			{
 				if (element.tagName === "A")
 				{
-					if (element.target && element.target.startsWith("@"))
-					{
-						event.preventDefault();
-						dispatch(event, element, "get", element.href, element.target);
-					} else if (!validate(element))
-						event.preventDefault();
+					event.preventDefault();
+					dispatch(event, element, "get", element.href, element.target);
 					return;
 				} else if ((element.hasAttribute("data-trigger")
 					|| element.hasAttribute("data-method")

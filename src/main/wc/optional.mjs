@@ -1,35 +1,75 @@
+
+
 export default class Optional
 {
+	#value;
+
 	constructor(value)
 	{
-		this._value = value;
+		this.#value = value;
+	}
+
+	isEmpty()
+	{
+		return this.#value === undefined
+			|| this.#value === null;
+	}
+
+	isPresent()
+	{
+		return this.#value !== undefined
+			&& this.#value !== null;
 	}
 
 	map(func)
 	{
-		return this._value ? new Optional(func(this._value)) : new Optional();
+		return this.isPresent() ? Optional.of(func(this.#value)) : EMPTY;
+	}
+
+	flatMap(func)
+	{
+		return this.isPresent() ? func(this.#value) : EMPTY;
+	}
+
+	filter(predicate)
+	{
+		return this.isPresent() && predicate(this.#value) ? this : EMPTY;
+	}
+
+	forEach(func)
+	{
+		if (this.isPresent())
+			func(this.#value);
 	}
 
 	orElse(value)
 	{
-		return this._value !== undefined ? this._value : value;
+		if (this.isPresent())
+			return this.#value;
+		return typeof value === "function" ? value() : value;
 	}
 
 	orElseThrow(message)
 	{
-		if (this._value === undefined || this._value === null)
+		if (this.isEmpty())
 			throw new TypeError(message || "No such element");
-		return this._value;
+		return this.#value;
+	}
+
+	or(value)
+	{
+		if (this.isPresent())
+			return this;
+		return Optional.of(typeof value === "function" ? value() : value);
 	}
 
 	then(resolve, reject)
 	{
-		if (this._value === undefined || this._value === null)
-			return reject ? Promise.reject(reject()) : this;
+		if (this.isEmpty())
+			return Promise.reject(reject ? reject() : new Error("No such element"));
 
-		return resolve ? Promise.resolve(resolve(this._value)) : this;
+		return Promise.resolve(resolve ? resolve(this.#value) : this.#value);
 	}
-
 	catch (reject)
 	{
 		return this.then(null, reject);
@@ -38,4 +78,17 @@ export default class Optional
 	{
 		return this.then(action, action);
 	}
+
+	static empty()
+	{
+		return EMPTY;
+	}
+
+	static of(value)
+	{
+		return value !== null && value !== undefined ?
+			new Optional(value) : Optional.empty();
+	}
 }
+
+const EMPTY = new Optional(null);
