@@ -76,7 +76,11 @@ label::first-line  {
 /* global customElements, template */
 
 import './g-icon.js';
+import './trigger.js';
+import GBlock from './g-block.js';
 import GWindow from './g-window.js';
+import RequestBuilder from './request-builder.js';
+import ResponseHandler from './response-handler.js';
 
 export default class GMessageDialog extends GWindow
 {
@@ -208,3 +212,19 @@ export default class GMessageDialog extends GWindow
 }
 
 customElements.define('g-message-dialog', GMessageDialog);
+
+window.addEventListener("@message", function (event)
+{
+	event.preventDefault();
+	event.stopPropagation();
+
+	let timeout = event.detail.parameters[0];
+	timeout = timeout ? Number(timeout) : null;
+
+	GBlock.show("...");
+	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+		.then(ResponseHandler.text)
+		.then(text => GMessageDialog.success(text, timeout))
+		.catch(error => GMessageDialog.error(error, timeout))
+		.finally(() => GBlock.hide());
+});

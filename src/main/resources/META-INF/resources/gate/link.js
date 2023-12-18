@@ -7,16 +7,6 @@ import resolve from './resolve.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
 
-function _message(link, timeout)
-{
-	link.style.pointerEvents = "none";
-	fetch(link.href)
-		.then(message => ResponseHandler.text(message))
-		.then(message => GMessageDialog.success(message, timeout ? Number(timeout) : null))
-		.catch(error => GMessageDialog.error(error.message))
-		.finally(() => link.style.pointerEvents = "");
-}
-
 window.addEventListener("click", function (event)
 {
 	if (event.button !== 0)
@@ -33,11 +23,6 @@ window.addEventListener("click", function (event)
 	if (target)
 		switch (target[1])
 		{
-			case "_message":
-				event.preventDefault();
-				event.stopPropagation();
-				return _message(link, target[3]);
-
 			case "_progress-dialog":
 				event.preventDefault();
 				event.stopPropagation();

@@ -3,6 +3,7 @@
 import './trigger.js';
 import GBlock from './g-block.js';
 import navigate from './navigate.js';
+import GFilePicker from './g-file-picker.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
@@ -18,11 +19,16 @@ function processWindow(event, target)
 		target.addEventListener("load", GBlock.hide, {once: true});
 		target.location = event.detail.action;
 	} else
-		fetch(RequestBuilder.build(event.detail.action, event.detail.method, event.detail.form))
-			.then(ResponseHandler.text)
-			.then(html => target.document.documentElement.outerHTML = html)
+		fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+			.then(ResponseHandler.self)
+			.then(response =>
+				response.headers.get('content-type') === "text/html"
+					? response.text().then(text => target.document.documentElement
+						.replaceChildren(...new DOMParser().parseFromString(text, 'text/html').documentElement.childNodes))
+					: GFilePicker.fetch(response)
+			)
 			.catch(GMessageDialog.error)
-			.finally(() => GBlock.hide());
+			.finally(GBlock.hide);
 }
 
 window.addEventListener("_self", event => processWindow(event, window));
@@ -30,7 +36,8 @@ window.addEventListener("_top", event => processWindow(event, window.top));
 window.addEventListener("_parent", event => processWindow(event, window.parent));
 window.addEventListener("_blank", event => processWindow(event, window.open()));
 
-window.addEventListener("@frame", event => navigate(event, `[name='${event.detail.parameters[0]}'], #${event.detail.parameters[0]}`)
+window.addEventListener("@frame", event =>
+	navigate(event, `[name='${event.detail.parameters[0]}'], #${event.detail.parameters[0]}`)
 		.then(target => processWindow(event, target.contentWindow))
 		.catch(() => {
 			throw new Error("Invalid target element");
@@ -39,7 +46,7 @@ window.addEventListener("@frame", event => navigate(event, `[name='${event.detai
 function processElement(event)
 {
 	GBlock.show("...");
-	return fetch(RequestBuilder.build(event.detail.action, event.detail.method, event.detail.form))
+	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.text)
 		.catch(GMessageDialog.error)
 		.then(html => navigate(event, event.detail.parameters[0]).then(target => ({target, html})))

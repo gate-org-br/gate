@@ -30,107 +30,126 @@ function validate(element)
 	return true;
 }
 
-function dispatch(cause, element, method, action, target)
+function dispatch(cause, element, method, action, target, form)
 {
-	if (validate(element))
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
+
+	method = (method || "get").trim();
+	action = resolve((action || "").trim());
+	target = (target || "_self").trim();
+
+	if (!target.startsWith("_") && !target.startsWith("@"))
+		target = `@frame(${target})`;
+
+	let type = target;
+	let parameters = [];
+	let parentesis = target.indexOf("(");
+	if (parentesis > 0)
 	{
-		method = (method || "get").trim();
-		action = resolve((action || "").trim());
-		target = (target || "_self").trim();
-
-		if (!target.startsWith("_") && !target.startsWith("@"))
-			target = `@frame(${target})`;
-
-		let type = target;
-		let parameters = [];
-		let parentesis = target.indexOf("(");
-		if (parentesis > 0)
-		{
-			if (!target.endsWith(")"))
-				throw new Error(`${target} is not a valid target`);
-			type = target.substring(0, parentesis);
-			parameters = CSV.parse(target.slice(parentesis + 1, -1));
-		}
-
-		let form = null;
-		if (method === "post"
-			|| method === "put"
-			|| method === "path")
-		{
-			form = element.form
-				|| element.closest("form");
-			if (element.hasAttribute("data-form"))
-			{
-				form = element.getRootNode()
-					.getElementById(element.getAttribute("data-form"));
-				if (!form)
-					throw new Error(`${element.getAttribute("data-form")} is not a valid id`);
-			}
-		}
-
-		element.dispatchEvent(new CustomEvent(type,
-			{bubbles: true,
-				composed: true,
-				detail: {cause, method, action, target, parameters, form}}));
+		if (!target.endsWith(")"))
+			throw new Error(`${target} is not a valid target`);
+		type = target.substring(0, parentesis);
+		parameters = CSV.parse(target.slice(parentesis + 1, -1));
 	}
+
+	if (!form)
+	{
+		if (element.hasAttribute("data-form"))
+		{
+			form = element.getRootNode().getElementById(element.getAttribute("data-form"));
+			if (!form)
+				throw new Error(`${element.getAttribute("data-form")} is not a valid id`);
+		} else if (element.method === "post" || method === "put" || method === "path")
+			form = element.form || element.closest("form");
+	}
+
+	if (form && !element.hasAttribute("formnovalidate") && !form.hasAttribute("novalidate") && !form.reportValidity())
+		return;
+
+	let detail = {cause, method, action, target, parameters, form};
+	element.dispatchEvent(new CustomEvent(type, {bubbles: true, composed: true, detail}));
 }
 
 
 window.addEventListener("click", function (event)
 {
-	if (!event.button)
+	if (event.button)
+		return;
+
+	for (let element of event.composedPath())
 	{
-		for (let element of event.composedPath())
+		if (!element.hasAttribute)
+			return;
+		if (element.tagName === "A")
 		{
-			if (element.hasAttribute)
-			{
-				if (element.tagName === "A")
-				{
-					event.preventDefault();
-					dispatch(event, element, "get", element.href, element.target);
-					return;
-				} else if ((element.hasAttribute("data-trigger")
-					|| element.hasAttribute("data-method")
-					|| element.hasAttribute("data-action")
-					|| element.hasAttribute("data-target"))
-					&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
-				{
-					event.preventDefault();
-					dispatch(event,
-						element,
-						element.getAttribute("data-method"),
-						element.getAttribute("data-action"),
-						element.getAttribute("data-target"));
-					return;
-				}
-			}
+			if (!validate(element))
+				return event.preventDefault();
+			if (element.target.startsWith("@"))
+				dispatch(event, element, "get", element.href, element.target);
+			return;
+		}
+
+		if (element.tagName === "BUTTON")
+		{
+			if (!element.form || !validate(element))
+				return event.preventDefault();
+
+			let method = (element.getAttribute("formmethod") || element.form.method || "get").toLowerCase();
+			let action = element.getAttribute("formaction") || element.form.action || "";
+			let target = element.getAttribute("formtarget") || element.form.target || "_self";
+
+			if (target.startsWith("@") && (method === "get" || method === "post"))
+				dispatch(event, element, method, action, target, element.form);
+
+			return;
+		}
+
+		if ((element.hasAttribute("data-trigger")
+			|| element.hasAttribute("data-method")
+			|| element.hasAttribute("data-action")
+			|| element.hasAttribute("data-target"))
+			&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
+		{
+			if (!validate(element))
+				return event.preventDefault();
+
+			dispatch(event,
+				element,
+				element.getAttribute("data-method"),
+				element.getAttribute("data-action"),
+				element.getAttribute("data-target"));
+			return;
 		}
 	}
 });
 
 window.addEventListener("submit", function (event)
 {
-	let submiter = event.submitter;
 	let element = event.composedPath()[0] || event.target;
-	let method = submiter.getAttribute("formmethod") || element.method;
-	let target = submiter.getAttribute("formtarget") || element.target;
-	let action = submiter.getAttribute("formaction") || element.action;
-	if (target && target.startsWith("@"))
-	{
-		event.preventDefault();
-		dispatch(event, submiter, method, action, target);
-	} else if (!validate(submiter) || !validate(element))
-		event.preventDefault();
+	if (!validate(element))
+		return event.preventDefault();
+
+	let submiter = event.submitter;
+	let method = submiter.getAttribute("formmethod") || element.method || "get";
+	let target = submiter.getAttribute("formtarget") || element.target || "_self";
+	let action = submiter.getAttribute("formaction") || element.action || "";
+	if (target.startsWith("@") || (method !== "get" && method !== "post"))
+		dispatch(event, submiter, method, action, target, element);
 });
 
 window.addEventListener("change", function (event)
 {
 	let element = event.target || event.composedPath()[0];
+	if (!validate(element))
+		return event.preventDefault();
+
 	if ((element.hasAttribute("data-trigger")
 		|| element.hasAttribute("data-method")
 		|| element.hasAttribute("data-action")
 		|| element.hasAttribute("data-target"))
-		&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "change")
+		&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "change")
 		dispatch(event, element, element.dataset.method, element.dataset.action, element.dataset.target);
 });
 
@@ -139,7 +158,8 @@ window.addEventListener("load", event => Array.from(document.querySelectorAll('*
 				|| e.hasAttribute("data-method")
 				|| e.hasAttribute("data-action")
 				|| e.hasAttribute("data-target"))
-		.filter(e => (e.getAttribute("data-trigger") || DEFAULT.get(e.tagName)) === "load")
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.filter(e => validate(e))
 		.forEach(e => dispatch(event, e, e.dataset.method, e.dataset.action, e.dataset.target)));
 
 window.addEventListener("@trigger", function (event)

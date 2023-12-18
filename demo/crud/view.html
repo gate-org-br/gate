@@ -29,11 +29,19 @@
 				Search<g-icon>&#X2010;</g-icon>
 			</button>
 
-			<button formtarget="@report" formaction="download.pdf">
+			<button class="primary" tabindex="2" title="Post" formaction="/main.html" formtarget="_top">
+				Post<g-icon>&#X2010;</g-icon>
+			</button>
+
+			<button formaction="/download.bin" formtarget="_self">
+				Download<i>&#X2021;</i>
+			</button>
+
+			<button formtarget="@report" formaction="/download.pdf">
 				Report<i>&#X2021;</i>
 			</button>
 
-			<button tabindex="2" title="Insert" formaction="insert.html" formtarget="@afterbegin(#page)">
+			<button tabindex="2" title="Insert" formaction="insert.html" formtarget="@afterbegin(#page > tbody)">
 				Insert
 				<g-icon>&#X1002;</g-icon>
 			</button>

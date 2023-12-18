@@ -98,18 +98,6 @@ import './table.js';
 import './hide.js';
 import "./populator.js";
 
-Array.from(document.getElementsByTagName("select")).forEach(function (element)
-{
-	element.onclick = function (event)
-	{
-		event = event ? event : window.event;
-		if (event.stopPropagation)
-			event.stopPropagation();
-		else
-			event.cancelBubble = true;
-	};
-});
-
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {
 	element.addEventListener("change", function ()
@@ -118,7 +106,3 @@ Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][dat
 		Array.from(document.querySelectorAll(selector)).forEach(target => target.checked = element.checked);
 	});
 });
-
-setInterval(() => window.dispatchEvent(new CustomEvent("refresh_size")), 500);
-
-document.body.style.visibility = 'visible';

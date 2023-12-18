@@ -5,6 +5,25 @@ export default class ResponseHandler
 {
 
 	/**
+	 * Returns a promise that resolves to the same response,
+	 * or rejects with an error message if the response is not successful.
+	 *
+	 * @param {Response} response - The response object to handle.
+	 * @returns {Promise} A promise that resolves to the same response,
+	 *                    or rejects with an error message.
+	 */
+	static self(response)
+	{
+		if (!response)
+			return Promise.resolve();
+
+		if (response.ok)
+			return response;
+
+		return response.text().then((error) => Promise.reject(new Error(error)));
+	}
+
+	/**
 	 * Returns a promise that resolves to the JSON body of the response,
 	 * or rejects with an error message if the response is not successful.
 	 *
@@ -66,7 +85,7 @@ export default class ResponseHandler
 	 * or rejects with an error message if the response is not successful.
 	 *
 	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} A promise that resolves with no value if the response is successful,
+	 * @returns {Promise} a promise that resolves with no value if the response is successful,
 	 *                    or rejects with an error message.
 	 */
 	static none(response)

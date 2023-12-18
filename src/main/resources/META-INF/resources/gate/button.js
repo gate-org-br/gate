@@ -20,40 +20,6 @@ window.addEventListener("click", function (event)
 	{
 		switch (target)
 		{
-			case "_message":
-				event.preventDefault();
-				event.stopPropagation();
-
-				button.disabled = true;
-				new URL(button.getAttribute("formaction"))
-					.post(new FormData(button.form), function (status)
-					{
-						try
-						{
-							status = JSON.parse(status);
-							GMessageDialog.show(status, 2000);
-						} finally
-						{
-							button.disabled = false;
-						}
-					});
-				break;
-			case "_alert":
-				event.preventDefault();
-				event.stopPropagation();
-
-				if (button.form.reportValidity())
-				{
-					button.disabled = true;
-					new URL(button.getAttribute("formaction"))
-						.post(new FormData(button.form), function (status)
-						{
-							alert(status);
-							button.disabled = false;
-						});
-				}
-				break;
-
 			case "_progress-dialog":
 				event.preventDefault();
 				event.stopPropagation();

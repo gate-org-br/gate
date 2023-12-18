@@ -25,10 +25,6 @@
 	box-sizing: border-box;
 }
 
-body {
-	visibility: hidden;
-}
-
 iframe {
 	border: none;
 	margin: 0;

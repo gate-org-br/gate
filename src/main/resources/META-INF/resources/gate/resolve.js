@@ -30,11 +30,30 @@ window.addEventListener("click", function (event)
 
 	for (let element of event.composedPath())
 	{
+		if (element.tagName === "A")
+		{
+			if (element.href.match(RESOLVE_REGEX))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				let clone = element.cloneNode(false);
+				clone.href = resolve(element.href);
+				element.parentNode.appendChild(clone);
+				clone.click();
+				clone.remove();
+			}
+			return;
+		}
+
 		if (element.tagName === "BUTTON")
 		{
-			let action = element.getAttribute("formaction");
-			if (!action && element.form)
-				action = element.form.action;
+			if (!element.form)
+				return;
+
+			let action = element.getAttribute("formaction") || element.form.action;
+
 			if (action && action.match(RESOLVE_REGEX))
 			{
 				event.preventDefault();
@@ -43,7 +62,9 @@ window.addEventListener("click", function (event)
 
 				let clone = element.cloneNode(false);
 				clone.setAttribute("formaction", resolve(action));
+				element.parentNode.appendChild(clone);
 				clone.click();
+				clone.remove();
 			}
 			return;
 		}
