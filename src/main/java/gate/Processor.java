@@ -20,7 +20,7 @@ public class Processor
 	private Logger logger;
 
 	@OnOpen
-	public void open(@PathParam("process") int id, Session session)
+	public void open(@PathParam("process") String id, Session session)
 	{
 		try
 		{
@@ -37,7 +37,7 @@ public class Processor
 	}
 
 	@OnClose
-	public void close(@PathParam("process") int id, Session session, CloseReason reason)
+	public void close(@PathParam("process") String id, Session session, CloseReason reason)
 	{
 		Progress progress = Progress.INSTANCES.get(id);
 		if (progress != null)

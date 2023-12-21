@@ -69,13 +69,6 @@ iframe {
 	padding: 0px;
 	flex-grow: 1;
 	overflow: hidden
-}
-
-iframe[name] {
-	background-position: center;
-	background-repeat: no-repeat;
-	background-position-y: center;
-	background-image: var(--loading);
 }</style>`;
 
 /* global customElements, template */
@@ -189,7 +182,7 @@ window.addEventListener("@dialog", function (event)
 	if (event.detail.method === "get")
 		dialog.iframe.src = event.detail.action;
 	else
-		fetch(RequestBuilder.build(event.detail.action, event.detail.method, event.detail.form))
+		fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 			.then(ResponseHandler.text)
 			.then(html => dialog.iframe.srcDoc = html)
 			.catch(GMessageDialog.error);

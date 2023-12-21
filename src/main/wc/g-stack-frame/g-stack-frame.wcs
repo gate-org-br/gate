@@ -26,10 +26,3 @@ iframe {
 	flex-grow: 1;
 	overflow:  hidden;
 }
-
-iframe[name] {
-	background-position: center;
-	background-repeat: no-repeat;
-	background-position-y: center;
-	background-image: var(--loading);
-}

@@ -10,7 +10,7 @@
 	<script type='module' src='gate/Gate.js' charset="utf-8"></script>
 </head>
 
-<body>
+<body data-loading onload="document.body.removeAttribute('data-loading')">
 	<g-desk-pane>
 		<a href='#' title='Gerência' data-tooltip="Tooltip da Gerência">Gerência<i>&#X2059;</i></a>
 		<a href='#' title='Relatórios' data-tooltip='["Relatório 1", "Relatório 2", "Relatório 3"]'

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <script>
+    const socket = new WebSocket('ws://localhost:8000');
+
+    socket.onopen = (event) => {
+      console.log('WebSocket connection opened:', event);
+
+      // Implement your logic here for handling the WebSocket connection.
+    };
+
+    socket.onmessage = (event) => {
+      console.log('WebSocket message received:', event.data);
+
+      // Implement your logic here for handling WebSocket messages.
+    };
+
+    socket.onclose = (event) => {
+      console.log('WebSocket connection closed:', event);
+
+      // Implement your logic here for handling WebSocket connection close.
+    };
+  </script>
+</body>
+</html>
+

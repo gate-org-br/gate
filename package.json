@@ -12,12 +12,15 @@
 	"contributors": [],
 	"devDependencies": {
 		"grunt": "1.4.0",
-		"less": "^3.13.0",
-		"grunt-import": "1.0.3",
-		"grunt-contrib-watch": "^1.1.0",
-		"grunt-contrib-concat": "~1.0.1",
-		"grunt-contrib-less": "3.0.0",
 		"grunt-contrib-clean": "^2.0.0",
-		"grunt-contrib-copy": "^1.0.0"
+		"grunt-contrib-concat": "~1.0.1",
+		"grunt-contrib-copy": "^1.0.0",
+		"grunt-contrib-less": "3.0.0",
+		"grunt-contrib-watch": "^1.1.0",
+		"grunt-import": "1.0.3",
+		"less": "^3.13.0"
+	},
+	"dependencies": {
+		"ws": "^8.15.1"
 	}
 }

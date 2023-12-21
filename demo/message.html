@@ -10,7 +10,7 @@
 	<script type='module' src='gate/Gate.js' charset="utf-8"></script>
 </head>
 
-<body>
+<body data-loading onload="document.body.removeAttribute('data-loading')">
 	<section style="display: grid; gap: 10px; grid-template-columns: 1fr 1fr 1fr 1fr;">
 		<g-message>
 			Mensagem padrão

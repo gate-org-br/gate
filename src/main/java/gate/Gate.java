@@ -168,7 +168,7 @@ public class Gate extends HttpServlet
 				}
 
 				if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-					executeAsync(httpServletRequest, response, screen, call.getMethod());
+					executeAsync(user, httpServletRequest, response, screen, call.getMethod());
 				else
 					execute(httpServletRequest, response, screen, call.getMethod());
 			}
@@ -221,12 +221,12 @@ public class Gate extends HttpServlet
 		}
 	}
 
-	private void executeAsync(HttpServletRequest request, HttpServletResponse response, Screen screen, Method method)
+	private void executeAsync(User user, HttpServletRequest request, HttpServletResponse response, Screen screen, Method method)
 	{
 		try
 		{
 			request.startAsync();
-			Progress progress = Progress.create();
+			Progress progress = Progress.create(user);
 			Handler handler = handlers.select(IntegerHandler.class).get();
 			handler.handle(request, response, progress.getProcess());
 			request.getAsyncContext().complete();

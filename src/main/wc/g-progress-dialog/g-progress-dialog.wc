@@ -1,5 +1,5 @@
 <template>
-	<main>
+	<dialog>
 		<header>
 			Progresso
 			<a id='close' href="#">
@@ -17,5 +17,5 @@
 				Processando
 			</button>
 		</footer>
-	</main>
+	</dialog>
 </template>

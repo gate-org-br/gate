@@ -1,0 +1,27 @@
+body[data-loading] {
+	height: 100vh;
+	cursor: pointer;
+	position: relative;
+	color: transparent;
+	pointer-events: none;
+}
+
+body[data-loading]>* {
+	visibility: hidden;
+}
+
+body[data-loading]::before {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	content: "";
+	position: absolute;
+	visibility: visible;
+	background-size: 256px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-color: var(--main);
+	background-image: var(--loading);
+}

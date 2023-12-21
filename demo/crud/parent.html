@@ -10,7 +10,7 @@
     <script type='module' src='/gate/Gate.js' charset="utf-8"></script>
 </head>
 
-<body>
+<body data-loading onload="document.body.removeAttribute('data-loading')">
     <g-dialog-configuration caption="Parent">
         <a href="#" onclick="alert('2079')">
             <g-icon>&#X2079;</g-icon>

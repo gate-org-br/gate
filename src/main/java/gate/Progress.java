@@ -1,11 +1,14 @@
 package gate;
 
+import gate.entity.User;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
+import gate.type.MD5;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -18,18 +21,19 @@ public class Progress
 {
 
 	private static final int UNKNOWN = -1;
+	private static final Random RANDOM = new Random();
 	private static final AtomicInteger SEQUENCE = new AtomicInteger();
 	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
-	static final ConcurrentMap<Integer, Progress> INSTANCES = new ConcurrentHashMap<>();
+	static final ConcurrentMap<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
 	private String url;
 	private JsonElement data;
 	private long todo = UNKNOWN;
 	private long done = UNKNOWN;
+	private final String process;
 	private String text = "Aguarde";
 	private Status status = Status.CREATED;
 	private final List<String> messages = new ArrayList<>();
-	private final int process = SEQUENCE.incrementAndGet();
 	private final List<Session> sessions = new CopyOnWriteArrayList<>();
 
 	public enum Status
@@ -37,11 +41,17 @@ public class Progress
 		CREATED, PENDING, COMMITED, CANCELED
 	}
 
-	Progress()
+	Progress(User user)
 	{
+
+		this.process = String.format("%d:%d:%d:%s",
+			user != null && user.getId() != null ? user.getId().getValue() : 0,
+			System.currentTimeMillis(),
+			SEQUENCE.incrementAndGet(),
+			MD5.digest(String.valueOf(RANDOM.nextInt())));
 	}
 
-	int getProcess()
+	String getProcess()
 	{
 		return process;
 	}
@@ -92,16 +102,16 @@ public class Progress
 			.setLong("todo", todo)
 			.setLong("done", done)
 			.setString("text", text)
-			.setInt("process", process)
+			.setString("process", process)
 			.setString("event", "Progress")
 			.setString("status", status.name())
 			.set("data", data)
 			.toString();
 	}
 
-	static Progress create()
+	static Progress create(User user)
 	{
-		Progress progress = new Progress();
+		Progress progress = new Progress(user);
 		CURRENT.set(progress);
 		INSTANCES.put(progress.getProcess(), progress);
 		return progress;
