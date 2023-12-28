@@ -12,8 +12,7 @@ export default class RequestBuilder
 			|| method === "put"
 			|| method === "patch")
 			return new Request(action, {method,
-				body: form ? new FormData(form) : new FormData(),
-				headers: {'Content-Type': 'application/x-www-form-urlencoded'}});
+				body: form ? new FormData(form) : new FormData()});
 
 	}
 }

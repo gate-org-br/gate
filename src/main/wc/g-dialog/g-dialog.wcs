@@ -13,12 +13,12 @@ dialog {
 	}
 }
 
-dialog > section {
+:host(*) > dialog > section {
 	padding: 0;
 	align-items: stretch;
 }
 
-nav
+:host(*) > nav
 {
 	gap: 8px;
 	width: auto;
@@ -30,7 +30,6 @@ nav
 	background-color: var(--main4);
 }
 
-
 ::slotted(a),
 ::slotted(button)
 {
@@ -40,7 +39,11 @@ nav
 	text-decoration: none;
 }
 
-iframe {
+:host(*) > dialog > section > div {
+	padding: 8px;
+}
+
+:host(*) > dialog > section >  iframe {
 	margin: 0;
 	width: 100%;
 	border: none;

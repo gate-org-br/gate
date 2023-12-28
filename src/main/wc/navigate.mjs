@@ -13,7 +13,7 @@ export default function navigate(source, path)
 		return new Optional(source.getRootNode().querySelector(path)
 			|| document.querySelector(path));
 
-	for (let step of path.split("/"))
+	for (let step of path.split(/\.(?=(?:[^"']*["'][^"']*["'])*[^"']*$)/g))
 	{
 		if (!source)
 			return new Optional(source);
@@ -33,9 +33,9 @@ export default function navigate(source, path)
 		else if (step.startsWith("querySelector(")
 			&& step.endsWith(")"))
 			source = source.querySelector(step.slice(14, -1));
-		else if (step.startsWith("chldren[")
+		else if (step.startsWith("children[")
 			&& step.endsWith("]"))
-			source = source.children[Number(step.slice(8, -1))];
+			source = source.children[Number(step.slice(9, -1))];
 		else if (step !== "this")
 			throw new Error(`${path} is not a valid path`);
 	}

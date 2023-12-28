@@ -1,5 +1,20 @@
 /* global customElements */
 
+import GBlock from './g-block.js';
+import RequestBuilder from './request-builder.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
+
+
+function resize(iframe)
+{
+	let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	var contentWidth = iframeDocument.body.scrollWidth;
+	var contentHeight = iframeDocument.body.scrollHeight;
+	iframe.style.width = contentWidth + 'px';
+	iframe.style.height = contentHeight + 'px';
+}
+
 customElements.define('g-tab-control', class extends HTMLElement
 {
 	constructor()
@@ -51,64 +66,56 @@ customElements.define('g-tab-control', class extends HTMLElement
 						while (link.nextElementSibling.firstChild)
 							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
 
-					if (!link.nextElementSibling.childNodes.length)
+					if (link.nextElementSibling.childNodes.length)
 					{
-						switch (type)
+						event.preventDefault();
+						event.stopPropagation();
+					} else if (type === "fetch")
+					{
+						event.preventDefault();
+						event.stopPropagation();
+						let method = link.getAttribute('method')
+							|| (link.form || {}).method
+							|| "get";
+						let action = link.getAttribute('href')
+							|| link.getAttribute('formaction')
+							|| (link.form || {}).action;
+						fetch(RequestBuilder.build(method, action, link.form))
+							.then(ResponseHandler.text)
+							.then(e => link.nextElementSibling.innerHTML = e);
+					} else if (type === "frame")
+					{
+						let iframe = document.createElement("iframe");
+						iframe.scrolling = "no";
+						iframe.setAttribute("allowfullscreen", "true");
+						iframe.style.margin = "0";
+						iframe.style.width = "100%";
+						iframe.style.border = "none";
+						iframe.style.overflow = "hidden";
+						iframe.style.height = "400px";
+						iframe.addEventListener("load", () =>
 						{
-							case "fetch":
-								new URL(link.getAttribute('href')
-									|| link.getAttribute('formaction'))
-									.get(text => link.nextElementSibling.innerHTML = text);
-								break;
-							case "frame":
-								let iframe = document.createElement("iframe");
-								iframe.style.margin = "0";
-								iframe.style.width = "100%";
-								iframe.style.border = "none";
-								iframe.style.overflow = "hidden";
-								iframe.style.backgroundPosition = "center";
-								iframe.style.backgroundRepeat = "no-repeat";
-								iframe.style.backgroundPositionY = "center";
-								iframe.style.backgroundImage = "var(--loading)";
-								iframe.scrolling = "no";
-								iframe.setAttribute("allowfullscreen", "true");
-								let name = Math.random().toString(36).substr(2);
-								iframe.setAttribute("id", name);
-								iframe.setAttribute("name", name);
-								link.nextElementSibling.appendChild(iframe);
-
-								iframe.addEventListener("load", () =>
-								{
-									var height = iframe.contentDocument.body.scrollHeight + "px";
-									if (iframe.style.height !== height)
-									{
-										iframe.style.height = height;
-										if (iframe.contentDocument.body.firstElementChild)
-											iframe.contentDocument.body.firstElementChild
-												.scrollIntoView(true);
-									}
-									iframe.style.backgroundImage = "none";
-								});
-
-								if (link.tagName === "A")
-									link.setAttribute("target", name);
-								else
-									link.setAttribute("formtarget", name);
-
-								return;
-						}
+							resize(iframe);
+							let observer = new MutationObserver(() => resize(iframe));
+							observer.observe(iframe.contentDocument || iframe.contentWindow.document,
+								{attributes: true, childList: true, subtree: true});
+						});
+						link.nextElementSibling.appendChild(iframe);
+						let name = Math.random().toString(36).substr(2);
+						iframe.setAttribute("id", name);
+						iframe.setAttribute("name", name);
+						if (link.tagName === "A")
+							link.setAttribute("target", name);
+						else if (link.tagName === "BUTTON")
+							link.setAttribute("formtarget", name);
+						link.nextElementSibling.appendChild(iframe);
 					}
-
-					event.preventDefault();
-					event.stopPropagation();
 				});
 
 				if (link.getAttribute("data-selected") &&
 					link.getAttribute("data-selected").toLowerCase() === "true")
 					link.click();
 			});
-
-
 
 			if (links.length && links.every(e => !e.hasAttribute("data-selected")
 					|| e.getAttribute("data-selected").toLowerCase() === "false"))

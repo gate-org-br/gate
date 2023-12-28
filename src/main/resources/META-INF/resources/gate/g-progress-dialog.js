@@ -115,7 +115,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 	get process()
 	{
-		return JSON.parse(this.getAttribute("process"));
+		return this.getAttribute("process");
 	}
 
 	attributeChangedCallback(name)
@@ -133,7 +133,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 window.addEventListener("@progress", function (event)
 {
 	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-		.then(ResponseHandler.json)
+		.then(ResponseHandler.text)
 		.then(id => new Process(id))
 		.then(process =>
 		{

@@ -15,8 +15,6 @@
 			</a>
 		</header>
 		<section part='section'>
-			<iframe name="@dialog" scrolling="no">
-			</iframe>
 		</section>
 	</dialog>
 </template>

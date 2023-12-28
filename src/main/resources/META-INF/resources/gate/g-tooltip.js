@@ -1,273 +1,284 @@
 let template = document.createElement("template");
 template.innerHTML = `
-<div></div>
- <style>:host(*) {
-	color: white;
-	display: flex;
-	z-index: 100000;
-	position: fixed;
-	border-radius: 3px;
-	visibility: hidden;
-	align-items: stretch;
-	justify-content: center;
+	<slot></slot>
+ <style>* {
+	box-sizing: border-box;
 }
 
-div {
-	flex-grow: 1;
+:host(*) {
+	margin: 0;
 	padding: 8px;
-	display: flex;
-	border-radius: 5px;
-	align-items: center;
-	justify-content: center;
-	background-color: black;
-	box-shadow: 4px 4px 4px 0px #666666;
-}
-
-div > * {
-	width: auto;
-	max-width: 60vw;
-}
-
-div::after {
-	content: " ";
-	border-width: 6px;
+	display: none;
+	z-index: 1000000;
+	border-radius: 3px;
+	width: fit-content;
+	height: fit-content;
 	position: absolute;
-	border-style: solid;
+	visibility: hidden;
+	flex-direction: column;
+	background-color: var(--main4);
+	border: 1px solid var(--main6);
+	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
-:host([arrow="bottom"]) > div::after {
+:host(*)::before {
+	width: 20px;
+	content: "";
+	color: black;
+	height: 20px;
+	display: flex;
+	position: absolute;
+	align-items: center;
+	background-size: 100%;
+	justify-content: center;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: url(data:image/svg+xml;base64,PHN2ZwogICB3aWR0aD0iMzIiCiAgIGhlaWdodD0iMzIiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGgKICAgICBkPSJNIDguOTgxNzI4OCwzMiBIIDIzLjAxODI3MiBjIDAuNzY3NTQ3LDAgMS4zODc5NywtMC42MjA0MjIgMS4zODc5NywtMS4zODc5NyBWIDE3LjAwMjk4MiBoIDUuODIxMTQ3IGMgMC41NjA3NCwwIDEuMDY4NzM3LC0wLjMzNzI3NyAxLjI4MjQ4NCwtMC44NTYzNzggMC4yMTUxMzYsLTAuNTE5MSAwLjA5NTc3LC0xLjExNTkyOCAtMC4zMDExODksLTEuNTEyODg3IEwgMTYuOTgxOTg5LDAuNDA3MDIyNCBjIC0wLjU0MjY5NiwtMC41NDI2OTY0IC0xLjQxOTg5MywtMC41NDI2OTY0IC0xLjk2MjU5LDAgTCAwLjc5MTMxNjQ2LDE0LjYzNTEwNSBjIC0wLjM5Njk1OTUsMC4zOTY5NTkgLTAuNTE2MzI0OSwwLjk5Mzc4NyAtMC4zMDExODk1LDEuNTEyODg3IDAuMjEzNzQ3NCwwLjUxOTEwMSAwLjcyMTc0NDU0LDAuODU2Mzc4IDEuMjgyNDg0NDQsMC44NTYzNzggaCA1LjgyMTE0NzQgdiAxMy42MDkwNDggYyAwLDAuNzY2MTYgMC42MjE4MSwxLjM4NjU4MiAxLjM4Nzk3LDEuMzg2NTgyIHoiCiAgICAgc3R5bGU9InN0cm9rZS13aWR0aDoxLjM4Nzk3IiAvPgo8L3N2Zz4K);
+}
+
+:host([position='north']) {
 	left: 50%;
-	bottom: 100%;
-	margin-left: -6px;
-	border-color: transparent transparent black transparent;
+	transform: translateY(calc(-100% - 22px)) translateX(-50%);
 }
 
-:host([arrow="top"]) > div::after {
+:host([position='north'])::before {
 	top: 100%;
+	left: calc(50% - 10px);
+	transform: rotate(180deg);
+}
+
+:host([position='south']) {
 	left: 50%;
-	margin-left: -6px;
-	border-color: black transparent transparent transparent;
+	top: calc(100% + 22px);
+	transform: translateX(-50%);
 }
 
-:host([arrow="left"]) > div::after {
+:host([position='south'])::before {
+	top: -20px;
+	left: calc(50% - 10px);
+}
+
+:host([position='west']) {
+	left: 0;
 	top: 50%;
+	transform: translateX(calc(-100% - 22px)) translateY(-50%);
+}
+
+:host([position='west'])::before {
 	left: 100%;
-	margin-top: -6px;
-	border-color: transparent transparent transparent black;
+	top: calc(50% - 10px);
+	transform: rotate(90deg);
 }
 
-:host([arrow="right"]) > div::after {
+:host([position='east']) {
 	top: 50%;
-	right: 100%;
-	margin-top: -6px;
-	border-color: transparent black transparent transparent;
+	left: calc(100% + 22px);
+	transform:  translateY(-50%);
 }
 
-dl {
-	margin: 0;
-	grid-gap: 8px;
-	display: grid;
-	grid-template-columns: auto auto;
+:host([position='east'])::before {
+	left: -20px;
+	top: calc(50% - 10px);
+	transform: rotate(270deg);
 }
 
-dt {
-	margin: 0;
-	text-align: right;
-	font-weight: bold;
+:host([position='northeast']) {
+	top: 0;
+	left: calc(100% + 22px);
+	transform:  translateY(calc(-100% - 20px));
 }
 
-dd {
-	margin: 0;
-	text-align: left;
+:host([position='northeast'])::before {
+	top: 100%;
+	left: -20px;
+	transform: rotate(225deg);
 }
 
-ul
-{
-	margin: 0;
-	padding: 0;
-	list-style-type: disc;
-	list-style-position: inside;
+:host([position='northwest']) {
+	top: 0;
+	left: 0;
+	transform:  translateX(calc(-100% - 20px)) translateY(calc(-100% - 20px));
 }
 
-li {
-	margin: 0;
-	padding: 0;
-}</style>`;
+:host([position='northwest'])::before {
+	top: 100%;
+	left: 100%;
+	transform: rotate(135deg);
+}
 
-/* global customElements, HTMLElement, template */
+:host([position='southeast']) {
+	left: 0;
+	top: calc(100% + 20px);
+	transform:  translateX(calc(-100% - 20px));
+}
 
-import './g-properties.js';
+:host([position='southeast'])::before {
+	top: -20px;
+	left: 100%;
+	transform: rotate(45deg);
+}
+
+:host([position='southwest']) {
+	top: calc(100% + 20px);
+	left: calc(100% + 20px);
+}
+
+:host([position='southwest'])::before {
+	left: -20px;
+	top: -20px;
+	transform: rotate(315deg);
+}
+</style>`;
+
+/* global template */
+
+import JSONtoHTML from './json-to-html.js';
+import RequestBuilder from './request-builder.js';
+import ResponseHandler from './response-handler.js';
+import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 let instance;
+const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
+
+function isVisible(rect)
+{
+	return rect.top >= 0
+		&& rect.left >= 0
+		&& rect.top + rect.height <= window.innerHeight
+		&& rect.left + rect.width <= window.innerWidth;
+}
+
 
 export default class GTooltip extends HTMLElement
 {
+
 	constructor()
 	{
 		super();
-		this._private = {};
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.setAttribute("position", "northeast");
 	}
 
-	get element()
+	show(position)
 	{
-		return this._private.element
-			|| document.documentElement;
-	}
+		if (instance)
+			instance.hide();
 
-	set element(element)
-	{
-		this._private.element = element;
-	}
+		instance = this;
 
-	get orientation()
-	{
-		return this._private.orientation || 'horizontal';
-	}
+		if (!this.parentNode)
+			throw new Error("Attempt to show disconnected tooltip");
 
-	set orientation(orientation)
-	{
-		this._private.orientation = orientation;
-	}
+		if (position)
+			this.position = position;
 
-	set content(content)
-	{
-		while (this.shadowRoot.firstElementChild.firstChild)
-			this.shadowRoot.removeChild(this.shadowRoot.firstElementChild.firstChild);
+		this.parentNode.style.position = "relative";
 
-		switch (typeof content)
-		{
-			case "string":
-				this.shadowRoot.firstElementChild.appendChild(document.createElement("label")).innerHTML = content;
-				break;
-			case "object":
-				if (Array.isArray(content))
-				{
-					let ul = this.shadowRoot.firstElementChild.appendChild(document.createElement("ul"));
-					content.forEach(e => ul.appendChild(document.createElement("li")).innerHTML = e);
-				} else if (content instanceof HTMLElement)
-				{
-					this.shadowRoot.firstElementChild.appendChild(content);
-				} else
-				{
-					this.shadowRoot.firstElementChild.appendChild(document.createElement("g-properties"))
-						.value = content;
-				}
-				break;
-		}
-	}
-
-	connectedCallback()
-	{
-		const tooltip = this.getBoundingClientRect();
-		const element = this.element.getBoundingClientRect();
-		element.center = {x: element.left + (element.width / 2), y: element.top + (element.height / 2)};
-
-		const left = element.center.x - tooltip.width / 2;
-		const right = element.center.x + tooltip.width / 2;
-		const top = element.center.y - (tooltip.height / 2);
-		const bottom = element.center.y + (tooltip.height / 2);
-
-		const vertical = () =>
-		{
-			if (left > 0 && right < window.innerWidth)
-				if (element.center.y >= (window.innerHeight / 2))
-					this.show(left, element.top - tooltip.height - 10, "top");
-				else
-					this.show(left, element.bottom + 10, "bottom");
-			else if (element.center.x >= (window.innerWidth / 2))
-				this.show(element.left - tooltip.width - 10, top, "left");
-			else
-				this.show(element.x + element.width + 10, top, "right");
-		}
-
-		const horizontal = () =>
-		{
-			if (top > 0 && bottom < window.innerHeight)
-				if (element.center.x >= (window.innerWidth / 2))
-					this.show(element.left - tooltip.width - 10, top, "left");
-				else
-					this.show(element.x + element.width + 10, top, "right");
-			else if (element.center.y >= (window.innerHeight / 2))
-				this.show(left, element.top - tooltip.height - 10, "top");
-			else
-				this.show(left, element.bottom + 10, "bottom");
-		}
-
-		switch (this.orientation)
-		{
-			case "vertical":
-				if (element.top - tooltip.height - 10 < 0 &&
-					element.bottom + tooltip.height + 10 > window.innerHeight)
-					return horizontal();
-				return vertical();
-
-			case "horizontal":
-				if (element.left - tooltip.width - 10 < 0 &&
-					element.right + tooltip.width + 10 > window.innerWidth)
-					return vertical();
-				horizontal();
-				break;
-		}
-	}
-
-	show(x, y, arrow)
-	{
-		this.style.top = y + "px";
-		this.style.left = x + "px";
-		this.setAttribute("arrow", arrow);
+		let i = 0;
+		this.style.display = "flex";
+		while (!isVisible(this.getBoundingClientRect()) && i++ < 8)
+			this.position = POSITIONS[(POSITIONS.indexOf(this.position) + 1) % 8];
 		this.style.visibility = "visible";
 	}
 
-	static show(element, orientation, content)
+	get position()
 	{
-		if (!this._private)
-			this._private = {};
+		return this.getAttribute("position");
 
-		GTooltip.hide();
+	}
 
-		let tooltip = document.createElement("g-tooltip");
-		tooltip.content = content;
-		tooltip.element = element;
-		tooltip.orientation = orientation;
-		instance = document.body.appendChild(tooltip);
+	set position(value)
+	{
+		this.setAttribute("position", value);
+	}
+
+	hide()
+	{
+		this.style.visibility = "hidden";
+		this.style.display = "";
+	}
+
+	static show(element, content, position = "north")
+	{
+		let tooltip = new GTooltip();
+		element.appendChild(tooltip);
+		tooltip.innerHTML = JSONtoHTML(content);
+		tooltip.show(position);
 	}
 
 	static hide()
 	{
 		if (instance)
 		{
+			instance.hide();
 			instance.remove();
 			instance = null;
 		}
+	}
+
+	static observedAttributes = ["position"];
+
+	attributeChangedCallback(name, oldValue, newValue)
+	{
+		if (name === "position" && !POSITIONS.includes(newValue))
+			this.position = oldValue;
 	}
 }
 
 customElements.define('g-tooltip', GTooltip);
 
-window.addEventListener("mousemove", event => {
 
-	if (instance)
-		return;
+window.addEventListener("@tooltip", function (event)
+{
+	event.preventDefault();
+	event.stopPropagation();
 
-	let target = event.composed
-		&& event.composedPath
-		&& event.composedPath().length
-		? event.composedPath()[0]
-		: event.target;
+	let position = event.detail.parameters[0];
 
-	target = target.closest
-		? target.closest("*[data-tooltip]")
-		: null;
+	let target = event.target;
+	if (target.getRootNode() === document)
+		for (let current = event.target; current !== document; current = current.parentNode)
+			if (current.shadowRoot)
+				target = current = current.shadowRoot.host;
 
-	if (!target)
-		return;
+	event.target.dispatchEvent(new TriggerStartupEvent(event));
 
-	let object = target.getAttribute("data-tooltip");
-	if (/ *[{"[].*[}"\]] */.test(object))
-		object = JSON.parse(object);
+	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+		.then(ResponseHandler.response)
+		.then(response => response.headers.get('content-type').startsWith("application/json")
+				? response.json().then(json => JSONtoHTML(json))
+				: response.text())
+		.then(content => GTooltip.show(target, content, position))
+		.then(() => event.target.addEventListener("mouseleave", () => GTooltip.hide()))
+		.then(() => setTimeout(() => event.target.dispatchEvent(new TriggerSuccessEvent(event)), 0))
+		.catch(error => setTimeout(event.target.dispatchEvent(new TriggerFailureEvent(event, error)), 0))
+		.finally(setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
+});
 
-	target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
-	GTooltip.show(target, target.getAttribute("data-tooltip-orientation"), object);
+window.addEventListener("mouseover", function (event)
+{
+	for (let target of [...event.composedPath(), event.target])
+	{
+		if (target.hasAttribute && target.hasAttribute("data-tooltip"))
+		{
+			let content = JSON.parse(target.getAttribute("data-tooltip"));
+			target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
+			let position = target.getAttribute("data-tooltip-position");
+			GTooltip.show(target, content, position);
+			return;
+		} else if (target.children)
+		{
+			for (let tooltip of target.children)
+			{
+				if (tooltip.tagName === "G-TOOLTIP")
+				{
+					target.addEventListener("mouseleave", () => tooltip.hide(), {once: true});
+					tooltip.show();
+					return;
+				}
+			}
+		}
+	}
 });

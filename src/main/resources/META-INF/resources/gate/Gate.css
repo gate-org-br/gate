@@ -16,12 +16,18 @@
 @import './minibar.css';
 @import './figure.css';
 
-@import "./sort.css";
+@import "./sorter.css";
 @import "./filter.css";
+@import './counter.css';
 
 @import './table.css';
 
 @import './visibility.css';
+
+@import './list.css';
+
+
+
 
 * {
 	box-sizing: border-box;
@@ -82,35 +88,9 @@ img {
 	margin-right: 2px
 }
 
-ul.LIST {
-	width: 100%;
-	list-style-type: none;
-	margin: auto;
-	padding: 0px;
-	display: inline-block
-}
-ul.LIST > li {
-	float: left;
-	width: 10%;
-	height: 32px;
-	background-color: white;
-	padding: 3px;
-	margin: 0.5%;
-	font-size: 24px;
-	border-radius: 5px;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: space-between
-}
-ul.LIST > li > i {
-	font-size: 24px
-}
-ul.LIST > li:focus {
-	background-color: var(--hovered);
-	font-weight: bold;
-	color: var(--question1)
-}
+
+
+
 
 input[type='file'] {
 	cursor: pointer

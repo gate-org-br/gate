@@ -1,101 +1,158 @@
 /**
- * Utility class for handling responses from HTTP requests.
+ * A utility class for handling different types of responses from fetch requests.
+ * @class
  */
 export default class ResponseHandler
 {
-
 	/**
-	 * Returns a promise that resolves to the same response,
-	 * or rejects with an error message if the response is not successful.
-	 *
-	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} A promise that resolves to the same response,
-	 *                    or rejects with an error message.
+	 * Handles a generic response, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<Response>} - A promise that resolves if the response is successful. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/data')
+	 *   .then(response => ResponseHandler.response(response))
+	 *   .then(data => console.log(data))
+	 *   .catch(error => console.error(error));
 	 */
-	static self(response)
+	static response(response)
 	{
 		if (!response)
+
 			return Promise.resolve();
-
 		if (response.ok)
-			return response;
 
-		return response.text().then((error) => Promise.reject(new Error(error)));
+			return response;
+		return response.text().then(error => Promise.reject(new Error(error)));
 	}
 
 	/**
-	 * Returns a promise that resolves to the JSON body of the response,
-	 * or rejects with an error message if the response is not successful.
-	 *
-	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} A promise that resolves to the JSON body of the response,
-	 *                    or rejects with an error message.
+	 * Handles a JSON response, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<Object>} - A promise that resolves to a parsed JSON object if the response is successful. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/json-data')
+	 *   .then(response => ResponseHandler.json(response))
+	 *   .then(jsonData => console.log(jsonData))
+	 *   .catch(error => console.error(error));
 	 */
 	static json(response)
 	{
 		if (!response)
+
 			return Promise.resolve();
-
 		if (response.ok)
-			return response.json();
 
-		return response.text().then((error) => Promise.reject(new Error(error)));
+			return response.json();
+		return response.text().then(error => Promise.reject(new Error(error)));
 	}
 
 	/**
-	 * Returns a promise that resolves to the text body of the response,
-	 * or rejects with an error message if the response is not successful.
-	 *
-	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} A promise that resolves to the text body of the response,
-	 *                    or rejects with an error message.
+	 * Handles a text response, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<string>} - A promise that resolves to the text content if the response is successful. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/text-data')
+	 *   .then(response => ResponseHandler.text(response))
+	 *   .then(textData => console.log(textData))
+	 *   .catch(error => console.error(error));
 	 */
 	static text(response)
 	{
 		if (!response)
+
 			return Promise.resolve();
-
 		if (response.ok)
-			return response.text();
 
-		return response.text().then((error) => Promise.reject(new Error(error)));
+			return response.text();
+		return response.text().then(error => Promise.reject(new Error(error)));
 	}
 
 	/**
-	 * Returns a promise that resolves to the blob body of the response,
-	 * or rejects with an error message if the response is not successful.
-	 *
-	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} A promise that resolves to the blob body of the response,
-	 *                    or rejects with an error message.
+	 * Handles a binary data (Blob) response, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<Blob>} - A promise that resolves to a Blob if the response is successful. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/image')
+	 *   .then(response => ResponseHandler.blob(response))
+	 *   .then(blobData => {
+	 *     // Handle the Blob data (e.g., display an image)
+	 *     const imageUrl = URL.createObjectURL(blobData);
+	 *     document.getElementById('myImage').src = imageUrl;
+	 *   })
+	 *   .catch(error => console.error(error));
 	 */
 	static blob(response)
 	{
 		if (!response)
+
 			return Promise.resolve();
-
 		if (response.ok)
-			return response.blob();
 
-		return response.text().then((error) => Promise.reject(new Error(error)));
+			return response.blob();
+		return response.text().then(error => Promise.reject(new Error(error)));
 	}
 
 	/**
-	 * Returns a promise that resolves with no value if the response is successful,
-	 * or rejects with an error message if the response is not successful.
-	 *
-	 * @param {Response} response - The response object to handle.
-	 * @returns {Promise} a promise that resolves with no value if the response is successful,
-	 *                    or rejects with an error message.
+	 * Handles a response with no content, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<void>} - A promise that resolves if the response is successful and has no content. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/delete', { method: 'DELETE' })
+	 *   .then(response => ResponseHandler.none(response))
+	 *   .then(() => console.log('Deletion successful'))
+	 *   .catch(error => console.error(error));
 	 */
 	static none(response)
 	{
 		if (!response)
-			return Promise.resolve();
 
+			return Promise.resolve();
 		if (response.ok)
-			return Promise.resolve();
 
-		return response.text().then((error) => Promise.reject(new Error(error)));
+			return Promise.resolve();
+		return response.text().then(error => Promise.reject(new Error(error)));
+	}
+
+	/**
+	 * Automatically handles different response types based on the content type, resolving or rejecting the promise.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<string|Object|Blob>} - A promise that resolves to the appropriate response data based on content type. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/data')
+	 *   .then(response => ResponseHandler.auto(response))
+	 *   .then(data => console.log(data))
+	 *   .catch(error => console.error(error));
+	 */
+	static auto(response)
+	{
+		if (!response)
+
+			return Promise.resolve();
+		if (response.ok)
+		{
+			let contentType = response.headers.get('content-type');
+			if (contentType.startsWith("text/"))
+
+				return response.text();
+			else if (contentType === "application/json")
+
+				return response.json();
+			else
+
+				return response.blob();
+		}
+		return response.text().then(error => Promise.reject(new Error(error)));
 	}
 }

@@ -42,10 +42,12 @@ dialog > section
 
 import './g-icon.js';
 import './g-grid.js';
+import DOM from './dom.js';
 import GWindow from './g-window.js';
 import Extractor from './extractor.js';
 import ObjectFilter from './object-filter.js';
 import GMessageDialog from './g-message-dialog.js';
+import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
 export default class GSelectPicker extends GWindow
@@ -116,44 +118,36 @@ export default class GSelectPicker extends GWindow
 	}
 };
 
-window.addEventListener("click", function (event)
+window.addEventListener("@select", function (event)
 {
-	if (event.button !== 0)
-		return;
+	let trigger = event.composedPath()[0] || event.target;
 
-	let link = event.target.closest("a[target='@select']");
-	if (!link && event.composed)
-		link = event.composedPath()[0].closest("a[target='@select']");
+	let parameters = event.detail.parameters.map(e => DOM.navigate(trigger, e).orElse(null));
 
-	if (link)
-	{
-		event.preventDefault();
-		event.stopPropagation();
+	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
+	if (!value)
+		throw new Error("Value input not found");
 
-		let label = link.parentNode.querySelector("input[type=text]");
-		if (!label)
-			throw new Error("Label input not found");
 
-		let value = link.parentNode.querySelector("input[type=hidden]");
-		if (!value)
-			throw new Error("Value input not found");
+	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
+	if (!label)
+		throw new Error("Label input not found");
 
-		if (label.value || value.value)
-			return label.value = value.value = '';
+	if (label.value || value.value)
+		return label.value = value.value = '';
 
-		link.style.pointerEvents = "none";
-		fetch(link.href)
-			.then(options => ResponseHandler.json(options))
-			.catch(error => GMessageDialog.error(error.message))
-			.then(options => GSelectPicker.pick(options, link.title))
-			.then(object =>
-			{
-				label.value = Extractor.label(object.value);
-				value.value = Extractor.value(object.value);
-			})
-			.catch(() => undefined)
-			.finally(() => link.style.pointerEvents = "");
-	}
+	trigger.style.pointerEvents = "none";
+	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+		.then(options => ResponseHandler.json(options))
+		.catch(error => GMessageDialog.error(error.message))
+		.then(options => GSelectPicker.pick(options, trigger.title))
+		.then(object =>
+		{
+			label.value = Extractor.label(object.value);
+			value.value = Extractor.value(object.value);
+		})
+		.catch(() => undefined)
+		.finally(() => trigger.style.pointerEvents = "");
 });
 
 customElements.define('g-select-picker', GSelectPicker);

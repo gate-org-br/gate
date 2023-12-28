@@ -1,0 +1,15 @@
+a.Hide removed to avoid redundance with target="@hide"
+
+target="_id(id)" removed and replaced with target="@innerHTML(selector)"
+
+attribute data-on-hide was removed and replaced by data-on:resolve(script)
+
+target="_stack" removed and replaced with target="@stack(type)"
+
+target="_dialog(size)" removed and replaced with target="@dialog(type, width, height)"
+
+data-get="id1, id2, ..." removed and replaced with target="@pick(selector1, selector2, ...)"
+
+data-ret="value1, value2, ..." removed and replaced with target="@return(value1, value2, ...)"
+
+<g-dialog-caption>caption</g-dialog-caption> removed and replaced <g-dialog-header caption='caption'>

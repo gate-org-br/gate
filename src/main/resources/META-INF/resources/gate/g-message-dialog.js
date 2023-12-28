@@ -79,11 +79,22 @@ import './g-icon.js';
 import './trigger.js';
 import GBlock from './g-block.js';
 import GWindow from './g-window.js';
+import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
+/**
+ * Represents a custom message dialog window that extends GWindow.
+ * @extends {GWindow}
+ * @class
+ */
 export default class GMessageDialog extends GWindow
 {
+	/**
+	 * Creates an instance of GMessageDialog.
+	 * @constructor
+	 */
 	constructor()
 	{
 		super();
@@ -91,31 +102,55 @@ export default class GMessageDialog extends GWindow
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
 	}
 
+	/**
+	 * Sets the type attribute of the message dialog.
+	 * @param {string} type - The type of the message dialog (SUCCESS, WARNING, ERROR, INFO).
+	 */
 	set type(type)
 	{
 		this.setAttribute("type", type);
 	}
 
+	/**
+	 * Gets the type attribute of the message dialog.
+	 * @returns {string} - The type of the message dialog.
+	 */
 	get type()
 	{
 		return this.getAttribute("type");
 	}
 
+	/**
+	 * Sets the text attribute of the message dialog.
+	 * @param {string} text - The text content of the message dialog.
+	 */
 	set text(text)
 	{
 		this.setAttribute("text", text);
 	}
 
+	/**
+	 * Gets the text attribute of the message dialog.
+	 * @returns {string} - The text content of the message dialog.
+	 */
 	get text()
 	{
 		return this.getAttribute("text");
 	}
 
+	/**
+	 * Gets the title attribute of the message dialog.
+	 * @returns {string} - The title of the message dialog.
+	 */
 	get title()
 	{
 		return this.getAttribute("title");
 	}
 
+	/**
+	 * Sets the title attribute of the message dialog.
+	 * @param {string} title - The title of the message dialog.
+	 */
 	set title(title)
 	{
 		return this.setAttribute("title", title);
@@ -139,73 +174,103 @@ export default class GMessageDialog extends GWindow
 		return ['type', 'text', "title"];
 	}
 
-	static success(text, timeout)
+	/**
+	 * Shows a success message dialog with the provided text and optional duration.
+	 * @static
+	 * @param {string} text - The text content of the success message.
+	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
+	 */
+	static success(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "SUCCESS";
 		message.text = text;
 		message.title = "Sucesso";
-		message.timeout = timeout;
+		message.duration = duration;
 		message.show();
 
-		if (timeout)
-			window.top.setTimeout(() => message.hide(), timeout);
+		if (duration)
+			window.top.setTimeout(() => message.hide(), duration);
 	}
 
-	static warning(text, timeout)
+	/**
+	 * Shows a warning message dialog with the provided text and optional duration.
+	 * @static
+	 * @param {string} text - The text content of the warning message.
+	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
+	 */
+	static warning(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "WARNING";
 		message.text = text;
 		message.title = "Alerta";
-		message.timeout = timeout;
+		message.duration = duration;
 		message.show();
 
-		if (timeout)
-			window.top.setTimeout(() => message.hide(), timeout);
+		if (duration)
+			window.top.setTimeout(() => message.hide(), duration);
 	}
 
-	static error(text, timeout)
+	/**
+	 * Shows an error message dialog with the provided text and optional duration.
+	 * @static
+	 * @param {string} text - The text content of the error message.
+	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
+	 */
+	static error(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "ERROR";
 		message.text = text;
 		message.title = "Erro";
-		message.timeout = timeout;
+		message.duration = duration;
 		message.show();
 
-		if (timeout)
-			window.top.setTimeout(() => message.hide(), timeout);
+		if (duration)
+			window.top.setTimeout(() => message.hide(), duration);
 	}
 
-	static  info(text, timeout)
+	/**
+	 * Shows an info message dialog with the provided text and optional duration.
+	 * @static
+	 * @param {string} text - The text content of the info message.
+	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
+	 */
+	static  info(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "INFO";
 		message.text = text;
 		message.title = "Informação";
-		message.timeout = timeout;
+		message.duration = duration;
 		message.show();
 
-		if (timeout)
-			window.top.setTimeout(() => message.hide(), timeout);
+		if (duration)
+			window.top.setTimeout(() => message.hide(), duration);
 	}
 
-	static  show(status, timeout)
+	/**
+	 * Shows a message dialog based on the provided status object and optional duration.
+	 * @static
+	 * @param {Object} status - The status object containing type and message properties.
+	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
+	 */
+	static  show(status, duration)
 	{
 		switch (status.type)
 		{
 			case "SUCCESS":
-				GMessageDialog.success(status.message, timeout);
+				GMessageDialog.success(status.message, duration);
 				break;
 			case "WARNING":
-				GMessageDialog.warning(status.message, timeout);
+				GMessageDialog.warning(status.message, duration);
 				break;
 			case "ERROR":
-				GMessageDialog.error(status.message, timeout);
+				GMessageDialog.error(status.message, duration);
 				break;
 			case "INFO":
-				GMessageDialog.info(status.message, timeout);
+				GMessageDialog.info(status.message, duration);
 				break;
 		}
 	}
@@ -218,13 +283,16 @@ window.addEventListener("@message", function (event)
 	event.preventDefault();
 	event.stopPropagation();
 
-	let timeout = event.detail.parameters[0];
-	timeout = timeout ? Number(timeout) : null;
+	let duration = event.detail.parameters[0];
+	duration = duration ? Number(duration) : null;
 
-	GBlock.show("...");
+	event.target.dispatchEvent(new TriggerStartupEvent(event));
+
+	let path = event.composedPath();
 	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.text)
-		.then(text => GMessageDialog.success(text, timeout))
-		.catch(error => GMessageDialog.error(error, timeout))
-		.finally(() => GBlock.hide());
+		.then(text => GMessageDialog.success(text, duration))
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
 });

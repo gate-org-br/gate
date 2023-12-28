@@ -118,6 +118,18 @@ table > tbody > tr:not([tabindex])[data-action] {
 table > tbody > tr:not([tabindex])[data-action]:hover {
   background-color: var(--hovered);
 }
+table > tbody > tr > td[tabindex] {
+  cursor: pointer;
+}
+table > tbody > tr > td[tabindex]:focus {
+  background-color: var(--hovered);
+}
+table > tbody > tr > td:not([tabindex])[data-action] {
+  cursor: pointer;
+}
+table > tbody > tr > td:not([tabindex])[data-action]:hover {
+  background-color: var(--hovered);
+}
 table > tfoot > tr > * {
   font-weight: bold;
   color: var(--base1);

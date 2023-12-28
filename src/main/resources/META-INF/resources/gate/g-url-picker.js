@@ -120,7 +120,7 @@ window.addEventListener("@pick", function (event)
 		GURLPicker.pick(dialog =>
 		{
 			dialog.caption = trigger.title || "";
-			dialog.iframe.name = event.detail.target;
+			dialog.iframe.src = event.detail.action;
 		})
 			.then(values => update(parameters, values))
 			.catch(() => parameters.forEach(e => e.value = ""));
@@ -130,7 +130,7 @@ window.addEventListener("@pick", function (event)
 		GURLPicker.pick(dialog =>
 		{
 			dialog.caption = trigger.title || "";
-			dialog.iframe.name = event.detail.target;
+			dialog.iframe.src = event.detail.action;
 		})
 			.then(values => update(parameters, values))
 			.catch(() => undefined)

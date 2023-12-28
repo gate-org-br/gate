@@ -14,29 +14,29 @@ export default class GModal extends HTMLElement
 
 	show()
 	{
-		if (!this.parentNode)
-			window.top.document.documentElement.appendChild(this);
-
-		if (this.dispatchEvent(new CustomEvent('show', {cancelable: true, bubbles: true, detail: {modal: this}})))
+		return new Promise(resolve =>
 		{
+			this.addEventListener("hide", () => {
+				resolve();
+			}, {once: true});
 			Scroll.disable(window.top.document.documentElement);
+			window.top.document.documentElement.appendChild(this);
 			let dialog = this.shadowRoot.querySelector("dialog");
 			if (dialog)
 				dialog.showModal();
-		}
-
-		return this;
+		});
 	}
 
 	hide()
 	{
-		if (this.parentNode && this.dispatchEvent(new CustomEvent('hide', {cancelable: true, bubbles: true, detail: {modal: this}})))
+		if (this.parentNode)
 		{
-			Scroll.enable(window.top.document.documentElement);
+			this.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: this}}));
 			let dialog = this.shadowRoot.querySelector("dialog");
 			if (dialog)
-				this.shadowRoot.querySelector("dialog").close();
-			this.parentNode.removeChild(this);
+				dialog.close();
+			this.remove();
+			Scroll.enable(window.top.document.documentElement);
 		}
 
 		return this;

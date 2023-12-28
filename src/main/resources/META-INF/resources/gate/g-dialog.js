@@ -16,8 +16,6 @@ template.innerHTML = `
 			</a>
 		</header>
 		<section part='section'>
-			<iframe name="@dialog" scrolling="no">
-			</iframe>
 		</section>
 	</dialog>
  <style>dialog {
@@ -35,12 +33,12 @@ template.innerHTML = `
 	}
 }
 
-dialog > section {
+:host(*) > dialog > section {
 	padding: 0;
 	align-items: stretch;
 }
 
-nav
+:host(*) > nav
 {
 	gap: 8px;
 	width: auto;
@@ -52,7 +50,6 @@ nav
 	background-color: var(--main4);
 }
 
-
 ::slotted(a),
 ::slotted(button)
 {
@@ -62,7 +59,11 @@ nav
 	text-decoration: none;
 }
 
-iframe {
+:host(*) > dialog > section > div {
+	padding: 8px;
+}
+
+:host(*) > dialog > section >  iframe {
 	margin: 0;
 	width: 100%;
 	border: none;
@@ -79,6 +80,7 @@ import "./g-dialog-configuration.js";
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
+import { TriggerResolveEvent } from './trigger-event.js';
 
 export default class GDialog extends GWindow
 {
@@ -87,16 +89,6 @@ export default class GDialog extends GWindow
 		super();
 		this.shadowRoot.innerHTML += template.innerHTML;
 		this.shadowRoot.getElementById("hide").addEventListener("click", () => this.hide());
-
-		let iframe = this.shadowRoot.querySelector("iframe");
-		iframe.dialog = this;
-		iframe.onmouseenter = () => iframe.focus();
-		iframe.addEventListener("load", () => iframe.removeAttribute("name"));
-
-		let navbar = this.shadowRoot.querySelector("g-navbar");
-		navbar.style.display = "none";
-		navbar.addEventListener("update", event => iframe.src = event.detail);
-		iframe.addEventListener("load", () => navbar.target = iframe.contentWindow.location.href);
 	}
 
 	get caption()
@@ -116,28 +108,65 @@ export default class GDialog extends GWindow
 		return this.shadowRoot.querySelector("g-navbar");
 	}
 
+	get type()
+	{
+		let section = this.shadowRoot.querySelector("section");
+		return !section.firstElementChild || section.firstElementChild.tagName === "IFRAME" ? "frame" : "fetch";
+	}
+
 	get iframe()
 	{
-		return this.shadowRoot.querySelector("iframe");
+		let section = this.shadowRoot.querySelector("section");
+
+		if (!section.firstElementChild)
+		{
+			let iframe = section.appendChild(document.createElement("iframe"));
+			iframe.dialog = this;
+			iframe.name = "@dialog";
+			iframe.setAttribute("scrolling", "no");
+			iframe.addEventListener("load", () => iframe.focus());
+			iframe.addEventListener("mouseenter", () => iframe.focus());
+
+			let navbar = this.shadowRoot.querySelector("g-navbar");
+			navbar.addEventListener("update", event => iframe.src = event.detail);
+			iframe.addEventListener("load", () => navbar.target = iframe.contentWindow.location.href);
+		}
+
+		if (section.firstElementChild.tagName !== "IFRAME")
+			throw new Error("Attempt to access iframe of a fetch dialog");
+
+		return section.firstElementChild;
 	}
 
-	set target(target)
+	get content()
 	{
-		this.iframe.src = target;
+		let section = this.shadowRoot.querySelector("section");
+
+		if (!section.firstElementChild)
+		{
+			let div = section.appendChild(document.createElement("div"));
+
+			let navbar = this.shadowRoot.querySelector("g-navbar");
+			navbar.addEventListener("update", event => fetch(event.detail)
+					.then(ResponseHandler.text)
+					.then(html => div.innerHTML = html)
+					.catch(GMessageDialog.error));
+		}
+
+		if (section.firstElementChild.tagName !== "DIV")
+			throw new Error("Attempt to access content of a frame dialog");
+
+		return section.firstElementChild;
 	}
 
-	set size(value)
+	set width(value)
 	{
-		let size = /^([0-9]+)(\/([0-9]+))?$/g.exec(value);
-		if (!size)
-			throw new Error(value + " is not a valid size");
-		let dialog = this.shadowRoot.querySelector("dialog");
+		this.shadowRoot.querySelector("dialog").style.width = value;
+	}
 
-		let width = size[1];
-		let height = size[3] || size[1];
-		dialog.style.width = width + "px";
-		dialog.style.height = height + "px";
-
+	set height(value)
+	{
+		this.shadowRoot.querySelector("dialog").style.height = value;
 	}
 
 	static hide()
@@ -163,29 +192,43 @@ customElements.define('g-dialog', GDialog);
 
 window.addEventListener("@dialog", function (event)
 {
+	let parameters = event.detail.parameters;
 	let trigger = event.composedPath()[0] || event.target;
+
 
 	let dialog = window.top.document.createElement("g-dialog");
 	dialog.caption = trigger.getAttribute("title");
-	dialog.addEventListener("show", () => trigger.dispatchEvent(new CustomEvent('show', {bubbles: true, detail: {modal: dialog}})));
-	dialog.addEventListener("hide", () => trigger.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: dialog}})));
 
-	if (event.detail.parameters[0])
-		dialog.size = event.detail.parameters[0];
+	if (parameters[1])
+		dialog.width = parameters[1];
+	if (parameters[2])
+		dialog.height = parameters[2];
 
 	if (trigger.hasAttribute("data-navigator")
 		|| trigger.parentNode.hasAttribute("data-navigator"))
 		dialog.navbar.targets = Array.from(trigger.parentNode.children)
 			.map(e => e.href || e.formaction || e.getAttribute("data-action"));
 
-	dialog.show();
-	if (event.detail.method === "get")
-		dialog.iframe.src = event.detail.action;
-	else
-		fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-			.then(ResponseHandler.text)
-			.then(html => dialog.iframe.srcDoc = html)
-			.catch(GMessageDialog.error);
+	dialog.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 
+
+	switch (event.detail.parameters[0] || "frame")
+	{
+		case "frame":
+			if (event.detail.method === "get")
+				dialog.iframe.src = event.detail.action;
+			else
+				fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+					.then(ResponseHandler.text)
+					.then(html => dialog.iframe.srcDoc = html)
+					.catch(GMessageDialog.error);
+			break;
+		case "fetch":
+			fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+				.then(ResponseHandler.text)
+				.then(html => dialog.content.innerHTML = html)
+				.catch(GMessageDialog.error);
+			break;
+	}
 });
 

@@ -1,0 +1,440 @@
+<html lang="pt-BR">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+
+		<style>
+			section {
+				gap: 12px;
+				padding: 12px;
+				display: flex;
+				text-align: center;
+				align-items: stretch;
+				flex-direction: column;
+				justify-content: center;
+			}
+		</style>
+	</head>
+
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+		<div style='display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-auto-rows: 160px; gap: 16px'>
+			<g-card>
+				<header>
+					@populate
+				</header>
+				<section>
+					<fieldset>
+						<label>
+							<span>
+								<select>
+								</select>
+								<a href="/options.json" target='@populate(this.previousElementSibling)'>
+									<i>&#X2090;</i>
+								</a>
+							</span>
+						</label>
+					</fieldset>
+				</section>
+
+				<g-tooltip>
+					<h1>@populate</h1>
+					<p>Populate the specified target element with a JSON array of objects returned by a request.</p>
+
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tbody>
+							<tr>
+								<td><strong>selector</strong></td>
+								<td>The selector of the target element where the data should be populated.</td>
+							</tr>
+							<tr>
+								<td><strong>value</strong></td>
+								<td>This parameter represents the attribute name whose values will be used for the options. If omitted, it defaults to the "value" attribute.</td>
+							</tr>
+							<tr>
+								<td><strong>label</td>
+								<td>This parameter represents the attribute name whose values will be displayed as text on the options. If omitted, it defaults to the "label" attribute.</td>
+							</tr>
+						</tbody>
+					</table>
+				</g-tooltip>
+			</g-card>
+
+			<g-card>
+				<header>
+					@select
+				</header>
+				<section>
+					<fieldset>
+						<label>
+							<span>
+								<input type="hidden">
+								<input type="text">
+								<a href="/objects.json" target='@select'>
+									<i>&#X2090;</i>
+								</a>
+							</span>
+						</label>
+					</fieldset>
+				</section>
+
+				<g-tooltip>
+					<h1>@select</h1>
+					<p>The <code>@select</code> trigger facilitates the selection of an element from a JSON array returned by a request, presenting the choices in a dialog.</p>
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>value</strong></td>
+							<td>Specifies the selector of the element that will receive the value of the selected element. If omitted, the trigger defaults to the first hidden input found within the parent of the target element.</td>
+						</tr>
+						<tr>
+							<td><strong>label</strong></td>
+							<td>Specifies the selector of the element that will receive the label of the selected element. If omitted, the trigger defaults to the first text input found within the parent of the target element.</td>
+						</tr>
+					</table>
+					<p>When activated, the <code>@select</code> trigger opens a dialog displaying the available choices, allowing users to make a selection. The chosen value and label are then appropriately assigned to the specified elements, providing a seamless integration of user selections into the document.</p>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@search
+				</header>
+				<section>
+					<fieldset>
+						<label>
+							<span>
+								<input type="hidden">
+								<input type="text">
+								<a href="/objects.json" target='@search'>
+									<i>&#X2090;</i>
+								</a>
+							</span>
+						</label>
+					</fieldset>
+				</section>
+
+				<g-tooltip>
+					<h1>target='@select(value, label)'</h1>
+					<ul>
+						<li>Opens a dialog for the selection of one of the elements returned by the request as a JSON array.</li>
+						<li>The dialog makes a post request to the server sending the search criteria.</li>
+						<li>The value parameter is the selector of the element that will receive the value of the selected element.</li>
+						<li>The value parameter defaults to the first hidden input found on the elements parent.</li>
+						<li>The label parameter is the selector of the element that will receive the label of the selected element.</li>
+						<li>The label parameter defaults to the first text input found on the elements parent.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@pick and @return
+				</header>
+				<section>
+					<fieldset>
+						<label>
+							<span>
+								<input type="text" id="label"/>
+								<input type="hidden" id="value" />
+								<a id='get' href="return.html" target="@pick(value, label)" title="Selecione">
+									<g-icon>
+										&#X2010;
+									</g-icon>
+								</a>
+							</span>
+						</label>
+					</fieldset>
+				</section>
+				<g-tooltip>
+					<h1>@pick</h1>
+
+					<p>This trigger initiates a dialog that showcases the outcome of a request in the form of an HTML document.
+						When using the this trigger, you provide one or more selectors as parameters.
+						These selectors serve as targets for the values retrieved from the displayed document.</p>
+
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>selectors...</strong></td>
+							<td>The selectors of the elements that will receive the values
+								retrieved from the displayed document.</td>
+						</tr>
+					</table>
+
+					<h1>@return</h1>
+
+					<p>For each value in the displayed document, there should be a corresponding
+						<code>@return</code> trigger. These triggers ensure that the values
+						are appropriately placed in their respective @pick trigger elements.</p>
+
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>values...</strong></td>
+							<td>The values to be returned by the displayed document.</td>
+						</tr>
+					</table>
+
+					<p>The dialog is closed once a single <code>@return</code> trigger is activated</p>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@outerHTML
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@outerHTML'>
+						Click me
+					</a>
+				</section>
+
+				<g-tooltip>
+					<h1>@outerHTML</h1>
+					<p>Replaces the target element with the result of of the request.
+						The target element selector can be passed as a parameter
+						or ommited to make the element targets itself.</p>
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>selector</strong></td>
+							<td>The selector of the element that will be replaced by
+								the result of the request. If ommited, defaults
+								to the triggered element</td>
+						</tr>
+					</table>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@innerHTML
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@innerHTML'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>@innerHTML</h1>
+					<p>Replaces the contents of the target element with the result of of the request.
+						The target element selector can be passed as a parameter
+						or ommited to make the element targets itself.</p>
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>selector</strong></td>
+							<td>The selector of the element that whose contents will
+								be replaced by
+								the result of the request. If ommited, defaults
+								to the triggered element</td>
+						</tr>
+					</table>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@beforebegin
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@beforebegin'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>target='@beforebegin(selector)'</h1>
+					<ul>
+						<li>Inserts the result of of the request before the target element.</li>
+						<li>The target element selector can be passed as a parameter or ommited to make the element targets itself.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@afterbegin
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@afterbegin'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>target='@beforebegin(selector)</h1>
+					<ul>
+						<li>Appends the result of of the request to the begin of the target element content.</li>
+						<li>The target element selector can be passed as a parameter or ommited to make the element targets itself.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@beforeend
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@beforeend'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>target='@beforeend(selector)</h1>
+					<ul>
+						<li>Appends the result of of the request to the end of the target element content.</li>
+						<li>The target element selector can be passed as a parameter or ommited to make the element targets itself.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@afterend
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@afterend'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>target='@afterend(selector)</h1>
+					<ul>
+						<li>Inserts the result of of the request after the target element.</li>
+						<li>The target element selector can be passed as a parameter or ommited to make the element targets itself.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@dialog
+				</header>
+				<section style="display: block">
+					Click to open a <a href="lorem-ipsum.html" target='@dialog(fetch, 50%, 50%)'>
+						fetch dialog
+					</a>
+					or a<a href="lorem-ipsum.html" target='@dialog(frame, 50%, 50%)'>
+						frame dialog
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>target='@dialog(type, style)</h1>
+					<ul>
+						<li>Display the result of of the request on a dialog.</li>
+						<li>If the type is set to fetch, the result is fetched and displayed on a div.</li>
+						<li>If the type is set to frame or ommited, the result is displayed on a iframe.</li>
+						<li>If the style is ommited, the dialog is displayed using 80% of the viewport on large screens and 100% on small ones.</li>
+					</ul>
+				</g-tooltip>
+			</g-card>
+			<g-card>
+				<header>
+					@stack
+				</header>
+				<section style="display: block">
+					Click to open a <a href="lorem-ipsum.html" target='@stack(fetch)'>
+						fetch stack
+					</a>
+					or a<a href="lorem-ipsum.html" target='@stack(frame)'>
+						frame stack
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>@stack(type)</h1>
+					<p>Display the result of of the request on a modal layer stacked
+						above the current window hiding it completely.</p>
+					<p>If the type is set to fetch, the result is fetched and displayed on a div.</p>
+					<p>If the type is set to frame or ommited, the result is displayed on a iframe.</p>
+				</g-tooltip>
+			</g-card>
+			<g-card >
+				<header>
+					@message
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@message'>
+						Click me
+					</a>
+				</section>
+				<g-tooltip>
+					<h1>@message</h1>
+					<p>Present the outcome of the request in a message window. The message window automatically closes
+						after the specified duration. If the duration is omitted, the message window will persist
+						until manually closed by the user.</p>
+					<table style="table-layout: auto; width: 600px; max-width: 80vw">
+						<caption>Parameters</caption>
+						<tr>
+							<td><strong>duration</strong></td>
+							<td>The duration in milliseconds for which the message will be displayed
+								before automatically closing.
+								If omitted, the message will remain visible until manually closed by the user.</td>
+						</tr>
+					</table>
+				</g-tooltip>
+			</g-card>
+			<g-card >
+				<header>
+					@tooltip
+				</header>
+				<section>
+					<a id='test' data-trigger='mouseover'
+					   href='data:application/json,[{"Name": "Josh", "Sex": "male"},
+					   {"Name": "Karen", "Sex": "female"}]' target='@tooltip'>
+						Hover to show a local json tooltip
+					</a>
+					<a data-trigger='mouseover' href="lorem-ipsum.html" target='@tooltip'>
+						Hover to show a remote text tooltip
+					</a>
+				</section>
+			</g-card>
+			<g-card>
+				<header>
+					@progress
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='@progress'>
+						Click me
+					</a>
+				</section>
+			</g-card>
+			<g-card>
+				<header>
+					_self
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='_self'>
+						Click me
+					</a>
+				</section>
+			</g-card>
+			<g-card>
+				<header>
+					_top
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='_top'>
+						Click me
+					</a>
+				</section>
+			</g-card>
+			<g-card>
+				<header>
+					_parent
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='_parent'>
+						Click me
+					</a>
+				</section>
+			</g-card>
+			<g-card>
+				<header>
+					_blank
+				</header>
+				<section>
+					<a href="lorem-ipsum.html" target='_blank'>
+						Click me
+					</a>
+				</section>
+			</g-card>
+		</div>
+	</body>
+	<script type='module'>
+		document.getElementById("test").addEventListener("click", () => alert(1));
+	</script>
+</div>

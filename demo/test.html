@@ -1,0 +1,47 @@
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+
+		<style>
+			body {
+				margin: 0;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+				justify-content: center
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+			div#target {
+				margin: 0;
+				position: relative;
+				background-color: gray;
+				width: 200px;
+				height: 200px;
+			}
+
+		</style>
+	</head>
+
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+
+		<select id="position" value='northeast'>
+			<option value='north'>north</option>
+			<option value='northeast'>northeast</option>
+			<option value='east'>east</option>
+			<option value='southeast'>southeast</option>
+			<option value='south'>south</option>
+			<option value='southwest'>southwest</option>
+			<option value='west'>west</option>
+			<option value='northwest'>northwest</option>
+		</select>
+
+		<div id='target' data-tooltip='["first", "second", "third"]'>
+		</div>
+	</body>
+</html>

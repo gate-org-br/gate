@@ -20,16 +20,16 @@ import gate.error.UnauthorizedException;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
-import gate.handler.IntegerHandler;
+import gate.handler.StringHandler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -41,6 +41,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -72,7 +73,9 @@ public class Gate extends HttpServlet
 	@Current
 	private Authenticator authenticator;
 
-	final String developer = SystemProperty.get("gate.developer").orElse(null);
+	@Inject
+	@ConfigProperty(name = "gate.developer")
+	Optional<String> developer;
 
 	static
 	{
@@ -137,6 +140,11 @@ public class Gate extends HttpServlet
 				{
 					user = (User) request.getSession()
 						.getAttribute(User.class.getName());
+				} else if (developer.isPresent())
+				{
+					user = control.select(developer.orElseThrow());
+					request.getSession().setAttribute(User.class.getName(), user);
+					event.fireAsync(new LoginEvent(user));
 				} else if (!call.isPublic())
 				{
 					user = authenticator.authenticate(request, response);
@@ -227,7 +235,7 @@ public class Gate extends HttpServlet
 		{
 			request.startAsync();
 			Progress progress = Progress.create(user);
-			Handler handler = handlers.select(IntegerHandler.class).get();
+			Handler handler = handlers.select(StringHandler.class).get();
 			handler.handle(request, response, progress.getProcess());
 			request.getAsyncContext().complete();
 

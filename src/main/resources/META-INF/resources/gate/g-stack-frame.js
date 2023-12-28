@@ -1,8 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<dialog>
-		<iframe name="@stack" scrolling="no">
-		</iframe>
 	</dialog>
  <style>* {
 	margin: 0;
@@ -17,7 +15,7 @@ template.innerHTML = `
 	max-width: unset;
 }
 
-dialog {
+:host(*) > dialog {
 	width: 100%;
 	height: 100%;
 	display:  flex;
@@ -28,7 +26,13 @@ dialog {
 	justify-content: center;
 }
 
-iframe {
+:host(*) > dialog > div
+{
+	padding: 8px;
+}
+
+
+:host(*) > dialog > iframe {
 	flex-grow: 1;
 	overflow:  hidden;
 }</style>`;
@@ -40,6 +44,7 @@ import GModal from './g-modal.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
+import { TriggerResolveEvent } from './trigger-event.js';
 
 customElements.define('g-stack-frame', class GStackFrame extends GModal
 {
@@ -48,39 +53,64 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		let iframe = this.iframe;
-
-		iframe.dialog = this;
-		iframe.addEventListener("load", () => iframe.focus());
-		iframe.addEventListener("mouseenter", () => iframe.focus());
 	}
 
 	get iframe()
 	{
-		return this.shadowRoot.querySelector("iframe");
+		let dialog = this.shadowRoot.querySelector("dialog");
+
+		if (!dialog.firstElementChild)
+		{
+			let iframe = dialog.appendChild(document.createElement("iframe"));
+			iframe.dialog = this;
+			iframe.name = "@stack";
+			iframe.setAttribute("scrolling", "no");
+			iframe.addEventListener("load", () => iframe.focus());
+			iframe.addEventListener("mouseenter", () => iframe.focus());
+		}
+
+		if (dialog.firstElementChild.tagName !== "IFRAME")
+			throw new Error("Attempt to access iframe of a fetch stack-frame");
+
+		return dialog.firstElementChild;
 	}
 
-	set target(target)
+	get content()
 	{
-		this.iframe.setAttribute('src', target);
+		let dialog = this.shadowRoot.querySelector("dialog");
+
+		if (!dialog.firstElementChild)
+			dialog.appendChild(document.createElement("div"));
+		if (dialog.firstElementChild.tagName !== "DIV")
+			throw new Error("Attempt to access content of a frame stack-frame");
+
+		return dialog.firstElementChild;
 	}
 });
 
 window.addEventListener("@stack", function (event)
 {
-	let trigger = event.composedPath()[0] || event.target;
 	let stack = window.top.document.createElement("g-stack-frame");
-	stack.addEventListener("show", () => trigger.dispatchEvent(new CustomEvent('show', {bubbles: true, detail: {modal: stack}})));
-	stack.addEventListener("hide", () => trigger.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: stack}})));
 
+	stack.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 
-	stack.show();
-	if (event.detail.method === "get")
-		stack.iframe.src = event.detail.action;
-	else
-		fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-			.then(ResponseHandler.text)
-			.then(html => stack.iframe.srcDoc = html)
-			.catch(GMessageDialog.error);
+	switch (event.detail.parameters[0] || "frame")
+	{
+		case "frame":
+			if (event.detail.method === "get")
+				stack.iframe.src = event.detail.action;
+			else
+				fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+					.then(ResponseHandler.text)
+					.then(html => stack.iframe.srcDoc = html)
+					.catch(GMessageDialog.error);
+			break;
+		case "fetch":
+			fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+				.then(ResponseHandler.text)
+				.then(html => stack.content.innerHTML = html)
+				.catch(GMessageDialog.error);
+			break;
+	}
+
 });

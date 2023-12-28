@@ -52,7 +52,15 @@ export default class Optional
 	orElseThrow(message)
 	{
 		if (this.isEmpty())
+		{
+			while (typeof message === 'function')
+				message = message();
+
+			if (message instanceof Error)
+				throw message;
+
 			throw new TypeError(message || "No such element");
+		}
 		return this.#value;
 	}
 

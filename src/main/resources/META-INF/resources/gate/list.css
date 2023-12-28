@@ -1,0 +1,48 @@
+ul {
+	margin: 0;
+	padding: 8px;
+	list-style-type: none;
+}
+
+ul ul {
+	margin-left: 40px;
+}
+
+li {
+	padding: 4px;
+}
+
+li[data-icon]
+{
+	gap: 8px;
+	display: flex;
+	align-items: center;
+}
+
+li[data-icon]:before {
+	font-size: 80%;
+	font-family: gate;
+	content: attr(data-icon);
+}
+
+dl {
+	display: inline-grid;
+	grid-template-columns: auto auto;
+}
+
+dt {
+	margin: 0;
+	padding: 4px;
+	display: flex;
+	font-weight: bold;
+	align-items: center;
+	justify-content: flex-end;
+}
+
+dd {
+	margin: 0;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}

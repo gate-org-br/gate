@@ -131,6 +131,24 @@ table {
 				background-color: var(--hovered);
 			}
 		}
+
+		> td {
+			&[tabindex]
+			{
+				cursor: pointer;
+				&:focus {
+					background-color: var(--hovered);
+				}
+			}
+
+			&:not([tabindex])[data-action]
+				{
+				cursor: pointer;
+				&:hover {
+					background-color: var(--hovered);
+				}
+			}
+		}
 	}
 
 

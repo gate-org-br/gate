@@ -42,6 +42,7 @@ dialog > section
 
 import './g-icon.js';
 import './g-grid.js';
+import DOM from './dom.js';
 import GWindow from './g-window.js';
 import Extractor from './extractor.js';
 import ObjectFilter from './object-filter.js';
@@ -187,14 +188,16 @@ window.addEventListener("@search", function (event)
 	event.stopPropagation();
 
 	let trigger = event.composedPath()[0] || event.target;
+	let parameters = event.detail.parameters.map(e => DOM.navigate(trigger, e).orElse(null));
 
-	let label = trigger.parentNode.querySelector("input[type=text]");
-	if (!label)
-		throw new Error("Label input not found");
-
-	let value = trigger.parentNode.querySelector("input[type=hidden]");
+	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
 	if (!value)
 		throw new Error("Value input not found");
+
+
+	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
+	if (!label)
+		throw new Error("Label input not found");
 
 	if (trigger === label)
 	{

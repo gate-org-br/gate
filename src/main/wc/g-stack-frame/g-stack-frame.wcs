@@ -11,7 +11,7 @@
 	max-width: unset;
 }
 
-dialog {
+:host(*) > dialog {
 	width: 100%;
 	height: 100%;
 	display:  flex;
@@ -22,7 +22,13 @@ dialog {
 	justify-content: center;
 }
 
-iframe {
+:host(*) > dialog > div
+{
+	padding: 8px;
+}
+
+
+:host(*) > dialog > iframe {
 	flex-grow: 1;
 	overflow:  hidden;
 }

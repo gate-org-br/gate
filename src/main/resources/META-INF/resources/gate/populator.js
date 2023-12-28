@@ -1,7 +1,10 @@
 import './trigger.js';
+import DOM from './dom.js';
 import GBlock from './g-block.js';
+import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
+import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 export default function Populator(options)
 {
@@ -46,36 +49,22 @@ export default function Populator(options)
 window.addEventListener("@populate", function (event)
 {
 	event.preventDefault();
-	let element = event.composedPath()[0];
 	let parameters = event.detail.parameters;
+	let trigger = event.composedPath()[0] || event.target;
 
-	if (parameters[0] && parameters[0] !== 'this')
-	{
-		element = element.getRootNode().getElementById(parameters[0]);
-		if (!element)
-			throw new Error(`No element with id ${parameters[0]} found on page`);
-	}
+	let element = DOM.navigate(trigger, parameters[0])
+		.orElseThrow("No populate target element specified");
 
-	let header = {};
-	if (event.detail.method !== "get")
-	{
-		header.method = event.detail.method;
-		header.body = new FormData(event.detail.element);
-		header.headers = {'Content-Type': 'application/x-www-form-urlencoded'};
-	}
-
-	element.style.cursor = "wait";
-	element.style.pointerEvents = "none";
-	GBlock.show(event.detail.parameters[1] || "...");
-
-	fetch(event.detail.action, header)
+	event.target.dispatchEvent(new TriggerStartupEvent(event));
+	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.json)
-		.then(options => new Populator(options).populate(element, parameters[1], parameters[2]))
-		.catch(GMessageDialog.error)
-		.finally(() =>
+		.then(options =>
 		{
-			GBlock.hide();
-			element.style.cursor = "";
-			element.style.pointerEvents = "";
-		});
+			let value = parameters[1] || "value";
+			let label = parameters[2] || "label";
+			new Populator(options).populate(element, value, label);
+			setTimeout(() => event.target.dispatchEvent(new TriggerSuccessEvent(event)), 0);
+		})
+		.catch(error => setTimeout(event.target.dispatchEvent(new TriggerFailureEvent(event, error)), 0))
+		.finally(setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 });

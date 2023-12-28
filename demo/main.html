@@ -3,50 +3,51 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
-	<script type='module' src='gate/Gate.js' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
+		<script type='module' src='gate/Gate.js' charset="utf-8"></script>
+	</head>
 
-<body data-loading onload="document.body.removeAttribute('data-loading')">
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
 
-	<main>
-		<header>
-			<img src='Logo.svg' />
-			<label>Gate</label>
-			<label>VersÃ£o 1.0.0-SNAPSHOT</label>
-		</header>
+		<main>
+			<header>
+				<img src='Logo.svg' />
+				<label>Gate</label>
+				<label>VersÃ£o 1.0.0-SNAPSHOT</label>
+			</header>
 
-		<nav>
-			<g-tabbar>
-				<a aria-selected target="iframe" href='./crud/view.html'>Crud<i>&#X2004;</i></a>
-				<a target="iframe" href='./message.html'>Mensagens<i>&#X2015;</i></a>
-				<a target="iframe" href='./callout.html'>Callouts<i>&#X2016;</i></a>
-				<a target="iframe" href='./coolbar.html'>Coolbar<i>&#X1003;</i></a>
-				<a target="iframe" href='./card.html'>Cards<i>&#X2197;</i></a>
-				<a target="iframe" href='./deskpane.html'>Deskpane<i>&#X2270;</i></a>
-				<a target="iframe" href='./tab-control.html'>Tab Control<i>&#X3055;</i></a>
-				<a target="iframe" href='./pickers.html'>Pickers<i>&#X2256;</i></a>
-				<a target="iframe" href='./form.html'>Form<i>&#X2169;</i></a>
-				<a target="iframe" href='./etc.html'>ETC<i>&#X3017;</i></a>
-				<hr />
-				<a id="reload" href="./main.html">
-					Reload<i>&#X2025;</i>
-				</a>
-				<a href='./login.html'>Sair<i>&#X2007;</i></a>
-			</g-tabbar>
-		</nav>
-		<section>
-			<iframe id='iframe' name='iframe' src="./crud/view.html" style="flex-grow: 1">
-			</iframe>
-		</section>
-		<footer>
-			<label>HomologaÃ§Ã£o</label>
-			<label>Fulano</label>
-		</footer>
-	</main>
-</body>
+			<nav>
+				<g-tabbar>
+					<a aria-selected target="iframe" href='./crud/view.html'>Crud<i>&#X2004;</i></a>
+					<a target="iframe" href='./message.html'>Mensagens<i>&#X2015;</i></a>
+					<a target="iframe" href='./callout.html'>Callouts<i>&#X2016;</i></a>
+					<a target="iframe" href='./coolbar.html'>Coolbar<i>&#X1003;</i></a>
+					<a target="iframe" href='./card.html'>Cards<i>&#X2197;</i></a>
+					<a target="iframe" href='./deskpane.html'>Deskpane<i>&#X2270;</i></a>
+					<a target="iframe" href='./tab-control/tab-control.html'>Tab Control<i>&#X3055;</i></a>
+					<a target="iframe" href='./pickers.html'>Pickers<i>&#X2256;</i></a>
+					<a target="iframe" href='./form.html'>Form<i>&#X2169;</i></a>
+					<a target="iframe" href='./target.html'>Targets<i>&#X1011;</i></a>
+					<a target="iframe" href='./etc.html'>ETC<i>&#X3017;</i></a>
+					<hr />
+					<a id="reload" href="./main.html">
+						Reload<i>&#X2025;</i>
+					</a>
+					<a href='./login.html'>Sair<i>&#X2007;</i></a>
+				</g-tabbar>
+			</nav>
+			<section>
+				<iframe id='iframe' name='iframe' src="./crud/view.html" style="flex-grow: 1">
+				</iframe>
+			</section>
+			<footer>
+				<label>HomologaÃ§Ã£o</label>
+				<label>Fulano</label>
+			</footer>
+		</main>
+	</body>
 
 </html>

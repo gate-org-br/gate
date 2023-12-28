@@ -3,53 +3,42 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
-	<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+	</head>
 
-<body data-loading onload="document.body.removeAttribute('data-loading')">
-	<form id='form' method="POST" action="page.html" target="@outerHTML(#page)">
-		<fieldset>
-			<legend>
-				<i>&#X2010;</i>Search
-			</legend>
-			<label>
-				Name:
-				<span>
-					<input name='name' type='text' />
-				</span>
-			</label>
-		</fieldset>
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+		<form id='form' method="POST" action="page.html" target="@outerHTML(#page)">
+			<fieldset>
+				<label>
+					<span>
+						<select id='selector'
+							required
+							data-method="post"
+							data-action="/crud/dataset/@{selector}.html"
+							data-target="@afterbegin(#page > tbody)"
+							data-on:resolve="this.value = null">
+							<option selected disabled value=''>Incluir</option>
+							<option value='albert-einstein'>Albert Einstein</option>
+							<option value='amelia-earhart'>Amelia Earhart</option>
+							<option value='jane-austen'>Jane Austen</option>
+							<option value='leonardo-da-vinci'>Leonardo da Vinci</option>
+							<option value='marie-curie'>Marie Curie</option>
+							<option value='martin-luther-king'>Martin Luther King</option>
+							<option value='mother-teresa'>Mother Teresa</option>
+							<option value='nelson-mandela'>Nelson Mandela</option>
+							<option value='rosa-parks'>Rosa Parks</option>
+							<option value='william-shakespeare'>William Shakespeare</option>
+						</select>
+					</span>
+				</label>
+			</fieldset>
 
-		<g-coolbar>
-			<button class="primary" tabindex="2" title="Search">
-				Search<g-icon>&#X2010;</g-icon>
-			</button>
-
-			<button class="primary" tabindex="2" title="Post" formaction="/main.html" formtarget="_top">
-				Post<g-icon>&#X2010;</g-icon>
-			</button>
-
-			<button formaction="/download.bin" formtarget="_self">
-				Download<i>&#X2021;</i>
-			</button>
-
-			<button formtarget="@report" formaction="/download.pdf">
-				Report<i>&#X2021;</i>
-			</button>
-
-			<button tabindex="2" title="Insert" formaction="insert.html" formtarget="@afterbegin(#page > tbody)">
-				Insert
-				<g-icon>&#X1002;</g-icon>
-			</button>
-		</g-coolbar>
-
-		<div id='page' data-action="page.html" data-target="@outerHTML">
-		</div>
-	</form>
-</body>
-
+			<div id='page' data-action="page.html" data-target="@outerHTML">
+			</div>
+		</form>
+	</body>
 </html>

@@ -55,8 +55,9 @@ import "./g-progress-dialog.js";
 
 import "./g-desk-pane.js";
 
-import "./sort.js";
+import "./sorter.js";
 import "./filter.js";
+import "./counter.js";
 
 import "./form.js";
 import "./validation.js";
