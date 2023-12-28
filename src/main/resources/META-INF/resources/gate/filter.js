@@ -1,39 +1,70 @@
-/* global Colorizer */
-
+import DOM from './dom.js';
 import colorize from './colorize.js';
 
 export default function filter(elements, value)
 {
+	if (!Array.isArray(elements))
+		elements = Array.from(elements);
 	value = value ? value.toUpperCase() : "";
-	elements.forEach(row => row.style.display = row.innerHTML.toUpperCase().indexOf(value) !== -1 ? "" : "none");
+	elements.forEach(row => row.style.display =
+			row.innerHTML.toUpperCase().indexOf(value) !== -1 ? "" : "none");
 }
 
-function process(input)
+function update()
 {
-
-	let table = input.getAttribute("data-filter")
-		? document.getElementById(input.getAttribute("data-filter"))
-		: input.closest("TABLE");
-	let elements = Array.from(table.children)
-		.filter(e => e.tagName === "TBODY")
-		.flatMap(e => Array.from(e.children));
-
-	filter(elements, input.value);
-	colorize(elements);
+	DOM.traverse(document,
+		element => element.tagName === "TBODY"
+			&& element.hasAttribute("data-filter"),
+		element =>
+	{
+		filter(element.children,
+			element.getAttribute("data-filter"));
+		colorize(element);
+	});
 }
+
+let observer = new MutationObserver(function (mutations)
+{
+	if (mutations.addedNodes)
+		mutations.addedNodes
+			.filter(node => node instanceof Element && node.shadowRoot)
+			.forEach(node => observer.observe(node.shadowRoot,
+					{childList: true,
+						subtree: true,
+						attributes: true,
+						attributeFilter: ['data-filter']}));
+	update();
+});
+
+observer.observe(document,
+	{childList: true,
+		subtree: true,
+		attributes: true,
+		attributeFilter: ['data-filter']});
+
+update();
 
 window.addEventListener("input", function (event)
 {
 	if (event.target.tagName === "INPUT"
 		&& event.target.hasAttribute("data-filter"))
-		process(event.target);
+	{
+		let tbody = event.target.getAttribute("data-filter")
+			? document.getElementById(event.target.dataset.filter)
+			: event.target.closest("TABLE").querySelector("TBODY");
+		tbody.setAttribute("data-filter", event.target.value);
+	}
+
 });
 
 window.addEventListener("changed", function (event)
 {
 	if (event.target.tagName === "INPUT"
 		&& event.target.hasAttribute("data-filter"))
-		process(event.target);
+	{
+		let tbody = event.target.getAttribute("data-filter")
+			? document.getElementById(event.target.dataset.filter)
+			: event.target.closest("TABLE").querySelector("TBODY");
+		tbody.setAttribute("data-filter", event.target.value);
+	}
 });
-
-Array.from(document.querySelectorAll("input[data-filter]")).forEach(e => process(e));
