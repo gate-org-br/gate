@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.attribute.property;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PropertyAttributeProcessor()
 	{
@@ -53,7 +53,7 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 		{
 			Object value = property.getValue(screen);
 			if (value == null && element.hasAttribute("g:empty"))
-				handler.setBody(Converter.toText(expression.evaluate(element.getAttributeValue("g:empty"))), false);
+				handler.setBody(Converter.toText(expression.create().evaluate(element.getAttributeValue("g:empty"))), false);
 			else
 				handler.setBody(property.getConverter().toText(property.getRawType(), value), false);
 		} else

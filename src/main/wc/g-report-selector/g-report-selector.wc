@@ -1,6 +1,0 @@
-<template>
-	<a href='#' data-type='PDF'><g-icon>&#x2218;</g-icon>PDF</a>
-	<a href='#' data-type='XLS'><g-icon>&#x2221;</g-icon>XLS</a>
-	<a href='#' data-type='DOC'><g-icon>&#x2220;</g-icon>DOC</a>
-	<a href='#' data-type='CSV'><g-icon>&#x2222;</g-icon>CSV</a>
-</template>

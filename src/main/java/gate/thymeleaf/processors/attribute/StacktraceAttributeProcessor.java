@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ public class StacktraceAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public StacktraceAttributeProcessor()
 	{
@@ -26,7 +26,7 @@ public class StacktraceAttributeProcessor extends AttributeProcessor
 		IElementTagStructureHandler handler)
 	{
 		extract(element, handler, "g:stacktrace")
-			.map(expression::evaluate)
+			.map(expression.create()::evaluate)
 			.filter(object -> object instanceof Throwable)
 			.map(throwable -> (Throwable) throwable)
 			.map(Toolkit::format)

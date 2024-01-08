@@ -1,5 +1,15 @@
 /* global customElements */
 
+function visible(element, container)
+{
+	element = element.getBoundingClientRect();
+	container = container.getBoundingClientRect();
+	return 	element.top >= container.top &&
+		element.left >= container.left &&
+		element.bottom <= container.bottom &&
+		element.right <= container.right;
+}
+
 customElements.define("g-scroll-tabbar", class extends HTMLElement
 {
 	constructor()
@@ -8,22 +18,42 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		let div = this.shadowRoot.firstElementChild;
+		let div = this.shadowRoot.querySelector("div");
 		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
 		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
 		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
 
+		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
+		{
+			for (let element = this.firstElementChild; element; element = element.nextElementSibling)
+				if (visible(element, div))
+					for (element = element.nextElementSibling; element; element = element.nextElementSibling)
+						if (!visible(element, div))
+							return element.scrollIntoView({inline: "start",
+								behavior: "smooth"});
+		}
+		);
+
+		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
+		{
+			for (let element = this.lastElementChild; element; element = element.previousElementSibling)
+				if (visible(element, div))
+					for (element = element.previousElementSibling; element; element = element.previousElementSibling)
+						if (!visible(element, div))
+							return element.scrollIntoView({inline: "end",
+								behavior: "smooth"});
+
+		});
+
 		div.addEventListener("scroll", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 	}
 
 	connectedCallback()
 	{
-		let div = this.shadowRoot.querySelector("div");
-		Array.from(this.children).forEach(e => div.appendChild(e));
-		window.setTimeout(() => this.update(), 0);
-		window.addEventListener("resize", () => this.update());
+		this.update();
 	}
 
 	update()
@@ -37,8 +67,8 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 			let containerMetricsRight = Math.floor(containerMetrics.right);
 			let containerMetricsLeft = Math.floor(containerMetrics.left);
 
-			let left = Math.floor(div.firstElementChild.getBoundingClientRect().left);
-			let right = Math.floor(div.lastElementChild.getBoundingClientRect().right);
+			let left = Math.floor(this.firstElementChild.getBoundingClientRect().left);
+			let right = Math.floor(this.lastElementChild.getBoundingClientRect().right);
 
 			if (containerMetricsLeft > left
 				&& containerMetricsRight < right)
@@ -51,12 +81,7 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 				this.setAttribute("data-overflowing", "none");
 		}
 
-		Array.from(div.children).filter(e => e.getAttribute("aria-selected"))
+		Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
 			.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
-	}
-
-	disconnectedCallback()
-	{
-		window.removeEventListener("resize", () => this.update());
 	}
 });

@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class IfAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public IfAttributeProcessor()
 	{
@@ -24,14 +24,14 @@ public class IfAttributeProcessor extends AttributeProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		if ((boolean) expression.evaluate(element.getAttributeValue("g:if")))
+		if ((boolean) expression.create().evaluate(element.getAttributeValue("g:if")))
 		{
 			handler.removeAttribute("g:if");
 			handler.removeAttribute("g:otherwise");
 		} else if (element.hasAttribute("g:otherwise"))
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");
-			otherwise = Converter.toText(expression.evaluate(otherwise));
+			otherwise = Converter.toText(expression.create().evaluate(otherwise));
 			handler.replaceWith(otherwise, false);
 		} else
 			handler.removeElement();

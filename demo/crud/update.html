@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+	</head>
+
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+		<form id='form' method="POST" action="page.html" target="@outerHTML(#page)">
+			<fieldset>
+				<label data-size='8'>
+					Name:
+					<span>
+						<input type="text">
+					</span>
+				</label>
+				<label data-size='8'>
+					Sex:
+					<span>
+						<select>
+							<option value=""></option>
+							<option value="male">Male</option>
+							<option value="female">Female</option>
+						</select>
+					</span>
+				</label>
+			</fieldset>
+
+			<g-coolbar>
+				<a class='primary' href="#" target="@pull(this.closest(body))">
+					Commit<g-icon>&#X1000;</g-icon>
+				</a>
+				<hr>
+				<a class='tertiary' href="#" target="@pull(this.closest(body))">
+					Cancel<g-icon>&#X1001;</g-icon>
+				</a>
+
+			</g-coolbar>
+		</form>
+	</body>
+</html>

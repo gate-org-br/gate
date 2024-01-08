@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -13,7 +13,7 @@ public class WriteAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public WriteAttributeProcessor()
 	{
@@ -24,7 +24,7 @@ public class WriteAttributeProcessor extends AttributeProcessor
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
 		var value = extract(element, handler, "g:write").orElseThrow();
-		var string = Converter.toString(expression.evaluate(value));
+		var string = Converter.toString(expression.create().evaluate(value));
 		handler.setBody(string, true);
 	}
 }

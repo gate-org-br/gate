@@ -9,9 +9,7 @@ import javax.el.ELContext;
 import javax.el.ELException;
 import javax.el.ExpressionFactory;
 import javax.el.LambdaExpression;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 public interface ELExpression
@@ -23,7 +21,6 @@ public interface ELExpression
 
 	public Comparator<Object> comparator(String expression);
 
-	@RequestScoped
 	public static class ELExpressionImpl implements ELExpression
 	{
 
@@ -33,7 +30,6 @@ public interface ELExpression
 		private static final Pattern FUNCTION = Pattern.compile("^\\$\\{([a-zA-Z][a-zA-Z0-9]*) *-> *(.*)\\}$");
 		private static final Pattern BI_FUNCTION = Pattern.compile("^\\$\\{\\(([a-zA-Z][a-zA-Z0-9]*), *([a-zA-Z][a-zA-Z0-9]*)\\)\\ *-> *(.*)}$");
 
-		@Inject
 		public ELExpressionImpl(BeanManager beanManager, HttpServletRequest request)
 		{
 
@@ -108,4 +104,5 @@ public interface ELExpression
 		}
 
 	}
+
 }

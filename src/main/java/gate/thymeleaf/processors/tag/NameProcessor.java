@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Name;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -14,7 +14,7 @@ public class NameProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public NameProcessor()
 	{
@@ -25,7 +25,7 @@ public class NameProcessor extends TagProcessor
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
 		var name = extract(element, handler, "type")
-			.map(expression::evaluate)
+			.map(expression.create()::evaluate)
 			.map(e -> Name.Extractor.extract(e).orElse("unamed"))
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute type on g:name"));
 		handler.replaceWith(name, false);

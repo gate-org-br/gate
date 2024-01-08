@@ -47,11 +47,14 @@ template.innerHTML = `
 
 ::slotted(section)
 {
+	gap: 8px;
 	padding: 8px;
 	flex-grow: 1;
+	display: flex;
 	font-size: 1em;
 	overflow: auto;
 	text-align: justify;
+	flex-direction: column;
 }
 
 ::slotted(footer) {

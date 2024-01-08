@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
 
-
 <html lang="pt-BR">
 
 	<head>
 		<meta charset="UTF-8">
 		<title>Gate</title>
 		<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
+		<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
 		<script type='module' src='gate/Gate.js' charset="utf-8"></script>
 	</head>
 
@@ -16,38 +16,48 @@
 			<header>
 				<img src='Logo.svg' />
 				<label>Gate</label>
-				<label>VersÃ£o 1.0.0-SNAPSHOT</label>
+				<label>Version 1.0.0-SNAPSHOT</label>
 			</header>
 
 			<nav>
-				<g-tabbar>
-					<a aria-selected target="iframe" href='./crud/view.html'>Crud<i>&#X2004;</i></a>
-					<a target="iframe" href='./message.html'>Mensagens<i>&#X2015;</i></a>
-					<a target="iframe" href='./callout.html'>Callouts<i>&#X2016;</i></a>
-					<a target="iframe" href='./coolbar.html'>Coolbar<i>&#X1003;</i></a>
-					<a target="iframe" href='./card.html'>Cards<i>&#X2197;</i></a>
-					<a target="iframe" href='./deskpane.html'>Deskpane<i>&#X2270;</i></a>
-					<a target="iframe" href='./tab-control/tab-control.html'>Tab Control<i>&#X3055;</i></a>
-					<a target="iframe" href='./pickers.html'>Pickers<i>&#X2256;</i></a>
-					<a target="iframe" href='./form.html'>Form<i>&#X2169;</i></a>
-					<a target="iframe" href='./target.html'>Targets<i>&#X1011;</i></a>
-					<a target="iframe" href='./etc.html'>ETC<i>&#X3017;</i></a>
+				<g-scroll-tabbar>
+					<a id='targets' href='./target/view.html' target="@innerHTML(section)" aria-selected>
+						<g-icon>&#X1011;</g-icon>Targets
+					</a>
+
+					<a id='message' href='./message.html' target="@innerHTML(section)">
+						<g-icon>&#X2015;</g-icon>Mensagens
+					</a>
+
+					<a id='callout' href='./callout.html' target="@innerHTML(section)">
+						<g-icon>&#X2016;</g-icon>Callouts
+					</a>
+
+					<a id='picker' href='./picker.html' target="@innerHTML(section)" >
+						Pickers<g-icon>&#X2256;</g-icon>
+					</a>
+
+					<a target="iframe" href='./crud/view.html'>Crud<g-icon>&#X2004;</g-icon></a>
+					<a target="iframe" href='./coolbar.html'>Coolbar<g-icon>&#X1003;</g-icon></a>
+					<a target="iframe" href='./card.html'>Cards<g-icon>&#X2197;</g-icon></a>
+					<a target="iframe" href='./deskpane.html'>Deskpane<g-icon>&#X2270;</g-icon></a>
+					<a target="iframe" href='./tab-control/tab-control.html'>Tab Control<g-icon>&#X3055;</g-icon></a>
+
+					<a target="iframe" href='./form.html'>Form<g-icon>&#X2169;</g-icon></a>
+					<a target="iframe" href='./etc.html'>ETC<g-icon>&#X3017;</g-icon></a>
 					<hr />
 					<a id="reload" href="./main.html">
-						Reload<i>&#X2025;</i>
+						Reload<g-icon>&#X2025;</g-icon>
 					</a>
-					<a href='./login.html'>Sair<i>&#X2007;</i></a>
-				</g-tabbar>
+					<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
+				</g-scroll-tabbar>
 			</nav>
-			<section>
-				<iframe id='iframe' name='iframe' src="./crud/view.html" style="flex-grow: 1">
-				</iframe>
+			<section data-trigger='load' data-action='./target/view.html' data-target='@innerHTML'>
 			</section>
 			<footer>
-				<label>HomologaÃ§Ã£o</label>
-				<label>Fulano</label>
+				<label>Foo</label>
+				<label>Bar</label>
 			</footer>
 		</main>
 	</body>
-
 </html>

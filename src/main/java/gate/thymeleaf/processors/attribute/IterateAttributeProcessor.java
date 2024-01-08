@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.type.Attributes;
@@ -28,7 +28,7 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 	TextEngine engine;
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public IterateAttributeProcessor()
 	{
@@ -41,11 +41,11 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		var source = expression.evaluate(element.getAttributeValue("g:iterate"));
+		var source = expression.create().evaluate(element.getAttributeValue("g:iterate"));
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("g:depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("g:index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("g:target"), "target");
-		var children = Optional.ofNullable(element.getAttributeValue("g:children")).map(expression::function).orElse(null);
+		var children = Optional.ofNullable(element.getAttributeValue("g:children")).map(expression.create()::function).orElse(null);
 
 		Attributes attributes
 			= Stream.of(element.getAllAttributes())

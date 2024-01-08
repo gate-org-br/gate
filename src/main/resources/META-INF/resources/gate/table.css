@@ -112,10 +112,14 @@ table > tbody > tr[tabindex] {
 table > tbody > tr[tabindex]:focus {
   background-color: var(--hovered);
 }
-table > tbody > tr:not([tabindex])[data-action] {
+table > tbody > tr:not([tabindex])[data-action],
+table > tbody > tr:not([tabindex])[data-target],
+table > tbody > tr:not([tabindex])[data-method] {
   cursor: pointer;
 }
-table > tbody > tr:not([tabindex])[data-action]:hover {
+table > tbody > tr:not([tabindex])[data-action]:hover,
+table > tbody > tr:not([tabindex])[data-target]:hover,
+table > tbody > tr:not([tabindex])[data-method]:hover {
   background-color: var(--hovered);
 }
 table > tbody > tr > td[tabindex] {
@@ -124,10 +128,14 @@ table > tbody > tr > td[tabindex] {
 table > tbody > tr > td[tabindex]:focus {
   background-color: var(--hovered);
 }
-table > tbody > tr > td:not([tabindex])[data-action] {
+table > tbody > tr > td:not([tabindex])[data-action],
+table > tbody > tr > td:not([tabindex])[data-target],
+table > tbody > tr > td:not([tabindex])[data-method] {
   cursor: pointer;
 }
-table > tbody > tr > td:not([tabindex])[data-action]:hover {
+table > tbody > tr > td:not([tabindex])[data-action]:hover,
+table > tbody > tr > td:not([tabindex])[data-target]:hover,
+table > tbody > tr > td:not([tabindex])[data-method]:hover {
   background-color: var(--hovered);
 }
 table > tfoot > tr > * {

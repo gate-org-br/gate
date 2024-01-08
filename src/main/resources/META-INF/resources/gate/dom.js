@@ -1,4 +1,13 @@
+import Parser from './parser.js';
 import Optional from './optional.js';
+
+let REGISTRY = [];
+new MutationObserver(mutations => mutations
+		.flatMap(e => Array.from(e.addedNodes))
+		.forEach(root => REGISTRY.forEach(e => DOM.traverse(root, e.filter, e.method))))
+	.observe(document, {childList: true, subtree: true});
+
+
 /**
  * Utility class for DOM manipulation and traversal.
  *
@@ -17,23 +26,118 @@ export default class DOM
 	 */
 	static traverse(root, filter, consumer)
 	{
-		Array.from(root.querySelectorAll("*")).forEach(element =>
+		if (root.querySelectorAll)
 		{
-			if (filter(element))
-				consumer(element);
-			if (element.shadowRoot)
-				DOM.traverse(element.shadowRoot, filter, consumer);
-		});
+			Array.from(root.querySelectorAll("*")).forEach(element =>
+			{
+				if (filter(element))
+					consumer(element);
+				if (element.shadowRoot)
+					DOM.traverse(element.shadowRoot, filter, consumer);
+			});
+		} else if (filter(root))
+			consumer(root);
 	}
 
 	/**
-	 * Navigate through the DOM based on a specified path.
+	 * Navigates the DOM based on the provided selector or numeric count.
 	 *
-	 * @param {Element|Event} source - The source element or event from which to start the navigation.
-	 * @param {string} path - The path specifying the navigation steps.
+	 * @param {Element} source - The source element to start navigation.
+	 * @param {string} selector - The selector or numeric count to determine the navigation steps.
+	 * @returns {Element|Optional} - The resulting element or an Optional containing the element.
+	 */
+	static parent(source, selector)
+	{
+		if (selector.match(/^\d+$/))
+		{
+			selector = Number(selector);
+			for (let i = 0; i <= selector; i++)
+				source = source.parentNode;
+		} else if (selector.length)
+		{
+			do
+			{
+				source = source.parentNode;
+			} while (!source.matches(selector));
+		} else
+			source = source.parentNode;
+		return source;
+	}
+
+	/**
+	 * Moves to the previous sibling element based on the provided selector or numeric count.
 	 *
-	 * @returns {Optional} An Optional object wrapping the result of the navigation.
-	 * If the result is present, it contains the navigated element; otherwise, it is empty.
+	 * @param {Element} source - The source element to start navigation.
+	 * @param {string} selector - The selector or numeric count to determine the navigation steps.
+	 * @returns {Element|Optional} - The resulting element or an Optional containing the element.
+	 */
+	static prev(source, selector)
+	{
+		if (selector.match(/^\d+$/))
+		{
+			selector = Number(selector);
+			for (let i = 0; i <= selector; i++)
+				source = source.previousElementSibling;
+		} else if (selector.length)
+		{
+			do
+			{
+				source = source.previousElementSibling;
+			} while (!source.matches(selector));
+		} else
+			source = source.previousElementSibling;
+		return source;
+	}
+
+	/**
+	 * Moves to the next sibling element based on the provided selector or numeric count.
+	 *
+	 * @param {Element} source - The source element to start navigation.
+	 * @param {string} selector - The selector or numeric count to determine the navigation steps.
+	 * @returns {Element|Optional} - The resulting element or an Optional containing the element.
+	 */
+	static next(source, selector)
+	{
+		if (selector.match(/^\d+$/))
+		{
+			selector = Number(selector);
+			for (let i = 0; i <= selector; i++)
+				source = source.nextElementSibling;
+		} else if (selector.length)
+		{
+			do
+			{
+				source = source.nextElementSibling;
+			} while (!source.matches(selector));
+		} else
+			source = source.nextElementSibling;
+		return source;
+	}
+
+	/**
+	 * Navigates the DOM based on the provided path string.
+	 *
+	 * @param {Element|Event} source - The source element to start navigation. If an Event is provided, the first element in its composed path is used.
+	 * @param {string} path - The path string representing the navigation steps.
+	 * @returns {Optional} - An Optional containing the resulting element or empty if the source is not provided or if the path is null or blank.
+	 *
+	 * @description
+	 * If the path does not start with "this", document.querySelector is used.
+	 * If the path starts with "this", the navigation begins from the specified source element.
+	 *
+	 * Navigation Steps:
+	 * - "this": Skips the current step and continues to the next one.
+	 * - "parent(number)": Navigates to the nth parent of the element.
+	 * - "parent(selector)": Navigates to the first parent of the element that matches the selector.
+	 * - "prev(number)": Navigates to the nth previous sibling of the element.
+	 * - "prev(selector)": Navigates to the first previous sibling of the element that matches the selector.
+	 * - "next(number)": Navigates to the nth next sibling of the element.
+	 * - "next(selector)": Navigates to the first next sibling of the element that matches the selector.
+	 * - "[+n]": Navigates to the nth child element of the current source element.
+	 * - "[-n]": Navigates to the nth child element of the current source element in reverse order.
+	 * - "selector": Navigates to the first child element that matches the provided selector.
+	 *
+	 * Steps can be separated by "." or by "[]" and can be quoted with double or single quotes.
 	 */
 	static navigate(source, path)
 	{
@@ -42,38 +146,50 @@ export default class DOM
 		if (source instanceof Event)
 			source = source.composedPath()[0] || source.target;
 		path = (path || "").trim();
-		if (!path)
+		if (!path || path === "this")
 			return new Optional(source);
+
 		if (!path.startsWith("this"))
-			return new Optional(source.getRootNode().querySelector(path)
-				|| document.querySelector(path));
-		for (let step of path.split(/\.(?=(?:[^"']*["'][^"']*["'])*[^"']*$)/g))
+			return new Optional(source.getRootNode().querySelector(path) || document.querySelector(path));
+
+		for (let step of Parser.path(path.substring(4)))
 		{
 			if (!source)
 				return new Optional(source);
-			else if (step === "parentNode")
-				source = source.parentNode;
-			else if (step === "nextElementSibling")
-				source = source.nextElementSibling;
-			else if (step === "previousElementSibling")
-				source = source.previousElementSibling;
-			else if (step === "firstElementChild")
-				source = source.firstElementChild;
-			else if (step === "lastElementChild")
-				source = source.lastElementChild;
-			else if (step.startsWith("closest(")
-				&& step.endsWith(")"))
-				source = source.closest(step.slice(8, -1));
-			else if (step.startsWith("querySelector(")
-				&& step.endsWith(")"))
-				source = source.querySelector(step.slice(14, -1));
-			else if (step.startsWith("children[")
-				&& step.endsWith("]"))
-				source = source.children[Number(step.slice(9, -1))];
-			else if (step !== "this")
-				throw new Error(`${path} is not a valid path`);
+			else if (step === "this")
+				continue;
+			else if (step.startsWith("parent('") && step.endsWith("')"))
+				source = DOM.parent(source, step.slice(8, -2).trim());
+			else if (step.startsWith('parent("') && step.endsWith('")'))
+				source = DOM.parent(source, step.slice(8, -2).trim());
+			else if (step.startsWith("parent(") && step.endsWith(')'))
+				source = DOM.parent(source, step.slice(7, -1).trim());
+			else if (step.startsWith("prev('") && step.endsWith("')"))
+				source = DOM.prev(source, step.slice(6, -2).trim());
+			else if (step.startsWith('prev("') && step.endsWith('")'))
+				source = DOM.prev(source, step.slice(6, -2).trim());
+			else if (step.startsWith("prev(") && step.endsWith(')'))
+				source = DOM.prev(source, step.slice(5, -1).trim());
+			else if (step.startsWith("next('") && step.endsWith("')"))
+				source = DOM.next(source, step.slice(6, -2).trim());
+			else if (step.startsWith('next("') && step.endsWith('")'))
+				source = DOM.next(source, step.slice(6, -2).trim());
+			else if (step.startsWith("next(") && step.endsWith(')'))
+				source = DOM.next(source, step.slice(5, -1).trim());
+			else if (/^\+?\d+$/.test(step))
+				source = source.children[Number(step)];
+			else if (/^-\d+$/.test(step))
+				source = source.children[source.children.length - Number(step)];
+			else
+				source = source.querySelector(step);
 		}
 
 		return Optional.of(source);
+	}
+
+	static forEveryElement(filter, method)
+	{
+		REGISTRY.push({filter, method});
+		DOM.traverse(document, filter, method);
 	}
 }

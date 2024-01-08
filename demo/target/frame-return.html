@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+
+
+<html lang="pt-BR">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+	</head>
+
+	<body>
+		<main>
+			<section>
+				<g-code-viewer>
+					<table>
+
+						<caption>USER FOUND: 2</caption>
+
+						<thead>
+							<tr>
+								<th>Name</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr title='Detalhes' data-target="@return(1, 'Albert Einstein')">
+								<td>Albert Einstein</td>
+							</tr>
+							<tr title='Detalhes' data-target="@return(2, 'Isaac Newton')">
+								<td>Isaac Newton</td>
+							</tr>
+						</tbody>
+					</table>
+				</g-code-viewer>
+			</section>
+		</main>
+	</body>
+
+</html>

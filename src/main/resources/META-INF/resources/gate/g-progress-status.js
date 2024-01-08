@@ -80,7 +80,7 @@ customElements.define('g-progress-status', class extends HTMLElement
 		let logger = this.shadowRoot.querySelector("g-logger");
 		window.addEventListener("ProcessPending", event =>
 		{
-			if (event.detail.process === this.process)
+			if (event.detail.id === this.process)
 			{
 				this.log(event);
 				title.style.color = '#000000';
@@ -90,7 +90,7 @@ customElements.define('g-progress-status', class extends HTMLElement
 		});
 		window.addEventListener("ProcessCommited", event =>
 		{
-			if (event.detail.process === this.process)
+			if (event.detail.id === this.process)
 			{
 				this.log(event);
 				if (!progress.max)
@@ -105,7 +105,7 @@ customElements.define('g-progress-status', class extends HTMLElement
 		});
 		window.addEventListener("ProcessCanceled", event =>
 		{
-			if (event.detail.process === this.process)
+			if (event.detail.id === this.process)
 			{
 				this.log(event);
 				if (!progress.max)
@@ -120,7 +120,7 @@ customElements.define('g-progress-status', class extends HTMLElement
 		});
 		window.addEventListener("ProcessError", event =>
 		{
-			if (event.detail.process === this.process)
+			if (event.detail.id === this.process)
 			{
 				this.log(event);
 				title.style.color = '#666666';

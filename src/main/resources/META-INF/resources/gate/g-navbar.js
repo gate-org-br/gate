@@ -50,11 +50,14 @@ a[navbar-disabled="true"] {
 
 customElements.define('g-navbar', class extends HTMLElement
 {
+	#index;
+	#targets;
+
 	constructor()
 	{
 		super();
-		this._private = {};
-		this._private.index = 0;
+		this.#index = -1;
+		this.#targets = null;
 		this.style.display = "none";
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
@@ -68,70 +71,83 @@ customElements.define('g-navbar', class extends HTMLElement
 
 	first()
 	{
-		const detail = this.targets[0];
-		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
-			this.target = detail;
+		let rollback = this.index;
+		this.index = 0;
+		const detail = {target: this.target, index: this.index};
+		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.index = rollback;
 	}
 
 	previous()
 	{
-		const detail = this.targets[this.index - 1];
-		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
-			this.target = detail;
+		let rollback = this.index;
+		this.index = this.index - 1;
+		const detail = {target: this.target, index: this.index};
+		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.index = rollback;
 	}
 
 	current()
 	{
-		const detail = this.targets[this.index];
-		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
-			this.target = detail;
+		const detail = {target: this.target, index: this.index};
+		this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail}));
 	}
 
 	next()
 	{
-		const detail = this.targets[this.index + 1];
-		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
-			this.target = detail;
+		let rollback = this.index;
+		this.index = this.index + 1;
+		const detail = {target: this.target, index: this.index};
+		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.index = rollback;
 	}
 
 	last()
 	{
-		const detail = this.targets[this.targets.length - 1];
-		if (this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
-			this.target = detail;
+		let rollback = this.index;
+		this.index = this.targets.length - 1;
+		const detail = {target: this.target, index: this.index};
+		if (!this.dispatchEvent(new CustomEvent('update', {cancelable: true, detail})))
+			this.index = rollback;
 	}
 
 	get index()
 	{
-		return this._private.index;
+		return this.#index;
+	}
+
+	set index(value)
+	{
+		if (!this.targets || value >= this.targets.length)
+			throw new Error("Invalid index");
+
+		this.#index = value;
+		this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(value === 0));
+		this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(value === 0));
+		this.shadowRoot.getElementById("label").innerHTML = `${value + 1} de ${this.targets.length}`;
+		this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(value === this.targets.length - 1));
+		this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(value === this.targets.length - 1));
 	}
 
 	get targets()
 	{
-		return this._private.targets || [];
+		return this.#targets;
 	}
 
-	set targets(targets)
+	set targets(value)
 	{
-		this._private.index = 0;
-		this._private.targets = targets;
-		this.style.display = this.targets.length ? "" : "none";
-		this.shadowRoot.getElementById("label").innerHTML = `${this.index + 1} de ${this.targets.length}`;
+		if (!Array.isArray(value))
+			throw new Error("Invalid targets");
+		this.#targets = value;
+
+		this.#index = value.length ? 0 : null;
+		this.style.display = this.#targets.length ? "" : "none";
+		this.shadowRoot.getElementById("label").innerHTML = `${this.#index + 1} de ${this.#targets.length}`;
 	}
 
-	set target(value)
+	get target()
 	{
-		for (let index = 0; index < this.targets.length; index++)
-		{
-			if (value.endsWith(this.targets[index]))
-			{
-				this._private.index = index;
-				this.shadowRoot.getElementById("first").setAttribute("navbar-disabled", String(index === 0));
-				this.shadowRoot.getElementById("prev").setAttribute("navbar-disabled", String(index === 0));
-				this.shadowRoot.getElementById("label").innerHTML = `${index + 1} de ${this.targets.length}`;
-				this.shadowRoot.getElementById("next").setAttribute("navbar-disabled", String(index === this.targets.length - 1));
-				this.shadowRoot.getElementById("last").setAttribute("navbar-disabled", String(index === this.targets.length - 1));
-			}
-		}
+		return this.targets ? this.targets[this.index] : null;
 	}
+
 });

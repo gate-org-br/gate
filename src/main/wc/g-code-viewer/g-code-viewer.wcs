@@ -1,0 +1,30 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*) {
+	width: 100%;
+	display: grid;
+	font-size: 10px;
+	border: 1px solid #EEEEEE;
+	grid-template-rows: auto auto;
+}
+
+#code-pane {
+	padding: 10px;
+	border-bottom: 1px solid #ccc;
+	background-color: var(--hovered);
+}
+
+#code-pane * {
+	font-size: inherit;
+	background-color: var(--hovered);
+}
+
+#html-pane {
+	gap: 10px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--main2);
+}

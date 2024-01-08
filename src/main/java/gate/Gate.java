@@ -20,11 +20,11 @@ import gate.error.UnauthorizedException;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
-import gate.handler.StringHandler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
 import gate.util.Toolkit;
 import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +35,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
+import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -87,6 +88,7 @@ public class Gate extends HttpServlet
 	{
 		try
 		{
+			Request.set(httpServletRequest);
 			httpServletRequest.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
@@ -229,41 +231,46 @@ public class Gate extends HttpServlet
 		}
 	}
 
-	private void executeAsync(User user, HttpServletRequest request, HttpServletResponse response, Screen screen, Method method)
+	private void executeAsync(User user, HttpServletRequest request,
+		HttpServletResponse response, Screen screen, Method method)
 	{
-		try
-		{
-			request.startAsync();
-			Progress progress = Progress.create(user);
-			Handler handler = handlers.select(StringHandler.class).get();
-			handler.handle(request, response, progress.getProcess());
-			request.getAsyncContext().complete();
+		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/event-stream");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Connection", "keep-alive");
 
-			Object url = screen.execute(method);
-			if (url != null)
-				Progress.redirect(url.toString());
-		} catch (AppException ex)
-		{
-			if (Progress.status() == Progress.Status.PENDING
-				|| Progress.status() == Progress.Status.CREATED)
-				Progress.cancel(ex.getMessage());
-			else
-				Progress.message(ex.getMessage());
-		} catch (Throwable ex)
-		{
-			if (Progress.status() == Progress.Status.PENDING
-				|| Progress.status() == Progress.Status.CREATED)
-				Progress.cancel(ex.getMessage());
-			else
-				Progress.message(ex.getMessage());
-			logger.error(ex.getMessage(), ex);
-		} finally
-		{
-			if (request.isAsyncStarted())
-				request.getAsyncContext().complete();
+		AsyncContext asyncContext
+			= request.startAsync(request, response);
+		asyncContext.setTimeout(0);
 
-			Toolkit.sleep(60000);
-			Progress.dispose();
-		}
+		asyncContext.start(() ->
+		{
+			Request.set(request);
+			Progress progress = null;
+			try (Writer writer = response.getWriter())
+			{
+				progress = Progress.create(user, writer);
+				Object result = screen.execute(method);
+				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
+					? method.getAnnotation(gate.annotation.Handler.class).value()
+					: Handler.getHandler(result.getClass());
+				var handler = handlers.select(type).get();
+				handler.handle(request, response,
+					progress, result);
+				progress.close();
+			} catch (AppException ex)
+			{
+				if (progress != null)
+					progress.abort(ex.getMessage());
+			} catch (Throwable ex)
+			{
+				if (progress != null)
+					progress.abort(ex.getMessage());
+				logger.error(ex.getMessage(), ex);
+			} finally
+			{
+				asyncContext.complete();
+			}
+		});
 	}
 }

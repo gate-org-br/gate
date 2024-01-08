@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -9,7 +9,7 @@ public class URLProcessor extends InputProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public URLProcessor()
 	{

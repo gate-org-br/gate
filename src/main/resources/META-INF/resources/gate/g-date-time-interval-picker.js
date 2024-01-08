@@ -42,6 +42,7 @@ dialog > footer > button {
 /* global customElements, template */
 
 import './g-icon.js';
+import DOM from './dom.js';
 import GWindow from './g-window.js';
 import './g-date-time-interval-selector.js';
 
@@ -79,12 +80,21 @@ export default class GDateTimeIntervalPicker extends GWindow
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
+}
 
-	static register(input)
+customElements.define('g-date-time-interval-picker', GDateTimeIntervalPicker);
+
+const REGISTRY = new WeakMap();
+DOM.forEveryElement(e => e.tagName === "INPUT"
+		&& !REGISTRY.has(e)
+		&& e.classList.contains("DateTimeInterval"), input =>
 	{
+		REGISTRY.set(input);
+
 		let link = input.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
-		link.setAttribute("tabindex", input.getAttribute('tabindex'));
+		if (input.hasAttribute('tabindex'))
+			link.setAttribute("tabindex", input.getAttribute('tabindex'));
 		let icon = link.appendChild(document.createElement("g-icon"));
 
 		icon.innerHTML = input.value ? "&#x1001;" : "&#x2003;";
@@ -100,18 +110,12 @@ export default class GDateTimeIntervalPicker extends GWindow
 				input.value = '';
 				input.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				GDateTimeIntervalPicker.pick().then(value =>
-				{
-					input.value = value;
-					input.dispatchEvent(new Event('change', {bubbles: true}));
-				}).catch(() => undefined);
+				GDateTimeIntervalPicker.pick()
+					.then(value => input.value = value)
+					.then(() => input.dispatchEvent(new Event('change', {bubbles: true})))
+					.catch(() => undefined);
 
 			link.focus();
 			link.blur();
 		});
-	}
-}
-
-customElements.define('g-date-time-interval-picker', GDateTimeIntervalPicker);
-
-Array.from(document.querySelectorAll("input.DateTimeInterval")).forEach(input => GDateTimeIntervalPicker.register(input));
+	});

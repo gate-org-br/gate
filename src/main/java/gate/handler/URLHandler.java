@@ -1,5 +1,6 @@
 package gate.handler;
 
+import gate.Progress;
 import gate.error.AppError;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,5 +22,13 @@ public class URLHandler implements Handler
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+		Progress progress, Object value) throws AppError
+	{
+		progress.result("text/plain",
+			null, value.toString());
 	}
 }

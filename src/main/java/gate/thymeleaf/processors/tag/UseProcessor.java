@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ public class UseProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public UseProcessor()
 	{
@@ -35,7 +35,7 @@ public class UseProcessor extends TagProcessor
 				.orElseThrow(() -> new TemplateProcessingException("Missing required attribute name on g:use"));
 
 			if (element.hasAttribute("value"))
-				request.setAttribute(name, expression.evaluate(element.getAttributeValue("value")));
+				request.setAttribute(name, expression.create().evaluate(element.getAttributeValue("value")));
 			else if (element.hasAttribute("type"))
 				request.setAttribute(name, Thread.currentThread().getContextClassLoader().loadClass(element.getAttributeValue("type"))
 					.getDeclaredConstructor()

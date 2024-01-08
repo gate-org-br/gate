@@ -1,6 +1,6 @@
 /* global */
 
-import URL from './url.js';
+import Optional from './optional.js';
 
 export default class GSelection
 {
@@ -9,14 +9,14 @@ export default class GSelection
 		let href = window.location.href;
 		if (href[href.length - 1] === '#')
 			href = href.slice(0, -1);
-		let parameters = URL.parse_query_string(href);
+		let parameters = new URLSearchParams(new URL(href).search);
 		let elements = Array.from(nodes)
 			.filter(e => (e.href && e.href.includes('?'))
 					|| (e.formaction && e.formaction.includes('?')));
 
 		var q = elements.filter(e =>
 		{
-			let args = URL.parse_query_string(e.href || e.formaction);
+			const args = new URLSearchParams(new URL(e.href || e.formaction).search);
 			return args.MODULE === parameters.MODULE
 				&& args.SCREEN === parameters.SCREEN
 				&& args.ACTION === parameters.ACTION;
@@ -26,22 +26,20 @@ export default class GSelection
 		{
 			var q = elements.filter(e =>
 			{
-				var args = URL.parse_query_string(e.href || e.formaction);
-				return args.MODULE === parameters.MODULE
-					&& args.SCREEN === parameters.SCREEN;
+				const args = new URLSearchParams(new URL(e.href || e.formaction).search);
+				return args.MODULE === parameters.MODULE && args.SCREEN === parameters.SCREEN;
 			});
 
 			if (q.length === 0)
 			{
 				q = elements.filter(e =>
 				{
-					var args = URL.parse_query_string(e.href || e.formaction);
+					const args = new URLSearchParams(new URL(e.href || e.formaction).search);
 					return args.MODULE === parameters.MODULE;
 				});
 			}
 		}
 
-		if (q.length !== 0)
-			return q[0];
+		return Optional.of(q[0]);
 	}
 }

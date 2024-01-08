@@ -1,6 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
+	<div></div>
  <style>* {
 	box-sizing: border-box;
 }
@@ -11,8 +12,8 @@ template.innerHTML = `
 	display: none;
 	z-index: 1000000;
 	border-radius: 3px;
-	width: fit-content;
-	height: fit-content;
+	width: min-content;
+	height: min-content;
 	position: absolute;
 	visibility: hidden;
 	flex-direction: column;
@@ -21,7 +22,7 @@ template.innerHTML = `
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
-:host(*)::before {
+div {
 	width: 20px;
 	content: "";
 	color: black;
@@ -37,103 +38,56 @@ template.innerHTML = `
 	background-image: url(data:image/svg+xml;base64,PHN2ZwogICB3aWR0aD0iMzIiCiAgIGhlaWdodD0iMzIiCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgeG1sbnM6c3ZnPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHBhdGgKICAgICBkPSJNIDguOTgxNzI4OCwzMiBIIDIzLjAxODI3MiBjIDAuNzY3NTQ3LDAgMS4zODc5NywtMC42MjA0MjIgMS4zODc5NywtMS4zODc5NyBWIDE3LjAwMjk4MiBoIDUuODIxMTQ3IGMgMC41NjA3NCwwIDEuMDY4NzM3LC0wLjMzNzI3NyAxLjI4MjQ4NCwtMC44NTYzNzggMC4yMTUxMzYsLTAuNTE5MSAwLjA5NTc3LC0xLjExNTkyOCAtMC4zMDExODksLTEuNTEyODg3IEwgMTYuOTgxOTg5LDAuNDA3MDIyNCBjIC0wLjU0MjY5NiwtMC41NDI2OTY0IC0xLjQxOTg5MywtMC41NDI2OTY0IC0xLjk2MjU5LDAgTCAwLjc5MTMxNjQ2LDE0LjYzNTEwNSBjIC0wLjM5Njk1OTUsMC4zOTY5NTkgLTAuNTE2MzI0OSwwLjk5Mzc4NyAtMC4zMDExODk1LDEuNTEyODg3IDAuMjEzNzQ3NCwwLjUxOTEwMSAwLjcyMTc0NDU0LDAuODU2Mzc4IDEuMjgyNDg0NDQsMC44NTYzNzggaCA1LjgyMTE0NzQgdiAxMy42MDkwNDggYyAwLDAuNzY2MTYgMC42MjE4MSwxLjM4NjU4MiAxLjM4Nzk3LDEuMzg2NTgyIHoiCiAgICAgc3R5bGU9InN0cm9rZS13aWR0aDoxLjM4Nzk3IiAvPgo8L3N2Zz4K);
 }
 
-:host([position='north']) {
-	left: 50%;
-	transform: translateY(calc(-100% - 22px)) translateX(-50%);
-}
-
-:host([position='north'])::before {
+div[data-arrow='north'] {
 	top: 100%;
 	left: calc(50% - 10px);
 	transform: rotate(180deg);
 }
 
-:host([position='south']) {
-	left: 50%;
-	top: calc(100% + 22px);
-	transform: translateX(-50%);
-}
-
-:host([position='south'])::before {
+div[data-arrow='south'] {
 	top: -20px;
 	left: calc(50% - 10px);
 }
 
-:host([position='west']) {
-	left: 0;
-	top: 50%;
-	transform: translateX(calc(-100% - 22px)) translateY(-50%);
-}
-
-:host([position='west'])::before {
+div[data-arrow='west'] {
 	left: 100%;
 	top: calc(50% - 10px);
 	transform: rotate(90deg);
 }
 
-:host([position='east']) {
-	top: 50%;
-	left: calc(100% + 22px);
-	transform:  translateY(-50%);
-}
-
-:host([position='east'])::before {
+div[data-arrow='east'] {
 	left: -20px;
 	top: calc(50% - 10px);
 	transform: rotate(270deg);
 }
 
-:host([position='northeast']) {
-	top: 0;
-	left: calc(100% + 22px);
-	transform:  translateY(calc(-100% - 20px));
-}
-
-:host([position='northeast'])::before {
+div[data-arrow='northeast'] {
 	top: 100%;
 	left: -20px;
 	transform: rotate(225deg);
 }
 
-:host([position='northwest']) {
-	top: 0;
-	left: 0;
-	transform:  translateX(calc(-100% - 20px)) translateY(calc(-100% - 20px));
-}
-
-:host([position='northwest'])::before {
+div[data-arrow='northwest'] {
 	top: 100%;
 	left: 100%;
 	transform: rotate(135deg);
 }
-
-:host([position='southeast']) {
-	left: 0;
-	top: calc(100% + 20px);
-	transform:  translateX(calc(-100% - 20px));
-}
-
-:host([position='southeast'])::before {
+div[data-arrow='southeast'] {
 	top: -20px;
-	left: 100%;
-	transform: rotate(45deg);
-}
-
-:host([position='southwest']) {
-	top: calc(100% + 20px);
-	left: calc(100% + 20px);
-}
-
-:host([position='southwest'])::before {
 	left: -20px;
-	top: -20px;
-	transform: rotate(315deg);
+	transform: rotate(-45deg);
 }
-</style>`;
+
+div[data-arrow='southwest'] {
+	left: 100%;
+	top: -20px;
+	transform: rotate(45deg);
+}</style>`;
 
 /* global template */
 
 import JSONtoHTML from './json-to-html.js';
+import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
@@ -141,14 +95,57 @@ import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerRe
 let instance;
 const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
 
-function isVisible(rect)
+const GAP = 20;
+
+function isVisible(element)
 {
+	let rect = element.getBoundingClientRect();
 	return rect.top >= 0
 		&& rect.left >= 0
-		&& rect.top + rect.height <= window.innerHeight
-		&& rect.left + rect.width <= window.innerWidth;
+		&& rect.bottom <= window.innerHeight
+		&& rect.right <= window.innerWidth;
 }
 
+
+function calc(element, tooltip, position)
+{
+	element = element.getBoundingClientRect();
+	tooltip = tooltip.getBoundingClientRect();
+
+	switch (position)
+	{
+		case "northeast":
+			return {x: element.left + element.width + GAP,
+				y: element.top - tooltip.height - GAP};
+
+		case "southwest":
+			return {x: element.left - tooltip.width - GAP,
+				y: element.bottom + GAP};
+		case "northwest":
+			return {x: element.left - tooltip.width - GAP,
+				y: element.top - tooltip.height - GAP};
+		case "southeast":
+			return {x: element.right + GAP,
+				y: element.bottom + GAP};
+
+		case "north":
+			return {x: element.left + (element.width / 2)
+					- (tooltip.width / 2),
+				y: element.top - tooltip.height - GAP};
+		case "east":
+			return {x: element.left + element.width + GAP,
+				y: element.top + (element.height / 2)
+					- (tooltip.height / 2)};
+		case "south":
+			return {x: element.left + (element.width / 2)
+					- (tooltip.width / 2),
+				y: element.bottom + GAP};
+		case "west":
+			return {x: element.left - tooltip.width - GAP,
+				y: element.top + (element.height / 2)
+					- (tooltip.height / 2)};
+	}
+}
 
 export default class GTooltip extends HTMLElement
 {
@@ -161,37 +158,48 @@ export default class GTooltip extends HTMLElement
 		this.setAttribute("position", "northeast");
 	}
 
-	show(position)
+	show(target, position = this.position)
 	{
-		if (instance)
-			instance.hide();
-
-		instance = this;
-
 		if (!this.parentNode)
 			throw new Error("Attempt to show disconnected tooltip");
 
-		if (position)
-			this.position = position;
+		if (instance)
+			instance.hide();
 
-		this.parentNode.style.position = "relative";
+		if (!target.getBoundingClientRect)
+			return;
 
-		let i = 0;
 		this.style.display = "flex";
-		while (!isVisible(this.getBoundingClientRect()) && i++ < 8)
-			this.position = POSITIONS[(POSITIONS.indexOf(this.position) + 1) % 8];
+
+		for (let i = 0; i < 8; i++)
+		{
+			let point = calc(target, this, position);
+			this.style.top = point.y + "px";
+			this.style.left = point.x + "px";
+
+			if (isVisible(this))
+				break;
+			else
+				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % 8];
+		}
+
+		this.shadowRoot.querySelector("div")
+			.dataset.arrow = position;
 		this.style.visibility = "visible";
+		instance = this;
 	}
 
 	get position()
 	{
-		return this.getAttribute("position");
+		return this.getAttribute("position")
+			|| "southeast";
 
 	}
 
 	set position(value)
 	{
-		this.setAttribute("position", value);
+		if (POSITIONS.includes(value))
+			this.setAttribute("position", value);
 	}
 
 	hide()
@@ -203,9 +211,9 @@ export default class GTooltip extends HTMLElement
 	static show(element, content, position = "north")
 	{
 		let tooltip = new GTooltip();
-		element.appendChild(tooltip);
+		document.body.appendChild(tooltip);
 		tooltip.innerHTML = JSONtoHTML(content);
-		tooltip.show(position);
+		tooltip.show(element, position);
 	}
 
 	static hide()
@@ -237,24 +245,19 @@ window.addEventListener("@tooltip", function (event)
 
 	let position = event.detail.parameters[0];
 
-	let target = event.target;
-	if (target.getRootNode() === document)
-		for (let current = event.target; current !== document; current = current.parentNode)
-			if (current.shadowRoot)
-				target = current = current.shadowRoot.host;
-
 	event.target.dispatchEvent(new TriggerStartupEvent(event));
 
+	let path = event.composedPath();
 	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.response)
 		.then(response => response.headers.get('content-type').startsWith("application/json")
 				? response.json().then(json => JSONtoHTML(json))
 				: response.text())
-		.then(content => GTooltip.show(target, content, position))
+		.then(content => GTooltip.show(event.target, content, position))
 		.then(() => event.target.addEventListener("mouseleave", () => GTooltip.hide()))
-		.then(() => setTimeout(() => event.target.dispatchEvent(new TriggerSuccessEvent(event)), 0))
-		.catch(error => setTimeout(event.target.dispatchEvent(new TriggerFailureEvent(event, error)), 0))
-		.finally(setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
 });
 
 window.addEventListener("mouseover", function (event)
@@ -265,7 +268,7 @@ window.addEventListener("mouseover", function (event)
 		{
 			let content = JSON.parse(target.getAttribute("data-tooltip"));
 			target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
-			let position = target.getAttribute("data-tooltip-position");
+			let position = target.getAttribute("data-tooltip:position");
 			GTooltip.show(target, content, position);
 			return;
 		} else if (target.children)
@@ -275,7 +278,7 @@ window.addEventListener("mouseover", function (event)
 				if (tooltip.tagName === "G-TOOLTIP")
 				{
 					target.addEventListener("mouseleave", () => tooltip.hide(), {once: true});
-					tooltip.show();
+					tooltip.show(target);
 					return;
 				}
 			}

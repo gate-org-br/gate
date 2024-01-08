@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class WithProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public WithProcessor()
 	{
@@ -31,7 +31,7 @@ public class WithProcessor extends TagProcessor
 
 			if (element.hasAttribute("value"))
 				handler.setLocalVariable(name,
-					expression.evaluate(element.getAttributeValue("value")));
+					expression.create().evaluate(element.getAttributeValue("value")));
 			else if (element.hasAttribute("type"))
 				handler.setLocalVariable(name,
 					Thread.currentThread().getContextClassLoader().loadClass(element.getAttributeValue("type"))

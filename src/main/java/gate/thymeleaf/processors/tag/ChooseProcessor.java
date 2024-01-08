@@ -17,7 +17,7 @@ public class ChooseProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public ChooseProcessor()
 	{
@@ -83,7 +83,7 @@ public class ChooseProcessor extends TagModelProcessor
 		for (IModel imodel : whens)
 		{
 			IOpenElementTag when = (IOpenElementTag) imodel.get(0);
-			if ((boolean) expression.evaluate(when.getAttributeValue("condition")))
+			if ((boolean) expression.create().evaluate(when.getAttributeValue("condition")))
 			{
 				for (int j = 1; j < imodel.size() - 1; j++)
 					model.add(imodel.get(j));

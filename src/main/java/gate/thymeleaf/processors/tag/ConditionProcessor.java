@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class ConditionProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public ConditionProcessor()
 	{
@@ -29,12 +29,12 @@ public class ConditionProcessor extends TagProcessor
 		if (!element.hasAttribute("if"))
 			throw new TemplateProcessingException("Missing required attribute if on g:condition");
 
-		if ((boolean) expression.evaluate(element.getAttributeValue("if")))
+		if ((boolean) expression.create().evaluate(element.getAttributeValue("if")))
 			handler.removeTags();
 		else if (element.hasAttribute("otherwise"))
 		{
 			String otherwise = element.getAttributeValue("otherwise");
-			otherwise = Converter.toText(expression.evaluate(otherwise));
+			otherwise = Converter.toText(expression.create().evaluate(otherwise));
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			handler.replaceWith(otherwise, false);
 		} else

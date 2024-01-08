@@ -124,7 +124,9 @@ table {
 			}
 		}
 
-		&:not([tabindex])[data-action]
+		&:not([tabindex])[data-action],
+			&:not([tabindex])[data-target],
+			&:not([tabindex])[data-method]
 			{
 			cursor: pointer;
 			&:hover {
@@ -141,7 +143,9 @@ table {
 				}
 			}
 
-			&:not([tabindex])[data-action]
+			&:not([tabindex])[data-action],
+				&:not([tabindex])[data-target],
+				&:not([tabindex])[data-method]
 				{
 				cursor: pointer;
 				&:hover {

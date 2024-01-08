@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -14,7 +14,7 @@ public class PrintProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PrintProcessor()
 	{
@@ -27,10 +27,10 @@ public class PrintProcessor extends TagProcessor
 		if (!element.hasAttribute("value"))
 			throw new TemplateProcessingException("Missing required attribute value on g:print");
 
-		var value = expression.evaluate(element.getAttributeValue("value"));
+		var value = expression.create().evaluate(element.getAttributeValue("value"));
 		String string = Converter.toText(value, element.getAttributeValue("format"));
 		if (string.isBlank() && element.hasAttribute("empty"))
-			string = Converter.toText(expression.evaluate(element.getAttributeValue("empty")));
+			string = Converter.toText(expression.create().evaluate(element.getAttributeValue("empty")));
 		string = string.replaceAll("\\n", "<br/>");
 		handler.replaceWith(string, false);
 	}

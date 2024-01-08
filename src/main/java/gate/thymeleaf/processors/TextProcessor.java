@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class TextProcessor implements ITextProcessor, Processor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TextProcessor()
 	{
@@ -24,7 +24,7 @@ public class TextProcessor implements ITextProcessor, Processor
 	@Override
 	public void process(ITemplateContext context, IText text, ITextStructureHandler handler)
 	{
-		var value = expression.evaluate(text.getText());
+		var value = expression.create().evaluate(text.getText());
 		handler.setText(value != null ? value.toString() : "");
 	}
 

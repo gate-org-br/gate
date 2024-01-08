@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag.property;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ public class TextEditorProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TextEditorProcessor()
 	{
@@ -29,7 +29,7 @@ public class TextEditorProcessor extends PropertyProcessor
 	{
 		String value = "";
 		if (attributes.containsKey("value"))
-			value = Converter.toString(expression.evaluate((String) attributes.remove("value")));
+			value = Converter.toString(expression.create().evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
 			value = Converter.toString(property.getValue(screen));
 		handler.replaceWith("<g-text-editor " + attributes + ">" + value + "</g-text-editor>", true);

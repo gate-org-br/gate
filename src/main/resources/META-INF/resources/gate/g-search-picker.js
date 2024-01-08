@@ -48,6 +48,16 @@ import Extractor from './extractor.js';
 import ObjectFilter from './object-filter.js';
 import GMessageDialog from './g-message-dialog.js';
 
+function debounce(func, timeout = 300)
+{
+	let timer;
+	return (...args) =>
+	{
+		clearTimeout(timer);
+		timer = setTimeout(() => func.apply(this, args), timeout);
+	};
+}
+
 export default class GSearchPicker extends GWindow
 {
 	constructor()
@@ -58,73 +68,79 @@ export default class GSearchPicker extends GWindow
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 
-		let prev = "";
-		let result = null;
-
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 
 		let input = this.shadowRoot.querySelector("input");
-		input.addEventListener("input", () =>
-		{
-			let text = input.value.toLowerCase();
+		input.addEventListener("input", debounce(() => this.text = input.value));
+	}
 
-			if (!text.length)
-			{
-				grid.clear();
-				result = null;
-				grid.innerText = "Entre com o critério de pesquisa";
-				return;
-			}
+	set action(value)
+	{
+		this.setAttribute("action", value);
+		this.shadowRoot.querySelector("input").value = "";
+	}
 
-			if (result && text.includes(prev))
-			{
-				grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
-				let values = ObjectFilter.filter(result, text);
-				grid.dataset = values;
-				this.dispatchEvent(new CustomEvent("update", {detail: Array.isArray(result[0]) ? values.slice(1) : values}));
-				return;
-			}
+	get action()
+	{
+		return this.getAttribute("action");
+	}
 
-			input.disabled = true;
-			fetch(this.options, {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: input.value})
-				.then(options => options.json())
-				.then(options =>
-				{
-					if (typeof options === "string")
-					{
-						result = null;
-						grid.innerText = options;
-						this.dispatchEvent(new CustomEvent("update", {detail: null}));
-						return;
-					}
+	set filter(value)
+	{
+		if (value)
+			this.setAttribute("filter", value);
+		else
+			this.removeAttribute("filter");
+	}
 
-					if (!Array.isArray(options))
-						throw new Error("Dados inválidos retornados pelo servidor");
-
-					result = options;
-					grid.innerText = "Nenhum registro encontrado para os critérios de pesquisa selecionados";
-					let values = ObjectFilter.filter(result, text);
-					grid.dataset = values;
-					this.dispatchEvent(new CustomEvent("update", {detail: Array.isArray(result[0]) ? values.slice(1) : values}));
-				})
-				.catch(error => GMessageDialog.error(error.message))
-				.finally(() =>
-				{
-					input.disabled = false;
-					input.focus();
-				});
-
-
-			prev = text;
-		});
+	get filter()
+	{
+		return this.getAttribute("filter");
 	}
 
 	set text(text)
 	{
 		let input = this.shadowRoot.querySelector("input");
 		input.value = text;
-		input.dispatchEvent(new Event('input'));
+
+		let grid = this.shadowRoot.querySelector("g-grid");
+		let headers = {};
+		let action = this.action;
+		if (this.filter)
+		{
+			if (action.indexOf("?") === -1)
+				action = action + "?" + this.filter + '=' + text;
+			else
+				action = action + "&" + this.filter + '=' + text;
+		} else
+			headers = {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: text};
+
+		fetch(action, headers)
+			.then(options => options.json())
+			.then(options =>
+			{
+				if (typeof options === "string")
+				{
+					grid.dataset = [];
+					grid.innerText = options;
+					this.dispatchEvent(new CustomEvent("update", {detail: null}));
+				} else if (Array.isArray(options))
+				{
+					grid.dataset = options;
+					grid.innerText = "Nenhum registro encontrado";
+					this.dispatchEvent(new CustomEvent("update", {detail: Array.isArray(options[0]) ? options.slice(1) : options}));
+				} else
+					throw new Error("Invalid json data returned by the server");
+
+			})
+			.catch(error => GMessageDialog.error(error.message))
+			.finally(() =>
+			{
+				input.disabled = false;
+				input.focus();
+			});
+
 	}
 
 	set caption(caption)
@@ -137,45 +153,27 @@ export default class GSearchPicker extends GWindow
 		return this.shadowRoot.getElementById("caption").innerHTML;
 	}
 
-	set options(options)
-	{
-		this._private.options = options;
-		this.shadowRoot.querySelector("input").value = "";
-	}
-
-	get options()
-	{
-		return this._private.options;
-	}
-
-	static pick(options, caption, text)
+	static pick(action, filter, caption, text)
 	{
 		let picker = window.top.document.createElement("g-search-picker");
-		picker.options = options;
-		if (caption)
-			picker.caption = caption;
+		picker.action = action;
+		picker.filter = filter;
+		picker.caption = caption || "";
 		picker.show();
-
-		if (text)
-			return new Promise((resolve, reject) =>
-			{
-				picker.addEventListener("update", e =>
-				{
-					if (e.detail && e.detail.length === 1)
-					{
-						resolve({index: 0, value: e.detail[0]});
-						picker.hide();
-					}
-				});
-				picker.addEventListener("cancel", () => reject(new Error("Cancel")));
-				picker.addEventListener("commit", e => resolve(e.detail));
-				picker.text = text;
-			});
 
 		return new Promise((resolve, reject) =>
 		{
+			picker.addEventListener("update", e =>
+			{
+				if (e.detail && e.detail.length === 1)
+				{
+					resolve({index: 0, value: e.detail[0]});
+					picker.hide();
+				}
+			});
 			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 			picker.addEventListener("commit", e => resolve(e.detail));
+			picker.text = text || "";
 		});
 	}
 };
@@ -186,22 +184,25 @@ window.addEventListener("@search", function (event)
 {
 	event.preventDefault();
 	event.stopPropagation();
-
 	let trigger = event.composedPath()[0] || event.target;
-	let parameters = event.detail.parameters.map(e => DOM.navigate(trigger, e).orElse(null));
+	let [filter, value, label, empty] = event.detail.parameters;
 
-	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
+	value = value
+		? trigger.getRootNode().getElementById(value)
+		: trigger.parentNode.querySelector("input[type=hidden]");
 	if (!value)
 		throw new Error("Value input not found");
 
 
-	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
+	label = label
+		? trigger.getRootNode().getElementById(label)
+		: trigger.parentNode.querySelector("input[type=text]");
 	if (!label)
 		throw new Error("Label input not found");
 
 	if (trigger === label)
 	{
-		GSearchPicker.pick(event.detail.action, trigger.title, label.value)
+		GSearchPicker.pick(event.detail.action, filter, trigger.title, label.value)
 			.then(object =>
 			{
 				label.value = Extractor.label(object.value);
@@ -209,7 +210,7 @@ window.addEventListener("@search", function (event)
 			})
 			.catch(() => label.value = value.value = "");
 	} else if (!label.value && !value.value)
-		GSearchPicker.pick(event.detail.action, trigger.title)
+		GSearchPicker.pick(event.detail.action, filter, trigger.title)
 			.then(object =>
 			{
 				label.value = Extractor.label(object.value);

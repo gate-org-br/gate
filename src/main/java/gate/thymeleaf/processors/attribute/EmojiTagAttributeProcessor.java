@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.annotation.Emoji;
 import gate.icon.Emojis;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class EmojiTagAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public EmojiTagAttributeProcessor()
 	{
@@ -27,7 +27,7 @@ public class EmojiTagAttributeProcessor extends AttributeProcessor
 	{
 		var type = element.getAttributeValue("g:emoji");
 		handler.removeAttribute("g:emoji");
-		var value = expression.evaluate(type);
+		var value = expression.create().evaluate(type);
 		var emoji = Emoji.Extractor.extract(value).orElse(Emojis.UNKNOWN);
 		handler.setBody(emoji.toString(), false);
 	}

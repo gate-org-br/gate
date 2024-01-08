@@ -1,0 +1,10 @@
+<template>
+	<link rel="stylesheet"
+	      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/idea.css"/>
+	<div id="html-pane">
+		<slot></slot>
+	</div>
+	<div id="code-pane">
+                <pre><code></code></pre>
+	</div>
+</template>

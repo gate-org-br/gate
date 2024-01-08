@@ -1,5 +1,6 @@
 package gate.handler;
 
+import gate.Progress;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -25,8 +26,21 @@ public class StringHandler implements Handler
 		if (string.endsWith(".jsp"))
 			jspHandler.handle(request, response, string);
 		else if (string.endsWith(".html"))
-			htmlHandler.handle(request, response, value);
+			htmlHandler.handle(request, response, string);
 		else
-			textHandler.handle(request, response, value);
+			textHandler.handle(request, response, string);
+	}
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+		Progress progress, Object value)
+	{
+		String string = value.toString();
+		if (string.endsWith(".jsp"))
+			jspHandler.handle(request, response, progress, string);
+		else if (string.endsWith(".html"))
+			htmlHandler.handle(request, response, progress, string);
+		else
+			textHandler.handle(request, response, progress, string);
 	}
 }

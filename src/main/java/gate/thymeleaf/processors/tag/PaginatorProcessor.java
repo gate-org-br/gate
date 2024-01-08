@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Page;
 import gate.util.Parameters;
@@ -22,7 +22,7 @@ public class PaginatorProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PaginatorProcessor()
 	{
@@ -41,7 +41,7 @@ public class PaginatorProcessor extends TagProcessor
 		Screen screen = (Screen) request.getAttribute("screen");
 
 		Page<?> page = element.hasAttribute("page")
-			? (Page<?>) expression.evaluate(element.getAttributeValue("page"))
+			? (Page<?>) expression.create().evaluate(element.getAttributeValue("page"))
 			: (Page<?>) Property.getValue(screen, "page");
 
 		Attributes attributes = Stream.of(element.getAllAttributes())

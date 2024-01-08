@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ public abstract class PropertyProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PropertyProcessor(String name)
 	{
@@ -41,7 +41,7 @@ public abstract class PropertyProcessor extends TagProcessor
 			throw new TemplateProcessingException("Missing required attribute property on g:" + getElement());
 
 		var name = (String) attributes.remove("property");
-		name = (String) expression.evaluate(name);
+		name = (String) expression.create().evaluate(name);
 		var property = Property.getProperty(screen.getClass(), name);
 
 		attributes.put("name", property.toString());

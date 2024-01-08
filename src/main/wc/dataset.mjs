@@ -1,11 +1,11 @@
 /* global fetch */
 
-import URL from './url.js';
 import NumberFormat from './number-format.js';
 
 export default class Dataset
 {
-	static fromTable(table, {dir = 'X', cat = 0, min = 1, max, lang })
+	static fromTable(table,
+		{dir = 'X', cat = 0, min = 1, max, lang })
 	{
 		const parser = new NumberFormat(lang);
 
@@ -39,7 +39,8 @@ export default class Dataset
 	{
 		return new Promise((resolve, reject) =>
 		{
-			try {
+			try
+			{
 				switch (type)
 				{
 					case 'table':

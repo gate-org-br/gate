@@ -7,23 +7,26 @@ import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.io.URL;
+import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import gate.util.Parameters;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
-import org.thymeleaf.standard.expression.IStandardExpressionParser;
-import org.thymeleaf.standard.expression.StandardExpressions;
 
 public class RequestAttributeProcessor extends AttributeProcessor
 {
+
+	@Inject
+	ELExpressionFactory ELExpressionFactory;
 
 	public RequestAttributeProcessor(String name)
 	{
@@ -56,15 +59,15 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		User user = CDI.current().select(User.class, Current.LITERAL).get();
 
 		Parameters parameters = new Parameters();
-		IEngineConfiguration configuration = context.getConfiguration();
-		IStandardExpressionParser parser = StandardExpressions.getExpressionParser(configuration);
+
+		ELExpression expression = ELExpressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
 			.filter(e -> e.getValue() != null)
 			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
 			.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
 			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
-			parser.parseExpression(context, e.getValue()).execute(context)));
+			expression.evaluate(e.getValue())));
 
 		if (call.checkAccess(user))
 		{
@@ -92,23 +95,30 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					handler.setAttribute("href", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("target", "_progress-dialog");
+						handler.setAttribute("target",
+							element.hasAttribute("target")
+							? "@progress(" + element.getAttributeValue("target") + ")"
+							: "@progress");
 
 					break;
 				case "button":
 					handler.setAttribute("formaction", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("formtarget", "_progress-dialog");
-
+						handler.setAttribute("formtarget",
+							element.hasAttribute("formtarget")
+							? "@progress(" + element.getAttributeValue("formtarget") + ")"
+							: "@progress");
 					break;
 
 				case "form":
 					handler.setAttribute("action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("target", "_progress-dialog");
-
+						handler.setAttribute("target",
+							element.hasAttribute("target")
+							? "@progress(" + element.getAttributeValue("target") + ")"
+							: "@progress");
 					break;
 				case "img":
 					handler.setAttribute("src", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
@@ -117,7 +127,10 @@ public class RequestAttributeProcessor extends AttributeProcessor
 					handler.setAttribute("data-action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("data-target", "_progress-dialog");
+						handler.setAttribute("data-target",
+							element.hasAttribute("data-target")
+							? "@progress(" + element.getAttributeValue("data-target") + ")"
+							: "@progress");
 					break;
 			}
 

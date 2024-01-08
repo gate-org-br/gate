@@ -5,7 +5,7 @@ import gate.annotation.Asynchronous;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
 import gate.util.Parameters;
@@ -24,7 +24,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public AnchorProcessor(String name)
 	{
@@ -44,12 +44,12 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		if (attributes.containsKey("arguments"))
 			Parameters.parse((String) attributes.remove("arguments")).entrySet()
 				.forEach(entry -> parameters.put(entry.getKey(),
-				expression.evaluate(entry.getValue().toString())));
+				expression.create().evaluate(entry.getValue().toString())));
 
 		attributes.entrySet().stream()
 			.filter(e -> e.getValue() != null)
 			.filter(e -> e.getKey().startsWith("_"))
-			.forEach(e -> parameters.put(e.getKey().substring(1), expression.evaluate((String) e.getValue())));
+			.forEach(e -> parameters.put(e.getKey().substring(1), expression.create().evaluate((String) e.getValue())));
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
@@ -94,7 +94,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		if (!attributes.containsKey("condition"))
 			return true;
 		String attribute = (String) attributes.remove("condition");
-		boolean condition = (boolean) expression.evaluate(attribute);
+		boolean condition = (boolean) expression.create().evaluate(attribute);
 		return condition;
 	}
 
@@ -103,7 +103,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		if (!attributes.containsKey("method"))
 			return "GET";
 		String method = (String) attributes.remove("method");
-		method = (String) expression.evaluate(method);
+		method = (String) expression.create().evaluate(method);
 		return method;
 	}
 
@@ -113,10 +113,10 @@ public abstract class AnchorProcessor extends TagModelProcessor
 			Optional.empty();
 
 		String target = (String) attributes.remove("target");
-		target = (String) expression.evaluate(target);
+		target = (String) expression.create().evaluate(target);
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-			return Optional.of("_progress-dialog");
+			return Optional.of(target != null ? "@progress(" + target + ")" : "@progress");
 		else
 			return Optional.ofNullable(target);
 	}

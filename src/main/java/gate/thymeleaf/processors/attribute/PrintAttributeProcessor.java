@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -13,7 +13,7 @@ public class PrintAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PrintAttributeProcessor()
 	{
@@ -27,9 +27,9 @@ public class PrintAttributeProcessor extends AttributeProcessor
 		var format = extract(element, handler, "g:format").orElse(null);
 		var empty = extract(element, handler, "g:empty").orElse(null);
 
-		value = Converter.toText(expression.evaluate(value), format);
+		value = Converter.toText(expression.create().evaluate(value), format);
 		if (value.isBlank() && empty != null)
-			value = Converter.toText(expression.evaluate(empty));
+			value = Converter.toText(expression.create().evaluate(empty));
 		value = value.replaceAll("\\n", "<br/>");
 		handler.setBody(value, true);
 	}

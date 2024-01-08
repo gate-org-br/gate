@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,7 +17,7 @@ public class TableProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TableProcessor()
 	{
@@ -34,14 +34,14 @@ public class TableProcessor extends TagModelProcessor
 				e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		if (!attributes.containsKey("condition")
-			|| (boolean) expression.evaluate((String) attributes.remove("condition")))
+			|| (boolean) expression.create().evaluate((String) attributes.remove("condition")))
 		{
 			attributes.remove("otherwise");
 			replaceTag(context, model, handler, "table", attributes);
 		} else if (attributes.containsKey("otherwise"))
 		{
 			var otherwise = attributes.remove("otherwise");
-			otherwise = expression.evaluate((String) otherwise);
+			otherwise = expression.create().evaluate((String) otherwise);
 			otherwise = Converter.toText(otherwise);
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			replaceWith(context, model, handler, otherwise.toString());

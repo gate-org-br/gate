@@ -4,7 +4,7 @@ import gate.annotation.Color;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
@@ -21,7 +21,7 @@ public class LabelProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public LabelProcessor()
 	{
@@ -71,7 +71,7 @@ public class LabelProcessor extends TagProcessor
 
 		String string = Converter.toText(value, format);
 		if (string.isBlank() && empty != null)
-			string = Converter.toText(expression.evaluate(empty));
+			string = Converter.toText(expression.create().evaluate(empty));
 		string = string.replaceAll("\\n", "<br/>");
 
 		handler.replaceWith("<label " + attributes + ">" + string + "</label>", true);

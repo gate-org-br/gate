@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -13,7 +13,7 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public FormControlAttributeProcessor(String element)
 	{
@@ -67,7 +67,7 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 		if (element.hasAttribute("value"))
 		{
 			handler.removeAttribute("value");
-			value = expression.evaluate(element.getAttributeValue("value"));
+			value = expression.create().evaluate(element.getAttributeValue("value"));
 		} else if (!property.toString().endsWith("[]"))
 			value = property.getValue(screen);
 

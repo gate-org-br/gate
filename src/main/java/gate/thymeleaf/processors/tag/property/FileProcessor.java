@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class FileProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public FileProcessor()
 	{

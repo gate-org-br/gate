@@ -1,6 +1,5 @@
 /* global echarts, customElements */
 
-import URL from './url.js';
 import Dataset from './dataset.js';
 import * as echarts from './echarts.js';
 

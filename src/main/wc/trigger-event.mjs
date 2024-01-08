@@ -1,15 +1,18 @@
-import GBlock from './g-block.js';
+import Parser from './parser.js';
 import trigger from './trigger.js';
 import validate from './validate.js';
 import GMessageDialog from './g-message-dialog.js';
 
 export default class TriggerEvent extends CustomEvent
 {
-	constructor(type, cause, method, action, target, parameters, form)
+	constructor(cause, method, action, target, form)
 	{
-		super(type, {bubbles: true, composed: true, cancelable: false,
-			detail: {cause, method, action, target, parameters, form}});
+		let type = Parser.method(target);
+		super(type.name, {bubbles: true, composed: true, cancelable: false,
+			detail: {cause, method, action, target,
+				parameters: type.parameters, form}});
 	}
+
 }
 
 export class TriggerStartupEvent extends CustomEvent
@@ -64,8 +67,7 @@ function call(event, element, attribute)
 
 window.addEventListener("trigger-startup", function (event)
 {
-	if (event.detail.cause.detail.cause.type === "click")
-		GBlock.show("...");
+	event.target.setAttribute("data-loading", "data-loading");
 	for (let element of event.composedPath())
 		call(event, element, "data-on:startup");
 });
@@ -79,7 +81,7 @@ window.addEventListener("trigger-success", function (event)
 window.addEventListener("trigger-failure", function (event)
 {
 	if (!event.defaultPrevented)
-		GMessageDialog.error(event.detail.error.message);
+		GMessageDialog.error(event.detail.error);
 
 	for (let element of event.composedPath())
 		call(event, element, "data-on:failure");
@@ -87,7 +89,7 @@ window.addEventListener("trigger-failure", function (event)
 
 window.addEventListener("trigger-resolve", function (event)
 {
-	GBlock.hide();
+	event.target.removeAttribute("data-loading");
 	for (let element of event.composedPath())
 		call(event, element, "data-on:resolve");
 });

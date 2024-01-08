@@ -1,6 +1,7 @@
 /* global customElements, template */
 
 import './g-progress.js';
+import DOM from './dom.js';
 import GWindow from './g-window.js';
 
 export default class GBlock extends GWindow
@@ -45,19 +46,26 @@ customElements.define('g-block', GBlock);
 
 GBlock.hide();
 
-Array.from(document.querySelectorAll("form[data-block]"))
-	.forEach(e => e.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"))));
-
-Array.from(document.querySelectorAll("a[data-block]"))
-	.forEach(e => e.addEventListener("click", () => GBlock.show(e.getAttribute("data-block"))));
-
-Array.from(document.querySelectorAll("button[data-block]")).forEach(e =>
+const REGISTRY = new WeakMap();
+DOM.forEveryElement(e => !REGISTRY.has(e) && e.hasAttribute && e.hasAttribute("data-block"), function (element)
+{
+	let message = element.getAttribute("data-block");
+	switch (element.tagName)
 	{
-		e.addEventListener("click", () =>
-		{
-			if (e.form)
-				e.form.addEventListener("submit", () => GBlock.show(e.getAttribute("data-block"), {once: true}));
+		case "A":
+			element.addEventListener("click", () => GBlock.show(message))
+			break;
+		case "FORM":
+			element.addEventListener("submit", () => GBlock.show(message))
+			break;
+		case "BUTTON":
+			if (element.form)
+				element.form.addEventListener("submit", () => GBlock.show(message), {once: true});
 			else
-				GBlock.show(e.getAttribute("data-block"));
-		});
-	});
+				element.addEventListener("click", () => GBlock.show(message))
+			break;
+		default:
+			element.addEventListener("click", () => GBlock.show(message))
+			break;
+	}
+});

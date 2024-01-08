@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.property.PropertyProcessor;
 import gate.type.Attributes;
 import gate.type.Field;
@@ -21,7 +21,7 @@ public class FormProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public FormProcessor()
 	{

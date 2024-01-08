@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.attribute.property;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.util.LinkedHashMap;
@@ -24,7 +24,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public SelectAttributeProcessor()
 	{
@@ -38,7 +38,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		Object options = null;
 		if (element.hasAttribute("g:options"))
 		{
-			options = expression.evaluate(element.getAttributeValue("g:options"));
+			options = expression.create().evaluate(element.getAttributeValue("g:options"));
 			handler.removeAttribute("g:options");
 		} else if (Boolean.class.isAssignableFrom(property.getRawType()))
 			options = List.of(Boolean.FALSE, Boolean.TRUE);
@@ -49,7 +49,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		else
 			throw new TemplateInputException("No option defined for property " + property.toString());
 
-		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression::comparator).orElse(null);
+		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression.create()::comparator).orElse(null);
 		if (comparator != null)
 			options = Toolkit
 				.collection(options)
@@ -57,19 +57,19 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 				.sorted(comparator)
 				.collect(Collectors.toList());
 
-		var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
-		var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
+		var labels = extract(element, handler, "g:labels").map(expression.create()::function).orElse(Function.identity());
+		var values = extract(element, handler, "g:values").map(expression.create()::function).orElse(Function.identity());
 
 		StringJoiner body = new StringJoiner(System.lineSeparator());
 
 		if (element.hasAttribute("g:empty"))
 		{
-			Object empty = expression.evaluate(element.getAttributeValue("g:empty"));
+			Object empty = expression.create().evaluate(element.getAttributeValue("g:empty"));
 			body.add("<option value=''>" + empty + "</option>");
 		} else
 			body.add("<option></option>");
 
-		Function<Object, Object> groups = extract(element, handler, "g:groups").map(expression::function).orElse(null);
+		Function<Object, Object> groups = extract(element, handler, "g:groups").map(expression.create()::function).orElse(null);
 		if (groups != null)
 		{
 			Toolkit.stream(options)

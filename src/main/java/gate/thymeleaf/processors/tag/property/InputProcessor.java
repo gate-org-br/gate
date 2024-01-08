@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -13,7 +13,7 @@ public abstract class InputProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public InputProcessor(String name)
 	{
@@ -30,7 +30,7 @@ public abstract class InputProcessor extends PropertyProcessor
 		if (attributes.containsKey("value"))
 		{
 			var value = attributes.get("value");
-			value = expression.evaluate((String) value);
+			value = expression.create().evaluate((String) value);
 			value = property.getConverter().toString(property.getRawType(), value);
 			attributes.put("value", (String) value);
 		} else if (!property.toString().endsWith("[]"))

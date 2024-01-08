@@ -40,9 +40,8 @@ customElements.define('g-coolbar', class extends HTMLElement
 
 	update()
 	{
-		let selected = GSelection.getSelectedLink(this.children);
-		if (selected)
-			selected.setAttribute("aria-selected", "true");
+		GSelection.getSelectedLink(this.children)
+			.ifPresent(e => e.setAttribute("aria-selected", "true"));
 
 		Array.from(this.children)
 			.filter(e => !e.getAttribute("hidden"))

@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
 import gate.util.Toolkit;
@@ -22,7 +22,7 @@ public class TextProcessor extends PropertyProcessor
 	Sequence sequence;
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TextProcessor()
 	{
@@ -44,15 +44,15 @@ public class TextProcessor extends PropertyProcessor
 		}
 
 		if (attributes.containsKey("value"))
-			attributes.put("value", property.getConverter().toString(property.getRawType(), expression.evaluate((String) attributes.get("value"))));
+			attributes.put("value", property.getConverter().toString(property.getRawType(), expression.create().evaluate((String) attributes.get("value"))));
 		else if (!property.toString().endsWith("[]"))
 			attributes.put("value", property.getConverter().toString(property.getRawType(), property.getValue(screen)));
 
 		if (attributes.containsKey("options"))
 		{
-			var options = expression.evaluate((String) attributes.remove("options"));
-			var labels = extract(element, handler, "labels").map(expression::function).orElse(Function.identity());
-			var values = extract(element, handler, "values").map(expression::function).orElse(Function.identity());
+			var options = expression.create().evaluate((String) attributes.remove("options"));
+			var labels = extract(element, handler, "labels").map(expression.create()::function).orElse(Function.identity());
+			var values = extract(element, handler, "values").map(expression.create()::function).orElse(Function.identity());
 
 			Attributes parameters = new Attributes();
 			String id = "datalist-" + sequence.next();

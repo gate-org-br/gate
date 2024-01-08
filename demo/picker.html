@@ -1,0 +1,153 @@
+<div style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px'>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Date:
+				<span>
+					<input class='Date'>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Time:
+				<span>
+					<input class='Time'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Date Time:
+				<span>
+					<input class='DateTime'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Month:
+				<span>
+					<input class='Month'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Date Interval:
+				<span>
+					<input class='DateInterval'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Time Interval:
+				<span>
+					<input class='TimeInterval'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Date Time Interval:
+				<span>
+					<input class='DateTimeInterval'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Month Interval:
+				<span>
+					<input class='MonthInterval'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+	<g-code-viewer ignore='<a[^>]*>(.*?)<\/a>'>
+		<fieldset>
+			<label>
+				Icon:
+				<span>
+					<input class='Icon'/>
+				</span>
+			</label>
+		</fieldset>
+	</g-code-viewer>
+</div>
+
+<g-coolbar>
+	<a href="#" data-block="Aguarde">
+		Block<g-icon>&#X2256;</g-icon>
+	</a>
+	<a href="#" id='selectn'>
+		Select n<i>&#X3011;</i>
+	</a>
+	<a href="#" id='image'>
+		File<img id="image" src="./3135715.png" style="height: 24px; width: 24px" />
+	</a>
+	<a href="#" id='form'>
+		Form<g-icon>&#X2044;</g-icon>
+	</a>
+	<a href="#" target="@popup(popup)" title="Popup">
+		Popup<g-icon>&#X2256;</g-icon>
+	</a>
+</g-coolbar>
+
+<g-popup id="popup" caption='popup' style="width: 800px; height: 600px;">
+	This popup is inside the link
+</g-popup>
+
+<script type='module'>
+
+	let options = [
+		{"label": "Label 1", "value": "Value 1"},
+		{"label": "Label 2", "value": "Value 2"},
+		{"label": "Label 3", "value": "Value 3"},
+		{"label": "Label 4", "value": "Value 4"},
+		{"label": "Label 5", "value": "Value 5"},
+		{"label": "Label 6", "value": "Value 6"},
+		{"label": "Label 7", "value": "Value 7"},
+		{"label": "Label 8", "value": "Value 8"},
+		{"label": "Label 9", "value": "Value 9"},
+		{"label": "Label 10", "value": "Value 10"}
+	];
+
+	document.getElementById("selectn").addEventListener("click", () => GSelectNPicker.pick(options, "Select N")
+			.then(e => GMessageDialog.success(JSON.stringify(e)))
+			.catch(e => GMessageDialog.error(e.message, 1000)));
+
+	document.getElementById("image").addEventListener("click", () => GFilePicker.pick("image/*")
+			.then(result => result.dataURL())
+			.then(result => document.getElementById("image").lastElementChild.src = result)
+			.catch(e => GMessageDialog.error(e.message, 1000))
+			.finally(() => console.log("finish")));
+
+	document.getElementById("form").addEventListener("click", () => GFormDialog
+			.pick(["Field 0",
+				{name: "Field 1", required: true, columns: 8},
+				{name: "Field 2", columns: 8, maxlength: 4},
+				{name: "Field 3", columns: 8, mask: "##/##/####"},
+				{name: "Field 4", columns: 8, options: ["Option 1", "Option 2", "Option 3"]},
+				{name: "Field 5", options: ["Option 1", "Option 2", "Option 3"], multiple: true, columns: 8},
+				{name: "Field 6", multiple: true, columns: 8}],
+				{caption: "Form", width: "min(600px, 100%)"})
+			.then(e => GMessageDialog.success(JSON.stringify(e)))
+			.catch(e => GMessageDialog.error(e.message, 1000))
+			.finally(() => console.log("finish")));
+</script>

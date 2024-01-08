@@ -1,5 +1,6 @@
 <template>
 	<div id='container'>
+		<slot></slot>
 	</div>
 	<a id='more' href='#'>
 		&#X3018;

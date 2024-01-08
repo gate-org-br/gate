@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.annotation.Emoji;
 import gate.icon.Emojis;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -14,7 +14,7 @@ public class EmojiAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public EmojiAttributeProcessor()
 	{
@@ -28,7 +28,7 @@ public class EmojiAttributeProcessor extends AttributeProcessor
 	{
 		handler.setAttribute("data-emoji",
 			extract(element, handler, "g:emoji")
-				.map(expression::evaluate)
+				.map(expression.create()::evaluate)
 				.flatMap(Emoji.Extractor::extract)
 				.orElse(Emojis.UNKNOWN).getCode());
 	}

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.iterable;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
@@ -24,7 +24,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 	TextEngine engine;
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public IterableProcessor(String name)
 	{
@@ -37,13 +37,13 @@ public abstract class IterableProcessor extends TagModelProcessor
 	{
 		if (!element.hasAttribute("source"))
 			throw new TemplateProcessingException("Missing required attribute source on g:" + getName());
-		var source = expression.evaluate(element.getAttributeValue("source"));
+		var source = expression.create().evaluate(element.getAttributeValue("source"));
 
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("target"), "target");
 
-		var children = element.hasAttribute("children") ? expression.function("children") : null;
+		var children = element.hasAttribute("children") ? expression.create().function("children") : null;
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		if (request.getAttribute(index) == null)

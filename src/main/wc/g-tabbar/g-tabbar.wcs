@@ -9,6 +9,7 @@
 	height: auto;
 	flex-grow: 1;
 	display: flex;
+	font-size: 16px;
 	align-items: center;
 	justify-content: flex-start;
 	background-color: var(--main3);
@@ -24,9 +25,9 @@
 	white-space: nowrap;
 }
 
-#container a,
-#container button,
-#container .g-command
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
 {
 	gap: 4px;
 	padding: 6px;
@@ -37,7 +38,7 @@
 	cursor: pointer;
 	flex-basis: 120px;
 	border-radius: 5px;
-	font-size: 0.75rem;
+	font-size: inherit;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
@@ -46,43 +47,43 @@
 	background-color: var(--main4);
 }
 
-:host(.inline) #container a,
-:host(.inline) #container button,
-:host(.inline) #container .g-command
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
 {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-#container a[aria-selected],
-#container button[aria-selected],
-#container .g-command[aria-selected]
+::slotted(a[aria-selected]),
+::slotted(button[aria-selected]),
+::slotted(.g-command[aria-selected])
 {
 	color: var(--base1);
 	background-color: var(--main5);
 }
 
-#container a:hover,
-#container button:hover,
-#container .g-command:hover
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
 	background-color:  var(--hovered);
 }
 
-#container a:focus,
-#container button:focus,
-#container .g-command:focus
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
 {
 	outline: none
 }
 
-#container *[hidden="true"]
+::slotted([hidden="true"])
 {
 	display: none;
 }
 
-#container hr
+::slotted(hr)
 {
 	border: none;
 	flex-grow: 100000;
@@ -104,24 +105,4 @@
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-}
-
-i, e, span, g-icon {
-	order: -1;
-	display: flex;
-	color: inherit;
-	cursor: inherit;
-	font-style: normal;
-	font-size: 1.25rem;
-	font-family: 'gate';
-	align-items: center;
-	justify-content: center;
-}
-
-:host(.inline) i,
-:host(.inline) e,
-:host(.inline) span,
-:host(.inline) g-icon
-{
-	font-size: 1.0rem;
 }

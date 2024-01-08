@@ -3,56 +3,14 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
-	<script type='module' src='gate/Gate.js' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
+		<script type='module' src='gate/Gate.js' charset="utf-8"></script>
+	</head>
 
-<body data-loading onload="document.body.removeAttribute('data-loading')">
-	<fieldset>
-		<legend>
-			Populate
-		</legend>
-		<label data-size="4">
-			Category:
-			<span>
-				<select id='cat' data-target="@trigger(#model)">
-					<option value="none"></option>
-					<option value="smartphone" selected="selected">Smartphone</option>
-					<option value="tablet">Tablet</option>
-				</select>
-			</span>
-		</label>
-		<label data-size="4">
-			Manufacturer:
-			<span>
-				<select id='man' data-target="@trigger(#model)">
-					<option value="none"></option>
-					<option value="apple" selected="selected">Apple</option>
-					<option value="xiaomi">Xiaomi</option>
-				</select>
-			</span>
-		</label>
-		<label data-size="8">
-			Model:
-			<span>
-				<select id="model" data-trigger="load" data-action="dataset/@{cat}-@{man}.json"
-					data-target="@populate(this, id, name)">
-					<option selected disabled value="none">Select a category and a manufacturer</option>
-				</select>
-			</span>
-		</label>
-	</fieldset>
-	<g-coolbar>
-		<a href="/message.txt" target="@message(1000)">
-			Message<g-icon>&#X2015;</g-icon>
-		</a>
-		<a href="/process.txt" target="@progress">
-			Progress<g-icon>&#X2176;</g-icon>
-		</a>
-	</g-coolbar>
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
 	<g-splitter>
 		<g-card style="padding: 12px; gap: 12px">
 			<g-select-menu label='Selecione uma ação'>

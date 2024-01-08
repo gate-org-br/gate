@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag;
 import gate.converter.Converter;
 import gate.icon.Icon;
 import gate.icon.Icons;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class ExitProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	private static final Icon DEFAULT = Icons.getIcon("exit");
 
@@ -47,14 +47,14 @@ public class ExitProcessor extends TagModelProcessor
 			if (attributes.containsKey("name"))
 			{
 				var name = attributes.remove("name");
-				name = expression.evaluate((String) name);
+				name = expression.create().evaluate((String) name);
 				body.add(Converter.toText(name));
 			}
 
 			if (attributes.containsKey("icon"))
 			{
 				var icon = attributes.remove("icon");
-				icon = expression.evaluate((String) icon);
+				icon = expression.create().evaluate((String) icon);
 				icon = Icons.getInstance().get((String) icon).orElse(DEFAULT);
 				body.add("<i>" + icon + "</i>");
 			}

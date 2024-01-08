@@ -1,5 +1,6 @@
 package gate.handler;
 
+import gate.Progress;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -17,7 +18,7 @@ public class TextHandler implements Handler
 		String string = value.toString();
 		response.setContentType("text/plain");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();
@@ -25,5 +26,12 @@ public class TextHandler implements Handler
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+		Progress progress, Object value)
+	{
+		progress.result("text/plain", null, value.toString());
 	}
 }

@@ -4,7 +4,6 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.NoSuchPropertyError;
 import gate.icon.Icon;
-import gate.icon.Icons;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;

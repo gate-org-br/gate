@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class WithAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public WithAttributeProcessor()
 	{
@@ -31,7 +31,7 @@ public class WithAttributeProcessor extends AttributeProcessor
 			var type = extract(element, handler, "g:type").orElse(null);
 
 			if (value != null)
-				handler.setLocalVariable(name, expression.evaluate(value));
+				handler.setLocalVariable(name, expression.create().evaluate(value));
 			else if (type != null)
 				handler.setLocalVariable(name, Thread.currentThread().getContextClassLoader().loadClass(type)
 					.getDeclaredConstructor().newInstance());

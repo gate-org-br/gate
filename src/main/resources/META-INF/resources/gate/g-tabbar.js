@@ -1,6 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<div id='container'>
+		<slot></slot>
 	</div>
 	<a id='more' href='#'>
 		&#X3018;
@@ -16,6 +17,7 @@ template.innerHTML = `
 	height: auto;
 	flex-grow: 1;
 	display: flex;
+	font-size: 16px;
 	align-items: center;
 	justify-content: flex-start;
 	background-color: var(--main3);
@@ -31,9 +33,9 @@ template.innerHTML = `
 	white-space: nowrap;
 }
 
-#container a,
-#container button,
-#container .g-command
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
 {
 	gap: 4px;
 	padding: 6px;
@@ -44,7 +46,7 @@ template.innerHTML = `
 	cursor: pointer;
 	flex-basis: 120px;
 	border-radius: 5px;
-	font-size: 0.75rem;
+	font-size: inherit;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
@@ -53,43 +55,43 @@ template.innerHTML = `
 	background-color: var(--main4);
 }
 
-:host(.inline) #container a,
-:host(.inline) #container button,
-:host(.inline) #container .g-command
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
 {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-#container a[aria-selected],
-#container button[aria-selected],
-#container .g-command[aria-selected]
+::slotted(a[aria-selected]),
+::slotted(button[aria-selected]),
+::slotted(.g-command[aria-selected])
 {
 	color: var(--base1);
 	background-color: var(--main5);
 }
 
-#container a:hover,
-#container button:hover,
-#container .g-command:hover
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
 	background-color:  var(--hovered);
 }
 
-#container a:focus,
-#container button:focus,
-#container .g-command:focus
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
 {
 	outline: none
 }
 
-#container *[hidden="true"]
+::slotted([hidden="true"])
 {
 	display: none;
 }
 
-#container hr
+::slotted(hr)
 {
 	border: none;
 	flex-grow: 100000;
@@ -111,26 +113,6 @@ template.innerHTML = `
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-}
-
-i, e, span, g-icon {
-	order: -1;
-	display: flex;
-	color: inherit;
-	cursor: inherit;
-	font-style: normal;
-	font-size: 1.25rem;
-	font-family: 'gate';
-	align-items: center;
-	justify-content: center;
-}
-
-:host(.inline) i,
-:host(.inline) e,
-:host(.inline) span,
-:host(.inline) g-icon
-{
-	font-size: 1.0rem;
 }</style>`;
 
 /* global customElements, template */
@@ -150,8 +132,7 @@ customElements.define('g-tabbar', class extends HTMLElement
 
 		this.shadowRoot.getElementById("more").addEventListener("click", () =>
 		{
-			let container = this.shadowRoot.getElementById("container");
-			let elements = Array.from(container.children)
+			let elements = Array.from(this.children)
 				.filter(e => e.tagName !== "HR")
 				.filter(e => !e.getAttribute("hidden"))
 				.filter(e => e.style.display === "none")
@@ -163,30 +144,36 @@ customElements.define('g-tabbar', class extends HTMLElement
 			menu.elements = elements;
 			menu.show(this.shadowRoot.getElementById("more"));
 		});
+
+		this.addEventListener("trigger-resolve", event =>
+			this.selected = event.composedPath()[0] || event.target);
+	}
+
+	set selected(element)
+	{
+		Array.from(this.children).forEach(e => e.removeAttribute("aria-selected"));
+		if (element)
+			element.setAttribute("aria-selected", "true");
 	}
 
 	connectedCallback()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		Array.from(this.children).forEach(e => container.appendChild(e));
-		this.update();
+		Array.from(this.children).flatMap(e => Array.from(e.children))
+			.filter(e => e.tagName)
+			.forEach(e => e.parentNode.insertBefore(e, e.parentNode.firstChild));
+		GSelection.getSelectedLink(this.children).ifPresent(e => this.selected = e);
 	}
 
 	update()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		let selected = GSelection.getSelectedLink(container.children);
-		if (selected)
-			selected.setAttribute("aria-selected", "true");
-
-		Array.from(container.children)
+		Array.from(this.children)
 			.filter(e => !e.getAttribute("hidden"))
 			.forEach(e => e.style.display = "");
 
 		this.shadowRoot.getElementById("more")
 			.style.display = this.overflowed ? "flex" : "none";
 
-		for (let e = container.lastElementChild;
+		for (let e = this.lastElementChild;
 			e && this.overflowed; e = e.previousElementSibling)
 			if (!e.hasAttribute("aria-selected")
 				&& !e.getAttribute("hidden"))

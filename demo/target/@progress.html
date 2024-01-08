@@ -1,0 +1,22 @@
+<g-card>
+	<section>
+		<p>
+			Makes a request to an asynchronous process on the server and displays
+			a dialog to present the progress of the request. Once the request is
+			completed, the specified trigger, if provided as a parameter, processes
+			the result of the operation.
+		</p>
+
+		<g-accordion>
+			<g-accordion-section expanded caption='Example 1'>
+				<g-code-viewer style='height: auto'>
+					<g-coolbar>
+						<a class='primary' href="/process.txt" target="@progress(@outerHTML)">
+							Progress<g-icon>&#X2176;</g-icon>
+						</a>
+					</g-coolbar>
+				</g-code-viewer>
+			</g-accordion-section>
+		</g-accordion>
+	</section>
+</g-card>

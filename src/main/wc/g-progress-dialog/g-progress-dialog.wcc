@@ -3,7 +3,7 @@
 import './g-icon.js';
 import './trigger.js';
 import './g-progress-status.js';
-import Process from './process.js';
+import process from './process.js';
 import GWindow from './g-window.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
@@ -29,7 +29,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 		window.addEventListener("ProcessCommited", event =>
 		{
-			if (event.detail.process !== this.process)
+			if (event.detail.id !== this.process)
 				return;
 
 			commit.innerHTML = "Ok";
@@ -44,7 +44,7 @@ customElements.define('g-progress-dialog', class extends GWindow
 
 		window.addEventListener("ProcessCanceled", event =>
 		{
-			if (event.detail.process !== this.process)
+			if (event.detail.id !== this.process)
 				return;
 
 			commit.innerHTML = "OK";
@@ -56,27 +56,11 @@ customElements.define('g-progress-dialog', class extends GWindow
 				this.hide();
 			};
 		});
-
-		window.addEventListener("ProcessRedirect", event =>
-		{
-			if (event.detail.process !== this.process)
-				return;
-
-			commit.innerHTML = "Ok";
-			commit.onclick = close.onclick = click =>
-			{
-				click.preventDefault();
-				click.stopPropagation();
-
-				this.hide();
-				this.dispatchEvent(new CustomEvent('redirect', {detail: event.detail.url}));
-			};
-		});
 	}
 
-	set process(process)
+	set process(value)
 	{
-		this.setAttribute("process", process);
+		this.setAttribute("process", value);
 	}
 
 	get process()
@@ -96,22 +80,10 @@ customElements.define('g-progress-dialog', class extends GWindow
 	}
 });
 
-window.addEventListener("@progress", function (event)
+window.addEventListener("ProcessRequest", function (event)
 {
-	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-		.then(ResponseHandler.text)
-		.then(id => new Process(id))
-		.then(process =>
-		{
-			let trigger = event.composedPath()[0] || event.target;
-			let dialog = window.top.document.createElement("g-progress-dialog");
-			dialog.process = process.id;
-			dialog.caption = trigger.getAttribute("title") || "Progresso";
-			dialog.addEventListener("show", () => trigger.dispatchEvent(new CustomEvent('show', {detail: {modal: dialog}})));
-			dialog.addEventListener("hide", () => trigger.dispatchEvent(new CustomEvent('hide', {detail: {modal: dialog}})));
-			dialog.addEventListener("redirect", event => window.location.href = event.detail);
-			dialog.show();
-
-		})
-		.catch(GMessageDialog.error);
+	let dialog = window.top.document.createElement("g-progress-dialog");
+	dialog.process = event.detail.id;
+	dialog.caption = event.detail.name;
+	dialog.show();
 });

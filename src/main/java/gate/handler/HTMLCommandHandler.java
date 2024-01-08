@@ -1,8 +1,10 @@
 package gate.handler;
 
+import gate.Progress;
 import gate.thymeleaf.CDIWebContext;
 import gate.thymeleaf.FileEngine;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import javax.enterprise.context.ApplicationScoped;
@@ -38,4 +40,21 @@ public class HTMLCommandHandler implements Handler
 		}
 	}
 
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+		Progress progress, Object value)
+	{
+
+		try (StringWriter writer = new StringWriter())
+		{
+			String filename = value.toString();
+			IContext context = new CDIWebContext(request, response,
+				beanManager, request.getServletContext());
+			engine.process(filename, context, writer);
+			progress.result("text/html", null, writer.toString());
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
 }

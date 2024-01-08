@@ -9,38 +9,33 @@
 	height: auto;
 	flex-grow: 1;
 	display: flex;
-	background-color: var(--main3);
+	position: relative;
 	justify-content: flex-start;
+	background-color: var(--main3);
 }
 
-:host([data-overflowing=left])::before,
-:host([data-overflowing=left])::after,
-:host([data-overflowing=right])::before,
-:host([data-overflowing=right])::after,
-:host([data-overflowing=both])::before,
-:host([data-overflowing=both])::after
+#next, #prev
 {
-	display: flex;
-	content: " ";
+	border: none;
+	display: none;
 	color: #999999;
 	font-size: 16px;
-	flex-basis: 32px;
-	font-family: "gate";
+	min-width: 24px;
+	flex-basis: 24px;
 	align-items: center;
 	justify-content: center;
 }
 
-:host([data-overflowing=left])::before,
-:host([data-overflowing=both])::before
+:host([data-overflowing=left]) #prev,
+:host([data-overflowing=both]) #prev
 {
-	content: "\\3017";
-
+	display: flex;
 }
 
-:host([data-overflowing=right])::after,
-:host([data-overflowing=both])::after
+:host([data-overflowing=right]) #next,
+:host([data-overflowing=both]) #next
 {
-	content: "\\3017";
+	display: flex;
 }
 
 div
@@ -56,9 +51,9 @@ div
 	white-space:  nowrap;
 }
 
-a,
-button,
-.g-command
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
 {
 	gap: 4px;
 	padding: 6px;
@@ -66,66 +61,74 @@ button,
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
+	cursor: pointer;
 	flex-basis: 120px;
 	border-radius: 5px;
-	font-size: 0.75rem;
+	font-size: inherit;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
-	background-color: var(--main4);
 	justify-content: space-around;
+	background-color: var(--main4);
 }
 
-:host(.inline) a,
-:host(.inline) button,
-:host(.inline) .g-command
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
 {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-a[aria-selected],
-button[aria-selected],
-.g-command[aria-selected]
+::slotted(a[aria-selected]),
+::slotted(button[aria-selected]),
+::slotted(.g-command[aria-selected])
 {
-	background-color: #E6E6E6;
+	color: var(--base1);
+	background-color: var(--main5);
 }
 
-a:hover,
-button:hover,
-.g-command:hover
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
-	background-color:  #FFFACD;
+	background-color:  var(--hovered);
 }
 
-a:focus,
-button:focus,
-.g-command:focus
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
 {
 	outline: none
 }
 
-*[hidden="true"]
+::slotted([hidden="true"])
 {
 	display: none;
 }
 
-hr
+::slotted(hr)
 {
 	border: none;
 	flex-grow: 100000;
 }
+button {
+	color: black;
+}
 
-i, g-icon {
-	order: -1;
-	display: flex;
-	color: inherit;
-	cursor: inherit;
-	font-style: normal;
-	font-size: 1.25rem;
-	font-family: 'gate';
-	align-items: center;
-	justify-content: center;
+g-icon {
+	color: #000099;
+	position: absolute;
+}
+
+button {
+	cursor: pointer;
+
+}
+
+button:hover
+{
+	background-color:  var(--hovered);
 }

@@ -35,7 +35,9 @@ template.innerHTML = `
 
 :host(*) > dialog > section {
 	padding: 0;
+	display: flex;
 	align-items: stretch;
+	flex-direction: column;
 }
 
 :host(*) > nav
@@ -60,7 +62,10 @@ template.innerHTML = `
 }
 
 :host(*) > dialog > section > div {
+	gap: 8px;
 	padding: 8px;
+	display: flex;
+	flex-direction: column;
 }
 
 :host(*) > dialog > section >  iframe {
@@ -122,14 +127,12 @@ export default class GDialog extends GWindow
 		{
 			let iframe = section.appendChild(document.createElement("iframe"));
 			iframe.dialog = this;
-			iframe.name = "@dialog";
 			iframe.setAttribute("scrolling", "no");
 			iframe.addEventListener("load", () => iframe.focus());
 			iframe.addEventListener("mouseenter", () => iframe.focus());
 
-			let navbar = this.shadowRoot.querySelector("g-navbar");
-			navbar.addEventListener("update", event => iframe.src = event.detail);
-			iframe.addEventListener("load", () => navbar.target = iframe.contentWindow.location.href);
+			this.shadowRoot.querySelector("g-navbar")
+				.addEventListener("update", event => iframe.src = event.detail.target);
 		}
 
 		if (section.firstElementChild.tagName !== "IFRAME")
@@ -146,11 +149,12 @@ export default class GDialog extends GWindow
 		{
 			let div = section.appendChild(document.createElement("div"));
 
-			let navbar = this.shadowRoot.querySelector("g-navbar");
-			navbar.addEventListener("update", event => fetch(event.detail)
-					.then(ResponseHandler.text)
-					.then(html => div.innerHTML = html)
-					.catch(GMessageDialog.error));
+			this.shadowRoot.querySelector("g-navbar")
+				.addEventListener("update", event =>
+					fetch(event.detail.target)
+						.then(ResponseHandler.text)
+						.then(html => div.innerHTML = html)
+						.catch(e => GMessageDialog.error(e) || event.preventDefault()));
 		}
 
 		if (section.firstElementChild.tagName !== "DIV")
@@ -200,14 +204,24 @@ window.addEventListener("@dialog", function (event)
 	dialog.caption = trigger.getAttribute("title");
 
 	if (parameters[1])
+	{
 		dialog.width = parameters[1];
+		dialog.height = parameters[1];
+	}
+
 	if (parameters[2])
 		dialog.height = parameters[2];
 
-	if (trigger.hasAttribute("data-navigator")
-		|| trigger.parentNode.hasAttribute("data-navigator"))
-		dialog.navbar.targets = Array.from(trigger.parentNode.children)
-			.map(e => e.href || e.formaction || e.getAttribute("data-action"));
+
+	if (trigger.hasAttribute("data-navigator") || trigger.parentNode.hasAttribute("data-navigator"))
+	{
+		let triggers = Array.from(trigger.parentNode.children);
+		dialog.navbar.targets = triggers.map(e => e.href || e.formaction || e.getAttribute("data-action"));
+		for (let index = 0; index < triggers.length; index++)
+			if (triggers[index] === trigger)
+				dialog.navbar.index = index;
+	}
+
 
 	dialog.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 

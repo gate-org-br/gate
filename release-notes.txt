@@ -13,3 +13,6 @@ data-get="id1, id2, ..." removed and replaced with target="@pick(selector1, sele
 data-ret="value1, value2, ..." removed and replaced with target="@return(value1, value2, ...)"
 
 <g-dialog-caption>caption</g-dialog-caption> removed and replaced <g-dialog-header caption='caption'>
+
+resolve @{id} was replaced by #{id}
+resolve implemented the @{selector} flag

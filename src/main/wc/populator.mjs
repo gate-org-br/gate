@@ -1,6 +1,7 @@
 import './trigger.js';
 import DOM from './dom.js';
 import GBlock from './g-block.js';
+import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
@@ -49,22 +50,27 @@ export default function Populator(options)
 window.addEventListener("@populate", function (event)
 {
 	event.preventDefault();
-	let parameters = event.detail.parameters;
+	let {method, action, form} = event.detail;
 	let trigger = event.composedPath()[0] || event.target;
+	let [selector, value = "value", label = "label"] = event.detail.parameters;
 
-	let element = DOM.navigate(trigger, parameters[0])
+	let element = DOM.navigate(trigger, selector)
 		.orElseThrow("No populate target element specified");
 
 	event.target.dispatchEvent(new TriggerStartupEvent(event));
-	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-		.then(ResponseHandler.json)
-		.then(options =>
-		{
-			let value = parameters[1] || "value";
-			let label = parameters[2] || "label";
-			new Populator(options).populate(element, value, label);
-			setTimeout(() => event.target.dispatchEvent(new TriggerSuccessEvent(event)), 0);
-		})
-		.catch(error => setTimeout(event.target.dispatchEvent(new TriggerFailureEvent(event, error)), 0))
-		.finally(setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
+	if (event.detail.action)
+	{
+		let path = event.composedPath();
+		fetch(RequestBuilder.build(method, action, form))
+			.then(ResponseHandler.json)
+			.then(options => new Populator(options).populate(element, value, label))
+			.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+			.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
+			.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+	} else
+	{
+		element.innerHTML = "";
+		event.target.dispatchEvent(new TriggerSuccessEvent(event));
+		event.target.dispatchEvent(new TriggerResolveEvent(event));
+	}
 });

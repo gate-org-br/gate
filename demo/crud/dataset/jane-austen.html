@@ -1,11 +1,11 @@
-<tr>
+<tr data-action='./update.html' data-target='@push(this.parent(body), @outerHTML(this.parent(form)))'>
 	<td>
 		Jane Austen
 	</td>
 	<td>
 		Female
 	</td>
-	<td data-action="/crud/delete.html" data-target="@remove(this.parentNode)" data-confirm="Are you sure?">
+	<td data-action="/crud/delete.html" data-target="@remove(this.parent())" data-confirm="Are you sure?">
 		<i>&#X1001;</i>
 	</td>
 </tr>

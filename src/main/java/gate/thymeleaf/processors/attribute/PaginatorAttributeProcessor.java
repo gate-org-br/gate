@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Page;
 import gate.util.Parameters;
 import java.util.StringJoiner;
@@ -19,7 +19,7 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public PaginatorAttributeProcessor()
 	{
@@ -40,7 +40,7 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 		var value = element.getAttributeValue("g:paginator");
 		handler.removeAttribute("g:paginator");
 		Page<?> page = value != null && !value.isBlank()
-			? (Page<?>) expression.evaluate(value)
+			? (Page<?>) expression.create().evaluate(value)
 			: (Page<?>) Property.getValue(screen, "page");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());

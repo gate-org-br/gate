@@ -42,6 +42,12 @@ export default class Optional
 			func(this.#value);
 	}
 
+	ifPresent(func)
+	{
+		if (this.isPresent())
+			func(this.#value);
+	}
+
 	orElse(value)
 	{
 		if (this.isPresent())

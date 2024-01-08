@@ -1,12 +1,9 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.Precedence;
-import gate.thymeleaf.TextEngine;
 import java.util.List;
 import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -15,12 +12,6 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 @ApplicationScoped
 public class EnumerateAttributeProcessor extends AttributeProcessor
 {
-
-	@Inject
-	TextEngine engine;
-
-	@Inject
-	ELExpression expression;
 
 	public EnumerateAttributeProcessor()
 	{

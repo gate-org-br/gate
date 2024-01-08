@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,7 +18,7 @@ public class TDProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TDProcessor()
 	{
@@ -37,17 +37,17 @@ public class TDProcessor extends TagModelProcessor
 		if (element instanceof IStandaloneElementTag)
 		{
 			var value = attributes.remove("value");
-			value = expression.evaluate((String) value);
+			value = expression.create().evaluate((String) value);
 
 			var format = attributes.remove("format");
-			format = expression.evaluate((String) format);
+			format = expression.create().evaluate((String) format);
 
 			String text = Converter.toText(value, (String) format);
 
 			if (text.isBlank() && attributes.containsKey("empty"))
 			{
 				var empty = attributes.remove("empty");
-				empty = expression.evaluate((String) empty);
+				empty = expression.create().evaluate((String) empty);
 				text = Converter.toText(empty);
 			}
 

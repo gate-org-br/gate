@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag;
 
 import gate.base.Screen;
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
 import java.util.List;
 import java.util.StringJoiner;
@@ -19,7 +19,7 @@ public class AlertProcessor extends TagProcessor
 {
 
 	@Inject
-	private ELExpression expression;
+	private ELExpressionFactory expression;
 
 	public AlertProcessor()
 	{
@@ -30,7 +30,7 @@ public class AlertProcessor extends TagProcessor
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
 		List<? extends Object> messages = extract(element, handler, "messages")
-			.map(expression::evaluate)
+			.map(expression.create()::evaluate)
 			.map(Toolkit::list)
 			.orElseGet(() ->
 			{

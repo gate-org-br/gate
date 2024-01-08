@@ -1,77 +1,98 @@
-export default class Process
+import EventHandler from './event-handler.js';
+import TriggerEvent from './trigger-event.js';
+import RequestBuilder from './request-builder.js';
+import ResponseHandler from './response-handler.js';
+import fetchEventSource	from './fetch-event-source.js';
+import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
+
+let sequence = 1;
+
+export default function process(request, id, name)
 {
-	constructor(id)
+	return new Promise((resolve, reject) =>
 	{
-		this._private = {id: id};
+		window.top.dispatchEvent(new CustomEvent('ProcessRequest',
+			{detail: {id, name}}));
 
-		let protocol = window.top.location.protocol === 'https:' ? "wss://" : "ws://";
-		let hostname = window.top.location.hostname;
-		let port = window.top.location.port ? ':' + window.top.location.port : '';
-		let pathname = window.top.location.pathname.replace(/\/Gate.*/, "") + "/Progress/";
-
-		var url = protocol + hostname + port + pathname + id;
-
-		let ws = new WebSocket(url);
-
-		ws.onerror = () => window.top.dispatchEvent(new CustomEvent('ProcessError',
-				{detail: {process: id, text: "Conexão perdida com o servidor"}}));
-
-		ws.onclose = e =>
-		{
-			if (e.code !== 1000)
-				window.top.dispatchEvent(new CustomEvent('ProcessError',
-					{detail: {process: id, text: "Conexão perdida com o servidor"}}));
-		};
-
-		ws.onmessage = (event) =>
-		{
-			event = JSON.parse(event.data);
-
-			event.toString = function ()
+		fetchEventSource(request, {
+			onmessage: (event) =>
 			{
-				if (this.done && this.done !== -1)
-					if (this.todo && this.todo !== -1)
-						return this.done + "/" + this.todo;
+				event = JSON.parse(String(atob(event.data)));
+				event.toString = function ()
+				{
+					if (this.done && this.done !== -1)
+						if (this.todo && this.todo !== -1)
+							return this.done + "/" + this.todo;
+						else
+							return this.done.toString();
 					else
-						return this.done.toString();
-				else
-					return "...";
-			};
+						return "...";
+				};
+				switch (event.event)
+				{
+					case "Progress":
+						switch (event.status)
+						{
+							case "CREATED":
+								window.top.dispatchEvent(new CustomEvent('ProcessPending',
+									{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+								break;
+							case "PENDING":
+								window.top.dispatchEvent(new CustomEvent('ProcessPending',
+									{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+								break;
+							case "COMMITED":
+								window.top.dispatchEvent(new CustomEvent('ProcessCommited',
+									{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+								break;
+							case "CANCELED":
+								window.top.dispatchEvent(new CustomEvent('ProcessCanceled',
+									{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+								break;
+						}
+						break;
+					case "Result":
+						const {contentType = 'text/plain;charset=utf-8', filename, data} = event;
+						window.top.dispatchEvent(new CustomEvent('ProccessResult', {id, name, contentType, filename, data}));
 
-			switch (event.event)
-			{
-				case "Progress":
-					switch (event.status)
-					{
-						case "CREATED":
-							window.top.dispatchEvent(new CustomEvent('ProcessPending',
-								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
-							break;
-						case "PENDING":
-							window.top.dispatchEvent(new CustomEvent('ProcessPending',
-								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
-							break;
-						case "COMMITED":
-							window.top.dispatchEvent(new CustomEvent('ProcessCommited',
-								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
-							break;
-						case "CANCELED":
-							window.top.dispatchEvent(new CustomEvent('ProcessCanceled',
-								{detail: {process: id, todo: event.todo, done: event.done, text: event.text, data: event.data, progress: event.toString()}}));
-							break;
-					}
-					break;
+						const headers = new Headers();
+						headers.append("Content-Type", contentType);
+						if (filename)
+							headers.append("Content-Disposition",
+								`attachment; filename="${filename}"`);
 
-				case "Redirect":
-					window.top.dispatchEvent(new CustomEvent('ProcessRedirect',
-						{detail: {process: id, url: event.url}}));
-					break;
+						resolve(new Response(data, {status: 200, statusText: 'OK', headers}));
+						break;
+				}
+			},
+
+			onerror: e => {
+				window.top.dispatchEvent(new CustomEvent('ProcessError',
+					{detail: {id, name, text: "Conexão perdida com o servidor"}}));
+				reject(e.text);
 			}
-		};
-	}
-
-	get id()
-	{
-		return this._private.id;
-	}
+		});
+	});
 }
+
+window.addEventListener("@progress", function (event)
+{
+	let cause = event.detail.cause;
+	let path = event.composedPath();
+	let trigger = path[0] || event.target;
+	let target = event.detail.parameters[0] || "@none";
+
+	let processName = trigger.title || "Progresso";
+	let processId = trigger.id || "proccess@" + sequence++;
+
+	event.target.dispatchEvent(new TriggerStartupEvent(event));
+	process(RequestBuilder.build(event.detail.method,
+		event.detail.action,
+		event.detail.form), processId, processName)
+		.then(ResponseHandler.dataURL)
+		.then(action => trigger.dispatchEvent(new TriggerEvent(cause, "get", action, target)))
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+});
+

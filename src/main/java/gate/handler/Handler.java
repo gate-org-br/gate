@@ -1,5 +1,7 @@
 package gate.handler;
 
+import gate.Progress;
+import gate.converter.Converter;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -42,6 +44,12 @@ public interface Handler
 	}
 
 	void handle(HttpServletRequest request, HttpServletResponse response, Object value);
+
+	default void handle(HttpServletRequest request, HttpServletResponse response, Progress progress, Object value)
+	{
+		progress.result("application/octet-stream",
+			null, Converter.toString(value));
+	}
 
 	public static class Instances
 	{

@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public AbstractPropertyAttributeProcessor(String element)
 	{
@@ -31,7 +31,7 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 		Screen screen = (Screen) request.getAttribute("screen");
 
 		var name = element.getAttributeValue("g:property");
-		name = (String) expression.evaluate(name);
+		name = (String) expression.create().evaluate(name);
 		Property property = Property.getProperty(screen.getClass(), name);
 
 		handler.removeAttribute("g:property");

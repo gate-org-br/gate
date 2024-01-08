@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class ConditionAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public ConditionAttributeProcessor()
 	{
@@ -24,14 +24,14 @@ public class ConditionAttributeProcessor extends AttributeProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		if ((boolean) expression.evaluate(element.getAttributeValue("g:condition")))
+		if ((boolean) expression.create().evaluate(element.getAttributeValue("g:condition")))
 		{
 			handler.removeAttribute("g:condition");
 			handler.removeAttribute("g:otherwise");
 		} else if (element.hasAttribute("g:otherwise"))
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");
-			otherwise = Converter.toText(expression.evaluate(otherwise));
+			otherwise = Converter.toText(expression.create().evaluate(otherwise));
 			otherwise = "<g-message class='warning icon'>" + otherwise + "</g-message>";
 			handler.replaceWith(otherwise, false);
 		} else

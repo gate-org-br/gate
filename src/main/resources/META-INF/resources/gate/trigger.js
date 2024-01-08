@@ -1,4 +1,3 @@
-import CSV from './csv.js';
 import DOM from './dom.js';
 import resolve from './resolve.js';
 import validate from './validate.js';
@@ -31,24 +30,16 @@ export default function trigger(cause, element)
 	let action = element.href || element.getAttribute("formaction") || element.getAttribute("data-action") || form?.action || "";
 	let target = element.target || element.getAttribute("formtarget") || element.getAttribute("data-target") || form?.target || "_self";
 
+	if (cause.ctrlKey && cause.type === "click")
+		target = "_blank";
+
 	if (!target.startsWith("_") && !target.startsWith("@"))
 		target = `@frame(${target})`;
 
-	let type = target;
-	let parameters = [];
-	let parentesis = target.indexOf("(");
-	if (parentesis > 0)
-	{
-		if (!target.endsWith(")"))
-			throw new Error(`${target} is not a valid target`);
-		type = target.substring(0, parentesis);
-		parameters = CSV.parse(target.slice(parentesis + 1, -1));
-	}
-
 	if (!form || element.hasAttribute("formnovalidate") || form.hasAttribute("novalidate") || form.reportValidity())
 	{
-		action = resolve(action);
-		element.dispatchEvent(new TriggerEvent(type, cause, method, action, target, parameters, form));
+		action = resolve(element, action);
+		element.dispatchEvent(new TriggerEvent(cause, method, action, target, form));
 	}
 }
 
@@ -67,8 +58,6 @@ const DEFAULT = new Map()
 
 window.addEventListener("click", function (event)
 {
-	if (event.ctrlKey)
-		return;
 
 	for (let element of event.composedPath())
 	{
@@ -76,6 +65,8 @@ window.addEventListener("click", function (event)
 			continue;
 		if (element.tagName === "A")
 		{
+			if (event.ctrlKey)
+				return;
 			if (element.target.startsWith("@"))
 			{
 				trigger(event, element);
@@ -90,6 +81,8 @@ window.addEventListener("click", function (event)
 
 		if (element.tagName === "BUTTON")
 		{
+			if (event.ctrlKey)
+				return;
 			let method = element.getAttribute("formmethod") || element.form?.method || "get";
 			let target = element.getAttribute("formtarget") || element.form?.target || "_self";
 
@@ -170,4 +163,22 @@ window.addEventListener("@trigger", function (event)
 	let source = event.composedPath()[0] || event.target;
 	let element = DOM.navigate(source, path).orElseThrow("Invalid target element");
 	trigger(event, element);
+});
+
+
+window.addEventListener("load", function (event)
+{
+	let selector = window.location.hash;
+	if (selector)
+	{
+		let element = document.querySelector(selector);
+		if (element)
+		{
+			let target = element.target
+				|| element.getAttribute("formtarget")
+				|| element.getAttribute("data-target");
+			if (target && target.startsWith("@"))
+				trigger(event, element);
+		}
+	}
 });

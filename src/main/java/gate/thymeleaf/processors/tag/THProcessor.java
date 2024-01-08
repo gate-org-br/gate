@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import java.util.stream.Collectors;
@@ -21,7 +21,7 @@ public class THProcessor extends TagModelProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public THProcessor()
 	{
@@ -51,10 +51,10 @@ public class THProcessor extends TagModelProcessor
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 
-		var value = expression.evaluate(element.getAttributeValue("value"));
+		var value = expression.create().evaluate(element.getAttributeValue("value"));
 		String string = Converter.toText(value, element.getAttributeValue("format"));
 		if (string.isBlank() && element.hasAttribute("empty"))
-			string = Converter.toText(expression.evaluate(element.getAttributeValue("empty")));
+			string = Converter.toText(expression.create().evaluate(element.getAttributeValue("empty")));
 		String body = string.replaceAll("\\n", "<br/>");
 
 		model.reset();

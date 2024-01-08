@@ -19,10 +19,8 @@ export default class ResponseHandler
 	static response(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
-
 			return response;
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
@@ -42,10 +40,8 @@ export default class ResponseHandler
 	static json(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
-
 			return response.json();
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
@@ -65,10 +61,8 @@ export default class ResponseHandler
 	static text(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
-
 			return response.text();
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
@@ -92,10 +86,8 @@ export default class ResponseHandler
 	static blob(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
-
 			return response.blob();
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
@@ -115,10 +107,8 @@ export default class ResponseHandler
 	static none(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
-
 			return Promise.resolve();
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
@@ -138,21 +128,59 @@ export default class ResponseHandler
 	static auto(response)
 	{
 		if (!response)
-
 			return Promise.resolve();
 		if (response.ok)
 		{
 			let contentType = response.headers.get('content-type');
 			if (contentType.startsWith("text/"))
-
 				return response.text();
 			else if (contentType === "application/json")
-
 				return response.json();
 			else
-
 				return response.blob();
 		}
 		return response.text().then(error => Promise.reject(new Error(error)));
 	}
+
+	/**
+	 * Handles a response by generating a data URL from the response content.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<string>} - A promise that resolves to a data URL if the response is successful. Otherwise, a rejected promise with an error is returned.
+	 * @example
+	 * // Usage with fetch:
+	 * fetch('https://api.example.com/data')
+	 *   .then(response => ResponseHandler.dataURL(response))
+	 *   .then(dataURL => console.log(dataURL))
+	 *   .catch(error => console.error(error));
+	 */
+	static dataURL(response)
+	{
+		if (!response)
+			return Promise.resolve();
+
+		if (response.ok)
+		{
+			return Promise.all([response.blob(),
+				response.headers.get('content-type'),
+				response.headers.get('content-disposition')])
+				.then(([blob, contentType, contentDisposition]) => {
+					return new Promise((resolve, reject) => {
+						const reader = new FileReader();
+						reader.onloadend = () => {
+							const base64data = reader.result.split(',')[1];
+							const filenameMatch = contentDisposition && contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+							const filename = filenameMatch ? filenameMatch[1].trim() : null;
+							resolve(filename
+								? `data:${contentType || 'application/octet-stream'};filename=${encodeURIComponent(filename)};base64,${base64data}`
+								: `data:${contentType || 'application/octet-stream'};base64,${base64data}`);
+						};
+						reader.readAsDataURL(blob);
+					});
+				});
+		}
+
+		return response.text().then(error => Promise.reject(new Error(error)));
+	}
+
 }

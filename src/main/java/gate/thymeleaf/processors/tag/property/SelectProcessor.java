@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag.property;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class SelectProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public SelectProcessor()
 	{
@@ -39,7 +39,7 @@ public class SelectProcessor extends PropertyProcessor
 
 		Object options = attributes.remove("options");
 		if (options != null)
-			options = expression.evaluate((String) options);
+			options = expression.create().evaluate((String) options);
 		else if (Boolean.class.isAssignableFrom(property.getRawType()))
 			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else if (boolean.class.isAssignableFrom(property.getRawType()))
@@ -52,7 +52,7 @@ public class SelectProcessor extends PropertyProcessor
 		String sortby = (String) attributes.remove("sortby");
 		if (sortby != null)
 		{
-			var comparator = expression.comparator(sortby);
+			var comparator = expression.create().comparator(sortby);
 			options = Toolkit
 				.collection(options)
 				.stream()
@@ -62,9 +62,9 @@ public class SelectProcessor extends PropertyProcessor
 
 		Object value = property.getValue(screen);
 
-		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
-		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
-		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
+		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
+		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
+		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression.create()::function).orElse(null);
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");
@@ -73,10 +73,10 @@ public class SelectProcessor extends PropertyProcessor
 		if (empty == null)
 			empty = "";
 		else
-			empty = expression.evaluate((String) empty);
+			empty = expression.create().evaluate((String) empty);
 		string.add("<option value=''>" + empty + "</option>");
 
-		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
+		Function<Object, Object> groups = extract(element, handler, "groups").map(expression.create()::function).orElse(null);
 		if (groups != null)
 		{
 			Toolkit.stream(options)

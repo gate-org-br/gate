@@ -52,10 +52,10 @@ import ResponseHandler from './response-handler.js';
 
 export default class GSelectPicker extends GWindow
 {
+	#options;
 	constructor()
 	{
 		super();
-		this._private = {};
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
@@ -81,12 +81,12 @@ export default class GSelectPicker extends GWindow
 
 	get options()
 	{
-		return this._private.options || [];
+		return this.#options || [];
 	}
 
 	set options(options)
 	{
-		this._private.options = options;
+		this.#options = options;
 		this.shadowRoot.querySelector("g-grid").dataset = options;
 	}
 

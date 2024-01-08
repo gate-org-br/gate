@@ -15,8 +15,7 @@ customElements.define('g-tabbar', class extends HTMLElement
 
 		this.shadowRoot.getElementById("more").addEventListener("click", () =>
 		{
-			let container = this.shadowRoot.getElementById("container");
-			let elements = Array.from(container.children)
+			let elements = Array.from(this.children)
 				.filter(e => e.tagName !== "HR")
 				.filter(e => !e.getAttribute("hidden"))
 				.filter(e => e.style.display === "none")
@@ -28,30 +27,36 @@ customElements.define('g-tabbar', class extends HTMLElement
 			menu.elements = elements;
 			menu.show(this.shadowRoot.getElementById("more"));
 		});
+
+		this.addEventListener("trigger-resolve", event =>
+			this.selected = event.composedPath()[0] || event.target);
+	}
+
+	set selected(element)
+	{
+		Array.from(this.children).forEach(e => e.removeAttribute("aria-selected"));
+		if (element)
+			element.setAttribute("aria-selected", "true");
 	}
 
 	connectedCallback()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		Array.from(this.children).forEach(e => container.appendChild(e));
-		this.update();
+		Array.from(this.children).flatMap(e => Array.from(e.children))
+			.filter(e => e.tagName)
+			.forEach(e => e.parentNode.insertBefore(e, e.parentNode.firstChild));
+		GSelection.getSelectedLink(this.children).ifPresent(e => this.selected = e);
 	}
 
 	update()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		let selected = GSelection.getSelectedLink(container.children);
-		if (selected)
-			selected.setAttribute("aria-selected", "true");
-
-		Array.from(container.children)
+		Array.from(this.children)
 			.filter(e => !e.getAttribute("hidden"))
 			.forEach(e => e.style.display = "");
 
 		this.shadowRoot.getElementById("more")
 			.style.display = this.overflowed ? "flex" : "none";
 
-		for (let e = container.lastElementChild;
+		for (let e = this.lastElementChild;
 			e && this.overflowed; e = e.previousElementSibling)
 			if (!e.hasAttribute("aria-selected")
 				&& !e.getAttribute("hidden"))

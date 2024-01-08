@@ -22,9 +22,11 @@ template.innerHTML = `
 
 main {
 	display: flex;
+	min-height: 36px;
 	text-align: justify;
 	align-items: stretch;
 	flex-direction: column;
+	justify-content: center;
 }
 
 :host(.icon)::before {

@@ -1,7 +1,10 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<button id="prev"><g-icon>&#X2277;</g-icon></button>
 	<div>
+		<slot></slot>
 	</div>
+	<button id="next"><g-icon>&#X2279;</g-icon></button>
  <style>* {
 	box-sizing: border-box;
 }
@@ -13,38 +16,33 @@ template.innerHTML = `
 	height: auto;
 	flex-grow: 1;
 	display: flex;
-	background-color: var(--main3);
+	position: relative;
 	justify-content: flex-start;
+	background-color: var(--main3);
 }
 
-:host([data-overflowing=left])::before,
-:host([data-overflowing=left])::after,
-:host([data-overflowing=right])::before,
-:host([data-overflowing=right])::after,
-:host([data-overflowing=both])::before,
-:host([data-overflowing=both])::after
+#next, #prev
 {
-	display: flex;
-	content: " ";
+	border: none;
+	display: none;
 	color: #999999;
 	font-size: 16px;
-	flex-basis: 32px;
-	font-family: "gate";
+	min-width: 24px;
+	flex-basis: 24px;
 	align-items: center;
 	justify-content: center;
 }
 
-:host([data-overflowing=left])::before,
-:host([data-overflowing=both])::before
+:host([data-overflowing=left]) #prev,
+:host([data-overflowing=both]) #prev
 {
-	content: "\\3017";
-
+	display: flex;
 }
 
-:host([data-overflowing=right])::after,
-:host([data-overflowing=both])::after
+:host([data-overflowing=right]) #next,
+:host([data-overflowing=both]) #next
 {
-	content: "\\3017";
+	display: flex;
 }
 
 div
@@ -60,9 +58,9 @@ div
 	white-space:  nowrap;
 }
 
-a,
-button,
-.g-command
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
 {
 	gap: 4px;
 	padding: 6px;
@@ -70,72 +68,89 @@ button,
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
+	cursor: pointer;
 	flex-basis: 120px;
 	border-radius: 5px;
-	font-size: 0.75rem;
+	font-size: inherit;
 	white-space: nowrap;
 	align-items: center;
 	text-decoration: none;
 	flex-direction: column;
-	background-color: var(--main4);
 	justify-content: space-around;
+	background-color: var(--main4);
 }
 
-:host(.inline) a,
-:host(.inline) button,
-:host(.inline) .g-command
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
 {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-a[aria-selected],
-button[aria-selected],
-.g-command[aria-selected]
+::slotted(a[aria-selected]),
+::slotted(button[aria-selected]),
+::slotted(.g-command[aria-selected])
 {
-	background-color: #E6E6E6;
+	color: var(--base1);
+	background-color: var(--main5);
 }
 
-a:hover,
-button:hover,
-.g-command:hover
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
-	background-color:  #FFFACD;
+	background-color:  var(--hovered);
 }
 
-a:focus,
-button:focus,
-.g-command:focus
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
 {
 	outline: none
 }
 
-*[hidden="true"]
+::slotted([hidden="true"])
 {
 	display: none;
 }
 
-hr
+::slotted(hr)
 {
 	border: none;
 	flex-grow: 100000;
 }
-
-i, g-icon {
-	order: -1;
-	display: flex;
-	color: inherit;
-	cursor: inherit;
-	font-style: normal;
-	font-size: 1.25rem;
-	font-family: 'gate';
-	align-items: center;
-	justify-content: center;
+button {
+	color: black;
 }
-</style>`;
+
+g-icon {
+	color: #000099;
+	position: absolute;
+}
+
+button {
+	cursor: pointer;
+
+}
+
+button:hover
+{
+	background-color:  var(--hovered);
+}</style>`;
 
 /* global customElements */
+
+function visible(element, container)
+{
+	element = element.getBoundingClientRect();
+	container = container.getBoundingClientRect();
+	return 	element.top >= container.top &&
+		element.left >= container.left &&
+		element.bottom <= container.bottom &&
+		element.right <= container.right;
+}
 
 customElements.define("g-scroll-tabbar", class extends HTMLElement
 {
@@ -145,22 +160,42 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		let div = this.shadowRoot.firstElementChild;
+		let div = this.shadowRoot.querySelector("div");
 		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
 		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
 		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
 		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
 
+		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
+		{
+			for (let element = this.firstElementChild; element; element = element.nextElementSibling)
+				if (visible(element, div))
+					for (element = element.nextElementSibling; element; element = element.nextElementSibling)
+						if (!visible(element, div))
+							return element.scrollIntoView({inline: "start",
+								behavior: "smooth"});
+		}
+		);
+
+		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
+		{
+			for (let element = this.lastElementChild; element; element = element.previousElementSibling)
+				if (visible(element, div))
+					for (element = element.previousElementSibling; element; element = element.previousElementSibling)
+						if (!visible(element, div))
+							return element.scrollIntoView({inline: "end",
+								behavior: "smooth"});
+
+		});
+
 		div.addEventListener("scroll", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 	}
 
 	connectedCallback()
 	{
-		let div = this.shadowRoot.querySelector("div");
-		Array.from(this.children).forEach(e => div.appendChild(e));
-		window.setTimeout(() => this.update(), 0);
-		window.addEventListener("resize", () => this.update());
+		this.update();
 	}
 
 	update()
@@ -174,8 +209,8 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 			let containerMetricsRight = Math.floor(containerMetrics.right);
 			let containerMetricsLeft = Math.floor(containerMetrics.left);
 
-			let left = Math.floor(div.firstElementChild.getBoundingClientRect().left);
-			let right = Math.floor(div.lastElementChild.getBoundingClientRect().right);
+			let left = Math.floor(this.firstElementChild.getBoundingClientRect().left);
+			let right = Math.floor(this.lastElementChild.getBoundingClientRect().right);
 
 			if (containerMetricsLeft > left
 				&& containerMetricsRight < right)
@@ -188,12 +223,7 @@ customElements.define("g-scroll-tabbar", class extends HTMLElement
 				this.setAttribute("data-overflowing", "none");
 		}
 
-		Array.from(div.children).filter(e => e.getAttribute("aria-selected"))
+		Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
 			.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
-	}
-
-	disconnectedCallback()
-	{
-		window.removeEventListener("resize", () => this.update());
 	}
 });

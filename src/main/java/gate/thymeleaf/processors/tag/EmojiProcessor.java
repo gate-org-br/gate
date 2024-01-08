@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag;
 import gate.annotation.Color;
 import gate.annotation.Emoji;
 import gate.icon.Emojis;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ public class EmojiProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public EmojiProcessor()
 	{
@@ -33,8 +33,8 @@ public class EmojiProcessor extends TagProcessor
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
 				e -> e.getValue(), (a, b) -> a, Attributes::new));
 
-		var type = Optional.ofNullable(attributes.remove("type")).map(e -> (String) e).map(expression::evaluate).orElse(null);
-		var empty = Optional.ofNullable(attributes.remove("empty")).map(e -> (String) e).map(expression::evaluate).orElse(null);
+		var type = Optional.ofNullable(attributes.remove("type")).map(e -> (String) e).map(expression.create()::evaluate).orElse(null);
+		var empty = Optional.ofNullable(attributes.remove("empty")).map(e -> (String) e).map(expression.create()::evaluate).orElse(null);
 
 		if (type == null)
 			type = empty;

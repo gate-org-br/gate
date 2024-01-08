@@ -1,0 +1,25 @@
+:host([empty][value='0'])
+{
+	flex-grow: 1;
+	display: flex;
+	padding: 12px;
+	display: flex;
+	font-size: 16px;
+	border: 1px solid;
+	text-align: justify;
+	align-items: stretch;
+	border-left: 6px solid;
+	justify-content: center;
+	border-color: var(--main6);
+	border-radius: 0 3px 3px 0;
+	background-color: var(--main1);
+}
+
+:host([empty][value='0']) ::slotted(*) {
+	display: none !important;
+}
+
+:host([empty][value='0'])::before
+{
+	content: attr(empty);
+}

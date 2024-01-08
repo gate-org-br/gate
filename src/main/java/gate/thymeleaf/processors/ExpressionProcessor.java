@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,7 +18,7 @@ public class ExpressionProcessor implements IElementTagProcessor, Processor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public ExpressionProcessor()
 	{
@@ -30,7 +30,7 @@ public class ExpressionProcessor implements IElementTagProcessor, Processor
 	{
 		Stream.of(element.getAllAttributes()).forEach(e ->
 		{
-			var value = expression.evaluate((e.getValue()));
+			var value = expression.create().evaluate((e.getValue()));
 			handler.setAttribute(e.getAttributeCompleteName(),
 				value != null ? value.toString() : "");
 		});

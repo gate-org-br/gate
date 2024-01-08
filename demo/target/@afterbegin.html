@@ -1,0 +1,42 @@
+<g-card>
+	<section>
+		<p>
+			Inserts the result of the HTTP request on the target element
+			before its first child.
+			You can pass the target element selector as a parameter or omit
+			it to make the trigger element target itself.
+		</p>
+
+		<g-tab-control>
+			<a href="#">
+				Example 1 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
+				<g-code-viewer style='height: auto'>
+					<g-callout>
+						Original content
+					</g-callout>
+					<g-coolbar>
+						<a href="/target/content.html"
+						   class="primary"
+						   target="@afterbegin(this.parent(1)[0])">
+							Fetch<g-icon>&#X2072;</g-icon>
+						</a>
+					</g-coolbar>
+				</g-code-viewer>
+			</div>
+			<a href="#">
+				Example 2 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
+				<g-code-viewer style='height: auto'>
+					<g-callout data-trigger="click"
+						   data-action="/target/content.html"
+						   data-target="@afterbegin">
+						Click me to update
+					</g-callout>
+				</g-code-viewer>
+			</div>
+		</g-tab-control>
+	</section>
+</g-card>

@@ -256,21 +256,21 @@ export default class GMessageDialog extends GWindow
 	 * @param {Object} status - The status object containing type and message properties.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static  show(status, duration)
+	static  show(type, message, duration)
 	{
-		switch (status.type)
+		switch (type)
 		{
-			case "SUCCESS":
-				GMessageDialog.success(status.message, duration);
+			case "success":
+				GMessageDialog.success(message, duration);
 				break;
-			case "WARNING":
-				GMessageDialog.warning(status.message, duration);
+			case "warning":
+				GMessageDialog.warning(message, duration);
 				break;
-			case "ERROR":
-				GMessageDialog.error(status.message, duration);
+			case "error":
+				GMessageDialog.error(message, duration);
 				break;
-			case "INFO":
-				GMessageDialog.info(status.message, duration);
+			case "info":
+				GMessageDialog.info(message, duration);
 				break;
 		}
 	}
@@ -282,16 +282,20 @@ window.addEventListener("@message", function (event)
 {
 	event.preventDefault();
 	event.stopPropagation();
+	let parameters = event.detail.parameters;
 
-	let duration = event.detail.parameters[0];
-	duration = duration ? Number(duration) : null;
+	let type = parameters[0] && isNaN(parameters[0]) ? parameters[0] : null
+		|| parameters[1] && isNaN(parameters[1]) ? parameters[1] : "success";
+
+	let duration = parameters[0] && !isNaN(parameters[0]) ? Number(parameters[0]) : null
+		|| parameters[1] && !isNaN(parameters[1]) ? Number(parameters[1]) : null;
+
 
 	event.target.dispatchEvent(new TriggerStartupEvent(event));
-
 	let path = event.composedPath();
 	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.text)
-		.then(text => GMessageDialog.success(text, duration))
+		.then(text => GMessageDialog.show(type, text, duration ? Number(duration) : null))
 		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
 		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
 		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));

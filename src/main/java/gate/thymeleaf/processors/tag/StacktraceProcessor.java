@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,7 +14,7 @@ public class StacktraceProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public StacktraceProcessor()
 	{
@@ -26,7 +26,7 @@ public class StacktraceProcessor extends TagProcessor
 		IElementTagStructureHandler handler)
 	{
 		Throwable exception = extract(element, handler, "exception")
-			.map(expression::evaluate)
+			.map(expression.create()::evaluate)
 			.filter(e -> e instanceof Throwable)
 			.map(e -> (Throwable) e)
 			.orElseThrow(() -> new TemplateProcessingException("Missing required attribute exception on g:stacktrace"));

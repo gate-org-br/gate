@@ -59,6 +59,7 @@ public class ChatService extends HttpServlet
 	public void service(HttpServletRequest request,
 		HttpServletResponse response) throws ServletException, IOException
 	{
+		Request.set(request);
 		try
 		{
 			if ("/host".equals(request.getPathInfo()))

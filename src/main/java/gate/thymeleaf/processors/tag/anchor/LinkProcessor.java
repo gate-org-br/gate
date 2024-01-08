@@ -4,7 +4,7 @@ import gate.Call;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.io.URL;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import java.util.Optional;
@@ -22,7 +22,7 @@ public class LinkProcessor extends AnchorProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public LinkProcessor()
 	{
@@ -106,7 +106,7 @@ public class LinkProcessor extends AnchorProcessor
 		if (!attributes.containsKey("otherwise"))
 			return Optional.empty();
 		Object otherwise = attributes.remove("otherwise");
-		otherwise = expression.evaluate((String) otherwise);
+		otherwise = expression.create().evaluate((String) otherwise);
 		if (otherwise == null)
 			return Optional.empty();
 		return Optional.of(Converter.toText(otherwise));

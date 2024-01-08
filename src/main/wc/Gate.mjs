@@ -34,7 +34,7 @@ import "./g-stack-frame.js";
 import "./g-context-menu.js";
 
 import "./g-text-editor.js";
-import "./g-report-dialog.js";
+import "./g-report-picker.js";
 import "./g-chart.js";
 import "./g-chart-dialog.js";
 import "./g-icon-pane.js";
@@ -49,15 +49,14 @@ import "./g-date-interval-picker.js";
 import "./g-time-interval-picker.js";
 import "./g-month-interval-picker.js";
 import "./g-date-time-interval-picker.js";
-import "./g-url-picker.js";
-
+import "./g-fetch-picker.js";
+import "./g-frame-picker.js";
 import "./g-progress-dialog.js";
 
 import "./g-desk-pane.js";
 
 import "./sorter.js";
 import "./filter.js";
-import "./counter.js";
 
 import "./form.js";
 import "./validation.js";
@@ -98,6 +97,10 @@ import './hateoas.js';
 import './table.js';
 import './hide.js';
 import "./populator.js";
+
+import "./g-counter.js";
+
+import "./content-stack.js";
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

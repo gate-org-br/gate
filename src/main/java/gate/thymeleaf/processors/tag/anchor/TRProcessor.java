@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag.anchor;
 import gate.Call;
 import gate.entity.User;
 import gate.io.URL;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import javax.enterprise.context.ApplicationScoped;
@@ -18,7 +18,7 @@ public class TRProcessor extends AnchorProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TRProcessor()
 	{

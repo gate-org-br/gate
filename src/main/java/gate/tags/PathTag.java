@@ -57,8 +57,8 @@ public class PathTag extends AttributeTag
 	private static Optional<String> getText(AnnotatedElement element)
 	{
 		StringJoiner string = new StringJoiner("");
+		Icon.Extractor.extract(element).ifPresent(e -> string.add("<g-icon>&#X" + e.getCode() + ";</g-icon>"));
 		Name.Extractor.extract(element).ifPresent(string::add);
-		Icon.Extractor.extract(element).ifPresent(e -> string.add("<i>&#X" + e.getCode() + ";</i>"));
 		return string.length() != 0 ? Optional.of(string.toString()) : Optional.empty();
 	}
 

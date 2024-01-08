@@ -1,0 +1,17 @@
+<template>
+	<dialog>
+		<header tabindex='1'>
+			<label id='caption'>
+			</label>
+			<a id='cancel' href='#'>
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section >
+			<iframe name='g-frame-picker' scrolling="no">
+			</iframe>
+		</section>
+	</dialog>
+</template>

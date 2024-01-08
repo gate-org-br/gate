@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -15,7 +15,7 @@ public class TextareaProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpression expression;
+	ELExpressionFactory expression;
 
 	public TextareaProcessor()
 	{
@@ -28,7 +28,7 @@ public class TextareaProcessor extends PropertyProcessor
 	{
 		String value = "";
 		if (attributes.containsKey("value"))
-			value = property.getConverter().toString(property.getRawType(), expression.evaluate((String) attributes.remove("value")));
+			value = property.getConverter().toString(property.getRawType(), expression.create().evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
 			value = property.getConverter().toString(property.getRawType(), property.getValue(screen));
 		handler.replaceWith("<textarea " + attributes + ">" + value + "</textarea>", true);
