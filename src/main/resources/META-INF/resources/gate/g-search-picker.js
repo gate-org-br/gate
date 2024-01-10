@@ -5,7 +5,7 @@ template.innerHTML = `
 			<label id='caption'>
 				Selecione um ítem
 			</label>
-			<a id='cancel' href="#">
+			<a id='close' href="#">
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -17,6 +17,17 @@ template.innerHTML = `
 				Entre com o critério pesquisa
 			</g-grid>
 		</section>
+		<footer>
+			<g-coolbar>
+				<button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon>
+				</button>
+				<hr>
+				<button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
 	</dialog>
  <style>dialog
 {
@@ -44,9 +55,12 @@ import './g-icon.js';
 import './g-grid.js';
 import DOM from './dom.js';
 import GWindow from './g-window.js';
-import Extractor from './extractor.js';
+import DataURL from './data-url.js';
 import ObjectFilter from './object-filter.js';
+import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
+import TriggerEvent, {TriggerStartupEvent, TriggerSuccessEvent,
+	TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 function debounce(func, timeout = 300)
 {
@@ -66,7 +80,9 @@ export default class GSearchPicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {value: {}}})));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
@@ -184,39 +200,20 @@ window.addEventListener("@search", function (event)
 {
 	event.preventDefault();
 	event.stopPropagation();
-	let trigger = event.composedPath()[0] || event.target;
-	let [filter, value, label, empty] = event.detail.parameters;
+	let path = event.composedPath();
+	let trigger = path[0] || event.target;
+	let {cause, method, action, parameters} = event.detail;
 
-	value = value
-		? trigger.getRootNode().getElementById(value)
-		: trigger.parentNode.querySelector("input[type=hidden]");
-	if (!value)
-		throw new Error("Value input not found");
+	let target = parameters.filter(e => e[0] === "@")[0] || "@fill";
+	let filter = parameters.filter(e => e[0] !== "@")[0] || "label";
+	let value = trigger.tagName === "INPUT" ? trigger.value : null;
 
-
-	label = label
-		? trigger.getRootNode().getElementById(label)
-		: trigger.parentNode.querySelector("input[type=text]");
-	if (!label)
-		throw new Error("Label input not found");
-
-	if (trigger === label)
-	{
-		GSearchPicker.pick(event.detail.action, filter, trigger.title, label.value)
-			.then(object =>
-			{
-				label.value = Extractor.label(object.value);
-				value.value = Extractor.value(object.value);
-			})
-			.catch(() => label.value = value.value = "");
-	} else if (!label.value && !value.value)
-		GSearchPicker.pick(event.detail.action, filter, trigger.title)
-			.then(object =>
-			{
-				label.value = Extractor.label(object.value);
-				value.value = Extractor.value(object.value);
-			})
-			.catch(() => undefined);
-	else
-		label.value = value.value = '';
+	trigger.dispatchEvent(new TriggerStartupEvent(event));
+	GSearchPicker.pick(action, filter, trigger.title, value)
+		.then(result => JSON.stringify(result.value))
+		.then(result => new DataURL("application/json", result).toString())
+		.then(result => trigger.dispatchEvent(new TriggerEvent(cause, method, result, target)))
+		.catch(() => undefined)
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
 });

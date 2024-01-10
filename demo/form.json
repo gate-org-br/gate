@@ -1,0 +1,42 @@
+[
+	"Field 0",
+	{
+		"name": "Field 1",
+		"required": true,
+		"columns": 8
+	},
+	{
+		"name": "Field 2",
+		"columns": 8,
+		"maxlength": 4
+	},
+	{
+		"name": "Field 3",
+		"columns": 8,
+		"mask": "##/##/####"
+	},
+	{
+		"name": "Field 4",
+		"columns": 8,
+		"options": [
+			"Option 1",
+			"Option 2",
+			"Option 3"
+		]
+	},
+	{
+		"name": "Field 5",
+		"options": [
+			"Option 1",
+			"Option 2",
+			"Option 3"
+		],
+		"multiple": true,
+		"columns": 8
+	},
+	{
+		"name": "Field 6",
+		"multiple": true,
+		"columns": 8
+	}
+]

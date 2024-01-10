@@ -101,17 +101,15 @@
 	<a href="#" id='image'>
 		File<img id="image" src="./3135715.png" style="height: 24px; width: 24px" />
 	</a>
-	<a href="#" id='form'>
-		Form<g-icon>&#X2044;</g-icon>
-	</a>
-	<a href="#" target="@popup(popup)" title="Popup">
+	<a href="#" title="Popup">
 		Popup<g-icon>&#X2256;</g-icon>
+		<g-popup id="popup" caption='popup' style="width: 800px; height: 600px;">
+			This popup is inside the link
+		</g-popup>
 	</a>
 </g-coolbar>
 
-<g-popup id="popup" caption='popup' style="width: 800px; height: 600px;">
-	This popup is inside the link
-</g-popup>
+
 
 <script type='module'>
 
@@ -135,19 +133,6 @@
 	document.getElementById("image").addEventListener("click", () => GFilePicker.pick("image/*")
 			.then(result => result.dataURL())
 			.then(result => document.getElementById("image").lastElementChild.src = result)
-			.catch(e => GMessageDialog.error(e.message, 1000))
-			.finally(() => console.log("finish")));
-
-	document.getElementById("form").addEventListener("click", () => GFormDialog
-			.pick(["Field 0",
-				{name: "Field 1", required: true, columns: 8},
-				{name: "Field 2", columns: 8, maxlength: 4},
-				{name: "Field 3", columns: 8, mask: "##/##/####"},
-				{name: "Field 4", columns: 8, options: ["Option 1", "Option 2", "Option 3"]},
-				{name: "Field 5", options: ["Option 1", "Option 2", "Option 3"], multiple: true, columns: 8},
-				{name: "Field 6", multiple: true, columns: 8}],
-				{caption: "Form", width: "min(600px, 100%)"})
-			.then(e => GMessageDialog.success(JSON.stringify(e)))
 			.catch(e => GMessageDialog.error(e.message, 1000))
 			.finally(() => console.log("finish")));
 </script>

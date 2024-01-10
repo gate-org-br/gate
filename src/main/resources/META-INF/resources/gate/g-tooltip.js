@@ -86,7 +86,7 @@ div[data-arrow='southwest'] {
 
 /* global template */
 
-import JSONtoHTML from './json-to-html.js';
+import Formatter from './formatter.js';
 import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -212,7 +212,7 @@ export default class GTooltip extends HTMLElement
 	{
 		let tooltip = new GTooltip();
 		document.body.appendChild(tooltip);
-		tooltip.innerHTML = JSONtoHTML(content);
+		tooltip.innerHTML = Formatter.JSONtoHTML(content);
 		tooltip.show(element, position);
 	}
 
@@ -251,7 +251,7 @@ window.addEventListener("@tooltip", function (event)
 	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.response)
 		.then(response => response.headers.get('content-type').startsWith("application/json")
-				? response.json().then(json => JSONtoHTML(json))
+				? response.json().then(json => Formatter.JSONtoHTML(json))
 				: response.text())
 		.then(content => GTooltip.show(event.target, content, position))
 		.then(() => event.target.addEventListener("mouseleave", () => GTooltip.hide()))

@@ -64,6 +64,9 @@ section {
 
 /* global customElements */
 
+import RequestBuilder from './request-builder.js';
+import ResponseHandler from './response-handler.js';
+
 customElements.define('g-accordion-section', class extends HTMLElement
 {
 	constructor()
@@ -103,14 +106,36 @@ customElements.define('g-accordion-section', class extends HTMLElement
 			this.removeAttribute("expanded", "");
 	}
 
+	get action()
+	{
+		return this.getAttribute("action");
+	}
+
+	set action(value)
+	{
+		return this.setAttribute("action", value);
+	}
+
+	connectedCallback()
+	{
+		if (this.parentNode && this.expanded
+			&& this.action && !this.innerHTML.trim())
+			fetch(RequestBuilder.build("get", this.action))
+				.then(ResponseHandler.text)
+				.then(e => this.innerHTML = e);
+	}
+
 	attributeChangedCallback(name, old, val)
 	{
-		this.shadowRoot.querySelector("header").innerText
-			= val;
+		if (name === "caption")
+			this.shadowRoot.querySelector("header").innerText
+				= val;
+		else
+			this.connectedCallback();
 	}
 
 	static get observedAttributes()
 	{
-		return ['caption'];
+		return ['caption', 'expanded', 'action'];
 	}
 });

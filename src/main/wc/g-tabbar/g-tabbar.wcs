@@ -4,25 +4,66 @@
 
 :host(*)
 {
+	width: 100%;
 	color: black;
 	border: none;
 	height: auto;
 	flex-grow: 1;
-	display: flex;
-	font-size: 16px;
-	align-items: center;
-	justify-content: flex-start;
+	display: grid;
+	align-items: stretch;
+	justify-content: stretch;
+	grid-template-columns: 1fr;
 	background-color: var(--main3);
 }
 
-#container
+#next, #prev
+{
+	border: none;
+	color: #999999;
+	font-size: 16px;
+	min-width: 24px;
+	flex-basis: 24px;
+	align-items: center;
+	justify-content: center;
+}
+
+:host([data-overflowing=left])
+{
+	grid-template-columns: 24px 1fr;
+}
+
+:host([data-overflowing=right])
+{
+	grid-template-columns: 1fr 24px;
+}
+
+:host([data-overflowing=both])
+{
+	grid-template-columns: 24px 1fr 24px;
+}
+
+:host([data-overflowing=left]) #prev,
+:host([data-overflowing=both]) #prev
+{
+	display: flex;
+}
+
+:host([data-overflowing=right]) #next,
+:host([data-overflowing=both]) #next
+{
+	display: flex;
+}
+
+div
 {
 	gap: 8px;
 	padding: 8px;
+	height: auto;
+	border: none;
 	flex-grow: 1;
 	display: flex;
-	overflow: hidden;
-	white-space: nowrap;
+	overflow-x: hidden;
+	white-space:  nowrap;
 }
 
 ::slotted(a),
@@ -88,21 +129,21 @@
 	border: none;
 	flex-grow: 100000;
 }
-
-#more {
-	padding: 0;
-	width: 32px;
-	flex-grow: 0;
-	height: 100%;
-	outline: none;
+button {
+	color: black;
 	display: none;
-	flex-shrink: 0;
-	color: inherit;
-	font-size: 20px;
+}
+
+g-icon {
+	color: #000099;
+}
+
+button {
 	cursor: pointer;
-	font-family: gate;
-	margin-right: auto;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
+
+}
+
+button:hover
+{
+	background-color:  var(--hovered);
 }

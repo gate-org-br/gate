@@ -5,6 +5,7 @@
 :host(*)
 {
 	display: none;
+	position: absolute;
 }
 
 dialog {

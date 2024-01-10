@@ -1,0 +1,41 @@
+<g-card>
+	<section>
+		<p>
+			Debouncing, a programming practice to optimize system performance, is particularly useful in scenarios
+			where time-consuming tasks need controlled execution frequencies. In user interfaces and event handling,
+			the <strong>@debounce</strong> mechanism serves to limit how often a function is called within a specified
+			time interval. Essential parameters for this process include a timeout duration and a piped trigger.
+			The <strong>@debounce</strong> ensures that its associated trigger executes only after the trigger event
+			has ceased for the specified timeout, preventing unnecessary or premature function calls. Users can conveniently
+			pass these required parameters in any order, providing flexibility and customization options for tailoring the
+			debounce behavior to specific application needs.
+		</p>
+		<g-tab-control>
+			<a href="#">
+				Example 1 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
+				<p>
+					In this example, the <strong>@debounce</strong> mechanism plays a crucial role in optimizing user input handling.
+					It ensures that the associated <strong>@JSONtoHTML</strong> trigger activates only one second after the user stops
+					inputting data.
+				</p>
+
+				<g-code-viewer style='height: auto'>
+					<fieldset>
+						<label>Job
+							<span>
+								<input type="text"
+								       data-trigger='input'
+								       data-action='/objects.json?Job=@{this}'
+								       data-target="@debounce(1000, @JSONtoHTML(@innerHTML(this.parent(2).next())))">
+							</span>
+						</label>
+					</fieldset>
+					<div>
+					</div>
+				</g-code-viewer>
+			</div>
+		</g-tab-control>
+	</section>
+</g-card>

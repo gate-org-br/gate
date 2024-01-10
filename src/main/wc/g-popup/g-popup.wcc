@@ -63,23 +63,11 @@ export default class GPopup extends HTMLElement
 
 customElements.define('g-popup', GPopup);
 
-window.addEventListener("trigger", function (event)
+window.addEventListener("click", function (event)
 {
-	if (event.detail.type === "_popup")
-	{
-		event.stopPropagation();
-		event.detail.cause.preventDefault();
-		event.detail.cause.stopPropagation();
-		event.detail.cause.stopImmediatePropagation();
-
-		if (!event.detail.parameters[0])
-			throw new Error(`Target popup element not defined`);
-
-		let popup = document.getElementById(event.detail.parameters[0]);
-		if (!popup)
-			throw new Error(`Target popup element with id ${event.detail.parameters[0]} not found on page`);
-
-		popup.caption = event.detail.target.getAttribute("title") || "";
-		popup.show();
-	}
+	event.composedPath()
+		.filter(element => element.children)
+		.forEach(element => Array.from(element.children)
+				.filter(e => e.tagName === "G-POPUP")
+				.forEach(e => e.show()));
 });

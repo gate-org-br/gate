@@ -1,6 +1,7 @@
 import Parser from './parser.js';
 import trigger from './trigger.js';
 import validate from './validate.js';
+import CancelError from './cancel-error.js';
 import GMessageDialog from './g-message-dialog.js';
 
 export default class TriggerEvent extends CustomEvent
@@ -80,7 +81,7 @@ window.addEventListener("trigger-success", function (event)
 
 window.addEventListener("trigger-failure", function (event)
 {
-	if (!event.defaultPrevented)
+	if (!event.defaultPrevented && !(event.detail.error instanceof CancelError))
 		GMessageDialog.error(event.detail.error);
 
 	for (let element of event.composedPath())

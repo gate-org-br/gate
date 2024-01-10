@@ -138,6 +138,17 @@ window.addEventListener("change", function (event)
 		trigger(event, element);
 });
 
+window.addEventListener("input", function (event)
+{
+	let element = event.target || event.composedPath()[0];
+	if ((element.hasAttribute("data-trigger")
+		|| element.hasAttribute("data-method")
+		|| element.hasAttribute("data-action")
+		|| element.hasAttribute("data-target"))
+		&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "input")
+		trigger(event, element);
+});
+
 window.addEventListener("mouseover", function (event)
 {
 	let element = event.target || event.composedPath()[0];

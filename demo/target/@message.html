@@ -8,8 +8,11 @@
 			message sticks until closed by the user.
 		</g-callout>
 
-		<g-accordion>
-			<g-accordion-section expanded caption='Default'>
+		<g-tab-control>
+			<a href="#">
+				Default<g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<p>
 					If the type parameter is omitted, it defaults to Success
 				</p>
@@ -23,8 +26,11 @@
 						</a>
 					</g-coolbar>
 				</g-code-viewer>
-			</g-accordion-section>
-			<g-accordion-section caption='Success'>
+			</div>
+			<a href="#">
+				Success<g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<g-code-viewer style='height: auto'>
 					<g-coolbar>
 						<a class='primary' href="/message.txt" target='@message(success)'>
@@ -35,8 +41,11 @@
 						</a>
 					</g-coolbar>
 				</g-code-viewer>
-			</g-accordion-section>
-			<g-accordion-section caption='Error'>
+			</div>
+			<a href="#">
+				Error<g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<g-code-viewer style='height: auto'>
 					<g-coolbar>
 						<a class='primary' href="/message.txt" target='@message(error)'>
@@ -47,8 +56,11 @@
 						</a>
 					</g-coolbar>
 				</g-code-viewer>
-			</g-accordion-section>
-			<g-accordion-section caption='Warning'>
+			</div>
+			<a href="#">
+				Warning<g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<g-code-viewer style='height: auto'>
 					<g-coolbar>
 						<a class='primary' href="/message.txt" target='@message(warning)'>
@@ -59,8 +71,11 @@
 						</a>
 					</g-coolbar>
 				</g-code-viewer>
-			</g-accordion-section>
-			<g-accordion-section caption='Info'>
+			</div>
+			<a href="#">
+				Info<g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<g-code-viewer style='height: auto'>
 					<g-coolbar>
 						<a class='primary' href="/message.txt" target='@message(info)'>
@@ -71,7 +86,7 @@
 						</a>
 					</g-coolbar>
 				</g-code-viewer>
-			</g-accordion-section>
-		</g-accordion>
+			</div>
+		</g-tab-control>
 	</section>
 </g-card>

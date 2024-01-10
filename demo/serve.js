@@ -20,7 +20,18 @@ const server = http.createServer((req, res) => {
 	const contentType = getContentType(ext);
 	res.writeHead(200, {'Content-Type': contentType});
 
-	if (Object.keys(query).length > 0
+	if (req.method === 'POST')
+	{
+		let rawData = '';
+		req.on('data', chunk => rawData += chunk);
+
+		req.on('end', () => {
+			if (rawData.length > 0)
+				res.end(rawData);
+			else
+				stream.pipe(res);
+		});
+	} else if (Object.keys(query).length > 0
 		&& Object.keys(query)[0] !== "type")
 	{
 		let rawData = '';
@@ -56,7 +67,10 @@ const server = http.createServer((req, res) => {
 			}
 		});
 	} else
+	{
+		// Act like a GET request
 		stream.pipe(res);
+	}
 });
 
 const wss = new WebSocket.Server({server});
@@ -88,7 +102,7 @@ wss.on('connection', (ws) => {
 		"text": "Done",
 		"process": 1,
 		"event": "Progress",
-		"status": "COMMITED"
+		"status": "COMMITTED"
 	}));
 	ws.close();
 });

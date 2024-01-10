@@ -2,13 +2,15 @@
 
 import './g-icon.js';
 import './g-grid.js';
-import DOM from './dom.js';
 import GWindow from './g-window.js';
-import Extractor from './extractor.js';
+import DataURL from './data-url.js';
+import EventHandler from './event-handler.js';
 import ObjectFilter from './object-filter.js';
 import GMessageDialog from './g-message-dialog.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+import TriggerEvent, {TriggerStartupEvent, TriggerSuccessEvent,
+	TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 export default class GSelectPicker extends GWindow
 {
@@ -19,7 +21,9 @@ export default class GSelectPicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {value: {}}})));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
@@ -78,36 +82,31 @@ export default class GSelectPicker extends GWindow
 	}
 };
 
+
 window.addEventListener("@select", function (event)
 {
-	let trigger = event.composedPath()[0] || event.target;
+	let path = event.composedPath();
+	let trigger = path[0] || event.target;
+	let {cause, method, action, form, parameters} = event.detail;
 
-	let parameters = event.detail.parameters.map(e => DOM.navigate(trigger, e).orElse(null));
+	let target = parameters[0] || "@fill";
 
-	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
-	if (!value)
-		throw new Error("Value input not found");
-
-
-	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
-	if (!label)
-		throw new Error("Label input not found");
-
-	if (label.value || value.value)
-		return label.value = value.value = '';
-
-	trigger.style.pointerEvents = "none";
-	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-		.then(options => ResponseHandler.json(options))
-		.catch(error => GMessageDialog.error(error.message))
-		.then(options => GSelectPicker.pick(options, trigger.title))
-		.then(object =>
+	trigger.dispatchEvent(new TriggerStartupEvent(event));
+	fetch(RequestBuilder.build(method, action, form))
+		.then(ResponseHandler.json)
+		.catch(error =>
 		{
-			label.value = Extractor.label(object.value);
-			value.value = Extractor.value(object.value);
+			EventHandler.dispatch(path, new TriggerFailureEvent(event, error));
+			throw error;
 		})
+		.then(options => GSelectPicker.pick(options, trigger.title))
+		.then(result => JSON.stringify(result.value))
+		.then(result => new DataURL("application/json", result).toString())
+		.then(result => trigger.dispatchEvent(new TriggerEvent(cause, method, result, target)))
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
 		.catch(() => undefined)
-		.finally(() => trigger.style.pointerEvents = "");
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+
 });
 
 customElements.define('g-select-picker', GSelectPicker);

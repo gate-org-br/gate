@@ -4,7 +4,13 @@ import './g-form.js';
 import './g-icon.js';
 import './g-coolbar.js';
 import GWindow from './g-window.js';
+import CancelError from './cancel-error.js';
+import EventHandler from './event-handler.js';
+import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+import TriggerEvent from './trigger-event.js';
+import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
+
 export default class GFormDialog extends GWindow
 {
 	constructor()
@@ -59,25 +65,26 @@ export default class GFormDialog extends GWindow
 
 	static edit(value, options)
 	{
-		let dialog = window.top.document.createElement("g-form-dialog");
-		dialog.value = value;
-		if (typeof options === 'object')
+		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
+		return new Promise((resolve, reject) =>
 		{
-			if (options.caption)
-				dialog.caption = options.caption;
-			if (options.width)
-				dialog.width = options.width;
-			if (options.height)
-				dialog.height = options.height;
-		} else if (typeof options === 'string')
-			dialog.caption = options;
-		dialog.show();
-		let promise = new Promise((resolve, reject) =>
-		{
+			let dialog = window.top.document.createElement("g-form-dialog");
+			dialog.value = value;
+			if (typeof options === 'object')
+			{
+				if (options.caption)
+					dialog.caption = options.caption;
+				if (options.width)
+					dialog.width = options.width;
+				if (options.height)
+					dialog.height = options.height;
+			} else if (typeof options === 'string')
+				dialog.caption = options;
+			dialog.show();
+
 			dialog.addEventListener("commit", e => resolve(e.detail));
-			dialog.addEventListener("cancel", () => reject(new Error("Cancel")));
+			dialog.addEventListener("cancel", () => reject(new CancelError()));
 		});
-		return promise;
 	}
 
 	static update(url, options)
@@ -93,3 +100,31 @@ export default class GFormDialog extends GWindow
 }
 
 customElements.define('g-form-dialog', GFormDialog);
+
+window.addEventListener("@form", function (event)
+{
+	let parameters = event.detail.parameters;
+
+	let target = parameters[0];
+	if (!target)
+		throw new Error("@form trigger target not specified");
+
+	let path = event.composedPath();
+	let trigger = path[0] || event.target;
+	let {method, action, form} = event.detail;
+
+	let options = {};
+	options.caption = trigger.title;
+	options.width = parameters[1];
+	options.height = parameters[2] || options.width;
+
+	fetch(RequestBuilder.build(method, action, form))
+		.then(ResponseHandler.json)
+		.then(form => GFormDialog.edit(form, options))
+		.then(result => `data:application/json;base64,${btoa(JSON.stringify(result))}`)
+		.then(action => trigger.dispatchEvent(new TriggerEvent(event, "get", action, target)))
+		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
+		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
+		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+});
+

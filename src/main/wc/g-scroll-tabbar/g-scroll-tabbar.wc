@@ -1,7 +1,0 @@
-<template>
-	<button id="prev"><g-icon>&#X2277;</g-icon></button>
-	<div>
-		<slot></slot>
-	</div>
-	<button id="next"><g-icon>&#X2279;</g-icon></button>
-</template>

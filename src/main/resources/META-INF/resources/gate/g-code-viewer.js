@@ -22,6 +22,7 @@ template.innerHTML = `
 
 #code-pane {
 	padding: 10px;
+	overflow: auto;
 	border-bottom: 1px solid #ccc;
 	background-color: var(--hovered);
 }

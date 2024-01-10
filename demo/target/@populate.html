@@ -7,12 +7,13 @@
 			The second parameter is the name of the attribute used to generate option values; if omitted, it defaults to <b>"value"</b>.
 			The third parameter is the name of the attribute used to generate option texts; if omitted, it defaults to <b>"label"</b>.
 		</p>
-
-
-		<g-accordion>
-			<g-accordion-section expanded caption='Example 1'>
+		<g-tab-control>
+			<a href="#">
+				Example 1 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<p>
-					The @populate trigger can be used with <a href="/resolve.html" target="_blank">action placeholders</a>
+					The @populate trigger can be used with <a href="/resolve.html" target="@dialog">action placeholders</a>
 					to populate a <b>&lt;select&gt;</b> tag based on the value of another one.
 				</p>
 				<g-code-viewer style='height: auto'>
@@ -41,8 +42,11 @@
 						</label>
 					</fieldset>
 				</g-code-viewer>
-			</g-accordion-section>
-			<g-accordion-section caption='Example 2'>
+			</div>
+			<a href="#">
+				Example 2 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
 				<p>
 					The @populate trigger can be used with <a href="/resolve.html" target="_blank">action placeholders</a>
 					and <b>@trigger</b> trigger to populate a <b>&lt;select&gt;</b> tag based on the values of any number of
@@ -86,7 +90,7 @@
 						</label>
 					</fieldset>
 				</g-code-viewer>
-			</g-accordion-section>
-		</g-accordion>
+			</div>
+		</g-tab-control>
 	</section>
 </g-card>

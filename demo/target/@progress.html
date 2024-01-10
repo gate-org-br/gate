@@ -7,16 +7,21 @@
 			the result of the operation.
 		</p>
 
-		<g-accordion>
-			<g-accordion-section expanded caption='Example 1'>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/process.txt" target="@progress(@outerHTML)">
-							Progress<g-icon>&#X2176;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</g-accordion-section>
-		</g-accordion>
+		<g-tab-control>
+			<a href="#">
+				Example 1 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
+				<g-accordion-section expanded caption='Example 1'>
+					<g-code-viewer style='height: auto'>
+						<g-coolbar>
+							<a class='primary' href="/process.txt" target="@progress(@outerHTML)">
+								Progress<g-icon>&#X2176;</g-icon>
+							</a>
+						</g-coolbar>
+					</g-code-viewer>
+				</g-accordion-section>
+			</div>
+		</g-tab-control>
 	</section>
 </g-card>

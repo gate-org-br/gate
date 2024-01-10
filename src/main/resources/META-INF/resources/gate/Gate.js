@@ -26,7 +26,6 @@ import "./g-paginator.js";
 import "./g-path.js";
 import "./g-coolbar.js";
 import "./g-tabbar.js";
-import "./g-scroll-tabbar.js";
 import "./g-tab-control.js";
 import "./g-navbar.js";
 import "./g-dialog.js";
