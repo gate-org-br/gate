@@ -18,11 +18,8 @@ window.addEventListener("@outerHTML", function (event)
 
 	fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
 		.then(ResponseHandler.text)
-		.then(result => {
-			let fragment = document.createRange()
-				.createContextualFragment(result);
-			target.replaceWith(...Array.from(fragment.childNodes));
-		})
+		.then(result => document.createRange().createContextualFragment(result))
+		.then(result => target.replaceWith(...Array.from(result.childNodes)))
 		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
 		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
 		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));

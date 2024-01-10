@@ -99,8 +99,6 @@ import "./populator.js";
 
 import "./g-counter.js";
 
-import "./content-stack.js";
-
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {
 	element.addEventListener("change", function ()

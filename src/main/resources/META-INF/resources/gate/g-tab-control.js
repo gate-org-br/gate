@@ -65,6 +65,7 @@ header
 	display: flex;
 	cursor: pointer;
 	flex-basis: 50%;
+	flex-basis: 32px;
 	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
@@ -137,6 +138,57 @@ header
 	{
 		grid-template-columns: repeat(10, 1fr);
 	}
+}
+
+:host([vertical])
+{
+	grid-template-rows: 1fr;
+	grid-template-columns: auto 1fr;
+}
+
+:host([vertical]) > header
+{
+	gap: 0;
+	width: 28px;
+	display: flex;
+	overflow: hidden;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+:host([vertical]) > header:hover,
+:host([vertical]) > header[active]
+{
+	width: fit-content;
+}
+
+:host([vertical]) > header::before
+{
+	padding: 8px;
+	font-family: gate;
+	content: '\\2265';
+	font-size: 0.75rem;
+	background-color: var(--main4);
+}
+
+:host([vertical]) > header > ::slotted(*)
+{
+	padding: 8px;
+	background-color: var(--main3);
+}
+
+
+@media only screen and (min-width: 1024px)
+{
+	:host([vertical]) > header
+	{
+		width: auto;
+	}
+
+	:host([vertical]) > header[active]
+	{
+		width: 28px;
+	}
 }</style>`;
 
 /* global customElements */
@@ -163,6 +215,17 @@ customElements.define('g-tab-control', class extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let header = this.shadowRoot.querySelector("header");
+
+		header.addEventListener("click", event =>
+		{
+			if (event.target === header)
+				if (!header.hasAttribute("active"))
+					header.setAttribute("active", "");
+				else
+					header.removeAttribute("active");
+		});
 	}
 
 	get type()

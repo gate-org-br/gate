@@ -16,4 +16,5 @@ import './@once.js';
 import './@debounce.js';
 import './@throttle.js';
 import './@fill.js';
+import './@stack.js';
 import './_default.js';

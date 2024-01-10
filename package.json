@@ -9,7 +9,8 @@
 		"browser"
 	],
 	"author": "davins",
-	"contributors": [],
+	"contributors": [
+	],
 	"devDependencies": {
 		"grunt": "1.4.0",
 		"grunt-contrib-clean": "^2.0.0",
@@ -21,6 +22,7 @@
 		"less": "^3.13.0"
 	},
 	"dependencies": {
+		"solc": "^0.4.26",
 		"ws": "^8.15.1"
 	}
 }

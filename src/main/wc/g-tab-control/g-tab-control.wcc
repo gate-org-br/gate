@@ -22,6 +22,17 @@ customElements.define('g-tab-control', class extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let header = this.shadowRoot.querySelector("header");
+
+		header.addEventListener("click", event =>
+		{
+			if (event.target === header)
+				if (!header.hasAttribute("active"))
+					header.setAttribute("active", "");
+				else
+					header.removeAttribute("active");
+		});
 	}
 
 	get type()

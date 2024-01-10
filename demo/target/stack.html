@@ -1,0 +1,44 @@
+<g-card>
+	<section>
+		<p>
+			The <strong>@push</strong>, <strong>@pull</strong>, and <strong>@free</strong> triggers are essential
+			elements of the content stack functionality, contributing to streamlined server request handling.
+			The content stack acts as a repository for storing inner HTML, reducing redundant server requests.
+			Upon activation, the <strong>@push</strong> trigger strategically
+			preserves the inner HTML of the designated trigger element on the stack before initiating the request.
+			Subsequently, the <strong>@pull</strong> trigger examines the content stack, extracting stored content if present,
+			and utilizing it as the action for the target trigger. If the stack is empty, the <strong>@pull</strong> trigger
+			seamlessly forwards the request unaltered. Additionally, the <strong>@free</strong> trigger plays a crucial role
+			by clearing the content stack before passing the request unaltered. This comprehensive system optimizes
+			efficiency by judiciously managing inner HTML content and enhancing the overall handling of server requests.
+		</p>
+		<g-tab-control>
+			<a href="#">
+				Example 1 <g-icon>&#X2013;</g-icon>
+			</a>
+			<div>
+				<p>
+					In this example, pressing the Push button triggers the <strong>@push</strong> operation,
+					causing the inner HTML of the specified target element to be consistently
+					pushed onto the content stack. Notably, the Push button is part of the loaded
+					content, and it serves the additional function of rolling back the content
+					from the stack. This setup ensures that each press of the Push button not only
+					updates the stack with the current inner HTML but also provides a mechanism to
+					revert to previously stored content by leveraging the stack functionality.
+				</p>
+				<g-code-viewer style='height: auto'>
+					<g-callout>
+						Original content
+					</g-callout>
+					<g-coolbar>
+						<a href="/target/stack-content.html"
+						   class="primary"
+						   target="@push(@innerHTML(this.parent().prev()))">
+							Push<g-icon>&#X2231;</g-icon>
+						</a>
+					</g-coolbar>
+				</g-code-viewer>
+			</div>
+		</g-tab-control>
+	</section>
+</g-card>
