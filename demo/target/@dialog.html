@@ -1,60 +1,58 @@
-<g-card>
-	<section>
-		<p>
-			Display the result of the HTTP request in a dialog. The content will be loaded into a <strong>&lt;div&gt</strong>;
-			if the first parameter is set to <strong>fetch</strong> or into an <strong>&lt;iframe&gt;</strong> if it is omitted
-			or set to <strong>frame</strong>.
-			You can provide the width and height of the dialog as the second and third parameters, respectively.
-			If the height is omitted, it defaults to the width.
-			If both the width and height are omitted, the dialog will have 100% width and height with an 80-pixel
-			margin when the screen width is greater than 640 pixels.
-			If the trigger element or its parent contains a <strong>data-navigator</strong> attribute, the dialog will
-			feature a navigator, enabling the user to navigate among all triggers located within it's parent element.
-		</p>
-
-		<g-tab-control>
-			<a href="#">
-				Example 1 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<table>
-						<caption>USERS</caption>
-						<tbody data-navigator>
-							<tr data-action='/target/user1.html' data-target="@dialog">
-								<td>User 1</td>
-							</tr>
-							<tr data-action='/target/user2.html' data-target="@dialog">
-								<td>User 2</td>
-							</tr>
-							<tr data-action='/target/user3.html' data-target="@dialog">
-								<td>User 2</td>
-							</tr>
-						</tbody>
-					</table>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Example 2 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<table>
-						<caption>USERS</caption>
-						<tbody data-navigator>
-							<tr data-action='/target/user1.html' data-target="@dialog(fetch, 640px, 480px)">
-								<td>User 1</td>
-							</tr>
-							<tr data-action='/target/user2.html' data-target="@dialog(fetch, 640px, 480px)">
-								<td>User 2</td>
-							</tr>
-							<tr data-action='/target/user3.html' data-target="@dialog(fetch, 640px, 480px)">
-								<td>User 2</td>
-							</tr>
-						</tbody>
-					</table>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+<g-callout class="fill">
+	<h1>@dialog</h1>
+	<p>
+		Display the result of the HTTP request in a dialog. The content will be loaded into a <strong>&lt;div&gt</strong>;
+		if the first parameter is set to <strong>fetch</strong> or into an <strong>&lt;iframe&gt;</strong> if it is omitted
+		or set to <strong>frame</strong>.
+		You can provide the width and height of the dialog as the second and third parameters, respectively.
+		If the height is omitted, it defaults to the width.
+		If both the width and height are omitted, the dialog will have 100% width and height with an 80-pixel
+		margin when the screen width is greater than 640 pixels.
+		If the trigger element or its parent contains a <strong>data-navigator</strong> attribute, the dialog will
+		feature a navigator, enabling the user to navigate among all triggers located within it's parent element.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/user1.html' data-target="@dialog">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/user2.html' data-target="@dialog">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/user3.html' data-target="@dialog">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/user1.html' data-target="@dialog(fetch, 640px, 480px)">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/user2.html' data-target="@dialog(fetch, 640px, 480px)">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/user3.html' data-target="@dialog(fetch, 640px, 480px)">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

@@ -1,5 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<slot></slot>
  <style>* {
 	box-sizing: border-box
 }
@@ -10,21 +11,23 @@ template.innerHTML = `
 	width: 100%;
 	color: black;
 	display: grid;
+	font-size: 16px;
 	background-color: transparent;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-a,
-button,
-.g-command,
-g-desk-pane
+::slotted(a),
+::slotted(button),
+::slotted(.g-command),
+::slotted(g-desk-pane),
+::slotted(g-desk-pane-reset)
 {
 	gap: 10px;
 	margin: 0;
 	padding: 16px;
 	height: 200px;
 	color: inherit;
-	font-size: 18px;
+	font-size: inherit;
 	position: relative;
 	text-align: center;
 	border-radius: 3px;
@@ -40,60 +43,48 @@ g-desk-pane
 
 }
 
-:host(*) > g-desk-pane::after
-{
-	right: 8px;
-	bottom: 4px;
-	color: var(--main6);
-	font-size: 16px;
-	font-family: gate;
-	content: '\\3017';
-	position: absolute;
-}
-
-
-a:hover,
-button:hover,
-.g-command:hover,
-g-desk-pane:hover
+::slotted(:hover)
 {
 	background-color:  #FFFACD;
 }
 
-i,
-e,
-span,
-g-icon
-{
-	order: -1;
-	width: 80px;
-	height: 80px;
-	display: flex;
-	font-size: 36px;
-	font-family: gate;
-	font-style: normal;
-	border-radius: 50%;
-	align-items: center;
-	justify-content: center;
-	background-color: #F6F6F6;
-}
-
-img
-{
-	order: -1;
-	width: 48px;
-	height: 48px;
-	margin-right: 8px;
-}
-
-:host(*) > g-desk-pane
+:host([child])
 {
 	cursor: pointer;
 }
 
-:host(*) > g-desk-pane::part(button)
+:host([child]) ::slotted(a),
+:host([child]) ::slotted(button),
+:host([child]) ::slotted(.g-command),
+:host([child]) ::slotted(g-desk-pane)
 {
 	display: none;
+}
+
+:host([child])::after
+{
+	right: 8px;
+	bottom: 4px;
+	font-family: gate;
+	content: '\\3017';
+	position: absolute;
+	color: var(--main6);
+}
+
+::slotted(g-desk-pane-reset)::before
+{
+	color: #660000;
+	font-size: 48px;
+	cursor: pointer;
+	content: '\\2023';
+	font-family: gate;
+}
+
+::slotted(g-desk-pane-reset)::after
+{
+	color: #660000;
+	cursor: pointer;
+	content: 'Return';
 }
 
 :host(.inline)
@@ -101,26 +92,22 @@ img
 	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
-
-:host(.inline) > *[part]
-
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command),
+:host(.inline) ::slotted(g-desk-pane),
+:host(.inline) ::slotted(g-desk-pane-reset)
 {
 	height: 80px;
+	padding: 16px;
 	display: flex;
-	text-align: left;
+	align-items: center;
 	justify-content: flex-start;
-}
-
-:host(.inline) i,
-:host(.inline) e,
-:host(.inline) span,
-:host(.inline) g-icon
-{
-	width: 36px;
-	background-color: transparent;
 }</style>`;
 
 /* global customElements */
+
+import './g-icon.js';
 
 customElements.define('g-desk-pane', class extends HTMLElement
 {
@@ -132,31 +119,26 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 		this.addEventListener("click", function (e)
 		{
-			let target = this.getRootNode().host;
-			if (target)
+			let parent = this.parentNode;
+			if (parent && parent.tagName === "G-DESK-PANE")
 			{
-				let backup = target.buttons;
-				backup.forEach(e => e.remove());
-				this.buttons.forEach(e => target.shadowRoot.appendChild(e));
-
-				let reset = target.shadowRoot.appendChild(document.createElement("a"));
-				reset.href = "#";
-				reset.innerText = "Retornar";
-				reset.style.color = "#660000";
-				reset.setAttribute("part", "button");
-				reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-
-				reset.addEventListener("click", () =>
-				{
-					reset.remove();
-					target.buttons.forEach(e => this.shadowRoot.appendChild(e));
-					backup.forEach(e => target.shadowRoot.appendChild(e));
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
 				e.preventDefault();
 				e.stopPropagation();
+
+				let backup = parent.buttons;
+				this.buttons.forEach(e => parent.appendChild(e));
+				backup.forEach(e => e.remove());
+
+				let reset = parent.appendChild(document.createElement("g-desk-pane-reset"));
+				reset.addEventListener("click", () =>
+				{
+					e.preventDefault();
+					e.stopPropagation();
+
+					reset.remove();
+					parent.buttons.forEach(e => this.appendChild(e));
+					backup.forEach(e => parent.appendChild(e));
+				});
 			}
 
 		}, true);
@@ -164,15 +146,36 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 	get buttons()
 	{
-		return Array.from(this.shadowRoot.querySelectorAll("a, button, g-command, g-desk-pane"));
+		return Array.from(this.children)
+			.filter(e => e.tagName === "A"
+					|| e.tagName === "BUTTON"
+					|| e.tagName === "G-DESK-PANE"
+					|| e.classList.contains(".g-command"));
 	}
 
 	connectedCallback()
 	{
-		Array.from(this.childNodes)
-			.forEach(e => this.shadowRoot.appendChild(e));
-		if (this.getRootNode().host)
-			this.classList = this.getRootNode().host.classList;
-		this.buttons.forEach(e => e.setAttribute("part", "button"));
+		if (this.parentNode.tagName === "G-DESK-PANE")
+			this.setAttribute("child", "");
+
+		this.buttons.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
+
+		Array.from(this.querySelectorAll("i, g-icon"))
+			.forEach(e => e.style.fontSize = "48px");
+		Array.from(this.querySelectorAll("img")).forEach(e =>
+		{
+			e.style.width = "48px";
+			e.style.height = "48px";
+		});
+	}
+});
+
+customElements.define('g-desk-pane-reset', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
 	}
 });

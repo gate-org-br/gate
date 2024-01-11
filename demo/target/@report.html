@@ -1,27 +1,26 @@
-<g-card>
-	<section>
-		<p>
-			Presents a dialog allowing the user to chose a report type from a list of
-			available ones (PDF, XLS, ODT, and CSV). Upon selection, makes the request
-			trigger request with the chosen type passed as parameter.
-			The parameter name can be provided as the first parameter of the trigger,
-			if omitted, it defaults to <b>"type"</b>.
-		</p>
-		<g-tab-control>
-			<a href="#">
-				Example 1 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a href="/download.pdf"
-						   class="primary"
-						   target="@report">
-							Print<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+<g-callout class="fill">
+	<h1>@report</h1>
+	<p>
+		Presents a dialog allowing the user to chose a report type from a list of
+		available ones (PDF, XLS, ODT, and CSV). Upon selection, makes the request
+		trigger request with the chosen type passed as parameter.
+		The parameter name can be provided as the first parameter of the trigger,
+		if omitted, it defaults to <b>"type"</b>.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a href="/download.pdf"
+				   class="primary"
+				   target="@report">
+					Print<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

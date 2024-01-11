@@ -1,37 +1,36 @@
-<g-card>
-	<section>
-		<p>
-			The @frame-picker trigger accepts a list of input element IDs as parameters.
-			Upon activation, it opens a dialog displaying the requested content within an <strong>iframe</strong>.
-			The response should contain a corresponding @return trigger for each available option.
-			The input elements specified in the initial @frame-picker trigger will then receive the values
-			passed by the selected @return trigger.
-		</p>
+<g-callout class="fill">
+	<h1>@frame-picker</h1>
+	<p>
+		The @frame-picker trigger accepts a list of input element IDs as parameters.
+		Upon activation, it opens a dialog displaying the requested content within an <strong>iframe</strong>.
+		The response should contain a corresponding @return trigger for each available option.
+		The input elements specified in the initial @frame-picker trigger will then receive the values
+		passed by the selected @return trigger.
+	</p>
+</g-callout>
 
-		<g-tab-control>
-			<a href="#">
-				Example 1 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<fieldset>
-						<label>
-							Name
-							<span>
-								<input type="hidden" id="frame-value" />
-								<input type="text" id="frame-label" data-target="@frame-picker(frame-value, frame-label)"
-								       data-action="/target/frame-return.html"
-								       title="Selecione" />
-								<a id='get' href="/target/frame-return.html" target="@frame-picker(frame-value, frame-label)" title="Selecione">
-									<g-icon>
-										&#X2010;
-									</g-icon>
-								</a>
-							</span>
-						</label>
-					</fieldset>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Name
+					<span>
+						<input type="hidden" id="frame-value" />
+						<input type="text" id="frame-label" data-target="@frame-picker(frame-value, frame-label)"
+						       data-action="/target/frame-return.html"
+						       title="Selecione" />
+						<a id='get' href="/target/frame-return.html" target="@frame-picker(frame-value, frame-label)" title="Selecione">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

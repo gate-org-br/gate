@@ -1,92 +1,89 @@
-<g-card>
-	<section>
-		<g-callout>
-			Display the result of the request as a popup message.
-			The type (success, error, warning, info) and duration (milliseconds)
-			of the message can be passed as parameters in any order. If the type
-			is omitted, it defaults to success. If the duration is omitted, the
-			message sticks until closed by the user.
-		</g-callout>
+<g-callout class="fill">
+	<h1>@message</h1>
+	<p>Display the result of the request as a popup message.
+		The type (success, error, warning, info) and duration (milliseconds)
+		of the message can be passed as parameters in any order. If the type
+		is omitted, it defaults to success. If the duration is omitted, the
+		message sticks until closed by the user.</p>
+</g-callout>
 
-		<g-tab-control>
-			<a href="#">
-				Default<g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<p>
-					If the type parameter is omitted, it defaults to Success
-				</p>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/message.txt" target='@message'>
-							Permanent<g-icon>&#X2072;</g-icon>
-						</a>
-						<a class='alternative' href="/message.txt" target='@message(1000)'>
-							Temporary<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Success<g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/message.txt" target='@message(success)'>
-							Permanent<g-icon>&#X2072;</g-icon>
-						</a>
-						<a class='alternative' href="/message.txt" target='@message(success, 1000)'>
-							Temporary<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Error<g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/message.txt" target='@message(error)'>
-							Permanent<g-icon>&#X2072;</g-icon>
-						</a>
-						<a class='alternative' href="/message.txt" target='@message(error, 1000)'>
-							Temporary<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Warning<g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/message.txt" target='@message(warning)'>
-							Permanent<g-icon>&#X2072;</g-icon>
-						</a>
-						<a class='alternative' href="/message.txt" target='@message(warning, 1000)'>
-							Temporary<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Info<g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<g-coolbar>
-						<a class='primary' href="/message.txt" target='@message(info)'>
-							Permanent<g-icon>&#X2072;</g-icon>
-						</a>
-						<a class='alternative' href="/message.txt" target='@message(info, 1000)'>
-							Temporary<g-icon>&#X2072;</g-icon>
-						</a>
-					</g-coolbar>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+<g-tab-control>
+	<a href="#">
+		Default<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			If the type parameter is omitted, it defaults to Success
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a class='primary' href="/message.txt" target='@message'>
+					Permanent<g-icon>&#X2072;</g-icon>
+				</a>
+				<a class='alternative' href="/message.txt" target='@message(1000)'>
+					Temporary<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Success<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a class='primary' href="/message.txt" target='@message(success)'>
+					Permanent<g-icon>&#X2072;</g-icon>
+				</a>
+				<a class='alternative' href="/message.txt" target='@message(success, 1000)'>
+					Temporary<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Error<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a class='primary' href="/message.txt" target='@message(error)'>
+					Permanent<g-icon>&#X2072;</g-icon>
+				</a>
+				<a class='alternative' href="/message.txt" target='@message(error, 1000)'>
+					Temporary<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Warning<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a class='primary' href="/message.txt" target='@message(warning)'>
+					Permanent<g-icon>&#X2072;</g-icon>
+				</a>
+				<a class='alternative' href="/message.txt" target='@message(warning, 1000)'>
+					Temporary<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Info<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a class='primary' href="/message.txt" target='@message(info)'>
+					Permanent<g-icon>&#X2072;</g-icon>
+				</a>
+				<a class='alternative' href="/message.txt" target='@message(info, 1000)'>
+					Temporary<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

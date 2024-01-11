@@ -24,14 +24,12 @@ customElements.define('g-tab-control', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let header = this.shadowRoot.querySelector("header");
-
 		header.addEventListener("click", event =>
 		{
-			if (event.target === header)
-				if (!header.hasAttribute("active"))
-					header.setAttribute("active", "");
-				else
-					header.removeAttribute("active");
+			if (!header.hasAttribute("toggled"))
+				header.setAttribute("toggled", "");
+			else
+				header.removeAttribute("toggled");
 		});
 	}
 
@@ -47,6 +45,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 	connectedCallback()
 	{
+		let header = this.shadowRoot.querySelector("header");
 		if (this.type !== "dummy")
 		{
 			var links = Array.from(this.children).filter(e => e.tagName === "A"
@@ -68,6 +67,9 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 				link.addEventListener("click", event =>
 				{
+					if (window.innerWidth <= 768)
+						header.removeAttribute("toggled");
+
 					pages.forEach(e => e.style.display = "none");
 					links.forEach(e => e.setAttribute("data-selected", "false"));
 					link.nextElementSibling.style.display = "flex";

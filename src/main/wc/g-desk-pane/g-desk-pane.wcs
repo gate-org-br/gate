@@ -8,21 +8,23 @@
 	width: 100%;
 	color: black;
 	display: grid;
+	font-size: 16px;
 	background-color: transparent;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
 
-a,
-button,
-.g-command,
-g-desk-pane
+::slotted(a),
+::slotted(button),
+::slotted(.g-command),
+::slotted(g-desk-pane),
+::slotted(g-desk-pane-reset)
 {
 	gap: 10px;
 	margin: 0;
 	padding: 16px;
 	height: 200px;
 	color: inherit;
-	font-size: 18px;
+	font-size: inherit;
 	position: relative;
 	text-align: center;
 	border-radius: 3px;
@@ -38,60 +40,48 @@ g-desk-pane
 
 }
 
-:host(*) > g-desk-pane::after
-{
-	right: 8px;
-	bottom: 4px;
-	color: var(--main6);
-	font-size: 16px;
-	font-family: gate;
-	content: '\\3017';
-	position: absolute;
-}
-
-
-a:hover,
-button:hover,
-.g-command:hover,
-g-desk-pane:hover
+::slotted(:hover)
 {
 	background-color:  #FFFACD;
 }
 
-i,
-e,
-span,
-g-icon
-{
-	order: -1;
-	width: 80px;
-	height: 80px;
-	display: flex;
-	font-size: 36px;
-	font-family: gate;
-	font-style: normal;
-	border-radius: 50%;
-	align-items: center;
-	justify-content: center;
-	background-color: #F6F6F6;
-}
-
-img
-{
-	order: -1;
-	width: 48px;
-	height: 48px;
-	margin-right: 8px;
-}
-
-:host(*) > g-desk-pane
+:host([child])
 {
 	cursor: pointer;
 }
 
-:host(*) > g-desk-pane::part(button)
+:host([child]) ::slotted(a),
+:host([child]) ::slotted(button),
+:host([child]) ::slotted(.g-command),
+:host([child]) ::slotted(g-desk-pane)
 {
 	display: none;
+}
+
+:host([child])::after
+{
+	right: 8px;
+	bottom: 4px;
+	font-family: gate;
+	content: '\\3017';
+	position: absolute;
+	color: var(--main6);
+}
+
+::slotted(g-desk-pane-reset)::before
+{
+	color: #660000;
+	font-size: 48px;
+	cursor: pointer;
+	content: '\\2023';
+	font-family: gate;
+}
+
+::slotted(g-desk-pane-reset)::after
+{
+	color: #660000;
+	cursor: pointer;
+	content: 'Return';
 }
 
 :host(.inline)
@@ -99,21 +89,15 @@ img
 	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
-
-:host(.inline) > *[part]
-
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command),
+:host(.inline) ::slotted(g-desk-pane),
+:host(.inline) ::slotted(g-desk-pane-reset)
 {
 	height: 80px;
+	padding: 16px;
 	display: flex;
-	text-align: left;
+	align-items: center;
 	justify-content: flex-start;
-}
-
-:host(.inline) i,
-:host(.inline) e,
-:host(.inline) span,
-:host(.inline) g-icon
-{
-	width: 36px;
-	background-color: transparent;
 }

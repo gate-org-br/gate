@@ -1,5 +1,7 @@
 /* global customElements */
 
+import './g-icon.js';
+
 customElements.define('g-desk-pane', class extends HTMLElement
 {
 	constructor()
@@ -10,31 +12,26 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 		this.addEventListener("click", function (e)
 		{
-			let target = this.getRootNode().host;
-			if (target)
+			let parent = this.parentNode;
+			if (parent && parent.tagName === "G-DESK-PANE")
 			{
-				let backup = target.buttons;
-				backup.forEach(e => e.remove());
-				this.buttons.forEach(e => target.shadowRoot.appendChild(e));
-
-				let reset = target.shadowRoot.appendChild(document.createElement("a"));
-				reset.href = "#";
-				reset.innerText = "Retornar";
-				reset.style.color = "#660000";
-				reset.setAttribute("part", "button");
-				reset.appendChild(document.createElement("i")).innerHTML = "&#X2023";
-
-				reset.addEventListener("click", () =>
-				{
-					reset.remove();
-					target.buttons.forEach(e => this.shadowRoot.appendChild(e));
-					backup.forEach(e => target.shadowRoot.appendChild(e));
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
 				e.preventDefault();
 				e.stopPropagation();
+
+				let backup = parent.buttons;
+				this.buttons.forEach(e => parent.appendChild(e));
+				backup.forEach(e => e.remove());
+
+				let reset = parent.appendChild(document.createElement("g-desk-pane-reset"));
+				reset.addEventListener("click", () =>
+				{
+					e.preventDefault();
+					e.stopPropagation();
+
+					reset.remove();
+					parent.buttons.forEach(e => this.appendChild(e));
+					backup.forEach(e => parent.appendChild(e));
+				});
 			}
 
 		}, true);
@@ -42,15 +39,36 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 	get buttons()
 	{
-		return Array.from(this.shadowRoot.querySelectorAll("a, button, g-command, g-desk-pane"));
+		return Array.from(this.children)
+			.filter(e => e.tagName === "A"
+					|| e.tagName === "BUTTON"
+					|| e.tagName === "G-DESK-PANE"
+					|| e.classList.contains(".g-command"));
 	}
 
 	connectedCallback()
 	{
-		Array.from(this.childNodes)
-			.forEach(e => this.shadowRoot.appendChild(e));
-		if (this.getRootNode().host)
-			this.classList = this.getRootNode().host.classList;
-		this.buttons.forEach(e => e.setAttribute("part", "button"));
+		if (this.parentNode.tagName === "G-DESK-PANE")
+			this.setAttribute("child", "");
+
+		this.buttons.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
+
+		Array.from(this.querySelectorAll("i, g-icon"))
+			.forEach(e => e.style.fontSize = "48px");
+		Array.from(this.querySelectorAll("img")).forEach(e =>
+		{
+			e.style.width = "48px";
+			e.style.height = "48px";
+		});
+	}
+});
+
+customElements.define('g-desk-pane-reset', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
 	}
 });

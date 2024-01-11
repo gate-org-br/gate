@@ -1,0 +1,70 @@
+<g-callout class="fill">
+	<h1>g-desk-pane</h1>
+	<p>
+		The <strong>&lt;g-desk-pane&gt;</strong> element is purpose-built for crafting desktop-style menus, providing an intuitive and responsive
+		navigation interface.
+		Each menu item within this element typically includes a link, specified using either <strong>&lt;a&gt;</strong> or <strong>&lt;button&gt;</strong>
+		tags, ensuring both accessibility and interactivity. Mandatory text accompanies each link, delivering essential information.
+		Iconography plays a significant role in enhancing visual representation. Icons or images, required for each link, can be seamlessly
+		integrated using <strong>&lt;img&gt;</strong> tags. This allows developers to incorporate custom graphics or symbols alongside textual
+		content, contributing to a more engaging user experience.
+		Moreover, the <strong>&lt;g-desk-pane&gt;</strong> element supports nested configurations, facilitating the creation of hierarchical
+		menus with grouped or categorized links. This flexibility empowers developers to design visually rich desktop menus that combine mandatory
+		text with customizable icons or images, delivering a cohesive and efficient navigation experience for users.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-callout>
+			<p>
+				The default layout of the <strong>&lt;g-desk-pane&gt;</strong> presents icons positioned above the associated text for each menu item.
+				In this arrangement, the visual hierarchy emphasizes the icon, providing a clear and recognizable representation of the menu option.
+				Users can quickly identify and associate each icon with its corresponding textual description, contributing to an intuitive and visually
+				appealing user experience.
+			</p>
+		</g-callout>
+
+		<g-code-viewer>
+			<g-desk-pane>
+				<a href='#'>Admin<g-icon>&#X2059;</g-icon></a>
+				<a href='#'>Reports<g-icon>&#X2021;</g-icon></a>
+				<a href='#'>Import<g-icon>&#X2181;</g-icon></a>
+				<a href='#'>Help<g-icon>&#X2122;</g-icon></a>
+				<a href='#'>Gate<img src="gate/gate.svg"></a>
+
+				<g-desk-pane>
+					Settings<g-icon>&#X2020;</g-icon>
+					<a href='#'>Users<g-icon>&#X2005;</g-icon></a>
+					<a href='#'>System<g-icon>&#X2007;</g-icon></a>
+				</g-desk-pane>
+			</g-desk-pane>
+		</g-code-viewer>
+	</div>
+	<a href="#">Example 2</a>
+	<div>
+		<g-callout>
+			<p>
+				The inline layout of the <strong>&lt;g-desk-pane&gt;</strong> places the text immediately after the associated icon for each menu item.
+				This configuration offers a side-by-side presentation, creating a balanced visual structure. The text complements the icon, providing
+				additional context and information about each menu option. The inline layout may be preferred in scenarios where a more compact and
+				horizontally aligned design is desired, optimizing screen space while maintaining clarity in menu item identification.
+			</p>
+		</g-callout>
+		<g-code-viewer>
+			<g-desk-pane class="inline">
+				<a href='#'>Admin<g-icon>&#X2059;</g-icon></a>
+				<a href='#'>Reports<g-icon>&#X2021;</g-icon></a>
+				<a href='#'>Import<g-icon>&#X2181;</g-icon></a>
+				<a href='#'>Help<g-icon>&#X2122;</g-icon></a>
+				<a href='#'>Gate<img src="gate/gate.svg"></a>
+				<g-desk-pane>
+					Settings<g-icon>&#X2020;</g-icon>
+					<a href='#'>Users<g-icon>&#X2005;</g-icon></a>
+					<a href='#'>System<g-icon>&#X2007;</g-icon></a>
+				</g-desk-pane>
+			</g-desk-pane>
+		</g-code-viewer>
+	</div>
+
+</g-tab-control>

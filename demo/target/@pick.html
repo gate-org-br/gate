@@ -1,41 +1,37 @@
-<g-card>
-	<section>
-		<g-callout>
-			This target is an alias to @fetch-picker
-		</g-callout>
+<g-callout class="fill">
+	<h1>@pick</h1>
+	<h3>This target is an alias to @fetch-picker</h3>
+	<p>
+		The @pick trigger accepts a list of input element IDs as parameters.
+		Upon activation, it opens a dialog displaying the requested content.
+		The response should contain a corresponding @return trigger for each available option.
+		The input elements specified in the initial @pick trigger will then receive the values
+		passed by the selected @return trigger.
+	</p>
+</g-callout>
 
-		<p>
-			The @pick trigger accepts a list of input element IDs as parameters.
-			Upon activation, it opens a dialog displaying the requested content.
-			The response should contain a corresponding @return trigger for each available option.
-			The input elements specified in the initial @pick trigger will then receive the values
-			passed by the selected @return trigger.
-		</p>
-
-		<g-tab-control>
-			<a href="#">
-				Example 1 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<g-code-viewer style='height: auto'>
-					<fieldset>
-						<label>
-							Name
-							<span>
-								<input id="pick-value" type="hidden"/>
-								<input id="pick-label" type="text" data-target="@pick(pick-value, pick-label)"
-								       data-action="/target/fetch-return.html"
-								       title="Selecione" />
-								<a id='get' href="/target/fetch-return.html" target="@pick(pick-value, pick-label)" title="Selecione">
-									<g-icon>
-										&#X2010;
-									</g-icon>
-								</a>
-							</span>
-						</label>
-					</fieldset>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Name
+					<span>
+						<input id="pick-value" type="hidden"/>
+						<input id="pick-label" type="text" data-target="@pick(pick-value, pick-label)"
+						       data-action="/target/fetch-return.html"
+						       title="Selecione" />
+						<a id='get' href="/target/fetch-return.html" target="@pick(pick-value, pick-label)" title="Selecione">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

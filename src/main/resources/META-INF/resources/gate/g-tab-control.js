@@ -1,6 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<header>
+		<label>
+		</label>
 		<slot name="head">
 		</slot>
 	</header>
@@ -18,6 +20,23 @@ template.innerHTML = `
 	background-color: var(--main3);
 	border: 1px outset var(--main4);
 	grid-template-rows: auto 1fr;
+}
+
+label
+{
+	padding: 8px;
+	display: none;
+	cursor: pointer;
+	font-family: gate;
+	font-size: 0.75rem;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--main4);
+}
+
+label::before
+{
+	content: '\\2265';
 }
 
 :host(:first-child)
@@ -156,39 +175,84 @@ header
 	justify-content: flex-start;
 }
 
-:host([vertical]) > header:hover,
-:host([vertical]) > header[active]
+:host([vertical]) > section
 {
-	width: fit-content;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	justify-content: stretch;
 }
 
-:host([vertical]) > header::before
+:host([vertical]) ::slotted(div)
 {
-	padding: 8px;
-	font-family: gate;
-	content: '\\2265';
-	font-size: 0.75rem;
-	background-color: var(--main4);
+	flex-grow: 1;
+}
+
+:host([vertical]) > header > label
+{
+	display: flex;
 }
 
 :host([vertical]) > header > ::slotted(*)
 {
 	padding: 8px;
+	visibility: hidden;
 	background-color: var(--main3);
 }
 
-
-@media only screen and (min-width: 1024px)
+:host([vertical]) > header > ::slotted(*:hover)
 {
-	:host([vertical]) > header
-	{
-		width: auto;
-	}
+	background-color:  #FFFACD;
+}
 
-	:host([vertical]) > header[active]
+:host([vertical]) > header[toggled]
+{
+	width: fit-content;
+}
+
+:host([vertical]) > header[toggled] > ::slotted(*)
+{
+	visibility: visible;
+}
+
+:host([vertical]) > header > ::slotted(a[data-selected=true]),
+:host([vertical]) > header > ::slotted(button[data-selected=true])
+{
+	color: black;
+	font-weight: bold;
+	background-color: white;
+}
+
+@media only screen and (min-width: 768px)
+{
+	:host([vertical]) > header[toggled]
 	{
 		width: 28px;
 	}
+
+	:host([vertical]) > header:hover,
+	:host([vertical]) > header:not([toggled])
+	{
+		width: auto;
+		width: fit-content;
+	}
+
+	:host([vertical]) > header[toggled] > ::slotted(*)
+	{
+		visibility: hidden;
+	}
+
+	:host([vertical]) > header:hover > ::slotted(*),
+	:host([vertical]) > :not(header[toggled]) > ::slotted(*)
+	{
+		visibility: visible;
+	}
+
+	:host([vertical]) > header:not([toggled]) label::after
+	{
+		content: '\\2188';
+	}
+
 }</style>`;
 
 /* global customElements */
@@ -217,14 +281,12 @@ customElements.define('g-tab-control', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let header = this.shadowRoot.querySelector("header");
-
 		header.addEventListener("click", event =>
 		{
-			if (event.target === header)
-				if (!header.hasAttribute("active"))
-					header.setAttribute("active", "");
-				else
-					header.removeAttribute("active");
+			if (!header.hasAttribute("toggled"))
+				header.setAttribute("toggled", "");
+			else
+				header.removeAttribute("toggled");
 		});
 	}
 
@@ -240,6 +302,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 	connectedCallback()
 	{
+		let header = this.shadowRoot.querySelector("header");
 		if (this.type !== "dummy")
 		{
 			var links = Array.from(this.children).filter(e => e.tagName === "A"
@@ -261,6 +324,9 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 				link.addEventListener("click", event =>
 				{
+					if (window.innerWidth <= 768)
+						header.removeAttribute("toggled");
+
 					pages.forEach(e => e.style.display = "none");
 					links.forEach(e => e.setAttribute("data-selected", "false"));
 					link.nextElementSibling.style.display = "flex";

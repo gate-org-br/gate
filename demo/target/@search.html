@@ -1,121 +1,120 @@
-<g-card>
-	<section>
+<g-callout class="fill">
+	<h1>@search</h1>
+	<p>
+		The <strong>@search</strong> trigger enhances user interaction by providing a
+		dynamic search dialog. Accepting a filter and a piped trigger as parameters,
+		it displays a dialog featuring a search input field for users to choose an
+		element from a JSON array fetched from the server. The search input triggers
+		requests to the server, either as get requests with search criteria in the
+		query string (if a filter attribute is supplied) or as post requests with
+		user input as the body (if the filter is omitted). The selected object is
+		then passed to the specified trigger parameter, defaulting to <strong>@fill</strong> if omitted.
+		To optimize performance, a debounce of 300ms is applied, preventing unnecessary server requests.
+		Additionally, when triggered by text input, the dialog opens with the input value pre-applied to the search field.
+		If the server returns a single value, it is automatically selected. This functionality streamlines
+		the user experience while ensuring efficiency in handling search queries.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
 		<p>
-			The <strong>@search</strong> trigger enhances user interaction by providing a
-			dynamic search dialog. Accepting a filter and a piped trigger as parameters,
-			it displays a dialog featuring a search input field for users to choose an
-			element from a JSON array fetched from the server. The search input triggers
-			requests to the server, either as get requests with search criteria in the
-			query string (if a filter attribute is supplied) or as post requests with
-			user input as the body (if the filter is omitted). The selected object is
-			then passed to the specified trigger parameter, defaulting to <strong>@fill</strong> if omitted.
-			To optimize performance, a debounce of 300ms is applied, preventing unnecessary server requests.
-			Additionally, when triggered by text input, the dialog opens with the input value pre-applied to the search field.
-			If the server returns a single value, it is automatically selected. This functionality streamlines
-			the user experience while ensuring efficiency in handling search queries.
+			When the action returns an
+			<a href='/objects.json'
+			   target='_blank'>JSON array of objects</a>
+			they are presented as cards on a list for user selection.
+			The first attribute of each object is not displayed as it contains
+			the value to be returned. Upon user selection, the <strong>label input</strong>
+			receives the first attribute and the <strong>value input</strong> receives the second one.
 		</p>
-		<g-tab-control>
-			<a href="#">
-				Example 1 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<p>
-					When the action returns an
-					<a href='/objects.json'
-					   target='_blank'>JSON array of objects</a>
-					they are presented as cards on a list for user selection.
-					The first attribute of each object is not displayed as it contains
-					the value to be returned. Upon user selection, the <strong>label input</strong>
-					receives the first attribute and the <strong>value input</strong> receives the second one.
-				</p>
-				<g-code-viewer style='height: auto'>
-					<fieldset data-size="8">
-						<legend>objects.json</legend>
-						<label>
-							Search:
-							<span>
-								<input type="text" data-action="./objects.json"
-								       data-target="@search(Name)" title="Search" />
-								<input type="hidden">
-								<a href="./objects.json" target="@search(Name)" title="Search">
-									<g-icon>
-										&#X2010;
-									</g-icon>
-								</a>
-							</span>
-						</label>
-					</fieldset>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Example 2 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<p>
-					If the result consists of a <a href="./options.json" target="_blank">
-						JSON array of objects with only
-						<strong>label</strong> and
-						<strong>value</strong>
-						attributes</a>,
-					the labels will be displayed on a list for user selection.
-					Upon user selection, the <strong>label input</strong> and
-					the <strong>value input</strong> receives the <strong>label
-						attribute</strong> and the <strong>value attribute</strong>
-					respectively.
-				</p>
-				<g-code-viewer style='height: auto'>
-					<fieldset>
-						<legend>options.json</legend>
-						<label>
-							Search:
-							<span>
-								<input type="text" data-action="./options.json" data-target="@search" title="Search" />
-								<input type="hidden">
-								<a href="./options.json" target="@search" title="Search">
-									<g-icon>
-										&#X2010;
-									</g-icon>
-								</a>
-							</span>
-						</label>
-					</fieldset>
-				</g-code-viewer>
-			</div>
-			<a href="#">
-				Example 3 <g-icon>&#X2013;</g-icon>
-			</a>
-			<div>
-				<p>
-					If the result consists of a <a href="./properties.json" target="_blank">
-						JSON array of objects with only
-						<strong>label</strong>,
-						<strong>value</strong> and
-						<strong>properties</strong>
-						attributes</a>,
-					the properties will be displayed as cards on a list for user selection.
-					Upon user selection, the <strong>label input</strong> and
-					the <strong>value input</strong> receives the <strong>label
-						attribute</strong> and the <strong>value attribute</strong>
-					respectively.
-				</p>
-				<g-code-viewer style='height: auto'>
-					<fieldset>
-						<legend>properties.json</legend>
-						<label>
-							Search:
-							<span>
-								<input type="text" data-action="./properties.json" data-target="@search" title="Search" />
-								<input type="hidden">
-								<a href="./properties.json" target="@search" title="Search">
-									<g-icon>
-										&#X2010;
-									</g-icon>
-								</a>
-							</span>
-						</label>
-					</fieldset>
-				</g-code-viewer>
-			</div>
-		</g-tab-control>
-	</section>
-</g-card>
+		<g-code-viewer style='height: auto'>
+			<fieldset data-size="8">
+				<legend>objects.json</legend>
+				<label>
+					Search:
+					<span>
+						<input type="text" data-action="./objects.json"
+						       data-target="@search(Name)" title="Search" />
+						<input type="hidden">
+						<a href="./objects.json" target="@search(Name)" title="Search">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			If the result consists of a <a href="./options.json" target="_blank">
+				JSON array of objects with only
+				<strong>label</strong> and
+				<strong>value</strong>
+				attributes</a>,
+			the labels will be displayed on a list for user selection.
+			Upon user selection, the <strong>label input</strong> and
+			the <strong>value input</strong> receives the <strong>label
+				attribute</strong> and the <strong>value attribute</strong>
+			respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<legend>options.json</legend>
+				<label>
+					Search:
+					<span>
+						<input type="text" data-action="./options.json" data-target="@search" title="Search" />
+						<input type="hidden">
+						<a href="./options.json" target="@search" title="Search">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 3 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			If the result consists of a <a href="./properties.json" target="_blank">
+				JSON array of objects with only
+				<strong>label</strong>,
+				<strong>value</strong> and
+				<strong>properties</strong>
+				attributes</a>,
+			the properties will be displayed as cards on a list for user selection.
+			Upon user selection, the <strong>label input</strong> and
+			the <strong>value input</strong> receives the <strong>label
+				attribute</strong> and the <strong>value attribute</strong>
+			respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<legend>properties.json</legend>
+				<label>
+					Search:
+					<span>
+						<input type="text" data-action="./properties.json" data-target="@search" title="Search" />
+						<input type="hidden">
+						<a href="./properties.json" target="@search" title="Search">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>
