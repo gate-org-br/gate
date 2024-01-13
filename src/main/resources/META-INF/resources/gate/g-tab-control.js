@@ -195,7 +195,7 @@ header
 
 :host([vertical]) > header > ::slotted(*)
 {
-	padding: 8px;
+	padding: 12px;
 	visibility: hidden;
 	background-color: var(--main3);
 }
@@ -233,8 +233,9 @@ header
 	:host([vertical]) > header:hover,
 	:host([vertical]) > header:not([toggled])
 	{
-		width: auto;
+		min-width: 160px;
 		width: fit-content;
+
 	}
 
 	:host([vertical]) > header[toggled] > ::slotted(*)

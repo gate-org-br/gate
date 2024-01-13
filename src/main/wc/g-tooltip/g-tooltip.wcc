@@ -7,6 +7,7 @@ import ResponseHandler from './response-handler.js';
 import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 let instance;
+const DEFAULT_POSITION = "northeast";
 const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
 
 const GAP = 20;
@@ -41,7 +42,6 @@ function calc(element, tooltip, position)
 		case "southeast":
 			return {x: element.right + GAP,
 				y: element.bottom + GAP};
-
 		case "north":
 			return {x: element.left + (element.width / 2)
 					- (tooltip.width / 2),
@@ -69,7 +69,6 @@ export default class GTooltip extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.setAttribute("position", "northeast");
 	}
 
 	show(target, position = this.position)
@@ -97,7 +96,7 @@ export default class GTooltip extends HTMLElement
 				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % 8];
 		}
 
-		this.shadowRoot.querySelector("div")
+		this.shadowRoot.querySelector("g-icon")
 			.dataset.arrow = position;
 		this.style.visibility = "visible";
 		instance = this;
@@ -122,12 +121,18 @@ export default class GTooltip extends HTMLElement
 		this.style.display = "";
 	}
 
-	static show(element, content, position = "north")
+	static show(element, content, position, size, height)
 	{
 		let tooltip = new GTooltip();
 		document.body.appendChild(tooltip);
+
+		if (size)
+			tooltip.style.width = tooltip.style.height = size;
+		if (height)
+			tooltip.style.height = height;
+
 		tooltip.innerHTML = Formatter.JSONtoHTML(content);
-		tooltip.show(element, position);
+		tooltip.show(element, position || DEFAULT_POSITION);
 	}
 
 	static hide()
@@ -156,18 +161,21 @@ window.addEventListener("@tooltip", function (event)
 {
 	event.preventDefault();
 	event.stopPropagation();
+	let {method, action, form, parameters} = event.detail;
 
-	let position = event.detail.parameters[0];
+	let position = parameters.filter(e => POSITIONS.includes(e))[0];
+	let width = parameters.filter(e => !POSITIONS.includes(e))[0];
+	let height = parameters.filter(e => !POSITIONS.includes(e))[1] || width;
 
 	event.target.dispatchEvent(new TriggerStartupEvent(event));
 
 	let path = event.composedPath();
-	return fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.response)
 		.then(response => response.headers.get('content-type').startsWith("application/json")
 				? response.json().then(json => Formatter.JSONtoHTML(json))
 				: response.text())
-		.then(content => GTooltip.show(event.target, content, position))
+		.then(content => GTooltip.show(event.target, content, position, width, height))
 		.then(() => event.target.addEventListener("mouseleave", () => GTooltip.hide()))
 		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
 		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
@@ -191,7 +199,8 @@ window.addEventListener("mouseover", function (event)
 			{
 				if (tooltip.tagName === "G-TOOLTIP")
 				{
-					target.addEventListener("mouseleave", () => tooltip.hide(), {once: true});
+					target.addEventListener("mouseleave",
+						() => tooltip.hide(), {once: true});
 					tooltip.show(target);
 					return;
 				}

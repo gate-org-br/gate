@@ -19,7 +19,7 @@ template.innerHTML = `
 	display: grid;
 	align-items: stretch;
 	justify-content: stretch;
-	grid-template-columns: 1fr;
+	grid-template-columns: 24px 1fr 24px;
 	background-color: var(--main3);
 }
 
@@ -34,33 +34,6 @@ template.innerHTML = `
 	justify-content: center;
 }
 
-:host([data-overflowing=left])
-{
-	grid-template-columns: 24px 1fr;
-}
-
-:host([data-overflowing=right])
-{
-	grid-template-columns: 1fr 24px;
-}
-
-:host([data-overflowing=both])
-{
-	grid-template-columns: 24px 1fr 24px;
-}
-
-:host([data-overflowing=left]) #prev,
-:host([data-overflowing=both]) #prev
-{
-	display: flex;
-}
-
-:host([data-overflowing=right]) #next,
-:host([data-overflowing=both]) #next
-{
-	display: flex;
-}
-
 div
 {
 	gap: 8px;
@@ -69,6 +42,7 @@ div
 	border: none;
 	flex-grow: 1;
 	display: flex;
+	grid-column: 2;
 	overflow-x: hidden;
 	white-space:  nowrap;
 }
@@ -167,6 +141,19 @@ function visible(element, container)
 		element.right <= container.right;
 }
 
+function scroll(tabbar, first, next, inline)
+{
+	let div = tabbar.shadowRoot.querySelector("div");
+	for (let element = first; element; element = next(element))
+		if (element.tagName === "A"
+			|| element.tagName === "BUTTON"
+			|| element.classList.contains(".g-command"))
+			if (visible(element, div))
+				for (element = next(element); element; element = next(element))
+					if (!visible(element, div))
+						return element.scrollIntoView({inline, behavior: "smooth"});
+}
+
 customElements.define("g-tabbar", class extends HTMLElement
 {
 	constructor()
@@ -176,33 +163,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
-		this.addEventListener("mouseenter", () => div.style.overflowX = "auto");
-		this.addEventListener("mouseleave", () => div.style.overflowX = "hidden");
-		this.addEventListener("touchstart", () => div.style.overflowX = "auto");
-		this.addEventListener("touchend", () => div.style.overflowX = "hidden");
-		this.addEventListener("touchmove", e => div.style.overflowX = this.contains(e.target) ? "auto" : "hidden");
-
-		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
-		{
-			for (let element = this.firstElementChild; element; element = element.nextElementSibling)
-				if (visible(element, div))
-					for (element = element.nextElementSibling; element; element = element.nextElementSibling)
-						if (!visible(element, div))
-							return element.scrollIntoView({inline: "start",
-								behavior: "smooth"});
-		}
-		);
-
-		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
-		{
-			for (let element = this.lastElementChild; element; element = element.previousElementSibling)
-				if (visible(element, div))
-					for (element = element.previousElementSibling; element; element = element.previousElementSibling)
-						if (!visible(element, div))
-							return element.scrollIntoView({inline: "end",
-								behavior: "smooth"});
-
-		});
+		this.shadowRoot.querySelector("#next").addEventListener("click", () => scroll(this, this.firstElementChild, e => e.nextElementSibling, "start"));
+		this.shadowRoot.querySelector("#prev").addEventListener("click", () => scroll(this, this.lastElementChild, e => e.previousElementSibling, "end"));
 
 		div.addEventListener("scroll", () => this.update());
 		new ResizeObserver(() => this.update()).observe(this);
@@ -216,29 +178,9 @@ customElements.define("g-tabbar", class extends HTMLElement
 	update()
 	{
 		let div = this.shadowRoot.querySelector("div");
-		this.setAttribute("data-overflowing", "none");
-
-		if (div.firstElementChild)
-		{
-			let containerMetrics = div.getBoundingClientRect();
-			let containerMetricsRight = Math.floor(containerMetrics.right);
-			let containerMetricsLeft = Math.floor(containerMetrics.left);
-
-			let left = Math.floor(this.firstElementChild.getBoundingClientRect().left);
-			let right = Math.floor(this.lastElementChild.getBoundingClientRect().right);
-
-			if (containerMetricsLeft > left
-				&& containerMetricsRight < right)
-				this.setAttribute("data-overflowing", "both");
-			else if (left < containerMetricsLeft)
-				this.setAttribute("data-overflowing", "left");
-			else if (right > containerMetricsRight)
-				this.setAttribute("data-overflowing", "right");
-			else
-				this.setAttribute("data-overflowing", "none");
-		}
-
-		Array.from(this.children).filter(e => e.getAttribute("aria-selected"))
-			.forEach(e => e.scrollIntoView({inline: "center", block: "nearest"}));
+		let next = this.shadowRoot.querySelector("#next");
+		let prev = this.shadowRoot.querySelector("#prev");
+		prev.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
+		next.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
 	}
 });

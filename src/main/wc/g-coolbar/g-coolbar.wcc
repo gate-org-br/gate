@@ -1,59 +1,58 @@
-/* global customElements, template */
+/* global customElements */
 
-import './g-side-menu.js';
-import Proxy from './proxy.js';
-import GSelection from './selection.js';
+function visible(element, container)
+{
+	element = element.getBoundingClientRect();
+	container = container.getBoundingClientRect();
+	return 	element.top >= container.top &&
+		element.left >= container.left &&
+		element.bottom <= container.bottom &&
+		element.right <= container.right;
+}
 
-customElements.define('g-coolbar', class extends HTMLElement
+function scroll(coolbar, first, next, inline)
+{
+	let div = coolbar.shadowRoot.querySelector("div");
+	for (let element = first; element; element = next(element))
+		if (element.tagName === "A"
+			|| element.tagName === "BUTTON"
+			|| element.classList.contains(".g-command"))
+			if (visible(element, div))
+				for (element = next(element); element; element = next(element))
+					if (!visible(element, div))
+						return element.scrollIntoView({inline, behavior: "smooth"});
+}
+
+customElements.define("g-coolbar", class extends HTMLElement
 {
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		this.shadowRoot.innerHTML = template.innerHTML;
-		new ResizeObserver(() => this.update()).observe(this);
-		this.shadowRoot.getElementById("container")
-			.firstChild.addEventListener('slotchange', () => this.update());
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		let more = this.shadowRoot.getElementById("more");
+		let div = this.shadowRoot.querySelector("div");
+		let next = this.shadowRoot.querySelector("#next");
+		let prev = this.shadowRoot.querySelector("#prev");
 
-		more.addEventListener("click", () =>
+		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
 		{
-			let elements = Array.from(this.children)
-				.filter(e => e.tagName !== "HR")
-				.filter(e => !e.getAttribute("hidden"))
-				.filter(e => e.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-
-			let menu = document.createElement("g-side-menu");
-			document.documentElement.appendChild(menu);
-			menu.elements = elements;
-			menu.show(more);
+			if (this.hasAttribute("reverse"))
+				scroll(this, this.firstElementChild, e => e.nextElementSibling, "start");
+			else
+				scroll(this, this.lastElementChild, e => e.previousElementSibling, "start");
 		});
-	}
 
-	connectedCallback()
-	{
-		setTimeout(() => this.update(), 200);
-	}
+		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
+		{
+			if (this.hasAttribute("reverse"))
+				scroll(this, this.lastElementChild, e => e.previousElementSibling, "end");
+			else
+				scroll(this, this.firstElementChild, e => e.nextElementSibling, "end");
+		});
 
-	update()
-	{
-		GSelection.getSelectedLink(this.children)
-			.ifPresent(e => e.setAttribute("aria-selected", "true"));
-
-		Array.from(this.children)
-			.filter(e => !e.getAttribute("hidden"))
-			.forEach(e => e.style.display = "");
-
-		this.shadowRoot.getElementById("more")
-			.style.display = this.overflowed ? "flex" : "none";
-
-		for (let e = this.lastElementChild;
-			e && this.overflowed; e = e.previousElementSibling)
-			if (!e.getAttribute("hidden"))
-				e.style.display = "none";
+		div.addEventListener("scroll", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 	}
 
 	get disabled()
@@ -69,11 +68,26 @@ customElements.define('g-coolbar', class extends HTMLElement
 			this.removeAttribute("disabled");
 	}
 
-	get overflowed()
+	connectedCallback()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		return container.scrollWidth > container.clientWidth
-			|| container.scrollHeight > container.clientHeight;
+		this.update();
+	}
+
+	update()
+	{
+		let div = this.shadowRoot.querySelector("div");
+		let next = this.shadowRoot.querySelector("#next");
+		let prev = this.shadowRoot.querySelector("#prev");
+
+		if (this.hasAttribute("reverse"))
+		{
+			prev.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
+			next.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
+		} else
+		{
+			next.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
+			prev.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
+		}
 	}
 });
 

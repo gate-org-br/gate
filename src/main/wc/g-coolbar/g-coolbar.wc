@@ -1,9 +1,7 @@
 <template>
-	<div id='container'>
-		<slot>
-		</slot>
+	<button id="prev"><g-icon>&#X2277;</g-icon></button>
+	<div>
+		<slot></slot>
 	</div>
-	<a id='more' href='#'>
-		&#X3018;
-	</a>
+	<button id="next"><g-icon>&#X2279;</g-icon></button>
 </template>

@@ -12,7 +12,7 @@
 	display: grid;
 	align-items: stretch;
 	justify-content: stretch;
-	grid-template-columns: 1fr;
+	grid-template-columns: 24px 1fr 24px;
 	background-color: var(--main3);
 }
 
@@ -27,33 +27,6 @@
 	justify-content: center;
 }
 
-:host([data-overflowing=left])
-{
-	grid-template-columns: 24px 1fr;
-}
-
-:host([data-overflowing=right])
-{
-	grid-template-columns: 1fr 24px;
-}
-
-:host([data-overflowing=both])
-{
-	grid-template-columns: 24px 1fr 24px;
-}
-
-:host([data-overflowing=left]) #prev,
-:host([data-overflowing=both]) #prev
-{
-	display: flex;
-}
-
-:host([data-overflowing=right]) #next,
-:host([data-overflowing=both]) #next
-{
-	display: flex;
-}
-
 div
 {
 	gap: 8px;
@@ -62,6 +35,7 @@ div
 	border: none;
 	flex-grow: 1;
 	display: flex;
+	grid-column: 2;
 	overflow-x: hidden;
 	white-space:  nowrap;
 }

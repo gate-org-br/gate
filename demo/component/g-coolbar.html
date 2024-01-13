@@ -1,0 +1,110 @@
+<g-callout class='fill'>
+	<h1>g-coolbar</h1>
+	<p>
+		The <strong>&lt;g-coolbar&gt;</strong> custom web component functions as a versatile toolbar,
+		accommodating links and buttons while offering a visually appealing and responsive design.
+		The component automatically styles elements based on their classes, defaulting to a secondary style.
+		In situations where there is limited space to display all buttons, the component intelligently introduces
+		scroll buttons. These scroll buttons facilitate user navigation, allowing them to access all content within
+		the toolbar.
+		You can use <strong>&lt;hr&gt;</strong> elements as greedy horizontal spacers and <strong>&lt;br&gt;</strong>
+		elements as fixed-sized separators to enhance the layout and structure of the toolbar. The styling options
+		include variations such as primary, alternative, tertiary, and danger, providing flexibility for customization.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-callout>
+			<p>
+				By default, the buttons within the <strong>&lt;g-coolbar&gt;</strong>
+				component are aligned from right to left.
+			</p>
+		</g-callout>
+
+		<g-code-viewer>
+			<g-coolbar>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">Example 2</a>
+	<div>
+		<g-callout>
+			<p>
+				By setting the reverse attribute, the alignment of the buttons is reversed,
+				making them align from left to right.
+			</p>
+		</g-callout>
+		<g-code-viewer>
+			<g-coolbar reverse>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">Example 3</a>
+	<div>
+		<g-callout>
+			<p>
+				The disabled attribute in the <strong>&lt;g-coolbar&gt;</strong> component serves a
+				unique purpose: when set, it hides all the elements within the toolbar and replaces
+				them with an infinite progress bar.
+				This behavior is designed to visually indicate to users that the toolbar is currently disabled or
+				in a loading state, offering a clear and intuitive representation of the disabled state.
+				The progress bar provides a visual cue of ongoing activity, ensuring users are aware of the current state
+				of the toolbar while it's disabled.
+			</p>
+		</g-callout>
+		<g-code-viewer>
+			<g-coolbar disabled>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

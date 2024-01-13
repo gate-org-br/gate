@@ -1,0 +1,52 @@
+<g-callout class="fill">
+	<h1>@tooltip</h1>
+	<p>
+		Displays a tooltip containing the outcome of an HTTP request on the target element.
+		JSON responses are seamlessly converted to HTML for optimal presentation. The position and size parameters
+		can be provided in any order for enhanced flexibility. When a single size parameter is passed, the tooltip
+		adopts equal width and height dimensions. If two size parameters are provided, the first parameter determines
+		the width, and the second parameter determines the height of the tooltip. This versatile approach accommodates
+		various preferences in specifying the appearance of the tooltip.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example shows a tooltip generated from
+
+			<a href="/target/@tooltip/tooltip.html" target='@dialog(400px)'>
+				HTML data
+			</a>
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-callout data-trigger='mouseover'
+				   data-action='/target/@tooltip/tooltip.html'
+				   data-target='@tooltip(200px, fit-content)'>
+				Hover me
+			</g-callout>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example shows a tooltip generated from
+
+			<a href="/target/@tooltip/tooltip.json" target='@dialog(400px)'>
+				JSON data
+			</a>
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-callout data-trigger='mouseover'
+				   data-action='/target/@tooltip/tooltip.json'
+				   data-target='@tooltip'>
+				Hover me
+			</g-callout>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

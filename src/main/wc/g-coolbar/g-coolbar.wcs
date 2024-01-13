@@ -5,9 +5,34 @@
 :host(*)
 {
 	width: 100%;
-	height: 44px;
-	display: flex;
+	color: black;
+	border: none;
+	height: auto;
+	flex-grow: 1;
+	display: grid;
+	align-items: stretch;
+	justify-content: stretch;
+	grid-template-columns: auto 1fr auto;
+}
+
+#next, #prev
+{
+	width: 24px;
+	border: none;
+	color: #999999;
+	font-size: 16px;
 	align-items: center;
+	justify-content: center;
+}
+
+div
+{
+	gap: 8px;
+	display: flex;
+	grid-column: 2;
+	overflow-x: hidden;
+	white-space:  nowrap;
+	flex-direction: row-reverse;
 }
 
 ::slotted(a),
@@ -30,6 +55,8 @@
 	min-width: fit-content;
 	background-color: #E8E8E8;
 	justify-content: space-between;
+
+	min-width: 200px;
 }
 
 ::slotted(a:hover),
@@ -37,6 +64,13 @@
 ::slotted(.g-command:hover)
 {
 	background-color: #D0D0D0;
+}
+
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
+{
+	outline: 4px solid var(--hovered);
 }
 
 ::slotted(a.primary),
@@ -94,99 +128,51 @@
 	background-color: #882222;
 }
 
-::slotted(a[disabled]),
-::slotted(a[disabled]:hover),
-::slotted(button[disabled]),
-::slotted(button[disabled]:hover),
-::slotted(.g-command[disabled]:hover),
-::slotted(.g-command[disabled]:hover) {
-
-	color: #AAAAAA;
-	cursor: not-allowed;
-	filter: opacity(40%);
-	background-color: var(--main6);
-}
-
-::slotted(a:focus),
-::slotted(button:focus),
-::slotted(.g-command:focus){
-	outline: 4px solid var(--hovered);
-}
-
-::slotted(*[hidden="true"])
+::slotted([hidden="true"])
 {
 	display: none;
-}
-
-::slotted(g-progress)
-{
-	height: 44px;
-	flex-grow: 1;
-}
-
-::slotted(progress)
-{
-	margin: 4px;
-	flex-grow: 100000;
 }
 
 ::slotted(hr)
 {
-	flex-grow: 100000;
 	border: none;
+	flex-grow: 100000;
 }
 
-#more {
-	order: 1;
-	padding: 0;
-	width: 32px;
-	flex-grow: 0;
-	height: 100%;
-	outline: none;
+
+
+button {
+	color: black;
 	display: none;
-	flex-shrink: 0;
-	color: inherit;
-	font-size: 20px;
+	height: 44px;
+}
+
+g-icon {
+	color: #000099;
+}
+
+button {
 	cursor: pointer;
-	font-family: gate;
-	margin-right: auto;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
+
 }
 
-#container {
-	gap: 8px;
-	order: 2;
-	flex-grow: 1;
-	display: flex;
-	overflow: hidden;
-	white-space: nowrap;
-	align-items: stretch;
-	flex-direction: row-reverse;
+button:hover
+{
+	background-color:  var(--hovered);
 }
 
-:host([reverse]) #more {
-	order: 2;
-}
-
-:host([reverse]) #container {
-	order: 1;
-}
-
-:host([reverse]) #container
+:host([reverse]) div
 {
 	flex-direction: row;
 }
-
 
 :host([disabled])
 {
 	background-color: var(--main6);
 }
 
-:host([disabled]) #container,
-:host([disabled]) #more
+:host([disabled]) div,
+:host([disabled]) button
 {
 	display: none;
 }
@@ -195,6 +181,7 @@
 {
 	content: "";
 	height: 44px;
+	grid-column: 2;
 	animation-fill-mode:both;
 	background-color: var(--base1);
 	animation: progress 2s infinite ease-in-out;
@@ -202,9 +189,9 @@
 
 @keyframes progress {
 	0% {
-		flex-basis: 0;
+		width: 0;
 	}
 	100% {
-		flex-basis: 100%;
+		width: 100%;
 	}
 }

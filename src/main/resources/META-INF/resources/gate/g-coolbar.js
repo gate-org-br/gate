@@ -1,12 +1,10 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div id='container'>
-		<slot>
-		</slot>
+	<button id="prev"><g-icon>&#X2277;</g-icon></button>
+	<div>
+		<slot></slot>
 	</div>
-	<a id='more' href='#'>
-		&#X3018;
-	</a>
+	<button id="next"><g-icon>&#X2279;</g-icon></button>
  <style>* {
 	box-sizing: border-box;
 }
@@ -14,9 +12,34 @@ template.innerHTML = `
 :host(*)
 {
 	width: 100%;
-	height: 44px;
-	display: flex;
+	color: black;
+	border: none;
+	height: auto;
+	flex-grow: 1;
+	display: grid;
+	align-items: stretch;
+	justify-content: stretch;
+	grid-template-columns: auto 1fr auto;
+}
+
+#next, #prev
+{
+	width: 24px;
+	border: none;
+	color: #999999;
+	font-size: 16px;
 	align-items: center;
+	justify-content: center;
+}
+
+div
+{
+	gap: 8px;
+	display: flex;
+	grid-column: 2;
+	overflow-x: hidden;
+	white-space:  nowrap;
+	flex-direction: row-reverse;
 }
 
 ::slotted(a),
@@ -39,6 +62,8 @@ template.innerHTML = `
 	min-width: fit-content;
 	background-color: #E8E8E8;
 	justify-content: space-between;
+
+	min-width: 200px;
 }
 
 ::slotted(a:hover),
@@ -46,6 +71,13 @@ template.innerHTML = `
 ::slotted(.g-command:hover)
 {
 	background-color: #D0D0D0;
+}
+
+::slotted(a:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus)
+{
+	outline: 4px solid var(--hovered);
 }
 
 ::slotted(a.primary),
@@ -103,99 +135,51 @@ template.innerHTML = `
 	background-color: #882222;
 }
 
-::slotted(a[disabled]),
-::slotted(a[disabled]:hover),
-::slotted(button[disabled]),
-::slotted(button[disabled]:hover),
-::slotted(.g-command[disabled]:hover),
-::slotted(.g-command[disabled]:hover) {
-
-	color: #AAAAAA;
-	cursor: not-allowed;
-	filter: opacity(40%);
-	background-color: var(--main6);
-}
-
-::slotted(a:focus),
-::slotted(button:focus),
-::slotted(.g-command:focus){
-	outline: 4px solid var(--hovered);
-}
-
-::slotted(*[hidden="true"])
+::slotted([hidden="true"])
 {
 	display: none;
-}
-
-::slotted(g-progress)
-{
-	height: 44px;
-	flex-grow: 1;
-}
-
-::slotted(progress)
-{
-	margin: 4px;
-	flex-grow: 100000;
 }
 
 ::slotted(hr)
 {
-	flex-grow: 100000;
 	border: none;
+	flex-grow: 100000;
 }
 
-#more {
-	order: 1;
-	padding: 0;
-	width: 32px;
-	flex-grow: 0;
-	height: 100%;
-	outline: none;
+
+
+button {
+	color: black;
 	display: none;
-	flex-shrink: 0;
-	color: inherit;
-	font-size: 20px;
+	height: 44px;
+}
+
+g-icon {
+	color: #000099;
+}
+
+button {
 	cursor: pointer;
-	font-family: gate;
-	margin-right: auto;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
+
 }
 
-#container {
-	gap: 8px;
-	order: 2;
-	flex-grow: 1;
-	display: flex;
-	overflow: hidden;
-	white-space: nowrap;
-	align-items: stretch;
-	flex-direction: row-reverse;
+button:hover
+{
+	background-color:  var(--hovered);
 }
 
-:host([reverse]) #more {
-	order: 2;
-}
-
-:host([reverse]) #container {
-	order: 1;
-}
-
-:host([reverse]) #container
+:host([reverse]) div
 {
 	flex-direction: row;
 }
-
 
 :host([disabled])
 {
 	background-color: var(--main6);
 }
 
-:host([disabled]) #container,
-:host([disabled]) #more
+:host([disabled]) div,
+:host([disabled]) button
 {
 	display: none;
 }
@@ -204,6 +188,7 @@ template.innerHTML = `
 {
 	content: "";
 	height: 44px;
+	grid-column: 2;
 	animation-fill-mode:both;
 	background-color: var(--base1);
 	animation: progress 2s infinite ease-in-out;
@@ -211,69 +196,69 @@ template.innerHTML = `
 
 @keyframes progress {
 	0% {
-		flex-basis: 0;
+		width: 0;
 	}
 	100% {
-		flex-basis: 100%;
+		width: 100%;
 	}
-}</style>`;
+}
+</style>`;
 
-/* global customElements, template */
+/* global customElements */
 
-import './g-side-menu.js';
-import Proxy from './proxy.js';
-import GSelection from './selection.js';
+function visible(element, container)
+{
+	element = element.getBoundingClientRect();
+	container = container.getBoundingClientRect();
+	return 	element.top >= container.top &&
+		element.left >= container.left &&
+		element.bottom <= container.bottom &&
+		element.right <= container.right;
+}
 
-customElements.define('g-coolbar', class extends HTMLElement
+function scroll(coolbar, first, next, inline)
+{
+	let div = coolbar.shadowRoot.querySelector("div");
+	for (let element = first; element; element = next(element))
+		if (element.tagName === "A"
+			|| element.tagName === "BUTTON"
+			|| element.classList.contains(".g-command"))
+			if (visible(element, div))
+				for (element = next(element); element; element = next(element))
+					if (!visible(element, div))
+						return element.scrollIntoView({inline, behavior: "smooth"});
+}
+
+customElements.define("g-coolbar", class extends HTMLElement
 {
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		this.shadowRoot.innerHTML = template.innerHTML;
-		new ResizeObserver(() => this.update()).observe(this);
-		this.shadowRoot.getElementById("container")
-			.firstChild.addEventListener('slotchange', () => this.update());
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		let more = this.shadowRoot.getElementById("more");
+		let div = this.shadowRoot.querySelector("div");
+		let next = this.shadowRoot.querySelector("#next");
+		let prev = this.shadowRoot.querySelector("#prev");
 
-		more.addEventListener("click", () =>
+		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
 		{
-			let elements = Array.from(this.children)
-				.filter(e => e.tagName !== "HR")
-				.filter(e => !e.getAttribute("hidden"))
-				.filter(e => e.style.display === "none")
-				.map(element => Proxy.create(element));
-			elements.forEach(e => e.style.display = "");
-
-			let menu = document.createElement("g-side-menu");
-			document.documentElement.appendChild(menu);
-			menu.elements = elements;
-			menu.show(more);
+			if (this.hasAttribute("reverse"))
+				scroll(this, this.firstElementChild, e => e.nextElementSibling, "start");
+			else
+				scroll(this, this.lastElementChild, e => e.previousElementSibling, "start");
 		});
-	}
 
-	connectedCallback()
-	{
-		setTimeout(() => this.update(), 200);
-	}
+		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
+		{
+			if (this.hasAttribute("reverse"))
+				scroll(this, this.lastElementChild, e => e.previousElementSibling, "end");
+			else
+				scroll(this, this.firstElementChild, e => e.nextElementSibling, "end");
+		});
 
-	update()
-	{
-		GSelection.getSelectedLink(this.children)
-			.ifPresent(e => e.setAttribute("aria-selected", "true"));
-
-		Array.from(this.children)
-			.filter(e => !e.getAttribute("hidden"))
-			.forEach(e => e.style.display = "");
-
-		this.shadowRoot.getElementById("more")
-			.style.display = this.overflowed ? "flex" : "none";
-
-		for (let e = this.lastElementChild;
-			e && this.overflowed; e = e.previousElementSibling)
-			if (!e.getAttribute("hidden"))
-				e.style.display = "none";
+		div.addEventListener("scroll", () => this.update());
+		new ResizeObserver(() => this.update()).observe(this);
 	}
 
 	get disabled()
@@ -289,11 +274,26 @@ customElements.define('g-coolbar', class extends HTMLElement
 			this.removeAttribute("disabled");
 	}
 
-	get overflowed()
+	connectedCallback()
 	{
-		let container = this.shadowRoot.getElementById("container");
-		return container.scrollWidth > container.clientWidth
-			|| container.scrollHeight > container.clientHeight;
+		this.update();
+	}
+
+	update()
+	{
+		let div = this.shadowRoot.querySelector("div");
+		let next = this.shadowRoot.querySelector("#next");
+		let prev = this.shadowRoot.querySelector("#prev");
+
+		if (this.hasAttribute("reverse"))
+		{
+			prev.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
+			next.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
+		} else
+		{
+			next.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
+			prev.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
+		}
 	}
 });
 

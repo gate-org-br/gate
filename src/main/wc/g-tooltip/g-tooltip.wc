@@ -1,4 +1,4 @@
 <template>
 	<slot></slot>
-	<div></div>
+	<g-icon>&#X3043;</g-icon>
 </template>

@@ -196,21 +196,20 @@ customElements.define('g-dialog', GDialog);
 
 window.addEventListener("@dialog", function (event)
 {
-	let parameters = event.detail.parameters;
+	let {method, action, form, parameters} = event.detail;
 	let trigger = event.composedPath()[0] || event.target;
-
 
 	let dialog = window.top.document.createElement("g-dialog");
 	dialog.caption = trigger.getAttribute("title");
 
-	if (parameters[1])
-	{
-		dialog.width = parameters[1];
-		dialog.height = parameters[1];
-	}
+	let type = parameters.filter(e => e === "fetch" || e === "frame")[0] || "fetch";
+	let size = parameters.filter(e => e !== "fetch" && e !== "frame")[0];
+	let height = parameters.filter(e => e => e !== "fetch" && e !== "frame")[1] || size;
 
-	if (parameters[2])
-		dialog.height = parameters[2];
+	if (size)
+		dialog.width = dialog.height = size;
+	if (height)
+		dialog.height = height;
 
 
 	if (trigger.hasAttribute("data-navigator") || trigger.parentNode.hasAttribute("data-navigator"))
@@ -226,22 +225,23 @@ window.addEventListener("@dialog", function (event)
 	dialog.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 
 
-	switch (event.detail.parameters[0] || "frame")
+	switch (type)
 	{
+		case "fetch":
+			fetch(RequestBuilder.build(method, action, form))
+				.then(ResponseHandler.text)
+				.then(html => dialog.content.innerHTML = html)
+				.catch(GMessageDialog.error);
+			break;
+
 		case "frame":
 			if (event.detail.method === "get")
 				dialog.iframe.src = event.detail.action;
 			else
-				fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
+				fetch(RequestBuilder.build(method, action, form))
 					.then(ResponseHandler.text)
 					.then(html => dialog.iframe.srcDoc = html)
 					.catch(GMessageDialog.error);
-			break;
-		case "fetch":
-			fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-				.then(ResponseHandler.text)
-				.then(html => dialog.content.innerHTML = html)
-				.catch(GMessageDialog.error);
 			break;
 	}
 });
