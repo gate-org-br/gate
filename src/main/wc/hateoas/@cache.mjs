@@ -16,13 +16,12 @@ window.addEventListener("@cache", function (event)
 	let target = parameters[0];
 
 	if (CACHE.has(action))
-		trigger.dispatchEvent(new TriggerEvent(cause, method,
+		return trigger.dispatchEvent(new TriggerEvent(cause, method,
 			CACHE.get(action), target));
 
-
-
-	if (undostack.has(element) && undostack.get(element).length)
-		action = new DataURL("text/html", undostack.get(element).pop()).toString();
-
-	trigger.dispatchEvent(new TriggerEvent(cause, method, action, target));
+	fetch(RequestBuilder.build(method, action))
+		.then(ResponseHandler.dataURL)
+		.then(result => CACHE.set(action, result))
+		.then(() => trigger.dispatchEvent(new TriggerEvent(cause, method,
+				CACHE.get(action), target)));
 });
