@@ -3,7 +3,6 @@
 @import './themes.css';
 @import './link.css';
 @import './button.css';
-@import './treeview.css';
 @import './g-icon-pane.css';
 
 @import './icon.css';
@@ -16,17 +15,11 @@
 @import './minibar.css';
 @import './figure.css';
 
-@import "./sorter.css";
-@import "./filter.css";
-
-@import './table.css';
+@import './g-table.css';
 
 @import './visibility.css';
 
 @import './list.css';
-
-
-
 
 * {
 	box-sizing: border-box;

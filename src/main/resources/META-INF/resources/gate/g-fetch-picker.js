@@ -4,20 +4,42 @@ template.innerHTML = `
 		<header tabindex='1'>
 			<label id='caption'>
 			</label>
-			<a id='cancel' href='#'>
+			<a id='close' href='#'>
 				<g-icon>
 					&#X1011;
 				</g-icon>
 			</a>
 		</header>
 		<section>
+			<slot></slot>
 		</section>
+		<footer>
+			<g-coolbar>
+				<button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon>
+				</button>
+				<hr>
+				<button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
 	</dialog>
- <style>dialog {
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	gap: 8px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+dialog {
 	width: 100%;
 	height: 100%;
-	max-width: none;
-	max-height: none;
 	border-radius: 0;
 }
 
@@ -32,18 +54,15 @@ template.innerHTML = `
 
 dialog > section {
 	padding: 8px;
-}
-
-iframe[name] {
-	background-position: center;
-	background-repeat: no-repeat;
-	background-position-y: center;
-	background-image: var(--loading);
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
 }</style>`;
 
 /* global customElements, template, CSV */
 
 import './trigger.js';
+import DOM from './dom.js';
 import Return from './@return.js';
 import GWindow from './g-window.js';
 
@@ -55,37 +74,34 @@ export default class GFetchPicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", { detail: [] })));
 	}
 
-	get caption()
+	get caption ()
 	{
 		return this.shadowRoot.getElementById("caption").innerText;
 	}
 
-	set caption(caption)
+	set caption (caption)
 	{
 		this.shadowRoot.getElementById("caption").innerText = caption;
 	}
 
-	get content()
-	{
-		return this.shadowRoot.querySelector("section");
-	}
-
-	show()
+	show ()
 	{
 		Return.bind(this);
 		super.show();
 	}
 
-	hide()
+	hide ()
 	{
 		super.hide();
 		Return.free(this);
 	}
 
-	static pick(url, caption)
+	static pick (url, caption)
 	{
 		return new Promise((resolve, reject) =>
 		{
@@ -95,7 +111,7 @@ export default class GFetchPicker extends GWindow
 
 			fetch(url)
 				.then(e => e.text())
-				.then(e => picker.content.innerHTML = e);
+				.then(e => picker.innerHTML = e);
 
 			picker.addEventListener("commit", e => resolve(e.detail));
 			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
@@ -106,28 +122,24 @@ export default class GFetchPicker extends GWindow
 customElements.define('g-fetch-picker', GFetchPicker);
 
 
-function pick(event)
+function pick (event)
 {
 	let trigger = event.composedPath()[0] || event.target;
-	let parameters = event.detail.parameters
-		.map(e => e ? document.getElementById(e) : e);
+	let { cause, action, parameters } = event.detail;
+	parameters = parameters.map(e => e ? DOM.navigate(trigger, e).orElseThrow(`${e} is not a valid selector`) : e);
 
-	if (event.detail.cause.type === "change")
+	if (cause.type === "change")
 	{
-		GFetchPicker.pick(event.detail.action, trigger.title)
+		GFetchPicker.pick(action, trigger.title)
 			.then(values => Return.update(parameters, values))
 			.catch(() => parameters.forEach(e => e.value = ""));
-	} else if (parameters.every(e => !e.value))
+	} else
 	{
 		trigger.style.pointerEvents = "none";
-		GFetchPicker.pick(event.detail.action, trigger.title)
+		GFetchPicker.pick(action, trigger.title)
 			.then(values => Return.update(parameters, values))
 			.catch(() => undefined)
 			.finally(() => trigger.style.pointerEvents = "");
-	} else
-	{
-		event.preventDefault();
-		parameters.forEach(e => e.value = "");
 	}
 }
 

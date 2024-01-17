@@ -20,11 +20,11 @@
 				<label>
 					Name
 					<span>
-						<input id="pick-value" type="hidden"/>
-						<input id="pick-label" type="text" data-target="@pick(pick-value, pick-label)"
-						       data-action="/target/fetch-return.html"
-						       title="Selecione" />
-						<a id='get' href="/target/fetch-return.html" target="@pick(pick-value, pick-label)" title="Selecione">
+						<input id="pick-value" type="hidden" />
+						<input id="pick-label" type="text" data-target="@pick(this, this.prev(0))"
+							data-action="/target/fetch-return.html" title="Selecione" />
+						<a href="/target/fetch-return.html" target="@pick(this.prev(1), this.prev(0))"
+							title="Selecione">
 							<g-icon>
 								&#X2010;
 							</g-icon>

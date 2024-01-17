@@ -1,4 +1,4 @@
-a.Hide removed to avoid redundance with target="@hide"
+a.Hide removed to avoid redundancy with target="@hide"
 
 target="_id(id)" removed and replaced with target="@innerHTML(selector)"
 
@@ -6,13 +6,24 @@ attribute data-on-hide was removed and replaced by data-on:resolve(script)
 
 target="_stack" removed and replaced with target="@stack(type)"
 
-target="_dialog(size)" removed and replaced with target="@dialog(type, width, height)"
+target="_dialog(size)" removed and replaced with target="@dialog('frame', width, height)"
 
-data-get="id1, id2, ..." removed and replaced with target="@pick(selector1, selector2, ...)"
+data-get="id1, id2, ..." removed and replaced with target="@frame-picker(selector1, selector2, ...)"
 
 data-ret="value1, value2, ..." removed and replaced with target="@return(value1, value2, ...)"
 
 <g-dialog-caption>caption</g-dialog-caption> removed and replaced <g-dialog-header caption='caption'>
 
-resolve @{id} was replaced by #{id}
+resolve @{id} was replaced by @{#id}
 resolve implemented the @{selector} flag
+
+class=TreeView replaced by g-tree-grid
+The selectors are now created automatically
+The padding is now applied automatically
+
+data-filter, data-sortable only works now inside g-tables
+
+input class="Date" replaced by input is='g-date-picker'
+input class="DateInterval" replaced by input is='g-date-interval-picker'
+input class="DateTime" replaced by input is='g-date-time-picker'
+input class="DateTimeInterval" replaced by input is='g-date-time-interval-picker'

@@ -1,0 +1,160 @@
+<g-callout class="fill">
+	<h1>g-table</h1>
+
+	<p>
+		The <strong>g-table</strong> component extends the functionality of the standard HTML <strong>&lt;table&gt;</strong>
+		by incorporating robust features for counting, filtering, and sorting data. Any child tag with a <strong>data-table-size</strong>
+		attribute dynamically updates to display the total number of rows in the <strong>g-table</strong> body, ensuring
+		users are always aware of the dataset's size. If the <strong>&lt;table&gt;</strong> body is empty, a custom message
+		specified by the <strong>data-empty</strong> attribute is displayed, providing a clear indication when no records are found.
+	</p>
+
+	<p>
+		For dynamic filtering, include a child <strong>&lt;input&gt;</strong> with a data-filter attribute.
+		This empowers users to input values, instantly triggering dynamic filtering within the <strong>&lt;table&gt;</strong> body.
+		This feature is invaluable for rapidly refining data based on specific criteria, enhancing the user's ability to navigate and focus on relevant information.
+	</p>
+
+	<p>
+		To enable sorting, apply the <strong>data-sortable</strong> attribute to column headers.
+		This indicates that the content in that column is sortable, allowing users to interactively organize data by clicking on designated column headers.
+		By default, sorting is determined by the text content of the respective column.
+		However, if a <strong>&lt;td&gt;</strong> element within a column includes the data-value attribute, the sorting is adjusted to use its numeric value, providing
+		flexibility in organizing numerical data within the <strong>&lt;table&gt;</strong>.
+	</p>
+
+	<p>
+		These powerful functionalities collectively enhance the user experience, making <strong>g-table</strong>
+		a versatile and feature-rich component for managing and presenting data effectively.
+	</p>
+</p>
+</g-callout>
+
+<g-code-viewer ignore='="[_AD]"|data-sorted="[^"]+"|data-size="[^"]*"'>
+	<table class="c2 c3 c4" is="g-table" data-empty="Nor records found">
+		<col>
+		<col style="width: 160px">
+		<col style="width: 160px">
+		<col style="width: 80px">
+
+		<caption>
+			RECORDS FOUND: <span data-table-size></span>
+		</caption>
+
+		<thead>
+			<tr>
+				<th colspan="4">
+					<input type="text" data-filter>
+				</th>
+			</tr>
+			<tr>
+				<th is='g-table-sorter' data-sortable>Name</th>
+				<th data-sortable>Sex</th>
+				<th data-sortable>Age</th>
+				<th>Remove</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Foo</td>
+				<td>Male</td>
+				<td data-value="25">25</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Bar</td>
+				<td>Female</td>
+				<td data-value="30">30</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Baz</td>
+				<td>Male</td>
+				<td data-value="22">22</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Qux</td>
+				<td>Female</td>
+				<td data-value="28">28</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Fob</td>
+				<td>Male</td>
+				<td data-value="32">32</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Bat</td>
+				<td>Female</td>
+				<td data-value="27">27</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Bit</td>
+				<td>Male</td>
+				<td data-value="29">29</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Car</td>
+				<td>Female</td>
+				<td data-value="35">35</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Zoo</td>
+				<td>Male</td>
+				<td data-value="26">26</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Tap</td>
+				<td>Female</td>
+				<td data-value="31">31</td>
+				<td>
+					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<g-icon>&#X2026;</g-icon>
+					</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</g-code-viewer>

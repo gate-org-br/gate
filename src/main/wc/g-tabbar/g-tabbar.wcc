@@ -1,16 +1,17 @@
 /* global customElements */
 
-function visible(element, container)
+const EPSILON = 0.5;
+function visible (element, container)
 {
 	element = element.getBoundingClientRect();
 	container = container.getBoundingClientRect();
-	return 	element.top >= container.top &&
-		element.left >= container.left &&
-		element.bottom <= container.bottom &&
-		element.right <= container.right;
+	return element.top >= container.top - EPSILON &&
+		element.left >= container.left - EPSILON &&
+		element.bottom <= container.bottom + EPSILON &&
+		element.right <= container.right + EPSILON;
 }
 
-function scroll(tabbar, first, next, inline)
+function scroll (tabbar, first, next, inline)
 {
 	let div = tabbar.shadowRoot.querySelector("div");
 	for (let element = first; element; element = next(element))
@@ -20,7 +21,7 @@ function scroll(tabbar, first, next, inline)
 			if (visible(element, div))
 				for (element = next(element); element; element = next(element))
 					if (!visible(element, div))
-						return element.scrollIntoView({inline, behavior: "smooth"});
+						return element.scrollIntoView({ inline, behavior: "smooth" });
 }
 
 customElements.define("g-tabbar", class extends HTMLElement
@@ -28,7 +29,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
@@ -39,12 +40,16 @@ customElements.define("g-tabbar", class extends HTMLElement
 		new ResizeObserver(() => this.update()).observe(this);
 	}
 
-	connectedCallback()
+	connectedCallback ()
 	{
 		this.update();
+		Array.from(this.children)
+			.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
 	}
 
-	update()
+	update ()
 	{
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");

@@ -1,6 +1,6 @@
 import DOM from './dom.js';
 const REQUIRED = new Error();
-const RESOLVE_REGEX = /(\?|\?\?|!|!!|@|@@|#|##)\{([^}]*)\}/g;
+const RESOLVE_REGEX = /(\?|\?\?|!|!!|@|@@)\{([^}]*)\}/g;
 export default function resolve(trigger, string)
 {
 	var result = decodeURI(string);
@@ -12,17 +12,6 @@ export default function resolve(trigger, string)
 				value = decodeURIComponent(value);
 				switch (method[0])
 				{
-					case '#':
-					case '##':
-					{
-						let element = document.getElementById(value);
-						if (!element)
-							throw new Error(`${value} is not a valid element id`);
-
-						if (method.length == 2 && !element.value)
-							throw REQUIRED;
-						return element.value || "";
-					}
 					case '@':
 					case '@@':
 					{

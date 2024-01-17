@@ -3,13 +3,25 @@
 		<header tabindex='1'>
 			<label id='caption'>
 			</label>
-			<a id='cancel' href='#'>
+			<a id='close' href='#'>
 				<g-icon>
 					&#X1011;
 				</g-icon>
 			</a>
 		</header>
 		<section>
+			<slot></slot>
 		</section>
+		<footer>
+			<g-coolbar>
+				<button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon>
+				</button>
+				<hr>
+				<button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
 	</dialog>
 </template>

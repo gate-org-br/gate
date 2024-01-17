@@ -2,10 +2,20 @@
 
 import './trigger.js';
 import GModal from './g-modal.js';
+import stylesheets from './stylesheets.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
 import { TriggerResolveEvent } from './trigger-event.js';
+
+function resize(iframe)
+{
+	let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	var contentWidth = iframeDocument.body.scrollWidth;
+	var contentHeight = iframeDocument.body.scrollHeight;
+	iframe.style.width = contentWidth + 'px';
+	iframe.style.height = contentHeight + 'px';
+}
 
 customElements.define('g-stack-frame', class GStackFrame extends GModal
 {
@@ -14,38 +24,35 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		stylesheets('g-table.css', 'input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	get iframe()
 	{
-		let dialog = this.shadowRoot.querySelector("dialog");
 
-		if (!dialog.firstElementChild)
+		if (!this.firstElementChild)
 		{
-			let iframe = dialog.appendChild(document.createElement("iframe"));
+			let iframe = this.appendChild(document.createElement("iframe"));
 			iframe.dialog = this;
-			iframe.name = "@stack";
 			iframe.setAttribute("scrolling", "no");
 			iframe.addEventListener("load", () => iframe.focus());
 			iframe.addEventListener("mouseenter", () => iframe.focus());
 		}
 
-		if (dialog.firstElementChild.tagName !== "IFRAME")
+		if (this.firstElementChild.tagName !== "IFRAME")
 			throw new Error("Attempt to access iframe of a fetch stack-frame");
 
-		return dialog.firstElementChild;
+		return this.firstElementChild;
 	}
 
 	get content()
 	{
-		let dialog = this.shadowRoot.querySelector("dialog");
-
-		if (!dialog.firstElementChild)
-			dialog.appendChild(document.createElement("div"));
-		if (dialog.firstElementChild.tagName !== "DIV")
+		if (!this.firstElementChild)
+			this.appendChild(document.createElement("div"));
+		if (this.firstElementChild.tagName !== "DIV")
 			throw new Error("Attempt to access content of a frame stack-frame");
-
-		return dialog.firstElementChild;
+		return this.firstElementChild;
 	}
 });
 
@@ -55,7 +62,7 @@ window.addEventListener("@stack", function (event)
 
 	stack.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
 
-	switch (event.detail.parameters[0] || "frame")
+	switch (event.detail.parameters[0] || "fetch")
 	{
 		case "frame":
 			if (event.detail.method === "get")

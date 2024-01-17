@@ -5,7 +5,8 @@ template.innerHTML = `
 		<slot></slot>
 	</div>
 	<button id="next"><g-icon>&#X2279;</g-icon></button>
- <style>* {
+ <style>*
+{
 	box-sizing: border-box;
 }
 
@@ -23,7 +24,8 @@ template.innerHTML = `
 	background-color: var(--main3);
 }
 
-#next, #prev
+#next,
+#prev
 {
 	border: none;
 	color: #999999;
@@ -44,7 +46,7 @@ div
 	display: flex;
 	grid-column: 2;
 	overflow-x: hidden;
-	white-space:  nowrap;
+	white-space: nowrap;
 }
 
 ::slotted(a),
@@ -90,7 +92,7 @@ div
 ::slotted(button:hover),
 ::slotted(.g-command:hover)
 {
-	background-color:  var(--hovered);
+	background-color: var(--hovered);
 }
 
 ::slotted(a:focus),
@@ -110,38 +112,92 @@ div
 	border: none;
 	flex-grow: 100000;
 }
-button {
+
+button
+{
 	color: black;
 	display: none;
 }
 
-g-icon {
+g-icon
+{
 	color: #000099;
 }
 
-button {
+button
+{
 	cursor: pointer;
 
 }
 
 button:hover
 {
-	background-color:  var(--hovered);
+	background-color: var(--hovered);
+}
+
+
+::slotted(:is(a, button, .g-command)[data-loading])
+{
+	position: relative;
+	pointer-events: none;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 32px;
+	content: "";
+	height: 16px;
+	position: absolute;
+	animation-fill-mode: both;
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	padding: 8px;
+	display: flex;
+	color: black;
+	font-size: 16px;
+	content: '\\2017';
+	font-family: gate;
+	position: absolute;
+	align-items: center;
+	border-radius: inherit;
+	background-color: #F0F0F0;
+}
+
+@keyframes loading
+{
+	0%
+	{
+		width: 0;
+	}
+
+	100%
+	{
+		width: calc(100% - 40px);
+	}
 }</style>`;
 
 /* global customElements */
 
-function visible(element, container)
+const EPSILON = 0.5;
+function visible (element, container)
 {
 	element = element.getBoundingClientRect();
 	container = container.getBoundingClientRect();
-	return 	element.top >= container.top &&
-		element.left >= container.left &&
-		element.bottom <= container.bottom &&
-		element.right <= container.right;
+	return element.top >= container.top - EPSILON &&
+		element.left >= container.left - EPSILON &&
+		element.bottom <= container.bottom + EPSILON &&
+		element.right <= container.right + EPSILON;
 }
 
-function scroll(tabbar, first, next, inline)
+function scroll (tabbar, first, next, inline)
 {
 	let div = tabbar.shadowRoot.querySelector("div");
 	for (let element = first; element; element = next(element))
@@ -151,7 +207,7 @@ function scroll(tabbar, first, next, inline)
 			if (visible(element, div))
 				for (element = next(element); element; element = next(element))
 					if (!visible(element, div))
-						return element.scrollIntoView({inline, behavior: "smooth"});
+						return element.scrollIntoView({ inline, behavior: "smooth" });
 }
 
 customElements.define("g-tabbar", class extends HTMLElement
@@ -159,7 +215,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
@@ -170,12 +226,16 @@ customElements.define("g-tabbar", class extends HTMLElement
 		new ResizeObserver(() => this.update()).observe(this);
 	}
 
-	connectedCallback()
+	connectedCallback ()
 	{
 		this.update();
+		Array.from(this.children)
+			.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
 	}
 
-	update()
+	update ()
 	{
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");

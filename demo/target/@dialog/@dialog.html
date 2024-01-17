@@ -1,0 +1,73 @@
+<g-callout class="fill">
+	<h1>@dialog</h1>
+	<p>
+		Display the result of the HTTP request in a dialog. The content will be loaded into a <strong>&lt;div&gt;</strong>
+		if the type parameter is set to <strong>fetch</strong> or into an <strong>&lt;iframe&gt;</strong> if it is omitted
+		or set to <strong>frame</strong>.
+	</p>
+	<p>
+		The type and size parameters can be provided in any order for enhanced flexibility. If the type parameter is omitted,
+		it defaults to fetch. When a single size parameter is passed, the dialog adopts equal width and height dimensions.
+		If two size parameters are provided, the first parameter determines the width, and the second parameter
+		determines the height of the dialog. If both the size and height are omitted, the dialog will have 100%
+		width and height with an 80-pixel margin when the screen width is greater than 640 pixels.
+		This versatile approach accommodates various preferences in specifying the appearance of the dialog.
+	</p>
+	<p>
+		If the trigger element or its parent contains a <strong>data-navigator</strong> attribute, the dialog will
+		feature a navigator, enabling the user to navigate among all triggers located within it's parent element.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Fetch dialog<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example showcases a dialog of type <strong>fetch</strong> (default) with dimensions
+			set to 640 pixels width and 480 pixels height.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/@dialog/fetch1.html' data-target="@dialog(640px, 480px)">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/@dialog/fetch2.html' data-target="@dialog(640px, 480px)">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/@dialog/fetch3.html' data-target="@dialog(640px, 480px)">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Frame dialog<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example showcases a dialog of type <strong>frame</strong> with dimensions
+			set to 100% width and height and a 80-pixel margin when the screen width is
+			greater than 640 pixels
+		</p>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/@dialog/frame1.html' data-target="@dialog(frame)">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/@dialog/frame2.html' data-target="@dialog(frame)">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/@dialog/frame3.html' data-target="@dialog(frame)">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

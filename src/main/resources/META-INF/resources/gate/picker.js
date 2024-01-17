@@ -1,0 +1,9 @@
+import './g-date-input.js';
+import './g-date-interval-input.js';
+import './g-time-input.js';
+import './g-time-interval-input.js';
+import './g-date-time-input.js';
+import './g-date-time-interval-input.js';
+import './g-month-input.js';
+import './g-month-interval-input.js';
+import './g-icon-input.js';

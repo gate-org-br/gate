@@ -42,7 +42,6 @@ dialog > footer > button {
 /* global customElements, template */
 
 import './g-icon.js';
-import DOM from './dom.js';
 import GWindow from './g-window.js';
 import './g-date-interval-selector.js';
 
@@ -82,39 +81,3 @@ export default class GDateIntervalPicker extends GWindow
 }
 
 customElements.define('g-date-interval-picker', GDateIntervalPicker);
-
-const REGISTRY = new WeakMap();
-DOM.forEveryElement(e => e.tagName === "INPUT"
-		&& !REGISTRY.has(e)
-		&& e.classList.contains("DateInterval"), input =>
-{
-	REGISTRY.set(input);
-
-	let link = input.parentNode.appendChild(document.createElement("a"));
-	link.href = "#";
-	if (input.hasAttribute('tabindex'))
-		link.setAttribute("tabindex", input.getAttribute('tabindex'));
-	let icon = link.appendChild(document.createElement("g-icon"));
-
-	icon.innerHTML = input.value ? "&#x1001;" : "&#x2003;";
-	input.addEventListener("input", () => icon.innerHTML = input.value ? "&#x1001;" : "&#x2003;");
-	input.addEventListener("change", () => icon.innerHTML = input.value ? "&#x1001;" : "&#x2003;");
-
-	link.addEventListener("click", function (event)
-	{
-		event.preventDefault();
-
-		if (input.value)
-		{
-			input.value = '';
-			input.dispatchEvent(new Event('change', {bubbles: true}));
-		} else
-			GDateIntervalPicker.pick()
-				.then(value => input.value = value)
-				.then(() => input.dispatchEvent(new Event('change', {bubbles: true})))
-				.catch(() => undefined);
-
-		link.focus();
-		link.blur();
-	});
-});

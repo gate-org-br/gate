@@ -1,3 +1,5 @@
+import DOM from './dom.js';
+
 export default function mask(element)
 {
 	var changed = false;
@@ -224,4 +226,4 @@ export default function mask(element)
 	element.oncut = () => false;
 }
 
-Array.from(document.querySelectorAll('input[data-mask]')).forEach(element => mask(element));
+DOM.forEveryElement(e => e.tagName === "INPUT" && e.hasAttribute("data-mask"), mask);

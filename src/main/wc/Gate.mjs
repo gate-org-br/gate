@@ -4,8 +4,8 @@ if (!document.querySelectorAll)
 import "./link.js";
 import "./mask.js";
 import "./button.js";
-import "./treeview.js";
 import "./switch.js";
+import "./g-tree-grid.js";
 
 import "./clipboard.js";
 
@@ -54,9 +54,6 @@ import "./g-progress-dialog.js";
 
 import "./g-desk-pane.js";
 
-import "./sorter.js";
-import "./filter.js";
-
 import "./form.js";
 import "./validation.js";
 
@@ -93,11 +90,12 @@ import "./g-accordion-section.js";
 
 import './hateoas.js';
 
-import './table.js';
-import './hide.js';
+import './g-table.js';
 import "./populator.js";
 
-import "./g-counter.js";
+import "./picker.js";
+
+import './@hide.js';
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

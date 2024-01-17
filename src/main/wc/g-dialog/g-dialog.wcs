@@ -1,3 +1,16 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	gap: 8px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+
 dialog {
 	width: 100%;
 	height: 100%;
@@ -13,14 +26,14 @@ dialog {
 	}
 }
 
-:host(*) > dialog > section {
-	padding: 0;
+dialog > section {
+	padding: 8px;
 	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
 
-:host(*) > nav
+nav
 {
 	gap: 8px;
 	width: auto;
@@ -32,8 +45,13 @@ dialog {
 	background-color: var(--main4);
 }
 
-::slotted(a),
-::slotted(button)
+nav:empty {
+	display: none;
+}
+
+nav > a ,
+nav > button,
+nav > .g-command
 {
 	font-size: 14px;
 	cursor: pointer;
@@ -41,18 +59,12 @@ dialog {
 	text-decoration: none;
 }
 
-:host(*) > dialog > section > div {
-	gap: 8px;
-	padding: 8px;
-	display: flex;
-	flex-direction: column;
-}
-
-:host(*) > dialog > section >  iframe {
+::slotted(iframe:only-child) {
 	margin: 0;
 	width: 100%;
 	border: none;
 	padding: 0px;
 	flex-grow: 1;
+	height: 100%;
 	overflow: hidden
 }

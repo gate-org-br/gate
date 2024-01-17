@@ -1,4 +1,3 @@
-import './g-dialog.js';
 import GMessageDialog from './g-message-dialog.js';
 
 const ESC = 27;
@@ -18,14 +17,6 @@ Array.from(document.getElementsByTagName("form")).forEach(function (form)
 		{
 			e.preventDefault();
 			e.stopImmediatePropagation();
-		} else if (this.target === "_dialog")
-		{
-			let dialog = window.top.document.createElement("g-dialog");
-			dialog.caption = this.getAttribute("title");
-			dialog.blocked = Boolean(this.getAttribute("data-blocked"));
-			dialog.addEventListener("show", event => this.dispatchEvent(event));
-			dialog.addEventListener("hide", event => this.dispatchEvent(event));
-			dialog.show();
 		}
 	});
 

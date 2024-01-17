@@ -1,0 +1,59 @@
+<g-callout class="fill">
+	<h1>@stack</h1>
+	<p>
+		Present the outcome of an HTTP request within a self-contained frame, concealing underlying elements.
+		The retrieved content dynamically populates a <strong>&lt;div&gt;</strong>, if the <strong>type</strong> parameter
+		is omitted or set to <strong>fetch</strong> or an <strong>&lt;iframe&gt;</strong>, if it is set to <strong>frame</strong>.
+		Notably, the frame possesses the capability to spawn additional frames, allowing the creation of a stack of nested frames.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Fetch stack<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example showcases a stack frame of type <strong>fetch</strong>.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/@stack/fetch1.html' data-target="@stack">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/@stack/fetch2.html' data-target="@stack">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/@stack/fetch3.html' data-target="@stack">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Frame stack<g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			This example showcases a stack frame of type <strong>frame</strong>.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<table>
+				<caption>USERS</caption>
+				<tbody data-navigator>
+					<tr data-action='/target/@stack/frame1.html' data-target="@stack(frame)">
+						<td>User 1</td>
+					</tr>
+					<tr data-action='/target/@stack/frame2.html' data-target="@stack(frame)">
+						<td>User 2</td>
+					</tr>
+					<tr data-action='/target/@stack/frame3.html' data-target="@stack(frame)">
+						<td>User 2</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

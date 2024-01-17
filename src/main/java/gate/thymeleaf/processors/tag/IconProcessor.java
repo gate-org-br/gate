@@ -48,7 +48,7 @@ public class IconProcessor extends TagProcessor
 		if (icon.getCode().length() == 1)
 			attributes.put("c", "c");
 
-		handler.replaceWith("<i " + attributes + ">" + icon + "</i>", false);
+		handler.replaceWith("<g-icon " + attributes + ">" + icon + "</g-icon>", false);
 	}
 
 }

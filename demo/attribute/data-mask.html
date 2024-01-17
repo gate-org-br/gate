@@ -1,0 +1,45 @@
+<g-callout class="fill">
+	<h1>data-mask</h1>
+	<p>
+		The <strong><code>data-mask</code></strong> attribute is utilized on input fields
+		to automatically apply a specific mask, guiding users in entering data with a defined
+		format. Symbols such as <strong><code>#</code></strong>, <strong><code>_</code></strong>,
+		and <strong><code>*</code></strong> represent placeholders for <strong>digits</strong>,
+		<strong>alphabetic characters</strong>, and <strong>alphanumeric entries</strong>, respectively.
+		The <strong><code>data-mask</code></strong> attribute enhances user experience by enforcing
+		structured input and ensuring data consistency.
+	</p>
+</g-callout>
+
+<g-code-viewer ignore='(autocomplete|placeholder|style)="[^"]*"'>
+	<fieldset>
+		<label data-size='4'>
+			Date:
+			<span>
+				<input type="text" data-mask='##/##/##'>
+			</span>
+		</label>
+		<label data-size='4'>
+			Time:
+			<span>
+				<input type="text" data-mask='##:##:##'>
+			</span>
+		</label>
+
+		<label data-size='4'>
+			Veicle Plate:
+			<span>
+				<input type="text" data-mask='___-##-##'>
+			</span>
+		</label>
+
+		<label data-size='4'>
+			Alphanum 8 size code:
+			<span>
+				<input type="text" data-mask='********'>
+			</span>
+		</label>
+
+	</fieldset>
+</g-code-viewer>
+

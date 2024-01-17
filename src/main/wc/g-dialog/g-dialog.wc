@@ -3,9 +3,7 @@
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
-			<nav>
-				<slot></slot>
-			</nav>
+			<nav></nav>
 			<g-navbar>
 			</g-navbar>
 			<a id='hide' href='#'>
@@ -14,7 +12,8 @@
 				</g-icon>
 			</a>
 		</header>
-		<section part='section'>
+		<section>
+			<slot></slot>
 		</section>
 	</dialog>
 </template>

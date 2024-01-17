@@ -1,4 +1,5 @@
-* {
+*
+{
 	box-sizing: border-box;
 }
 
@@ -16,7 +17,8 @@
 	background-color: var(--main3);
 }
 
-#next, #prev
+#next,
+#prev
 {
 	border: none;
 	color: #999999;
@@ -37,7 +39,7 @@ div
 	display: flex;
 	grid-column: 2;
 	overflow-x: hidden;
-	white-space:  nowrap;
+	white-space: nowrap;
 }
 
 ::slotted(a),
@@ -83,7 +85,7 @@ div
 ::slotted(button:hover),
 ::slotted(.g-command:hover)
 {
-	background-color:  var(--hovered);
+	background-color: var(--hovered);
 }
 
 ::slotted(a:focus),
@@ -103,21 +105,74 @@ div
 	border: none;
 	flex-grow: 100000;
 }
-button {
+
+button
+{
 	color: black;
 	display: none;
 }
 
-g-icon {
+g-icon
+{
 	color: #000099;
 }
 
-button {
+button
+{
 	cursor: pointer;
 
 }
 
 button:hover
 {
-	background-color:  var(--hovered);
+	background-color: var(--hovered);
+}
+
+
+::slotted(:is(a, button, .g-command)[data-loading])
+{
+	position: relative;
+	pointer-events: none;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 32px;
+	content: "";
+	height: 16px;
+	position: absolute;
+	animation-fill-mode: both;
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	padding: 8px;
+	display: flex;
+	color: black;
+	font-size: 16px;
+	content: '\\2017';
+	font-family: gate;
+	position: absolute;
+	align-items: center;
+	border-radius: inherit;
+	background-color: #F0F0F0;
+}
+
+@keyframes loading
+{
+	0%
+	{
+		width: 0;
+	}
+
+	100%
+	{
+		width: calc(100% - 40px);
+	}
 }

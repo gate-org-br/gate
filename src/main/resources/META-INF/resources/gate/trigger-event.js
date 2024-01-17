@@ -1,3 +1,4 @@
+import DOM from './dom.js';
 import Parser from './parser.js';
 import trigger from './trigger.js';
 import validate from './validate.js';
@@ -49,13 +50,30 @@ export class TriggerResolveEvent extends CustomEvent
 }
 
 
-function triggerEvent(event)
+function triggerEvent()
 {
-	return function (element)
+
+	return function ()
 	{
-		if (typeof element === "string")
-			element = this.target.getRootNode().querySelector(element);
-		trigger(event.detail.cause, element);
+		switch (arguments.length)
+		{
+			case 0:
+				return trigger(event.detail.cause, this);
+			case 1:
+				let element = arguments[0];
+				if (typeof element === "string")
+					element = DOM.navigate(event.target, element)
+						.orElseThrow(`${element} is not a valid selector.`);
+				return trigger(event.detail.cause, element);
+			case 2:
+			case 3:
+			case 4:
+				return this.dispatchEvent(new TriggerEvent(event.detail.cause,
+					arguments[0], arguments[1], arguments[2], arguments[3]
+					? DOM.navigate(this, arguments[3])
+					.map(e => new FormData(e))
+					.orElseThrow(`${element} is not a valid selector.`) : null));
+		}
 	};
 }
 

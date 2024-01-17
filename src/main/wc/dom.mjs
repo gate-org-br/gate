@@ -51,17 +51,18 @@ export default class DOM
 		if (selector.match(/^\d+$/))
 		{
 			selector = Number(selector);
-			for (let i = 0; i <= selector; i++)
+			for (let i = 0; source && i <= selector; i++)
 				source = source.parentNode;
-		} else if (selector.length)
+			return source;
+		} else if (selector && selector.length)
 		{
-			do
-			{
-				source = source.parentNode;
-			} while (!source.matches(selector));
+			for (source = source.parentNode; source; source = source.parentNode)
+				if (!source.matches)
+					return null;
+				else if (source.matches(selector))
+					return source;
 		} else
-			source = source.parentNode;
-		return source;
+			return source.parentNode;
 	}
 
 	/**
@@ -176,12 +177,14 @@ export default class DOM
 				source = DOM.next(source, step.slice(6, -2).trim());
 			else if (step.startsWith("next(") && step.endsWith(')'))
 				source = DOM.next(source, step.slice(5, -1).trim());
+			else if (step.startsWith("search(") && step.endsWith(')'))
+				source = source.querySelector(step.slice(7, -1).trim());
 			else if (/^\+?\d+$/.test(step))
 				source = source.children[Number(step)];
 			else if (/^-\d+$/.test(step))
-				source = source.children[source.children.length - Number(step)];
+				source = source.children[source.children.length + Number(step)];
 			else
-				source = source.querySelector(step);
+				source = Array.from(source.children).filter(e => e.tagName === step.toUpperCase())[0];
 		}
 
 		return Optional.of(source);

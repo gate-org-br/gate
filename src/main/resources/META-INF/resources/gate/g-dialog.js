@@ -4,9 +4,7 @@ template.innerHTML = `
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
-			<nav>
-				<slot></slot>
-			</nav>
+			<nav></nav>
 			<g-navbar>
 			</g-navbar>
 			<a id='hide' href='#'>
@@ -15,10 +13,24 @@ template.innerHTML = `
 				</g-icon>
 			</a>
 		</header>
-		<section part='section'>
+		<section>
+			<slot></slot>
 		</section>
 	</dialog>
- <style>dialog {
+ <style>* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	gap: 8px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+
+dialog {
 	width: 100%;
 	height: 100%;
 	border-radius: 0;
@@ -33,14 +45,14 @@ template.innerHTML = `
 	}
 }
 
-:host(*) > dialog > section {
-	padding: 0;
+dialog > section {
+	padding: 8px;
 	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
 
-:host(*) > nav
+nav
 {
 	gap: 8px;
 	width: auto;
@@ -52,8 +64,13 @@ template.innerHTML = `
 	background-color: var(--main4);
 }
 
-::slotted(a),
-::slotted(button)
+nav:empty {
+	display: none;
+}
+
+nav > a ,
+nav > button,
+nav > .g-command
 {
 	font-size: 14px;
 	cursor: pointer;
@@ -61,27 +78,21 @@ template.innerHTML = `
 	text-decoration: none;
 }
 
-:host(*) > dialog > section > div {
-	gap: 8px;
-	padding: 8px;
-	display: flex;
-	flex-direction: column;
-}
-
-:host(*) > dialog > section >  iframe {
+::slotted(iframe:only-child) {
 	margin: 0;
 	width: 100%;
 	border: none;
 	padding: 0px;
 	flex-grow: 1;
+	height: 100%;
 	overflow: hidden
 }</style>`;
 
 /* global customElements, template */
 
 import './g-navbar.js';
+import "./g-dialog-header.js";
 import GWindow from './g-window.js';
-import "./g-dialog-configuration.js";
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
@@ -94,38 +105,48 @@ export default class GDialog extends GWindow
 		super();
 		this.shadowRoot.innerHTML += template.innerHTML;
 		this.shadowRoot.getElementById("hide").addEventListener("click", () => this.hide());
+
+		this.shadowRoot.querySelector("g-navbar")
+			.addEventListener("update", event =>
+				fetch(event.detail.target)
+					.then(ResponseHandler.text)
+					.then(html => this.innerHTML = html)
+					.catch(e => GMessageDialog.error(e) || event.preventDefault()));
 	}
 
-	get caption()
+	get caption ()
 	{
 		return this.shadowRoot
 			.getElementById("caption").innerText;
 	}
 
-	set caption(caption)
+	set caption (caption)
 	{
 		this.shadowRoot.getElementById("caption")
 			.innerText = caption;
 	}
 
-	get navbar()
+	get navbar ()
 	{
 		return this.shadowRoot.querySelector("g-navbar");
 	}
 
-	get type()
+	get type ()
 	{
 		let section = this.shadowRoot.querySelector("section");
 		return !section.firstElementChild || section.firstElementChild.tagName === "IFRAME" ? "frame" : "fetch";
 	}
 
-	get iframe()
+	get toolbar ()
 	{
-		let section = this.shadowRoot.querySelector("section");
+		return this.shadowRoot.querySelector("nav");
+	}
 
-		if (!section.firstElementChild)
+	get iframe ()
+	{
+		if (!this.firstElementChild)
 		{
-			let iframe = section.appendChild(document.createElement("iframe"));
+			let iframe = this.appendChild(document.createElement("iframe"));
 			iframe.dialog = this;
 			iframe.setAttribute("scrolling", "no");
 			iframe.addEventListener("load", () => iframe.focus());
@@ -135,57 +156,35 @@ export default class GDialog extends GWindow
 				.addEventListener("update", event => iframe.src = event.detail.target);
 		}
 
-		if (section.firstElementChild.tagName !== "IFRAME")
+		if (this.firstElementChild.tagName !== "IFRAME")
 			throw new Error("Attempt to access iframe of a fetch dialog");
 
-		return section.firstElementChild;
+		return this.firstElementChild;
 	}
 
-	get content()
-	{
-		let section = this.shadowRoot.querySelector("section");
-
-		if (!section.firstElementChild)
-		{
-			let div = section.appendChild(document.createElement("div"));
-
-			this.shadowRoot.querySelector("g-navbar")
-				.addEventListener("update", event =>
-					fetch(event.detail.target)
-						.then(ResponseHandler.text)
-						.then(html => div.innerHTML = html)
-						.catch(e => GMessageDialog.error(e) || event.preventDefault()));
-		}
-
-		if (section.firstElementChild.tagName !== "DIV")
-			throw new Error("Attempt to access content of a frame dialog");
-
-		return section.firstElementChild;
-	}
-
-	set width(value)
+	set width (value)
 	{
 		this.shadowRoot.querySelector("dialog").style.width = value;
 	}
 
-	set height(value)
+	set height (value)
 	{
 		this.shadowRoot.querySelector("dialog").style.height = value;
 	}
 
-	static hide()
+	static hide ()
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
 	}
 
-	static set caption(caption)
+	static set caption (caption)
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.caption = caption;
 	}
 
-	static get caption()
+	static get caption ()
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.caption;
@@ -196,7 +195,7 @@ customElements.define('g-dialog', GDialog);
 
 window.addEventListener("@dialog", function (event)
 {
-	let {method, action, form, parameters} = event.detail;
+	let { method, action, form, parameters } = event.detail;
 	let trigger = event.composedPath()[0] || event.target;
 
 	let dialog = window.top.document.createElement("g-dialog");
@@ -230,7 +229,8 @@ window.addEventListener("@dialog", function (event)
 		case "fetch":
 			fetch(RequestBuilder.build(method, action, form))
 				.then(ResponseHandler.text)
-				.then(html => dialog.content.innerHTML = html)
+				.then(result => document.createRange().createContextualFragment(result))
+				.then(result => dialog.replaceChildren(...Array.from(result.childNodes)))
 				.catch(GMessageDialog.error);
 			break;
 

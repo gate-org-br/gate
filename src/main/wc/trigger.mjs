@@ -27,7 +27,7 @@ export default function trigger(cause, element)
 		form = element.closest("form");
 
 	let method = (element.getAttribute("formmethod") || element.getAttribute("data-method") || form?.method || "get").toLowerCase();
-	let action = element.href || element.getAttribute("formaction") || element.getAttribute("data-action") || form?.action || "";
+	let action = element.getAttribute("href") || element.getAttribute("formaction") || element.getAttribute("data-action") || form?.action || "";
 	let target = element.target || element.getAttribute("formtarget") || element.getAttribute("data-target") || form?.target || "_self";
 
 	if (cause.ctrlKey && cause.type === "click")
@@ -108,7 +108,7 @@ window.addEventListener("click", function (event)
 			return EventHandler.cancel(event);
 		}
 	}
-}, true);
+});
 
 window.addEventListener("submit", function (event)
 {

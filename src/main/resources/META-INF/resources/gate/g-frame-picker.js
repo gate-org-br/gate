@@ -4,7 +4,7 @@ template.innerHTML = `
 		<header tabindex='1'>
 			<label id='caption'>
 			</label>
-			<a id='cancel' href='#'>
+			<a id='close' href='#'>
 				<g-icon>
 					&#X1011;
 				</g-icon>
@@ -14,6 +14,17 @@ template.innerHTML = `
 			<iframe name='g-frame-picker' scrolling="no">
 			</iframe>
 		</section>
+		<footer>
+			<g-coolbar>
+				<button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon>
+				</button>
+				<hr>
+				<button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
 	</dialog>
  <style>dialog {
 	width: 100%;
@@ -56,6 +67,7 @@ iframe[name] {
 /* global customElements, template, CSV */
 
 import './trigger.js';
+import DOM from './dom.js';
 import Return from './@return.js';
 import GWindow from './g-window.js';
 
@@ -67,41 +79,44 @@ export default class GFramePicker extends GWindow
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
-		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", { detail: [] })));
+
 
 		let iframe = this.shadowRoot.querySelector("iframe");
 		iframe.onmouseenter = () => iframe.focus();
 		iframe.addEventListener("load", () => iframe.removeAttribute("name"));
 	}
 
-	get caption()
+	get caption ()
 	{
 		return this.shadowRoot.getElementById("caption").innerText;
 	}
 
-	set caption(caption)
+	set caption (caption)
 	{
 		this.shadowRoot.getElementById("caption").innerText = caption;
 	}
 
-	get iframe()
+	get iframe ()
 	{
 		return this.shadowRoot.querySelector("iframe");
 	}
 
-	show()
+	show ()
 	{
 		Return.bind(this);
 		super.show();
 	}
 
-	hide()
+	hide ()
 	{
 		super.hide();
 		Return.free(this);
 	}
 
-	static pick(url, caption)
+	static pick (url, caption)
 	{
 		let picker = window.top.document.createElement("g-frame-picker");
 		picker.show();
@@ -120,25 +135,21 @@ customElements.define('g-frame-picker', GFramePicker);
 
 window.addEventListener("@frame-picker", function (event)
 {
+	let { cause, action, parameters } = event.detail;
 	let trigger = event.composedPath()[0] || event.target;
-	let parameters = event.detail.parameters
-		.map(e => e ? document.getElementById(e) : e);
+	parameters = parameters.map(e => e ? DOM.navigate(trigger, e).orElseThrow(`${e} is not a valid selector`) : e);
 
-	if (event.detail.cause.type === "change")
+	if (cause.type === "change")
 	{
-		GFramePicker.pick(event.detail.action, trigger.title || "")
+		GFramePicker.pick(action, trigger.title || "")
 			.then(values => Return.update(parameters, values))
 			.catch(() => parameters.forEach(e => e.value = ""));
-	} else if (parameters.every(e => !e.value))
+	} else
 	{
 		trigger.style.pointerEvents = "none";
-		GFramePicker.pick(event.detail.action, trigger.title || "")
+		GFramePicker.pick(action, trigger.title || "")
 			.then(values => Return.update(parameters, values))
 			.catch(() => undefined)
 			.finally(() => trigger.style.pointerEvents = "");
-	} else
-	{
-		event.preventDefault();
-		parameters.forEach(e => e.value = "");
 	}
 });

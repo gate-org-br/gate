@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='/gate/Gate.css' />
+		<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
+		<script type='module' src='/gate/Gate.js' charset="utf-8"></script>
+	</head>
+
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+		<main>
+			<section>
+				<g-callout>
+					<h1>@hide</h1>
+					<p>
+						The <strong>@hide</strong> trigger hides
+						the current dialog
+					</p>
+				</g-callout>
+
+				<g-code-viewer>
+					<fieldset>
+						<label>
+							Name
+							<span>
+								User 2
+							</span>
+						</label>
+					</fieldset>
+
+					<g-coolbar>
+						<a class='primary' href="#" target='@hide'>
+							Hide <g-icon>&#X1001;</g-icon>
+						</a>
+					</g-coolbar>
+				</g-code-viewer>
+			</section>
+		</main>
+	</body>
+</html>

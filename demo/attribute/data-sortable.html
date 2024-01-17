@@ -1,0 +1,76 @@
+<g-callout class="fill">
+	<h1>data-sortable</h1>
+	<p>
+		The <strong>data-sortable</strong> attribute is specifically designed for HTML tables, where
+		it is applied to column headers to indicate that the content in that column is sortable.
+		This attribute empowers users to interactively organize data within the table by clicking on
+		the designated column headers. The sorting functionality is determined by the text content
+		of the respective column. However, if a <strong>&lt;td&gt;</strong> element within a column
+		includes the <strong>data-value</strong> attribute, the sorting is adjusted to use its the numeric value.
+	</p>
+</g-callout>
+
+<g-code-viewer ignore='="[_AD]"|data-sorted="[^"]+"'>
+	<table>
+		<thead>
+			<tr>
+				<th data-sortable>Name</th>
+				<th data-sortable>Sex</th>
+				<th data-sortable>Age</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Foo</td>
+				<td>Male</td>
+				<td data-value="25">25</td>
+			</tr>
+			<tr>
+				<td>Bar</td>
+				<td>Female</td>
+				<td data-value="30">30</td>
+			</tr>
+			<tr>
+				<td>Baz</td>
+				<td>Male</td>
+				<td data-value="22">22</td>
+			</tr>
+			<tr>
+				<td>Qux</td>
+				<td>Female</td>
+				<td data-value="28">28</td>
+			</tr>
+			<tr>
+				<td>Fob</td>
+				<td>Male</td>
+				<td data-value="32">32</td>
+			</tr>
+			<tr>
+				<td>Bat</td>
+				<td>Female</td>
+				<td data-value="27">27</td>
+			</tr>
+			<tr>
+				<td>Bit</td>
+				<td>Male</td>
+				<td data-value="29">29</td>
+			</tr>
+			<tr>
+				<td>Car</td>
+				<td>Female</td>
+				<td data-value="35">35</td>
+			</tr>
+			<tr>
+				<td>Zoo</td>
+				<td>Male</td>
+				<td data-value="26">26</td>
+			</tr>
+			<tr>
+				<td>Tap</td>
+				<td>Female</td>
+				<td data-value="31">31</td>
+			</tr>
+		</tbody>
+	</table>
+</g-code-viewer>
+

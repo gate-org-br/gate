@@ -5,24 +5,26 @@ template.innerHTML = `
 		<slot></slot>
 	</div>
 	<button id="next"><g-icon>&#X2279;</g-icon></button>
- <style>* {
+ <style>*
+{
 	box-sizing: border-box;
 }
 
 :host(*)
 {
 	width: 100%;
+	height: auto;
 	color: black;
 	border: none;
 	height: auto;
-	flex-grow: 1;
 	display: grid;
 	align-items: stretch;
 	justify-content: stretch;
 	grid-template-columns: auto 1fr auto;
 }
 
-#next, #prev
+#next,
+#prev
 {
 	width: 24px;
 	border: none;
@@ -38,13 +40,11 @@ div
 	display: flex;
 	grid-column: 2;
 	overflow-x: hidden;
-	white-space:  nowrap;
+	white-space: nowrap;
 	flex-direction: row-reverse;
 }
 
-::slotted(a),
-::slotted(button),
-::slotted(.g-command)
+::slotted(:is(a, button, .g-command))
 {
 	gap: 8px;
 	width: 140px;
@@ -62,8 +62,6 @@ div
 	min-width: fit-content;
 	background-color: #E8E8E8;
 	justify-content: space-between;
-
-	min-width: 200px;
 }
 
 ::slotted(a:hover),
@@ -82,7 +80,8 @@ div
 
 ::slotted(a.primary),
 ::slotted(button.primary),
-::slotted(.g-command.primary) {
+::slotted(.g-command.primary)
+{
 	color: white;
 	border: none;
 	background-color: #2A6B9A;
@@ -90,13 +89,15 @@ div
 
 ::slotted(a.primary:hover),
 ::slotted(button.primary:hover),
-::slotted(.g-command.primary:hover) {
+::slotted(.g-command.primary:hover)
+{
 	background-color: #25608A;
 }
 
 ::slotted(a.alternative),
 ::slotted(button.alternative),
-::slotted(.g-command.alternative) {
+::slotted(.g-command.alternative)
+{
 	color: white;
 	border: none;
 	background-color: #009E60;
@@ -104,26 +105,30 @@ div
 
 ::slotted(a.alternative:hover),
 ::slotted(button.alternative:hover),
-::slotted(.g-command.alternative:hover) {
+::slotted(.g-command.alternative:hover)
+{
 	background-color: #008E56;
 }
 
 ::slotted(a.tertiary),
 ::slotted(button.tertiary),
-::slotted(.g-command.tertiary) {
+::slotted(.g-command.tertiary)
+{
 	background-color: var(--main1);
 	border: 1px solid var(--main6);
 }
 
 ::slotted(a.tertiary:hover),
 ::slotted(button.tertiary:hover),
-::slotted(.g-command.tertiary:hover) {
+::slotted(.g-command.tertiary:hover)
+{
 	border: 1px solid black;
 }
 
 ::slotted(a.danger),
 ::slotted(button.danger),
-::slotted(.g-command.danger) {
+::slotted(.g-command.danger)
+{
 	color: white;
 	border: none;
 	background-color: #AA2222;
@@ -131,7 +136,8 @@ div
 
 ::slotted(a.danger:hover),
 ::slotted(button.danger:hover),
-::slotted(.g-command.danger:hover) {
+::slotted(.g-command.danger:hover)
+{
 	background-color: #882222;
 }
 
@@ -146,26 +152,27 @@ div
 	flex-grow: 100000;
 }
 
-
-
-button {
+button
+{
 	color: black;
 	display: none;
 	height: 44px;
 }
 
-g-icon {
+g-icon
+{
 	color: #000099;
 }
 
-button {
+button
+{
 	cursor: pointer;
 
 }
 
 button:hover
 {
-	background-color:  var(--hovered);
+	background-color: var(--hovered);
 }
 
 :host([reverse]) div
@@ -189,34 +196,86 @@ button:hover
 	content: "";
 	height: 44px;
 	grid-column: 2;
-	animation-fill-mode:both;
+	animation-fill-mode: both;
 	background-color: var(--base1);
 	animation: progress 2s infinite ease-in-out;
 }
 
-@keyframes progress {
-	0% {
+@keyframes progress
+{
+	0%
+	{
 		width: 0;
 	}
-	100% {
+
+	100%
+	{
 		width: 100%;
 	}
 }
-</style>`;
+
+::slotted(:is(a, button, .g-command)[data-loading])
+{
+	position: relative;
+	pointer-events: none;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 32px;
+	content: "";
+	height: 16px;
+	position: absolute;
+	animation-fill-mode: both;
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	padding: 8px;
+	display: flex;
+	color: black;
+	font-size: 16px;
+	content: '\\2017';
+	font-family: gate;
+	position: absolute;
+	align-items: center;
+	border-radius: inherit;
+	background-color: #F0F0F0;
+}
+
+@keyframes loading
+{
+	0%
+	{
+		width: 0;
+	}
+
+	100%
+	{
+		width: calc(100% - 40px);
+	}
+}</style>`;
 
 /* global customElements */
 
-function visible(element, container)
+const EPSILON = 0.5;
+function visible (element, container)
 {
 	element = element.getBoundingClientRect();
 	container = container.getBoundingClientRect();
-	return 	element.top >= container.top &&
-		element.left >= container.left &&
-		element.bottom <= container.bottom &&
-		element.right <= container.right;
+	return element.top >= container.top - EPSILON &&
+		element.left >= container.left - EPSILON &&
+		element.bottom <= container.bottom + EPSILON &&
+		element.right <= container.right + EPSILON;
 }
 
-function scroll(coolbar, first, next, inline)
+function scroll (coolbar, first, next, inline)
 {
 	let div = coolbar.shadowRoot.querySelector("div");
 	for (let element = first; element; element = next(element))
@@ -226,7 +285,7 @@ function scroll(coolbar, first, next, inline)
 			if (visible(element, div))
 				for (element = next(element); element; element = next(element))
 					if (!visible(element, div))
-						return element.scrollIntoView({inline, behavior: "smooth"});
+						return element.scrollIntoView({ inline, behavior: "smooth", block: 'nearest' });
 }
 
 customElements.define("g-coolbar", class extends HTMLElement
@@ -234,7 +293,7 @@ customElements.define("g-coolbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
@@ -261,12 +320,12 @@ customElements.define("g-coolbar", class extends HTMLElement
 		new ResizeObserver(() => this.update()).observe(this);
 	}
 
-	get disabled()
+	get disabled ()
 	{
 		return this.hasAttribute("disabled");
 	}
 
-	set disabled(value)
+	set disabled (value)
 	{
 		if (value)
 			this.setAttribute("disabled", "");
@@ -274,12 +333,12 @@ customElements.define("g-coolbar", class extends HTMLElement
 			this.removeAttribute("disabled");
 	}
 
-	connectedCallback()
+	connectedCallback ()
 	{
 		this.update();
 	}
 
-	update()
+	update ()
 	{
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");
