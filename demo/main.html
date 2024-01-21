@@ -2,51 +2,50 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
-	<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
-	<script type='module' src='gate/Gate.js' charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
+		<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
+		<script type='module' src='gate/Gate.js' charset="utf-8"></script>
+	</head>
 
-<body data-loading onload="document.body.removeAttribute('data-loading')">
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
 
-	<main>
-		<header>
-			<img src='/gate/gate.svg' />
-			<label>Gate</label>
-			<label>Version 1.0.0-SNAPSHOT</label>
-		</header>
+		<main>
+			<header>
+				<img src='/gate/gate.svg' />
+				<label>Gate</label>
+				<label>Version 1.0.0-SNAPSHOT</label>
+			</header>
 
-		<nav>
-			<g-tabbar>
-				<a id='targets' href='./target/view.html' target="@innerHTML(section)" aria-selected>
-					Targets<g-icon>&#X1011;</g-icon>
-				</a>
-				<a id='targets' href='./component/view.html' target="@innerHTML(section)">
-					<g-icon>&#X2178;</g-icon>Components
-				</a>
-				<a id='targets' href='./attribute/view.html' target="@innerHTML(section)">
-					<g-icon>&#X2269;</g-icon>Attributes
-				</a>
-				<a target="iframe" href='./card.html'>Cards<g-icon>&#X2197;</g-icon></a>
+			<nav>
+				<g-tabbar>
+					<a id='targets' href='./target/view.html' target="@inner-html(section)" aria-selected>
+						Targets<g-icon>&#X1011;</g-icon>
+					</a>
+					<a id='targets' href='./component/view.html' target="@inner-html(section)">
+						<g-icon>&#X2178;</g-icon>Components
+					</a>
+					<a id='targets' href='./attribute/view.html' target="@inner-html(section)">
+						<g-icon>&#X2269;</g-icon>Attributes
+					</a>
+					<a target="iframe" href='./card.html'>Cards<g-icon>&#X2197;</g-icon></a>
 
-				<a target="iframe" href='./form.html'>Form<g-icon>&#X2169;</g-icon></a>
-				<hr />
-				<a id="reload" href="./main.html">
-					Reload<g-icon>&#X2025;</g-icon>
-				</a>
-				<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
-			</g-tabbar>
-		</nav>
-		<section data-trigger='load' data-action='./target/view.html' data-target='@innerHTML'>
-		</section>
-		<footer>
-			<label>Foo</label>
-			<label>Bar</label>
-		</footer>
-	</main>
-</body>
-
+					<a target="iframe" href='./form.html'>Form<g-icon>&#X2169;</g-icon></a>
+					<hr />
+					<a id="reload" href="./main.html">
+						Reload<g-icon>&#X2025;</g-icon>
+					</a>
+					<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
+				</g-tabbar>
+			</nav>
+			<section data-trigger='load' data-action='./target/view.html' data-target='@inner-html'>
+			</section>
+			<footer>
+				<label>Foo</label>
+				<label>Bar</label>
+			</footer>
+		</main>
+	</body>
 </html>

@@ -4,9 +4,7 @@
 		The <strong>@throttle</strong> trigger is designed to manage the execution frequency of a specified action.
 		It that another trigger is is executed at most once within the specified time interval in
 		milliseconds. This throttling mechanism prevents the action from being triggered too frequently,
-		promoting efficient and controlled event handling. The target trigger and time interval can be passed
-		as parameters in any order. If the trigger parameter is omitted, it defaults to @none. If the time
-		interval parameter is omitted, it defaults to 1000.
+		promoting efficient and controlled event handling. If the time interval parameter is omitted, it defaults to 1000.
 	</p>
 </g-callout>
 
@@ -16,7 +14,7 @@
 	</a>
 	<div>
 		<p>
-			In this example, the "@afterend" trigger is configured to execute at most once every 5 seconds,
+			In this example, the "@after-end" trigger is configured to execute at most once every 5 seconds,
 			regardless of how many times the Fetch button is clicked. This setup ensures that the associated
 			action is throttled, preventing rapid and repeated executions within the specified 5-second time
 			interval.
@@ -28,19 +26,19 @@
 			<g-coolbar>
 				<a href="/target/content.html"
 				   class="primary"
-				   target="@throttle(5000, @afterend(this.parent(1)[0]))">
+				   target="@throttle(5000) > @after-end(this.parent(1)[0])">
 					Fetch<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>
 		</g-code-viewer>
 	</div>
 	<a href="#">
-		Example 1 <g-icon>&#X2013;</g-icon>
+		Example 2 <g-icon>&#X2013;</g-icon>
 	</a>
 	<div>
 		<p>
 			In this example, the time interval parameter is omitted, and the default interval of 1 second is applied.
-			This means that the "@afterend" trigger will execute at most once every 1 second, regardless of the number
+			This means that the "@after-end" trigger will execute at most once every 1 second, regardless of the number
 			of times the Fetch button is clicked.
 		</p>
 		<g-code-viewer style='height: auto'>
@@ -50,7 +48,7 @@
 			<g-coolbar>
 				<a href="/target/content.html"
 				   class="primary"
-				   target="@throttle(@afterend(this.parent(1)[0]))">
+				   target="@throttle > @after-end(this.parent(1)[0])">
 					Fetch<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>

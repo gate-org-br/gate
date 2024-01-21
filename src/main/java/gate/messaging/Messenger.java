@@ -93,10 +93,12 @@ public class Messenger implements ServletContextListener
 	{
 		try
 		{
+			if (sender == null)
+				throw new MessageException("Tentativa de enviar mensagem sem especificar o remetente.");
 			if (receiver == null)
-				throw new MessageException("Esquecifique o destinatário da mensagem.");
+				throw new MessageException("Tentativa de enviar mensagem sem especificar o destinatário.");
 			if (message == null)
-				throw new MessageException("Esquecifique o conteudo da mensagem a ser enviada.");
+				throw new MessageException("Tentativa de enviar mensagem sem especificar seu conteúdo.");
 
 			Mail mail = new Mail();
 			mail.setAttempts(0);

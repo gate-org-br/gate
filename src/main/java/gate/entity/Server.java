@@ -13,6 +13,8 @@ public class Server
 
 	@Required
 	private String host;
+
+	@Required
 	private String port;
 
 	@Required

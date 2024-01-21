@@ -61,8 +61,6 @@ dialog > section {
 
 /* global customElements, template, CSV */
 
-import './trigger.js';
-import DOM from './dom.js';
 import Return from './@return.js';
 import GWindow from './g-window.js';
 
@@ -76,32 +74,32 @@ export default class GFetchPicker extends GWindow
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
-		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", { detail: [] })));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: []})));
 	}
 
-	get caption ()
+	get caption()
 	{
 		return this.shadowRoot.getElementById("caption").innerText;
 	}
 
-	set caption (caption)
+	set caption(caption)
 	{
 		this.shadowRoot.getElementById("caption").innerText = caption;
 	}
 
-	show ()
+	show()
 	{
 		Return.bind(this);
 		super.show();
 	}
 
-	hide ()
+	hide()
 	{
 		super.hide();
 		Return.free(this);
 	}
 
-	static pick (url, caption)
+	static pick(url, caption)
 	{
 		return new Promise((resolve, reject) =>
 		{
@@ -120,28 +118,3 @@ export default class GFetchPicker extends GWindow
 };
 
 customElements.define('g-fetch-picker', GFetchPicker);
-
-
-function pick (event)
-{
-	let trigger = event.composedPath()[0] || event.target;
-	let { cause, action, parameters } = event.detail;
-	parameters = parameters.map(e => e ? DOM.navigate(trigger, e).orElseThrow(`${e} is not a valid selector`) : e);
-
-	if (cause.type === "change")
-	{
-		GFetchPicker.pick(action, trigger.title)
-			.then(values => Return.update(parameters, values))
-			.catch(() => parameters.forEach(e => e.value = ""));
-	} else
-	{
-		trigger.style.pointerEvents = "none";
-		GFetchPicker.pick(action, trigger.title)
-			.then(values => Return.update(parameters, values))
-			.catch(() => undefined)
-			.finally(() => trigger.style.pointerEvents = "");
-	}
-}
-
-window.addEventListener("@pick", pick);
-window.addEventListener("@fetch-picker", pick);

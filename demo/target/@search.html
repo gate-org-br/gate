@@ -2,13 +2,15 @@
 	<h1>@search</h1>
 	<p>
 		The <strong>@search</strong> trigger enhances user interaction by providing a
-		dynamic search dialog. Accepting a filter and a piped trigger as parameters,
-		it displays a dialog featuring a search input field for users to choose an
-		element from a JSON array fetched from the server. The search input triggers
-		requests to the server, either as get requests with search criteria in the
-		query string (if a filter attribute is supplied) or as post requests with
-		user input as the body (if the filter is omitted). The selected object is
-		then passed to the specified trigger parameter, defaulting to <strong>@fill</strong> if omitted.
+		dynamic search dialog. Accepting a filter as parameter, it displays a dialog
+		featuring a search input field for users to choose an element from a JSON array
+		fetched from the server.
+
+		The search input triggers requests to the server, either as get requests with
+		search criteria in the query string (if a filter attribute is supplied) or as
+		post requests with user input as the body (if the filter is omitted).
+
+		The selected object is then dispatched to the next trigger on the pipeline.
 		To optimize performance, a debounce of 300ms is applied, preventing unnecessary server requests.
 		Additionally, when triggered by text input, the dialog opens with the input value pre-applied to the search field.
 		If the server returns a single value, it is automatically selected. This functionality streamlines
@@ -36,9 +38,9 @@
 					Search:
 					<span>
 						<input type="text" data-action="./objects.json"
-						       data-target="@search(Name)" title="Search" />
+						       data-target="@search(Name) > @fill" title="Search" />
 						<input type="hidden">
-						<a href="./objects.json" target="@search(Name)" title="Search">
+						<a href="./objects.json" target="@search(Name) > @fill" title="Search">
 							<g-icon>
 								&#X2010;
 							</g-icon>
@@ -70,9 +72,9 @@
 				<label>
 					Search:
 					<span>
-						<input type="text" data-action="./options.json" data-target="@search" title="Search" />
+						<input type="text" data-action="./options.json" data-target="@search > @fill" title="Search" />
 						<input type="hidden">
-						<a href="./options.json" target="@search" title="Search">
+						<a href="./options.json" target="@search > @fill" title="Search">
 							<g-icon>
 								&#X2010;
 							</g-icon>
@@ -105,9 +107,9 @@
 				<label>
 					Search:
 					<span>
-						<input type="text" data-action="./properties.json" data-target="@search" title="Search" />
+						<input type="text" data-action="./properties.json" data-target="@search > @fill" title="Search" />
 						<input type="hidden">
-						<a href="./properties.json" target="@search" title="Search">
+						<a href="./properties.json" target="@search > @fill" title="Search">
 							<g-icon>
 								&#X2010;
 							</g-icon>

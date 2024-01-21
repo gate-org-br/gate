@@ -12,7 +12,6 @@ table {
   border: 1px solid var(--base3);
 }
 table[is='g-table'][data-table-size='0'][data-empty] {
-  flex-grow: 1;
   padding: 12px;
   display: flex;
   font-size: 16px;
@@ -20,7 +19,6 @@ table[is='g-table'][data-table-size='0'][data-empty] {
   text-align: justify;
   align-items: stretch;
   border-left: 6px solid;
-  justify-content: center;
   border-color: var(--main6);
   border-radius: 0 3px 3px 0;
   background-color: var(--main1);

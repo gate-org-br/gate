@@ -2,17 +2,15 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import Extractor from './extractor.js';
-import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
-import {TriggerStartupEvent, TriggerSuccessEvent,
-	TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 window.addEventListener("@fill", function (event)
 {
 	let path = event.composedPath();
-	let trigger = event.composedPath()[0] || event.target;
+	let trigger = path[0] || event.target;
 	let {method, action, form, parameters} = event.detail;
 
 	parameters = parameters
@@ -28,15 +26,13 @@ window.addEventListener("@fill", function (event)
 	if (!label)
 		throw new Error("Label input not found");
 
-	event.target.dispatchEvent(new TriggerStartupEvent(event));
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.json)
 		.then(result =>
 		{
 			label.value = Extractor.label(result);
 			value.value = Extractor.value(result);
+			event.success(path, result);
 		})
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+		.catch(error => event.failure(path, error));
 });

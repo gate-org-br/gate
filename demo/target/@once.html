@@ -1,8 +1,8 @@
 <g-callout class="fill">
 	<h1>@once</h1>
 	<p>
-		The <strong>"@once"</strong> trigger accepts another trigger as a parameter and
-		ensures that it is executed at most once.
+		The <strong>"@once"</strong> trigger ensures every subsequent trigger
+		on the pipeline will be executed only once.
 	</p>
 </g-callout>
 
@@ -18,7 +18,7 @@
 			<g-coolbar>
 				<a href="/target/content.html"
 				   class="primary"
-				   target="@once(@afterend(this.parent(1)[0]))">
+				   target="@once > @after-end(this.parent(1)[0])">
 					Fetch<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>

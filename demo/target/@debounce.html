@@ -1,23 +1,28 @@
 <g-callout class="fill">
 	<h1>@debounce</h1>
 	<p>
-		Debouncing, a programming practice to optimize system performance, is particularly useful in scenarios
-		where time-consuming tasks need controlled execution frequencies. In user interfaces and event handling,
-		the <strong>@debounce</strong> mechanism serves to limit how often a function is called within a specified
-		time interval. Essential parameters for this process include a timeout duration and a piped trigger.
-		The <strong>@debounce</strong> ensures that its associated trigger executes only after the trigger event
-		has ceased for the specified timeout, preventing unnecessary or premature function calls. Users can conveniently
-		pass these required parameters in any order, providing flexibility and customization options for tailoring the
-		debounce behavior to specific application needs.
+		Debouncing, a programming technique aimed at enhancing system performance,
+		proves especially valuable in situations where resource-intensive tasks require
+		regulated execution frequencies.
+
+		In the context of user interfaces and event handling, the debounce mechanism strategically
+		restricts the frequency of function calls within a defined time window.
+
+		The <strong>@debounce</strong> trigger ensures that the subsequent trigger in the sequence
+		is invoked only after the triggering event has ceased for the specified timeout duration.
+
+		This helps prevent unnecessary or premature function calls.
+		If the timeout parameter is omitted, it defaults to 500 milliseconds.
 	</p>
-</g-callout>		<g-tab-control>
+</g-callout>
+<g-tab-control>
 	<a href="#">
 		Example 1 <g-icon>&#X2013;</g-icon>
 	</a>
 	<div>
 		<p>
 			In this example, the <strong>@debounce</strong> mechanism plays a crucial role in optimizing user input handling.
-			It ensures that the associated <strong>@JSONtoHTML</strong> trigger activates only one second after the user stops
+			It ensures that the <strong>@json-to-html</strong> trigger activates only one second after the user stops
 			inputting data.
 		</p>
 
@@ -28,7 +33,7 @@
 						<input type="text"
 						       data-trigger='input'
 						       data-action='/objects.json?Job=@{this}'
-						       data-target="@debounce(1000, @JSONtoHTML(@innerHTML(this.parent(2).next())))">
+						       data-target="@debounce(1000) > @json-to-html > @inner-html(this.parent(2).next())">
 					</span>
 				</label>
 			</fieldset>

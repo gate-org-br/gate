@@ -1,6 +1,6 @@
 <g-callout>
 	<p>
-		The target indicate where to put the result of the request.
+		The target indicate what to do with the result of the request.
 		The default HTML targets start with the <strong>underline (_)</strong> character and by default
 		only anchors and forms, using the target attribute, or buttons, using the formtarget attribute,
 		can have targets.
@@ -10,17 +10,20 @@
 </g-callout>
 
 <g-tab-control type='fetch' vertical>
-	<a href="/target/@afterbegin.html">
-		@afterbegin
+	<a href="/target/@after-begin.html">
+		@after-begin
 	</a>
-	<a href="/target/@afterend.html">
-		@afterend
+	<a href="/target/@after-end.html">
+		@after-end
 	</a>
-	<a href="/target/@beforebegin.html">
-		@beforebegin
+	<a href="/target/@before-begin.html">
+		@before-begin
 	</a>
-	<a href="/target/@beforeend.html">
-		@beforeend
+	<a href="/target/@before-end.html">
+		@before-end
+	</a>
+	<a href="/target/@cache.html">
+		@cache
 	</a>
 	<a href="/target/@debounce.html">
 		@debounce
@@ -31,29 +34,32 @@
 	<a href="/target/@fetch-picker.html">
 		@fetch-picker
 	</a>
+	<a href="/target/@fill.html">
+		@fill
+	</a>
 	<a href="/target/@form.html">
 		@form
 	</a>
 	<a href="/target/@frame-picker.html">
 		@frame-picker
 	</a>
-	<a href="/target/stack.html">
-		@free
+	<a href="/target/@inner-html.html">
+		@inner-html
 	</a>
-	<a href="/target/@innerHTML.html">
-		@innerHTML
-	</a>
-	<a href="/target/@JSONtoHTML.html">
-		@JSONtoHTML
+	<a href="/target/@json-to-html.html">
+		@json-to-html
 	</a>
 	<a href="/target/@message.html">
 		@message
 	</a>
+	<a href="/target/@none.html">
+		@none
+	</a>
 	<a href="/target/@once.html">
 		@once
 	</a>
-	<a href="/target/@outerHTML.html">
-		@outerHTML
+	<a href="/target/@outer-html.html">
+		@outer-html
 	</a>
 	<a href="/target/@pick.html">
 		@pick
@@ -61,17 +67,17 @@
 	<a href="/target/@populate.html">
 		@populate
 	</a>
+	<a href="/target/@post.html">
+		@post
+	</a>
 	<a href="/target/@progress.html">
 		@progress
 	</a>
-	<a href="/target/stack.html">
-		@pull
-	</a>
-	<a href="/target/stack.html">
-		@push
-	</a>
 	<a href="/target/@report.html">
 		@report
+	</a>
+	<a href="/target/@save.html">
+		@save
 	</a>
 	<a href="/target/@search.html">
 		@search
@@ -87,5 +93,8 @@
 	</a>
 	<a href="/target/@tooltip/@tooltip.html">
 		@tooltip
+	</a>
+	<a href="/target/@value.html">
+		@value
 	</a>
 </g-tab-control>

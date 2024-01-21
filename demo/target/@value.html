@@ -1,0 +1,34 @@
+<g-callout class="fill">
+	<h1>@value</h1>
+	<p>
+		Updates the value of the target element to the result of the HTTP request.
+		You can pass the target element selector as a parameter or omit
+		it to make the trigger element target itself.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			On this example, the <strong>@form </strong>trigger fetches the <a href="/form.json" target='_blank'>form.json</a>
+			file from the server using the HTTP get method and presents it's as a form to be edited by the user.
+			Upon edition, the edited form is dispatched to the <strong>@post</strong> trigger.
+			The <strong>@post</strong> trigger makes a HTTP post with the edited form to <a href="/form.json" target='_blank'>form.json</a>
+			and dispatches the result to the <strong>@value</strong> trigger.
+			The <strong>@value</strong> trigger updates it's target value with the edited form.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-form-view>
+			</g-form-view>
+			<g-coolbar>
+				<a href="/form.json"
+				   class="primary"
+				   target="@form > @post > @value(this.parent().prev())">
+					Update form<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

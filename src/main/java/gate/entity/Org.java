@@ -3,6 +3,7 @@ package gate.entity;
 import gate.annotation.Description;
 import gate.annotation.Entity;
 import gate.annotation.Icon;
+import gate.annotation.Name;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.LocalTimeInterval;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 
 @Icon("2006")
 @Entity("orgID")
+@Name("Organização")
 public class Org implements Serializable
 {
 

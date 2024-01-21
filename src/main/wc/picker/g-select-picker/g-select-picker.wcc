@@ -3,14 +3,8 @@
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
-import DataURL from './data-url.js';
-import EventHandler from './event-handler.js';
 import ObjectFilter from './object-filter.js';
 import GMessageDialog from './g-message-dialog.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import TriggerEvent, {TriggerStartupEvent, TriggerSuccessEvent,
-	TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 export default class GSelectPicker extends GWindow
 {
@@ -81,32 +75,5 @@ export default class GSelectPicker extends GWindow
 		});
 	}
 };
-
-
-window.addEventListener("@select", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {cause, method, action, form, parameters} = event.detail;
-
-	let target = parameters[0] || "@fill";
-
-	trigger.dispatchEvent(new TriggerStartupEvent(event));
-	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.json)
-		.catch(error =>
-		{
-			EventHandler.dispatch(path, new TriggerFailureEvent(event, error));
-			throw error;
-		})
-		.then(options => GSelectPicker.pick(options, trigger.title))
-		.then(result => JSON.stringify(result.value))
-		.then(result => new DataURL("application/json", result).toString())
-		.then(result => trigger.dispatchEvent(new TriggerEvent(cause, method, result, target)))
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(() => undefined)
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
-
-});
 
 customElements.define('g-select-picker', GSelectPicker);

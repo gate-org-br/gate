@@ -95,7 +95,9 @@ customElements.define('g-tab-control', class extends HTMLElement
 							|| (link.form || {}).action;
 						fetch(RequestBuilder.build(method, action, link.form))
 							.then(ResponseHandler.text)
-							.then(e => link.nextElementSibling.innerHTML = e);
+							.then(result => document.createRange().createContextualFragment(result))
+							.then(result => link.nextElementSibling.replaceChildren(...Array.from(result.childNodes)))
+							.catch(error => GMessageDialog.error(error.message));
 					} else if (type === "frame")
 					{
 						let iframe = document.createElement("iframe");

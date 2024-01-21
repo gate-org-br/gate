@@ -2,7 +2,7 @@ import DOM from './dom.js';
 import resolve from './resolve.js';
 import validate from './validate.js';
 import EventHandler from './event-handler.js';
-import TriggerEvent from './trigger-event.js';
+import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
 
 export default function trigger(cause, element)
 {
@@ -39,7 +39,9 @@ export default function trigger(cause, element)
 	if (!form || element.hasAttribute("formnovalidate") || form.hasAttribute("novalidate") || form.reportValidity())
 	{
 		action = resolve(element, action);
-		element.dispatchEvent(new TriggerEvent(cause, method, action, target, form));
+		let event = TriggerEvent.of(cause, method, action, form, target);
+		element.dispatchEvent(new TriggerStartupEvent(event));
+		element.dispatchEvent(event);
 	}
 }
 
@@ -83,8 +85,8 @@ window.addEventListener("click", function (event)
 		{
 			if (event.ctrlKey)
 				return;
-			let method = element.getAttribute("formmethod") || element.form?.method || "get";
-			let target = element.getAttribute("formtarget") || element.form?.target || "_self";
+			let method = element.getAttribute("formmethod") || "post";
+			let target = element.getAttribute("formtarget") || "_self";
 
 			if (target.startsWith("@") || (method !== "get" && method !== "post"))
 			{
@@ -122,7 +124,7 @@ window.addEventListener("submit", function (event)
 		event.preventDefault();
 		event.stopPropagation();
 		event.stopImmediatePropagation();
-		trigger(event, submiter || form);
+		trigger(event, form);
 	} else if (!validate(form))
 		event.preventDefault();
 });

@@ -1,7 +1,6 @@
 package gate.tags;
 
 import gate.converter.Converter;
-import gate.tags.AttributeTag;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.util.List;

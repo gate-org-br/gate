@@ -3,8 +3,7 @@
 	<p>
 		The <strong>@select</strong> trigger simplifies the process of choosing an element from a JSON array
 		obtained through a request. Users can trigger a dialog to make their selection, and the chosen element
-		is then handled by the specified trigger. If the trigger parameter is omitted, the default handler is
-		set to <strong>@fill</strong>.
+		is passed to the next trigger on the pipeline.
 	</p>
 </g-callout>
 
@@ -29,7 +28,7 @@
 					<span>
 						<input type="text" />
 						<input type="hidden">
-						<a href="/objects.json" target="@select" title="Select 1">
+						<a href="/objects.json" target="@select > @fill" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>
@@ -60,7 +59,7 @@
 					<span>
 						<input type="text" />
 						<input type="hidden">
-						<a href="./table.json" target="@select" title="Select 1">
+						<a href="./table.json" target="@select > @fill" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>
@@ -93,7 +92,7 @@
 					<span>
 						<input type="text" />
 						<input type="hidden">
-						<a href="./options.json" target="@select" title="Select 1">
+						<a href="./options.json" target="@select > @fill" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>
@@ -127,7 +126,7 @@
 					<span>
 						<input type="text" />
 						<input type="hidden">
-						<a href="./properties.json" target="@select" title="Select 1">
+						<a href="./properties.json" target="@select > @fill" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>

@@ -4,7 +4,7 @@ export default class DataURL
 	#data;
 	#filename;
 
-	static of(string)
+	static parse(string)
 	{
 		const match = string.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9]+)(;base64)?(?:;name=(.*))?,(.*)$/);
 		if (!match)

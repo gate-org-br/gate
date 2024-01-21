@@ -1,3 +1,65 @@
+import Lexer from './lexer.js';
+
+const QUOTES = ['"', '`', "'"];
+
+function trigger(lexer)
+{
+	let name = lexer.consume();
+	if (!name.match(/^@[a-z]+(-[a-z]+)*$/))
+		throw new Error(`Invalid trigger name ${name}`);
+	return {name, parameters: parameters(lexer)};
+}
+
+function parameters(lexer)
+{
+	let result = [];
+
+	if (lexer.token === "(")
+	{
+
+		do
+		{
+			lexer.next();
+
+			if (lexer.token === ",")
+				result.push("");
+			else if (lexer.token[0] === "'"
+				|| lexer.token[0] === "`"
+				|| lexer.token[0] === '"')
+				result.push(lexer.consume().slice(1, -1));
+			else
+			{
+				let value = '';
+				do
+				{
+					let string = [];
+					while (lexer.token
+						&& lexer.token !== "("
+						&& lexer.token !== ")"
+						&& lexer.token !== ","
+						&& lexer.token !== "'"
+						&& lexer.token !== "`"
+						&& lexer.token !== '"')
+						string.push(lexer.consume());
+					value += string.join(" ");
+
+					if (lexer.token === "(")
+						value += "(" + parameters(lexer).join(" ") + ")";
+
+				} while (lexer.token && lexer.token !== ")" && lexer.token !== ",");
+				result.push(value);
+			}
+		} while (lexer.token === ",");
+
+		if (!lexer.token === ")")
+			throw new Error(`Unterminated parameter list found on ${lexer.toString()}`);
+		lexer.next();
+	}
+
+	return result;
+}
+
+
 export default class Parser
 {
 	static path(string)
@@ -10,7 +72,7 @@ export default class Parser
 			{
 				for (i++; i < string.length && string[i] !== ']'; i++)
 				{
-					if (string[i] === '"' || string[i] === "'")
+					if (QUOTES.includes(string[i]))
 					{
 						const delimiter = string[i];
 						for (i++; i < string.length && string[i] !== delimiter; i++)
@@ -25,7 +87,7 @@ export default class Parser
 			} else if (string[i] === '.')
 			{
 				for (i++; i < string.length && string[i] !== '.' && string[i] !== '['; i++)
-					if (string[i] === '"' || string[i] === "'")
+					if (QUOTES.includes(string[i]))
 					{
 						const delimiter = string[i];
 						for (i++; i < string.length && string[i] !== delimiter; i++)
@@ -42,63 +104,33 @@ export default class Parser
 		return steps;
 	}
 
-	static method(string)
+	static pipeline(string)
 	{
-		let parentesis = string.indexOf("(");
-		if (parentesis <= 0)
-			return ({name: string, parameters: []});
-		if (!string.endsWith(")"))
-			throw new Error(`${string} is not a valid method`);
-		return ({name: string.substring(0, parentesis),
-			parameters: Parser.parameters(string.slice(parentesis + 1, -1))});
-	}
-
-	static parameters(string)
-	{
-		function quoted()
+		let result = [];
+		let lexer = new Lexer(string, c =>
 		{
-			const delimiter = string[i];
-			parameter += delimiter;
-			for (i++; i < string.length && string[i] !== delimiter; i++)
-				parameter += string[i];
-			if (string[i] !== delimiter)
-				throw new Error(`Unterminated string found on ${string}`);
-			parameter += delimiter;
-		}
-
-		function params()
-		{
-			parameter += "(";
-			for (i++; i < string.length && string[i] !== ")"; i++)
-				if (string[i] === '"' || string[i] === "'")
-					quoted();
-				else
-					parameter += string[i];
-			if (string[i] !== ")")
-				throw new Error(`Unclosed parenthesis found on ${string}`);
-			parameter += ")";
-		}
-
-		let i;
-		let parameter = '';
-		let parameters = [];
-		for (i = 0; i < string.length; i++)
-		{
-			if (string[i] === ',')
+			switch (c)
 			{
-				i++;
-				parameters.push(parameter.trim());
-				parameter = '';
-			} else if (string[i] === '"' || string[i] === "'")
-				quoted();
-			else if (string[i] === "(")
-				params();
-			else
-				parameter += string[i];
-		}
+				case '"':
+				case "'":
+				case "`":
+					return "DELIMITER";
+				case "(":
+				case ")":
+				case ">":
+				case ",":
+					return "SEPARATOR";
+				default:
+					return "CHARACTER";
+			}
+		});
 
-		parameters.push(Parser.unquote(parameter));
-		return parameters;
+
+		result.push(trigger(lexer));
+		while (lexer.consume() === ">")
+			result.push(trigger(lexer));
+
+		return result;
 	}
 
 	static unquote(string)
@@ -107,7 +139,9 @@ export default class Parser
 		if (string.startsWith("'")
 			&& string.endsWith("'")
 			|| string.startsWith('"')
-			&& string.endsWith('"'))
+			&& string.endsWith('"')
+			|| string.startsWith('`')
+			&& string.endsWith('`'))
 			string = string.slice(1, -1);
 		return string;
 	}

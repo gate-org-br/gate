@@ -1,3 +1,5 @@
+import DataURL from './data-url.js';
+
 export default class GFilePicker
 {
 	static pick(type = "*")
@@ -30,26 +32,15 @@ export default class GFilePicker
 		}).finally(() => input.remove());
 	}
 
-	static fetch(response)
+	static saveDataURL(url, filename)
 	{
-		let contentType = response.headers.get('content-type');
-		let contentDisposition = response.headers.get('content-disposition') || "";
-		let filename = contentDisposition.split('filename=')[1] || contentType.replace("/", ".");
-		return response.blob().then(blob => GFilePicker.save(blob, filename));
-	}
-
-	static save(file, filename = "file.bin")
-	{
-		const reader = new FileReader();
-		reader.onloadend = function ()
-		{
-			const link = document.createElement('a');
-			link.download = filename;
-			document.body.appendChild(link);
-			link.href = reader.result;
-			link.click();
-			link.remove();
-		};
-		reader.readAsDataURL(file);
+		let dataURL = DataURL.parse(url);
+		filename = filename || dataURL.filename
+			|| dataURL.contentType.replace("/", ".");
+		let anchor = document.createElement("a");
+		anchor.href = url;
+		anchor.download = filename;
+		anchor.click();
+		return url;
 	}
 };

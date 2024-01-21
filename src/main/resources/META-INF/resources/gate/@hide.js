@@ -5,7 +5,7 @@ import DOM from './dom.js';
 import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
-import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
+import {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 function hide(trigger)
 {
@@ -25,7 +25,6 @@ window.addEventListener("@hide", function (event)
 	if (!action || action === '#')
 		return hide(trigger);
 
-	event.target.dispatchEvent(new TriggerStartupEvent(event));
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.none)
 		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))

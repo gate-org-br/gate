@@ -27,18 +27,18 @@ Array.from(document.getElementsByTagName("form")).forEach(function (form)
 		if (!event.ctrlKey && event.keyCode === ENTER)
 		{
 			var element = document.activeElement;
-			switch (element.tagName.toLowerCase())
+			switch (element.tagName)
 			{
-				case "select":
-				case "textarea":
+				case "SELECT":
+				case "TEXTAREA":
 					break;
-				case "a":
-				case "button":
+				case "A":
+				case "BUTTON":
 					element.click();
 					event.preventDefault();
 					event.stopImmediatePropagation();
 					break;
-				case "input":
+				case "INPUT":
 					var commit = this.querySelector(".Commit");
 					if (commit)
 					{

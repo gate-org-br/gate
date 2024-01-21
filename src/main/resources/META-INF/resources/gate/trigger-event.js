@@ -3,18 +3,58 @@ import Parser from './parser.js';
 import trigger from './trigger.js';
 import validate from './validate.js';
 import CancelError from './cancel-error.js';
+import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
 
 export default class TriggerEvent extends CustomEvent
 {
-	constructor(cause, method, action, target, form)
+	#pipeline;
+	constructor(name, cause, method, action, form, parameters, pipeline)
 	{
-		let type = Parser.method(target);
-		super(type.name, {bubbles: true, composed: true, cancelable: false,
-			detail: {cause, method, action, target,
-				parameters: type.parameters, form}});
+		super(name, {bubbles: true, composed: true, cancelable: false,
+			detail: {cause, method, action, form, parameters}});
+		this.#pipeline = pipeline;
 	}
 
+	failure(path, error)
+	{
+		EventHandler.dispatch(path,
+			new TriggerFailureEvent(this, error),
+			new TriggerResolveEvent(this));
+	}
+
+	success(path, result)
+	{
+		if (this.#pipeline.length)
+		{
+			let {name, parameters} = this.#pipeline[0];
+			let {cause, method, action, form} = this.detail;
+			EventHandler.dispatch(path,
+				new TriggerEvent(name,
+					cause,
+					method,
+					result || action,
+					form,
+					parameters,
+					this.#pipeline.slice(1)));
+		} else
+			EventHandler.dispatch(path,
+				new TriggerSuccessEvent(this),
+				new TriggerResolveEvent(this));
+	}
+
+	resolve(path)
+	{
+		EventHandler.dispatch(path, new TriggerResolveEvent(this));
+	}
+
+	static of(cause, method, action, form, target)
+	{
+		let pipeline = Parser.pipeline(target);
+		let {name, parameters} = pipeline[0];
+		pipeline = pipeline.slice(1);
+		return new TriggerEvent(name, cause, method, action, form, parameters, pipeline);
+	}
 }
 
 export class TriggerStartupEvent extends CustomEvent

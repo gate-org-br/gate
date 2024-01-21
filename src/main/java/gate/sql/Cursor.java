@@ -845,9 +845,9 @@ public class Cursor implements AutoCloseable, Fetchable
 			Map<String, Class<?>> result = new LinkedHashMap<>();
 			ResultSetMetaData rsmd = getResultSet().getMetaData();
 			int count = rsmd.getColumnCount();
-			for (int i = 0; i < count; i++)
-				result.put(rsmd.getColumnName(i + 1),
-					SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1)));
+			for (int i = 1; i <= count; i++)
+				result.put(rsmd.getColumnLabel(i),
+					SQLTypeConverter.getJavaType(rsmd.getColumnType(i)));
 			return result;
 		} catch (SQLException e)
 		{

@@ -1,0 +1,30 @@
+<g-callout class="fill">
+	<h1>@save</h1>
+	<p>
+		Saves the contents of the request to the disk,
+		allowing users to download or store the data.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-callout>
+			<p>
+				In this example, the <strong>@report</strong> trigger initiates a request,
+				passing the chosen type as a parameter, and dispatches the report data to
+				the <strong>@save</strong> trigger.
+			</p>
+		</g-callout>
+		<g-code-viewer style='height: auto'>
+			<g-coolbar>
+				<a href="/download.pdf"
+				   class="primary"
+				   target="@report > @save">
+					Print<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

@@ -59,8 +59,7 @@ import DataURL from './data-url.js';
 import ObjectFilter from './object-filter.js';
 import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
-import TriggerEvent, {TriggerStartupEvent, TriggerSuccessEvent,
-	TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
+import TriggerEvent, {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 function debounce(func, timeout = 300)
 {
@@ -195,25 +194,3 @@ export default class GSearchPicker extends GWindow
 };
 
 customElements.define('g-search-picker', GSearchPicker);
-
-window.addEventListener("@search", function (event)
-{
-	event.preventDefault();
-	event.stopPropagation();
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {cause, method, action, parameters} = event.detail;
-
-	let target = parameters.filter(e => e[0] === "@")[0] || "@fill";
-	let filter = parameters.filter(e => e[0] !== "@")[0] || "label";
-	let value = trigger.tagName === "INPUT" ? trigger.value : null;
-
-	trigger.dispatchEvent(new TriggerStartupEvent(event));
-	GSearchPicker.pick(action, filter, trigger.title, value)
-		.then(result => JSON.stringify(result.value))
-		.then(result => new DataURL("application/json", result).toString())
-		.then(result => trigger.dispatchEvent(new TriggerEvent(cause, method, result, target)))
-		.catch(() => undefined)
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
-});

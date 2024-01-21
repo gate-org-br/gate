@@ -2,11 +2,11 @@
 	<h1>@pick</h1>
 	<h3>This target is an alias to @fetch-picker</h3>
 	<p>
-		The @pick trigger accepts a list of input element IDs as parameters.
+		The <strong>@pick</strong> trigger accepts a list of <strong>&lt;input&gt;</strong> element selectors as parameters.
 		Upon activation, it opens a dialog displaying the requested content.
-		The response should contain a corresponding @return trigger for each available option.
-		The input elements specified in the initial @pick trigger will then receive the values
-		passed by the selected @return trigger.
+		The response should contain a corresponding <strong>@return</strong> trigger for each available option.
+		The <strong>&lt;input&gt;</strong> elements specified in the initial <strong>@pick</strong> trigger will then receive the values
+		passed by the selected <strong>@return</strong> trigger.
 	</p>
 </g-callout>
 
@@ -22,9 +22,9 @@
 					<span>
 						<input id="pick-value" type="hidden" />
 						<input id="pick-label" type="text" data-target="@pick(this, this.prev(0))"
-							data-action="/target/fetch-return.html" title="Selecione" />
+						       data-action="/target/fetch-return.html" title="Selecione" />
 						<a href="/target/fetch-return.html" target="@pick(this.prev(1), this.prev(0))"
-							title="Selecione">
+						   title="Selecione">
 							<g-icon>
 								&#X2010;
 							</g-icon>

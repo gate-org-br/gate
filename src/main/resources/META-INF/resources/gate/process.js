@@ -1,11 +1,4 @@
-import EventHandler from './event-handler.js';
-import TriggerEvent from './trigger-event.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
 import fetchEventSource	from './fetch-event-source.js';
-import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
-
-let sequence = 1;
 
 export default function process(request, id, name)
 {
@@ -74,25 +67,3 @@ export default function process(request, id, name)
 		});
 	});
 }
-
-window.addEventListener("@progress", function (event)
-{
-	let cause = event.detail.cause;
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let target = event.detail.parameters[0] || "@none";
-
-	let processName = trigger.title || "Progresso";
-	let processId = trigger.id || "proccess@" + sequence++;
-
-	event.target.dispatchEvent(new TriggerStartupEvent(event));
-	process(RequestBuilder.build(event.detail.method,
-		event.detail.action,
-		event.detail.form), processId, processName)
-		.then(ResponseHandler.dataURL)
-		.then(action => trigger.dispatchEvent(new TriggerEvent(cause, "get", action, target)))
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
-});
-

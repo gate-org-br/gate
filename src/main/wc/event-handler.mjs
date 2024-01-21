@@ -25,11 +25,11 @@ export default class EventHandler extends HTMLElement
 		event.stopImmediatePropagation();
 	}
 
-	static dispatch(path, event)
+	static dispatch(path, ...events)
 	{
-		for (let target of path)
-			if (target.isConnected && target.dispatchEvent)
-				return target.dispatchEvent(event);
+		let target = path.filter(e => e.isConnected && e.dispatchEvent)[0];
+		if (target)
+			events.forEach(event => target.dispatchEvent(event));
 	}
 }
 

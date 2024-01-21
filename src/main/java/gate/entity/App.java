@@ -17,6 +17,7 @@ import javax.enterprise.context.Dependent;
 
 @Dependent
 @Icon("2189")
+@Name("Aplicação")
 @Converter(AppConverter.class)
 public class App implements Serializable
 {

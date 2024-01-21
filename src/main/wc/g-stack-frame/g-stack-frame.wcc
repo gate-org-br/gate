@@ -55,30 +55,3 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 		return this.firstElementChild;
 	}
 });
-
-window.addEventListener("@stack", function (event)
-{
-	let stack = window.top.document.createElement("g-stack-frame");
-
-	stack.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
-
-	switch (event.detail.parameters[0] || "fetch")
-	{
-		case "frame":
-			if (event.detail.method === "get")
-				stack.iframe.src = event.detail.action;
-			else
-				fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-					.then(ResponseHandler.text)
-					.then(html => stack.iframe.srcDoc = html)
-					.catch(GMessageDialog.error);
-			break;
-		case "fetch":
-			fetch(RequestBuilder.build(event.detail.method, event.detail.action, event.detail.form))
-				.then(ResponseHandler.text)
-				.then(html => stack.content.innerHTML = html)
-				.catch(GMessageDialog.error);
-			break;
-	}
-
-});

@@ -3,7 +3,7 @@
 	<p>
 		Presents a dialog allowing the user to chose a report type from a list of
 		available ones (PDF, XLS, ODT, and CSV). Upon selection, makes the request
-		trigger request with the chosen type passed as parameter.
+		with the chosen type passed as parameter.
 		The parameter name can be provided as the first parameter of the trigger,
 		if omitted, it defaults to <b>"type"</b>.
 	</p>
@@ -13,11 +13,18 @@
 		Example 1 <g-icon>&#X2013;</g-icon>
 	</a>
 	<div>
+		<g-callout>
+			<p>
+				On this example, the <strong>@report</strong> trigger makes
+				the request passing the chosen type as a parameter and dispatch
+				the report data to the <strong>@save</strong> trigger.
+			</p>
+		</g-callout>
 		<g-code-viewer style='height: auto'>
 			<g-coolbar>
 				<a href="/download.pdf"
 				   class="primary"
-				   target="@report">
+				   target="@report > @save">
 					Print<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>

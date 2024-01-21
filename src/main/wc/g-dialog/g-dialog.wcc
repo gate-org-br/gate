@@ -3,10 +3,8 @@
 import './g-navbar.js';
 import "./g-dialog-header.js";
 import GWindow from './g-window.js';
-import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
-import { TriggerResolveEvent } from './trigger-event.js';
 
 export default class GDialog extends GWindow
 {
@@ -18,41 +16,47 @@ export default class GDialog extends GWindow
 
 		this.shadowRoot.querySelector("g-navbar")
 			.addEventListener("update", event =>
-				fetch(event.detail.target)
-					.then(ResponseHandler.text)
-					.then(html => this.innerHTML = html)
-					.catch(e => GMessageDialog.error(e) || event.preventDefault()));
+			{
+				if (this.type === "frame")
+					this.iframe.srcDoc = event.detail.target;
+				else
+					fetch(event.detail.target)
+						.then(ResponseHandler.text)
+						.then(html => this.innerHTML = html)
+						.catch(e => GMessageDialog.error(e) || event.preventDefault())
+			});
 	}
 
-	get caption ()
+	get caption()
 	{
 		return this.shadowRoot
 			.getElementById("caption").innerText;
 	}
 
-	set caption (caption)
+	set caption(caption)
 	{
 		this.shadowRoot.getElementById("caption")
 			.innerText = caption;
 	}
 
-	get navbar ()
+	get navbar()
 	{
 		return this.shadowRoot.querySelector("g-navbar");
 	}
 
-	get type ()
+	get type()
 	{
-		let section = this.shadowRoot.querySelector("section");
-		return !section.firstElementChild || section.firstElementChild.tagName === "IFRAME" ? "frame" : "fetch";
+		return this.firstElementChild
+			&& this.firstElementChild === this.lastElementChild
+			&& this.firstElementChild.tagName === "IFRAME" ? "frame" : "fetch";
 	}
 
-	get toolbar ()
+	get toolbar()
 	{
 		return this.shadowRoot.querySelector("nav");
 	}
 
-	get iframe ()
+	get iframe()
 	{
 		if (!this.firstElementChild)
 		{
@@ -72,29 +76,29 @@ export default class GDialog extends GWindow
 		return this.firstElementChild;
 	}
 
-	set width (value)
+	set width(value)
 	{
 		this.shadowRoot.querySelector("dialog").style.width = value;
 	}
 
-	set height (value)
+	set height(value)
 	{
 		this.shadowRoot.querySelector("dialog").style.height = value;
 	}
 
-	static hide ()
+	static hide()
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.hide();
 	}
 
-	static set caption (caption)
+	static set caption(caption)
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			window.frameElement.dialog.caption = caption;
 	}
 
-	static get caption ()
+	static get caption()
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.caption;
@@ -102,57 +106,3 @@ export default class GDialog extends GWindow
 };
 
 customElements.define('g-dialog', GDialog);
-
-window.addEventListener("@dialog", function (event)
-{
-	let { method, action, form, parameters } = event.detail;
-	let trigger = event.composedPath()[0] || event.target;
-
-	let dialog = window.top.document.createElement("g-dialog");
-	dialog.caption = trigger.getAttribute("title");
-
-	let type = parameters.filter(e => e === "fetch" || e === "frame")[0] || "fetch";
-	let size = parameters.filter(e => e !== "fetch" && e !== "frame")[0];
-	let height = parameters.filter(e => e => e !== "fetch" && e !== "frame")[1] || size;
-
-	if (size)
-		dialog.width = dialog.height = size;
-	if (height)
-		dialog.height = height;
-
-
-	if (trigger.hasAttribute("data-navigator") || trigger.parentNode.hasAttribute("data-navigator"))
-	{
-		let triggers = Array.from(trigger.parentNode.children);
-		dialog.navbar.targets = triggers.map(e => e.href || e.formaction || e.getAttribute("data-action"));
-		for (let index = 0; index < triggers.length; index++)
-			if (triggers[index] === trigger)
-				dialog.navbar.index = index;
-	}
-
-
-	dialog.show().finally(() => setTimeout(() => event.target.dispatchEvent(new TriggerResolveEvent(event)), 0));
-
-
-	switch (type)
-	{
-		case "fetch":
-			fetch(RequestBuilder.build(method, action, form))
-				.then(ResponseHandler.text)
-				.then(result => document.createRange().createContextualFragment(result))
-				.then(result => dialog.replaceChildren(...Array.from(result.childNodes)))
-				.catch(GMessageDialog.error);
-			break;
-
-		case "frame":
-			if (event.detail.method === "get")
-				dialog.iframe.src = event.detail.action;
-			else
-				fetch(RequestBuilder.build(method, action, form))
-					.then(ResponseHandler.text)
-					.then(html => dialog.iframe.srcDoc = html)
-					.catch(GMessageDialog.error);
-			break;
-	}
-});
-

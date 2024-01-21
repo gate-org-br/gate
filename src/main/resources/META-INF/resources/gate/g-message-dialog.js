@@ -76,13 +76,7 @@ label::first-line  {
 /* global customElements, template */
 
 import './g-icon.js';
-import './trigger.js';
-import GBlock from './g-block.js';
 import GWindow from './g-window.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import { TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent } from './trigger-event.js';
 
 /**
  * Represents a custom message dialog window that extends GWindow.
@@ -106,7 +100,7 @@ export default class GMessageDialog extends GWindow
 	 * Sets the type attribute of the message dialog.
 	 * @param {string} type - The type of the message dialog (SUCCESS, WARNING, ERROR, INFO).
 	 */
-	set type (type)
+	set type(type)
 	{
 		this.setAttribute("type", type);
 	}
@@ -115,7 +109,7 @@ export default class GMessageDialog extends GWindow
 	 * Gets the type attribute of the message dialog.
 	 * @returns {string} - The type of the message dialog.
 	 */
-	get type ()
+	get type()
 	{
 		return this.getAttribute("type");
 	}
@@ -124,7 +118,7 @@ export default class GMessageDialog extends GWindow
 	 * Sets the text attribute of the message dialog.
 	 * @param {string} text - The text content of the message dialog.
 	 */
-	set text (text)
+	set text(text)
 	{
 		this.setAttribute("text", text);
 	}
@@ -133,7 +127,7 @@ export default class GMessageDialog extends GWindow
 	 * Gets the text attribute of the message dialog.
 	 * @returns {string} - The text content of the message dialog.
 	 */
-	get text ()
+	get text()
 	{
 		return this.getAttribute("text");
 	}
@@ -142,7 +136,7 @@ export default class GMessageDialog extends GWindow
 	 * Gets the title attribute of the message dialog.
 	 * @returns {string} - The title of the message dialog.
 	 */
-	get title ()
+	get title()
 	{
 		return this.getAttribute("title");
 	}
@@ -151,12 +145,12 @@ export default class GMessageDialog extends GWindow
 	 * Sets the title attribute of the message dialog.
 	 * @param {string} title - The title of the message dialog.
 	 */
-	set title (title)
+	set title(title)
 	{
 		return this.setAttribute("title", title);
 	}
 
-	attributeChangedCallback (name)
+	attributeChangedCallback(name)
 	{
 		switch (name)
 		{
@@ -169,7 +163,7 @@ export default class GMessageDialog extends GWindow
 		}
 	}
 
-	static get observedAttributes ()
+	static get observedAttributes()
 	{
 		return ['type', 'text', "title"];
 	}
@@ -180,7 +174,7 @@ export default class GMessageDialog extends GWindow
 	 * @param {string} text - The text content of the success message.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static success (text, duration)
+	static success(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "SUCCESS";
@@ -199,7 +193,7 @@ export default class GMessageDialog extends GWindow
 	 * @param {string} text - The text content of the warning message.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static warning (text, duration)
+	static warning(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "WARNING";
@@ -218,7 +212,7 @@ export default class GMessageDialog extends GWindow
 	 * @param {string} text - The text content of the error message.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static error (text, duration)
+	static error(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "ERROR";
@@ -237,7 +231,7 @@ export default class GMessageDialog extends GWindow
 	 * @param {string} text - The text content of the info message.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static info (text, duration)
+	static info(text, duration)
 	{
 		var message = window.top.document.createElement("g-message-dialog");
 		message.type = "INFO";
@@ -256,7 +250,7 @@ export default class GMessageDialog extends GWindow
 	 * @param {Object} status - The status object containing type and message properties.
 	 * @param {number} [duration] - The duration in milliseconds for the message dialog.
 	 */
-	static show (type, message, duration)
+	static show(type, message, duration)
 	{
 		switch (type)
 		{
@@ -277,22 +271,3 @@ export default class GMessageDialog extends GWindow
 }
 
 customElements.define('g-message-dialog', GMessageDialog);
-
-window.addEventListener("@message", function (event)
-{
-	event.preventDefault();
-	event.stopPropagation();
-	let { method, action, form, parameters } = event.detail;
-
-	let type = parameters.filter(e => ["success", "warning", "error", "info"].includes(e))[0] || "success";
-	let duration = parameters.filter(e => /^\d+$/.test(e)).map(parseInt)[0];
-
-	event.target.dispatchEvent(new TriggerStartupEvent(event));
-	let path = event.composedPath();
-	return fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.text)
-		.then(text => GMessageDialog.show(type, text, duration))
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
-});

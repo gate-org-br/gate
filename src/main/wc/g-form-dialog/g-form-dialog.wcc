@@ -3,13 +3,11 @@
 import './g-form.js';
 import './g-icon.js';
 import './g-coolbar.js';
+import DataURL from './data-url.js';
 import GWindow from './g-window.js';
 import CancelError from './cancel-error.js';
-import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
-import TriggerEvent from './trigger-event.js';
-import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 export default class GFormDialog extends GWindow
 {
@@ -103,28 +101,21 @@ customElements.define('g-form-dialog', GFormDialog);
 
 window.addEventListener("@form", function (event)
 {
-	let parameters = event.detail.parameters;
-
-	let target = parameters[0];
-	if (!target)
-		throw new Error("@form trigger target not specified");
-
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form} = event.detail;
+	let {method, action, form, parameters: [width, height]} = event.detail;
 
 	let options = {};
 	options.caption = trigger.title;
-	options.width = parameters[1];
-	options.height = parameters[2] || options.width;
+	options.width = width;
+	options.height = height || width;
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.json)
 		.then(form => GFormDialog.edit(form, options))
-		.then(result => `data:application/json;base64,${btoa(JSON.stringify(result))}`)
-		.then(action => trigger.dispatchEvent(new TriggerEvent(event, "get", action, target)))
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+		.then(result => JSON.stringify(result))
+		.then(result => new DataURL("application/json", result).toString())
+		.then(result => event.success(path, result))
+		.catch(error => event.failure(path, error));
 });
 

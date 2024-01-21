@@ -61,15 +61,9 @@ section g-icon
 /* global customElements, template */
 
 import './g-icon.js';
-import './trigger.js';
 import GWindow from './g-window.js';
-import GFilePicker from './g-file-picker.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import {TriggerStartupEvent, TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
-class GReportPicker extends GWindow
+export default class GReportPicker extends GWindow
 {
 	constructor()
 	{
@@ -80,7 +74,8 @@ class GReportPicker extends GWindow
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		Array.from(this.shadowRoot.querySelectorAll("button"))
-			.forEach(a => a.addEventListener("click", a => this.dispatchEvent(new CustomEvent("commit", {detail: a.id}))));
+			.forEach(button => button.addEventListener("click", () =>
+					this.dispatchEvent(new CustomEvent("commit", {detail: button.id}))));
 	}
 
 	static pick(caption)
@@ -98,25 +93,3 @@ class GReportPicker extends GWindow
 }
 
 customElements.define('g-report-picker', GReportPicker);
-
-window.addEventListener("@report", function (event)
-{
-	event.preventDefault();
-	event.stopPropagation();
-	let {method, action, form} = event.detail;
-	let [parameter = "type"] = event.detail.parameters;
-	let trigger = event.composedPath()[0] || event.target;
-
-	let path = event.composedPath();
-	GReportPicker.pick(trigger.title).then(type =>
-	{
-		const url = new URL(action);
-		url.searchParams.set(parameter, type);
-		fetch(RequestBuilder.build(method, url.toString(), form))
-			.then(ResponseHandler.response)
-			.then(response => GFilePicker.fetch(response))
-			.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-			.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-			.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
-	}).catch(() => undefined);
-});
