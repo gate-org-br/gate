@@ -18,22 +18,35 @@ template.innerHTML = `
 	height: auto;
 	flex-grow: 1;
 	display: grid;
+	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
-	grid-template-columns: 24px 1fr 24px;
 	background-color: var(--main3);
+	grid-template-columns: auto 1fr auto;
 }
 
 #next,
 #prev
 {
+	height: 100%;
 	border: none;
 	color: #999999;
 	font-size: 16px;
 	min-width: 24px;
 	flex-basis: 24px;
+	position: absolute;
 	align-items: center;
 	justify-content: center;
+}
+
+#prev
+{
+	left: 0;
+}
+
+#next
+{
+	right: 0;
 }
 
 div
@@ -69,15 +82,6 @@ div
 	flex-direction: column;
 	justify-content: space-around;
 	background-color: var(--main4);
-}
-
-:host(.inline) ::slotted(a),
-:host(.inline) ::slotted(button),
-:host(.inline) ::slotted(.g-command)
-{
-	flex-basis: 160px;
-	flex-direction: row;
-	justify-content: flex-start;
 }
 
 ::slotted(a[aria-selected]),
@@ -142,17 +146,6 @@ button:hover
 	pointer-events: none;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])::after
-{
-	left: 32px;
-	content: "";
-	height: 16px;
-	position: absolute;
-	animation-fill-mode: both;
-	background-color: var(--base1);
-	animation: loading 2s infinite ease-in-out;
-}
-
 ::slotted(:is(a, button, .g-command)[data-loading])::before
 {
 	top: 0px;
@@ -160,34 +153,60 @@ button:hover
 	right: 0px;
 	bottom: 0px;
 	padding: 8px;
-	display: flex;
 	color: black;
+	display: flex;
 	font-size: 16px;
 	content: '\\2017';
 	font-family: gate;
 	position: absolute;
-	align-items: center;
 	border-radius: inherit;
+	justify-content: center;
 	background-color: #F0F0F0;
 }
 
-@keyframes loading
+::slotted(:is(a, button, .g-command)[data-loading])::after
 {
-	0%
-	{
-		width: 0;
-	}
+	content: "";
+	bottom: 8px;
+	height: 14px;
+	position: absolute;
+	animation-fill-mode: both;
+	max-width: calc(100% - 16px);
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
+}
 
-	100%
-	{
-		width: calc(100% - 40px);
-	}
+:host(.inline) ::slotted(a),
+:host(.inline) ::slotted(button),
+:host(.inline) ::slotted(.g-command)
+{
+	flex-basis: 160px;
+	flex-direction: row;
+	justify-content: flex-start;
+}
+
+:host(.inline) ::slotted(a)::before,
+:host(.inline) ::slotted(button)::before,
+:host(.inline) ::slotted(.g-command)::before
+{
+	align-items: center;
+	justify-content: flex-start;
+}
+
+:host(.inline) ::slotted(a)::after,
+:host(.inline) ::slotted(button)::after,
+:host(.inline) ::slotted(.g-command)::after
+{
+	left: 32px;
+	max-width: calc(100% - 40px)
 }</style>`;
 
 /* global customElements */
 
+import './loading.js';
+
 const EPSILON = 0.5;
-function visible (element, container)
+function visible(element, container)
 {
 	element = element.getBoundingClientRect();
 	container = container.getBoundingClientRect();
@@ -197,7 +216,7 @@ function visible (element, container)
 		element.right <= container.right + EPSILON;
 }
 
-function scroll (tabbar, first, next, inline)
+function scroll(tabbar, first, next, inline)
 {
 	let div = tabbar.shadowRoot.querySelector("div");
 	for (let element = first; element; element = next(element))
@@ -207,7 +226,7 @@ function scroll (tabbar, first, next, inline)
 			if (visible(element, div))
 				for (element = next(element); element; element = next(element))
 					if (!visible(element, div))
-						return element.scrollIntoView({ inline, behavior: "smooth" });
+						return element.scrollIntoView({inline, behavior: "smooth"});
 }
 
 customElements.define("g-tabbar", class extends HTMLElement
@@ -215,7 +234,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({ mode: 'open' });
+		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
@@ -224,9 +243,15 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 		div.addEventListener("scroll", () => this.update());
 		new ResizeObserver(() => this.update()).observe(this);
+
+		this.addEventListener("trigger-success",
+			event => Array.from(this.children)
+				.forEach(e => e === event.target
+						? e.setAttribute("aria-selected", "")
+						: e.removeAttribute("aria-selected")));
 	}
 
-	connectedCallback ()
+	connectedCallback()
 	{
 		this.update();
 		Array.from(this.children)
@@ -235,12 +260,20 @@ customElements.define("g-tabbar", class extends HTMLElement
 			.forEach(e => e.parentNode.appendChild(e));
 	}
 
-	update ()
+	update()
 	{
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");
 		let prev = this.shadowRoot.querySelector("#prev");
-		prev.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
-		next.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
+
+		prev.style.display = "none";
+		next.style.display = "none";
+		if (!visible(this.firstElementChild, div))
+			if (!visible(this.lastElementChild, div))
+				prev.style.display = next.style.display = "flex";
+			else
+				prev.style.display = "flex";
+		else if (!visible(this.lastElementChild, div))
+			next.style.display = "flex";
 	}
 });

@@ -1,13 +1,6 @@
 import Parser from './parser.js';
 import Optional from './optional.js';
 
-let REGISTRY = [];
-new MutationObserver(mutations => mutations
-		.flatMap(e => Array.from(e.addedNodes))
-		.forEach(root => REGISTRY.forEach(e => DOM.traverse(root, e.filter, e.method))))
-	.observe(document, {childList: true, subtree: true});
-
-
 /**
  * Utility class for DOM manipulation and traversal.
  *
@@ -188,11 +181,5 @@ export default class DOM
 		}
 
 		return Optional.of(source);
-	}
-
-	static forEveryElement(filter, method)
-	{
-		REGISTRY.push({filter, method});
-		DOM.traverse(document, filter, method);
 	}
 }

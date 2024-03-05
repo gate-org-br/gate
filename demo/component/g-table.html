@@ -10,9 +10,27 @@
 	</p>
 
 	<p>
-		For dynamic filtering, include a child <strong>&lt;input&gt;</strong> with a data-filter attribute.
-		This empowers users to input values, instantly triggering dynamic filtering within the <strong>&lt;table&gt;</strong> body.
-		This feature is invaluable for rapidly refining data based on specific criteria, enhancing the user's ability to navigate and focus on relevant information.
+		To enable filtering, you can set a <strong>data-filter</strong> attribute on the table's
+		<strong>&lt;tbody&gt;</strong>.
+		Rows containing the specified <strong>data-filter</strong> text will be displayed, while
+		others will be hidden.
+
+		Additionally, for more precise filtering, you can set a <strong>data-filter:value</strong>
+		attribute on <strong>&lt;tr&gt;</strong> elements.
+		When this attribute is set, the filtering will be based on exact matches of the
+		<strong>data-filter:value</strong> attribute of the <strong>&lt;tr&gt;</strong>
+		instead of the inner text.
+	</p>
+	<p>
+		You can also set a <strong>data-filter</strong> attribute on <strong>&lt;col&gt;</strong>
+		elements in the <strong>&lt;table&gt;</strong>.
+		Rows containing the specified <strong>data-filter</strong> text in the respective column will
+		be displayed, while others will be hidden.
+
+		Additionally, for more precise filtering, you can set a <strong>data-filter:value</strong>
+		attribute on <strong>&lt;td&gt;</strong> elements. When this attribute is set, the filtering
+		will be based on exact matches of the <strong>data-filter:value</strong> attribute of the
+		<strong>&lt;td&gt;</strong> instead of the inner text.
 	</p>
 
 	<p>
@@ -31,130 +49,147 @@
 </g-callout>
 
 <g-code-viewer ignore='="[_AD]"|data-sorted="[^"]+"|data-size="[^"]*"'>
-	<table class="c2 c3 c4" is="g-table" data-empty="Nor records found">
-		<col>
-		<col style="width: 160px">
-		<col style="width: 160px">
-		<col style="width: 80px">
+	<fieldset>
+		<label data-size='8'>
+			<span>
+				<input type="text"
+				       placeholder='Search'
+				       data-trigger='input'
+				       data-action='data:text/plain,@{this}'
+				       data-target='@attribute(this.parent(fieldset).search(table):data-filter)'>
+			</span>
+		</label>
+		<label data-size='8'>
+			<span>
+				<select data-action='data:text/plain,@{this}'
+					data-target='@attribute(this.parent(fieldset).search(col:nth-child(2)):data-filter)'>
+					<option value="">Sex</option>
+					<option value="Male">Male</option>
+					<option value="Female">Female</option>
+				</select>
+			</span>
+		</label>
+		<table class="c2 c3 c4" is="g-table" data-empty="Nor records found">
+			<col>
+			<col style="width: 160px">
+			<col style="width: 160px">
+			<col style="width: 80px">
 
-		<caption>
-			RECORDS FOUND: <span data-table-size></span>
-		</caption>
+			<caption>
+				RECORDS FOUND: <span data-table-size></span>
+			</caption>
 
-		<thead>
-			<tr>
-				<th colspan="4">
-					<input type="text" data-filter>
-				</th>
-			</tr>
-			<tr>
-				<th is='g-table-sorter' data-sortable>Name</th>
-				<th data-sortable>Sex</th>
-				<th data-sortable>Age</th>
-				<th>Remove</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>Foo</td>
-				<td>Male</td>
-				<td data-value="25">25</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Bar</td>
-				<td>Female</td>
-				<td data-value="30">30</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Baz</td>
-				<td>Male</td>
-				<td data-value="22">22</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Qux</td>
-				<td>Female</td>
-				<td data-value="28">28</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Fob</td>
-				<td>Male</td>
-				<td data-value="32">32</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Bat</td>
-				<td>Female</td>
-				<td data-value="27">27</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Bit</td>
-				<td>Male</td>
-				<td data-value="29">29</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Car</td>
-				<td>Female</td>
-				<td data-value="35">35</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Zoo</td>
-				<td>Male</td>
-				<td data-value="26">26</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-			<tr>
-				<td>Tap</td>
-				<td>Female</td>
-				<td data-value="31">31</td>
-				<td>
-					<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
-						<g-icon>&#X2026;</g-icon>
-					</a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+			<thead>
+				<tr>
+					<th data-sortable>Name</th>
+					<th data-sortable>Sex</th>
+					<th data-sortable>Age</th>
+					<th>Remove</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Foo</td>
+					<td data-filter:value='Male'>Male</td>
+					<td data-value="25">25</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Bar</td>
+					<td data-filter:value='Female'>Female</td>
+					<td data-value="30">30</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Baz</td>
+					<td data-filter:value='Male'>Male</td>
+					<td data-value="22">22</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Qux</td>
+					<td data-filter:value='Female'>Female</td>
+					<td data-value="28">28</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Fob</td>
+					<td data-filter:value='Male'>Male</td>
+					<td data-value="32">32</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Bat</td>
+					<td data-filter:value='Female'>Female</td>
+					<td data-value="27">27</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Bit</td>
+					<td data-filter:value='Male'>Male</td>
+					<td data-value="29">29</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Car</td>
+					<td data-filter:value='Female'>Female</td>
+					<td data-value="35">35</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Zoo</td>
+					<td data-filter:value='Male'>Male</td>
+					<td data-value="26">26</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+				<tr>
+					<td>Tap</td>
+					<td data-filter:value='Female'>Female</td>
+					<td data-value="31">31</td>
+					<td>
+						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+							<g-icon>&#X2026;</g-icon>
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</fieldset>
 </g-code-viewer>

@@ -22,7 +22,6 @@ dialog {
 	gap: 8px;
 	padding: 8px;
 	flex-grow: 1;
-	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
@@ -63,7 +62,7 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		stylesheets('g-table.css', 'input.css', 'fieldset.css')
+		stylesheets('table.css', 'input.css', 'fieldset.css')
 			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 

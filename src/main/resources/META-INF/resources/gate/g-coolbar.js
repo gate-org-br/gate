@@ -18,6 +18,7 @@ template.innerHTML = `
 	border: none;
 	height: auto;
 	display: grid;
+	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
 	grid-template-columns: auto 1fr auto;
@@ -29,9 +30,20 @@ template.innerHTML = `
 	width: 24px;
 	border: none;
 	color: #999999;
-	font-size: 16px;
+	font-size: 12px;
+	position: absolute;
 	align-items: center;
 	justify-content: center;
+}
+
+#prev
+{
+	left: 0;
+}
+
+#next
+{
+	right: 0;
 }
 
 div
@@ -47,7 +59,7 @@ div
 ::slotted(:is(a, button, .g-command))
 {
 	gap: 8px;
-	width: 140px;
+	width: 120px;
 	height: 44px;
 	color: black;
 	padding: 8px;
@@ -55,7 +67,7 @@ div
 	border: none;
 	display: flex;
 	cursor: pointer;
-	font-size: 16px;
+	font-size: 12px;
 	border-radius: 3px;
 	align-items: center;
 	text-decoration: none;
@@ -220,17 +232,6 @@ button:hover
 	pointer-events: none;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])::after
-{
-	left: 32px;
-	content: "";
-	height: 16px;
-	position: absolute;
-	animation-fill-mode: both;
-	background-color: var(--base1);
-	animation: loading 2s infinite ease-in-out;
-}
-
 ::slotted(:is(a, button, .g-command)[data-loading])::before
 {
 	top: 0px;
@@ -240,7 +241,7 @@ button:hover
 	padding: 8px;
 	display: flex;
 	color: black;
-	font-size: 16px;
+	font-size: 12px;
 	content: '\\2017';
 	font-family: gate;
 	position: absolute;
@@ -249,23 +250,24 @@ button:hover
 	background-color: #F0F0F0;
 }
 
-@keyframes loading
+::slotted(:is(a, button, .g-command)[data-loading])::after
 {
-	0%
-	{
-		width: 0;
-	}
-
-	100%
-	{
-		width: calc(100% - 40px);
-	}
+	left: 32px;
+	content: "";
+	height: 16px;
+	position: absolute;
+	animation-fill-mode: both;
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
 }</style>`;
 
 /* global customElements */
 
+import './loading.js';
+
 const EPSILON = 0.5;
-function visible (element, container)
+
+function visible(element, container)
 {
 	element = element.getBoundingClientRect();
 	container = container.getBoundingClientRect();
@@ -275,7 +277,7 @@ function visible (element, container)
 		element.right <= container.right + EPSILON;
 }
 
-function scroll (coolbar, first, next, inline)
+function scroll(coolbar, first, next, inline)
 {
 	let div = coolbar.shadowRoot.querySelector("div");
 	for (let element = first; element; element = next(element))
@@ -285,7 +287,7 @@ function scroll (coolbar, first, next, inline)
 			if (visible(element, div))
 				for (element = next(element); element; element = next(element))
 					if (!visible(element, div))
-						return element.scrollIntoView({ inline, behavior: "smooth", block: 'nearest' });
+						return element.scrollIntoView({inline, behavior: "smooth", block: 'nearest'});
 }
 
 customElements.define("g-coolbar", class extends HTMLElement
@@ -293,7 +295,7 @@ customElements.define("g-coolbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({ mode: 'open' });
+		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		let div = this.shadowRoot.querySelector("div");
@@ -320,12 +322,12 @@ customElements.define("g-coolbar", class extends HTMLElement
 		new ResizeObserver(() => this.update()).observe(this);
 	}
 
-	get disabled ()
+	get disabled()
 	{
 		return this.hasAttribute("disabled");
 	}
 
-	set disabled (value)
+	set disabled(value)
 	{
 		if (value)
 			this.setAttribute("disabled", "");
@@ -333,26 +335,43 @@ customElements.define("g-coolbar", class extends HTMLElement
 			this.removeAttribute("disabled");
 	}
 
-	connectedCallback ()
+	adoptedCallback()
 	{
-		this.update();
 	}
 
-	update ()
+	connectedCallback()
+	{
+		this.update();
+		this.setAttribute("size", this.children.length);
+	}
+
+	update()
 	{
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");
 		let prev = this.shadowRoot.querySelector("#prev");
 
-		if (this.hasAttribute("reverse"))
-		{
-			prev.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
-			next.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
-		} else
-		{
-			next.style.display = visible(this.firstElementChild, div) ? "none" : "flex";
-			prev.style.display = visible(this.lastElementChild, div) ? "none" : "flex";
-		}
+		prev.style.display = "none";
+		next.style.display = "none";
+		if (this.firstElementChild)
+			if (this.hasAttribute("reverse"))
+			{
+				if (!visible(this.firstElementChild, div))
+					if (!visible(this.lastElementChild, div))
+						prev.style.display = next.style.display = "flex";
+					else
+						prev.style.display = "flex";
+				else if (!visible(this.lastElementChild, div))
+					next.style.display = "flex";
+			} else
+			{
+				if (!visible(this.firstElementChild, div))
+					if (!visible(this.lastElementChild, div))
+						prev.style.display = next.style.display = "flex";
+					else
+						next.style.display = "flex";
+				else if (!visible(this.lastElementChild, div))
+					prev.style.display = "flex";
+			}
 	}
 });
-

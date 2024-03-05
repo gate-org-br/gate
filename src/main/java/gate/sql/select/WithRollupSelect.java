@@ -23,8 +23,6 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 
 	public abstract static class Constant extends WithRollupSelect implements
 		Refinable.Constant,
-		Refinable.Generic,
-		Refinable.Compiled,
 		Orderable.Constant,
 		Limitable.Constant,
 		Query.Constant.Builder
@@ -56,7 +54,6 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 	}
 
 	public static abstract class Generic extends WithRollupSelect implements
-		Refinable.Constant,
 		Refinable.Generic,
 		Orderable.Generic,
 		Limitable.Generic,
@@ -89,7 +86,6 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 	}
 
 	public static abstract class Compiled extends WithRollupSelect implements
-		Refinable.Constant,
 		Refinable.Compiled,
 		Orderable.Compiled,
 		Limitable.Compiled,

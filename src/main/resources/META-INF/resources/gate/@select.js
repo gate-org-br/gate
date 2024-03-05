@@ -1,4 +1,5 @@
 import DataURL from './data-url.js';
+import GTreePicker from './g-tree-picker.js';
 import GSelectPicker from './g-select-picker.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -16,10 +17,15 @@ window.addEventListener("@select", function (event)
 			event.failure(path, error);
 			throw error;
 		})
-		.then(options => GSelectPicker.pick(options, trigger.title)
-				.then(result => JSON.stringify(result.value))
-				.then(result => new DataURL("application/json", result).toString())
+		.then(options =>
+		{
+			let picker = options.length && options[0].children ?
+				GTreePicker : GSelectPicker;
+			picker.pick(options, trigger.title)
+				.then(e => e.value)
+				.then(DataURL.ofJSON)
 				.then(result => event.success(path, result))
-				.catch(() => event.resolve(path)));
+				.catch(() => event.resolve(path));
+		});
 
 });

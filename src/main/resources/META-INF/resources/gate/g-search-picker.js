@@ -53,13 +53,8 @@ dialog > section
 
 import './g-icon.js';
 import './g-grid.js';
-import DOM from './dom.js';
 import GWindow from './g-window.js';
-import DataURL from './data-url.js';
-import ObjectFilter from './object-filter.js';
-import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
-import TriggerEvent, {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 function debounce(func, timeout = 300)
 {

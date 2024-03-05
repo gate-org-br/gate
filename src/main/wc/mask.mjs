@@ -1,5 +1,3 @@
-import DOM from './dom.js';
-
 export default function mask(element)
 {
 	var changed = false;
@@ -226,4 +224,15 @@ export default function mask(element)
 	element.oncut = () => false;
 }
 
-DOM.forEveryElement(e => e.tagName === "INPUT" && e.hasAttribute("data-mask"), mask);
+const REGISTRY = new WeakSet();
+window.addEventListener("connected", function (event)
+{
+	let element = event.target || event.composedPath()[0];
+	if (!REGISTRY.has(element)
+		&& element.tagName === "INPUT"
+		&& element.hasAttribute("data-mask"))
+	{
+		mask(element);
+		REGISTRY.add(element);
+	}
+});

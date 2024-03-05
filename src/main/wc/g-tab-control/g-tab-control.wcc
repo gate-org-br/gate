@@ -1,10 +1,11 @@
 /* global customElements */
 
+import './loading.js';
 import GBlock from './g-block.js';
+import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
-
 
 function resize(iframe)
 {
@@ -31,6 +32,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 			else
 				header.removeAttribute("toggled");
 		});
+
+		this.addEventListener("click", event =>
+		{
+			if (event.target.closest("g-tab-control") === this
+				&& Array.from(this.children)
+				.some(e => e.hasAttribute("data-loading")))
+				EventHandler.cancel(event);
+		}, true);
 	}
 
 	get type()
@@ -46,13 +55,12 @@ customElements.define('g-tab-control', class extends HTMLElement
 	connectedCallback()
 	{
 		let header = this.shadowRoot.querySelector("header");
+		let links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
+		this.setAttribute("size", links.length);
+		links.forEach(e => e.setAttribute("slot", "head"));
+
 		if (this.type !== "dummy")
 		{
-			var links = Array.from(this.children).filter(e => e.tagName === "A"
-					|| e.tagName === "BUTTON");
-
-			this.setAttribute("size", links.length);
-
 			links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
 				.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
 
@@ -61,7 +69,6 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 			links.forEach(link =>
 			{
-				links.forEach(e => e.setAttribute("slot", "head"));
 				let type = link.getAttribute("data-type") || this.type;
 				let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
 
@@ -79,6 +86,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						while (link.nextElementSibling.firstChild)
 							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
 
+
 					if (link.nextElementSibling.childNodes.length)
 					{
 						event.preventDefault();
@@ -93,11 +101,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 						let action = link.getAttribute('href')
 							|| link.getAttribute('formaction')
 							|| (link.form || {}).action;
+
+						link.setAttribute("data-loading", "");
 						fetch(RequestBuilder.build(method, action, link.form))
 							.then(ResponseHandler.text)
 							.then(result => document.createRange().createContextualFragment(result))
 							.then(result => link.nextElementSibling.replaceChildren(...Array.from(result.childNodes)))
-							.catch(error => GMessageDialog.error(error.message));
+							.catch(error => GMessageDialog.error(error.message))
+							.finally(() => link.removeAttribute("data-loading"));
 					} else if (type === "frame")
 					{
 						let iframe = document.createElement("iframe");
@@ -111,6 +122,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						iframe.addEventListener("load", () =>
 						{
 							resize(iframe);
+							link.removeAttribute("data-loading");
 							let observer = new MutationObserver(() => resize(iframe));
 							observer.observe(iframe.contentDocument || iframe.contentWindow.document,
 								{attributes: true, childList: true, subtree: true});
@@ -124,6 +136,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						else if (link.tagName === "BUTTON")
 							link.setAttribute("formtarget", name);
 						link.nextElementSibling.appendChild(iframe);
+						link.setAttribute("data-loading", "");
 					}
 				});
 
@@ -137,10 +150,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 				links[0].click();
 		} else
 		{
-			var links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
-			this.setAttribute("size", links.length);
-			links.forEach(e => e.setAttribute("slot", "head"));
 			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+
+			links.forEach(link => link.addEventListener("click", () =>
+				{
+					if (window.innerWidth <= 768)
+						header.removeAttribute("toggled");
+					links.forEach(e => e.setAttribute("data-selected", e === link));
+				}));
 		}
 	}
 });

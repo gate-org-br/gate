@@ -1,11 +1,8 @@
 package gate.sql;
 
-import gate.error.DatabaseException;
-import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.literal.NamedLiteral;
 import javax.enterprise.inject.spi.CDI;
-import javax.inject.Named;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public interface LinkSource
@@ -30,45 +27,20 @@ public interface LinkSource
 
 	static DataSource getDefaultDataSource()
 	{
-		var beanManager = CDI.current().getBeanManager();
-		var beans = beanManager.getBeans(DataSource.class);
-
-		if (beans.isEmpty())
-			throw new DatabaseException("No default datasource found");
-
-		var bean = beans.stream().filter(e -> e.getQualifiers().stream()
-			.noneMatch(a -> a.annotationType() == Default.class)).findFirst().orElseThrow(()
-			-> new DatabaseException("No default datasource found"));
-
-		DataSource dataSource = (DataSource) beanManager.getReference(bean, DataSource.class,
-			beanManager.createCreationalContext(bean));
-		return dataSource;
+		Instance<DataSource> dataSourceInstance = CDI.current().select(DataSource.class);
+		if (dataSourceInstance.isUnsatisfied())
+			throw new IllegalArgumentException("Default DataSource not found");
+		return dataSourceInstance.get();
 
 	}
 
 	static DataSource getNamedDataSource(String name)
 	{
-		var beanManager = CDI.current().getBeanManager();
-		var beans = beanManager.getBeans(DataSource.class);
-
-		if (!beans.isEmpty())
-		{
-			var bean = beans.stream().filter(e -> e.getQualifiers().stream().anyMatch(a -> a.annotationType()
-				== Named.class && ((Named) a).value().equals(name)))
-				.findFirst().orElseThrow(() -> new DatabaseException("No " + name + " datasource found"));
-
-			DataSource dataSource = (DataSource) beanManager.getReference(bean, DataSource.class,
-				beanManager.createCreationalContext(bean));
-			return dataSource;
-		}
-
-		try
-		{
-			return (DataSource) new InitialContext().lookup("java:/comp/env/" + name);
-		} catch (NamingException ex)
-		{
-			throw new DatabaseException(ex);
-		}
+		Instance<DataSource> dataSourceInstance = CDI.current().select(DataSource.class,
+			NamedLiteral.of(name));
+		if (dataSourceInstance.isUnsatisfied())
+			throw new IllegalArgumentException("DataSource not found: " + name);
+		return dataSourceInstance.get();
 	}
 
 	static class LinkSourceImpl implements LinkSource

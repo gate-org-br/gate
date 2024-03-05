@@ -1,28 +1,27 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import gate.error.ConversionException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fetches the first row as a map whose keys are the column names and values are the column values.
+ * Fetches the first row as a map whose keys are the column names and values are
+ * the column values.
  */
-public class MapFetcher implements Fetcher<Optional<Map<String, Object>>>
-{
+public class MapFetcher implements Fetcher<Optional<Map<String, Object>>> {
 
 	/**
-	 * Fetches the first row as a map whose keys are the column names and values are the column values.
+	 * Fetches the first row as a map whose keys are the column names and values are
+	 * the column values.
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the column names and values are the
-	 * column values or an empty Optional if the result is empty
+	 * @return an Optional describing the first row as a map whose keys are the
+	 *         column names and values are the
+	 *         column values or an empty Optional if the result is empty
 	 *
 	 */
 	@Override
-	public Optional<Map<String, Object>> fetch(Cursor cursor)
-	{
+	public Optional<Map<String, Object>> fetch(Cursor cursor) {
 		if (!cursor.next())
 			return Optional.empty();
 

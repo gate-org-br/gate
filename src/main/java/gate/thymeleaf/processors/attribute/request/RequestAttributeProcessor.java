@@ -84,10 +84,10 @@ public class RequestAttributeProcessor extends AttributeProcessor
 				call.getTooltip().ifPresent(e -> handler.setAttribute("data-tooltip", e));
 
 			if (!element.hasAttribute("title"))
-				call.getDescription().ifPresent(e -> handler.setAttribute("description", e));
-
-			if (!element.hasAttribute("title"))
+			{
 				call.getName().ifPresent(e -> handler.setAttribute("title", e));
+				call.getDescription().ifPresent(e -> handler.setAttribute("title", e));
+			}
 
 			switch (element.getElementCompleteName().toLowerCase())
 			{

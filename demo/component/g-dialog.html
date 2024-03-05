@@ -1,0 +1,46 @@
+<g-callout class='fill'>
+	<h1>&lt;g-dialog&gt;</h1>
+	<p>
+		The <strong>&lt;g-dialog&gt;</strong> custom web component provides a versatile and user-friendly solution for creating
+		popup or modal elements.
+		With a focus on simplicity and ease of use, the component allows developers to integrate customizable captions, styles,
+		and show/hide functionality into their web applications.
+		The encapsulation mechanism ensures a clean separation between the internal structure and external styling, promoting
+		modularity and maintainability.
+		Users can effortlessly manage the popup's visibility using the <strong>show()</strong> and <strong>hide()</strong> methods,
+		and dynamic adjustments to attributes like <strong>caption</strong> and <strong>style</strong> enable
+		seamless customization. Overall, the <strong>&lt;g-dialog&gt;</strong> component serves as a convenient tool for enhancing
+		user interfaces with stylish and interactive popups.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-callout>
+			<p>
+				On this example, a <strong>&lt;g-dialog&gt;</strong> is defined with a 400px width and height
+				and a Popup caption. The <strong>@show</strong> trigger is used to display it when the Show
+				button is clicked. The <strong>connected</strong> trigger on the <strong>&lt;g-dialog&gt;</strong>
+				makes it show itself when connected to the DOM.
+			</p>
+		</g-callout>
+		<g-code-viewer ignore="<a.*/a>">
+			<g-coolbar>
+				<a class='primary' href="#" target="@show(this.parent().next())">
+					Show <g-icon>&#X2256;</g-icon>
+				</a>
+			</g-coolbar>
+			<g-dialog caption='Popup' style="width: 400px; height: 400px"
+				  data-trigger='connected' data-target="@show(this)">
+				<fieldset>
+					<g-selectn>
+						<input type="checkbox"><label>Option 1</label>
+						<input type="checkbox"><label>Option 2</label>
+						<input type="checkbox"><label>Option 3</label>
+					</g-selectn>
+				</fieldset>
+			</g-dialog>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

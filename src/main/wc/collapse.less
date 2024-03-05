@@ -1,0 +1,60 @@
+table[data-overflowing]
+{
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+
+	> col {
+		display: none
+	}
+	> thead {
+		display: none
+	}
+
+	> tbody
+	{
+		gap: 8px;
+		padding: 8px;
+		display: flex;
+		align-items: stretch;
+		flex-direction: column;
+
+		> tr {
+			gap: 8px;
+			padding: 8px;
+			height: auto;
+			display: flex;
+			border-radius: 3px;
+			flex-direction: column;
+			border: 1px solid var(--main3);
+			box-shadow: 1px 1px 2px 0px var(--main6);
+
+			> td{
+				display: none;
+
+				&[title] {
+					gap: 8px;
+					display: flex;
+					align-items: center;
+
+					&::before {
+						font-weight: bold;
+						white-space: nowrap;
+						content: attr(title)":";
+					}
+				}
+			}
+		}
+	}
+
+	> tfoot {
+		order: 1000;
+
+		> tr,
+		> tr > td {
+			display: flex;
+			align-items: center;
+			justify-content: center
+		}
+	}
+}

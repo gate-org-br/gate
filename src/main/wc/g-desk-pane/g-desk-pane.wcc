@@ -1,6 +1,27 @@
 /* global customElements */
 
 import './g-icon.js';
+import './loading.js';
+
+document.head.insertAdjacentHTML('beforeend',
+	`<style>
+		g-desk-pane img {
+			order: -1;
+			width: 48px;
+			height: 48px
+		}
+		g-desk-pane i, g-desk-pane e, g-desk-pane g-icon {
+			order: -1;
+			font-size: 48px
+		}
+		g-desk-pane.small img {
+			width: 32px;
+			height: 32px
+		}
+		g-desk-pane.small i, g-desk-pane.small e, g-desk-pane.small g-icon {
+			font-size: 24px
+		}
+	</style>`);
 
 customElements.define('g-desk-pane', class extends HTMLElement
 {
@@ -50,18 +71,6 @@ customElements.define('g-desk-pane', class extends HTMLElement
 	{
 		if (this.parentNode.tagName === "G-DESK-PANE")
 			this.setAttribute("child", "");
-
-		this.buttons.flatMap(e => Array.from(e.childNodes))
-			.filter(e => e.nodeType === Node.TEXT_NODE)
-			.forEach(e => e.parentNode.appendChild(e));
-
-		Array.from(this.querySelectorAll("i, g-icon"))
-			.forEach(e => e.style.fontSize = "48px");
-		Array.from(this.querySelectorAll("img")).forEach(e =>
-		{
-			e.style.width = "48px";
-			e.style.height = "48px";
-		});
 	}
 });
 

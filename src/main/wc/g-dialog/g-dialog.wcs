@@ -5,7 +5,6 @@
 :host(*)
 {
 	gap: 8px;
-	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
@@ -59,12 +58,17 @@ nav > .g-command
 	text-decoration: none;
 }
 
-::slotted(iframe:only-child) {
+::slotted(section:only-child),
+::slotted(iframe:only-child)
+{
 	margin: 0;
 	width: 100%;
 	border: none;
 	padding: 0px;
 	flex-grow: 1;
 	height: 100%;
+}
+
+::slotted(iframe:only-child) {
 	overflow: hidden
 }

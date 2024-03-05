@@ -72,46 +72,12 @@ body > main > section {
   background-color: var(--main1);
 }
 body > main > section > article {
-  margin: 0;
-  padding: 0;
   grid-row: 3;
-  height: 100%;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-}
-body > main > section > article > header {
-  grid-row: 1;
-}
-body > main > section > article > nav {
-  grid-row: 2;
-}
-body > main > section > article > section,
-body > main > section > article > article {
-  grid-row: 3;
-  overflow: auto;
-  overflow-x: hidden;
-  gap: 12px;
-  display: flex;
-  flex-direction: column;
-}
-body > main > section > article > footer {
-  grid-row: 4;
-  overflow: auto;
-  overflow-x: hidden;
-}
-body > main > section > article > * {
-  margin-top: 10px;
-}
-body > main > section > article > *:first-child {
-  margin-top: 0px;
-}
-body > main > section > article > *:only-child {
-  margin-top: 0px;
 }
 body > main > footer {
   bottom: 0;
   grid-row: 4;
-  height: 22px;
+  height: 28px;
   padding: 8px;
   display: flex;
   font-size: 12px;
@@ -135,4 +101,45 @@ section {
   display: flex;
   align-items: stretch;
   flex-direction: column;
+}
+article {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+article > header {
+  grid-row: 1;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+article > nav {
+  grid-row: 2;
+}
+article > section {
+  grid-row: 3;
+  overflow: auto;
+  overflow-x: hidden;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+article > footer {
+  grid-row: 4;
+  overflow: auto;
+  overflow-x: hidden;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+article > * {
+  margin-top: 10px;
+}
+article > *:first-child {
+  margin-top: 0px;
+}
+article > *:only-child {
+  margin-top: 0px;
 }

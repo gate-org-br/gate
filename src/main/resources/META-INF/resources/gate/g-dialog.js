@@ -24,7 +24,6 @@ template.innerHTML = `
 :host(*)
 {
 	gap: 8px;
-	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
@@ -78,20 +77,24 @@ nav > .g-command
 	text-decoration: none;
 }
 
-::slotted(iframe:only-child) {
+::slotted(section:only-child),
+::slotted(iframe:only-child)
+{
 	margin: 0;
 	width: 100%;
 	border: none;
 	padding: 0px;
 	flex-grow: 1;
 	height: 100%;
+}
+
+::slotted(iframe:only-child) {
 	overflow: hidden
 }</style>`;
 
 /* global customElements, template */
 
 import './g-navbar.js';
-import "./g-dialog-header.js";
 import GWindow from './g-window.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
@@ -166,16 +169,6 @@ export default class GDialog extends GWindow
 		return this.firstElementChild;
 	}
 
-	set width(value)
-	{
-		this.shadowRoot.querySelector("dialog").style.width = value;
-	}
-
-	set height(value)
-	{
-		this.shadowRoot.querySelector("dialog").style.height = value;
-	}
-
 	static hide()
 	{
 		if (window.frameElement && window.frameElement.dialog)
@@ -192,6 +185,19 @@ export default class GDialog extends GWindow
 	{
 		if (window.frameElement && window.frameElement.dialog)
 			return window.frameElement.dialog.caption;
+	}
+
+	static get observedAttributes()
+	{
+		return ["caption", "style"];
+	}
+
+	attributeChangedCallback(name, _, val)
+	{
+		if (name === "caption")
+			this.caption = val;
+		else if (name === "style")
+			this.shadowRoot.querySelector("dialog").style = val;
 	}
 };
 

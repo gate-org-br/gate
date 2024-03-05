@@ -1,7 +1,8 @@
 import DOM from './dom.js';
 const REQUIRED = new Error();
+import EventHandler from './event-handler.js';
 const RESOLVE_REGEX = /(\?|\?\?|!|!!|@|@@)\{([^}]*)\}/g;
-export default function resolve(trigger, string)
+export default function resolve(trigger, context, string)
 {
 	var result = decodeURI(string);
 	try
@@ -34,10 +35,10 @@ export default function resolve(trigger, string)
 					case '!':
 					case '!!':
 					{
-						let result = prompt(value);
+						let result = context[value];
 						if (method.length == 2 && !result)
 							throw REQUIRED;
-						return result ? "true" : "false";
+						return result;
 					}
 				}
 			});
@@ -55,53 +56,37 @@ window.addEventListener("click", function (event)
 	if (event.button)
 		return;
 
-	for (let element of event.composedPath())
+	let element = event.target.closest("A, BUTTON");
+	if (!element)
+		return;
+
+	let current = element.href
+		|| element.getAttribute("formaction")
+		|| (element.form || {}).action;
+
+	if (!current || !current.match(RESOLVE_REGEX))
+		return;
+
+	EventHandler.cancel(event);
+
+	let resolved = resolve(element, {}, current);
+	if (!resolved)
+		return;
+
+	if (element.tagName === "A")
 	{
-		if (element.tagName === "A")
-		{
-			if (element.href.match(RESOLVE_REGEX))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				let action = resolve(element, element.href);
-				if (!action)
-					return;
-
-				let clone = element.cloneNode(false);
-				clone.href = action;
-				element.parentNode.appendChild(clone);
-				clone.click();
-				clone.remove();
-			}
-			return;
-		}
-
-		if (element.tagName === "BUTTON")
-		{
-			if (!element.form)
-				return;
-
-			let action = element.getAttribute("formaction") || element.form.action;
-
-			if (action && action.match(RESOLVE_REGEX))
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
-				action = resolve(element, element.action);
-				if (!action)
-					return;
-
-				let clone = element.cloneNode(false);
-				clone.setAttribute("formaction", element);
-				element.parentNode.appendChild(clone);
-				clone.click();
-				clone.remove();
-			}
-			return;
-		}
+		element.href = resolved;
+		element.click();
+		element.href = current;
+	} else if (element.hasAttribute("formaction"))
+	{
+		element.setAttribute("formaction", resolved);
+		element.click();
+		element.setAttribute("formaction", current);
+	} else
+	{
+		element.form.action = resolved;
+		element.click();
+		element.form.action = current;
 	}
 });

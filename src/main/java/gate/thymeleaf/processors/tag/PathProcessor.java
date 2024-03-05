@@ -27,6 +27,9 @@ public class PathProcessor extends TagProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
+		if ("g-path".equals(element.getElementCompleteName()))
+			return;
+
 		String module = extract(element, handler, "module").orElse(null);
 		String screen = extract(element, handler, "screen").orElse(null);
 		String action = extract(element, handler, "action").orElse(null);

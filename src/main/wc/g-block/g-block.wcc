@@ -46,26 +46,33 @@ customElements.define('g-block', GBlock);
 
 GBlock.hide();
 
-const REGISTRY = new WeakMap();
-DOM.forEveryElement(e => !REGISTRY.has(e) && e.hasAttribute && e.hasAttribute("data-block"), function (element)
+const REGISTRY = new WeakSet();
+window.addEventListener("connected", function (event)
 {
-	let message = element.getAttribute("data-block");
-	switch (element.tagName)
+	let element = event.target || event.composedPath()[0];
+	if (!REGISTRY.has(element)
+		&& element.hasAttribute
+		&& element.hasAttribute("data-block"))
 	{
-		case "A":
-			element.addEventListener("click", () => GBlock.show(message))
-			break;
-		case "FORM":
-			element.addEventListener("submit", () => GBlock.show(message))
-			break;
-		case "BUTTON":
-			if (element.form)
-				element.form.addEventListener("submit", () => GBlock.show(message), {once: true});
-			else
-				element.addEventListener("click", () => GBlock.show(message))
-			break;
-		default:
-			element.addEventListener("click", () => GBlock.show(message))
-			break;
+		REGISTRY.add(element);
+		let message = element.getAttribute("data-block");
+		switch (element.tagName)
+		{
+			case "A":
+				element.addEventListener("click", () => GBlock.show(message));
+				break;
+			case "FORM":
+				element.addEventListener("submit", () => GBlock.show(message));
+				break;
+			case "BUTTON":
+				if (element.form)
+					element.form.addEventListener("submit", () => GBlock.show(message), {once: true});
+				else
+					element.addEventListener("click", () => GBlock.show(message));
+				break;
+			default:
+				element.addEventListener("click", () => GBlock.show(message));
+				break;
+		}
 	}
 });

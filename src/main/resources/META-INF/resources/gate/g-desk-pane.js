@@ -12,6 +12,7 @@ template.innerHTML = `
 	color: black;
 	display: grid;
 	font-size: 16px;
+	grid-auto-rows: 200px;
 	background-color: transparent;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
@@ -25,7 +26,6 @@ template.innerHTML = `
 	gap: 10px;
 	margin: 0;
 	padding: 16px;
-	height: 200px;
 	color: inherit;
 	font-size: inherit;
 	position: relative;
@@ -87,8 +87,22 @@ template.innerHTML = `
 	content: 'Return';
 }
 
+
+:host(.small)
+{
+	font-size: 12px;
+	grid-auto-rows: 100px;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+:host(.small) ::slotted(g-desk-pane-reset)::before
+{
+	font-size: 32px;
+}
+
 :host(.inline)
 {
+	grid-auto-rows: 80px;
 	grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
 }
 
@@ -98,16 +112,119 @@ template.innerHTML = `
 :host(.inline) ::slotted(g-desk-pane),
 :host(.inline) ::slotted(g-desk-pane-reset)
 {
-	height: 80px;
-	padding: 16px;
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
+}
+
+:host(.inline.small)
+{
+	grid-auto-rows: 40px;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+
+::slotted(:is(a, button, .g-command)[data-loading])
+{
+	position: relative;
+	pointer-events: none;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	color: black;
+	display: flex;
+	padding: 32px;
+	font-size: 48px;
+	content: '\\2017';
+	font-family: gate;
+	position: absolute;
+	border-radius: inherit;
+	justify-content: center;
+	background-color: #F0F0F0;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	bottom: 48px;
+	content: "";
+	height: 24px;
+	max-width: 80%;
+	position: absolute;
+	animation-fill-mode: both;
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
+}
+
+:host(.small) ::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	padding: 16px;
+	font-size: 24px;
+}
+
+
+:host(.small) ::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	bottom: 24px;
+	height: 16px;
+}
+
+:host(.inline) ::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	padding: 16px;
+	font-size: 32px;
+	align-items: center;
+	justify-content: flex-start;
+}
+
+:host(.inline) ::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 64px;
+	bottom: 28px;
+	max-width: calc(100% - 80px);
+}
+
+:host(.inline.small) ::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	font-size: 24px;
+}
+
+
+:host(.inline.small) ::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 48px;
+	bottom: 12px;
+	max-width: calc(100% - 60px);
 }</style>`;
 
 /* global customElements */
 
 import './g-icon.js';
+import './loading.js';
+
+document.head.insertAdjacentHTML('beforeend',
+	`<style>
+		g-desk-pane img {
+			order: -1;
+			width: 48px;
+			height: 48px
+		}
+		g-desk-pane i, g-desk-pane e, g-desk-pane g-icon {
+			order: -1;
+			font-size: 48px
+		}
+		g-desk-pane.small img {
+			width: 32px;
+			height: 32px
+		}
+		g-desk-pane.small i, g-desk-pane.small e, g-desk-pane.small g-icon {
+			font-size: 24px
+		}
+	</style>`);
 
 customElements.define('g-desk-pane', class extends HTMLElement
 {
@@ -157,18 +274,6 @@ customElements.define('g-desk-pane', class extends HTMLElement
 	{
 		if (this.parentNode.tagName === "G-DESK-PANE")
 			this.setAttribute("child", "");
-
-		this.buttons.flatMap(e => Array.from(e.childNodes))
-			.filter(e => e.nodeType === Node.TEXT_NODE)
-			.forEach(e => e.parentNode.appendChild(e));
-
-		Array.from(this.querySelectorAll("i, g-icon"))
-			.forEach(e => e.style.fontSize = "48px");
-		Array.from(this.querySelectorAll("img")).forEach(e =>
-		{
-			e.style.width = "48px";
-			e.style.height = "48px";
-		});
 	}
 });
 

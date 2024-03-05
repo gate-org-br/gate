@@ -1,0 +1,57 @@
+<g-callout class='fill'>
+	<h1>&lt;g-form&gt;</h1>
+	<p>
+		The <strong>&lt;g-form&gt;</strong> element serves as a dynamic form renderer, capable of transforming a
+		<a target='_blank' href="/component/form/form.json">JSON representation</a>
+		into an interactive editing interface.
+
+		This element plays a pivotal role in the form management system, enabling users to modify and customize form fields effortlessly.
+
+		Upon receiving a JSON structure, the <strong>&lt;g-form&gt;</strong> element interprets each element within the structure as a form field.
+
+		For instance, simple text fields may be represented as strings, while more complex fields are expressed as objects with specific attributes.
+
+		Each field in the received JSON is dynamically rendered within the form, with corresponding input elements reflecting the field's properties.
+
+		The user interface presented by <strong>&lt;g-form&gt;</strong> allows users to modify and input values for each field.
+
+		For example, users can set field names, define requirements, specify column layouts, and provide options for drop downs
+		or multiple-choice selections.
+
+		Upon user interaction, the <strong>&lt;g-form&gt;</strong> element captures the entered values and structures them into an array.
+
+		This array, acting as the modified representation of the original JSON, can then be utilized for various purposes, such as saving updated
+		form configurations or further processing within the application.
+
+		In summary, the <strong>&lt;g-form&gt;</strong> element seamlessly bridges the gap between a JSON-based form representation
+		and a user-friendly editing interface, enhancing the flexibility and user experience in managing dynamic forms.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-callout>
+			<p>
+				On this example the <a target='_blank' href="/component/form/form.json">JSON form specification</a> is
+				displayed by the user to editing. You can click at the Show button to display the current value.
+			</p>
+		</g-callout>
+
+		<g-code-viewer>
+
+			<fieldset>
+				<g-form data-trigger='connected' data-action='/component/form/form.json' data-target='@value'>
+				</g-form>
+			</fieldset>
+
+			<g-coolbar>
+				<a href="#"
+				   class='primary'
+				   onclick='alert(JSON.stringify(document.querySelector("g-form").value, null, "\t"))'>
+					Show <g-icon>&#X2269;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

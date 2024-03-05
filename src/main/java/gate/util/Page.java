@@ -37,7 +37,7 @@ public class Page<E> implements Iterable<E>, Serializable
 		return indx;
 	}
 
-	public boolean isFrst()
+	public boolean isFirst()
 	{
 		return indx == 0;
 	}
@@ -54,7 +54,7 @@ public class Page<E> implements Iterable<E>, Serializable
 
 	public Page<E> getPrev()
 	{
-		if (getPaginator().getData() == null || isFrst())
+		if (getPaginator().getData() == null || isFirst())
 			return null;
 		return new Page<>(paginator, indx - 1);
 	}
@@ -73,7 +73,7 @@ public class Page<E> implements Iterable<E>, Serializable
 
 	public int getPrevIndx()
 	{
-		return isFrst() ? -1 : indx - 1;
+		return isFirst() ? -1 : indx - 1;
 	}
 
 	public int getSize()

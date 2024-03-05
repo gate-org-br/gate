@@ -16,9 +16,7 @@ window.addEventListener("@before-begin", function (event)
 		.then(ResponseHandler.text)
 		.then(result =>
 		{
-			let fragment = document.createRange()
-				.createContextualFragment(result);
-			element.parentNode.insertBefore(fragment, element);
+			element.insertAdjacentHTML("beforebegin", result);
 			event.success(path, new DataURL('text/html', result).toString());
 		})
 		.catch(error => event.failure(path, error));

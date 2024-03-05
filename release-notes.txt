@@ -1,16 +1,32 @@
 a.Hide removed to avoid redundancy with target="@hide"
+	Replace regex class=(['"])Hide\1 with target='@hide'
 
 target="_id(id)" removed and replaced with target="@innerHTML(selector)"
+	Replace regex target="_id\(([^"]+)\)" with target='inner-html(#$1)'
+	Replace regex target='_id\(([^']+)\)' with target='inner-html(#$1)'
 
-attribute data-on-hide was removed and replaced by data-on:resolve(script)
+target="_stack" removed and replaced with target="@stack('frame')"
+	Replace regex target=(["'])_stack\1 with target='@stack(frame)'
 
-target="_stack" removed and replaced with target="@stack(type)"
+target="_dialog" removed and replaced with target="@dialog('frame')"
+	Replace regex target=(["'])_dialog\1 with target='@dialog(frame)'
 
-target="_dialog(size)" removed and replaced with target="@dialog('frame', width, height)"
+target="_dialog(size)" removed and replaced with target="@dialog('frame', size)"
+	Replace regex target=(['"])_dialog\((\d+)\)\1 with target='@dialog(frame, $2px)'
+
+target="_dialog(width/height)" removed and replaced with target="@dialog('frame', width, height)"
+	Replace regex target=(['"])_dialog\((\d+)\/(\d+)\)\1 with target='@dialog(frame, $2px, $3px)'
+
+attribute data-on-hide='reload' was removed and replaced @reload trigger
+	Remove all occurrences of regex data-on-hide=(['"])reload\1 and make the @dialog or @stack
+	trigger dispatch to the @reload trigger
 
 data-get="id1, id2, ..." removed and replaced with target="@frame-picker(selector1, selector2, ...)"
 
 data-ret="value1, value2, ..." removed and replaced with target="@return(value1, value2, ...)"
+
+Only on HTML files, the required='' was replaced by not:required.
+Same pattern to all boolean attributes
 
 <g-dialog-caption>caption</g-dialog-caption> removed and replaced <g-dialog-header caption='caption'>
 
@@ -27,3 +43,8 @@ input class="Date" replaced by input is='g-date-picker'
 input class="DateInterval" replaced by input is='g-date-interval-picker'
 input class="DateTime" replaced by input is='g-date-time-picker'
 input class="DateTimeInterval" replaced by input is='g-date-time-interval-picker'
+
+g-icon-pane removed
+g-desk-pane small class added to replace the removed g-icon-pane
+
+_report and _report_dialog replaced by @report > @save

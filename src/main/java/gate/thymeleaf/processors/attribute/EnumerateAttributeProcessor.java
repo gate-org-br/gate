@@ -27,10 +27,15 @@ public class EnumerateAttributeProcessor extends AttributeProcessor
 			var source = element.getAttributeValue("g:enumerate");
 			if (source == null || source.isBlank())
 				throw new TemplateProcessingException("Missing required enum class name on g:enumerate attribute");
+			handler.removeAttribute("g:enumerate");
+
 			var type = Thread.currentThread().getContextClassLoader().loadClass(source);
 
 			var status = Optional.ofNullable(element.getAttributeValue("g:status")).orElse("status");
+			handler.removeAttribute("g:status");
+
 			var target = Optional.ofNullable(element.getAttributeValue("g:target")).orElse("target");
+			handler.removeAttribute("g:target");
 
 			handler.iterateElement(target, status, List.of(type.getEnumConstants()));
 

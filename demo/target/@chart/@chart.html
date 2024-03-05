@@ -1,0 +1,35 @@
+<g-callout class="fill">
+	<h1>@chart</h1>
+	<p>
+		Displays a dataset fetched from an HTTP request as a chart within a dialog window.
+		The chart type (<strong>pie</strong>, <strong>rose</strong>, <strong>donut</strong>, <strong>column</strong>, <strong>line</strong>,
+		<strong>area</strong>, <strong>bar</strong>) can be specified as a parameter, defaulting to <strong>pie</strong> when omitted.
+		The dataset structure is expected to be a two-dimensional array, where the first row represents category headers and subsequent
+		rows contain data corresponding to each category. The first column contains the names of the categories, while subsequent columns
+		hold the values associated with each category.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1<g-icon>&#X3055;</g-icon></a>
+	<div>
+		<g-callout>
+			<p>
+				In this example, the <strong>@chart</strong> trigger retrieves <a target='_blank'
+												  href='/target/@chart/popularity.json'>the dataset</a>
+				from the server and presents it as a line chart within a dialog window.
+			</p>
+		</g-callout>
+
+		<g-code-viewer>
+			<g-coolbar>
+				<a class='primary'
+				   href="/target/@chart/popularity.json"
+				   target="@chart(line)"
+				   title="Language popularity">
+					Show<g-icon>&#X2032;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

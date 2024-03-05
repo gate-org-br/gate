@@ -3,6 +3,7 @@ package gate.thymeleaf.processors.attribute;
 import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
+import gate.type.Attributes;
 import gate.util.Page;
 import gate.util.Parameters;
 import java.util.StringJoiner;
@@ -43,50 +44,42 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 			? (Page<?>) expression.create().evaluate(value)
 			: (Page<?>) Property.getValue(screen, "page");
 
+		final String tag = screen.isPOST() ? "button" : "a";
+		final String action = screen.isPOST() ? "formaction" : "href";
+		final String target = screen.isPOST() ? "formtarget" : "target";
+		final String text = "Página&nbsp;%d&nbsp;de&nbsp;%d".formatted(page.getIndx() + 1, page.getPaginator().getSize());
+		final String first = "%s&pageSize=%d&pageIndx=%d".formatted(url, page.getPaginator().getPageSize(), page.getPaginator().getFirstPageIndx());
+		final String prev = "%s&pageSize=%d&pageIndx=%d".formatted(url, page.getPaginator().getPageSize(), page.getPrevIndx());
+		final String expand = "%s&pageSize=%d&pageIndx=%d".formatted(url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFirstPageIndx());
+		final String collapse = "%s&pageSize=%d&pageIndx=%d".formatted(url, screen.getDefaultPageSize(), page.getPaginator().getFirstPageIndx());
+		final String next = "%s&pageSize=%d&pageIndx=%d".formatted(url, page.getPaginator().getPageSize(), page.getNextIndx());
+		final String last = "%s&pageSize=%d&pageIndx=%d".formatted(url, page.getPaginator().getPageSize(), page.getPaginator().getLastPageIndx());
+		Attributes parameters = new Attributes();
+
+		parameters.set(target, element.getAttributeValue("g:target"));
+		handler.removeAttribute("g:target");
+
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<g-paginator>");
-		if (screen.isPOST())
+		if (!page.isFirst())
 		{
-			if (!page.isFrst())
-				string.add(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</button>&nbsp;&nbsp;",
-					url, page.getPaginator().getPageSize(), page.getPaginator().getFrstPageIndx()))
-					.add(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Anterior'>&lt;</button>&nbsp;&nbsp;",
-						url, page.getPaginator().getPageSize(), page.getPrevIndx()));
+			string.add("<%s %s>&lt;&lt;</%s>&nbsp;&nbsp;".formatted(tag, parameters.set("title", "Primeiro").set(action, first), tag));
+			string.add("<%s %s>&lt;</%s>&nbsp;&nbsp;".formatted(tag, parameters.set("title", "Anterior").set(action, prev), tag));
+		}
 
-			if (page.getSize() == screen.getDefaultPageSize())
-				string.add(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>",
-					url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
-			else
-				string.add(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>",
-					url, screen.getDefaultPageSize(), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
+		if (page.getSize() == screen.getDefaultPageSize())
+			string.add("<%s %s>[%s]</%s>".formatted(tag, parameters.set("title", "Expandir").set(action, expand), text, tag));
+		else
+			string.add("<%s %s>[%s]</%s>".formatted(tag, parameters.set("title", "Contrair").set(action, collapse), text, tag));
 
-			if (!page.isLast())
-				string.add(String.format("&nbsp;&nbsp;<button formaction='%s&pageSize=%d&pageIndx=%d' title='Pr&oacute;ximo'>&gt;</button>",
-					url, page.getPaginator().getPageSize(), page.getNextIndx()))
-					.add(String.format("&nbsp;&nbsp;<button formaction='%s&pageSize=%d&pageIndx=%d' title='&Uacute;ltimo'>&gt;&gt;</button>",
-						url, page.getPaginator().getPageSize(), page.getPaginator().getLastPageIndx()));
-		} else if (screen.isGET())
+		if (!page.isLast())
 		{
-			if (!page.isFrst())
-				string.add(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</a>&nbsp;&nbsp;",
-					url, page.getPaginator().getPageSize(), page.getPaginator().getFrstPageIndx()))
-					.add(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Anterior'>&lt;</a>&nbsp;&nbsp;",
-						url, page.getPaginator().getPageSize(), page.getPrevIndx()));
+			string.add("<%s %s>&gt;</%s>&nbsp;&nbsp;".formatted(tag, parameters.set("title", "Próximo").set(action, next), tag));
 
-			if (page.getSize() == screen.getDefaultPageSize())
-				string.add(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>",
-					url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
-			else
-				string.add(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>",
-					url, screen.getDefaultPageSize(), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
-
-			if (!page.isLast())
-				string.add(String.format("&nbsp;&nbsp;<a href='%s&pageSize=%d&pageIndx=%d' title='Pr&oacute;ximo'>&gt;</a>",
-					url, page.getPaginator().getPageSize(), page.getNextIndx()))
-					.add(String.format("&nbsp;&nbsp;<a href='%s&pageSize=%d&pageIndx=%d' title='&Uacute;ltimo'>&gt;&gt;</a>",
-						url, page.getPaginator().getPageSize(), page.getPaginator().getLastPageIndx()));
+			string.add("<%s %s>&gt;&gt;</%s>&nbsp;&nbsp;".formatted(tag, parameters.set("title", "Último").set(action, last), tag));
 		}
 		string.add("</g-paginator>");
+
 		handler.setBody(string.toString(), false);
 	}
 }

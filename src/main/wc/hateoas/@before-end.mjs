@@ -16,9 +16,7 @@ window.addEventListener("@before-end", function (event)
 		.then(ResponseHandler.text)
 		.then(result =>
 		{
-			let fragment = document.createRange()
-				.createContextualFragment(result);
-			element.appendChild(fragment);
+			element.insertAdjacentHTML("beforeend", result);
 			event.success(path, new DataURL('text/html', result).toString());
 		})
 		.catch(error => event.failure(path, error));

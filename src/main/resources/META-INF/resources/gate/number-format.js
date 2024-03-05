@@ -15,8 +15,14 @@ export default class NumberFormat
 		this._numeral = new RegExp(`[${numerals.join("")}]`, "g");
 		this._index = d => index.get(d);
 	}
+
 	parse(string)
 	{
+		if (!string)
+			return 0;
+		if (typeof string === "number")
+			return string;
+
 		return (string = string.trim()
 			.replace(this._group, "")
 			.replace(this._decimal, ".")

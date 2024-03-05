@@ -29,12 +29,16 @@ function highlightHTML(htmlString)
 
 			if (!selfClosing.includes(node.tagName))
 			{
-				Array.from(node.childNodes).forEach(e => highlightNodes(e, depth + 1));
+				Array.from(node.tagName === "TEMPLATE" ? node.content.childNodes : node.childNodes)
+					.forEach(e => highlightNodes(e, depth + 1));
 				highlightedString += `${indent}<b ${tag}>&lt;/${node.tagName.toLowerCase()}&gt;</b>`;
 			}
-		} else if (node.nodeType === Node.TEXT_NODE
-			&& node.textContent.trim().length)
-			highlightedString += `${indent}${node.textContent.trim()}`;
+		} else if (node.nodeType === Node.TEXT_NODE)
+		{
+			if (node.textContent.trim().length)
+				highlightedString += `${indent}${node.textContent.trim()}`;
+		} else if (node.nodeType === Node.COMMENT_NODE)
+			highlightedString += `${indent}&lt;!--${node.textContent.trim()}--&gt;`;
 	}
 
 	highlightNodes(doc.body, 0);

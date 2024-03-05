@@ -10,13 +10,12 @@ template.innerHTML = `
 	right: 0;
 	bottom: 0;
 	z-index: 2;
-	display: flex;
+	display: none;
 	position: fixed;
 	align-items: center;
 	justify-content: center;
 }
 
-main,
 dialog {
 	max-width: none;
 	max-height: none;
@@ -31,7 +30,6 @@ dialog {
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
-main > header,
 dialog > header
 {
 	gap: 8px;
@@ -45,7 +43,6 @@ dialog > header
 	border-bottom: 1px solid var(--main6);
 }
 
-main > section,
 dialog > section
 {
 	padding: 8px;
@@ -57,12 +54,10 @@ dialog > section
 	-webkit-overflow-scrolling: touch;
 }
 
-main > section > fieldset:only-child,
 dialog > section > fieldset:only-child {
 	border: none;
 }
 
-main > header > label,
 dialog > header > label
 {
 	flex-grow: 1;
@@ -73,8 +68,6 @@ dialog > header > label
 	justify-content: flex-start;
 }
 
-main > header > a,
-main > header > button,
 dialog > header > a,
 dialog > header > button
 {
@@ -89,15 +82,12 @@ dialog > header > button
 	background-color: transparent;
 }
 
-main > header > a > g-icon,
-main > header > button > g-icon
 dialog > header > a > g-icon,
 dialog > header > button > g-icon
 {
 	line-height: 16px;
 }
 
-main > footer,
 dialog > footer {
 	gap: 4px;
 	padding: 8px;
@@ -120,7 +110,7 @@ export default class GWindow extends GModal
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		stylesheets('g-table.css', 'input.css', 'fieldset.css')
+		stylesheets('table.css', 'input.css', 'fieldset.css')
 			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 };

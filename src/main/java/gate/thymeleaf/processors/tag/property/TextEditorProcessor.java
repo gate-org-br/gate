@@ -32,6 +32,7 @@ public class TextEditorProcessor extends PropertyProcessor
 			value = Converter.toString(expression.create().evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
 			value = Converter.toString(property.getValue(screen));
-		handler.replaceWith("<g-text-editor " + attributes + ">" + value + "</g-text-editor>", true);
+		attributes.put("value", value);
+		handler.replaceWith("<g-text-editor " + attributes + "></g-text-editor>", true);
 	}
 }

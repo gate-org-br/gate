@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -793,16 +794,16 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the names of columns of the cursor.
 	 *
-	 * @return a java array with the names of the columns associated with this cursor
+	 * @return a java list with the names of the columns associated with this cursor
 	 */
-	public String[] getColumnNames()
+	public List<String> getColumnNames()
 	{
 		try
 		{
 			ResultSetMetaData rsmd = getResultSet().getMetaData();
-			String[] names = new String[rsmd.getColumnCount()];
-			for (int i = 0; i < names.length; i++)
-				names[i] = rsmd.getColumnLabel(i + 1);
+			List<String> names = new ArrayList<>(rsmd.getColumnCount());
+			for (int i = 0; i < rsmd.getColumnCount(); i++)
+				names.add(rsmd.getColumnLabel(i + 1));
 			return names;
 		} catch (SQLException e)
 		{
@@ -813,16 +814,16 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Gets the default java types of the columns of the cursor.
 	 *
-	 * @return a java array with the default java types of the columns of the cursor
+	 * @return a java list with the default java types of the columns of the cursor
 	 */
-	public Class<?>[] getColumnTypes()
+	public List<Class<?>> getColumnTypes()
 	{
 		try
 		{
 			ResultSetMetaData rsmd = getResultSet().getMetaData();
-			Class<?>[] types = new Class<?>[rsmd.getColumnCount()];
-			for (int i = 0; i < types.length; i++)
-				types[i] = SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1));
+			List<Class<?>> types = new ArrayList<>(rsmd.getColumnCount());
+			for (int i = 0; i < rsmd.getColumnCount(); i++)
+				types.add(SQLTypeConverter.getJavaType(rsmd.getColumnType(i + 1)));
 			return types;
 		} catch (SQLException e)
 		{
@@ -830,9 +831,23 @@ public class Cursor implements AutoCloseable, Fetchable
 		}
 	}
 
+	/**
+	 * Gets the values of all the columns of the cursor as a List.
+	 *
+	 * @return a java list with the values of the columns of the cursor
+	 */
+	public List<Object> getColumnValues()
+	{
+		int count = getColumnCount();
+		List<Object> result = new ArrayList<>();
+		for (int i = 0; i < count; i++)
+			result.add(getValue(i + 1));
+		return result;
+	}
+
 	public List<String> getPropertyNames(Class<?> type)
 	{
-		return Stream.of(getColumnNames())
+		return getColumnNames().stream()
 			.map(e -> e.contains(Converter.SEPARATOR) ? e.split(Converter.SEPARATOR)[0] : e)
 			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
 			.distinct().collect(Collectors.toList());
@@ -857,7 +872,7 @@ public class Cursor implements AutoCloseable, Fetchable
 
 	public List<Property> getProperties(Class<?> type)
 	{
-		return Stream.of(getColumnNames())
+		return getColumnNames().stream()
 			.map(e -> e.contains(Converter.SEPARATOR) ? e.split("_")[0] : e)
 			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
 			.map(e -> Property.getProperty(type, e))

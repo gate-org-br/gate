@@ -1,4 +1,5 @@
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import Populator from './populator.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -23,7 +24,7 @@ window.addEventListener("@populate", function (event)
 				new Populator(result).populate(element, value, label);
 				event.success(path, new DataURL('application/json', result).toString());
 			})
-			.catch(error => event.failure(error));
+			.catch(error => event.failure(path, error));
 	} else
 	{
 		element.innerHTML = "";

@@ -30,8 +30,6 @@ public abstract class GroupedSelect implements Clause, Orderable, Limitable
 
 	public abstract static class Constant extends GroupedSelect implements
 		Refinable.Constant,
-		Refinable.Generic,
-		Refinable.Compiled,
 		Orderable.Constant,
 		Limitable.Constant,
 		Query.Constant.Builder
@@ -40,19 +38,6 @@ public abstract class GroupedSelect implements Clause, Orderable, Limitable
 		public Constant(Clause clause)
 		{
 			super(clause);
-		}
-
-		@Override
-		public RefinedSelect.Constant having(ConstantCondition predicate)
-		{
-			return new RefinedSelect.Constant(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " having " + predicate.toString();
-				}
-			};
 		}
 
 		@Override
@@ -76,7 +61,6 @@ public abstract class GroupedSelect implements Clause, Orderable, Limitable
 	}
 
 	public static abstract class Generic extends GroupedSelect implements
-		Refinable.Constant,
 		Refinable.Generic,
 		Orderable.Generic,
 		Limitable.Generic,
@@ -122,7 +106,6 @@ public abstract class GroupedSelect implements Clause, Orderable, Limitable
 	}
 
 	public static abstract class Compiled extends GroupedSelect implements
-		Refinable.Constant,
 		Refinable.Compiled,
 		Orderable.Compiled,
 		Limitable.Compiled,

@@ -1,4 +1,5 @@
 /* global customElements */
+import stylesheets from './stylesheets.js';
 
 customElements.define('g-form-view', class extends HTMLElement
 {
@@ -7,17 +8,21 @@ customElements.define('g-form-view', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
+		stylesheets('input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("label")).forEach(e => e.remove());
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		Array.from(fieldset.children).forEach(e => e.remove());
 
 		if (value)
 			value.forEach(element => {
-				let label = this.shadowRoot.appendChild(document.createElement("label"));
+				let label = fieldset.appendChild(document.createElement("label"));
 
 				if (element.size)
+				{
 					switch (Number(element.size))
 					{
 						case 0:
@@ -33,6 +38,8 @@ customElements.define('g-form-view', class extends HTMLElement
 							label.setAttribute("data-size", 8);
 							break;
 					}
+				} else if (element.columns)
+					label.setAttribute("data-size", element.columns);
 
 				label.innerText = element.name + ': ';
 

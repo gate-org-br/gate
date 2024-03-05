@@ -1,15 +1,13 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-import gate.error.ConversionException;
-import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fetches the first row of a Cursor as a map whose keys are the column names and values are the column values as
- * objects of the specified types.
+ * Fetches the first row of a Cursor as a map whose keys are the column names and values are the column values as objects of the specified types.
  */
 public class TypedMapFetcher implements Fetcher<Optional<Map<String, Object>>>
 {
@@ -27,13 +25,12 @@ public class TypedMapFetcher implements Fetcher<Optional<Map<String, Object>>>
 	}
 
 	/**
-	 * Fetches the first row as a map whose keys are the column names and values are the column values as objects of
-	 * the specified types.
+	 * Fetches the first row as a map whose keys are the column names and values are the column values as objects of the specified types.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the column names and values are the
-	 * column values as objects of the specified type or an empty Optional if the result is empty
+	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values as objects of the specified
+	 * type or an empty Optional if the result is empty
 	 *
 	 */
 	@Override
@@ -41,11 +38,11 @@ public class TypedMapFetcher implements Fetcher<Optional<Map<String, Object>>>
 	{
 		if (!cursor.next())
 			return Optional.empty();
-		String[] names = cursor.getColumnNames();
+		List<String> names = cursor.getColumnNames();
 		Map<String, Object> result = new HashMap<>();
 
-		for (int i = 0; i < names.length; i++)
-			result.put(names[i], cursor.getValue(types[i], names[i]));
+		for (int i = 0; i < names.size(); i++)
+			result.put(names.get(i), cursor.getValue(types[i], names.get(i)));
 		return Optional.of(result);
 	}
 }

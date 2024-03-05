@@ -27,12 +27,13 @@ window.addEventListener("@fill", function (event)
 		throw new Error("Label input not found");
 
 	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.json)
-		.then(result =>
+		.then(ResponseHandler.dataURL)
+		.then(dataURL =>
 		{
+			let result = DataURL.toJSON(dataURL);
 			label.value = Extractor.label(result);
 			value.value = Extractor.value(result);
-			event.success(path, result);
+			event.success(path, dataURL);
 		})
 		.catch(error => event.failure(path, error));
 });

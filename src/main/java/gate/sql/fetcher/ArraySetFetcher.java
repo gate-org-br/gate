@@ -22,14 +22,8 @@ public class ArraySetFetcher implements Fetcher<Set<Object[]>>
 	@Override
 	public Set<Object[]> fetch(Cursor cursor)
 	{
-		Class[] types = cursor.getColumnTypes();
 		while (cursor.next())
-		{
-			Object[] array = new Object[types.length];
-			for (int i = 0; i < array.length; i++)
-				array[i] = cursor.getCurrentValue(types[i]);
-			result.add(array);
-		}
+			result.add(cursor.getColumnValues().toArray());
 		return result;
 	}
 

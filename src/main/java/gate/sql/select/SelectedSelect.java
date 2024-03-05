@@ -1,10 +1,11 @@
 package gate.sql.select;
 
 import gate.sql.Clause;
+import gate.sql.condition.ConstantCondition;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class SelectedSelect implements Clause, Groupable, Orderable, Limitable
+public abstract class SelectedSelect implements Clause, Groupable, Orderable, Limitable, Refinable
 {
 
 	private final Clause clause;
@@ -21,19 +22,33 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 	}
 
 	public abstract static class Constant extends SelectedSelect implements
-			Joinable.Constant,
-			Filterable.Constant,
-			Groupable.Constant,
-			Orderable.Constant,
-			Limitable.Constant,
-			Unitable.Constant,
-			Aliasable,
-			Query.Constant.Builder
+		Joinable.Constant,
+		Filterable.Constant,
+		Refinable.Constant,
+		Groupable.Constant,
+		Orderable.Constant,
+		Limitable.Constant,
+		Unitable.Constant,
+		Aliasable,
+		Query.Constant.Builder
 	{
 
 		public Constant(Clause clause)
 		{
 			super(clause);
+		}
+
+		@Override
+		public RefinedSelect.Constant having(ConstantCondition predicate)
+		{
+			return new RefinedSelect.Constant(this)
+			{
+				@Override
+				public String toString()
+				{
+					return getClause() + " having " + predicate.toString();
+				}
+			};
 		}
 
 		@Override
@@ -46,6 +61,19 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 				{
 					return getClause() + " as " + alias;
 				}
+
+				@Override
+				public RefinedSelect.Constant having(ConstantCondition predicate)
+				{
+					return new RefinedSelect.Constant(this)
+					{
+						@Override
+						public String toString()
+						{
+							return getClause() + " having " + predicate.toString();
+						}
+					};
+				}
 			};
 		}
 
@@ -57,14 +85,15 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 	}
 
 	public abstract static class Generic extends SelectedSelect implements
-			Joinable.Generic,
-			Filterable.Generic,
-			Groupable.Generic,
-			Orderable.Generic,
-			Limitable.Generic,
-			Unitable.Generic,
-			Aliasable,
-			Query.Builder
+		Joinable.Generic,
+		Filterable.Generic,
+		Refinable.Generic,
+		Groupable.Generic,
+		Orderable.Generic,
+		Limitable.Generic,
+		Unitable.Generic,
+		Aliasable,
+		Query.Builder
 	{
 
 		public Generic(Clause clause)
@@ -93,14 +122,15 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 	}
 
 	public abstract static class Compiled extends SelectedSelect implements
-			Joinable.Compiled,
-			Filterable.Compiled,
-			Groupable.Compiled,
-			Orderable.Compiled,
-			Limitable.Compiled,
-			Unitable.Compiled,
-			Aliasable,
-			Query.Compiled.Builder
+		Joinable.Compiled,
+		Filterable.Compiled,
+		Refinable.Compiled,
+		Groupable.Compiled,
+		Orderable.Compiled,
+		Limitable.Compiled,
+		Unitable.Compiled,
+		Aliasable,
+		Query.Compiled.Builder
 	{
 
 		public Compiled(Clause clause)
@@ -125,7 +155,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 		public Query.Compiled build()
 		{
 			return Query.of(toString()).parameters(getParameters()
-					.collect(Collectors.toList()));
+				.collect(Collectors.toList()));
 		}
 	}
 
@@ -138,13 +168,14 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 		}
 
 		public abstract static class Constant extends Aliased implements
-				Joinable.Constant,
-				Filterable.Constant,
-				Groupable.Constant,
-				Orderable.Constant,
-				Limitable.Constant,
-				Unitable.Constant,
-				Query.Constant.Builder
+			Joinable.Constant,
+			Filterable.Constant,
+			Refinable.Constant,
+			Groupable.Constant,
+			Orderable.Constant,
+			Limitable.Constant,
+			Unitable.Constant,
+			Query.Constant.Builder
 		{
 
 			public Constant(Clause clause)
@@ -160,13 +191,14 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 		}
 
 		public abstract static class Generic extends Aliased implements
-				Joinable.Generic,
-				Filterable.Generic,
-				Groupable.Generic,
-				Orderable.Generic,
-				Limitable.Generic,
-				Unitable.Generic,
-				Query.Builder
+			Joinable.Generic,
+			Filterable.Generic,
+			Refinable.Generic,
+			Groupable.Generic,
+			Orderable.Generic,
+			Limitable.Generic,
+			Unitable.Generic,
+			Query.Builder
 		{
 
 			public Generic(Clause clause)
@@ -182,13 +214,14 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 		}
 
 		public abstract static class Compiled extends Aliased implements
-				Joinable.Compiled,
-				Filterable.Compiled,
-				Groupable.Compiled,
-				Orderable.Compiled,
-				Limitable.Compiled,
-				Unitable.Compiled,
-				Query.Compiled.Builder
+			Joinable.Compiled,
+			Filterable.Compiled,
+			Refinable.Compiled,
+			Groupable.Compiled,
+			Orderable.Compiled,
+			Limitable.Compiled,
+			Unitable.Compiled,
+			Query.Compiled.Builder
 		{
 
 			public Compiled(Clause clause)
@@ -200,7 +233,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 			public Query.Compiled build()
 			{
 				return Query.of(toString()).parameters(getParameters()
-						.collect(Collectors.toList()));
+					.collect(Collectors.toList()));
 			}
 
 		}

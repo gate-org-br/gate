@@ -2,49 +2,56 @@ let template = document.createElement("template");
 template.innerHTML = `
  <style>:host(*) { display: none }</style>`;
 
-/* global customElements */
+/* global customElements, template */
 
-let connection;
-
-export default function registerEventSource(listener)
+export default class GEventSource extends HTMLElement
 {
-	if (connection)
-		throw new Error("Attempt to redefine an app event listener");
 
-	let protocol = location.protocol === 'https:' ? "wss://" : "ws://";
-	let hostname = location.hostname;
-	let port = location.port ? ':' + location.port : '';
-	let pathname = location.pathname.replace(/\/Gate.*/, "") + "/AppEvents";
-
-	var url = protocol + hostname + port + pathname;
-
-	connection = new WebSocket(url);
-
-	connection.onmessage = event =>
-	{
-		event = JSON.parse(event.data);
-		listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail, composed: true}));
-	};
-
-	connection.onopen = () => console.log("listening to app events");
-	connection.onclose = () => connection = new WebSocket(url);
-}
-
-customElements.define('g-event-source', class extends HTMLElement
-{
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: "open"});
+		GEventSource.register(this, this.log);
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	connectedCallback()
+	get log()
 	{
-		registerEventSource(this.hasAttribute("target")
-			? document.getElementById(this.getAttribute("target"))
-			: window);
+		return this.hasAttribute("log");
 	}
-});
 
-Array.from(document.querySelectorAll("[data-event-source]")).forEach(listener => registerEventSource(listener));
+	set log(value)
+	{
+		if (value)
+			this.setAttribute("log", "");
+		else
+			this.removeAttribute("log");
+	}
+
+	static register(listener, log)
+	{
+		const eventSource = new EventSource(`${window.location.origin}/SSE`);
+
+		eventSource.onopen = () => log && console.log('listening to app events.');
+
+		eventSource.addEventListener('message', (message) =>
+		{
+			let json = atob(message.data);
+			log && console.log(json);
+			const event = JSON.parse(json);
+			listener.dispatchEvent(new CustomEvent("sse", {bubbles: true, composed: true, detail: event}));
+			listener.dispatchEvent(new CustomEvent(event.type, {bubbles: true, composed: true, detail: event.details}));
+		});
+
+		eventSource.onerror = error => log && console.error('Error when listening to app events:', error);
+
+		window.addEventListener('beforeunload', () => eventSource.close(), {once: true});
+	}
+
+}
+
+
+customElements.define('g-event-source', GEventSource);
+
+Array.from(document.querySelectorAll("[data-event-source]"))
+	.forEach(listener => GEventSource.register(listener, listener.hasAttribute("data-event-source:log")));

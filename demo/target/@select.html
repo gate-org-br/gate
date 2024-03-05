@@ -136,4 +136,38 @@
 			</fieldset>
 		</g-code-viewer>
 	</div>
+	<a href="#">
+		Example 5 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			If the result consists of a <a href="./tree.json" target="_blank">
+				JSON array of objects with only
+				<strong>label</strong>,
+				<strong>value</strong> and
+				<strong>children</strong>
+				attributes</a>,
+			the properties will be displayed as a tree for user selection.
+			Upon user selection, the <strong>label input</strong> and
+			the <strong>value input</strong> receives the <strong>label
+				attribute</strong> and the <strong>value attribute</strong>
+			respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Select:
+					<span>
+						<input type="text" />
+						<input type="hidden">
+						<a href="./tree.json" target="@select > @fill" title="Select 1">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
 </g-tab-control>

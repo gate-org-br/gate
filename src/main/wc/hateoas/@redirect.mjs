@@ -15,7 +15,6 @@ window.addEventListener("@redirect", function (event)
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.text)
 		.then(result = window.location = result)
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+		.then(() => event.success(path))
+		.catch(error => event.failure(path, error));
 });

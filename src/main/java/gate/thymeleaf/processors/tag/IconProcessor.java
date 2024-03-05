@@ -29,6 +29,9 @@ public class IconProcessor extends TagProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
+		if ("g-icon".equals(element.getElementCompleteName()))
+			return;
+
 		Attributes attributes = Stream.of(element.getAllAttributes())
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
 				e -> e.getValue(), (a, b) -> a, Attributes::new));

@@ -8,7 +8,7 @@ template.innerHTML = `
 	font-size: 16px;
 	border-radius: 3px;
 	flex-direction: column;
-	background-color: var(--main2);
+	background-color: var(--main1);
 	border: 1px solid var(--main3);
 	box-shadow: 1px 1px 2px 0px var(--main6);
 }

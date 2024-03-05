@@ -16,12 +16,7 @@ window.addEventListener("@after-end", function (event)
 		.then(ResponseHandler.text)
 		.then(result =>
 		{
-			let fragment = document.createRange()
-				.createContextualFragment(result);
-			if (element.nextSibling)
-				element.parentNode.insertBefore(fragment, element.nextSibling);
-			else
-				element.parentNode.appendChild(fragment);
+			element.insertAdjacentHTML("afterend", result);
 			event.success(path, new DataURL('text/html', result).toString());
 		})
 		.catch(error => event.failure(path, error));

@@ -15,7 +15,7 @@ template.innerHTML = `
 		</section>
 		<footer>
 			<g-coolbar>
-				<button id='clear' class='primary'>
+				<button id='clear' class='danger'>
 					Limpar <g-icon>&#X2018;</g-icon>
 				</button>
 				<hr>

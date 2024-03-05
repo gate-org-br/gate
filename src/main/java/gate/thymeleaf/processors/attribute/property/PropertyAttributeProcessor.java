@@ -63,6 +63,6 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 	@Override
 	public int getPrecedence()
 	{
-		return Precedence.LOW;
+		return Precedence.VERY_LOW;
 	}
 }

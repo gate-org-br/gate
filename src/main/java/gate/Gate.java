@@ -138,7 +138,9 @@ public class Gate extends HttpServlet
 				{
 					user = Credentials.of(request).orElseThrow();
 					request.setAttribute(User.class.getName(), user);
-				} else if (request.getSession(false) != null)
+				} else if (request.getSession(false) != null
+					&& request.getSession()
+						.getAttribute(User.class.getName()) != null)
 				{
 					user = (User) request.getSession()
 						.getAttribute(User.class.getName());

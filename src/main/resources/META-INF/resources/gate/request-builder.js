@@ -2,6 +2,8 @@ export default class RequestBuilder
 {
 	static build(method, action, body, contentType)
 	{
+		if (!action || action === "#")
+			action = "data:text/plain,";
 
 		let headers = new Headers();
 		if (contentType)

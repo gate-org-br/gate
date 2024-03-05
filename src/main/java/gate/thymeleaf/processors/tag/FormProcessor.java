@@ -10,13 +10,13 @@ import gate.type.Field;
 import gate.type.Form;
 import gate.util.Toolkit;
 import java.util.StringJoiner;
-import javax.enterprise.inject.Vetoed;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-@Vetoed
+@ApplicationScoped
 public class FormProcessor extends PropertyProcessor
 {
 
@@ -33,6 +33,9 @@ public class FormProcessor extends PropertyProcessor
 		IElementTagStructureHandler handler,
 		Screen screen, Property property, Attributes attributes)
 	{
+
+		if ("g-form".equals(element.getElementCompleteName()))
+			return;
 
 		if (!property.getRawType().equals(Form.class))
 			throw new IllegalArgumentException(String.format("Property '%s' is not a %s.",

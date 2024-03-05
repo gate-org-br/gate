@@ -1,5 +1,7 @@
 package gate.type;
 
+import gate.annotation.Converter;
+import gate.converter.DataGridConverter;
 import gate.lang.json.JsonArray;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+@Converter(DataGridConverter.class)
 public class DataGrid extends ArrayList<Object[]>
 {
 
@@ -95,15 +98,20 @@ public class DataGrid extends ArrayList<Object[]>
 		return select(indexes.stream().mapToInt(Number::intValue).toArray()).toString();
 	}
 
+	public JsonArray toJsonArray()
+	{
+		return JsonArray.format(Stream.concat(Stream.of((Object) head), stream()));
+	}
+
 	@Override
 	public String toString()
 	{
-		return JsonArray.format(Stream.concat(Stream.of((Object) head), stream())).toString();
+		return toJsonArray().toString();
 	}
 
 	public DataGrid rollup()
 	{
-		if (size() > 0)
+		if (!isEmpty())
 			setFoot(remove(size() - 1));
 		return this;
 	}

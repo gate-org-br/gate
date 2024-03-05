@@ -74,6 +74,9 @@ public class Converters
 		INSTANCES.put(java.time.Year.class, new YearConverter());
 		INSTANCES.put(EnumSet.class, new EnumSetConverter());
 		INSTANCES.put(Path.class, new PathConverter());
+		INSTANCES.put(Map.class, new MapConverter());
+
+		INSTANCES.put(Object[].class, new ArrayConverter());
 	}
 
 	public Converter get(Class<?> type)

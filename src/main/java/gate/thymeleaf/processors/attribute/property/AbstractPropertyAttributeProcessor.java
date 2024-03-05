@@ -15,7 +15,7 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 {
 
 	@Inject
-	ELExpressionFactory expression;
+	ELExpressionFactory expressionFactory;
 
 	public AbstractPropertyAttributeProcessor(String element)
 	{
@@ -31,7 +31,7 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 		Screen screen = (Screen) request.getAttribute("screen");
 
 		var name = element.getAttributeValue("g:property");
-		name = (String) expression.create().evaluate(name);
+		name = (String) expressionFactory.create().evaluate(name);
 		Property property = Property.getProperty(screen.getClass(), name);
 
 		handler.removeAttribute("g:property");

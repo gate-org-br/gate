@@ -10,9 +10,9 @@ public interface Clause
 {
 
 	/**
-	 * Returns the preceeding clause.
+	 * Returns the preceding clause.
 	 *
-	 * @return the preceeding clause
+	 * @return the preceding clause
 	 */
 	Clause getClause();
 
@@ -27,7 +27,7 @@ public interface Clause
 	/**
 	 * Rollback the clause.
 	 *
-	 * @return the preceeding clause
+	 * @return the preceding clause
 	 */
 	default Clause rollback()
 	{

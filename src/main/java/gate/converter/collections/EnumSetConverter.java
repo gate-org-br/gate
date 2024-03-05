@@ -15,68 +15,59 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class EnumSetConverter implements Converter
-{
+public class EnumSetConverter implements Converter {
 
 	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
+	public List<Constraint.Implementation<?>> getConstraints() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public String getDescription()
-	{
+	public String getDescription() {
 		return "Lista de opções";
 	}
 
 	@Override
-	public String getMask()
-	{
+	public String getMask() {
 		return null;
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
-	{
+	public String toText(Class<?> type, Object object) {
 		return object != null ? ((EnumSet<?>) object).stream()
-			.map(e -> Converter.toText(e)).collect(Collectors.joining(", ")) : "";
+				.map(e -> Converter.toText(e)).collect(Collectors.joining(", ")) : "";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
-	{
+	public String toText(Class<?> type, Object object, String format) {
 		return object != null ? String.format(format, toText(type, object)) : "";
 	}
 
 	@Override
-	public String toString(Class<?> type, Object object)
-	{
+	public String toString(Class<?> type, Object object) {
 		if (object == null)
 			return "";
 		return ((EnumSet<?>) object).stream().map(e -> e.name())
-			.map(e -> '"' + e + '"')
-			.collect(() -> new StringJoiner(", ", "[", "]"), StringJoiner::add, StringJoiner::merge)
-			.toString();
+				.map(e -> '"' + e + '"')
+				.collect(() -> new StringJoiner(", ", "[", "]"), StringJoiner::add, StringJoiner::merge)
+				.toString();
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
-	{
+	public Object ofString(Class<?> type, String string) throws ConversionException {
 		if (string == null || string.isBlank())
 			return null;
 
 		Class<? extends Enum> enumClass = type.asSubclass(Enum.class);
 		return JsonArray.parse(string).stream()
-			.map(e -> (JsonString) e)
-			.map(e -> e.getValue())
-			.map(e -> Enum.valueOf(enumClass, e))
-			.collect(Collectors.toCollection(() -> EnumSet.noneOf(enumClass)));
+				.map(e -> (JsonString) e)
+				.map(e -> e.getValue())
+				.map(e -> Enum.valueOf(enumClass, e))
+				.collect(Collectors.toCollection(() -> EnumSet.noneOf(enumClass)));
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
-	{
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException {
 		String value = rs.getString(fields);
 		if (rs.wasNull())
 			return null;
@@ -84,8 +75,8 @@ public class EnumSetConverter implements Converter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
-	{
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+			throws SQLException, ConversionException {
 		String value = rs.getString(fields);
 		if (rs.wasNull())
 			return null;
@@ -93,8 +84,7 @@ public class EnumSetConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
-	{
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException {
 		if (value != null)
 			ps.setString(fields++, toString(value.getClass(), value));
 		else

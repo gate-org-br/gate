@@ -25,6 +25,7 @@ public abstract class FilteredSelect implements
 	}
 
 	public abstract static class Constant extends FilteredSelect implements
+		Refinable.Constant,
 		Groupable.Constant,
 		Orderable.Constant,
 		Limitable.Constant,
@@ -45,6 +46,7 @@ public abstract class FilteredSelect implements
 	}
 
 	public abstract static class Generic extends FilteredSelect implements
+		Refinable.Constant,
 		Groupable.Generic,
 		Orderable.Generic,
 		Limitable.Generic,
@@ -65,6 +67,7 @@ public abstract class FilteredSelect implements
 	}
 
 	public abstract static class Compiled extends FilteredSelect implements
+		Refinable.Constant,
 		Groupable.Compiled,
 		Orderable.Compiled,
 		Limitable.Compiled,

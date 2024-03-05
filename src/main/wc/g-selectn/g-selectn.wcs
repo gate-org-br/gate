@@ -1,14 +1,20 @@
+* {
+	box-sizing: border-box
+}
+
+
 :host(*)
 {
-	gap: 4px;
 	padding: 8px;
 	display: grid;
 	overflow: auto;
 	overflow-y: auto;
+	position: relative;
 	border-radius: 3px;
 	align-content: start;
 	background-color: white;
 	grid-template-columns: 24px 1fr;
+	align-items: center;
 }
 
 :host([columns='1'])  {
@@ -36,8 +42,23 @@
 	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
 }
 
-label {
-	display: flex;
+*,
+::slotted(*)
+{
+
 	cursor: pointer;
-	align-items: center;
+	border: none !important;
+}
+
+input,
+::slotted(input)
+{
+	margin: 0;
+	width: 16px;
+}
+
+input {
+	top: 4px;
+	right: 4px;
+	position: absolute;
 }

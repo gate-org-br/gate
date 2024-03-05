@@ -4,7 +4,6 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
 import gate.icon.Icon;
-import gate.icon.Icons;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.GenericArrayType;
@@ -21,8 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public interface Attribute
-{
+public interface Attribute {
 
 	Type getGenericType();
 
@@ -36,28 +34,26 @@ public interface Attribute
 
 	Object forceValue(Object object);
 
-	default boolean isEntityId()
-	{
+	default boolean isEntityId() {
 		return false;
 	}
 
-	default Class<?> getElementRawType()
-	{
+	default Class<?> getElementRawType() {
 		Type type = getElementType();
 		if (type instanceof Class<?>)
 			return (Class<?>) type;
 		if (type instanceof ParameterizedType)
 			return (Class<?>) ((ParameterizedType) type).getRawType();
 		else if (type instanceof GenericArrayType)
-			return Array.newInstance((Class<?>) ((ParameterizedType) ((GenericArrayType) type).getGenericComponentType()).getRawType(), 0).getClass();
+			return Array.newInstance(
+					(Class<?>) ((ParameterizedType) ((GenericArrayType) type).getGenericComponentType()).getRawType(),
+					0).getClass();
 		else
 			return null;
 	}
 
-	default Object createInstance(Class<?> type)
-	{
-		try
-		{
+	default Object createInstance(Class<?> type) {
+		try {
 			if (type == List.class)
 				return new ArrayList<>();
 			else if (type == Collection.class)
@@ -68,168 +64,137 @@ public interface Attribute
 				return new HashMap<>();
 
 			Constructor constructor = Stream.of(type.getConstructors())
-				.filter(e -> e.getParameters().length == 0).findAny().orElse(null);
+					.filter(e -> e.getParameters().length == 0).findAny().orElse(null);
 			if (constructor == null)
 				throw new PropertyError("No default constructor found in %s.", type.getName());
 			constructor.setAccessible(true);
 			return constructor.newInstance();
 		} catch (InstantiationException
-			| IllegalAccessException
-			| IllegalArgumentException
-			| InvocationTargetException e)
-		{
+				| IllegalAccessException
+				| IllegalArgumentException
+				| InvocationTargetException e) {
 			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
 		}
 
 	}
 
-	default boolean getBoolean(Object object)
-	{
+	default boolean getBoolean(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a boolean value from a non boolean attribute");
 	}
 
-	default void setBoolean(Object object, boolean value)
-	{
+	default void setBoolean(Object object, boolean value) {
 		throw new UnsupportedOperationException("Attempt to write a boolean value to a non boolean attribute");
 	}
 
-	default char getChar(Object object)
-	{
+	default char getChar(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a char value from a non char attribute");
 	}
 
-	default void setChar(Object object, char value)
-	{
+	default void setChar(Object object, char value) {
 		throw new UnsupportedOperationException("Attempt to write a char value to a non char attribute");
 	}
 
-	default byte getByte(Object object)
-	{
+	default byte getByte(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a byte value from a non byte attribute");
 	}
 
-	default void setByte(Object object, byte value)
-	{
+	default void setByte(Object object, byte value) {
 		throw new UnsupportedOperationException("Attempt to write a byte value to a non byte attribute");
 	}
 
-	default short getShort(Object object)
-	{
+	default short getShort(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a short value from a non short attribute");
 	}
 
-	default void setShort(Object object, short value)
-	{
+	default void setShort(Object object, short value) {
 		throw new UnsupportedOperationException("Attempt to write a short value to a non short attribute");
 	}
 
-	default int getInt(Object object)
-	{
+	default int getInt(Object object) {
 		throw new UnsupportedOperationException("Attempt to read an int value from a non int attribute");
 	}
 
-	default void setInt(Object object, int value)
-	{
+	default void setInt(Object object, int value) {
 		throw new UnsupportedOperationException("Attempt to write an int value to a non int attribute");
 	}
 
-	default long getLong(Object object)
-	{
+	default long getLong(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a long value from a non long attribute");
 	}
 
-	default void setLong(Object object, long value)
-	{
+	default void setLong(Object object, long value) {
 		throw new UnsupportedOperationException("Attempt to write a long value to a non long attribute");
 	}
 
-	default float getFloat(Object object)
-	{
+	default float getFloat(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a float value from a non float attribute");
 	}
 
-	default void setFloat(Object object, float value)
-	{
+	default void setFloat(Object object, float value) {
 		throw new UnsupportedOperationException("Attempt to write a float value to a non float attribute");
 	}
 
-	default double getDouble(Object object)
-	{
+	default double getDouble(Object object) {
 		throw new UnsupportedOperationException("Attempt to read a double value from a non double attribute");
 	}
 
-	default void setDouble(Object object, double value)
-	{
+	default void setDouble(Object object, double value) {
 		throw new UnsupportedOperationException("Attempt to write a double value to a non double attribute");
 	}
 
-	default String getDisplayName()
-	{
+	default String getDisplayName() {
 		return null;
 	}
 
-	default String getDescription()
-	{
+	default String getDescription() {
 		return null;
 	}
 
-	default String getPlaceholder()
-	{
+	default String getPlaceholder() {
 		return null;
 	}
 
-	default Icon getIcon()
-	{
+	default Icon getIcon() {
 		return null;
 	}
 
-	default String getCode()
-	{
+	default String getCode() {
 		return null;
 	}
 
-	default String getTooltip()
-	{
+	default String getTooltip() {
 		return null;
 	}
 
-	default String getColor()
-	{
+	default String getColor() {
 		return null;
 	}
 
-	default String getMask()
-	{
+	default String getMask() {
 		return null;
 	}
 
-	default Collection<Constraint.Implementation> getConstraints()
-	{
+	default Collection<Constraint.Implementation> getConstraints() {
 		return Collections.emptyList();
 	}
 
-	default String getColumnName()
-	{
+	default String getColumnName() {
 		return null;
 	}
 
-	default String getTableName()
-	{
+	default String getTableName() {
 		return Entity.getTableName(getRawType());
 	}
 
-	default String getFullTableName()
-	{
+	default String getFullTableName() {
 		return Entity.getFullTableName(getRawType());
 	}
 
-	default boolean isEntity()
-	{
+	default boolean isEntity() {
 		return Entity.isEntity(getRawType());
 	}
 
-	default Converter getConverter()
-	{
+	default Converter getConverter() {
 		return Converter.getConverter(getRawType());
 	}
 }

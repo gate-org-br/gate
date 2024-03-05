@@ -1,45 +1,9 @@
 <template>
-	<main>
-		<header tabindex='1'>
+	<dialog part='dialog'>
+		<header part='header' tabindex='1'>
 			<label id='caption'>
-				Chart
 			</label>
-			<a id='rchart' href='#' title='Rose'>
-				<g-icon>
-					&#x2247;
-				</g-icon>
-			</a>
-			<a id='dchart' href='#' title='Donut'>
-				<g-icon>
-					&#x2245;
-				</g-icon>
-			</a>
-			<a id='pchart' href='#' title='Pizza'>
-				<g-icon>
-					&#x2031;
-				</g-icon>
-			</a>
-			<a id='achart' href='#' title='Área'>
-				<g-icon>
-					&#x2244;
-				</g-icon>
-			</a>
-			<a id='lchart' href='#' title='Linha'>
-				<g-icon>
-					&#x2032;
-				</g-icon>
-			</a>
-			<a id='bchart' href='#' title='Barra'>
-				<g-icon>
-					&#x2246;
-				</g-icon>
-			</a>
-			<a id='cchart' href='#' title='Coluna'>
-				<g-icon>
-					&#x2033;
-				</g-icon>
-			</a>
-			<a id='close' href='#' title='Fechar'>
+			<a id='hide' href='#'>
 				<g-icon>
 					&#x1011;
 				</g-icon>
@@ -49,5 +13,5 @@
 			<g-chart>
 			</g-chart>
 		</section>
-	</main>
+	</dialog>
 </template>

@@ -28,7 +28,7 @@ public class TypedMapPageFetcher implements Fetcher<Page<Map<String, Object>>>
 		if (!cursor.next())
 			return Page.of(List.of(), 0, pageSize, pageIndx);
 
-		String[] names = cursor.getColumnNames();
+		List<String> names = cursor.getColumnNames();
 
 		if (Stream.of(names).noneMatch("dataSize"::equals))
 			throw new UnsupportedOperationException("Result set does not contain a dataSize column");
@@ -39,9 +39,12 @@ public class TypedMapPageFetcher implements Fetcher<Page<Map<String, Object>>>
 		do
 		{
 			Map<String, Object> result = new HashMap<>();
-			for (int i = 0; i < names.length; i++)
-				if (!"dataSize".equals(names[i]))
-					result.put(names[i], cursor.getValue(types[i], names[i]));
+			for (int i = 0; i < names.size(); i++)
+			{
+				String name = names.get(i);
+				if (!"dataSize".equals(name))
+					result.put(name, cursor.getValue(types[i], name));
+			}
 			results.add(result);
 		} while (cursor.next());
 		return Page.of(results, dataSize, pageSize, pageIndx);

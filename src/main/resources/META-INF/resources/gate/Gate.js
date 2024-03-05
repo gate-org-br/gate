@@ -6,8 +6,7 @@ import "./mask.js";
 import "./button.js";
 import "./switch.js";
 import "./g-tree-grid.js";
-
-import "./clipboard.js";
+import "./g-tree-list.js";
 
 import "./g-table-scroll.js";
 
@@ -36,8 +35,6 @@ import "./g-text-editor.js";
 import "./g-report-picker.js";
 import "./g-chart.js";
 import "./g-chart-dialog.js";
-import "./g-icon-pane.js";
-import "./g-popup.js";
 
 import "./g-icon-picker.js";
 import "./g-date-picker.js";
@@ -86,7 +83,6 @@ import "./g-splitter.js";
 import "./g-callout.js";
 
 import "./g-accordion.js";
-import "./g-accordion-section.js";
 
 import './hateoas.js';
 
@@ -95,7 +91,7 @@ import "./populator.js";
 
 import "./picker.js";
 
-import './@hide.js';
+import './collapse.js';
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

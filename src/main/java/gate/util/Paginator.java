@@ -85,7 +85,7 @@ public class Paginator<E> implements Iterable<Page<E>>, Serializable
 		return size;
 	}
 
-	public int getFrstPageIndx()
+	public int getFirstPageIndx()
 	{
 		return size == 0 ? -1 : 0;
 	}

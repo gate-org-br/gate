@@ -55,7 +55,6 @@ import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
 import ObjectFilter from './object-filter.js';
-import GMessageDialog from './g-message-dialog.js';
 
 export default class GSelectPicker extends GWindow
 {

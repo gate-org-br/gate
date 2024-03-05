@@ -1,64 +1,84 @@
 export default class Lexer
 {
-	#type;
-	#lexer;
+	#separators;
+	#delimiters;
 	#token;
 	#string;
+	#position;
 
-	constructor(string, type)
+	constructor(string, separators, delimiters)
 	{
 		this.#string = string;
-		this.#type = type;
-		this.#lexer = this.#createLexer();
+		this.#separators = separators;
+		this.#delimiters = delimiters;
+		this.#position = 0;
 		this.next();
 	}
 
-	* #createLexer()
+	isEOF()
 	{
-		for (let i = 0; i < this.#string.length; i++)
+		return this.#position >= this.#string.length;
+	}
+
+	isSpace()
+	{
+		return this.#string[this.#position] === ' ';
+	}
+
+	isDelimiter()
+	{
+		return this.#delimiters.includes(this.#string[this.#position]);
+	}
+
+	isSeparator()
+	{
+		return this.#separators.some(e => this.#string.startsWith(e, this.#position));
+	}
+
+	* generateTokens()
+	{
+		while (!this.isEOF())
 		{
-			while (this.#string[i] === ' ')
-				i++;
-			switch (this.#type(this.#string[i]))
+			while (!this.isEOF() && this.isSpace())
+				this.#position++;
+
+			if (this.isSeparator())
 			{
-				case "SEPARATOR":
-					yield this.#string[i];
-					break;
-				case "DELIMITER":
-				{
-					let value = '';
-					let delimiter = this.#string[i];
-					value += delimiter;
-					for (i++; this.#string[i] !== delimiter; i++)
-						value += this.#string[i];
-					if (this.#string[i] !== delimiter)
-						throw new Error(`Unterminated string found on ${this.#string}`);
-					value += delimiter;
-					yield value;
-					break;
-				}
-				case "CHARACTER":
-				{
-					let value = '';
-					while (i < this.#string.length
-						&& this.#string[i] !== ' '
-						&& this.#type(this.#string[i]) === "CHARACTER")
-						value += this.#string[i++];
-					i--;
-					yield value;
-				}
+				let separator = '';
+				while (!this.isEOF()
+					&& this.#separators.some(e =>
+						e.startsWith(separator + this.#string[this.#position])))
+					separator += this.#string[this.#position++];
+				yield separator;
+			} else if (this.isDelimiter())
+			{
+				let delimiter = this.#string[this.#position++];
+				let value = delimiter;
+				while (!this.isEOF() && this.#string[this.#position] !== delimiter)
+					value += this.#string[this.#position++];
+				if (this.#string[this.#position] !== delimiter)
+					throw new Error(`Unterminated string found on ${this.#string}`);
+				value += this.#string[this.#position++];
+				yield value;
+			} else
+			{
+				let value = '';
+				while (!this.isEOF() && !this.isSpace() && !this.isSeparator() && !this.isDelimiter())
+					value += this.#string[this.#position++];
+				yield value;
 			}
 		}
 	}
 
 	next()
 	{
-		this.#token = this.#lexer.next().value;
+		const result = this.generateTokens().next();
+		this.#token = result.value;
 	}
 
 	consume()
 	{
-		let token = this.#token;
+		const token = this.#token;
 		this.next();
 		return token;
 	}

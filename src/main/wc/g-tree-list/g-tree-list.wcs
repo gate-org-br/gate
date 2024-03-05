@@ -1,0 +1,34 @@
+ul[is='g-tree-list']
+{
+	list-style-type: none;
+
+	ul
+	{
+		display: none;
+		list-style-type: none;
+	}
+
+	li {
+		cursor: pointer;
+	}
+
+	li::before
+	{
+		content: '+';
+		font-size: 12px;
+		font-weight: bold;
+		font-family: monospace;
+	}
+
+	li[data-expanded]::before {
+		content: '-';
+	}
+
+	li[data-empty]::before {
+		content: ' ';
+	}
+
+	li[data-expanded]>ul {
+		display: block;
+	}
+}

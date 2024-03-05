@@ -1,88 +1,31 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<fieldset>
+	</fieldset>
  <style>* {
 	box-sizing: border-box
 }
 
 :host(*) {
-	display: grid;
-	grid-template-columns: repeat(16, 1fr);
-}
-
-label {
-	padding: 4px;
 	display: flex;
-	grid-column: span 16;
+	align-items: stretch;
 	flex-direction: column;
+	justify-content: stretch;
 }
 
-span {
-	padding: 4px;
-	flex-grow: 1;
-	display: flex;
-	flex-basis: 32px;
-	border-radius:5px;
-	align-items: center;
-	background-color: var(--main1);
+fieldset {
+	padding: 0;
+	border: none;
 }
 
-span.multiple {
-	display: block;
+span.multiple
+{
 	overflow: auto;
-	flex-basis: 64px;
-}
-
-@media only screen and (min-width: 576px) {
-	label[data-size="1"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 768px) {
-	label[data-size="1"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 992px) {
-	label[data-size="1"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 8;
-	}
-}
-
-
-@media only screen and (min-width: 1200px) {
-	label[data-size="1"] {
-		grid-column: span 1;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="8"] {
-		grid-column: span 8;
-	}
-}
-</style>`;
+	flex-basis: 80px;
+}</style>`;
 
 /* global customElements */
+import stylesheets from './stylesheets.js';
 
 customElements.define('g-form-view', class extends HTMLElement
 {
@@ -91,17 +34,21 @@ customElements.define('g-form-view', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
+		stylesheets('input.css', 'fieldset.css')
+			.forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	set value(value)
 	{
-		Array.from(this.shadowRoot.querySelectorAll("label")).forEach(e => e.remove());
+		let fieldset = this.shadowRoot.querySelector("fieldset");
+		Array.from(fieldset.children).forEach(e => e.remove());
 
 		if (value)
 			value.forEach(element => {
-				let label = this.shadowRoot.appendChild(document.createElement("label"));
+				let label = fieldset.appendChild(document.createElement("label"));
 
 				if (element.size)
+				{
 					switch (Number(element.size))
 					{
 						case 0:
@@ -117,6 +64,8 @@ customElements.define('g-form-view', class extends HTMLElement
 							label.setAttribute("data-size", 8);
 							break;
 					}
+				} else if (element.columns)
+					label.setAttribute("data-size", element.columns);
 
 				label.innerText = element.name + ': ';
 

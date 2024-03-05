@@ -3,7 +3,6 @@
 @import './themes.css';
 @import './link.css';
 @import './button.css';
-@import './g-icon-pane.css';
 
 @import './icon.css';
 @import './emoji.css';
@@ -15,7 +14,9 @@
 @import './minibar.css';
 @import './figure.css';
 
-@import './g-table.css';
+@import './table.css';
+
+@import './collapse.css';
 
 @import './visibility.css';
 

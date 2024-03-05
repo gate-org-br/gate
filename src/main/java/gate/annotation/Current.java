@@ -12,20 +12,16 @@ import javax.inject.Qualifier;
 
 @Qualifier
 @Retention(RUNTIME)
-@Target(
-	{
+@Target({
 		TYPE, METHOD, PARAMETER, FIELD
-	})
-public @interface Current
-{
+})
+public @interface Current {
 
 	public static final AnnotationLiteral<Current> LITERAL = new Literal();
 
-	static class Literal extends AnnotationLiteral<Current> implements Current
-	{
+	static class Literal extends AnnotationLiteral<Current> implements Current {
 
-		private Literal()
-		{
+		private Literal() {
 
 		}
 	}

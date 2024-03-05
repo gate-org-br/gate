@@ -9,7 +9,7 @@ window.addEventListener("@save", function (event)
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
-		.then(response => GFilePicker.saveDataURL(response))
+		.then(GFilePicker.saveDataURL)
 		.then(response => event.success(path, response))
 		.catch(error => event.failure(path, error));
 });

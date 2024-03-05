@@ -17,10 +17,7 @@ window.addEventListener("@dialog", function (event)
 	let height = parameters.filter(e => e => e !== "fetch" && e !== "frame")[1] || size;
 
 	if (size)
-		dialog.width = dialog.height = size;
-	if (height)
-		dialog.height = height;
-
+		dialog.setAttribute("style", `width: ${size}; height: ${height || size}`);
 
 	if (trigger.hasAttribute("data-navigator") || trigger.parentNode.hasAttribute("data-navigator"))
 	{
@@ -31,6 +28,7 @@ window.addEventListener("@dialog", function (event)
 				dialog.navbar.index = index;
 	}
 
+	let promise = dialog.show();
 	switch (type)
 	{
 		case "fetch":
@@ -38,26 +36,25 @@ window.addEventListener("@dialog", function (event)
 				.then(ResponseHandler.text)
 				.then(result =>
 				{
-					dialog.show().finally(() => event.success(path, new DataURL('text/html', result).toString()));
+					promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
 					dialog.appendChild(document.createRange().createContextualFragment(result));
-				}).catch(error => event.failure(error));
+				}).catch(error => event.failure(path, error));
 			break;
 
 		case "frame":
 			if (event.detail.method === "get")
 			{
-				dialog.show().finally(() => event.success(path));
+				promise.finally(() => event.success(path));
 				dialog.iframe.src = event.detail.action;
 			} else
 				fetch(RequestBuilder.build(method, action, form))
 					.then(ResponseHandler.text)
 					.then(result =>
 					{
-						dialog.show().finally(() => event.success(path, new DataURL('text/html', result).toString()));
+						promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
 						dialog.iframe.srcDoc = result;
-
 					})
-					.catch(error => event.failure(error));
+					.catch(error => event.failure(path, error));
 			break;
 	}
 });

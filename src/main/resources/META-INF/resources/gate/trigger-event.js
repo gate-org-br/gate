@@ -1,7 +1,6 @@
 import DOM from './dom.js';
 import Parser from './parser.js';
 import trigger from './trigger.js';
-import validate from './validate.js';
 import CancelError from './cancel-error.js';
 import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
@@ -9,10 +8,10 @@ import GMessageDialog from './g-message-dialog.js';
 export default class TriggerEvent extends CustomEvent
 {
 	#pipeline;
-	constructor(name, cause, method, action, form, parameters, pipeline)
+	constructor(name, cause, method, action, form, parameters, context, pipeline)
 	{
 		super(name, {bubbles: true, composed: true, cancelable: false,
-			detail: {cause, method, action, form, parameters}});
+			detail: {cause, method, action, form, parameters, context}});
 		this.#pipeline = pipeline;
 	}
 
@@ -28,7 +27,7 @@ export default class TriggerEvent extends CustomEvent
 		if (this.#pipeline.length)
 		{
 			let {name, parameters} = this.#pipeline[0];
-			let {cause, method, action, form} = this.detail;
+			let {cause, method, action, form, context} = this.detail;
 			EventHandler.dispatch(path,
 				new TriggerEvent(name,
 					cause,
@@ -36,6 +35,7 @@ export default class TriggerEvent extends CustomEvent
 					result || action,
 					form,
 					parameters,
+					context,
 					this.#pipeline.slice(1)));
 		} else
 			EventHandler.dispatch(path,
@@ -48,12 +48,19 @@ export default class TriggerEvent extends CustomEvent
 		EventHandler.dispatch(path, new TriggerResolveEvent(this));
 	}
 
-	static of(cause, method, action, form, target)
+	static of(cause, method, action, form, target, context)
 	{
+		if (target == "_top"
+			|| target == "_self"
+			|| target == "_blank"
+			|| target == "_parent"
+			|| target == "_dialog")
+			return new TriggerEvent(target, cause, method, action, form, [], context, []);
+
 		let pipeline = Parser.pipeline(target);
 		let {name, parameters} = pipeline[0];
 		pipeline = pipeline.slice(1);
-		return new TriggerEvent(name, cause, method, action, form, parameters, pipeline);
+		return new TriggerEvent(name, cause, method, action, form, parameters, context, pipeline);
 	}
 }
 
@@ -89,39 +96,14 @@ export class TriggerResolveEvent extends CustomEvent
 	}
 }
 
-
-function triggerEvent()
-{
-
-	return function ()
-	{
-		switch (arguments.length)
-		{
-			case 0:
-				return trigger(event.detail.cause, this);
-			case 1:
-				let element = arguments[0];
-				if (typeof element === "string")
-					element = DOM.navigate(event.target, element)
-						.orElseThrow(`${element} is not a valid selector.`);
-				return trigger(event.detail.cause, element);
-			case 2:
-			case 3:
-			case 4:
-				return this.dispatchEvent(new TriggerEvent(event.detail.cause,
-					arguments[0], arguments[1], arguments[2], arguments[3]
-					? DOM.navigate(this, arguments[3])
-					.map(e => new FormData(e))
-					.orElseThrow(`${element} is not a valid selector.`) : null));
-		}
-	};
-}
-
 function call(event, element, attribute)
 {
 	if (element.hasAttribute && element.hasAttribute(attribute))
-		new Function("event", "trigger", element.getAttribute(attribute))
-			.bind(element)(event, triggerEvent(event));
+	{
+		let script = element.getAttribute(attribute);
+		let func = new Function("event", `return ${script}`).bind(element);
+		func()(event);
+	}
 }
 
 window.addEventListener("trigger-startup", function (event)
@@ -140,7 +122,7 @@ window.addEventListener("trigger-success", function (event)
 window.addEventListener("trigger-failure", function (event)
 {
 	if (!event.defaultPrevented && !(event.detail.error instanceof CancelError))
-		GMessageDialog.error(event.detail.error);
+		GMessageDialog.error(event.detail.error.message);
 
 	for (let element of event.composedPath())
 		call(event, element, "data-on:failure");

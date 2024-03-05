@@ -2,31 +2,34 @@
 
 import NumberFormat from './number-format.js';
 
+const format = new NumberFormat();
+
+function extract(table)
+{
+	let columns = [];
+	let head = Array.from(table.querySelector("thead > tr").children);
+	const catColumns = head.filter(col => col.getAttribute("data-chart") === "cat");
+	const valColumns = head.filter(col => col.getAttribute("data-chart") === "val");
+
+	if (catColumns.length === 1 && valColumns.length > 0)
+	{
+		columns.push(...catColumns.map(col => head.indexOf(col)));
+		columns.push(...valColumns.map(col => head.indexOf(col)));
+	} else
+		columns = head.map((col, index) => index);
+
+	let result = [];
+	result.push(columns.map(column => head[column].innerText));
+
+	let data = Array.from(table.querySelectorAll("tbody > tr"));
+	data.forEach(row => result.push(columns.map(column => row.children[column].innerText)
+			.map((value, index) => index ? format.parse(value) : value)));
+
+	return result;
+}
+
 export default class Dataset
 {
-	static fromTable(table,
-		{dir = 'X', cat = 0, min = 1, max, lang })
-	{
-		const parser = new NumberFormat(lang);
-
-		let rows = Array.from(table.querySelectorAll("tr"))
-			.filter(e => e.parentNode.tagName === "THEAD"
-					|| e.parentNode.tagName === "TBODY");
-
-		let size = rows[0].children.length;
-		min = min < 0 ? size + min : min;
-		max = max < 0 ? size + max : max;
-		cat = cat < 0 ? size + cat : cat;
-		let result = rows.map(row => row.parentNode.tagName === "THEAD"
-				? [row.children[cat].innerText.trim(), ...Array.from(row.children)
-						.filter((_, index) => index >= min && (!max || index <= max))
-						.map(e => e.innerText.trim())]
-				: [row.children[cat].innerText.trim(), ...Array.from(row.children)
-						.filter((_, index) => index >= min && (!max || index <= max))
-						.map(e => e.getAttribute("data-value") || e.innerText.trim())
-						.map(e => parser.parse(e))]);
-		return dir === 'X' ? result : Dataset.reverse(result);
-	}
 
 	static reverse(dataset)
 	{
@@ -35,31 +38,21 @@ export default class Dataset
 			: dataset;
 	}
 
-	static parse(type, value)
+	static fetch(value)
 	{
+
 		return new Promise((resolve, reject) =>
 		{
 			try
 			{
-				switch (type)
-				{
-					case 'table':
-						let matcher = value.match(/^(#[a-z]+)(\(([^)]*)\))?$/i);
-						if (!matcher)
-							throw new Error("Invalid table id");
-						let table = document.querySelector(matcher[1]);
-						let options = matcher[3] ? JSON.parse(matcher[3]) : {};
-						return resolve(Dataset.fromTable(table, options));
-						break;
-					case 'url':
-						fetch(value).then(e => e.json()).then(e => resolve(e));
-						break;
-					case 'array':
-						resolve(JSON.parse(value));
-						break;
-					default:
-						throw new Error("Invalid value type");
-				}
+				if (value instanceof HTMLTableElement)
+					return resolve(extract(value));
+				else if (typeof value === "string")
+					if (value.startsWith("#"))
+						return resolve(Dataset.fetch(document.querySelector(value)));
+					else
+						return fetch(value).then(e => e.json()).then(e => resolve(e));
+				throw new Error("Invalid dataset source");
 			} catch (error)
 			{
 				reject(error);

@@ -176,7 +176,8 @@ customElements.define('g-text-editor', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.tabindex = 0;
+		if (!this.tabindex)
+			this.tabindex = 0;
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this._private = {"input": document.createElement("input")};

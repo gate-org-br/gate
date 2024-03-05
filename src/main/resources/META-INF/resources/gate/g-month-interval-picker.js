@@ -20,9 +20,9 @@ template.innerHTML = `
 	</dialog>
  <style>dialog
 {
-	height: 440px;
 	min-width: 320px;
 	max-width: 600px;
+	height: fit-content;
 	width: calc(100% - 40px);
 }
 

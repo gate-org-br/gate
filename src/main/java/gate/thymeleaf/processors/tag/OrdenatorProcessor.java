@@ -43,6 +43,7 @@ public class OrdenatorProcessor extends TagModelProcessor
 		Attributes attributes = new Attributes();
 		if ("POST".equalsIgnoreCase(method))
 		{
+			attributes.set("formtarget", element.getAttributeValue("target"));
 			if (property.equals(orderBy))
 			{
 				queryString.put("orderBy", desc);
@@ -60,6 +61,7 @@ public class OrdenatorProcessor extends TagModelProcessor
 			}
 		} else
 		{
+			attributes.set("target", element.getAttributeValue("target"));
 			if (property.equals(orderBy))
 			{
 				queryString.put("orderBy", desc);

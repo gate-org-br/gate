@@ -16,12 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
-public class OptionHandler implements Handler
-{
+public class OptionHandler implements Handler {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
-	{
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError {
 		Objects.requireNonNull(value);
 
 		String string = Toolkit.stream(value).map(this::javaToJson).collect(Collectors.joining(",", "[", "]"));
@@ -31,20 +29,17 @@ public class OptionHandler implements Handler
 		response.setContentLength(bytes.length);
 		response.setContentType("application/json");
 
-		try ( OutputStream os = response.getOutputStream())
-		{
+		try (OutputStream os = response.getOutputStream()) {
 			os.write(bytes);
 			os.flush();
-		} catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new UncheckedIOException(ex);
 		}
 	}
 
-	private String javaToJson(Object object)
-	{
+	private String javaToJson(Object object) {
 		Objects.requireNonNull(object);
-		Class type = object.getClass();
+		Class<?> type = object.getClass();
 		Property property = Property.getProperty(type, Entity.getId(type));
 		Object id = property.getValue(object);
 		String label = object.toString();

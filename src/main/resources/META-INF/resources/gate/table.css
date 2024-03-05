@@ -1,0 +1,250 @@
+table {
+  width: 100%;
+  border: none;
+  color: black;
+  border-spacing: 0;
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: normal;
+  table-layout: fixed;
+  border-spacing: 0px;
+  text-decoration: none;
+  border: 1px solid var(--base3);
+}
+table > td > input,
+table > td > select {
+  width: 100%;
+}
+table thead,
+table tbody,
+table tfoot,
+table tr,
+table td {
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: inherit;
+}
+table > * > tr > * > fieldset {
+  padding: 0;
+}
+table tr {
+  height: 38px;
+}
+table tr > * {
+  padding: 4px;
+  text-align: left;
+  vertical-align: middle;
+  border-left: 1px solid;
+}
+table tr > *:first-child {
+  border-left: none;
+}
+table tr > * a,
+table tr > * button,
+table tr > * .g-command {
+  border: 0;
+  padding: 0;
+  color: var(--question1);
+  font-size: 12px;
+  cursor: pointer;
+  background: none;
+  font-weight: inherit;
+  text-decoration: none;
+}
+table tr th {
+  font-weight: bold;
+}
+table tr td {
+  word-break: normal;
+  background-color: transparent;
+}
+table tr td > form {
+  height: 32px;
+}
+table tr td > select:only-child,
+table tr td > textarea:only-child,
+table tr td > input[type='text']:only-child,
+table tr td > input[type='password']:only-child,
+table tr td > form > select:only-child,
+table tr td > form > textarea:only-child,
+table tr td > form > input[type='text']:only-child,
+table tr td > form > input[type='password']:only-child {
+  width: 100%;
+  height: 32px;
+  text-indent: 4px;
+  border-radius: 3px;
+  border: 1px solid var(--main5);
+}
+table > caption {
+  height: 32px;
+  line-height: 32px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--base1);
+  vertical-align: middle;
+  border-radius: 3px 3px 0 0;
+  background-color: var(--base3);
+}
+table > thead > tr > * {
+  font-weight: bold;
+  color: var(--base1);
+  border-color: var(--base5);
+  background-color: var(--base6);
+}
+table > tbody > tr {
+  outline: none;
+}
+table > tbody > tr:nth-child(odd) {
+  background-color: var(--main1);
+}
+table > tbody > tr:nth-child(odd) > * {
+  border-color: var(--main2);
+}
+table > tbody > tr:nth-child(even) {
+  background-color: var(--main2);
+}
+table > tbody > tr:nth-child(even) > * {
+  border-color: var(--main1);
+}
+table > tbody > tr.odd {
+  background-color: var(--main1);
+}
+table > tbody > tr.odd > * {
+  border-color: var(--main2);
+}
+table > tbody > tr.even {
+  background-color: var(--main2);
+}
+table > tbody > tr.even > * {
+  border-color: var(--main1);
+}
+table > tbody > tr[tabindex] {
+  cursor: pointer;
+}
+table > tbody > tr[tabindex]:focus {
+  background-color: var(--hovered);
+}
+table > tbody > tr:not([tabindex])[data-action],
+table > tbody > tr:not([tabindex])[data-target],
+table > tbody > tr:not([tabindex])[data-method] {
+  cursor: pointer;
+}
+table > tbody > tr:not([tabindex])[data-action]:hover,
+table > tbody > tr:not([tabindex])[data-target]:hover,
+table > tbody > tr:not([tabindex])[data-method]:hover {
+  background-color: var(--hovered);
+}
+table > tbody > tr > td[tabindex] {
+  cursor: pointer;
+}
+table > tbody > tr > td[tabindex]:focus {
+  background-color: var(--hovered);
+}
+table > tbody > tr > td:not([tabindex])[data-action],
+table > tbody > tr > td:not([tabindex])[data-target],
+table > tbody > tr > td:not([tabindex])[data-method] {
+  cursor: pointer;
+}
+table > tbody > tr > td:not([tabindex])[data-action]:hover,
+table > tbody > tr > td:not([tabindex])[data-target]:hover,
+table > tbody > tr > td:not([tabindex])[data-method]:hover {
+  background-color: var(--hovered);
+}
+table > tfoot > tr > * {
+  font-weight: bold;
+  color: var(--base1);
+  border-color: var(--base5);
+  background-color: var(--base6);
+}
+table.c1 > * > tr > *:nth-child(1),
+table.cge1 > * > tr > *:nth-child(n+1),
+table.c2 > * > tr > *:nth-child(2),
+table.cge2 > * > tr > *:nth-child(n+2),
+table.c3 > * > tr > *:nth-child(3),
+table.cge3 > * > tr > *:nth-child(n+3),
+table.c4 > * > tr > *:nth-child(4),
+table.cge4 > * > tr > *:nth-child(n+4),
+table.c5 > * > tr > *:nth-child(5),
+table.cge5 > * > tr > *:nth-child(n+5),
+table.c6 > * > tr > *:nth-child(6),
+table.cge6 > * > tr > *:nth-child(n+6),
+table.c7 > * > tr > *:nth-child(7),
+table.cge7 > * > tr > *:nth-child(n+7),
+table.c8 > * > tr > *:nth-child(8),
+table.cge8 > * > tr > *:nth-child(n+8),
+table.c9 > * > tr > *:nth-child(9),
+table.cge9 > * > tr > *:nth-child(n+9),
+table.c10 > * > tr > *:nth-child(10),
+table.cge10 > * > tr > *:nth-child(n+10),
+table.c11 > * > tr > *:nth-child(11),
+table.cge11 > * > tr > *:nth-child(n+11),
+table.c12 > * > tr > *:nth-child(12),
+table.cge12 > * > tr > *:nth-child(n+12),
+table.c13 > * > tr > *:nth-child(13),
+table.cge13 > * > tr > *:nth-child(n+13),
+table.c14 > * > tr > *:nth-child(14),
+table.cge14 > * > tr > *:nth-child(n+14),
+table.c15 > * > tr > *:nth-child(15),
+table.cge15 > * > tr > *:nth-child(n+15),
+table.c16 > * > tr > *:nth-child(16),
+table.cge16 > * > tr > *:nth-child(n+16),
+table.c17 > * > tr > *:nth-child(17),
+table.cge17 > * > tr > *:nth-child(n+17),
+table.c18 > * > tr > *:nth-child(18),
+table.cge18 > * > tr > *:nth-child(n+18),
+table.c19 > * > tr > *:nth-child(19),
+table.cge19 > * > tr > *:nth-child(n+19) {
+  text-align: center;
+}
+table.m1 > * > tr > *:nth-child(1),
+table.m2 > * > tr > *:nth-child(2),
+table.m3 > * > tr > *:nth-child(3),
+table.m4 > * > tr > *:nth-child(4),
+table.m5 > * > tr > *:nth-child(5),
+table.m6 > * > tr > *:nth-child(6),
+table.m7 > * > tr > *:nth-child(7),
+table.m8 > * > tr > *:nth-child(8),
+table.m9 > * > tr > *:nth-child(9),
+table.m10 > * > tr > *:nth-child(10),
+table.m11 > * > tr > *:nth-child(11),
+table.m12 > * > tr > *:nth-child(12),
+table.m13 > * > tr > *:nth-child(13),
+table.m14 > * > tr > *:nth-child(14),
+table.m15 > * > tr > *:nth-child(15),
+table.m16 > * > tr > *:nth-child(16),
+table.m17 > * > tr > *:nth-child(17),
+table.m18 > * > tr > *:nth-child(18),
+table.m19 > * > tr > *:nth-child(19),
+table.m20 > * > tr > *:nth-child(20) {
+  font-family: monospace;
+}
+table.r1 > * > tr > *:nth-child(1),
+table.r2 > * > tr > *:nth-child(2),
+table.r3 > * > tr > *:nth-child(3),
+table.r4 > * > tr > *:nth-child(4),
+table.r5 > * > tr > *:nth-child(5),
+table.r6 > * > tr > *:nth-child(6),
+table.r7 > * > tr > *:nth-child(7),
+table.r8 > * > tr > *:nth-child(8),
+table.r9 > * > tr > *:nth-child(9),
+table.r10 > * > tr > *:nth-child(10),
+table.r11 > * > tr > *:nth-child(11),
+table.r12 > * > tr > *:nth-child(12),
+table.r13 > * > tr > *:nth-child(13),
+table.r14 > * > tr > *:nth-child(14),
+table.r15 > * > tr > *:nth-child(15),
+table.r16 > * > tr > *:nth-child(16),
+table.r17 > * > tr > *:nth-child(17),
+table.r18 > * > tr > *:nth-child(18),
+table.r19 > * > tr > *:nth-child(19),
+table.r20 > * > tr > *:nth-child(20) {
+  text-align: right;
+}
+td > label,
+th > label {
+  gap: 8px;
+  width: 100%;
+  display: flex;
+  cursor: inherit;
+  align-items: center;
+}

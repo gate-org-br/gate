@@ -1,9 +1,9 @@
-const WebSocket = require('ws');
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const querystring = require('querystring');
+const event = btoa(JSON.stringify({type: "Ok", detail: {message: "success"}}));
 
 const server = http.createServer((req, res) => {
 	const parsedUrl = url.parse(req.url);
@@ -15,6 +15,15 @@ const server = http.createServer((req, res) => {
 		res.writeHead(404, {'Content-Type': 'text/plain'});
 		res.end('Not Found');
 	});
+
+	if (req.method === 'GET' && parsedUrl.pathname === '/SSE')
+	{
+		res.writeHead(200, {'Content-Type': 'text/event-stream'});
+		const timer = setInterval(() => res.write(`event: message\ndata: ${event}\n\n`), 10000);
+		res.on('close', () => clearInterval(timer));
+		res.end();
+		return;
+	}
 
 	const ext = path.extname(filePath).toLowerCase();
 	const contentType = getContentType(ext);
@@ -31,8 +40,11 @@ const server = http.createServer((req, res) => {
 			else
 				stream.pipe(res);
 		});
-	} else if (Object.keys(query).length > 0
-		&& Object.keys(query)[0] !== "type")
+
+		return;
+	}
+
+	if (Object.keys(query).length > 0 && Object.keys(query)[0] !== "type")
 	{
 		let rawData = '';
 		stream.on('data', chunk => rawData += chunk);
@@ -66,45 +78,11 @@ const server = http.createServer((req, res) => {
 				res.end('Error parsing JSON');
 			}
 		});
-	} else
-	{
-		// Act like a GET request
-		stream.pipe(res);
+		return;
 	}
-});
 
-const wss = new WebSocket.Server({server});
+	stream.pipe(res);
 
-wss.on('connection', (ws) => {
-	ws.send(JSON.stringify({
-		"todo": 0,
-		"done": 4000,
-		"text": "Processing records",
-		"process": 1,
-		"event": "Progress",
-		"status": "PENDING"
-	}));
-
-	for (let i = 1; i <= 3999; i++)
-	{
-		ws.send(JSON.stringify({
-			"todo": 4000,
-			"done": i,
-			"text": `${i} records processed`,
-			"process": 1,
-			"event": "Progress",
-			"status": "PENDING"
-		}));
-	}
-	ws.send(JSON.stringify({
-		"todo": 4000,
-		"done": 4000,
-		"text": "Done",
-		"process": 1,
-		"event": "Progress",
-		"status": "COMMITTED"
-	}));
-	ws.close();
 });
 
 const PORT = process.env.PORT || 8000;

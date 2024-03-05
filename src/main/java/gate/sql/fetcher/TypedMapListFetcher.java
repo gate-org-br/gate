@@ -20,13 +20,13 @@ public class TypedMapListFetcher implements Fetcher<List<Map<String, Object>>>
 	public List<Map<String, Object>> fetch(Cursor rs)
 	{
 
-		String[] names = rs.getColumnNames();
+		List<String> names = rs.getColumnNames();
 		List<Map<String, Object>> results = new ArrayList<>();
 		while (rs.next())
 		{
 			Map<String, Object> result = new HashMap<>();
-			for (int i = 0; i < names.length; i++)
-				result.put(names[i], rs.getValue(types[i], names[i]));
+			for (int i = 0; i < names.size(); i++)
+				result.put(names.get(i), rs.getValue(types[i], names.get(i)));
 			results.add(result);
 		}
 		return results;

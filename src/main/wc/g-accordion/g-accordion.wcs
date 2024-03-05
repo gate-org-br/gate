@@ -4,3 +4,53 @@
 	flex-direction: column;
 	box-shadow: 1px 1px 2px 0px var(--main6);
 }
+
+
+::slotted(a),
+::slotted(button)
+{
+	padding: 8px;
+	display: flex;
+	cursor: pointer;
+	font-weight: bold;
+	position: relative;
+	padding-right: 20px;
+	align-items: center;
+	background-color: var(--main2);
+}
+
+::slotted(div)
+{
+	gap: 12px;
+	padding : 8px;
+	display: none;
+	overflow: hidden;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: white;
+}
+
+::slotted(div[data-expanded])
+{
+	display: flex;
+}
+
+::slotted(a)::after,
+::slotted(button)::after
+{
+	display: flex;
+	font-size: 0.5em;
+	content: '\\2276';
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	right: 8px;
+}
+
+::slotted(a[data-expanded])::after,
+::slotted(button[data-expanded])::after
+{
+	content: '\\2278';
+}
+

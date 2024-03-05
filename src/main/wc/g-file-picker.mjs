@@ -35,7 +35,7 @@ export default class GFilePicker
 	static saveDataURL(url, filename)
 	{
 		let dataURL = DataURL.parse(url);
-		filename = filename || dataURL.filename
+		filename = filename || dataURL.parameters.name
 			|| dataURL.contentType.replace("/", ".");
 		let anchor = document.createElement("a");
 		anchor.href = url;

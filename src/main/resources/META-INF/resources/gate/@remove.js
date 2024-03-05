@@ -2,9 +2,8 @@
 
 import './trigger.js';
 import DOM from './dom.js';
-import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
-import {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
+import ResponseHandler from './response-handler.js';
 
 window.addEventListener("@remove", function (event)
 {
@@ -13,8 +12,8 @@ window.addEventListener("@remove", function (event)
 	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
 
 	return fetch(RequestBuilder.build(method, action, form))
+		.then(ResponseHandler.none)
 		.then(() => element.remove())
-		.then(() => EventHandler.dispatch(path, new TriggerSuccessEvent(event)))
-		.catch(error => EventHandler.dispatch(path, new TriggerFailureEvent(event, error)))
-		.finally(() => EventHandler.dispatch(path, new TriggerResolveEvent(event)));
+		.then(() => event.success(path))
+		.catch(error => event.failure(path, error));
 });

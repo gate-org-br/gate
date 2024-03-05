@@ -16,8 +16,7 @@ public class ArrayFetcher implements Fetcher<Optional<Object[]>>
 	 *
 	 * @param cursor the Cursor to be fetched
 	 *
-	 * @return an Optional describing the first row of the Cursor as a java array, or an empty Optional if the
-	 *         cursor is empty
+	 * @return an Optional describing the first row of the Cursor as a java array, or an empty Optional if the cursor is empty
 	 *
 	 */
 	@Override
@@ -25,11 +24,6 @@ public class ArrayFetcher implements Fetcher<Optional<Object[]>>
 	{
 		if (!cursor.next())
 			return Optional.empty();
-
-		Class<?>[] types = cursor.getColumnTypes();
-		Object[] result = new Object[types.length];
-		for (int i = 0; i < types.length; i++)
-			result[i] = cursor.getCurrentValue(types[i]);
-		return Optional.of(result);
+		return Optional.of(cursor.getColumnValues().toArray());
 	}
 }

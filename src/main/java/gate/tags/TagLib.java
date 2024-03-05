@@ -13,6 +13,7 @@ import gate.icon.Icons;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.regex.Pattern;
 import javax.enterprise.inject.spi.CDI;
 
@@ -99,4 +100,15 @@ public class TagLib
 		return Converter.toText(object, format);
 	}
 
+	public static List<?> enumerate(String type)
+	{
+		try
+		{
+			return List.of(Thread.currentThread().getContextClassLoader()
+				.loadClass(type).getEnumConstants());
+		} catch (ClassNotFoundException ex)
+		{
+			throw new IllegalArgumentException("Invalid enum class name: " + type);
+		}
+	}
 }

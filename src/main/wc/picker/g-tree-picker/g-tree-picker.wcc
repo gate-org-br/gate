@@ -1,0 +1,89 @@
+/* global customElements, template, fetch */
+
+import './g-icon.js';
+import './g-tree-list.js';
+import GWindow from './g-window.js';
+
+function tree(picker, options)
+{
+	return options.map(option =>
+	{
+		let li = document.createElement("li");
+		let anchor = li.appendChild(document.createElement("a"));
+		anchor.innerText = option.label;
+		anchor.addEventListener("click", () => picker.dispatchEvent(new CustomEvent("commit", {detail: {value: option}})));
+		if (option.children && option.children.length)
+		{
+			let ul = li.appendChild(document.createElement("ul"));
+			tree(picker, option.children).forEach(child => ul.appendChild(child));
+		}
+		return li;
+	});
+}
+
+export default class GTreePicker extends GWindow
+{
+	#options;
+	constructor()
+	{
+		super();
+		this.addEventListener("cancel", () => this.hide());
+		this.addEventListener("commit", () => this.hide());
+		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
+		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
+		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {value: {}}})));
+	}
+
+	set caption(caption)
+	{
+		this.shadowRoot.getElementById("caption").innerHTML = caption;
+	}
+
+	get caption()
+	{
+		return this.shadowRoot.getElementById("caption").innerHTML;
+	}
+
+	get options()
+	{
+		return this.#options || [];
+	}
+
+	set options(options)
+	{
+		this.#options = options;
+		let list = this.shadowRoot.querySelector("ul");
+		list.innerHTML = "";
+		tree(this, options).forEach(li => list.appendChild(li));
+	}
+
+	static pick(options, caption)
+	{
+		if (typeof options === "string")
+			return fetch(options)
+				.then(response =>
+				{
+					return response.ok ?
+						response.json()
+						: response.text().then(message =>
+					{
+						throw new Error(message);
+					});
+				}).then(result => GTreePicker.pick(result, caption));
+
+		let picker = window.top.document.createElement("g-tree-picker");
+		picker.options = options;
+		if (caption)
+			picker.caption = caption;
+		picker.show();
+
+		return new Promise((resolve, reject) =>
+		{
+			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("commit", e => resolve(e.detail));
+		});
+	}
+};
+
+customElements.define('g-tree-picker', GTreePicker);

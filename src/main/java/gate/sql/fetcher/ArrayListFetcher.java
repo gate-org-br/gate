@@ -22,14 +22,8 @@ public class ArrayListFetcher implements Fetcher<List<Object[]>>
 	@Override
 	public List<Object[]> fetch(Cursor cursor)
 	{
-		Class[] types = cursor.getColumnTypes();
 		while (cursor.next())
-		{
-			Object[] array = new Object[types.length];
-			for (int i = 0; i < array.length; i++)
-				array[i] = cursor.getCurrentValue(types[i]);
-			result.add(array);
-		}
+			result.add(cursor.getColumnValues().toArray());
 		return result;
 	}
 

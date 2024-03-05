@@ -1,18 +1,25 @@
-var elements = Array.from(document.querySelectorAll('[autofocus]'));
-if (!elements.length)
+window.addEventListener("connected", function (event)
 {
-	let elements = Array.from(document.querySelectorAll('[tabindex]'))
-		.filter(e => Number(e.getAttribute("tabindex")) > 0);
-	if (elements.length)
-	{
-		let element = elements.reverse()
-			.reduce((a, b) => Number(a.getAttribute("tabindex")) < Number(b.getAttribute("tabindex")) ? a : b);
-		if (element)
-		{
-			element.focus();
-			if (element.onfocus)
-				element.onfocus();
-		}
-	}
-} else
-	elements[0].focus();
+	if (event.target.hasAttribute("autofocus"))
+		return event.target.focus();
+
+	if (!event.target.hasAttribute("tabindex"))
+		return;
+
+	let target = parseInt(event.target.getAttribute("tabindex"), 10);
+	if (target < 0)
+		return;
+
+	if (!document.activeElement)
+		return event.target.focus();
+
+	if (!document.activeElement.hasAttribute("tabindex"))
+		return event.target.focus();
+
+	let current = parseInt(document.activeElement.getAttribute("tabindex"), 10);
+	if (current < 0)
+		return event.target.focus();
+
+	if (target < current)
+		event.target.focus();
+});

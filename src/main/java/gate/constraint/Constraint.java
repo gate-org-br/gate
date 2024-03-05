@@ -14,23 +14,19 @@ import java.lang.reflect.InvocationTargetException;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Constraint
-{
+public @interface Constraint {
 
-	abstract class Implementation<T> implements Serializable
-	{
+	abstract class Implementation<T> implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 
 		private final T value;
 
-		public Implementation(T value)
-		{
+		public Implementation(T value) {
 			this.value = value;
 		}
 
-		public T getValue()
-		{
+		public T getValue() {
 			return value;
 		}
 
@@ -38,18 +34,18 @@ public @interface Constraint
 
 		public abstract void validate(Object entity, Property property) throws AppException;
 
-		@SuppressWarnings("unchecked")
-		public static Implementation getImplementation(Annotation constraint)
-		{
+		@SuppressWarnings({ "rawtypes" })
+		public static Implementation getImplementation(Annotation constraint) {
 
-			try
-			{
-				Class<? extends Constraint.Implementation> implementationClass = constraint.annotationType().getAnnotation(gate.constraint.Implementation.class).value();
-				Constructor<? extends Constraint.Implementation> implementationConstructor = implementationClass.getConstructor(Object.class);
-				return implementationConstructor.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
+			try {
+				Class<? extends Constraint.Implementation> implementationClass = constraint.annotationType()
+						.getAnnotation(gate.constraint.Implementation.class).value();
+				Constructor<? extends Constraint.Implementation> implementationConstructor = implementationClass
+						.getConstructor(Object.class);
+				return implementationConstructor
+						.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
 			} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-				| IllegalArgumentException | InvocationTargetException | InstantiationException e)
-			{
+					| IllegalArgumentException | InvocationTargetException | InstantiationException e) {
 				throw new AppError(e);
 			}
 		}

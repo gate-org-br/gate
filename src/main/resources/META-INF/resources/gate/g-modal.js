@@ -7,7 +7,6 @@ export default class GModal extends HTMLElement
 	constructor()
 	{
 		super();
-		this._private = {};
 		this.addEventListener("keydown", event => event.stopPropagation());
 		this.addEventListener("keypress", event => event.stopPropagation());
 	}
@@ -16,14 +15,12 @@ export default class GModal extends HTMLElement
 	{
 		return new Promise(resolve =>
 		{
-			this.addEventListener("hide", () => {
-				resolve();
-			}, {once: true});
-			Scroll.disable(window.top.document.documentElement);
-			window.top.document.documentElement.appendChild(this);
-			let dialog = this.shadowRoot.querySelector("dialog");
-			if (dialog)
-				dialog.showModal();
+			this.addEventListener("hide", () => resolve(), {once: true});
+
+			if (!this.parentNode)
+				window.top.document.body.appendChild(this);
+			this.style.display = "flex";
+			this.shadowRoot.querySelector("dialog").showModal();
 		});
 	}
 
@@ -32,11 +29,11 @@ export default class GModal extends HTMLElement
 		if (this.parentNode)
 		{
 			this.dispatchEvent(new CustomEvent('hide', {bubbles: true, detail: {modal: this}}));
-			let dialog = this.shadowRoot.querySelector("dialog");
-			if (dialog)
-				dialog.close();
-			this.remove();
-			Scroll.enable(window.top.document.documentElement);
+
+			this.shadowRoot.querySelector("dialog").close();
+			this.style.display = "";
+			if (this.parentNode === window.top.document.body)
+				this.remove();
 		}
 
 		return this;

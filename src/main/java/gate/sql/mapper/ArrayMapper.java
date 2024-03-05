@@ -1,7 +1,6 @@
 package gate.sql.mapper;
 
 import gate.sql.Cursor;
-import java.util.stream.Stream;
 
 /**
  * Extracts each row from a Cursor as stream of arrays.
@@ -19,7 +18,7 @@ public class ArrayMapper implements Mapper<Object[]>
 	@Override
 	public Object[] apply(Cursor cursor)
 	{
-		return Stream.of(cursor.getColumnTypes())
+		return cursor.getColumnTypes().stream()
 			.map(e -> cursor.getCurrentValue(e))
 			.toArray();
 	}

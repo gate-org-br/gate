@@ -1,0 +1,122 @@
+[
+	{
+		"label": "Role 1",
+		"value": "0000000001",
+		"children": [
+			{
+				"label": "Role 1.1",
+				"value": "0000000011",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 1.2",
+				"value": "0000000012",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 1.3",
+				"value": "0000000013",
+				"children": [
+				]
+			}
+		]
+	},
+	{
+		"label": "Role 2",
+		"value": "0000000002",
+		"children": [
+			{
+				"label": "Role 2.1",
+				"value": "0000000021",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 2.2",
+				"value": "0000000022",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 2.3",
+				"value": "0000000023",
+				"children": [
+				]
+			}
+		]
+	},
+	{
+		"label": "Role 3",
+		"value": "0000000003",
+		"children": [
+			{
+				"label": "Role 3.1",
+				"value": "0000000031",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 3.2",
+				"value": "0000000032",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 3.3",
+				"value": "0000000033",
+				"children": [
+				]
+			}
+		]
+	},
+	{
+		"label": "Role 4",
+		"value": "0000000003",
+		"children": [
+			{
+				"label": "Role 4.1",
+				"value": "0000000041",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 4.2",
+				"value": "0000000042",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 4.3",
+				"value": "0000000043",
+				"children": [
+				]
+			}
+		]
+	},
+	{
+		"label": "Role 5",
+		"value": "0000000005",
+		"children": [
+			{
+				"label": "Role 5.1",
+				"value": "0000000051",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 5.2",
+				"value": "0000000052",
+				"children": [
+				]
+			},
+			{
+				"label": "Role 5.3",
+				"value": "0000000053",
+				"children": [
+				]
+			}
+		]
+	}
+]

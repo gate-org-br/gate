@@ -51,9 +51,8 @@ label::before
 
 header
 {
-	gap: 1px;
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
+	display: flex;
+	flex-wrap: wrap;
 }
 
 ::slotted(div)
@@ -76,21 +75,25 @@ header
 ::slotted(button)
 {
 	gap: 8px;
-	width: 100%;
+	padding: 8px;
 	height: 32px;
 	border: none;
-	padding: 5px;
 	color: black;
 	display: flex;
 	cursor: pointer;
 	flex-basis: 50%;
-	flex-basis: 32px;
 	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
 	background-color: #E8E8E8;
 	justify-content: flex-start;
 }
+
+header > ::slotted(:not(:first-child))
+{
+	border-left: 1px solid #F8F8F8;
+}
+
 
 ::slotted(a:hover),
 ::slotted(button:hover)
@@ -115,108 +118,107 @@ header
 
 @media only screen and (min-width: 768px)
 {
-	header
+	header > ::slotted(*)
 	{
-		grid-template-columns: repeat(4, 1fr);
+		flex-basis: 25%;
 	}
 
-	:host([size='9']) > header,
-	:host([size='10']) > header,
-	:host([size='20']) > header,
-	:host([size='30']) > header,
-	:host([size='40']) > header,
-	:host([size='50']) > header,
-	:host([size='60']) > header,
-	:host([size='70']) > header,
-	:host([size='80']) > header,
-	:host([size='90']) > header,
-	:host([size='100']) > header
+	:host([size='9']) > header > ::slotted(*),
+	:host([size='10']) > header > ::slotted(*),
+	:host([size='20']) > header > ::slotted(*),
+	:host([size='30']) > header > ::slotted(*),
+	:host([size='40']) > header > ::slotted(*),
+	:host([size='50']) > header > ::slotted(*),
+	:host([size='60']) > header > ::slotted(*),
+	:host([size='70']) > header > ::slotted(*),
+	:host([size='80']) > header > ::slotted(*),
+	:host([size='90']) > header > ::slotted(*),
+	:host([size='100']) > header > ::slotted(*)
 	{
-		grid-template-columns: repeat(5, 1fr);
+		flex-basis: 20%;
 	}
 }
 
 @media only screen and (min-width: 1200px)
 {
-	header
+	header > ::slotted(*)
 	{
-		grid-template-columns: repeat(8, 1fr);
+		flex-basis: 12.5%;
 	}
 
-	:host([size='9']) > header,
-	:host([size='10']) > header,
-	:host([size='20']) > header,
-	:host([size='30']) > header,
-	:host([size='40']) > header,
-	:host([size='50']) > header,
-	:host([size='60']) > header,
-	:host([size='70']) > header,
-	:host([size='80']) > header,
-	:host([size='90']) > header,
-	:host([size='100']) > header
+	:host([size='9']) > header > ::slotted(*),
+	:host([size='10']) > header > ::slotted(*),
+	:host([size='20']) > header > ::slotted(*),
+	:host([size='30']) > header > ::slotted(*),
+	:host([size='40']) > header > ::slotted(*),
+	:host([size='50']) > header > ::slotted(*),
+	:host([size='60']) > header > ::slotted(*),
+	:host([size='70']) > header > ::slotted(*),
+	:host([size='80']) > header > ::slotted(*),
+	:host([size='90']) > header > ::slotted(*),
+	:host([size='100']) > header > ::slotted(*)
 	{
-		grid-template-columns: repeat(10, 1fr);
+		flex-basis: 10%;
 	}
 }
 
-:host([vertical])
+:host([layout='vertical'])
 {
 	grid-template-rows: 1fr;
 	grid-template-columns: auto 1fr;
 }
 
-:host([vertical]) > header
+:host([layout='vertical']) > header
 {
 	gap: 0;
 	width: 28px;
-	display: flex;
 	overflow: hidden;
 	flex-direction: column;
 	justify-content: flex-start;
 }
 
-:host([vertical]) > section
+:host([layout='vertical']) > section
 {
 	display: flex;
-	flex-direction: column;
 	align-items: stretch;
+	flex-direction: column;
 	justify-content: stretch;
 }
 
-:host([vertical]) ::slotted(div)
+:host([layout='vertical']) ::slotted(div)
 {
 	flex-grow: 1;
 }
 
-:host([vertical]) > header > label
+:host([layout='vertical']) > header > label
 {
 	display: flex;
 }
 
-:host([vertical]) > header > ::slotted(*)
+:host([layout='vertical']) > header > ::slotted(*)
 {
-	padding: 12px;
+	flex-basis: 32px;
 	visibility: hidden;
 	background-color: var(--main3);
 }
 
-:host([vertical]) > header > ::slotted(*:hover)
+:host([layout='vertical']) > header > ::slotted(*:hover)
 {
 	background-color:  #FFFACD;
 }
 
-:host([vertical]) > header[toggled]
+:host([layout='vertical']) > header[toggled]
 {
-	width: fit-content;
+	width: max-content;
 }
 
-:host([vertical]) > header[toggled] > ::slotted(*)
+:host([layout='vertical']) > header[toggled] > ::slotted(*)
 {
 	visibility: visible;
 }
 
-:host([vertical]) > header > ::slotted(a[data-selected=true]),
-:host([vertical]) > header > ::slotted(button[data-selected=true])
+:host([layout='vertical']) > header > ::slotted(a[data-selected=true]),
+:host([layout='vertical']) > header > ::slotted(button[data-selected=true])
 {
 	color: black;
 	font-weight: bold;
@@ -225,44 +227,79 @@ header
 
 @media only screen and (min-width: 768px)
 {
-	:host([vertical]) > header[toggled]
+	:host([layout='vertical']) > header[toggled]
 	{
 		width: 28px;
 	}
 
-	:host([vertical]) > header:hover,
-	:host([vertical]) > header:not([toggled])
+	:host([layout='vertical']) > header:hover,
+	:host([layout='vertical']) > header:not([toggled])
 	{
-		min-width: 160px;
-		width: fit-content;
-
+		width: max-content;
 	}
 
-	:host([vertical]) > header[toggled] > ::slotted(*)
+	:host([layout='vertical']) > header[toggled] > ::slotted(*)
 	{
 		visibility: hidden;
 	}
 
-	:host([vertical]) > header:hover > ::slotted(*),
-	:host([vertical]) > :not(header[toggled]) > ::slotted(*)
+	:host([layout='vertical']) > header:hover > ::slotted(*),
+	:host([layout='vertical']) > :not(header[toggled]) > ::slotted(*)
 	{
 		visibility: visible;
 	}
 
-	:host([vertical]) > header:not([toggled]) label::after
+	:host([layout='vertical']) > header:not([toggled]) label::after
 	{
 		content: '\\2188';
 	}
+}
 
+
+
+::slotted(:is(a, button, .g-command)[data-loading])
+{
+	position: relative;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before
+{
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	padding: 8px;
+	color: black;
+	display: flex;
+	content: '\\2017';
+	font-family: gate;
+	position: absolute;
+	align-items: center;
+	font-size: inherit;
+	border-radius: inherit;
+	background-color: white;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::after
+{
+	left: 28px;
+	content: "";
+	height: 12px;
+	position: absolute;
+	animation-fill-mode: both;
+	max-width: calc(100% - 36px);
+	background-color: var(--base1);
+	animation: loading 2s infinite ease-in-out;
 }</style>`;
 
 /* global customElements */
 
+import './loading.js';
 import GBlock from './g-block.js';
+import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
-
 
 function resize(iframe)
 {
@@ -289,6 +326,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 			else
 				header.removeAttribute("toggled");
 		});
+
+		this.addEventListener("click", event =>
+		{
+			if (event.target.closest("g-tab-control") === this
+				&& Array.from(this.children)
+				.some(e => e.hasAttribute("data-loading")))
+				EventHandler.cancel(event);
+		}, true);
 	}
 
 	get type()
@@ -304,13 +349,12 @@ customElements.define('g-tab-control', class extends HTMLElement
 	connectedCallback()
 	{
 		let header = this.shadowRoot.querySelector("header");
+		let links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
+		this.setAttribute("size", links.length);
+		links.forEach(e => e.setAttribute("slot", "head"));
+
 		if (this.type !== "dummy")
 		{
-			var links = Array.from(this.children).filter(e => e.tagName === "A"
-					|| e.tagName === "BUTTON");
-
-			this.setAttribute("size", links.length);
-
 			links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
 				.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
 
@@ -319,7 +363,6 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 			links.forEach(link =>
 			{
-				links.forEach(e => e.setAttribute("slot", "head"));
 				let type = link.getAttribute("data-type") || this.type;
 				let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
 
@@ -337,6 +380,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						while (link.nextElementSibling.firstChild)
 							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
 
+
 					if (link.nextElementSibling.childNodes.length)
 					{
 						event.preventDefault();
@@ -351,11 +395,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 						let action = link.getAttribute('href')
 							|| link.getAttribute('formaction')
 							|| (link.form || {}).action;
+
+						link.setAttribute("data-loading", "");
 						fetch(RequestBuilder.build(method, action, link.form))
 							.then(ResponseHandler.text)
 							.then(result => document.createRange().createContextualFragment(result))
 							.then(result => link.nextElementSibling.replaceChildren(...Array.from(result.childNodes)))
-							.catch(error => GMessageDialog.error(error.message));
+							.catch(error => GMessageDialog.error(error.message))
+							.finally(() => link.removeAttribute("data-loading"));
 					} else if (type === "frame")
 					{
 						let iframe = document.createElement("iframe");
@@ -369,6 +416,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						iframe.addEventListener("load", () =>
 						{
 							resize(iframe);
+							link.removeAttribute("data-loading");
 							let observer = new MutationObserver(() => resize(iframe));
 							observer.observe(iframe.contentDocument || iframe.contentWindow.document,
 								{attributes: true, childList: true, subtree: true});
@@ -382,6 +430,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 						else if (link.tagName === "BUTTON")
 							link.setAttribute("formtarget", name);
 						link.nextElementSibling.appendChild(iframe);
+						link.setAttribute("data-loading", "");
 					}
 				});
 
@@ -395,10 +444,14 @@ customElements.define('g-tab-control', class extends HTMLElement
 				links[0].click();
 		} else
 		{
-			var links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
-			this.setAttribute("size", links.length);
-			links.forEach(e => e.setAttribute("slot", "head"));
 			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+
+			links.forEach(link => link.addEventListener("click", () =>
+				{
+					if (window.innerWidth <= 768)
+						header.removeAttribute("toggled");
+					links.forEach(e => e.setAttribute("data-selected", e === link));
+				}));
 		}
 	}
 });

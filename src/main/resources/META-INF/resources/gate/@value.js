@@ -13,12 +13,27 @@ window.addEventListener("@value", function (event)
 
 	let target = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.auto)
-		.then(result =>
+	fetch(RequestBuilder.build(method, action, form)).then(response =>
+	{
+		if (!response)
+			return Promise.resolve();
+		if (response.ok)
 		{
-			target.value = result;
-			event.success(path, new DataURL(result).toString());
-		})
-		.catch(error => event.failure(path, error));
+			let contentType = response.headers.get('content-type');
+			if (contentType.startsWith("text/"))
+				response = response.text();
+			else if (contentType === "application/json")
+				response = response.json();
+			else
+				response = response.blob();
+
+			return response.then(result =>
+			{
+				target.value = result;
+				event.success(path, new DataURL(contentType, result).toString());
+			});
+		}
+
+		return response.text().then(error => Promise.reject(new Error(error)));
+	}).catch(error => event.failure(path, error));
 });

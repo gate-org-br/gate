@@ -89,7 +89,7 @@ public class ShortcutProcessor extends AnchorProcessor
 
 	private String getIcon(Call call)
 	{
-		return call.getIcon().map(e -> "<i>" + e + "</i>")
+		return call.getIcon().map(e -> "<g-icon>" + e + "</g-icon>")
 			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
 			.orElse("?");
 	}

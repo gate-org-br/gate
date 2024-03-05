@@ -16,5 +16,5 @@ window.addEventListener("@debounce", function (event)
 		prev.event.resolve(path);
 		clearTimeout(prev.timeout);
 	}
-	REGISTRY.set(trigger, {event, timeout: setTimeout(() => event.success(path), timeout ? timeout * 1 : 500)});
+	REGISTRY.set(trigger, {event, timeout: setTimeout(() => event.success(path), timeout ? timeout * 1 : 1000)});
 });

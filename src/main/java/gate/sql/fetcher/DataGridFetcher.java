@@ -24,15 +24,9 @@ public class DataGridFetcher implements Fetcher<DataGrid>
 				head[i - 1] = rsmd.getColumnLabel(i);
 
 			DataGrid dataSet = new DataGrid(head);
-			Class<?>[] types = cursor.getColumnTypes();
 
 			while (cursor.next())
-			{
-				Object[] result = new Object[types.length];
-				for (int i = 0; i < types.length; i++)
-					result[i] = cursor.getCurrentValue(types[i]);
-				dataSet.add(result);
-			}
+				dataSet.add(cursor.getColumnValues().toArray());
 
 			return dataSet;
 		} catch (SQLException e)

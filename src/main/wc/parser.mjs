@@ -107,23 +107,7 @@ export default class Parser
 	static pipeline(string)
 	{
 		let result = [];
-		let lexer = new Lexer(string, c =>
-		{
-			switch (c)
-			{
-				case '"':
-				case "'":
-				case "`":
-					return "DELIMITER";
-				case "(":
-				case ")":
-				case ">":
-				case ",":
-					return "SEPARATOR";
-				default:
-					return "CHARACTER";
-			}
-		});
+		let lexer = new Lexer(string, ["(", ")", ">", ",", "=>", ">>"], ["'", '"']);
 
 
 		result.push(trigger(lexer));

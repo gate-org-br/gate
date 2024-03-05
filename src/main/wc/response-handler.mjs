@@ -1,3 +1,5 @@
+import DataURL from './data-url.js';
+
 /**
  * A utility class for handling different types of responses from fetch requests.
  * @class
@@ -162,18 +164,26 @@ export default class ResponseHandler
 		if (response.ok)
 		{
 			return Promise.all([response.blob(),
-				response.headers.get('content-type'),
 				response.headers.get('content-disposition')])
-				.then(([blob, contentType, contentDisposition]) => {
+				.then(([blob, contentDisposition]) => {
 					return new Promise((resolve, reject) => {
 						const reader = new FileReader();
-						reader.onloadend = () => {
-							const base64data = reader.result.split(',')[1];
-							const filenameMatch = contentDisposition && contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-							const filename = filenameMatch ? filenameMatch[1].trim() : null;
-							resolve(filename
-								? `data:${contentType || 'application/octet-stream'};filename=${encodeURIComponent(filename)};base64,${base64data}`
-								: `data:${contentType || 'application/octet-stream'};base64,${base64data}`);
+						reader.onloadend = () =>
+						{
+							const matcher = contentDisposition
+								? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+								: null;
+							const filename = matcher ? matcher[1].trim() : null;
+
+							if (!filename)
+								return resolve(reader.result);
+
+							const dataURL = DataURL.parse(reader.result);
+							if (dataURL.parameters.name)
+								return resolve(reader.result);
+
+							dataURL.parameters.name = filename;
+							resolve(dataURL.toString());
 						};
 						reader.readAsDataURL(blob);
 					});

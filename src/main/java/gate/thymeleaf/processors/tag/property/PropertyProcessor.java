@@ -5,6 +5,7 @@ import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -19,7 +20,7 @@ public abstract class PropertyProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpressionFactory expression;
+	ELExpressionFactory expressionFactory;
 
 	public PropertyProcessor(String name)
 	{
@@ -30,18 +31,35 @@ public abstract class PropertyProcessor extends TagProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
+		if (element.getElementCompleteName().startsWith("g-"))
+			return;
+
+		var expression = expressionFactory.create();
+
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		Screen screen = (Screen) request.getAttribute("screen");
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				e -> Objects.requireNonNullElse(e.getValue(), ""), (a, b) -> a, Attributes::new));
+
+		var not = Stream.concat(attributes.keySet().stream()
+			.filter(e -> e.startsWith("not:"))
+			.map(e -> e.substring(4)),
+			attributes.entrySet().stream()
+				.filter(e -> e.getKey().startsWith("set:"))
+				.filter(e -> !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))
+				.map(e -> e.getKey().substring(4)))
+			.toList();
+
+		attributes.keySet().removeIf(e -> e.startsWith("not:"));
+		attributes.keySet().removeIf(e -> e.startsWith("set:"));
 
 		if (!attributes.containsKey("property"))
 			throw new TemplateProcessingException("Missing required attribute property on g:" + getElement());
 
 		var name = (String) attributes.remove("property");
-		name = (String) expression.create().evaluate(name);
+		name = (String) expression.evaluate(name);
 		var property = Property.getProperty(screen.getClass(), name);
 
 		attributes.put("name", property.toString());
@@ -76,8 +94,7 @@ public abstract class PropertyProcessor extends TagProcessor
 				attributes.put("placeholder", placeholder);
 		}
 
-		attributes.entrySet().removeIf(e -> e.getValue() == null || e.getValue().toString().isBlank());
-
+		attributes.keySet().removeIf(not::contains);
 		process(context, element, handler, screen, property, attributes);
 
 	}

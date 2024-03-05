@@ -1,0 +1,50 @@
+table[data-overflowing] {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+table[data-overflowing] > col {
+  display: none;
+}
+table[data-overflowing] > thead {
+  display: none;
+}
+table[data-overflowing] > tbody {
+  gap: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+table[data-overflowing] > tbody > tr {
+  gap: 8px;
+  padding: 8px;
+  height: auto;
+  display: flex;
+  border-radius: 3px;
+  flex-direction: column;
+  border: 1px solid var(--main3);
+  box-shadow: 1px 1px 2px 0px var(--main6);
+}
+table[data-overflowing] > tbody > tr > td {
+  display: none;
+}
+table[data-overflowing] > tbody > tr > td[title] {
+  gap: 8px;
+  display: flex;
+  align-items: center;
+}
+table[data-overflowing] > tbody > tr > td[title]::before {
+  font-weight: bold;
+  white-space: nowrap;
+  content: attr(title) ":";
+}
+table[data-overflowing] > tfoot {
+  order: 1000;
+}
+table[data-overflowing] > tfoot > tr,
+table[data-overflowing] > tfoot > tr > td {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

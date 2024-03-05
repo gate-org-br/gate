@@ -27,7 +27,6 @@ public class IfAttributeProcessor extends AttributeProcessor
 		if ((boolean) expression.create().evaluate(element.getAttributeValue("g:if")))
 		{
 			handler.removeAttribute("g:if");
-			handler.removeAttribute("g:otherwise");
 		} else if (element.hasAttribute("g:otherwise"))
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");

@@ -1,10 +1,5 @@
 package gate.report;
 
-import static gate.report.Chart.Format.AREA;
-import static gate.report.Chart.Format.BAR;
-import static gate.report.Chart.Format.COLUMN;
-import static gate.report.Chart.Format.LINE;
-import static gate.report.Chart.Format.PIE;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -17,20 +12,16 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class ChartGenerator
-{
+public class ChartGenerator {
 
-	public static <T> JFreeChart create(Chart<T> chart)
-	{
+	public static <T> JFreeChart create(Chart<T> chart) {
 		boolean integers = true;
 		DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 
-		for (T obj : chart.getDataset())
-		{
+		for (T obj : chart.getDataset()) {
 			String categoryName = chart.getCategory().getValue().apply(obj);
 
-			for (Value<T> value : chart.getValues())
-			{
+			for (Value<T> value : chart.getValues()) {
 				Number number = value.getValue().apply(obj);
 				if (number.doubleValue() != number.longValue())
 					integers = false;
@@ -38,61 +29,54 @@ public class ChartGenerator
 				categoryDataset.addValue(number, value.getName(), categoryName);
 			}
 		}
-		try
-		{
+		try {
 
-			switch (chart.getFormat())
-			{
-				case BAR:
-				{
+			switch (chart.getFormat()) {
+				case BAR: {
 					JFreeChart jfreechat = ChartFactory.createBarChart(chart.getCaption(),
-						chart.getCategory().getName(), null, categoryDataset,
-						PlotOrientation.HORIZONTAL, true, false, false);
+							chart.getCategory().getName(), null, categoryDataset,
+							PlotOrientation.HORIZONTAL, true, false, false);
 					if (integers)
 						jfreechat.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechat;
 				}
-				case LINE:
-				{
+				case LINE: {
 					JFreeChart jfreechat = ChartFactory.createLineChart(chart.getCaption(),
-						chart.getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+							chart.getCategory().getName(), null, categoryDataset,
+							PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechat.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechat;
 				}
 
-				case AREA:
-				{
+				case AREA: {
 
 					JFreeChart jfreechart = ChartFactory.createAreaChart(chart.getCaption(),
-						chart.getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+							chart.getCategory().getName(), null, categoryDataset,
+							PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechart;
 				}
-				case COLUMN:
-				{
+				case COLUMN: {
 					JFreeChart jfreechart = ChartFactory.createBarChart(chart.getCaption(),
-						chart.getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+							chart.getCategory().getName(), null, categoryDataset,
+							PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechart;
 				}
-				case PIE:
-				{
+				case PIE: {
 					JFreeChart jfreechart = ChartFactory.createMultiplePieChart(chart.getCaption(),
-						categoryDataset, TableOrder.BY_ROW, true, true, false);
+							categoryDataset, TableOrder.BY_ROW, true, true, false);
 
 					Font titleFont = new Font("Arial", Font.BOLD, 12);
 					Font labelFont = new Font("Arial", Font.PLAIN, 8);
@@ -110,8 +94,7 @@ public class ChartGenerator
 				default:
 					throw new IOException();
 			}
-		} catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			throw new UncheckedIOException(ex);
 		}
 	}

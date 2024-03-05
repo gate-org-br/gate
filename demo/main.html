@@ -27,12 +27,6 @@
 					<a id='targets' href='./component/view.html' target="@inner-html(section)">
 						<g-icon>&#X2178;</g-icon>Components
 					</a>
-					<a id='targets' href='./attribute/view.html' target="@inner-html(section)">
-						<g-icon>&#X2269;</g-icon>Attributes
-					</a>
-					<a target="iframe" href='./card.html'>Cards<g-icon>&#X2197;</g-icon></a>
-
-					<a target="iframe" href='./form.html'>Form<g-icon>&#X2169;</g-icon></a>
 					<hr />
 					<a id="reload" href="./main.html">
 						Reload<g-icon>&#X2025;</g-icon>
@@ -40,8 +34,25 @@
 					<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
 				</g-tabbar>
 			</nav>
-			<section data-trigger='load' data-action='./target/view.html' data-target='@inner-html'>
+
+			<section>
+				<script type='module'>
+
+					const string = 'ábaco';
+
+					const base64 = btoa(unescape(encodeURIComponent(string)));
+					const dataurl = `data:text/plain;base64,${base64}`;
+
+					alert(decodeURIComponent(escape(atob(base64))));
+
+					fetch(dataurl)
+						.then(response => response.text())
+						.then(text => alert(text));
+				</script>
+
+
 			</section>
+
 			<footer>
 				<label>Foo</label>
 				<label>Bar</label>

@@ -1,7 +1,148 @@
-/* global Objects */
+let template = document.createElement("template");
+template.innerHTML = `
+ <style>table[is='g-table'][data-table-size='0'][data-empty]
+{
+	display: flex;
+	padding: 12px;
+	display: flex;
+	font-size: 16px;
+	border: 1px solid;
+	text-align: justify;
+	align-items: stretch;
+	border-left: 6px solid;
+	border-color: var(--main6);
+	border-radius: 0 3px 3px 0;
+	background-color: var(--main1);
+}
+
+table[is='g-table'][data-table-size='0'][data-empty] *
+{
+	display: none !important;
+}
+
+table[is='g-table'][data-table-size='0'][data-empty]::before
+{
+	content: attr(data-empty);
+}
+
+table[is='g-table'] > thead > tr > th[data-sortable]
+{
+	cursor: pointer;
+	color: var(--question1);
+}
+
+table[is='g-table'] > thead > tr > th[data-sortable]::before
+{
+	font-size: 16px;
+	content: "\\2195 ";
+	font-family: monospace;
+	color: rgba(0, 0, 0, 0.2)
+}
+
+table[is='g-table'] > thead > tr > th[data-sortable="A"]::before
+{
+	content: "\\2191 ";
+	color: var(--base);
+}
+
+table[is='g-table'] > thead > tr > th[data-sortable="D"]::before
+{
+	content: "\\2193 ";
+	color: var(--base);
+
+}
+
+table[is='g-table'] > tbody > tr[hidden]
+{
+	display: none;
+}</style>`;
+
+/* global Objects, template */
 
 import Objects from './objects.js';
 import colorize from './colorize.js';
+import EventHandler from './event-handler.js';
+
+document.head.insertAdjacentHTML('beforeend', template.innerHTML);
+
+customElements.define('g-table', class extends HTMLTableElement
+{
+	#observer;
+
+	constructor()
+	{
+		super();
+		this.#observer = new MutationObserver(() => this.update(this));
+
+		this.addEventListener("click", function (event)
+		{
+			let target = event.target.closest("th[data-sortable]");
+			if (target)
+			{
+				Array.from(target.parentNode.children)
+					.filter(e => e.hasAttribute("data-sortable"))
+					.forEach(e => e.dataset.sortable = "_");
+
+				let position = Array.prototype
+					.indexOf.call(target.parentNode.children, target);
+
+				if (this.hasAttribute("data-sorted") &&
+					this.getAttribute("data-sorted").endsWith(":A"))
+				{
+					target.setAttribute("data-sortable", "D");
+					this.setAttribute("data-sorted", `${position}:D`);
+				} else
+				{
+					target.setAttribute("data-sortable", "A");
+					this.setAttribute("data-sorted", `${position}:A`);
+				}
+			}
+		});
+	}
+
+	update()
+	{
+		this.#observer.disconnect();
+
+		if (this.hasAttribute("data-sorted"))
+		{
+			let value = this.getAttribute("data-sorted").split(":");
+			let index = Number(value[0]);
+			let order = value[1];
+
+			Array.from(this.querySelectorAll("tbody")).forEach(body =>
+			{
+				let replacement = document.createElement("div");
+				body.replaceWith(replacement);
+				sort(body, index, order);
+				replacement.replaceWith(body);
+			});
+		}
+
+		let rows = Array.from(this.querySelectorAll("tbody > tr"));
+
+		let criteria = this.hasAttribute("data-filter") ?
+			this.getAttribute("data-filter") : null;
+		let columns = Array.from(this.querySelectorAll("col"))
+			.map(e => e.hasAttribute("data-filter") ? e.getAttribute("data-filter") : null);
+		filter(rows, criteria, ...columns);
+
+		colorize(rows);
+
+		rows = rows.filter(e => !e.hasAttribute("hidden"));
+		this.setAttribute("data-table-size", rows.length);
+		this.querySelectorAll("[data-table-size]")
+			.forEach(e => e.innerText = rows.length);
+
+		this.#observer.observe(this, {childList: true, subtree: true,
+			attributes: true});
+	}
+
+	connectedCallback()
+	{
+		this.update(this);
+	}
+}, {extends: 'table'});
 
 function sort(element, index, order)
 {
@@ -29,98 +170,35 @@ function sort(element, index, order)
 		element.appendChild(children[i]);
 }
 
-function filter(elements, value)
+function filter(elements, value, ...columns)
 {
 	if (!Array.isArray(elements))
 		elements = Array.from(elements);
-	value = value ? value.toUpperCase() : "";
-	elements.forEach(row => row.style.display =
-			row.innerHTML.toUpperCase().indexOf(value) !== -1 ? "" : "none");
-}
 
-customElements.define('g-table', class extends HTMLTableElement
-{
-	#observer;
-
-	constructor()
+	value = value ? value.toUpperCase().trim() : "";
+	elements.forEach(element =>
 	{
-		super();
-		this.#observer = new MutationObserver(() => this.update(this));
-	}
+		if (value && element.innerHTML.toUpperCase().indexOf(value) === -1)
+			return element.setAttribute("hidden", "hidden");
 
-	update()
-	{
-		this.#observer.disconnect();
-
-		let body = this.querySelector("tbody");
-		const size = body ? body.children.length : 0;
-		this.setAttribute("data-table-size", size);
-		this.querySelectorAll("[data-table-size]").forEach(e => e.innerText = size);
-
-		if (body.hasAttribute("data-sorted"))
+		for (let i = 0; i < columns.length; i++)
 		{
-			let replacement = document.createElement("div");
-			body.replaceWith(replacement);
+			if (columns[i])
+			{
+				let column = columns[i].trim().toUpperCase();
+				if (element.children[i].hasAttribute("data-filter:value"))
+				{
+					if (element.children[i].getAttribute("data-filter:value").trim().toUpperCase() !== column)
+						return element.setAttribute("hidden", "hidden");
 
-			let value = body.getAttribute("data-sorted").split(":");
-			let index = Number(value[0]);
-			let order = value[1];
-
-			sort(body, index, order);
-			replacement.replaceWith(body);
+				} else if (element.children[i].innerHTML.trim().toUpperCase().indexOf(column) === -1)
+					return element.setAttribute("hidden", "hidden");
+			}
 		}
 
-
-		if (body.hasAttribute("data-filter"))
-			filter(body.children, body.getAttribute("data-filter"));
-
-		colorize(body.children);
-
-		this.#observer.observe(body, {childList: true, subtree: true,
-			attributes: true,
-			attributeFilter: ['data-sorted', 'data-filter']});
-	}
-
-	connectedCallback()
-	{
-		let body = this.querySelector("tbody");
-		Array.from(this.querySelectorAll("th[data-sortable]")).forEach(target =>
-		{
-			target.addEventListener("click", () =>
-			{
-				Array.from(target.parentNode.children)
-					.filter(e => e.hasAttribute("data-sortable"))
-					.forEach(e => e.dataset.sortable = "_");
-
-				let position = Array.prototype
-					.indexOf.call(target.parentNode.children, target);
-
-				let tbody = target.closest("table").querySelector("tbody");
-				if (tbody.hasAttribute("data-sorted") &&
-					tbody.getAttribute("data-sorted").endsWith(":A"))
-				{
-					target.setAttribute("data-sortable", "D");
-					tbody.setAttribute("data-sorted", `${position}:D`);
-				} else
-				{
-					target.setAttribute("data-sortable", "A");
-					tbody.setAttribute("data-sorted", `${position}:A`);
-				}
-
-			});
-		});
-
-		Array.from(this.querySelectorAll("input[data-filter]"))
-			.forEach(target => target.addEventListener("input",
-					() => body.setAttribute("data-filter", target.value)));
-
-		this.#observer.observe(body, {childList: true, subtree: true,
-			attributes: true,
-			attributeFilter: ['data-sorted', 'data-filter']});
-		this.update(this);
-	}
-}, {extends: 'table'});
-
+		return element.removeAttribute("hidden");
+	});
+}
 
 window.addEventListener("mouseover", function (event)
 {
@@ -138,42 +216,26 @@ window.addEventListener("keydown", function (event)
 		{
 			case "Enter":
 				target.click();
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
+				EventHandler.cancel(event);
 				break;
-
 			case "Home":
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
+				EventHandler.cancel(event);
 				if (target.parentNode.firstElementChild.hasAttribute("tabindex"))
 					target.parentNode.firstElementChild.focus();
-
 				break;
 			case "End":
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
+				EventHandler.cancel(event);
 				if (target.parentNode.lastElementChild.hasAttribute("tabindex"))
 					target.parentNode.lastElementChild.focus();
 				break;
 			case "ArrowUp":
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
+				EventHandler.cancel(event);
 				if (target.previousElementSibling &&
 					target.previousElementSibling.hasAttribute("tabindex"))
 					target.previousElementSibling.focus();
 				break;
 			case "ArrowDown":
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-
+				EventHandler.cancel(event);
 				if (target.nextElementSibling &&
 					target.nextElementSibling.hasAttribute("tabindex"))
 					target.nextElementSibling.focus();

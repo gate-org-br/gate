@@ -18,6 +18,6 @@ public class ObjectMapper implements Mapper<Object>
 	@Override
 	public Object apply(Cursor cursor)
 	{
-		return cursor.getValue(cursor.getColumnTypes()[0], 1);
+		return cursor.getValue(cursor.getColumnTypes().get(0), 1);
 	}
 }

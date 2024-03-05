@@ -16,9 +16,7 @@ window.addEventListener("@inner-html", function (event)
 		.then(ResponseHandler.text)
 		.then(result =>
 		{
-			let fragment = document.createRange().createContextualFragment(result);
-			element.innerHTML = '';
-			element.appendChild(fragment);
+			element.innerHTML = result;
 			event.success(path, new DataURL('text/html', result).toString());
 		})
 		.catch(error => event.failure(path, error));

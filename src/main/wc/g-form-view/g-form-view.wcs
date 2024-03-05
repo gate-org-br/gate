@@ -3,78 +3,19 @@
 }
 
 :host(*) {
-	display: grid;
-	grid-template-columns: repeat(16, 1fr);
-}
-
-label {
-	padding: 4px;
 	display: flex;
-	grid-column: span 16;
+	align-items: stretch;
 	flex-direction: column;
+	justify-content: stretch;
 }
 
-span {
-	padding: 4px;
-	flex-grow: 1;
-	display: flex;
-	flex-basis: 32px;
-	border-radius:5px;
-	align-items: center;
-	background-color: var(--main1);
+fieldset {
+	padding: 0;
+	border: none;
 }
 
-span.multiple {
-	display: block;
+span.multiple
+{
 	overflow: auto;
-	flex-basis: 64px;
-}
-
-@media only screen and (min-width: 576px) {
-	label[data-size="1"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 768px) {
-	label[data-size="1"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 8;
-	}
-}
-
-@media only screen and (min-width: 992px) {
-	label[data-size="1"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 8;
-	}
-}
-
-
-@media only screen and (min-width: 1200px) {
-	label[data-size="1"] {
-		grid-column: span 1;
-	}
-
-	label[data-size="2"] {
-		grid-column: span 2;
-	}
-
-	label[data-size="4"] {
-		grid-column: span 4;
-	}
-
-	label[data-size="8"] {
-		grid-column: span 8;
-	}
+	flex-basis: 80px;
 }

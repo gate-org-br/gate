@@ -32,16 +32,16 @@ public class PaginatorTag extends AttributeTag
 
 		if (screen.isPOST())
 		{
-			if (!page.isFrst())
+			if (!page.isFirst())
 			{
-				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</button>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPaginator().getFrstPageIndx()));
+				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</button>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPaginator().getFirstPageIndx()));
 				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Anterior'>&lt;</button>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPrevIndx()));
 			}
 
 			if (page.getSize() == screen.getDefaultPageSize())
-				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>", url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
+				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>", url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFirstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
 			else
-				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>", url, screen.getDefaultPageSize(), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
+				getJspContext().getOut().write(String.format("<button formaction='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</button>", url, screen.getDefaultPageSize(), page.getPaginator().getFirstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
 
 			if (!page.isLast())
 			{
@@ -50,16 +50,16 @@ public class PaginatorTag extends AttributeTag
 			}
 		} else if (screen.isGET())
 		{
-			if (!page.isFrst())
+			if (!page.isFirst())
 			{
-				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</a>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPaginator().getFrstPageIndx()));
+				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Primeiro'>&lt;&lt;</a>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPaginator().getFirstPageIndx()));
 				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Anterior'>&lt;</a>&nbsp;&nbsp;", url, page.getPaginator().getPageSize(), page.getPrevIndx()));
 			}
 
 			if (page.getSize() == screen.getDefaultPageSize())
-				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>", url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
+				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Expandir'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>", url, Math.min(page.getPaginator().getDataSize(), 1000), page.getPaginator().getFirstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
 			else
-				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>", url, screen.getDefaultPageSize(), page.getPaginator().getFrstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
+				getJspContext().getOut().write(String.format("<a href='%s&pageSize=%d&pageIndx=%d' title='Contrair'>[P&aacute;gina&nbsp;%d&nbsp;de&nbsp;%d]</a>", url, screen.getDefaultPageSize(), page.getPaginator().getFirstPageIndx(), page.getIndx() + 1, page.getPaginator().getSize()));
 
 			if (!page.isLast())
 			{

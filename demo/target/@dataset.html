@@ -1,0 +1,69 @@
+<g-callout class="fill">
+	<h1>@dataset</h1>
+	<p>
+		The <strong>@dataset</strong> trigger extracts data from a <strong>&lt;table&gt;</strong>
+		element and pass it to the pipeline. The table id can be passed on the <strong>data-action</strong>
+		attribute or as a <strong>selector</strong> on the trigger parameter list.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1<g-icon>&#X3055;</g-icon></a>
+	<div>
+		<g-callout>
+			<p>
+				On this example, the <strong>@dataset</strong> trigger extracts data from the popularity
+				<strong>&lt;table&gt;</strong> and pass it to the <strong>@value</strong> trigger.
+				The  <strong>@value</strong> trigger sets the <strong>value</strong> property of the
+				<strong>&lt;g-chart&gt;</strong> element to be the data extracted from the table.
+				This pattern facilitates the automatic generation of charts from tabular data.
+			</p>
+		</g-callout>
+		<g-code-viewer ignore='<div.*</div>|_echarts_instance_="[^"]*"| position: relative; | user-select: none;'>
+			<table id="popularity" class='c1 c2 c3 c4'>
+				<caption>DATASET</caption>
+				<thead>
+					<tr>
+						<td>Year</td>
+						<td>Java</td>
+						<td>Python</td>
+						<td>Javascript</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>2020</td>
+						<td>20</td>
+						<td>50</td>
+						<td>30</td>
+					</tr>
+					<tr>
+						<td>2021</td>
+						<td>25</td>
+						<td>45</td>
+						<td>30</td>
+					</tr>
+					<tr>
+						<td>2022</td>
+						<td>30</td>
+						<td>40</td>
+						<td>30</td>
+					</tr>
+					<tr>
+						<td>2023</td>
+						<td>50</td>
+						<td>20</td>
+						<td>30</td>
+					</tr>
+				</tbody>
+			</table>
+			<g-chart type='line'
+				 title='Top languages'
+				 data-trigger='connected'
+				 data-action='#popularity'
+				 data-target='@dataset > @value'
+				 style='width: 100%; height: 600px'>
+			</g-chart>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

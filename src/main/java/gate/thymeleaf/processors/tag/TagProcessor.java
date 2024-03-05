@@ -23,7 +23,7 @@ public class TagProcessor implements IElementTagProcessor, Processor
 		this.element = element;
 		this.matchingElementName = element != null
 			? MatchingElementName.forElementName(TemplateMode.HTML,
-				ElementNames.forName(TemplateMode.HTML, "g", element)) : null;
+				ElementNames.forName(TemplateMode.HTML, "g:" + element)) : null;
 	}
 
 	@Override

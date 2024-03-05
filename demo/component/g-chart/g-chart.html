@@ -1,0 +1,40 @@
+<g-callout class="fill">
+	<h1>&lt;g-chart&gt;</h1>
+	<p>
+		Displays a dataset as a chart.
+
+		The chart type (<strong>pie</strong>, <strong>rose</strong>, <strong>donut</strong>, <strong>column</strong>, <strong>line</strong>,
+		<strong>area</strong> or <strong>bar</strong>) can be specified using the <strong>type attribute/property</strong>, defaulting to <strong>pie</strong>
+		when omitted.
+
+		The <strong>title attribute/property </strong> is the title of the chart to be displayed.
+
+		The <strong>value attribute</strong> is the URL from where to fetch the <strong>value property</strong>.
+
+		The <strong>value property</strong> structure is expected to be
+		a two-dimensional JSON array, where the first row represents category headers and subsequent rows contain data corresponding to each category.
+		The first column contains the names of the categories, while subsequent columns hold the values associated with each category.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1<g-icon>&#X3055;</g-icon></a>
+	<div>
+		<g-callout>
+			<p>
+				In this example, the <strong>&lt;g-chart&gt;</strong> element fetches
+				<a target='_blank'
+				   href='/component/g-chart/popularity.json'>the dataset</a>
+				from the server and presents it as a line chart.
+			</p>
+		</g-callout>
+
+		<g-code-viewer ignore='<div.*</div>|_echarts_instance_="[^"]*"| position: relative; | user-select: none;'>
+			<g-chart type='line'
+				 title='Top languages'
+				 style='width: 100%; height: 600px'
+				 value='/component/g-chart/popularity.json'>
+			</g-chart>
+		</g-code-viewer>
+	</div>
+</g-tab-control>
