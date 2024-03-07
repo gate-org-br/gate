@@ -1,7 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*) { display: none }</style>`;
-
+ <style data-element="g-event-source">:host(*) { display: none }</style>`;
 /* global customElements, template */
 
 export default class GEventSource extends HTMLElement

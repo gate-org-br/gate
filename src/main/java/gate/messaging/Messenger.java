@@ -93,7 +93,7 @@ public class Messenger implements ServletContextListener
 	{
 		try
 		{
-			if (sender != null)
+			if (sender == null)
 				throw new MessageException("Tentativa de enviar mensagem sem especificar o remetente.");
 			if (receiver == null)
 				throw new MessageException("Tentativa de enviar mensagem sem especificar o destinatário.");
@@ -122,12 +122,10 @@ public class Messenger implements ServletContextListener
 		try
 		{
 			Server server = control.server();
-			if (server.getUsername() != null
-				&& server.getHost() != null
-				&& server.getPort() != null
-				&& server.getUsername() != null
-				&& server.getPassword() != null)
+			if (server.getUsername() != null)
 				post(server.getUsername(), receiver, mail);
+			else
+				logger.info("Attempt to send a message without specifying the sender");
 		} catch (AppException ex)
 		{
 			throw new MessageException(ex.getMessage());

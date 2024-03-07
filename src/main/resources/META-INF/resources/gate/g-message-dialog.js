@@ -13,7 +13,7 @@ template.innerHTML = `
 		<section>
 		</section>
 	</dialog>
- <style>dialog
+ <style data-element="g-message-dialog">dialog
 {
 	width: 100%;
 	height: 240px;
@@ -72,7 +72,6 @@ label::first-line  {
 :host([type="WARNING"]) > dialog > section::before {
 	content: "\\1007"
 }</style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

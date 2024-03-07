@@ -17,7 +17,7 @@ template.innerHTML = `
 			<slot></slot>
 		</section>
 	</dialog>
- <style>* {
+ <style data-element="g-dialog">* {
 	box-sizing: border-box;
 }
 
@@ -91,7 +91,6 @@ nav > .g-command
 ::slotted(iframe:only-child) {
 	overflow: hidden
 }</style>`;
-
 /* global customElements, template */
 
 import './g-navbar.js';

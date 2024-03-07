@@ -48,3 +48,5 @@ g-icon-pane removed
 g-desk-pane small class added to replace the removed g-icon-pane
 
 _report and _report_dialog replaced by @report > @save
+
+StringList objects are now stored as JSON arrays on database

@@ -3,7 +3,7 @@ template.innerHTML = `
 	<a id='prev' href='#'>&#X2278;</a>
 	<div id='main'></div>
 	<a id='next' href='#'>&#X2276;</a>
- <style>:host(*) {
+ <style data-element="g-slider">:host(*) {
 	display: flex;
 	font-size: 20px;
 	overflow: hidden;
@@ -65,7 +65,6 @@ label
 	justify-content: center;
 	text-decoration: underline;
 }</style>`;
-
 /* global customElements, template */
 
 const execute = function (value, func, count)

@@ -11,7 +11,7 @@ template.innerHTML = `
 	<g-callout class='fill'>
 		<slot></slot>
 	</g-callout>
- <style>* {
+ <style data-element="g-grid">* {
 	box-sizing: border-box;
 }
 
@@ -76,7 +76,6 @@ footer
 {
 	display: table-footer-group;
 }</style>`;
-
 import './g-callout.js';
 import './g-grid-row.js';
 import './g-grid-header.js';

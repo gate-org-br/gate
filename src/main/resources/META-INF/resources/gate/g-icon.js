@@ -1,5 +1,5 @@
 let template = document.createElement("template");
-template.innerHTML = `<i><slot></slot></i> <style>* {
+template.innerHTML = `<i><slot></slot></i> <style data-element="g-icon">* {
 	box-sizing: border-box;
 }
 
@@ -19,7 +19,6 @@ i
 	font-size: inherit;
 	font-style: normal;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-icon', class extends HTMLElement

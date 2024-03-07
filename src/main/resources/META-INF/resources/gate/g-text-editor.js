@@ -85,7 +85,7 @@ template.innerHTML = `
 	</div>
 	<div id='editor' tabindex="0" contentEditable='true'>
 	</div>
- <style>:host(*)
+ <style data-element="g-text-editor">:host(*)
 {
 	width: 100%;
 	height: 100%;
@@ -168,7 +168,6 @@ i {
 img {
 	max-width: 100%;
 }</style>`;
-
 /* global customElements */
 
 customElements.define('g-text-editor', class extends HTMLElement

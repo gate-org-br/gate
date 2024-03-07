@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>* {
+ <style data-element="g-table-scroll">* {
 	box-sizing: border-box
 }
 
@@ -16,7 +16,6 @@ template.innerHTML = `
 	flex-direction: column;
 	justify-content: flex-start;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-table-scroll', class extends HTMLElement

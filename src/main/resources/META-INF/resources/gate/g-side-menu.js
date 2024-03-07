@@ -4,7 +4,7 @@ template.innerHTML = `
 		<section>
 		</section>
 	</main>
- <style>* {
+ <style data-element="g-side-menu">* {
 	box-sizing: border-box
 }
 
@@ -190,7 +190,6 @@ hr {
 br {
 	height: 16px;
 }</style>`;
-
 /* global customElements */
 
 import GModal from './g-modal.js';

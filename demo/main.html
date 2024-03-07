@@ -36,21 +36,6 @@
 			</nav>
 
 			<section>
-				<script type='module'>
-
-					const string = 'ábaco';
-
-					const base64 = btoa(unescape(encodeURIComponent(string)));
-					const dataurl = `data:text/plain;base64,${base64}`;
-
-					alert(decodeURIComponent(escape(atob(base64))));
-
-					fetch(dataurl)
-						.then(response => response.text())
-						.then(text => alert(text));
-				</script>
-
-
 			</section>
 
 			<footer>

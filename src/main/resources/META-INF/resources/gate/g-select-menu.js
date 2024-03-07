@@ -4,7 +4,7 @@ template.innerHTML = `
 	</header>
 	<main>
 	</main>
- <style>* {
+ <style data-element="g-select-menu">* {
 	box-sizing: border-box;
 }
 
@@ -94,7 +94,6 @@ a:hover,
 {
 	content: '\\2278';
 }</style>`;
-
 /* global customElements */
 
 

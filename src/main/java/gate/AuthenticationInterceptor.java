@@ -1,4 +1,4 @@
-package gate.rest;
+package gate;
 
 import gate.annotation.Secure;
 import gate.entity.User;
@@ -24,6 +24,8 @@ public class AuthenticationInterceptor
 	@AroundInvoke
 	public Object secure(InvocationContext ctx) throws Exception
 	{
+		Request.set(request);
+
 		if (request.getSession(false) == null
 			&& Credentials.isPresent(request))
 		{

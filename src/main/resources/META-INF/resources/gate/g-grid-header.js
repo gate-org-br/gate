@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>* {
+ <style data-element="g-grid-header">* {
 	box-sizing: border-box;
 }
 
@@ -27,7 +27,6 @@ template.innerHTML = `
 	border-color: var(--base5);
 	background-color: var(--base6);
 }</style>`;
-
 import './g-grid-cell.js';
 import colorize from './colorize.js';
 

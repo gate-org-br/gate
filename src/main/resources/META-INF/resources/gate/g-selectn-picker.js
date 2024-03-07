@@ -31,7 +31,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-selectn-picker">dialog
 {
 	min-width: 320px;
 	max-width: 800px;
@@ -46,7 +46,6 @@ section {
 g-selectn {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template, fetch */
 
 import './g-icon.js';

@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>* {
+ <style data-element="g-window">* {
 	box-sizing: border-box
 }
 
@@ -98,7 +98,6 @@ dialog > footer {
 	flex-direction: row-reverse;
 	border-top: 1px solid var(--main6);
 }</style>`;
-
 /* global customElements, template */
 
 import GModal from './g-modal.js';

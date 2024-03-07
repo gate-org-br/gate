@@ -28,7 +28,6 @@ window.addEventListener("@dialog", function (event)
 				dialog.navbar.index = index;
 	}
 
-	let promise = dialog.show();
 	switch (type)
 	{
 		case "fetch":
@@ -36,7 +35,7 @@ window.addEventListener("@dialog", function (event)
 				.then(ResponseHandler.text)
 				.then(result =>
 				{
-					promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+					dialog.show().finally(() => event.success(path, new DataURL('text/html', result).toString()));
 					dialog.appendChild(document.createRange().createContextualFragment(result));
 				}).catch(error => event.failure(path, error));
 			break;
@@ -44,14 +43,14 @@ window.addEventListener("@dialog", function (event)
 		case "frame":
 			if (event.detail.method === "get")
 			{
-				promise.finally(() => event.success(path));
+				dialog.show().finally(() => event.success(path));
 				dialog.iframe.src = event.detail.action;
 			} else
 				fetch(RequestBuilder.build(method, action, form))
 					.then(ResponseHandler.text)
 					.then(result =>
 					{
-						promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+						dialog.show().finally(() => event.success(path, new DataURL('text/html', result).toString()));
 						dialog.iframe.srcDoc = result;
 					})
 					.catch(error => event.failure(path, error));

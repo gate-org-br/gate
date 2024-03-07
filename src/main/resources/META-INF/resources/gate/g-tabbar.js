@@ -5,7 +5,7 @@ template.innerHTML = `
 		<slot></slot>
 	</div>
 	<button id="next"><g-icon>&#X2279;</g-icon></button>
- <style>*
+ <style data-element="g-tabbar">*
 {
 	box-sizing: border-box;
 }
@@ -200,10 +200,9 @@ button:hover
 	left: 32px;
 	max-width: calc(100% - 40px)
 }</style>`;
-
 /* global customElements */
 
-import './loading.js';
+import loading from './loading.js';
 
 const EPSILON = 0.5;
 function visible(element, container)
@@ -253,6 +252,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 	connectedCallback()
 	{
+		loading(this.parentNode);
+
 		this.update();
 		Array.from(this.children)
 			.flatMap(e => Array.from(e.childNodes))

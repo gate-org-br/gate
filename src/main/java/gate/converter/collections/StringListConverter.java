@@ -4,6 +4,7 @@ import gate.constraint.Constraint;
 import gate.converter.CollectionConverter;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.json.JsonArray;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.type.collections.StringList;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StringListConverter extends CollectionConverter
 {
@@ -90,28 +92,30 @@ public class StringListConverter extends CollectionConverter
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
 		if (rs.wasNull())
 			return null;
-		return new StringList(value);
+		return JsonArray.parse(value).stream().map(e -> e.toString())
+			.collect(Collectors.toCollection(StringList::new));
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
 		if (rs.wasNull())
 			return null;
-		return new StringList(value);
+		return JsonArray.parse(value).stream().map(e -> e.toString())
+			.collect(Collectors.toCollection(StringList::new));
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, value.toString());
+			ps.setString(fields++, JsonArray.format(value).toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;
@@ -162,21 +166,23 @@ public class StringListConverter extends CollectionConverter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.Comma(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.Comma::new));
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.Comma(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.Comma::new));
 		}
 	}
 
@@ -225,21 +231,23 @@ public class StringListConverter extends CollectionConverter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.Semicolon(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.Semicolon::new));
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.Semicolon(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.Semicolon::new));
 		}
 	}
 
@@ -288,21 +296,23 @@ public class StringListConverter extends CollectionConverter
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.LineBreak(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.LineBreak::new));
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 		{
 			String value = rs.getString(fields);
 			if (rs.wasNull())
 				return null;
-			return new StringList.LineBreak(value);
+			return JsonArray.parse(value).stream().map(e -> e.toString())
+				.collect(Collectors.toCollection(StringList.LineBreak::new));
 		}
 	}
 

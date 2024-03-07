@@ -6,7 +6,7 @@ template.innerHTML = `
 	</label>
 	<a id='next' >&#x2275;</a>
 	<a id='last' href='#'>&#x2279;</a>
- <style>:host(*) {
+ <style data-element="g-navbar">:host(*) {
 	width: auto;
 	padding: 8px;
 	display: flex;
@@ -45,7 +45,6 @@ a[navbar-disabled="true"] {
 	cursor: not-allowed;
 	pointer-events: none;
 }</style>`;
-
 /* global customElements */
 
 customElements.define('g-navbar', class extends HTMLElement

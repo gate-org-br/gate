@@ -4,7 +4,7 @@ template.innerHTML = `
 	</g-chat-peer-list>
 	<g-chat-contact-list>
 	</g-chat-contact-list>
- <style>* {
+ <style data-element="g-chat">* {
 	box-sizing: border-box
 }
 
@@ -16,7 +16,6 @@ template.innerHTML = `
 	background-color: transparent;
 	grid-template-columns: 250px 1fr;
 }</style>`;
-
 /* global customElements */
 
 import './g-chat-peer-list.js';

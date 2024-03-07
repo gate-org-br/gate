@@ -18,7 +18,7 @@ template.innerHTML = `
 			</button>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-date-time-interval-picker">dialog
 {
 	min-width: 320px;
 	max-width: 600px;
@@ -38,7 +38,6 @@ dialog > footer > button {
 	flex-grow: 1;
 	justify-content: center;
 }</style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

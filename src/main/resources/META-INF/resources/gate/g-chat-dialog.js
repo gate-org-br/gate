@@ -14,7 +14,7 @@ template.innerHTML = `
 			</g-chat>
 		</section>
 	</main>
- <style>main
+ <style data-element="g-chat-dialog">main
 {
 	min-width: 320px;
 	max-width: 800px;
@@ -25,7 +25,6 @@ g-chat {
 	width: 100%;
 	height: 492px;
 }</style>`;
-
 /* global customElements, template, GChatContactDialog */
 
 import './g-icon.js';

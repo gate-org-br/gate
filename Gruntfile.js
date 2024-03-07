@@ -59,8 +59,7 @@ module.exports = function (grunt)
 					if (template)
 						if (style)
 							return `let template = document.createElement("template");
-template.innerHTML = \`${template} <style>${style}</style>\`;
-
+template.innerHTML = \`${template} <style data-element="${name.slice(name.lastIndexOf("/") + 1, -3)}">${style}</style>\`;
 ${script}`;
 						else
 							return `let template = document.createElement("template");

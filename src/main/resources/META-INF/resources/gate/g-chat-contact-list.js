@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>* {
+ <style data-element="g-chat-contact-list">* {
 	box-sizing: border-box
 }
 
@@ -13,7 +13,6 @@ template.innerHTML = `
 	justify-content: center;
 	background: linear-gradient(to bottom, var(--main4) 0, var(--main5) 50%, var(--main4) 100%);
 }</style>`;
-
 /* global customElements */
 
 import './g-chat-contact.js';

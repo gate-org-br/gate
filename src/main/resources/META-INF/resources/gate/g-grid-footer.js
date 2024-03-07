@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>* {
+ <style data-element="g-grid-footer">* {
 	box-sizing: border-box;
 }
 
@@ -26,7 +26,6 @@ template.innerHTML = `
 	border-color: var(--base5);
 	background-color: var(--base6);
 }</style>`;
-
 import './g-grid-cell.js';
 
 customElements.define('g-grid-footer', class extends HTMLElement

@@ -1,6 +1,6 @@
 /* global customElements */
 
-import './loading.js';
+import loading from './loading.js';
 
 const EPSILON = 0.5;
 function visible(element, container)
@@ -50,6 +50,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 	connectedCallback()
 	{
+		loading(this.parentNode);
+
 		this.update();
 		Array.from(this.children)
 			.flatMap(e => Array.from(e.childNodes))

@@ -4,7 +4,7 @@ template.innerHTML = `
 		<slot>
 		</slot>
 	</main>
- <style>* {
+ <style data-element="g-message">* {
 	box-sizing: border-box;
 
 }
@@ -94,7 +94,6 @@ main {
 	content: '\\1006';
 }
 </style>`;
-
 /* global customElements, template */
 
 customElements.define('g-message', class extends HTMLElement

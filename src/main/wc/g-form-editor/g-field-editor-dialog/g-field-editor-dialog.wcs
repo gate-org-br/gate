@@ -1,8 +1,20 @@
-main
+dialog
 {
 	min-width: 320px;
-	max-width: 1200px;
+	max-width: 1000px;
+	height: fit-content;
 	width: calc(100% - 40px);
+	max-height: calc(100% - 40px);
+}
+
+dialog > section
+{
+	gap: 4px;
+	padding: 4px;
+	display: flex;
+	overflow: auto;
+	align-items: stretch;
+	justify-content: stretch;
 }
 
 g-field-editor {

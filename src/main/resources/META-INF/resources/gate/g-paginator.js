@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>:host {
+ <style data-element="g-paginator">:host {
 	margin: 4px;
 	float: right;
 	color: inherit;
@@ -21,7 +21,6 @@ template.innerHTML = `
 	font-weight: normal;
 	text-decoration: none;
 }</style>`;
-
 /* global customElements */
 
 customElements.define('g-paginator', class extends HTMLElement

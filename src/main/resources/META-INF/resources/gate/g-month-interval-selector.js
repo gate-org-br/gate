@@ -4,13 +4,12 @@ template.innerHTML = `
 	</g-month-selector>
 	<g-month-selector id='max'>
 	</g-month-selector>
- <style>:host(*)
+ <style data-element="g-month-interval-selector">:host(*)
 {
 	gap: 4px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-month-interval-selector', class extends HTMLElement

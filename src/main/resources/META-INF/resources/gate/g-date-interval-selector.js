@@ -4,13 +4,12 @@ template.innerHTML = `
 	</g-date-selector>
 	<g-date-selector id='max'>
 	</g-date-selector>
- <style>:host(*)
+ <style data-element="g-date-interval-selector">:host(*)
 {
 	gap: 4px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-date-interval-selector', class extends HTMLElement

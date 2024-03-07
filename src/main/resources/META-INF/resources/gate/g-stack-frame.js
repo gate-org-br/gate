@@ -3,7 +3,7 @@ template.innerHTML = `
 	<dialog>
 		<slot></slot>
 	</dialog>
- <style>* {
+ <style data-element="g-stack-frame">* {
 	box-sizing: border-box;
 }
 
@@ -35,7 +35,6 @@ dialog {
 	flex-grow: 1;
 	overflow: hidden;
 }</style>`;
-
 /* global customElements, template */
 
 import './trigger.js';

@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
- <style>* {
+ <style data-element="g-grid-cell">* {
 	box-sizing: border-box;
 }
 
@@ -13,7 +13,6 @@ template.innerHTML = `
 	vertical-align: middle;
 	background-color: transparent;
 }</style>`;
-
 import './g-properties.js';
 
 function element(content)

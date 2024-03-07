@@ -11,7 +11,7 @@ template.innerHTML = `
 	</label>
 	<g-logger title="Clique para gerar CSV">
 	</g-logger>
- <style>* {
+ <style data-element="g-progress-status">* {
 	box-sizing: border-box
 }
 
@@ -62,7 +62,6 @@ g-logger
 
 
 </style>`;
-
 /* global customElements */
 
 import './g-logger.js';

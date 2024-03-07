@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>* {
+ <style data-element="g-chat-message-list">* {
 	box-sizing: border-box
 }
 
@@ -12,7 +12,6 @@ template.innerHTML = `
 	flex-direction: column;
 	justify-content: flex-start;
 }</style>`;
-
 /* global customElements */
 
 import  './g-chat-message.js';

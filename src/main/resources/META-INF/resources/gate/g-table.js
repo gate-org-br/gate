@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>table[is='g-table'][data-table-size='0'][data-empty]
+ <style data-element="g-table">table[is='g-table'][data-table-size='0'][data-empty]
 {
 	display: flex;
 	padding: 12px;
@@ -56,15 +56,14 @@ table[is='g-table'] > tbody > tr[hidden]
 {
 	display: none;
 }</style>`;
-
 /* global Objects, template */
 
 import Objects from './objects.js';
 import colorize from './colorize.js';
 import EventHandler from './event-handler.js';
+import applyTemplate from './apply-template.js';
 
-document.head.insertAdjacentHTML('beforeend', template.innerHTML);
-
+applyTemplate(document, template);
 customElements.define('g-table', class extends HTMLTableElement
 {
 	#observer;
@@ -140,6 +139,7 @@ customElements.define('g-table', class extends HTMLTableElement
 
 	connectedCallback()
 	{
+		applyTemplate(this, template);
 		this.update(this);
 	}
 }, {extends: 'table'});

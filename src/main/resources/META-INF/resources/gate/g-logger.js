@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style data-element="g-logger">:host(*)
 {
 	padding: 4px;
 	cursor: pointer;
@@ -15,7 +15,6 @@ span
 	display: flex;
 	align-items: center;
 }</style>`;
-
 /* global customElements */
 
 

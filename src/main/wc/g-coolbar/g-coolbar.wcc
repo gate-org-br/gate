@@ -1,6 +1,6 @@
 /* global customElements */
 
-import './loading.js';
+import loading from './loading.js';
 
 const EPSILON = 0.5;
 
@@ -84,6 +84,8 @@ customElements.define("g-coolbar", class extends HTMLElement
 
 	update()
 	{
+		loading(this.parentNode);
+
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");
 		let prev = this.shadowRoot.querySelector("#prev");

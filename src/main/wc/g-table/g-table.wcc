@@ -3,9 +3,9 @@
 import Objects from './objects.js';
 import colorize from './colorize.js';
 import EventHandler from './event-handler.js';
+import applyTemplate from './apply-template.js';
 
-document.head.insertAdjacentHTML('beforeend', template.innerHTML);
-
+applyTemplate(document, template);
 customElements.define('g-table', class extends HTMLTableElement
 {
 	#observer;
@@ -81,6 +81,7 @@ customElements.define('g-table', class extends HTMLTableElement
 
 	connectedCallback()
 	{
+		applyTemplate(this, template);
 		this.update(this);
 	}
 }, {extends: 'table'});

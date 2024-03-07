@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style data-element="g-calendar">:host(*)
 {
 	display: grid;
 	font-size: 16px;
@@ -67,7 +67,6 @@ button {
 	justify-content: center;
 	background-color: transparent;
 }</style>`;
-
 /* global customElements */
 
 import DateFormat from './date-format.js';

@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>* {
+ <style data-element="g-grid-row">* {
 	box-sizing: border-box;
 }
 
@@ -28,7 +28,6 @@ template.innerHTML = `
 :host(:hover){
 	background-color: var(--hovered);
 }</style>`;
-
 import './g-grid-cell.js';
 
 customElements.define('g-grid-row', class extends HTMLElement

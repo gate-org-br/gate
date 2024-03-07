@@ -29,7 +29,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-search-picker">dialog
 {
 	min-width: 320px;
 	max-width: 800px;
@@ -48,7 +48,6 @@ dialog > section
 	justify-content: stretch;
 	grid-template-rows: 40px 400px;
 }</style>`;
-
 /* global customElements, template, fetch */
 
 import './g-icon.js';

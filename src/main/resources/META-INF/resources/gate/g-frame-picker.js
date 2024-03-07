@@ -26,7 +26,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>dialog {
+ <style data-element="g-frame-picker">dialog {
 	width: 100%;
 	height: 100%;
 	max-width: none;
@@ -63,7 +63,6 @@ iframe[name] {
 	background-position-y: center;
 	background-image: var(--loading);
 }</style>`;
-
 /* global customElements, template, CSV */
 
 import Return from './@return.js';

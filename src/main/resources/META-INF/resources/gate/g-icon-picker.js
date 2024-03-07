@@ -14,7 +14,7 @@ template.innerHTML = `
 			</g-icon-selector>
 		</section>
 	</dialog>
- <style>dialog
+ <style data-element="g-icon-picker">dialog
 {
 	height: 600px;
 	min-width: 320px;
@@ -25,7 +25,6 @@ template.innerHTML = `
 g-icon-selector {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

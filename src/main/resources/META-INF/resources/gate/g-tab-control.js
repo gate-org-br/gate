@@ -10,7 +10,7 @@ template.innerHTML = `
 		<slot name="body">
 		</slot>
 	</section>
- <style>* {
+ <style data-element="g-tab-control">* {
 	box-sizing: border-box;
 }
 
@@ -291,11 +291,10 @@ header > ::slotted(:not(:first-child))
 	background-color: var(--base1);
 	animation: loading 2s infinite ease-in-out;
 }</style>`;
-
 /* global customElements */
 
-import './loading.js';
 import GBlock from './g-block.js';
+import loading from './loading.js';
 import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
@@ -348,6 +347,8 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 	connectedCallback()
 	{
+		loading(this.parentNode);
+
 		let header = this.shadowRoot.querySelector("header");
 		let links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
 		this.setAttribute("size", links.length);

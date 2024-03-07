@@ -8,7 +8,7 @@ template.innerHTML = `
 	<div id="code-pane">
                 <pre><code></code></pre>
 	</div>
- <style>* {
+ <style data-element="g-code-viewer">* {
 	box-sizing: border-box;
 }
 
@@ -39,7 +39,6 @@ template.innerHTML = `
 	flex-direction: column;
 	background-color: var(--main2);
 }</style>`;
-
 function highlightHTML(htmlString)
 {
 	const tag = 'style="color: #000066"';

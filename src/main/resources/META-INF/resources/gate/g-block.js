@@ -12,7 +12,7 @@ template.innerHTML = `
 			</g-digital-clock>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-block">dialog
 {
 	height: fit-content;
 	min-width: 320px;
@@ -37,7 +37,6 @@ g-digital-clock
 	font-size: 16px;
 }
 </style>`;
-
 /* global customElements, template */
 
 import './g-progress.js';

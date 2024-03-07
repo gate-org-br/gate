@@ -26,7 +26,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-tree-picker">dialog
 {
 	min-width: 320px;
 	max-width: 800px;
@@ -43,62 +43,7 @@ dialog > section
 	overflow: auto;
 	align-items: stretch;
 	background-color: white;
-}
-
-ul[is='g-tree-list']
-{
-	margin: 0;
-	padding: 4px;
-	font-size: 16px;
-	list-style-type: none;
-
-	a {
-		padding: 4px;
-		font-size: inherit;
-		align-items: center;
-		display: inline-flex;
-	}
-
-	a:hover {
-		color: blue;
-	}
-
-	ul
-	{
-		display: none;
-		list-style-type: none;
-	}
-
-	li {
-		cursor: pointer;
-	}
-
-	li::before
-	{
-		padding: 4px;
-		content: '+';
-		color: inherit;
-		font-weight: bold;
-		font-size: inherit;
-		align-items: center;
-		display: inline-flex;
-		font-family: monospace;
-	}
-
-	li[data-expanded]::before {
-		content: '-';
-	}
-
-	li[data-empty]::before {
-		content: ' ';
-	}
-
-	li[data-expanded]>ul {
-		display: block;
-	}
-}
-</style>`;
-
+}</style>`;
 /* global customElements, template, fetch */
 
 import './g-icon.js';

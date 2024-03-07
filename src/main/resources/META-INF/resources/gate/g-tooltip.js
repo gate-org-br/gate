@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
 	<g-icon>&#X3043;</g-icon>
- <style>* {
+ <style data-element="g-tooltip">* {
 	box-sizing: border-box;
 }
 
@@ -74,7 +74,6 @@ g-icon[data-arrow='southwest'] {
 	top: -20px;
 	transform: rotate(45deg);
 }</style>`;
-
 /* global template */
 
 import Formatter from './formatter.js';

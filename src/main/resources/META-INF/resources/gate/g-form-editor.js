@@ -9,7 +9,7 @@ template.innerHTML = `
 	<g-grid>
 		Nenhum campo cadastrado
 	</g-grid>
- <style>* {
+ <style data-element="g-form-editor">* {
 	box-sizing: border-box
 }
 
@@ -20,7 +20,6 @@ template.innerHTML = `
 	flex-direction: column;
 
 }</style>`;
-
 /* global customElements */
 
 import './g-form.js';

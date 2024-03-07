@@ -1,7 +1,7 @@
 /* global template */
+import applyTemplate from './apply-template.js';
 
-document.head.insertAdjacentHTML('beforeend', template.innerHTML);
-
+applyTemplate(document, template);
 customElements.define('g-tree-list', class extends HTMLUListElement
 {
 	constructor()
@@ -11,6 +11,8 @@ customElements.define('g-tree-list', class extends HTMLUListElement
 
 	connectedCallback()
 	{
+		applyTemplate(this, template);
+
 		Array.from(this.querySelectorAll("li")).forEach(li =>
 		{
 			if (li.querySelector("ul > li"))

@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<g-calendar max="1">
 	</g-calendar>
- <style>:host(*)
+ <style data-element="g-date-selector">:host(*)
 {
 	display:flex;
 	align-items: stretch;
@@ -14,7 +14,6 @@ g-calendar
 {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template */
 
 import './g-calendar.js';

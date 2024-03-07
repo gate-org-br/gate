@@ -4,12 +4,11 @@ template.innerHTML = `
 	</g-date-selector>
 	<g-time-selector id='time'>
 	</g-time-selector>
- <style>:host(*)
+ <style data-element="g-date-time-selector">:host(*)
 {
 	display:grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-date-time-selector', class extends HTMLElement

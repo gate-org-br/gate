@@ -76,7 +76,7 @@ template.innerHTML = `
 			</span>
 		</label>
 	</fieldset>
- <style>* {
+ <style data-element="g-field-editor">* {
 	box-sizing: border-box
 }
 
@@ -91,7 +91,6 @@ fieldset {
 	padding: 0;
 	border: none;
 }</style>`;
-
 /* global customElements */
 
 import stylesheets from './stylesheets.js';

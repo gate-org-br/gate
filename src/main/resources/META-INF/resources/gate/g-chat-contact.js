@@ -15,7 +15,7 @@ template.innerHTML = `
 		<input id='message' type='text' maxlength='256' placeholder='Mensagem'/>
 		<button>&#X2034</button>
 	</footer>
- <style>* {
+ <style data-element="g-chat-contact">* {
 	box-sizing: border-box
 }
 
@@ -115,7 +115,6 @@ button
 	font-family: gate;
 	border-radius: 0 0 5px 0;
 }</style>`;
-
 /* global customElements */
 
 import './g-chat-message-list.js';

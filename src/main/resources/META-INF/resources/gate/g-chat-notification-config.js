@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>* {
+ <style data-element="g-chat-notification-config">* {
 	box-sizing: border-box
 }
 
@@ -63,7 +63,6 @@ template.innerHTML = `
 }
 
 </style>`;
-
 /* global customElements */
 
 import GChatNotificatorStatus from './g-chat-notification-status.js';

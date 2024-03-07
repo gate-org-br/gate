@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style data-element="g-context-menu">:host(*)
 {
 	margin: 0;
 	padding: 0;
@@ -35,7 +35,6 @@ button:hover
 {
 	background-color: var(--hovered, #FFFACD);
 }</style>`;
-
 /* global customElements, template */
 
 export default class GContextMenu extends HTMLElement

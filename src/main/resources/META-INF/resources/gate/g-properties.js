@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*) {
+ <style data-element="g-properties">:host(*) {
 	display: inline-grid;
 	grid-template-columns: auto auto;
 }
@@ -19,7 +19,6 @@ span {
 	align-items: center;
 	justify-content: flex-start;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-properties', class extends HTMLElement

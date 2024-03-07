@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<fieldset>
 	</fieldset>
- <style>* {
+ <style data-element="g-form-view">* {
 	box-sizing: border-box
 }
 
@@ -23,7 +23,6 @@ span.multiple
 	overflow: auto;
 	flex-basis: 80px;
 }</style>`;
-
 /* global customElements */
 import stylesheets from './stylesheets.js';
 

@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>:host(*) {
+ <style data-element="g-card">:host(*) {
 	height: auto;
 	display: flex;
 	font-size: 16px;
@@ -68,7 +68,6 @@ template.innerHTML = `
 	justify-content: flex-end;
 	border-top: 1px solid var(--main5);
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-card', class extends HTMLElement

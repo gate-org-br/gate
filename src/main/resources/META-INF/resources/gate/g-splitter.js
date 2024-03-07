@@ -10,7 +10,7 @@ template.innerHTML = `
 		</button>
 	</div>
 	<slot name="R"></slot>
- <style>* {
+ <style data-element="g-splitter">* {
 	box-sizing: border-box
 }
 
@@ -68,7 +68,6 @@ button {
 	cursor: e-resize;
 	background-color: var(--main4);
 }</style>`;
-
 /* global customElements, template */
 
 

@@ -16,7 +16,7 @@ template.innerHTML = `
 			<button id='CSV'><g-icon>&#x2222;</g-icon>CSV</button>
 		</section>
 	</dialog>
- <style>dialog {
+ <style data-element="g-report-picker">dialog {
 	width: 600px;
 	height: fit-content;
 }
@@ -57,7 +57,6 @@ section g-icon
 	font-size: 50px;
 }
 </style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

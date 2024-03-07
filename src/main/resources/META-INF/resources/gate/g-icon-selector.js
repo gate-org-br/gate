@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style data-element="g-icon-selector">:host(*)
 {
 	width: 100%;
 	margin: 8px;
@@ -32,7 +32,6 @@ a {
 a:hover {
 	background-color: var(--hovered)
 }</style>`;
-
 /* global customElements */
 
 import icons from './icon-list.js';

@@ -25,7 +25,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>dialog
+ <style data-element="g-form-dialog">dialog
 {
 	width: 100%;
 	max-height: 100%;
@@ -44,7 +44,6 @@ template.innerHTML = `
 g-form {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template, fetch, Promise */
 
 import './g-form.js';

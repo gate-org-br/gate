@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>* {
+ <style data-element="g-callout">* {
 	box-sizing: border-box;
 
 }
@@ -99,7 +99,6 @@ template.innerHTML = `
 	border-color: var(--question2);
 }
 </style>`;
-
 /* global customElements, template */
 
 customElements.define('g-callout', class extends HTMLElement

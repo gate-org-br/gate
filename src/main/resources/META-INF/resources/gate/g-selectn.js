@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<input type="checkbox">
 	<slot></slot>
- <style>* {
+ <style data-element="g-selectn">* {
 	box-sizing: border-box
 }
 
@@ -66,7 +66,6 @@ input {
 	right: 4px;
 	position: absolute;
 }</style>`;
-
 /* global customElements */
 
 import GContextMenu from './g-context-menu.js';

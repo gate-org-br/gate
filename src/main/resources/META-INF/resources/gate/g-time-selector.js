@@ -4,13 +4,12 @@ template.innerHTML = `
 	</g-slider>
 	<g-slider id='m' size="5" value='0'>
 	</g-slider>
- <style>:host(*)
+ <style data-element="g-time-selector">:host(*)
 {
 	flex-grow: 1;
 	display:grid;
 	grid-template-columns: 1fr 1fr;
 }</style>`;
-
 /* global customElements */
 
 import './g-slider.js';

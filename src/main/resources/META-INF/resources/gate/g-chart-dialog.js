@@ -15,7 +15,7 @@ template.innerHTML = `
 			</g-chart>
 		</section>
 	</dialog>
- <style>dialog {
+ <style data-element="g-chart-dialog">dialog {
 	width: 100%;
 	height: 100%;
 	border-radius: 0;
@@ -40,7 +40,6 @@ g-chart {
 	flex-grow: 1;
 	background-color: white;
 }</style>`;
-
 /* global customElements, template, fetch */
 
 import  './g-icon.js';

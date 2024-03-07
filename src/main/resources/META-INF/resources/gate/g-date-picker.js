@@ -14,7 +14,7 @@ template.innerHTML = `
 			</g-date-selector>
 		</section>
 	</dialog>
- <style>dialog
+ <style data-element="g-date-picker">dialog
 {
 	height: 440px;
 	min-width: 320px;
@@ -29,7 +29,6 @@ dialog > section {
 g-date-selector {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

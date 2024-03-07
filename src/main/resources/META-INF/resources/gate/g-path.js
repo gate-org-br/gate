@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
- <style>:host(*)
+ <style data-element="g-path">:host(*)
 {
 	gap: 4px;
 	height: 16px;
@@ -42,7 +42,6 @@ template.innerHTML = `
 	pointer-events: none;
 	justify-content: center;
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-path', class extends HTMLElement

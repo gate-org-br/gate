@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot>
 	</slot>
- <style>:host(*)
+ <style data-element="g-accordion">:host(*)
 {
 	display: flex;
 	flex-direction: column;
@@ -59,7 +59,6 @@ template.innerHTML = `
 }
 
 </style>`;
-
 /* global customElements */
 
 import RequestBuilder from './request-builder.js';

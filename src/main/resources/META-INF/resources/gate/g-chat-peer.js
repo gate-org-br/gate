@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<label></label>
- <style>* {
+ <style data-element="g-chat-peer">* {
 	box-sizing: border-box
 }
 
@@ -88,7 +88,6 @@ template.innerHTML = `
 {
 	display: none;
 }</style>`;
-
 /* global customElements */
 
 customElements.define('g-chat-peer', class extends HTMLElement

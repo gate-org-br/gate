@@ -25,7 +25,7 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style>* {
+ <style data-element="g-fetch-picker">* {
 	box-sizing: border-box;
 }
 
@@ -58,7 +58,6 @@ dialog > section {
 	align-items: stretch;
 	flex-direction: column;
 }</style>`;
-
 /* global customElements, template, CSV */
 
 import Return from './@return.js';

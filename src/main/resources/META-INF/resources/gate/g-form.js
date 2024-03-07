@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<fieldset>
 	</fieldset>
- <style>* {
+ <style data-element="g-form">* {
 	box-sizing: border-box
 }
 
@@ -17,7 +17,6 @@ fieldset {
 	padding: 0;
 	border: none;
 }</style>`;
-
 /* global customElements */
 
 import './g-selectn.js';

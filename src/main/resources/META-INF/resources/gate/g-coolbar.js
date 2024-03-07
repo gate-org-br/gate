@@ -5,7 +5,7 @@ template.innerHTML = `
 		<slot></slot>
 	</div>
 	<button id="next"><g-icon>&#X2279;</g-icon></button>
- <style>*
+ <style data-element="g-coolbar">*
 {
 	box-sizing: border-box;
 }
@@ -260,10 +260,9 @@ button:hover
 	background-color: var(--base1);
 	animation: loading 2s infinite ease-in-out;
 }</style>`;
-
 /* global customElements */
 
-import './loading.js';
+import loading from './loading.js';
 
 const EPSILON = 0.5;
 
@@ -347,6 +346,8 @@ customElements.define("g-coolbar", class extends HTMLElement
 
 	update()
 	{
+		loading(this.parentNode);
+
 		let div = this.shadowRoot.querySelector("div");
 		let next = this.shadowRoot.querySelector("#next");
 		let prev = this.shadowRoot.querySelector("#prev");

@@ -2,7 +2,7 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
 	<label></label>
- <style>* {
+ <style data-element="g-chat-counter">* {
 	box-sizing: border-box
 }
 
@@ -12,7 +12,6 @@ template.innerHTML = `
 	align-items: stretch;
 	justify-content: space-between;
 }</style>`;
-
 /* global customElements */
 
 import GChatService from './g-chat-service.js';

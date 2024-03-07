@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
+	<dialog>
 		<header>
 			<label id='caption'></label>
 			<a id='close' href="#">
@@ -27,18 +27,29 @@ template.innerHTML = `
 				</button>
 			</g-coolbar>
 		</footer>
-	</main>
- <style>main
+	</dialog>
+ <style data-element="g-field-editor-dialog">dialog
 {
 	min-width: 320px;
-	max-width: 1200px;
+	max-width: 1000px;
+	height: fit-content;
 	width: calc(100% - 40px);
+	max-height: calc(100% - 40px);
+}
+
+dialog > section
+{
+	gap: 4px;
+	padding: 4px;
+	display: flex;
+	overflow: auto;
+	align-items: stretch;
+	justify-content: stretch;
 }
 
 g-field-editor {
 	flex-grow: 1;
 }</style>`;
-
 /* global customElements, template */
 
 import './g-icon.js';

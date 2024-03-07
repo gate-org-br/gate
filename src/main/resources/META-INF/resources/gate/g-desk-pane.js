@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
- <style>* {
+ <style data-element="g-desk-pane">* {
 	box-sizing: border-box
 }
 
@@ -200,11 +200,10 @@ template.innerHTML = `
 	bottom: 12px;
 	max-width: calc(100% - 60px);
 }</style>`;
-
 /* global customElements */
 
 import './g-icon.js';
-import './loading.js';
+import loading from './loading.js';
 
 document.head.insertAdjacentHTML('beforeend',
 	`<style>
@@ -272,6 +271,7 @@ customElements.define('g-desk-pane', class extends HTMLElement
 
 	connectedCallback()
 	{
+		loading(this.parentNode);
 		if (this.parentNode.tagName === "G-DESK-PANE")
 			this.setAttribute("child", "");
 	}

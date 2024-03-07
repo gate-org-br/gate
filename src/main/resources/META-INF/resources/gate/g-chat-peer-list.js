@@ -7,7 +7,7 @@ template.innerHTML = `
 		<g-chat-notification-config label="Notificações">
 		</g-chat-notification-config>
 	</footer>
- <style>* {
+ <style data-element="g-chat-peer-list">* {
 	box-sizing: border-box
 }
 
@@ -56,7 +56,6 @@ g-chat-peer:hover
 {
 	background-color: var(--hovered);
 }</style>`;
-
 /* global customElements */
 
 import './g-chat-peer.js';

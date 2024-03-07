@@ -6,7 +6,7 @@ template.innerHTML = `
 	</section>
 	<footer>
 	</footer>
- <style>* {
+ <style data-element="g-chat-message">* {
 	box-sizing: border-box
 }
 
@@ -76,7 +76,6 @@ footer
 	content: '\\1000';
 }
 </style>`;
-
 /* global customElements */
 
 customElements.define('g-chat-message', class extends HTMLElement

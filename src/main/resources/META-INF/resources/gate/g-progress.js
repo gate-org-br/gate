@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style>:host(*)
+ <style data-element="g-progress">:host(*)
 {
 	width: 100%;
 	flex-grow: 1;
@@ -25,7 +25,6 @@ template.innerHTML = `
 		flex-basis: 100%;
 	}
 }</style>`;
-
 /* global customElements, template */
 
 customElements.define('g-progress', class extends HTMLElement
