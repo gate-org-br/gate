@@ -19,10 +19,17 @@ export default class GDialog extends GWindow
 				if (this.type === "frame")
 					this.iframe.srcDoc = event.detail.target;
 				else
+				{
+					this.innerHTML = "";
 					fetch(event.detail.target)
 						.then(ResponseHandler.text)
 						.then(html => this.innerHTML = html)
-						.catch(e => GMessageDialog.error(e) || event.preventDefault())
+						.catch(e =>
+						{
+							event.preventDefault();
+							GMessageDialog.error(e);
+						})
+				}
 			});
 	}
 

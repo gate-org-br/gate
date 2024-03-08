@@ -26,6 +26,13 @@ dialog {
 	flex-direction: column;
 }
 
+:host(:empty) > dialog > section {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: var(--loading);
+	background-size: clamp(128px, 25%, 256px);
+}
+
 ::slotted(iframe:only-child) {
 	margin: 0;
 	width: 100%;

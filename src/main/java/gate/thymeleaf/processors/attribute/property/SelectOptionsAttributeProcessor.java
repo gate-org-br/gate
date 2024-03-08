@@ -44,6 +44,7 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 
 		var labels = extract(element, handler, "g:labels").map(expression.create()::function).orElse(Function.identity());
 		var values = extract(element, handler, "g:values").map(expression.create()::function).orElse(Function.identity());
+		var children = extract(element, handler, "g:children").map(e -> (String) e).map(expression.create()::function).orElse(null);
 
 		StringJoiner body = new StringJoiner(System.lineSeparator());
 
@@ -65,32 +66,35 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 				.forEach(group ->
 				{
 					body.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
-					print(body, group.getValue(), labels, values);
+					print(0, body, group.getValue(), labels, values, children);
 					body.add("</optgroup>");
 				});
 		} else
-			print(body, Toolkit.iterable(options), labels, values);
+			print(0, body, Toolkit.iterable(options), labels, values, children);
 
 		handler.setBody(body.toString(), false);
 	}
 
-	private String print(StringJoiner result,
-		Iterable<?> options,
-		Function<Object, Object> labels, Function<Object, Object> values)
+	private void print(int level, StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Function<Object, Object> children)
 	{
-		for (Object option : options)
+		for (Object object : options)
 		{
-			var label = Converter.toText(labels.apply(option));
 
-			option = values.apply(option);
+			var option = values.apply(object);
 
 			Attributes attributes = new Attributes();
 
 			attributes.put("value", Converter.toString(option));
 
-			result.add("<option " + attributes + ">" + label + "</option>");
+			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
+				+ Converter.toText(labels.apply(object)) + "</option>");
+
+			if (children != null)
+			{
+				print(level + 1, string, Toolkit.iterable(children.apply(object)),
+					labels, values, children);
+			}
 		}
-		return result.toString();
 	}
 
 	@Override

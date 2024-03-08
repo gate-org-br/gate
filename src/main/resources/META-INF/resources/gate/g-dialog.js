@@ -51,6 +51,13 @@ dialog > section {
 	flex-direction: column;
 }
 
+:host(:empty) > dialog > section {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: var(--loading);
+	background-size: clamp(128px, 25%, 256px);
+}
+
 nav
 {
 	gap: 8px;
@@ -112,10 +119,17 @@ export default class GDialog extends GWindow
 				if (this.type === "frame")
 					this.iframe.srcDoc = event.detail.target;
 				else
+				{
+					this.innerHTML = "";
 					fetch(event.detail.target)
 						.then(ResponseHandler.text)
 						.then(html => this.innerHTML = html)
-						.catch(e => GMessageDialog.error(e) || event.preventDefault())
+						.catch(e =>
+						{
+							event.preventDefault();
+							GMessageDialog.error(e);
+						})
+				}
 			});
 	}
 

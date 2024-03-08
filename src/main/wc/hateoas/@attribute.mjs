@@ -35,7 +35,10 @@ window.addEventListener("@attribute", function (event)
 
 			return response.then(result =>
 			{
-				target.setAttribute(attribute, result);
+				if (result)
+					target.setAttribute(attribute, result);
+				else
+					target.removeAttribute(attribute);
 				event.success(path, new DataURL(contentType, result).toString());
 			});
 		}

@@ -19,20 +19,17 @@ window.addEventListener("@fill", function (event)
 				.orElseTrhow(`Invalid selector: ${e}`));
 
 	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
-	if (!value)
-		throw new Error("Value input not found");
-
 	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
-	if (!label)
-		throw new Error("Label input not found");
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(dataURL =>
 		{
 			let result = DataURL.toJSON(dataURL);
-			label.value = Extractor.label(result);
-			value.value = Extractor.value(result);
+			if (label)
+				label.value = Extractor.label(result) || "";
+			if (value)
+				value.value = Extractor.value(result) || "";
 			event.success(path, dataURL);
 		})
 		.catch(error => event.failure(path, error));

@@ -138,7 +138,7 @@ button:hover {
 	color: #000066
 }
 
-span  {
+:host(*) > span  {
 	flex: 0 0 8px;
 	display: block;
 }
