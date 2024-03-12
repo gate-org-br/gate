@@ -15,7 +15,7 @@ import java.io.UncheckedIOException;
 import java.net.URL;
 import java.util.stream.Stream;
 
-public class Select implements Clause
+public class Select implements SelectClause
 {
 
 	@Override
@@ -148,6 +148,7 @@ public class Select implements Clause
 				return Stream.of(conditions)
 					.flatMap(Condition::getParameters);
 			}
+
 		};
 	}
 
@@ -221,7 +222,7 @@ public class Select implements Clause
 	/**
 	 * Creates a query from GQN notation.
 	 *
-	 * 
+	 *
 	 * @param type the type of the entity to be selected
 	 * @param notation GQN notation to be used to generate the query
 	 *
@@ -250,7 +251,7 @@ public class Select implements Clause
 	/**
 	 * Creates a compiled query from GQN notation ignoring null values.
 	 *
-	 * 
+	 *
 	 * @param type the type of the entity to be selected
 	 * @param object the object whose properties will be compiled with the query
 	 * @param notation GQN notation to be used to generate the query
@@ -280,4 +281,23 @@ public class Select implements Clause
 	{
 		return new TypedSelect<>(type);
 	}
+
+	public static Query.Compiled.Builder exists(SelectClause select)
+	{
+		return new Query.Compiled.Builder()
+		{
+			@Override
+			public String toString()
+			{
+				return "select exists (" + select.toString() + ")";
+			}
+
+			@Override
+			public Query.Compiled build()
+			{
+				return Query.of(toString()).parameters(select.getParameters());
+			}
+		};
+	}
+
 }

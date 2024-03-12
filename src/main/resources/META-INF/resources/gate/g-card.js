@@ -5,7 +5,6 @@ template.innerHTML = `
  <style data-element="g-card">:host(*) {
 	height: auto;
 	display: flex;
-	font-size: 16px;
 	border-radius: 3px;
 	flex-direction: column;
 	background-color: var(--main1);
@@ -15,8 +14,7 @@ template.innerHTML = `
 
 ::slotted(i),
 ::slotted(e),
-::slotted(g-icon),
-::slotted(picture)
+::slotted(g-icon)
 {
 	padding: 8px;
 	display: flex;
@@ -24,49 +22,62 @@ template.innerHTML = `
 	justify-content: center;
 }
 
+::slotted(header),
+::slotted(section),
+::slotted(footer) {
+	border-bottom: 1px solid var(--main5);
+}
+
+::slotted(header:last-child),
+::slotted(section:last-child),
+::slotted(footer:last-child) {
+	border-bottom: none;
+}
+
+::slotted(img) {
+	margin: 10px;
+	height: 48px;
+	align-self: center;
+}
+
 ::slotted(header)
 {
-	gap: 8px;
-	padding: 8px;
-	display: flex;
-	font-size: 1.2em;
-	flex-basis: 32px;
+	padding: 4px;
+	font-size: 16px;
+	flex-basis: 36px;
 	font-weight: bold;
-	align-items: center;
-	justify-content: space-between;
-	border-bottom: 1px solid var(--main5);
 }
 
 ::slotted(nav)
 {
-	flex-grow: 1;
-	padding: 0 8px 0 8px;
+	gap: 4px;
+	color: black;
+	display: flex;
+	font-size: 12px;
+	flex-basis: 36px;
+	align-items: center;
 	justify-content: flex-end;
-	border-bottom: 1px solid var(--main5);
 }
 
 ::slotted(section)
 {
-	gap: 8px;
 	padding: 8px;
 	flex-grow: 1;
-	display: flex;
-	font-size: 1em;
 	overflow: auto;
+	font-size: 12px;
 	text-align: justify;
-	flex-direction: column;
 }
 
 ::slotted(footer) {
 	gap: 4px;
-	padding: 8px;
+	padding: 4px;
 	color: black;
 	display: flex;
-	font-size: 1.2em;
-	flex-basis: 32px;
+	font-size: 10px;
+	flex-basis: 36px;
+	font-style: italic;
 	align-items: center;
 	justify-content: flex-end;
-	border-top: 1px solid var(--main5);
 }</style>`;
 /* global customElements, template */
 

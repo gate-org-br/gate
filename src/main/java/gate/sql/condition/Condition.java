@@ -202,6 +202,39 @@ public abstract class Condition implements Clause
 	}
 
 	/**
+	 * Creates a new predicate with the specified expression and parameters.
+	 *
+	 * @param expression the expression to be tested
+	 * @param parameters the parameters to be included on the condition
+	 * @return the current predicate, for chained invocations
+	 *
+	 * @see gate.sql.condition.ConstantPredicate
+	 */
+	public static CompiledPredicate of(String expression, Object... parameters)
+	{
+		return new CompiledPredicate(ROOT)
+		{
+			@Override
+			public Stream<Object> getParameters()
+			{
+				return Stream.of(parameters);
+			}
+
+			@Override
+			public Stream<Property> getProperties()
+			{
+				return Stream.empty();
+			}
+
+			@Override
+			public String toString()
+			{
+				return expression;
+			}
+		};
+	}
+
+	/**
 	 * Creates a new negated relation.
 	 *
 	 * @return the current relation, for chained invocations

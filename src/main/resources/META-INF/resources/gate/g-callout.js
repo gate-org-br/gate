@@ -97,8 +97,7 @@ template.innerHTML = `
 
 :host(.question.fill) ::slotted(hr) {
 	border-color: var(--question2);
-}
-</style>`;
+}</style>`;
 /* global customElements, template */
 
 customElements.define('g-callout', class extends HTMLElement

@@ -4,7 +4,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class LimitedSelect implements Clause
+public abstract class LimitedSelect implements SelectClause
 {
 
 	private final Clause clause;
@@ -21,7 +21,7 @@ public abstract class LimitedSelect implements Clause
 	}
 
 	public abstract static class Constant extends LimitedSelect implements
-			Query.Constant.Builder
+		Query.Constant.Builder
 	{
 
 		public Constant(Clause clause)
@@ -37,7 +37,7 @@ public abstract class LimitedSelect implements Clause
 	}
 
 	public abstract static class Generic extends LimitedSelect implements
-			Query.Builder
+		Query.Builder
 	{
 
 		public Generic(Clause clause)
@@ -53,7 +53,7 @@ public abstract class LimitedSelect implements Clause
 	}
 
 	public abstract static class Compiled extends LimitedSelect implements
-			Query.Compiled.Builder
+		Query.Compiled.Builder
 	{
 
 		public Compiled(Clause clause)
@@ -65,8 +65,8 @@ public abstract class LimitedSelect implements Clause
 		public Query.Compiled build()
 		{
 			return Query.of(toString())
-					.parameters(getParameters()
-							.collect(Collectors.toList()));
+				.parameters(getParameters()
+					.collect(Collectors.toList()));
 		}
 	}
 

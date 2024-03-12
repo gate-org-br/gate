@@ -31,6 +31,7 @@ public class HTMLCommandHandler implements Handler
 		{
 			String filename = value.toString();
 			Writer writer = response.getWriter();
+			response.setContentType("text/html");
 			IContext context = new CDIWebContext(request, response,
 				beanManager, request.getServletContext());
 			engine.process(filename, context, writer);

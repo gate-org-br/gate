@@ -6,6 +6,7 @@ import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonScanner;
+import gate.lang.json.JsonString;
 import gate.lang.json.JsonToken;
 import gate.type.collections.StringList;
 import gate.util.Reflection;
@@ -115,7 +116,9 @@ public class StringListConverter extends CollectionConverter
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, JsonArray.format(value).toString());
+			ps.setString(fields++, ((StringList) value).stream()
+				.map(JsonString::of).collect(Collectors.toCollection(JsonArray::new))
+				.toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;

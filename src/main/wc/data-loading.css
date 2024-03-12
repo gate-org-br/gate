@@ -25,3 +25,17 @@ body[data-loading]::before {
 	background-color: var(--main);
 	background-image: var(--loading);
 }
+
+section[data-loading] > *,
+article[data-loading] > *
+{
+	visibility: hidden;
+}
+
+section[data-loading],
+article[data-loading] {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: var(--loading);
+	background-size: clamp(128px, 25%, 256px);
+}

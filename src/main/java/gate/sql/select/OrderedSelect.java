@@ -4,7 +4,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class OrderedSelect implements Clause, Limitable, Sortable
+public abstract class OrderedSelect implements SelectClause, Limitable, Sortable
 {
 
 	private final Clause clause;
@@ -23,10 +23,10 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 	public abstract OrderedSelect and(String exp);
 
 	public abstract static class Constant extends OrderedSelect implements
-			Orderable.Constant,
-			Sortable.Constant,
-			Limitable.Constant,
-			Query.Constant.Builder
+		Orderable.Constant,
+		Sortable.Constant,
+		Limitable.Constant,
+		Query.Constant.Builder
 	{
 
 		public Constant(Clause clause)
@@ -51,14 +51,14 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 		public Query.Constant build()
 		{
 			return Query.of(toString())
-					.constant();
+				.constant();
 		}
 	}
 
 	public abstract static class Generic extends OrderedSelect implements
-			Orderable.Generic,
-			Sortable.Generic,
-			Limitable.Generic, Query.Builder
+		Orderable.Generic,
+		Sortable.Generic,
+		Limitable.Generic, Query.Builder
 	{
 
 		public Generic(Clause clause)
@@ -87,10 +87,10 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 	}
 
 	public abstract static class Compiled extends OrderedSelect implements
-			Orderable.Compiled,
-			Sortable.Compiled,
-			Limitable.Compiled,
-			Query.Compiled.Builder
+		Orderable.Compiled,
+		Sortable.Compiled,
+		Limitable.Compiled,
+		Query.Compiled.Builder
 	{
 
 		public Compiled(Clause clause)
@@ -115,8 +115,8 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 		public Query.Compiled build()
 		{
 			return Query.of(toString())
-					.parameters(getParameters()
-							.collect(Collectors.toList()));
+				.parameters(getParameters()
+					.collect(Collectors.toList()));
 		}
 	}
 }

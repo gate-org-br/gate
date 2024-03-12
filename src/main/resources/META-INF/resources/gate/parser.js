@@ -77,7 +77,7 @@ export default class Parser
 						const delimiter = string[i];
 						for (i++; i < string.length && string[i] !== delimiter; i++)
 							step += string[i];
-						if (string[i++] !== delimiter)
+						if (string[i] !== delimiter)
 							throw new Error(`Unterminated string found on ${string}`);
 					} else
 						step += string[i];
@@ -92,7 +92,7 @@ export default class Parser
 						const delimiter = string[i];
 						for (i++; i < string.length && string[i] !== delimiter; i++)
 							step += string[i];
-						if (string[i++] !== delimiter)
+						if (string[i] !== delimiter)
 							throw new Error(`Unterminated string found on ${string}`);
 					} else
 						step += string[i];

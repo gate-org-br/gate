@@ -1,18 +1,15 @@
 <g-callout class="fill">
 	<h1>@fill</h1>
 	<p>
-		Simplifies the process of populating input fields with JSON data.
-		Accepts value and label <strong>&lt;input&gt;</strong> selectors as the first and second parameters, respectively.
-		If the value <strong>&lt;input&gt;</strong> selector is omitted, it defaults to the first
-		hidden <strong>&lt;input&gt;</strong> sibling of the trigger element.
-		If the label <strong>&lt;input&gt;</strong> selector is omitted, it defaults to the first
-		text <strong>&lt;input&gt;</strong> sibling of the trigger element.
+
+		Simplifies the process of populating input fields with JSON data. Input field selectors are passed as parameters,
+		defaulting to <strong>this.parent().search("input[type='hidden']")</strong> and
+		<strong>this.parent().search("input[type='text']")</strong> when omitted.
 	</p>
 	<p>
-		If the JSON data is an object with only 'value' and 'label' attributes, these are selected as the value and label,
-		respectively.
-		For a generic object, the first property is chosen as the value, and the second one as the label. In the case of an
-		Array, the first column is selected as the value, and the second column as the label.
+		When handling JSON data, if it's in array format, the values of the target elements are populated with the
+		corresponding array elements. If the JSON data is a generic object, the target elements' values are populated
+		with the object's properties, respecting their order.
 	</p>
 </g-callout>
 
@@ -22,13 +19,15 @@
 	</a>
 	<div>
 		<p>
-			When the action returns an
-			<a href='/objects.json'
-			   target='_blank'>JSON array of objects</a>
-			they are presented as cards on a list for user selection.
-			The first attribute of each object is not displayed as it contains
-			the value to be returned. Upon user selection, the <strong>label input</strong>
-			receives the first attribute and the <strong>value input</strong> receives the second one.
+			When the action returns a <a href='/objects.json'
+						     target='_blank'>JSON array of objects</a>, the <strong>@select</strong> target
+			showcases them as cards within a list
+			for user selection. Any attributes beginning with the <strong>_</strong> character are omitted from display.
+
+			Upon user selection, the chosen object is directed to the <strong>@fill</strong> target.
+			When invoked without parameters, the <strong>@fill</strong>
+			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second properties of the selected object, respectively.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<fieldset>
@@ -52,14 +51,15 @@
 	</a>
 	<div>
 		<p>
-			When the result is a
-			<a href='/table.json' target='_blank'>JSON array of arrays</a>,
-			they are presented a on a grid for user selection. The first array
-			within the JSON structure serves as the headers for each column in
-			the grid. The first element of each array is not displayed as it contains
-			the value to be returned.
-			Upon user selection, the <strong>label input</strong> receives the first element
-			of the selected array and the <strong>value input</strong> receives the second one.
+			When the action returns a <a href='/table.json'
+						     target='_blank'>JSON array of arrays</a>, the <strong>@select</strong> target
+			showcases them on a grid
+			for user selection. Any columns with headers beginning with the <strong>_</strong> character are omitted from display.
+
+			Upon user selection, the chosen array is directed to the <strong>@fill</strong> target.
+			When invoked without parameters, the <strong>@fill</strong>
+			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second columns of the selected array, respectively.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<fieldset>
@@ -78,71 +78,46 @@
 			</fieldset>
 		</g-code-viewer>
 	</div>
+
 	<a href="#">
 		Example 3 <g-icon>&#X2013;</g-icon>
 	</a>
 	<div>
 		<p>
-			If the result consists of a <a href="./options.json" target="_blank">
-				JSON array of objects with only
-				<strong>label</strong> and
-				<strong>value</strong>
-				attributes</a>,
-			the labels will be displayed on a list for user selection.
-			Upon user selection, the <strong>label input</strong> and
-			the <strong>value input</strong> receives the <strong>label
-				attribute</strong> and the <strong>value attribute</strong>
-			respectively.
+			On this example, the <strong>@fill</strong> target will populate the <strong>&lt;input id='_ID'&gt;</strong>,
+			<strong>&lt;input id='Name'&gt;</strong>, <strong>&lt;input id='Occupation'&gt;</strong> and
+			<strong>&lt;input id='Birthdate:'&gt;</strong>
+			elements respectively with the first, second, third and fourth columns of the selected array from the
+			<a href='/table.json' target='_blank'>table.json</a> file.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<fieldset>
-				<label>
-					Select:
+				<label data-size='8'>
+					Name:
 					<span>
-						<input type="text" />
-						<input type="hidden">
-						<a href="./options.json" target="@select > @fill" title="Select 1">
+						<input id='Name' type="text" readonly/>
+						<a href="./table.json" target="@select > @fill(#_ID, #Name, #Occupation, #Birthdate)" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>
 						</a>
 					</span>
 				</label>
-			</fieldset>
-		</g-code-viewer>
-	</div>
-	<a href="#">
-		Example 4 <g-icon>&#X2013;</g-icon>
-	</a>
-	<div>
-		<p>
-			If the result consists of a <a href="./properties.json" target="_blank">
-				JSON array of objects with only
-				<strong>label</strong>,
-				<strong>value</strong> and
-				<strong>properties</strong>
-				attributes</a>,
-			the properties will be displayed as cards on a list for user selection.
-			Upon user selection, the <strong>label input</strong> and
-			the <strong>value input</strong> receives the <strong>label
-				attribute</strong> and the <strong>value attribute</strong>
-			respectively.
-		</p>
-		<g-code-viewer style='height: auto'>
-			<fieldset>
-				<label>
-					Select:
+				<label data-size='4'>
+					Occupation:
 					<span>
-						<input type="text" />
-						<input type="hidden">
-						<a href="./properties.json" target="@select > @fill" title="Select 1">
-							<g-icon>
-								&#X2010;
-							</g-icon>
-						</a>
+						<input id='Occupation' type="text" readonly/>
 					</span>
 				</label>
+				<label data-size='4'>
+					Birthdate:
+					<span>
+						<input id='Birthdate' type="text" readonly/>
+					</span>
+				</label>
+				<input id='_ID' type="hidden">
 			</fieldset>
 		</g-code-viewer>
 	</div>
+
 </g-tab-control>

@@ -60,7 +60,7 @@ public class LDAPAuthenticator implements Authenticator
 		var authorization = request.getBasicAuthorization().orElse(null);
 
 		if (authorization == null)
-			return developer != null ? control.select(developer) : null;
+			return null;
 
 		User user = control.select(authorization.username());
 

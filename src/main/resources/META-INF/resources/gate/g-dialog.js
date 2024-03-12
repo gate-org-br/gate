@@ -51,7 +51,12 @@ dialog > section {
 	flex-direction: column;
 }
 
-:host(:empty) > dialog > section {
+:host([data-loading]) > dialog > section > *
+{
+	visibility: hidden;
+}
+
+:host([data-loading]) > dialog > section {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);
@@ -120,7 +125,7 @@ export default class GDialog extends GWindow
 					this.iframe.srcDoc = event.detail.target;
 				else
 				{
-					this.innerHTML = "";
+					this.setAttribute("data-loading", "");
 					fetch(event.detail.target)
 						.then(ResponseHandler.text)
 						.then(html => this.innerHTML = html)
@@ -128,7 +133,7 @@ export default class GDialog extends GWindow
 						{
 							event.preventDefault();
 							GMessageDialog.error(e);
-						})
+						}).finally(() => this.removeAttribute("data-loading"));
 				}
 			});
 	}

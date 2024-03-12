@@ -10,15 +10,12 @@ import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
-import gate.util.SystemProperty;
 import javax.servlet.http.HttpServletResponse;
 
 public class DatabaseAuthenticator implements Authenticator
 {
 
 	private final GateControl control;
-
-	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	private DatabaseAuthenticator(GateControl control)
 	{
@@ -50,7 +47,7 @@ public class DatabaseAuthenticator implements Authenticator
 		var authorization = request.getBasicAuthorization().orElse(null);
 
 		if (authorization == null)
-			return developer != null ? control.select(developer) : null;
+			return null;
 
 		if (authorization.username().equals(authorization.password()))
 			throw new DefaultPasswordException();

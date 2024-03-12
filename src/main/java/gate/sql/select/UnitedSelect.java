@@ -4,7 +4,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class UnitedSelect implements Clause, Unitable
+public abstract class UnitedSelect implements SelectClause, Unitable
 {
 
 	private final Clause clause;

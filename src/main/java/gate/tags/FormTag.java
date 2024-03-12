@@ -44,7 +44,9 @@ public class FormTag extends AttributeTag
 		String property, Attributes attributes)
 	{
 
-		int size = Integer.parseInt(field.getSize().toString()) * 2;
+		Attributes size = new Attributes();
+		if (field.getSize() != null)
+			size.put("data-size", Integer.parseInt(field.getSize().toString()) * 2);
 
 		if (Toolkit.notEmpty(field.getName()))
 		{
@@ -77,9 +79,9 @@ public class FormTag extends AttributeTag
 					attributes.put("type", "text");
 					if (field.getValue() != null)
 						attributes.put("value", field.getValue());
-					return String.format("<label data-size='%d'>%s:<span><input %s/></span></label>", size, field.getName(), attributes.toString());
+					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes.toString());
 				} else
-					return String.format("<label data-size='%d'>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
+					return String.format("<label %s>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
 						size, field.getName(), attributes.toString(), field.getValue() != null ? field.getValue() : "");
 			} else
 			{
@@ -98,7 +100,7 @@ public class FormTag extends AttributeTag
 
 					attributes.put("name", property);
 					return String
-						.format("<label data-size='%d'>%s:<span><select %s>%s</select></span></label>", size,
+						.format("<label %s>%s:<span><select %s>%s</select></span></label>", size,
 							field.getName(), attributes.toString(), options.toString());
 				} else
 				{
@@ -113,16 +115,16 @@ public class FormTag extends AttributeTag
 							attributes.remove("checked");
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
-					return String.format("<fieldset data-size='%d'><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
+					return String.format("<fieldset %s><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
 						size, field.getName(), options.toString());
 				}
 			}
 		} else if (Boolean.FALSE.equals(field.getMultiple()))
 		{
-			return String.format("<label data-size='%d'>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
+			return String.format("<label %s>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		} else
 		{
-			return String.format("<label data-size='%d'>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
+			return String.format("<label %s>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		}
 	}
 }

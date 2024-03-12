@@ -51,7 +51,7 @@ public class StringList extends ArrayList<String>
 	@Override
 	public String[] toArray()
 	{
-		return toArray(new String[size()]);
+		return toArray(String[]::new);
 	}
 
 	public StringList append(String format, Object... args)

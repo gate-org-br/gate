@@ -31,7 +31,7 @@ window.addEventListener("@dialog", function (event)
 	let promise = dialog.show();
 	if (type === "fetch")
 	{
-
+		dialog.setAttribute("data-loading", "");
 		fetch(RequestBuilder.build(method, action, form))
 			.then(ResponseHandler.text)
 			.then(result =>
@@ -43,13 +43,14 @@ window.addEventListener("@dialog", function (event)
 			{
 				dialog.hide();
 				event.failure(path, error);
-			});
+			}).finally(() => dialog.removeAttribute("data-loading"));
 	} else if (event.detail.method === "get")
 	{
 		promise.finally(() => event.success(path));
 		dialog.iframe.src = event.detail.action;
 	} else
 	{
+		dialog.setAttribute("data-loading", "");
 		fetch(RequestBuilder.build(method, action, form))
 			.then(ResponseHandler.text)
 			.then(result =>
@@ -61,6 +62,6 @@ window.addEventListener("@dialog", function (event)
 			{
 				dialog.hide();
 				event.failure(path, error);
-			});
+			}).finally(() => dialog.removeAttribute("data-loading"));
 	}
 });

@@ -3,7 +3,6 @@ package gate.lang.json;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -76,6 +76,11 @@ public interface JsonElement extends Serializable
 		}
 	}
 
+	public default String format()
+	{
+		return format(this);
+	}
+
 	static JsonElement parse(String string)
 		throws ConversionException
 	{
@@ -108,7 +113,7 @@ public interface JsonElement extends Serializable
 			return stringWriter.toString();
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 

@@ -5,7 +5,7 @@ import gate.sql.condition.ConstantCondition;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class GroupedSelect implements Clause, Orderable, Limitable
+public abstract class GroupedSelect implements SelectClause, Orderable, Limitable
 {
 
 	private final Clause clause;

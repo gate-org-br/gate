@@ -604,4 +604,25 @@ public class SelectTest
 		assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
+
+	@Test
+	public void testExists()
+	{
+		try (Link link = TestDataSource.INSTANCE.getLink())
+		{
+			assertTrue(link.from(Select.exists(Select
+				.expression("id")
+				.expression("name")
+				.from("Person")))
+				.fetchBoolean());
+
+			assertTrue(!link.from(Select.exists(Select
+				.expression("id")
+				.expression("name")
+				.from("Person")
+				.where(Condition.of("id").eq(0))))
+				.fetchBoolean());
+
+		}
+	}
 }

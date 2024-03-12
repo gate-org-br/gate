@@ -1,608 +1,608 @@
 [
-    [
-        "ID",
-        "Name",
-        "Occupation",
-        "Birthdate"
-    ],
-    [
-        1,
-        "Albert Einstein",
-        "Physicist",
-        "March 14, 1879"
-    ],
-    [
-        2,
-        "Marie Curie",
-        "Chemist and Physicist",
-        "November 7, 1867"
-    ],
-    [
-        3,
-        "Nelson Mandela",
-        "Political Leader",
-        "July 18, 1918"
-    ],
-    [
-        4,
-        "Ada Lovelace",
-        "Mathematician and Writer",
-        "December 10, 1815"
-    ],
-    [
-        5,
-        "Leonardo da Vinci",
-        "Polymath",
-        "April 15, 1452"
-    ],
-    [
-        6,
-        "Rosa Parks",
-        "Civil Rights Activist",
-        "February 4, 1913"
-    ],
-    [
-        7,
-        "Steve Jobs",
-        "Entrepreneur and Innovator",
-        "February 24, 1955"
-    ],
-    [
-        8,
-        "Malala Yousafzai",
-        "Activist for Female Education",
-        "July 12, 1997"
-    ],
-    [
-        9,
-        "Martin Luther King Jr.",
-        "Civil Rights Leader",
-        "January 15, 1929"
-    ],
-    [
-        10,
-        "Jane Goodall",
-        "Primatologist and Anthropologist",
-        "April 3, 1934"
-    ],
-    [
-        11,
-        "Marie Antoinette",
-        "Queen of France",
-        "November 2, 1755"
-    ],
-    [
-        12,
-        "Vincent van Gogh",
-        "Painter",
-        "March 30, 1853"
-    ],
-    [
-        13,
-        "Coco Chanel",
-        "Fashion Designer",
-        "August 19, 1883"
-    ],
-    [
-        14,
-        "George Washington",
-        "1st President of the United States",
-        "February 22, 1732"
-    ],
-    [
-        15,
-        "Charles Dickens",
-        "Novelist",
-        "February 7, 1812"
-    ],
-    [
-        16,
-        "Helen Keller",
-        "Author and Activist",
-        "June 27, 1880"
-    ],
-    [
-        17,
-        "Walt Disney",
-        "Entrepreneur and Animator",
-        "December 5, 1901"
-    ],
-    [
-        18,
-        "J.K. Rowling",
-        "Author of Harry Potter series",
-        "July 31, 1965"
-    ],
-    [
-        19,
-        "Sigmund Freud",
-        "Psychologist",
-        "May 6, 1856"
-    ],
-    [
-        20,
-        "Frida Kahlo",
-        "Painter",
-        "July 6, 1907"
-    ],
-    [
-        21,
-        "Mark Twain",
-        "Author and Humorist",
-        "November 30, 1835"
-    ],
-    [
-        22,
-        "George Orwell",
-        "Author of 1984",
-        "June 25, 1903"
-    ],
-    [
-        23,
-        "Marlon Brando",
-        "Actor",
-        "April 3, 1924"
-    ],
-    [
-        24,
-        "Eleanor Roosevelt",
-        "First Lady and Activist",
-        "October 11, 1884"
-    ],
-    [
-        25,
-        "John Lennon",
-        "Musician and Activist",
-        "October 9, 1940"
-    ],
-    [
-        26,
-        "Madame Curie",
-        "Chemist and Physicist",
-        "November 7, 1867"
-    ],
-    [
-        27,
-        "Napoleon Bonaparte",
-        "Military and Political Leader",
-        "August 15, 1769"
-    ],
-    [
-        28,
-        "Aristotle",
-        "Philosopher",
-        "384 BC"
-    ],
-    [
-        29,
-        "Queen Victoria",
-        "Queen of the United Kingdom",
-        "May 24, 1819"
-    ],
-    [
-        30,
-        "Michael Jordan",
-        "Basketball Player",
-        "February 17, 1963"
-    ],
-    [
-        31,
-        "John F. Kennedy",
-        "35th President of the United States",
-        "May 29, 1917"
-    ],
-    [
-        32,
-        "Abraham Lincoln",
-        "16th President of the United States",
-        "February 12, 1809"
-    ],
-    [
-        33,
-        "Queen Elizabeth II",
-        "Queen of the United Kingdom",
-        "April 21, 1926"
-    ],
-    [
-        34,
-        "Cleopatra",
-        "Queen of Ancient Egypt",
-        "69 BC"
-    ],
-    [
-        35,
-        "Pablo Picasso",
-        "Painter and Sculptor",
-        "October 25, 1881"
-    ],
-    [
-        36,
-        "Bill Gates",
-        "Co-founder of Microsoft",
-        "October 28, 1955"
-    ],
-    [
-        37,
-        "Dalai Lama",
-        "Spiritual Leader",
-        "July 6, 1935"
-    ],
-    [
-        38,
-        "Amelia Earhart",
-        "Aviator and Author",
-        "July 24, 1897"
-    ],
-    [
-        39,
-        "Mao Zedong",
-        "Chinese Communist Leader",
-        "December 26, 1893"
-    ],
-    [
-        40,
-        "Michael Jackson",
-        "King of Pop",
-        "August 29, 1958"
-    ],
-    [
-        41,
-        "Emily Dickinson",
-        "Poet",
-        "December 10, 1830"
-    ],
-    [
-        42,
-        "Charles Darwin",
-        "Naturalist and Biologist",
-        "February 12, 1809"
-    ],
-    [
-        43,
-        "George W. Bush",
-        "43rd President of the United States",
-        "July 6, 1946"
-    ],
-    [
-        44,
-        "Oprah Winfrey",
-        "Media Mogul and Philanthropist",
-        "January 29, 1954"
-    ],
-    [
-        45,
-        "Socrates",
-        "Philosopher",
-        "469 BC"
-    ],
-    [
-        46,
-        "Cristiano Ronaldo",
-        "Footballer",
-        "February 5, 1985"
-    ],
-    [
-        47,
-        "Issac Newton",
-        "Physicist and Mathematician",
-        "January 4, 1643"
-    ],
-    [
-        48,
-        "George Washington Carver",
-        "Agricultural Scientist",
-        "January 5, 1864"
-    ],
-    [
-        49,
-        "Aung San Suu Kyi",
-        "Political Leader and Nobel Laureate",
-        "June 19, 1945"
-    ],
-    [
-        50,
-        "Fidel Castro",
-        "Cuban Revolutionary Leader",
-        "August 13, 1926"
-    ],
-    [
-        51,
-        "Marilyn Monroe",
-        "Actress and Model",
-        "June 1, 1926"
-    ],
-    [
-        52,
-        "Winston Churchill",
-        "British Prime Minister",
-        "November 30, 1874"
-    ],
-    [
-        53,
-        "Mahatma Gandhi",
-        "Leader of Indian Independence Movement",
-        "October 2, 1869"
-    ],
-    [
-        54,
-        "Elvis Presley",
-        "King of Rock and Roll",
-        "January 8, 1935"
-    ],
-    [
-        55,
-        "Thomas Edison",
-        "Inventor and Businessman",
-        "February 11, 1847"
-    ],
-    [
-        56,
-        "Rachael Carson",
-        "Marine Biologist and Author",
-        "May 27, 1907"
-    ],
-    [
-        57,
-        "Louis Pasteur",
-        "Chemist and Microbiologist",
-        "December 27, 1822"
-    ],
-    [
-        58,
-        "Marie Curie",
-        "Chemist and Physicist",
-        "November 7, 1867"
-    ],
-    [
-        59,
-        "Benjamin Franklin",
-        "Founding Father of the United States",
-        "January 17, 1706"
-    ],
-    [
-        60,
-        "Henry Ford",
-        "Founder of Ford Motor Company",
-        "July 30, 1863"
-    ],
-    [
-        61,
-        "George Harrison",
-        "Musician and Beatles Guitarist",
-        "February 25, 1943"
-    ],
-    [
-        62,
-        "Muhammad Ali",
-        "Professional Boxer",
-        "January 17, 1942"
-    ],
-    [
-        63,
-        "Johann Sebastian Bach",
-        "Composer and Musician",
-        "March 31, 1685"
-    ],
-    [
-        64,
-        "Charlie Chaplin",
-        "Actor and Filmmaker",
-        "April 16, 1889"
-    ],
-    [
-        65,
-        "Ayn Rand",
-        "Author and Philosopher",
-        "February 2, 1905"
-    ],
-    [
-        66,
-        "James Cameron",
-        "Film Director and Producer",
-        "August 16, 1954"
-    ],
-    [
-        67,
-        "Plato",
-        "Philosopher",
-        "428/427 or 424/423 – 348/347 BC"
-    ],
-    [
-        68,
-        "Fidel Castro",
-        "Cuban Revolutionary Leader",
-        "August 13, 1926"
-    ],
-    [
-        69,
-        "Edgar Allan Poe",
-        "Poet and Writer",
-        "January 19, 1809"
-    ],
-    [
-        70,
-        "Mozart",
-        "Composer",
-        "January 27, 1756"
-    ],
-    [
-        71,
-        "Bruce Lee",
-        "Martial Artist and Actor",
-        "November 27, 1940"
-    ],
-    [
-        72,
-        "Nikola Tesla",
-        "Inventor and Engineer",
-        "July 10, 1856"
-    ],
-    [
-        73,
-        "Babe Ruth",
-        "Baseball Player",
-        "February 6, 1895"
-    ],
-    [
-        74,
-        "Cleopatra",
-        "Queen of Ancient Egypt",
-        "69 BC"
-    ],
-    [
-        75,
-        "Socrates",
-        "Philosopher",
-        "469 BC"
-    ],
-    [
-        76,
-        "Mao Zedong",
-        "Chinese Communist Leader",
-        "December 26, 1893"
-    ],
-    [
-        77,
-        "Indira Gandhi",
-        "Prime Minister of India",
-        "November 19, 1917"
-    ],
-    [
-        78,
-        "Dalai Lama",
-        "Spiritual Leader",
-        "July 6, 1935"
-    ],
-    [
-        79,
-        "Marie Curie",
-        "Chemist and Physicist",
-        "November 7, 1867"
-    ],
-    [
-        80,
-        "Napoleon Bonaparte",
-        "Military and Political Leader",
-        "August 15, 1769"
-    ],
-    [
-        81,
-        "Winston Churchill",
-        "British Prime Minister",
-        "November 30, 1874"
-    ],
-    [
-        82,
-        "Coco Chanel",
-        "Fashion Designer",
-        "August 19, 1883"
-    ],
-    [
-        83,
-        "Martin Luther King Jr.",
-        "Civil Rights Leader",
-        "January 15, 1929"
-    ],
-    [
-        84,
-        "Charles Darwin",
-        "Naturalist and Biologist",
-        "February 12, 1809"
-    ],
-    [
-        85,
-        "Julius Caesar",
-        "Military General and Statesman",
-        "July 12 or 13, 100 BC"
-    ],
-    [
-        86,
-        "Queen Victoria",
-        "Queen of the United Kingdom",
-        "May 24, 1819"
-    ],
-    [
-        87,
-        "Cristiano Ronaldo",
-        "Footballer",
-        "February 5, 1985"
-    ],
-    [
-        88,
-        "Issac Newton",
-        "Physicist and Mathematician",
-        "January 4, 1643"
-    ],
-    [
-        89,
-        "George Washington Carver",
-        "Agricultural Scientist",
-        "January 5, 1864"
-    ],
-    [
-        90,
-        "Aung San Suu Kyi",
-        "Political Leader and Nobel Laureate",
-        "June 19, 1945"
-    ],
-    [
-        91,
-        "Fidel Castro",
-        "Cuban Revolutionary Leader",
-        "August 13, 1926"
-    ],
-    [
-        92,
-        "Marilyn Monroe",
-        "Actress and Model",
-        "June 1, 1926"
-    ],
-    [
-        93,
-        "Winston Churchill",
-        "British Prime Minister",
-        "November 30, 1874"
-    ],
-    [
-        94,
-        "Mahatma Gandhi",
-        "Leader of Indian Independence Movement",
-        "October 2, 1869"
-    ],
-    [
-        95,
-        "Elvis Presley",
-        "King of Rock and Roll",
-        "January 8, 1935"
-    ],
-    [
-        96,
-        "Thomas Edison",
-        "Inventor and Businessman",
-        "February 11, 1847"
-    ],
-    [
-        97,
-        "Rachael Carson",
-        "Marine Biologist and Author",
-        "May 27, 1907"
-    ],
-    [
-        98,
-        "Louis Pasteur",
-        "Chemist and Microbiologist",
-        "December 27, 1822"
-    ],
-    [
-        99,
-        "Marie Curie",
-        "Chemist and Physicist",
-        "November 7, 1867"
-    ],
-    [
-        100,
-        "Benjamin Franklin",
-        "Founding Father of the United States",
-        "January 17, 1706"
-    ]
+	[
+		"_ID",
+		"Name",
+		"Occupation",
+		"Birthdate"
+	],
+	[
+		1,
+		"Albert Einstein",
+		"Physicist",
+		"March 14, 1879"
+	],
+	[
+		2,
+		"Marie Curie",
+		"Chemist and Physicist",
+		"November 7, 1867"
+	],
+	[
+		3,
+		"Nelson Mandela",
+		"Political Leader",
+		"July 18, 1918"
+	],
+	[
+		4,
+		"Ada Lovelace",
+		"Mathematician and Writer",
+		"December 10, 1815"
+	],
+	[
+		5,
+		"Leonardo da Vinci",
+		"Polymath",
+		"April 15, 1452"
+	],
+	[
+		6,
+		"Rosa Parks",
+		"Civil Rights Activist",
+		"February 4, 1913"
+	],
+	[
+		7,
+		"Steve Jobs",
+		"Entrepreneur and Innovator",
+		"February 24, 1955"
+	],
+	[
+		8,
+		"Malala Yousafzai",
+		"Activist for Female Education",
+		"July 12, 1997"
+	],
+	[
+		9,
+		"Martin Luther King Jr.",
+		"Civil Rights Leader",
+		"January 15, 1929"
+	],
+	[
+		10,
+		"Jane Goodall",
+		"Primatologist and Anthropologist",
+		"April 3, 1934"
+	],
+	[
+		11,
+		"Marie Antoinette",
+		"Queen of France",
+		"November 2, 1755"
+	],
+	[
+		12,
+		"Vincent van Gogh",
+		"Painter",
+		"March 30, 1853"
+	],
+	[
+		13,
+		"Coco Chanel",
+		"Fashion Designer",
+		"August 19, 1883"
+	],
+	[
+		14,
+		"George Washington",
+		"1st President of the United States",
+		"February 22, 1732"
+	],
+	[
+		15,
+		"Charles Dickens",
+		"Novelist",
+		"February 7, 1812"
+	],
+	[
+		16,
+		"Helen Keller",
+		"Author and Activist",
+		"June 27, 1880"
+	],
+	[
+		17,
+		"Walt Disney",
+		"Entrepreneur and Animator",
+		"December 5, 1901"
+	],
+	[
+		18,
+		"J.K. Rowling",
+		"Author of Harry Potter series",
+		"July 31, 1965"
+	],
+	[
+		19,
+		"Sigmund Freud",
+		"Psychologist",
+		"May 6, 1856"
+	],
+	[
+		20,
+		"Frida Kahlo",
+		"Painter",
+		"July 6, 1907"
+	],
+	[
+		21,
+		"Mark Twain",
+		"Author and Humorist",
+		"November 30, 1835"
+	],
+	[
+		22,
+		"George Orwell",
+		"Author of 1984",
+		"June 25, 1903"
+	],
+	[
+		23,
+		"Marlon Brando",
+		"Actor",
+		"April 3, 1924"
+	],
+	[
+		24,
+		"Eleanor Roosevelt",
+		"First Lady and Activist",
+		"October 11, 1884"
+	],
+	[
+		25,
+		"John Lennon",
+		"Musician and Activist",
+		"October 9, 1940"
+	],
+	[
+		26,
+		"Madame Curie",
+		"Chemist and Physicist",
+		"November 7, 1867"
+	],
+	[
+		27,
+		"Napoleon Bonaparte",
+		"Military and Political Leader",
+		"August 15, 1769"
+	],
+	[
+		28,
+		"Aristotle",
+		"Philosopher",
+		"384 BC"
+	],
+	[
+		29,
+		"Queen Victoria",
+		"Queen of the United Kingdom",
+		"May 24, 1819"
+	],
+	[
+		30,
+		"Michael Jordan",
+		"Basketball Player",
+		"February 17, 1963"
+	],
+	[
+		31,
+		"John F. Kennedy",
+		"35th President of the United States",
+		"May 29, 1917"
+	],
+	[
+		32,
+		"Abraham Lincoln",
+		"16th President of the United States",
+		"February 12, 1809"
+	],
+	[
+		33,
+		"Queen Elizabeth II",
+		"Queen of the United Kingdom",
+		"April 21, 1926"
+	],
+	[
+		34,
+		"Cleopatra",
+		"Queen of Ancient Egypt",
+		"69 BC"
+	],
+	[
+		35,
+		"Pablo Picasso",
+		"Painter and Sculptor",
+		"October 25, 1881"
+	],
+	[
+		36,
+		"Bill Gates",
+		"Co-founder of Microsoft",
+		"October 28, 1955"
+	],
+	[
+		37,
+		"Dalai Lama",
+		"Spiritual Leader",
+		"July 6, 1935"
+	],
+	[
+		38,
+		"Amelia Earhart",
+		"Aviator and Author",
+		"July 24, 1897"
+	],
+	[
+		39,
+		"Mao Zedong",
+		"Chinese Communist Leader",
+		"December 26, 1893"
+	],
+	[
+		40,
+		"Michael Jackson",
+		"King of Pop",
+		"August 29, 1958"
+	],
+	[
+		41,
+		"Emily Dickinson",
+		"Poet",
+		"December 10, 1830"
+	],
+	[
+		42,
+		"Charles Darwin",
+		"Naturalist and Biologist",
+		"February 12, 1809"
+	],
+	[
+		43,
+		"George W. Bush",
+		"43rd President of the United States",
+		"July 6, 1946"
+	],
+	[
+		44,
+		"Oprah Winfrey",
+		"Media Mogul and Philanthropist",
+		"January 29, 1954"
+	],
+	[
+		45,
+		"Socrates",
+		"Philosopher",
+		"469 BC"
+	],
+	[
+		46,
+		"Cristiano Ronaldo",
+		"Footballer",
+		"February 5, 1985"
+	],
+	[
+		47,
+		"Issac Newton",
+		"Physicist and Mathematician",
+		"January 4, 1643"
+	],
+	[
+		48,
+		"George Washington Carver",
+		"Agricultural Scientist",
+		"January 5, 1864"
+	],
+	[
+		49,
+		"Aung San Suu Kyi",
+		"Political Leader and Nobel Laureate",
+		"June 19, 1945"
+	],
+	[
+		50,
+		"Fidel Castro",
+		"Cuban Revolutionary Leader",
+		"August 13, 1926"
+	],
+	[
+		51,
+		"Marilyn Monroe",
+		"Actress and Model",
+		"June 1, 1926"
+	],
+	[
+		52,
+		"Winston Churchill",
+		"British Prime Minister",
+		"November 30, 1874"
+	],
+	[
+		53,
+		"Mahatma Gandhi",
+		"Leader of Indian Independence Movement",
+		"October 2, 1869"
+	],
+	[
+		54,
+		"Elvis Presley",
+		"King of Rock and Roll",
+		"January 8, 1935"
+	],
+	[
+		55,
+		"Thomas Edison",
+		"Inventor and Businessman",
+		"February 11, 1847"
+	],
+	[
+		56,
+		"Rachael Carson",
+		"Marine Biologist and Author",
+		"May 27, 1907"
+	],
+	[
+		57,
+		"Louis Pasteur",
+		"Chemist and Microbiologist",
+		"December 27, 1822"
+	],
+	[
+		58,
+		"Marie Curie",
+		"Chemist and Physicist",
+		"November 7, 1867"
+	],
+	[
+		59,
+		"Benjamin Franklin",
+		"Founding Father of the United States",
+		"January 17, 1706"
+	],
+	[
+		60,
+		"Henry Ford",
+		"Founder of Ford Motor Company",
+		"July 30, 1863"
+	],
+	[
+		61,
+		"George Harrison",
+		"Musician and Beatles Guitarist",
+		"February 25, 1943"
+	],
+	[
+		62,
+		"Muhammad Ali",
+		"Professional Boxer",
+		"January 17, 1942"
+	],
+	[
+		63,
+		"Johann Sebastian Bach",
+		"Composer and Musician",
+		"March 31, 1685"
+	],
+	[
+		64,
+		"Charlie Chaplin",
+		"Actor and Filmmaker",
+		"April 16, 1889"
+	],
+	[
+		65,
+		"Ayn Rand",
+		"Author and Philosopher",
+		"February 2, 1905"
+	],
+	[
+		66,
+		"James Cameron",
+		"Film Director and Producer",
+		"August 16, 1954"
+	],
+	[
+		67,
+		"Plato",
+		"Philosopher",
+		"428/427 or 424/423 – 348/347 BC"
+	],
+	[
+		68,
+		"Fidel Castro",
+		"Cuban Revolutionary Leader",
+		"August 13, 1926"
+	],
+	[
+		69,
+		"Edgar Allan Poe",
+		"Poet and Writer",
+		"January 19, 1809"
+	],
+	[
+		70,
+		"Mozart",
+		"Composer",
+		"January 27, 1756"
+	],
+	[
+		71,
+		"Bruce Lee",
+		"Martial Artist and Actor",
+		"November 27, 1940"
+	],
+	[
+		72,
+		"Nikola Tesla",
+		"Inventor and Engineer",
+		"July 10, 1856"
+	],
+	[
+		73,
+		"Babe Ruth",
+		"Baseball Player",
+		"February 6, 1895"
+	],
+	[
+		74,
+		"Cleopatra",
+		"Queen of Ancient Egypt",
+		"69 BC"
+	],
+	[
+		75,
+		"Socrates",
+		"Philosopher",
+		"469 BC"
+	],
+	[
+		76,
+		"Mao Zedong",
+		"Chinese Communist Leader",
+		"December 26, 1893"
+	],
+	[
+		77,
+		"Indira Gandhi",
+		"Prime Minister of India",
+		"November 19, 1917"
+	],
+	[
+		78,
+		"Dalai Lama",
+		"Spiritual Leader",
+		"July 6, 1935"
+	],
+	[
+		79,
+		"Marie Curie",
+		"Chemist and Physicist",
+		"November 7, 1867"
+	],
+	[
+		80,
+		"Napoleon Bonaparte",
+		"Military and Political Leader",
+		"August 15, 1769"
+	],
+	[
+		81,
+		"Winston Churchill",
+		"British Prime Minister",
+		"November 30, 1874"
+	],
+	[
+		82,
+		"Coco Chanel",
+		"Fashion Designer",
+		"August 19, 1883"
+	],
+	[
+		83,
+		"Martin Luther King Jr.",
+		"Civil Rights Leader",
+		"January 15, 1929"
+	],
+	[
+		84,
+		"Charles Darwin",
+		"Naturalist and Biologist",
+		"February 12, 1809"
+	],
+	[
+		85,
+		"Julius Caesar",
+		"Military General and Statesman",
+		"July 12 or 13, 100 BC"
+	],
+	[
+		86,
+		"Queen Victoria",
+		"Queen of the United Kingdom",
+		"May 24, 1819"
+	],
+	[
+		87,
+		"Cristiano Ronaldo",
+		"Footballer",
+		"February 5, 1985"
+	],
+	[
+		88,
+		"Issac Newton",
+		"Physicist and Mathematician",
+		"January 4, 1643"
+	],
+	[
+		89,
+		"George Washington Carver",
+		"Agricultural Scientist",
+		"January 5, 1864"
+	],
+	[
+		90,
+		"Aung San Suu Kyi",
+		"Political Leader and Nobel Laureate",
+		"June 19, 1945"
+	],
+	[
+		91,
+		"Fidel Castro",
+		"Cuban Revolutionary Leader",
+		"August 13, 1926"
+	],
+	[
+		92,
+		"Marilyn Monroe",
+		"Actress and Model",
+		"June 1, 1926"
+	],
+	[
+		93,
+		"Winston Churchill",
+		"British Prime Minister",
+		"November 30, 1874"
+	],
+	[
+		94,
+		"Mahatma Gandhi",
+		"Leader of Indian Independence Movement",
+		"October 2, 1869"
+	],
+	[
+		95,
+		"Elvis Presley",
+		"King of Rock and Roll",
+		"January 8, 1935"
+	],
+	[
+		96,
+		"Thomas Edison",
+		"Inventor and Businessman",
+		"February 11, 1847"
+	],
+	[
+		97,
+		"Rachael Carson",
+		"Marine Biologist and Author",
+		"May 27, 1907"
+	],
+	[
+		98,
+		"Louis Pasteur",
+		"Chemist and Microbiologist",
+		"December 27, 1822"
+	],
+	[
+		99,
+		"Marie Curie",
+		"Chemist and Physicist",
+		"November 7, 1867"
+	],
+	[
+		100,
+		"Benjamin Franklin",
+		"Founding Father of the United States",
+		"January 17, 1706"
+	]
 ]

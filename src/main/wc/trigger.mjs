@@ -155,12 +155,24 @@ window.addEventListener("input", function (event)
 window.addEventListener("mouseover", function (event)
 {
 	let element = event.target || event.composedPath()[0];
-	if ((element.hasAttribute("data-trigger")
+	if (element.hasAttribute("data-trigger")
 		|| element.hasAttribute("data-method")
 		|| element.hasAttribute("data-action")
 		|| element.hasAttribute("data-target"))
-		&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "mouseover")
-		trigger(event, element);
+	{
+		let type = element.dataset.trigger
+			|| DEFAULT.get(element.tagName);
+		if (type && type.startsWith("hover(") && type.endsWith(")"))
+		{
+			const timeout = setTimeout(() => trigger(event, element), Number(type.slice(6, -1)) * 1000);
+			element.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+		} else if (type === "hover")
+		{
+			const timeout = setTimeout(() => trigger(event, element), 1000);
+			element.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+		} else if (type === "mouseenter")
+			trigger(event, element);
+	}
 });
 
 window.addEventListener("load", event =>

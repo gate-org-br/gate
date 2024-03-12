@@ -26,7 +26,12 @@ dialog {
 	flex-direction: column;
 }
 
-:host(:empty) > dialog > section {
+:host([data-loading]) > dialog > section > *
+{
+	visibility: hidden;
+}
+
+:host([data-loading]) > dialog > section {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);

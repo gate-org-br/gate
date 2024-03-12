@@ -1,8 +1,9 @@
 package gate.base;
 
-import gate.annotation.BodyParameter;
-import gate.annotation.PathParameter;
-import gate.annotation.QueryParameter;
+import gate.annotation.BodyParamExtractor;
+import gate.annotation.CookieParamExtractor;
+import gate.annotation.HeaderParamExtractor;
+import gate.annotation.QueryParamExtractor;
 import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
@@ -28,6 +29,9 @@ import java.util.Optional;
 import javax.enterprise.inject.spi.Unmanaged;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.ws.rs.CookieParam;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.QueryParam;
 
 public abstract class Screen extends Base
 {
@@ -115,12 +119,14 @@ public abstract class Screen extends Base
 		{
 			Object value;
 
-			if (parameter.isAnnotationPresent(PathParameter.class))
-				value = PathParameter.Extractor.extract(getRequest(), parameter);
-			else if (parameter.isAnnotationPresent(BodyParameter.class))
-				value = BodyParameter.Extractor.extract(getRequest(), parameter);
+			if (parameter.isAnnotationPresent(QueryParam.class))
+				value = QueryParamExtractor.extract(getRequest(), parameter);
+			else if (parameter.isAnnotationPresent(HeaderParam.class))
+				value = HeaderParamExtractor.extract(getRequest(), parameter);
+			else if (parameter.isAnnotationPresent(CookieParam.class))
+				value = CookieParamExtractor.extract(getRequest(), parameter);
 			else
-				value = QueryParameter.Extractor.extract(getRequest(), parameter);
+				value = BodyParamExtractor.extract(getRequest(), parameter);
 
 			parameters.add(value);
 		}

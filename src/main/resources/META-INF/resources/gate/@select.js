@@ -19,13 +19,22 @@ window.addEventListener("@select", function (event)
 		})
 		.then(options =>
 		{
-			let picker = options.length && options[0].children ?
-				GTreePicker : GSelectPicker;
-			picker.pick(options, trigger.title)
-				.then(e => e.value)
-				.then(DataURL.ofJSON)
-				.then(result => event.success(path, result))
-				.catch(() => event.resolve(path));
-		});
+			if (options.length
+				&& options[0].value
+				&& options[0].label
+				&& options[0].children
+				&& Object.keys(options[0]).length === 3)
+				GTreePicker.pick(options, trigger.title)
+					.then(e => [e.value.value, e.value.label])
+					.then(DataURL.ofJSON)
+					.then(result => event.success(path, result))
+					.catch(() => event.resolve(path));
+			else
+				GSelectPicker.pick(options, trigger.title)
+					.then(e => e.value)
+					.then(DataURL.ofJSON)
+					.then(result => event.success(path, result))
+					.catch(() => event.resolve(path));
+		}).finally(() => trigger.hasAttribute("tabindex") && trigger.focus());
 
 });

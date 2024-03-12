@@ -5,7 +5,7 @@ import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
 public abstract class FilteredSelect implements
-	Clause,
+	SelectClause,
 	Groupable,
 	Orderable,
 	Limitable

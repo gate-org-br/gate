@@ -1,3 +1,5 @@
+The default is now BodyParam instead of QueryParam.
+
 a.Hide removed to avoid redundancy with target="@hide"
 	Replace regex class=(['"])Hide\1 with target='@hide'
 

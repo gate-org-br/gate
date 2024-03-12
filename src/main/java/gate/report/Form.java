@@ -28,9 +28,9 @@ public class Form extends ReportElement
 		form.getFields().forEach((e) ->
 		{
 			if (Boolean.TRUE.equals(e.getMultiple()))
-				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1).height(40f));
+				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize() != null ? e.getSize().ordinal() + 1 : 8).height(40f));
 			else
-				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1));
+				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize() != null ? e.getSize().ordinal() + 1 : 8));
 		});
 	}
 
@@ -65,10 +65,10 @@ public class Form extends ReportElement
 		{
 
 			form.getFields().forEach(e -> add(e.getName(), e.getValue())
-				.colspan(e.getSize().ordinal() + 1));
+				.colspan(e.getSize() != null ? e.getSize().ordinal() + 1 : this.columns));
 
 			int count = form.getFields().stream()
-				.mapToInt(e -> e.getSize().ordinal() + 1)
+				.mapToInt(e -> e.getSize() != null ? e.getSize().ordinal() + 1 : this.columns)
 				.sum() % columns;
 			if (count > 0)
 			{

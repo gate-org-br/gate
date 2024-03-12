@@ -32,7 +32,8 @@ public class JsonElementHandler implements MessageBodyWriter<JsonElement>, Messa
 	public void writeTo(JsonElement value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 		MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		entityStream.write(value.toString().getBytes());
+		var string = JsonElement.format(value);
+		entityStream.write(string.getBytes());
 	}
 
 	@Override

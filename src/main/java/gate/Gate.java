@@ -144,14 +144,11 @@ public class Gate extends HttpServlet
 				{
 					user = (User) request.getSession()
 						.getAttribute(User.class.getName());
-				} else if (developer.isPresent())
-				{
-					user = control.select(developer.orElseThrow());
-					request.getSession().setAttribute(User.class.getName(), user);
-					event.fireAsync(new LoginEvent(user));
 				} else if (!call.isPublic())
 				{
 					user = authenticator.authenticate(request, response);
+					if (user == null && developer.isPresent())
+						user = control.select(developer.get());
 					if (user != null)
 					{
 						event.fireAsync(new LoginEvent(user));

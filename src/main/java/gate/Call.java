@@ -19,6 +19,7 @@ import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.util.Toolkit;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,8 @@ public class Call
 	public static Call of(String module, String screen, String action) throws BadRequestException
 	{
 		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow(() -> new BadRequestException(module, screen, action));
+		if (Modifier.isAbstract(type.getModifiers()))
+			throw new BadRequestException(module, screen, action);
 		Method method = Screen.getAction(type, action).orElseThrow(() -> new BadRequestException(module, screen, action));
 		return new Call(module, screen, action, type, method);
 	}

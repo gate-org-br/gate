@@ -14,7 +14,10 @@ window.addEventListener("@reload", function (event)
 		.then(result =>
 		{
 			event.success(path, result);
-			window.location = window.location.href;
+			let url = window.location.href;
+			if (url.endsWith("#"))
+				url = url.slice(0, -1);
+			window.location = url;
 		})
 		.catch(error => event.failure(path, error));
 });

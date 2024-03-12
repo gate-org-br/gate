@@ -13,6 +13,7 @@ window.addEventListener("@search", function (event)
 
 	let value = trigger.tagName === "INPUT" ? trigger.value : null;
 	let cancel = VALUES.get(trigger) || "";
+
 	GSearchPicker.pick(action, filter, trigger.title, value)
 		.then(result => result.value)
 		.then(DataURL.ofJSON)
@@ -22,5 +23,5 @@ window.addEventListener("@search", function (event)
 			if (trigger.tagName === "INPUT")
 				trigger.value = cancel;
 			event.resolve(path);
-		});
+		}).finally(() => trigger.hasAttribute("tabindex") && trigger.focus());
 });

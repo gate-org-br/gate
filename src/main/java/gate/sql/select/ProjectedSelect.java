@@ -2,7 +2,7 @@ package gate.sql.select;
 
 import gate.sql.Clause;
 
-public abstract class ProjectedSelect implements Clause, Aliasable, Projectable, Selectable
+public abstract class ProjectedSelect implements SelectClause, Aliasable, Projectable, Selectable
 {
 
 	private final Clause clause;

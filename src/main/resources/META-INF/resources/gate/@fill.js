@@ -13,23 +13,22 @@ window.addEventListener("@fill", function (event)
 	let trigger = path[0] || event.target;
 	let {method, action, form, parameters} = event.detail;
 
-	parameters = parameters
-		.filter(e => e)
-		.map(e => DOM.navigate(trigger, e)
-				.orElseTrhow(`Invalid selector: ${e}`));
-
-	let value = parameters[0] || trigger.parentNode.querySelector("input[type=hidden]");
-	let label = parameters[1] || trigger.parentNode.querySelector("input[type=text]");
+	if (!parameters || !parameters.length)
+		parameters = [trigger.parentNode.querySelector("input[type='hidden']"),
+			trigger.parentNode.querySelector("input[type='text']")];
+	else
+		parameters = parameters
+			.map(e => e !== "_" ? DOM.navigate(trigger, e)
+					.orElseThrow(`Invalid selector: ${e}`) : null);
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(dataURL =>
 		{
 			let result = DataURL.toJSON(dataURL);
-			if (label)
-				label.value = Extractor.label(result) || "";
-			if (value)
-				value.value = Extractor.value(result) || "";
+			for (let i = 0; i < parameters.length; i++)
+				if (parameters[i])
+					parameters[i].value = Extractor.value(result, i);
 			event.success(path, dataURL);
 		})
 		.catch(error => event.failure(path, error));

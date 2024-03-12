@@ -74,4 +74,15 @@ export default class Extractor
 
 		return object[keys[0]];
 	}
+
+	static value(object, index)
+	{
+		if (!object)
+			return '';
+		if (Array.isArray(object))
+			return object[index] || "";
+		let keys = Object.keys(object);
+		return object[keys[index]] || "";
+	}
+
 }

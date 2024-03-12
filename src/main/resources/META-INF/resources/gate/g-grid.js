@@ -83,53 +83,59 @@ import './g-grid-footer.js';
 
 class Column
 {
-	constructor(owner, index)
+	#index;
+	#owner;
+	#style;
+	#stylesheet;
+
+	constructor(owner, index, stylesheet)
 	{
-		this._private = {};
-		this._private.index = index;
-		this._private.owner = owner;
+		this.#index = index;
+		this.#owner = owner;
+		this.#stylesheet = stylesheet;
 	}
 
 	get index()
 	{
-		return this._private.index;
+		return this.#index;
 	}
 
 	get style()
 	{
-		if (!this._private.style)
+		if (!this.#style)
 		{
-			let sheet = this._private.owner._private.stylesheet;
-			let ruleIndex = sheet.insertRule(`g-grid-cell:nth-child(${this.index + 1}) {}`);
-			this._private.style = sheet.cssRules[ruleIndex].style;
+			let ruleIndex = this.#stylesheet.insertRule(`g-grid-cell:nth-child(${this.index + 1}) {}`);
+			this.#style = this.#stylesheet.cssRules[ruleIndex].style;
 		}
 
-		return this._private.style;
+		return this.#style;
 	}
 
 	get header()
 	{
-		return this._private.owner.shadowRoot.querySelector("g-grid-header").cell(this.index);
+		return this.#owner.shadowRoot.querySelector("g-grid-header").cell(this.index);
 	}
 
 	get footer()
 	{
-		return this._private.owner.shadowRoot.querySelector("g-grid-footer").cell(this.index);
+		return this.#owner.shadowRoot.querySelector("g-grid-footer").cell(this.index);
 	}
 }
 
 export default class GGrid extends HTMLElement
 {
+	#columns;
+	#stylesheet;
+
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 
-		this._private = {};
-		this._private.columns = new Map();
-		this._private.stylesheet = new CSSStyleSheet();
-		this.shadowRoot.adoptedStyleSheets = [this._private.stylesheet];
+		this.#columns = new Map();
+		this.#stylesheet = new CSSStyleSheet();
+		this.shadowRoot.adoptedStyleSheets = [this.#stylesheet];
 		this.addEventListener("change", () => this.connectedCallback());
 	}
 
@@ -141,25 +147,23 @@ export default class GGrid extends HTMLElement
 
 	get columns()
 	{
-		return Array.from(this._private.columns.values());
+		return Array.from(this.#columns.values());
 	}
 
 	set columns(values)
 	{
-		let header = this.shadowRoot
-			.querySelector("g-grid-header");
+		let header = this.shadowRoot.querySelector("g-grid-header");
 		while (header.firstChild)
 			header.firstChild.remove();
 
-		values.forEach((header, index) =>
-			this.column(index).header.value = header);
+		values.forEach((header, index) => this.column(index).header.value = header);
 	}
 
 	column(index)
 	{
-		if (!this._private.columns.has(index))
-			this._private.columns.set(index, new Column(this, index));
-		return this._private.columns.get(index);
+		if (!this.#columns.has(index))
+			this.#columns.set(index, new Column(this, index, this.#stylesheet));
+		return this.#columns.get(index);
 	}
 
 	get rows()
@@ -217,23 +221,12 @@ export default class GGrid extends HTMLElement
 				{
 					let row = this.row();
 					row.value = value;
-
 					let keys = Object.keys(value);
-					if (keys.length === 2
-						&& keys.includes("label")
-						&& keys.includes("value"))
-						row.cell().value = value.label;
-					else if (keys.length === 3
-						&& keys.includes("label")
-						&& keys.includes("value")
-						&& keys.includes("properties"))
-						row.cell().value = value.properties;
-					else
-						row.cell().value = keys.reduce((val, key) =>
-						{
-							val[key] = value[key];
-							return val;
-						}, {});
+					row.cell().value = keys.reduce((val, key) =>
+					{
+						val[key] = value[key];
+						return val;
+					}, {});
 				});
 			}
 	}
@@ -244,14 +237,18 @@ export default class GGrid extends HTMLElement
 		if (values.length)
 			if (Array.isArray(values[0]))
 			{
-				values[0].slice(1).forEach((header, index) =>
-					this.column(index).header.value = header);
+				let index = 0;
+				values[0].filter(e => !e.startsWith("_"))
+					.forEach(header => this.column(index++).header.value = header);
 
 				values.slice(1).forEach(value =>
 				{
 					let row = this.row();
 					row.value = value;
-					value.slice(1).forEach(e => row.cell().value = e);
+
+					for (let i = 0; i < values[0].length; i++)
+						if (!values[0][i].startsWith("_"))
+							row.cell().value = value[i];
 				});
 			} else
 			{
@@ -259,19 +256,10 @@ export default class GGrid extends HTMLElement
 				{
 					let row = this.row();
 					row.value = value;
-
 					let keys = Object.keys(value);
-					if (keys.length === 2
-						&& keys.includes("label")
-						&& keys.includes("value"))
-						row.cell().value = value.label;
-					else if (keys.length === 3
-						&& keys.includes("label")
-						&& keys.includes("value")
-						&& keys.includes("properties"))
-						row.cell().value = value.properties;
-					else
-						row.cell().value = keys.slice(1).reduce((val, key) =>
+					row.cell().value = keys
+						.filter(e => !e.startsWith("_"))
+						.reduce((val, key) =>
 						{
 							val[key] = value[key];
 							return val;
@@ -282,9 +270,9 @@ export default class GGrid extends HTMLElement
 
 	clear()
 	{
-		this._private.columns.clear();
-		while (this._private.stylesheet.cssRules.length)
-			this._private.stylesheet.deleteRule(0);
+		this.#columns.clear();
+		while (this.#stylesheet.cssRules.length)
+			this.#stylesheet.deleteRule(0);
 
 		[this.shadowRoot.querySelector("g-grid-header"),
 			this.shadowRoot.querySelector("section"),
