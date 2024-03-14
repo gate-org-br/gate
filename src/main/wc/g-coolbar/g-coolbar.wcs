@@ -245,10 +245,11 @@ button:hover
 
 ::slotted(:is(a, button, .g-command)[data-loading])::after
 {
-	left: 32px;
+	left: 24px;
 	content: "";
-	height: 16px;
+	height: 12px;
 	position: absolute;
+	max-width: calc(100% - 32px);
 	animation-fill-mode: both;
 	background-color: var(--base1);
 	animation: loading 2s infinite ease-in-out;

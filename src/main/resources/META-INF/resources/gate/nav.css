@@ -1,6 +1,7 @@
 nav {
   width: auto;
   display: flex;
+  font-size: 16px;
   align-items: center;
   background-color: transparent;
 }
@@ -8,7 +9,7 @@ nav > a {
   color: black;
   padding: 8px;
   display: flex;
-  font-size: 16px;
+  font-size: inherit;
   border-radius: 3px;
   align-items: center;
   justify-content: center;

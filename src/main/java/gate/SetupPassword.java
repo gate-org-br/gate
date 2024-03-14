@@ -1,11 +1,15 @@
 package gate;
 
 import gate.entity.User;
-import gate.error.AppException;
-import gate.handler.HTMLCommandHandler;
-import gate.type.DateTime;
-import gate.util.Toolkit;
+import gate.error.AuthenticationException;
+import gate.error.BadRequestException;
+import gate.error.ConstraintViolationException;
+import gate.error.InvalidPasswordException;
+import gate.error.NotFoundException;
+import gate.http.ScreenServletRequest;
+import gate.type.MD5;
 import java.io.IOException;
+import java.io.Writer;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -20,62 +24,40 @@ public class SetupPassword extends HttpServlet
 {
 
 	@Inject
-	private GateControl control;
-
-	@Inject
-	private HTMLCommandHandler htmlHanlder;
+	private PasswordControl control;
 
 	private static final long serialVersionUID = 1L;
 
-	static final String HTML = "/views/SetupPassword.html";
-
 	@Override
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-		IOException
+	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
 	{
-		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		try
-		{
-			request.setAttribute("now", DateTime.now());
+		httpServletRequest.setCharacterEncoding("UTF-8");
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
-			if (request.getMethod().equals("POST"))
+		try (Writer writer = response.getWriter())
+		{
+			try
 			{
-				User user = new User();
-				user.setUsername(request.getParameter("user.username"));
-				user.setPassword(request.getParameter("user.password"));
-				user.setChange(request.getParameter("user.change"));
-				user.setRepeat(request.getParameter("user.repeat"));
 
-				if (Toolkit.isEmpty(user.getUsername()) || user.getUsername().length() > 64)
-					throw new AppException("O campo login é obrigatório e deve conter no máximo 64 caracteres.");
+				var authorization = request.getBasicAuthorization()
+					.orElseThrow(() -> new BadRequestException("Missing user credentials"));
 
-				if (Toolkit.isEmpty(user.getPassword()) || user.getPassword().length() > 64)
-					throw new AppException("O campo senha é obrigatório e deve conter no máximo 64 caracteres.");
+				User user = control.select(authorization.username());
+				if (!user.getPassword().equals(MD5.digest(authorization.password()).toString()))
+					throw new InvalidPasswordException();
 
-				if (Toolkit.isEmpty(user.getChange()) || user.getChange().length() > 64)
-					throw new AppException("O campo nova senha é obrigatório e deve conter no máximo 64 caracteres.");
+				control.update(user, request.getBody().trim());
 
-				if (Toolkit.isEmpty(user.getRepeat()) || user.getRepeat().length() > 64)
-					throw new AppException("O campo nova senha é obrigatório e deve conter no máximo 64 caracteres.");
-
-				if (!user.getChange().equals(user.getRepeat()))
-					throw new AppException("Os campos de nova senha devem ser preenchidos exatamente como mesmo texto.");
-
-				control.update(user);
-
-				request.setAttribute("messages", new String[]
-				{
-					"Sua senha foi alterada com sucesso."
-				});
-				htmlHanlder.handle(request, response, Gate.HTML);
-				return;
+			} catch (AuthenticationException | BadRequestException ex)
+			{
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				writer.write(ex.getMessage());
+			} catch (ConstraintViolationException | NotFoundException | RuntimeException ex)
+			{
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				writer.write("Erro de sistema");
 			}
-		} catch (AppException e)
-		{
-			request.setAttribute("messages", e.getMessages());
 		}
-
-		htmlHanlder.handle(request, response, HTML);
 	}
 }

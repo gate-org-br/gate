@@ -137,8 +137,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Optional<User> getUser()
-		throws InvalidCredentialsException
+	public Optional<User> getUser() throws InvalidCredentialsException
 	{
 		return Credentials.of(this);
 	}
@@ -192,8 +191,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	}
 
-	public Optional<BasicAuthorization> getBasicAuthorization()
-		throws AuthenticationException
+	public Optional<BasicAuthorization> getBasicAuthorization() throws AuthenticationException
 	{
 		String username = getParameter("$username");
 		String password = getParameter("$password");
@@ -209,6 +207,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			throw new InvalidPasswordException();
 
 		return Optional.of(new BasicAuthorization(username, password));
+	}
 
+	public Optional<BearerAuthorization> getBearerAuthorization() throws AuthenticationException
+	{
+		return getAuthorization()
+			.filter(e -> e instanceof BearerAuthorization)
+			.map(e -> (BearerAuthorization) e);
 	}
 }

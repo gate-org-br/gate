@@ -28,20 +28,16 @@ public class Auth extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void doGet(HttpServletRequest httpServletRequest,
-		HttpServletResponse response)
-		throws IOException
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
-		httpServletRequest.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-
-		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 		try (Writer writer = response.getWriter())
 		{
 			try
 			{
-				User user = authenticator.authenticate(request, response);
+				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
 				if (user == null)
 					throw new AuthenticatorException("Attempt to login without provinding valid credentials");
 				writer.write(String.format("{status: 'success', value: '%s'}", Credentials.create(user)));
@@ -50,27 +46,23 @@ public class Auth extends HttpServlet
 				| HierarchyException
 				| BadRequestException ex)
 			{
-				writer.write(String.format("{status: 'error', value: '%s'}",
-					ex.getMessage()));
+				writer.write(String.format("{status: 'error', value: '%s'}", ex.getMessage()));
 			}
 		}
 	}
 
 	@Override
-	public void doPost(HttpServletRequest httpServletRequest,
-		HttpServletResponse response)
-		throws IOException
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
-		httpServletRequest.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
 
-		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 		try (Writer writer = response.getWriter())
 		{
 
 			try
 			{
-				User user = authenticator.authenticate(request, response);
+				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
 				if (user == null)
 					throw new AuthenticationException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));

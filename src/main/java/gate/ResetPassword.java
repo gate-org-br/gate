@@ -1,14 +1,16 @@
 package gate;
 
 import gate.entity.User;
-import gate.error.AppException;
+import gate.error.AuthenticationException;
+import gate.error.BadRequestException;
+import gate.error.ConstraintViolationException;
 import gate.error.InvalidUsernameException;
-import gate.handler.HTMLCommandHandler;
+import gate.error.NotFoundException;
+import gate.http.ScreenServletRequest;
+import gate.io.Token;
 import gate.messaging.Messenger;
-import gate.type.mime.MimeMail;
-import gate.util.PasswordGenerator;
 import java.io.IOException;
-import java.util.Collections;
+import java.io.Writer;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -23,54 +25,76 @@ public class ResetPassword extends HttpServlet
 {
 
 	@Inject
-	private GateControl control;
+	private PasswordControl control;
 
 	@Inject
 	private Messenger messenger;
 
-	@Inject
-	private HTMLCommandHandler htmlHanlder;
-
 	private static final long serialVersionUID = 1L;
 
-	static final String HTML = "/views/ResetPassword.html";
-
 	@Override
-	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
 	{
-		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		try
+		httpServletRequest.setCharacterEncoding("UTF-8");
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+
+		try (Writer writer = response.getWriter())
 		{
-			if (request.getMethod().equals("POST"))
+
+			try
 			{
-				User user = control
-					.select(request.getParameter("user.username"))
-					.setPassword(PasswordGenerator.generate());
+
+				User user = control.select(request.getParameter("username"));
 
 				if (user.getEmail() == null)
-					throw new AppException("Você não definiu um email para o qual sua nova senha possa ser enviada");
+					throw new BadRequestException("Você não definiu um email para o qual seu token possa ser enviado");
 
-				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-					"Sua senha foi redefinida para " + user.getPassword()));
+				System.out.println(Token.create(user));
+//				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
+//					"Utilize este token para redefinir sua senha: " + Token.create(user)));
 
-				control.update(user, user.getPassword());
-
-				request.setAttribute("messages", new String[]
-				{
-					"Sua senha foi redefinida e enviada para " + user.getEmail()
-				});
-
-				htmlHanlder.handle(request, response, Gate.HTML);
+			} catch (BadRequestException | InvalidUsernameException ex)
+			{
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				writer.write(ex.getMessage());
 			}
-		} catch (AppException ex)
-		{
-			request.setAttribute("messages", ex.getMessages());
-		} catch (InvalidUsernameException ex)
-		{
-			request.setAttribute("messages", Collections.singletonList(ex.getMessage()));
+//catch (MessageException | RuntimeException ex)
+//			{
+//				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+//				writer.write("Erro de sistema");
+//			}
 		}
-
-		htmlHanlder.handle(request, response, HTML);
 	}
+
+	@Override
+	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
+	{
+		response.setCharacterEncoding("UTF-8");
+		httpServletRequest.setCharacterEncoding("UTF-8");
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+
+		try (Writer writer = response.getWriter())
+		{
+
+			try
+			{
+				String token = request.getBearerAuthorization().map(e -> e.token())
+					.orElseThrow(() -> new BadRequestException("Credentials not supplied"));
+				User user = Token.parse(token);
+
+				control.update(user, request.getBody().trim());
+
+			} catch (BadRequestException | NotFoundException | AuthenticationException ex)
+			{
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				writer.write(ex.getMessage());
+			} catch (ConstraintViolationException | RuntimeException ex)
+			{
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+				writer.write("Erro de sistema");
+			}
+		}
+	}
+
 }

@@ -39,17 +39,16 @@ table tr > * {
 table tr > *:first-child {
   border-left: none;
 }
-table tr > * a,
-table tr > * button,
-table tr > * .g-command {
-  border: 0;
-  padding: 0;
-  color: var(--question1);
-  font-size: 12px;
+table tr > * > a,
+table tr > * > button,
+table tr > * > .g-command {
+  color: #000066;
   cursor: pointer;
-  background: none;
-  font-weight: inherit;
-  text-decoration: none;
+}
+table tr > * > a:hover,
+table tr > * > button:hover,
+table tr > * > .g-command:hover {
+  font-weight: bold;
 }
 table tr th {
   font-weight: bold;

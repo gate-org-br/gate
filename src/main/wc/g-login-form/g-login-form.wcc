@@ -1,0 +1,134 @@
+/* global customElements */
+
+import './g-icon.js';
+import './g-coolbar.js';
+import './g-tab-control.js';
+import stylesheets from './stylesheets.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
+
+customElements.define('g-login-form', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		stylesheets('input.css', 'fieldset.css').forEach(e => this.shadowRoot.appendChild(e));
+
+		let setup = this.shadowRoot.querySelector("#setup-button");
+		setup.addEventListener("click", event =>
+		{
+			event.preventDefault();
+			let username = setup.closest("form").querySelectorAll("input")[0];
+			username.value = username.value.trim();
+			let password = setup.closest("form").querySelectorAll("input")[1];
+			password.value = password.value.trim();
+			let change = setup.closest("form").querySelectorAll("input")[2];
+			change.value = change.value.trim();
+			let repeat = setup.closest("form").querySelectorAll("input")[3];
+			repeat.value = repeat.value.trim();
+
+			if (!username.reportValidity()
+				|| !password.reportValidity()
+				|| !change.reportValidity()
+				|| !repeat.reportValidity())
+				return;
+
+			if (username.value === change.value)
+				return GMessageDialog.error("A nova senha não pode ser igual ao login");
+
+			if (change.value !== repeat.value)
+				return GMessageDialog.error("As duas senhas não conferem");
+
+			let creadentials = btoa(username.value + ':' + password.value);
+			fetch(new Request("SetupPassword", {method: "post",
+				headers: {Authorization: `Basic ${creadentials}`}, body: change.value}))
+				.then(ResponseHandler.none)
+				.then(() =>
+				{
+					this.shadowRoot.querySelector("#login-tab").click();
+					GMessageDialog.success("Senha alterada com sucesso");
+					username.value = password.value = change.value = repeat.value = "";
+				})
+				.catch(error => GMessageDialog.error(error.message));
+		});
+
+		let forgot = this.shadowRoot.querySelector("#forgot-button");
+		forgot.addEventListener("click", event =>
+		{
+			event.preventDefault();
+			let username = forgot.closest("form").querySelectorAll("input")[0];
+			username.value = username.value.trim();
+
+			if (!username.reportValidity())
+				return;
+
+			fetch(`ResetPassword?username=${username.value}`)
+				.then(ResponseHandler.none)
+				.then(() =>
+				{
+					this.shadowRoot.querySelector("#reset-tab").click();
+					GMessageDialog.success("Código enviado com sucesso");
+					username.value = "";
+				})
+				.catch(error => GMessageDialog.error(error.message));
+		});
+
+		let reset = this.shadowRoot.querySelector("#reset-button");
+		reset.addEventListener("click", event =>
+		{
+			event.preventDefault();
+
+			let code = reset.closest("form").querySelector("textarea");
+			code.value = code.value.trim();
+			let change = reset.closest("form").querySelectorAll("input")[0];
+			change.value = change.value.trim();
+			let repeat = reset.closest("form").querySelectorAll("input")[1];
+			repeat.value = repeat.value.trim();
+
+			if (!code.reportValidity()
+				|| !change.reportValidity()
+				|| !repeat.reportValidity())
+				return;
+
+			if (change.value !== repeat.value)
+				return GMessageDialog.error("As duas senhas não conferem");
+
+			fetch(new Request("ResetPassword", {method: "post",
+				headers: {Authorization: `Bearer ${code.value}`}, body: change.value}))
+				.then(ResponseHandler.none)
+				.then(() =>
+				{
+					this.shadowRoot.querySelector("#login-tab").click();
+					GMessageDialog.success("Senha alterada com sucesso");
+					code.value = change.value = repeat.value = "";
+				})
+				.catch(error => GMessageDialog.error(error.message));
+		});
+	}
+
+	attributeChangedCallback(name, _, val)
+	{
+		switch (name)
+		{
+			case "action":
+				return this.shadowRoot.querySelector("#form").action = val;
+			case "method":
+				return this.shadowRoot.querySelector("#form").method = val;
+			case "target":
+				return this.shadowRoot.querySelector("#form").target = val;
+			case "logo":
+				return this.shadowRoot.querySelector("#logo").src = val;
+			case "app":
+				return this.shadowRoot.querySelector("#app").innerText = val;
+			case "version":
+				return this.shadowRoot.querySelector("#version").innerText = `Versão ${val}`;
+		}
+	}
+
+	static get observedAttributes()
+	{
+		return ["action", "method", "target", "logo", "app", "version"];
+	}
+});

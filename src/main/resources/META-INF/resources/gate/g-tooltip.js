@@ -7,21 +7,23 @@ template.innerHTML = `
 }
 
 :host(*) {
+	gap: 8px;
 	margin: 0;
 	padding: 8px;
 	display: none;
+	max-width: 50vw;
 	position: fixed;
 	z-index: 1000000;
+	max-height: 50vh;
 	visibility: hidden;
 	border-radius: 3px;
-	width: min-content;
-	height: min-content;
+	width: max-content;
+	height: max-content;
 	flex-direction: column;
 	background-color: var(--main4);
 	border: 1px solid var(--main10);
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
-
 
 g-icon
 {

@@ -24,13 +24,6 @@ template.innerHTML = `
 			&#X3025;
 		</button>
 		<span></span>
-		<button tabindex='-1' id='increaseFontSize' title='Aumentar fonte'>
-			&#X1012;
-		</button>
-		<button tabindex='-1' id='decreaseFontSize' title='Reduzir fonte'>
-			&#X1013;
-		</button>
-		<span></span>
 		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
 			&#X3030;
 		</button>
@@ -107,6 +100,9 @@ template.innerHTML = `
 	justify-content: flex-start;
 }
 
+#toolbar > span {
+	width: 12px;
+}
 button
 {
 	margin: 2px;
@@ -190,9 +186,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.shadowRoot.getElementById("red").addEventListener("click", () => this.redFont());
 		this.shadowRoot.getElementById("green").addEventListener("click", () => this.greenFont());
 		this.shadowRoot.getElementById("blue").addEventListener("click", () => this.blueFont());
-
-		this.shadowRoot.getElementById("increaseFontSize").addEventListener("click", () => this.increaseFontSize());
-		this.shadowRoot.getElementById("decreaseFontSize").addEventListener("click", () => this.decreaseFontSize());
 
 		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => this.removeFormat());
 
@@ -341,32 +334,20 @@ customElements.define('g-text-editor', class extends HTMLElement
 	happyFace()
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertHTML", null, `<i>&#X2104</i>`);
+		document.execCommand("insertHTML", null, `<g-icon>&#X2104</g-icon>`);
 	}
 
 	sadFace()
 	{
 		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertHTML", null, `<i>&#X2106</i>`);
-	}
-
-	increaseFontSize()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("increaseFontSize");
-	}
-
-	decreaseFontSize()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("decreaseFontSize");
+		document.execCommand("insertHTML", null, `<g-icon>&#X2106</g-icon>`);
 	}
 
 	insertIcon()
 	{
 		this.shadowRoot.getElementById("editor").focus();
 		let picker = window.top.document.createElement("g-icon-picker");
-		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<i>&#X${e.detail}</i>`));
+		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<g-icon>&#X${e.detail}</g-icon>`));
 		picker.show();
 	}
 
@@ -391,7 +372,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 	connectedCallback()
 	{
 		this.appendChild(this._private.input);
-		document.execCommand("styleWithCSS", null, true);
 	}
 
 	get value()

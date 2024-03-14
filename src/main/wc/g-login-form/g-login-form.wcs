@@ -1,0 +1,95 @@
+* {
+	box-sizing: border-box;
+}
+
+g-tab-control > a {
+	flex-grow: 1;
+	flex-shrink: 0;
+}
+
+:host(*)
+{
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+main
+{
+	width: 600px;
+	min-width: 320px;
+	max-width: calc(100% - 16px);
+	border: 1px solid var(--main4);
+	background-color: var(--main3);
+	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
+}
+
+header
+{
+	gap: 8px;
+	padding: 8px;
+	height: 50px;
+	color: white;
+	display: flex;
+	align-items: center;
+	background-color: var(--base2);
+}
+
+#logo {
+	width: 32px;
+	height: 32px;
+}
+
+#app
+{
+	flex-grow: 1;
+	font-size: 20px;
+}
+
+#version {
+	font-size: 12px;
+}
+
+section
+{
+	padding: 10px;
+}
+
+form
+{
+	gap: 12px;
+	display: flex;
+	flex-direction: column;
+}
+
+:host([setup-password='false']) #setup-tab,
+:host([setup-password='false']) #forgot-tab,
+:host([setup-password='false']) #reset-tab
+{
+	display: none;
+}
+
+@media screen and (max-width: 600px)
+{
+
+
+	:host(*)
+	{
+		align-items: flex-start;
+	}
+
+	main
+	{
+		width: 100%;
+		border: none;
+		height: 100%;
+		box-shadow: none;
+		max-width: unset;
+		background-color: var(--main3);
+	}
+}

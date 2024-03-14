@@ -43,9 +43,11 @@ template.innerHTML = `
 ::slotted(header)
 {
 	padding: 4px;
+	display: flex;
 	font-size: 16px;
 	flex-basis: 36px;
 	font-weight: bold;
+	align-items: center;
 }
 
 ::slotted(nav)

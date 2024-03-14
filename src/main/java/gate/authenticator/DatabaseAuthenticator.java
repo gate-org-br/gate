@@ -66,4 +66,9 @@ public class DatabaseAuthenticator implements Authenticator
 		return null;
 	}
 
+	@Override
+	public Type getType()
+	{
+		return Authenticator.Type.DATABASE;
+	}
 }

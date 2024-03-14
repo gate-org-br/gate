@@ -1,9 +1,7 @@
 if (!document.querySelectorAll)
 	window.location = '../gate/NAVI.jsp';
 
-import "./link.js";
 import "./mask.js";
-import "./button.js";
 import "./switch.js";
 import "./g-tree-grid.js";
 import "./g-tree-list.js";
@@ -32,6 +30,7 @@ import "./g-stack-frame.js";
 import "./g-context-menu.js";
 
 import "./g-text-editor.js";
+import "./g-text-viewer.js";
 import "./g-report-picker.js";
 import "./g-chart.js";
 import "./g-chart-dialog.js";
@@ -92,6 +91,8 @@ import "./populator.js";
 import "./picker.js";
 
 import './collapse.js';
+
+import './g-login-form.js';
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

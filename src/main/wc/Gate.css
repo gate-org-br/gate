@@ -1,8 +1,6 @@
 @import './data-loading.css';
 
 @import './themes.css';
-@import './link.css';
-@import './button.css';
 
 @import './icon.css';
 @import './emoji.css';
@@ -10,8 +8,6 @@
 @import './fieldset.css';
 @import './nav.css';
 @import './layout.css';
-@import './login.css';
-@import './minibar.css';
 @import './figure.css';
 
 @import './table.css';
@@ -47,11 +43,10 @@ form {
 }
 
 p  {
+	line-height: 1.4em;
 	text-align: justify
 }
-p:first-of-type {
-	text-indent: 40px
-}
+
 h5 {
 	font-size: 14px;
 	text-align: center
@@ -82,7 +77,9 @@ img {
 }
 
 
-
+a, button {
+	text-decoration: none;
+}
 
 
 input[type='file'] {

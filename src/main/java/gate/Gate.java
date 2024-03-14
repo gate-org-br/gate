@@ -122,13 +122,11 @@ public class Gate extends HttpServlet
 					}
 				}
 
-				String provider = authenticator
-					.provider(request, response);
+				String provider = authenticator.provider(request, response);
 				if (provider != null)
 					response.sendRedirect(provider);
 				else
-					handlers.select(HTMLCommandHandler.class).get()
-						.handle(httpServletRequest, response, HTML);
+					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest, response, HTML);
 			} else
 			{
 				User user = null;
@@ -138,12 +136,9 @@ public class Gate extends HttpServlet
 				{
 					user = Credentials.of(request).orElseThrow();
 					request.setAttribute(User.class.getName(), user);
-				} else if (request.getSession(false) != null
-					&& request.getSession()
-						.getAttribute(User.class.getName()) != null)
+				} else if (request.getSession(false) != null && request.getSession().getAttribute(User.class.getName()) != null)
 				{
-					user = (User) request.getSession()
-						.getAttribute(User.class.getName());
+					user = (User) request.getSession().getAttribute(User.class.getName());
 				} else if (!call.isPublic())
 				{
 					user = authenticator.authenticate(request, response);
@@ -186,8 +181,7 @@ public class Gate extends HttpServlet
 			| InvalidUsernameException
 			| InvalidPasswordException ex)
 		{
-			httpServletRequest.setAttribute("messages",
-				Collections.singletonList(ex.getMessage()));
+			httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, HTML);
 		} catch (AuthenticationException
@@ -238,8 +232,7 @@ public class Gate extends HttpServlet
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 
-		AsyncContext asyncContext
-			= request.startAsync(request, response);
+		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(0);
 
 		asyncContext.start(() ->
@@ -254,8 +247,7 @@ public class Gate extends HttpServlet
 					? method.getAnnotation(gate.annotation.Handler.class).value()
 					: Handler.getHandler(result.getClass());
 				var handler = handlers.select(type).get();
-				handler.handle(request, response,
-					progress, result);
+				handler.handle(request, response, progress, result);
 				progress.close();
 			} catch (AppException ex)
 			{

@@ -5,6 +5,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Gate</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel='stylesheet' type='text/css' href='gate/Gate.css' />
 		<script type='module' src='/gate/g-code-viewer.js' charset="utf-8"></script>
 		<script type='module' src='gate/Gate.js' charset="utf-8"></script>
@@ -24,7 +25,7 @@
 					<a id='targets' href='./target/view.html' target="@inner-html(section)" aria-selected>
 						Targets<g-icon>&#X1011;</g-icon>
 					</a>
-					<a id='targets' href='./component/view.html' target="@inner-html(section)">
+					<a id='components' href='./component/view.html' target="@inner-html(section)">
 						<g-icon>&#X2178;</g-icon>Components
 					</a>
 					<hr />
@@ -36,20 +37,8 @@
 			</nav>
 
 			<section>
-				<table>
-					<caption>USERS</caption>
-					<tbody data-navigator>
-						<tr data-action='/target/@dialog/fetch1.html' data-target="@dialog">
-							<td>User 1</td>
-						</tr>
-						<tr data-action='/target/@dialog/fetch2.html' data-target="@dialog(640px, 480px)">
-							<td>User 2</td>
-						</tr>
-						<tr data-action='/target/@dialog/fetch3.html' data-target="@dialog(640px, 480px)">
-							<td>User 2</td>
-						</tr>
-					</tbody>
-				</table>
+				<g-text-editor>
+				</g-text-editor>
 			</section>
 
 			<footer>

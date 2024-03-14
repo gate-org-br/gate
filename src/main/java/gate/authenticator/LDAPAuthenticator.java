@@ -130,4 +130,10 @@ public class LDAPAuthenticator implements Authenticator
 	{
 		return null;
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Authenticator.Type.LDAP;
+	}
 }

@@ -245,4 +245,10 @@ public class OIDCAuthenticator implements Authenticator
 
 		throw new BadRequestException();
 	}
+
+	@Override
+	public Type getType()
+	{
+		return Authenticator.Type.OIDC;
+	}
 }

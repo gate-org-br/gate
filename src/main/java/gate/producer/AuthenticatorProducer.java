@@ -12,6 +12,7 @@ import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author davins
@@ -31,6 +32,7 @@ public class AuthenticatorProducer implements Serializable
 	@Current
 	@Produces
 	@ApplicationScoped
+	@Named("authenticator")
 	public Authenticator get()
 	{
 		switch (SystemProperty.get("gate.auth.type").orElse("default"))

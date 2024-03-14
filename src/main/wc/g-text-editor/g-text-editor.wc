@@ -23,13 +23,6 @@
 			&#X3025;
 		</button>
 		<span></span>
-		<button tabindex='-1' id='increaseFontSize' title='Aumentar fonte'>
-			&#X1012;
-		</button>
-		<button tabindex='-1' id='decreaseFontSize' title='Reduzir fonte'>
-			&#X1013;
-		</button>
-		<span></span>
 		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
 			&#X3030;
 		</button>

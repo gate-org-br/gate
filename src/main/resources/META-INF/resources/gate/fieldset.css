@@ -49,7 +49,7 @@ fieldset > label > span,
 fieldset > label > form {
   flex-grow: 1;
   display: flex;
-  overflow: hidden;
+  overflow: auto;
   min-height: 38px;
   text-indent: 4px;
   line-height: 38px;
@@ -71,10 +71,9 @@ fieldset > label > span > label,
 fieldset > label > form > label {
   height: 100%;
   flex-grow: 1;
-  display: flex;
+  overflow: auto;
   font-size: 14px;
   line-height: 38px;
-  align-items: center;
 }
 fieldset > label > span > label[data-icon],
 fieldset > label > form > label[data-icon] {

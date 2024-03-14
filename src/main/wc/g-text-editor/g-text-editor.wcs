@@ -20,6 +20,9 @@
 	justify-content: flex-start;
 }
 
+#toolbar > span {
+	width: 12px;
+}
 button
 {
 	margin: 2px;

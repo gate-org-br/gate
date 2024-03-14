@@ -1,0 +1,144 @@
+<template>
+	<main>
+		<header>
+			<img id='logo' src='Logo.svg'>
+			<label id='app'></label>
+			<label id='version'></label>
+		</header>
+		<section>
+			<g-tab-control>
+				<a href='#' id='login-tab'>
+					<g-icon>&#X2004;</g-icon>Fazer logon
+				</a>
+				<div>
+					<form id='form'
+					      method ='POST'
+					      target ='_top'
+					      action='#'>
+						<fieldset>
+							<label>
+								Login:
+								<span>
+									<input type="text" required='required' name='$username' maxlength='64' tabindex="1" title='Entre com o seu login.'>
+								</span>
+							</label>
+							<label>
+								Senha:
+								<span>
+									<input type="password" required='required' name='$password' maxlength='32' tabindex="1" title='Entre com a sua senha.'>
+								</span>
+							</label>
+						</fieldset>
+						<g-coolbar>
+							<button class="primary">
+								Entrar<g-icon>&#X2002;</g-icon>
+							</button>
+						</g-coolbar>
+					</form>
+				</div>
+
+				<a id='setup-tab' href='#'>
+					<g-icon>&#X2002;</g-icon>Trocar senha
+				</a>
+				<div>
+					<form method ='POST' action="#">
+						<fieldset>
+							<label style='grid-column: 1 / span 8'>
+								Login:
+								<span>
+									<input type="text" required='required' maxlength='64' tabindex="1" title='Entre com o seu login.'/>
+								</span>
+							</label>
+							<label style='grid-column: 9 / span 8'>
+								Senha:
+								<span>
+									<input type="password" required='required' maxlength='32' tabindex="1" title='Entre com a sua senha.'/>
+								</span>
+							</label>
+							<label style='grid-column: 1 / span 8'>
+								Nova Senha:
+								<span>
+									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+								</span>
+							</label>
+							<label style='grid-column: 9 / span 8'>
+								Repita:
+								<span>
+									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+								</span>
+							</label>
+						</fieldset>
+						<g-coolbar>
+							<button id='setup-button' class="primary">
+								Trocar<g-icon>&#X2057;</g-icon>
+							</button>
+						</g-coolbar>
+					</form>
+				</div>
+				<a id='forgot-tab' href='#'>
+					<g-icon>&#X2034;</g-icon>Esqueci a senha
+				</a>
+				<div>
+					<form method ='POST' action="#">
+						<g-callout>
+							<p>
+								Entre com o seu login ou email na caixa de texto
+								abaixo e clique em <strong>Enviar código</strong>.
+
+								Uma código será enviado para seu endereço de email
+								e deverá ser utilizado para redefinir sua senha
+								clicando em <strong>Redefinir senha</strong>.
+							</p>
+						</g-callout>
+						<fieldset>
+							<label>
+								Login ou E-Mail:
+								<span>
+									<input type="text" required='required' maxlength='64'
+									       tabindex="1" title='Entre com o seu login ou e-mail'/>
+								</span>
+							</label>
+						</fieldset>
+						<g-coolbar>
+							<button id='forgot-button' class="primary">
+								Enviar código<g-icon>&#X2034;</g-icon>
+							</button>
+						</g-coolbar>
+					</form>
+				</div>
+				<a id='reset-tab' href='#'>
+					<g-icon>&#X2058;</g-icon>Redefinir a senha
+				</a>
+				<div>
+					<form method ='POST' action="#">
+						<fieldset>
+							<label>
+								Entre com o código recebido no email:
+								<span style='flex-basis: 60px'>
+									<textarea required='required' tabindex="1" title='Entre com o código recebido no email'></textarea>
+								</span>
+							</label>
+							<label style='grid-column: 1 / span 8'>
+								Entre com a nova senha:
+								<span>
+									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+								</span>
+							</label>
+							<label style='grid-column: 9 / span 8'>
+								Repita a nova senha:
+								<span>
+									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+								</span>
+							</label>
+						</fieldset>
+						<g-coolbar>
+							<button id='reset-button' class="primary">
+								Redefinir<g-icon>&#X2058;</g-icon>
+							</button>
+						</g-coolbar>
+					</form>
+				</div>
+			</g-tab-control>
+		</section>
+	</main>
+</template>

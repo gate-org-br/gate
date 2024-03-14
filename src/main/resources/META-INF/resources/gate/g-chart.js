@@ -1,8 +1,7 @@
-/* global echarts, customElements */
+/* global customElements */
 
 import icons from './icon-data.js';
 import Dataset from './dataset.js';
-import * as echarts from './echarts.js';
 import NumberFormat from './number-format.js';
 
 const format = new NumberFormat();
@@ -60,7 +59,6 @@ customElements.define('g-chart', class extends HTMLElement
 				title: 'Donut',
 				onclick: () => this.type = "dchart",
 				icon: `image://${icons.get('2245')}`
-
 			}, myRChart: {
 				title: 'Rose',
 				onclick: () => this.type = "rchart",
@@ -180,7 +178,7 @@ customElements.define('g-chart', class extends HTMLElement
 			this.draw(this.type, this.title, this.reversed
 				? Dataset.reverse(this.value) : this.value);
 		else
-			echarts.init(this).clear();
+			import('./echarts.js').then(echarts => echarts.init(this).clear());
 	}
 
 	draw(type, title, value)
@@ -215,22 +213,25 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		title = title ? {x: 'center', text: title} : null;
 
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption({
-			grid,
-			title,
-			toolbox: this.#toolbox,
-			dataset: {source: value},
-			legend: {show: value[0].length > 2, y: 'bottom'},
-			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-			xAxis: category,
-			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-			series: Array(value[0].length - 1)
-				.fill({type: 'bar',
-					barGap: 0,
-					seriesLayoutBy: 'column',
-					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption({
+				grid,
+				title,
+				toolbox: this.#toolbox,
+				dataset: {source: value},
+				legend: {show: value[0].length > 2, y: 'bottom'},
+				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+				xAxis: category,
+				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
+				series: Array(value[0].length - 1)
+					.fill({type: 'bar',
+						barGap: 0,
+						seriesLayoutBy: 'column',
+						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+			});
 		});
 	}
 
@@ -238,44 +239,50 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		title = title ? {x: 'center', text: title} : null;
 
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption({
-			grid,
-			title,
-			toolbox: this.#toolbox,
-			dataset: {source: value},
-			legend: {show: value[0].length > 2, y: 'bottom'},
-			dataZoom: {right: 40, width: 12, endValue: 9, startValue: 0, orient: 'vertical', filterMode: 'empty'},
-			yAxis: category,
-			xAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-			series: Array(value[0].length - 1)
-				.fill({type: 'bar',
-					barGap: 0,
-					seriesLayoutBy: 'column',
-					label: {show: true, position: 'right', formatter: e => e.value[e.encode.x].toLocaleString(locale)}})
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption({
+				grid,
+				title,
+				toolbox: this.#toolbox,
+				dataset: {source: value},
+				legend: {show: value[0].length > 2, y: 'bottom'},
+				dataZoom: {right: 40, width: 12, endValue: 9, startValue: 0, orient: 'vertical', filterMode: 'empty'},
+				yAxis: category,
+				xAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
+				series: Array(value[0].length - 1)
+					.fill({type: 'bar',
+						barGap: 0,
+						seriesLayoutBy: 'column',
+						label: {show: true, position: 'right', formatter: e => e.value[e.encode.x].toLocaleString(locale)}})
+			});
 		});
+
 	}
 
 	lchart(title, value)
 	{
 		title = title ? {x: 'center', text: title} : null;
-
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption({
-			grid,
-			title,
-			toolbox: this.#toolbox,
-			dataset: {source: value},
-			legend: {show: value[0].length > 2, y: 'bottom'},
-			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-			xAxis: category,
-			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-			series: Array(value[0].length - 1)
-				.fill({type: 'line',
-					seriesLayoutBy: 'column',
-					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption({
+				grid,
+				title,
+				toolbox: this.#toolbox,
+				dataset: {source: value},
+				legend: {show: value[0].length > 2, y: 'bottom'},
+				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+				xAxis: category,
+				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
+				series: Array(value[0].length - 1)
+					.fill({type: 'line',
+						seriesLayoutBy: 'column',
+						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+			});
 		});
 	}
 
@@ -283,45 +290,57 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		title = title ? {x: 'center', text: title} : null;
 
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption({
-			grid,
-			title,
-			toolbox: this.#toolbox,
-			dataset: {source: value},
-			legend: {show: value[0].length > 2, y: 'bottom'},
-			dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-			xAxis: category,
-			yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-			series: Array(value[0].length - 1)
-				.fill({type: 'line',
-					seriesLayoutBy: 'column',
-					label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)},
-					areaStyle: {type: 'default'}})
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption({
+				grid,
+				title,
+				toolbox: this.#toolbox,
+				dataset: {source: value},
+				legend: {show: value[0].length > 2, y: 'bottom'},
+				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
+				xAxis: category,
+				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
+				series: Array(value[0].length - 1)
+					.fill({type: 'line',
+						seriesLayoutBy: 'column',
+						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)},
+						areaStyle: {type: 'default'}})
+			});
 		});
 	}
 
 	pchart(title, value)
 	{
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption(pie(title, this.#toolbox, value, "80%", null));
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption(pie(title, this.#toolbox, value, "80%", null));
+		});
 	}
 
 	dchart(title, value)
 	{
 
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption(pie(title, this.#toolbox, value, ["60%", "80%"], null));
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption(pie(title, this.#toolbox, value, ["60%", "80%"], null));
+		});
 	}
 
 	rchart(title, value)
 	{
-		this.#chart = echarts.init(this);
-		this.#chart.clear();
-		this.#chart.setOption(pie(title, this.#toolbox, value, "80%", "area"));
+		import('./echarts.js').then(echarts =>
+		{
+			this.#chart = echarts.init(this);
+			this.#chart.clear();
+			this.#chart.setOption(pie(title, this.#toolbox, value, "80%", "area"));
+		});
 	}
 
 	static get observedAttributes()

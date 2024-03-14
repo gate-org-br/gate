@@ -27,4 +27,11 @@ public interface Authenticator
 		BadRequestException;
 
 	public String logoutUri(ScreenServletRequest request);
+
+	public abstract Type getType();
+
+	public enum Type
+	{
+		DATABASE, LDAP, OIDC
+	}
 }
