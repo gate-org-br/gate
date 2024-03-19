@@ -1,11 +1,11 @@
 <g-callout class="fill">
 	<h1>@cache</h1>
 	<p>
-		The <strong>@cache</strong> trigger functions as a caching mechanism in the web application, storing and retrieving
+		The <strong>@cache</strong> target functions as a caching mechanism in the web application, storing and retrieving
 		specific data, such as HTTP request results or computational outcomes.
 		Notably, the cache is designed for automatic invalidation upon any non-GET requests initiated by the application,
 		ensuring that cached content stays synchronized with dynamic changes.
-		Furthermore, the <strong>@invalidate-cache</strong> trigger provides an explicit method for triggering cache invalidation
+		Furthermore, the <strong>@invalidate-cache</strong> target provides an explicit method for triggering cache invalidation
 		by other components or operations, offering a controlled approach to managing cached data.
 		This dual strategy optimizes performance by minimizing redundant operations while allowing for responsive updates,
 		contributing to a more efficient and dynamic web application experience.
@@ -18,10 +18,10 @@
 	</a>
 	<div>
 		<p>
-			On this example, the @cache trigger stores the <strong>/target/content.html</strong> data
-			before passing it to the <strong>@inner-html</strong> trigger. Subsequent clicks on the
+			On this example, the @cache target stores the <strong>/target/content.html</strong> data
+			before passing it to the <strong>@inner-html</strong> target. Subsequent clicks on the
 			anchor will use the cached content until a non-GET request is made by the application or
-			the <strong>@invalidate-cache</strong> trigger is used.
+			the <strong>@invalidate-cache</strong> target is used.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<g-callout>
@@ -41,8 +41,8 @@
 	</a>
 	<div>
 		<p>
-			On this example, the <strong>@invalidate-cache</strong> trigger ensures the <strong>/target/content.html</strong> data
-			will be fetched from the server before it is passed to the <strong>@inner-html</strong> trigger..
+			On this example, the <strong>@invalidate-cache</strong> target ensures the <strong>/target/content.html</strong> data
+			will be fetched from the server before it is passed to the <strong>@inner-html</strong> target.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<g-callout>

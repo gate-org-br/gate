@@ -1,10 +1,10 @@
 <g-callout class="fill">
 	<h1>@map</h1>
 	<p>
-		The <strong>@map</strong> trigger facilitates the transformation of data through the execution
-		of custom JavaScript code before passing it to the next trigger in the pipeline.
+		The <strong>@map</strong> target facilitates the transformation of data through the execution
+		of custom JavaScript code before passing it to the next target in the pipeline.
 
-		This trigger takes a single parameter: an arrow function. The arrow function is designed to receive
+		This target takes a single parameter: an arrow function. The arrow function is designed to receive
 		the result of the request, process it, and then return the modified data.
 
 		This allows for flexible and dynamic data processing within the pipeline.
@@ -17,11 +17,11 @@
 	</a>
 	<div>
 		<p>
-			On this example, the <strong>@map</strong> trigger fetches <a href="/objects.json" target='_blanck'>objects.json</a>
-			from the server and dispatches only the first 10 elements of the result to the <strong>@json-to-html</strong> trigger.
-			The <strong>@json-to-html</strong> trigger convert it to HTML and pass the converted information to the
-			<strong>@outer-html</strong> trigger.
-			The <strong>@outer-html</strong> trigger replaces the <strong>&lt;g-callout&gt;</strong> with HTML data.
+			On this example, the <strong>@map</strong> target fetches <a href="/objects.json" target='_blanck'>objects.json</a>
+			from the server and dispatches only the first 10 elements of the result to the <strong>@json-to-html</strong> target.
+			The <strong>@json-to-html</strong> target convert it to HTML and pass the converted information to the
+			<strong>@outer-html</strong> target.
+			The <strong>@outer-html</strong> target replaces the <strong>&lt;g-callout&gt;</strong> with HTML data.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<g-coolbar>

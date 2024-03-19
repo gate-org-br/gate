@@ -2,9 +2,9 @@
 	<h1>@template</h1>
 	<p>
 		Transforms JSON data into HTML using a specified <strong>Handlebars</strong> template.
-		Before applying the transformation, the trigger adds helper functions (add, sub, mul and div) to <strong>Handlebars</strong>
+		Before applying the transformation, the target adds helper functions (add, sub, mul and div) to <strong>Handlebars</strong>
 		to allow basic arithmetic operations. Commented sections within the template are uncommented during this process.
-		The resulting HTML is then passed to the next trigger in the pipeline.
+		The resulting HTML is then passed to the next target in the pipeline.
 	</p>
 </g-callout>
 
@@ -14,11 +14,11 @@
 	</a>
 	<div>
 		<p>
-			In this example, the <strong>@template</strong> trigger fetches <a href="/objects.json" target='_blank'>objects.json</a>
+			In this example, the <strong>@template</strong> target fetches <a href="/objects.json" target='_blank'>objects.json</a>
 			from the server, converts it to HTML using the content of the template tag, and passes the transformed information to the
-			<strong>@outer-html</strong> trigger. Before transformation, the trigger uncomments the {{# .}} and {{/ .}} and adds helper functions
+			<strong>@outer-html</strong> target. Before transformation, the target uncomments the {{# .}} and {{/ .}} and adds helper functions
 			(add, sub, mul, div) to <strong>Handlebars</strong> to enable basic arithmetic operations.
-			The <strong>@outer-html</strong> trigger replaces the <strong>&lt;g-callout&gt;</strong> with HTML data.
+			The <strong>@outer-html</strong> target replaces the <strong>&lt;g-callout&gt;</strong> with HTML data.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<g-coolbar>

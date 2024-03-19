@@ -1,8 +1,8 @@
 <g-callout class="fill">
 	<h1>@throttle</h1>
 	<p>
-		The <strong>@throttle</strong> trigger is designed to manage the execution frequency of a specified action.
-		It that another trigger is is executed at most once within the specified time interval in
+		The <strong>@throttle</strong> target is designed to manage the execution frequency of a specified action.
+		It that another target is is executed at most once within the specified time interval in
 		milliseconds. This throttling mechanism prevents the action from being triggered too frequently,
 		promoting efficient and controlled event handling. If the time interval parameter is omitted, it defaults to 1000.
 	</p>
@@ -14,7 +14,7 @@
 	</a>
 	<div>
 		<p>
-			In this example, the "@after-end" trigger is configured to execute at most once every 5 seconds,
+			In this example, the <strong>@after-end</strong> target is configured to execute at most once every 5 seconds,
 			regardless of how many times the Fetch button is clicked. This setup ensures that the associated
 			action is throttled, preventing rapid and repeated executions within the specified 5-second time
 			interval.
@@ -38,7 +38,7 @@
 	<div>
 		<p>
 			In this example, the time interval parameter is omitted, and the default interval of 1 second is applied.
-			This means that the "@after-end" trigger will execute at most once every 1 second, regardless of the number
+			This means that the <strong>@after-end</strong> target will execute at most once every 1 second, regardless of the number
 			of times the Fetch button is clicked.
 		</p>
 		<g-code-viewer style='height: auto'>

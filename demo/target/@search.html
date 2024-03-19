@@ -1,7 +1,7 @@
 <g-callout class="fill">
 	<h1>@search</h1>
 	<p>
-		The <strong>@search</strong> trigger enhances user interaction by providing a
+		The <strong>@search</strong> target enhances user interaction by providing a
 		dynamic search dialog. Accepting a filter as parameter, it displays a dialog
 		featuring a search input field for users to choose an element from a JSON array
 		fetched from the server.
@@ -10,7 +10,7 @@
 		search criteria in the query string (if a filter attribute is supplied) or as
 		post requests with user input as the body (if the filter is omitted).
 
-		The selected object is then dispatched to the next trigger on the pipeline.
+		The selected object is then dispatched to the next target on the pipeline.
 		To optimize performance, a debounce of 300ms is applied, preventing unnecessary server requests.
 		Additionally, when triggered by text input, the dialog opens with the input value pre-applied to the search field.
 		If the server returns a single value, it is automatically selected. This functionality streamlines

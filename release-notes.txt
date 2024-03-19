@@ -1,9 +1,10 @@
-The default is now BodyParam instead of QueryParam.
+Gate annotations for Screen parameter types were replaced by JAXRS annotations.
+The default screen method parameter type was changed to BodyParam instead of QueryParam.
 
 a.Hide removed to avoid redundancy with target="@hide"
 	Replace regex class=(['"])Hide\1 with target='@hide'
 
-target="_id(id)" removed and replaced with target="@innerHTML(selector)"
+target="_id(id)" removed and replaced with target="@inner-html(selector)"
 	Replace regex target="_id\(([^"]+)\)" with target='inner-html(#$1)'
 	Replace regex target='_id\(([^']+)\)' with target='inner-html(#$1)'
 
@@ -23,7 +24,7 @@ attribute data-on-hide='reload' was removed and replaced @reload trigger
 	Remove all occurrences of regex data-on-hide=(['"])reload\1 and make the @dialog or @stack
 	trigger dispatch to the @reload trigger
 
-data-get="id1, id2, ..." removed and replaced with target="@frame-picker(selector1, selector2, ...)"
+data-get="id1, id2, ..." removed and replaced with target="@pick(frame) > @fill(selector1, selector2, ...)"
 
 data-ret="value1, value2, ..." removed and replaced with target="@return(value1, value2, ...)"
 
@@ -32,8 +33,7 @@ Same pattern to all boolean attributes
 
 <g-dialog-caption>caption</g-dialog-caption> removed and replaced <g-dialog-header caption='caption'>
 
-resolve @{id} was replaced by @{#id}
-resolve implemented the @{selector} flag
+resolve @{id} was replaced by @{selector}
 
 class=TreeView replaced by g-tree-grid
 The selectors are now created automatically

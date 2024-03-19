@@ -337,7 +337,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 	get type()
 	{
-		return this.getAttribute("type") || "frame";
+		return this.getAttribute("type") || "fetch";
 	}
 
 	set type(type)
