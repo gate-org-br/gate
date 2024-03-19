@@ -18,7 +18,7 @@ window.addEventListener("@post", function (event)
 		|| trigger.getAttribute("formaction")
 		|| trigger.getAttribute("data-action");
 
-	url = resolve(trigger, event.detail.cause, url);
+	url = resolve(trigger, event.detail.context, url);
 
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
