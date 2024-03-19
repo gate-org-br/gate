@@ -266,6 +266,7 @@ customElements.define('g-desk-pane', class extends HTMLElement
 			.filter(e => e.tagName === "A"
 					|| e.tagName === "BUTTON"
 					|| e.tagName === "G-DESK-PANE"
+					|| e.tagName === "G-DESK-PANE-RESET"
 					|| e.classList.contains(".g-command"));
 	}
 

@@ -6,11 +6,11 @@ import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
-window.addEventListener("@post", function (event)
+window.addEventListener("@get", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {action, method, form, parameters} = event.detail;
+	let {parameters} = event.detail;
 
 	let url = parameters[0]
 		|| trigger.getAttribute("href")
@@ -20,10 +20,7 @@ window.addEventListener("@post", function (event)
 
 	url = resolve(trigger, event.detail.cause, url);
 
-	return fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.dataURL)
-		.then(DataURL.parse)
-		.then(result => fetch(RequestBuilder.build("post", url, result.data, result.contentType)))
+	return fetch(RequestBuilder.build("get", url))
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));

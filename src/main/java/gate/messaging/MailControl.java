@@ -23,17 +23,17 @@ class MailControl extends Control
 
 	public boolean isEnabled()
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			return dao.isEnabled();
 		}
 	}
 
-	public Server server() throws AppException
+	public Optional<Server> server()
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			return dao.server();
 		}
@@ -41,8 +41,8 @@ class MailControl extends Control
 
 	public List<Mail> search()
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			return dao.search();
 		}
@@ -50,8 +50,8 @@ class MailControl extends Control
 
 	public List<Mail> search(App app)
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			return dao.search(app);
 		}
@@ -59,8 +59,8 @@ class MailControl extends Control
 
 	public Optional<Mail> select(App app)
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			return dao.select(app);
 		}
@@ -68,8 +68,8 @@ class MailControl extends Control
 
 	public void insert(Mail mail) throws AppException
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			dao.insert(mail);
 		}
@@ -77,8 +77,8 @@ class MailControl extends Control
 
 	public void update(Mail mail) throws AppException
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			dao.update(mail);
 		}
@@ -86,8 +86,8 @@ class MailControl extends Control
 
 	public void expire(App app) throws AppException
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			dao.expire(app);
 		}
@@ -95,8 +95,8 @@ class MailControl extends Control
 
 	public void delete(Mail mail) throws AppException
 	{
-		try ( Link link = linkSource.getLink();
-			 MailDao dao = new MailDao(link))
+		try (Link link = linkSource.getLink();
+			MailDao dao = new MailDao(link))
 		{
 			dao.delete(mail);
 		}

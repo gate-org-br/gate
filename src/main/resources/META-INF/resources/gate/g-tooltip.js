@@ -1,28 +1,32 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<slot></slot>
+	<div>
+		<slot></slot>
+	</div>
 	<g-icon>&#X3043;</g-icon>
  <style data-element="g-tooltip">* {
 	box-sizing: border-box;
 }
 
 :host(*) {
-	gap: 8px;
 	margin: 0;
 	padding: 8px;
 	display: none;
-	max-width: 50vw;
 	position: fixed;
 	z-index: 1000000;
-	max-height: 50vh;
 	visibility: hidden;
 	border-radius: 3px;
-	width: max-content;
-	height: max-content;
-	flex-direction: column;
 	background-color: var(--main4);
 	border: 1px solid var(--main10);
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
+}
+
+div {
+	overflow: auto;
+	width: max-content;
+	height: max-content;
+	max-width: calc(50vw - 16px);
+	max-height: calc(50vh - 16px);
 }
 
 g-icon
@@ -149,13 +153,18 @@ export default class GTooltip extends HTMLElement
 		if (!this.parentNode)
 			throw new Error("Attempt to show disconnected tooltip");
 
-		if (instance)
-			instance.hide();
-
 		if (!target.getBoundingClientRect)
 			return;
 
-		this.style.display = "flex";
+		if (instance)
+			instance.hide();
+		instance = this;
+		const controller = new AbortController();
+		target.addEventListener("mouseleave", () => this.hide() | controller.abort(), {signal: controller.signal});
+		target.addEventListener("focusout", () => this.hide() | controller.abort(), {signal: controller.signal});
+		target.addEventListener("click", () => this.hide() | controller.abort(), {signal: controller.signal});
+
+		this.style.display = "block";
 
 		for (let i = 0; i < 8; i++)
 		{
@@ -172,7 +181,7 @@ export default class GTooltip extends HTMLElement
 		this.shadowRoot.querySelector("g-icon")
 			.dataset.arrow = position;
 		this.style.visibility = "visible";
-		instance = this;
+
 	}
 
 	get position()
@@ -190,6 +199,9 @@ export default class GTooltip extends HTMLElement
 
 	hide()
 	{
+		if (this.parentNode === document.body)
+			return this.remove();
+
 		this.style.visibility = "hidden";
 		this.style.display = "";
 	}
@@ -204,7 +216,7 @@ export default class GTooltip extends HTMLElement
 		if (height)
 			tooltip.style.height = height;
 
-		tooltip.innerHTML = Formatter.JSONtoHTML(content);
+		tooltip.innerHTML = content;
 		tooltip.show(element, position || DEFAULT_POSITION);
 	}
 
@@ -235,23 +247,13 @@ window.addEventListener("mouseover", function (event)
 	{
 		if (target.hasAttribute && target.hasAttribute("data-tooltip"))
 		{
-			let content = JSON.parse(target.getAttribute("data-tooltip"));
-			target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
+			let json = JSON.parse(target.getAttribute("data-tooltip"));
+			let content = Formatter.JSONtoHTML(json);
 			let position = target.getAttribute("data-tooltip:position");
-			GTooltip.show(target, content, position);
-			return;
+			return GTooltip.show(target, content, position);
 		} else if (target.children)
-		{
 			for (let tooltip of target.children)
-			{
 				if (tooltip.tagName === "G-TOOLTIP")
-				{
-					target.addEventListener("mouseleave",
-						() => tooltip.hide(), {once: true});
-					tooltip.show(target);
-					return;
-				}
-			}
-		}
+					return tooltip.show(target);
 	}
 });

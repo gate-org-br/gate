@@ -116,9 +116,6 @@ article > section {
   grid-row: 3;
   overflow: auto;
   overflow-x: hidden;
-  gap: 12px;
-  display: flex;
-  flex-direction: column;
 }
 article > footer {
   grid-row: 4;
@@ -136,4 +133,9 @@ article > *:first-child {
 }
 article > *:only-child {
   margin-top: 0px;
+}
+section {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
 }

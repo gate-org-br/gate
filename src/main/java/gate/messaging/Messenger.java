@@ -5,6 +5,7 @@ import gate.entity.App;
 import gate.entity.Mail;
 import gate.entity.Server;
 import gate.error.AppException;
+import gate.stream.CheckedOptional;
 import gate.type.mime.Mime;
 import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeList;
@@ -60,7 +61,7 @@ public class Messenger implements ServletContextListener
 					{
 						send(mail.getSender(), mail.getReceiver(), mail.getMessage());
 						control.delete(mail);
-					} catch (MessagingException | AppException | RuntimeException ex)
+					} catch (AppException | RuntimeException ex)
 					{
 						logger.warn(ex.getMessage(), ex);
 						mail.setAttempts(mail.getAttempts() + 1);
@@ -115,21 +116,15 @@ public class Messenger implements ServletContextListener
 		}
 	}
 
-	public void post(String receiver,
-		MimeMail<?> mail)
-		throws MessageException
+	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		try
+		CheckedOptional.of(MessageException.class, control.server()).ifPresent(server ->
 		{
-			Server server = control.server();
 			if (server.getUsername() != null)
 				post(server.getUsername(), receiver, mail);
 			else
 				logger.info("Attempt to send a message without specifying the sender");
-		} catch (AppException ex)
-		{
-			throw new MessageException(ex.getMessage());
-		}
+		});
 	}
 
 	public List<Mail> search() throws MessageException
@@ -137,15 +132,10 @@ public class Messenger implements ServletContextListener
 		return control.search();
 	}
 
-	private void send(String sender, String receiver, MimeMail<?> mail) throws MessagingException
+	private void send(String sender, String receiver, MimeMail<?> mail) throws MessageException
 	{
-		try
-		{
-			send(control.server(), sender, receiver, mail);
-		} catch (AppException ex)
-		{
-			throw new MessagingException(ex.getMessage());
-		}
+		CheckedOptional.of(MessageException.class, control.server())
+			.ifPresent(server -> send(server, sender, receiver, mail));
 	}
 
 	public void send(Server server, String sender, String receiver, MimeMail<?> mail) throws MessagingException
@@ -190,19 +180,16 @@ public class Messenger implements ServletContextListener
 
 		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
 
-		if (mail.getContent() instanceof MimeText)
+		if (mail.getContent() instanceof MimeText mimeText)
 		{
-			MimeText mimeText = (MimeText) mail.getContent();
 			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-		} else if (mail.getContent() instanceof MimeDataFile)
+		} else if (mail.getContent() instanceof MimeDataFile mimeDataFile)
 		{
-			MimeDataFile mimeDataFile = (MimeDataFile) mail.getContent();
 			mimeMessage.setDisposition("Attachment");
 			mimeMessage.setFileName(mimeDataFile.getName());
 			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
-		} else if (mail.getContent() instanceof MimeList)
+		} else if (mail.getContent() instanceof MimeList mimeList)
 		{
-			MimeList mimeList = (MimeList) mail.getContent();
 			mimeMessage.setContent(getMultipart(mimeList));
 		}
 
@@ -224,19 +211,16 @@ public class Messenger implements ServletContextListener
 		for (Mime mime : data)
 		{
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			if (mime instanceof MimeText)
+			if (mime instanceof MimeText mimeText)
 			{
-				MimeText mimeText = (MimeText) mime;
 				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-			} else if (mime instanceof MimeDataFile)
+			} else if (mime instanceof MimeDataFile mimeDataFile)
 			{
-				MimeDataFile mimeDataFile = (MimeDataFile) mime;
 				mimeBodyPart.setDisposition("Attachment");
 				mimeBodyPart.setFileName(mimeDataFile.getName());
 				mimeBodyPart.setContent(mimeDataFile.getData(), "application/octet-stream");
-			} else if (mime instanceof MimeList)
+			} else if (mime instanceof MimeList mimeList)
 			{
-				MimeList mimeList = (MimeList) mime;
 				mimeBodyPart.setContent(getMultipart(mimeList));
 			}
 

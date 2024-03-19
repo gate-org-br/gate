@@ -1,6 +1,7 @@
 /* global fetch */
 
 import './trigger.js';
+import resolve from './resolve.js';
 import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -17,11 +18,13 @@ window.addEventListener("@post", function (event)
 		|| trigger.getAttribute("formaction")
 		|| trigger.getAttribute("data-action");
 
+	url = resolve(trigger, event.detail.cause, url);
+
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(DataURL.parse)
 		.then(result => fetch(RequestBuilder.build("post", url, result.data, result.contentType)))
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
-		.catch(error => event.error(path, error));
+		.catch(error => event.failure(path, error));
 });

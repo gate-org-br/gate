@@ -1,6 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
  <style data-element="g-event-source">:host(*) { display: none }</style>`;
+import Base64 from './base64.js';
+
 /* global customElements, template */
 
 export default class GEventSource extends HTMLElement
@@ -35,11 +37,11 @@ export default class GEventSource extends HTMLElement
 
 		eventSource.addEventListener('message', (message) =>
 		{
-			let json = atob(message.data);
+			let json = Base64.decode(message.data);
 			log && console.log(json);
 			const event = JSON.parse(json);
 			listener.dispatchEvent(new CustomEvent("sse", {bubbles: true, composed: true, detail: event}));
-			listener.dispatchEvent(new CustomEvent(event.type, {bubbles: true, composed: true, detail: event.details}));
+			listener.dispatchEvent(new CustomEvent(event.type, {bubbles: true, composed: true, detail: event.detail}));
 		});
 
 		eventSource.onerror = error => log && console.error('Error when listening to app events:', error);

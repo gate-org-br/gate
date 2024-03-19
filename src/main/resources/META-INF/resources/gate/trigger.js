@@ -176,18 +176,18 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-	{
-		Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-					|| e.hasAttribute("data-method")
-					|| e.hasAttribute("data-action")
-					|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
 
-		DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
-			e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
-	});
+	DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
+		e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
+});
 
 window.addEventListener("load", function (event)
 {
@@ -279,7 +279,7 @@ window.addEventListener("sse", function (event)
 		if (element.getAttribute("data-trigger").startsWith("sse("))
 		{
 			let predicate = element.getAttribute("data-trigger").slice(4, -1);
-			if (!new Function("event", `return ${predicate}`).bind(element)()(event))
+			if (!new Function("event", `return ${predicate}`).bind(element)()(event.detail))
 				return;
 		}
 

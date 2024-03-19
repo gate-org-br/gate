@@ -21,5 +21,5 @@ window.addEventListener("@message", function (event)
 			GMessageDialog.show(type, text, duration);
 			event.success(path, new DataURL("text/plain", text).toString());
 		})
-		.catch(error => event.error(path, error));
+		.catch(error => event.failure(path, error));
 });

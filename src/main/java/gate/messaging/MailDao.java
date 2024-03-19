@@ -33,7 +33,7 @@ class MailDao extends Dao
 			.fetchBoolean();
 	}
 
-	public Server server() throws AppException
+	public Optional<Server> server()
 	{
 		return Select.expression("type")
 			.expression("host")
@@ -47,8 +47,7 @@ class MailDao extends Dao
 			.where(Condition.of("type").eq(Server.Type.SMTP))
 			.build()
 			.connect(getLink())
-			.fetchEntity(Server.class)
-			.orElseThrow(() -> new AppException("Nenhum servidor SMTP configurado"));
+			.fetchEntity(Server.class);
 	}
 
 	public List<Mail> search()

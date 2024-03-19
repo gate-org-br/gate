@@ -1,21 +1,4 @@
-
-function decodeBase64(base64String)
-{
-	const bytes = new Uint8Array(atob(base64String).split('').map(char => char.charCodeAt(0)));
-	const decoder = new TextDecoder('utf-8');
-	return decoder.decode(bytes);
-}
-
-
-function encodeBase64(string)
-{
-	const encoder = new TextEncoder('utf-8');
-	const bytes = encoder.encode(string);
-	let binaryString = '';
-	bytes.forEach(byte => binaryString += String.fromCharCode(byte));
-	return btoa(binaryString);
-}
-
+import Base64 from './base64.js';
 export default class DataURL
 {
 	static parse(string)
@@ -42,7 +25,7 @@ export default class DataURL
 		if (contentType.startsWith("text")
 			|| contentType === "application/json")
 			return new DataURL(contentType,
-				decodeBase64(data), parameters, base64);
+				Base64.decode(data), parameters, base64);
 
 		return new DataURL(contentType, atob(data), parameters, base64);
 
@@ -66,7 +49,7 @@ export default class DataURL
 
 		if (this.contentType.startsWith("text")
 			|| this.contentType === "application/json")
-			return `data:${this.contentType}${parameters};base64,${encodeBase64(this.data)}`;
+			return `data:${this.contentType}${parameters};base64,${Base64.encode(this.data)}`;
 
 		return `data:${this.contentType}${parameters};base64,${btoa(this.data)}`;
 	}

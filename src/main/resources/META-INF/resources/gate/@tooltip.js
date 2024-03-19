@@ -20,13 +20,9 @@ window.addEventListener("@tooltip", function (event)
 		{
 			let dataURL = DataURL.parse(response);
 			if (dataURL.contentType === "application/json")
-				GTooltip.show(event.target, Formatter
-					.JSONtoHTML(JSON.parse(dataURL.data)),
-					position, width, height);
+				GTooltip.show(trigger, Formatter.JSONtoHTML(JSON.parse(dataURL.data)), position, width, height);
 			else
-				GTooltip.show(event.target, dataURL.data,
-					position, width, height);
-			trigger.addEventListener("mouseleave", () => GTooltip.hide(), {"once": true});
+				GTooltip.show(trigger, dataURL.data, position, width, height);
 			event.success(path, response);
 		})
 		.catch(error => event.failure(path, error));

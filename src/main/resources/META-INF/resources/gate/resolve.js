@@ -2,6 +2,16 @@ import DOM from './dom.js';
 const REQUIRED = new Error();
 import EventHandler from './event-handler.js';
 const RESOLVE_REGEX = /(\?|\?\?|!|!!|@|@@)\{([^}]*)\}/g;
+
+
+function getValue(obj, propName)
+{
+	const props = propName.split(/\.|\[(.*?)\]/).filter(Boolean);
+	for (let i = 0; obj && i < props.length; i++)
+		obj = obj[props[i]];
+	return obj;
+}
+
 export default function resolve(trigger, context, string)
 {
 	var result = decodeURI(string);
@@ -35,7 +45,7 @@ export default function resolve(trigger, context, string)
 					case '!':
 					case '!!':
 					{
-						let result = context[value];
+						let result = getValue(context, value);
 						if (method.length == 2 && !result)
 							throw REQUIRED;
 						return result;

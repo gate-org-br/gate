@@ -30,6 +30,11 @@ table > * > tr > * > fieldset {
 table tr {
   height: 38px;
 }
+table tr a,
+table tr button {
+  border: none;
+  background-color: transparent;
+}
 table tr > * {
   padding: 4px;
   text-align: left;

@@ -71,13 +71,18 @@ export default class GTooltip extends HTMLElement
 		if (!this.parentNode)
 			throw new Error("Attempt to show disconnected tooltip");
 
-		if (instance)
-			instance.hide();
-
 		if (!target.getBoundingClientRect)
 			return;
 
-		this.style.display = "flex";
+		if (instance)
+			instance.hide();
+		instance = this;
+		const controller = new AbortController();
+		target.addEventListener("mouseleave", () => this.hide() | controller.abort(), {signal: controller.signal});
+		target.addEventListener("focusout", () => this.hide() | controller.abort(), {signal: controller.signal});
+		target.addEventListener("click", () => this.hide() | controller.abort(), {signal: controller.signal});
+
+		this.style.display = "block";
 
 		for (let i = 0; i < 8; i++)
 		{
@@ -94,7 +99,7 @@ export default class GTooltip extends HTMLElement
 		this.shadowRoot.querySelector("g-icon")
 			.dataset.arrow = position;
 		this.style.visibility = "visible";
-		instance = this;
+
 	}
 
 	get position()
@@ -112,6 +117,9 @@ export default class GTooltip extends HTMLElement
 
 	hide()
 	{
+		if (this.parentNode === document.body)
+			return this.remove();
+
 		this.style.visibility = "hidden";
 		this.style.display = "";
 	}
@@ -126,7 +134,7 @@ export default class GTooltip extends HTMLElement
 		if (height)
 			tooltip.style.height = height;
 
-		tooltip.innerHTML = Formatter.JSONtoHTML(content);
+		tooltip.innerHTML = content;
 		tooltip.show(element, position || DEFAULT_POSITION);
 	}
 
@@ -157,23 +165,13 @@ window.addEventListener("mouseover", function (event)
 	{
 		if (target.hasAttribute && target.hasAttribute("data-tooltip"))
 		{
-			let content = JSON.parse(target.getAttribute("data-tooltip"));
-			target.addEventListener("mouseleave", () => GTooltip.hide(), {once: true});
+			let json = JSON.parse(target.getAttribute("data-tooltip"));
+			let content = Formatter.JSONtoHTML(json);
 			let position = target.getAttribute("data-tooltip:position");
-			GTooltip.show(target, content, position);
-			return;
+			return GTooltip.show(target, content, position);
 		} else if (target.children)
-		{
 			for (let tooltip of target.children)
-			{
 				if (tooltip.tagName === "G-TOOLTIP")
-				{
-					target.addEventListener("mouseleave",
-						() => tooltip.hide(), {once: true});
-					tooltip.show(target);
-					return;
-				}
-			}
-		}
+					return tooltip.show(target);
 	}
 });
