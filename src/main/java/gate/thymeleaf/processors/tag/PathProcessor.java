@@ -4,12 +4,11 @@ import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.base.Screen;
 import gate.type.Attributes;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -34,15 +33,15 @@ public class PathProcessor extends TagProcessor
 		String screen = extract(element, handler, "screen").orElse(null);
 		String action = extract(element, handler, "action").orElse(null);
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		var request = ((IWebContext) context).getExchange().getRequest();
 
 		boolean empty = module == null && screen == null && action == null;
 		if ("#".equals(module) || empty)
-			module = request.getParameter("MODULE");
+			module = request.getParameterValue("MODULE");
 		if ("#".equals(screen) || empty)
-			screen = request.getParameter("SCREEN");
+			screen = request.getParameterValue("SCREEN");
 		if ("#".equals(action) || empty)
-			action = request.getParameter("ACTION");
+			action = request.getParameterValue("ACTION");
 
 		StringJoiner string = new StringJoiner("");
 		if (module != null)

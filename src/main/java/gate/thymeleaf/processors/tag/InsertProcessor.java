@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.LinkedList;
-import javax.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -20,19 +20,10 @@ public class InsertProcessor extends TagModelProcessor
 	@Override
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		var request = ((IWebContext) context).getRequest();
-		IModel content = (IModel) ((LinkedList) request.getAttribute("g-template-content")).removeLast();
+		var exchange = ((IWebContext) context).getExchange();
+		IModel content = (IModel) ((LinkedList) exchange.getAttributeValue("g-template-content")).removeLast();
 		model.reset();
 		model.insertModel(0, content);
 
 	}
-//
-//	@Override
-//	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
-//	{
-//		var request = ((IWebContext) context).getRequest();
-//		var content = request.getAttribute("g-template-content");
-//		request.removeAttribute("g-template-content");
-//		handler.replaceWith(content.toString(), false);
-//	}
 }

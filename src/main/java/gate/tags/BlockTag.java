@@ -1,7 +1,7 @@
 package gate.tags;
 
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
 
 public class BlockTag extends AttributeTag
 {

@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.thymeleaf.Precedence;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;

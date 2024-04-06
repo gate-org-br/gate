@@ -3,9 +3,9 @@ package gate.policonverter;
 import gate.error.ConversionException;
 import gate.type.DateTime;
 import gate.type.collections.DateTimeSet;
+import jakarta.servlet.http.Part;
 import java.text.ParseException;
 import java.util.stream.Stream;
-import javax.servlet.http.Part;
 
 public class DateTimeSetPoliconverter implements Policonverter
 {

@@ -5,16 +5,14 @@ import gate.error.InvalidCredentialsException;
 import gate.type.ID;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import javax.crypto.SecretKey;
 
 public class Token
 {
 
-	private static final Key SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	private static final SecretKey SECRET = Jwts.SIG.HS256.key().build();
 
 	private Token()
 	{
@@ -25,11 +23,11 @@ public class Token
 	{
 		try
 		{
-			Claims claims = Jwts.parserBuilder()
-				.setSigningKey(SECRET)
+			Claims claims = Jwts.parser()
+				.verifyWith(SECRET)
 				.build()
-				.parseClaimsJws(string)
-				.getBody();
+				.parseSignedClaims(string)
+				.getPayload();
 
 			return new User().setId(ID.valueOf(claims.get("id", String.class)));
 		} catch (RuntimeException ex)
@@ -42,7 +40,7 @@ public class Token
 	{
 		String credentials = Jwts.builder()
 			.claim("id", user.getId().toString())
-			.setExpiration(Date.from(Instant.now().plusSeconds(600)))
+			.expiration(Date.from(Instant.now().plusSeconds(600)))
 			.signWith(SECRET).compact();
 
 		return credentials;

@@ -6,14 +6,14 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Page;
 import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.StringJoiner;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.web.IWebExchange;
 
 @ApplicationScoped
 public class PaginatorAttributeProcessor extends AttributeProcessor
@@ -30,13 +30,13 @@ public class PaginatorAttributeProcessor extends AttributeProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		HttpServletRequest request = (HttpServletRequest) ((IWebContext) context).getRequest();
-		Parameters queryString = Parameters.parse(request.getQueryString());
+		IWebExchange exchange = ((IWebContext) context).getExchange();
+		Parameters queryString = Parameters.parse(exchange.getRequest().getQueryString());
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
 
 		String url = String.format("Gate?%s", queryString.toString());
-		Screen screen = (Screen) request.getAttribute("screen");
+		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
 		var value = element.getAttributeValue("g:paginator");
 		handler.removeAttribute("g:paginator");

@@ -1,20 +1,19 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.PNG;
+import jakarta.servlet.http.Part;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class PNGConverter implements Converter
 {

@@ -3,9 +3,9 @@ package gate.handler;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class SafeStringHandler implements Handler

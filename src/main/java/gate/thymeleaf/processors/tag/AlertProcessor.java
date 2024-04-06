@@ -4,15 +4,15 @@ import gate.base.Screen;
 import gate.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.web.IWebExchange;
 
 @ApplicationScoped
 public class AlertProcessor extends TagProcessor {
@@ -31,8 +31,8 @@ public class AlertProcessor extends TagProcessor {
 				.map(Toolkit::list)
 				.orElseGet(() -> {
 					IWebContext webContext = (IWebContext) context;
-					HttpServletRequest request = webContext.getRequest();
-					Screen screen = (Screen) request.getAttribute("screen");
+					IWebExchange exchange = webContext.getExchange();
+					Screen screen = (Screen) exchange.getAttributeValue("screen");
 					return screen != null ? screen.getMessages() : List.of();
 				});
 

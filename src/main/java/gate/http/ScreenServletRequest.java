@@ -10,6 +10,10 @@ import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
 import gate.io.Credentials;
 import gate.policonverter.Policonverter;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -28,10 +32,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.Part;
 
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
@@ -51,7 +51,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			parts = Collections.emptyList();
 		} catch (IOException e)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -174,20 +174,21 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			throw new AuthenticationException("Invalid authorization header");
 
 		String type = authorization.group(1);
-		switch (type.toUpperCase())
+		return switch (type.toUpperCase())
 		{
-			case "BEARER":
-				return Optional.of(new BearerAuthorization(authorization.group(2)));
-			case "BASIC":
+			case "BEARER" ->
+				Optional.of(new BearerAuthorization(authorization.group(2)));
+			case "BASIC" ->
+			{
 				String value = authorization.group(2);
 				value = new String(Base64.getDecoder().decode(value));
 				Matcher basic = BASIC_AUTHORIZATION.matcher(value);
 				if (!basic.matches())
 					throw new AuthenticationException("Invalid basic authorization header");
-				return Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
-			default:
-				throw new AuthenticationException("Authorization type not supported: " + type);
-		}
+				yield Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
+			}
+			default -> throw new AuthenticationException("Authorization type not supported: " + type);
+		};
 
 	}
 

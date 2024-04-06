@@ -2,8 +2,8 @@ package gate.thymeleaf.processors.tag;
 
 import gate.icon.Emojis;
 import gate.thymeleaf.TextEngine;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -35,13 +35,13 @@ public class EmojisProcessor extends TagModelProcessor
 		IModel content = model.cloneModel();
 		model.reset();
 
-		var request = ((IWebContext) context).getRequest();
+		var exchange = ((IWebContext) context).getExchange();
 
 		for (gate.icon.Emoji emoji : Emojis.getInstance().get())
 		{
-			request.setAttribute(name, emoji);
+			exchange.setAttributeValue(name, emoji);
 			add(context, model, handler, engine.process(content, context));
-			request.removeAttribute(name);
+			exchange.removeAttribute(name);
 		}
 	}
 }

@@ -2,8 +2,8 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;

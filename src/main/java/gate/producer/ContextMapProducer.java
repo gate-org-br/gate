@@ -2,8 +2,8 @@ package gate.producer;
 
 import gate.annotation.Name;
 import gate.util.JNDIContextMap;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /**
  *

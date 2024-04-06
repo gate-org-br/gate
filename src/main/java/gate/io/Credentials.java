@@ -9,22 +9,20 @@ import gate.lang.json.JsonObject;
 import gate.type.ID;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
+import javax.crypto.SecretKey;
 
 public class Credentials
 {
 
 	private static final Pattern BEARER = Pattern.compile("Bearer (.*)");
-	private static final Key SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	private static final SecretKey SECRET = Jwts.SIG.HS256.key().build();
 
 	private Credentials()
 	{
@@ -35,11 +33,11 @@ public class Credentials
 	{
 		try
 		{
-			Claims claims = Jwts.parserBuilder()
-				.setSigningKey(SECRET)
+			Claims claims = Jwts.parser()
+				.verifyWith(SECRET)
 				.build()
-				.parseClaimsJws(string)
-				.getBody();
+				.parseSignedClaims(string)
+				.getPayload();
 
 			User user = new User();
 			user.setId(ID.valueOf(claims.get("id", String.class)));
@@ -81,7 +79,7 @@ public class Credentials
 				.setString("action", e.getAction()))
 				.collect(Collectors.toCollection(JsonArray::new))
 				.toString())
-			.setExpiration(Date.from(Instant.now().plusSeconds(3600)))
+			.expiration(Date.from(Instant.now().plusSeconds(3600)))
 			.signWith(SECRET).compact();
 
 		return credentials;

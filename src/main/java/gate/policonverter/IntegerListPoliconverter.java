@@ -1,8 +1,8 @@
 package gate.policonverter;
 
 import gate.type.collections.IntegerList;
+import jakarta.servlet.http.Part;
 import java.util.stream.Stream;
-import javax.servlet.http.Part;
 
 public class IntegerListPoliconverter implements Policonverter
 {

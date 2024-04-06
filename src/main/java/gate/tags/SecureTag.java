@@ -1,7 +1,7 @@
 package gate.tags;
 
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 public class SecureTag extends AccessTag
 {

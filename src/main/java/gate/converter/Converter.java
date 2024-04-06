@@ -5,7 +5,10 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
+import static gate.lang.json.JsonToken.Type.NULL;
+import static gate.lang.json.JsonToken.Type.STRING;
 import gate.lang.json.JsonWriter;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -18,7 +21,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.servlet.http.Part;
 
 /**
  * Adapts a java class to be used by the gate framework.

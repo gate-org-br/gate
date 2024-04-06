@@ -2,12 +2,13 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.NotFoundExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a requested resource could not be found.
  */
 @Catcher(NotFoundExceptionCatcher.class)
-public class NotFoundException extends AppException
+public class NotFoundException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -30,4 +31,9 @@ public class NotFoundException extends AppException
 		super(message);
 	}
 
+	@Override
+	public int getStatusCode()
+	{
+		return HttpServletResponse.SC_NOT_FOUND;
+	}
 }

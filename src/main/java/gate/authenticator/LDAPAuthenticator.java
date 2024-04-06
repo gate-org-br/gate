@@ -5,11 +5,12 @@ import gate.entity.User;
 import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
+import gate.error.HttpException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import gate.util.SystemProperty;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
@@ -20,14 +21,12 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.servlet.http.HttpServletResponse;
 
 public class LDAPAuthenticator implements Authenticator
 {
 
 	private final String server;
 	private final GateControl control;
-	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	private LDAPAuthenticator(GateControl control, String server)
 	{
@@ -53,8 +52,14 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
+	public boolean isPresent(ScreenServletRequest request) throws gate.error.AuthenticationException
+	{
+		return request.getBasicAuthorization().isPresent();
+	}
+
+	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-		throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException, gate.error.AuthenticationException
+		throws HttpException, gate.error.AuthenticationException, HierarchyException
 	{
 
 		var authorization = request.getBasicAuthorization().orElse(null);
@@ -66,6 +71,8 @@ public class LDAPAuthenticator implements Authenticator
 
 		try
 		{
+
+			@SuppressWarnings("UseOfObsoleteCollectionType")
 			Hashtable<String, String> parameters = new Hashtable<>();
 			parameters.put(Context.PROVIDER_URL, server);
 			parameters.put(Context.SECURITY_AUTHENTICATION, "none");

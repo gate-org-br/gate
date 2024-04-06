@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag;
 
 import gate.entity.User;
 import gate.thymeleaf.Precedence;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -20,8 +20,8 @@ public class SuperUserProcessor extends TagModelProcessor
 	@Override
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		var request = ((IWebContext) context).getRequest();
-		User user = (User) request.getSession().getAttribute(User.class.getName());
+		var session = ((IWebContext) context).getExchange().getSession();
+		User user = (User) session.getAttributeValue(User.class.getName());
 		if (user != null && user.isSuperUser())
 			removeTag(context, model, handler);
 		else

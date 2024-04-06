@@ -1,7 +1,7 @@
 package gate.policonverter;
 
 import gate.error.ConversionException;
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 public interface Policonverter
 {

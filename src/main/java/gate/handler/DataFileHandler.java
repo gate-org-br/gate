@@ -1,12 +1,12 @@
 package gate.handler;
 
 import gate.type.DataFile;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class DataFileHandler implements Handler
@@ -21,7 +21,7 @@ public class DataFileHandler implements Handler
 		response.setContentLength(dataFile.getData().length);
 		response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", dataFile.getName()));
 
-		try ( OutputStream os = response.getOutputStream())
+		try (OutputStream os = response.getOutputStream())
 		{
 			os.write(dataFile.getData());
 			os.flush();

@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import java.util.StringJoiner;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
 
 public class PathTag extends AttributeTag
 {

@@ -1,8 +1,8 @@
 package gate.tags.anchor;
 
 import gate.type.Attributes;
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
 
 public class MenuTag extends AnchorTag
 {

@@ -6,19 +6,19 @@ import gate.thymeleaf.TextEngine;
 import gate.type.Attributes;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.web.IWebExchange;
 
 @ApplicationScoped
 public class IterateAttributeProcessor extends AttributeModelProcessor
@@ -38,7 +38,7 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 	@Override
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		IWebExchange exchange = ((IWebContext) context).getExchange();
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		var source = expression.create().evaluate(element.getAttributeValue("g:iterate"));
@@ -62,49 +62,49 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 		IModel content = model.cloneModel();
 		model.reset();
 
-		if (request.getAttribute(index) == null)
+		if (exchange.getAttributeValue(index) == null)
 		{
-			request.setAttribute(index, -1);
-			if (request.getAttribute(depth) == null)
+			exchange.setAttributeValue(index, -1);
+			if (exchange.getAttributeValue(depth) == null)
 			{
-				request.setAttribute(depth, -1);
-				iterate(context, model, handler, content, request, source, target, index, depth, children);
-				request.removeAttribute(depth);
+				exchange.setAttributeValue(depth, -1);
+				iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+				exchange.removeAttribute(depth);
 			} else
-				iterate(context, model, handler, content, request, source, target, index, depth, children);
-			request.removeAttribute(index);
-		} else if (request.getAttribute(depth) == null)
+				iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+			exchange.removeAttribute(index);
+		} else if (exchange.getAttributeValue(depth) == null)
 		{
-			request.setAttribute(depth, -1);
-			iterate(context, model, handler, content, request, source, target, index, depth, children);
-			request.removeAttribute(depth);
+			exchange.setAttributeValue(depth, -1);
+			iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+			exchange.removeAttribute(depth);
 		} else
-			iterate(context, model, handler, content, request, source, target, index, depth, children);
+			iterate(context, model, handler, content, exchange, source, target, index, depth, children);
 	}
 
 	private void iterate(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-		IModel content, HttpServletRequest request, Object source,
+		IModel content, IWebExchange exchange, Object source,
 		String target, String index, String depth, Function<Object, Object> children)
 	{
-		request.setAttribute(depth, ((int) request.getAttribute(depth)) + 1);
+		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
 		{
-			request.setAttribute(index, ((int) request.getAttribute(index)) + 1);
+			exchange.setAttributeValue(index, ((int) exchange.getAttributeValue(index)) + 1);
 
 			if (target != null)
-				request.setAttribute(target, value);
+				exchange.setAttributeValue(target, value);
 			add(context, model, handler, engine.process(content, context));
 			if (target != null)
-				request.removeAttribute(target);
+				exchange.removeAttribute(target);
 
 			if (value != null)
 				if (children != null)
 					for (Object child : Toolkit.iterable(children.apply(value)))
-						iterate(context, model, handler, content, request, child, target, index, depth, children);
-				else if (value instanceof Hierarchy)
-					((Hierarchy) value).getChildren().forEach(child -> iterate(context, model, handler, content, request, child, target, index, depth, children));
+						iterate(context, model, handler, content, exchange, child, target, index, depth, children);
+				else if (value instanceof Hierarchy hierarchy)
+					hierarchy.getChildren().forEach(child -> iterate(context, model, handler, content, exchange, child, target, index, depth, children));
 		}
-		request.setAttribute(depth, ((int) request.getAttribute(depth)) - 1);
+		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) - 1);
 	}
 
 	@Override

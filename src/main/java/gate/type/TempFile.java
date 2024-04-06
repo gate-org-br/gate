@@ -4,6 +4,8 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.TempFileConverter;
 import gate.handler.TempFileHandler;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,8 +15,6 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.enterprise.inject.spi.CDI;
-import javax.servlet.http.Part;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -145,8 +145,8 @@ public class TempFile implements AutoCloseable
 		TempFile tempFile = TempFile.empty()
 			.named(part.getSubmittedFileName());
 
-		try ( InputStream inputStream = part.getInputStream();
-			 OutputStream outputStream = tempFile.getOutputStream())
+		try (InputStream inputStream = part.getInputStream();
+			OutputStream outputStream = tempFile.getOutputStream())
 		{
 			inputStream.transferTo(outputStream);
 			return tempFile;
@@ -167,7 +167,7 @@ public class TempFile implements AutoCloseable
 	{
 		TempFile tempFile = TempFile.empty();
 
-		try ( OutputStream outputStream = tempFile.getOutputStream())
+		try (OutputStream outputStream = tempFile.getOutputStream())
 		{
 			outputStream.write(bytes);
 			return tempFile;
@@ -189,7 +189,7 @@ public class TempFile implements AutoCloseable
 	{
 		TempFile tempFile = TempFile.empty();
 
-		try ( OutputStream outputStream = tempFile.getOutputStream())
+		try (OutputStream outputStream = tempFile.getOutputStream())
 		{
 			inputStream.transferTo(outputStream);
 			return tempFile;

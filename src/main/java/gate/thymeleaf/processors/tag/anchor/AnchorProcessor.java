@@ -9,11 +9,10 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import jakarta.inject.Inject;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -52,12 +51,12 @@ public abstract class AnchorProcessor extends TagModelProcessor
 			.forEach(e -> parameters.put(e.getKey().substring(1), expression.create().evaluate((String) e.getValue())));
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		var exchange = ((IWebContext) context).getExchange();
 
 		Call call;
 		try
 		{
-			call = Call.of(request,
+			call = Call.of(exchange,
 				(String) attributes.remove("module"),
 				(String) attributes.remove("screen"),
 				(String) attributes.remove("action"));
@@ -84,7 +83,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 			call.getName().ifPresent(e -> attributes.put("title", e));
 		}
 
-		User user = (User) request.getSession().getAttribute(User.class.getName());
+		User user = (User) exchange.getSession().getAttributeValue(User.class.getName());
 
 		process(context, model, handler, element, user, call, attributes, parameters);
 	}

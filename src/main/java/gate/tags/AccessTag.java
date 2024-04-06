@@ -4,11 +4,11 @@ import gate.Call;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.BadRequestException;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public abstract class AccessTag extends SimpleTagSupport
 {

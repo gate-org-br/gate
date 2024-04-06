@@ -2,8 +2,8 @@ package gate.thymeleaf.processors;
 
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IText;
 import org.thymeleaf.processor.text.ITextProcessor;

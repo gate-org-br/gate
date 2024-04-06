@@ -2,10 +2,10 @@ package gate.policonverter;
 
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import jakarta.servlet.http.Part;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import javax.servlet.http.Part;
 
 public class CollectionPoliconverter implements Policonverter
 {

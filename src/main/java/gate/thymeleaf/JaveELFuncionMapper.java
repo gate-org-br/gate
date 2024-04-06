@@ -1,11 +1,11 @@
 package gate.thymeleaf;
 
 import gate.tags.TagLib;
+import jakarta.el.FunctionMapper;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import javax.el.FunctionMapper;
 
 public class JaveELFuncionMapper extends FunctionMapper
 {

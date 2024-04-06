@@ -1,7 +1,8 @@
 package gate.annotation;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
-class CurrentQualifier extends AnnotationLiteral<Current> implements Current {
+class CurrentQualifier extends AnnotationLiteral<Current> implements Current
+{
 
 }

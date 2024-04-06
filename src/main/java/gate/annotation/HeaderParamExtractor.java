@@ -4,9 +4,9 @@ import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.HeaderParam;
 import java.lang.reflect.Parameter;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.HeaderParam;
 
 public class HeaderParamExtractor
 {

@@ -4,8 +4,8 @@ import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
+import jakarta.ws.rs.DefaultValue;
 import java.lang.reflect.Parameter;
-import javax.ws.rs.DefaultValue;
 
 public class BodyParamExtractor
 {

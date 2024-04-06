@@ -2,9 +2,9 @@ package gate.thymeleaf.processors;
 
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagProcessor;

@@ -4,7 +4,6 @@ import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
 import gate.annotation.QueryParamExtractor;
-import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.BadRequestException;
@@ -18,6 +17,12 @@ import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
 import gate.util.Reflection;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.HeaderParam;
+import jakarta.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
@@ -26,15 +31,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.inject.spi.Unmanaged;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.QueryParam;
 
-public abstract class Screen extends Base
-{
+public abstract class Screen extends Base {
 
 	private String orderBy;
 	private Integer pageSize;
@@ -43,56 +41,41 @@ public abstract class Screen extends Base
 	private ScreenServletRequest request;
 	private HttpServletResponse response;
 
-	public static Screen create(Class<Screen> clazz)
-	{
+	public static Screen create(Class<Screen> clazz) {
 		Unmanaged.UnmanagedInstance<Screen> instance = null;
-		try
-		{
+		try {
 			instance = new Unmanaged<>(clazz).newInstance();
 			return instance.produce().inject().postConstruct().get();
-		} finally
-		{
+		} finally {
 			if (instance != null)
 				instance.preDestroy().dispose();
 		}
 	}
 
-	public void prepare(ScreenServletRequest request, HttpServletResponse response) throws BadRequestException
-	{
+	public void prepare(ScreenServletRequest request, HttpServletResponse response) throws BadRequestException {
 		this.request = request;
 		this.response = response;
 
-		try
-		{
-			getRequest().getParameterList().stream().sorted().forEach(name ->
-			{
+		try {
+			getRequest().getParameterList().stream().sorted().forEach(name -> {
 				Property property = Property.parse(getClass(), name);
-				if (property != null)
-				{
-					try
-					{
-						if (property.getLastAttribute() instanceof CollectionAttribute)
-						{
+				if (property != null) {
+					try {
+						if (property.getLastAttribute() instanceof CollectionAttribute) {
 							Property previous = property.getPreviousProperty();
 							previous.setValue(this, getRequest()
-								.getParameterValues(previous.getRawType(), property.getRawType(), name));
-						} else
-						{
+									.getParameterValues(previous.getRawType(), property.getRawType(), name));
+						} else {
 							Converter converter = property.getConverter();
 							Object value = getRequest().getParameterValue(name);
-							if (value instanceof Part)
-							{
+							if (value instanceof Part) {
 								Part part = (Part) value;
-								try
-								{
+								try {
 									value = converter.ofPart(property.getRawType(), part);
-								} finally
-								{
-									try
-									{
+								} finally {
+									try {
 										part.delete();
-									} catch (IOException ex)
-									{
+									} catch (IOException ex) {
 										throw new UncheckedIOException(ex);
 									}
 								}
@@ -100,23 +83,19 @@ public abstract class Screen extends Base
 								value = converter.ofString(property.getRawType(), (String) value);
 							property.setValue(this, value);
 						}
-					} catch (ConversionException ex)
-					{
+					} catch (ConversionException ex) {
 						throw new UncheckedConversionException(ex);
 					}
 				}
 			});
-		} catch (UncheckedConversionException | NoSuchPropertyError ex)
-		{
+		} catch (UncheckedConversionException | NoSuchPropertyError ex) {
 			throw new BadRequestException(ex.getCause().getMessage());
 		}
 	}
 
-	public Object execute(Method method) throws Throwable
-	{
+	public Object execute(Method method) throws Throwable {
 		var parameters = new ArrayList<>();
-		for (var parameter : method.getParameters())
-		{
+		for (var parameter : method.getParameters()) {
 			Object value;
 
 			if (parameter.isAnnotationPresent(QueryParam.class))
@@ -131,182 +110,138 @@ public abstract class Screen extends Base
 			parameters.add(value);
 		}
 
-		try
-		{
+		try {
 			return method.invoke(this, parameters.toArray());
-		} catch (InvocationTargetException ex)
-		{
+		} catch (InvocationTargetException ex) {
 			throw ex.getCause();
 		}
 	}
 
-	public Integer getDefaultPageSize()
-	{
+	public Integer getDefaultPageSize() {
 		return 10;
 	}
 
-	public String getModule()
-	{
+	public String getModule() {
 		return getRequest().getParameter("MODULE");
 	}
 
-	public String getScreen()
-	{
+	public String getScreen() {
 		return getRequest().getParameter("SCREEN");
 	}
 
-	public String getAction()
-	{
+	public String getAction() {
 		return getRequest().getParameter("ACTION");
 	}
 
-	public ScreenServletRequest getRequest()
-	{
+	public ScreenServletRequest getRequest() {
 		return request;
 	}
 
-	public HttpServletResponse getResponse()
-	{
+	public HttpServletResponse getResponse() {
 		return response;
 	}
 
-	public boolean isGET()
-	{
+	public boolean isGET() {
 		return "GET".equals(request.getMethod());
 	}
 
-	public boolean isDELETE()
-	{
+	public boolean isDELETE() {
 		return "DELETE".equals(request.getMethod());
 	}
 
-	public boolean isPOST()
-	{
+	public boolean isPOST() {
 		return "POST".equals(request.getMethod());
 	}
 
-	public boolean isPUT()
-	{
+	public boolean isPUT() {
 		return "PUT".equals(request.getMethod());
 	}
 
-	public boolean isPATCH()
-	{
+	public boolean isPATCH() {
 		return "PATCH".equals(request.getMethod());
 	}
 
-	public String getMethod()
-	{
+	public String getMethod() {
 		return request.getMethod().toLowerCase();
 	}
 
-	public List<String> getMessages()
-	{
+	public List<String> getMessages() {
 		if (messages == null)
 			messages = new LinkedList<>();
 		return messages;
 	}
 
-	public void setMessages(Exception ex)
-	{
+	public void setMessages(Exception ex) {
 		setMessages(ex.getMessage());
 	}
 
-	public void setMessages(AppException ex)
-	{
+	public void setMessages(AppException ex) {
 		setMessages(ex.getMessages());
 	}
 
-	public void setMessages(String... messages)
-	{
+	public void setMessages(String... messages) {
 		this.messages = List.of(messages);
 	}
 
-	public void setMessages(List<String> messages)
-	{
+	public void setMessages(List<String> messages) {
 		this.messages = messages;
 	}
 
-	public Integer getPageIndx()
-	{
+	public Integer getPageIndx() {
 		if (pageIndx == null)
 			pageIndx = 0;
 		return pageIndx;
 	}
 
-	public void setPageIndx(Integer pageIndx)
-	{
+	public void setPageIndx(Integer pageIndx) {
 		this.pageIndx = pageIndx;
 	}
 
-	public Integer getPageSize()
-	{
+	public Integer getPageSize() {
 		if (pageSize == null)
 			pageSize = getDefaultPageSize();
 		return pageSize;
 	}
 
-	public void setPageSize(Integer pageSize)
-	{
+	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
 
-	public String getOrderBy()
-	{
+	public String getOrderBy() {
 		return orderBy;
 	}
 
-	public void setOrderBy(String orderBy)
-	{
+	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
 	}
 
-	public <R> Page<R> paginate(List<R> data)
-	{
+	public <R> Page<R> paginate(List<R> data) {
 		return new Paginator<>(data, getPageSize()).getPage(getPageIndx());
 	}
 
-	public <T> List<T> ordenate(List<T> data)
-	{
+	public <T> List<T> ordenate(List<T> data) {
 		if (getOrderBy() != null)
 			data.sort(new PropertyComparator(getOrderBy()));
 		return data;
 	}
 
-	public static Optional<Class<Screen>> getScreen(String module, String screen)
-	{
-		try
-		{
+	public static Optional<Class<Screen>> getScreen(String module, String screen) {
+		try {
 			return Optional.of(Thread.currentThread().getContextClassLoader().loadClass(screen != null
-				? module + "." + screen
-				+ "Screen" : module + ".Screen"))
-				.map(e -> e.asSubclass(Screen.class
-			));
-		} catch (ClassNotFoundException ex)
-		{
+					? module + "." + screen
+							+ "Screen"
+					: module + ".Screen"))
+					.map(e -> (Class<Screen>) e);
+		} catch (ClassNotFoundException ex) {
 			return Optional.empty();
 		}
 	}
 
-	public static Optional<Method> getAction(Class<Screen> clazz, String action)
-	{
+	public static Optional<Method> getAction(Class<Screen> clazz, String action) {
 		return Reflection.findMethodByName(clazz, action != null ? "call" + action : "call");
 	}
 
-	public static Optional<Method> getAction(String module, String screen, String action)
-	{
+	public static Optional<Method> getAction(String module, String screen, String action) {
 		return getScreen(module, screen).flatMap(e -> getAction(e, action));
-	}
-
-	public String getDefaultJSP(Method method)
-	{
-		String screenName = getClass().getSimpleName();
-		PackageName packageName = PackageName.of(getClass());
-		return "/WEB-INF/vies/"
-			+ packageName.getFolderName()
-			+ "/"
-			+ screenName.substring(0, screenName.length() - 6)
-			+ "/"
-			+ method.getName().substring(4);
 	}
 }

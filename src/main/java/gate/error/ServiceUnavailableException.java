@@ -2,6 +2,7 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.InternalServerExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a requested resource could not be found.
@@ -28,6 +29,12 @@ public class ServiceUnavailableException extends InternalServerException
 	public ServiceUnavailableException(String message)
 	{
 		super(message);
+	}
+
+	@Override
+	public int getStatusCode()
+	{
+		return HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 	}
 
 }

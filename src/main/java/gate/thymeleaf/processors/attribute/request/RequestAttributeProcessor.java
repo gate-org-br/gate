@@ -11,16 +11,16 @@ import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import gate.util.Parameters;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
-import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.web.IWebExchange;
 
 public class RequestAttributeProcessor extends AttributeProcessor
 {
@@ -45,12 +45,12 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		handler.removeAttribute("g:screen");
 		handler.removeAttribute("g:action");
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		IWebExchange exchange = ((IWebContext) context).getExchange();
 
 		Call call;
 		try
 		{
-			call = Call.of(request, module, screen, action);
+			call = Call.of(exchange, module, screen, action);
 		} catch (BadRequestException ex)
 		{
 			throw new AppError(ex);

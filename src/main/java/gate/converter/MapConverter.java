@@ -13,7 +13,8 @@ public class MapConverter extends ObjectConverter
 {
 
 	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
+			throws ConversionException
 	{
 		if (scanner.getCurrent().getType() != JsonToken.Type.OPEN_OBJECT)
 			throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
@@ -29,18 +30,20 @@ public class MapConverter extends ObjectConverter
 			{
 				empty = false;
 				if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
-					throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
+					throw new ConversionException(
+							scanner.getCurrent() + " is not a valid JSON object key");
 
 				String key = scanner.getCurrent().toString();
 
 				scanner.scan();
 				if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
-					throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
+					throw new ConversionException(
+							scanner.getCurrent() + " is not a valid JSON object");
 
 				scanner.scan();
 				Converter converter = Converter.getConverter((Class) elementType);
 				Object value = converter.ofJson(scanner, elementType,
-					Reflection.getElementType(elementType));
+						Reflection.getElementType(elementType));
 				object.put(key, value);
 			} else if (!empty)
 				throw new ConversionException("the specified JsonElement is not a JsonObject");
@@ -72,7 +75,8 @@ public class MapConverter extends ObjectConverter
 				writer.write(JsonToken.Type.STRING, Converter.toString(entry.getKey()));
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
 				Converter converter = Converter.getConverter(entry.getValue().getClass());
-				converter.toJson(writer, (Class<Object>) entry.getValue().getClass(), entry.getValue());
+				converter.toJson(writer, (Class<Object>) entry.getValue().getClass(),
+						entry.getValue());
 			}
 		}
 
@@ -80,7 +84,8 @@ public class MapConverter extends ObjectConverter
 	}
 
 	@Override
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
+			throws ConversionException
 	{
 		Map<?, ?> map = (Map<?, ?>) object;
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
@@ -98,7 +103,8 @@ public class MapConverter extends ObjectConverter
 				writer.write(JsonToken.Type.STRING, Converter.toString(entry.getKey()));
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
 				Converter converter = Converter.getConverter(entry.getValue().getClass());
-				converter.toJsonText(writer, (Class<Object>) entry.getValue().getClass(), entry.getValue());
+				converter.toJsonText(writer, (Class<Object>) entry.getValue().getClass(),
+						entry.getValue());
 			}
 		}
 

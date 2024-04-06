@@ -11,9 +11,9 @@ import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class OptionHandler implements Handler {

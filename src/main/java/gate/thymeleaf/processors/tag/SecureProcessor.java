@@ -6,9 +6,8 @@ import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -33,10 +32,10 @@ public class SecureProcessor extends TagProcessor
 	{
 		try
 		{
-			HttpServletRequest request = ((IWebContext) context).getRequest();
-			User user = (User) request.getSession().getAttribute(User.class.getName());
+			var exchange = ((IWebContext) context).getExchange();
+			User user = (User) exchange.getSession().getAttributeValue(User.class.getName());
 
-			if (Call.of(request,
+			if (Call.of(exchange,
 				element.getAttributeValue("module"),
 				element.getAttributeValue("screen"),
 				element.getAttributeValue("action"))

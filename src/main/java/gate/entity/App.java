@@ -8,12 +8,12 @@ import gate.converter.AppConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
+import jakarta.enterprise.context.Dependent;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.enterprise.context.Dependent;
 
 @Dependent
 @Icon("2189")

@@ -4,11 +4,11 @@ import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.DefaultValue;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 import java.util.stream.Stream;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.DefaultValue;
 
 public class CookieParamExtractor
 {

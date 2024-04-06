@@ -88,7 +88,8 @@ public class SIMCardConverter implements Converter
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
+		throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, ((SIMCard) value).getValue());

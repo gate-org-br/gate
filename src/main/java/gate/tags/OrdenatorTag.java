@@ -2,10 +2,10 @@ package gate.tags;
 
 import gate.error.ConversionException;
 import gate.util.Parameters;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
 
 public class OrdenatorTag extends AttributeTag
 {

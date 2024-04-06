@@ -1,9 +1,11 @@
 package gate.error;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * Signals that the client must authenticate itself to access the requested resource.
  */
-public class UnauthorizedException extends AppException
+public class UnauthorizedException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -24,5 +26,11 @@ public class UnauthorizedException extends AppException
 	public UnauthorizedException(String message)
 	{
 		super(message);
+	}
+
+	@Override
+	public int getStatusCode()
+	{
+		return HttpServletResponse.SC_UNAUTHORIZED;
 	}
 }

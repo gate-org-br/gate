@@ -5,7 +5,7 @@ import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.tags.AttributeTag;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 abstract class PropertyTag extends AttributeTag
 {

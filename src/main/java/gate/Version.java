@@ -1,12 +1,12 @@
 package gate;
 
+import jakarta.inject.Inject;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/Version")
 public class Version extends HttpServlet
@@ -20,7 +20,7 @@ public class Version extends HttpServlet
 	@Override
 	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(version.toString());
 			writer.flush();

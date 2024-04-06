@@ -1,7 +1,7 @@
 package gate.tags.anchor;
 
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
 
 public class ShortcutTag extends AnchorTag
 {

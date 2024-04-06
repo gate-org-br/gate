@@ -6,6 +6,7 @@ import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.type.mime.MimeData;
 import gate.util.Strings;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
@@ -14,7 +15,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class MimeDataConverter implements Converter
 {

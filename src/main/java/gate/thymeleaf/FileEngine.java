@@ -1,8 +1,8 @@
 package gate.thymeleaf;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.io.Writer;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.templatemode.TemplateMode;

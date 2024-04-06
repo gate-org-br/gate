@@ -2,9 +2,8 @@ package gate.thymeleaf.processors.tag;
 
 import gate.type.Attributes;
 import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -25,7 +24,7 @@ public class OrdenatorProcessor extends TagModelProcessor
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
 		IWebContext webContext = (IWebContext) context;
-		HttpServletRequest request = webContext.getRequest();
+		var request = webContext.getExchange().getRequest();
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		String method = Optional.ofNullable(element.getAttributeValue("method"))
@@ -33,7 +32,7 @@ public class OrdenatorProcessor extends TagModelProcessor
 		String property = Optional.ofNullable(element.getAttributeValue("property")).orElseThrow(()
 			-> new TemplateProcessingException("Missing required attribute property on g:" + getName()));
 
-		String orderBy = request.getParameter("orderBy");
+		String orderBy = request.getParameterValue("orderBy");
 		Parameters queryString = Parameters.parse(request.getQueryString());
 		Optional.ofNullable(element.getAttributeValue("arguments")).map(Parameters::parse).ifPresent(queryString::putAll);
 		queryString.remove("orderBy");

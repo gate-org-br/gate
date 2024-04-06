@@ -6,7 +6,7 @@ import gate.lang.property.Property;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 public class PropertiesTag extends AttributeTag
 {

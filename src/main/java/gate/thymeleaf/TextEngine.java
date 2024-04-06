@@ -1,11 +1,11 @@
 package gate.thymeleaf;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import ognl.OgnlRuntime;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
@@ -51,7 +51,7 @@ public interface TextEngine
 		@Override
 		public String process(IModel imodel, IContext context)
 		{
-			try ( StringWriter writer = new StringWriter())
+			try (StringWriter writer = new StringWriter())
 			{
 				imodel.write(writer);
 				writer.flush();

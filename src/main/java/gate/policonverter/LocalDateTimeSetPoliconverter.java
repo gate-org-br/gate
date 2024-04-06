@@ -2,9 +2,9 @@ package gate.policonverter;
 
 import gate.error.ConversionException;
 import gate.type.collections.LocalDateTimeSet;
+import jakarta.servlet.http.Part;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
-import javax.servlet.http.Part;
 
 public class LocalDateTimeSetPoliconverter implements Policonverter
 {

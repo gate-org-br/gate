@@ -1,15 +1,15 @@
 package gate.tags.iterable;
 
 import gate.util.Toolkit;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.LambdaExpression;
+import jakarta.el.StandardELContext;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.Objects;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.LambdaExpression;
-import javax.el.StandardELContext;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public abstract class IterableTag extends SimpleTagSupport
 {

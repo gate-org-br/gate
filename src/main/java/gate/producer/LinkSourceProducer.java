@@ -3,8 +3,8 @@ package gate.producer;
 import gate.annotation.DataSource;
 import gate.annotation.DefaultDataSource;
 import gate.sql.LinkSource;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 public class LinkSourceProducer
 {

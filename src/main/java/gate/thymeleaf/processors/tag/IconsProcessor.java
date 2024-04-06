@@ -3,8 +3,8 @@ package gate.thymeleaf.processors.tag;
 import gate.icon.Icon;
 import gate.icon.Icons;
 import gate.thymeleaf.TextEngine;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -36,13 +36,13 @@ public class IconsProcessor extends TagModelProcessor
 		IModel content = model.cloneModel();
 		model.reset();
 
-		var request = ((IWebContext) context).getRequest();
+		var exchange = ((IWebContext) context).getExchange();
 
 		for (Icon icon : Icons.getInstance().get())
 		{
-			request.setAttribute(name, icon);
+			exchange.setAttributeValue(name, icon);
 			add(context, model, handler, engine.process(content, context));
-			request.removeAttribute(name);
+			exchange.removeAttribute(name);
 		}
 	}
 }

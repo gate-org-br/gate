@@ -1,10 +1,10 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.thymeleaf.TextEngine;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -42,13 +42,13 @@ public class EnumerateProcessor extends TagModelProcessor
 			IModel content = model.cloneModel();
 			model.reset();
 
-			var request = ((IWebContext) context).getRequest();
+			var exchange = ((IWebContext) context).getExchange();
 
 			for (var e : List.of(type.getEnumConstants()))
 			{
-				request.setAttribute(target, e);
+				exchange.setAttributeValue(target, e);
 				add(context, model, handler, engine.process(content, context));
-				request.removeAttribute(target);
+				exchange.removeAttribute(target);
 			}
 		} catch (ClassNotFoundException ex)
 		{

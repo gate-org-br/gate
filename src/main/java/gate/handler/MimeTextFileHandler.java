@@ -5,10 +5,10 @@ import gate.type.mime.MimeTextFile;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class MimeTextFileHandler implements Handler

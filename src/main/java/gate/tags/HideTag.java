@@ -2,7 +2,7 @@ package gate.tags;
 
 import gate.icon.Icons;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 public class HideTag extends AttributeTag
 {

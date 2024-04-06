@@ -3,10 +3,10 @@ package gate.tags;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import org.slf4j.LoggerFactory;
 
 public class TemplateTag extends SimpleTagSupport

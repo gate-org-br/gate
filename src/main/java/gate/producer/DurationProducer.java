@@ -1,9 +1,9 @@
 package gate.producer;
 
 import gate.type.Duration;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 import java.io.Serializable;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 
 /**
  *

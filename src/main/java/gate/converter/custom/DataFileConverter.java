@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.type.DataFile;
+import jakarta.servlet.http.Part;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class DataFileConverter implements Converter
 {

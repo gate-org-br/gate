@@ -5,11 +5,10 @@ import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -36,8 +35,8 @@ public abstract class PropertyProcessor extends TagProcessor
 
 		var expression = expressionFactory.create();
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Screen screen = (Screen) request.getAttribute("screen");
+		var exchange = ((IWebContext) context).getExchange();
+		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),

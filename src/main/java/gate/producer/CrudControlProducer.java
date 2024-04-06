@@ -2,9 +2,9 @@ package gate.producer;
 
 import gate.annotation.Type;
 import gate.base.CrudControl;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
-import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.spi.InjectionPoint;
 
 /**
  * @author davins

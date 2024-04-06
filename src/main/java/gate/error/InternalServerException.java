@@ -2,12 +2,13 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.InternalServerExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a requested resource could not be found.
  */
 @Catcher(InternalServerExceptionCatcher.class)
-public class InternalServerException extends AppException
+public class InternalServerException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -28,6 +29,12 @@ public class InternalServerException extends AppException
 	public InternalServerException(String message)
 	{
 		super(message);
+	}
+
+	@Override
+	public int getStatusCode()
+	{
+		return HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 	}
 
 }

@@ -3,14 +3,13 @@ package gate.authenticator;
 import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
-import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
+import gate.error.HttpException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class DatabaseAuthenticator implements Authenticator
 {
@@ -34,14 +33,15 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
+	public boolean isPresent(ScreenServletRequest request) throws AuthenticationException
+	{
+		return request.getBasicAuthorization().isPresent();
+	}
+
+	@Override
 	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
-		throws AuthenticatorException,
-		InvalidPasswordException,
-		InvalidUsernameException,
-		HierarchyException,
-		DefaultPasswordException,
-		AuthenticationException
+		throws HttpException, AuthenticationException, HierarchyException
 	{
 
 		var authorization = request.getBasicAuthorization().orElse(null);

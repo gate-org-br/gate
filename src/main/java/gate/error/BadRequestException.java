@@ -2,9 +2,10 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.BatdRequestExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Catcher(BatdRequestExceptionCatcher.class)
-public class BadRequestException extends AppException
+public class BadRequestException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -23,6 +24,12 @@ public class BadRequestException extends AppException
 	{
 		super(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
 			module, screen, action));
+	}
+
+	@Override
+	public int getStatusCode()
+	{
+		return HttpServletResponse.SC_BAD_REQUEST;
 	}
 
 }

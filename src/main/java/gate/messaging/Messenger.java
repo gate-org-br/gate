@@ -11,24 +11,24 @@ import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
 import gate.type.mime.MimeText;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.servlet.ServletContextListener;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 
 @ApplicationScoped
@@ -118,7 +118,7 @@ public class Messenger implements ServletContextListener
 
 	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		CheckedOptional.of(MessageException.class, control.server()).ifPresent(server ->
+		CheckedOptional.of(MessageException.class, control.server()).ifPresent​(server ->
 		{
 			if (server.getUsername() != null)
 				post(server.getUsername(), receiver, mail);
@@ -135,7 +135,7 @@ public class Messenger implements ServletContextListener
 	private void send(String sender, String receiver, MimeMail<?> mail) throws MessageException
 	{
 		CheckedOptional.of(MessageException.class, control.server())
-			.ifPresent(server -> send(server, sender, receiver, mail));
+			.ifPresent​(server -> send(server, sender, receiver, mail));
 	}
 
 	public void send(Server server, String sender, String receiver, MimeMail<?> mail) throws MessagingException
@@ -159,7 +159,7 @@ public class Messenger implements ServletContextListener
 		if (server.getUseSSL())
 			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
-		javax.mail.Session session = javax.mail.Session.getInstance(props, new javax.mail.Authenticator()
+		jakarta.mail.Session session = jakarta.mail.Session.getInstance(props, new jakarta.mail.Authenticator()
 		{
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication()
@@ -178,7 +178,7 @@ public class Messenger implements ServletContextListener
 		else if (mail.getPriority() == MimeMail.Priority.HIGH)
 			mimeMessage.setHeader("X-Priority", "1");
 
-		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
+		mimeMessage.addRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(receiver));
 
 		if (mail.getContent() instanceof MimeText mimeText)
 		{

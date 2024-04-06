@@ -2,12 +2,10 @@ package gate.tags;
 
 import gate.annotation.Current;
 import gate.entity.User;
-
+import jakarta.inject.Inject;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
-import javax.inject.Inject;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public class SuperUserTag extends SimpleTagSupport
 {

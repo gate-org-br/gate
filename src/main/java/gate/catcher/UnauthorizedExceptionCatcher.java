@@ -1,6 +1,6 @@
 package gate.catcher;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class UnauthorizedExceptionCatcher extends HttpExceptionCatcher

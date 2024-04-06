@@ -6,12 +6,9 @@ import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
 import gate.error.BadRequestException;
-import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
-import gate.http.Authorization;
-import gate.http.BasicAuthorization;
+import gate.error.HttpException;
+import gate.error.InternalServerException;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.URL;
@@ -20,9 +17,8 @@ import gate.util.Parameters;
 import gate.util.SecuritySessions;
 import gate.util.SystemProperty;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -31,7 +27,6 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
-import javax.servlet.http.HttpServletResponse;
 
 public class OIDCAuthenticator implements Authenticator
 {
@@ -48,8 +43,7 @@ public class OIDCAuthenticator implements Authenticator
 	private final Cache<String> clientSecret = Cache.of(() -> SystemProperty.get("gate.auth.oidc.client_secret")
 		.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_secret system property")));
 
-	private final Cache<String> redirectUri = Cache.of(() -> SystemProperty.get("gate.auth.oidc.redirect_uri")
-		.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.redirect_uri system property")));
+	private final Cache<String> redirectUri = Cache.of(() -> SystemProperty.get("gate.auth.oidc.redirect_uri").orElse("${server}/Gate"));
 
 	private final Cache<String> scope = Cache
 		.of(() -> SystemProperty.get("gate.auth.oidc.scope").orElse("openid email profile"));
@@ -67,8 +61,7 @@ public class OIDCAuthenticator implements Authenticator
 			return new URL(configurationEndpoint.get())
 				.get()
 				.readJsonObject()
-				.orElseThrow(
-					() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -110,14 +103,12 @@ public class OIDCAuthenticator implements Authenticator
 			BigInteger modulos = object.getString("n")
 				.map(Base64.getUrlDecoder()::decode)
 				.map(e -> new BigInteger(1, e))
-				.orElseThrow(() -> new AuthenticatorException(
-				"Error trying to get public key modulus from auth provider"));
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key modulus from auth provider"));
 
 			BigInteger exponent = object.getString("e")
 				.map(Base64.getUrlDecoder()::decode)
 				.map(e -> new BigInteger(1, e))
-				.orElseThrow(() -> new AuthenticatorException(
-				"Error trying to get public key exponent from auth provider"));
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key exponent from auth provider"));
 
 			RSAPublicKeySpec spec = new RSAPublicKeySpec(modulos, exponent);
 			return KeyFactory.getInstance("RSA").generatePublic(spec);
@@ -126,6 +117,15 @@ public class OIDCAuthenticator implements Authenticator
 			throw new AuthenticatorException(ex);
 		}
 	});
+
+	private String getCallback(ScreenServletRequest request)
+	{
+		return redirectUri.get()
+			.replace("${server}", "%s://%s:%d"
+				.formatted(request.getScheme(),
+					request.getLocalAddr(),
+					request.getLocalPort()));
+	}
 
 	private OIDCAuthenticator(GateControl control)
 	{
@@ -141,52 +141,94 @@ public class OIDCAuthenticator implements Authenticator
 	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
 		String session = SESSIONS.create();
+
 		return new URL(authorizationEndpoint.get())
 			.setParameter("response_type", "code")
 			.setParameter("client_id", clientId.get())
-			.setParameter("redirect_uri", redirectUri.get())
+			.setParameter("redirect_uri", getCallback(request))
 			.setParameter("scope", scope.get())
 			.setParameter("state", session)
 			.toString();
 	}
 
 	@Override
+	public boolean isPresent(ScreenServletRequest request) throws AuthenticationException
+	{
+		return request.getParameter("code") != null
+			|| request.getBearerAuthorization().isPresent();
+	}
+
+	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-		throws InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException,
-		BadRequestException
+		throws HttpException, AuthenticationException, HierarchyException
 	{
 		try
 		{
-
-			JsonObject tokens = getTokens(request);
-
-			if (tokens.containsKey("id_token"))
-			{
-				Jwt<Header, Claims> jwt = tokens.getString("id_token")
-					.map(Jwts.parserBuilder().setSigningKey(publicKey.get()).build()::parse)
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get id token from auth provider"));
-
-				if (jwt.getBody().containsKey(userId.get()))
-					return control.select((String) jwt.getBody().get("email", String.class));
-			}
-
-			String accessToken = tokens
-				.getString("access_token")
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get access token from auth provider"));
-
-			JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setCredentials(accessToken)
-				.get()
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get user info from auth provider"));
-
-			return control.select(userInfo.getString(userId.get())
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get user user id from auth provider")));
-
-		} catch (IOException | AuthenticationException ex)
+			if (request.getParameter("code") != null)
+				return authorizationCodeFlow(request, response);
+			else
+				return clientCredentialsCodeFlow(request, response);
+		} catch (IOException | RuntimeException ex)
 		{
-			throw new BadRequestException();
+			throw new InternalServerException();
 		}
+	}
+
+	private User authorizationCodeFlow(ScreenServletRequest request, HttpServletResponse response)
+		throws HttpException, AuthenticationException, HierarchyException, IOException
+	{
+		var code = request.getParameter("code");
+
+		var state = request.getParameter("state");
+		if (state == null || !SESSIONS.check(state))
+			throw new BadRequestException("Error validating state");
+
+		var tokens = new URL(tokenEndpoint.get())
+			.post(new Parameters()
+				.set("grant_type", "authorization_code")
+				.set("code", code)
+				.set("scope", scope.get())
+				.set("client_id", clientId.get())
+				.set("client_secret", clientSecret.get())
+				.set("redirect_uri", getCallback(request)))
+			.readJsonObject()
+			.orElseThrow(() -> new AuthenticationException("Error trying to get token from auth provider"));
+
+		if (tokens.containsKey("id_token"))
+		{
+			var jwt = tokens.getString("id_token")
+				.map(Jwts.parser().verifyWith(publicKey.get()).build()::parse)
+				.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
+
+			if (jwt.getPayload() instanceof Claims claims
+				&& claims.containsKey(userId.get()))
+				return control.select(claims.get(userId.get(), String.class));
+		}
+
+		String accessToken = tokens
+			.getString("access_token")
+			.orElseThrow(() -> new AuthenticationException("Error trying to get access token from auth provider"));
+
+		JsonObject userInfo = new URL(userInfoEndpoint.get())
+			.setCredentials(accessToken)
+			.get()
+			.readJsonObject()
+			.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
+
+		return control.select(userInfo.getString(userId.get())
+			.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
+	}
+
+	private User clientCredentialsCodeFlow(ScreenServletRequest request, HttpServletResponse response)
+		throws HttpException, AuthenticationException, HierarchyException, IOException
+	{
+		BearerAuthorization authorization = request.getBearerAuthorization()
+			.orElseThrow(() -> new BadRequestException("Credentials not supplied"));
+		var jwt = Jwts.parser().verifyWith(publicKey.get()).build().parse(authorization.token());
+		if (jwt.getPayload() instanceof Claims claims
+			&& claims.containsKey("sub"))
+			return control.select(claims.get("sub", String.class));
+		throw new AuthenticationException("Error trying to get subject from auth provider");
 	}
 
 	@Override
@@ -200,50 +242,6 @@ public class OIDCAuthenticator implements Authenticator
 			.setParameter("client_id", clientId.get())
 			.setParameter("post_logout_redirect_uri", request.getRequestURL().toString())
 			.toString();
-	}
-
-	private JsonObject getTokens(ScreenServletRequest request)
-		throws IOException, BadRequestException, AuthenticationException
-	{
-		var code = request.getParameter("code");
-		if (code != null)
-		{
-			var state = request.getParameter("state");
-			if (state == null || !SESSIONS.check(state))
-				throw new BadRequestException("Bad request");
-
-			return new URL(tokenEndpoint.get())
-				.post(new Parameters()
-					.set("grant_type", "authorization_code")
-					.set("code", code)
-					.set("scope", scope.get())
-					.set("client_id", clientId.get())
-					.set("client_secret", clientSecret.get())
-					.set("redirect_uri", redirectUri.get()))
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get token from auth provider"));
-		}
-
-		Authorization authorization = request.getAuthorization()
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get token from auth provider"));
-
-		if (authorization instanceof BasicAuthorization)
-			return new URL(tokenEndpoint.get())
-				.post(new Parameters()
-					.set("grant_type", "password")
-					.set("scope", scope.get())
-					.set("client_id", clientId.get())
-					.set("client_secret", clientSecret.get())
-					.set("username", ((BasicAuthorization) authorization).username())
-					.set("password", ((BasicAuthorization) authorization).password()))
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get token from auth provider"));
-
-		if (authorization instanceof BearerAuthorization)
-			return new JsonObject()
-				.setString("access_token", ((BearerAuthorization) authorization).token());
-
-		throw new BadRequestException();
 	}
 
 	@Override

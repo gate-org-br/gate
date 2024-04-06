@@ -1,8 +1,8 @@
 package gate.tags;
 
 import gate.type.Attributes;
-import javax.servlet.jsp.tagext.DynamicAttributes;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
+import jakarta.servlet.jsp.tagext.DynamicAttributes;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 
 public class AttributeTag extends SimpleTagSupport implements DynamicAttributes
 {

@@ -6,12 +6,12 @@ import gate.sql.Link;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.Hierarchy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.util.List;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 public class RoleProducer
 {
@@ -34,7 +34,7 @@ public class RoleProducer
 
 		public List<Role> search() throws AppException
 		{
-			try ( Dao dao = new Dao())
+			try (Dao dao = new Dao())
 			{
 				return Hierarchy.setup(dao.search());
 			}
@@ -45,7 +45,7 @@ public class RoleProducer
 
 			public List<Role> search()
 			{
-				try ( Link link = new Link("Gate"))
+				try (Link link = new Link("Gate"))
 				{
 
 					return Select.expression("Role.id").as("id")

@@ -1,7 +1,7 @@
 package gate.policonverter;
 
 import gate.type.collections.StringList;
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 
 public class StringListPoliconverter implements Policonverter
 {

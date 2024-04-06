@@ -6,10 +6,9 @@ import gate.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -31,8 +30,8 @@ public class LabelProcessor extends TagProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Screen screen = (Screen) request.getAttribute("screen");
+		var exchange = ((IWebContext) context).getExchange();
+		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
 		var property = extract(element, handler, "property")
 			.map(e -> Property.getProperty(screen.getClass(), e))

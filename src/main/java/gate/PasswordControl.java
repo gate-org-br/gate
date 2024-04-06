@@ -14,8 +14,8 @@ import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
 import gate.type.MD5;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 
 @Dependent
 public class PasswordControl extends gate.base.Control

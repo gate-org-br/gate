@@ -4,11 +4,10 @@ import gate.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
@@ -49,7 +48,7 @@ public class THProcessor extends TagModelProcessor
 	private void standalone(ITemplateContext context, IModel model, IElementModelStructureHandler handler, IProcessableElementTag element, Attributes attributes)
 	{
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
+		var request = ((IWebContext) context).getExchange().getRequest();
 
 		var value = expression.create().evaluate(element.getAttributeValue("value"));
 		String string = Converter.toText(value, element.getAttributeValue("format"));
@@ -67,7 +66,7 @@ public class THProcessor extends TagModelProcessor
 
 			Parameters parameters = new Parameters();
 			parameters.put(request.getQueryString());
-			String orderBy = request.getParameter("orderBy");
+			String orderBy = request.getParameterValue("orderBy");
 			parameters.remove("orderBy");
 
 			String arrow = "";
@@ -95,14 +94,14 @@ public class THProcessor extends TagModelProcessor
 	{
 		if (element.hasAttribute("ordenate"))
 		{
-			HttpServletRequest request = ((IWebContext) context).getRequest();
+			var request = ((IWebContext) context).getExchange().getRequest();
 
 			var ordenate = element.getAttributeValue("ordenate");
 			final String ordenateDesc = "-" + ordenate;
 
 			Parameters parameters = new Parameters();
 			parameters.put(request.getQueryString());
-			String orderBy = request.getParameter("orderBy");
+			String orderBy = request.getParameterValue("orderBy");
 			parameters.remove("orderBy");
 
 			String arrow = "";

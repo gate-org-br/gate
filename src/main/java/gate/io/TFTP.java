@@ -5,6 +5,7 @@ import gate.type.DataFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.SocketException;
+import java.time.Duration;
 import org.apache.commons.net.tftp.TFTPClient;
 
 public class TFTP
@@ -40,7 +41,7 @@ public class TFTP
 		try
 		{
 			tftp = new TFTPClient();
-			tftp.setDefaultTimeout(60000);
+			tftp.setDefaultTimeout(Duration.ofMinutes(1));
 			tftp.open();
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{

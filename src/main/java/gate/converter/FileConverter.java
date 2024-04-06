@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+import jakarta.servlet.http.Part;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class FileConverter implements Converter
 {

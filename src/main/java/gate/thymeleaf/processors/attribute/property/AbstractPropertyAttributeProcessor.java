@@ -4,8 +4,7 @@ import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -27,8 +26,8 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 		IProcessableElementTag element,
 		IElementTagStructureHandler handler)
 	{
-		HttpServletRequest request = ((IWebContext) context).getRequest();
-		Screen screen = (Screen) request.getAttribute("screen");
+		var exchange = ((IWebContext) context).getExchange();
+		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
 		var name = element.getAttributeValue("g:property");
 		name = (String) expressionFactory.create().evaluate(name);

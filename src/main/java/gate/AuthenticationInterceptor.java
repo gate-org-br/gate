@@ -3,13 +3,13 @@ package gate;
 import gate.annotation.Secure;
 import gate.entity.User;
 import gate.io.Credentials;
-import javax.annotation.Priority;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Secure
 @Dependent

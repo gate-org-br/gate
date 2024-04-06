@@ -3,19 +3,21 @@ package gate;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.entity.User;
+import gate.error.AppException;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
 import gate.error.BadRequestException;
 import gate.error.HierarchyException;
+import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
+import jakarta.inject.Inject;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/Auth")
 public class Auth extends HttpServlet
@@ -39,12 +41,11 @@ public class Auth extends HttpServlet
 			{
 				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
 				if (user == null)
-					throw new AuthenticatorException("Attempt to login without provinding valid credentials");
+					throw new BadRequestException("Attempt to login without provinding valid credentials");
 				writer.write(String.format("{status: 'success', value: '%s'}", Credentials.create(user)));
 			} catch (AuthenticationException
 				| AuthenticatorException
-				| HierarchyException
-				| BadRequestException ex)
+				| AppException ex)
 			{
 				writer.write(String.format("{status: 'error', value: '%s'}", ex.getMessage()));
 			}
@@ -64,24 +65,21 @@ public class Auth extends HttpServlet
 			{
 				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
 				if (user == null)
-					throw new AuthenticationException("Attempt to login without provinding valid credentials");
+					throw new BadRequestException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));
-			} catch (AuthenticationException | BadRequestException ex)
+			} catch (AuthenticationException ex)
 			{
-				response.setStatus(400);
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				writer.write(ex.getMessage());
-			} catch (AuthenticatorException ex)
+			} catch (HttpException ex)
 			{
-				response.setStatus(503);
+				response.setStatus(ex.getStatusCode());
 				writer.write(ex.getMessage());
-			} catch (HierarchyException ex)
+			} catch (HierarchyException
+				| RuntimeException ex)
 			{
-				response.setStatus(503);
+				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Internal server error");
-			} catch (RuntimeException ex)
-			{
-				response.setStatus(400);
-				writer.write("Attempt to login without provinding valid credentials");
 			}
 		}
 	}

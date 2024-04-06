@@ -1,16 +1,16 @@
 package gate.thymeleaf;
 
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.LambdaExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.el.ELContext;
-import javax.el.ELException;
-import javax.el.ExpressionFactory;
-import javax.el.LambdaExpression;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.servlet.http.HttpServletRequest;
 
 public interface ELExpression
 {

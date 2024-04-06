@@ -4,12 +4,12 @@ import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
+import jakarta.servlet.http.Part;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.QueryParam;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Parameter;
-import javax.servlet.http.Part;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
 
 public class QueryParamExtractor
 {

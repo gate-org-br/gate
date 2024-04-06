@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+import jakarta.servlet.http.Part;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.sql.Types;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class ByteArrayConverter implements Converter
 {
@@ -37,14 +37,14 @@ public class ByteArrayConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
-			throws SQLException
+		throws SQLException
 	{
 		return rs.getBytes(index);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields,
-			Class<?> type) throws SQLException
+		Class<?> type) throws SQLException
 	{
 		return rs.getBytes(fields);
 	}
@@ -94,7 +94,7 @@ public class ByteArrayConverter implements Converter
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
 		try (BufferedInputStream stream = new BufferedInputStream(part.getInputStream());
-				ByteArrayOutputStream bytes = new ByteArrayOutputStream())
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 		{
 			for (int i = stream.read(); i != -1; i = stream.read())
 				bytes.write(i);

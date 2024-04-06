@@ -3,11 +3,11 @@ package gate.policonverter;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
+import jakarta.servlet.http.Part;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import javax.servlet.http.Part;
 
 public class EnumSetPoliconverter implements Policonverter
 {

@@ -1,13 +1,13 @@
 package gate;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class Request
 {
 
 	private static final ThreadLocal<HttpServletRequest> current = new ThreadLocal<>();
 
-	static void set(HttpServletRequest request)
+	public static void set(HttpServletRequest request)
 	{
 		current.set(request);
 	}

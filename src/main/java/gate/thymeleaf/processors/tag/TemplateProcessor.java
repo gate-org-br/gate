@@ -2,11 +2,9 @@ package gate.thymeleaf.processors.tag;
 
 import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
-import java.io.IOException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.LinkedList;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.servlet.ServletException;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -43,29 +41,14 @@ public class TemplateProcessor extends TagModelProcessor
 
 		removeTag(context, model, handler);
 
-		var request = ((IWebContext) context).getRequest();
+		var exchange = ((IWebContext) context).getExchange();
 
-		if (filename.endsWith(".jsp"))
-		{
-			var response = ((IWebContext) context).getResponse();
-			try
-			{
-				var content = textEngine.process(model, context);
-				request.setAttribute("g-template-content", content);
-				request.getRequestDispatcher(filename).forward(request, response);
-			} catch (IOException | ServletException ex)
-			{
-				throw new TemplateProcessingException(ex.getMessage(), ex);
-			}
-		} else
-		{
-			if (request.getAttribute("g-template-content") == null)
-				request.setAttribute("g-template-content", new LinkedList<>());
-			((LinkedList) request.getAttribute("g-template-content")).add(model);
-			var content = fileEngine.process(filename, context);
-			replaceWith(context, model, handler, content);
-		}
+		if (exchange.getAttributeValue("g-template-content") == null)
+			exchange.setAttributeValue("g-template-content", new LinkedList<>());
+		((LinkedList) exchange.getAttributeValue("g-template-content")).add(model);
+		var content = fileEngine.process(filename, context);
+		replaceWith(context, model, handler, content);
 
-		request.removeAttribute("g-template-content");
+		exchange.removeAttribute("g-template-content");
 	}
 }

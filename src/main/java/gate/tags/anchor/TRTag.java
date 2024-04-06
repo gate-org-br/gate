@@ -1,8 +1,8 @@
 package gate.tags.anchor;
 
 import gate.util.Toolkit;
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
 
 public class TRTag extends AnchorTag
 {

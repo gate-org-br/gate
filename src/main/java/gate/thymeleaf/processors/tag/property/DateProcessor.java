@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag.property;
 
 import gate.thymeleaf.ELExpressionFactory;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class DateProcessor extends ISOInputProcessor
 {

@@ -2,8 +2,8 @@ package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Name;
 import gate.thymeleaf.ELExpressionFactory;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;

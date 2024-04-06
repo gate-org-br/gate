@@ -10,10 +10,10 @@ import gate.sql.Link;
 import gate.sql.LinkSource;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class GateControl extends gate.base.Control

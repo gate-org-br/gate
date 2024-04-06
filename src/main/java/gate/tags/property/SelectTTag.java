@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 public class SelectTTag extends PropertyTag
 {

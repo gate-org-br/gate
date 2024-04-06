@@ -2,6 +2,9 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Part;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,9 +17,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import javax.enterprise.inject.spi.CDI;
-import javax.servlet.ServletContext;
-import javax.servlet.http.Part;
 
 public class PathConverter implements Converter
 {

@@ -1,11 +1,11 @@
 package gate.type;
 
+import jakarta.enterprise.inject.Vetoed;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.inject.Vetoed;
 
 @Vetoed
 public class TempFileManager

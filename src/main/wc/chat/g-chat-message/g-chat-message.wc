@@ -1,8 +1,0 @@
-<template>
-	<section>
-		<slot>
-		</slot>
-	</section>
-	<footer>
-	</footer>
-</template>

@@ -4,9 +4,9 @@ import gate.Request;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.InvalidCredentialsException;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
+import jakarta.servlet.http.HttpSession;
 
 public class UserProducer
 {

@@ -8,11 +8,11 @@ import gate.authenticator.LDAPAuthenticator;
 import gate.authenticator.OIDCAuthenticator;
 import gate.entity.Org;
 import gate.util.SystemProperty;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import java.io.Serializable;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  * @author davins

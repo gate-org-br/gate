@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class SelectNProcessor extends CheckableProcessor

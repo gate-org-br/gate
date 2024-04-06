@@ -5,7 +5,7 @@ import gate.annotation.Emoji;
 import gate.error.AppError;
 import gate.icon.Emojis;
 import java.io.IOException;
-import javax.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspException;
 
 public class EmojiTag extends AttributeTag
 {

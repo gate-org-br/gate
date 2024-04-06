@@ -1,11 +1,11 @@
 package gate.tags;
 
 import gate.base.Screen;
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 
 public class AlertTag extends SimpleTagSupport
 {

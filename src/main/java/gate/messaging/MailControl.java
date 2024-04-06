@@ -8,10 +8,10 @@ import gate.entity.Server;
 import gate.error.AppException;
 import gate.sql.Link;
 import gate.sql.LinkSource;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 class MailControl extends Control

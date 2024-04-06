@@ -2,15 +2,15 @@ package gate.tags;
 
 import gate.converter.Converter;
 import gate.util.Toolkit;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.LambdaExpression;
+import jakarta.el.StandardELContext;
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.LambdaExpression;
-import javax.el.StandardELContext;
-import javax.servlet.jsp.JspException;
 
 public class ListTag extends AttributeTag
 {

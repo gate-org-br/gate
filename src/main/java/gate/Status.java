@@ -8,14 +8,14 @@ import gate.event.AppEvent;
 import gate.event.LoginEvent;
 import gate.event.LogoffEvent;
 import gate.type.ID;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
+import jakarta.inject.Inject;
+import jakarta.servlet.annotation.WebListener;
+import jakarta.servlet.http.HttpSessionEvent;
+import jakarta.servlet.http.HttpSessionListener;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebListener;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 @WebListener
 @ApplicationScoped

@@ -1,14 +1,14 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.web.IWebRequest;
 
 @ApplicationScoped
 public class LinkOrdenatorAttributeProcessor extends AttributeProcessor
@@ -28,8 +28,8 @@ public class LinkOrdenatorAttributeProcessor extends AttributeProcessor
 			-> new TemplateProcessingException("Missing required property on g:ordenator"));
 
 		IWebContext webContext = (IWebContext) context;
-		HttpServletRequest request = webContext.getRequest();
-		String orderBy = request.getParameter("orderBy");
+		IWebRequest request = webContext.getExchange().getRequest();
+		String orderBy = request.getParameterValue("orderBy");
 		Parameters queryString = Parameters.parse(request.getQueryString());
 		Optional.ofNullable(element.getAttributeValue("arguments")).map(Parameters::parse).ifPresent(queryString::putAll);
 		queryString.remove("orderBy");

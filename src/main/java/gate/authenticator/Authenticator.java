@@ -3,13 +3,10 @@ package gate.authenticator;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
-import gate.error.BadRequestException;
-import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface Authenticator
 {
@@ -20,13 +17,12 @@ public interface Authenticator
 	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
 		throws AuthenticationException,
-		InvalidPasswordException,
-		InvalidUsernameException,
-		DefaultPasswordException,
-		HierarchyException,
-		BadRequestException;
+		HttpException,
+		HierarchyException;
 
 	public String logoutUri(ScreenServletRequest request);
+
+	public boolean isPresent(ScreenServletRequest request) throws AuthenticationException;
 
 	public abstract Type getType();
 

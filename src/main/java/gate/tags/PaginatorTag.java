@@ -5,8 +5,8 @@ import gate.lang.property.Property;
 import gate.util.Page;
 import gate.util.Parameters;
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.PageContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.jsp.PageContext;
 
 public class PaginatorTag extends AttributeTag
 {

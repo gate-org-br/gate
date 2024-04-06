@@ -18,6 +18,7 @@ import gate.base.Screen;
 import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.util.Toolkit;
+import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.servlet.http.HttpServletRequest;
+import org.thymeleaf.web.IWebExchange;
 
 public class Call
 {
@@ -37,14 +38,24 @@ public class Call
 	private final Method method;
 
 	private static final Pattern PARAMETERS = Pattern.compile("/([0-9]+)");
+	public static final Call NONE = new Call(null, null, null, null, null);
 
-	public Call(String module, String screen, String action, Class<Screen> type, Method method)
+	private Call(String module, String screen, String action, Class<Screen> type, Method method)
 	{
 		this.type = type;
 		this.method = method;
 		this.module = module;
 		this.screen = screen;
 		this.action = action;
+	}
+
+	public static Call of(Method method) throws BadRequestException
+	{
+		Class<Screen> type = (Class<Screen>) method.getDeclaringClass();
+		String module = type.getPackageName();
+		String screen = type.getSimpleName().equals("Screen") ? null : type.getSimpleName().substring(6);
+		String action = method.getName().equals("call") ? null : method.getName().substring(4);
+		return new Call(module, screen, action, type, method);
 	}
 
 	public static Call of(String module, String screen, String action) throws BadRequestException
@@ -74,6 +85,30 @@ public class Call
 				screen = (String) request.getAttribute("SCREEN");
 				if (Toolkit.isEmpty(action))
 					action = (String) request.getAttribute("ACTION");
+			}
+		}
+
+		return of(module, screen, action);
+	}
+
+	public static Call of(IWebExchange exchange, String module, String screen, String action) throws BadRequestException
+	{
+
+		if ("#".equals(module))
+			module = (String) exchange.getAttributeValue("MODULE");
+		if ("#".equals(screen))
+			screen = (String) exchange.getAttributeValue("SCREEN");
+		if ("#".equals(action))
+			action = (String) exchange.getAttributeValue("ACTION");
+
+		if (Toolkit.isEmpty(module))
+		{
+			module = (String) exchange.getAttributeValue("MODULE");
+			if (Toolkit.isEmpty(screen))
+			{
+				screen = (String) exchange.getAttributeValue("SCREEN");
+				if (Toolkit.isEmpty(action))
+					action = (String) exchange.getAttributeValue("ACTION");
 			}
 		}
 
@@ -167,24 +202,29 @@ public class Call
 
 		switch (Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION))
 		{
-			case NONE:
+			case NONE ->
+			{
 				return true;
-			case AUTHENTICATION:
+			}
+			case AUTHENTICATION ->
+			{
 				return user != null;
-			case AUTHORIZATION:
+			}
+			case AUTHORIZATION ->
 			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
 				return user != null && user.checkAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SPECIFIC_AUTHORIZATION:
+			case SPECIFIC_AUTHORIZATION ->
 			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
 				return user != null && user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SUPERUSER:
+			case SUPERUSER ->
+			{
 				return user != null && user.isSuperUser();
-			default:
-				throw new IllegalStateException();
+			}
+			default -> throw new IllegalStateException();
 		}
 	}
 

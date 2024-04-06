@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.attribute.property;
 import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;

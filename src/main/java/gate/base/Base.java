@@ -4,7 +4,7 @@ import gate.annotation.Current;
 import gate.entity.App;
 import gate.entity.Org;
 import gate.entity.User;
-import javax.enterprise.inject.spi.CDI;
+import jakarta.enterprise.inject.spi.CDI;
 
 abstract class Base
 {

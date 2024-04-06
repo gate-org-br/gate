@@ -1,10 +1,10 @@
 package gate.tags.property;
 
 import gate.util.Toolkit;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.LambdaExpression;
-import javax.el.StandardELContext;
+import jakarta.el.ELContext;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.LambdaExpression;
+import jakarta.el.StandardELContext;
 
 abstract class SelectorTag extends PropertyTag
 {

@@ -1,16 +1,16 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.type.Attributes;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.enterprise.context.ApplicationScoped;
-import javax.servlet.http.HttpServletRequest;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.web.IWebExchange;
 
 @ApplicationScoped
 public class InsertAttributeProcessor extends AttributeModelProcessor
@@ -33,22 +33,11 @@ public class InsertAttributeProcessor extends AttributeModelProcessor
 				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
 					e -> e.getValue(), (a, b) -> a, Attributes::new));
 
-		HttpServletRequest request = ((IWebContext) context).getRequest();
-		IModel content = (IModel) ((LinkedList) request.getAttribute("g-template-content")).removeLast();
+		IWebExchange exchange = ((IWebContext) context).getExchange();
+
+		IModel content = (IModel) ((LinkedList) exchange.getAttributeValue("g-template-content")).removeLast();
 		replaceTag(context, model, handler, element.getElementCompleteName(), attributes);
 		model.insertModel(1, content);
-
 	}
-//
-//	@Override
-//	public void process(ITemplateContext context,
-//		IProcessableElementTag element,
-//		IElementTagStructureHandler handler)
-//	{
-//		handler.removeAttribute("g:insert");
-//		HttpServletRequest request = ((IWebContext) context).getRequest();
-//		Object content = request.getAttribute("g-template-content");
-//		request.removeAttribute("g-template-content");
-//		handler.setBody(content.toString(), false);
-//	}
+
 }
