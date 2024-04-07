@@ -295,7 +295,7 @@ public class Select implements SelectClause
 			@Override
 			public Query.Compiled build()
 			{
-				return Query.of(toString()).parameters(select.getParameters());
+				return Query.of(toString()).parameters(select.getParameters().toList());
 			}
 		};
 	}

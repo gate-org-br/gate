@@ -1,20 +1,22 @@
-SELECT
-    id,
-    active,
-    Role$id as 'role.id',
-    username,
-    password,
-    name,
-    code,
-    email,
-    description,
-    phone,
-    cellPhone,
-    photo,
-    CPF,
-    sex,
-    birthdate,
-    registration
+SELECT 
+    Uzer.id,
+    Uzer.active,
+    Uzer.Role$id AS 'role.id',
+    Uzer.username,
+    Uzer.password,
+    Uzer.name,
+    Uzer.code,
+    Uzer.email,
+    Uzer.phone,
+    Uzer.cellPhone,
+    Uzer.CPF,
+    Uzer.sex,
+    Uzer.birthdate,
+    Uzer.registration,
+    UzerFunc.Func$id AS 'func.id'
 FROM
     gate.Uzer
-where username = ? or email = ?
+        LEFT JOIN
+    UzerFunc ON Uzer.id = UzerFunc.Uzer$id
+WHERE
+    username = ? OR email = ?

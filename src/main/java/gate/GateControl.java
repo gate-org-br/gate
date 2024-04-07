@@ -1,7 +1,6 @@
 package gate;
 
 import gate.annotation.DataSource;
-import gate.entity.Bond;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.HierarchyException;
@@ -13,7 +12,6 @@ import gate.util.Toolkit;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Dependent
 public class GateControl extends gate.base.Control
@@ -42,15 +40,13 @@ public class GateControl extends gate.base.Control
 			Hierarchy.setup(roles);
 
 			List<gate.entity.Auth> auths = dao.getAuths();
-			List<Bond> funcs = dao.getBonds();
 
-			funcs.forEach(func -> func.getFunc().setAuths(auths.stream().filter(auth -> func.getFunc().equals(auth.getFunc())).collect(Collectors.toList())));
+			user.getFuncs().stream().forEach(func -> func.setAuths(auths.stream().filter(auth -> auth.getFunc().equals(func)).toList()));
+			roles.stream().flatMap(role -> role.getFuncs().stream()).forEach(func -> func.setAuths(auths.stream().filter(auth -> auth.getFunc().equals(func)).toList()));
 
-			user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList()));
-			user.setFuncs(funcs.stream().filter(func -> user.equals(func.getUser())).map(Bond::getFunc).collect(Collectors.toList()));
+			user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).toList());
 
-			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
-			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
+			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).toList()));
 
 			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(() -> new HierarchyException("Perfil do usuário não encontrado")));
 
