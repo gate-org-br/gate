@@ -55,10 +55,10 @@ public class JsonNull implements JsonElement
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+	@SuppressWarnings("unchecked")
+	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
-		return toObject((Class< T>) type);
+		return toObject((Class<T>) type);
 	}
 
 	/**
@@ -68,7 +68,8 @@ public class JsonNull implements JsonElement
 	 *
 	 * @return a JsonBoolean object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON
+	 *         formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNull parse(String json) throws ConversionException

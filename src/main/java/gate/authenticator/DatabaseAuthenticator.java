@@ -33,7 +33,7 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
-	public boolean isPresent(ScreenServletRequest request) throws AuthenticationException
+	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getBasicAuthorization().isPresent();
 	}

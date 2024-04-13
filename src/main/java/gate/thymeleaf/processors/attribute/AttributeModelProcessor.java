@@ -16,7 +16,6 @@ import org.thymeleaf.templatemode.TemplateMode;
 public abstract class AttributeModelProcessor implements IElementModelProcessor, Processor
 {
 
-	private final String name;
 	private final MatchingElementName matchingElementName;
 	private final MatchingAttributeName matchingAttributeName;
 
@@ -27,13 +26,12 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 
 	public AttributeModelProcessor(String element, String attribute)
 	{
-		this.name = attribute;
-		this.matchingElementName = element != null
-			? MatchingElementName.forElementName(TemplateMode.HTML,
-				ElementNames.forName(TemplateMode.HTML, null, element)) : null;
+		this.matchingElementName =
+				element != null ? MatchingElementName.forElementName(TemplateMode.HTML,
+						ElementNames.forName(TemplateMode.HTML, null, element)) : null;
 
 		this.matchingAttributeName = MatchingAttributeName.forAttributeName(TemplateMode.HTML,
-			AttributeNames.forName(TemplateMode.HTML, "g", attribute));
+				AttributeNames.forName(TemplateMode.HTML, "g", attribute));
 	}
 
 	@Override
@@ -60,28 +58,28 @@ public abstract class AttributeModelProcessor implements IElementModelProcessor,
 		return Precedence.DEFAULT;
 	}
 
-	public void add(ITemplateContext context, IModel model,
-		IElementModelStructureHandler handler, String text)
+	public void add(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
+			String text)
 	{
 		model.add(context.getModelFactory().createText(text));
 	}
 
-	public void removeTag(ITemplateContext context,
-		IModel model, IElementModelStructureHandler handler)
+	public void removeTag(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
 	{
 		model.remove(0);
 		model.remove(model.size() - 1);
 	}
 
-	public void replaceTag(ITemplateContext context,
-		IModel model, IElementModelStructureHandler handler, String tag, Attributes attributes)
+	public void replaceTag(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler, String tag, Attributes attributes)
 	{
 		model.replace(0, context.getModelFactory().createText("<" + tag + " " + attributes + ">"));
 		model.replace(model.size() - 1, context.getModelFactory().createText("</" + tag + ">"));
 	}
 
-	public void replaceWith(ITemplateContext context,
-		IModel model, IElementModelStructureHandler handler, String text)
+	public void replaceWith(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler, String text)
 	{
 		model.reset();
 		model.add(context.getModelFactory().createText(text));

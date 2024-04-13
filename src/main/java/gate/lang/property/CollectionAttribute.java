@@ -49,7 +49,8 @@ public class CollectionAttribute implements Attribute
 	public Class<?> getRawType()
 	{
 		return type instanceof ParameterizedType
-			? (Class<?>) ((ParameterizedType) type).getRawType() : (Class<?>) type;
+				? (Class<?>) ((ParameterizedType) type).getRawType()
+				: (Class<?>) type;
 	}
 
 	@Override
@@ -74,14 +75,14 @@ public class CollectionAttribute implements Attribute
 	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
-		((Collection) object).add(value);
+		((Collection<Object>) object).add(value);
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof CollectionAttribute
-			&& Objects.equals(type, ((CollectionAttribute) obj).type);
+				&& Objects.equals(type, ((CollectionAttribute) obj).type);
 	}
 
 	@Override

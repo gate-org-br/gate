@@ -25,7 +25,7 @@ public class PivotTable<T> implements Serializable
 		this.valueLabel = valueLabel;
 	}
 
-	public PivotTable add(String row, String col, T value)
+	public PivotTable<T> add(String row, String col, T value)
 	{
 		values.computeIfAbsent(row, e -> new LinkedHashMap<>()).put(col, value);
 		return this;
@@ -53,17 +53,18 @@ public class PivotTable<T> implements Serializable
 
 	public List<String> header()
 	{
-		return Stream.concat(Stream.of(getRowLabel()),
-			values.values().stream().flatMap(e -> e.keySet().stream())
-				.map(e -> String.valueOf(e))).distinct().toList();
+		return Stream
+				.concat(Stream.of(getRowLabel()), values.values().stream()
+						.flatMap(e -> e.keySet().stream()).map(e -> String.valueOf(e)))
+				.distinct().toList();
 	}
 
 	public List<List<Object>> values()
 	{
 		return values.entrySet().stream()
-			.map(row -> Stream.concat(Stream.of(row.getKey()),
-			row.getValue().values().stream()).collect(Collectors.toList()))
-			.collect(Collectors.toList());
+				.map(row -> Stream.concat(Stream.of(row.getKey()), row.getValue().values().stream())
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList());
 	}
 
 	public String getRowLabel()
@@ -96,9 +97,9 @@ public class PivotTable<T> implements Serializable
 		return JsonArray.of(dataset());
 	}
 
-	public PivotTable inverted()
+	public PivotTable<T> inverted()
 	{
-		PivotTable result = new PivotTable(getColLabel(), getRowLabel(), getValueLabel());
+		PivotTable<T> result = new PivotTable<T>(getColLabel(), getRowLabel(), getValueLabel());
 
 		for (Map.Entry<String, Map<String, T>> row : values.entrySet())
 			for (Map.Entry<String, T> col : row.getValue().entrySet())

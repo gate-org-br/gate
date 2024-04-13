@@ -30,6 +30,7 @@ public class ArrayConverter extends ObjectConverter
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_ARRAY, null);
@@ -54,7 +55,9 @@ public class ArrayConverter extends ObjectConverter
 	}
 
 	@Override
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	@SuppressWarnings("unchecked")
+	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
+			throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_ARRAY, null);
 
@@ -78,12 +81,13 @@ public class ArrayConverter extends ObjectConverter
 	}
 
 	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
+			throws ConversionException
 	{
 		if (scanner.getCurrent().getType() != JsonToken.Type.OPEN_ARRAY)
 			throw new ConversionException(scanner.getCurrent() + " is not a collection");
 
-		Collection collection = new ArrayList<>();
+		Collection<Object> collection = new ArrayList<>();
 		Converter converter = Converter.getConverter(Reflection.getRawType(elementType));
 
 		do
@@ -91,7 +95,7 @@ public class ArrayConverter extends ObjectConverter
 			scanner.scan();
 			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
 				collection.add(converter.ofJson(scanner, elementType,
-					Reflection.getElementType(elementType)));
+						Reflection.getElementType(elementType)));
 			else if (!collection.isEmpty())
 				throw new ConversionException(scanner.getCurrent() + " is not a collection");
 		} while (JsonToken.Type.COMMA == scanner.getCurrent().getType());

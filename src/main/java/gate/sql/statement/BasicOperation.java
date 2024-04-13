@@ -109,8 +109,7 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public int execute()
-				throws ConstraintViolationException
+			public int execute() throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -118,23 +117,23 @@ class BasicOperation<T> implements Operation<T>
 
 					if (Entity.isEntity(type))
 					{
-						Property entityId
-							= Property.getProperty(type, Entity.getId(type));
+						Property entityId = Property.getProperty(type, Entity.getId(type));
 
 						for (T value : values)
 						{
-							properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+							properties.forEach(
+									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
 							if (entityId.getValue(value) == null)
-								command
-									.getGeneratedKey(entityId.getRawType())
-									.ifPresent(id -> entityId.setValue(value, id));
+								command.getGeneratedKey(entityId.getRawType())
+										.ifPresent(id -> entityId.setValue(value, id));
 						}
 					} else
 					{
 						for (T value : values)
 						{
-							properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+							properties.forEach(
+									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
 						}
 					}
@@ -174,8 +173,7 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
-				public int execute()
-					throws ConstraintViolationException
+				public int execute() throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{
@@ -183,24 +181,24 @@ class BasicOperation<T> implements Operation<T>
 
 						if (Entity.isEntity(type))
 						{
-							Property entityId
-								= Property.getProperty(type, Entity.getId(type));
+							Property entityId = Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{
-								properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+								properties.forEach(e -> command.setParameter(e.getRawType(),
+										e.getValue(value)));
 								result += command.execute();
 								if (entityId.getValue(value) == null)
-									command
-										.getGeneratedKey(entityId.getRawType())
-										.ifPresent(id -> entityId.setValue(value, id));
+									command.getGeneratedKey(entityId.getRawType())
+											.ifPresent(id -> entityId.setValue(value, id));
 								observer.accept(value);
 							}
 						} else
 						{
 							for (T value : values)
 							{
-								properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+								properties.forEach(e -> command.setParameter(e.getRawType(),
+										e.getValue(value)));
 								result += command.execute();
 								observer.accept(value);
 							}
@@ -212,7 +210,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public Operation.Compiled.Connected<T> observe(Consumer<T> observer)
-					throws ConstraintViolationException
+						throws ConstraintViolationException
 				{
 					return Connected.this.observe(observer);
 				}
@@ -224,7 +222,7 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
-				public Operation.Compiled.Connected print()
+				public Operation.Compiled.Connected<T> print()
 				{
 					System.out.println(toString());
 					return this;
@@ -283,8 +281,7 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public int execute()
-				throws ConstraintViolationException
+			public int execute() throws ConstraintViolationException
 			{
 				try (Command command = link.createCommand(sql))
 				{
@@ -296,15 +293,18 @@ class BasicOperation<T> implements Operation<T>
 
 						for (T value : values)
 						{
-							properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+							properties.forEach(
+									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
-							command.getGeneratedKey(entityId.getRawType()).ifPresent(id -> entityId.setValue(value, id));
+							command.getGeneratedKey(entityId.getRawType())
+									.ifPresent(id -> entityId.setValue(value, id));
 						}
 					} else
 					{
 						for (T value : values)
 						{
-							properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+							properties.forEach(
+									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
 						}
 					}
@@ -326,7 +326,7 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Connected.Compiled print()
+			public Operation.Connected.Compiled<T> print()
 			{
 				System.out.println(toString());
 				System.out.println(values);
@@ -345,8 +345,7 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
-				public int execute()
-					throws ConstraintViolationException
+				public int execute() throws ConstraintViolationException
 				{
 					try (Command command = link.createCommand(sql))
 					{
@@ -354,24 +353,24 @@ class BasicOperation<T> implements Operation<T>
 
 						if (Entity.isEntity(type))
 						{
-							Property entityId
-								= Property.getProperty(type, Entity.getId(type));
+							Property entityId = Property.getProperty(type, Entity.getId(type));
 
 							for (T value : values)
 							{
-								properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+								properties.forEach(e -> command.setParameter(e.getRawType(),
+										e.getValue(value)));
 								result += command.execute();
 								if (entityId.getValue(value) == null)
-									command
-										.getGeneratedKey(entityId.getRawType())
-										.ifPresent(id -> entityId.setValue(value, id));
+									command.getGeneratedKey(entityId.getRawType())
+											.ifPresent(id -> entityId.setValue(value, id));
 								observer.accept(value);
 							}
 						} else
 						{
 							for (T value : values)
 							{
-								properties.forEach(e -> command.setParameter(e.getRawType(), e.getValue(value)));
+								properties.forEach(e -> command.setParameter(e.getRawType(),
+										e.getValue(value)));
 								result += command.execute();
 								observer.accept(value);
 							}
@@ -383,7 +382,7 @@ class BasicOperation<T> implements Operation<T>
 
 				@Override
 				public Operation.Connected.Compiled<T> observe(Consumer<T> observer)
-					throws ConstraintViolationException
+						throws ConstraintViolationException
 				{
 					return Compiled.this.observe(observer);
 				}

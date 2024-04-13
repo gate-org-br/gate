@@ -164,8 +164,7 @@ public class Paginator<E> implements Iterable<Page<E>>, Serializable
 			@Override
 			public int characteristics()
 			{
-				return Spliterator.ORDERED
-					| Spliterator.NONNULL;
+				return Spliterator.ORDERED | Spliterator.NONNULL;
 			}
 
 			@Override

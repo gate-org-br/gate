@@ -25,8 +25,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 	}
 
 	@Override
-	public int execute(Collection<T> values)
-		throws ConstraintViolationException
+	public int execute(Collection<T> values) throws ConstraintViolationException
 	{
 		return Insert.into(type).build().values(values).connect(link).execute();
 	}
@@ -48,7 +47,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		}
 
 		@Override
-		public InsertOperation observe(Consumer<T> observer)
+		public InsertOperation<T> observe(Consumer<T> observer)
 		{
 			return BasicInsertOperation.this.observe(observer);
 		}
@@ -56,12 +55,12 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		@Override
 		public int execute(Collection<T> values) throws ConstraintViolationException
 		{
-			return Insert.into(type).build().values(values).connect(link)
-				.observe(observer)
-				.execute();
+			return Insert.into(type).build().values(values).connect(link).observe(observer)
+					.execute();
 		}
 
 		@Override
+		@SuppressWarnings({"rawtypes", "unchecked"})
 		public Properties<T> properties(String... properties)
 		{
 			return new BasicInsertOperation.Properties(properties).observe(observer);
@@ -80,7 +79,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		}
 
 		@Override
-		public InsertOperation.Properties observe(Consumer<T> observer)
+		public InsertOperation.Properties<T> observe(Consumer<T> observer)
 		{
 			return observer != null ? new Observed(observer) : this;
 		}
@@ -88,11 +87,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 		@Override
 		public int execute(Collection<T> values) throws ConstraintViolationException
 		{
-			return Insert.into(type)
-				.set(properties)
-				.build().values(values)
-				.connect(link)
-				.execute();
+			return Insert.into(type).set(properties).build().values(values).connect(link).execute();
 		}
 
 		public class Observed implements InsertOperation.Properties<T>
@@ -106,7 +101,7 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 			}
 
 			@Override
-			public InsertOperation.Properties observe(Consumer<T> observer)
+			public InsertOperation.Properties<T> observe(Consumer<T> observer)
 			{
 				return Properties.this.observe(observer);
 			}
@@ -114,14 +109,8 @@ public class BasicInsertOperation<T> implements InsertOperation<T>
 			@Override
 			public int execute(Collection<T> values) throws ConstraintViolationException
 			{
-				return Insert
-					.into(type)
-					.set(properties)
-					.build()
-					.values(values)
-					.connect(link)
-					.observe(observer)
-					.execute();
+				return Insert.into(type).set(properties).build().values(values).connect(link)
+						.observe(observer).execute();
 			}
 
 		}

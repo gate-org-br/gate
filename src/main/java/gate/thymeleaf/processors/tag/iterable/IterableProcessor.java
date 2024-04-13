@@ -32,18 +32,19 @@ public abstract class IterableProcessor extends TagModelProcessor
 	}
 
 	protected void iterate(ITemplateContext context, IModel model,
-		IElementModelStructureHandler handler, IProcessableElementTag element,
-		IModel content)
+			IElementModelStructureHandler handler, IProcessableElementTag element, IModel content)
 	{
 		if (!element.hasAttribute("source"))
-			throw new TemplateProcessingException("Missing required attribute source on g:" + getName());
+			throw new TemplateProcessingException(
+					"Missing required attribute source on g:" + getName());
 		var source = expression.create().evaluate(element.getAttributeValue("source"));
 
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("target"), "target");
 
-		var children = element.hasAttribute("children") ? expression.create().function("children") : null;
+		var children =
+				element.hasAttribute("children") ? expression.create().function("children") : null;
 
 		var exchange = ((IWebContext) context).getExchange();
 		if (exchange.getAttributeValue(index) == null)
@@ -53,61 +54,29 @@ public abstract class IterableProcessor extends TagModelProcessor
 			if (exchange.getAttributeValue(depth) == null)
 			{
 				exchange.setAttributeValue(depth, -1);
-				iterate(context,
-					model,
-					handler,
-					exchange,
-					content,
-					source,
-					target,
-					index,
-					depth,
-					children);
+				iterate(context, model, handler, exchange, content, source, target, index, depth,
+						children);
 				exchange.removeAttribute(depth);
 			} else
-				iterate(context,
-					model,
-					handler,
-					exchange,
-					content,
-					source,
-					target,
-					index,
-					depth,
-					children);
+				iterate(context, model, handler, exchange, content, source, target, index, depth,
+						children);
 
 			exchange.removeAttribute(index);
 		} else if (exchange.getAttributeValue(depth) == null)
 		{
 			exchange.setAttributeValue(depth, -1);
-			iterate(context,
-				model,
-				handler,
-				exchange,
-				content,
-				source,
-				target,
-				index,
-				depth,
-				children);
+			iterate(context, model, handler, exchange, content, source, target, index, depth,
+					children);
 			exchange.removeAttribute(depth);
 		} else
-			iterate(context,
-				model,
-				handler,
-				exchange,
-				content,
-				source,
-				target,
-				index,
-				depth,
-				children);
+			iterate(context, model, handler, exchange, content, source, target, index, depth,
+					children);
 	}
 
 	private void iterate(ITemplateContext context, IModel model,
-		IElementModelStructureHandler handler,
-		IWebExchange exchange, IModel body, Object source,
-		String target, String index, String depth, Function<Object, Object> children)
+			IElementModelStructureHandler handler, IWebExchange exchange, IModel body,
+			Object source, String target, String index, String depth,
+			Function<Object, Object> children)
 	{
 		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
@@ -120,10 +89,12 @@ public abstract class IterableProcessor extends TagModelProcessor
 				exchange.removeAttribute(target);
 			if (value != null && children != null)
 				for (Object child : Toolkit.iterable(children.apply(value)))
-					iterate(context, model, handler, exchange, body, child, target, index, depth, children);
+					iterate(context, model, handler, exchange, body, child, target, index, depth,
+							children);
 			else if (value instanceof Hierarchy)
-				for (Object child : Toolkit.iterable(((Hierarchy) value).getChildren()))
-					iterate(context, model, handler, exchange, body, child, target, index, depth, children);
+				for (Object child : Toolkit.iterable(((Hierarchy<?>) value).getChildren()))
+					iterate(context, model, handler, exchange, body, child, target, index, depth,
+							children);
 
 		}
 		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) - 1);

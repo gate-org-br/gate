@@ -29,7 +29,9 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
+	@SuppressWarnings("unchecked")
+	public void process(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
 	{
 
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
@@ -42,7 +44,7 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 
 		if (exchange.getAttributeValue("g-template-content") == null)
 			exchange.setAttributeValue("g-template-content", new LinkedList<>());
-		((LinkedList) exchange.getAttributeValue("g-template-content")).add(model);
+		((LinkedList<Object>) exchange.getAttributeValue("g-template-content")).add(model);
 		replaceWith(context, model, handler, fileEngine.process(template, context));
 
 		exchange.removeAttribute("g-template-content");

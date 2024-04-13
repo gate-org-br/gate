@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public interface InsertOperation<T>
 {
 
-	InsertOperation observe(Consumer<T> observer);
+	InsertOperation<T> observe(Consumer<T> observer);
 
 	/**
 	 * Inserts the defined objects on the database.
@@ -26,12 +26,13 @@ public interface InsertOperation<T>
 	 * @return the number of records affected by the insert sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	int execute(Collection<T> values) throws ConstraintViolationException,
-						 FKViolationException,
-						 UKViolationException;
+	int execute(Collection<T> values)
+			throws ConstraintViolationException, FKViolationException, UKViolationException;
 
 	/**
 	 * Inserts the defined object on the database.
@@ -41,12 +42,13 @@ public interface InsertOperation<T>
 	 * @return the number of records affected by the insert sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	default int execute(T value) throws ConstraintViolationException,
-					    FKViolationException,
-					    UKViolationException
+	default int execute(T value)
+			throws ConstraintViolationException, FKViolationException, UKViolationException
 
 	{
 		return execute(Collections.singleton(value));
@@ -60,12 +62,13 @@ public interface InsertOperation<T>
 	 * @return the number of records affected by the insert sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	default int execute(T... values) throws ConstraintViolationException,
-						FKViolationException,
-						UKViolationException
+	default int execute(@SuppressWarnings("unchecked") T... values)
+			throws ConstraintViolationException, FKViolationException, UKViolationException
 	{
 		return execute(Arrays.asList(values));
 	}
@@ -87,7 +90,7 @@ public interface InsertOperation<T>
 	interface Properties<T>
 	{
 
-		InsertOperation.Properties observe(Consumer<T> observer);
+		InsertOperation.Properties<T> observe(Consumer<T> observer);
 
 		/**
 		 * Inserts the defined objects on the database.
@@ -96,13 +99,15 @@ public interface InsertOperation<T>
 		 *
 		 * @return the number of records affected by the insert sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		int execute(Collection<T> values) throws ConstraintViolationException,
-							 FKViolationException,
-							 UKViolationException;
+		int execute(Collection<T> values)
+				throws ConstraintViolationException, FKViolationException, UKViolationException;
 
 		/**
 		 * Inserts the defined object on the database.
@@ -111,13 +116,15 @@ public interface InsertOperation<T>
 		 *
 		 * @return the number of records affected by the insert sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		default int execute(T value) throws ConstraintViolationException,
-						    FKViolationException,
-						    UKViolationException
+		default int execute(T value)
+				throws ConstraintViolationException, FKViolationException, UKViolationException
 		{
 			return execute(Collections.singleton(value));
 		}
@@ -129,13 +136,15 @@ public interface InsertOperation<T>
 		 *
 		 * @return the number of records affected by the insert sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		default int execute(T... values) throws ConstraintViolationException,
-							FKViolationException,
-							UKViolationException
+		default int execute(@SuppressWarnings("unchecked") T... values)
+				throws ConstraintViolationException, FKViolationException, UKViolationException
 		{
 			return execute(Arrays.asList(values));
 		}

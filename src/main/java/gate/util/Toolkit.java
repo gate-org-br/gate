@@ -62,49 +62,49 @@ public class Toolkit
 		return 1;
 	}
 
-	public static Iterable<Object> iterable(Object obj)
+	public static Iterable<?> iterable(Object obj)
 	{
 		if (obj == null)
 			return List.of();
 		if (obj instanceof Iterable<?>)
-			return (Iterable) obj;
+			return (Iterable<?>) obj;
 		if (obj instanceof Object[])
 			return Arrays.asList((Object[]) obj);
 		return List.of(obj);
 	}
 
-	public static Stream<Object> stream(Object obj)
+	public static Stream<?> stream(Object obj)
 	{
 		if (obj == null)
 			return Stream.empty();
 		else if (obj instanceof Collection)
-			return ((Collection) obj).stream();
+			return ((Collection<?>) obj).stream();
 		else if (obj instanceof Object[])
 			return Stream.of((Object[]) obj);
 		else
 			return Stream.of(obj);
 	}
 
-	public static Collection<Object> collection(Object obj)
+	public static Collection<?> collection(Object obj)
 	{
 		if (obj == null)
 			return List.of();
 		else if (obj instanceof Collection)
-			return (Collection) obj;
+			return (Collection<?>) obj;
 		else if (obj instanceof Object[])
 			return Arrays.asList((Object[]) obj);
 		else
 			return List.of(obj);
 	}
 
-	public static List<? extends Object> list(Object obj)
+	public static List<?> list(Object obj)
 	{
 		if (obj == null)
 			return List.of();
 		else if (obj instanceof List)
-			return (List) obj;
+			return (List<?>) obj;
 		else if (obj instanceof Collection)
-			return new ArrayList((Collection) obj);
+			return new ArrayList<>((Collection<?>) obj);
 		else if (obj instanceof Object[])
 			return Arrays.asList((Object[]) obj);
 		else
@@ -121,7 +121,7 @@ public class Toolkit
 		return obj != null ? obj : supplier.get();
 	}
 
-	public static <T> T coalesce(T... elements)
+	public static <T> T coalesce(@SuppressWarnings("unchecked") T... elements)
 	{
 		return Stream.of(elements).filter(e -> e != null).findFirst().orElse(null);
 	}
@@ -180,10 +180,8 @@ public class Toolkit
 			string.add("<li>");
 			string.add(Toolkit.escapeHTML(error.getMessage()));
 			string.add("<ul>");
-			Stream.of(error.getStackTrace())
-				.map(StackTraceElement::toString)
-				.map(Toolkit::escapeHTML)
-				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			Stream.of(error.getStackTrace()).map(StackTraceElement::toString)
+					.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
 			string.add("</ul>");
 			string.add("</li>");
 		}

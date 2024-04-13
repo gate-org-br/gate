@@ -19,8 +19,7 @@ public class ReportTest
 {
 
 	public ReportTest()
-	{
-	}
+	{}
 
 	@Test
 	public void testSomeMethod() throws FileNotFoundException, IOException
@@ -107,10 +106,11 @@ public class ReportTest
 
 		report.addLineBreak();
 
-		Grid<User> grid = report.addGrid(User.class,
-			List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
-				new User().setId(ID.valueOf(2)).setName("Bar")))
-			.setCaption("USERS: 2");
+		Grid<User> grid = report
+				.addGrid(User.class,
+						List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+								new User().setId(ID.valueOf(2)).setName("Bar")))
+				.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");
 		grid.add().body(User::getName).head("Name");
@@ -118,7 +118,7 @@ public class ReportTest
 		grid.setLimit(2);
 
 		report.compact();
-		PDF doc = new PDF(report);
+		new PDF(report);
 	}
 
 	@Test
@@ -131,40 +131,17 @@ public class ReportTest
 
 		report.addLineBreak();
 
-		report.addList(ReportList.Type.NUMBER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList(ReportList.Type.NUMBER).add("Item").add("Item").add("Item").add("Item");
 
-		report.addList(ReportList.Type.LETTER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList(ReportList.Type.LETTER).add("Item").add("Item").add("Item").add("Item");
 
-		report.addList(ReportList.Type.SYMBOL)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList(ReportList.Type.SYMBOL).add("Item").add("Item").add("Item").add("Item");
 
-		report.addList(ReportList.Type.NUMBER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add(report.addList(ReportList.Type.LETTER)
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.add(report.addList(ReportList.Type.SYMBOL)
-					.add("Item")
-					.add("Item")
-					.add("Item")
-					.add("Item")));
+		report.addList(ReportList.Type.NUMBER).add("Item").add("Item").add("Item").add("Item")
+				.add(report.addList(ReportList.Type.LETTER).add("Item").add("Item").add("Item")
+						.add("Item").add(report.addList(ReportList.Type.SYMBOL).add("Item")
+								.add("Item").add("Item").add("Item")));
 
-		PDF doc = new PDF(report);
+		new PDF(report);
 	}
 }

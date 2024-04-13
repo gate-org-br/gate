@@ -29,8 +29,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -61,8 +60,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -93,8 +91,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -109,7 +106,8 @@ interface ExtractorPredicateMethods<T> extends Clause
 	// Le
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Evaluates to true if the previously specified clause is less than or equals the specified parameter.
+	 * Evaluates to true if the previously specified clause is less than or equals the specified
+	 * parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -125,8 +123,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -157,8 +154,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -173,7 +169,8 @@ interface ExtractorPredicateMethods<T> extends Clause
 	// Ge
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
-	 * Evaluates to true if the previously specified clause is greater than or equals the specified parameter.
+	 * Evaluates to true if the previously specified clause is greater than or equals the specified
+	 * parameter.
 	 *
 	 * @param parameter parameter to be compared with the specified clause
 	 *
@@ -189,8 +186,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -221,8 +217,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter));
+				return Stream.concat(getClause().getParameters(), Stream.of(parameter));
 			}
 
 			@Override
@@ -253,7 +248,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameter1, parameter2));
+						Stream.of(parameter1, parameter2));
 			}
 
 			@Override
@@ -270,7 +265,7 @@ interface ExtractorPredicateMethods<T> extends Clause
 		@Override
 		default ExtractorCondition<T> eq(Function<T, Object> parameter)
 		{
-			return new ExtractorCondition(getClause().rollback());
+			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override

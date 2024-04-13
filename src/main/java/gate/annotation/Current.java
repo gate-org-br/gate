@@ -12,15 +12,13 @@ import java.lang.annotation.Target;
 
 @Qualifier
 @Retention(RUNTIME)
-@Target(
-{
-	TYPE, METHOD, PARAMETER, FIELD
-})
+@Target({TYPE, METHOD, PARAMETER, FIELD})
 public @interface Current
 {
 
 	public static final AnnotationLiteral<Current> LITERAL = new Literal();
 
+	@SuppressWarnings("all")
 	static class Literal extends AnnotationLiteral<Current> implements Current
 	{
 

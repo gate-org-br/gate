@@ -9,7 +9,8 @@ import java.util.function.Function;
 /**
  * Describes a column to be displayed on a Grid.
  * <p>
- * A Column uses it's associated mapping function to get the value to be displayed on each row of it's associated Grid.
+ * A Column uses it's associated mapping function to get the value to be displayed on each row of
+ * it's associated Grid.
  *
  * 
  */
@@ -42,7 +43,8 @@ public final class Column<T> extends Element
 	/**
 	 * Specify a value to be displayed on the column cells.
 	 *
-	 * @param value the function to be used to extract the value to be displayed on each cell of the column
+	 * @param value the function to be used to extract the value to be displayed on each cell of the
+	 *        column
 	 *
 	 * @return this, for chained invocations
 	 */
@@ -69,7 +71,8 @@ public final class Column<T> extends Element
 	/**
 	 * Defines a function to dynamically change the column style for each row of the Grid.
 	 *
-	 * @param styler a mapping function that returns the style to be applied for each row of the Grid
+	 * @param styler a mapping function that returns the style to be applied for each row of the
+	 *        Grid
 	 *
 	 * @return this, for chained invocations
 	 */
@@ -102,10 +105,7 @@ public final class Column<T> extends Element
 	{
 		Style style = new Style(style());
 
-		gate.annotation.Color.Extractor
-			.extract(value)
-			.map(Color::of)
-			.ifPresent(style::color);
+		gate.annotation.Color.Extractor.extract(value).map(Color::of).ifPresent(style::color);
 
 		styler.apply(object, style);
 		return style;
@@ -144,6 +144,7 @@ public final class Column<T> extends Element
 	@Override
 	public Column<T> style(Style style)
 	{
-		return (Column<T>) super.style(style);
+		super.style(style);
+		return this;
 	}
 }

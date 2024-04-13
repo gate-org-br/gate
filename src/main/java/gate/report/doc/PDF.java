@@ -52,7 +52,8 @@ import java.util.concurrent.ConcurrentMap;
  * Generates PDF documents from objects of type {@link gate.report.Report}.
  */
 @Icon("gate.report.Doc$Type:PDF")
-public class PDF extends Doc {
+public class PDF extends Doc
+{
 
 	private static final Color CAPTION_COLOR = new Color(120, 129, 133);
 	private static final Color HEAD_COLOR = new Color(185, 198, 205);
@@ -75,31 +76,38 @@ public class PDF extends Doc {
 	 *
 	 * @param report the report to be used to generate the document
 	 */
-	public PDF(Report report) {
+	public PDF(Report report)
+	{
 		super(report);
 	}
 
 	@Override
-	public String getContentType() {
+	public String getContentType()
+	{
 		return "application";
 	}
 
 	@Override
-	public String getContentSubtype() {
+	public String getContentSubtype()
+	{
 		return "pdf";
 	}
 
 	@Override
-	public String getFileName() {
+	public String getFileName()
+	{
 		return String.format("%s.pdf", getReport().getName());
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void print(OutputStream os) {
-		try {
+	@SuppressWarnings({"unchecked"})
+	public void print(OutputStream os)
+	{
+		try
+		{
 			Document document;
-			switch (getReport().getOrientation()) {
+			switch (getReport().getOrientation())
+			{
 				case PORTRAIT:
 					document = new Document(PageSize.A4);
 					break;
@@ -114,7 +122,8 @@ public class PDF extends Doc {
 			writer.setPageEvent(new Numerator());
 			document.open();
 
-			for (ReportElement element : getReport().getElements()) {
+			for (ReportElement element : getReport().getElements())
+			{
 				if (element instanceof Header)
 					document.add(printHeader((Header) element));
 				else if (element instanceof Paragraph)
@@ -125,11 +134,10 @@ public class PDF extends Doc {
 					document.add(printLineBreak());
 				else if (element instanceof PageBreak)
 					document.add(printPageBreak());
-				else if (element instanceof Form
-						&& (!((Form) element).getFields().isEmpty()))
+				else if (element instanceof Form && (!((Form) element).getFields().isEmpty()))
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid)
-					document.add(printGrid((Grid) element));
+					document.add(printGrid((Grid<Object>) element));
 				else if (element instanceof ReportList)
 					document.add(printList((ReportList) element));
 				else if (element instanceof Image && ((Image) element).getSource() != null)
@@ -138,51 +146,65 @@ public class PDF extends Doc {
 					document.add(printChart((Chart<?>) element, document, writer));
 			}
 			document.close();
-		} catch (DocumentException ex) {
+		} catch (DocumentException ex)
+		{
 			throw new AppError(ex);
 		}
 	}
 
-	private Element printHeader(Header header) {
+	private Element printHeader(Header header)
+	{
 		String string = Converter.toText(header.getValue());
-		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(header.style()));
+		com.lowagie.text.Paragraph element =
+				new com.lowagie.text.Paragraph(string, getFont(header.style()));
 		element.setAlignment(getAlignment(header.style()));
 		return element;
 	}
 
-	private Element printParagraph(Paragraph paragraph) {
+	private Element printParagraph(Paragraph paragraph)
+	{
 		String string = Converter.toText(paragraph.getValue());
-		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(paragraph.style()));
+		com.lowagie.text.Paragraph element =
+				new com.lowagie.text.Paragraph(string, getFont(paragraph.style()));
 		element.setAlignment(getAlignment(paragraph.style()));
 		return element;
 	}
 
-	private Element printFooter(Footer footer) {
+	private Element printFooter(Footer footer)
+	{
 		String string = Converter.toText(footer.getValue());
-		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(footer.style()));
+		com.lowagie.text.Paragraph element =
+				new com.lowagie.text.Paragraph(string, getFont(footer.style()));
 		element.setAlignment(getAlignment(footer.style()));
 		return element;
 	}
 
-	private Element printPageBreak() {
+	private Element printPageBreak()
+	{
 		return Chunk.NEXTPAGE;
 	}
 
-	private Element printLineBreak() {
+	private Element printLineBreak()
+	{
 		return new Phrase("\n");
 	}
 
-	private Element printImage(Image image) {
-		try {
-			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance((byte[]) image.getSource());
+	private Element printImage(Image image)
+	{
+		try
+		{
+			com.lowagie.text.Image element =
+					com.lowagie.text.Image.getInstance((byte[]) image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
-		} catch (BadElementException | IOException e) {
+		} catch (BadElementException | IOException e)
+		{
 			throw new AppError(e);
 		}
 	}
 
-	private com.lowagie.text.Image printChart(Chart<?> chart, Document document, PdfWriter writer) {
+	private com.lowagie.text.Image printChart(Chart<?> chart, Document document, PdfWriter writer)
+	{
 
 		float width = document.getPageSize().getWidth() - 40;
 		float height = (document.getPageSize().getHeight() - 40) / 2;
@@ -199,14 +221,15 @@ public class PDF extends Doc {
 		return image;
 	}
 
-	private PdfPCell printField(Field field) {
-		try {
+	private PdfPCell printField(Field field)
+	{
+		try
+		{
 			PdfPTable table = new PdfPTable(1);
-			table.setWidths(new float[] {
-					1f
-			});
+			table.setWidths(new float[] {1f});
 
-			PdfPCell label = new PdfPCell(new com.lowagie.text.Paragraph(field.getName(), FIELD_FONT));
+			PdfPCell label =
+					new PdfPCell(new com.lowagie.text.Paragraph(field.getName(), FIELD_FONT));
 			label.setBorder(0);
 			label.setPadding(0);
 			label.setPaddingBottom(2);
@@ -227,18 +250,23 @@ public class PDF extends Doc {
 			cell.setPadding(3);
 			cell.setColspan(field.getColspan());
 			return cell;
-		} catch (DocumentException e) {
+		} catch (DocumentException e)
+		{
 			throw new AppError(e);
 		}
 	}
 
-	private Element printForm(Form form) {
-		try {
+	private Element printForm(Form form)
+	{
+		try
+		{
 			PdfPTable element = new PdfPTable(1);
 			element.setWidthPercentage(form.getPercentage());
 
-			if (form.getCaption() != null) {
-				PdfPCell caption = new PdfPCell(new com.lowagie.text.Paragraph(form.getCaption(), FORM_FONT));
+			if (form.getCaption() != null)
+			{
+				PdfPCell caption =
+						new PdfPCell(new com.lowagie.text.Paragraph(form.getCaption(), FORM_FONT));
 				caption.setBorder(0);
 				caption.setMinimumHeight(20);
 				caption.setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
@@ -262,13 +290,16 @@ public class PDF extends Doc {
 			element.addCell(body);
 
 			return element;
-		} catch (DocumentException ex) {
+		} catch (DocumentException ex)
+		{
 			throw new AppError(ex);
 		}
 	}
 
-	private int getAlignment(Style style) {
-		switch (style.getTextAlign()) {
+	private int getAlignment(Style style)
+	{
+		switch (style.getTextAlign())
+		{
 			case CENTER:
 				return PdfPCell.ALIGN_CENTER;
 			case JUSTIFY:
@@ -282,7 +313,8 @@ public class PDF extends Doc {
 		}
 	}
 
-	private PdfPCell createHeadCell(String value, Style style) {
+	private PdfPCell createHeadCell(String value, Style style)
+	{
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(value, HEAD_FONT));
 		cell.setMinimumHeight(16);
 		cell.setBorderColor(Color.GRAY);
@@ -293,7 +325,8 @@ public class PDF extends Doc {
 		return cell;
 	}
 
-	private PdfPCell createBodyCell(Object value, Style style, int index, int level) {
+	private PdfPCell createBodyCell(Object value, Style style, int index, int level)
+	{
 		String string = Converter.toText(value);
 
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(string, getFont(style)));
@@ -307,7 +340,8 @@ public class PDF extends Doc {
 		return cell;
 	}
 
-	private PdfPCell createFootCell(String value, Style style) {
+	private PdfPCell createFootCell(String value, Style style)
+	{
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(value, getFont(style)));
 		cell.setMinimumHeight(20);
 		cell.setBorderColor(Color.GRAY);
@@ -318,15 +352,17 @@ public class PDF extends Doc {
 		return cell;
 	}
 
-	private void addBodies(Grid<Object> grid, PdfPTable table, Object data, int level) {
+	private void addBodies(Grid<Object> grid, PdfPTable table, Object data, int level)
+	{
 
-		int size = grid.getLimit() != null
-				? Math.min(grid.getLimit(), grid.getColumns().size())
+		int size = grid.getLimit() != null ? Math.min(grid.getLimit(), grid.getColumns().size())
 				: grid.getColumns().size();
-		for (Object object : Toolkit.iterable(data)) {
+		for (Object object : Toolkit.iterable(data))
+		{
 			int index = table.getRows().size() - 1;
 
-			for (int i = 0; i < size; i++) {
+			for (int i = 0; i < size; i++)
+			{
 				Column<Object> column = grid.getColumns().get(i);
 				Object value = column.getBody().apply(object);
 
@@ -342,10 +378,11 @@ public class PDF extends Doc {
 		}
 	}
 
-	private PdfPTable printGrid(Grid<Object> grid) {
-		try {
-			int size = grid.getLimit() != null
-					? Math.min(grid.getLimit(), grid.getColumns().size())
+	private PdfPTable printGrid(Grid<Object> grid)
+	{
+		try
+		{
+			int size = grid.getLimit() != null ? Math.min(grid.getLimit(), grid.getColumns().size())
 					: grid.getColumns().size();
 
 			float[] widths = new float[size];
@@ -356,7 +393,8 @@ public class PDF extends Doc {
 			table.setWidths(widths);
 			table.setWidthPercentage(100);
 
-			if (grid.getCaption() != null) {
+			if (grid.getCaption() != null)
+			{
 				table.setHeaderRows(table.getHeaderRows() + 1);
 				table.getDefaultCell().setMinimumHeight(16);
 				table.getDefaultCell().setBorderColor(Color.GRAY);
@@ -367,15 +405,17 @@ public class PDF extends Doc {
 				table.addCell(new com.lowagie.text.Paragraph(grid.getCaption(), CAPTION_FONT));
 			}
 
-			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null)) {
-				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
+			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
+			{
+				grid.getColumns().stream().limit(size).forEach(e -> table
+						.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
-			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null)) {
-				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
+			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null))
+			{
+				grid.getColumns().stream().limit(size).forEach(e -> table
+						.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
 				table.setFooterRows(1);
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
@@ -383,34 +423,40 @@ public class PDF extends Doc {
 			addBodies(grid, table, grid.getData(), 0);
 
 			return table;
-		} catch (DocumentException ex) {
+		} catch (DocumentException ex)
+		{
 			throw new AppError(ex);
 
 		}
 	}
 
-	private class Numerator extends PdfPageEventHelper {
+	private class Numerator extends PdfPageEventHelper
+	{
 
 		private PdfTemplate pages;
 		protected BaseFont baseFont;
 		private static final float FOOTER_SIZE = 8f;
 
-		public Numerator() {
-		}
+		public Numerator()
+		{}
 
 		@Override
-		public void onOpenDocument(PdfWriter writer, Document document) {
-			try {
+		public void onOpenDocument(PdfWriter writer, Document document)
+		{
+			try
+			{
 				baseFont = BaseFont.createFont();
 				pages = writer.getDirectContent().createTemplate(100, 100);
 				pages.setBoundingBox(new Rectangle(-20, -20, 100, 100));
-			} catch (DocumentException | IOException e) {
+			} catch (DocumentException | IOException e)
+			{
 				throw new AppError(e);
 			}
 		}
 
 		@Override
-		public void onEndPage(PdfWriter writer, Document document) {
+		public void onEndPage(PdfWriter writer, Document document)
+		{
 			PdfContentByte cb = writer.getDirectContent();
 			cb.saveState();
 			String text = String.format("Página %s de ", writer.getPageNumber());
@@ -428,7 +474,8 @@ public class PDF extends Doc {
 		}
 
 		@Override
-		public void onCloseDocument(PdfWriter writer, com.lowagie.text.Document document) {
+		public void onCloseDocument(PdfWriter writer, com.lowagie.text.Document document)
+		{
 			pages.beginText();
 			pages.setFontAndSize(baseFont, FOOTER_SIZE);
 			pages.setTextMatrix(0, 0);
@@ -437,13 +484,15 @@ public class PDF extends Doc {
 		}
 	}
 
-	private Element printList(ReportList reportList) {
+	private Element printList(ReportList reportList)
+	{
 		com.lowagie.text.List list = new com.lowagie.text.List();
 
 		if (reportList.getType() == null)
 			throw new IllegalArgumentException("Report list type can't be null");
 
-		switch (reportList.getType()) {
+		switch (reportList.getType())
+		{
 			case NUMBER:
 				list.setNumbered(true);
 				break;
@@ -453,13 +502,16 @@ public class PDF extends Doc {
 			case SYMBOL:
 				break;
 			default:
-				throw new IllegalArgumentException("Invalid report list type: " + reportList.getType().name());
+				throw new IllegalArgumentException(
+						"Invalid report list type: " + reportList.getType().name());
 		}
 
 		reportList.getElements().stream().forEach(e -> {
-			if (e instanceof String) {
+			if (e instanceof String)
+			{
 				list.add(new ListItem(e.toString(), getFont(reportList.style())));
-			} else if (e instanceof ReportList) {
+			} else if (e instanceof ReportList)
+			{
 				ListItem item = new ListItem();
 				item.add(printList((ReportList) e));
 				list.add(item);
@@ -469,13 +521,16 @@ public class PDF extends Doc {
 		return list;
 	}
 
-	private Color getColor(Style style) {
+	private Color getColor(Style style)
+	{
 		return COLORS.computeIfAbsent(style.getColor(),
 				c -> new Color(c.getR(), c.getG(), c.getB()));
 	}
 
-	private int getFontWeight(Style style) {
-		switch (style.getFontWeight()) {
+	private int getFontWeight(Style style)
+	{
+		switch (style.getFontWeight())
+		{
 			case NORMAL:
 				return Font.NORMAL;
 			case BOLD:
@@ -485,8 +540,9 @@ public class PDF extends Doc {
 		}
 	}
 
-	private Font getFont(Style style) {
-		return FONTS.computeIfAbsent(style, e -> new Font(Font.TIMES_ROMAN, e.getFontSize(),
-				getFontWeight(e), getColor(e)));
+	private Font getFont(Style style)
+	{
+		return FONTS.computeIfAbsent(style,
+				e -> new Font(Font.TIMES_ROMAN, e.getFontSize(), getFontWeight(e), getColor(e)));
 	}
 }

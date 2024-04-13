@@ -3,12 +3,10 @@ package gate.tags.property;
 import gate.converter.Converter;
 import gate.type.Attributes;
 import gate.util.Toolkit;
+import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import jakarta.servlet.jsp.JspException;
 
 public abstract class CheckableTag extends SelectorTag
 {
@@ -33,16 +31,17 @@ public abstract class CheckableTag extends SelectorTag
 				throw new IOException("No option defined for property " + getProperty());
 
 		if (sortby != null)
-			options = Toolkit.collection(options)
-				.stream()
+			options = Toolkit.collection(options).stream()
 				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
 				.collect(Collectors.toList());
 
 		getJspContext().getOut().print("<g-selectn " + getAttributes() + ">");
 
 		if (groups != null)
-			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
-				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
+			for (var group : Toolkit
+				.collection(options).stream().collect(Collectors
+				.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList()))
+				.entrySet())
 				print(group.getValue(), 0);
 		else
 			print(options, 0);
@@ -77,11 +76,9 @@ public abstract class CheckableTag extends SelectorTag
 				getJspBody().invoke(null);
 				getJspContext().removeAttribute("option");
 			} else if (labels != null)
-				getJspContext().getOut()
-					.print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
+				getJspContext().getOut().print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
 			else
-				getJspContext().getOut()
-					.print(Converter.toText(option));
+				getJspContext().getOut().print(Converter.toText(option));
 
 			getJspContext().getOut().print("</label>");
 

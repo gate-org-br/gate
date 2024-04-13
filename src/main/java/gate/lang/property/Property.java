@@ -411,7 +411,7 @@ public class Property
 	 * @return a list of all constraints defined for this property
 	 * @see gate.constraint.Constraint
 	 */
-	public Collection<Constraint.Implementation> getConstraints()
+	public Collection<Constraint.Implementation<?>> getConstraints()
 	{
 		return lastAttribute.getConstraints();
 	}

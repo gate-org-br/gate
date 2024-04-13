@@ -15,20 +15,22 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 {
 
 	private final Class<T> type;
-	private static final ConcurrentMap<Class<?>, ObjectReader<?>> INSTANCES
-			= new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Class<?>, ObjectReader<?>> INSTANCES =
+			new ConcurrentHashMap<>();
 
 	private ObjectReader(Class<T> type)
 	{
 		this.type = type;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> ObjectReader<T> getInstance(Class<T> type)
 	{
 		return (ObjectReader<T>) INSTANCES.computeIfAbsent(type, ObjectReader::new);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Optional<T> read(InputStream is) throws IOException
 	{
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -37,9 +39,8 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 			for (int c = reader.read(); c != -1; c = reader.read())
 				writer.write((char) c);
 			writer.flush();
-			return Optional.ofNullable((T) Converter
-					.getConverter(type)
-					.ofString(type, writer.toString()));
+			return Optional
+					.ofNullable((T) Converter.getConverter(type).ofString(type, writer.toString()));
 		} catch (ConversionException ex)
 		{
 			throw new IOException(ex.getMessage(), ex);

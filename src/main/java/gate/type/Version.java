@@ -16,7 +16,8 @@ public interface Version extends Serializable, Comparable<Version>
 
 	public static final Version UNDEFINED = new VersionImpl(0, 0, 0, null, null);
 	public static final Version INVALID = new VersionImpl(0, 0, 0, "INVALID", null);
-	public static final Pattern PATTERN = Pattern.compile("^([0-9]+)[.]([0-9]+)[.]([0-9]+)(-([0-9a-zA-Z]+))?(-([0-9a-zA-Z]+))?$");
+	public static final Pattern PATTERN =
+			Pattern.compile("^([0-9]+)[.]([0-9]+)[.]([0-9]+)(-([0-9a-zA-Z]+))?(-([0-9a-zA-Z]+))?$");
 
 	public abstract int getMajor();
 
@@ -62,10 +63,8 @@ public interface Version extends Serializable, Comparable<Version>
 			return Version.INVALID;
 
 		return new VersionImpl(Short.parseShort(matcher.group(1)),
-			Short.parseShort(matcher.group(2)),
-			Short.parseShort(matcher.group(3)),
-			matcher.group(5),
-			matcher.group(7));
+				Short.parseShort(matcher.group(2)), Short.parseShort(matcher.group(3)),
+				matcher.group(5), matcher.group(7));
 	}
 
 	public static class VersionImpl implements Version
@@ -79,8 +78,7 @@ public interface Version extends Serializable, Comparable<Version>
 
 		private static final long serialVersionUID = 1L;
 
-		private VersionImpl(int major, int minor, int patch,
-			String qualifier, String iteration)
+		private VersionImpl(int major, int minor, int patch, String qualifier, String iteration)
 		{
 			this.major = major;
 			this.minor = minor;
@@ -124,11 +122,9 @@ public interface Version extends Serializable, Comparable<Version>
 		{
 			if (qualifier != null)
 				if (iteration != null)
-					return major + "." + minor + "." + patch
-						+ "-" + qualifier + "-" + iteration;
+					return major + "." + minor + "." + patch + "-" + qualifier + "-" + iteration;
 				else
-					return major + "." + minor + "." + patch
-						+ "-" + qualifier;
+					return major + "." + minor + "." + patch + "-" + qualifier;
 			else
 				return major + "." + minor + "." + patch;
 		}
@@ -136,12 +132,10 @@ public interface Version extends Serializable, Comparable<Version>
 		@Override
 		public boolean equals(Object obj)
 		{
-			return obj instanceof Version
-				&& ((Version) obj).getMajor() == major
-				&& ((Version) obj).getMinor() == minor
-				&& ((Version) obj).getPatch() == patch
-				&& Objects.equals(((Version) obj).getQualifier(), qualifier)
-				&& Objects.equals(((Version) obj).getIteration(), iteration);
+			return obj instanceof Version && ((Version) obj).getMajor() == major
+					&& ((Version) obj).getMinor() == minor && ((Version) obj).getPatch() == patch
+					&& Objects.equals(((Version) obj).getQualifier(), qualifier)
+					&& Objects.equals(((Version) obj).getIteration(), iteration);
 		}
 
 		@Override
@@ -168,7 +162,7 @@ public interface Version extends Serializable, Comparable<Version>
 				else
 					return version.getQualifier().compareTo(qualifier);
 
-			if (!Objects.equals(iteration, version.getClass()))
+			if (!Objects.equals(iteration, version.getIteration()))
 				if (version.getIteration() == null)
 					return 1;
 				else if (iteration == null)

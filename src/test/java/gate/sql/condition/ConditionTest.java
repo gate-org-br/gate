@@ -9,9 +9,8 @@ public class ConditionTest
 	@Test
 	public void testNot()
 	{
-		Condition condition = Condition
-			.not().when(false).expression("column1").isNull()
-			.not().when(true).expression("column2").isNull();
+		Condition condition = Condition.not().when(false).expression("column1").isNull().and().not()
+				.when(true).expression("column2").isNull();
 		assertEquals("not column2 is null", condition.toString());
 	}
 

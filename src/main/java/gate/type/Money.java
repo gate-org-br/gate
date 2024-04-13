@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.MoneyConverter;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -15,7 +14,7 @@ import java.util.stream.Stream;
 
 @Icon("$")
 @Converter(MoneyConverter.class)
-public final class Money extends Number implements Comparable<Money>, Serializable
+public final class Money extends Number implements Comparable<Money>
 {
 
 	private final BigDecimal value;
@@ -60,9 +59,9 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 
 	public Percentage percentage(Money money)
 	{
-		return new Percentage(money.value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : getValue().divide(
-			money.getValue(), 4, RoundingMode.HALF_EVEN).multiply(new BigDecimal(100), new MathContext(2,
-			RoundingMode.HALF_EVEN)));
+		return new Percentage(money.value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
+				: getValue().divide(money.getValue(), 4, RoundingMode.HALF_EVEN)
+						.multiply(new BigDecimal(100), new MathContext(2, RoundingMode.HALF_EVEN)));
 	}
 
 	public Money add(Tax tax)
@@ -243,7 +242,8 @@ public final class Money extends Number implements Comparable<Money>, Serializab
 
 	public static Money sum(Stream<Money> values)
 	{
-		return new Money(values.filter(Objects::nonNull).map(Money::getValue).reduce(BigDecimal.ZERO, BigDecimal::add));
+		return new Money(values.filter(Objects::nonNull).map(Money::getValue)
+				.reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 
 	public static Money of(String string)

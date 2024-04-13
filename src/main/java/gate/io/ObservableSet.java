@@ -31,7 +31,8 @@ public class ObservableSet<T> implements Set<T>, Observable<T>
 		return result;
 	}
 
-	public static <T> ObservableSet<T> of(Set<T> values, Observer<T>... observers)
+	public static <T> ObservableSet<T> of(Set<T> values,
+			@SuppressWarnings("unchecked") Observer<T>... observers)
 	{
 		var result = new ObservableSet<T>(values);
 		Stream.of(observers).forEach(result::addObserver);
@@ -155,8 +156,7 @@ public class ObservableSet<T> implements Set<T>, Observable<T>
 	}
 
 	@Override
-	public boolean contains(Object o
-	)
+	public boolean contains(Object o)
 	{
 		return values.contains(o);
 	}
@@ -168,8 +168,7 @@ public class ObservableSet<T> implements Set<T>, Observable<T>
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a
-	)
+	public <E> E[] toArray(E[] a)
 	{
 		return values.toArray(a);
 	}

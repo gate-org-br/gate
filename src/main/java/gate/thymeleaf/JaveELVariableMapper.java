@@ -20,7 +20,8 @@ public class JaveELVariableMapper extends VariableMapper
 	private final HttpServletRequest request;
 	private final Map<String, ValueExpression> values = new HashMap<>();
 
-	public JaveELVariableMapper(ExpressionFactory factory, BeanManager beanManager, HttpServletRequest request)
+	public JaveELVariableMapper(ExpressionFactory factory, BeanManager beanManager,
+			HttpServletRequest request)
 	{
 		this.factory = factory;
 		this.beanManager = beanManager;
@@ -31,9 +32,8 @@ public class JaveELVariableMapper extends VariableMapper
 	public ValueExpression resolveVariable(String variable)
 	{
 		if ("param".equals(variable))
-			return createValue(request.getParameterMap()
-				.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(),
-					e -> e.getValue()[0])));
+			return createValue(request.getParameterMap().entrySet().stream()
+					.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()[0])));
 
 		if (values.containsKey(variable))
 			return values.get(variable);
@@ -51,7 +51,7 @@ public class JaveELVariableMapper extends VariableMapper
 	private ValueExpression createValue(Object value)
 	{
 		if (value instanceof LazyContextVariable)
-			value = ((LazyContextVariable) value).getValue();
+			value = ((LazyContextVariable<?>) value).getValue();
 		return factory.createValueExpression(value, Object.class);
 	}
 

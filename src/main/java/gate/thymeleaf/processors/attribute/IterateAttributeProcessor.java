@@ -36,7 +36,8 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
+	public void process(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
 	{
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
@@ -45,18 +46,18 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("g:depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("g:index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("g:target"), "target");
-		var children = Optional.ofNullable(element.getAttributeValue("g:children")).map(expression.create()::function).orElse(null);
+		var children = Optional.ofNullable(element.getAttributeValue("g:children"))
+				.map(expression.create()::function).orElse(null);
 
-		Attributes attributes
-			= Stream.of(element.getAllAttributes())
-				.filter(e -> e.getValue() != null)
-				.filter(e -> !"g:iterate".equals(e.getAttributeCompleteName()))
-				.filter(e -> !"g:depth".equals(e.getAttributeCompleteName()))
-				.filter(e -> !"g:index".equals(e.getAttributeCompleteName()))
-				.filter(e -> !"g:target".equals(e.getAttributeCompleteName()))
-				.filter(e -> !"g:children".equals(e.getAttributeCompleteName()))
-				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-					e -> e.getValue(), (a, b) -> a, Attributes::new));
+		Attributes attributes =
+				Stream.of(element.getAllAttributes()).filter(e -> e.getValue() != null)
+						.filter(e -> !"g:iterate".equals(e.getAttributeCompleteName()))
+						.filter(e -> !"g:depth".equals(e.getAttributeCompleteName()))
+						.filter(e -> !"g:index".equals(e.getAttributeCompleteName()))
+						.filter(e -> !"g:target".equals(e.getAttributeCompleteName()))
+						.filter(e -> !"g:children".equals(e.getAttributeCompleteName()))
+						.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+								e -> e.getValue(), (a, b) -> a, Attributes::new));
 		replaceTag(context, model, handler, element.getElementCompleteName(), attributes);
 
 		IModel content = model.cloneModel();
@@ -68,23 +69,29 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 			if (exchange.getAttributeValue(depth) == null)
 			{
 				exchange.setAttributeValue(depth, -1);
-				iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+				iterate(context, model, handler, content, exchange, source, target, index, depth,
+						children);
 				exchange.removeAttribute(depth);
 			} else
-				iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+				iterate(context, model, handler, content, exchange, source, target, index, depth,
+						children);
 			exchange.removeAttribute(index);
 		} else if (exchange.getAttributeValue(depth) == null)
 		{
 			exchange.setAttributeValue(depth, -1);
-			iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+			iterate(context, model, handler, content, exchange, source, target, index, depth,
+					children);
 			exchange.removeAttribute(depth);
 		} else
-			iterate(context, model, handler, content, exchange, source, target, index, depth, children);
+			iterate(context, model, handler, content, exchange, source, target, index, depth,
+					children);
 	}
 
-	private void iterate(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-		IModel content, IWebExchange exchange, Object source,
-		String target, String index, String depth, Function<Object, Object> children)
+	@SuppressWarnings("unchecked")
+	private void iterate(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler, IModel content, IWebExchange exchange,
+			Object source, String target, String index, String depth,
+			Function<Object, Object> children)
 	{
 		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) + 1);
 		for (Object value : Toolkit.iterable(source))
@@ -100,9 +107,11 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 			if (value != null)
 				if (children != null)
 					for (Object child : Toolkit.iterable(children.apply(value)))
-						iterate(context, model, handler, content, exchange, child, target, index, depth, children);
+						iterate(context, model, handler, content, exchange, child, target, index,
+								depth, children);
 				else if (value instanceof Hierarchy hierarchy)
-					hierarchy.getChildren().forEach(child -> iterate(context, model, handler, content, exchange, child, target, index, depth, children));
+					hierarchy.getChildren().forEach(child -> iterate(context, model, handler,
+							content, exchange, child, target, index, depth, children));
 		}
 		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) - 1);
 	}

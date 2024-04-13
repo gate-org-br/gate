@@ -12,14 +12,14 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 	/**
 	 * A compiled condition that is always true.
 	 */
-	public static final ExtractorCondition EXTRACTOR_TRUE
-		= new ExtractorCondition(Condition.of("0").isEq("0"));
+	public static final ExtractorCondition<?> EXTRACTOR_TRUE =
+			new ExtractorCondition<>(Condition.of("0").isEq("0"));
 
 	/**
 	 * A compiled condition that is always false.
 	 */
-	public static final ExtractorCondition EXTRACTOR_FALSE
-		= new ExtractorCondition(Condition.of("0").isEq("1"));
+	public static final ExtractorCondition<?> EXTRACTOR_FALSE =
+			new ExtractorCondition<>(Condition.of("0").isEq("1"));
 
 	ExtractorCondition(Clause clause)
 	{

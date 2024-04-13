@@ -28,13 +28,11 @@ import java.util.function.Function;
 public class JsonObject implements Map<String, JsonElement>, JsonElement
 {
 
-	private final Map<String, JsonElement> values
-		= new LinkedHashMap<>();
+	private final Map<String, JsonElement> values = new LinkedHashMap<>();
 	private static final long serialVersionUID = 1L;
 
 	public JsonObject()
-	{
-	}
+	{}
 
 	public JsonObject(Map<String, JsonElement> values)
 	{
@@ -50,8 +48,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof JsonObject
-			&& values.equals(((JsonObject) o).values);
+		return o instanceof JsonObject && values.equals(((JsonObject) o).values);
 	}
 
 	@Override
@@ -184,49 +181,38 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public Optional<String> getString(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonString)
-			.map(Object::toString);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonString)
+				.map(Object::toString);
 	}
 
 	public Optional<Integer> getInt(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::intValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::intValue);
 	}
 
 	public Optional<Long> getLong(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::longValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::longValue);
 	}
 
 	public Optional<Short> getShort(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::shortValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::shortValue);
 	}
 
 	public Optional<Byte> getByte(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::byteValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::byteValue);
 	}
 
 	public Optional<Float> getFloat(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::floatValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::floatValue);
 	}
 
 	public JsonObject setObject(String key, Object value)
@@ -251,11 +237,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	{
 		try
 		{
-			return Optional.ofNullable(get(key))
-				.filter(e -> e instanceof JsonString)
-				.map(e -> (JsonString) e)
-				.map(e -> UncheckedConversionException.execute(()
-				-> gate.converter.Converter.fromString(type, e.toString())));
+			return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonString)
+					.map(e -> (JsonString) e).map(e -> UncheckedConversionException.execute(
+							() -> gate.converter.Converter.fromString(type, e.toString())));
 		} catch (UncheckedConversionException ex)
 		{
 			throw ex.getCause();
@@ -264,18 +248,14 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public Optional<Double> getDouble(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e)
-			.map(JsonNumber::doubleValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e).map(JsonNumber::doubleValue);
 	}
 
 	public Optional<Boolean> getBoolean(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonBoolean)
-			.map(e -> (JsonBoolean) e)
-			.map(JsonBoolean::getValue);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonBoolean)
+				.map(e -> (JsonBoolean) e).map(JsonBoolean::getValue);
 	}
 
 	public Optional<JsonElement> getJsonElement(String key)
@@ -285,38 +265,33 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 
 	public Optional<JsonObject> getJsonObject(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonObject)
-			.map(e -> (JsonObject) e);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonObject)
+				.map(e -> (JsonObject) e);
 	}
 
 	public Optional<JsonArray> getJsonArray(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonArray)
-			.map(e -> (JsonArray) e);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonArray)
+				.map(e -> (JsonArray) e);
 	}
 
 	public Optional<JsonNumber> getJsonNumber(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
+				.map(e -> (JsonNumber) e);
 
 	}
 
 	public Optional<JsonBoolean> getJsonBoolean(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonBoolean)
-			.map(e -> (JsonBoolean) e);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonBoolean)
+				.map(e -> (JsonBoolean) e);
 	}
 
 	public Optional<JsonString> getJsonString(String key)
 	{
-		return Optional.ofNullable(get(key))
-			.filter(e -> e instanceof JsonString)
-			.map(e -> (JsonString) e);
+		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonString)
+				.map(e -> (JsonString) e);
 	}
 
 	/**
@@ -326,7 +301,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	 *
 	 * @return a JsonObject object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON
+	 *         formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
@@ -342,7 +318,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	/**
 	 * Formats the specified JsonObject into a JSON formatted string.
 	 * <p>
-	 * The attributes parse the specified JsonObject will be formatted recursively as their respective elements on JSON notation.
+	 * The attributes parse the specified JsonObject will be formatted recursively as their
+	 * respective elements on JSON notation.
 	 *
 	 * @param jsonObject the jsonObject object to be formatted on JSON notation
 	 *
@@ -371,25 +348,21 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 					Field field = type.getDeclaredField(entry.getKey());
 					field.setAccessible(true);
 					field.set(object, entry.getValue().toObject(field.getType(),
-						Reflection.getElementType(field.getGenericType())));
+							Reflection.getElementType(field.getGenericType())));
 				}
 			}
 
 			return object;
-		} catch (NoSuchMethodException
-			| NoSuchFieldException
-			| InstantiationException
-			| IllegalAccessException
-			| InvocationTargetException
-			| SecurityException ex)
+		} catch (NoSuchMethodException | NoSuchFieldException | InstantiationException
+				| IllegalAccessException | InvocationTargetException | SecurityException ex)
 		{
 			throw new UncheckedConversionException(ex.getMessage());
 		}
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+	@SuppressWarnings("unchecked")
+	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -466,29 +439,24 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 		return values.entrySet();
 	}
 
-	public static <T> JsonObject format(T obj,
-		Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonObject format(T obj, Function<T, String> label, Function<T, Object> value)
 	{
-		return new JsonObject()
-			.set("label", JsonString.of(label.apply(obj)))
-			.set("value", JsonElement.of(value.apply(obj)));
+		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
+				JsonElement.of(value.apply(obj)));
 	}
 
-	public static <T> JsonObject of(T obj,
-		Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value)
 	{
-		return new JsonObject()
-			.set("label", JsonString.of(label.apply(obj)))
-			.set("value", JsonElement.of(value.apply(obj)));
+		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
+				JsonElement.of(value.apply(obj)));
 	}
 
-	public static <T> JsonObject of(T obj,
-		Function<T, String> label, Function<T, Object> value, Function<T, JsonObject> properties)
+	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value,
+			Function<T, JsonObject> properties)
 	{
-		return new JsonObject()
-			.set("label", JsonString.of(label.apply(obj)))
-			.set("value", JsonElement.of(value.apply(obj)))
-			.set("properties", properties.apply(obj));
+		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
+				.set("value", JsonElement.of(value.apply(obj)))
+				.set("properties", properties.apply(obj));
 	}
 
 	/**
@@ -500,8 +468,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	public static JsonObject format(Object obj)
 	{
 		JsonObject result = new JsonObject();
-		Property.getProperties(obj.getClass()).forEach((property) ->
-		{
+		Property.getProperties(obj.getClass()).forEach((property) -> {
 			String name = property.getDisplayName();
 			if (name != null)
 			{

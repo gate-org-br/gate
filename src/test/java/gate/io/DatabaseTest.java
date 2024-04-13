@@ -14,7 +14,7 @@ public class DatabaseTest
 	@Test
 	public void testInsert()
 	{
-		Database database = Database.of(String.class, tempDir.resolve("Database"));
+		Database<String> database = Database.of(String.class, tempDir.resolve("Database"));
 		database.insert("table1", "table1.string1");
 		database.insert("table1", "table1.string2");
 
@@ -31,7 +31,7 @@ public class DatabaseTest
 	@Test
 	public void testDelete()
 	{
-		Database database = Database.of(String.class, tempDir.resolve("Database"));
+		Database<String> database = Database.of(String.class, tempDir.resolve("Database"));
 		database.insert("table1", "table1.string1");
 		database.insert("table1", "table1.string2");
 		database.insert("table2", "table2.string1");
@@ -55,11 +55,9 @@ public class DatabaseTest
 		database.insert("table2", "table2.string1");
 		database.insert("table2", "table2.string2");
 
-		assertEquals(2, database.search(e -> e.startsWith("table1"))
-			.size());
+		assertEquals(2, database.search(e -> e.startsWith("table1")).size());
 
-		assertEquals(2, database.search(e -> e.endsWith("string1"))
-			.size());
+		assertEquals(2, database.search(e -> e.endsWith("string1")).size());
 		database.drop();
 	}
 }

@@ -41,20 +41,21 @@ public class StringMatrixConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		return ofString(type, rs.getString(index));
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields,
-		Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+			throws SQLException, ConversionException
 	{
 		return ofString(type, rs.getString(fields));
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
+	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value)
+			throws SQLException
 	{
 		if (value != null)
 			ps.setString(index, toString(String[][].class, value));
@@ -69,7 +70,7 @@ public class StringMatrixConverter implements Converter
 		if (object == null)
 			return "";
 		try (StringWriter writer = new StringWriter();
-			CSVFormatter formatter = CSVFormatter.of(writer))
+				CSVFormatter formatter = CSVFormatter.of(writer))
 		{
 			for (String[] values : (String[][]) object)
 				formatter.writeLine(values);
@@ -92,9 +93,7 @@ public class StringMatrixConverter implements Converter
 
 		try (CSVParser reader = CSVParser.of(new BufferedReader(new StringReader(string))))
 		{
-			return reader.stream()
-				.map(e -> e.toArray(new String[0]))
-				.toArray(String[][]::new);
+			return reader.stream().map(e -> e.toArray(new String[0])).toArray(String[][]::new);
 		}
 	}
 
@@ -111,13 +110,13 @@ public class StringMatrixConverter implements Converter
 	}
 
 	@Override
+	@SuppressWarnings("resource")
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
-		try (CSVParser reader = CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
+		try (CSVParser reader =
+				CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
 		{
-			return reader.stream()
-				.map(e -> e.toArray(new String[0]))
-				.toArray(String[][]::new);
+			return reader.stream().map(e -> e.toArray(new String[0])).toArray(String[][]::new);
 		} catch (IOException ex)
 		{
 			throw new ConversionException(ex.getMessage(), ex);

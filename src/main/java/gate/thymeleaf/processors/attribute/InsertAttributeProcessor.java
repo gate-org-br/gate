@@ -23,19 +23,20 @@ public class InsertAttributeProcessor extends AttributeModelProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
+	public void process(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
 	{
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
-		Attributes attributes
-			= Stream.of(element.getAllAttributes())
-				.filter(e -> e.getValue() != null)
-				.filter(e -> !"g:insert".equals(e.getAttributeCompleteName()))
-				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-					e -> e.getValue(), (a, b) -> a, Attributes::new));
+		Attributes attributes =
+				Stream.of(element.getAllAttributes()).filter(e -> e.getValue() != null)
+						.filter(e -> !"g:insert".equals(e.getAttributeCompleteName()))
+						.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+								e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 
-		IModel content = (IModel) ((LinkedList) exchange.getAttributeValue("g-template-content")).removeLast();
+		IModel content = (IModel) ((LinkedList<?>) exchange.getAttributeValue("g-template-content"))
+				.removeLast();
 		replaceTag(context, model, handler, element.getElementCompleteName(), attributes);
 		model.insertModel(1, content);
 	}

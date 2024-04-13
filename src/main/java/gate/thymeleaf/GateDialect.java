@@ -6,12 +6,11 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 
 @ApplicationScoped
-public class GateDialect implements IDialect, IProcessorDialect
+public class GateDialect implements IProcessorDialect
 {
 
 	@Inject

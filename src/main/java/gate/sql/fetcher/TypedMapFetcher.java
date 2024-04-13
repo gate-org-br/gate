@@ -7,30 +7,33 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fetches the first row of a Cursor as a map whose keys are the column names and values are the column values as objects of the specified types.
+ * Fetches the first row of a Cursor as a map whose keys are the column names and values are the
+ * column values as objects of the specified types.
  */
 public class TypedMapFetcher implements Fetcher<Optional<Map<String, Object>>>
 {
 
-	private final Class[] types;
+	private final Class<?>[] types;
 
 	/**
 	 * Creates a new TypedMapFetcher with the specified types.
 	 *
 	 * @param types an array specifying the types of the objects to be fetched
 	 */
-	public TypedMapFetcher(Class[] types)
+	public TypedMapFetcher(Class<?>[] types)
 	{
 		this.types = types;
 	}
 
 	/**
-	 * Fetches the first row as a map whose keys are the column names and values are the column values as objects of the specified types.
+	 * Fetches the first row as a map whose keys are the column names and values are the column
+	 * values as objects of the specified types.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the column names and values are the column values as objects of the specified
-	 * type or an empty Optional if the result is empty
+	 * @return an Optional describing the first row as a map whose keys are the column names and
+	 *         values are the column values as objects of the specified type or an empty Optional if
+	 *         the result is empty
 	 *
 	 */
 	@Override

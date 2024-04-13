@@ -22,7 +22,7 @@ public interface Authenticator
 
 	public String logoutUri(ScreenServletRequest request);
 
-	public boolean isPresent(ScreenServletRequest request) throws AuthenticationException;
+	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException;
 
 	public abstract Type getType();
 

@@ -9,11 +9,10 @@ import java.util.NoSuchElementException;
 public class Parameters
 {
 
-	private final Map<String, Deque<Object>> parameters = new HashMap();
+	private final Map<String, Deque<Object>> parameters = new HashMap<>();
 
 	public Parameters()
-	{
-	}
+	{}
 
 	public Parameters(Parameters parameters)
 	{
@@ -22,14 +21,13 @@ public class Parameters
 
 	public Parameters put(String name, Object value)
 	{
-		parameters.computeIfAbsent(name,
-			e -> new ArrayDeque<>()).push(value);
+		parameters.computeIfAbsent(name, e -> new ArrayDeque<>()).push(value);
 		return this;
 	}
 
 	public Object get(String name)
 	{
-		Deque deque = parameters.get(name);
+		Deque<?> deque = parameters.get(name);
 		if (deque == null)
 			throw new NoSuchElementException(name);
 		return deque.peek();
@@ -37,7 +35,7 @@ public class Parameters
 
 	public void remove(String name)
 	{
-		Deque deque = parameters.get(name);
+		Deque<?> deque = parameters.get(name);
 		if (deque == null)
 			throw new NoSuchElementException(name);
 		deque.remove();

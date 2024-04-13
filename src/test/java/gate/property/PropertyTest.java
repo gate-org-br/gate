@@ -21,8 +21,7 @@ public class PropertyTest
 	private Role role;
 
 	public PropertyTest()
-	{
-	}
+	{}
 
 	public Map<String, User> getUsers()
 	{
@@ -98,7 +97,8 @@ public class PropertyTest
 	{
 		try
 		{
-			assertEquals(Property.getProperty(Role.class, "users[0].name").getValue(role), "Usuário 1");
+			assertEquals(Property.getProperty(Role.class, "users[0].name").getValue(role),
+					"Usuário 1");
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());
@@ -135,7 +135,8 @@ public class PropertyTest
 	{
 		try
 		{
-			assertEquals(Property.getProperty(getClass(), "users.user1.name").getValue(this), "Usuário 1");
+			assertEquals(Property.getProperty(getClass(), "users.user1.name").getValue(this),
+					"Usuário 1");
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());
@@ -161,7 +162,9 @@ public class PropertyTest
 	{
 		try
 		{
-			Object result = Property.getProperty(Role.class, "users[0].checkAccess('module', 'screen', 'action')").getValue(role);
+			Object result = Property
+					.getProperty(Role.class, "users[0].checkAccess('module', 'screen', 'action')")
+					.getValue(role);
 			assertEquals(false, result);
 		} catch (PropertyError e)
 		{
@@ -190,9 +193,8 @@ public class PropertyTest
 	{
 		try
 		{
-			Property.getProperty(getClass(), "users.user3")
-				.setValue(this, new User().setId(ID.valueOf(3))
-					.setName("Usuário 3"));
+			Property.getProperty(getClass(), "users.user3").setValue(this,
+					new User().setId(ID.valueOf(3)).setName("Usuário 3"));
 
 			String expected = "Usuário 3";
 			Object result = getUsers().get("user3").getName();
@@ -222,8 +224,8 @@ public class PropertyTest
 	{
 		try
 		{
-			Property.getProperty(Role.class, "users[]").setValue(role, new User()
-				.setId(ID.valueOf(3)).setName("Usuário 3"));
+			Property.getProperty(Role.class, "users[]").setValue(role,
+					new User().setId(ID.valueOf(3)).setName("Usuário 3"));
 			assertEquals(role.getUsers().size(), 3);
 		} catch (PropertyError e)
 		{
@@ -236,8 +238,8 @@ public class PropertyTest
 	{
 		try
 		{
-			assertEquals("users[1].name", Property.getProperty(Role.class, "users[1].name")
-				.toString());
+			assertEquals("users[1].name",
+					Property.getProperty(Role.class, "users[1].name").toString());
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());
@@ -249,7 +251,8 @@ public class PropertyTest
 	{
 		try
 		{
-			assertEquals(Property.getProperty(Role.class, "role.name").getColumnName(), "Role$name");
+			assertEquals(Property.getProperty(Role.class, "role.name").getColumnName(),
+					"Role$name");
 		} catch (PropertyError e)
 		{
 			fail(e.getMessage());
@@ -292,6 +295,7 @@ public class PropertyTest
 
 	}
 
+	@SuppressWarnings("unused")
 	private static class Mock
 	{
 
@@ -311,6 +315,7 @@ public class PropertyTest
 		{
 			return mock;
 		}
+
 
 		public void setName(String name)
 		{

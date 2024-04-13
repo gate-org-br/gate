@@ -11,10 +11,9 @@ import java.util.function.Function;
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to
- * be displayed on each of it's cells. Each object of the associated data source
- * will generate a single row on the Grid. The value to be displayed on each
- * column is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to be displayed on each
+ * of it's cells. Each object of the associated data source will generate a single row on the Grid.
+ * The value to be displayed on each column is obtained using a mapping function on it's row value.
  *
  *
  *
@@ -39,8 +38,8 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Adds a new Column to the Grid.
 	 * <p>
-	 * Each column is associated with a mapping function used to get the
-	 * value to be displayed for each row of the Grid.
+	 * Each column is associated with a mapping function used to get the value to be displayed for
+	 * each row of the Grid.
 	 *
 	 * @return the new Column added
 	 */
@@ -71,11 +70,9 @@ public class Grid<T> extends ReportElement
 	}
 
 	/**
-	 * Sets a value to be displayed on the grid's caption using a java
-	 * Formatter.
+	 * Sets a value to be displayed on the grid's caption using a java Formatter.
 	 *
-	 * @param caption the format string of the caption to be passed to the
-	 * java Formatter
+	 * @param caption the format string of the caption to be passed to the java Formatter
 	 * @param args the parameters to be passed to the java Formatter
 	 *
 	 * @return this, for chained invocations
@@ -88,11 +85,9 @@ public class Grid<T> extends ReportElement
 	}
 
 	/**
-	 * Sets a mapping function to select a value to be displayed on a sub
-	 * grid of the current grid.
+	 * Sets a mapping function to select a value to be displayed on a sub grid of the current grid.
 	 *
-	 * @param children the function where to get the values to be displayed
-	 * on the sub grid
+	 * @param children the function where to get the values to be displayed on the sub grid
 	 *
 	 * @return the same object, for chained invocations
 	 */
@@ -125,20 +120,20 @@ public class Grid<T> extends ReportElement
 	@Override
 	public final Grid<T> style(Style style)
 	{
-		return (Grid<T>) super.style(style);
+		super.style(style);
+		return this;
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Element compact()
 	{
 		Iterator<Column<T>> iterator = columns.iterator();
 		while (iterator.hasNext())
 		{
 			Column<T> column = iterator.next();
-			if (Toolkit.collection(datasource)
-				.stream()
-				.map(e -> column.getBody().apply((T) e))
-				.allMatch(e -> e == null))
+			if (Toolkit.collection(datasource).stream().map(e -> column.getBody().apply((T) e))
+					.allMatch(e -> e == null))
 				iterator.remove();
 		}
 
@@ -146,11 +141,9 @@ public class Grid<T> extends ReportElement
 	}
 
 	/**
-	 * Sets the max number of columns to be shown on doc types of limited
-	 * size.
+	 * Sets the max number of columns to be shown on doc types of limited size.
 	 *
-	 * @param limit the max number of columns to be shown on doc types of
-	 * limited size
+	 * @param limit the max number of columns to be shown on doc types of limited size
 	 *
 	 * @return the same object, for chained invocations
 	 */
@@ -163,11 +156,9 @@ public class Grid<T> extends ReportElement
 	}
 
 	/**
-	 * Returns the max number of columns to be shown on doc types of limited
-	 * size.
+	 * Returns the max number of columns to be shown on doc types of limited size.
 	 *
-	 * @return the max number of columns to be shown on doc types of limited
-	 * size.
+	 * @return the max number of columns to be shown on doc types of limited size.
 	 */
 	public Integer getLimit()
 	{

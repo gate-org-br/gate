@@ -4,13 +4,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-public class Category implements Comparable<Category> {
+public class Category implements Comparable<Category>
+{
 
 	private Number value;
-	private Comparable name;
+	private Comparable<?> name;
 	private static final BigDecimal ONE_HUNDRED = new BigDecimal(100);
 
-	public Category(Comparable name, Number value) {
+	public Category(Comparable<?> name, Number value)
+	{
 		if (name == null)
 			name = "Indefinido";
 		if (value == null)
@@ -20,39 +22,48 @@ public class Category implements Comparable<Category> {
 		this.value = value;
 	}
 
-	public Comparable getName() {
+	public Comparable<?> getName()
+	{
 		return name;
 	}
 
-	public Number getValue() {
+	public Number getValue()
+	{
 		return value;
 	}
 
-	public BigDecimal getPercentage(BigDecimal total) {
+	public BigDecimal getPercentage(BigDecimal total)
+	{
 		if (BigDecimal.ZERO.compareTo(total) == 0)
 			return BigDecimal.ZERO;
-		return new BigDecimal(this.getValue().doubleValue()).divide(total, 4, RoundingMode.DOWN).multiply(ONE_HUNDRED);
+		return new BigDecimal(this.getValue().doubleValue()).divide(total, 4, RoundingMode.DOWN)
+				.multiply(ONE_HUNDRED);
 	}
 
 	@Override
-	public int compareTo(Category category) {
-		return ((Comparable) category.getValue()).compareTo((Comparable) getValue());
+	@SuppressWarnings("unchecked")
+	public int compareTo(Category category)
+	{
+		return ((Comparable<Object>) category.getValue())
+				.compareTo((Comparable<Object>) getValue());
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		return obj instanceof Category
-				&& name.equals(((Category) obj).name)
+	public boolean equals(Object obj)
+	{
+		return obj instanceof Category && name.equals(((Category) obj).name)
 				&& value.equals(((Category) obj).value);
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return Objects.hashCode(this.name) + Objects.hashCode(this.value);
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return value.toString();
 	}
 }

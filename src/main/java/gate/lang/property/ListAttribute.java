@@ -72,36 +72,36 @@ class ListAttribute implements Attribute
 	@Override
 	public Object getValue(Object object)
 	{
-		return object != null
-			&& ((List<?>) object).size() > index
-			? ((List<?>) object).get(index) : null;
+		return object != null && ((List<?>) object).size() > index ? ((List<?>) object).get(index)
+				: null;
 	}
 
 	@Override
 	public Object forceValue(Object object)
 	{
-		List list = (List) object;
+		@SuppressWarnings("unchecked")
+		List<Object> list = (List<Object>) object;
 		if (list.size() <= index)
 		{
-			Class clazz = getRawType();
+			Class<?> clazz = getRawType();
 			while (list.size() <= index)
 				list.add(createInstance(clazz));
 		}
-		return ((List<?>) object).get(index);
+		return list.get(index);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
-		((List) object).set(index, value);
+		((List<Object>) object).set(index, value);
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof ListAttribute
-			&& index == ((ListAttribute) obj).index
-			&& Objects.equals(type, ((ListAttribute) obj).type);
+		return obj instanceof ListAttribute && index == ((ListAttribute) obj).index
+				&& Objects.equals(type, ((ListAttribute) obj).type);
 	}
 
 	@Override

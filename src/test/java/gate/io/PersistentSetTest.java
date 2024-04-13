@@ -73,7 +73,7 @@ public class PersistentSetTest
 	@Test
 	public void testIterator()
 	{
-		Iterator iterator = persistentSet.iterator();
+		Iterator<?> iterator = persistentSet.iterator();
 		iterator.next();
 		iterator.remove();
 		assertEquals(persistentSet.size(), 9);

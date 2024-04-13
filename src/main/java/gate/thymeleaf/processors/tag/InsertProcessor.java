@@ -18,10 +18,12 @@ public class InsertProcessor extends TagModelProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
+	public void process(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
 	{
 		var exchange = ((IWebContext) context).getExchange();
-		IModel content = (IModel) ((LinkedList) exchange.getAttributeValue("g-template-content")).removeLast();
+		IModel content = (IModel) ((LinkedList<?>) exchange.getAttributeValue("g-template-content"))
+				.removeLast();
 		model.reset();
 		model.insertModel(0, content);
 

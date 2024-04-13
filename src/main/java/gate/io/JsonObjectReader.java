@@ -18,11 +18,11 @@ public class JsonObjectReader extends AbstractReader<Optional<JsonObject>>
 {
 
 	private static final JsonObjectReader INSTANCE = new JsonObjectReader();
-	private static final ConcurrentMap<String, JsonObjectReader> INSTANCES = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, JsonObjectReader> INSTANCES =
+			new ConcurrentHashMap<>();
 
 	private JsonObjectReader()
-	{
-	}
+	{}
 
 	private JsonObjectReader(String charset)
 	{
@@ -30,14 +30,13 @@ public class JsonObjectReader extends AbstractReader<Optional<JsonObject>>
 	}
 
 	@Override
+	@SuppressWarnings("resource")
 	public Optional<JsonObject> read(InputStream is) throws IOException
 	{
 		try
 		{
-			return new JsonParser(new BufferedReader(new InputStreamReader(is)))
-				.stream()
-				.map(e -> (JsonObject) e)
-				.findAny();
+			return new JsonParser(new BufferedReader(new InputStreamReader(is))).stream()
+					.map(e -> (JsonObject) e).findAny();
 		} catch (ConversionException ex)
 		{
 			throw new IOException(ex.getMessage(), ex);

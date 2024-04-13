@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class TypedMapPageFetcher implements Fetcher<Page<Map<String, Object>>>
 {
@@ -30,8 +29,9 @@ public class TypedMapPageFetcher implements Fetcher<Page<Map<String, Object>>>
 
 		List<String> names = cursor.getColumnNames();
 
-		if (Stream.of(names).noneMatch("dataSize"::equals))
-			throw new UnsupportedOperationException("Result set does not contain a dataSize column");
+		if (names.stream().noneMatch("dataSize"::equals))
+			throw new UnsupportedOperationException(
+					"Result set does not contain a dataSize column");
 
 		int dataSize = cursor.getIntValue("dataSize");
 

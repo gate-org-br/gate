@@ -35,25 +35,19 @@ public class AuthenticatorProducer implements Serializable
 	@Named("authenticator")
 	public Authenticator get()
 	{
-		switch (SystemProperty.get("gate.auth.type").orElse("default"))
+		return switch (SystemProperty.get("gate.auth.type").orElse("db"))
 		{
-			case "db":
-				return DatabaseAuthenticator.of(control);
+			case "db" ->
+				DatabaseAuthenticator.of(control);
 
-			case "ldap":
-				return LDAPAuthenticator.of(control);
+			case "ldap" ->
+				LDAPAuthenticator.of(control);
 
-			case "oidc":
-				return OIDCAuthenticator.of(control);
+			case "oidc" ->
+				OIDCAuthenticator.of(control);
 
-			default:
-			case "default":
-				if (org.getAuthenticators() != null
-					&& !org.getAuthenticators().isEmpty())
-					return LDAPAuthenticator.of(control,
-						org.getAuthenticators().get(0));
-				else
-					return DatabaseAuthenticator.of(control);
-		}
+			default ->
+				DatabaseAuthenticator.of(control);
+		};
 	}
 }

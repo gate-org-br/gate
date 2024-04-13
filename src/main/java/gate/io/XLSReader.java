@@ -22,8 +22,7 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 	private static DataFormatter FORMATTER = new DataFormatter();
 
 	private XLSReader()
-	{
-	}
+	{}
 
 	@Override
 	public List<List<Object>> read(InputStream is) throws IOException
@@ -45,39 +44,28 @@ public class XLSReader extends AbstractReader<List<List<Object>>>
 
 	private Object getValue(Cell cell)
 	{
-
 		if (cell != null)
-			switch (cell.getCellType())
+			return switch (cell.getCellType())
 			{
-				case STRING:
-					return cell.getStringCellValue();
-				case NUMERIC:
-					if (DateUtil.isCellDateFormatted(cell))
-						return cell.getLocalDateTimeCellValue();
-					return getNumber(cell);
-				case BOOLEAN:
-					return cell.getBooleanCellValue();
-				case BLANK:
-					return "";
-				case ERROR:
-					return cell.getErrorCellValue();
-				case FORMULA:
-					switch (cell.getCachedFormulaResultType())
-					{
-						case STRING:
-							return cell.getStringCellValue();
-						case NUMERIC:
-							if (DateUtil.isCellDateFormatted(cell))
-								return cell.getLocalDateTimeCellValue();
-							return getNumber(cell);
-						case BOOLEAN:
-							return cell.getBooleanCellValue();
-						case BLANK:
-							return "";
-						case ERROR:
-							return String.valueOf(cell.getErrorCellValue());
-					}
-			}
+				case STRING -> cell.getStringCellValue();
+				case NUMERIC -> DateUtil.isCellDateFormatted(cell)
+						? cell.getLocalDateTimeCellValue()
+						: getNumber(cell);
+				case BOOLEAN -> cell.getBooleanCellValue();
+				case ERROR -> cell.getErrorCellValue();
+				case FORMULA -> switch (cell.getCachedFormulaResultType())
+				{
+					case STRING -> cell.getStringCellValue();
+					case NUMERIC -> DateUtil.isCellDateFormatted(cell)
+							? cell.getLocalDateTimeCellValue()
+							: getNumber(cell);
+					case BOOLEAN -> cell.getBooleanCellValue();
+					case ERROR -> String.valueOf(cell.getErrorCellValue());
+					default -> "";
+				};
+
+				default -> "";
+			};
 		return "";
 	}
 

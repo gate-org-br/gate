@@ -9,9 +9,9 @@ import java.util.Map;
 public class TypedMapListFetcher implements Fetcher<List<Map<String, Object>>>
 {
 
-	private final Class[] types;
+	private final Class<?>[] types;
 
-	public TypedMapListFetcher(Class[] types)
+	public TypedMapListFetcher(Class<?>[] types)
 	{
 		this.types = types;
 	}

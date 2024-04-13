@@ -238,7 +238,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current column value as an object of the specified type and moves the column index to the next column.
+	 * Reads the current column value as an object of the specified type and moves the column index
+	 * to the next column.
 	 *
 	 *
 	 * @param type type of the object to be read
@@ -250,6 +251,7 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			Converter converter = Converter.getConverter(type);
+			@SuppressWarnings("unchecked")
 			T value = (T) converter.readFromResultSet(getResultSet(), column, type);
 			column += Math.max(1, converter.getSufixes().size());
 			return value;
@@ -264,6 +266,7 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			Converter converter = Converter.getConverter(type);
+			@SuppressWarnings("unchecked")
 			T value = (T) converter.readFromResultSet(getResultSet(), column, elementType);
 			column += Math.max(1, converter.getSufixes().size());
 			return value;
@@ -284,7 +287,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	{
 		try
 		{
-			Class<?> type = SQLTypeConverter.getJavaType(rs.getMetaData().getColumnType(columnIndex));
+			Class<?> type =
+					SQLTypeConverter.getJavaType(rs.getMetaData().getColumnType(columnIndex));
 			return Converter.getConverter(type).readFromResultSet(rs, columnIndex, type);
 		} catch (ConversionException | SQLException ex)
 		{
@@ -573,11 +577,13 @@ public class Cursor implements AutoCloseable, Fetchable
 	 *
 	 * @return the value of the specified column
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T getValue(Class<T> type, int columnIndex)
 	{
 		try
 		{
-			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex, type);
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex,
+					type);
 		} catch (ConversionException | SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
@@ -595,11 +601,13 @@ public class Cursor implements AutoCloseable, Fetchable
 	 *
 	 * @return the value of the specified column
 	 */
+	@SuppressWarnings("unchecked")
 	public <T, E> T getValue(Class<T> type, Class<E> elementType, int columnIndex)
 	{
 		try
 		{
-			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex, elementType);
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnIndex,
+					elementType);
 		} catch (ConversionException | SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
@@ -615,11 +623,13 @@ public class Cursor implements AutoCloseable, Fetchable
 	 *
 	 * @return the value of the specified column
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> T getValue(Class<T> type, String columnName)
 	{
 		try
 		{
-			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, type);
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName,
+					type);
 		} catch (ConversionException | SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
@@ -637,11 +647,13 @@ public class Cursor implements AutoCloseable, Fetchable
 	 *
 	 * @return the value of the specified column
 	 */
+	@SuppressWarnings("unchecked")
 	public <T, E> T getValue(Class<T> type, Class<E> elementType, String columnName)
 	{
 		try
 		{
-			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName, elementType);
+			return (T) Converter.getConverter(type).readFromResultSet(getResultSet(), columnName,
+					elementType);
 		} catch (ConversionException | SQLException e)
 		{
 			throw new UnsupportedOperationException(e);
@@ -848,9 +860,9 @@ public class Cursor implements AutoCloseable, Fetchable
 	public List<String> getPropertyNames(Class<?> type)
 	{
 		return getColumnNames().stream()
-			.map(e -> e.contains(Converter.SEPARATOR) ? e.split(Converter.SEPARATOR)[0] : e)
-			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
-			.distinct().collect(Collectors.toList());
+				.map(e -> e.contains(Converter.SEPARATOR) ? e.split(Converter.SEPARATOR)[0] : e)
+				.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e).distinct()
+				.collect(Collectors.toList());
 	}
 
 	public Map<String, Class<?>> getMetaData()
@@ -862,7 +874,7 @@ public class Cursor implements AutoCloseable, Fetchable
 			int count = rsmd.getColumnCount();
 			for (int i = 1; i <= count; i++)
 				result.put(rsmd.getColumnLabel(i),
-					SQLTypeConverter.getJavaType(rsmd.getColumnType(i)));
+						SQLTypeConverter.getJavaType(rsmd.getColumnType(i)));
 			return result;
 		} catch (SQLException e)
 		{
@@ -873,29 +885,28 @@ public class Cursor implements AutoCloseable, Fetchable
 	public List<Property> getProperties(Class<?> type)
 	{
 		return getColumnNames().stream()
-			.map(e -> e.contains(Converter.SEPARATOR) ? e.split("_")[0] : e)
-			.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
-			.map(e -> Property.getProperty(type, e))
-			.distinct()
-			.collect(Collectors.toList());
+				.map(e -> e.contains(Converter.SEPARATOR) ? e.split("_")[0] : e)
+				.map(e -> e.contains("$") ? e.replaceAll("[$]", ".") : e)
+				.map(e -> Property.getProperty(type, e)).distinct().collect(Collectors.toList());
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with the specified properties set to their respective column values.
+	 * Reads the current row as a java object of the specified type with the specified properties
+	 * set to their respective column values.
 	 *
 	 *
 	 * @param type type of the entity to be read
 	 * @param properties entity properties to be read
 	 *
-	 * @return the current as a java object of the specified type with the specified properties set to their respective column values
+	 * @return the current as a java object of the specified type with the specified properties set
+	 *         to their respective column values
 	 */
 	public <T> T getEntity(Class<T> type, List<Property> properties)
 	{
 		try
 		{
 			T result = type.getDeclaredConstructor().newInstance();
-			properties.forEach(property ->
-			{
+			properties.forEach(property -> {
 				Class<?> clazz = property.getRawType();
 				if (clazz == boolean.class)
 					property.setBoolean(result, getCurrentBooleanValue());
@@ -920,18 +931,20 @@ public class Cursor implements AutoCloseable, Fetchable
 			});
 			return result;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException | NoSuchMethodException | SecurityException ex)
+				| InvocationTargetException | NoSuchMethodException | SecurityException ex)
 		{
 			throw new UnsupportedOperationException(ex);
 		}
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with it's property values matched to their respective column values.
+	 * Reads the current row as a java object of the specified type with it's property values
+	 * matched to their respective column values.
 	 *
 	 * @param type type of the entity to be read
 	 *
-	 * @return the current row as a java object of the specified type with it's property values matched to their respective column values.
+	 * @return the current row as a java object of the specified type with it's property values
+	 *         matched to their respective column values.
 	 */
 	public <T> T getEntity(Class<T> type)
 	{

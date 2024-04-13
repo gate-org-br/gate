@@ -81,7 +81,7 @@ public class Chart<T> extends ReportElement
 		return category;
 	}
 
-	public Chart setCategory(Category<T> category)
+	public Chart<?> setCategory(Category<T> category)
 	{
 		this.category = category;
 		return this;
@@ -106,20 +106,16 @@ public class Chart<T> extends ReportElement
 
 	public Chart<T> addValue(String name, Function<T, Number> value)
 	{
-		return addValue(new Value(name, value));
+		return addValue(new Value<>(name, value));
 	}
 
 	public enum Format
 	{
 		@Name("Pizza")
-		PIE,
-		@Name("Linhas")
-		LINE,
-		@Name("Áreas")
-		AREA,
-		@Name("Barras")
-		BAR,
-		@Name("Colunas")
+		PIE, @Name("Linhas")
+		LINE, @Name("Áreas")
+		AREA, @Name("Barras")
+		BAR, @Name("Colunas")
 		COLUMN
 	}
 
@@ -149,22 +145,22 @@ public class Chart<T> extends ReportElement
 				case BAR:
 				{
 					JFreeChart chart = ChartFactory.createBarChart(getCaption(),
-						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.HORIZONTAL, true, false, false);
+							getCategory().getName(), null, categoryDataset,
+							PlotOrientation.HORIZONTAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return EncoderUtil.encode(chart.createBufferedImage(width, height), "png");
 				}
 				case LINE:
 				{
 					JFreeChart chart = ChartFactory.createLineChart(getCaption(),
-						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+							getCategory().getName(), null, categoryDataset,
+							PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return EncoderUtil.encode(chart.createBufferedImage(width, height), "png");
 				}
@@ -173,29 +169,29 @@ public class Chart<T> extends ReportElement
 				{
 
 					JFreeChart chart = ChartFactory.createAreaChart(getCaption(),
-						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+							getCategory().getName(), null, categoryDataset,
+							PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return EncoderUtil.encode(chart.createBufferedImage(width, height), "png");
 				}
 				case COLUMN:
 				{
-					JFreeChart chart = ChartFactory.createBarChart(getCaption(),
-						getCategory().getName(), null, categoryDataset,
-						PlotOrientation.VERTICAL, true, false, false);
+					JFreeChart chart =
+							ChartFactory.createBarChart(getCaption(), getCategory().getName(), null,
+									categoryDataset, PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						chart.getCategoryPlot().getRangeAxis()
-							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return EncoderUtil.encode(chart.createBufferedImage(width, height), "png");
 				}
 				case PIE:
 				{
 					JFreeChart chart = ChartFactory.createMultiplePieChart(getCaption(),
-						categoryDataset, TableOrder.BY_ROW, true, true, false);
+							categoryDataset, TableOrder.BY_ROW, true, true, false);
 
 					Font titleFont = new Font("Arial", Font.BOLD, 12);
 					Font labelFont = new Font("Arial", Font.PLAIN, 8);
@@ -204,7 +200,7 @@ public class Chart<T> extends ReportElement
 					chart.getLegend().setItemFont(labelFont);
 
 					MultiplePiePlot plot = (MultiplePiePlot) chart.getPlot();
-					((PiePlot) plot.getPieChart().getPlot()).setLabelFont(labelFont);
+					((PiePlot<?>) plot.getPieChart().getPlot()).setLabelFont(labelFont);
 
 					plot.getPieChart().getTitle().setFont(titleFont);
 

@@ -24,18 +24,18 @@ public class Entity
 	private static final Map<Property, List<String>> JOINS = new ConcurrentHashMap<>();
 	private static final Map<Property, String> FULL_COLUMN_NAMES = new ConcurrentHashMap<>();
 
-	public static boolean isEntity(Class type)
+	public static boolean isEntity(Class<?> type)
 	{
 		return type.isAnnotationPresent(gate.annotation.Entity.class);
 	}
 
-	public static void check(Class type)
+	public static void check(Class<?> type)
 	{
 		if (!isEntity(type))
 			throw new PropertyError("%s is not an Entity", type.getName());
 	}
 
-	public static String getId(Class type)
+	public static String getId(Class<?> type)
 	{
 		check(type);
 		return ((gate.annotation.Entity) type.getAnnotation(gate.annotation.Entity.class)).value();
@@ -44,9 +44,8 @@ public class Entity
 	public static String getTableName(Class<?> type)
 	{
 		check(type);
-		return type.isAnnotationPresent(Table.class)
-			? type.getAnnotation(Table.class).value()
-			: type.getSimpleName();
+		return type.isAnnotationPresent(Table.class) ? type.getAnnotation(Table.class).value()
+				: type.getSimpleName();
 	}
 
 	public static String getDisplayName(Class<?> type)
@@ -59,8 +58,8 @@ public class Entity
 	{
 		check(type);
 		return type.isAnnotationPresent(Schema.class)
-			? type.getAnnotation(Schema.class).value()
-			+ "." + getTableName(type) : getTableName(type);
+				? type.getAnnotation(Schema.class).value() + "." + getTableName(type)
+				: getTableName(type);
 	}
 
 	public static List<Property> getProperties(Class<?> type, Predicate<Property> predicate)
@@ -71,10 +70,9 @@ public class Entity
 		{
 			for (Field field : type.getDeclaredFields())
 			{
-				if (!field.getType().isArray()
-					&& !Modifier.isStatic(field.getModifiers())
-					&& !Modifier.isTransient(field.getModifiers())
-					&& !Collection.class.isAssignableFrom(field.getType()))
+				if (!field.getType().isArray() && !Modifier.isStatic(field.getModifiers())
+						&& !Modifier.isTransient(field.getModifiers())
+						&& !Collection.class.isAssignableFrom(field.getType()))
 				{
 					String name = field.getName();
 					if (isEntity(field.getType()))
@@ -99,10 +97,8 @@ public class Entity
 
 	public static String[] getFullGQN(Class<?> type)
 	{
-		return getProperties(type)
-			.stream().map(Property::toString)
-			.map(e -> "=" + e)
-			.toArray(String[]::new);
+		return getProperties(type).stream().map(Property::toString).map(e -> "=" + e)
+				.toArray(String[]::new);
 	}
 
 	public static Stream<String> getColumnNames(Class<?> type, String name)
@@ -119,8 +115,7 @@ public class Entity
 
 	public static String getFullColumnName(Property property)
 	{
-		return FULL_COLUMN_NAMES.computeIfAbsent(property, e ->
-		{
+		return FULL_COLUMN_NAMES.computeIfAbsent(property, e -> {
 			StringJoiner name = new StringJoiner("$");
 			StringJoiner path = new StringJoiner("$");
 			for (Attribute attribute : e.getAttributes())
@@ -145,8 +140,7 @@ public class Entity
 
 	public static List<String> getJoins(Property property)
 	{
-		return JOINS.computeIfAbsent(property, e ->
-		{
+		return JOINS.computeIfAbsent(property, e -> {
 			List<String> joins = new ArrayList<>();
 			StringJoiner name = new StringJoiner("$");
 			StringJoiner path = new StringJoiner("$");
@@ -165,7 +159,8 @@ public class Entity
 						path.merge(name);
 						name = new StringJoiner("$");
 						String PK = path + "." + id;
-						joins.add("left join " + attribute.getFullTableName() + " as " + path + " on " + Condition.of(FK).isEq(PK));
+						joins.add("left join " + attribute.getFullTableName() + " as " + path
+								+ " on " + Condition.of(FK).isEq(PK));
 					}
 				}
 			}
@@ -173,11 +168,11 @@ public class Entity
 		});
 	}
 
-	public static <T extends Object> T create(Class<T> type, String id) throws ReflectiveOperationException
+	public static <T extends Object> T create(Class<T> type, String id)
+			throws ReflectiveOperationException
 	{
 		T object = type.getConstructor().newInstance();
-		Property.getProperty(type, Entity.getId(type))
-			.setValue(object, ID.valueOf(id));
+		Property.getProperty(type, Entity.getId(type)).setValue(object, ID.valueOf(id));
 		return object;
 	}
 }

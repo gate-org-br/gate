@@ -1,9 +1,8 @@
 package gate.tags;
 
 import gate.util.Parameters;
-import jakarta.servlet.jsp.tagext.DynamicAttributes;
 
-public class ParameterTag extends AttributeTag implements DynamicAttributes
+public class ParameterTag extends AttributeTag
 {
 
 	private final Parameters parameters = new Parameters();

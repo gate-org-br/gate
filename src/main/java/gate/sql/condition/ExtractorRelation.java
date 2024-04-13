@@ -10,7 +10,7 @@ import gate.sql.statement.Query;
  * @see gate.sql.condition.ExtractorPredicate
  */
 public class ExtractorRelation<T> extends Relation
-	implements ConstantRelationMethods, ExtractorRelationMethods<T>
+		implements ConstantRelationMethods, ExtractorRelationMethods<T>
 {
 
 	ExtractorRelation(Clause clause)
@@ -21,7 +21,7 @@ public class ExtractorRelation<T> extends Relation
 	@Override
 	public ExtractorRelation<T> when(boolean assertion)
 	{
-		return assertion ? this : new Rollback(getClause());
+		return assertion ? this : new Rollback<>(getClause());
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ExtractorRelation<T> extends Relation
 	@Override
 	public ExtractorCondition<T> exists(Query.Constant subquery)
 	{
-		return new ExtractorCondition(this)
+		return new ExtractorCondition<>(this)
 		{
 			@Override
 			public String toString()
@@ -104,7 +104,7 @@ public class ExtractorRelation<T> extends Relation
 	@Override
 	public ExtractorPredicate<T> not(Query.Constant subquery)
 	{
-		return new ExtractorPredicate(this)
+		return new ExtractorPredicate<>(this)
 		{
 			@Override
 			public String toString()
@@ -126,7 +126,7 @@ public class ExtractorRelation<T> extends Relation
 	@Override
 	public ExtractorRelation<T> not()
 	{
-		return new ExtractorRelation(this)
+		return new ExtractorRelation<>(this)
 		{
 			@Override
 			public String toString()
@@ -152,12 +152,13 @@ public class ExtractorRelation<T> extends Relation
 	}
 
 	@Override
-	public ExtractorCondition<T> not(ExtractorCondition condition)
+	public ExtractorCondition<T> not(ExtractorCondition<T> condition)
 	{
 		return not().condition(condition);
 	}
 
-	static class Rollback<T> extends ExtractorRelation<T> implements ExtractorRelationMethods.Rollback<T>
+	static class Rollback<T> extends ExtractorRelation<T>
+			implements ExtractorRelationMethods.Rollback<T>
 	{
 
 		public Rollback(Clause clause)
@@ -178,7 +179,7 @@ public class ExtractorRelation<T> extends Relation
 		}
 
 		@Override
-		public ExtractorCondition<T> not(ExtractorCondition condition)
+		public ExtractorCondition<T> not(ExtractorCondition<T> condition)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}

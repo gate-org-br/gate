@@ -10,14 +10,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ElementType(ID.class)
-@SuppressWarnings("serial")
 @Converter(IDSConverter.class)
 public class IDS extends ArrayList<ID>
 {
 
 	public IDS()
-	{
-	}
+	{}
 
 	public IDS(String values)
 	{
@@ -39,7 +37,8 @@ public class IDS extends ArrayList<ID>
 	@Override
 	public String toString()
 	{
-		return stream().filter(Objects::nonNull).map(ID::toString).collect(Collectors.joining(", "));
+		return stream().filter(Objects::nonNull).map(ID::toString)
+				.collect(Collectors.joining(", "));
 	}
 
 	@Override

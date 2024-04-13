@@ -74,33 +74,35 @@ class MapAttribute implements Attribute
 	{
 		if (object == null)
 			return null;
+		@SuppressWarnings("rawtypes")
 		Map map = (Map) object;
 		return map.get(key);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Object forceValue(Object object)
 	{
 		if (object == null)
 			return null;
-		Map map = (Map) object;
+		var map = (Map<Object, Object>) object;
 		if (!map.containsKey(key))
 			map.put(key, createInstance(getElementRawType()));
 		return map.get(key);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
-		((Map) object).put(key, value);
+		((Map<Object, Object>) object).put(key, value);
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof MapAttribute
-			&& Objects.equals(key, ((MapAttribute) obj).key)
-			&& Objects.equals(genericType, ((MapAttribute) obj).genericType);
+		return obj instanceof MapAttribute && Objects.equals(key, ((MapAttribute) obj).key)
+				&& Objects.equals(genericType, ((MapAttribute) obj).genericType);
 	}
 
 	@Override
@@ -112,8 +114,7 @@ class MapAttribute implements Attribute
 	@Override
 	public String toString()
 	{
-		return key instanceof String
-			? new StringBuilder("['").append(key).append("']").toString()
-			: new StringBuilder("[").append(key).append("]").toString();
+		return key instanceof String ? new StringBuilder("['").append(key).append("']").toString()
+				: new StringBuilder("[").append(key).append("]").toString();
 	}
 }

@@ -2,7 +2,6 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.PercentageConverter;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -11,14 +10,15 @@ import java.util.Currency;
 import java.util.Locale;
 
 @Converter(PercentageConverter.class)
-public class Percentage extends Number implements Serializable, Comparable<Percentage>
+public class Percentage extends Number implements Comparable<Percentage>
 {
 
 	private final BigDecimal value;
 	private static final long serialVersionUID = 1L;
 
 	public static final Percentage ZERO = new Percentage(BigDecimal.ZERO);
-	public static final Percentage ONE_HUNDRED = new Percentage(new BigDecimal(100).setScale(2, RoundingMode.HALF_EVEN));
+	public static final Percentage ONE_HUNDRED =
+			new Percentage(new BigDecimal(100).setScale(2, RoundingMode.HALF_EVEN));
 
 	public Percentage(BigDecimal value)
 	{

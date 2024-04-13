@@ -92,7 +92,7 @@ public class MimeText implements Mime
 	{
 		try
 		{
-			Map map = new HashMap<>();
+			Map<String, String> map = new HashMap<>();
 			map.put("charset", charset);
 
 			return new DataURL(getType(), getSubType(), false, map,
@@ -103,8 +103,7 @@ public class MimeText implements Mime
 		}
 	}
 
-	public static MimeText parse(String string)
-			throws ConversionException
+	public static MimeText parse(String string) throws ConversionException
 	{
 		try
 		{

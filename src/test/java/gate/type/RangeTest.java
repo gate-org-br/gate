@@ -18,7 +18,8 @@ public class RangeTest
 	public void test02()
 	{
 		int value = 0;
-		for (long i : Range.of(0, 10))
+		for (@SuppressWarnings("unused")
+		long i : Range.of(0, 10))
 			value++;
 		assertEquals(11, value);
 	}
@@ -26,8 +27,7 @@ public class RangeTest
 	@Test
 	public void test03()
 	{
-		long value = Range.of(1, 3)
-			.stream().sum();
+		long value = Range.of(1, 3).stream().sum();
 
 		assertEquals(6, value);
 	}
@@ -35,8 +35,7 @@ public class RangeTest
 	@Test
 	public void test04() throws ParseException
 	{
-		long value = Range.of("1-3")
-			.stream().sum();
+		long value = Range.of("1-3").stream().sum();
 
 		assertEquals(6, value);
 	}

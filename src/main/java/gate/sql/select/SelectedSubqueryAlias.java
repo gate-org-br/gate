@@ -18,7 +18,7 @@ public abstract class SelectedSubqueryAlias implements Clause, Aliasable
 		return clause;
 	}
 
-	public abstract static class Constant extends SelectedSubqueryAlias implements Aliasable
+	public abstract static class Constant extends SelectedSubqueryAlias
 	{
 
 		public Constant(Clause clause)
@@ -40,7 +40,7 @@ public abstract class SelectedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Generic extends SelectedSubqueryAlias implements Aliasable
+	public abstract static class Generic extends SelectedSubqueryAlias
 	{
 
 		public Generic(Clause clause)
@@ -62,7 +62,7 @@ public abstract class SelectedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Compiled extends SelectedSubqueryAlias implements Aliasable
+	public abstract static class Compiled extends SelectedSubqueryAlias
 	{
 
 		public Compiled(Clause clause)

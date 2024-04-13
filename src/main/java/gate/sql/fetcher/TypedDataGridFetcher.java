@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class TypedDataGridFetcher implements Fetcher<DataGrid>
 {
 
-	private final Class[] types;
+	private final Class<?>[] types;
 
-	public TypedDataGridFetcher(Class[] types)
+	public TypedDataGridFetcher(Class<?>[] types)
 	{
 		this.types = types;
 	}

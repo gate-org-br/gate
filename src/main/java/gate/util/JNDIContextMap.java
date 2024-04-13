@@ -108,6 +108,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T get(Object key)
 	{
 		try
@@ -127,6 +128,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T put(String key, T value)
 	{
 		try
@@ -152,6 +154,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public T remove(Object key)
 	{
 		try

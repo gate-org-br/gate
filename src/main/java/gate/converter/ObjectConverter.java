@@ -70,22 +70,23 @@ public class ObjectConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException,
-		ConversionException
+			throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(type, value);
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
+	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+			throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(type, value);
 	}
 
 	@Override
-	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
+	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
+			throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, toString(value.getClass(), value));
@@ -95,7 +96,8 @@ public class ObjectConverter implements Converter
 	}
 
 	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
+			throws ConversionException
 	{
 		try
 		{
@@ -103,12 +105,12 @@ public class ObjectConverter implements Converter
 				throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 			boolean empty = true;
-			Class<?> clazz = (Class) type;
-			Constructor<?> constructor
-				= Stream.of(clazz.getDeclaredConstructors())
-					.filter(e -> e.getParameterCount() == 0)
-					.findAny().orElseThrow(() -> new ConversionException(
-					"No default constructor found on " + clazz.getName()));
+			@SuppressWarnings("unchecked")
+			var clazz = (Class<Object>) type;
+			Constructor<?> constructor = Stream.of(clazz.getDeclaredConstructors())
+					.filter(e -> e.getParameterCount() == 0).findAny()
+					.orElseThrow(() -> new ConversionException(
+							"No default constructor found on " + clazz.getName()));
 			constructor.setAccessible(true);
 			Object object = constructor.newInstance();
 
@@ -119,20 +121,23 @@ public class ObjectConverter implements Converter
 				{
 					empty = false;
 					if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
-						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
+						throw new ConversionException(
+								scanner.getCurrent() + " is not a valid JSON object key");
 
 					Field field = Reflection.findField(clazz, scanner.getCurrent().toString())
-						.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
+							.orElseThrow(() -> new NoSuchFieldException(
+									scanner.getCurrent().toString()));
 
 					scanner.scan();
 					if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
-						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
+						throw new ConversionException(
+								scanner.getCurrent() + " is not a valid JSON object");
 
 					scanner.scan();
 					Type genericType = field.getGenericType();
 					Converter converter = Converter.getConverter(field.getType());
-					Object value = converter.ofJson(scanner, genericType, Reflection.getElementType(
-						genericType));
+					Object value = converter.ofJson(scanner, genericType,
+							Reflection.getElementType(genericType));
 					field.set(object, value);
 				} else if (!empty)
 					throw new ConversionException("the specified JsonElement is not a JsonObject");
@@ -143,13 +148,15 @@ public class ObjectConverter implements Converter
 
 			scanner.scan();
 			return object;
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchFieldException ex)
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
+				| NoSuchFieldException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		try
@@ -160,7 +167,7 @@ public class ObjectConverter implements Converter
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);
@@ -187,7 +194,9 @@ public class ObjectConverter implements Converter
 	}
 
 	@Override
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	@SuppressWarnings("unchecked")
+	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
+			throws ConversionException
 	{
 		try
 		{
@@ -197,7 +206,7 @@ public class ObjectConverter implements Converter
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);
@@ -209,8 +218,8 @@ public class ObjectConverter implements Converter
 							writer.write(JsonToken.Type.COMMA, null);
 
 						String name = field.isAnnotationPresent(Name.class)
-							? field.getAnnotation(Name.class).value()
-							: field.getName();
+								? field.getAnnotation(Name.class).value()
+								: field.getName();
 
 						writer.write(JsonToken.Type.STRING, name);
 						writer.write(JsonToken.Type.DOUBLE_DOT, null);

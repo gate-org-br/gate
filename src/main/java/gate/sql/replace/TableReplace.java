@@ -17,8 +17,7 @@ public class TableReplace implements Replace
 {
 
 	private final String table;
-	private final Set<String> replace
-		= new HashSet<>();
+	private final Set<String> replace = new HashSet<>();
 
 	TableReplace(String table)
 	{
@@ -115,8 +114,7 @@ public class TableReplace implements Replace
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Generic()
-		{
-		}
+		{}
 
 		/**
 		 * Adds a new column to the builder.
@@ -143,9 +141,7 @@ public class TableReplace implements Replace
 		 */
 		public <T> Generic set(Class<T> type, String column)
 		{
-			Converter.getConverter(type)
-				.getColumns(column)
-				.forEach(this::set);
+			Converter.getConverter(type).getColumns(column).forEach(this::set);
 			return this;
 		}
 
@@ -158,7 +154,8 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 	}
 
@@ -173,8 +170,7 @@ public class TableReplace implements Replace
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Compiled()
-		{
-		}
+		{}
 
 		/**
 		 * Adds a new column and it's associated value to the builder.
@@ -205,11 +201,8 @@ public class TableReplace implements Replace
 		public <T> Compiled set(Class<T> type, String column, T value)
 		{
 			values.add(value);
-			Converter.getConverter(type)
-				.getColumns(column)
-				.peek(columns::add)
-				.map(e -> "?")
-				.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
+					.forEach(parameters::add);
 			return this;
 		}
 
@@ -234,14 +227,16 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 
 		public class When
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -254,7 +249,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -267,7 +263,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * 
 			 * @param column the column to be added
@@ -282,7 +279,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * 
 			 * @param type type of the column to be added
@@ -355,7 +353,7 @@ public class TableReplace implements Replace
 	 *
 	 * @param <E> type of the entities to be replaced on database
 	 */
-	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder
+	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder<E>
 	{
 
 		private final Class<E> type;
@@ -397,16 +395,13 @@ public class TableReplace implements Replace
 		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
 		{
 			extractors.add(extractor);
-			Converter.getConverter(type)
-				.getColumns(column)
-				.peek(columns::add)
-				.map(e -> "?")
-				.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
+					.forEach(parameters::add);
 			return this;
 		}
 
 		@Override
-		public Sentence.Extractor.Compiled build()
+		public Sentence.Extractor.Compiled<E> build()
 		{
 			return Sentence.of(toString()).from(type).parameters(extractors);
 		}
@@ -414,7 +409,8 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 	}
 
@@ -448,7 +444,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param value the value associated
@@ -461,7 +458,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param supplier the supplier of the value associated
@@ -474,7 +472,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * 
 		 * @param type type of the column to be added
@@ -489,7 +488,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * 
 		 * @param type type of the column to be added

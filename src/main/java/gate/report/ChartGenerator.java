@@ -12,16 +12,20 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-public class ChartGenerator {
+public class ChartGenerator
+{
 
-	public static <T> JFreeChart create(Chart<T> chart) {
+	public static <T> JFreeChart create(Chart<T> chart)
+	{
 		boolean integers = true;
 		DefaultCategoryDataset categoryDataset = new DefaultCategoryDataset();
 
-		for (T obj : chart.getDataset()) {
+		for (T obj : chart.getDataset())
+		{
 			String categoryName = chart.getCategory().getValue().apply(obj);
 
-			for (Value<T> value : chart.getValues()) {
+			for (Value<T> value : chart.getValues())
+			{
 				Number number = value.getValue().apply(obj);
 				if (number.doubleValue() != number.longValue())
 					integers = false;
@@ -29,10 +33,13 @@ public class ChartGenerator {
 				categoryDataset.addValue(number, value.getName(), categoryName);
 			}
 		}
-		try {
+		try
+		{
 
-			switch (chart.getFormat()) {
-				case BAR: {
+			switch (chart.getFormat())
+			{
+				case BAR:
+				{
 					JFreeChart jfreechat = ChartFactory.createBarChart(chart.getCaption(),
 							chart.getCategory().getName(), null, categoryDataset,
 							PlotOrientation.HORIZONTAL, true, false, false);
@@ -42,7 +49,8 @@ public class ChartGenerator {
 
 					return jfreechat;
 				}
-				case LINE: {
+				case LINE:
+				{
 					JFreeChart jfreechat = ChartFactory.createLineChart(chart.getCaption(),
 							chart.getCategory().getName(), null, categoryDataset,
 							PlotOrientation.VERTICAL, true, false, false);
@@ -53,7 +61,8 @@ public class ChartGenerator {
 					return jfreechat;
 				}
 
-				case AREA: {
+				case AREA:
+				{
 
 					JFreeChart jfreechart = ChartFactory.createAreaChart(chart.getCaption(),
 							chart.getCategory().getName(), null, categoryDataset,
@@ -64,7 +73,8 @@ public class ChartGenerator {
 
 					return jfreechart;
 				}
-				case COLUMN: {
+				case COLUMN:
+				{
 					JFreeChart jfreechart = ChartFactory.createBarChart(chart.getCaption(),
 							chart.getCategory().getName(), null, categoryDataset,
 							PlotOrientation.VERTICAL, true, false, false);
@@ -74,7 +84,8 @@ public class ChartGenerator {
 
 					return jfreechart;
 				}
-				case PIE: {
+				case PIE:
+				{
 					JFreeChart jfreechart = ChartFactory.createMultiplePieChart(chart.getCaption(),
 							categoryDataset, TableOrder.BY_ROW, true, true, false);
 
@@ -85,7 +96,7 @@ public class ChartGenerator {
 					jfreechart.getLegend().setItemFont(labelFont);
 
 					MultiplePiePlot plot = (MultiplePiePlot) jfreechart.getPlot();
-					((PiePlot) plot.getPieChart().getPlot()).setLabelFont(labelFont);
+					((PiePlot<?>) plot.getPieChart().getPlot()).setLabelFont(labelFont);
 
 					plot.getPieChart().getTitle().setFont(titleFont);
 
@@ -94,7 +105,8 @@ public class ChartGenerator {
 				default:
 					throw new IOException();
 			}
-		} catch (IOException ex) {
+		} catch (IOException ex)
+		{
 			throw new UncheckedIOException(ex);
 		}
 	}

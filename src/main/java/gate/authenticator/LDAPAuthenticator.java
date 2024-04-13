@@ -34,11 +34,6 @@ public class LDAPAuthenticator implements Authenticator
 		this.control = control;
 	}
 
-	public static LDAPAuthenticator of(GateControl control, String server)
-	{
-		return new LDAPAuthenticator(control, server);
-	}
-
 	public static LDAPAuthenticator of(GateControl control)
 	{
 		return new LDAPAuthenticator(control, SystemProperty.get("gate.auth.ldap.server")
@@ -52,7 +47,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public boolean isPresent(ScreenServletRequest request) throws gate.error.AuthenticationException
+	public boolean hasCredentials(ScreenServletRequest request) throws gate.error.AuthenticationException
 	{
 		return request.getBasicAuthorization().isPresent();
 	}

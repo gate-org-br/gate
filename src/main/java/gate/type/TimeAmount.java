@@ -1,9 +1,6 @@
 package gate.type;
 
-import java.io.Serializable;
-
-public abstract class TimeAmount extends Number
-	implements Serializable, Comparable<TimeAmount>
+public abstract class TimeAmount extends Number implements Comparable<TimeAmount>
 {
 
 	private static final long serialVersionUID = 1L;

@@ -53,20 +53,22 @@ public class CSV extends Doc
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void print(OutputStream os)
 	{
-		try ( PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
+		try (PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
 		{
 			for (ReportElement element : getReport().getElements())
-				if (element instanceof Grid)
-					print(writer, (Grid) element, ((Grid) element).getData());
+				if (element instanceof Grid grid)
+					print(writer, (Grid<Object>) grid, grid.getData());
 		} catch (ConversionException e)
 		{
 			throw new AppError(e);
 		}
 	}
 
-	private void print(PrintWriter writer, Grid<Object> grid, Object data) throws ConversionException
+	private void print(PrintWriter writer, Grid<Object> grid, Object data)
+			throws ConversionException
 	{
 		try
 		{
@@ -74,15 +76,15 @@ public class CSV extends Doc
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
 				formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
-					.map(Converter::toText).collect(Collectors.toList()));
+						.map(Converter::toText).collect(Collectors.toList()));
 
 			for (Object obj : Toolkit.iterable(data))
 				if (obj != null)
 				{
 
 					formatter.writeLine(grid.getColumns().stream()
-						.map(e -> Converter.toText(e.getBody().apply(obj)))
-						.collect(Collectors.toList()));
+							.map(e -> Converter.toText(e.getBody().apply(obj)))
+							.collect(Collectors.toList()));
 
 					if (grid.getChildren() != null)
 						for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
@@ -91,7 +93,7 @@ public class CSV extends Doc
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
 				formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
-					.map(Converter::toText).collect(Collectors.toList()));
+						.map(Converter::toText).collect(Collectors.toList()));
 
 		} catch (IOException ex)
 		{

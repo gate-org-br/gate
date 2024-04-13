@@ -57,7 +57,7 @@ public class Constraints
 	/**
 	 * Validates the specified properties of the specified entities according to it's constraints
 	 *
-	 * 
+	 *
 	 * @param type type of the entities to be validated
 	 * @param entities the entities whose properties must be validated
 	 * @param properties the properties to be validated
@@ -82,7 +82,7 @@ public class Constraints
 	/**
 	 * Validates the specified properties of the specified entities according to it's constraints
 	 *
-	 * 
+	 *
 	 * @param type type of the entities to be validated
 	 * @param entities the entities whose properties must be validated
 	 * @param properties the properties to be validated

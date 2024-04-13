@@ -10,28 +10,25 @@ import java.util.List;
 public class TypedArrayListFetcher implements Fetcher<List<Object[]>>
 {
 
-	private final Class[] types;
+	private final Class<?>[] types;
 	private final List<Object[]> result = new ArrayList<>();
 
 	/**
 	 * Creates a new TypedArrayListFetcher with the specified types.
 	 *
-	 * @param types an array specifying the types of the objects to be
-	 * fetched
+	 * @param types an array specifying the types of the objects to be fetched
 	 */
-	public TypedArrayListFetcher(Class[] types)
+	public TypedArrayListFetcher(Class<?>[] types)
 	{
 		this.types = types;
 	}
 
 	/**
-	 * Fetches each row as a list of java arrays of Objects of the specified
-	 * types.
+	 * Fetches each row as a list of java arrays of Objects of the specified types.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return each row fetched as a list of java arrays of Objects of the
-	 * specified types
+	 * @return each row fetched as a list of java arrays of Objects of the specified types
 	 */
 	@Override
 	public List<Object[]> fetch(Cursor cursor)

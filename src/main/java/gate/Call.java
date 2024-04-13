@@ -21,11 +21,7 @@ import gate.util.Toolkit;
 import jakarta.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.thymeleaf.web.IWebExchange;
 
 public class Call
@@ -37,7 +33,6 @@ public class Call
 	private final Class<Screen> type;
 	private final Method method;
 
-	private static final Pattern PARAMETERS = Pattern.compile("/([0-9]+)");
 	public static final Call NONE = new Call(null, null, null, null, null);
 
 	private Call(String module, String screen, String action, Class<Screen> type, Method method)
@@ -51,23 +46,28 @@ public class Call
 
 	public static Call of(Method method) throws BadRequestException
 	{
+		@SuppressWarnings("unchecked")
 		Class<Screen> type = (Class<Screen>) method.getDeclaringClass();
 		String module = type.getPackageName();
-		String screen = type.getSimpleName().equals("Screen") ? null : type.getSimpleName().substring(6);
+		String screen =
+				type.getSimpleName().equals("Screen") ? null : type.getSimpleName().substring(6);
 		String action = method.getName().equals("call") ? null : method.getName().substring(4);
 		return new Call(module, screen, action, type, method);
 	}
 
 	public static Call of(String module, String screen, String action) throws BadRequestException
 	{
-		Class<Screen> type = Screen.getScreen(module, screen).orElseThrow(() -> new BadRequestException(module, screen, action));
+		Class<Screen> type = Screen.getScreen(module, screen)
+				.orElseThrow(() -> new BadRequestException(module, screen, action));
 		if (Modifier.isAbstract(type.getModifiers()))
 			throw new BadRequestException(module, screen, action);
-		Method method = Screen.getAction(type, action).orElseThrow(() -> new BadRequestException(module, screen, action));
+		Method method = Screen.getAction(type, action)
+				.orElseThrow(() -> new BadRequestException(module, screen, action));
 		return new Call(module, screen, action, type, method);
 	}
 
-	public static Call of(HttpServletRequest request, String module, String screen, String action) throws BadRequestException
+	public static Call of(HttpServletRequest request, String module, String screen, String action)
+			throws BadRequestException
 	{
 
 		if ("#".equals(module))
@@ -91,7 +91,8 @@ public class Call
 		return of(module, screen, action);
 	}
 
-	public static Call of(IWebExchange exchange, String module, String screen, String action) throws BadRequestException
+	public static Call of(IWebExchange exchange, String module, String screen, String action)
+			throws BadRequestException
 	{
 
 		if ("#".equals(module))
@@ -132,42 +133,51 @@ public class Call
 
 	public Optional<gate.icon.Icon> getIcon()
 	{
-		return action != null ? Icon.Extractor.extract(method) : Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
+		return action != null ? Icon.Extractor.extract(method)
+				: Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
 	}
 
 	public Optional<gate.icon.Emoji> getEmoji()
 	{
-		return action != null ? Emoji.Extractor.extract(method) : Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
+		return action != null ? Emoji.Extractor.extract(method)
+				: Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
 	}
 
 	public Optional<String> getName()
 	{
-		return action != null ? Name.Extractor.extract(method) : Name.Extractor.extract(method).or(() -> Name.Extractor.extract(type));
+		return action != null ? Name.Extractor.extract(method)
+				: Name.Extractor.extract(method).or(() -> Name.Extractor.extract(type));
 	}
 
 	public Optional<String> getDescription()
 	{
-		return action != null ? Description.Extractor.extract(method) : Description.Extractor.extract(method).or(() -> Description.Extractor.extract(type));
+		return action != null ? Description.Extractor.extract(method)
+				: Description.Extractor.extract(method)
+						.or(() -> Description.Extractor.extract(type));
 	}
 
 	public Optional<String> getTooltip()
 	{
-		return action != null ? Tooltip.Extractor.extract(method) : Tooltip.Extractor.extract(method).or(() -> Tooltip.Extractor.extract(type));
+		return action != null ? Tooltip.Extractor.extract(method)
+				: Tooltip.Extractor.extract(method).or(() -> Tooltip.Extractor.extract(type));
 	}
 
 	public Optional<String> getColor()
 	{
-		return action != null ? Color.Extractor.extract(method) : Color.Extractor.extract(method).or(() -> Color.Extractor.extract(type));
+		return action != null ? Color.Extractor.extract(method)
+				: Color.Extractor.extract(method).or(() -> Color.Extractor.extract(type));
 	}
 
 	public Optional<String> getConfirm()
 	{
-		return action != null ? Confirm.Extractor.extract(method) : Confirm.Extractor.extract(method).or(() -> Confirm.Extractor.extract(type));
+		return action != null ? Confirm.Extractor.extract(method)
+				: Confirm.Extractor.extract(method).or(() -> Confirm.Extractor.extract(type));
 	}
 
 	public Optional<String> getAlert()
 	{
-		return action != null ? Alert.Extractor.extract(method) : Alert.Extractor.extract(method).or(() -> Alert.Extractor.extract(type));
+		return action != null ? Alert.Extractor.extract(method)
+				: Alert.Extractor.extract(method).or(() -> Alert.Extractor.extract(type));
 	}
 
 	public Class<Screen> getType()
@@ -200,40 +210,21 @@ public class Call
 		if (Annotations.exists(Superuser.class, type, method))
 			return user != null && user.isSuperUser();
 
-		switch (Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION))
+		return switch (Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION))
 		{
-			case NONE ->
-			{
-				return true;
-			}
-			case AUTHENTICATION ->
-			{
-				return user != null;
-			}
-			case AUTHORIZATION ->
-			{
+			case NONE -> true;
+			case AUTHENTICATION -> user != null;
+			case AUTHORIZATION -> {
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
-				return user != null && user.checkAccess(auth.module(), auth.screen(), auth.action());
+				yield user != null && user.checkAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SPECIFIC_AUTHORIZATION ->
-			{
+			case SPECIFIC_AUTHORIZATION -> {
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
-				return user != null && user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
+				yield user != null
+						&& user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SUPERUSER ->
-			{
-				return user != null && user.isSuperUser();
-			}
+			case SUPERUSER -> user != null && user.isSuperUser();
 			default -> throw new IllegalStateException();
-		}
-	}
-
-	public static List<Integer> getParameters(String path)
-	{
-		List<Integer> parameters = new ArrayList<>();
-		Matcher matcher = PARAMETERS.matcher(path);
-		while (matcher.find())
-			parameters.add(Integer.valueOf(matcher.group(1)));
-		return parameters;
+		};
 	}
 }

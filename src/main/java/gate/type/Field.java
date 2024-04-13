@@ -144,9 +144,9 @@ public class Field implements Serializable
 		return this;
 	}
 
-	public List<Constraint.Implementation> getConstraints()
+	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		List<Constraint.Implementation> constraints = new ArrayList<>();
+		List<Constraint.Implementation<?>> constraints = new ArrayList<>();
 		if (Boolean.TRUE.equals(getRequired()))
 			constraints.add(new Required.Implementation("required"));
 		if (getMaxlength() != null)
@@ -215,26 +215,21 @@ public class Field implements Serializable
 
 	public int getMinSize()
 	{
-		return Math.max(value != null
-			? value.stream()
-				.mapToInt(e -> e.length()).sum() : 0,
-			name != null ? name.length() : 0);
+		return Math.max(value != null ? value.stream().mapToInt(e -> e.length()).sum() : 0,
+				name != null ? name.length() : 0);
 	}
 
 	public JsonObject toJson()
 	{
-		return new JsonObject()
-			.setString("name", name)
-			.setString("mask", mask)
-			.setInt("maxlength", maxlength)
-			.setObject("size", Size.class, size)
-			.setString("description", description)
-			.setObject("pattern", Pattern.class, pattern)
-			.setBoolean("readonly", readonly ? true : null)
-			.setBoolean("multiple", multiple ? true : null)
-			.setBoolean("required", required ? true : null)
-			.set("value", value != null && !value.isEmpty() ? JsonArray.of(value) : null)
-			.set("options", options != null && !options.isEmpty() ? JsonArray.of(options) : null);
+		return new JsonObject().setString("name", name).setString("mask", mask)
+				.setInt("maxlength", maxlength).setObject("size", Size.class, size)
+				.setString("description", description).setObject("pattern", Pattern.class, pattern)
+				.setBoolean("readonly", readonly ? true : null)
+				.setBoolean("multiple", multiple ? true : null)
+				.setBoolean("required", required ? true : null)
+				.set("value", value != null && !value.isEmpty() ? JsonArray.of(value) : null)
+				.set("options",
+						options != null && !options.isEmpty() ? JsonArray.of(options) : null);
 	}
 
 	@Override
@@ -250,28 +245,29 @@ public class Field implements Serializable
 
 	public static Field parse(JsonObject jsonObject) throws ConversionException
 	{
-		Field field = new Field()
-			.setName(jsonObject.getString("name").orElse(null))
-			.setMask(jsonObject.getString("mask").orElse(null))
-			.setMaxlength(jsonObject.getInt("maxlength").orElse(null))
-			.setDescription(jsonObject.getString("description").orElse(null))
-			.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
-			.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
-			.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
-			.setSize(jsonObject.getString("size").map(Size::parse).orElse(null))
-			.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null));
+		Field field = new Field().setName(jsonObject.getString("name").orElse(null))
+				.setMask(jsonObject.getString("mask").orElse(null))
+				.setMaxlength(jsonObject.getInt("maxlength").orElse(null))
+				.setDescription(jsonObject.getString("description").orElse(null))
+				.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
+				.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
+				.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
+				.setSize(jsonObject.getString("size").map(Size::parse).orElse(null))
+				.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null));
 
 		JsonElement options = jsonObject.get("options");
 		if (options instanceof JsonString)
 			field.setOptions(new StringList(options.toString()));
 		else if (options instanceof JsonArray)
-			field.setOptions(((JsonArray) options).stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
+			field.setOptions(((JsonArray) options).stream().map(JsonElement::toString)
+					.collect(Collectors.toCollection(StringList::new)));
 
 		JsonElement value = jsonObject.get("value");
 		if (value instanceof JsonString)
 			field.setValue(new StringList(value.toString()));
 		else if (value instanceof JsonArray)
-			field.setValue(((JsonArray) value).stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
+			field.setValue(((JsonArray) value).stream().map(JsonElement::toString)
+					.collect(Collectors.toCollection(StringList::new)));
 
 		return field;
 	}
@@ -282,18 +278,20 @@ public class Field implements Serializable
 			throw new AppException(String.format("O campo %s é requerido", getName()));
 
 		if (getMaxlength() != null
-			&& getValue().stream().anyMatch(e -> e.length() > getMaxlength()))
-			throw new AppException(String.format("O tamanho máximo do campo %s é %s",
-				getName(), getMaxlength()));
+				&& getValue().stream().anyMatch(e -> e.length() > getMaxlength()))
+			throw new AppException(
+					String.format("O tamanho máximo do campo %s é %s", getName(), getMaxlength()));
 
 		if (getPattern() != null)
 		{
 			if (getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(String.format("Formato inválido para o campo %s", getName()));
+				throw new AppException(
+						String.format("Formato inválido para o campo %s", getName()));
 
 			if (!getOptions().isEmpty()
-				&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(String.format("%s is not a valid option para o campo campo %s", value, getName()));
+					&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
+				throw new AppException(String.format(
+						"%s is not a valid option para o campo campo %s", value, getName()));
 		}
 	}
 
@@ -301,12 +299,9 @@ public class Field implements Serializable
 	{
 
 		@Name("1")
-		ONE,
-		@Name("2")
-		TWO,
-		@Name("4")
-		FOUR,
-		@Name("8")
+		ONE, @Name("2")
+		TWO, @Name("4")
+		FOUR, @Name("8")
 		EIGHT;
 
 		@Override

@@ -20,7 +20,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class JsonElementConverter implements Converter
 {

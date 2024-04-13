@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Implementation {
+public @interface Implementation
+{
 
 	Class<? extends Constraint.Implementation<?>> value();
 }

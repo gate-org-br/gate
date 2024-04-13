@@ -29,9 +29,10 @@ import org.slf4j.Logger;
  *
  * @author davins
  *
- * Produces an App object with current application data.
+ *         Produces an App object with current application data.
  *
- * Produces a Collection of App objects with all current gate based applications deployed on the container.
+ *         Produces a Collection of App objects with all current gate based applications deployed on
+ *         the container.
  *
  */
 @ApplicationScoped
@@ -57,16 +58,17 @@ public class AppProducer implements Serializable
 	@PostConstruct
 	public void prepare()
 	{
-		String id = Objects.requireNonNullElse(servletContext.getServletContextName(), servletContext.getInitParameter("id"));
+		String id = Objects.requireNonNullElse(servletContext.getServletContextName(),
+				servletContext.getInitParameter("id"));
 
-		var types = instances.stream()
-			.map(e -> (Class<Screen>) e.getClass())
-			.map(e -> e.isSynthetic() ? e.getSuperclass() : e)
-			.filter(type -> !Modifier.isAbstract(type.getModifiers()))
-			.filter(type -> type.getSimpleName().endsWith("Screen"))
-			.toList();
+		@SuppressWarnings("unchecked")
+		var types = instances.stream().map(e -> (Class<Screen>) e.getClass())
+				.map(e -> e.isSynthetic() ? e.getSuperclass() : e)
+				.filter(type -> !Modifier.isAbstract(type.getModifiers()))
+				.filter(type -> type.getSimpleName().endsWith("Screen")).toList();
 
-		app = App.getInstance(id, servletContext.getInitParameter("name"), servletContext.getInitParameter("description"), types);
+		app = App.getInstance(id, servletContext.getInitParameter("name"),
+				servletContext.getInitParameter("description"), types);
 
 		try
 		{
@@ -93,11 +95,9 @@ public class AppProducer implements Serializable
 		@DataSource("Gate")
 		LinkSource linksource;
 
-		public void update(App app)
-			throws ConstraintViolationException
+		public void update(App app) throws ConstraintViolationException
 		{
-			try (Link link = linksource.getLink();
-				AppDao dao = new AppDao(link))
+			try (Link link = linksource.getLink(); AppDao dao = new AppDao(link))
 			{
 				link.beginTran();
 				dao.delete(app);
@@ -116,21 +116,14 @@ public class AppProducer implements Serializable
 
 			public void insert(App app) throws ConstraintViolationException
 			{
-				Insert.into("App")
-					.set("id", app.getId())
-					.set("json", app.toString())
-					.build()
-					.connect(getLink())
-					.execute();
+				Insert.into("App").set("id", app.getId()).set("json", app.toString()).build()
+						.connect(getLink()).execute();
 			}
 
 			public void delete(App app) throws ConstraintViolationException
 			{
-				Delete.from("App")
-					.where(Condition.of("id").eq(app.getId()))
-					.build()
-					.connect(getLink())
-					.execute();
+				Delete.from("App").where(Condition.of("id").eq(app.getId())).build()
+						.connect(getLink()).execute();
 			}
 
 		}

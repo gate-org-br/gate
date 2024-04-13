@@ -23,12 +23,13 @@ public interface DeleteOperation<T>
 	 * @return the number of records affected by the delete sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	int execute(Collection<T> values) throws ConstraintViolationException,
-			FKViolationException,
-			UKViolationException;
+	int execute(Collection<T> values)
+			throws ConstraintViolationException, FKViolationException, UKViolationException;
 
 	/**
 	 * Deletes the defined object from the database matching the id.
@@ -38,12 +39,13 @@ public interface DeleteOperation<T>
 	 * @return the number of records affected by the delete sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	default int execute(T value) throws ConstraintViolationException,
-			FKViolationException,
-			UKViolationException
+	default int execute(T value)
+			throws ConstraintViolationException, FKViolationException, UKViolationException
 	{
 		return execute(Collections.singleton(value));
 	}
@@ -56,12 +58,13 @@ public interface DeleteOperation<T>
 	 * @return the number of records affected by the delete sentence
 	 *
 	 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-	 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-	 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+	 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+	 *         execution
+	 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+	 *         execution
 	 */
-	default int execute(T... values) throws ConstraintViolationException,
-			FKViolationException,
-			UKViolationException
+	default int execute(@SuppressWarnings("unchecked") T... values)
+			throws ConstraintViolationException, FKViolationException, UKViolationException
 	{
 		return DeleteOperation.this.execute(Arrays.asList(values));
 	}
@@ -90,13 +93,15 @@ public interface DeleteOperation<T>
 		 *
 		 * @return the number of records affected by the delete sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		int execute(Collection<T> values) throws ConstraintViolationException,
-				FKViolationException,
-				UKViolationException;
+		int execute(Collection<T> values)
+				throws ConstraintViolationException, FKViolationException, UKViolationException;
 
 		/**
 		 * Deletes the defined object from the database matching the selected criteria.
@@ -105,13 +110,15 @@ public interface DeleteOperation<T>
 		 *
 		 * @return the number of records affected by the delete sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		default int execute(T value) throws ConstraintViolationException,
-				FKViolationException,
-				UKViolationException
+		default int execute(T value)
+				throws ConstraintViolationException, FKViolationException, UKViolationException
 		{
 			return execute(Collections.singleton(value));
 		}
@@ -123,13 +130,15 @@ public interface DeleteOperation<T>
 		 *
 		 * @return the number of records affected by the delete sentence
 		 *
-		 * @throws gate.error.ConstraintViolationException if a constraint is violated during execution
-		 * @throws gate.error.FKViolationException         if a foreign key constraint is violated during execution
-		 * @throws gate.error.UKViolationException         if a unique key constraint is violated during execution
+		 * @throws gate.error.ConstraintViolationException if a constraint is violated during
+		 *         execution
+		 * @throws gate.error.FKViolationException if a foreign key constraint is violated during
+		 *         execution
+		 * @throws gate.error.UKViolationException if a unique key constraint is violated during
+		 *         execution
 		 */
-		default int execute(T... values) throws ConstraintViolationException,
-				FKViolationException,
-				UKViolationException
+		default int execute(@SuppressWarnings("unchecked") T... values)
+				throws ConstraintViolationException, FKViolationException, UKViolationException
 		{
 			return Criteria.this.execute(Arrays.asList(values));
 		}

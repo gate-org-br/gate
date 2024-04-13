@@ -14,12 +14,11 @@ public class JaveELFuncionMapper extends FunctionMapper
 
 	JaveELFuncionMapper(Map<String, Method> functions)
 	{
-		this.functions = functions == null
-			? new HashMap() : new HashMap(functions);
+		this.functions = functions == null ? new HashMap<>() : new HashMap<>(functions);
 
 		for (Method method : TagLib.class.getDeclaredMethods())
 			if (Modifier.isStatic(method.getModifiers())
-				&& Modifier.isPublic(method.getModifiers()))
+					&& Modifier.isPublic(method.getModifiers()))
 				this.functions.put("g:" + method.getName(), method);
 	}
 

@@ -12,9 +12,7 @@ public class PropertyComparator implements Comparator<Object>
 	public PropertyComparator(String name)
 	{
 		desc = name.charAt(0) == '-';
-		this.name = name.charAt(0) == '-'
-				|| name.charAt(0) == '+'
-				? name.substring(1) : name;
+		this.name = name.charAt(0) == '-' || name.charAt(0) == '+' ? name.substring(1) : name;
 	}
 
 	@Override
@@ -22,8 +20,12 @@ public class PropertyComparator implements Comparator<Object>
 	{
 
 		Property property = Property.getProperty(obj1.getClass(), name);
-		Comparable comparable1 = (Comparable) (desc ? property.getValue(obj2) : property.getValue(obj1));
-		Comparable comparable2 = (Comparable) (desc ? property.getValue(obj1) : property.getValue(obj2));
+		@SuppressWarnings("unchecked")
+		Comparable<Object> comparable1 =
+				(Comparable<Object>) (desc ? property.getValue(obj2) : property.getValue(obj1));
+		@SuppressWarnings("unchecked")
+		Comparable<Object> comparable2 =
+				(Comparable<Object>) (desc ? property.getValue(obj1) : property.getValue(obj2));
 
 		if (comparable1 == null && comparable2 == null)
 			return 0;

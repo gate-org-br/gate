@@ -4,7 +4,6 @@ import gate.error.AppException;
 
 import java.io.Serializable;
 
-@SuppressWarnings("serial")
 public abstract class Model implements Serializable
 {
 

@@ -10,28 +10,25 @@ import java.util.Set;
 public class TypedArraySetFetcher implements Fetcher<Set<Object[]>>
 {
 
-	private final Class[] types;
+	private final Class<?>[] types;
 	private final Set<Object[]> result = new LinkedHashSet<>();
 
 	/**
 	 * Creates a new TypedArrayListFetcher with the specified types.
 	 *
-	 * @param types an array specifying the types of the objects to be
-	 * fetched
+	 * @param types an array specifying the types of the objects to be fetched
 	 */
-	public TypedArraySetFetcher(Class[] types)
+	public TypedArraySetFetcher(Class<?>[] types)
 	{
 		this.types = types;
 	}
 
 	/**
-	 * Fetches each row as a set of java arrays of Objects of the specified
-	 * types.
+	 * Fetches each row as a set of java arrays of Objects of the specified types.
 	 *
 	 * @param cursor the cursor to be fetched
 	 *
-	 * @return each row fetched as a set of java arrays of Objects of the
-	 * specified types
+	 * @return each row fetched as a set of java arrays of Objects of the specified types
 	 */
 	@Override
 	public Set<Object[]> fetch(Cursor cursor)

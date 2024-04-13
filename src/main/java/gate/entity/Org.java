@@ -7,7 +7,6 @@ import gate.annotation.Name;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.LocalTimeInterval;
-import gate.type.collections.StringList;
 import gate.type.mime.MimeData;
 import java.io.Serializable;
 
@@ -36,9 +35,6 @@ public class Org implements Serializable
 	@Required
 	@Description("Entre com o logo da organização")
 	private MimeData icon;
-
-	@Description("Entre com a lista de servidores LDAP que serão utilizados para autenticação")
-	private StringList authenticators;
 
 	@Description("Expediente da organização nos domingos")
 	private LocalTimeInterval sun;
@@ -102,18 +98,6 @@ public class Org implements Serializable
 	{
 		this.icon = icon;
 		return this;
-	}
-
-	public StringList getAuthenticators()
-	{
-		if (authenticators == null)
-			authenticators = new StringList();
-		return authenticators;
-	}
-
-	public void setAuthenticators(StringList authenticators)
-	{
-		this.authenticators = authenticators;
 	}
 
 	public LocalTimeInterval getSun()

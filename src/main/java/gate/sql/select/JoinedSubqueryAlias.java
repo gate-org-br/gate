@@ -18,7 +18,7 @@ public abstract class JoinedSubqueryAlias implements Clause, Aliasable
 		return clause;
 	}
 
-	public abstract static class Constant extends JoinedSubqueryAlias implements Aliasable
+	public abstract static class Constant extends JoinedSubqueryAlias
 	{
 
 		public Constant(Clause clause)
@@ -40,7 +40,7 @@ public abstract class JoinedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Generic extends JoinedSubqueryAlias implements Aliasable
+	public abstract static class Generic extends JoinedSubqueryAlias
 	{
 
 		public Generic(Clause clause)
@@ -62,7 +62,7 @@ public abstract class JoinedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Compiled extends JoinedSubqueryAlias implements Aliasable
+	public abstract static class Compiled extends JoinedSubqueryAlias
 	{
 
 		public Compiled(Clause clause)

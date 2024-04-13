@@ -12,36 +12,42 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Implementation(Minlength.Implementation.class)
-public @interface Minlength {
+public @interface Minlength
+{
 
 	int value();
 
-	class Implementation extends Constraint.Implementation<Object> {
+	class Implementation extends Constraint.Implementation<Object>
+	{
 
 		private static final long serialVersionUID = 1L;
 
-		public Implementation(Object value) {
+		public Implementation(Object value)
+		{
 			super(value);
 		}
 
 		@Override
-		public void validate(Object entity, Property property) throws AppException {
+		public void validate(Object entity, Property property) throws AppException
+		{
 			Integer constraint = (Integer) getValue();
 			Class<?> type = property.getRawType();
 			String value = Converter
-					.getConverter(type)
-					.toString(type, property.getValue(entity));
-			if (value.length() < constraint) {
+				.getConverter(type)
+				.toString(type, property.getValue(entity));
+			if (value.length() < constraint)
+			{
 				String name = property.getDisplayName();
 				if (name == null)
 					name = property.toString();
 				throw new AppException(
-						String.format("O campo %s deve possuir no mínimo %d caracteres.", name, getValue()));
+					String.format("O campo %s deve possuir no mínimo %d caracteres.", name, getValue()));
 			}
 		}
 
 		@Override
-		public String getName() {
+		public String getName()
+		{
 			return "data-minlength";
 		}
 	}

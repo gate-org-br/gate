@@ -30,8 +30,7 @@ interface ExtractorRelationMethods<T> extends Clause
 			@Override
 			public Stream<Object> getParameters()
 			{
-				return Stream.concat(getClause().getParameters(),
-					condition.getParameters());
+				return Stream.concat(getClause().getParameters(), condition.getParameters());
 			}
 		};
 	}
@@ -44,19 +43,19 @@ interface ExtractorRelationMethods<T> extends Clause
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
-	ExtractorCondition not(ExtractorCondition condition);
+	ExtractorCondition<T> not(ExtractorCondition<T> condition);
 
 	interface Rollback<T> extends ExtractorRelationMethods<T>
 	{
 
 		@Override
-		default ExtractorCondition<T> condition(ExtractorCondition condition)
+		default ExtractorCondition<T> condition(ExtractorCondition<T> condition)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}
 
 		@Override
-		default ExtractorCondition<T> not(ExtractorCondition condition)
+		default ExtractorCondition<T> not(ExtractorCondition<T> condition)
 		{
 			return new ExtractorCondition<>(getClause().rollback());
 		}

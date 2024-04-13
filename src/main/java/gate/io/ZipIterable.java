@@ -28,7 +28,8 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 		this.data = data;
 		try (ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(data)))
 		{
-			for (ZipEntry entry = zipInputStream.getNextEntry(); entry != null; entry = zipInputStream.getNextEntry())
+			for (ZipEntry entry = zipInputStream.getNextEntry(); entry != null; entry =
+					zipInputStream.getNextEntry())
 			{
 				if (!entry.isDirectory())
 					Progress.update(++size);
@@ -114,9 +115,7 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 
 				try (ByteArrayOutputStream data = new ByteArrayOutputStream())
 				{
-					for (int c = zipInputStream.read();
-						c != -1;
-						c = zipInputStream.read())
+					for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read())
 						data.write(c);
 					data.flush();
 
@@ -139,7 +138,7 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 		}
 
 		@Override
-		public boolean tryAdvance(Consumer action)
+		public boolean tryAdvance(Consumer<? super DataFile> action)
 		{
 			if (!hasNext())
 				return false;
@@ -148,7 +147,7 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 		}
 
 		@Override
-		public Spliterator trySplit()
+		public Spliterator<DataFile> trySplit()
 		{
 			return null;
 		}

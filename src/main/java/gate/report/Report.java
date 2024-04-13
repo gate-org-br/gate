@@ -199,10 +199,9 @@ public class Report
 		return image;
 	}
 
-	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
-		Chart.Format format)
+	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset, Chart.Format format)
 	{
-		Chart chart = new Chart(type, dataset, format);
+		Chart<T> chart = new Chart<>(type, dataset, format);
 		elements.add(chart);
 		return chart;
 	}
@@ -223,8 +222,7 @@ public class Report
 	public enum Orientation
 	{
 		@Name("Retrato")
-		PORTRAIT,
-		@Name("Paisagem")
+		PORTRAIT, @Name("Paisagem")
 		LANDSCAPE
 	}
 }

@@ -9,15 +9,17 @@ import java.io.Serializable;
 /**
  * @author davins
  *
- * Produces CrudControl objects for the specified type
+ *         Produces CrudControl objects for the specified type
  */
 public class CrudControlProducer implements Serializable
 {
 
 	@Produces
 	@Type(Class.class)
+	@SuppressWarnings("unchecked")
 	public <T> CrudControl<T> produce(InjectionPoint injectionPoint)
 	{
-		return new CrudControl<>((Class<T>) injectionPoint.getAnnotated().getAnnotation(Type.class).value());
+		return new CrudControl<T>(
+				(Class<T>) injectionPoint.getAnnotated().getAnnotation(Type.class).value());
 	}
 }

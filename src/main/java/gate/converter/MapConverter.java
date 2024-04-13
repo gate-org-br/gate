@@ -21,7 +21,7 @@ public class MapConverter extends ObjectConverter
 
 		boolean empty = true;
 
-		Map object = new HashMap<>();
+		var object = new HashMap<>();
 
 		do
 		{
@@ -41,7 +41,7 @@ public class MapConverter extends ObjectConverter
 							scanner.getCurrent() + " is not a valid JSON object");
 
 				scanner.scan();
-				Converter converter = Converter.getConverter((Class) elementType);
+				Converter converter = Converter.getConverter((Class<?>) elementType);
 				Object value = converter.ofJson(scanner, elementType,
 						Reflection.getElementType(elementType));
 				object.put(key, value);
@@ -57,13 +57,14 @@ public class MapConverter extends ObjectConverter
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
-		Map<?, ?> map = (Map<?, ?>) object;
+		var map = (Map<?, ?>) object;
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 		boolean first = true;
-		for (Map.Entry entry : map.entrySet())
+		for (var entry : map.entrySet())
 		{
 			if (entry.getValue() != null)
 			{
@@ -84,14 +85,15 @@ public class MapConverter extends ObjectConverter
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
 			throws ConversionException
 	{
-		Map<?, ?> map = (Map<?, ?>) object;
+		var map = (Map<?, ?>) object;
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 		boolean first = true;
-		for (Map.Entry entry : map.entrySet())
+		for (var entry : map.entrySet())
 		{
 			if (entry.getValue() != null)
 			{

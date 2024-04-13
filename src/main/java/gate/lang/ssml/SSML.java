@@ -66,8 +66,7 @@ public class SSML
 	{
 		consume();
 		target.append(".");
-		if (current() == '\n'
-			|| current() == '\r')
+		if (current() == '\n' || current() == '\r')
 			paragraph();
 		else
 			target.append(STRONG);
@@ -130,12 +129,6 @@ public class SSML
 		target.append(XSTRONG);
 	}
 
-	private void pause(String string)
-	{
-		target.append(string);
-		consume();
-	}
-
 	private void doubleQuotedString()
 	{
 		target.append((char) consume());
@@ -170,8 +163,8 @@ public class SSML
 	}
 
 	/**
-	 * Creates SSML markup text from the specified source string with pauses
-	 * added to it's punctuation marks.
+	 * Creates SSML markup text from the specified source string with pauses added to it's
+	 * punctuation marks.
 	 *
 	 * @param source the string to be converted to SSML markup text
 	 * @return the SSML text markup text generated from the specified string

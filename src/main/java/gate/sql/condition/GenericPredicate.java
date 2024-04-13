@@ -5,9 +5,8 @@ import gate.sql.Clause;
 /**
  * A single predicate of a generic condition.
  */
-public abstract class GenericPredicate extends Predicate implements
-	ConstantPredicateMethods,
-	GenericPredicateMethods
+public abstract class GenericPredicate extends Predicate
+		implements ConstantPredicateMethods, GenericPredicateMethods
 {
 
 	GenericPredicate(Clause clause)
@@ -132,9 +131,7 @@ public abstract class GenericPredicate extends Predicate implements
 		};
 	}
 
-	static class Rollback extends GenericPredicate implements
-		ConstantPredicateMethods,
-		GenericPredicateMethods.Rollback
+	static class Rollback extends GenericPredicate implements GenericPredicateMethods.Rollback
 	{
 
 		public Rollback(Clause clause)

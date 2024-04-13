@@ -17,8 +17,7 @@ public class TableInsert implements Insert
 {
 
 	private final String table;
-	private final Set<String> insert
-		= new HashSet<>();
+	private final Set<String> insert = new HashSet<>();
 
 	TableInsert(String table)
 	{
@@ -126,8 +125,7 @@ public class TableInsert implements Insert
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Generic()
-		{
-		}
+		{}
 
 		/**
 		 * Adds a new column to the builder.
@@ -154,9 +152,7 @@ public class TableInsert implements Insert
 		 */
 		public <T> Generic set(Class<T> type, String column)
 		{
-			Converter.getConverter(type)
-				.getColumns(column)
-				.forEach(this::set);
+			Converter.getConverter(type).getColumns(column).forEach(this::set);
 			return this;
 		}
 
@@ -169,7 +165,8 @@ public class TableInsert implements Insert
 		@Override
 		public String toString()
 		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", insert) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 	}
 
@@ -184,8 +181,7 @@ public class TableInsert implements Insert
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Compiled()
-		{
-		}
+		{}
 
 		/**
 		 * Adds a new column and it's associated value to the builder.
@@ -216,11 +212,8 @@ public class TableInsert implements Insert
 		public <T> Compiled set(Class<T> type, String column, T value)
 		{
 			values.add(value);
-			Converter.getConverter(type)
-				.getColumns(column)
-				.peek(columns::add)
-				.map(e -> "?")
-				.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
+					.forEach(parameters::add);
 			return this;
 		}
 
@@ -245,14 +238,16 @@ public class TableInsert implements Insert
 		@Override
 		public String toString()
 		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", insert) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 
 		public class When
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -265,7 +260,8 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -278,7 +274,8 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 *
 			 * @param column the column to be added
@@ -293,7 +290,8 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified
+			 * condition was true.
 			 *
 			 *
 			 * @param type type of the column to be added
@@ -366,7 +364,7 @@ public class TableInsert implements Insert
 	 *
 	 * @param <E> type of the entities to be inserted on database
 	 */
-	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder
+	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder<E>
 	{
 
 		private final Class<E> type;
@@ -419,11 +417,8 @@ public class TableInsert implements Insert
 		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
 		{
 			extractors.add(extractor);
-			Converter.getConverter(type)
-				.getColumns(column)
-				.peek(columns::add)
-				.map(e -> "?")
-				.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
+					.forEach(parameters::add);
 			return this;
 		}
 
@@ -436,7 +431,8 @@ public class TableInsert implements Insert
 		@Override
 		public String toString()
 		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values " + parameters;
+			return String.join(" ", insert) + " into " + table + " " + columns + " values "
+					+ parameters;
 		}
 	}
 
@@ -470,7 +466,8 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param value the value associated
@@ -483,7 +480,8 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param supplier the supplier of the value associated
@@ -496,7 +494,8 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added
@@ -511,7 +510,8 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified
+		 * condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added

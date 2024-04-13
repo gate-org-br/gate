@@ -20,10 +20,7 @@ import gate.sql.statement.UpdateOperation;
 import gate.sql.update.Update;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.CDI;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -37,7 +34,8 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 /**
- * Holds the connection to the database and provides a clean interface for transaction management, querying and execution of statements.
+ * Holds the connection to the database and provides a clean interface for transaction management,
+ * querying and execution of statements.
  *
  * @author davins
  */
@@ -46,36 +44,6 @@ public class Link implements AutoCloseable
 {
 
 	private final Connection connection;
-
-	public SearchCommand searchCommand(String string)
-	{
-		return new SearchCommand(this, string);
-	}
-
-	public SearchCommand searchCommand(String string, Object... parameters)
-	{
-		return new SearchCommand(this, string, parameters);
-	}
-
-	public SearchCommand searchCommand(URL resource, Object... parameters)
-	{
-		try
-		{
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream())))
-			{
-				try (StringWriter writer = new StringWriter())
-				{
-					for (int c = reader.read(); c != -1; c = reader.read())
-						writer.write((char) c);
-					writer.flush();
-					return new SearchCommand(this, writer.toString(), parameters);
-				}
-			}
-		} catch (IOException ex)
-		{
-			throw new AppError(ex);
-		}
-	}
 
 	/**
 	 * Returns the JDBC connection associated with this link.
@@ -92,9 +60,7 @@ public class Link implements AutoCloseable
 	 */
 	public Link()
 	{
-		this(CDI.current()
-			.select(AppProducer.class)
-			.get().produce().getId());
+		this(CDI.current().select(AppProducer.class).get().produce().getId());
 	}
 
 	/**
@@ -171,7 +137,7 @@ public class Link implements AutoCloseable
 		try
 		{
 			return new Command(this,
-				connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
+					connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
 		} catch (SQLException e)
 		{
 			throw new AppError(e);
@@ -373,7 +339,8 @@ public class Link implements AutoCloseable
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence)
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(
+			Sentence.Extractor.Compiled<T> sentence)
 	{
 		return sentence.connect(this);
 	}
@@ -411,7 +378,8 @@ public class Link implements AutoCloseable
 	 *
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled.Builder<T> builder)
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(
+			Sentence.Extractor.Compiled.Builder<T> builder)
 	{
 		return builder.build().connect(this);
 	}
@@ -445,7 +413,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can
+	 * be executed.
 	 *
 	 * @param query the SQL string to be executed after the definition of it's parameter values
 	 *
@@ -459,9 +428,11 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can
+	 * be executed.
 	 *
-	 * @param resource a resource containing the SQL string to be executed after the definition of it's parameter values
+	 * @param resource a resource containing the SQL string to be executed after the definition of
+	 *        it's parameter values
 	 *
 	 * @return a connected query whose parameter values are yet to be defined
 	 */
@@ -482,12 +453,14 @@ public class Link implements AutoCloseable
 	 * <p>
 	 * Each @ symbol found on the query will be replaced by it's respective format argument.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can
+	 * be executed.
 	 *
 	 * @param query the SQL string to be executed after the definition of it's parameter values
 	 * @param args arguments referenced by the @ symbols in the SQL string
 	 *
-	 * @return a connected query formatted with the specified arguments whose parameter values are yet to be defined
+	 * @return a connected query formatted with the specified arguments whose parameter values are
+	 *         yet to be defined
 	 */
 	public Query.Connected from(String query, String... args)
 	{
@@ -499,12 +472,15 @@ public class Link implements AutoCloseable
 	 * <p>
 	 * Each @ symbol found on the query will be replaced by it's respective format argument.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before execution.
+	 * The query returned will lack parameter values and must have them to be defined before
+	 * execution.
 	 *
-	 * @param resource a resource containing the SQL string to be executed after the definition of it's parameter values
+	 * @param resource a resource containing the SQL string to be executed after the definition of
+	 *        it's parameter values
 	 * @param args arguments referenced by the @ symbols in the SQL string
 	 *
-	 * @return a connected query formatted with the specified arguments whose parameter values are yet to be defined
+	 * @return a connected query formatted with the specified arguments whose parameter values are
+	 *         yet to be defined
 	 */
 	public Query.Connected from(URL resource, String... args)
 	{
@@ -525,17 +501,16 @@ public class Link implements AutoCloseable
 	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param query the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the
+	 *        parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
 	public Query.Compiled.Connected from(String query, CompiledCondition... conditions)
 	{
-		return Query.of(Formatter.format(query, (Object[]) conditions))
-			.parameters(Stream.of(conditions)
-				.flatMap(Clause::getParameters)
-				.collect(Collectors.toList()))
-			.connect(this);
+		return Query.of(Formatter.format(query, (Object[]) conditions)).parameters(
+				Stream.of(conditions).flatMap(Clause::getParameters).collect(Collectors.toList()))
+				.connect(this);
 	}
 
 	/**
@@ -546,7 +521,8 @@ public class Link implements AutoCloseable
 	 * The query returned will be compiled with the parameters of the specified conditions.
 	 *
 	 * @param resource a resource containing the SQL string to be executed
-	 * @param conditions the list of conditions that will replace @ symbols and provide the parameters to be compiled into the query
+	 * @param conditions the list of conditions that will replace @ symbols and provide the
+	 *        parameters to be compiled into the query
 	 *
 	 * @return a connected and compiled query ready for execution
 	 */
@@ -564,7 +540,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can
+	 * be executed.
 	 *
 	 * @param query the query object to be executed after the definition of it's parameter values
 	 *
@@ -578,7 +555,8 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can be executed.
+	 * The query returned will lack parameter values and must have them to be defined before it can
+	 * be executed.
 	 *
 	 * @param query a query builder to generate the query to be executed
 	 *
@@ -643,7 +621,8 @@ public class Link implements AutoCloseable
 	 * @param type type of the objects to be selected
 	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
-	 * @return a SearchOperation object for definition of the properties and the criteria of selection
+	 * @return a SearchOperation object for definition of the properties and the criteria of
+	 *         selection
 	 */
 	public <T> SearchOperation<T> search(Class<T> type)
 	{
@@ -652,16 +631,14 @@ public class Link implements AutoCloseable
 			@Override
 			public List<T> matching(T filter)
 			{
-				return Select.of(type, filter, GQN)
-					.connect(Link.this).fetchEntityList(type);
+				return Select.of(type, filter, GQN).connect(Link.this).fetchEntityList(type);
 			}
 
 			@Override
 			public List<T> parameters(List<Object> parameters)
 			{
-				return Select.of(type, GQN)
-					.parameters(parameters)
-					.connect(Link.this).fetchEntityList(type);
+				return Select.of(type, GQN).parameters(parameters).connect(Link.this)
+						.fetchEntityList(type);
 
 			}
 		};
@@ -673,7 +650,8 @@ public class Link implements AutoCloseable
 	 * @param type type of the object to be selected
 	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
-	 * @return a SelectOperation object for definition of the properties and the criteria of selection
+	 * @return a SelectOperation object for definition of the properties and the criteria of
+	 *         selection
 	 */
 	public <T> SelectOperation<T> select(Class<T> type)
 	{
@@ -682,16 +660,14 @@ public class Link implements AutoCloseable
 			@Override
 			public Optional<T> matching(T filter)
 			{
-				return Select.of(type, filter, GQN)
-					.connect(Link.this).fetchEntity(type);
+				return Select.of(type, filter, GQN).connect(Link.this).fetchEntity(type);
 			}
 
 			@Override
 			public Optional<T> parameters(List<Object> parameters)
 			{
-				return Select.of(type, GQN)
-					.parameters(parameters)
-					.connect(Link.this).fetchEntity(type);
+				return Select.of(type, GQN).parameters(parameters).connect(Link.this)
+						.fetchEntity(type);
 			}
 		};
 	}
@@ -702,7 +678,8 @@ public class Link implements AutoCloseable
 	 * @param type type of the objects to be inserted
 	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
-	 * @return an InsertOperation object for definition of the properties and the values to be inserted
+	 * @return an InsertOperation object for definition of the properties and the values to be
+	 *         inserted
 	 */
 	public <T> InsertOperation<T> insert(Class<T> type)
 	{
@@ -715,7 +692,8 @@ public class Link implements AutoCloseable
 	 * @param type type of the objects to be updated
 	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
-	 * @return an UpdateOperation object for definition of the properties, update criteria and the values to be updated
+	 * @return an UpdateOperation object for definition of the properties, update criteria and the
+	 *         values to be updated
 	 */
 	public <T> UpdateOperation<T> update(Class<T> type)
 	{
@@ -730,12 +708,7 @@ public class Link implements AutoCloseable
 			@Override
 			public UpdateOperation.Properties<T> properties(String... GQN)
 			{
-				return e -> Update
-					.of(type, GQN)
-					.build()
-					.values(e)
-					.connect(Link.this)
-					.execute();
+				return e -> Update.of(type, GQN).build().values(e).connect(Link.this).execute();
 			}
 		};
 	}
@@ -746,7 +719,8 @@ public class Link implements AutoCloseable
 	 * @param type type of the objects to be deleted
 	 * @param <T> type type of the entities to be compiled with the sentence
 	 *
-	 * @return a DeleteOperation object for definition of the deletion criteria and the values to be deleted
+	 * @return a DeleteOperation object for definition of the deletion criteria and the values to be
+	 *         deleted
 	 */
 	public <T> DeleteOperation<T> delete(Class<T> type)
 	{

@@ -4,11 +4,10 @@ import gate.error.AppException;
 import gate.lang.property.Property;
 import gate.converter.Converter;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TextModel extends Model implements Serializable
+public class TextModel extends Model
 {
 
 	private static final long serialVersionUID = 1L;
@@ -46,10 +45,9 @@ public class TextModel extends Model implements Serializable
 			for (String name : getPropertyNames(string))
 			{
 				Property property = Property.getProperty(entity.getClass(), name);
-				Class type = property.getRawType();
-				String value = Converter
-					.getConverter(type)
-					.toString(type, property.getValue(entity));
+				Class<?> type = property.getRawType();
+				String value =
+						Converter.getConverter(type).toString(type, property.getValue(entity));
 				string = string.replace(String.format("${%s}", name), value);
 			}
 			return new DataFile(string.getBytes(), getAttachment().getName());

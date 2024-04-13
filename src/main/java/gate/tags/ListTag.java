@@ -8,8 +8,6 @@ import jakarta.el.LambdaExpression;
 import jakarta.el.StandardELContext;
 import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ListTag extends AttributeTag
@@ -68,7 +66,7 @@ public class ListTag extends AttributeTag
 		{
 			getJspContext().getOut().print(String.format("<ul %s>", getAttributes()));
 
-			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
+			for (var group : Toolkit.collection(options).stream()
 				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
 			{
 				getJspContext().getOut().print("<li>");

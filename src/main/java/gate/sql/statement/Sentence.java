@@ -67,7 +67,8 @@ public interface Sentence extends SQL
 	 * 
 	 * @param type type of the entities to be compiled with the sentence
 	 *
-	 * @return the same sentence prepared to be compiled with the specified entities and a list of functions
+	 * @return the same sentence prepared to be compiled with the specified entities and a list of
+	 *         functions
 	 */
 	<T> Extractor<T> from(Class<T> type);
 
@@ -109,12 +110,14 @@ public interface Sentence extends SQL
 		{
 
 			/**
-			 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
+			 * Defines a Consumer to be called each time a set or parameters is processed by the
+			 * statement.
 			 * <p>
 			 * Very useful for tracking the progress of long batch operations
 			 *
-			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any time. If
-			 * null, removes any previously defined consumer.
+			 * @param consumer the consumer to be called each time the statement is executed. Only a
+			 *        single consumer can be defined at any time. If null, removes any previously
+			 *        defined consumer.
 			 *
 			 * @return the current sentence, for chained invocations
 			 */
@@ -143,20 +146,22 @@ public interface Sentence extends SQL
 		/**
 		 * Specify the functions to be used to extract the attributes to be updated on the database.
 		 *
-		 * @param extractors list of functions to be used to extract the attributes to be updated on the database
+		 * @param extractors list of functions to be used to extract the attributes to be updated on
+		 *        the database
 		 *
 		 * @return the same sentence compiled with the specified functions
 		 */
-		Compiled parameters(List<Function<T, ?>> extractors);
+		Compiled<T> parameters(List<Function<T, ?>> extractors);
 
 		/**
 		 * Specify the functions to be used to extract the attributes to be updated on the database.
 		 *
-		 * @param extractors list of functions to be used to extract the attributes to be updated on the database
+		 * @param extractors list of functions to be used to extract the attributes to be updated on
+		 *        the database
 		 *
 		 * @return the same sentence compiled with the specified functions
 		 */
-		default Compiled parameters(Function<T, ?>... extractors)
+		default Compiled<T> parameters(@SuppressWarnings("unchecked") Function<T, ?>... extractors)
 		{
 			return Extractor.this.parameters(Arrays.asList(extractors));
 		}
@@ -191,12 +196,14 @@ public interface Sentence extends SQL
 			{
 
 				/**
-				 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
+				 * Defines a Consumer to be called each time a set or parameters is processed by the
+				 * statement.
 				 * <p>
 				 * Very useful for tracking the progress of long batch operations
 				 *
-				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any
-				 * time. If null, removes any previously defined consumer.
+				 * @param consumer the consumer to be called each time the statement is executed.
+				 *        Only a single consumer can be defined at any time. If null, removes any
+				 *        previously defined consumer.
 				 *
 				 * @return the current sentence, for chained invocations
 				 */
@@ -279,12 +286,14 @@ public interface Sentence extends SQL
 		{
 
 			/**
-			 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
+			 * Defines a Consumer to be called each time a set or parameters is processed by the
+			 * statement.
 			 * <p>
 			 * Very useful for tracking the progress of long batch operations
 			 *
-			 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any time. If
-			 * null, removes any previously defined consumer.
+			 * @param consumer the consumer to be called each time the statement is executed. Only a
+			 *        single consumer can be defined at any time. If null, removes any previously
+			 *        defined consumer.
 			 *
 			 * @return the current sentence, for chained invocations
 			 */
@@ -298,22 +307,27 @@ public interface Sentence extends SQL
 		{
 
 			/**
-			 * Specify the functions to be used to extract the attributes to be updated on the database.
+			 * Specify the functions to be used to extract the attributes to be updated on the
+			 * database.
 			 *
-			 * @param extractors list of functions to be used to extract the attributes to be updated on the database
+			 * @param extractors list of functions to be used to extract the attributes to be
+			 *        updated on the database
 			 *
 			 * @return the same sentence compiled with the specified functions
 			 */
 			Compiled<T> parameters(List<Function<T, ?>> extractors);
 
 			/**
-			 * Specify the functions to be used to extract the attributes to be updated on the database.
+			 * Specify the functions to be used to extract the attributes to be updated on the
+			 * database.
 			 *
-			 * @param extractors list of functions to be used to extract the attributes to be updated on the database
+			 * @param extractors list of functions to be used to extract the attributes to be
+			 *        updated on the database
 			 *
 			 * @return the same sentence compiled with the specified functions
 			 */
-			default Compiled<T> parameters(Function<T, ?>... extractors)
+			default Compiled<T> parameters(
+					@SuppressWarnings("unchecked") Function<T, ?>... extractors)
 			{
 				return parameters(Arrays.asList(extractors));
 			}
@@ -332,12 +346,14 @@ public interface Sentence extends SQL
 			{
 
 				/**
-				 * Defines a Consumer to be called each time a set or parameters is processed by the statement.
+				 * Defines a Consumer to be called each time a set or parameters is processed by the
+				 * statement.
 				 * <p>
 				 * Very useful for tracking the progress of long batch operations
 				 *
-				 * @param consumer the consumer to be called each time the statement is executed. Only a single consumer can be defined at any
-				 * time. If null, removes any previously defined consumer.
+				 * @param consumer the consumer to be called each time the statement is executed.
+				 *        Only a single consumer can be defined at any time. If null, removes any
+				 *        previously defined consumer.
 				 *
 				 * @return the current sentence, for chained invocations
 				 */

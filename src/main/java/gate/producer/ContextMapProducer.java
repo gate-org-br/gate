@@ -9,7 +9,7 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
  *
  * @author davins
  *
- * Produces and disposes Connection objects using specified data sources.
+ *         Produces and disposes Connection objects using specified data sources.
  *
  */
 public class ContextMapProducer
@@ -19,6 +19,7 @@ public class ContextMapProducer
 	@Produces
 	public <T> JNDIContextMap<T> produce(InjectionPoint injectionPoint)
 	{
-		return new JNDIContextMap(injectionPoint.getAnnotated().getAnnotation(Name.class).value());
+		return new JNDIContextMap<T>(
+				injectionPoint.getAnnotated().getAnnotation(Name.class).value());
 	}
 }

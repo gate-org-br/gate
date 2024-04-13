@@ -225,6 +225,7 @@ public abstract class Screen extends Base {
 		return data;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static Optional<Class<Screen>> getScreen(String module, String screen) {
 		try {
 			return Optional.of(Thread.currentThread().getContextClassLoader().loadClass(screen != null

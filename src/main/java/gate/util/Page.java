@@ -80,14 +80,17 @@ public class Page<E> implements Iterable<E>, Serializable
 	{
 		if (data != null)
 			return data.size();
-		return Math.min(paginator.getPageSize(), paginator.getData().size() - ((indx) * paginator.getPageSize()));
+		return Math.min(paginator.getPageSize(),
+				paginator.getData().size() - ((indx) * paginator.getPageSize()));
 	}
 
 	public E getLine(int indx)
 	{
 		if (data != null)
 			return data.get(indx);
-		return indx >= 0 && indx <= getSize() - 1 ? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx) : null;
+		return indx >= 0 && indx <= getSize() - 1
+				? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx)
+				: null;
 	}
 
 	public int getFrstLineIndx()
@@ -149,11 +152,11 @@ public class Page<E> implements Iterable<E>, Serializable
 
 	public static <T> Page<T> of(List<T> data, int pageSize, int pageIndex)
 	{
-		return new Paginator(data, pageSize).getPage(pageIndex);
+		return new Paginator<T>(data, pageSize).getPage(pageIndex);
 	}
 
 	public static <T> Page<T> of(List<T> data, int dataSize, int pageSize, int pageIndex)
 	{
-		return new Paginator(dataSize, pageSize).getPage(pageIndex, data);
+		return new Paginator<T>(dataSize, pageSize).getPage(pageIndex, data);
 	}
 }
