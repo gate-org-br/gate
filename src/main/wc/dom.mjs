@@ -139,7 +139,7 @@ export default class DOM
 			return Optional.empty();
 		if (source instanceof Event)
 			source = source.composedPath()[0] || source.target;
-		path = (path || "").trim();
+		path = Parser.unquote(path);
 		if (!path || path === "this")
 			return new Optional(source);
 

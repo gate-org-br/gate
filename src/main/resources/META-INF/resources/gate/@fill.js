@@ -2,10 +2,12 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import Parser from './parser.js';
 import DataURL from './data-url.js';
 import Extractor from './extractor.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+
 
 window.addEventListener("@fill", function (event)
 {
@@ -28,7 +30,7 @@ window.addEventListener("@fill", function (event)
 			let result = DataURL.toJSON(dataURL);
 			for (let i = 0; i < parameters.length; i++)
 				if (parameters[i])
-					parameters[i].value = Extractor.value(result, i);
+					parameters[i].value = Parser.unquote(Extractor.value(result, i));
 			event.success(path, dataURL);
 		})
 		.catch(error => event.failure(path, error));

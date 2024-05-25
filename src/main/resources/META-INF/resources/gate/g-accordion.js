@@ -62,7 +62,6 @@ template.innerHTML = `
 /* global customElements */
 
 import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
 
 customElements.define('g-accordion', class extends HTMLElement
@@ -70,7 +69,7 @@ customElements.define('g-accordion', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({ mode: "open" });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		this.addEventListener("click", event =>
@@ -90,7 +89,7 @@ customElements.define('g-accordion', class extends HTMLElement
 		});
 	}
 
-	connectedCallback()
+	connectedCallback ()
 	{
 		if (this.multiple)
 			Array.from(this.querySelectorAll("a[data-expanded], button[data-expanded]"))
@@ -100,12 +99,12 @@ customElements.define('g-accordion', class extends HTMLElement
 
 	}
 
-	get multiple()
+	get multiple ()
 	{
 		return this.hasAttribute("multiple");
 	}
 
-	set multiple(value)
+	set multiple (value)
 	{
 		if (value)
 			this.setAttribute("multiple", "");
@@ -113,7 +112,7 @@ customElements.define('g-accordion', class extends HTMLElement
 			this.removeAttribute("multiple", "");
 	}
 
-	expand(target)
+	expand (target)
 	{
 		if (!target)
 			return;
@@ -142,7 +141,7 @@ customElements.define('g-accordion', class extends HTMLElement
 		div.setAttribute("data-expanded", "");
 	}
 
-	colapse(target)
+	colapse (target)
 	{
 		if (!target)
 			return;

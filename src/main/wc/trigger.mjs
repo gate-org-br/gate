@@ -176,18 +176,18 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-{
-	Array.from(document.querySelectorAll('*'))
-		.filter(e => e.hasAttribute("data-trigger")
-				|| e.hasAttribute("data-method")
-				|| e.hasAttribute("data-action")
-				|| e.hasAttribute("data-target"))
-		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+	{
+		Array.from(document.querySelectorAll('*'))
+			.filter(e => e.hasAttribute("data-trigger")
+					|| e.hasAttribute("data-method")
+					|| e.hasAttribute("data-action")
+					|| e.hasAttribute("data-target"))
+			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
 
-	DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
-		e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
-});
+		DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
+			e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
+	});
 
 window.addEventListener("load", function (event)
 {
@@ -221,7 +221,7 @@ window.addEventListener("connected", function (event)
 	if (type === "connected")
 		trigger(event, element);
 	else if (type.match(/^every\([0-9]+\)$/))
-		setInterval(() => trigger(event, element), Number(trigger.slice(6, -1)) * 1000);
+		setInterval(() => trigger(event, element), Number(type.slice(6, -1)) * 1000);
 	else if (type === "drag-and-drop")
 	{
 		Array.from(element.children).forEach(e =>

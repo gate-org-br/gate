@@ -62,7 +62,6 @@ class MailDao extends Dao
 			.expression("expiration")
 			.from("Mail")
 			.orderBy("date")
-			.limit(1)
 			.build()
 			.connect(getLink())
 			.fetchEntityList(Mail.class);

@@ -118,13 +118,8 @@ public class Messenger implements ServletContextListener
 
 	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		CheckedOptional.of(MessageException.class, control.server()).ifPresent​(server ->
-		{
-			if (server.getUsername() != null)
-				post(server.getUsername(), receiver, mail);
-			else
-				logger.info("Attempt to send a message without specifying the sender");
-		});
+		CheckedOptional.of(MessageException.class, control.server())
+			.ifPresent​(server -> post(server.getUsername(), receiver, mail));
 	}
 
 	public List<Mail> search() throws MessageException

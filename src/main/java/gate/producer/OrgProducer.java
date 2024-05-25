@@ -60,7 +60,6 @@ public class OrgProducer implements Serializable
 					return Select.expression("orgID")
 						.expression("name")
 						.expression("description")
-						.expression("authenticators")
 						.expression("sun__min")
 						.expression("sun__max")
 						.expression("mon__min")

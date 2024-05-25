@@ -57,6 +57,14 @@ customElements.define("g-tabbar", class extends HTMLElement
 			.flatMap(e => Array.from(e.childNodes))
 			.filter(e => e.nodeType === Node.TEXT_NODE)
 			.forEach(e => e.parentNode.appendChild(e));
+
+		let selected = Array.from(this.children)
+			.filter(e => window.location.href === (e.href || e.formaction))[0];
+		if (!selected)
+			selected = Array.from(this.children)
+				.filter(e => window.location.href.startsWith(e.href || e.formaction))[0];
+		if (selected)
+			selected.setAttribute("aria-selected", "aria-selected");
 	}
 
 	update()

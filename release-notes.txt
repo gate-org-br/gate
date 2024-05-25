@@ -41,10 +41,10 @@ The padding is now applied automatically
 
 data-filter, data-sortable only works now inside g-tables
 
-input class="Date" replaced by input is='g-date-picker'
-input class="DateInterval" replaced by input is='g-date-interval-picker'
-input class="DateTime" replaced by input is='g-date-time-picker'
-input class="DateTimeInterval" replaced by input is='g-date-time-interval-picker'
+input class="Date" replaced by input is='g-date-input'
+input class="DateInterval" replaced by input is='g-date-interval-input'
+input class="DateTime" replaced by input is='g-date-time-input'
+input class="DateTimeInterval" replaced by input is='g-date-time-interval-input'
 
 g-icon-pane removed
 g-desk-pane small class added to replace the removed g-icon-pane

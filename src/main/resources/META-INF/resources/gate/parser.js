@@ -26,7 +26,7 @@ function parameters(lexer)
 			else if (lexer.token[0] === "'"
 				|| lexer.token[0] === "`"
 				|| lexer.token[0] === '"')
-				result.push(lexer.consume().slice(1, -1));
+				result.push(lexer.consume());
 			else
 			{
 				let value = '';
