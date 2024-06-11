@@ -5,7 +5,9 @@ import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.authenticator.DatabaseAuthenticator;
 import gate.authenticator.LDAPAuthenticator;
+import gate.authenticator.LDAPWithDatabaseFallbackAuthenticator;
 import gate.authenticator.OIDCAuthenticator;
+import gate.entity.App;
 import gate.entity.Org;
 import gate.util.SystemProperty;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,6 +29,10 @@ public class AuthenticatorProducer implements Serializable
 	Org org;
 
 	@Inject
+	@Current
+	App app;
+
+	@Inject
 	GateControl control;
 
 	@Current
@@ -35,16 +41,21 @@ public class AuthenticatorProducer implements Serializable
 	@Named("authenticator")
 	public Authenticator get()
 	{
-		return switch (SystemProperty.get("gate.auth.type").orElse("db"))
+		return switch (SystemProperty.get(app + ".auth.type")
+			.or(() -> SystemProperty.get("gate.auth.type"))
+			.orElse("database"))
 		{
-			case "db" ->
+			case "database" ->
 				DatabaseAuthenticator.of(control);
 
 			case "ldap" ->
-				LDAPAuthenticator.of(control);
+				LDAPAuthenticator.of(app.getId().toLowerCase(), control);
 
 			case "oidc" ->
-				OIDCAuthenticator.of(control);
+				OIDCAuthenticator.of(app.getId().toLowerCase(), control);
+
+			case "ldap-with-database-fallback" ->
+				LDAPWithDatabaseFallbackAuthenticator.of(app.getId().toLowerCase(), control);
 
 			default ->
 				DatabaseAuthenticator.of(control);

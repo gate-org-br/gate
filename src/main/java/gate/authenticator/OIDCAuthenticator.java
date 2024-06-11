@@ -34,89 +34,20 @@ public class OIDCAuthenticator implements Authenticator
 	private final GateControl control;
 	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
 
-	private final Cache<String> provider = Cache.of(() -> SystemProperty.get("gate.auth.oidc.provider")
-		.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.provider system property")));
-
-	private final Cache<String> clientId = Cache.of(() -> SystemProperty.get("gate.auth.oidc.client_id")
-		.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property")));
-
-	private final Cache<String> clientSecret = Cache.of(() -> SystemProperty.get("gate.auth.oidc.client_secret")
-		.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_secret system property")));
-
-	private final Cache<String> redirectUri = Cache.of(() -> SystemProperty.get("gate.auth.oidc.redirect_uri").orElse("${server}/Gate"));
-
-	private final Cache<String> scope = Cache
-		.of(() -> SystemProperty.get("gate.auth.oidc.scope").orElse("openid email profile"));
-
-	private final Cache<String> configurationEndpoint = Cache
-		.of(() -> SystemProperty.get("gate.auth.oidc.configuration_endpoint")
-		.orElseGet(() -> provider.get() + "/.well-known/openid-configuration"));
-
-	private final Cache<String> userId = Cache.of(() -> SystemProperty.get("gate.auth.oidc.user_id").orElse("email"));
-
-	private final Cache<JsonObject> configuration = Cache.of(() ->
-	{
-		try
-		{
-			return new URL(configurationEndpoint.get())
-				.get()
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
-		} catch (IOException ex)
-		{
-			throw new AuthenticatorException(ex);
-		}
-	});
-
-	private final Cache<String> authorizationEndpoint = Cache.of(() -> SystemProperty
-		.get("gate.auth.oidc.authorization_endpoint")
-		.orElseGet(() -> configuration.get().getString("authorization_endpoint").orElseThrow(
-		() -> new AuthenticatorException("Error trying to get authorization_endpoint from provider"))));
-
-	private final Cache<String> tokenEndpoint = Cache.of(() -> SystemProperty.get("gate.auth.oidc.token_endpoint")
-		.orElseGet(() -> configuration.get().getString("token_endpoint").orElseThrow(
-		() -> new AuthenticatorException("Error trying to get token_endpoint from provider"))));
-
-	private final Cache<String> userInfoEndpoint = Cache.of(() -> SystemProperty.get("gate.auth.oidc.userinfo_endpoint")
-		.orElseGet(() -> configuration.get().getString("userinfo_endpoint").orElseThrow(
-		() -> new AuthenticatorException("Error trying to get userinfo_endpoint from provider"))));
-
-	private final Cache<String> jwksUri = Cache.of(() -> SystemProperty.get("gate.auth.oidc.jwks_uri")
-		.orElseGet(() -> configuration.get().getString("jwks_uri")
-		.orElseThrow(() -> new AuthenticatorException("Error trying to get jwks_uri from provider"))));
-
-	private final Cache<String> logoutUri = Cache
-		.of(() -> SystemProperty.get("gate.auth.oidc.logout_uri").orElse(null));
-
-	private final Cache<PublicKey> publicKey = Cache.of(() ->
-	{
-		try
-		{
-			JsonObject object = new URL(jwksUri.get())
-				.get()
-				.readJsonObject()
-				.flatMap(e -> e.getJsonArray("keys"))
-				.flatMap(e -> e.stream().findFirst())
-				.map(e -> (JsonObject) e)
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
-
-			BigInteger modulos = object.getString("n")
-				.map(Base64.getUrlDecoder()::decode)
-				.map(e -> new BigInteger(1, e))
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key modulus from auth provider"));
-
-			BigInteger exponent = object.getString("e")
-				.map(Base64.getUrlDecoder()::decode)
-				.map(e -> new BigInteger(1, e))
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key exponent from auth provider"));
-
-			RSAPublicKeySpec spec = new RSAPublicKeySpec(modulos, exponent);
-			return KeyFactory.getInstance("RSA").generatePublic(spec);
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException ex)
-		{
-			throw new AuthenticatorException(ex);
-		}
-	});
+	private final Cache<String> provider;
+	private final Cache<String> clientId;
+	private final Cache<String> clientSecret;
+	private final Cache<String> redirectUri;
+	private final Cache<String> scope;
+	private final Cache<String> configurationEndpoint;
+	private final Cache<String> userId;
+	private final Cache<JsonObject> configuration;
+	private final Cache<String> authorizationEndpoint;
+	private final Cache<String> tokenEndpoint;
+	private final Cache<String> userInfoEndpoint;
+	private final Cache<String> jwksUri;
+	private final Cache<String> logoutUri;
+	private final Cache<PublicKey> publicKey;
 
 	private String getCallback(ScreenServletRequest request)
 	{
@@ -127,14 +58,111 @@ public class OIDCAuthenticator implements Authenticator
 					request.getLocalPort()));
 	}
 
-	private OIDCAuthenticator(GateControl control)
+	private OIDCAuthenticator(String app, GateControl control)
 	{
 		this.control = control;
+
+		clientId = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.client_id")
+			.or(() -> SystemProperty.get("gate.auth.oidc.client_id"))
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property")));
+
+		clientSecret = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.client_secret")
+			.or(() -> SystemProperty.get("gate.auth.oidc.client_secret"))
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property")));
+
+		provider = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.provider")
+			.or(() -> SystemProperty.get("gate.auth.oidc.provider"))
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.provider system property")));
+
+		configurationEndpoint = Cache
+			.of(() -> SystemProperty.get(app + ".auth.oidc.configuration_endpoint")
+			.or(() -> SystemProperty.get("gate.auth.oidc.configuration_endpoint"))
+			.orElseGet(() -> provider.get() + "/.well-known/openid-configuration"));
+
+		redirectUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.redirect_uri")
+			.or(() -> SystemProperty.get("gate.auth.oidc.redirect_uri"))
+			.orElse("${server}/Gate"));
+
+		userId = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.user_id")
+			.or(() -> SystemProperty.get("gate.auth.oidc.user_id"))
+			.orElse("email"));
+
+		scope = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.scope")
+			.or(() -> SystemProperty.get("gate.auth.oidc.scope"))
+			.orElse("openid email profile"));
+
+		configuration = Cache.of(() ->
+		{
+			try
+			{
+				return new URL(configurationEndpoint.get())
+					.get()
+					.readJsonObject()
+					.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
+			} catch (IOException ex)
+			{
+				throw new AuthenticatorException(ex);
+			}
+		});
+
+		authorizationEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.authorization_endpoint")
+			.or(() -> SystemProperty.get("gate.auth.oidc.authorization_endpoint"))
+			.orElseGet(() -> configuration.get().getString("authorization_endpoint")
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get authorization_endpoint from provider"))));
+
+		tokenEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.token_endpoint")
+			.or(() -> SystemProperty.get("gate.auth.oidc.token_endpoint"))
+			.orElseGet(() -> configuration.get().getString("token_endpoint")
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get token_endpoint from provider"))));
+
+		userInfoEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.userinfo_endpoint")
+			.or(() -> SystemProperty.get("gate.auth.oidc.userinfo_endpoint"))
+			.orElseGet(() -> configuration.get().getString("userinfo_endpoint")
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get userinfo_endpoint from provider"))));
+
+		jwksUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.jwks_uri")
+			.or(() -> SystemProperty.get("gate.auth.oidc.jwks_uri"))
+			.orElseGet(() -> configuration.get().getString("jwks_uri")
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get jwks_uri from provider"))));
+
+		logoutUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.logout_uri")
+			.or(() -> SystemProperty.get("gate.auth.oidc.logout_uri"))
+			.orElse(null));
+
+		publicKey = Cache.of(() ->
+		{
+			try
+			{
+				JsonObject object = new URL(jwksUri.get())
+					.get()
+					.readJsonObject()
+					.flatMap(e -> e.getJsonArray("keys"))
+					.flatMap(e -> e.stream().findFirst())
+					.map(e -> (JsonObject) e)
+					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+
+				BigInteger modulos = object.getString("n")
+					.map(Base64.getUrlDecoder()::decode)
+					.map(e -> new BigInteger(1, e))
+					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key modulus from auth provider"));
+
+				BigInteger exponent = object.getString("e")
+					.map(Base64.getUrlDecoder()::decode)
+					.map(e -> new BigInteger(1, e))
+					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key exponent from auth provider"));
+
+				RSAPublicKeySpec spec = new RSAPublicKeySpec(modulos, exponent);
+				return KeyFactory.getInstance("RSA").generatePublic(spec);
+			} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException ex)
+			{
+				throw new AuthenticatorException(ex);
+			}
+		});
 	}
 
-	public static OIDCAuthenticator of(GateControl control)
+	public static OIDCAuthenticator of(String app, GateControl control)
 	{
-		return new OIDCAuthenticator(control);
+		return new OIDCAuthenticator(app, control);
 	}
 
 	@Override
@@ -225,9 +253,11 @@ public class OIDCAuthenticator implements Authenticator
 		BearerAuthorization authorization = request.getBearerAuthorization()
 			.orElseThrow(() -> new BadRequestException("Credentials not supplied"));
 		var jwt = Jwts.parser().verifyWith(publicKey.get()).build().parse(authorization.token());
+
 		if (jwt.getPayload() instanceof Claims claims
 			&& claims.containsKey("sub"))
-			return control.select(claims.get("sub", String.class));
+			return control.select(claims.get("sub", String.class
+			));
 		throw new AuthenticationException("Error trying to get subject from auth provider");
 	}
 

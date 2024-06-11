@@ -3,12 +3,13 @@ package gate.authenticator;
 import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticatorException;
+import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
+import gate.type.MD5;
 import gate.util.SystemProperty;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
@@ -22,19 +23,18 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-public class LDAPAuthenticator implements Authenticator
+public class LDAPWithDatabaseFallbackAuthenticator implements Authenticator
 {
 
 	private final GateControl control;
 
 	private final String server;
+	private final String securityProtocol;
 	private final String clientUsername;
 	private final String clientPassword;
-	private final String securityProtocol;
 
-	private LDAPAuthenticator(GateControl control,
-		String server, String securityProtocol,
-		String clientUsername, String clientPassword)
+	private LDAPWithDatabaseFallbackAuthenticator(GateControl control,
+		String server, String securityProtocol, String clientUsername, String clientPassword)
 	{
 		this.control = control;
 		this.server = server;
@@ -43,7 +43,7 @@ public class LDAPAuthenticator implements Authenticator
 		this.clientPassword = clientPassword;
 	}
 
-	public static LDAPAuthenticator of(String app, GateControl control)
+	public static LDAPWithDatabaseFallbackAuthenticator of(String app, GateControl control)
 	{
 		String server = SystemProperty.get(app + ".auth.ldap.server")
 			.or(() -> SystemProperty.get("gate.auth.ldap.server"))
@@ -53,15 +53,15 @@ public class LDAPAuthenticator implements Authenticator
 			.or(() -> SystemProperty.get("gate.auth.ldap.security_protocol"))
 			.orElse(null);
 
-		String cilentUsername = SystemProperty.get(app + ".auth.ldap.client_username")
-			.or(() -> SystemProperty.get("gate.auth.ldap.client_username"))
+		String username = SystemProperty.get(app + ".auth.ldap.client_username")
+			.or(() -> SystemProperty.get("gate.auth.ldap.username"))
 			.orElse(null);
 
-		String clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
-			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
+		String password = SystemProperty.get(app + ".auth.ldap.client_password")
+			.or(() -> SystemProperty.get("gate.auth.ldap.password"))
 			.orElse(null);
 
-		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword);
+		return new LDAPWithDatabaseFallbackAuthenticator(control, server, securityProtocol, username, password);
 	}
 
 	@Override
@@ -91,7 +91,8 @@ public class LDAPAuthenticator implements Authenticator
 		return new InitialDirContext(parameters);
 	}
 
-	private String getUniqueID(String username, String password, BasicAuthorization authorization) throws NamingException
+	private String getUniqueID(String username, String password,
+		BasicAuthorization authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -131,9 +132,17 @@ public class LDAPAuthenticator implements Authenticator
 			{
 				String dn = getUniqueID(clientUsername, clientPassword, authorization);
 				if (dn == null)
-					throw new InvalidUsernameException();
-				getDirContext(dn, authorization.password())
-					.close();
+				{
+					if (MD5.digest(authorization.username()).toString()
+						.equals(user.getPassword()))
+						throw new DefaultPasswordException();
+
+					if (!MD5.digest(authorization.password())
+						.toString().equals(user.getPassword()))
+						throw new InvalidPasswordException();
+				} else
+					getDirContext(dn, authorization.password())
+						.close();
 			} else
 				getDirContext(authorization.username(), authorization.password())
 					.close();

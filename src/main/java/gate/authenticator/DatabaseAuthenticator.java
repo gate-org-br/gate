@@ -49,10 +49,11 @@ public class DatabaseAuthenticator implements Authenticator
 		if (authorization == null)
 			return null;
 
-		if (authorization.username().equals(authorization.password()))
-			throw new DefaultPasswordException();
-
 		User user = control.select(authorization.username());
+
+		if (MD5.digest(authorization.username()).toString()
+			.equals(user.getPassword()))
+			throw new DefaultPasswordException();
 
 		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))
 			throw new InvalidPasswordException();
