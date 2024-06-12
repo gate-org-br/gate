@@ -31,16 +31,19 @@ public class LDAPAuthenticator implements Authenticator
 	private final String clientUsername;
 	private final String clientPassword;
 	private final String securityProtocol;
+	private final String rootContext;
 
 	private LDAPAuthenticator(GateControl control,
 		String server, String securityProtocol,
-		String clientUsername, String clientPassword)
+		String clientUsername, String clientPassword,
+		String rootContext)
 	{
 		this.control = control;
 		this.server = server;
 		this.securityProtocol = securityProtocol;
 		this.clientUsername = clientUsername;
 		this.clientPassword = clientPassword;
+		this.rootContext = rootContext;
 	}
 
 	public static LDAPAuthenticator of(String app, GateControl control)
@@ -61,7 +64,11 @@ public class LDAPAuthenticator implements Authenticator
 			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
 			.orElse(null);
 
-		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword);
+		String rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
+			.or(() -> SystemProperty.get("gate.auth.ldap.root_context"))
+			.orElse("");
+
+		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword, rootContext);
 	}
 
 	@Override
@@ -99,7 +106,7 @@ public class LDAPAuthenticator implements Authenticator
 
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			NamingEnumeration<SearchResult> enumeration = serverContext.search("", "(|(dn={0})(cn={1})(mail={2}))",
+			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
 				new Object[]
 				{
 					authorization.username(), authorization.username(), authorization.username()

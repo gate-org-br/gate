@@ -29,18 +29,24 @@ public class LDAPWithDatabaseFallbackAuthenticator implements Authenticator
 	private final GateControl control;
 
 	private final String server;
-	private final String securityProtocol;
 	private final String clientUsername;
 	private final String clientPassword;
+	private final String securityProtocol;
+	private final String rootContext;
 
 	private LDAPWithDatabaseFallbackAuthenticator(GateControl control,
-		String server, String securityProtocol, String clientUsername, String clientPassword)
+		String server,
+		String securityProtocol,
+		String clientUsername,
+		String clientPassword,
+		String rootContext)
 	{
 		this.control = control;
 		this.server = server;
 		this.securityProtocol = securityProtocol;
 		this.clientUsername = clientUsername;
 		this.clientPassword = clientPassword;
+		this.rootContext = rootContext;
 	}
 
 	public static LDAPWithDatabaseFallbackAuthenticator of(String app, GateControl control)
@@ -53,15 +59,19 @@ public class LDAPWithDatabaseFallbackAuthenticator implements Authenticator
 			.or(() -> SystemProperty.get("gate.auth.ldap.security_protocol"))
 			.orElse(null);
 
-		String username = SystemProperty.get(app + ".auth.ldap.client_username")
-			.or(() -> SystemProperty.get("gate.auth.ldap.username"))
+		String cilentUsername = SystemProperty.get(app + ".auth.ldap.client_username")
+			.or(() -> SystemProperty.get("gate.auth.ldap.client_username"))
 			.orElse(null);
 
-		String password = SystemProperty.get(app + ".auth.ldap.client_password")
-			.or(() -> SystemProperty.get("gate.auth.ldap.password"))
+		String clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
+			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
 			.orElse(null);
 
-		return new LDAPWithDatabaseFallbackAuthenticator(control, server, securityProtocol, username, password);
+		String rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
+			.or(() -> SystemProperty.get("gate.auth.ldap.root_context"))
+			.orElse("");
+
+		return new LDAPWithDatabaseFallbackAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword, rootContext);
 	}
 
 	@Override
@@ -100,7 +110,7 @@ public class LDAPWithDatabaseFallbackAuthenticator implements Authenticator
 
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			NamingEnumeration<SearchResult> enumeration = serverContext.search("", "(|(dn={0})(cn={1})(mail={2}))",
+			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
 				new Object[]
 				{
 					authorization.username(), authorization.username(), authorization.username()

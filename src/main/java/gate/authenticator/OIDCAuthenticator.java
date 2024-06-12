@@ -34,13 +34,13 @@ public class OIDCAuthenticator implements Authenticator
 	private final GateControl control;
 	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
 
-	private final Cache<String> provider;
-	private final Cache<String> clientId;
-	private final Cache<String> clientSecret;
-	private final Cache<String> redirectUri;
-	private final Cache<String> scope;
-	private final Cache<String> configurationEndpoint;
-	private final Cache<String> userId;
+	private final String provider;
+	private final String clientId;
+	private final String clientSecret;
+	private final String redirectUri;
+	private final String scope;
+	private final String configurationEndpoint;
+	private final String userId;
 	private final Cache<JsonObject> configuration;
 	private final Cache<String> authorizationEndpoint;
 	private final Cache<String> tokenEndpoint;
@@ -51,51 +51,49 @@ public class OIDCAuthenticator implements Authenticator
 
 	private String getCallback(ScreenServletRequest request)
 	{
-		return redirectUri.get()
-			.replace("${server}", "%s://%s:%d"
-				.formatted(request.getScheme(),
-					request.getLocalAddr(),
-					request.getLocalPort()));
+		return redirectUri.replace("${server}", "%s://%s:%d"
+			.formatted(request.getScheme(),
+				request.getLocalAddr(),
+				request.getLocalPort()));
 	}
 
 	private OIDCAuthenticator(String app, GateControl control)
 	{
 		this.control = control;
 
-		clientId = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.client_id")
+		clientId = SystemProperty.get(app + ".auth.oidc.client_id")
 			.or(() -> SystemProperty.get("gate.auth.oidc.client_id"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property")));
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property"));
 
-		clientSecret = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.client_secret")
+		clientSecret = SystemProperty.get(app + ".auth.oidc.client_secret")
 			.or(() -> SystemProperty.get("gate.auth.oidc.client_secret"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property")));
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property"));
 
-		provider = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.provider")
+		provider = SystemProperty.get(app + ".auth.oidc.provider")
 			.or(() -> SystemProperty.get("gate.auth.oidc.provider"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.provider system property")));
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.provider system property"));
 
-		configurationEndpoint = Cache
-			.of(() -> SystemProperty.get(app + ".auth.oidc.configuration_endpoint")
+		configurationEndpoint = SystemProperty.get(app + ".auth.oidc.configuration_endpoint")
 			.or(() -> SystemProperty.get("gate.auth.oidc.configuration_endpoint"))
-			.orElseGet(() -> provider.get() + "/.well-known/openid-configuration"));
+			.orElseGet(() -> provider + "/.well-known/openid-configuration");
 
-		redirectUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.redirect_uri")
+		redirectUri = SystemProperty.get(app + ".auth.oidc.redirect_uri")
 			.or(() -> SystemProperty.get("gate.auth.oidc.redirect_uri"))
-			.orElse("${server}/Gate"));
+			.orElse("${server}/Gate");
 
-		userId = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.user_id")
+		userId = SystemProperty.get(app + ".auth.oidc.user_id")
 			.or(() -> SystemProperty.get("gate.auth.oidc.user_id"))
-			.orElse("email"));
+			.orElse("email");
 
-		scope = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.scope")
+		scope = SystemProperty.get(app + ".auth.oidc.scope")
 			.or(() -> SystemProperty.get("gate.auth.oidc.scope"))
-			.orElse("openid email profile"));
+			.orElse("openid email profile");
 
 		configuration = Cache.of(() ->
 		{
 			try
 			{
-				return new URL(configurationEndpoint.get())
+				return new URL(configurationEndpoint)
 					.get()
 					.readJsonObject()
 					.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
@@ -172,9 +170,9 @@ public class OIDCAuthenticator implements Authenticator
 
 		return new URL(authorizationEndpoint.get())
 			.setParameter("response_type", "code")
-			.setParameter("client_id", clientId.get())
+			.setParameter("client_id", clientId)
 			.setParameter("redirect_uri", getCallback(request))
-			.setParameter("scope", scope.get())
+			.setParameter("scope", scope)
 			.setParameter("state", session)
 			.toString();
 	}
@@ -215,9 +213,9 @@ public class OIDCAuthenticator implements Authenticator
 			.post(new Parameters()
 				.set("grant_type", "authorization_code")
 				.set("code", code)
-				.set("scope", scope.get())
-				.set("client_id", clientId.get())
-				.set("client_secret", clientSecret.get())
+				.set("scope", scope)
+				.set("client_id", clientId)
+				.set("client_secret", clientSecret)
 				.set("redirect_uri", getCallback(request)))
 			.readJsonObject()
 			.orElseThrow(() -> new AuthenticationException("Error trying to get token from auth provider"));
@@ -229,8 +227,8 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
 
 			if (jwt.getPayload() instanceof Claims claims
-				&& claims.containsKey(userId.get()))
-				return control.select(claims.get(userId.get(), String.class));
+				&& claims.containsKey(userId))
+				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens
@@ -243,7 +241,7 @@ public class OIDCAuthenticator implements Authenticator
 			.readJsonObject()
 			.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
 
-		return control.select(userInfo.getString(userId.get())
+		return control.select(userInfo.getString(userId)
 			.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
 	}
 
@@ -269,7 +267,7 @@ public class OIDCAuthenticator implements Authenticator
 			return null;
 
 		return new URL(url)
-			.setParameter("client_id", clientId.get())
+			.setParameter("client_id", clientId)
 			.setParameter("post_logout_redirect_uri", request.getRequestURL().toString())
 			.toString();
 	}
