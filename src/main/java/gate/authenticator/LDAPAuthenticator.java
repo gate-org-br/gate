@@ -6,7 +6,7 @@ import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import gate.util.SystemProperty;
@@ -25,25 +25,57 @@ import javax.servlet.http.HttpServletResponse;
 public class LDAPAuthenticator implements Authenticator
 {
 
-	private final String server;
 	private final GateControl control;
+
+	private final String server;
+	private final String clientUsername;
+	private final String clientPassword;
+	private final String securityProtocol;
+	private final String rootContext;
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	private LDAPAuthenticator(GateControl control, String server)
+	private LDAPAuthenticator(GateControl control,
+		String server, String securityProtocol,
+		String clientUsername, String clientPassword,
+		String rootContext)
 	{
-		this.server = server;
 		this.control = control;
+		this.server = server;
+		this.securityProtocol = securityProtocol;
+		this.clientUsername = clientUsername;
+		this.clientPassword = clientPassword;
+		this.rootContext = rootContext;
 	}
 
-	public static LDAPAuthenticator of(GateControl control, String server)
+	public static LDAPAuthenticator of(GateControl control, String app, String server)
 	{
-		return new LDAPAuthenticator(control, server);
+
+		String securityProtocol = SystemProperty.get(app + ".auth.ldap.security_protocol")
+			.or(() -> SystemProperty.get("gate.auth.ldap.security_protocol"))
+			.orElse(null);
+
+		String cilentUsername = SystemProperty.get(app + ".auth.ldap.client_username")
+			.or(() -> SystemProperty.get("gate.auth.ldap.client_username"))
+			.orElse(null);
+
+		String clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
+			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
+			.orElse(null);
+
+		String rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
+			.or(() -> SystemProperty.get("gate.auth.ldap.root_context"))
+			.orElse("");
+
+		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword, rootContext);
 	}
 
-	public static LDAPAuthenticator of(GateControl control)
+	public static LDAPAuthenticator of(GateControl control, String app)
 	{
-		return new LDAPAuthenticator(control, SystemProperty.get("gate.auth.ldap.server")
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.ldap.server system property")));
+		String server = SystemProperty.get(app + ".auth.ldap.server")
+			.or(() -> SystemProperty.get("gate.auth.ldap.server"))
+			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.ldap.server system property"));
+
+		return of(control, app, server);
 	}
 
 	@Override
@@ -52,11 +84,46 @@ public class LDAPAuthenticator implements Authenticator
 		return null;
 	}
 
+	private DirContext getDirContext(String username, String password) throws NamingException
+	{
+		@SuppressWarnings("UseOfObsoleteCollectionType")
+		Hashtable<String, String> parameters = new Hashtable<>();
+		parameters.put(Context.SECURITY_AUTHENTICATION, "simple");
+		parameters.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+
+		parameters.put(Context.PROVIDER_URL, server);
+		parameters.put(Context.SECURITY_PRINCIPAL, username);
+		parameters.put(Context.SECURITY_CREDENTIALS, password);
+		parameters.put(Context.SECURITY_PROTOCOL, securityProtocol);
+
+		return new InitialDirContext(parameters);
+	}
+
+	private String getUniqueID(String username, String password, BasicAuthorization authorization) throws NamingException
+	{
+		DirContext serverContext = getDirContext(username, password);
+		try
+		{
+
+			SearchControls controls = new SearchControls();
+			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
+				new Object[]
+				{
+					authorization.username(), authorization.username(), authorization.username()
+				}, controls);
+
+			return enumeration.hasMore() ? enumeration.next().getNameInNamespace() : null;
+		} finally
+		{
+			serverContext.close();
+		}
+	}
+
 	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-		throws AuthenticatorException, InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException, gate.error.AuthenticationException
+		throws gate.error.AuthenticationException, HierarchyException
 	{
-
 		var authorization = request.getBasicAuthorization().orElse(null);
 
 		if (authorization == null)
@@ -66,50 +133,24 @@ public class LDAPAuthenticator implements Authenticator
 
 		try
 		{
-			Hashtable<String, String> parameters = new Hashtable<>();
-			parameters.put(Context.PROVIDER_URL, server);
-			parameters.put(Context.SECURITY_AUTHENTICATION, "none");
-			parameters.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-
-			DirContext serverContext = new InitialDirContext(parameters);
-			try
+			if (clientUsername != null && clientPassword != null)
 			{
-				SearchControls controls = new SearchControls();
-				controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-				NamingEnumeration<SearchResult> enumeration
-					= serverContext.search("", "(|(cn={0})(mail={1}))", new Object[]
-					{
-						authorization.username(), authorization.username()
-				}, controls);
-
-				if (enumeration.hasMore())
+				String dn = getUniqueID(clientUsername, clientPassword, authorization);
+				if (dn == null)
 				{
-					try
-					{
-						String dn = enumeration.next().getNameInNamespace();
-						parameters.put(Context.SECURITY_PRINCIPAL, dn);
-						parameters.put(Context.SECURITY_CREDENTIALS, authorization.password());
-						parameters.put(Context.SECURITY_AUTHENTICATION, "simple");
-						DirContext authContext = new InitialDirContext(parameters);
-						authContext.close();
-					} catch (AuthenticationException ex)
-					{
-						throw new InvalidPasswordException();
-					}
-				} else
-				{
-					if (authorization.username().equals(authorization.password()))
+					if (MD5.digest(authorization.username()).toString()
+						.equals(user.getPassword()))
 						throw new DefaultPasswordException();
 
 					if (!MD5.digest(authorization.password())
 						.toString().equals(user.getPassword()))
 						throw new InvalidPasswordException();
-				}
-
-			} finally
-			{
-				serverContext.close();
-			}
+				} else
+					getDirContext(dn, authorization.password())
+						.close();
+			} else
+				getDirContext(authorization.username(), authorization.password())
+					.close();
 
 			return user;
 

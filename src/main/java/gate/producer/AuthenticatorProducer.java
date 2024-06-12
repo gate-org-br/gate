@@ -6,6 +6,7 @@ import gate.authenticator.Authenticator;
 import gate.authenticator.DatabaseAuthenticator;
 import gate.authenticator.LDAPAuthenticator;
 import gate.authenticator.OIDCAuthenticator;
+import gate.entity.App;
 import gate.entity.Org;
 import gate.util.SystemProperty;
 import java.io.Serializable;
@@ -26,6 +27,10 @@ public class AuthenticatorProducer implements Serializable
 	Org org;
 
 	@Inject
+	@Current
+	App app;
+
+	@Inject
 	GateControl control;
 
 	@Current
@@ -39,10 +44,10 @@ public class AuthenticatorProducer implements Serializable
 				return DatabaseAuthenticator.of(control);
 
 			case "ldap":
-				return LDAPAuthenticator.of(control);
+				return LDAPAuthenticator.of(control, app.getId());
 
 			case "oidc":
-				return OIDCAuthenticator.of(control);
+				return OIDCAuthenticator.of(control, app.getId());
 
 			default:
 			case "default":
