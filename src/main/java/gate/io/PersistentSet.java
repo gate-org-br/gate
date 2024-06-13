@@ -286,7 +286,10 @@ public class PersistentSet<T> implements Set<T>
 		try
 		{
 			if (!Files.exists(path))
+			{
+				Files.createDirectories(path.getParent());
 				Files.createFile(path);
+			}
 
 			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND))
 			{

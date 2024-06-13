@@ -265,7 +265,7 @@ public class Database<T> implements Observable<T>
 		try
 		{
 			if (Files.notExists(folder))
-				Files.createDirectory(folder);
+				Files.createDirectories(folder);
 
 			Map<String, Set<T>> tables = new HashMap<>();
 			Files.list(folder).forEach(path -> tables.put(path.getFileName().toString(), PersistentSet.of(type, path)));
