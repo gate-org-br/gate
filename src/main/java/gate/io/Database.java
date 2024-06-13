@@ -1,5 +1,7 @@
 package gate.io;
 
+import gate.io.Observable;
+import gate.io.Observer;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
@@ -72,75 +74,75 @@ public class Database<T> implements Observable<T>
 	public List<T> search(Predicate<T> predicate)
 	{
 		return tables.values().stream().flatMap(Set::stream).filter(predicate)
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public List<T> search(Comparator<T> comparator)
 	{
 		return tables.values().stream().flatMap(Set::stream).sorted(comparator)
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public List<T> search(Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.values().stream().flatMap(Set::stream).filter(predicate).sorted(comparator)
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 	}
 
 	public Optional<T> select(String tableName)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.flatMap(e -> e.getValue().stream().findAny());
+			.flatMap(e -> e.getValue().stream().findAny());
 	}
 
 	public Optional<T> select(String tableName, Predicate<T> predicate)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.flatMap(e -> e.getValue().stream().filter(predicate).findAny());
+			.flatMap(e -> e.getValue().stream().filter(predicate).findAny());
 	}
 
 	public Optional<T> select(String tableName, Comparator<T> comparator)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.flatMap(e -> e.getValue().stream().min(comparator));
+			.flatMap(e -> e.getValue().stream().min(comparator));
 	}
 
 	public Optional<T> select(String tableName, Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.flatMap(e -> e.getValue().stream().filter(predicate).sorted(comparator).findAny());
+			.flatMap(e -> e.getValue().stream().filter(predicate).sorted(comparator).findAny());
 	}
 
 	public List<T> search(String tableName)
 	{
 		return tables.containsKey(tableName) ? new ArrayList<>(tables.get(tableName))
-				: Collections.emptyList();
+			: Collections.emptyList();
 	}
 
 	public List<T> search(String tableName, Predicate<T> predicate)
 	{
 		return tables.containsKey(tableName)
-				? tables.get(tableName).stream().filter(predicate).collect(Collectors.toList())
-				: Collections.emptyList();
+			? tables.get(tableName).stream().filter(predicate).collect(Collectors.toList())
+			: Collections.emptyList();
 	}
 
 	public List<T> search(String tableName, Comparator<T> comparator)
 	{
 		return tables.containsKey(tableName)
-				? tables.get(tableName).stream().sorted(comparator).collect(Collectors.toList())
-				: Collections.emptyList();
+			? tables.get(tableName).stream().sorted(comparator).collect(Collectors.toList())
+			: Collections.emptyList();
 	}
 
 	public List<T> search(String tableName, Predicate<T> predicate, Comparator<T> comparator)
 	{
 		return tables.containsKey(tableName) ? tables.get(tableName).stream().filter(predicate)
-				.sorted(comparator).collect(Collectors.toList()) : Collections.emptyList();
+			.sorted(comparator).collect(Collectors.toList()) : Collections.emptyList();
 	}
 
 	public long count(String tableName, Predicate<T> predicate)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.map(e -> e.getValue().stream().filter(predicate).count()).orElse(Long.valueOf(0));
+			.map(e -> e.getValue().stream().filter(predicate).count()).orElse(Long.valueOf(0));
 	}
 
 	public void delete(String tableName, Predicate<T> predicate)
@@ -192,7 +194,7 @@ public class Database<T> implements Observable<T>
 	public void insert(String tableName, Collection<T> values)
 	{
 		Set<T> table = tables.computeIfAbsent(tableName,
-				e -> Collections.synchronizedSet(PersistentSet.of(type, folder.resolve(e))));
+			e -> Collections.synchronizedSet(PersistentSet.of(type, folder.resolve(e))));
 		table.addAll(values);
 		observers.forEach(Observer::onUpdate);
 	}
@@ -232,11 +234,11 @@ public class Database<T> implements Observable<T>
 		try
 		{
 			if (Files.notExists(folder))
-				Files.createDirectory(folder);
+				Files.createDirectories(folder);
 
 			Map<String, Set<T>> tables = new HashMap<>();
 			Files.list(folder).forEach(path -> tables.put(path.getFileName().toString(),
-					PersistentSet.of(type, path)));
+				PersistentSet.of(type, path)));
 			return new Database<>(type, folder, tables);
 		} catch (IOException ex)
 		{

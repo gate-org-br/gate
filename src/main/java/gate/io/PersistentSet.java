@@ -86,7 +86,7 @@ public class PersistentSet<T> implements Set<T>
 	public boolean removeAll(Collection<?> collection)
 	{
 		var elements = collection.stream().filter(e -> type.isAssignableFrom(e.getClass()))
-				.filter(e -> values.contains((T) e)).toList();
+			.filter(e -> values.contains((T) e)).toList();
 
 		if (!elements.isEmpty())
 		{
@@ -282,14 +282,17 @@ public class PersistentSet<T> implements Set<T>
 		try
 		{
 			if (!Files.exists(path))
+			{
+				Files.createDirectories(path.getParent());
 				Files.createFile(path);
+			}
 
 			try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND))
 			{
 				for (Object value : values)
 				{
-					JsonObject line =
-							new JsonObject().setString("a", action).set("v", JsonElement.of(value));
+					JsonObject line
+						= new JsonObject().setString("a", action).set("v", JsonElement.of(value));
 					writer.append(line.toString());
 					writer.newLine();
 				}

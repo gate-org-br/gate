@@ -8,7 +8,6 @@ import gate.authenticator.LDAPAuthenticator;
 import gate.authenticator.LDAPWithDatabaseFallbackAuthenticator;
 import gate.authenticator.OIDCAuthenticator;
 import gate.entity.App;
-import gate.entity.Org;
 import gate.util.SystemProperty;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -23,10 +22,6 @@ import java.io.Serializable;
  */
 public class AuthenticatorProducer implements Serializable
 {
-
-	@Inject
-	@Current
-	Org org;
 
 	@Inject
 	@Current
@@ -49,13 +44,13 @@ public class AuthenticatorProducer implements Serializable
 				DatabaseAuthenticator.of(control);
 
 			case "ldap" ->
-				LDAPAuthenticator.of(app.getId().toLowerCase(), control);
+				LDAPAuthenticator.of(control, app.getId().toLowerCase());
 
 			case "oidc" ->
-				OIDCAuthenticator.of(app.getId().toLowerCase(), control);
+				OIDCAuthenticator.of(control, app.getId().toLowerCase());
 
 			case "ldap-with-database-fallback" ->
-				LDAPWithDatabaseFallbackAuthenticator.of(app.getId().toLowerCase(), control);
+				LDAPWithDatabaseFallbackAuthenticator.of(control, app.getId().toLowerCase());
 
 			default ->
 				DatabaseAuthenticator.of(control);

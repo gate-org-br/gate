@@ -33,42 +33,31 @@ public class LDAPAuthenticator implements Authenticator
 	private final String securityProtocol;
 	private final String rootContext;
 
-	private LDAPAuthenticator(GateControl control,
-		String server, String securityProtocol,
-		String clientUsername, String clientPassword,
-		String rootContext)
+	private final String developer = SystemProperty.get("gate.developer").orElse(null);
+
+	private LDAPAuthenticator(GateControl control, String app)
 	{
 		this.control = control;
-		this.server = server;
-		this.securityProtocol = securityProtocol;
-		this.clientUsername = clientUsername;
-		this.clientPassword = clientPassword;
-		this.rootContext = rootContext;
-	}
-
-	public static LDAPAuthenticator of(String app, GateControl control)
-	{
-		String server = SystemProperty.get(app + ".auth.ldap.server")
+		this.server = SystemProperty.get(app + ".auth.ldap.server")
 			.or(() -> SystemProperty.get("gate.auth.ldap.server"))
 			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.ldap.server system property"));
-
-		String securityProtocol = SystemProperty.get(app + ".auth.ldap.security_protocol")
+		this.securityProtocol = SystemProperty.get(app + ".auth.ldap.security_protocol")
 			.or(() -> SystemProperty.get("gate.auth.ldap.security_protocol"))
 			.orElse(null);
-
-		String cilentUsername = SystemProperty.get(app + ".auth.ldap.client_username")
+		this.clientUsername = SystemProperty.get(app + ".auth.ldap.client_username")
 			.or(() -> SystemProperty.get("gate.auth.ldap.client_username"))
 			.orElse(null);
-
-		String clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
+		this.clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
 			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
 			.orElse(null);
-
-		String rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
+		this.rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
 			.or(() -> SystemProperty.get("gate.auth.ldap.root_context"))
 			.orElse("");
+	}
 
-		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword, rootContext);
+	public static LDAPAuthenticator of(GateControl control, String app)
+	{
+		return new LDAPAuthenticator(control, app);
 	}
 
 	@Override
@@ -128,7 +117,7 @@ public class LDAPAuthenticator implements Authenticator
 			.orElse(null);
 
 		if (authorization == null)
-			return null;
+			return developer != null ? control.select(developer) : null;
 
 		User user = control.select(authorization.username());
 

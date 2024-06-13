@@ -57,7 +57,7 @@ public class OIDCAuthenticator implements Authenticator
 				request.getLocalPort()));
 	}
 
-	private OIDCAuthenticator(String app, GateControl control)
+	private OIDCAuthenticator(GateControl control, String app)
 	{
 		this.control = control;
 
@@ -158,9 +158,9 @@ public class OIDCAuthenticator implements Authenticator
 		});
 	}
 
-	public static OIDCAuthenticator of(String app, GateControl control)
+	public static OIDCAuthenticator of(GateControl control, String app)
 	{
-		return new OIDCAuthenticator(app, control);
+		return new OIDCAuthenticator(control, app);
 	}
 
 	@Override
