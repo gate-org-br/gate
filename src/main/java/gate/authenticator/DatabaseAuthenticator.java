@@ -16,18 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 public class DatabaseAuthenticator implements Authenticator
 {
 
-	private final GateControl control;
-
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	private DatabaseAuthenticator(GateControl control)
+	public DatabaseAuthenticator(Config configuration)
 	{
-		this.control = control;
-	}
 
-	public static DatabaseAuthenticator of(GateControl control)
-	{
-		return new DatabaseAuthenticator(control);
 	}
 
 	@Override
@@ -37,7 +30,7 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(ScreenServletRequest request,
+	public User authenticate(GateControl control, ScreenServletRequest request,
 		HttpServletResponse response)
 		throws AuthenticatorException,
 		InvalidPasswordException,

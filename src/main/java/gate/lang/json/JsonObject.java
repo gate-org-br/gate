@@ -368,7 +368,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 			{
 				if (entry.getValue() != null)
 				{
-					Field field = type.getDeclaredField(entry.getKey());
+					
+					Field field = Reflection.findField(type, entry.getKey())
+						.orElseThrow(() -> new  NoSuchFieldException("No such field %s found on type %s".formatted(entry.getKey(), type.getName())));
+					
 					field.setAccessible(true);
 					field.set(object, entry.getValue().toObject(field.getType(),
 						Reflection.getElementType(field.getGenericType())));

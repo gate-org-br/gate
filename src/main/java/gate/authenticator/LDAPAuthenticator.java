@@ -25,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 public class LDAPAuthenticator implements Authenticator
 {
 
-	private final GateControl control;
-
 	private final String server;
 	private final String clientUsername;
 	private final String clientPassword;
@@ -34,48 +32,19 @@ public class LDAPAuthenticator implements Authenticator
 	private final String rootContext;
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	private LDAPAuthenticator(GateControl control,
-		String server, String securityProtocol,
-		String clientUsername, String clientPassword,
-		String rootContext)
+	public LDAPAuthenticator(Config config)
 	{
-		this.control = control;
+		this(config, config.getProperty("ldap.server")
+			.orElseThrow(() -> new AuthenticatorException("Missing ldap.server")));
+	}
+
+	public LDAPAuthenticator(Config config, String server)
+	{
 		this.server = server;
-		this.securityProtocol = securityProtocol;
-		this.clientUsername = clientUsername;
-		this.clientPassword = clientPassword;
-		this.rootContext = rootContext;
-	}
-
-	public static LDAPAuthenticator of(GateControl control, String app, String server)
-	{
-
-		String securityProtocol = SystemProperty.get(app + ".auth.ldap.security_protocol")
-			.or(() -> SystemProperty.get("gate.auth.ldap.security_protocol"))
-			.orElse(null);
-
-		String cilentUsername = SystemProperty.get(app + ".auth.ldap.client_username")
-			.or(() -> SystemProperty.get("gate.auth.ldap.client_username"))
-			.orElse(null);
-
-		String clientPassword = SystemProperty.get(app + ".auth.ldap.client_password")
-			.or(() -> SystemProperty.get("gate.auth.ldap.client_password"))
-			.orElse(null);
-
-		String rootContext = SystemProperty.get(app + ".auth.ldap.root_context")
-			.or(() -> SystemProperty.get("gate.auth.ldap.root_context"))
-			.orElse("");
-
-		return new LDAPAuthenticator(control, server, securityProtocol, cilentUsername, clientPassword, rootContext);
-	}
-
-	public static LDAPAuthenticator of(GateControl control, String app)
-	{
-		String server = SystemProperty.get(app + ".auth.ldap.server")
-			.or(() -> SystemProperty.get("gate.auth.ldap.server"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.ldap.server system property"));
-
-		return of(control, app, server);
+		this.securityProtocol = config.getProperty("ldap.security_protocol").orElse(null);
+		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
+		this.clientPassword = config.getProperty("ldap.client_password").orElse(null);
+		this.rootContext = config.getProperty("ldap.root_context").orElse("");
 	}
 
 	@Override
@@ -94,7 +63,9 @@ public class LDAPAuthenticator implements Authenticator
 		parameters.put(Context.PROVIDER_URL, server);
 		parameters.put(Context.SECURITY_PRINCIPAL, username);
 		parameters.put(Context.SECURITY_CREDENTIALS, password);
-		parameters.put(Context.SECURITY_PROTOCOL, securityProtocol);
+
+		if (securityProtocol != null)
+			parameters.put(Context.SECURITY_PROTOCOL, securityProtocol);
 
 		return new InitialDirContext(parameters);
 	}
@@ -121,7 +92,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
+	public User authenticate(GateControl control, ScreenServletRequest request, HttpServletResponse response)
 		throws gate.error.AuthenticationException, HierarchyException
 	{
 		var authorization = request.getBasicAuthorization().orElse(null);
@@ -159,7 +130,7 @@ public class LDAPAuthenticator implements Authenticator
 			throw new AuthenticatorException(ex);
 		} catch (NamingException ex)
 		{
-			if (ex.getCause() instanceof AuthenticationException)
+			if (ex instanceof AuthenticationException)
 				throw new InvalidPasswordException();
 			else
 				throw new AuthenticatorException(ex);

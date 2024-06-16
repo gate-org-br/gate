@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 public class OIDCAuthenticator implements Authenticator
 {
 
-	private final GateControl control;
 	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
 
 	private final String provider;
@@ -46,118 +45,31 @@ public class OIDCAuthenticator implements Authenticator
 	private final String scope;
 	private final String configurationEndpoint;
 	private final String userId;
+	private final String logoutUri;
 	private final Cache<JsonObject> configuration;
 	private final Cache<String> authorizationEndpoint;
 	private final Cache<String> tokenEndpoint;
 	private final Cache<String> userInfoEndpoint;
 	private final Cache<String> jwksUri;
-	private final Cache<String> logoutUri;
 	private final Cache<PublicKey> publicKey;
 
-	private OIDCAuthenticator(GateControl control, String app)
+	public OIDCAuthenticator(Config config)
 	{
-		this.control = control;
 
-		clientId = SystemProperty.get(app + ".auth.oidc.client_id")
-			.or(() -> SystemProperty.get("gate.auth.oidc.client_id"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property"));
-
-		clientSecret = SystemProperty.get(app + ".auth.oidc.client_secret")
-			.or(() -> SystemProperty.get("gate.auth.oidc.client_secret"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.client_id system property"));
-
-		provider = SystemProperty.get(app + ".auth.oidc.provider")
-			.or(() -> SystemProperty.get("gate.auth.oidc.provider"))
-			.orElseThrow(() -> new AuthenticatorException("Missing gate.auth.oidc.provider system property"));
-
-		configurationEndpoint = SystemProperty.get(app + ".auth.oidc.configuration_endpoint")
-			.or(() -> SystemProperty.get("gate.auth.oidc.configuration_endpoint"))
-			.orElseGet(() -> provider + "/.well-known/openid-configuration");
-
-		redirectUri = SystemProperty.get(app + ".auth.oidc.redirect_uri")
-			.or(() -> SystemProperty.get("gate.auth.oidc.redirect_uri"))
-			.orElse("${server}/Gate");
-
-		userId = SystemProperty.get(app + ".auth.oidc.user_id")
-			.or(() -> SystemProperty.get("gate.auth.oidc.user_id"))
-			.orElse("email");
-
-		scope = SystemProperty.get(app + ".auth.oidc.scope")
-			.or(() -> SystemProperty.get("gate.auth.oidc.scope"))
-			.orElse("openid email profile");
-
-		configuration = Cache.of(() ->
-		{
-			try
-			{
-				return new URL(configurationEndpoint)
-					.get()
-					.readJsonObject()
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
-			} catch (IOException ex)
-			{
-				throw new AuthenticatorException(ex);
-			}
-		});
-
-		authorizationEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.authorization_endpoint")
-			.or(() -> SystemProperty.get("gate.auth.oidc.authorization_endpoint"))
-			.orElseGet(() -> configuration.get().getString("authorization_endpoint")
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get authorization_endpoint from provider"))));
-
-		tokenEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.token_endpoint")
-			.or(() -> SystemProperty.get("gate.auth.oidc.token_endpoint"))
-			.orElseGet(() -> configuration.get().getString("token_endpoint")
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get token_endpoint from provider"))));
-
-		userInfoEndpoint = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.userinfo_endpoint")
-			.or(() -> SystemProperty.get("gate.auth.oidc.userinfo_endpoint"))
-			.orElseGet(() -> configuration.get().getString("userinfo_endpoint")
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get userinfo_endpoint from provider"))));
-
-		jwksUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.jwks_uri")
-			.or(() -> SystemProperty.get("gate.auth.oidc.jwks_uri"))
-			.orElseGet(() -> configuration.get().getString("jwks_uri")
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get jwks_uri from provider"))));
-
-		logoutUri = Cache.of(() -> SystemProperty.get(app + ".auth.oidc.logout_uri")
-			.or(() -> SystemProperty.get("gate.auth.oidc.logout_uri"))
-			.orElse(null));
-
-		publicKey = Cache.of(() ->
-		{
-			try
-			{
-				JsonObject object = new URL(jwksUri.get())
-					.get()
-					.readJsonObject()
-					.flatMap(e -> e.getJsonArray("keys"))
-					.flatMap(e -> e.stream().findFirst())
-					.map(e -> (JsonObject) e)
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
-
-				BigInteger modulos = object.getString("n")
-					.map(Base64.getUrlDecoder()::decode)
-					.map(e -> new BigInteger(1, e))
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key modulus from auth provider"));
-
-				BigInteger exponent = object.getString("e")
-					.map(Base64.getUrlDecoder()::decode)
-					.map(e -> new BigInteger(1, e))
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key exponent from auth provider"));
-
-				RSAPublicKeySpec spec = new RSAPublicKeySpec(modulos, exponent);
-				return KeyFactory.getInstance("RSA").generatePublic(spec);
-			} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException ex)
-			{
-				throw new AuthenticatorException(ex);
-			}
-		});
-	}
-
-	public static OIDCAuthenticator of(GateControl control, String app)
-	{
-		return new OIDCAuthenticator(control, app);
+		clientId = config.getProperty("oidc.client_id").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
+		clientSecret = config.getProperty("oidc.client_secret").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
+		provider = config.getProperty("oidc.provider").orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));;
+		configurationEndpoint = config.getProperty("oidc.configuration_endpoint").orElse(provider + "/.well-known/openid-configuration");
+		redirectUri = config.getProperty("oidc.redirect_uri").orElse("${server}/Gate");
+		userId = config.getProperty("oidc.user_id").orElse("email");
+		scope = config.getProperty("oidc.scope").orElse("openid email profile");
+		logoutUri = config.getProperty("oidc.logout_uri").orElse(null);
+		configuration = Cache.of(this::fetchConfiguration);
+		authorizationEndpoint = Cache.of(() -> config.getProperty("oidc.authorization_endpoint").orElseGet(() -> getEndpoint("authorization_endpoint")));
+		tokenEndpoint = Cache.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
+		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
+		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
+		publicKey = Cache.of(this::fetchPublicKey);
 	}
 
 	@Override
@@ -174,12 +86,11 @@ public class OIDCAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
+	public User authenticate(GateControl control, ScreenServletRequest request, HttpServletResponse response)
 		throws InvalidPasswordException, InvalidUsernameException, HierarchyException, DefaultPasswordException, BadRequestException
 	{
 		try
 		{
-
 			JsonObject tokens = getTokens(request);
 
 			if (tokens.containsKey("id_token"))
@@ -190,8 +101,7 @@ public class OIDCAuthenticator implements Authenticator
 					.orElseThrow(() -> new AuthenticatorException("Error trying to get id token from auth provider"));
 
 				if (jwt.getBody().containsKey(userId))
-					return control.select((String) jwt.getBody().get("email", String.class
-					));
+					return control.select((String) jwt.getBody().get("email", String.class));
 			}
 
 			String accessToken = tokens
@@ -216,11 +126,10 @@ public class OIDCAuthenticator implements Authenticator
 	@Override
 	public String logoutUri(gate.http.ScreenServletRequest request)
 	{
-		String url = logoutUri.get();
-		if (url == null)
+		if (logoutUri == null)
 			return null;
 
-		return new URL(url)
+		return new URL(logoutUri)
 			.setParameter("client_id", clientId)
 			.setParameter("post_logout_redirect_uri", request.getRequestURL().toString())
 			.toString();
@@ -267,5 +176,55 @@ public class OIDCAuthenticator implements Authenticator
 				.setString("access_token", ((BearerAuthorization) authorization).token());
 
 		throw new BadRequestException();
+	}
+
+	private JsonObject fetchConfiguration()
+	{
+		try
+		{
+			return new URL(configurationEndpoint)
+				.get()
+				.readJsonObject()
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
+		} catch (IOException ex)
+		{
+			throw new AuthenticatorException(ex);
+		}
+	}
+
+	private PublicKey fetchPublicKey()
+	{
+		try
+		{
+			JsonObject object = new URL(jwksUri.get())
+				.get()
+				.readJsonObject()
+				.flatMap(e -> e.getJsonArray("keys"))
+				.flatMap(e -> e.stream().findFirst())
+				.map(e -> (JsonObject) e)
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+
+			BigInteger modulus = object.getString("n")
+				.map(Base64.getUrlDecoder()::decode)
+				.map(e -> new BigInteger(1, e))
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key modulus from auth provider"));
+
+			BigInteger exponent = object.getString("e")
+				.map(Base64.getUrlDecoder()::decode)
+				.map(e -> new BigInteger(1, e))
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key exponent from auth provider"));
+
+			RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, exponent);
+			return KeyFactory.getInstance("RSA").generatePublic(spec);
+		} catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException ex)
+		{
+			throw new AuthenticatorException(ex);
+		}
+	}
+
+	private String getEndpoint(String endpointKey)
+	{
+		return configuration.get().getString(endpointKey)
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get " + endpointKey + " from provider"));
 	}
 }

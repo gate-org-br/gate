@@ -12,52 +12,28 @@ import gate.io.Credentials;
 import java.io.IOException;
 import java.io.Writer;
 import javax.inject.Inject;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@MultipartConfig
 @WebServlet("/Auth")
 public class Auth extends HttpServlet
 {
 
 	@Inject
+	GateControl control;
+
+	@Inject
 	@Current
-	private Authenticator authenticator;
+	Authenticator authenticator;
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void doGet(HttpServletRequest httpServletRequest,
-		HttpServletResponse response)
-		throws IOException
-	{
-		httpServletRequest.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("UTF-8");
-
-		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
-
-		try (Writer writer = response.getWriter())
-		{
-			try
-			{
-				User user = authenticator.authenticate(request, response);
-				if (user == null)
-					throw new AuthenticatorException("Attempt to login without provinding valid credentials");
-				writer.write(String.format("{status: 'success', value: '%s'}", Credentials.create(user)));
-			} catch (AuthenticationException
-				| AuthenticatorException
-				| HierarchyException
-				| BadRequestException ex)
-			{
-				writer.write(String.format("{status: 'error', value: '%s'}",
-					ex.getMessage()));
-			}
-		}
-	}
-
-	@Override
-	public void doPost(HttpServletRequest httpServletRequest,
+	public void service(HttpServletRequest httpServletRequest,
 		HttpServletResponse response)
 		throws IOException
 	{
@@ -70,7 +46,7 @@ public class Auth extends HttpServlet
 
 			try
 			{
-				User user = authenticator.authenticate(request, response);
+				User user = authenticator.authenticate(control, request, response);
 				if (user == null)
 					throw new AuthenticationException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));
