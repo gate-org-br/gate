@@ -259,7 +259,7 @@ public class PersistentSet<T> implements Set<T>
 						log++;
 						JsonObject entry = JsonObject.parse(line);
 						var value = entry.get("v").toObject(type);
-						switch (entry.getString("action").orElseThrow())
+						switch (entry.getString("a").orElseThrow())
 						{
 							case "+":
 								values.add(value);
