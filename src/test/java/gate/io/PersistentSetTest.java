@@ -59,6 +59,7 @@ public class PersistentSetTest
 	public void testAdd_Collection()
 	{
 		persistentSet.addAll(Arrays.asList(USER10, USER11));
+		persistentSet = PersistentSet.of(User.class, TEMP_DIR.resolve("test-persistent-set.json"));
 		assertEquals(persistentSet.size(), 12);
 	}
 
@@ -66,6 +67,7 @@ public class PersistentSetTest
 	public void testClear()
 	{
 		persistentSet.clear();
+		persistentSet = PersistentSet.of(User.class, TEMP_DIR.resolve("test-persistent-set.json"));
 		assertEquals(persistentSet.size(), 0);
 		assertFalse(Files.exists(TEMP_DIR.resolve("test-persistent-set.json")));
 	}
@@ -83,6 +85,7 @@ public class PersistentSetTest
 	public void testRemoveIf()
 	{
 		persistentSet.removeIf(e -> e.getName().equals("User 0"));
+		persistentSet = PersistentSet.of(User.class, TEMP_DIR.resolve("test-persistent-set.json"));
 		assertEquals(persistentSet.size(), 9);
 	}
 

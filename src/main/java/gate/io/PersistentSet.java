@@ -70,7 +70,8 @@ public class PersistentSet<T> implements Set<T>
 	@Override
 	public boolean remove(Object value)
 	{
-		if (type.isAssignableFrom(value.getClass()) && values.contains(value))
+		if (type.isAssignableFrom(value.getClass())
+			&& values.contains((T) value))
 		{
 			log += PersistentSet.persist(List.of(value), "-", path);
 			values.remove(value);
@@ -82,10 +83,10 @@ public class PersistentSet<T> implements Set<T>
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public boolean removeAll(Collection<?> collection)
 	{
-		var elements = collection.stream().filter(e -> type.isAssignableFrom(e.getClass()))
+		var elements = collection.stream()
+			.filter(e -> type.isAssignableFrom(e.getClass()))
 			.filter(e -> values.contains((T) e)).toList();
 
 		if (!elements.isEmpty())
@@ -102,7 +103,8 @@ public class PersistentSet<T> implements Set<T>
 	@Override
 	public boolean retainAll(Collection<?> collection)
 	{
-		var elements = values.stream().filter(e -> !collection.contains(e)).toList();
+		var elements = values.stream()
+			.filter(e -> !collection.contains(e)).toList();
 
 		if (!elements.isEmpty())
 		{
@@ -181,7 +183,8 @@ public class PersistentSet<T> implements Set<T>
 	}
 
 	@Override
-	public boolean contains(Object o)
+	public boolean contains(Object o
+	)
 	{
 		return values.contains(o);
 	}
@@ -193,7 +196,8 @@ public class PersistentSet<T> implements Set<T>
 	}
 
 	@Override
-	public <E> E[] toArray(E[] a)
+	public <T> T[] toArray(T[] a
+	)
 	{
 		return values.toArray(a);
 	}
@@ -255,7 +259,7 @@ public class PersistentSet<T> implements Set<T>
 						log++;
 						JsonObject entry = JsonObject.parse(line);
 						var value = entry.get("v").toObject(type);
-						switch (entry.getString("action").orElseThrow())
+						switch (entry.getString("a").orElseThrow())
 						{
 							case "+":
 								values.add(value);
@@ -291,8 +295,9 @@ public class PersistentSet<T> implements Set<T>
 			{
 				for (Object value : values)
 				{
-					JsonObject line
-						= new JsonObject().setString("a", action).set("v", JsonElement.of(value));
+					JsonObject line = new JsonObject()
+						.setString("a", action)
+						.set("v", JsonElement.of(value));
 					writer.append(line.toString());
 					writer.newLine();
 				}
