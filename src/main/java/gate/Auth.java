@@ -3,9 +3,7 @@ package gate;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.entity.User;
-import gate.error.AppException;
 import gate.error.AuthenticationException;
-import gate.error.AuthenticatorException;
 import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
@@ -27,33 +25,13 @@ public class Auth extends HttpServlet
 	@Current
 	private Authenticator authenticator;
 
+	@Inject
+	GateControl control;
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
-	{
-		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("UTF-8");
-
-		try (Writer writer = response.getWriter())
-		{
-			try
-			{
-				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
-				if (user == null)
-					throw new BadRequestException("Attempt to login without provinding valid credentials");
-				writer.write(String.format("{status: 'success', value: '%s'}", Credentials.create(user)));
-			} catch (AuthenticationException
-				| AuthenticatorException
-				| AppException ex)
-			{
-				writer.write(String.format("{status: 'error', value: '%s'}", ex.getMessage()));
-			}
-		}
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{
 		request.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
@@ -63,7 +41,8 @@ public class Auth extends HttpServlet
 
 			try
 			{
-				User user = authenticator.authenticate(new ScreenServletRequest(request), response);
+				User user = authenticator.authenticate(control,
+					new ScreenServletRequest(request), response);
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));
