@@ -8,6 +8,7 @@ import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
 import gate.util.Reflection;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -337,8 +338,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonElement
 	{
 		try
 		{
-
-			T object = type.getConstructor().newInstance();
+			Constructor<T> constructor = type.getDeclaredConstructor();
+			constructor.setAccessible(true);
+			T object = constructor.newInstance();
 
 			for (Map.Entry<String, JsonElement> entry : entrySet())
 			{

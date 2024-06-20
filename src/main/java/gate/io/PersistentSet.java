@@ -1,5 +1,7 @@
 package gate.io;
 
+import gate.annotation.SecurityAlgorithm;
+import gate.annotation.SecurityKey;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.BufferedReader;
@@ -24,13 +26,15 @@ public class PersistentSet<T> implements Set<T>
 	private final Path path;
 	private final Class<T> type;
 	private final Set<T> values;
+	private final Encryptor encryptor;
 
-	private PersistentSet(Class<T> type, Path path, Set<T> values, long log)
+	private PersistentSet(Class<T> type, Path path, Set<T> values, long log, Encryptor encryptor)
 	{
 		this.log = log;
 		this.path = path;
 		this.type = type;
 		this.values = values;
+		this.encryptor = encryptor;
 	}
 
 	public Path getPath()
@@ -43,7 +47,7 @@ public class PersistentSet<T> implements Set<T>
 	{
 		if (!values.contains(value))
 		{
-			log += PersistentSet.persist(List.of(value), "+", path);
+			log += PersistentSet.persist(List.of(value), "+", path, encryptor);
 			values.add(value);
 			compact();
 			return true;
@@ -58,7 +62,7 @@ public class PersistentSet<T> implements Set<T>
 		var elements = collection.stream().filter(e -> !values.contains(e)).toList();
 		if (!elements.isEmpty())
 		{
-			log += PersistentSet.persist(elements, "+", path);
+			log += PersistentSet.persist(elements, "+", path, encryptor);
 			values.addAll(elements);
 			compact();
 			return true;
@@ -73,7 +77,7 @@ public class PersistentSet<T> implements Set<T>
 		if (type.isAssignableFrom(value.getClass())
 			&& values.contains((T) value))
 		{
-			log += PersistentSet.persist(List.of(value), "-", path);
+			log += PersistentSet.persist(List.of(value), "-", path, encryptor);
 			values.remove(value);
 			compact();
 			return true;
@@ -91,7 +95,7 @@ public class PersistentSet<T> implements Set<T>
 
 		if (!elements.isEmpty())
 		{
-			log += PersistentSet.persist(elements, "-", path);
+			log += PersistentSet.persist(elements, "-", path, encryptor);
 			values.removeAll(elements);
 			compact();
 			return true;
@@ -108,7 +112,7 @@ public class PersistentSet<T> implements Set<T>
 
 		if (!elements.isEmpty())
 		{
-			log += PersistentSet.persist(elements, "-", path);
+			log += PersistentSet.persist(elements, "-", path, encryptor);
 			values.removeAll(elements);
 			compact();
 			return true;
@@ -156,7 +160,7 @@ public class PersistentSet<T> implements Set<T>
 			public void remove()
 			{
 
-				log += PersistentSet.persist(List.of(value), "-", path);
+				log += PersistentSet.persist(List.of(value), "-", path, encryptor);
 				iterator.remove();
 				compact();
 			}
@@ -231,7 +235,7 @@ public class PersistentSet<T> implements Set<T>
 
 				if (!values.isEmpty())
 				{
-					PersistentSet.persist(values, "+", backup);
+					PersistentSet.persist(values, "+", backup, encryptor);
 					Files.move(backup, path, StandardCopyOption.REPLACE_EXISTING);
 				} else
 					Files.deleteIfExists(path);
@@ -244,12 +248,13 @@ public class PersistentSet<T> implements Set<T>
 		}
 	}
 
-	public static <T> PersistentSet<T> of(Class<T> type, Path path)
+	public static <T> PersistentSet<T> of(Class<T> type, Path path, Encryptor encryptor)
 	{
 		try
 		{
 			int log = 0;
 			var values = new HashSet<T>();
+
 			if (Files.exists(path))
 			{
 				try (BufferedReader reader = Files.newBufferedReader(path))
@@ -257,6 +262,10 @@ public class PersistentSet<T> implements Set<T>
 					for (String line = reader.readLine(); line != null; line = reader.readLine())
 					{
 						log++;
+
+						if (encryptor != null)
+							line = encryptor.decrypt(line);
+
 						JsonObject entry = JsonObject.parse(line);
 						var value = entry.get("v").toObject(type);
 						switch (entry.getString("a").orElseThrow())
@@ -274,14 +283,24 @@ public class PersistentSet<T> implements Set<T>
 				}
 			}
 
-			return new PersistentSet<>(type, path, values, log);
+			return new PersistentSet<>(type, path, values, log, encryptor);
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
 		}
 	}
 
-	private static long persist(Collection<?> values, String action, Path path)
+	public static <T> PersistentSet<T> of(Class<T> type, Path path)
+	{
+		String algorithm = type.isAnnotationPresent(SecurityAlgorithm.class)
+			? type.getAnnotation(SecurityKey.class).value() : "AES";
+		String key = type.isAnnotationPresent(SecurityKey.class)
+			? type.getAnnotation(SecurityKey.class).value() : null;
+		Encryptor encryptor = key != null ? Encryptor.of(algorithm, key) : null;
+		return of(type, path, encryptor);
+	}
+
+	private static long persist(Collection<?> values, String action, Path path, Encryptor encryptor)
 	{
 		try
 		{
@@ -295,10 +314,15 @@ public class PersistentSet<T> implements Set<T>
 			{
 				for (Object value : values)
 				{
-					JsonObject line = new JsonObject()
+					String line = new JsonObject()
 						.setString("a", action)
-						.set("v", JsonElement.of(value));
-					writer.append(line.toString());
+						.set("v", JsonElement.of(value))
+						.toString();
+
+					if (encryptor != null)
+						line = encryptor.encrypt(line);
+
+					writer.append(line);
 					writer.newLine();
 				}
 			}
