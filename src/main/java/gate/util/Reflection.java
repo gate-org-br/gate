@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 public class Reflection
 {
 
-	private static final Pattern PATTERN
-		= Pattern.compile("^([a-zA-Z_$][a-zA-Z0-9_$]*([.][a-zA-Z_$][a-zA-Z0-9_$]*)+([$][a-zA-Z_$][a-zA-Z0-9_$]*)*)(:(([a-zA-Z_$][a-zA-Z0-9_$]*)([(][)])?))?$");
+	private static final Pattern PATTERN = Pattern.compile(
+		"^([a-zA-Z_$][a-zA-Z0-9_$]*([.][a-zA-Z_$][a-zA-Z0-9_$]*)+([$][a-zA-Z_$][a-zA-Z0-9_$]*)*)(:(([a-zA-Z_$][a-zA-Z0-9_$]*)([(][)])?))?$");
 
 	public static Class<?> getRawType(Type type)
 	{
@@ -31,9 +31,8 @@ public class Reflection
 		if (type instanceof ParameterizedType)
 			return (Class<?>) ((ParameterizedType) type).getRawType();
 		else if (type instanceof GenericArrayType)
-			return Array.newInstance(
-				(Class<?>) ((ParameterizedType) ((GenericArrayType) type).getGenericComponentType()).getRawType(), 0)
-				.getClass();
+			return Array.newInstance((Class<?>) ((ParameterizedType) ((GenericArrayType) type)
+				.getGenericComponentType()).getRawType(), 0).getClass();
 		else
 			return null;
 	}
@@ -52,9 +51,7 @@ public class Reflection
 
 	public static List<Field> getFields(Class<?> clazz)
 	{
-		List<Field> fields
-			= Stream.of(clazz.getDeclaredFields())
-				.collect(Collectors.toList());
+		List<Field> fields = Stream.of(clazz.getDeclaredFields()).collect(Collectors.toList());
 		if (clazz.getSuperclass() != null)
 			fields.addAll(getFields(clazz.getSuperclass()));
 		return fields;
@@ -68,13 +65,12 @@ public class Reflection
 	 *
 	 * @return an Optional describing the requested field of an empty Optional if the field does not exists
 	 */
-	public static Optional<Field> findField(Class type, String name)
+	public static Optional<Field> findField(Class<?> type, String name)
 	{
-		Optional<Field> field = Stream.of(type.getDeclaredFields())
-			.filter(e -> e.getName().equals(name))
-			.findAny();
+		Optional<Field> field
+			= Stream.of(type.getDeclaredFields()).filter(e -> e.getName().equals(name)).findAny();
 
-		Class supertype = type.getSuperclass();
+		Class<?> supertype = type.getSuperclass();
 		if (!field.isPresent() && supertype != null)
 			return findField(supertype, name);
 
@@ -92,14 +88,14 @@ public class Reflection
 	 *
 	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
 	 */
-	public static Optional<Method> findMethod(Class type, String name, Class... parameterTypes)
+	public static Optional<Method> findMethod(Class<?> type, String name,
+		Class<?>... parameterTypes)
 	{
 		Optional<Method> method = Stream.of(type.getDeclaredMethods())
 			.filter(e -> e.getName().equals(name))
-			.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes))
-			.findAny();
+			.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes)).findAny();
 
-		Class supertype = type.getSuperclass();
+		Class<?> supertype = type.getSuperclass();
 		if (!method.isPresent() && supertype != null)
 			return findMethod(supertype, name, parameterTypes);
 
@@ -116,16 +112,16 @@ public class Reflection
 	 *
 	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
 	 */
-	public static Optional<Method> findMethodByName(Class type, String name)
+	public static Optional<Method> findMethodByName(Class<?> type, String name)
 	{
-		List<Method> methods = Stream.of(type.getDeclaredMethods())
-			.filter(e -> e.getName().equals(name))
-			.collect(Collectors.toCollection(ArrayList::new));
+		List<Method> methods
+			= Stream.of(type.getDeclaredMethods()).filter(e -> e.getName().equals(name))
+				.collect(Collectors.toCollection(ArrayList::new));
 
 		switch (methods.size())
 		{
 			case 0:
-				Class supertype = type.getSuperclass();
+				Class<?> supertype = type.getSuperclass();
 				if (supertype != null)
 					return findMethodByName(supertype, name);
 				return Optional.empty();
@@ -180,15 +176,14 @@ public class Reflection
 		if (!matcher.matches())
 			return Optional.empty();
 
-		Class type = Thread.currentThread().getContextClassLoader().loadClass(matcher.group(1));
+		Class<?> type = Thread.currentThread().getContextClassLoader().loadClass(matcher.group(1));
 
 		String member = matcher.group(6);
 
 		if (member == null)
 			return Optional.of(type);
 
-		return matcher.group(7) != null
-			? Reflection.findMethod(type, member)
+		return matcher.group(7) != null ? Reflection.findMethod(type, member)
 			: Reflection.findField(type, member);
 	}
 }
