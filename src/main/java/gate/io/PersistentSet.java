@@ -1,7 +1,5 @@
 package gate.io;
 
-import gate.annotation.SecurityAlgorithm;
-import gate.annotation.SecurityKey;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.BufferedReader;
@@ -292,12 +290,7 @@ public class PersistentSet<T> implements Set<T>
 
 	public static <T> PersistentSet<T> of(Class<T> type, Path path)
 	{
-		String algorithm = type.isAnnotationPresent(SecurityAlgorithm.class)
-			? type.getAnnotation(SecurityKey.class).value() : "AES";
-		String key = type.isAnnotationPresent(SecurityKey.class)
-			? type.getAnnotation(SecurityKey.class).value() : null;
-		Encryptor encryptor = key != null ? Encryptor.of(algorithm, key) : null;
-		return of(type, path, encryptor);
+		return of(type, path, null);
 	}
 
 	private static long persist(Collection<?> values, String action, Path path, Encryptor encryptor)

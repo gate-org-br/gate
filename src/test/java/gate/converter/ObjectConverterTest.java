@@ -1,6 +1,5 @@
 package gate.converter;
 
-import gate.annotation.SecurityKey;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.type.ID;
@@ -39,14 +38,14 @@ public class ObjectConverterTest
 	@Test
 	public void testSecureObject() throws ConversionException
 	{
-		ClassifiedUser user = new ClassifiedUser();
+		User user = new User();
 		user.setId(ID.valueOf(1));
 		user.setName("User 1");
 
 		Converter converter = Converter.getConverter(Object.class);
 
-		String string = converter.toString(ClassifiedUser.class, user);
-		user = (ClassifiedUser) converter.ofString(ClassifiedUser.class, string);
+		String string = converter.toString(User.class, user);
+		user = (User) converter.ofString(User.class, string);
 
 		assertEquals(ID.valueOf(1), user.getId());
 		assertEquals("User 1", user.getName());
@@ -61,11 +60,4 @@ public class ObjectConverterTest
 		assertNull(converter.ofString(Object.class, ""));
 	}
 
-	@SecurityKey("/zgq2IL4H6tN4kRrzybBQA==")
-	public static class ClassifiedUser extends User
-	{
-
-		private static final long serialVersionUID = 1L;
-
-	}
 }

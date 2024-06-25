@@ -18,7 +18,6 @@ import gate.io.URL;
 import gate.lang.json.JsonObject;
 import gate.util.Parameters;
 import gate.util.SecuritySessions;
-import gate.util.SystemProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
@@ -109,7 +108,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticatorException("Error trying to get access token from auth provider"));
 
 			JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setCredentials(accessToken)
+				.setAuthorization(new BearerAuthorization(accessToken))
 				.get()
 				.readJsonObject()
 				.orElseThrow(() -> new AuthenticatorException("Error trying to get user info from auth provider"));

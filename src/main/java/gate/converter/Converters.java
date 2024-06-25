@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 import org.slf4j.LoggerFactory;
 
 public class Converters
@@ -90,17 +91,15 @@ public class Converters
 					else if (clazz.isAnnotationPresent(gate.annotation.Converter.class))
 						return clazz.getAnnotation(gate.annotation.Converter.class)
 							.value().getDeclaredConstructor().newInstance();
-
-				for (Class<?> clazz = e;
-					clazz != null;
-					clazz = clazz.getSuperclass())
-					for (Class<?> inter : clazz.getInterfaces())
-						if (INSTANCES.containsKey(inter))
-							return INSTANCES.get(inter);
-						else if (inter.isAnnotationPresent(gate.annotation.Converter.class))
-							return inter.getAnnotation(gate.annotation.Converter.class)
-								.value().getDeclaredConstructor().newInstance();
-
+					else if (Stream.of(clazz.getInterfaces())
+						.filter(iter -> INSTANCES.containsKey(iter)
+						|| iter.isAnnotationPresent(gate.annotation.Converter.class)).count() == 1)
+						for (Class<?> inter : clazz.getInterfaces())
+							if (INSTANCES.containsKey(inter))
+								return INSTANCES.get(inter);
+							else if (inter.isAnnotationPresent(gate.annotation.Converter.class))
+								return inter.getAnnotation(gate.annotation.Converter.class)
+									.value().getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException ex)
 			{

@@ -3,6 +3,7 @@ package gate.rest;
 import gate.annotation.Authorization;
 import gate.annotation.Secure;
 import gate.entity.User;
+import gate.io.Credentials;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -24,9 +25,14 @@ public class AuthorizationInterceptor
 	public Object secure(InvocationContext ctx) throws Exception
 	{
 
-		User user = request.getSession(false) != null
-			? (User) request.getSession().getAttribute(User.class.getName())
-			: (User) request.getAttribute(User.class.getName());
+		User user = null;
+		if (Credentials.isPresent(request))
+		{
+			user = Credentials.of(request).orElseThrow();
+			request.setAttribute(User.class.getName(), user);
+		} else if (request.getSession(false) != null)
+			user = (User) request.getSession()
+				.getAttribute(User.class.getName());
 
 		if (user == null)
 			throw new ForbiddenException();

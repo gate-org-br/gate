@@ -1,6 +1,5 @@
 package gate.io;
 
-import gate.annotation.SecurityKey;
 import gate.error.ConversionException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -28,14 +27,12 @@ public abstract class Encoder<T>
 
 	public static <T> Encoder<T> of(Class<T> type)
 	{
-		return type.isAnnotationPresent(SecurityKey.class)
-			? Encoder.of(type, type.getAnnotation(SecurityKey.class).value())
-			: new NormalEncoder<>(type);
+		return new NormalEncoder<>(type);
 	}
 
 	public static <T> Encoder<T> of(Class<T> type, String key)
 	{
-		return new CipherEncoder<>(type, Encryptor.of("AES", key));
+		return new CipherEncoder<>(type, Encryptor.of(key));
 	}
 
 	private static class NormalEncoder<T> extends Encoder<T>
@@ -52,9 +49,9 @@ public abstract class Encoder<T>
 			if (object == null)
 				return "";
 
-			try ( ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				 BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
-				 ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
+			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
 
 			{
 				objectOutputStream.writeObject(object);
@@ -76,9 +73,9 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			try ( ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
-				 BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
-				 ClassLoaderObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(Thread.currentThread().getContextClassLoader(), bufferedInputStream))
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
+				BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
+				ClassLoaderObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(Thread.currentThread().getContextClassLoader(), bufferedInputStream))
 
 			{
 				return (T) objectInputStream.readObject();

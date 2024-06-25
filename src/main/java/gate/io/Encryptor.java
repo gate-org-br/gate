@@ -18,6 +18,11 @@ public class Encryptor
 	private final Cipher cipher;
 	private final SecretKeySpec key;
 
+	public static Encryptor of(String key)
+	{
+		return new Encryptor("AES", key);
+	}
+
 	public static Encryptor of(String algorithm, String key)
 	{
 		return new Encryptor(algorithm, key);

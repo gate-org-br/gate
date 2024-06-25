@@ -10,69 +10,90 @@ import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
+import java.net.Socket;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.ws.rs.HttpMethod;
 
 @Handler(URLHandler.class)
 public class URL
 {
 
-	private static final int INFINITE = 0;
+	private static final Duration INFINITE = Duration.ZERO;
 
 	private final String value;
-	private String credentials;
 	private boolean trust = false;
-	private int timeout = INFINITE;
+	private Duration timeout = Duration.ZERO;
 	private final Parameters parameters;
 	private Authorization authorization;
 
-	private static final TrustManager[] TRUST_MANAGERS = new TrustManager[]
+	private static final TrustManager TRUST_MANAGER = new X509ExtendedTrustManager()
 	{
-		new X509TrustManager()
+		@Override
+		public X509Certificate[] getAcceptedIssuers()
 		{
-			@Override
-			public X509Certificate[] getAcceptedIssuers()
+			return new X509Certificate[]
 			{
-				return null;
-			}
+			};
+		}
 
-			@Override
-			public void checkClientTrusted(X509Certificate[] certs, String t)
-			{
-			}
+		@Override
+		public void checkClientTrusted(X509Certificate[] chain, String authType)
+		{
+		}
 
-			@Override
-			public void checkServerTrusted(X509Certificate[] certs, String t)
-			{
-			}
+		@Override
+		public void checkServerTrusted(X509Certificate[] chain, String authType)
+		{
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket)
+		{
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket)
+		{
+		}
+
+		@Override
+		public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
+		{
+		}
+
+		@Override
+		public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
+		{
 		}
 	};
-
-	private static final HostnameVerifier HOSTNAME_VERIFIER = (String host, SSLSession sess) -> host.equals("localhost");
 
 	public URL(String url)
 	{
@@ -116,7 +137,6 @@ public class URL
 	{
 		setParameter("ACTION", action);
 		return this;
-
 	}
 
 	public URL setMessages(AppException ex)
@@ -135,14 +155,12 @@ public class URL
 	{
 		setParameter("tab", tab);
 		return this;
-
 	}
 
 	public URL setMessages(List<String> messages)
 	{
 		setParameter("messages", !messages.isEmpty() ? messages : null);
 		return this;
-
 	}
 
 	public URL setMessages(String... messages)
@@ -151,10 +169,9 @@ public class URL
 		return this;
 	}
 
-	public URL setTimeout(int timeout)
+	public URL setTimeout(Duration timeout)
 	{
-		if (timeout < 0)
-			throw new IllegalArgumentException("Timeout can't be negative");
+		Objects.requireNonNull(timeout);
 		this.timeout = timeout;
 		return this;
 	}
@@ -165,129 +182,49 @@ public class URL
 		return this;
 	}
 
-	public URL setCredentials(String credentials)
-	{
-		this.credentials = credentials;
-		return this;
-	}
-
 	public URL setAuthorization(Authorization authorization)
 	{
 		this.authorization = authorization;
 		return this;
 	}
 
-	public URLResult get() throws IOException
-	{
-		java.net.URL url = new java.net.URL(toString());
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		if (connection instanceof HttpsURLConnection && trust)
-			skipCertificatedValidation((HttpsURLConnection) connection);
-
-		if (credentials != null)
-			connection.setRequestProperty("Authorization", "Bearer " + credentials);
-		else if (authorization != null)
-			connection.setRequestProperty("Authorization", authorization.toString());
-
-		connection.setConnectTimeout(timeout);
-		connection.setReadTimeout(timeout);
-
-		connection.setDoOutput(true);
-		connection.setRequestMethod("GET");
-
-		connection.connect();
-		if (connection.getResponseCode() < 200 || connection.getResponseCode() > 299)
-		{
-			StringBuilder response = new StringBuilder();
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
-			{
-				for (String line = in.readLine();
-					line != null;
-					line = in.readLine())
-					response.append(line);
-				throw new IOException(response.toString());
-			}
-		}
-
-		return new URLResult(connection);
-	}
-
-	public URLResult post(List<Parameter> parameters) throws IOException
+	private URLResult execute(String method, List<Parameter> parameters) throws IOException
 	{
 		StringJoiner string = new StringJoiner("&");
 		for (Parameter parameter : parameters)
 		{
-			String key = URLEncoder.encode(parameter.getName(), "UTF-8");
-			String val = URLEncoder.encode(Converter.toString(parameter.getValue()), "UTF-8");
+			String key = URLEncoder.encode(parameter.getName(), StandardCharsets.UTF_8);
+			String val = URLEncoder.encode(Converter.toString(parameter.getValue()), StandardCharsets.UTF_8);
 			string.add(key + "=" + val);
 		}
 
-		return post("application/x-www-form-urlencoded", string.toString().getBytes("UTF-8"));
+		return execute(method, "application/x-www-form-urlencoded", string.toString().getBytes(StandardCharsets.UTF_8));
 	}
 
-	public URLResult post(Parameters parameters) throws IOException
+	public URLResult get(List<Parameter> parameters) throws IOException
 	{
-		return post("application/x-www-form-urlencoded", parameters.toEncodedString().getBytes());
+		return execute(HttpMethod.GET, parameters);
 	}
 
-	public URLResult post(String contentType, byte[] bytes) throws IOException
+	public URLResult get(Parameter... parameters) throws IOException
 	{
-
-		java.net.URL url = new java.net.URL(toString());
-
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-		if (connection instanceof HttpsURLConnection && trust)
-			skipCertificatedValidation((HttpsURLConnection) connection);
-
-		connection.setConnectTimeout(timeout);
-		connection.setReadTimeout(timeout);
-
-		connection.setDoOutput(true);
-		connection.setRequestMethod("POST");
-		connection.setRequestProperty("Content-Length", String.valueOf(bytes.length));
-		connection.setRequestProperty("Content-Type", contentType);
-		if (credentials != null)
-			connection.setRequestProperty("Authorization", "Bearer " + credentials);
-		else if (authorization != null)
-			connection.setRequestProperty("Authorization", authorization.toString());
-
-		connection.connect();
-
-		try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream()))
-		{
-			wr.write(bytes);
-			wr.flush();
-		}
-
-		if (connection.getResponseCode() < 200 || connection.getResponseCode() > 299)
-		{
-			StringBuilder response = new StringBuilder();
-			try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream())))
-			{
-				for (String line = in.readLine();
-					line != null;
-					line = in.readLine())
-					response.append(line);
-				throw new IOException(response.toString());
-			}
-		}
-
-		return new URLResult(connection);
+		return get(Arrays.asList(parameters));
 	}
 
-	private void skipCertificatedValidation(HttpsURLConnection connection) throws IOException
+	public URLResult get(String contentType, byte[] bytes) throws IOException
 	{
-		try
-		{
-			SSLContext ctx = SSLContext.getInstance("TLS");
-			ctx.init(null, TRUST_MANAGERS, new SecureRandom());
-			connection.setHostnameVerifier(HOSTNAME_VERIFIER);
-			connection.setSSLSocketFactory(ctx.getSocketFactory());
-		} catch (NoSuchAlgorithmException | KeyManagementException ex)
-		{
-			throw new IOException(ex);
-		}
+		return execute(HttpMethod.GET, contentType, bytes);
+	}
+
+	public URLResult get(Parameters parameters) throws IOException
+	{
+		return get("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult post(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.POST, parameters);
 	}
 
 	public URLResult post(Parameter... parameters) throws IOException
@@ -295,10 +232,332 @@ public class URL
 		return post(Arrays.asList(parameters));
 	}
 
+	public URLResult post(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.POST, contentType, bytes);
+	}
+
+	public URLResult post(Parameters parameters) throws IOException
+	{
+		return post("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult put(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.PUT, parameters);
+	}
+
+	public URLResult put(Parameter... parameters) throws IOException
+	{
+		return put(Arrays.asList(parameters));
+	}
+
+	public URLResult put(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.PUT, contentType, bytes);
+	}
+
+	public URLResult put(Parameters parameters) throws IOException
+	{
+		return put("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult patch(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.PATCH, parameters);
+	}
+
+	public URLResult patch(Parameter... parameters) throws IOException
+	{
+		return patch(Arrays.asList(parameters));
+	}
+
+	public URLResult patch(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.PATCH, contentType, bytes);
+	}
+
+	public URLResult patch(Parameters parameters) throws IOException
+	{
+		return patch("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult delete(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.DELETE, parameters);
+	}
+
+	public URLResult delete(Parameter... parameters) throws IOException
+	{
+		return delete(Arrays.asList(parameters));
+	}
+
+	public URLResult delete(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.DELETE, contentType, bytes);
+	}
+
+	public URLResult delete(Parameters parameters) throws IOException
+	{
+		return delete("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult head(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.HEAD, parameters);
+	}
+
+	public URLResult head(Parameter... parameters) throws IOException
+	{
+		return head(Arrays.asList(parameters));
+	}
+
+	public URLResult head(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.HEAD, contentType, bytes);
+	}
+
+	public URLResult head(Parameters parameters) throws IOException
+	{
+		return head("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult options(List<Parameter> parameters) throws IOException
+	{
+		return execute(HttpMethod.OPTIONS, parameters);
+	}
+
+	public URLResult options(Parameter... parameters) throws IOException
+	{
+		return options(Arrays.asList(parameters));
+	}
+
+	public URLResult options(String contentType, byte[] bytes) throws IOException
+	{
+		return execute(HttpMethod.OPTIONS, contentType, bytes);
+	}
+
+	public URLResult options(Parameters parameters) throws IOException
+	{
+		return options("application/x-www-form-urlencoded",
+			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+	}
+
+	public URLResult get() throws IOException
+	{
+		return execute("GET");
+	}
+
+	public URLResult post() throws IOException
+	{
+		return execute("POST");
+	}
+
+	public URLResult put() throws IOException
+	{
+		return execute("PUT");
+	}
+
+	public URLResult delete() throws IOException
+	{
+		return execute("DELETE");
+	}
+
+	public URLResult options() throws IOException
+	{
+		return execute("OPTIONS");
+	}
+
+	public URLResult patch() throws IOException
+	{
+		return execute("PATCH");
+	}
+
+	public URLResult head() throws IOException
+	{
+		return execute("HEAD");
+	}
+
+	private URLResult execute(String method) throws IOException
+	{
+		try
+		{
+			HttpRequest.Builder builder = HttpRequest.newBuilder()
+				.uri(URI.create(toString()));
+
+			if (timeout != INFINITE)
+				builder = builder.timeout(timeout);
+
+			if (authorization != null)
+				builder.header("Authorization", authorization.toString());
+
+			HttpRequest request = builder.method(method, HttpRequest.BodyPublishers.noBody()).build();
+
+			HttpClient client = getHttpClient();
+
+			HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+			if (response.statusCode() < 200 || response.statusCode() > 299)
+				throw new IOException(getErrorMessage(response));
+
+			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
+				.stream().findAny().orElse("application/octet-stream"), response);
+		} catch (InterruptedException ex)
+		{
+			throw new IOException(ex);
+		}
+	}
+
+	private URLResult execute(String method, String contentType, byte[] bytes) throws IOException
+	{
+		try
+		{
+			HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(bytes);
+
+			HttpRequest.Builder builder = HttpRequest.newBuilder()
+				.uri(URI.create(toString()))
+				.timeout(timeout)
+				.header("Content-Type", contentType)
+				.method(method, bodyPublisher);
+
+			if (authorization != null)
+				builder.header("Authorization", authorization.toString());
+
+			HttpRequest request = builder.build();
+
+			HttpClient client = getHttpClient();
+
+			HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+			if (response.statusCode() < 200 || response.statusCode() > 299)
+				throw new IOException(getErrorMessage(response));
+
+			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
+				.stream().findAny().orElse("application/octet-stream"), response);
+		} catch (InterruptedException ex)
+		{
+			throw new IOException(ex);
+		}
+	}
+
+	private String getErrorMessage(HttpResponse<InputStream> response) throws IOException
+	{
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(response.body())))
+		{
+			StringBuilder string = new StringBuilder();
+			for (String line = in.readLine();
+				line != null;
+				line = in.readLine())
+				string.append(line);
+			return string.toString();
+		}
+	}
+
+	private HttpClient getHttpClient() throws IOException
+	{
+		try
+		{
+			HttpClient.Builder builder = HttpClient.newBuilder();
+			if (trust)
+			{
+				var sslContext = SSLContext.getInstance("TLS");
+				sslContext.init(null, new TrustManager[]
+				{
+					TRUST_MANAGER
+				}, new SecureRandom());
+				builder.sslContext(sslContext);
+
+				SSLParameters ssl = new SSLParameters();
+				ssl.setEndpointIdentificationAlgorithm("");
+				builder.sslParameters(ssl);
+			}
+			if (timeout != INFINITE)
+				builder.connectTimeout(timeout);
+			return builder.build();
+		} catch (NoSuchAlgorithmException | KeyManagementException e)
+		{
+			throw new IOException("Failed to create HTTP client", e);
+		}
+	}
+
 	@Override
 	public String toString()
 	{
 		return parameters.isEmpty() ? value : value + "?" + parameters.toEncodedString();
+	}
+
+	public static class URLResult implements IOResult
+	{
+
+		private final int status;
+		private final String contentType;
+		private final HttpResponse<InputStream> response;
+
+		public URLResult(int status, String contentType, HttpResponse<InputStream> response)
+		{
+			this.status = status;
+			this.contentType = contentType;
+			this.response = response;
+		}
+
+		public InputStream openStream() throws IOException
+		{
+			return response.body();
+		}
+
+		@Override
+		public <T> T read(Reader<T> loader) throws IOException
+		{
+			try (InputStream stream = response.body())
+			{
+				return loader.read(stream);
+			}
+		}
+
+		public int getStatus()
+		{
+			return status;
+		}
+
+		public String getContentType()
+		{
+			return contentType;
+		}
+
+		@Override
+		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
+		{
+			try (InputStream stream = response.body())
+			{
+				return processor.process(stream);
+			}
+		}
+
+		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
+		{
+			try
+			{
+				InputStream stream = response.body();
+				return StreamSupport.stream(spliterator.apply(stream), false).onClose(() ->
+				{
+					try
+					{
+						stream.close();
+					} catch (IOException ex)
+					{
+						throw new UncheckedIOException(ex);
+					}
+				});
+			} catch (UncheckedIOException ex)
+			{
+				throw ex.getCause();
+			}
+		}
 	}
 
 	public static String toString(String module,
@@ -316,63 +575,6 @@ public class URL
 		if (Toolkit.notEmpty(arguments))
 			string.add(arguments);
 		return "Gate?" + string.toString();
-	}
-
-	public static class URLResult implements IOResult
-	{
-
-		private final URLConnection connection;
-
-		private URLResult(URLConnection connection)
-		{
-			this.connection = connection;
-		}
-
-		public InputStream openStream() throws IOException
-		{
-			return connection.getInputStream();
-		}
-
-		@Override
-		public <T> T read(Reader<T> loader) throws IOException
-		{
-			try (InputStream stream = connection.getInputStream())
-			{
-				return loader.read(stream);
-			}
-		}
-
-		@Override
-		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
-		{
-			try (InputStream stream = connection.getInputStream())
-			{
-				return processor.process(stream);
-			}
-		}
-
-		@Override
-		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
-		{
-
-			try
-			{
-				InputStream stream = connection.getInputStream();
-				return StreamSupport.stream(spliterator.apply(stream), false).onClose(() ->
-				{
-					try
-					{
-						stream.close();
-					} catch (IOException ex)
-					{
-						throw new UncheckedIOException(ex);
-					}
-				});
-			} catch (UncheckedIOException ex)
-			{
-				throw ex.getCause();
-			}
-		}
 	}
 
 	public static URL parse(String string) throws ConversionException

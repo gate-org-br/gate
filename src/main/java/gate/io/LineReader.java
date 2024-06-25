@@ -10,17 +10,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class LineReader extends AbstractReader<List<String>>
 {
-
-	private static final LineReader INSTANCE
-			= new LineReader();
-
-	private static final ConcurrentMap<String, LineReader> INSTANCES
-			= new ConcurrentHashMap<String, LineReader>();
 
 	private LineReader()
 	{
@@ -35,23 +27,23 @@ public class LineReader extends AbstractReader<List<String>>
 	public List<String> read(InputStream is) throws IOException
 	{
 		BufferedReader reader
-				= new BufferedReader(new InputStreamReader(is, charset));
+			= new BufferedReader(new InputStreamReader(is, charset));
 		List<String> lines = new ArrayList<>();
 		for (String line = reader.readLine();
-				line != null;
-				line = reader.readLine())
+			line != null;
+			line = reader.readLine())
 			lines.add(line);
 		return lines;
 	}
 
 	public static LineReader getInstance()
 	{
-		return INSTANCE;
+		return new LineReader();
 	}
 
 	public static LineReader getInstance(String charset)
 	{
-		return INSTANCES.computeIfAbsent(charset, LineReader::new);
+		return new LineReader(charset);
 	}
 
 	public static List<String> read(byte[] bytes) throws IOException
