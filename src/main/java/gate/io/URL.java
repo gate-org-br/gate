@@ -13,8 +13,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -30,11 +28,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Spliterator;
 import java.util.StringJoiner;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
@@ -403,7 +397,7 @@ public class URL
 			HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
 			if (response.statusCode() < 200 || response.statusCode() > 299)
-				throw new IOException(getErrorMessage(response));
+				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
 				.stream().findAny().orElse("application/octet-stream"), response);
@@ -435,7 +429,7 @@ public class URL
 			HttpResponse<InputStream> response = client.send(request, HttpResponse.BodyHandlers.ofInputStream());
 
 			if (response.statusCode() < 200 || response.statusCode() > 299)
-				throw new IOException(getErrorMessage(response));
+				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
 				.stream().findAny().orElse("application/octet-stream"), response);
@@ -489,75 +483,6 @@ public class URL
 	public String toString()
 	{
 		return parameters.isEmpty() ? value : value + "?" + parameters.toEncodedString();
-	}
-
-	public static class URLResult implements IOResult
-	{
-
-		private final int status;
-		private final String contentType;
-		private final HttpResponse<InputStream> response;
-
-		public URLResult(int status, String contentType, HttpResponse<InputStream> response)
-		{
-			this.status = status;
-			this.contentType = contentType;
-			this.response = response;
-		}
-
-		public InputStream openStream() throws IOException
-		{
-			return response.body();
-		}
-
-		@Override
-		public <T> T read(Reader<T> loader) throws IOException
-		{
-			try (InputStream stream = response.body())
-			{
-				return loader.read(stream);
-			}
-		}
-
-		public int getStatus()
-		{
-			return status;
-		}
-
-		public String getContentType()
-		{
-			return contentType;
-		}
-
-		@Override
-		public <T> long process(Processor<T> processor) throws IOException, InvocationTargetException
-		{
-			try (InputStream stream = response.body())
-			{
-				return processor.process(stream);
-			}
-		}
-
-		public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException
-		{
-			try
-			{
-				InputStream stream = response.body();
-				return StreamSupport.stream(spliterator.apply(stream), false).onClose(() ->
-				{
-					try
-					{
-						stream.close();
-					} catch (IOException ex)
-					{
-						throw new UncheckedIOException(ex);
-					}
-				});
-			} catch (UncheckedIOException ex)
-			{
-				throw ex.getCause();
-			}
-		}
 	}
 
 	public static String toString(String module,
