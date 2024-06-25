@@ -1,50 +1,51 @@
 package gate.io;
 
 import gate.converter.Converter;
-import gate.error.ConversionException;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class ObjectReader<T> implements Reader<Optional<T>>
 {
 
 	private final Class<T> type;
-	private static final ConcurrentMap<Class<?>, ObjectReader<?>> INSTANCES =
-			new ConcurrentHashMap<>();
+	private final Class<?> elementType;
+	private final String contentType;
 
-	private ObjectReader(Class<T> type)
+	private ObjectReader(String contentType, Class<T> type, Class<?> elementType)
 	{
+		this.contentType = contentType;
 		this.type = type;
+		this.elementType = elementType;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <T> ObjectReader<T> getInstance(Class<T> type)
 	{
-		return (ObjectReader<T>) INSTANCES.computeIfAbsent(type, ObjectReader::new);
+		return new ObjectReader("application/json", type, null);
+	}
+
+	public static <T> ObjectReader<T> getInstance(String contentType, Class<T> type)
+	{
+		return new ObjectReader(contentType, type, null);
+	}
+
+	public static <T> ObjectReader<T> getInstance(Class<T> type, Class<?> elementType)
+	{
+		return new ObjectReader("application/json", type, elementType);
+	}
+
+	public static <T> ObjectReader<T> getInstance(String contentType, Class<T> type, Class<?> elementType)
+	{
+		return new ObjectReader(contentType, type, elementType);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Optional<T> read(InputStream is) throws IOException
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		try (StringWriter writer = new StringWriter())
-		{
-			for (int c = reader.read(); c != -1; c = reader.read())
-				writer.write((char) c);
-			writer.flush();
-			return Optional
-					.ofNullable((T) Converter.getConverter(type).ofString(type, writer.toString()));
-		} catch (ConversionException ex)
-		{
-			throw new IOException(ex.getMessage(), ex);
-		}
+		String string = StringReader.getInstance().read(is);
+		if ("application/json".equalsIgnoreCase(contentType))
+			return Optional.ofNullable((T) Converter.fromJson(type, elementType, string));
+		return Optional.ofNullable((T) Converter.fromString(type, string));
 	}
 
 	@Override
@@ -52,5 +53,4 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 	{
 		return "UTF-8";
 	}
-
 }

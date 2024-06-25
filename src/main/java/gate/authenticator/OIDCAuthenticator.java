@@ -57,7 +57,6 @@ public class OIDCAuthenticator implements Authenticator
 
 	public OIDCAuthenticator(Config config)
 	{
-
 		clientId = config.getProperty("oidc.client_id").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
 		clientSecret = config.getProperty("oidc.client_secret").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
 		provider = config.getProperty("oidc.provider").orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));;
@@ -147,7 +146,7 @@ public class OIDCAuthenticator implements Authenticator
 			.orElseThrow(() -> new AuthenticationException("Error trying to get access token from auth provider"));
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-			.setCredentials(accessToken)
+			.setAuthorization(new BearerAuthorization(accessToken))
 			.get()
 			.readJsonObject()
 			.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));

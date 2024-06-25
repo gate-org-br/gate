@@ -68,6 +68,21 @@ public interface IOResult
 		return read(ObjectReader.getInstance(type));
 	}
 
+	default <T> Optional<T> readObject(String contentType, Class<T> type) throws IOException
+	{
+		return read(ObjectReader.getInstance(contentType, type));
+	}
+
+	default <T> Optional<T> readObject(Class<T> type, Class<?> elementType) throws IOException
+	{
+		return read(ObjectReader.getInstance(type, elementType));
+	}
+
+	default <T> Optional<T> readObject(String contentType, Class<T> type, Class<?> elementType) throws IOException
+	{
+		return read(ObjectReader.getInstance(contentType, type, elementType));
+	}
+
 	default Optional<JsonElement> readJsonElement() throws IOException
 	{
 		return read(JsonElementReader.getInstance());
