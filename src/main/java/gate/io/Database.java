@@ -16,14 +16,16 @@ public class Database<T> implements Observable<T>
 
 	protected final Path folder;
 	protected final Class<T> type;
+	protected final Encryptor encryptor;
 	protected final Map<String, Set<T>> tables;
 	protected final List<Observer<T>> observers = new CopyOnWriteArrayList<>();
 
-	Database(Class<T> type, Path folder, Map<String, Set<T>> tables)
+	Database(Class<T> type, Path folder, Map<String, Set<T>> tables, Encryptor encryptor)
 	{
 		this.type = type;
 		this.folder = folder;
 		this.tables = tables;
+		this.encryptor = encryptor;
 	}
 
 	public boolean isEmpty()
@@ -225,7 +227,7 @@ public class Database<T> implements Observable<T>
 	public void insert(String tableName, Collection<T> values)
 	{
 		Set<T> table = tables.computeIfAbsent(tableName,
-			e -> Collections.synchronizedSet(PersistentSet.of(type, folder.resolve(e))));
+			e -> Collections.synchronizedSet(PersistentSet.of(type, folder.resolve(e), encryptor)));
 		table.addAll(values);
 		observers.forEach(Observer::onUpdate);
 	}
@@ -260,7 +262,7 @@ public class Database<T> implements Observable<T>
 		}
 	}
 
-	public static <T> Database<T> of(Class<T> type, Path folder)
+	public static <T> Database<T> of(Class<T> type, Path folder, Encryptor encryptor)
 	{
 		try
 		{
@@ -268,12 +270,17 @@ public class Database<T> implements Observable<T>
 				Files.createDirectories(folder);
 
 			Map<String, Set<T>> tables = new HashMap<>();
-			Files.list(folder).forEach(path -> tables.put(path.getFileName().toString(), PersistentSet.of(type, path)));
-			return new Database<>(type, folder, tables);
+			Files.list(folder).forEach(path -> tables.put(path.getFileName().toString(), PersistentSet.of(type, path, encryptor)));
+			return new Database<>(type, folder, tables, encryptor);
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	public static <T> Database<T> of(Class<T> type, Path folder)
+	{
+		return of(type, folder, null);
 	}
 
 	@Override
