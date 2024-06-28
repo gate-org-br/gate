@@ -11,9 +11,11 @@ window.addEventListener("@progress", function (event)
 	let processName = trigger.title || "Progresso";
 	let processId = trigger.id || "proccess@" + sequence++;
 
-	process(RequestBuilder.build(event.detail.method,
+	process(processId,
+		processName,
+		event.detail.method,
 		event.detail.action,
-		event.detail.form), processId, processName)
+		event.detail.form)
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));

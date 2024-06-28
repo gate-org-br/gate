@@ -66,7 +66,7 @@ function resize(iframe)
 	iframe.style.height = contentHeight + 'px';
 }
 
-export default class GStackFrame extends GModal
+customElements.define('g-stack-frame', class GStackFrame extends GModal
 {
 	constructor()
 	{
@@ -103,6 +103,4 @@ export default class GStackFrame extends GModal
 			throw new Error("Attempt to access content of a frame stack-frame");
 		return this.firstElementChild;
 	}
-};
-
-customElements.define('g-stack-frame', GStackFrame);
+});

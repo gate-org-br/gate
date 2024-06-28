@@ -242,11 +242,14 @@ public class Gate extends HttpServlet
 			{
 				progress = Progress.create(user, writer);
 				Object result = screen.execute(method);
-				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-					? method.getAnnotation(gate.annotation.Handler.class).value()
-					: Handler.getHandler(result.getClass());
-				var handler = handlers.select(type).get();
-				handler.handle(request, response, progress, result);
+				if (result != null)
+				{
+					var type = method.isAnnotationPresent(gate.annotation.Handler.class)
+						? method.getAnnotation(gate.annotation.Handler.class).value()
+						: Handler.getHandler(result.getClass());
+					var handler = handlers.select(type).get();
+					handler.handle(request, response, progress, result);
+				}
 				progress.close();
 			} catch (AppException ex)
 			{
