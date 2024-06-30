@@ -6,6 +6,7 @@ import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
+import gate.error.InvalidUsernameException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
@@ -25,25 +26,27 @@ import javax.servlet.http.HttpServletResponse;
 public class LDAPAuthenticator implements Authenticator
 {
 
+	private final GateControl control;
+
 	private final String server;
 	private final String clientUsername;
 	private final String clientPassword;
 	private final String securityProtocol;
 	private final String rootContext;
+	private final boolean databaseFallback;
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	public LDAPAuthenticator(Config config)
+	public LDAPAuthenticator(GateControl control,
+		AuthConfig config)
 	{
-		this(config, config.getProperty("ldap.server")
-			.orElseThrow(() -> new AuthenticatorException("Missing ldap.server")));
-	}
-
-	public LDAPAuthenticator(Config config, String server)
-	{
-		this.server = server;
+		this.control = control;
+		this.server = config.getProperty("ldap.server").orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
 		this.securityProtocol = config.getProperty("ldap.security_protocol").orElse(null);
 		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
 		this.clientPassword = config.getProperty("ldap.client_password").orElse(null);
+		this.databaseFallback = config.getProperty("ldap.database_fallback")
+			.map(e -> "true".equals(e))
+			.orElse(false);
 		this.rootContext = config.getProperty("ldap.root_context").orElse("");
 	}
 
@@ -51,6 +54,12 @@ public class LDAPAuthenticator implements Authenticator
 	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
 		return null;
+	}
+
+	@Override
+	public boolean hasCredentials(ScreenServletRequest request) throws gate.error.AuthenticationException
+	{
+		return request.getBasicAuthorization().isPresent();
 	}
 
 	private DirContext getDirContext(String username, String password) throws NamingException
@@ -70,7 +79,8 @@ public class LDAPAuthenticator implements Authenticator
 		return new InitialDirContext(parameters);
 	}
 
-	private String getUniqueID(String username, String password, BasicAuthorization authorization) throws NamingException
+	private String getUniqueID(String username, String password,
+		BasicAuthorization authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -92,7 +102,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(GateControl control, ScreenServletRequest request, HttpServletResponse response)
+	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
 		throws gate.error.AuthenticationException, HierarchyException
 	{
 		var authorization = request.getBasicAuthorization().orElse(null);
@@ -109,6 +119,9 @@ public class LDAPAuthenticator implements Authenticator
 				String dn = getUniqueID(clientUsername, clientPassword, authorization);
 				if (dn == null)
 				{
+					if (!databaseFallback)
+						throw new InvalidUsernameException();
+
 					if (MD5.digest(authorization.username()).toString()
 						.equals(user.getPassword()))
 						throw new DefaultPasswordException();
@@ -141,5 +154,11 @@ public class LDAPAuthenticator implements Authenticator
 	public String logoutUri(gate.http.ScreenServletRequest request)
 	{
 		return null;
+	}
+
+	@Override
+	public Type getType()
+	{
+		return Authenticator.Type.LDAP;
 	}
 }

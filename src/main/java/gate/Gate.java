@@ -23,7 +23,6 @@ import gate.handler.Handler;
 import gate.handler.IntegerHandler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -71,8 +70,6 @@ public class Gate extends HttpServlet
 	@Inject
 	@Current
 	private Authenticator authenticator;
-
-	final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	static
 	{
@@ -138,7 +135,7 @@ public class Gate extends HttpServlet
 						.getAttribute(User.class.getName());
 				else if (!call.isPublic())
 				{
-					user = authenticator.authenticate(control, request, response);
+					user = authenticator.authenticate(request, response);
 					if (user != null)
 					{
 						event.fireAsync(new LoginEvent(user));

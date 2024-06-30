@@ -3,11 +3,9 @@ package gate.authenticator;
 import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
-import gate.error.AuthenticatorException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import gate.util.SystemProperty;
@@ -16,11 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 public class DatabaseAuthenticator implements Authenticator
 {
 
+	private final GateControl control;
+
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	public DatabaseAuthenticator(Config configuration)
+	public DatabaseAuthenticator(GateControl control, AuthConfig config)
 	{
-
+		this.control = control;
 	}
 
 	@Override
@@ -30,14 +30,15 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(GateControl control, ScreenServletRequest request,
+	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
+	{
+		return request.getBasicAuthorization().isPresent();
+	}
+
+	@Override
+	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
-		throws AuthenticatorException,
-		InvalidPasswordException,
-		InvalidUsernameException,
-		HierarchyException,
-		DefaultPasswordException,
-		AuthenticationException
+		throws AuthenticationException, HierarchyException
 	{
 
 		var authorization = request.getBasicAuthorization().orElse(null);
@@ -45,10 +46,11 @@ public class DatabaseAuthenticator implements Authenticator
 		if (authorization == null)
 			return developer != null ? control.select(developer) : null;
 
-		if (authorization.username().equals(authorization.password()))
-			throw new DefaultPasswordException();
-
 		User user = control.select(authorization.username());
+
+		if (MD5.digest(authorization.username()).toString()
+			.equals(user.getPassword()))
+			throw new DefaultPasswordException();
 
 		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))
 			throw new InvalidPasswordException();
@@ -62,4 +64,9 @@ public class DatabaseAuthenticator implements Authenticator
 		return null;
 	}
 
+	@Override
+	public Type getType()
+	{
+		return Authenticator.Type.DATABASE;
+	}
 }

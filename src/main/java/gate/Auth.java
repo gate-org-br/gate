@@ -5,7 +5,6 @@ import gate.authenticator.Authenticator;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
-import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
@@ -46,11 +45,11 @@ public class Auth extends HttpServlet
 
 			try
 			{
-				User user = authenticator.authenticate(control, request, response);
+				User user = authenticator.authenticate(request, response);
 				if (user == null)
 					throw new AuthenticationException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));
-			} catch (AuthenticationException | BadRequestException ex)
+			} catch (AuthenticationException ex)
 			{
 				response.setStatus(400);
 				writer.write(ex.getMessage());
