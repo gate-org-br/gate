@@ -15,10 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DatabaseAuthenticator implements Authenticator
 {
 
+	private final GateControl control;
+
 	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
-	public DatabaseAuthenticator(Config config)
+	public DatabaseAuthenticator(GateControl control, AuthConfig config)
 	{
+		this.control = control;
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class DatabaseAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(GateControl control, ScreenServletRequest request,
+	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
 		throws HttpException, AuthenticationException, HierarchyException
 	{

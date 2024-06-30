@@ -19,6 +19,7 @@ import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
 import gate.util.Toolkit;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -37,8 +38,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @MultipartConfig
@@ -53,9 +52,6 @@ public class Gate extends HttpServlet
 	Logger logger;
 
 	@Inject
-	GateControl control;
-
-	@Inject
 	Event<LoginEvent> event;
 
 	@Any
@@ -68,11 +64,8 @@ public class Gate extends HttpServlet
 
 	@Inject
 	@Current
+	@RequestScoped
 	Authenticator authenticator;
-
-	@Inject
-	@ConfigProperty(name = "gate.developer")
-	Optional<String> developer;
 
 	@Inject
 	Call mainAction;
@@ -87,6 +80,7 @@ public class Gate extends HttpServlet
 		throws ServletException, IOException
 	{
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+
 		try
 		{
 			Request.set(httpServletRequest);
@@ -139,7 +133,7 @@ public class Gate extends HttpServlet
 				request.setAttribute(User.class.getName(), user);
 			} else if (authenticator.hasCredentials(request))
 			{
-				user = authenticator.authenticate(control, request, response);
+				user = authenticator.authenticate(request, response);
 				if (user != null)
 				{
 					event.fireAsync(new LoginEvent(user));
@@ -148,11 +142,6 @@ public class Gate extends HttpServlet
 			} else if (request.getSession(false) != null
 				&& request.getSession().getAttribute(User.class.getName()) != null)
 				user = (User) request.getSession().getAttribute(User.class.getName());
-			else if (developer.isPresent())
-			{
-				user = control.select(developer.get());
-				request.getSession().setAttribute(User.class.getName(), user);
-			}
 
 			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION) ? mainAction
 				: Call.of(MODULE, SCREEN, ACTION);

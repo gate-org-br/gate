@@ -28,4 +28,16 @@ public class AuthenticatorException extends RuntimeException
 	{
 		super(message);
 	}
+
+	/**
+	 * Constructs an AuthenticatorException with the specified message and cause.
+	 *
+	 * @param message The exception message.
+	 * @param cause The cause, which is saved for later retrieval by the getCause() method. A null value is permitted, and indicates that the cause is
+	 * nonexistent or unknown.
+	 */
+	public AuthenticatorException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
 }

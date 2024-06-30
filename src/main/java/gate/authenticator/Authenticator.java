@@ -1,6 +1,5 @@
 package gate.authenticator;
 
-import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
@@ -15,8 +14,7 @@ public interface Authenticator
 	public String provider(ScreenServletRequest request,
 		HttpServletResponse response) throws AuthenticatorException;
 
-	public User authenticate(GateControl control,
-		ScreenServletRequest request,
+	public User authenticate(ScreenServletRequest request,
 		HttpServletResponse response)
 		throws AuthenticationException,
 		HttpException,

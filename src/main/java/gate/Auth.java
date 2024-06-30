@@ -9,6 +9,7 @@ import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,26 +24,24 @@ public class Auth extends HttpServlet
 
 	@Inject
 	@Current
-	private Authenticator authenticator;
-
-	@Inject
-	GateControl control;
+	@RequestScoped
+	Authenticator authenticator;
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void service(HttpServletRequest request, HttpServletResponse response) throws IOException
+	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response) throws IOException
 	{
-		request.setCharacterEncoding("UTF-8");
+		httpServletRequest.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 		try (Writer writer = response.getWriter())
 		{
 
 			try
 			{
-				User user = authenticator.authenticate(control,
-					new ScreenServletRequest(request), response);
+				User user = authenticator.authenticate(new ScreenServletRequest(httpServletRequest), response);
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
 				writer.write(Credentials.create(user));
