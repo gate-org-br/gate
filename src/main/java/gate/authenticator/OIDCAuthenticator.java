@@ -26,7 +26,6 @@ public class OIDCAuthenticator implements Authenticator
 
 	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
 
-	private final AuthConfig config;
 	private final String provider;
 	private final String clientId;
 	private final String clientSecret;
@@ -53,7 +52,6 @@ public class OIDCAuthenticator implements Authenticator
 	public OIDCAuthenticator(GateControl control, AuthConfig config)
 	{
 		this.control = control;
-		this.config = config;
 		clientId = config.getProperty("oidc.client_id").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
 		clientSecret = config.getProperty("oidc.client_secret").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
 		provider = config.getProperty("oidc.provider").orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
