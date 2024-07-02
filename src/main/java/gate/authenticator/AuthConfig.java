@@ -24,9 +24,7 @@ public class AuthConfig
 				.or(() -> SystemProperty.get("gate.auth." + key));
 
 		return SystemProperty.get(context + ".auth." + name + "." + key)
-			.or(() -> SystemProperty.get(context + ".auth." + key))
-			.or(() -> SystemProperty.get("gate.auth." + name + "." + key))
-			.or(() -> SystemProperty.get("gate.auth." + key));
+			.or(() -> SystemProperty.get("gate.auth." + name + "." + key));
 	}
 
 	public String context()
