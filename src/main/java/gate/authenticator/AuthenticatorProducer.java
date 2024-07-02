@@ -59,7 +59,7 @@ public class AuthenticatorProducer implements Serializable
 					default -> throw new AuthenticatorException("Invalid authenticator type");
 				};
 
-			if ("default".equals(authenticator))
+			if (!"default".equals(authenticator))
 				throw new AuthenticatorException("Invalid authenticator");
 
 			return new DatabaseAuthenticator(control, config);
