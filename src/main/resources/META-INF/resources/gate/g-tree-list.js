@@ -45,7 +45,7 @@ template.innerHTML = `
 	}
 
 	li[data-empty]::before {
-		content: ' ';
+		content: '\\25CF';
 	}
 
 	li[data-expanded]>ul {

@@ -12,15 +12,15 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class TextEditorProcessor extends PropertyProcessor
+public class TextViewerProcessor extends PropertyProcessor
 {
 
 	@Inject
 	ELExpressionFactory expression;
 
-	public TextEditorProcessor()
+	public TextViewerProcessor()
 	{
-		super("text-editor");
+		super("text-viewer");
 	}
 
 	@Override
@@ -32,11 +32,11 @@ public class TextEditorProcessor extends PropertyProcessor
 		if (attributes.containsKey("value"))
 			value = Converter.toString(expression.create()
 				.evaluate((String) attributes.remove("value")));
-		else if (!property.toString().endsWith("[]"))
+		else
 			value = Converter.toString(property.getValue(screen));
 
 		attributes.put("value", value.replace('"', '\''));
 
-		handler.replaceWith("<g-text-editor " + attributes + "></g-text-editor>", true);
+		handler.replaceWith("<g-text-viewer " + attributes + "></g-text-viewer>", true);
 	}
 }

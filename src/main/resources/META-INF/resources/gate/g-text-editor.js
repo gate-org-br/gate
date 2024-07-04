@@ -1,387 +1,599 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div id='toolbar'>
-		<button tabindex='-1' id='bold' title='Negrito'>
-			&#X3026;
-		</button>
-		<button tabindex='-1' id='italic' title='Itálico'>
-			&#X3027;
-		</button>
-		<button tabindex='-1' id='underline' title='Sublinhado'>
-			&#X3028;
-		</button>
-		<button tabindex='-1' id='strikeThrough' title='Riscado'>
-			&#X3029;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='red' title='Vermelho'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='green' title='Verde'>
-			&#X3025;
-		</button>
-		<button tabindex='-1' id='blue' title='Azul'>
-			&#X3025;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='removeFormat' title='Remover formatação'>
-			&#X3030;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='justifyCenter' title='Centralizar'>
-			&#X3034;
-		</button>
-		<button tabindex='-1' id='justifyLeft' title='Alinha à esquerda'>
-			&#X3032;
-		</button>
-		<button tabindex='-1' id='justifyRight' title='Alinha à direita'>
-			&#X3033;
-		</button>
-		<button tabindex='-1' id='justifyFull' title='Justificar'>
-			&#X3031;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='indent' title='Indentar'>
-			&#X3039;
-		</button>
-		<button tabindex='-1' id='outdent' title='Remover indentação'>
-			&#X3040;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='insertUnorderedList' title='Criar lista'>
-			&#X3035;
-		</button>
-		<button tabindex='-1' id='insertOrderedList' title='Criar lista ordenada'>
-			&#X3038;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='createLink' title='Criar link'>
-			&#X2076;
-		</button>
-		<button tabindex='-1' id='unlink' title='Remover link'>
-			&#X2233;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='happyFace' title='Carinha feliz"'>
-			&#X2104;
-		</button>
-		<button tabindex='-1' id='sadFace' title='Carinha triste"'>
-			&#X2106;
-		</button>
-		<button tabindex='-1' id='insertIcon' title='Inserir ícone'>
-			&#X3017;
-		</button>
-		<span></span>
-		<button tabindex='-1' id='insertImage' title='Inserir imagem'>
-			&#X2009;
-		</button>
+	<g-text-editor-toolbar id='toolbar'>
+	</g-text-editor-toolbar>
+	<div id='scroll'>
+		<div id='editor' tabindex="0" contentEditable='true'></div>
 	</div>
-	<div id='editor' tabindex="0" contentEditable='true'>
-	</div>
+	<input id='value' type="hidden"/>
  <style data-element="g-text-editor">:host(*)
 {
 	width: 100%;
 	height: 100%;
 	display: grid;
 	border-radius: 5px;
-	place-items: stretch;
-	place-content: stretch;
-	grid-template-rows: auto 1fr;
+	line-height: normal;
+	border: 1px solid #f2f2f2;
+	grid-template-rows: 60px 1fr;
 }
 
-#toolbar
+:host([hidden])
 {
-	padding: 4px;
+	display:  none;
+}
+
+#scroll {
 	display: flex;
 	overflow: auto;
-	align-items: center;
-	background-color: var(--main6);
-	border-radius: 5px 5px 0 0;
-	justify-content: flex-start;
-}
-
-#toolbar > span {
-	width: 12px;
-}
-button
-{
-	margin: 2px;
-	color: black;
-	height: 32px;
-	display: flex;
-	flex: 0 0 32px;
-	font-size: 16px;
-	background: none;
-	border-radius: 5px;
-	align-items: center;
-	font-family: "gate";
-	justify-content: center;
-	border: 1px solid var(--main5);
-	background-color: var(--main4);
-}
-
-button:hover {
-	background-color: var(--main1);
-}
-
-#red {
-	color: #660000
-}
-#green {
-	color: #006600
-}
-#blue {
-	color: #000066
-}
-
-:host(*) > span  {
-	flex: 0 0 8px;
-	display: block;
+	align-items: stretch;
+	justify-content: stretch;
 }
 
 #editor
 {
 	flex-grow: 1;
-	padding: 8px;
+	padding: 12px;
 	outline: none;
 	overflow: auto;
-	line-height: 18px;
+	font-size: 16px;
+	white-space: pre-wrap;
 	background-color: white;
 	border-radius: 0 0 5px 5px;
 }
 
 #editor:focus {
 	outline: none;
+}
+
+
+#editor > div {
+	padding: 8px;
+	display: flex;
+	overflow: auto;
+	height: fit-content;
+	align-items: stretch;
+	justify-content: center;
+}
+
+#editor > div:hover
+{
+	resize: vertical;
+	border: 1px solid #EFEFEF;
 	background-color: var(--hovered);
 }
 
-i {
-	font-family: gate;
-	font-style: normal;
-	text-decoration: none;
+#editor > div:focus
+{
+	outline: dotted;
 }
 
-img {
-	max-width: 100%;
+#editor > div > *
+{
+	height: 100%;
 }</style>`;
 /* global customElements */
+
+import './g-text-editor-toolbar.js';
+
+const LINE_BREAK = '\n';
 
 customElements.define('g-text-editor', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		if (!this.tabindex)
-			this.tabindex = 0;
+		this.tabindex = 0;
 		this.attachShadow({mode: "open"});
+		this._private = {undo: [], redo: []};
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this._private = {"input": document.createElement("input")};
-		this._private.input.setAttribute("type", "hidden");
+		const editor = this.shadowRoot.getElementById("editor");
 
-		this.shadowRoot.getElementById("bold").addEventListener("click", () => this.bold());
-		this.shadowRoot.getElementById("italic").addEventListener("click", () => this.italic());
-		this.shadowRoot.getElementById("underline").addEventListener("click", () => this.underline());
-		this.shadowRoot.getElementById("strikeThrough").addEventListener("click", () => this.strikeThrough());
+		editor.addEventListener('focusout', event => this._private.selection = this.getSelection());
 
-		this.shadowRoot.getElementById("red").addEventListener("click", () => this.redFont());
-		this.shadowRoot.getElementById("green").addEventListener("click", () => this.greenFont());
-		this.shadowRoot.getElementById("blue").addEventListener("click", () => this.blueFont());
-
-		this.shadowRoot.getElementById("removeFormat").addEventListener("click", () => this.removeFormat());
-
-		this.shadowRoot.getElementById("justifyCenter").addEventListener("click", () => this.justifyCenter());
-		this.shadowRoot.getElementById("justifyLeft").addEventListener("click", () => this.justifyLeft());
-		this.shadowRoot.getElementById("justifyRight").addEventListener("click", () => this.justifyRight());
-		this.shadowRoot.getElementById("justifyFull").addEventListener("click", () => this.justifyFull());
-
-		this.shadowRoot.getElementById("indent").addEventListener("click", () => this.indent());
-		this.shadowRoot.getElementById("outdent").addEventListener("click", () => this.outdent());
-
-		this.shadowRoot.getElementById("insertUnorderedList").addEventListener("click", () => this.insertUnorderedList());
-		this.shadowRoot.getElementById("insertOrderedList").addEventListener("click", () => this.insertOrderedList());
-
-		this.shadowRoot.getElementById("createLink").addEventListener("click", () => this.createLink());
-		this.shadowRoot.getElementById("unlink").addEventListener("click", () => this.unlink());
-
-		this.shadowRoot.getElementById("happyFace").addEventListener("click", () => this.happyFace());
-		this.shadowRoot.getElementById("sadFace").addEventListener("click", () => this.sadFace());
-		this.shadowRoot.getElementById("insertIcon").addEventListener("click", () => this.insertIcon());
-
-		this.shadowRoot.getElementById("insertImage").addEventListener("click", () => this.insertImage());
-
-		let editor = this.shadowRoot.getElementById("editor");
-		this.addEventListener("focus", () =>
+		editor.addEventListener('focusin', event =>
 		{
-			let range = document.createRange();
-			range.setStart(editor, 0);
-			range.setEnd(editor, 0);
-
-			let selection = window.getSelection();
-			selection.removeAllRanges();
-			selection.addRange(range);
+			let selection = this.getSelection();
+			if (this._private.selection)
+				this.setSelection(this._private.selection);
 		});
-		editor.addEventListener("input", () => this._private.input.value = editor.innerHTML);
-	}
 
-	bold()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("bold");
-	}
-
-	italic()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("italic");
-	}
-
-	underline()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("underline");
-	}
-
-	strikeThrough()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("strikeThrough");
-	}
-
-	redFont()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#660000");
-	}
-
-	greenFont()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#006600");
-	}
-
-	blueFont()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("foreColor", null, "#000066");
-	}
-
-	removeFormat()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("removeFormat");
-	}
-
-	justifyCenter()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("justifyCenter");
-	}
-
-	justifyLeft()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("justifyLeft");
-	}
-
-	justifyRight()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("justifyRight");
-	}
-
-	justifyFull()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("justifyFull");
-	}
-
-	indent()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("indent");
-	}
-
-	outdent()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("outdent");
-	}
-
-	insertUnorderedList()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertUnorderedList");
-	}
-
-	insertOrderedList()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertOrderedList");
-	}
-
-	createLink()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("createLink", null, prompt("Entre com a url"));
-	}
-
-	unlink()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("unlink");
-	}
-
-	happyFace()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertHTML", null, `<g-icon>&#X2104</g-icon>`);
-	}
-
-	sadFace()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		document.execCommand("insertHTML", null, `<g-icon>&#X2106</g-icon>`);
-	}
-
-	insertIcon()
-	{
-		this.shadowRoot.getElementById("editor").focus();
-		let picker = window.top.document.createElement("g-icon-picker");
-		picker.addEventListener("picked", e => document.execCommand("insertHTML", null, `<g-icon>&#X${e.detail}</g-icon>`));
-		picker.show();
-	}
-
-	insertImage()
-	{
-		let blob = document.createElement("input");
-		blob.setAttribute("type", "file");
-		blob.setAttribute("accept", ".jpg, .png, .svg, .jpeg, .gif, .bmp, .tif, .tiff|image/*");
-		blob.addEventListener("change", () =>
+		editor.addEventListener('beforeinput', event =>
 		{
-			let reader = new FileReader();
-			reader.readAsDataURL(blob.files[0]);
-			reader.onloadend = () =>
+			event.preventDefault();
+			if (event.inputType === 'deleteContentForward')
 			{
-				this.shadowRoot.getElementById("editor").focus();
-				document.execCommand("insertImage", null, reader.result);
-			};
+				this.mark();
+				let range = this.getSelection();
+				if (range.collapsed && range.endOffset < event.currentTarget.innerText.length)
+					range.setEnd(range.startContainer, range.endOffset + 1);
+				range.deleteContents();
+			} else if (event.inputType === 'deleteContentBackward')
+			{
+				this.mark();
+				let range = this.getSelection();
+				if (range.collapsed && range.startOffset)
+					range.setStart(range.startContainer, range.startOffset - 1);
+				range.deleteContents();
+			} else if (event.inputType === 'insertParagraph')
+				this.input(LINE_BREAK);
+			else if (event.inputType === 'insertText')
+				this.input(event.data);
+			this.compact();
+
 		});
-		blob.click();
+
+		editor.addEventListener("paste", (event) =>
+		{
+			event.preventDefault();
+			this.input(event.clipboardData.getData("text/plain"));
+		});
+
+		editor.addEventListener('keydown', event =>
+		{
+			if (event.ctrlKey)
+			{
+				if (event.key === "y" || event.key === "Y")
+					this.redo();
+				else if (event.key === "z" || event.key === "Z")
+					this.undo();
+				else if (event.key === "c" || event.key === "C")
+					return;
+				else if (event.key === "v" || event.key === "V")
+					return;
+
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+
+		});
+
+		editor.addEventListener('keydown', event =>
+		{
+			if (event.target.tagName === "DIV"
+				&& event.target.parentNode === editor)
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+
+				let target = event.target;
+				switch (event.key)
+				{
+					case "Enter":
+						this.mark();
+						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
+							target.previousSibling.textContent += LINE_BREAK;
+						else
+							target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target);
+						break;
+					case "Delete":
+						this.mark();
+						target.remove();
+						break;
+					case "Backspace":
+						let prev = target.previousSibling;
+						if (prev.tagName === "SPAN" && prev.lastChild)
+							prev = prev.lastChild;
+						if (prev && prev.nodeType === Node.TEXT_NODE)
+							if (prev.textContent.endsWith(LINE_BREAK))
+								prev.textContent = prev.textContent.slice(0, -1);
+						break;
+					case 'ArrowLeft':
+					case 'ArrowUp':
+						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
+							this.setSelection(target.previousSibling);
+						else
+							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target));
+						break;
+
+					case 'ArrowRight':
+					case 'ArrowDown':
+						if (!target.nextSibling)
+							this.setSelection(target.parentNode.appendChild(document.createTextNode(LINE_BREAK)));
+						else if (target.nextSibling.nodeType === Node.TEXT_NODE)
+							this.setSelection(target.nextSibling);
+						else
+							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK, target.nextSibling)));
+						break;
+
+				}
+			}
+		});
+
+		editor.addEventListener('keydown', event =>
+		{
+			let range = this.getSelection();
+			let content = range.commonAncestorContainer;
+			switch (event.key)
+			{
+				case "Tab":
+					event.preventDefault();
+					event.stopPropagation();
+					event.stopImmediatePropagation();
+
+					if (content === editor
+						|| content.tagName === "A"
+						|| content.tagName === "SPAN"
+						|| content.nodeType === Node.TEXT_NODE)
+						this.input("\t");
+					break;
+				case 'ArrowUp':
+				case 'ArrowLeft':
+					if (content.nodeType === Node.TEXT_NODE)
+						content = content.parentNode;
+					if (content.tagName === "SPAN" || content.tagName === "A")
+					{
+						let text;
+						content.normalize();
+						if (content.previousSibling && content.previousSibling.nodeType === Node.TEXT_NODE)
+							text = content.previousSibling;
+						else
+							text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content);
+						range.setStart(text, 0);
+						range.setEnd(text, 0);
+					}
+					break;
+				case 'ArrowDown':
+				case 'ArrowRight':
+					if (content.nodeType === Node.TEXT_NODE)
+						content = content.parentNode;
+					if (content.tagName === "SPAN" || content.tagName === "A")
+					{
+						let text;
+						content.normalize();
+						if (!content.firstChild || content.firstChild.textContent.length === range.endOffset)
+						{
+							if (!content.nextSibling)
+								text = content.parentNode.appendChild(document.createTextNode(LINE_BREAK));
+							else if (content.nextSibling.nodeType === Node.TEXT_NODE)
+								text = content.nextSibling;
+							else
+								text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content.nextSibling);
+						}
+
+						range.setStart(text, 0);
+						range.setEnd(text, 0);
+					}
+					break;
+
+			}
+		});
+	}
+
+	formatBold()
+	{
+		this.mark();
+		let selection = this.getSelectedNodes();
+		if (selection.every(e => e.style.fontWeight === "700"))
+			selection.forEach(e => e.style.fontWeight = "400");
+		else
+			selection.forEach(e => e.style.fontWeight = "700");
+		this.compact();
+	}
+
+	formatItalic()
+	{
+		this.mark();
+		let selection = this.getSelectedNodes();
+		if (selection.every(e => e.style.fontStyle === "italic"))
+			selection.forEach(e => e.style.fontStyle = "normal");
+		else
+			selection.forEach(e => e.style.fontStyle = "italic");
+		this.compact();
+	}
+
+	formatUnderline()
+	{
+		this.mark();
+		let selection = this.getSelectedNodes();
+		if (selection.every(e => e.style.textDecoration === "underline"))
+			selection.forEach(e => e.style.textDecoration = "");
+		else
+			selection.forEach(e => e.style.textDecoration = "underline");
+		this.compact();
+	}
+
+	formatStrikeThrough()
+	{
+		this.mark();
+		let selection = this.getSelectedNodes();
+		if (selection.every(e => e.style.textDecoration === "line-through"))
+			selection.forEach(e => e.style.textDecoration = "");
+		else
+			selection.forEach(e => e.style.textDecoration = "line-through");
+		this.compact();
+	}
+
+	formatFontColor(value)
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e => e.style.color = value);
+		this.compact();
+	}
+
+	formatBackColor(value)
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e => e.style.backgroundColor = value);
+		this.compact();
+	}
+
+	formatJustifyLeft()
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e =>
+		{
+			e.style.display = "block";
+			e.style.textAlign = "left";
+		});
+		this.compact();
+	}
+
+	formatJustifyCenter()
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e =>
+		{
+			e.style.display = "block";
+			e.style.textAlign = "center";
+		});
+		this.compact();
+	}
+
+	formatJustifyRight()
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e =>
+		{
+			e.style.display = "block";
+			e.style.textAlign = "right";
+		});
+		this.compact();
+	}
+
+	formatJustifyFull()
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e =>
+		{
+			e.style.display = "block";
+			e.style.textAlign = "justify";
+		});
+		this.compact();
+	}
+
+	formatRemove()
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e => e.style = "");
+		this.compact();
+	}
+
+	formatFontSize(value)
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e => e.style.fontSize = value);
+		this.compact();
+
+	}
+
+	formatFontName(value)
+	{
+		this.mark();
+		this.getSelectedNodes().forEach(e => e.style.fontFamily = value);
+		this.compact();
+	}
+
+	input(text)
+	{
+		if (!this.editor.innerHTML
+			|| text.length > 1
+			|| text === " "
+			|| text === "\t"
+			|| text === "\n")
+			this.mark();
+
+		let range = this.getSelection();
+		const textNode = document.createTextNode(text);
+		range.insertNode(textNode);
+		range.setStart(textNode, text.length);
+		range.setEnd(textNode, text.length);
+		this.setSelection(range);
+		this.editor.normalize();
+	}
+
+	attach(type, name, url)
+	{
+		this.mark();
+
+		let range = this.getSelection();
+
+		let html = null;
+		if (type.startsWith("image"))
+			html = `<div tabindex='1' contenteditable='false'><img src="${url}"/></div>`;
+		else if (type.startsWith("video"))
+			html = `<div tabindex='1' contenteditable='false'><video src="${url}" controls/></div>`;
+		else if (type.startsWith("audio"))
+			html = `<div tabindex='1' contenteditable='false'><audio src="${url}" controls/></div>`;
+		else
+			html = `<a href="${url}" download="${name}">${name}</a>`;
+
+		let element = range.createContextualFragment(html).childNodes[0];
+
+		range.insertNode(element);
+		if (element.parentNode !== this.editor)
+		{
+			element.parentNode.normalize();
+			if (element.previousSibling)
+			{
+				let span = element.parentNode.cloneNode(false);
+				span.appendChild(element.previousSibling);
+				this.editor.insertBefore(span, element.parentNode);
+			}
+			this.editor.insertBefore(element, element.parentNode);
+		}
+
+		this.compact();
+	}
+
+	mark()
+	{
+		this._private.undo.push(this.editor.innerHTML);
+	}
+
+	undo()
+	{
+		let value = this._private.undo.pop();
+		if (value !== undefined)
+		{
+			this._private.redo.push(this.editor.innerHTML);
+			this.editor.innerHTML = value;
+		}
+	}
+
+	redo()
+	{
+		let value = this._private.redo.pop();
+		if (value !== undefined)
+		{
+			this.mark();
+			this.editor.innerHTML = value;
+		}
+	}
+
+	set hidden(value)
+	{
+		if (value)
+			this.setAttribute("hidden", "true");
+		else
+			this.removeAttribute("hidden");
+	}
+
+	get hidden()
+	{
+		return this.hasAtribute("hidden");
 	}
 
 	connectedCallback()
 	{
-		this.appendChild(this._private.input);
+		let form = this.closest("form");
+		if (form)
+		{
+			form.addEventListener("submit", event =>
+			{
+				if (this.required && !this.value)
+					this.setCustomValidity("Please fill out this field");
+				else if (this.maxlength && this.value.length > this.maxlength)
+					this.setCustomValidity("The specified value exceeds max length");
+				else if (this.pattern && this.value && !this.value.match(this.pattern))
+					this.setCustomValidity("The specified value is not valid");
+				else
+					this.setCustomValidity("");
+				if (!this.reportValidity())
+					event.preventDefault();
+			});
+			form.addEventListener("formdata", event => event.formData.set(this.name, this.value));
+		}
+	}
+
+	getSelection()
+	{
+		let selection = this.shadowRoot.getSelection
+			? this.shadowRoot.getSelection()
+			: window.getSelection();
+
+		if (selection
+			&& selection.rangeCount
+			&& this.editor.contains(selection.getRangeAt(0).commonAncestorContainer))
+			return selection.getRangeAt(0);
+
+		let range = document.createRange();
+		range.setStart(this.editor, 0);
+		range.setEnd(this.editor, 0);
+		return range;
+	}
+
+	setSelection(range)
+	{
+		let selection = this.shadowRoot.getSelection
+			? this.shadowRoot.getSelection()
+			: window.getSelection();
+
+		if (range.nodeType === Node.TEXT_NODE)
+		{
+			let element = range;
+			range = document.createRange();
+			range.setStart(element, 0);
+			range.setEnd(element, 0);
+		}
+
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	getSelectedNodes()
+	{
+		this.editor.focus();
+		this.editor.normalize();
+
+		let range = this.getSelection();
+		let fragment = range.extractContents();
+		let textNodes = Array.from(fragment.childNodes)
+			.filter(e => e.nodeType === Node.TEXT_NODE || e.tagName === "SPAN" || e.tagName === "A")
+			.flatMap(e => e.nodeType === Node.TEXT_NODE ? e : Array.from(e.childNodes));
+		range.insertNode(fragment);
+
+		textNodes.forEach(text =>
+		{
+			let parent = text.parentNode;
+			if (parent === this.editor)
+			{
+				let span = document.createElement("span");
+				text.replaceWith(span);
+				span.appendChild(text);
+			} else if (parent.childNodes.length > 1)
+			{
+				Array.from(parent.childNodes).forEach(textFragment =>
+				{
+					let span = parent.cloneNode(false);
+					this.editor.insertBefore(span, parent);
+					span.appendChild(textFragment);
+				});
+			}
+		});
+
+		return textNodes.map(e => e.parentNode);
+	}
+
+	compact()
+	{
+
+		this.editor.normalize();
+		Array.from(this.editor.querySelectorAll("span, a"))
+			.filter(e => e.innerText.trim() === "")
+			.forEach(e => e.remove());
+
+		this.editor.normalize();
+		return this;
 	}
 
 	get value()
 	{
-		return this.getAttribute("value");
+		this.compact();
+		return this.shadowRoot.getElementById("editor").innerHTML
+			.trim()
+			.replaceAll(LINE_BREAK, "<br>");
 	}
 
 	set value(value)
 	{
-		this.setAttribute("value", value);
+		this.shadowRoot.getElementById("editor")
+			.innerHTML = value
+			.replaceAll(LINE_BREAK, "")
+			.replaceAll("<br>", LINE_BREAK)
+			.trim();
+		this.compact();
 	}
 
 	get name()
@@ -406,7 +618,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	get maxlength()
 	{
-		return this.getAttribute("maxlength");
+		return Number(this.getAttribute("maxlength"));
 	}
 
 	set maxlength(maxlength)
@@ -434,31 +646,23 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.setAttribute("tabindex", tabindex);
 	}
 
-	attributeChangedCallback(atrribute)
+	get toolbar()
 	{
-		switch (atrribute)
-		{
-			case "name":
-				this._private.input.setAttribute("name", this.name);
-				break;
-			case "value":
-				this.shadowRoot.getElementById("editor").innerHTML = this.value;
-				this._private.input.setAttribute("value", this.value);
-				break;
-			case "required":
-				this._private.input.setAttribute("required", this.required);
-				break;
-			case "maxlength":
-				this._private.input.setAttribute("maxlength", this.maxlength);
-				break;
-			case "pattern":
-				this._private.input.setAttribute("pattern", this.pattern);
-				break;
-		}
+		return this.shadowRoot.getElementById("toolbar");
+	}
+
+	get editor()
+	{
+		return this.shadowRoot.getElementById("editor");
+	}
+
+	attributeChangedCallback()
+	{
+		this.value = this.getAttribute("value");
 	}
 
 	static get observedAttributes()
 	{
-		return ["name", "value", "required", "maxlength", "pattern", "tabindex"];
+		return ["value"];
 	}
 });

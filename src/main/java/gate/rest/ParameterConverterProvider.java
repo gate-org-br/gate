@@ -17,7 +17,8 @@ public class ParameterConverterProvider implements ParamConverterProvider
 	public <T> ParamConverter<T> getConverter(Class<T> rawType,
 		Type genericType, Annotation[] annotations)
 	{
-		if (Converter.getConverter(rawType) instanceof ObjectConverter)
+		if (rawType.isPrimitive()
+			|| Converter.getConverter(rawType) instanceof ObjectConverter)
 			return null;
 		return new ParameterConverter<>(rawType);
 	}

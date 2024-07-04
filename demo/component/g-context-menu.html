@@ -1,0 +1,29 @@
+<g-callout class='fill'>
+	<h1>&lt;g-context-menu&gt;</h1>
+	<p>
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-code-viewer>
+			<g-callout id="context">
+				Click here to show the menu
+			</g-callout>
+			<script type="module">
+				import GContextMenu from './gate/g-context-menu.js';
+				document.querySelector("#context").addEventListener("contextmenu", e =>
+				{
+					e.preventDefault();
+					GContextMenu.show(e.x, e.y,
+						{"text": "Item 1", "action": () => alert("Item 1"), "icon": "2003"},
+						{"text": "Item 2", "action": () => alert("Item 2"), "icon": "2003"},
+						{"text": "Item 3", "action": () => alert("Item 3"), "icon": "2003"},
+						{"text": "Item 4", "action": () => alert("Item 4"), "icon": "2003"},
+						{"text": "Item 5", "action": () => alert("Item 5"), "icon": "2003"});
+				});
+			</script>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

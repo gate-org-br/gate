@@ -7,6 +7,7 @@ import gate.error.AuthenticatorException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class AuthenticatorProducer implements Serializable
 	@Current
 	@Produces
 	@RequestScoped
+	@Named("authenticator")
 	public Authenticator get()
 	{
 		String authenticator

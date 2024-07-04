@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.servlet.jsp.JspException;
 import java.io.IOException;
 
-public class TextEditorTag extends PropertyTag
+public class TextViewerTag extends PropertyTag
 {
 
 	@Inject
@@ -21,12 +21,12 @@ public class TextEditorTag extends PropertyTag
 		if (getAttributes().containsKey("value"))
 			value = Converter.toString(expression.create()
 				.evaluate((String) getAttributes().remove("value")));
-		else if (getName() != null && !getName().endsWith("[]"))
+		else
 			value = Converter.toString(getValue());
 
 		getAttributes().put("value", value.replace('"', '\''));
 
-		getJspContext().getOut().print("<g-text-editor "
-			+ getAttributes().toString() + "></g-text-editor>");
+		getJspContext().getOut().print("<g-text-viewer "
+			+ getAttributes().toString() + "></g-text-viewer>");
 	}
 }

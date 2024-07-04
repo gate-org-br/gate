@@ -37,6 +37,15 @@ button:hover
 }</style>`;
 /* global customElements, template */
 
+function isVisible(element)
+{
+	let rect = element.getBoundingClientRect();
+	return rect.top >= 0
+		&& rect.left >= 0
+		&& rect.bottom <= window.innerHeight
+		&& rect.right <= window.innerWidth;
+}
+
 export default class GContextMenu extends HTMLElement
 {
 	constructor()
@@ -55,29 +64,37 @@ export default class GContextMenu extends HTMLElement
 		{
 			let link = this.shadowRoot.appendChild(document.createElement("a"));
 			link.innerText = action.text;
-			link.appendChild(document.createElement("g-icon")).innerHTML = `&#X${action.icon};`;
+			link.appendChild(document.createElement("g-icon")).innerHTML = `&#X${action.icon || '1024'};`;
 			if (typeof action.action === 'string')
 				link.href = action.action;
 			else
-				link.addEventListener("click", () => action.action(this.context));
+				link.addEventListener("click", () => action.action());
 		});
 	}
 
 	show(x, y)
 	{
-		if (x + this.clientWidth > window.innerWidth)
-			x = x >= this.clientWidth
-				? x - this.clientWidth
-				: x = window.innerWidth / 2 - this.clientWidth / 2;
-
-		if (y + this.clientHeight > window.innerHeight)
-			y = y >= this.clientHeight
-				? y - this.clientHeight
-				: y = window.innerHeight / 2 - this.clientHeight / 2;
-
-		this.style.top = y + "px";
-		this.style.left = x + "px";
+		this.style.top = (y - 1) + "px";
+		this.style.left = (x - 1) + "px";
 		document.documentElement.appendChild(this);
+
+		if (isVisible(this))
+			return;
+
+		this.style.top = (y + 1 - this.clientHeight) + "px";
+		this.style.left = (x - 1) + "px";
+
+		if (isVisible(this))
+			return;
+
+		this.style.left = (x + 1 - this.clientWidth) + "px";
+		this.style.top = y - 1 + "px";
+
+		if (isVisible(this))
+			return;
+
+		this.style.left = (x + 1 - this.clientWidth) + "px";
+		this.style.top = (y + 1 - this.clientHeight) + "px";
 	}
 
 	hide()

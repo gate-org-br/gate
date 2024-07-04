@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.converter.custom.SafeHTMLConverter;
 import java.io.Serializable;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.safety.Safelist;
 
 @Converter(SafeHTMLConverter.class)
@@ -30,7 +31,7 @@ public class SafeHTML implements Serializable
 			"table", "caption", "thead", "tbody", "tfoot", "tr", "td", "th")
 		.addAttributes("div", "style")
 		.addAttributes("span", "style")
-		.addAttributes("a", "href", "style")
+		.addAttributes("a", "href", "style", "download")
 		.addAttributes("img", "src", "style")
 		.addAttributes("p", "style")
 		.addAttributes("h1", "style")
@@ -72,8 +73,8 @@ public class SafeHTML implements Serializable
 
 	public static SafeHTML of(String value)
 	{
-
-		return new SafeHTML(Jsoup.clean(value, ALLOWED).trim());
-
+		OutputSettings outputSettings = new OutputSettings();
+		outputSettings.prettyPrint(false);
+		return new SafeHTML(Jsoup.clean(value, "", ALLOWED, outputSettings).trim());
 	}
 }

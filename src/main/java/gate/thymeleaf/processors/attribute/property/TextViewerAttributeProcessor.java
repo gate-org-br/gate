@@ -9,12 +9,12 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
-public class TextEditorAttributeProcessor extends FormControlAttributeProcessor
+public class TextViewerAttributeProcessor extends FormControlAttributeProcessor
 {
 
-	public TextEditorAttributeProcessor()
+	public TextViewerAttributeProcessor()
 	{
-		super("g-text-editor");
+		super("g-text-viewer");
 	}
 
 	@Override

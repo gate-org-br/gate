@@ -119,6 +119,8 @@ export default class Parser
 
 	static unquote(string)
 	{
+		if (typeof string !== "string")
+			return string;
 		string = string.trim();
 		if (string.startsWith("'")
 			&& string.endsWith("'")

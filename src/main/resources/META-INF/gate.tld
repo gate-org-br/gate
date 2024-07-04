@@ -1386,7 +1386,27 @@
 			<rtexprvalue>true</rtexprvalue>
 			<description>
 				The current screen property to be synchronized
-				with the generated textarea.
+				with the generated editor
+			</description>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>text-viewer</name>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+		<tag-class>gate.tags.property.TextViewerTag</tag-class>
+		<description>
+			Creates a html text viewer bound
+			to the current screen specified property.
+		</description>
+		<attribute>
+			<name>property</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<description>
+				The current screen property to be synchronized
+				with the generated viewer.
 			</description>
 		</attribute>
 	</tag>
