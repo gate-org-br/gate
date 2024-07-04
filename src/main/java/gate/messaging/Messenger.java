@@ -5,7 +5,6 @@ import gate.entity.App;
 import gate.entity.Mail;
 import gate.entity.Server;
 import gate.error.AppException;
-import gate.stream.CheckedOptional;
 import gate.type.mime.Mime;
 import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeList;
@@ -118,8 +117,8 @@ public class Messenger implements ServletContextListener
 
 	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		CheckedOptional.of(MessageException.class, control.server())
-			.ifPresent​(server -> post(server.getUsername(), receiver, mail));
+		var server = control.server().orElseThrow(() -> new MessageException("SMPT server not configured"));
+		post(server.getUsername(), receiver, mail);
 	}
 
 	public List<Mail> search() throws MessageException
@@ -129,8 +128,14 @@ public class Messenger implements ServletContextListener
 
 	private void send(String sender, String receiver, MimeMail<?> mail) throws MessageException
 	{
-		CheckedOptional.of(MessageException.class, control.server())
-			.ifPresent​(server -> send(server, sender, receiver, mail));
+		try
+		{
+			var server = control.server().orElseThrow(() -> new MessageException("SMPT server not configured"));
+			send(server, sender, receiver, mail);
+		} catch (MessagingException ex)
+		{
+			throw new MessageException("Error trying to send mail message", ex);
+		}
 	}
 
 	public void send(Server server, String sender, String receiver, MimeMail<?> mail) throws MessagingException

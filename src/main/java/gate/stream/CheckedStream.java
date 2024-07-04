@@ -33,10 +33,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.filter(e -> {
+			return CheckedStream.of(type, stream.filter(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -52,10 +56,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.map(e -> {
+			return CheckedStream.of(type, stream.map(e ->
+			{
 				try
 				{
 					return mapper.apply(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -71,10 +79,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.mapToDouble(e -> {
+			return stream.mapToDouble(e ->
+			{
 				try
 				{
 					return mapper.applyAsDouble​(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -87,14 +99,18 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public DoubleStream flatMapToDouble(CheckedFunction<? super T, ? extends DoubleStream> mapper)
-			throws E
+		throws E
 	{
 		try
 		{
-			return stream.flatMapToDouble(a -> {
+			return stream.flatMapToDouble(a ->
+			{
 				try
 				{
 					return mapper.apply(a);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -110,10 +126,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.mapToInt(e -> {
+			return stream.mapToInt(e ->
+			{
 				try
 				{
 					return mapper.applyAsInt(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -129,10 +149,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.flatMapToInt(a -> {
+			return stream.flatMapToInt(a ->
+			{
 				try
 				{
 					return mapper.apply(a);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -148,10 +172,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.mapToLong(e -> {
+			return stream.mapToLong(e ->
+			{
 				try
 				{
 					return mapper.applyAsLong(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -164,14 +192,18 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public LongStream flatMapToLong(CheckedFunction<? super T, ? extends LongStream> mapper)
-			throws E
+		throws E
 	{
 		try
 		{
-			return stream.flatMapToLong(a -> {
+			return stream.flatMapToLong(a ->
+			{
 				try
 				{
 					return mapper.apply(a);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -184,14 +216,18 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public <R> CheckedStream<R, E> flatMap(
-			CheckedFunction<? super T, ? extends Stream<? extends R>> mapper) throws E
+		CheckedFunction<? super T, ? extends Stream<? extends R>> mapper) throws E
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.flatMap(e -> {
+			return CheckedStream.of(type, stream.flatMap(e ->
+			{
 				try
 				{
 					return mapper.apply(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -216,10 +252,14 @@ public class CheckedStream<T, E extends Exception>
 	public CheckedStream<T, E> sorted​(CheckedComparator<? super T> comparator) throws E
 	{
 
-		return CheckedStream.of(type, stream).sorted​((a, b) -> {
+		return CheckedStream.of(type, stream).sorted​((a, b) ->
+		{
 			try
 			{
 				return comparator.compare(a, b);
+			} catch (RuntimeException ex)
+			{
+				throw ex;
 			} catch (Exception ex)
 			{
 				throw new CheckedExceptionWrapper(ex);
@@ -231,10 +271,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.peek(e -> {
+			return CheckedStream.of(type, stream.peek(e ->
+			{
 				try
 				{
 					action.accept(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -260,10 +304,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.takeWhile(e -> {
+			return CheckedStream.of(type, stream.takeWhile(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -279,10 +327,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedStream.of(type, stream.dropWhile(e -> {
+			return CheckedStream.of(type, stream.dropWhile(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -298,10 +350,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			stream.forEach(e -> {
+			stream.forEach(e ->
+			{
 				try
 				{
 					action.accept(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -317,10 +373,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			stream.forEach(e -> {
+			stream.forEach(e ->
+			{
 				try
 				{
 					action.accept(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -347,10 +407,14 @@ public class CheckedStream<T, E extends Exception>
 		try
 		{
 
-			return stream.reduce(identity, (a, b) -> {
+			return stream.reduce(identity, (a, b) ->
+			{
 				try
 				{
 					return accumulator.apply(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -366,10 +430,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedOptional.of(type, stream.reduce((a, b) -> {
+			return CheckedOptional.of(type, stream.reduce((a, b) ->
+			{
 				try
 				{
 					return accumulator.apply(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -382,23 +450,31 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public <U> U reduce(U identity, CheckedBiFunction<U, ? super T, U> accumulator,
-			CheckedBinaryOperator<U> combiner) throws E
+		CheckedBinaryOperator<U> combiner) throws E
 	{
 		try
 		{
 
-			return stream.reduce(identity, (a, b) -> {
+			return stream.reduce(identity, (a, b) ->
+			{
 				try
 				{
 					return accumulator.apply(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
 				}
-			}, (a, b) -> {
+			}, (a, b) ->
+			{
 				try
 				{
 					return combiner.apply(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -411,30 +487,42 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public <R> R collect(CheckedSupplier<R> supplier, CheckedBiConsumer<R, ? super T> accumulator,
-			CheckedBiConsumer<R, R> combiner) throws E
+		CheckedBiConsumer<R, R> combiner) throws E
 	{
 		try
 		{
-			return stream.collect(() -> {
+			return stream.collect(() ->
+			{
 				try
 				{
 					return supplier.get();
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
 				}
-			}, (a, b) -> {
+			}, (a, b) ->
+			{
 				try
 				{
 					accumulator.accept(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
 				}
-			}, (a, b) -> {
+			}, (a, b) ->
+			{
 				try
 				{
 					combiner.accept(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -455,10 +543,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedOptional.of(type, stream.min((a, b) -> {
+			return CheckedOptional.of(type, stream.min((a, b) ->
+			{
 				try
 				{
 					return comparator.compare(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -474,10 +566,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return CheckedOptional.of(type, stream.max((a, b) -> {
+			return CheckedOptional.of(type, stream.max((a, b) ->
+			{
 				try
 				{
 					return comparator.compare(a, b);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -498,10 +594,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.anyMatch(e -> {
+			return stream.anyMatch(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -517,10 +617,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.allMatch(e -> {
+			return stream.allMatch(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);
@@ -536,10 +640,14 @@ public class CheckedStream<T, E extends Exception>
 	{
 		try
 		{
-			return stream.noneMatch(e -> {
+			return stream.noneMatch(e ->
+			{
 				try
 				{
 					return predicate.test(e);
+				} catch (RuntimeException ex)
+				{
+					throw ex;
 				} catch (Exception ex)
 				{
 					throw new CheckedExceptionWrapper(ex);

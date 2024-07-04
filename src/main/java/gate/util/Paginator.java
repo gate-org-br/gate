@@ -98,28 +98,28 @@ public class Paginator<E> implements Iterable<Page<E>>, Serializable
 	public Page<E> getFrstPage()
 	{
 		if (data == null || getSize() == 0)
-			return null;
+			return new Page<>(this, -1, List.of());
 		return new Page<>(this, 0);
 	}
 
 	public Page<E> getLastPage()
 	{
 		if (data == null || getSize() == 0)
-			return null;
+			return new Page<>(this, -1, List.of());
 		return new Page<>(this, getSize() - 1);
 	}
 
 	public Page<E> getPage(int indx)
 	{
 		if (data == null || getSize() == 0)
-			return null;
+			return new Page<>(this, -1, List.of());
 		return new Page<>(this, Math.min(Math.max(indx, 0), getSize() - 1));
 	}
 
 	public Page<E> getPage(int indx, List<E> data)
 	{
 		if (indx < 0 || indx >= getSize())
-			return null;
+			return new Page<>(this, -1, List.of());
 		return new Page<>(this, indx, data);
 	}
 

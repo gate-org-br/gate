@@ -363,11 +363,15 @@ customElements.define('g-login-form', class extends HTMLElement
 				return this.shadowRoot.querySelector("#app").innerText = val;
 			case "version":
 				return this.shadowRoot.querySelector("#version").innerText = `Versão ${val}`;
+			case "tab":
+				return this.shadowRoot.querySelector(`#${val}-tab`)
+					? this.shadowRoot.querySelector(`#${val}-tab`).click()
+					: null;
 		}
 	}
 
 	static get observedAttributes()
 	{
-		return ["action", "method", "target", "logo", "app", "version"];
+		return ["action", "method", "target", "logo", "app", "version", "tab"];
 	}
 });

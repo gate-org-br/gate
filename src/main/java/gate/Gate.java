@@ -178,6 +178,7 @@ public class Gate extends HttpServlet
 			{
 				httpServletRequest.setAttribute("messages",
 					Collections.singletonList(ex.getMessage()));
+				httpServletRequest.setAttribute("exception", ex);
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
 			} else

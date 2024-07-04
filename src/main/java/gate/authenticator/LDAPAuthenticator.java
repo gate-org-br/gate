@@ -122,7 +122,7 @@ public class LDAPAuthenticator implements Authenticator
 					if (!databaseFallback)
 						throw new InvalidUsernameException();
 
-					if (MD5.digest(authorization.username()).toString()
+					if (MD5.digest(user.getUsername()).toString()
 						.equals(user.getPassword()))
 						throw new DefaultPasswordException();
 

@@ -1,12 +1,15 @@
 package gate.util;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
-public class Page<E> implements Iterable<E>, Serializable
+public class Page<E> implements Collection<E>, Serializable
 {
 
 	private final int indx;
@@ -81,7 +84,7 @@ public class Page<E> implements Iterable<E>, Serializable
 		if (data != null)
 			return data.size();
 		return Math.min(paginator.getPageSize(),
-				paginator.getData().size() - ((indx) * paginator.getPageSize()));
+			paginator.getData().size() - ((indx) * paginator.getPageSize()));
 	}
 
 	public E getLine(int indx)
@@ -89,8 +92,8 @@ public class Page<E> implements Iterable<E>, Serializable
 		if (data != null)
 			return data.get(indx);
 		return indx >= 0 && indx <= getSize() - 1
-				? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx)
-				: null;
+			? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx)
+			: null;
 	}
 
 	public int getFrstLineIndx()
@@ -117,6 +120,90 @@ public class Page<E> implements Iterable<E>, Serializable
 	public Iterator<E> iterator()
 	{
 		return new PageIterator();
+	}
+
+	@Override
+	public int size()
+	{
+		return getSize();
+	}
+
+	@Override
+	public boolean isEmpty()
+	{
+		return getSize() == 0;
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c)
+	{
+		for (Object element : c)
+			if (!contains(element))
+				return false;
+		return true;
+	}
+
+	@Override
+	public boolean contains(Object o)
+	{
+		for (E element : this)
+			if (Objects.equals(element, o))
+				return true;
+		return false;
+	}
+
+	@Override
+	public Object[] toArray()
+	{
+		List<E> array = new ArrayList<>();
+		for (E element : this)
+			array.add(element);
+		return array.toArray();
+	}
+
+	@Override
+	public <T> T[] toArray(T[] a)
+	{
+		List<E> array = new ArrayList<>();
+		for (E element : this)
+			array.add(element);
+		return array.toArray(a);
+	}
+
+	@Override
+	public boolean add(E e)
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
+	}
+
+	@Override
+	public boolean remove(Object o)
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends E> c)
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c)
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c)
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
+	}
+
+	@Override
+	public void clear()
+	{
+		throw new UnsupportedOperationException("Readonly collection.");
 	}
 
 	private class PageIterator implements Iterator<E>
