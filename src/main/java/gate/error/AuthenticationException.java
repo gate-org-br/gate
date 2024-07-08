@@ -3,10 +3,16 @@ package gate.error;
 /**
  * Signals that the user could not be authenticated.
  */
-public class AuthenticationException extends Exception
+public class AuthenticationException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
+
+	@Override
+	public int getStatusCode()
+	{
+		return 401;
+	}
 
 	/**
 	 * Constructs an AuthenticationException.

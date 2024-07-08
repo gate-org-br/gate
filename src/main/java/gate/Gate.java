@@ -173,16 +173,19 @@ public class Gate extends HttpServlet
 
 		} catch (AuthenticationException ex)
 		{
-			String provider = authenticator.provider(request, response);
-			if (provider == null)
+			if (authenticator.provider(request, response) != null)
+			{
+				var type = Catcher.getCatcher(ex.getClass());
+				Catcher catcher = catchers.select(type).get();
+				catcher.catches(httpServletRequest, response, ex);
+			} else
 			{
 				httpServletRequest.setAttribute("messages",
 					Collections.singletonList(ex.getMessage()));
 				httpServletRequest.setAttribute("exception", ex);
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
-			} else
-				response.sendRedirect(provider);
+			}
 		} catch (HttpException | HierarchyException | IOException | RuntimeException ex)
 		{
 			var type = Catcher.getCatcher(ex.getClass());

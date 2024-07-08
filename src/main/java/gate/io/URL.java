@@ -415,9 +415,11 @@ public class URL
 
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
 				.uri(URI.create(toString()))
-				.timeout(timeout)
 				.header("Content-Type", contentType)
 				.method(method, bodyPublisher);
+
+			if (timeout != INFINITE)
+				builder = builder.timeout(timeout);
 
 			if (authorization != null)
 				builder.header("Authorization", authorization.toString());

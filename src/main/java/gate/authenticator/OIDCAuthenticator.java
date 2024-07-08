@@ -17,10 +17,13 @@ import gate.util.JWKSPublicKeyParser;
 import gate.util.Parameters;
 import gate.util.SecuritySessions;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.PublicKey;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OIDCAuthenticator implements Authenticator
 {
@@ -29,7 +32,6 @@ public class OIDCAuthenticator implements Authenticator
 
 	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
 
-	private final AuthConfig config;
 	private final String provider;
 	private final String clientId;
 	private final String clientSecret;
@@ -43,7 +45,7 @@ public class OIDCAuthenticator implements Authenticator
 	private final Cache<String> tokenEndpoint;
 	private final Cache<String> userInfoEndpoint;
 	private final Cache<String> jwksUri;
-	private final Cache<PublicKey> publicKey;
+	private final Cache<Map<String, PublicKey>> publicKeys;
 
 	private String getCallback(ScreenServletRequest request)
 	{
@@ -56,7 +58,6 @@ public class OIDCAuthenticator implements Authenticator
 	public OIDCAuthenticator(GateControl control, AuthConfig config)
 	{
 		this.control = control;
-		this.config = config;
 		clientId = config.getProperty("oidc.client_id").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
 		clientSecret = config.getProperty("oidc.client_secret").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
 		provider = config.getProperty("oidc.provider").orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
@@ -70,7 +71,7 @@ public class OIDCAuthenticator implements Authenticator
 		tokenEndpoint = Cache.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
 		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
 		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
-		publicKey = Cache.of(this::fetchPublicKey);
+		publicKeys = Cache.of(this::fetchPublicKeys);
 	}
 
 	@Override
@@ -131,9 +132,9 @@ public class OIDCAuthenticator implements Authenticator
 
 		if (tokens.containsKey("id_token"))
 		{
-			var jwt = tokens.getString("id_token")
-				.map(Jwts.parser().verifyWith(publicKey.get()).build()::parse)
-				.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
+
+			var idToken = tokens.getString("id_token").orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
+			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(idToken);
 
 			if (jwt.getPayload() instanceof Claims claims)
 			{
@@ -163,14 +164,12 @@ public class OIDCAuthenticator implements Authenticator
 	private User clientCredentialsCodeFlow(GateControl control, ScreenServletRequest request)
 		throws HttpException, AuthenticationException, HierarchyException, IOException
 	{
-		BearerAuthorization authorization = request.getBearerAuthorization()
-			.orElseThrow(() -> new BadRequestException("Credentials not supplied"));
-		var jwt = Jwts.parser().verifyWith(publicKey.get()).build().parse(authorization.token());
+		BearerAuthorization authorization = request.getBearerAuthorization().orElseThrow(() -> new BadRequestException("Credentials not supplied"));
+		var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(authorization.token());
 
 		if (jwt.getPayload() instanceof Claims claims
 			&& claims.containsKey("sub"))
-			return control.select(claims.get("sub", String.class
-			));
+			return control.select(claims.get("sub", String.class));
 		throw new AuthenticationException("Error trying to get subject from auth provider");
 	}
 
@@ -201,19 +200,20 @@ public class OIDCAuthenticator implements Authenticator
 		}
 	}
 
-	private PublicKey fetchPublicKey()
+	private Map<String, PublicKey> fetchPublicKeys()
 	{
 		try
 		{
-			JsonObject object = new URL(jwksUri.get())
+			return new URL(jwksUri.get())
 				.get()
 				.readJsonObject()
 				.flatMap(e -> e.getJsonArray("keys"))
-				.flatMap(e -> e.stream().findFirst())
+				.orElseThrow()
+				.stream()
 				.map(e -> (JsonObject) e)
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
-
-			return JWKSPublicKeyParser.parse(object);
+				.collect(Collectors.toMap(e -> e.getString("kid")
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider")),
+					JWKSPublicKeyParser::parse));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -230,5 +230,20 @@ public class OIDCAuthenticator implements Authenticator
 	public Type getType()
 	{
 		return Authenticator.Type.OIDC;
+	}
+
+	private PublicKey getPublicKey(Header header)
+	{
+		if (!header.containsKey("kid"))
+			return publicKeys.get().values().stream().findFirst()
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+
+		var publicKey = publicKeys.get().get((String) header.get("kid"));
+
+		if (publicKey == null)
+			return publicKeys.get().values().stream().findFirst()
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+
+		return publicKey;
 	}
 }
