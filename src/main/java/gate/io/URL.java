@@ -26,7 +26,9 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import javax.net.ssl.SSLContext;
@@ -47,6 +49,7 @@ public class URL
 	private Duration timeout = Duration.ZERO;
 	private final Parameters parameters;
 	private Authorization authorization;
+	private Map<String, String> headers = new HashMap<>();
 
 	private static final TrustManager TRUST_MANAGER = new X509ExtendedTrustManager()
 	{
@@ -112,6 +115,12 @@ public class URL
 			parameters.put(name, parameter);
 		else
 			parameters.remove(name);
+		return this;
+	}
+
+	public URL setHeader(String header, String value)
+	{
+		headers.put(header, value);
 		return this;
 	}
 
@@ -385,10 +394,12 @@ public class URL
 				.uri(URI.create(toString()));
 
 			if (timeout != INFINITE)
-				builder = builder.timeout(timeout);
+				builder.timeout(timeout);
 
 			if (authorization != null)
 				builder.header("Authorization", authorization.toString());
+
+			headers.entrySet().forEach(e -> builder.header(e.getKey(), e.getValue()));
 
 			HttpRequest request = builder.method(method, HttpRequest.BodyPublishers.noBody()).build();
 
@@ -421,6 +432,8 @@ public class URL
 
 			if (authorization != null)
 				builder.header("Authorization", authorization.toString());
+
+			headers.entrySet().forEach(e -> builder.header(e.getKey(), e.getValue()));
 
 			HttpRequest request = builder.build();
 
