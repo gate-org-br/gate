@@ -34,7 +34,6 @@ public class Auth extends HttpServlet
 	{
 		httpServletRequest.setCharacterEncoding("UTF-8");
 		response.setCharacterEncoding("UTF-8");
-		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 		try (Writer writer = response.getWriter())
 		{

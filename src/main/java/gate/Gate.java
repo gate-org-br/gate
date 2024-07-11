@@ -18,6 +18,7 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
+import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
@@ -48,6 +49,9 @@ public class Gate extends HttpServlet
 	static final String HTML = "/views/Gate.html";
 	private static final long serialVersionUID = 1L;
 
+	private final String developer
+		= SystemProperty.get("gate.developer").orElse(null);
+
 	@Inject
 	Logger logger;
 
@@ -69,6 +73,9 @@ public class Gate extends HttpServlet
 
 	@Inject
 	Call mainAction;
+
+	@Inject
+	GateControl control;
 
 	static
 	{
@@ -142,6 +149,9 @@ public class Gate extends HttpServlet
 			} else if (request.getSession(false) != null
 				&& request.getSession().getAttribute(User.class.getName()) != null)
 				user = (User) request.getSession().getAttribute(User.class.getName());
+			else if (developer != null)
+				request.getSession().setAttribute(User.class.getName(),
+					user = control.select(developer));
 
 			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION) ? mainAction
 				: Call.of(MODULE, SCREEN, ACTION);
@@ -233,25 +243,31 @@ public class Gate extends HttpServlet
 			Progress progress = null;
 			try (Writer writer = response.getWriter())
 			{
-				progress = Progress.create(user, writer);
-				Object result = screen.execute(method);
-				if (result != null)
+				try
 				{
-					var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-						? method.getAnnotation(gate.annotation.Handler.class).value()
-						: Handler.getHandler(result.getClass());
-					var handler = handlers.select(type).get();
-					handler.handle(request, response, progress, result);
+					progress = Progress.create(user, writer);
+					Object result = screen.execute(method);
+					if (result != null)
+					{
+						var type = method.isAnnotationPresent(gate.annotation.Handler.class)
+							? method.getAnnotation(gate.annotation.Handler.class).value()
+							: Handler.getHandler(result.getClass());
+						var handler = handlers.select(type).get();
+						handler.handle(request, response, progress, result);
+					}
+					progress.close();
+				} catch (AppException ex)
+				{
+					if (progress != null)
+						progress.abort(ex.getMessage());
+				} catch (Throwable ex)
+				{
+					if (progress != null)
+						progress.abort(ex.getMessage());
+					logger.error(ex.getMessage(), ex);
 				}
-				progress.close();
-			} catch (AppException ex)
+			} catch (IOException ex)
 			{
-				if (progress != null)
-					progress.abort(ex.getMessage());
-			} catch (Throwable ex)
-			{
-				if (progress != null)
-					progress.abort(ex.getMessage());
 				logger.error(ex.getMessage(), ex);
 			} finally
 			{

@@ -103,7 +103,7 @@ public class Progress
 	{
 		if (status == Progress.Status.PENDING
 			|| status == Progress.Status.CREATED)
-			update(Status.CANCELED, todo, done, text);
+			update(Status.CANCELED, todo, done, message);
 		else
 			update(status, todo, done, message);
 		dispatch(this.toString());
