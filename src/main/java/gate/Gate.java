@@ -23,6 +23,7 @@ import gate.handler.Handler;
 import gate.handler.IntegerHandler;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
+import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -54,9 +55,6 @@ public class Gate extends HttpServlet
 	Logger logger;
 
 	@Inject
-	GateControl control;
-
-	@Inject
 	Event<LoginEvent> event;
 
 	@Any
@@ -70,6 +68,11 @@ public class Gate extends HttpServlet
 	@Inject
 	@Current
 	private Authenticator authenticator;
+
+	@Inject
+	GateControl control;
+
+	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	static
 	{
@@ -130,10 +133,7 @@ public class Gate extends HttpServlet
 				{
 					user = Credentials.of(request).orElseThrow();
 					request.setAttribute(User.class.getName(), user);
-				} else if (request.getSession(false) != null)
-					user = (User) request.getSession()
-						.getAttribute(User.class.getName());
-				else if (!call.isPublic())
+				} else if (authenticator.hasCredentials(request))
 				{
 					user = authenticator.authenticate(request, response);
 					if (user != null)
@@ -141,7 +141,12 @@ public class Gate extends HttpServlet
 						event.fireAsync(new LoginEvent(user));
 						request.getSession().setAttribute(User.class.getName(), user);
 					}
-				}
+				} else if (request.getSession(false) != null
+					&& request.getSession().getAttribute(User.class.getName()) != null)
+					user = (User) request.getSession().getAttribute(User.class.getName());
+				else if (!call.isPublic() && developer != null)
+					request.getSession().setAttribute(User.class.getName(),
+						user = control.select(developer));
 
 				if (!call.checkAccess(user))
 					if (user != null)

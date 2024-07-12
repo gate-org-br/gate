@@ -10,7 +10,6 @@ import gate.error.InvalidUsernameException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
-import gate.util.SystemProperty;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
@@ -34,7 +33,6 @@ public class LDAPAuthenticator implements Authenticator
 	private final String securityProtocol;
 	private final String rootContext;
 	private final boolean databaseFallback;
-	private final String developer = SystemProperty.get("gate.developer").orElse(null);
 
 	public LDAPAuthenticator(GateControl control,
 		AuthConfig config)
@@ -106,9 +104,6 @@ public class LDAPAuthenticator implements Authenticator
 		throws gate.error.AuthenticationException, HierarchyException
 	{
 		var authorization = request.getBasicAuthorization().orElse(null);
-
-		if (authorization == null)
-			return developer != null ? control.select(developer) : null;
 
 		User user = control.select(authorization.username());
 
