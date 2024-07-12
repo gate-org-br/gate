@@ -133,6 +133,10 @@ public class Gate extends HttpServlet
 				return;
 			}
 
+			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION)
+				? mainAction
+				: Call.of(MODULE, SCREEN, ACTION);
+
 			User user = null;
 			if (Credentials.isPresent(httpServletRequest))
 			{
@@ -149,12 +153,10 @@ public class Gate extends HttpServlet
 			} else if (request.getSession(false) != null
 				&& request.getSession().getAttribute(User.class.getName()) != null)
 				user = (User) request.getSession().getAttribute(User.class.getName());
-			else if (developer != null)
+			else if (!call.isPublic() && developer != null)
 				request.getSession().setAttribute(User.class.getName(),
 					user = control.select(developer));
 
-			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION) ? mainAction
-				: Call.of(MODULE, SCREEN, ACTION);
 			if (!call.checkAccess(user))
 				if (user != null)
 					throw new ForbiddenException();
