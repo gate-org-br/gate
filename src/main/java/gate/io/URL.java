@@ -174,8 +174,7 @@ public class URL
 
 	public URL setTimeout(Duration timeout)
 	{
-		Objects.requireNonNull(timeout);
-		this.timeout = timeout;
+		this.timeout = Objects.requireNonNull(timeout);
 		return this;
 	}
 
@@ -426,9 +425,11 @@ public class URL
 
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
 				.uri(URI.create(toString()))
-				.timeout(timeout)
 				.header("Content-Type", contentType)
 				.method(method, bodyPublisher);
+
+			if (timeout != INFINITE)
+				builder.timeout(timeout);
 
 			if (authorization != null)
 				builder.header("Authorization", authorization.toString());

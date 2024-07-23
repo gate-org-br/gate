@@ -3,9 +3,8 @@ template.innerHTML = `
 	<g-text-editor-toolbar id='toolbar'>
 	</g-text-editor-toolbar>
 	<div id='scroll'>
-		<div id='editor' tabindex="0" contentEditable='true'></div>
+		<div id='editor' tabindex="1" contentEditable='true'></div>
 	</div>
-	<input id='value' type="hidden"/>
  <style data-element="g-text-editor">:host(*)
 {
 	width: 100%;
@@ -50,26 +49,19 @@ template.innerHTML = `
 	padding: 8px;
 	display: flex;
 	overflow: auto;
+	margin: 4px 0 4px 0;
 	height: fit-content;
 	align-items: stretch;
 	justify-content: center;
-}
-
-#editor > div:hover
-{
-	resize: vertical;
 	border: 1px solid #EFEFEF;
 	background-color: var(--hovered);
 }
 
-#editor > div:focus
+#editor > div:hover
 {
 	outline: dotted;
-}
-
-#editor > div > *
-{
-	height: 100%;
+	resize: vertical;
+	outline-width: 1px;
 }</style>`;
 /* global customElements */
 
@@ -77,25 +69,41 @@ import './g-text-editor-toolbar.js';
 
 const LINE_BREAK = '\n';
 
+function equals(node1, node2)
+{
+	return node1
+		&& node2
+		&& node1.tagName
+		&& node2.tagName
+		&& node1.style.fontWeight === node2.style.fontWeight
+		&& node1.style.fontStyle === node2.style.fontStyle
+		&& node1.style.fontSize === node2.style.fontSize
+		&& node1.style.fontFamily === node2.style.fontFamily
+		&& node1.style.textDecoration === node2.style.textDecoration
+		&& node1.style.color === node2.style.color
+		&& node1.style.backgroundColor === node2.style.backgroundColor;
+}
+
 customElements.define('g-text-editor', class extends HTMLElement
 {
+	#internals;
+	#undo = [];
+	#redo = [];
+	#selection;
+
+	static formAssociated = true;
+
 	constructor()
 	{
 		super();
-		this.tabindex = 0;
 		this.attachShadow({mode: "open"});
-		this._private = {undo: [], redo: []};
+		this.#internals = this.attachInternals();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		const editor = this.shadowRoot.getElementById("editor");
 
-		editor.addEventListener('focusout', event => this._private.selection = this.getSelection());
-
-		editor.addEventListener('focusin', event =>
-		{
-			let selection = this.getSelection();
-			if (this._private.selection)
-				this.setSelection(this._private.selection);
-		});
+		this.addEventListener("focusin", () => editor.focus());
+		editor.addEventListener('focusout', event => this.#selection = this.getSelection());
+		editor.addEventListener('focusin', event => this.#selection && this.setSelection(this.#selection));
 
 		editor.addEventListener('beforeinput', event =>
 		{
@@ -104,22 +112,64 @@ customElements.define('g-text-editor', class extends HTMLElement
 			{
 				this.mark();
 				let range = this.getSelection();
-				if (range.collapsed && range.endOffset < event.currentTarget.innerText.length)
-					range.setEnd(range.startContainer, range.endOffset + 1);
+				if (range.collapsed)
+				{
+					let node = range.startContainer;
+					if (node instanceof Text
+						&& range.endOffset < node.length)
+						range.setEnd(node, range.endOffset + 1);
+					else
+					{
+						node = node.nextSibling
+							|| node?.parentNode.nextSibling;
+
+						if (node instanceof Text)
+						{
+							range.setStart(node, 0);
+							range.setEnd(node, Math.min(node.length, 1));
+						} else if (node instanceof HTMLSpanElement)
+						{
+							node = node.firstChild;
+							range.setStart(node, 0);
+							range.setEnd(node, Math.min(node.length, 1));
+						} else if (node instanceof HTMLDivElement)
+							range.selectNode(node);
+					}
+				}
 				range.deleteContents();
 			} else if (event.inputType === 'deleteContentBackward')
 			{
 				this.mark();
 				let range = this.getSelection();
-				if (range.collapsed && range.startOffset)
-					range.setStart(range.startContainer, range.startOffset - 1);
+				if (range.collapsed)
+				{
+					let node = range.startContainer;
+					if (node instanceof Text && range.endOffset >= 1)
+						range.setStart(node, range.startOffset - 1);
+					else
+					{
+						node = node.previousSibling
+							|| node?.parentNode.previousSibling;
+
+						if (node instanceof Text)
+						{
+							range.setStart(node, Math.max(node.length - 1, 0));
+							range.setEnd(node, node.length);
+						} else if (node instanceof HTMLSpanElement)
+						{
+							node = node.firstChild;
+							range.setStart(node, Math.max(node.length - 1, 0));
+							range.setEnd(node, node.length);
+						} else if (node instanceof HTMLDivElement)
+							range.selectNode(node);
+					}
+				}
 				range.deleteContents();
 			} else if (event.inputType === 'insertParagraph')
 				this.input(LINE_BREAK);
 			else if (event.inputType === 'insertText')
 				this.input(event.data);
 			this.compact();
-
 		});
 
 		editor.addEventListener("paste", (event) =>
@@ -130,81 +180,88 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 		editor.addEventListener('keydown', event =>
 		{
-			if (event.ctrlKey)
-			{
-				if (event.key === "y" || event.key === "Y")
-					this.redo();
-				else if (event.key === "z" || event.key === "Z")
-					this.undo();
-				else if (event.key === "c" || event.key === "C")
-					return;
-				else if (event.key === "v" || event.key === "V")
-					return;
+			if (!event.ctrlKey)
+				return;
 
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
-			}
+			if (event.key === "y" || event.key === "Y")
+				this.redo();
+			else if (event.key === "z" || event.key === "Z")
+				this.undo();
+			else if (event.key === "c" || event.key === "C")
+				return;
+			else if (event.key === "v" || event.key === "V")
+				return;
 
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
 		});
 
 		editor.addEventListener('keydown', event =>
 		{
-			if (event.target.tagName === "DIV"
-				&& event.target.parentNode === editor)
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				event.stopImmediatePropagation();
 
-				let target = event.target;
-				switch (event.key)
-				{
-					case "Enter":
-						this.mark();
-						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
-							target.previousSibling.textContent += LINE_BREAK;
-						else
-							target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target);
-						break;
-					case "Delete":
-						this.mark();
-						target.remove();
-						break;
-					case "Backspace":
-						let prev = target.previousSibling;
-						if (prev.tagName === "SPAN" && prev.lastChild)
-							prev = prev.lastChild;
-						if (prev && prev.nodeType === Node.TEXT_NODE)
-							if (prev.textContent.endsWith(LINE_BREAK))
-								prev.textContent = prev.textContent.slice(0, -1);
-						break;
-					case 'ArrowLeft':
-					case 'ArrowUp':
-						if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
-							this.setSelection(target.previousSibling);
-						else
-							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target));
-						break;
-
-					case 'ArrowRight':
-					case 'ArrowDown':
-						if (!target.nextSibling)
-							this.setSelection(target.parentNode.appendChild(document.createTextNode(LINE_BREAK)));
-						else if (target.nextSibling.nodeType === Node.TEXT_NODE)
-							this.setSelection(target.nextSibling);
-						else
-							this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK, target.nextSibling)));
-						break;
-
-				}
-			}
-		});
-
-		editor.addEventListener('keydown', event =>
-		{
 			let range = this.getSelection();
-			let content = range.commonAncestorContainer;
+			if (range.startContainer !== range.endContainer)
+				return;
+
+			let target = range.startContainer;
+			if (!target.closest)
+				target = target.parentNode;
+			target = target.closest("#editor > div");
+			if (!target)
+				return;
+
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+
+			switch (event.key)
+			{
+				case "Delete":
+					this.mark();
+					target.remove();
+					break;
+				case "Enter":
+					this.mark();
+					if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
+						target.previousSibling.textContent += LINE_BREAK;
+					else
+						target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target);
+					break;
+				case "Backspace":
+					this.mark();
+					let prev = target.previousSibling;
+					if (prev.tagName === "SPAN" && prev.lastChild)
+						prev = prev.lastChild;
+					if (prev && prev.nodeType === Node.TEXT_NODE)
+						if (prev.textContent.endsWith(LINE_BREAK))
+							prev.textContent = prev.textContent.slice(0, -1);
+					break;
+				case 'ArrowLeft':
+				case 'ArrowUp':
+					this.mark();
+					if (target.previousSibling && target.previousSibling.nodeType === Node.TEXT_NODE)
+						this.setSelection(target.previousSibling);
+					else
+						this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK), target));
+					break;
+
+				case 'ArrowRight':
+				case 'ArrowDown':
+					this.mark();
+					if (!target.nextSibling)
+						this.setSelection(target.parentNode.appendChild(document.createTextNode(LINE_BREAK)));
+					else if (target.nextSibling.nodeType === Node.TEXT_NODE)
+						this.setSelection(target.nextSibling);
+					else
+						this.setSelection(target.parentNode.insertBefore(document.createTextNode(LINE_BREAK, target.nextSibling)));
+					break;
+
+			}
+		});
+
+		editor.addEventListener('keydown', event =>
+		{
 			switch (event.key)
 			{
 				case "Tab":
@@ -212,63 +269,60 @@ customElements.define('g-text-editor', class extends HTMLElement
 					event.stopPropagation();
 					event.stopImmediatePropagation();
 
-					if (content === editor
-						|| content.tagName === "A"
-						|| content.tagName === "SPAN"
-						|| content.nodeType === Node.TEXT_NODE)
+					let range = this.getSelection();
+					range.collapse();
+					let node = range.startContainer;
+
+					if (node === editor
+						|| node.tagName === "A"
+						|| node.tagName === "SPAN"
+						|| node.nodeType === Node.TEXT_NODE)
 						this.input("\t");
 					break;
-				case 'ArrowUp':
-				case 'ArrowLeft':
-					if (content.nodeType === Node.TEXT_NODE)
-						content = content.parentNode;
-					if (content.tagName === "SPAN" || content.tagName === "A")
-					{
-						let text;
-						content.normalize();
-						if (content.previousSibling && content.previousSibling.nodeType === Node.TEXT_NODE)
-							text = content.previousSibling;
-						else
-							text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content);
-						range.setStart(text, 0);
-						range.setEnd(text, 0);
-					}
-					break;
-				case 'ArrowDown':
-				case 'ArrowRight':
-					if (content.nodeType === Node.TEXT_NODE)
-						content = content.parentNode;
-					if (content.tagName === "SPAN" || content.tagName === "A")
-					{
-						let text;
-						content.normalize();
-						if (!content.firstChild || content.firstChild.textContent.length === range.endOffset)
-						{
-							if (!content.nextSibling)
-								text = content.parentNode.appendChild(document.createTextNode(LINE_BREAK));
-							else if (content.nextSibling.nodeType === Node.TEXT_NODE)
-								text = content.nextSibling;
-							else
-								text = content.parentNode.insertBefore(document.createTextNode(LINE_BREAK), content.nextSibling);
-						}
-
-						range.setStart(text, 0);
-						range.setEnd(text, 0);
-					}
-					break;
-
 			}
 		});
+
+		new MutationObserver(mutations =>
+		{
+			mutations.flatMap(e => Array.from(e.addedNodes))
+				.filter(e => e instanceof HTMLDivElement)
+				.forEach(node =>
+				{
+					node.addEventListener("click", event =>
+					{
+						event.stopPropagation();
+						event.preventDefault();
+						event.stopImmediatePropagation();
+						this.setSelection(node);
+					});
+				});
+
+			this.#update();
+		}).observe(editor, {characterData: true, subtree: true, childList: true});
+
+		this.#update();
+	}
+
+	#update()
+	{
+		this.#internals.setFormValue(this.value);
+		this.#internals.setValidity({});
+		if (this.required && !this.value)
+			this.#internals.setValidity({valueMissing: true}, "This field is required");
+		else if (this.maxlength && this.value.length > this.maxlength)
+			this.#internals.setValidity({tooLong: true}, `This field must have max ${this.maxlength} characteres`);
+		else if (this.pattern && this.value && !this.value.match(this.pattern))
+			this.#internals.setValidity({patternMismatch: true}, `Enter the correct format`);
 	}
 
 	formatBold()
 	{
 		this.mark();
 		let selection = this.getSelectedNodes();
-		if (selection.every(e => e.style.fontWeight === "700"))
-			selection.forEach(e => e.style.fontWeight = "400");
+		if (selection.every(e => e.style.fontWeight === "bold"))
+			selection.forEach(e => e.style.fontWeight = "");
 		else
-			selection.forEach(e => e.style.fontWeight = "700");
+			selection.forEach(e => e.style.fontWeight = "bold");
 		this.compact();
 	}
 
@@ -277,7 +331,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.mark();
 		let selection = this.getSelectedNodes();
 		if (selection.every(e => e.style.fontStyle === "italic"))
-			selection.forEach(e => e.style.fontStyle = "normal");
+			selection.forEach(e => e.style.fontStyle = "");
 		else
 			selection.forEach(e => e.style.fontStyle = "italic");
 		this.compact();
@@ -319,50 +373,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 		this.compact();
 	}
 
-	formatJustifyLeft()
-	{
-		this.mark();
-		this.getSelectedNodes().forEach(e =>
-		{
-			e.style.display = "block";
-			e.style.textAlign = "left";
-		});
-		this.compact();
-	}
-
-	formatJustifyCenter()
-	{
-		this.mark();
-		this.getSelectedNodes().forEach(e =>
-		{
-			e.style.display = "block";
-			e.style.textAlign = "center";
-		});
-		this.compact();
-	}
-
-	formatJustifyRight()
-	{
-		this.mark();
-		this.getSelectedNodes().forEach(e =>
-		{
-			e.style.display = "block";
-			e.style.textAlign = "right";
-		});
-		this.compact();
-	}
-
-	formatJustifyFull()
-	{
-		this.mark();
-		this.getSelectedNodes().forEach(e =>
-		{
-			e.style.display = "block";
-			e.style.textAlign = "justify";
-		});
-		this.compact();
-	}
-
 	formatRemove()
 	{
 		this.mark();
@@ -393,7 +403,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 			|| text === "\t"
 			|| text === "\n")
 			this.mark();
-
 		let range = this.getSelection();
 		const textNode = document.createTextNode(text);
 		range.insertNode(textNode);
@@ -411,16 +420,15 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 		let html = null;
 		if (type.startsWith("image"))
-			html = `<div tabindex='1' contenteditable='false'><img src="${url}"/></div>`;
+			html = `<div contenteditable='false'><img src="${url}"/></div>`;
 		else if (type.startsWith("video"))
-			html = `<div tabindex='1' contenteditable='false'><video src="${url}" controls/></div>`;
+			html = `<div contenteditable='false'><video src="${url}" controls/></div>`;
 		else if (type.startsWith("audio"))
-			html = `<div tabindex='1' contenteditable='false'><audio src="${url}" controls/></div>`;
+			html = `<div contenteditable='false'><audio src="${url}" controls/></div>`;
 		else
-			html = `<a href="${url}" download="${name}">${name}</a>`;
+			html = `<div contenteditable='false'><a tabindex='-1' href="${url}" download="${name}">${name}</a></div>`;
 
 		let element = range.createContextualFragment(html).childNodes[0];
-
 		range.insertNode(element);
 		if (element.parentNode !== this.editor)
 		{
@@ -439,22 +447,22 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	mark()
 	{
-		this._private.undo.push(this.editor.innerHTML);
+		this.#undo.push(this.editor.innerHTML);
 	}
 
 	undo()
 	{
-		let value = this._private.undo.pop();
+		let value = this.#undo.pop();
 		if (value !== undefined)
 		{
-			this._private.redo.push(this.editor.innerHTML);
+			this.#redo.push(this.editor.innerHTML);
 			this.editor.innerHTML = value;
 		}
 	}
 
 	redo()
 	{
-		let value = this._private.redo.pop();
+		let value = this.#redo.pop();
 		if (value !== undefined)
 		{
 			this.mark();
@@ -473,28 +481,6 @@ customElements.define('g-text-editor', class extends HTMLElement
 	get hidden()
 	{
 		return this.hasAtribute("hidden");
-	}
-
-	connectedCallback()
-	{
-		let form = this.closest("form");
-		if (form)
-		{
-			form.addEventListener("submit", event =>
-			{
-				if (this.required && !this.value)
-					this.setCustomValidity("Please fill out this field");
-				else if (this.maxlength && this.value.length > this.maxlength)
-					this.setCustomValidity("The specified value exceeds max length");
-				else if (this.pattern && this.value && !this.value.match(this.pattern))
-					this.setCustomValidity("The specified value is not valid");
-				else
-					this.setCustomValidity("");
-				if (!this.reportValidity())
-					event.preventDefault();
-			});
-			form.addEventListener("formdata", event => event.formData.set(this.name, this.value));
-		}
 	}
 
 	getSelection()
@@ -520,12 +506,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 			? this.shadowRoot.getSelection()
 			: window.getSelection();
 
-		if (range.nodeType === Node.TEXT_NODE)
+		if (range.nodeType)
 		{
 			let element = range;
 			range = document.createRange();
 			range.setStart(element, 0);
-			range.setEnd(element, 0);
+			range.setEnd(element, 1);
 		}
 
 		selection.removeAllRanges();
@@ -570,6 +556,19 @@ customElements.define('g-text-editor', class extends HTMLElement
 	{
 
 		this.editor.normalize();
+		let spans = Array.from(this.editor.querySelectorAll("span, a"));
+		for (let i = spans.length - 1; i >= 0; i--)
+			if (equals(spans[i], spans[i].previousSibling))
+				while (spans[i].firstChild)
+					spans[i].previousSibling.appendChild(spans[i].firstChild);
+
+		this.editor.normalize();
+		Array.from(this.editor.querySelectorAll("span, a"))
+			.filter(e => !e.hasAttribute("style") === ""
+					|| e.getAttribute("style") === "")
+			.forEach(e => e.outerHTML = e.innerHTML);
+
+		this.editor.normalize();
 		Array.from(this.editor.querySelectorAll("span, a"))
 			.filter(e => e.innerText.trim() === "")
 			.forEach(e => e.remove());
@@ -608,12 +607,15 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	get required()
 	{
-		return this.getAttribute("required");
+		return this.hasAttribute("required");
 	}
 
 	set required(required)
 	{
-		this.setAttribute("required", required);
+		if (required)
+			this.setAttribute("required", "");
+		else
+			this.removeAttribute("required", "");
 	}
 
 	get maxlength()
@@ -659,6 +661,26 @@ customElements.define('g-text-editor', class extends HTMLElement
 	attributeChangedCallback()
 	{
 		this.value = this.getAttribute("value");
+	}
+
+	checkValidity()
+	{
+		return this.#internals.checkValidity();
+	}
+
+	reportValidity()
+	{
+		return this.#internals.reportValidity();
+	}
+
+	get validity()
+	{
+		return this.#internals.validity;
+	}
+
+	get validationMessage()
+	{
+		return this.#internals.validationMessage;
 	}
 
 	static get observedAttributes()

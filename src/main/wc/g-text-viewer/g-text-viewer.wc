@@ -1,2 +1,3 @@
 <template>
+	<div id='editor' tabindex="1" contentEditable='true'></div>
 </template>

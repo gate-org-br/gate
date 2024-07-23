@@ -42,24 +42,17 @@
 	padding: 8px;
 	display: flex;
 	overflow: auto;
+	margin: 4px 0 4px 0;
 	height: fit-content;
 	align-items: stretch;
 	justify-content: center;
-}
-
-#editor > div:hover
-{
-	resize: vertical;
 	border: 1px solid #EFEFEF;
 	background-color: var(--hovered);
 }
 
-#editor > div:focus
+#editor > div:hover
 {
 	outline: dotted;
-}
-
-#editor > div > *
-{
-	height: 100%;
+	resize: vertical;
+	outline-width: 1px;
 }

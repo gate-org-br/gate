@@ -11,12 +11,12 @@ customElements.define('g-text-viewer', class extends HTMLElement
 
 	set value(value)
 	{
-		this.shadowRoot.innerHTML = value || "";
+		this.shadowRoot.querySelector("#editor").innerHTML = value || "";
 	}
 
 	get value()
 	{
-		return this.shadowRoot.innerHTML;
+		return this.shadowRoot.querySelector("#editor").innerHTML;
 	}
 
 	attributeChangedCallback()

@@ -3,12 +3,13 @@
 	margin: 0;
 	padding: 0;
 	color: black;
-	width: 280px;
+	width: auto;
+	min-width: 120px;
 	display: flex;
 	z-index: 1000;
 	cursor: pointer;
 	position: fixed;
-	font-size: 16px;
+	font-size: 12px;
 	align-items: stretch;
 	flex-direction: column;
 	background-color: #F0F0F0;
@@ -17,12 +18,14 @@
 
 a, button
 {
+	gap: 8px;
 	padding: 8px;
 	display: flex;
 	color: inherit;
-	flex-basis: 24px;
+	flex-basis: 16px;
 	font-size: inherit;
 	align-items: center;
+	white-space: nowrap;
 	text-decoration: none;
 	border: 1px solid #E0E0E0;
 	justify-content: space-between;
@@ -32,4 +35,25 @@ a:hover,
 button:hover
 {
 	background-color: var(--hovered, #FFFACD);
+}
+
+label {
+	flex-grow: 1;
+}
+
+a[data-icon]::before,
+button[data-icon]::before
+{
+	font-family: gate;
+	content: attr(data-icon);
+}
+
+a[submenu]::after,
+button[submenu]::after
+{
+	font-size: 10px;
+	color: #CCCCCC;
+	font-family: gate;
+	content: '\\2207';
+
 }
