@@ -114,3 +114,8 @@ small {
 	opacity: 0.5;
 	pointer-events: none;
 }
+
+*[data-loading]
+{
+	cursor: wait !important;
+}

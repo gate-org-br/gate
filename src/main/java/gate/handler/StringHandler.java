@@ -19,6 +19,9 @@ public class StringHandler implements Handler
 	@Inject
 	private TextHandler textHandler;
 
+	@Inject
+	private JSHandler jsHandler;
+
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
@@ -27,8 +30,11 @@ public class StringHandler implements Handler
 			jspHandler.handle(request, response, string);
 		else if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, string);
+		else if (string.endsWith(".js"))
+			jsHandler.handle(request, response, string);
 		else
 			textHandler.handle(request, response, string);
+
 	}
 
 	@Override

@@ -243,8 +243,6 @@ header > ::slotted(:not(:first-child))
 	}
 }
 
-
-
 ::slotted(:is(a, button, .g-command)[data-loading])
 {
 	position: relative;
@@ -252,30 +250,18 @@ header > ::slotted(:not(:first-child))
 
 ::slotted(:is(a, button, .g-command)[data-loading])::before
 {
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-	padding: 8px;
-	color: black;
-	display: flex;
-	content: '\\2017';
-	font-family: gate;
-	position: absolute;
-	align-items: center;
-	font-size: inherit;
-	border-radius: inherit;
-	background-color: white;
-}
-
-::slotted(:is(a, button, .g-command)[data-loading])::after
-{
-	left: 28px;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	content: "";
-	height: 12px;
+	color: inherit;
 	position: absolute;
-	animation-fill-mode: both;
-	max-width: calc(100% - 36px);
-	background-color: var(--base1);
-	animation: loading 2s infinite ease-in-out;
+	background-size: 25%;
+	border-radius: inherit;
+	background-color: inherit;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
 }

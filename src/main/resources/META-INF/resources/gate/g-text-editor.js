@@ -96,7 +96,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({mode: "open", delegatesFocus: true});
 		this.#internals = this.attachInternals();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		const editor = this.shadowRoot.getElementById("editor");

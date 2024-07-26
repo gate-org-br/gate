@@ -11,7 +11,7 @@ update gate.Uzer set description = details;
 ALTER TABLE gate.Uzer ADD details VARCHAR(1024) GENERATED ALWAYS AS (description) VIRTUAL;
 
 ALTER TABLE gate.Uzer 
-ADD UNIQUE INDEX Uzer$fk$username (username ASC) VISIBLE;
+ADD UNIQUE INDEX Uzer$uk$username (username ASC) VISIBLE;
 
 ALTER TABLE `gate`.`Uzer` 
 ADD UNIQUE INDEX `Uzer$uk$email` (`email` ASC) VISIBLE;

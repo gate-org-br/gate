@@ -143,37 +143,23 @@ button:hover
 ::slotted(:is(a, button, .g-command)[data-loading])
 {
 	position: relative;
-	pointer-events: none;
 }
 
 ::slotted(:is(a, button, .g-command)[data-loading])::before
 {
-	top: 0px;
-	left: 0px;
-	right: 0px;
-	bottom: 0px;
-	padding: 8px;
-	color: black;
-	display: flex;
-	font-size: 16px;
-	content: '\\2017';
-	font-family: gate;
-	position: absolute;
-	border-radius: inherit;
-	justify-content: center;
-	background-color: #F0F0F0;
-}
-
-::slotted(:is(a, button, .g-command)[data-loading])::after
-{
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	content: "";
-	bottom: 8px;
-	height: 14px;
 	position: absolute;
-	animation-fill-mode: both;
-	max-width: calc(100% - 16px);
-	background-color: var(--base1);
-	animation: loading 2s infinite ease-in-out;
+	background-size: 50%;
+	border-radius: inherit;
+	background-color: #F0F0F0;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
 }
 
 :host(.inline) ::slotted(a),

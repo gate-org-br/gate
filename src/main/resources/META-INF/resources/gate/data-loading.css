@@ -3,7 +3,6 @@ body[data-loading] {
 	cursor: pointer;
 	position: relative;
 	color: transparent;
-	pointer-events: none;
 }
 
 body[data-loading]>* {
@@ -18,12 +17,12 @@ body[data-loading]::before {
 	content: "";
 	position: absolute;
 	visibility: visible;
-	background-size: 256px;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-color: var(--main);
 	background-image: var(--loading);
+	background-size: clamp(64px, 25%, 128px);
 }
 
 section[data-loading] > *,

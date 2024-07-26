@@ -127,7 +127,6 @@ template.innerHTML = `
 ::slotted(:is(a, button, .g-command)[data-loading])
 {
 	position: relative;
-	pointer-events: none;
 }
 
 ::slotted(:is(a, button, .g-command)[data-loading])::before

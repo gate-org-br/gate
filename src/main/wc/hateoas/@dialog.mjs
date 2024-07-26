@@ -19,7 +19,10 @@ window.addEventListener("@dialog", function (event)
 	if (size)
 		dialog.setAttribute("style", `width: ${size}; height: ${height || size}`);
 
-	if (trigger.hasAttribute("data-navigator") || trigger.parentNode.hasAttribute("data-navigator"))
+	if (trigger.hasAttribute("data-navigator")
+		|| (trigger.parentNode
+			&& trigger.parentNode.hasAttribute
+			&& trigger.parentNode.hasAttribute("data-navigator")))
 	{
 		let triggers = Array.from(trigger.parentNode.children);
 		dialog.navbar.targets = triggers.map(e => e.href || e.formaction || e.getAttribute("data-action"));

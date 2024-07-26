@@ -7,6 +7,9 @@ import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
 
 export default function trigger(cause, element, context, action)
 {
+	if (element.hasAttribute("data-loading"))
+		return;
+
 	if (element.tagName === "A" && !(element.target || "_self").startsWith("@"))
 		return element.click();
 	if (element.tagName === "BUTTON"

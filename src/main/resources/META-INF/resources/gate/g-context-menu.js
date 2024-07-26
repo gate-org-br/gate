@@ -1,15 +1,18 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-context-menu">:host(*)
+ <style data-element="g-context-menu">* {
+	cursor: pointer;
+}
+
+:host(*)
 {
 	margin: 0;
 	padding: 0;
 	color: black;
 	width: auto;
-	min-width: 120px;
 	display: flex;
 	z-index: 1000;
-	cursor: pointer;
+	min-width: 200px;
 	position: fixed;
 	font-size: 12px;
 	align-items: stretch;
@@ -61,6 +64,10 @@ button[submenu]::after
 }</style>`;
 /* global customElements, template */
 
+import DOM from './dom.js';
+import resolve from './resolve.js';
+import trigger from './trigger.js';
+
 function isVisible(element)
 {
 	const rect = element.getBoundingClientRect();
@@ -72,6 +79,8 @@ function isVisible(element)
 
 export default class GContextMenu extends HTMLElement
 {
+	#context;
+
 	constructor()
 	{
 		super();
@@ -82,33 +91,55 @@ export default class GContextMenu extends HTMLElement
 		this.addEventListener("mouseleave", () => this.hide());
 	}
 
+	set context(context)
+	{
+		this.#context = context;
+	}
+
+	get context()
+	{
+		return this.#context;
+	}
+
 	set actions(actions)
 	{
-		actions.forEach(action =>
+		actions.forEach(({icon, text, color, method, action, target, title}) =>
 		{
 			let link = this.shadowRoot.appendChild(document.createElement("a"));
+			link.style.color = color;
+			link.title = title || null;
+			link.appendChild(document.createElement("label")).innerText = text;
+			link.setAttribute("data-icon", String.fromCharCode(icon ? parseInt(icon, 16) : 0x1024));
+			if (typeof action === 'string')
+			{
+				if (target)
+					link.target = target;
+				if (method)
+					link.setAttribute("data-method", method);
 
-			link.setAttribute("data-icon", action.icon
-				? String.fromCharCode(parseInt(action.icon, 16))
-				: String.fromCharCode(0x1024));
-			link.appendChild(document.createElement("label")).innerText = action.text;
-			if (typeof action.action === 'string')
-				link.href = action.action;
-			else if (typeof action.action === 'function')
 				link.addEventListener("click", event =>
 				{
 					event.preventDefault();
 					event.stopPropagation();
-					action.action();
+					trigger(event, link, this.context, action);
+					this.hide();
 				});
-			else if (Array.isArray(action.action))
+			} else if (typeof action === 'function')
+				link.addEventListener("click", event =>
+				{
+					event.preventDefault();
+					event.stopPropagation();
+					action(this.#context);
+					this.hide();
+				});
+			else if (Array.isArray(action))
 			{
 				link.setAttribute("submenu", "");
 				link.addEventListener('mouseenter', () =>
 				{
 					const submenu = document.createElement('g-context-menu');
 					link.addEventListener('mouseleave', () => submenu.hide(), {once: true});
-					submenu.actions = action.action;
+					submenu.actions = action;
 					link.appendChild(submenu);
 
 					const rect = link.getBoundingClientRect();
@@ -126,7 +157,7 @@ export default class GContextMenu extends HTMLElement
 						}
 					}
 				});
-			}
+		}
 		});
 	}
 
@@ -158,9 +189,10 @@ export default class GContextMenu extends HTMLElement
 		this.remove();
 	}
 
-	static show(x, y, ...actions)
+	static show(context, x, y, ...actions)
 	{
 		let menu = document.createElement("g-context-menu");
+		menu.context = context;
 		menu.actions = actions;
 		menu.show(x, y);
 		return menu;
@@ -168,3 +200,19 @@ export default class GContextMenu extends HTMLElement
 }
 
 customElements.define('g-context-menu', GContextMenu);
+
+window.addEventListener("contextmenu", event =>
+	{
+		if (event.ctrlKey)
+			return;
+
+		let element = event.target.closest("[data-context-menu]");
+		if (!element)
+			return;
+
+		event.preventDefault();
+		import(element.getAttribute("data-context-menu"))
+			.then(module => module.default)
+			.then(options => GContextMenu.show(element, event.x, event.y, ...options))
+			.catch(error => alert(error));
+	});

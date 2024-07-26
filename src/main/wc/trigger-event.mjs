@@ -108,7 +108,9 @@ function call(event, element, attribute)
 
 window.addEventListener("trigger-startup", function (event)
 {
-	event.target.setAttribute("data-loading", "data-loading");
+	event.target.setAttribute("data-loading",
+		event.detail.cause.detail.cause.type ||
+		"data-loading");
 	for (let element of event.composedPath())
 		call(event, element, "data-on:startup");
 });

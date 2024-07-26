@@ -41,7 +41,7 @@ dialog > section {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);
-	background-size: clamp(128px, 25%, 256px);
+	background-size: clamp(64px, 25%, 128px);
 }
 
 nav

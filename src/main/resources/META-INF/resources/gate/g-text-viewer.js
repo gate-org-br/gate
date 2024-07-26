@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div id='editor' tabindex="1" contentEditable='true'></div>
+	<div id='editor'></div>
  <style data-element="g-text-viewer">:host(*)
 {
 	flex-grow: 1;
@@ -34,6 +34,12 @@ template.innerHTML = `
 	justify-content: center;
 	border: 1px solid #EFEFEF;
 	background-color: var(--hovered);
+}
+
+#editor > img
+{
+	display: block;
+	max-width: 100%;
 }</style>`;
 /* global customElements */
 

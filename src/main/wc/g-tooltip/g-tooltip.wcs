@@ -19,8 +19,8 @@ div {
 	overflow: auto;
 	width: max-content;
 	height: max-content;
-	max-width: calc(50vw - 16px);
-	max-height: calc(50vh - 16px);
+	max-width: min(50vw - 16px, 400px);
+	max-height: min(50vh - 16px, 400px);
 }
 
 g-icon

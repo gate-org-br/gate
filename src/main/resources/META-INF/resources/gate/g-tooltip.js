@@ -25,8 +25,8 @@ div {
 	overflow: auto;
 	width: max-content;
 	height: max-content;
-	max-width: calc(50vw - 16px);
-	max-height: calc(50vh - 16px);
+	max-width: min(50vw - 16px, 400px);
+	max-height: min(50vh - 16px, 400px);
 }
 
 g-icon
@@ -83,21 +83,16 @@ g-icon[data-arrow='southwest'] {
 /* global template */
 
 import Formatter from './formatter.js';
-let instance;
 const DEFAULT_POSITION = "northeast";
 export const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
-
 const GAP = 20;
+let instance;
 
 function isVisible(element)
 {
 	let rect = element.getBoundingClientRect();
-	return rect.top >= 0
-		&& rect.left >= 0
-		&& rect.bottom <= window.innerHeight
-		&& rect.right <= window.innerWidth;
+	return rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
 }
-
 
 function calc(element, tooltip, position)
 {
@@ -107,40 +102,28 @@ function calc(element, tooltip, position)
 	switch (position)
 	{
 		case "northeast":
-			return {x: element.left + element.width + GAP,
-				y: element.top - tooltip.height - GAP};
-
+			return {x: element.right + GAP, y: element.top - tooltip.height - GAP};
 		case "southwest":
-			return {x: element.left - tooltip.width - GAP,
-				y: element.bottom + GAP};
+			return {x: element.left - tooltip.width - GAP, y: element.bottom + GAP};
 		case "northwest":
-			return {x: element.left - tooltip.width - GAP,
-				y: element.top - tooltip.height - GAP};
+			return {x: element.left - tooltip.width - GAP, y: element.top - tooltip.height - GAP};
 		case "southeast":
-			return {x: element.right + GAP,
-				y: element.bottom + GAP};
+			return {x: element.right + GAP, y: element.bottom + GAP};
 		case "north":
-			return {x: element.left + (element.width / 2)
-					- (tooltip.width / 2),
-				y: element.top - tooltip.height - GAP};
+			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.top - tooltip.height - GAP};
 		case "east":
-			return {x: element.left + element.width + GAP,
-				y: element.top + (element.height / 2)
-					- (tooltip.height / 2)};
+			return {x: element.right + GAP, y: element.top + (element.height / 2) - (tooltip.height / 2)};
 		case "south":
-			return {x: element.left + (element.width / 2)
-					- (tooltip.width / 2),
-				y: element.bottom + GAP};
+			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.bottom + GAP};
 		case "west":
-			return {x: element.left - tooltip.width - GAP,
-				y: element.top + (element.height / 2)
-					- (tooltip.height / 2)};
+			return {x: element.left - tooltip.width - GAP, y: element.top + (element.height / 2) - (tooltip.height / 2)};
+		default:
+			return {x: element.right + GAP, y: element.bottom + GAP}; // Default to southeast if invalid position
 	}
 }
 
 export default class GTooltip extends HTMLElement
 {
-
 	constructor()
 	{
 		super();
@@ -159,36 +142,36 @@ export default class GTooltip extends HTMLElement
 		if (instance)
 			instance.hide();
 		instance = this;
+
 		const controller = new AbortController();
-		target.addEventListener("mouseleave", () => this.hide() | controller.abort(), {signal: controller.signal});
-		target.addEventListener("focusout", () => this.hide() | controller.abort(), {signal: controller.signal});
-		target.addEventListener("click", () => this.hide() | controller.abort(), {signal: controller.signal});
+		target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
+		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
+		target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
 
 		this.style.display = "block";
+		this.style.visibility = "hidden";
 
-		for (let i = 0; i < 8; i++)
+		setTimeout(() =>
 		{
-			let point = calc(target, this, position);
-			this.style.top = point.y + "px";
-			this.style.left = point.x + "px";
+			for (let i = 0; i < POSITIONS.length; i++)
+			{
+				let point = calc(target, this, position);
+				this.style.top = `${point.y}px`;
+				this.style.left = `${point.x}px`;
 
-			if (isVisible(this))
-				break;
-			else
-				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % 8];
-		}
+				if (isVisible(this))
+					break;
+				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % POSITIONS.length];
+			}
 
-		this.shadowRoot.querySelector("g-icon")
-			.dataset.arrow = position;
-		this.style.visibility = "visible";
-
+			this.shadowRoot.querySelector("g-icon").dataset.arrow = position;
+			this.style.visibility = "visible";
+		}, 0);
 	}
 
 	get position()
 	{
-		return this.getAttribute("position")
-			|| "southeast";
-
+		return this.getAttribute("position") || "southeast";
 	}
 
 	set position(value)
@@ -230,7 +213,10 @@ export default class GTooltip extends HTMLElement
 		}
 	}
 
-	static observedAttributes = ["position"];
+	static get observedAttributes()
+	{
+		return ["position"];
+	}
 
 	attributeChangedCallback(name, oldValue, newValue)
 	{
@@ -252,8 +238,10 @@ window.addEventListener("mouseover", function (event)
 			let position = target.getAttribute("data-tooltip:position");
 			return GTooltip.show(target, content, position);
 		} else if (target.children)
+		{
 			for (let tooltip of target.children)
 				if (tooltip.tagName === "G-TOOLTIP")
 					return tooltip.show(target);
+		}
 	}
 });
