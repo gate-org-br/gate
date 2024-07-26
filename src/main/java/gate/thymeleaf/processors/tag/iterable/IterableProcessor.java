@@ -7,6 +7,7 @@ import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +43,7 @@ public abstract class IterableProcessor extends TagModelProcessor
 		var depth = Objects.requireNonNullElse(element.getAttributeValue("depth"), "depth");
 		var index = Objects.requireNonNullElse(element.getAttributeValue("index"), "index");
 		var target = Objects.requireNonNullElse(element.getAttributeValue("target"), "target");
-
-		var children = element.hasAttribute("children") ? expression.function("children") : null;
+		var children = Optional.ofNullable(element.getAttributeValue("children")).map(expression::function).orElse(null);
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
 		if (request.getAttribute(index) == null)
