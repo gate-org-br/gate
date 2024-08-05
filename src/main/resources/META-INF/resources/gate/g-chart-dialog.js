@@ -4,6 +4,8 @@ template.innerHTML = `
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
+			<g-chart-toolbar chart='chart'>
+			</g-chart-toolbar>
 			<a id='hide' href='#'>
 				<g-icon>
 					&#x1011;
@@ -11,11 +13,16 @@ template.innerHTML = `
 			</a>
 		</header>
 		<section>
-			<g-chart>
+			<g-chart id='chart'>
 			</g-chart>
 		</section>
 	</dialog>
- <style data-element="g-chart-dialog">dialog {
+ <style data-element="g-chart-dialog">* {
+	box-sizing: border-box;
+
+}
+
+dialog {
 	width: 100%;
 	height: 100%;
 	border-radius: 0;
@@ -31,14 +38,17 @@ template.innerHTML = `
 }
 
 section {
-	align-items: stretch;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
 }
 
 g-chart {
-	width: 100%;
 	height: 100%;
-	flex-grow: 1;
-	background-color: white;
+	flex-basis: 100%;
+	max-width: 100%;
+	max-height: 100%;
 }</style>`;
 /* global customElements, template, fetch */
 

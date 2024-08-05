@@ -1,6 +1,7 @@
 /* global customElements */
 
 import loading from './loading.js';
+import TriggerExtractor from './trigger-extractor.js';
 
 const EPSILON = 0.5;
 function visible(element, container)
@@ -41,11 +42,18 @@ customElements.define("g-tabbar", class extends HTMLElement
 		div.addEventListener("scroll", () => this.update());
 		new ResizeObserver(() => this.update()).observe(this);
 
-		this.addEventListener("trigger-success",
-			event => Array.from(this.children)
-				.forEach(e => e === event.target
-						? e.setAttribute("aria-selected", "")
-						: e.removeAttribute("aria-selected")));
+		window.addEventListener("trigger-success", event =>
+		{
+			let target = event.detail.cause.target;
+			let trigger = Array.from(this.children)
+				.filter(e => e === target ||
+						(TriggerExtractor.method(e) === TriggerExtractor.method(target)
+							&& TriggerExtractor.action(e) === TriggerExtractor.action(target)
+							&& TriggerExtractor.target(e) === TriggerExtractor.target(target)))[0];
+
+			if (trigger)
+				this.select(trigger);
+		});
 	}
 
 	connectedCallback()
@@ -58,13 +66,26 @@ customElements.define("g-tabbar", class extends HTMLElement
 			.filter(e => e.nodeType === Node.TEXT_NODE)
 			.forEach(e => e.parentNode.appendChild(e));
 
-		let selected = Array.from(this.children)
-			.filter(e => window.location.href === (e.href || e.formaction))[0];
-		if (!selected)
-			selected = Array.from(this.children)
-				.filter(e => window.location.href.startsWith(e.href || e.formaction))[0];
+		let action = window.location.href;
+		let origin = window.location.origin;
+		let triggers = Array.from(this.children).filter(e => TriggerExtractor.target(e) === "_self");
+
+		let selected = triggers.filter(e => action === new URL(TriggerExtractor.action(e), origin).href)[0]
+			|| triggers.filter(e => action.startsWith(TriggerExtractor.action(e)))[0];
+
 		if (selected)
-			selected.setAttribute("aria-selected", "aria-selected");
+			this.select(selected);
+	}
+
+	select(element)
+	{
+		Array.from(this.children).forEach(e =>
+		{
+			if (e === element)
+				e.setAttribute("aria-selected", "")
+			else
+				e.removeAttribute("aria-selected");
+		});
 	}
 
 	update()

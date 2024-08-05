@@ -34,6 +34,7 @@ import "./g-text-viewer.js";
 import "./g-report-picker.js";
 import "./g-chart.js";
 import "./g-chart-dialog.js";
+import "./g-chart-toolbar.js";
 
 import "./g-icon-picker.js";
 import "./g-date-picker.js";

@@ -3,14 +3,10 @@ import DOM from './dom.js';
 function checkOverflow(table)
 {
 	table.removeAttribute('data-overflowing');
-
-	let style = window.getComputedStyle(table.parentNode);
-	let width = table.offsetWidth + parseInt(style.paddingLeft)
-		+ parseInt(style.paddingRight);
-
-	if (width > table.parentNode.offsetWidth)
+	if (table.scrollWidth > table.clientWidth
+		|| Array.from(table.querySelectorAll("td, th"))
+		.some(e => e.scrollWidth > e.clientWidth))
 		table.setAttribute('data-overflowing', 'true');
-
 }
 
 window.addEventListener("resize", () =>

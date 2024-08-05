@@ -3,7 +3,7 @@ template.innerHTML = `
 	<div>
 		<slot></slot>
 	</div>
-	<g-icon>&#X3043;</g-icon>
+	<span></span>
  <style data-element="g-tooltip">* {
 	box-sizing: border-box;
 }
@@ -25,67 +25,64 @@ div {
 	overflow: auto;
 	width: max-content;
 	height: max-content;
-	max-width: min(50vw - 16px, 400px);
-	max-height: min(50vh - 16px, 400px);
+	max-width: min(50vw - 16px, 600px);
+	max-height: min(50vh - 16px, 600px);
 }
 
-g-icon
+span
 {
-	font-size: 20px;
+	width: 0;
+	height: 0;
 	position: absolute;
+	display: inline-block;
 }
 
-g-icon[data-arrow='north'] {
+span[data-arrow='north']
+{
 	top: 100%;
-	left: calc(50% - 10px);
-	transform: rotate(180deg);
+	left: calc(50% - 6px);
+	border-top: 12px solid black;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
 }
 
-g-icon[data-arrow='south'] {
-	top: -20px;
-	left: calc(50% - 10px);
+span[data-arrow='south'] {
+	top: -12px;
+	left: calc(50% - 6px);
+	border-bottom: 12px solid black;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
 }
 
-g-icon[data-arrow='west'] {
+span[data-arrow='west'] {
 	left: 100%;
-	top: calc(50% - 10px);
-	transform: rotate(90deg);
+	top: calc(50% - 6px);
+	border-left: 12px solid black;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
 }
 
-g-icon[data-arrow='east'] {
-	left: -20px;
-	top: calc(50% - 10px);
-	transform: rotate(270deg);
+span[data-arrow='east']
+{
+	left: -12px;
+	top: calc(50% - 6px);
+	border-right: 12px solid black;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
 }
 
-g-icon[data-arrow='northeast'] {
-	top: 100%;
-	left: -20px;
-	transform: rotate(225deg);
-}
-
-g-icon[data-arrow='northwest'] {
-	top: 100%;
-	left: 100%;
-	transform: rotate(135deg);
-}
-g-icon[data-arrow='southeast'] {
-	top: -20px;
-	left: -20px;
-	transform: rotate(-45deg);
-}
-
-g-icon[data-arrow='southwest'] {
-	left: 100%;
-	top: -20px;
-	transform: rotate(45deg);
+span[data-arrow='northwest'],
+span[data-arrow='northeast'],
+span[data-arrow='southeast'],
+span[data-arrow='southwest'] {
+	display: none;
 }</style>`;
 /* global template */
 
 import Formatter from './formatter.js';
-const DEFAULT_POSITION = "northeast";
-export const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
-const GAP = 20;
+const DEFAULT_POSITION = "north";
+export const POSITIONS = ["north", "east", "south", "west", "northeast", "southwest", "northwest", "southeast"];
+const GAP = 12;
 let instance;
 
 function isVisible(element)
@@ -102,13 +99,13 @@ function calc(element, tooltip, position)
 	switch (position)
 	{
 		case "northeast":
-			return {x: element.right + GAP, y: element.top - tooltip.height - GAP};
+			return {x: element.right, y: element.top - tooltip.height};
 		case "southwest":
-			return {x: element.left - tooltip.width - GAP, y: element.bottom + GAP};
+			return {x: element.left - tooltip.width, y: element.bottom};
 		case "northwest":
-			return {x: element.left - tooltip.width - GAP, y: element.top - tooltip.height - GAP};
+			return {x: element.left - tooltip.width, y: element.top - tooltip.height};
 		case "southeast":
-			return {x: element.right + GAP, y: element.bottom + GAP};
+			return {x: element.right, y: element.bottom};
 		case "north":
 			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.top - tooltip.height - GAP};
 		case "east":
@@ -164,7 +161,7 @@ export default class GTooltip extends HTMLElement
 				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % POSITIONS.length];
 			}
 
-			this.shadowRoot.querySelector("g-icon").dataset.arrow = position;
+			this.shadowRoot.querySelector("span").dataset.arrow = position;
 			this.style.visibility = "visible";
 		}, 0);
 	}

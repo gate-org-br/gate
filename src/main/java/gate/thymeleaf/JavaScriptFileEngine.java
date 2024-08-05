@@ -1,14 +1,13 @@
 package gate.thymeleaf;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.io.Writer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-public interface FileEngine
+public interface JavaScriptFileEngine
 {
 
 	public void process(String filename, IContext context, Writer writer);
@@ -16,21 +15,17 @@ public interface FileEngine
 	public String process(String filename, IContext context);
 
 	@ApplicationScoped
-	public static class FileEngineImpl implements FileEngine
+	public static class FileEngineImpl implements JavaScriptFileEngine
 	{
 
 		private final TemplateEngine templateEngine;
 
-		@Inject
-		public FileEngineImpl(GateDialect dialect)
+		public FileEngineImpl()
 		{
 
 			this.templateEngine = new TemplateEngine();
-
-			templateEngine.addDialect(dialect);
 			var resolver = new ClassLoaderTemplateResolver();
-			resolver.setTemplateMode(TemplateMode.HTML);
-
+			resolver.setTemplateMode(TemplateMode.JAVASCRIPT);
 			templateEngine.setTemplateResolver(resolver);
 		}
 

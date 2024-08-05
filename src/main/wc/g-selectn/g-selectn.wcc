@@ -11,7 +11,6 @@ customElements.define('g-selectn', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.tabIndex = 0;
 		this.attachShadow({mode: "open"});
 		this.#internals = this.attachInternals();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));

@@ -64,9 +64,7 @@ button[submenu]::after
 }</style>`;
 /* global customElements, template */
 
-import DOM from './dom.js';
 import resolve from './resolve.js';
-import trigger from './trigger.js';
 
 function isVisible(element)
 {
@@ -86,8 +84,6 @@ export default class GContextMenu extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		this.addEventListener("click", () => this.hide());
 		this.addEventListener("mouseleave", () => this.hide());
 	}
 
@@ -103,8 +99,11 @@ export default class GContextMenu extends HTMLElement
 
 	set actions(actions)
 	{
-		actions.forEach(({icon, text, color, method, action, target, title}) =>
+		actions.forEach(({icon, text, color, method, action, target, title, visible}) =>
 		{
+			if (visible && !visible(this.context))
+				return;
+
 			let link = this.shadowRoot.appendChild(document.createElement("a"));
 			link.style.color = color;
 			link.title = title || null;
@@ -112,27 +111,21 @@ export default class GContextMenu extends HTMLElement
 			link.setAttribute("data-icon", String.fromCharCode(icon ? parseInt(icon, 16) : 0x1024));
 			if (typeof action === 'string')
 			{
-				if (target)
-					link.target = target;
+				link.target = target || "_self";
+				link.href = resolve(link, this.context, action);
 				if (method)
 					link.setAttribute("data-method", method);
-
-				link.addEventListener("click", event =>
-				{
-					event.preventDefault();
-					event.stopPropagation();
-					trigger(event, link, this.context, action);
-					this.hide();
-				});
+				link.addEventListener("click", () => setTimeout(() => this.hide(), 0));
 			} else if (typeof action === 'function')
+			{
 				link.addEventListener("click", event =>
 				{
 					event.preventDefault();
 					event.stopPropagation();
 					action(this.#context);
-					this.hide();
+					this.root().hide();
 				});
-			else if (Array.isArray(action))
+			} else if (Array.isArray(action))
 			{
 				link.setAttribute("submenu", "");
 				link.addEventListener('mouseenter', () =>
@@ -158,6 +151,7 @@ export default class GContextMenu extends HTMLElement
 					}
 				});
 		}
+
 		});
 	}
 
@@ -184,6 +178,13 @@ export default class GContextMenu extends HTMLElement
 		}
 	}
 
+	root()
+	{
+		return this.getRootNode().host
+			instanceof GContextMenu
+			? this.getRootNode().host.root()
+			: this;
+	}
 	hide()
 	{
 		this.remove();
@@ -202,17 +203,23 @@ export default class GContextMenu extends HTMLElement
 customElements.define('g-context-menu', GContextMenu);
 
 window.addEventListener("contextmenu", event =>
-	{
-		if (event.ctrlKey)
-			return;
+{
+	if (event.ctrlKey)
+		return;
 
-		let element = event.target.closest("[data-context-menu]");
-		if (!element)
-			return;
+	let element = event.target.closest("[data-contextmenu], [data-contextmenu-module]");
+	if (!element)
+		return;
 
-		event.preventDefault();
-		import(element.getAttribute("data-context-menu"))
-			.then(module => module.default)
-			.then(options => GContextMenu.show(element, event.x, event.y, ...options))
+	event.preventDefault();
+	if (element.hasAttribute("data-contextmenu"))
+		fetch(element.getAttribute("data-contextmenu"))
+			.then(e => e.json())
+			.then(e => GContextMenu.show(element, event.x, event.y, ...e))
 			.catch(error => alert(error));
-	});
+	else
+		import(element.getAttribute("data-contextmenu-module"))
+			.then(module => module.default)
+			.then(e => GContextMenu.show(element, event.x, event.y, ...e))
+			.catch(error => alert(error));
+});

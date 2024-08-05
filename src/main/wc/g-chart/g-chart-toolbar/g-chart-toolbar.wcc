@@ -1,0 +1,27 @@
+/* global customElements, template */
+
+customElements.define('g-chart-toolbar', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.shadowRoot.querySelector("#pie").addEventListener("click", () => this.chart.type = "pie");
+		this.shadowRoot.querySelector("#doughnut").addEventListener("click", () => this.chart.type = "doughnut");
+		this.shadowRoot.querySelector("#line").addEventListener("click", () => this.chart.type = "line");
+		this.shadowRoot.querySelector("#column").addEventListener("click", () => this.chart.type = "column");
+		this.shadowRoot.querySelector("#bar").addEventListener("click", () => this.chart.type = "bar");
+		this.shadowRoot.querySelector("#area").addEventListener("click", () => this.chart.type = "area");
+		this.shadowRoot.querySelector("#radar").addEventListener("click", () => this.chart.type = "radar");
+		this.shadowRoot.querySelector("#polar").addEventListener("click", () => this.chart.type = "polar");
+		this.shadowRoot.querySelector("#reverse").addEventListener("click", () => this.chart.reversed = !this.chart.reversed);
+	}
+
+	get chart()
+	{
+		return this.getRootNode()
+			.getElementById(this.getAttribute("chart"));
+	}
+});

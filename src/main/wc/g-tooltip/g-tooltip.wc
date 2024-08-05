@@ -2,5 +2,5 @@
 	<div>
 		<slot></slot>
 	</div>
-	<g-icon>&#X3043;</g-icon>
+	<span></span>
 </template>

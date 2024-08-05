@@ -44,7 +44,7 @@ function parameters(lexer)
 					value += string.join(" ");
 
 					if (lexer.token === "(")
-						value += "(" + parameters(lexer).join(" ") + ")";
+						value += "(" + parameters(lexer).join(",") + ")";
 
 				} while (lexer.token && lexer.token !== ")" && lexer.token !== ",");
 				result.push(value);

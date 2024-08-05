@@ -23,8 +23,8 @@
 				<label data-size="8">
 					Job:
 					<span>
-						<select data-action='/objects.json?Job=@@{this}'
-							data-target='@populate(#populate1-person, ID, Name)'>
+						<select data-action='/objects.json?Job=$ELEM{this}'
+							data-target='@populate(#populate1-person, _ID, Name)'>
 							<option value="" disabled selected>Select</option>
 							<option value="Chemist">Chemist</option>
 							<option value="Mathematician">Mathematician</option>

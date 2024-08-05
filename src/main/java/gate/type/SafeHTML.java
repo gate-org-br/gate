@@ -66,6 +66,11 @@ public class SafeHTML implements Serializable
 		return value;
 	}
 
+	public String text()
+	{
+		return Jsoup.parse(value).text();
+	}
+
 	public boolean isBlank()
 	{
 		return value.isBlank();

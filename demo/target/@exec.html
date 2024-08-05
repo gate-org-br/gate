@@ -25,7 +25,7 @@
 			<g-coolbar>
 				<a href="/objects.json"
 				   class="primary"
-				   target="@exec('e => alert(JSON.stringify(e[0]))') > @json-to-html > @outer-html(this.parent().next())">
+				   target="@exec(e => alert(JSON.stringify(e[0]))) > @json-to-html > @outer-html(this.parent().next())">
 					Fetch and format<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>

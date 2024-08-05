@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,6 +10,7 @@ import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import gate.thymeleaf.HTMLFileEngine;
 
 @ApplicationScoped
 public class TemplateProcessor extends TagModelProcessor
@@ -20,7 +20,7 @@ public class TemplateProcessor extends TagModelProcessor
 	TextEngine textEngine;
 
 	@Inject
-	FileEngine fileEngine;
+	HTMLFileEngine fileEngine;
 
 	public TemplateProcessor()
 	{

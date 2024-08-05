@@ -23,6 +23,7 @@ function require(value)
 {
 	if (!value)
 		throw REQUIRED;
+	return value;
 }
 
 export default function resolve(trigger, context, string)
@@ -33,7 +34,7 @@ export default function resolve(trigger, context, string)
 		result = result.replace(RESOLVE_REGEX, function (_, method, value)
 		{
 			value = decodeURIComponent(value);
-			switch (method[0])
+			switch (method)
 			{
 				case '@':
 				case '$elem':
@@ -63,43 +64,3 @@ export default function resolve(trigger, context, string)
 	}
 	return encodeURI(result);
 }
-
-window.addEventListener("click", function (event)
-{
-	if (event.button)
-		return;
-
-	let element = event.target.closest("A, BUTTON");
-	if (!element)
-		return;
-
-	let current = element.href
-		|| element.getAttribute("formaction")
-		|| (element.form || {}).action;
-
-	if (!current || !current.match(RESOLVE_REGEX))
-		return;
-
-	EventHandler.cancel(event);
-
-	let resolved = resolve(element, {}, current);
-	if (!resolved)
-		return;
-
-	if (element.tagName === "A")
-	{
-		element.href = resolved;
-		element.click();
-		element.href = current;
-	} else if (element.hasAttribute("formaction"))
-	{
-		element.setAttribute("formaction", resolved);
-		element.click();
-		element.setAttribute("formaction", current);
-	} else
-	{
-		element.form.action = resolved;
-		element.click();
-		element.form.action = current;
-	}
-});

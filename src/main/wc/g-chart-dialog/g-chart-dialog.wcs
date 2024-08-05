@@ -1,3 +1,8 @@
+* {
+	box-sizing: border-box;
+
+}
+
 dialog {
 	width: 100%;
 	height: 100%;
@@ -14,12 +19,15 @@ dialog {
 }
 
 section {
-	align-items: stretch;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: white;
 }
 
 g-chart {
-	width: 100%;
 	height: 100%;
-	flex-grow: 1;
-	background-color: white;
+	flex-basis: 100%;
+	max-width: 100%;
+	max-height: 100%;
 }

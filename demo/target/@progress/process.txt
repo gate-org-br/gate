@@ -1,10 +1,17 @@
+event: Progress
 data: eyJ0b2RvIjogMTAsICJkb25lIjogMCwgInRleHQiOiAiUHJvY2Vzc2luZyByZWNvcmRzIiwgImV2ZW50IjogIlByb2dyZXNzIiwgInN0YXR1cyI6ICJQRU5ESU5HIiB9
 
+event: Progress
 data: eyJ0b2RvIjogMSwgImRvbmUiOiAxLCAidGV4dCI6ICJQcm9jZXNzaW5nIHJlY29yZHM6IDEiLCAiZXZlbnQiOiAiUHJvZ3Jlc3MiLCAic3RhdHVzIjogIlBFTkRJTkciIH0=
 
+event: Progress
 data: eyJ0b2RvIjogMSwgImRvbmUiOiAxLCAidGV4dCI6ICJEb25lIiwgImV2ZW50IjogIlByb2dyZXNzIiwgInN0YXR1cyI6ICJDT01NSVRFRCJ9
 
+event: Progress
 data: eyAiZXZlbnQiOiAiUmVzdWx0IiwgImRhdGEiOiAiPGE+RG9uZTxnLWljb24+JiNYMjE3Njs8L2ctaWNvbj48L2E+IiB9
 
+event: Result
+data: eyJjb250ZW50VHlwZSI6ICJ0ZXh0L3BsYWluIiwgImRhdGEiOiJSZXN1bHRhZG8ifQ==
+
 event: close
-data: Connection closed by server
+data: Connection closed by the server

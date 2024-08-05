@@ -3,6 +3,7 @@ import DataURL from './data-url.js';
 import resolve from './resolve.js';
 import validate from './validate.js';
 import EventHandler from './event-handler.js';
+import TriggerExtractor from './trigger-extractor.js';
 import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
 
 export default function trigger(cause, element, context, action)
@@ -27,9 +28,9 @@ export default function trigger(cause, element, context, action)
 	else if (["post", "put", "path"].includes((element.getAttribute("formmethod") || element.getAttribute("data-method") || "none").toLowerCase()))
 		form = element.closest("form");
 
-	let method = (element.getAttribute("formmethod") || element.getAttribute("data-method") || form?.method || "get").toLowerCase();
-	action = action || element.getAttribute("href") || element.getAttribute("formaction") || element.getAttribute("data-action") || form?.action || "";
-	let target = element.target || element.getAttribute("formtarget") || element.getAttribute("data-target") || form?.target || "_self";
+	let method = TriggerExtractor.method(element);
+	action = action || TriggerExtractor.action(element);
+	let target = TriggerExtractor.target(element);
 
 	if (cause.ctrlKey && cause.type === "click")
 		target = "_blank";
@@ -76,13 +77,28 @@ window.addEventListener("click", function (event)
 			if (!validate(element))
 				return EventHandler.cancel(event);
 
-			if (element.target.startsWith("@"))
+			let method = element.getAttribute("data-method") || "get";
+			let target = element.getAttribute("target") || "_self";
+
+			if (target.startsWith("@") || method !== "get")
 			{
 				trigger(event, element);
 				return EventHandler.cancel(event);
 			}
 
-			return;
+			let current = element.href;
+
+			let resolved = resolve(element, {}, current);
+			if (resolved === current)
+				return;
+
+			if (!resolved)
+				return EventHandler.cancel(event);
+
+			element.href = resolved;
+			element.click();
+			element.href = current;
+			return EventHandler.cancel(event);
 		}
 
 		if (element.tagName === "BUTTON")
@@ -99,7 +115,22 @@ window.addEventListener("click", function (event)
 				return EventHandler.cancel(event);
 			}
 
-			return;
+			let current = element.getAttribute("formaction") || (element.form || {}).action;
+			if (!current)
+				return;
+
+			let resolved = resolve(element, {}, current);
+			if (resolved === current)
+				return;
+
+			if (!resolved)
+				return EventHandler.cancel(event);
+
+			element.setAttribute("formaction", resolved);
+			element.click();
+			element.setAttribute("formaction", current);
+			return EventHandler.cancel(event);
+
 		}
 
 		if ((element.hasAttribute("data-trigger")
@@ -179,18 +210,18 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-	{
-		Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-					|| e.hasAttribute("data-method")
-					|| e.hasAttribute("data-action")
-					|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
 
-		DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
-			e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
-	});
+	DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
+		e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
+});
 
 window.addEventListener("load", function (event)
 {

@@ -1,106 +1,74 @@
+let template = document.createElement("template");
+template.innerHTML = `
+	<canvas>
+	</canvas>
+ <style data-element="g-chart">* {
+	box-sizing: border-box;
+
+}
+
+:host(*)
+{
+	display: flex;
+	overflow: hidden;
+	align-items: center;
+	justify-content: center;
+}</style>`;
 /* global customElements */
 
-import icons from './icon-data.js';
 import Dataset from './dataset.js';
 import NumberFormat from './number-format.js';
 
 const format = new NumberFormat();
-const locale = document.documentElement.lang || navigator.language;
-const tooltip = {valueFormatter: value => value.toLocaleString(locale)};
-const grid = {top: '80px', left: '80px', right: '80px', bottom: '80px', containLabel: true};
-const category = {type: 'category', axisLabel: {width: "100", interval: 0, overflow: "break"}};
 
-function pie(title, toolbox, value, radius, roseType)
+function options(title)
 {
-	let labels = value[0].slice(1);
-	let width = 100 / labels.length;
-
-	let series = labels.map((_, index) => ({
-			radius,
-			roseType,
-			type: 'pie',
-			top: 'center',
-			height: '100%',
-			width: width + '%',
-			name: value[0][index + 1],
-			left: (index * width) + '%',
-			encode: {itemName: value[0][0], value: value[0][index + 1]},
-			label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
-		}));
-
-	title = title ? [{text: title, x: "center"}] : [];
-	if (labels.length > 1)
-		labels.map((e, index) => ({subtext: e, left: (index * width) + width / 2 + '%', top: 25, textAlign: 'center'}))
-			.forEach(e => title.push(e));
-
-	return {title,
-		series,
-		tooltip,
-		toolbox,
-		legend: {bottom: 0},
-		dataset: {source: value}};
+	return {responsive: true,
+		maintainAspectRatio: false,
+		plugins: {title: {display: true,
+				text: title,
+				font: {size: 16},
+				padding: {top: 10, bottom: 10}
+			}
+		}
+	}
 }
+
+function data(value, reversed = false, fill = false)
+{
+	if (!value)
+		return {labels: [], datasets: []};
+
+	if (reversed)
+		value = Dataset.reverse(value);
+
+	return  {
+		labels: value.slice(1).map(e => e[0]),
+		datasets: value[0].slice(1).map((label, i) =>
+			({label, fill, data: value.slice(1).map(e => e[i + 1])}))
+	};
+}
+
+
+function load()
+{
+	return import("./chart.js").then(e => {
+		e.default.register(e.Title);
+		return e.default;
+	});
+}
+
 
 customElements.define('g-chart', class extends HTMLElement
 {
 	#chart;
 	#value;
 
-	#toolbox = {
-		show: true,
-		top: 'middle',
-		orient: 'vertical',
-		feature: {
-			myPChart: {
-				title: 'Pie',
-				onclick: () => this.type = "pchart",
-				icon: `image://${icons.get('2031')}`
-			}, myDChart: {
-				title: 'Donut',
-				onclick: () => this.type = "dchart",
-				icon: `image://${icons.get('2245')}`
-			}, myRChart: {
-				title: 'Rose',
-				onclick: () => this.type = "rchart",
-				icon: `image://${icons.get('2247')}`
-			}, myLChart: {
-				title: 'Line',
-				onclick: () => this.type = "lchart",
-				icon: `image://${icons.get('2032')}`
-			}, myCChart: {
-				title: 'Column',
-				onclick: () => this.type = "cchart",
-				icon: `image://${icons.get('2033')}`
-			}, myAChart: {
-				title: 'Area',
-				onclick: () => this.type = "achart",
-				icon: `image://${icons.get('2244')}`
-			}, myBChart: {
-				title: 'Bar',
-				onclick: () => this.type = "bchart",
-				icon: `image://${icons.get('2246')}`
-			}, myReverse: {
-				title: 'Reverse',
-				onclick: () => this.reversed = !this.reversed,
-				icon: `image://${icons.get('2025')}`
-			},
-			saveAsImage: {title: 'Salvar'}
-		}
-	}
-
 	constructor()
 	{
 		super();
-		window.addEventListener('resize', () => this.resize());
-		new IntersectionObserver(entries =>
-			entries.filter(e => e.isIntersecting).forEach(() => this.resize()))
-			.observe(this);
-	}
-
-	resize()
-	{
-		if (this.#chart)
-			this.#chart.resize();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set value(value)
@@ -118,9 +86,109 @@ customElements.define('g-chart', class extends HTMLElement
 		return this.#value;
 	}
 
-	set type(type)
+	#line()
 	{
-		this.setAttribute("type", type);
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'line',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title), scales: {y: {beginAtZero: true}}}
+			});
+		});
+	}
+
+	#area()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'line',
+				data: data(this.value, this.reversed, true),
+				options: {...options(this.title), scales: {y: {beginAtZero: true}}}
+			});
+		});
+	}
+
+	#column()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'bar',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title), scales: {y: {beginAtZero: true}}}
+			});
+		});
+	}
+
+	#bar()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'bar',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title), indexAxis: 'y', scales: {x: {beginAtZero: true}}}
+			});
+		});
+	}
+
+	#pie()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'pie',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title)}
+			});
+		});
+	}
+
+	#doughnut()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'doughnut',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title)}
+			});
+		});
+	}
+
+	#radar()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'radar',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title)}
+			});
+		});
+	}
+
+	#polar()
+	{
+		load().then(Chart =>
+		{
+			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
+				type: 'polarArea',
+				data: data(this.value, this.reversed),
+				options: {...options(this.title)}
+			});
+		});
+	}
+
+	#clear()
+	{
+		if (this.#chart)
+		{
+			this.#chart.destroy();
+			this.#chart = null;
+		}
 	}
 
 	get type()
@@ -128,14 +196,9 @@ customElements.define('g-chart', class extends HTMLElement
 		return this.getAttribute("type");
 	}
 
-	set title(title)
+	set type(type)
 	{
-		this.setAttribute("title", title);
-	}
-
-	get title()
-	{
-		return this.getAttribute("title");
+		this.setAttribute("type", type);
 	}
 
 	get reversed()
@@ -151,200 +214,53 @@ customElements.define('g-chart', class extends HTMLElement
 			this.removeAttribute("reversed");
 	}
 
-	attributeChangedCallback(name, _, value)
-	{
-		setTimeout(() =>
-		{
-			switch (name)
-			{
-				case 'value':
-					fetch(value)
-						.then(e => e.json())
-						.then(e => this.value = e);
-					break;
-
-				case 'type':
-				case 'title':
-				case 'reversed':
-					this.refresh();
-					break;
-			}
-		}, 0);
-	}
-
 	refresh()
 	{
-		if (this.type && this.value)
-			this.draw(this.type, this.title, this.reversed
-				? Dataset.reverse(this.value) : this.value);
-		else
-			import('./echarts.js').then(echarts => echarts.init(this).clear());
+		this.#clear();
+		if (this.value && this.type)
+			switch (this.type)
+			{
+				case "area":
+					return this.#area();
+				case "pie":
+					return this.#pie();
+				case "line":
+					return this.#line();
+				case "column":
+					return this.#column();
+				case "bar":
+					return this.#bar();
+				case "doughnut":
+					return this.#doughnut();
+				case "radar":
+					return this.#radar();
+				case "polar":
+					return this.#polar();
+			}
+
 	}
 
-	draw(type, title, value)
+	attributeChangedCallback(name, _, value)
 	{
-		switch (type)
+		switch (name)
 		{
-			case 'column':
-			case 'cchart':
-				return this.cchart(title, value);
-			case 'bar':
-			case 'bchart':
-				return this.bchart(title, value);
-			case 'line':
-			case 'lchart':
-				return this.lchart(title, value);
-			case 'area':
-			case 'achart':
-				return this.achart(title, value);
-			case 'pie':
-			case 'pchart':
-				return this.pchart(title, value);
-			case 'donut':
-			case 'dchart':
-				return this.dchart(title, value);
-			case 'rose':
-			case 'rchart':
-				return this.rchart(title, value);
+			case 'value':
+				fetch(value)
+					.then(e => e.json())
+					.then(e => this.value = e);
+				break;
+
+			case 'type':
+			case 'title':
+			case 'reversed':
+				this.refresh();
+				break;
 		}
-	}
-
-	cchart(title, value)
-	{
-		title = title ? {x: 'center', text: title} : null;
-
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption({
-				grid,
-				title,
-				toolbox: this.#toolbox,
-				dataset: {source: value},
-				legend: {show: value[0].length > 2, y: 'bottom'},
-				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-				xAxis: category,
-				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-				series: Array(value[0].length - 1)
-					.fill({type: 'bar',
-						barGap: 0,
-						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
-			});
-		});
-	}
-
-	bchart(title, value)
-	{
-		title = title ? {x: 'center', text: title} : null;
-
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption({
-				grid,
-				title,
-				toolbox: this.#toolbox,
-				dataset: {source: value},
-				legend: {show: value[0].length > 2, y: 'bottom'},
-				dataZoom: {right: 40, width: 12, endValue: 9, startValue: 0, orient: 'vertical', filterMode: 'empty'},
-				yAxis: category,
-				xAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-				series: Array(value[0].length - 1)
-					.fill({type: 'bar',
-						barGap: 0,
-						seriesLayoutBy: 'column',
-						label: {show: true, position: 'right', formatter: e => e.value[e.encode.x].toLocaleString(locale)}})
-			});
-		});
-
-	}
-
-	lchart(title, value)
-	{
-		title = title ? {x: 'center', text: title} : null;
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption({
-				grid,
-				title,
-				toolbox: this.#toolbox,
-				dataset: {source: value},
-				legend: {show: value[0].length > 2, y: 'bottom'},
-				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-				xAxis: category,
-				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-				series: Array(value[0].length - 1)
-					.fill({type: 'line',
-						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
-			});
-		});
-	}
-
-	achart(title, value)
-	{
-		title = title ? {x: 'center', text: title} : null;
-
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption({
-				grid,
-				title,
-				toolbox: this.#toolbox,
-				dataset: {source: value},
-				legend: {show: value[0].length > 2, y: 'bottom'},
-				dataZoom: {height: 12, endValue: 9, startValue: 0, filterMode: 'empty'},
-				xAxis: category,
-				yAxis: {axisLabel: {formatter: value => value.toLocaleString(locale)}},
-				series: Array(value[0].length - 1)
-					.fill({type: 'line',
-						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)},
-						areaStyle: {type: 'default'}})
-			});
-		});
-	}
-
-	pchart(title, value)
-	{
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption(pie(title, this.#toolbox, value, "80%", null));
-		});
-	}
-
-	dchart(title, value)
-	{
-
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption(pie(title, this.#toolbox, value, ["60%", "80%"], null));
-		});
-	}
-
-	rchart(title, value)
-	{
-		import('./echarts.js').then(echarts =>
-		{
-			this.#chart = echarts.init(this);
-			this.#chart.clear();
-			this.#chart.setOption(pie(title, this.#toolbox, value, "80%", "area"));
-		});
 	}
 
 	static get observedAttributes()
 	{
-		return ['type', 'title', 'value', "reversed"];
+		return ['value', 'type', 'reversed', 'title'];
 	}
-});
+}
+);

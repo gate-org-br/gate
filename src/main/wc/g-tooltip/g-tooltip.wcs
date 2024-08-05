@@ -19,58 +19,55 @@ div {
 	overflow: auto;
 	width: max-content;
 	height: max-content;
-	max-width: min(50vw - 16px, 400px);
-	max-height: min(50vh - 16px, 400px);
+	max-width: min(50vw - 16px, 600px);
+	max-height: min(50vh - 16px, 600px);
 }
 
-g-icon
+span
 {
-	font-size: 20px;
+	width: 0;
+	height: 0;
 	position: absolute;
+	display: inline-block;
 }
 
-g-icon[data-arrow='north'] {
+span[data-arrow='north']
+{
 	top: 100%;
-	left: calc(50% - 10px);
-	transform: rotate(180deg);
+	left: calc(50% - 6px);
+	border-top: 12px solid black;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
 }
 
-g-icon[data-arrow='south'] {
-	top: -20px;
-	left: calc(50% - 10px);
+span[data-arrow='south'] {
+	top: -12px;
+	left: calc(50% - 6px);
+	border-bottom: 12px solid black;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
 }
 
-g-icon[data-arrow='west'] {
+span[data-arrow='west'] {
 	left: 100%;
-	top: calc(50% - 10px);
-	transform: rotate(90deg);
+	top: calc(50% - 6px);
+	border-left: 12px solid black;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
 }
 
-g-icon[data-arrow='east'] {
-	left: -20px;
-	top: calc(50% - 10px);
-	transform: rotate(270deg);
+span[data-arrow='east']
+{
+	left: -12px;
+	top: calc(50% - 6px);
+	border-right: 12px solid black;
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
 }
 
-g-icon[data-arrow='northeast'] {
-	top: 100%;
-	left: -20px;
-	transform: rotate(225deg);
-}
-
-g-icon[data-arrow='northwest'] {
-	top: 100%;
-	left: 100%;
-	transform: rotate(135deg);
-}
-g-icon[data-arrow='southeast'] {
-	top: -20px;
-	left: -20px;
-	transform: rotate(-45deg);
-}
-
-g-icon[data-arrow='southwest'] {
-	left: 100%;
-	top: -20px;
-	transform: rotate(45deg);
+span[data-arrow='northwest'],
+span[data-arrow='northeast'],
+span[data-arrow='southeast'],
+span[data-arrow='southwest'] {
+	display: none;
 }

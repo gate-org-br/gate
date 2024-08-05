@@ -1,7 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<slot>
-	</slot>
+	<slot> </slot>
  <style data-element="g-accordion">:host(*)
 {
 	display: flex;
@@ -57,10 +56,8 @@ template.innerHTML = `
 {
 	content: '\\2278';
 }
-
 </style>`;
 /* global customElements */
-
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -69,19 +66,16 @@ customElements.define('g-accordion', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({ mode: "open" });
+		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		this.addEventListener("click", event =>
-		{
-			let target = event.target.closest("a, button");
+		this.addEventListener('click', (event) => {
+			let target = event.target.closest('a, button');
 			if (target)
 			{
 				event.preventDefault();
 				event.stopPropagation();
 				event.stopImmediatePropagation();
-
-				if (!target.hasAttribute("data-expanded"))
+				if (!target.hasAttribute('data-expanded'))
 					this.expand(target);
 				else
 					this.colapse(target);
@@ -89,65 +83,56 @@ customElements.define('g-accordion', class extends HTMLElement
 		});
 	}
 
-	connectedCallback ()
+	connectedCallback()
 	{
 		if (this.multiple)
-			Array.from(this.querySelectorAll("a[data-expanded], button[data-expanded]"))
-				.forEach(e => this.expand(e));
+			Array.from(this.querySelectorAll('a[data-expanded], button[data-expanded]')).forEach((e) => this.expand(e));
 		else
-			this.expand(this.querySelector("a[data-expanded], button[data-expanded]"));
-
+			this.expand(this.querySelector('a[data-expanded], button[data-expanded]'));
 	}
 
-	get multiple ()
+	get multiple()
 	{
-		return this.hasAttribute("multiple");
+		return this.hasAttribute('multiple');
 	}
 
-	set multiple (value)
+	set multiple(value)
 	{
 		if (value)
-			this.setAttribute("multiple", "");
+			this.setAttribute('multiple', '');
 		else
-			this.removeAttribute("multiple", "");
+			this.removeAttribute('multiple', '');
 	}
 
-	expand (target)
+	expand(target)
 	{
 		if (!target)
 			return;
-
 		if (!this.multiple)
-			Array.from(this.children)
-				.forEach(e => e.removeAttribute("data-expanded"));
-
+			Array.from(this.children).forEach((e) => e.removeAttribute('data-expanded'));
 		let div = target.nextElementSibling;
-		if (!div || div.tagName !== "DIV")
+		if (!div || div.tagName !== 'DIV')
 		{
-			div = div ?
-				this.insertBefore(document.createElement("div"), div) :
-				this.appendChild(document.createElement("div"));
-
-			let method = target.getAttribute('method') || (target.form || {}).method || "get";
-			let action = target.getAttribute('href') || target.getAttribute('formaction') || (target.form || {}).action;
-
+			div = div ? this.insertBefore(document.createElement('div'), div) : this.appendChild(document.createElement('div'));
+			let method = target.getAttribute('method') || (target.form ||
+				{}).method || 'get';
+			let action = target.getAttribute('href') || target.getAttribute('formaction') || (target.form ||
+				{}).action;
 			fetch(RequestBuilder.build(method, action, target.form))
 				.then(ResponseHandler.text)
-				.then(result => document.createRange().createContextualFragment(result))
-				.then(result => div.replaceChildren(...Array.from(result.childNodes)));
+				.then((result) => document.createRange().createContextualFragment(result))
+				.then((result) => div.replaceChildren(...Array.from(result.childNodes)));
 		}
-
-		target.setAttribute("data-expanded", "");
-		div.setAttribute("data-expanded", "");
+		target.setAttribute('data-expanded', '');
+		div.setAttribute('data-expanded', '');
 	}
 
-	colapse (target)
+	colapse(target)
 	{
 		if (!target)
 			return;
-
 		let div = target.nextElementSibling;
-		target.removeAttribute("data-expanded");
-		div.removeAttribute("data-expanded");
+		target.removeAttribute('data-expanded');
+		div.removeAttribute('data-expanded');
 	}
 });

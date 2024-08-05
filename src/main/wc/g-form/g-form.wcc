@@ -39,7 +39,8 @@ function create(form, element)
 	{
 		if (element.multiple)
 		{
-			input = span.appendChild(document.createElement("g-selectn"));
+			input = document.createElement("g-selectn");
+			span.appendChild(input);
 			input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 			input.options = element.options.map(option => ({"label": option, "value": option}));
 

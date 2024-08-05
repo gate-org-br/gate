@@ -1,9 +1,9 @@
 /* global template */
 
 import Formatter from './formatter.js';
-const DEFAULT_POSITION = "northeast";
-export const POSITIONS = ["northeast", "southwest", "northwest", "southeast", "north", "east", "south", "west"];
-const GAP = 20;
+const DEFAULT_POSITION = "north";
+export const POSITIONS = ["north", "east", "south", "west", "northeast", "southwest", "northwest", "southeast"];
+const GAP = 12;
 let instance;
 
 function isVisible(element)
@@ -20,13 +20,13 @@ function calc(element, tooltip, position)
 	switch (position)
 	{
 		case "northeast":
-			return {x: element.right + GAP, y: element.top - tooltip.height - GAP};
+			return {x: element.right, y: element.top - tooltip.height};
 		case "southwest":
-			return {x: element.left - tooltip.width - GAP, y: element.bottom + GAP};
+			return {x: element.left - tooltip.width, y: element.bottom};
 		case "northwest":
-			return {x: element.left - tooltip.width - GAP, y: element.top - tooltip.height - GAP};
+			return {x: element.left - tooltip.width, y: element.top - tooltip.height};
 		case "southeast":
-			return {x: element.right + GAP, y: element.bottom + GAP};
+			return {x: element.right, y: element.bottom};
 		case "north":
 			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.top - tooltip.height - GAP};
 		case "east":
@@ -82,7 +82,7 @@ export default class GTooltip extends HTMLElement
 				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % POSITIONS.length];
 			}
 
-			this.shadowRoot.querySelector("g-icon").dataset.arrow = position;
+			this.shadowRoot.querySelector("span").dataset.arrow = position;
 			this.style.visibility = "visible";
 		}, 0);
 	}

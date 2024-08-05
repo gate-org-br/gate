@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -11,6 +10,7 @@ import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+import gate.thymeleaf.HTMLFileEngine;
 
 @ApplicationScoped
 public class TemplateAttributeModelProcessor extends AttributeModelProcessor
@@ -20,7 +20,7 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 	TextEngine textEngine;
 
 	@Inject
-	FileEngine fileEngine;
+	HTMLFileEngine fileEngine;
 
 	public TemplateAttributeModelProcessor()
 	{

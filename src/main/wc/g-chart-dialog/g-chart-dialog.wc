@@ -3,6 +3,8 @@
 		<header part='header' tabindex='1'>
 			<label id='caption'>
 			</label>
+			<g-chart-toolbar chart='chart'>
+			</g-chart-toolbar>
 			<a id='hide' href='#'>
 				<g-icon>
 					&#x1011;
@@ -10,7 +12,7 @@
 			</a>
 		</header>
 		<section>
-			<g-chart>
+			<g-chart id='chart'>
 			</g-chart>
 		</section>
 	</dialog>

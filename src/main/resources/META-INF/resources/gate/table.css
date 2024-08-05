@@ -85,7 +85,6 @@ table > caption {
   font-weight: bold;
   text-align: center;
   color: var(--base1);
-  vertical-align: middle;
   border-radius: 3px 3px 0 0;
   background-color: var(--base3);
 }

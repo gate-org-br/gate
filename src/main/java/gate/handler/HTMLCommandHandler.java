@@ -2,7 +2,6 @@ package gate.handler;
 
 import gate.Progress;
 import gate.thymeleaf.CDIWebContext;
-import gate.thymeleaf.FileEngine;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
@@ -14,13 +13,14 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+import gate.thymeleaf.HTMLFileEngine;
 
 @ApplicationScoped
 public class HTMLCommandHandler implements Handler
 {
 
 	@Inject
-	FileEngine engine;
+	HTMLFileEngine engine;
 
 	@Inject
 	private BeanManager beanManager;

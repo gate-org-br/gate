@@ -3,8 +3,8 @@
 	<p>
 		Displays a dataset as a chart.
 
-		The chart type (<strong>pie</strong>, <strong>rose</strong>, <strong>donut</strong>, <strong>column</strong>, <strong>line</strong>,
-		<strong>area</strong> or <strong>bar</strong>) can be specified using the <strong>type attribute/property</strong>, defaulting to <strong>pie</strong>
+		The chart type (<strong>pie</strong>, <strong>polar</strong>, <strong>doughnut</strong>, <strong>line</strong>, <strong>column</strong>,
+		<strong>bar</strong>, <strong>area</strong>, <strong>radar</strong>, <strong>polar</strong>) can be specified using the <strong>type attribute/property</strong>, defaulting to <strong>pie</strong>
 		when omitted.
 
 		The <strong>title attribute/property </strong> is the title of the chart to be displayed.
@@ -31,6 +31,7 @@
 
 		<g-code-viewer ignore='<div.*</div>|_echarts_instance_="[^"]*"| position: relative; | user-select: none;'>
 			<g-chart type='line'
+				 toolbar
 				 title='Top languages'
 				 style='width: 100%; height: 600px'
 				 value='/component/g-chart/popularity.json'>

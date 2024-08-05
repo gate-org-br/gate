@@ -8,18 +8,25 @@
 	<a href="#">Example 1</a>
 	<div>
 		<g-code-viewer>
-			<g-callout id="context"
-				   data-context-menu='/component/contextmenu.js'>
+			<g-callout id="context">
 				Click here to show the menu
 			</g-callout>
-			<g-card>
-				<section>
-					<code>
-						<pre id='code'>
-						</pre>
-					</code>
-				</section>
-			</g-card>
+			<script type="module">
+				import GContextMenu from './gate/g-context-menu.js';
+				document.querySelector("#context").addEventListener("contextmenu", e =>
+				{
+					e.preventDefault();
+					GContextMenu.show(event.target, e.x, e.y,
+						{"text": "function", "icon": "2008", "action": () => alert("Item 1")},
+						{"text": "_blank", "icon": "2009", "action": "http://www.google.com", "target": "_blank"},
+						{"text": "@dialog", "icon": "2006", "action": "message.txt", "target": "@dialog", "title": "Dialog"},
+						{"text": "Submenu", "icon": "2207",
+							"action": [{"text": "Action", "icon": "2008", "action": () => alert("Item 1")},
+								{"text": "_blank", "icon": "2009", "action": "http://www.google.com", "target": "_blank"},
+								{"text": "@dialog", "icon": "2006", "action": "http://www.google.com", "target": "@dialog"}]
+						});
+				});
+			</script>
 		</g-code-viewer>
 	</div>
 </g-tab-control>
