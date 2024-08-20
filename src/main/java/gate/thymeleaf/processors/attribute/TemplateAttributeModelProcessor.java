@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.thymeleaf.TextEngine;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.HTMLFileEngine;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.LinkedList;
@@ -10,17 +11,16 @@ import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.web.IWebExchange;
-import gate.thymeleaf.HTMLFileEngine;
 
 @ApplicationScoped
 public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 {
 
 	@Inject
-	TextEngine textEngine;
+	HTMLFileEngine fileEngine;
 
 	@Inject
-	HTMLFileEngine fileEngine;
+	ELExpressionFactory expression;
 
 	public TemplateAttributeModelProcessor()
 	{
@@ -31,12 +31,13 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 	@Override
 	@SuppressWarnings("unchecked")
 	public void process(ITemplateContext context, IModel model,
-			IElementModelStructureHandler handler)
+		IElementModelStructureHandler handler)
 	{
 
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		var template = element.getAttributeValue("g:template");
+		var template = (String) expression.create()
+			.evaluate(element.getAttributeValue("g:template"));
 
 		removeTag(context, model, handler);
 

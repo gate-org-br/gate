@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.thymeleaf.TextEngine;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.HTMLFileEngine;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.LinkedList;
@@ -10,17 +11,16 @@ import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
-import gate.thymeleaf.HTMLFileEngine;
 
 @ApplicationScoped
 public class TemplateProcessor extends TagModelProcessor
 {
 
 	@Inject
-	TextEngine textEngine;
+	HTMLFileEngine fileEngine;
 
 	@Inject
-	HTMLFileEngine fileEngine;
+	ELExpressionFactory expression;
 
 	public TemplateProcessor()
 	{
@@ -31,16 +31,17 @@ public class TemplateProcessor extends TagModelProcessor
 	@Override
 	@SuppressWarnings("unchecked")
 	public void process(ITemplateContext context, IModel model,
-			IElementModelStructureHandler handler)
+		IElementModelStructureHandler handler)
 	{
 
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		if (!element.hasAttribute("filename"))
 			throw new TemplateProcessingException(
-					"Missing required attribute filename on g:template");
+				"Missing required attribute filename on g:template");
 
-		var filename = element.getAttributeValue("filename");
+		var filename = (String) expression.create()
+			.evaluate(element.getAttributeValue("filename"));
 
 		removeTag(context, model, handler);
 
