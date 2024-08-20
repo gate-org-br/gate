@@ -5,6 +5,7 @@ import resolve from './resolve.js';
 import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+import TriggerExtractor from './trigger-extractor.js';
 
 window.addEventListener("@post", function (event)
 {
@@ -12,11 +13,7 @@ window.addEventListener("@post", function (event)
 	let trigger = path[0] || event.target;
 	let {action, method, form, parameters} = event.detail;
 
-	let url = parameters[0]
-		|| trigger.getAttribute("href")
-		|| trigger.getAttribute("action")
-		|| trigger.getAttribute("formaction")
-		|| trigger.getAttribute("data-action");
+	let url = parameters[0] || TriggerExtractor.action(trigger);
 
 	url = resolve(trigger, event.detail.context, url);
 

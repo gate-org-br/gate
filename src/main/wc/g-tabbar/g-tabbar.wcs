@@ -10,36 +10,11 @@
 	border: none;
 	height: auto;
 	flex-grow: 1;
-	display: grid;
+	display: flex;
 	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
 	background-color: var(--main3);
-	grid-template-columns: auto 1fr auto;
-}
-
-#next,
-#prev
-{
-	height: 100%;
-	border: none;
-	color: #999999;
-	font-size: 16px;
-	min-width: 24px;
-	flex-basis: 24px;
-	position: absolute;
-	align-items: center;
-	justify-content: center;
-}
-
-#prev
-{
-	left: 0;
-}
-
-#next
-{
-	right: 0;
 }
 
 div
@@ -50,8 +25,7 @@ div
 	border: none;
 	flex-grow: 1;
 	display: flex;
-	grid-column: 2;
-	overflow-x: hidden;
+	overflow-x: auto;
 	white-space: nowrap;
 }
 
@@ -109,29 +83,6 @@ div
 	border: none;
 	flex-grow: 100000;
 }
-
-button
-{
-	color: black;
-	display: none;
-}
-
-g-icon
-{
-	color: #000099;
-}
-
-button
-{
-	cursor: pointer;
-
-}
-
-button:hover
-{
-	background-color: var(--hovered);
-}
-
 
 ::slotted(:is(a, button, .g-command)[data-loading])
 {

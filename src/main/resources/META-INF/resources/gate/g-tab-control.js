@@ -34,6 +34,10 @@ label
 	background-color: var(--main4);
 }
 
+section {
+	overflow: hidden;
+}
+
 label::before
 {
 	content: '\\2265';
@@ -159,99 +163,6 @@ header > ::slotted(:not(:first-child))
 	:host([size='100']) > header > ::slotted(*)
 	{
 		flex-basis: 10%;
-	}
-}
-
-:host([layout='vertical'])
-{
-	grid-template-rows: 1fr;
-	grid-template-columns: auto 1fr;
-}
-
-:host([layout='vertical']) > header
-{
-	gap: 0;
-	width: 28px;
-	overflow: hidden;
-	flex-direction: column;
-	justify-content: flex-start;
-}
-
-:host([layout='vertical']) > section
-{
-	display: flex;
-	align-items: stretch;
-	flex-direction: column;
-	justify-content: stretch;
-}
-
-:host([layout='vertical']) ::slotted(div)
-{
-	flex-grow: 1;
-}
-
-:host([layout='vertical']) > header > label
-{
-	display: flex;
-}
-
-:host([layout='vertical']) > header > ::slotted(*)
-{
-	flex-basis: 32px;
-	visibility: hidden;
-	background-color: var(--main3);
-}
-
-:host([layout='vertical']) > header > ::slotted(*:hover)
-{
-	background-color:  #FFFACD;
-}
-
-:host([layout='vertical']) > header[toggled]
-{
-	width: max-content;
-}
-
-:host([layout='vertical']) > header[toggled] > ::slotted(*)
-{
-	visibility: visible;
-}
-
-:host([layout='vertical']) > header > ::slotted(a[data-selected=true]),
-:host([layout='vertical']) > header > ::slotted(button[data-selected=true])
-{
-	color: black;
-	font-weight: bold;
-	background-color: white;
-}
-
-@media only screen and (min-width: 768px)
-{
-	:host([layout='vertical']) > header[toggled]
-	{
-		width: 28px;
-	}
-
-	:host([layout='vertical']) > header:hover,
-	:host([layout='vertical']) > header:not([toggled])
-	{
-		width: max-content;
-	}
-
-	:host([layout='vertical']) > header[toggled] > ::slotted(*)
-	{
-		visibility: hidden;
-	}
-
-	:host([layout='vertical']) > header:hover > ::slotted(*),
-	:host([layout='vertical']) > :not(header[toggled]) > ::slotted(*)
-	{
-		visibility: visible;
-	}
-
-	:host([layout='vertical']) > header:not([toggled]) label::after
-	{
-		content: '\\2188';
 	}
 }
 

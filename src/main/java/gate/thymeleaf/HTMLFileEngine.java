@@ -1,5 +1,7 @@
 package gate.thymeleaf;
 
+import gate.thymeleaf.processors.attribute.property.NotAttributeProcessor;
+import gate.thymeleaf.processors.attribute.property.SetAttributeProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.io.Writer;
@@ -22,12 +24,16 @@ public interface HTMLFileEngine
 		private final TemplateEngine templateEngine;
 
 		@Inject
-		public FileEngineImpl(GateDialect dialect)
+		public FileEngineImpl(GateDialect dialect,
+			SetAttributeProcessor set,
+			NotAttributeProcessor not)
 		{
 
 			this.templateEngine = new TemplateEngine();
 
 			templateEngine.addDialect(dialect);
+			templateEngine.addDialect(set);
+			templateEngine.addDialect(not);
 			var resolver = new ClassLoaderTemplateResolver();
 			resolver.setTemplateMode(TemplateMode.HTML);
 

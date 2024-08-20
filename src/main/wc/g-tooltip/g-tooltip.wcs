@@ -11,16 +11,15 @@
 	visibility: hidden;
 	border-radius: 3px;
 	background-color: var(--main4);
-	border: 1px solid var(--main10);
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
 div {
+	height: auto;
 	overflow: auto;
 	width: max-content;
-	height: max-content;
-	max-width: min(50vw - 16px, 600px);
-	max-height: min(50vh - 16px, 600px);
+	max-width: calc(50vw - 16px);
+	max-height: calc(50vh - 16px);
 }
 
 span
@@ -35,7 +34,7 @@ span[data-arrow='north']
 {
 	top: 100%;
 	left: calc(50% - 6px);
-	border-top: 12px solid black;
+	border-top: 12px solid var(--main4);
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 }
@@ -43,7 +42,7 @@ span[data-arrow='north']
 span[data-arrow='south'] {
 	top: -12px;
 	left: calc(50% - 6px);
-	border-bottom: 12px solid black;
+	border-bottom: 12px solid var(--main4);
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 }
@@ -51,7 +50,7 @@ span[data-arrow='south'] {
 span[data-arrow='west'] {
 	left: 100%;
 	top: calc(50% - 6px);
-	border-left: 12px solid black;
+	border-left: 12px solid var(--main4);
 	border-top: 6px solid transparent;
 	border-bottom: 6px solid transparent;
 }
@@ -60,7 +59,7 @@ span[data-arrow='east']
 {
 	left: -12px;
 	top: calc(50% - 6px);
-	border-right: 12px solid black;
+	border-right: 12px solid var(--main4);
 	border-top: 6px solid transparent;
 	border-bottom: 6px solid transparent;
 }

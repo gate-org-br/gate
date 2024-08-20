@@ -166,7 +166,8 @@ customElements.define('g-form', class extends HTMLElement
 	get value()
 	{
 		let fieldset = this.shadowRoot.querySelector("fieldset");
-		return Array.from(fieldset.querySelectorAll("label"))
+		return Array.from(fieldset.children)
+			.filter(e => e.tagName === "LABEL")
 			.map(label => {
 
 				let object = {};

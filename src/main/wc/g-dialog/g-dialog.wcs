@@ -16,7 +16,7 @@ dialog {
 	border-radius: 0;
 }
 
-@media only screen and (min-width: 640px)
+@media only screen and (min-width: 1000px)
 {
 	dialog{
 		border-radius: 3px;

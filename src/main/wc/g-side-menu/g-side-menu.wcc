@@ -1,52 +1,44 @@
 /* global customElements */
 
-import GModal from './g-modal.js';
+import GBlock from './g-block.js';
+import loading from './loading.js';
+import EventHandler from './event-handler.js';
+import RequestBuilder from './request-builder.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
-customElements.define('g-side-menu', class extends GModal
+
+customElements.define('g-side-menu', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", e => e.stopPropagation() | this.hide());
+
+		this.shadowRoot.querySelector("header")
+			.addEventListener("click", event =>
+			{
+				if (!this.hasAttribute("open"))
+					this.setAttribute("open", "");
+				else
+					this.removeAttribute("open");
+			});
+
+		this.shadowRoot.querySelector("section")
+			.addEventListener("click", event => this.removeAttribute("open"));
 	}
 
-	showLeft()
+	connectedCallback()
 	{
-		setTimeout(() => this.position = "left", 100);
-	}
+		Array.from(this.children)
+			.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
 
-	showRight()
-	{
-		setTimeout(() => this.position = "right", 100);
-	}
-
-	set position(position)
-	{
-		this.setAttribute("position", position);
-	}
-
-	get position()
-	{
-		return this.getAttribute("position");
-	}
-
-	show(element)
-	{
-		let center = element.getBoundingClientRect();
-		center = center.left + (center.width / 2);
-		if (center <= window.innerWidth / 2)
-			this.showLeft();
-		else
-			this.showRight();
-	}
-
-	set elements(elements)
-	{
-		let menu = this.shadowRoot.querySelector("section");
-		while (menu.firstChild)
-			menu.removeChild(menu.firstChild);
-		elements.forEach(e => menu.appendChild(e));
+		Array.from(this.children)
+			.filter(e => e.tagName !== "HR")
+			.filter(e => !e.querySelector('g-icon'))
+			.forEach(e => e.setAttribute("_iconless", ""));
 	}
 });

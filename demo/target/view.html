@@ -1,193 +1,105 @@
-<g-tab-control type='fetch' layout='vertical'>
-	<a href="#">
-		Targets
-	</a>
-	<div>
-		<h1>Targets</h1>
-		<p>
-			The target indicate what to do with the result of the request.
-			The default HTML targets start with the <strong>underline (_)</strong> character and by default
-			only anchors and forms, using the target attribute, or buttons, using the formtarget attribute,
-			can have targets.
-			Gate adds some usefull target types starting with the <strong>at (@)</strong> character and provides the
-			data-target attribute to allow targets to be specified on HTML elements other than forms, anchors
-			and buttons.
-		</p>
-
-		<p>
-			Targets can have selectors as parameters. Selectors are strings that represent a series of navigation steps
-			to locate a specific element within the DOM.
-			It can start with <strong>this</strong> to indicate navigation relative to the trigger element or be a valid
-			CSS selector to directly target an element on the document. Selectors can be quoted with double <strong>(")</strong>
-			or single <strong>(')</strong> quotes. Steps can be separated by dots <strong>(.)</strong>
-			or enclosed with square brackets <strong>([])</strong> and can be any of the following:
-		</p>
-
-		<g-callout>
-			<div>
-				<dl>
-					<dt>this</dt>
-					<dd>Skips the current step and continues to the next one.</dd>
-
-					<dt>parent()</dt>
-					<dd>Navigates to the parent of the element.</dd>
-
-					<dt>parent(number)</dt>
-					<dd>Navigates to the nth parent of the element.</dd>
-
-					<dt>parent(selector)</dt>
-					<dd>Navigates to the first parent of the element that matches the provided CSS selector.</dd>
-
-					<dt>prev()</dt>
-					<dd>Navigates to the previous sibling of the element.</dd>
-
-					<dt>prev(number)</dt>
-					<dd>Navigates to the nth previous sibling of the element.</dd>
-
-					<dt>prev(selector)</dt>
-					<dd>Navigates to the first previous sibling of the element that matches the provided CSS selector.</dd>
-
-					<dt>next()</dt>
-					<dd>Navigates to the next sibling of the element.</dd>
-
-					<dt>next(number)</dt>
-					<dd>Navigates to the nth next sibling of the element.</dd>
-
-					<dt>next(selector)</dt>
-					<dd>Navigates to the first next sibling of the element that matches the provided CSS selector.</dd>
-
-					<dt>search(selector)</dt>
-					<dd>Navigates to the first child element that matches the provided CSS selector.</dd>
-
-					<dt>[+number]</dt>
-					<dd>Navigates to the nth child element of the current source element.</dd>
-
-					<dt>[-number]</dt>
-					<dd>Navigates to the nth child element of the current source element in reverse order.</dd>
-
-					<dt>[selector]</dt>
-					<dd>Navigates to the first direct child element that matches the provided CSS selector.</dd>
-			</div>
-		</g-callout>
-
-		<p>
-			The first example showcases that valid CSS selectors can be used to select a target element on the document.
-			The following ones illustrate the usage of <strong>this</strong> to target elements on the DOM using the trigger
-			element as reference.
-		</p>
-
-		<g-callout>
-			<div>
-				<dl>
-					<dt>section</dt>
-					<dd>Navigates to the next first section element of the document.</dd>
-
-					<dt>this.parent(section)</dt>
-					<dd>Navigates to the next first parent section element of the trigger element.</dd>
-
-					<dt>this.parent(2).next('.class-name')</dt>
-					<dd>Navigates to the next sibling with the class "class-name" of the third parent of the trigger element.</dd>
-
-					<dt>this.prev(-1)[3]</dt>
-					<dd>Navigates to the fourth child of the previous sibling of the trigger element.</dd>
-				</dl>
-			</div>
-		</g-callout>
-	</div>
-	<a href="/target/@after-begin.html">
-		@after-begin
-	</a>
-	<a href="/target/@after-end.html">
-		@after-end
-	</a>
-	<a href="/target/@before-begin.html">
-		@before-begin
-	</a>
-	<a href="/target/@before-end.html">
-		@before-end
-	</a>
-	<a href="/target/@cache.html">
-		@cache
-	</a>
-	<a href="/target/@chart/@chart.html">
-		@chart
-	</a>
-	<a href="/target/@dataset.html">
-		@dataset
-	</a>
-	<a href="/target/@map.html">
-		@map
-	</a>
-	<a href="/target/@debounce.html">
-		@debounce
-	</a>
-	<a href="/target/@dialog/@dialog.html">
-		@dialog
-	</a>
-	<a href="/target/@exec.html">
-		@exec
-	</a>
-	<a href="/target/@fill.html">
-		@fill
-	</a>
-	<a href="/target/@form.html">
-		@form
-	</a>
-	<a href="/target/@inner-html.html">
-		@inner-html
-	</a>
-	<a href="/target/@json-to-html.html">
-		@json-to-html
-	</a>
-	<a href="/target/@message.html">
-		@message
-	</a>
-	<a href="/target/@none.html">
-		@none
-	</a>
-	<a href="/target/@once.html">
-		@once
-	</a>
-	<a href="/target/@outer-html.html">
-		@outer-html
-	</a>
-	<a href="/target/@pick.html">
-		@pick
-	</a>
-	<a href="/target/@populate.html">
-		@populate
-	</a>
-	<a href="/target/@post.html">
-		@post
-	</a>
-	<a href="/target/@progress/@progress.html">
-		@progress
-	</a>
-	<a href="/target/@report.html">
-		@report
-	</a>
-	<a href="/target/@save.html">
-		@save
-	</a>
-	<a href="/target/@search.html">
-		@search
-	</a>
-	<a href="/target/@select.html">
-		@select
-	</a>
-	<a href="/target/@stack/@stack.html">
-		@stack
-	</a>
-	<a href="/target/@template.html">
-		@template
-	</a>
-	<a href="/target/@throttle.html">
-		@throttle
-	</a>
-	<a href="/target/@tooltip/@tooltip.html">
-		@tooltip
-	</a>
-	<a href="/target/@value.html">
-		@value
-	</a>
-</g-tab-control>
+<div style='display: grid; grid-template-columns: auto 1fr; gap: 12px'>
+	<g-side-menu>
+		<a href="/target/target.html" target="@inner-html(this.parent().next())">
+			Targets<g-icon>&#X1024;</g-icon>
+		</a>
+		<a href="/target/@after-begin.html" target="@inner-html(this.parent().next())">
+			@after-begin
+		</a>
+		<a href="/target/@after-end.html" target="@inner-html(this.parent().next())">
+			@after-end
+		</a>
+		<a href="/target/@before-begin.html" target="@inner-html(this.parent().next())">
+			@before-begin
+		</a>
+		<a href="/target/@before-end.html" target="@inner-html(this.parent().next())">
+			@before-end
+		</a>
+		<a href="/target/@cache.html" target="@inner-html(this.parent().next())">
+			@cache
+		</a>
+		<a href="/target/@chart/@chart.html" target="@inner-html(this.parent().next())">
+			@chart
+		</a>
+		<a href="/target/@dataset.html" target="@inner-html(this.parent().next())">
+			@dataset
+		</a>
+		<a href="/target/@map.html" target="@inner-html(this.parent().next())">
+			@map
+		</a>
+		<a href="/target/@debounce.html" target="@inner-html(this.parent().next())">
+			@debounce
+		</a>
+		<a href="/target/@dialog/@dialog.html" target="@inner-html(this.parent().next())">
+			@dialog
+		</a>
+		<a href="/target/@exec.html" target="@inner-html(this.parent().next())">
+			@exec
+		</a>
+		<a href="/target/@fill.html" target="@inner-html(this.parent().next())">
+			@fill
+		</a>
+		<a href="/target/@form.html" target="@inner-html(this.parent().next())">
+			@form
+		</a>
+		<a href="/target/@inner-html.html" target="@inner-html(this.parent().next())">
+			@inner-html
+		</a>
+		<a href="/target/@json-to-html.html" target="@inner-html(this.parent().next())">
+			@json-to-html
+		</a>
+		<a href="/target/@message.html" target="@inner-html(this.parent().next())">
+			@message
+		</a>
+		<a href="/target/@none.html" target="@inner-html(this.parent().next())">
+			@none
+		</a>
+		<a href="/target/@once.html" target="@inner-html(this.parent().next())">
+			@once
+		</a>
+		<a href="/target/@outer-html.html" target="@inner-html(this.parent().next())">
+			@outer-html
+		</a>
+		<a href="/target/@pick.html" target="@inner-html(this.parent().next())">
+			@pick
+		</a>
+		<a href="/target/@populate.html" target="@inner-html(this.parent().next())">
+			@populate
+		</a>
+		<a href="/target/@post.html" target="@inner-html(this.parent().next())">
+			@post
+		</a>
+		<a href="/target/@progress/@progress.html" target="@inner-html(this.parent().next())">
+			@progress
+		</a>
+		<a href="/target/@report.html" target="@inner-html(this.parent().next())">
+			@report
+		</a>
+		<a href="/target/@save.html" target="@inner-html(this.parent().next())">
+			@save
+		</a>
+		<a href="/target/@search.html" target="@inner-html(this.parent().next())">
+			@search
+		</a>
+		<a href="/target/@select.html" target="@inner-html(this.parent().next())">
+			@select
+		</a>
+		<a href="/target/@stack/@stack.html" target="@inner-html(this.parent().next())">
+			@stack
+		</a>
+		<a href="/target/@template.html" target="@inner-html(this.parent().next())">
+			@template
+		</a>
+		<a href="/target/@throttle.html" target="@inner-html(this.parent().next())">
+			@throttle
+		</a>
+		<a href="/target/@tooltip/@tooltip.html" target="@inner-html(this.parent().next())">
+			@tooltip
+		</a>
+		<a href="/target/@value.html" target="@inner-html(this.parent().next())">
+			@value
+		</a>
+	</g-side-menu>
+	<section data-trigger='connected' data-action='/target/target.html' data-target='@inner-html'>
+	</section>
+</div>

@@ -17,16 +17,15 @@ template.innerHTML = `
 	visibility: hidden;
 	border-radius: 3px;
 	background-color: var(--main4);
-	border: 1px solid var(--main10);
 	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
 }
 
 div {
+	height: auto;
 	overflow: auto;
 	width: max-content;
-	height: max-content;
-	max-width: min(50vw - 16px, 600px);
-	max-height: min(50vh - 16px, 600px);
+	max-width: calc(50vw - 16px);
+	max-height: calc(50vh - 16px);
 }
 
 span
@@ -41,7 +40,7 @@ span[data-arrow='north']
 {
 	top: 100%;
 	left: calc(50% - 6px);
-	border-top: 12px solid black;
+	border-top: 12px solid var(--main4);
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 }
@@ -49,7 +48,7 @@ span[data-arrow='north']
 span[data-arrow='south'] {
 	top: -12px;
 	left: calc(50% - 6px);
-	border-bottom: 12px solid black;
+	border-bottom: 12px solid var(--main4);
 	border-left: 6px solid transparent;
 	border-right: 6px solid transparent;
 }
@@ -57,7 +56,7 @@ span[data-arrow='south'] {
 span[data-arrow='west'] {
 	left: 100%;
 	top: calc(50% - 6px);
-	border-left: 12px solid black;
+	border-left: 12px solid var(--main4);
 	border-top: 6px solid transparent;
 	border-bottom: 6px solid transparent;
 }
@@ -66,7 +65,7 @@ span[data-arrow='east']
 {
 	left: -12px;
 	top: calc(50% - 6px);
-	border-right: 12px solid black;
+	border-right: 12px solid var(--main4);
 	border-top: 6px solid transparent;
 	border-bottom: 6px solid transparent;
 }
@@ -79,11 +78,15 @@ span[data-arrow='southwest'] {
 }</style>`;
 /* global template */
 
+import './mutation-events.js';
+import DataURL from './data-url.js';
 import Formatter from './formatter.js';
+import ResponseHandler from './response-handler.js';
+
+let instance;
+const GAP = 12;
 const DEFAULT_POSITION = "north";
 export const POSITIONS = ["north", "east", "south", "west", "northeast", "southwest", "northwest", "southeast"];
-const GAP = 12;
-let instance;
 
 function isVisible(element)
 {
@@ -121,6 +124,13 @@ function calc(element, tooltip, position)
 
 export default class GTooltip extends HTMLElement
 {
+	#parent;
+	#trigger = () =>
+	{
+		let timeout = setTimeout(() => this.show(this.parentNode), 500);
+		this.parentNode.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+	}
+
 	constructor()
 	{
 		super();
@@ -186,16 +196,10 @@ export default class GTooltip extends HTMLElement
 		this.style.display = "";
 	}
 
-	static show(element, content, position, size, height)
+	static show(element, content, position)
 	{
 		let tooltip = new GTooltip();
 		document.body.appendChild(tooltip);
-
-		if (size)
-			tooltip.style.width = tooltip.style.height = size;
-		if (height)
-			tooltip.style.height = height;
-
 		tooltip.innerHTML = content;
 		tooltip.show(element, position || DEFAULT_POSITION);
 	}
@@ -220,25 +224,72 @@ export default class GTooltip extends HTMLElement
 		if (name === "position" && !POSITIONS.includes(newValue))
 			this.position = oldValue;
 	}
+
+	connectedCallback()
+	{
+		if (this.parentNode !== document.body)
+		{
+			this.#parent = this.parentNode;
+			this.#parent.addEventListener("mouseenter", this.#trigger);
+		}
+	}
+
+	disconnectedCallback()
+	{
+		if (this.#parent)
+		{
+			this.#parent.removeEventListener("mouseenter", this.#trigger);
+			this.#parent = null;
+		}
+	}
 }
 
 customElements.define('g-tooltip', GTooltip);
 
-window.addEventListener("mouseover", function (event)
+function trigger()
 {
-	for (let target of [...event.composedPath(), event.target])
+	let timeout = setTimeout(() =>
 	{
-		if (target.hasAttribute && target.hasAttribute("data-tooltip"))
-		{
-			let json = JSON.parse(target.getAttribute("data-tooltip"));
-			let content = Formatter.JSONtoHTML(json);
-			let position = target.getAttribute("data-tooltip:position");
-			return GTooltip.show(target, content, position);
-		} else if (target.children)
-		{
-			for (let tooltip of target.children)
-				if (tooltip.tagName === "G-TOOLTIP")
-					return tooltip.show(target);
-		}
-	}
+		if (this.hasAttribute("data-tooltip"))
+			return GTooltip.show(this, this.getAttribute("data-tooltip"));
+		if (this.hasAttribute("data-tooltip:source"))
+			return fetch(this.getAttribute("data-tooltip:source"))
+				.then(ResponseHandler.dataURL)
+				.then(response => DataURL.parse(response))
+				.then(dataURL => dataURL.contentType === "application/json" ? Formatter.JSONtoHTML(JSON.parse(dataURL.data)) : dataURL.data)
+				.then(content => GTooltip.show(this, content))
+				.catch(error => console.error('Error trying to fetch tooltip data:', error));
+	}, 500);
+	this.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+}
+
+window.addEventListener("connected", event => {
+	let target = event.composedPath()[0] || event.target;
+	if (target.hasAttribute("data-tooltip")
+		|| target.hasAttribute("data-tooltip:source")
+		|| Array.from(target.children).some(e => e.tagName === "G-TOOLTIP"))
+		target.addEventListener("mouseenter", trigger);
+});
+
+window.addEventListener("disconnected", event => {
+	let target = event.composedPath()[0] || event.target;
+	target.removeEventListener("mouseenter", trigger);
+});
+
+window.addEventListener("attribute-created", event => {
+	let attribute = event.attribute;
+	let target = event.composedPath()[0] || event.target;
+	if (attribute === "data-tooltip"
+		|| attribute === "data-tooltip:source")
+		target.addEventListener("mouseenter", trigger);
+});
+
+window.addEventListener("attribute-removed", event => {
+	let attribute = event.attribute;
+	let target = event.composedPath()[0] || event.target;
+	if (attribute === "data-tooltip"
+		|| attribute === "data-tooltip:source")
+		if (!target.hasAttribute("data-tooltip")
+			&& !target.hasAttribute("data-tooltip:source"))
+			target.removeEventListener("mouseenter", trigger);
 });

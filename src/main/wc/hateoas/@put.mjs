@@ -20,7 +20,7 @@ window.addEventListener("@post", function (event)
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(DataURL.parse)
-		.then(result => fetch(RequestBuilder.build("post", url, result.data, result.contentType)))
+		.then(result => fetch(RequestBuilder.build("put", url, result.data, result.contentType)))
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));

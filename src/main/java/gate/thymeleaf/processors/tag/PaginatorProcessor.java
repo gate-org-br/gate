@@ -66,6 +66,9 @@ public class PaginatorProcessor extends TagProcessor
 
 		parameters.set(target, element.getAttributeValue("target"));
 
+		if (screen.isPOST())
+			parameters.set("form", element.getAttributeValue("form"));
+
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add(String.format("<g-paginator %s>", attributes.toString()));
 

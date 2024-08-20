@@ -57,6 +57,6 @@ public class ExpressionProcessor implements IElementTagProcessor, Processor
 	@Override
 	public int getPrecedence()
 	{
-		return Precedence.VERY_LOW;
+		return Precedence.MIN;
 	}
 }

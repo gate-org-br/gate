@@ -89,6 +89,8 @@ import './collapse.js';
 
 import './g-login-form.js';
 
+import './g-side-menu.js';
+
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {
 	element.addEventListener("change", function ()

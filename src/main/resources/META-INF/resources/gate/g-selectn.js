@@ -73,6 +73,7 @@ import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-selectn', class extends HTMLElement
 {
+	#options;
 	#internals;
 	static formAssociated = true;
 
@@ -103,6 +104,7 @@ customElements.define('g-selectn', class extends HTMLElement
 
 	set options(options)
 	{
+		this.#options = options;
 		Array.from(this.querySelectorAll("input, label"))
 			.forEach(e => e.remove());
 		options.forEach(option =>
@@ -119,11 +121,7 @@ customElements.define('g-selectn', class extends HTMLElement
 
 	get options()
 	{
-		return Array.from(this.querySelectorAll("input"))
-			.map(checkbox => ({
-					"value": checkbox.value,
-					"label": checkbox.previousElementSibling.innerText
-				}));
+		return this.#options;
 	}
 
 	get value()

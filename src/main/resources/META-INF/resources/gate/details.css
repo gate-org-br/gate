@@ -1,0 +1,42 @@
+details {
+  gap: 8px;
+  display: flex;
+  border-radius: 3px;
+  align-items: stretch;
+  justify-content: stretch;
+  border: 1px solid var(--base3);
+}
+details > section {
+  padding: 8px;
+}
+details > summary {
+  border: none;
+  padding: 6px;
+  display: flex;
+  margin-left: 0;
+  margin-right: 0;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 3px;
+  align-items: center;
+  color: var(--base1);
+  justify-content: space-between;
+  background-color: var(--base3);
+}
+details > summary:focus {
+  background-color: var(--hovered);
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary::after {
+  font-family: gate;
+  content: "\2278";
+}
+details[open] > summary {
+  border-radius: 3px 3px 0 0;
+}
+details[open] > summary::after {
+  content: "\2276";
+}

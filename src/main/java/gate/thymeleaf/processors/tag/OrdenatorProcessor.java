@@ -42,6 +42,7 @@ public class OrdenatorProcessor extends TagModelProcessor
 		Attributes attributes = new Attributes();
 		if ("POST".equalsIgnoreCase(method))
 		{
+			attributes.set("form", element.getAttributeValue("form"));
 			attributes.set("formtarget", element.getAttributeValue("target"));
 			if (property.equals(orderBy))
 			{

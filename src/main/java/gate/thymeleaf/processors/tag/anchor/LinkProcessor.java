@@ -7,10 +7,10 @@ import gate.io.URL;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
-import java.util.Optional;
-import java.util.StringJoiner;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.Optional;
+import java.util.StringJoiner;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -64,6 +64,7 @@ public class LinkProcessor extends AnchorProcessor
 			call.getAction(),
 			parameters.toString()));
 
+		attributes.put("form", element.getAttributeValue("form"));
 		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
 		if (element instanceof IStandaloneElementTag)

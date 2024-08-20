@@ -16,6 +16,7 @@ template.innerHTML = `
  <style data-element="g-message-dialog">dialog
 {
 	width: 100%;
+	padding: 8px;
 	height: 240px;
 	color: inherit;
 	min-width: 320px;

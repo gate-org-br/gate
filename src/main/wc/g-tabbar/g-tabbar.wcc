@@ -3,30 +3,6 @@
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
-const EPSILON = 0.5;
-function visible(element, container)
-{
-	element = element.getBoundingClientRect();
-	container = container.getBoundingClientRect();
-	return element.top >= container.top - EPSILON &&
-		element.left >= container.left - EPSILON &&
-		element.bottom <= container.bottom + EPSILON &&
-		element.right <= container.right + EPSILON;
-}
-
-function scroll(tabbar, first, next, inline)
-{
-	let div = tabbar.shadowRoot.querySelector("div");
-	for (let element = first; element; element = next(element))
-		if (element.tagName === "A"
-			|| element.tagName === "BUTTON"
-			|| element.classList.contains(".g-command"))
-			if (visible(element, div))
-				for (element = next(element); element; element = next(element))
-					if (!visible(element, div))
-						return element.scrollIntoView({inline, behavior: "smooth"});
-}
-
 customElements.define("g-tabbar", class extends HTMLElement
 {
 	constructor()
@@ -34,14 +10,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
 		let div = this.shadowRoot.querySelector("div");
-		this.shadowRoot.querySelector("#next").addEventListener("click", () => scroll(this, this.firstElementChild, e => e.nextElementSibling, "start"));
-		this.shadowRoot.querySelector("#prev").addEventListener("click", () => scroll(this, this.lastElementChild, e => e.previousElementSibling, "end"));
-
-		div.addEventListener("scroll", () => this.update());
-		new ResizeObserver(() => this.update()).observe(this);
-
 		window.addEventListener("trigger-success", event =>
 		{
 			let target = event.detail.cause.target;
@@ -50,7 +19,6 @@ customElements.define("g-tabbar", class extends HTMLElement
 						(TriggerExtractor.method(e) === TriggerExtractor.method(target)
 							&& TriggerExtractor.action(e) === TriggerExtractor.action(target)
 							&& TriggerExtractor.target(e) === TriggerExtractor.target(target)))[0];
-
 			if (trigger)
 				this.select(trigger);
 		});
@@ -59,20 +27,15 @@ customElements.define("g-tabbar", class extends HTMLElement
 	connectedCallback()
 	{
 		loading(this.parentNode);
-
-		this.update();
 		Array.from(this.children)
 			.flatMap(e => Array.from(e.childNodes))
 			.filter(e => e.nodeType === Node.TEXT_NODE)
 			.forEach(e => e.parentNode.appendChild(e));
-
 		let action = window.location.href;
 		let origin = window.location.origin;
 		let triggers = Array.from(this.children).filter(e => TriggerExtractor.target(e) === "_self");
-
 		let selected = triggers.filter(e => action === new URL(TriggerExtractor.action(e), origin).href)[0]
 			|| triggers.filter(e => action.startsWith(TriggerExtractor.action(e)))[0];
-
 		if (selected)
 			this.select(selected);
 	}
@@ -86,22 +49,5 @@ customElements.define("g-tabbar", class extends HTMLElement
 			else
 				e.removeAttribute("aria-selected");
 		});
-	}
-
-	update()
-	{
-		let div = this.shadowRoot.querySelector("div");
-		let next = this.shadowRoot.querySelector("#next");
-		let prev = this.shadowRoot.querySelector("#prev");
-
-		prev.style.display = "none";
-		next.style.display = "none";
-		if (!visible(this.firstElementChild, div))
-			if (!visible(this.lastElementChild, div))
-				prev.style.display = next.style.display = "flex";
-			else
-				prev.style.display = "flex";
-		else if (!visible(this.lastElementChild, div))
-			next.style.display = "flex";
 	}
 });

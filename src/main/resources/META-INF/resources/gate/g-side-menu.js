@@ -1,244 +1,166 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<main>
-		<section>
-		</section>
-	</main>
+	<header>
+	</header>
+	<section>
+		<slot>
+		</slot>
+	</section>
  <style data-element="g-side-menu">* {
-	box-sizing: border-box
+	box-sizing: border-box;
 }
 
-:host(*) {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	z-index: 2;
-	position: fixed;
-}
-
-main
+:host(*)
 {
-	width: 100%;
-	height: 100%;
+	width: 32px;
 	display: flex;
-	align-items: stretch;
-
-}
-
-:host([position="left"]) > main
-{
-	justify-content: flex-start;
-}
-:host([position="right"]) > main
-{
-	justify-content: flex-end;
-}
-
-section
-{
-	gap: 6px;
-	width: 0;
-	padding: 0px;
-	display: flex;
-	max-width: 80%;
-	transition: 0.5s;
-	overflow-y: auto;
+	font-size: 16px;
+	overflow: hidden;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: var(--main2);
-	justify-content: flex-start;
+	background-color: var(--main3);
 }
 
-:host([position='left']) > main > section {
-	width: 280px;
-	padding: 6px;
-	border-right: 1px solid var(--main4);
-}
-
-:host([position='right']) > main > section {
-	width: 280px;
-	padding: 6px;
-	border-left: 1px solid var(--main4);
-}
-
-a,
-button,
-.g-command
+:host([open])
 {
-	border: none;
+	width: max-content;
+}
+
+::slotted(hr) {
+	max-height: 0;
+}
+
+header
+{
 	padding: 8px;
 	display: flex;
-	color: inherit;
 	cursor: pointer;
-	flex-basis: 24px;
+	overflow: hidden;
+	font-size: inherit;
+	align-items: center;
+	background-color: var(--main4);
+	justify-content: space-between;
+}
+
+header::before
+{
+	display: flex;
+	content: '\\2265';
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+}
+
+:host([open]) header::after
+{
+	display: flex;
+	font-size: 8px;
+	color: #CCCCCC;
+	content: '\\1001';
+	font-family: gate;
+	align-items: center;
+	justify-content: center;
+}
+
+section {
+	display: flex;
+	overflow-y: auto;
+	overflow-x: hidden;
+	font-size: inherit;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+::slotted(a),
+::slotted(button),
+::slotted(.g-command)
+{
+	gap: 8px;
+	padding: 8px;
+	border: none;
+	color: black;
+	display: flex;
+	cursor: pointer;
+	overflow: hidden;
+	flex-basis: 32px;
+	max-height: 32px;
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
-	background-color: white;
-	justify-content: space-between;
-	box-shadow: 1px 1px 2px 0px var(--main6);
-}
-
-a.primary,
-button.primary,
-.g-command.primary
-{
-	color: #000066;
-}
-
-a.tertiary,
-button.tertiary,
-.g-command.tertiary
-{
-	box-shadow: none;
-	background-color: var(--main4);
-}
-
-a.danger,
-button.danger,
-.g-command.danger
-{
-	color: #660000;
-}
-
-
-a.warning,
-button.warning,
-.g-command.warning
-{
-	color: #666600;
-}
-
-a.success,
-button.success,
-.g-command.success
-{
-	color: #006600;
-}
-
-a.info,
-button.info,
-.g-command.info
-{
-	color: #4444FF;
-}
-
-a.link,
-button.link,
-.g-command.link
-{
-	box-shadow: none;
 	background-color: transparent;
 }
 
-a.dark,
-button.dark,
-.g-command.dark
+
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
-	color: white;
-	background-color: black;
+	background-color:  #FFFACD;
 }
 
-a.dark:hover,
-button.dark:hover,
-.g-command.dark:hover
+::slotted([_iconless])::before
 {
-	color: black;
-}
-
-a[disabled],
-a[disabled]:hover,
-button[disabled],
-button[disabled]:hover,
-.g-command[disabled],
-.g-command[disabled]:hover {
-
-	color: #AAAAAA;
-	cursor: not-allowed;
-	filter: opacity(40%);
-	background-color: var(--main6);
-}
-
-a:focus,
-button:focus,
-.g-command:focus{
-	outline: 4px solid var(--hovered);
-}
-
-a:hover,
-button:hover,
-.g-command:hover
-{
-	background-color: #FFFACD;
-}
-
-i {
-	order: 1;
+	display: flex;
+	color: #CCCCCC;
+	content: '\\1003';
 	font-family: gate;
-	margin-right: 8px;
-	font-size: inherit;
-	font-style: normal;
-	text-decoration: none;
+	align-items: center;
+	justify-content: center;
 }
 
-hr {
-	border: none;
-	flex-grow: 1;
-}
+@media only screen and (min-width: 1000px)
+{
+	:host(*)
+	{
+		width: max-content;
+	}
 
-br {
-	height: 16px;
+	header {
+		display: none;
+	}
 }</style>`;
 /* global customElements */
 
-import GModal from './g-modal.js';
+import GBlock from './g-block.js';
+import loading from './loading.js';
+import EventHandler from './event-handler.js';
+import RequestBuilder from './request-builder.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
-customElements.define('g-side-menu', class extends GModal
+
+customElements.define('g-side-menu', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("click", e => e.stopPropagation() | this.hide());
+
+		this.shadowRoot.querySelector("header")
+			.addEventListener("click", event =>
+			{
+				if (!this.hasAttribute("open"))
+					this.setAttribute("open", "");
+				else
+					this.removeAttribute("open");
+			});
+
+		this.shadowRoot.querySelector("section")
+			.addEventListener("click", event => this.removeAttribute("open"));
 	}
 
-	showLeft()
+	connectedCallback()
 	{
-		setTimeout(() => this.position = "left", 100);
-	}
+		Array.from(this.children)
+			.flatMap(e => Array.from(e.childNodes))
+			.filter(e => e.nodeType === Node.TEXT_NODE)
+			.forEach(e => e.parentNode.appendChild(e));
 
-	showRight()
-	{
-		setTimeout(() => this.position = "right", 100);
-	}
-
-	set position(position)
-	{
-		this.setAttribute("position", position);
-	}
-
-	get position()
-	{
-		return this.getAttribute("position");
-	}
-
-	show(element)
-	{
-		let center = element.getBoundingClientRect();
-		center = center.left + (center.width / 2);
-		if (center <= window.innerWidth / 2)
-			this.showLeft();
-		else
-			this.showRight();
-	}
-
-	set elements(elements)
-	{
-		let menu = this.shadowRoot.querySelector("section");
-		while (menu.firstChild)
-			menu.removeChild(menu.firstChild);
-		elements.forEach(e => menu.appendChild(e));
+		Array.from(this.children)
+			.filter(e => e.tagName !== "HR")
+			.filter(e => !e.querySelector('g-icon'))
+			.forEach(e => e.setAttribute("_iconless", ""));
 	}
 });

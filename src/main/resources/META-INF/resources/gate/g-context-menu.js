@@ -64,6 +64,7 @@ button[submenu]::after
 }</style>`;
 /* global customElements, template */
 
+import './mutation-events.js';
 import resolve from './resolve.js';
 
 function isVisible(element)
@@ -74,6 +75,8 @@ function isVisible(element)
 		rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
 		rect.right <= (window.innerWidth || document.documentElement.clientWidth);
 }
+
+let instance;
 
 export default class GContextMenu extends HTMLElement
 {
@@ -157,6 +160,10 @@ export default class GContextMenu extends HTMLElement
 
 	show(x, y)
 	{
+		if (instance)
+			instance.hide();
+		instance = this;
+
 		document.body.appendChild(this);
 
 		this.style.top = `${y - 1}px`;
@@ -202,24 +209,43 @@ export default class GContextMenu extends HTMLElement
 
 customElements.define('g-context-menu', GContextMenu);
 
-window.addEventListener("contextmenu", event =>
+window.addEventListener("click", () =>
+	{
+		if (instance)
+		{
+			instance.hide();
+			instance = null;
+		}
+	});
+
+window.addEventListener("contextmenu", function (event)
 {
 	if (event.ctrlKey)
 		return;
 
-	let element = event.target.closest("[data-contextmenu], [data-contextmenu-module]");
-	if (!element)
-		return;
-
-	event.preventDefault();
-	if (element.hasAttribute("data-contextmenu"))
-		fetch(element.getAttribute("data-contextmenu"))
-			.then(e => e.json())
-			.then(e => GContextMenu.show(element, event.x, event.y, ...e))
-			.catch(error => alert(error));
-	else
-		import(element.getAttribute("data-contextmenu-module"))
-			.then(module => module.default)
-			.then(e => GContextMenu.show(element, event.x, event.y, ...e))
-			.catch(error => alert(error));
+	for (let element = event.target;
+		element;
+		element = element.parentNode || element.host)
+	{
+		if (element.hasAttribute)
+		{
+			if (element.hasAttribute("data-contextmenu:source"))
+			{
+				fetch(element.getAttribute("data-contextmenu:source"))
+					.then(response => response.json())
+					.then(data => GContextMenu.show(element, event.x, event.y, ...data))
+					.catch(error => console.error('Error fetching context menu source:', error));
+				event.preventDefault();
+				return;
+			} else if (element.hasAttribute("data-contextmenu:module"))
+			{
+				import(element.getAttribute("data-contextmenu:module"))
+					.then(module => module.default)
+					.then(data => GContextMenu.show(element, event.x, event.y, ...data))
+					.catch(error => console.error('Error importing context menu module:', error));
+				event.preventDefault();
+				return;
+			}
+		}
+	}
 });

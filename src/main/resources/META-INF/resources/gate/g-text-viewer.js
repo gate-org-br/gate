@@ -11,6 +11,14 @@ template.innerHTML = `
 	justify-content: stretch;
 }
 
+dialog {
+	top: 0;
+	bottom: 0;
+	padding: 8px;
+	outline: none;
+	border: 1px solid #CCCCCC;
+}
+
 #editor
 {
 	flex-grow: 1;
@@ -50,6 +58,25 @@ customElements.define('g-text-viewer', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.addEventListener("click", event =>
+		{
+			let target = event.composedPath()[0];
+			if (target.tagName === "IMG")
+			{
+				event.stopPropagation();
+				let dialog = this.shadowRoot
+					.appendChild(document.createElement("dialog"));
+
+				dialog.appendChild(document.createElement("img"))
+					.src = target.src;
+
+				dialog.addEventListener("click", e => e.stopPropagation() | dialog.remove());
+				dialog.addEventListener("keypress", e => e.stopPropagation() | dialog.remove());
+
+				dialog.showModal();
+			}
+		});
 	}
 
 	set value(value)

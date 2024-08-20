@@ -36,18 +36,18 @@ export default function resolve(trigger, context, string)
 			value = decodeURIComponent(value);
 			switch (method)
 			{
-				case '@':
 				case '$elem':
 					return navigate(trigger, value);
-				case '?':
 				case '$user':
 					return prompt(value);
 				case '$prop':
 					return property(context, value);
 				case '$attr':
 					return context.getAttribute(value);
+				case '@':
 				case '$ELEM':
 					return require(navigate(trigger, value));
+				case '?':
 				case '$USER':
 					return require(prompt(value));
 				case '$PROP':

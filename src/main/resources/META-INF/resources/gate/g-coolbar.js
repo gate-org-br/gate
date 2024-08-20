@@ -1,10 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<button id="prev"><g-icon>&#X2277;</g-icon></button>
 	<div>
 		<slot></slot>
 	</div>
-	<button id="next"><g-icon>&#X2279;</g-icon></button>
  <style data-element="g-coolbar">*
 {
 	box-sizing: border-box;
@@ -16,42 +14,20 @@ template.innerHTML = `
 	height: auto;
 	color: black;
 	border: none;
-	height: auto;
-	display: grid;
+	flex-grow: 1;
+	display: flex;
 	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
-	grid-template-columns: auto 1fr auto;
-}
-
-#next,
-#prev
-{
-	width: 24px;
-	border: none;
-	color: #999999;
-	font-size: 12px;
-	position: absolute;
-	align-items: center;
-	justify-content: center;
-}
-
-#prev
-{
-	left: 0;
-}
-
-#next
-{
-	right: 0;
 }
 
 div
 {
 	gap: 8px;
+	padding: 8px;
+	flex-grow: 1;
 	display: flex;
-	grid-column: 2;
-	overflow-x: hidden;
+	overflow-x: auto;
 	white-space: nowrap;
 	flex-direction: row-reverse;
 }
@@ -164,29 +140,6 @@ div
 	flex-grow: 100000;
 }
 
-button
-{
-	color: black;
-	display: none;
-	height: 44px;
-}
-
-g-icon
-{
-	color: #000099;
-}
-
-button
-{
-	cursor: pointer;
-
-}
-
-button:hover
-{
-	background-color: var(--hovered);
-}
-
 :host([reverse]) div
 {
 	flex-direction: row;
@@ -252,31 +205,6 @@ button:hover
 
 import loading from './loading.js';
 
-const EPSILON = 0.5;
-
-function visible(element, container)
-{
-	element = element.getBoundingClientRect();
-	container = container.getBoundingClientRect();
-	return element.top >= container.top - EPSILON &&
-		element.left >= container.left - EPSILON &&
-		element.bottom <= container.bottom + EPSILON &&
-		element.right <= container.right + EPSILON;
-}
-
-function scroll(coolbar, first, next, inline)
-{
-	let div = coolbar.shadowRoot.querySelector("div");
-	for (let element = first; element; element = next(element))
-		if (element.tagName === "A"
-			|| element.tagName === "BUTTON"
-			|| element.classList.contains(".g-command"))
-			if (visible(element, div))
-				for (element = next(element); element; element = next(element))
-					if (!visible(element, div))
-						return element.scrollIntoView({inline, behavior: "smooth", block: 'nearest'});
-}
-
 customElements.define("g-coolbar", class extends HTMLElement
 {
 	constructor()
@@ -284,29 +212,6 @@ customElements.define("g-coolbar", class extends HTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		let div = this.shadowRoot.querySelector("div");
-		let next = this.shadowRoot.querySelector("#next");
-		let prev = this.shadowRoot.querySelector("#prev");
-
-		this.shadowRoot.querySelector("#next").addEventListener("click", () =>
-		{
-			if (this.hasAttribute("reverse"))
-				scroll(this, this.firstElementChild, e => e.nextElementSibling, "start");
-			else
-				scroll(this, this.lastElementChild, e => e.previousElementSibling, "start");
-		});
-
-		this.shadowRoot.querySelector("#prev").addEventListener("click", () =>
-		{
-			if (this.hasAttribute("reverse"))
-				scroll(this, this.lastElementChild, e => e.previousElementSibling, "end");
-			else
-				scroll(this, this.firstElementChild, e => e.nextElementSibling, "end");
-		});
-
-		div.addEventListener("scroll", () => this.update());
-		new ResizeObserver(() => this.update()).observe(this);
 	}
 
 	get disabled()
@@ -322,45 +227,9 @@ customElements.define("g-coolbar", class extends HTMLElement
 			this.removeAttribute("disabled");
 	}
 
-	adoptedCallback()
-	{
-	}
-
 	connectedCallback()
 	{
-		this.update();
-		this.setAttribute("size", this.children.length);
-	}
-
-	update()
-	{
 		loading(this.parentNode);
-
-		let div = this.shadowRoot.querySelector("div");
-		let next = this.shadowRoot.querySelector("#next");
-		let prev = this.shadowRoot.querySelector("#prev");
-
-		prev.style.display = "none";
-		next.style.display = "none";
-		if (this.firstElementChild)
-			if (this.hasAttribute("reverse"))
-			{
-				if (!visible(this.firstElementChild, div))
-					if (!visible(this.lastElementChild, div))
-						prev.style.display = next.style.display = "flex";
-					else
-						prev.style.display = "flex";
-				else if (!visible(this.lastElementChild, div))
-					next.style.display = "flex";
-			} else
-			{
-				if (!visible(this.firstElementChild, div))
-					if (!visible(this.lastElementChild, div))
-						prev.style.display = next.style.display = "flex";
-					else
-						next.style.display = "flex";
-				else if (!visible(this.lastElementChild, div))
-					prev.style.display = "flex";
-			}
+		this.setAttribute("size", this.children.length);
 	}
 });

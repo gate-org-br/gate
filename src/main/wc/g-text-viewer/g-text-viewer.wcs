@@ -8,6 +8,14 @@
 	justify-content: stretch;
 }
 
+dialog {
+	top: 0;
+	bottom: 0;
+	padding: 8px;
+	outline: none;
+	border: 1px solid #CCCCCC;
+}
+
 #editor
 {
 	flex-grow: 1;

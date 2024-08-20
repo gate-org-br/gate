@@ -1,4 +1,5 @@
 import DOM from './dom.js';
+import './mutation-events.js';
 import DataURL from './data-url.js';
 import resolve from './resolve.js';
 import validate from './validate.js';
@@ -210,18 +211,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-{
-	Array.from(document.querySelectorAll('*'))
-		.filter(e => e.hasAttribute("data-trigger")
-				|| e.hasAttribute("data-method")
-				|| e.hasAttribute("data-action")
-				|| e.hasAttribute("data-target"))
-		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-
-	DOM.traverse(document, e => e.nodeType === Node.ELEMENT_NODE,
-		e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})));
-});
+	{
+		Array.from(document.querySelectorAll('*'))
+			.filter(e => e.hasAttribute("data-trigger")
+					|| e.hasAttribute("data-method")
+					|| e.hasAttribute("data-action")
+					|| e.hasAttribute("data-target"))
+			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+	});
 
 window.addEventListener("load", function (event)
 {
@@ -239,12 +237,6 @@ window.addEventListener("load", function (event)
 		}
 	}
 });
-
-new MutationObserver(mutations => mutations
-		.flatMap(e => Array.from(e.addedNodes))
-		.forEach(root => DOM.traverse(root, e => e.nodeType === Node.ELEMENT_NODE,
-				e => e.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true})))))
-	.observe(document, {childList: true, subtree: true});
 
 window.addEventListener("connected", function (event)
 {

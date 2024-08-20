@@ -18,6 +18,8 @@
 
 @import './list.css';
 
+@import './details.css';
+
 * {
 	box-sizing: border-box;
 }
