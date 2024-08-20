@@ -1,5 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class TemplateProcessor extends TagModelProcessor
 	@Inject
 	FileEngine fileEngine;
 
+	@Inject
+	ELExpression expression;
+
 	public TemplateProcessor()
 	{
 		super("template");
@@ -39,7 +43,7 @@ public class TemplateProcessor extends TagModelProcessor
 		if (!element.hasAttribute("filename"))
 			throw new TemplateProcessingException("Missing required attribute filename on g:template");
 
-		var filename = element.getAttributeValue("filename");
+		var filename = (String) expression.evaluate(element.getAttributeValue("filename"));
 
 		removeTag(context, model, handler);
 

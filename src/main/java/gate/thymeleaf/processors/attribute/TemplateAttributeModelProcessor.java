@@ -1,5 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.FileEngine;
 import gate.thymeleaf.TextEngine;
 import java.io.IOException;
@@ -24,6 +25,9 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 	@Inject
 	FileEngine fileEngine;
 
+	@Inject
+	ELExpression expression;
+
 	public TemplateAttributeModelProcessor()
 	{
 		super("template");
@@ -36,7 +40,7 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
-		var template = element.getAttributeValue("g:template");
+		var template = (String) expression.evaluate(element.getAttributeValue("g:template"));
 
 		removeTag(context, model, handler);
 
