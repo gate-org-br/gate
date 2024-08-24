@@ -1,6 +1,7 @@
 /* global template */
 
 import './mutation-events.js';
+import anchor from './anchor.js';
 import DataURL from './data-url.js';
 import Formatter from './formatter.js';
 import ResponseHandler from './response-handler.js';
@@ -8,41 +9,8 @@ import ResponseHandler from './response-handler.js';
 let instance;
 const GAP = 12;
 const DEFAULT_POSITION = "north";
-export const POSITIONS = ["north", "east", "south", "west", "northeast", "southwest", "northwest", "southeast"];
-
-function isVisible(element)
-{
-	let rect = element.getBoundingClientRect();
-	return rect.top >= 0 && rect.left >= 0 && rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
-}
-
-function calc(element, tooltip, position)
-{
-	element = element.getBoundingClientRect();
-	tooltip = tooltip.getBoundingClientRect();
-
-	switch (position)
-	{
-		case "northeast":
-			return {x: element.right, y: element.top - tooltip.height};
-		case "southwest":
-			return {x: element.left - tooltip.width, y: element.bottom};
-		case "northwest":
-			return {x: element.left - tooltip.width, y: element.top - tooltip.height};
-		case "southeast":
-			return {x: element.right, y: element.bottom};
-		case "north":
-			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.top - tooltip.height - GAP};
-		case "east":
-			return {x: element.right + GAP, y: element.top + (element.height / 2) - (tooltip.height / 2)};
-		case "south":
-			return {x: element.left + (element.width / 2) - (tooltip.width / 2), y: element.bottom + GAP};
-		case "west":
-			return {x: element.left - tooltip.width - GAP, y: element.top + (element.height / 2) - (tooltip.height / 2)};
-		default:
-			return {x: element.right + GAP, y: element.bottom + GAP}; // Default to southeast if invalid position
-	}
-}
+export const POSITIONS = ["north", "south", "east", "west",
+	"northeast", "southwest", "northwest", "southeast"];
 
 export default class GTooltip extends HTMLElement
 {
@@ -79,28 +47,15 @@ export default class GTooltip extends HTMLElement
 
 		this.style.display = "block";
 		this.style.visibility = "hidden";
-
-		setTimeout(() =>
-		{
-			for (let i = 0; i < POSITIONS.length; i++)
-			{
-				let point = calc(target, this, position);
-				this.style.top = `${point.y}px`;
-				this.style.left = `${point.x}px`;
-
-				if (isVisible(this))
-					break;
-				position = POSITIONS[(POSITIONS.indexOf(position) + 1) % POSITIONS.length];
-			}
-
-			this.shadowRoot.querySelector("span").dataset.arrow = position;
-			this.style.visibility = "visible";
-		}, 0);
+		const arrow = this.shadowRoot.querySelector("span");
+		anchor(this, target, GAP, position, ...POSITIONS)
+			.then(e => arrow.dataset.arrow = e)
+			.finally(() => this.style.visibility = "visible");
 	}
 
 	get position()
 	{
-		return this.getAttribute("position") || "southeast";
+		return this.getAttribute("position") || DEFAULT_POSITION;
 	}
 
 	set position(value)

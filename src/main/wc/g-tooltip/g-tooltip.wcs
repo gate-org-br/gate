@@ -64,9 +64,36 @@ span[data-arrow='east']
 	border-bottom: 6px solid transparent;
 }
 
-span[data-arrow='northwest'],
-span[data-arrow='northeast'],
-span[data-arrow='southeast'],
+span[data-arrow='northwest'] {
+	top: 0;
+	left: 100%;
+	border-left: 12px solid var(--main4);
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+}
+
+span[data-arrow='northeast']
+{
+	top: 0;
+	left: -12px;
+	border-right: 12px solid var(--main4);
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+}
+
 span[data-arrow='southwest'] {
-	display: none;
+	bottom: 0;
+	left: 100%;
+	border-left: 12px solid var(--main4);
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
+}
+
+span[data-arrow='southeast']
+{
+	bottom: 0;
+	left: -12px;
+	border-right: 12px solid var(--main4);
+	border-top: 6px solid transparent;
+	border-bottom: 6px solid transparent;
 }

@@ -6,13 +6,13 @@
 {
 	margin: 0;
 	padding: 0;
-	color: black;
 	width: auto;
+	color: black;
 	display: flex;
 	z-index: 1000;
-	min-width: 200px;
-	position: fixed;
 	font-size: 12px;
+	position: fixed;
+	min-width: 200px;
 	align-items: stretch;
 	flex-direction: column;
 	background-color: #F0F0F0;
@@ -30,7 +30,6 @@ a, button
 	align-items: center;
 	white-space: nowrap;
 	text-decoration: none;
-	border: 1px solid #E0E0E0;
 	justify-content: space-between;
 }
 

@@ -8,13 +8,13 @@ template.innerHTML = `
 {
 	margin: 0;
 	padding: 0;
-	color: black;
 	width: auto;
+	color: black;
 	display: flex;
 	z-index: 1000;
-	min-width: 200px;
-	position: fixed;
 	font-size: 12px;
+	position: fixed;
+	min-width: 200px;
 	align-items: stretch;
 	flex-direction: column;
 	background-color: #F0F0F0;
@@ -32,7 +32,6 @@ a, button
 	align-items: center;
 	white-space: nowrap;
 	text-decoration: none;
-	border: 1px solid #E0E0E0;
 	justify-content: space-between;
 }
 
@@ -65,16 +64,8 @@ button[submenu]::after
 /* global customElements, template */
 
 import './mutation-events.js';
+import anchor from './anchor.js';
 import resolve from './resolve.js';
-
-function isVisible(element)
-{
-	const rect = element.getBoundingClientRect();
-	return rect.top >= 0 &&
-		rect.left >= 0 &&
-		rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-		rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-}
 
 let instance;
 
@@ -109,7 +100,7 @@ export default class GContextMenu extends HTMLElement
 
 			let link = this.shadowRoot.appendChild(document.createElement("a"));
 			link.style.color = color;
-			link.title = title || null;
+			link.title = title || "";
 			link.appendChild(document.createElement("label")).innerText = text;
 			link.setAttribute("data-icon", String.fromCharCode(icon ? parseInt(icon, 16) : 0x1024));
 			if (typeof action === 'string')
@@ -136,25 +127,13 @@ export default class GContextMenu extends HTMLElement
 					const submenu = document.createElement('g-context-menu');
 					link.addEventListener('mouseleave', () => submenu.hide(), {once: true});
 					submenu.actions = action;
-					link.appendChild(submenu);
 
-					const rect = link.getBoundingClientRect();
-					submenu.style.top = `${rect.top}px`;
-					submenu.style.left = `${rect.right}px`;
-					if (!isVisible(submenu))
-					{
-						submenu.style.left = `${rect.left - submenu.clientWidth}px`;
-						if (!isVisible(submenu))
-						{
-							submenu.style.top = `${rect.bottom - submenu.clientHeight}px`;
-							submenu.style.left = `${rect.right}px`;
-							if (!isVisible(submenu))
-								submenu.style.left = `${rect.left - submenu.clientWidth}px`;
-						}
-					}
+					submenu.style.visibiliy = "hidden";
+					link.appendChild(submenu);
+					anchor(submenu, link, 0, "northeast", "southeast", "northwest", "southwest")
+						.finally(() => submenu.style.visibiliy = "");
 				});
 		}
-
 		});
 	}
 
@@ -166,23 +145,17 @@ export default class GContextMenu extends HTMLElement
 
 		document.body.appendChild(this);
 
-		this.style.top = `${y - 1}px`;
-		this.style.left = `${x - 1}px`;
-		if (!isVisible(this))
-		{
-			this.style.top = `${y + 1 - this.clientHeight}px`;
-			this.style.left = `${x - 1}px`;
-			if (!isVisible(this))
-			{
-				this.style.left = `${x + 1 - this.clientWidth}px`;
-				this.style.top = `${y - 1}px`;
-				if (!isVisible(this))
-				{
-					this.style.left = `${x + 1 - this.clientWidth}px`;
-					this.style.top = `${y + 1 - this.clientHeight}px`;
-				}
-			}
-		}
+		const target = {getBoundingClientRect: () => ({x, y,
+					left: x,
+					top: y,
+					right: x,
+					bottom: y,
+					width: 0,
+					height: 0})};
+
+		this.style.visibility = "hidden";
+		anchor(this, target, 0, "northeast", "southeast", "northwest", "southwest")
+			.finally(() => this.style.visibility = "visible");
 	}
 
 	root()
@@ -210,13 +183,13 @@ export default class GContextMenu extends HTMLElement
 customElements.define('g-context-menu', GContextMenu);
 
 window.addEventListener("click", () =>
+{
+	if (instance)
 	{
-		if (instance)
-		{
-			instance.hide();
-			instance = null;
-		}
-	});
+		instance.hide();
+		instance = null;
+	}
+});
 
 window.addEventListener("contextmenu", function (event)
 {
