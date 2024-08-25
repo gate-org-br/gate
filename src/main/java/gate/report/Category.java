@@ -6,9 +6,9 @@ public class Category<T>
 {
 
 	private final String name;
-	private final Function<T, String> value;
+	private final Function<T, Object> value;
 
-	public Category(String name, Function<T, String> value)
+	public Category(String name, Function<T, Object> value)
 	{
 		this.name = name;
 		this.value = value;
@@ -19,7 +19,7 @@ public class Category<T>
 		return name;
 	}
 
-	public Function<T, String> getValue()
+	public Function<T, Object> getValue()
 	{
 		return value;
 	}

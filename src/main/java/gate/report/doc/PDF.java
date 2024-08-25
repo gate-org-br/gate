@@ -481,7 +481,7 @@ public class PDF extends Doc
 			pages.beginText();
 			pages.setFontAndSize(baseFont, FOOTER_SIZE);
 			pages.setTextMatrix(0, 0);
-			pages.showText(String.valueOf(writer.getPageNumber()));
+			pages.showText(String.valueOf(writer.getPageNumber() - 1));
 			pages.endText();
 		}
 	}

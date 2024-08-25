@@ -1,5 +1,6 @@
 package gate.report;
 
+import gate.converter.Converter;
 import static gate.report.Chart.Format.AREA;
 import static gate.report.Chart.Format.BAR;
 import static gate.report.Chart.Format.COLUMN;
@@ -27,7 +28,7 @@ public class ChartGenerator
 
 		for (T obj : chart.getDataset())
 		{
-			String categoryName = chart.getCategory().getValue().apply(obj);
+			String categoryName = Converter.toText(chart.getCategory().getValue().apply(obj));
 
 			for (Value<T> value : chart.getValues())
 			{
