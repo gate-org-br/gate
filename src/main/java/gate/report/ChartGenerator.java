@@ -1,5 +1,11 @@
 package gate.report;
 
+import gate.converter.Converter;
+import static gate.report.Chart.Format.AREA;
+import static gate.report.Chart.Format.BAR;
+import static gate.report.Chart.Format.COLUMN;
+import static gate.report.Chart.Format.LINE;
+import static gate.report.Chart.Format.PIE;
 import java.awt.Font;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -22,7 +28,7 @@ public class ChartGenerator
 
 		for (T obj : chart.getDataset())
 		{
-			String categoryName = chart.getCategory().getValue().apply(obj);
+			String categoryName = Converter.toText(chart.getCategory().getValue().apply(obj));
 
 			for (Value<T> value : chart.getValues())
 			{
@@ -41,22 +47,22 @@ public class ChartGenerator
 				case BAR:
 				{
 					JFreeChart jfreechat = ChartFactory.createBarChart(chart.getCaption(),
-							chart.getCategory().getName(), null, categoryDataset,
-							PlotOrientation.HORIZONTAL, true, false, false);
+						chart.getCategory().getName(), null, categoryDataset,
+						PlotOrientation.HORIZONTAL, true, false, false);
 					if (integers)
 						jfreechat.getCategoryPlot().getRangeAxis()
-								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechat;
 				}
 				case LINE:
 				{
 					JFreeChart jfreechat = ChartFactory.createLineChart(chart.getCaption(),
-							chart.getCategory().getName(), null, categoryDataset,
-							PlotOrientation.VERTICAL, true, false, false);
+						chart.getCategory().getName(), null, categoryDataset,
+						PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechat.getCategoryPlot().getRangeAxis()
-								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechat;
 				}
@@ -65,29 +71,29 @@ public class ChartGenerator
 				{
 
 					JFreeChart jfreechart = ChartFactory.createAreaChart(chart.getCaption(),
-							chart.getCategory().getName(), null, categoryDataset,
-							PlotOrientation.VERTICAL, true, false, false);
+						chart.getCategory().getName(), null, categoryDataset,
+						PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechart.getCategoryPlot().getRangeAxis()
-								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechart;
 				}
 				case COLUMN:
 				{
 					JFreeChart jfreechart = ChartFactory.createBarChart(chart.getCaption(),
-							chart.getCategory().getName(), null, categoryDataset,
-							PlotOrientation.VERTICAL, true, false, false);
+						chart.getCategory().getName(), null, categoryDataset,
+						PlotOrientation.VERTICAL, true, false, false);
 					if (integers)
 						jfreechart.getCategoryPlot().getRangeAxis()
-								.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
 					return jfreechart;
 				}
 				case PIE:
 				{
 					JFreeChart jfreechart = ChartFactory.createMultiplePieChart(chart.getCaption(),
-							categoryDataset, TableOrder.BY_ROW, true, true, false);
+						categoryDataset, TableOrder.BY_ROW, true, true, false);
 
 					Font titleFont = new Font("Arial", Font.BOLD, 12);
 					Font labelFont = new Font("Arial", Font.PLAIN, 8);
@@ -96,7 +102,7 @@ public class ChartGenerator
 					jfreechart.getLegend().setItemFont(labelFont);
 
 					MultiplePiePlot plot = (MultiplePiePlot) jfreechart.getPlot();
-					((PiePlot<?>) plot.getPieChart().getPlot()).setLabelFont(labelFont);
+					((PiePlot) plot.getPieChart().getPlot()).setLabelFont(labelFont);
 
 					plot.getPieChart().getTitle().setFont(titleFont);
 
