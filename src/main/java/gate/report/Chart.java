@@ -1,6 +1,8 @@
 package gate.report;
 
 import gate.annotation.Name;
+import gate.type.DataGrid;
+import gate.type.PivotTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -109,5 +111,36 @@ public class Chart<T> extends ReportElement
 		BAR,
 		@Name("Colunas")
 		COLUMN
+	}
+
+	public static Chart of(Format format, String caption, PivotTable<? extends Number> dataset)
+	{
+		var chart = new Chart<>((Class<List<Object>>) (Object) List.class,
+			dataset.values(), format);
+
+		chart.setCaption(caption);
+		chart.setCategory(dataset.header().get(0), e -> e.get(0));
+		for (int i = 1; i < dataset.header().size(); i++)
+		{
+			var index = i;
+			chart.addValue(dataset.header().get(i), e -> (Number) e.get(index));
+		}
+
+		return chart;
+	}
+
+	public static Chart of(Format format, String caption, DataGrid dataset)
+	{
+		var chart = new Chart<>(Object[].class, dataset, format);
+
+		chart.setCaption(caption);
+		chart.setCategory(dataset.getHead()[0], e -> e[0]);
+		for (int i = 1; i < dataset.getHead().length; i++)
+		{
+			var index = i;
+			chart.addValue(dataset.getHead()[i], e -> (Number) e[index]);
+		}
+
+		return chart;
 	}
 }
