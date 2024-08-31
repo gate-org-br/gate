@@ -9,6 +9,7 @@ import java.util.Base64;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -17,6 +18,22 @@ public class Encryptor
 
 	private final Cipher cipher;
 	private final SecretKeySpec key;
+
+	public static Encryptor of()
+	{
+		try
+		{
+			KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+			keyGen.init(128);
+			String key = Base64.getEncoder()
+				.encodeToString(keyGen.generateKey().getEncoded());
+			return of("AES", key);
+		} catch (NoSuchAlgorithmException ex)
+		{
+			throw new ExceptionInInitializerError(ex);
+		}
+
+	}
 
 	public static Encryptor of(String key)
 	{

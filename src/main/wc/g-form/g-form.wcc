@@ -117,13 +117,32 @@ function create(form, element)
 
 customElements.define('g-form', class extends HTMLElement
 {
+	#internals;
+	static formAssociated = true;
+
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({mode: "open", delegatesFocus: true});
+		this.#internals = this.attachInternals();
 		this.shadowRoot.innerHTML = template.innerHTML;
 		stylesheets('input.css', 'fieldset.css')
 			.forEach(e => this.shadowRoot.appendChild(e));
+
+		this.addEventListener("change", e =>
+		{
+			if (e.target === this)
+			{
+				this.#internals.setFormValue(JSON.stringify(this.value));
+				this.#internals.setValidity({});
+
+				let fieldset = this.shadowRoot.querySelector("fieldset");
+				for (let input of Array.from(fieldset.querySelectorAll("input, select, textarea, g-selectn")))
+					if (input.checkValidity && !input.checkValidity())
+						return this.#internals.setValidity(input.validity,
+							input.validationMessage, input);
+			}
+		});
 	}
 
 	get name()
@@ -142,6 +161,11 @@ customElements.define('g-form', class extends HTMLElement
 		Array.from(fieldset.querySelectorAll("label")).forEach(e => e.remove());
 		if (value)
 			value.forEach(element => fieldset.appendChild(create(this, element)));
+
+		this.#internals.setValidity({});
+		this.#internals.setFormValue(JSON.stringify(value));
+		if (!this.checkValidity())
+			this.#internals.setValidity({customError: true}, "Formulário inválido.");
 	}
 
 	get value()
@@ -267,21 +291,6 @@ customElements.define('g-form', class extends HTMLElement
 		}
 
 		return true;
-	}
-
-	connectedCallback()
-	{
-		let form = this.closest("form");
-		if (form)
-		{
-			form.addEventListener("submit", event =>
-			{
-				if (!this.reportValidity())
-					event.preventDefault();
-			});
-
-			form.addEventListener("formdata", event => event.formData.set(this.name, JSON.stringify(this.value)));
-		}
 	}
 
 	attributeChangedCallback()

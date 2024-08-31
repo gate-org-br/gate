@@ -206,7 +206,7 @@ public class PDF extends Doc
 	{
 
 		float width = document.getPageSize().getWidth() - 40;
-		float height = (document.getPageSize().getHeight() - 40) / 2;
+		float height = document.getPageSize().getHeight() - 80;
 
 		PdfContentByte cb = writer.getDirectContent();
 		PdfTemplate template = cb.createTemplate(width, height);
