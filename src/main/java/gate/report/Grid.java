@@ -1,5 +1,9 @@
 package gate.report;
 
+import gate.converter.Converter;
+import gate.language.Language;
+import gate.type.DataGrid;
+import gate.type.PivotTable;
 import gate.util.Toolkit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,9 +15,8 @@ import java.util.function.Function;
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to be displayed on each
- * of it's cells. Each object of the associated data source will generate a single row on the Grid.
- * The value to be displayed on each column is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each object of the associated data source
+ * will generate a single row on the Grid. The value to be displayed on each column is obtained using a mapping function on it's row value.
  *
  *
  *
@@ -38,8 +41,7 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Adds a new Column to the Grid.
 	 * <p>
-	 * Each column is associated with a mapping function used to get the value to be displayed for
-	 * each row of the Grid.
+	 * Each column is associated with a mapping function used to get the value to be displayed for each row of the Grid.
 	 *
 	 * @return the new Column added
 	 */
@@ -120,20 +122,20 @@ public class Grid<T> extends ReportElement
 	@Override
 	public final Grid<T> style(Style style)
 	{
-		super.style(style);
-		return this;
+		return (Grid<T>) super.style(style);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Element compact()
 	{
 		Iterator<Column<T>> iterator = columns.iterator();
 		while (iterator.hasNext())
 		{
 			Column<T> column = iterator.next();
-			if (Toolkit.collection(datasource).stream().map(e -> column.getBody().apply((T) e))
-					.allMatch(e -> e == null))
+			if (Toolkit.collection(datasource)
+				.stream()
+				.map(e -> column.getBody().apply((T) e))
+				.allMatch(e -> e == null))
 				iterator.remove();
 		}
 
@@ -171,4 +173,42 @@ public class Grid<T> extends ReportElement
 		return columns.isEmpty();
 	}
 
+	public static Grid<List<Object>> of(String caption, PivotTable dataset)
+	{
+		Grid<List<Object>> grid = new Grid<>(dataset.values())
+			.setCaption(caption)
+			.add(new Column<List<Object>>()
+				.head(dataset.header().get(0))
+				.body(e -> Language.PORTUGUESE.capitalize(Converter.toString(e.get(0))))
+				.style(new Style().width(90).left()));
+
+		for (int i = 1; i < dataset.header().size(); i++)
+		{
+			var index = i;
+			grid.add(new Column<List<Object>>().head(dataset.header().get(i))
+				.body(e -> e.get(index)).style(new Style().width(10)));
+		}
+
+		return grid;
+	}
+
+	public static Grid<Object[]> of(String caption, DataGrid dataset)
+	{
+		Grid<Object[]> grid = new Grid<>(dataset)
+			.setCaption(caption)
+			.add(new Column<Object[]>()
+				.head(dataset.getHead()[0])
+				.body(e -> Converter.toText(e[0]))
+				.style(new Style().width(90).left()));
+
+		for (int i = 1; i < dataset.getHead().length; i++)
+		{
+			var index = i;
+			grid.add(new Column<Object[]>().head(dataset.getHead()[i])
+				.body(e -> Converter.toText(e[index]))
+				.style(new Style().width(10)));
+		}
+
+		return grid;
+	}
 }

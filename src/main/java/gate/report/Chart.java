@@ -1,10 +1,8 @@
 package gate.report;
 
 import gate.annotation.Name;
-import gate.report.Report.Orientation;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import gate.type.DataGrid;
+import gate.type.PivotTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,46 +113,34 @@ public class Chart<T> extends ReportElement
 		COLUMN
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, IOException
+	public static Chart of(Format format, String caption, PivotTable<? extends Number> dataset)
 	{
-		Report report = new Report(Orientation.LANDSCAPE);
-		report.add(new Chart<Object[]>(Object[].class,
-			List.of(new Object[]
-			{
-				"Fatia 1", 800
-		},
-			new Object[]
-			{
-				"Fatia 2", 300
-			},
-			new Object[]
-			{
-				"Fatia 3", 1
-			},
-			new Object[]
-			{
-				"Fatia 4", 160
-			},
-			new Object[]
-			{
-				"Fatia 5", 220
-			},
-			new Object[]
-			{
-				"Fatia 6", 100
-			}),
-			Chart.Format.COLUMN)
-			.setCaption("Caption")
-			.setCategory("Name", e -> e[0])
-			.addValue("Value", e -> (Integer) e[1]))
-			.setName("Name");
+		var chart = new Chart<>((Class<List<Object>>) (Object) List.class,
+			dataset.values(), format);
 
-		try (FileOutputStream fileOutputStream = new FileOutputStream("/home/davinunesdasilva/chart.pdf"))
+		chart.setCaption(caption);
+		chart.setCategory(dataset.header().get(0), e -> e.get(0));
+		for (int i = 1; i < dataset.header().size(); i++)
 		{
-			Doc.create(Doc.Type.PDF, report)
-				.print(fileOutputStream);
+			var index = i;
+			chart.addValue(dataset.header().get(i), e -> (Number) e.get(index));
 		}
 
+		return chart;
 	}
 
+	public static Chart of(Format format, String caption, DataGrid dataset)
+	{
+		var chart = new Chart<>(Object[].class, dataset, format);
+
+		chart.setCaption(caption);
+		chart.setCategory(dataset.getHead()[0], e -> e[0]);
+		for (int i = 1; i < dataset.getHead().length; i++)
+		{
+			var index = i;
+			chart.addValue(dataset.getHead()[i], e -> (Number) e[index]);
+		}
+
+		return chart;
+	}
 }

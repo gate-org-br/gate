@@ -15,15 +15,18 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 {
 
 	private final Class<T> type;
+	private final T defaultValue;
 
 	/**
 	 * Creates a new PivotFetcher with the specified type.
 	 *
 	 * @param type type of the java object to be fetched
+	 * @param defaultValue value to be used as default
 	 */
-	public PivotTableFetcher(Class<T> type)
+	public PivotTableFetcher(Class<T> type, T defaultValue)
 	{
 		this.type = type;
+		this.defaultValue = defaultValue;
 	}
 
 	/**
@@ -40,14 +43,13 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 		{
 			ResultSetMetaData rsmd = cursor.getResultSet().getMetaData();
 			if (rsmd.getColumnCount() < 3)
-				throw new java.lang.IllegalArgumentException(
-						"Attempt to fetch a pivot table from a cursor with less than 3 columns");
+				throw new java.lang.IllegalArgumentException("Attempt to fetch a pivot table from a cursor with less than 3 columns");
 
-			PivotTable<T> result = new PivotTable<>(rsmd.getColumnLabel(1), rsmd.getColumnLabel(2),
-					rsmd.getColumnLabel(3));
+			PivotTable result = new PivotTable(rsmd.getColumnLabel(1), rsmd.getColumnLabel(2), rsmd.getColumnLabel(3), defaultValue);
 			while (cursor.next())
-				result.add(cursor.getValue(String.class, 1), cursor.getValue(String.class, 2),
-						cursor.getValue(type, 3));
+				result.add(cursor.getValue(String.class, 1),
+					cursor.getValue(String.class, 2),
+					cursor.getValue(type, 3));
 			return result;
 		} catch (SQLException e)
 		{
