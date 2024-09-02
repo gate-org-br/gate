@@ -491,7 +491,21 @@ public interface Fetchable
 	 */
 	default <T> PivotTable<T> fetchPivotTable(Class<T> type)
 	{
-		return fetch(new PivotTableFetcher<>(type));
+		return fetch(new PivotTableFetcher<>(type, null));
+	}
+
+	/**
+	 * Fetches each row as a pivot table.
+	 *
+	 * @param <T> type of the pivot table to be fetched
+	 * @param type type of the pivot table to be fetched
+	 * @param defaultValue value to be used as default
+	 *
+	 * @return each row as a pivot table
+	 */
+	default <T> PivotTable<T> fetchPivotTable(Class<T> type, T defaultValue)
+	{
+		return fetch(new PivotTableFetcher<>(type, defaultValue));
 	}
 
 	/**

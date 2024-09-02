@@ -3,8 +3,10 @@ package gate.type;
 import gate.lang.json.JsonArray;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -14,19 +16,23 @@ public class PivotTable<T> implements Serializable
 	private final String rowLabel;
 	private final String colLabel;
 	private final String valueLabel;
+	private final T defaultValue;
 
 	private static final long serialVersionUID = 1L;
+	private final Set<String> columns = new LinkedHashSet<>();
 	private final Map<String, Map<String, T>> values = new LinkedHashMap<>();
 
-	public PivotTable(String rowLabel, String colLabel, String valueLabel)
+	public PivotTable(String rowLabel, String colLabel, String valueLabel, T defaultValue)
 	{
 		this.rowLabel = rowLabel;
 		this.colLabel = colLabel;
 		this.valueLabel = valueLabel;
+		this.defaultValue = defaultValue;
 	}
 
 	public PivotTable add(String row, String col, T value)
 	{
+		columns.add(col);
 		values.computeIfAbsent(row, e -> new LinkedHashMap<>()).put(col, value);
 		return this;
 	}
@@ -34,7 +40,7 @@ public class PivotTable<T> implements Serializable
 	public T get(String row, String col)
 	{
 		Map<String, T> value = values.get(row);
-		return value != null ? value.get(col) : null;
+		return value != null ? value.getOrDefault(col, defaultValue) : defaultValue;
 	}
 
 	public T remove(String row, String col)
@@ -53,16 +59,15 @@ public class PivotTable<T> implements Serializable
 
 	public List<String> header()
 	{
-		return Stream.concat(Stream.of(getRowLabel()),
-			values.values().stream().flatMap(e -> e.keySet().stream())
-				.map(e -> String.valueOf(e))).distinct().toList();
+		return Stream.concat(Stream.of(getRowLabel()), columns.stream()).toList();
 	}
 
 	public List<List<Object>> values()
 	{
 		return values.entrySet().stream()
 			.map(row -> Stream.concat(Stream.of(row.getKey()),
-			row.getValue().values().stream()).collect(Collectors.toList()))
+			columns.stream().map(e -> row.getValue().getOrDefault(e, defaultValue)))
+			.collect(Collectors.toList()))
 			.collect(Collectors.toList());
 	}
 
@@ -98,7 +103,7 @@ public class PivotTable<T> implements Serializable
 
 	public PivotTable inverted()
 	{
-		PivotTable result = new PivotTable(getColLabel(), getRowLabel(), getValueLabel());
+		PivotTable result = new PivotTable(getColLabel(), getRowLabel(), getValueLabel(), defaultValue);
 
 		for (Map.Entry<String, Map<String, T>> row : values.entrySet())
 			for (Map.Entry<String, T> col : row.getValue().entrySet())
