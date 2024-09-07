@@ -123,7 +123,7 @@ ${script}`;
 			{
 				const code = filename.replace('.svg', '');
 				const data = grunt.file.read(path, {encoding: 'utf8'});
-				content += `icons.set("${code}", "data:image/svg+xml;base64,${btoa(data)}");\n`;
+				content += `icons.set("${code}", "data:image/svg+xml;base64,${Buffer.from(data).toString('base64')}");\n`;
 			}
 		});
 		content += "export default icons;";

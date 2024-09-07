@@ -35,7 +35,7 @@ public class Progress
 	}
 
 	private Progress update(Status status, long todo,
-		long done, String text)
+			long done, String text)
 	{
 		this.todo = todo;
 		this.done = done;
@@ -44,23 +44,28 @@ public class Progress
 		return this;
 	}
 
-	private void dispatch(String message)
+	private void dispatch(String type, String message)
 	{
 		if (this.status != Status.DISCONNECTED)
 		{
 			try
 			{
-				writer.write("event: Progress\n");
+				writer.write("event: %s\n".formatted(type));
 				writer.write("data: " + Base64.getEncoder().encodeToString(message
-					.getBytes(Charset.forName("UTF-8"))) + "\n\n");
+						.getBytes(Charset.forName("UTF-8"))) + "\n\n");
 				writer.flush();
 			} catch (IOException ex)
 			{
 				this.status = Status.DISCONNECTED;
 				Logger.getLogger(Progress.class.getName())
-					.log(Level.INFO, null, ex);
+						.log(Level.INFO, null, ex);
 			}
 		}
+	}
+
+	private void dispatch(String message)
+	{
+		dispatch("Progress", message);
 	}
 
 	public void close()
@@ -75,7 +80,7 @@ public class Progress
 			{
 				this.status = Status.DISCONNECTED;
 				Logger.getLogger(Progress.class.getName())
-					.log(Level.INFO, null, ex);
+						.log(Level.INFO, null, ex);
 			}
 		}
 	}
@@ -88,21 +93,20 @@ public class Progress
 	}
 
 	public void result(String contentType,
-		String filename,
-		String data)
+			String filename,
+			String data)
 	{
-		dispatch(new JsonObject()
-			.setString("event", "Result")
-			.setString("contentType", contentType)
-			.setString("filename", filename)
-			.setString("data", data)
-			.toString());
+		dispatch("Result", new JsonObject()
+				.setString("contentType", contentType)
+				.setString("filename", filename)
+				.setString("data", data)
+				.toString());
 	}
 
 	void abort(String message)
 	{
 		if (status == Progress.Status.PENDING
-			|| status == Progress.Status.CREATED)
+				|| status == Progress.Status.CREATED)
 			update(Status.CANCELED, todo, done, message);
 		else
 			update(status, todo, done, message);
@@ -114,13 +118,13 @@ public class Progress
 	public String toString()
 	{
 		return new JsonObject()
-			.setLong("todo", todo)
-			.setLong("done", done)
-			.setString("text", text)
-			.setString("event", "Progress")
-			.setString("status", status.name())
-			.set("data", data)
-			.toString();
+				.setLong("todo", todo)
+				.setLong("done", done)
+				.setString("text", text)
+				.setString("event", "Progress")
+				.setString("status", status.name())
+				.set("data", data)
+				.toString();
 	}
 
 	/**
@@ -146,10 +150,10 @@ public class Progress
 		if (progress != null)
 		{
 			if (Status.COMMITED.equals(progress.status)
-				|| Status.CANCELED.equals(progress.status))
+					|| Status.CANCELED.equals(progress.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text)
-				.dispatch(progress.toString());
+					.dispatch(progress.toString());
 		}
 	}
 
@@ -163,7 +167,7 @@ public class Progress
 		Progress progress = CURRENT.get();
 		if (progress != null)
 			progress.update(progress.status, progress.todo, progress.done, message)
-				.dispatch(progress.toString());
+					.dispatch(progress.toString());
 	}
 
 	/**
@@ -248,7 +252,7 @@ public class Progress
 			if (!Status.PENDING.equals(progress.status))
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(progress.status, progress.todo, done, text)
-				.dispatch(progress.toString());
+					.dispatch(progress.toString());
 		}
 	}
 
@@ -266,7 +270,7 @@ public class Progress
 			if (!Status.PENDING.equals(progress.status))
 				throw new IllegalStateException("Attempt to commit non pending task");
 			progress.update(Status.COMMITED, progress.todo, progress.done, text)
-				.dispatch(progress.toString());
+					.dispatch(progress.toString());
 		}
 	}
 
@@ -281,6 +285,6 @@ public class Progress
 		Progress progress = CURRENT.get();
 		if (progress != null)
 			progress.update(Status.CANCELED, progress.todo, progress.done, text)
-				.dispatch(progress.toString());
+					.dispatch(progress.toString());
 	}
 }

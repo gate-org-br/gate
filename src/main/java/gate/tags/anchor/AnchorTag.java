@@ -91,9 +91,9 @@ public abstract class AnchorTag extends ParameterTag
 	public String getURL()
 	{
 		return URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			getParameters().toString());
+				call.getScreen(),
+				call.getAction(),
+				getParameters().toString());
 	}
 
 	public String createBody()
@@ -102,8 +102,8 @@ public abstract class AnchorTag extends ParameterTag
 		call.getName().ifPresent(string::add);
 
 		call.getIcon().map(e -> "<i>" + e + "</i>")
-			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
-			.ifPresent(string::add);
+				.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+				.ifPresent(string::add);
 		return string.toString();
 	}
 
@@ -121,7 +121,7 @@ public abstract class AnchorTag extends ParameterTag
 		}
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-			target = target != null ? "@progress(" + target + ")" : "@progress";
+			target = target != null && !target.startsWith("@progress") ? "@progress > " + target : "@progress";
 
 		if (!getAttributes().containsKey("style"))
 			call.getColor().ifPresent(e -> getAttributes().put("style", "color: " + e));

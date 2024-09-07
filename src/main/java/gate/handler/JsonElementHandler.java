@@ -1,5 +1,6 @@
 package gate.handler;
 
+import gate.Progress;
 import gate.error.AppError;
 import gate.lang.json.JsonElement;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class JsonElementHandler implements Handler
 		String string = JsonElement.format((JsonElement) value);
 		response.setContentType("application/json");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();
@@ -28,5 +29,13 @@ public class JsonElementHandler implements Handler
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response,
+			Progress progress, Object value)
+	{
+		String string = JsonElement.format((JsonElement) value);
+		progress.result("application/json", null, string);
 	}
 }

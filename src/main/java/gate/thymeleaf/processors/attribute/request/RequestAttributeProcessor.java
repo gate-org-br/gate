@@ -63,11 +63,11 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		ELExpression expression = ELExpressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
-			.filter(e -> e.getValue() != null)
-			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
-			.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
-			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
-			expression.evaluate(e.getValue())));
+				.filter(e -> e.getValue() != null)
+				.filter(e -> e.getAttributeCompleteName().startsWith("_"))
+				.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
+				.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
+				expression.evaluate(e.getValue())));
 
 		if (call.checkAccess(user))
 		{
@@ -96,9 +96,10 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("target",
-							element.hasAttribute("target")
-							? "@progress(" + element.getAttributeValue("target") + ")"
-							: "@progress");
+								element.hasAttribute("target")
+								&& !element.getAttributeValue("target").startsWith("@progress")
+								? "@progress > " + element.getAttributeValue("target")
+								: "@progress");
 
 					break;
 				case "button":
@@ -106,9 +107,10 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("formtarget",
-							element.hasAttribute("formtarget")
-							? "@progress(" + element.getAttributeValue("formtarget") + ")"
-							: "@progress");
+								element.hasAttribute("formtarget")
+								&& !element.getAttributeValue("formtarget").startsWith("@progress")
+								? "@progress > " + element.getAttributeValue("formtarget")
+								: "@progress");
 					break;
 
 				case "form":
@@ -116,9 +118,10 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("target",
-							element.hasAttribute("target")
-							? "@progress(" + element.getAttributeValue("target") + ")"
-							: "@progress");
+								element.hasAttribute("target")
+								&& !element.getAttributeValue("target").startsWith("@progress")
+								? "@progress > " + element.getAttributeValue("target")
+								: "@progress");
 					break;
 				case "img":
 					handler.setAttribute("src", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
@@ -128,25 +131,26 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("data-target",
-							element.hasAttribute("data-target")
-							? "@progress(" + element.getAttributeValue("data-target") + ")"
-							: "@progress");
+								element.hasAttribute("data-target")
+								&& !element.getAttributeValue("data-target").startsWith("@progress")
+								? "@progress > " + element.getAttributeValue("data-target")
+								: "@progress");
 					break;
 			}
 
 			if (element instanceof IStandaloneElementTag
-				&& (element.getElementCompleteName().toLowerCase().equals("a")
-				|| element.getElementCompleteName().toLowerCase().equals("button")))
+					&& (element.getElementCompleteName().toLowerCase().equals("a")
+					|| element.getElementCompleteName().toLowerCase().equals("button")))
 			{
 				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 				call.getName().ifPresent(body::add);
 				call.getIcon().map(e -> "<g-icon>" + e + "</g-icon>")
-					.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
-					.ifPresent(body::add);
+						.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+						.ifPresent(body::add);
 				handler.setBody(body.toString(), true);
 			}
 		} else if (element.getElementCompleteName().toLowerCase().equals("a")
-			|| element.getElementCompleteName().toLowerCase().equals("button"))
+				|| element.getElementCompleteName().toLowerCase().equals("button"))
 			handler.removeElement();
 	}
 

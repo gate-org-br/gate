@@ -115,7 +115,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		target = (String) expression.create().evaluate(target);
 
 		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-			return Optional.of(target != null ? "@progress(" + target + ")" : "@progress");
+			return Optional.of(target != null && !target.startsWith("@progress") ? "@progress > " + target  : "@progress");
 		else
 			return Optional.ofNullable(target);
 	}
