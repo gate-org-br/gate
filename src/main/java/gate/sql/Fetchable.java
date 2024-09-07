@@ -14,7 +14,9 @@ import gate.sql.fetcher.EntitySetFetcher;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.fetcher.IntArrayFetcher;
 import gate.sql.fetcher.JsonArrayFetcher;
+import gate.sql.fetcher.JsonDatasetFetcher;
 import gate.sql.fetcher.JsonObjectFetcher;
+import gate.sql.fetcher.JsonTreeFetcher;
 import gate.sql.fetcher.MapFetcher;
 import gate.sql.fetcher.MapListFetcher;
 import gate.sql.fetcher.ObjectFetcher;
@@ -539,6 +541,38 @@ public interface Fetchable
 	default JsonArray fetchJsonArray()
 	{
 		return fetch(new JsonArrayFetcher());
+	}
+
+	/**
+	 * Fetches the result set as a JSON tree.
+	 *
+	 * @return a JSON tree with the result set rows as JSON objects
+	 */
+	default JsonArray fetchJsonTree()
+	{
+		return fetch(new JsonTreeFetcher());
+	}
+
+	/**
+	 * Fetches the result set as a JSON data set.
+	 *
+	 * @return a JSON data set with the result set rows as JSON objects
+	 */
+	default JsonArray fetchJsonDataset()
+	{
+		return fetch(new JsonDatasetFetcher(false));
+	}
+
+	/**
+	 * Fetches the result set as a JSON data set.
+	 *
+	 * @param includeHeader true if the header is to be included on the dataset
+	 *
+	 * @return a JSON data set with the result set rows as JSON objects
+	 */
+	default JsonArray fetchJsonDataset(boolean includeHeader)
+	{
+		return fetch(new JsonDatasetFetcher(includeHeader));
 	}
 
 	/**
