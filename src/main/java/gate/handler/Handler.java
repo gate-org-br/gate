@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public interface Handler
 			HANDLERS.put(Integer.class, IntegerHandler.class);
 			HANDLERS.put(Enum.class, EnumHandler.class);
 			HANDLERS.put(Path.class, PathHandler.class);
+			HANDLERS.put(Response.class, JAXRSResponseHandler.class);
 		}
 	}
 }
