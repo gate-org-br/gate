@@ -47,7 +47,7 @@ public class Messenger implements ServletContextListener
 	private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
 	@PostConstruct
-	public void startup()
+	public void startup(@Observes @Initialized(ApplicationScoped.class) Object pointless)
 	{
 		service.scheduleWithFixedDelay(() ->
 		{
