@@ -19,6 +19,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -47,7 +49,7 @@ public class Messenger implements ServletContextListener
 	private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
 	@PostConstruct
-	public void startup()
+	public void startup(@Observes @Initialized(ApplicationScoped.class) Object pointless)
 	{
 		service.scheduleWithFixedDelay(() ->
 		{
