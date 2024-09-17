@@ -110,7 +110,7 @@ public class Captcha
 		g2d.fillRect(0, 0, width, height);
 
 		g2d.setColor(Color.BLACK);
-		g2d.setFont(new Font("Arial", Font.BOLD, 40));
+		g2d.setFont(new Font("Monospaced", Font.BOLD, 40));
 
 		FontMetrics fontMetrics = g2d.getFontMetrics();
 		int x = (width - fontMetrics.stringWidth(this.text)) / 2;
