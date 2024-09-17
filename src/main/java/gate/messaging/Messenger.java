@@ -13,6 +13,8 @@ import gate.type.mime.MimeText;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
