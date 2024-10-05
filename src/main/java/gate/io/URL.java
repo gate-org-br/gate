@@ -222,7 +222,7 @@ public class URL
 	public URLResult get(Parameters parameters) throws IOException
 	{
 		return get("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult post(List<Parameter> parameters) throws IOException
@@ -243,7 +243,7 @@ public class URL
 	public URLResult post(Parameters parameters) throws IOException
 	{
 		return post("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult put(List<Parameter> parameters) throws IOException
@@ -264,7 +264,7 @@ public class URL
 	public URLResult put(Parameters parameters) throws IOException
 	{
 		return put("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult patch(List<Parameter> parameters) throws IOException
@@ -285,7 +285,7 @@ public class URL
 	public URLResult patch(Parameters parameters) throws IOException
 	{
 		return patch("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult delete(List<Parameter> parameters) throws IOException
@@ -306,7 +306,7 @@ public class URL
 	public URLResult delete(Parameters parameters) throws IOException
 	{
 		return delete("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult head(List<Parameter> parameters) throws IOException
@@ -327,7 +327,7 @@ public class URL
 	public URLResult head(Parameters parameters) throws IOException
 	{
 		return head("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult options(List<Parameter> parameters) throws IOException
@@ -348,7 +348,7 @@ public class URL
 	public URLResult options(Parameters parameters) throws IOException
 	{
 		return options("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult get() throws IOException
@@ -391,7 +391,7 @@ public class URL
 		try
 		{
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
-				.uri(URI.create(toString()));
+					.uri(URI.create(toString()));
 
 			if (timeout != INFINITE)
 				builder.timeout(timeout);
@@ -411,7 +411,7 @@ public class URL
 				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
-				.stream().findAny().orElse("application/octet-stream"), response);
+					.stream().findAny().orElse("application/octet-stream"), response);
 		} catch (InterruptedException ex)
 		{
 			throw new IOException(ex);
@@ -425,10 +425,12 @@ public class URL
 			HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(bytes);
 
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
-				.uri(URI.create(toString()))
-				.timeout(timeout)
-				.header("Content-Type", contentType)
-				.method(method, bodyPublisher);
+					.uri(URI.create(toString()))
+					.header("Content-Type", contentType)
+					.method(method, bodyPublisher);
+
+			if (timeout != INFINITE)
+				builder.timeout(timeout);
 
 			if (authorization != null)
 				builder.header("Authorization", authorization.toString());
@@ -445,7 +447,7 @@ public class URL
 				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
-				.stream().findAny().orElse("application/octet-stream"), response);
+					.stream().findAny().orElse("application/octet-stream"), response);
 		} catch (InterruptedException ex)
 		{
 			throw new IOException(ex);
@@ -458,8 +460,8 @@ public class URL
 		{
 			StringBuilder string = new StringBuilder();
 			for (String line = in.readLine();
-				line != null;
-				line = in.readLine())
+					line != null;
+					line = in.readLine())
 				string.append(line);
 			return string.toString();
 		}
@@ -499,9 +501,9 @@ public class URL
 	}
 
 	public static String toString(String module,
-		String screen,
-		String action,
-		String arguments)
+			String screen,
+			String action,
+			String arguments)
 	{
 		StringJoiner string = new StringJoiner("&");
 		if (Toolkit.notEmpty(module))
@@ -530,7 +532,7 @@ public class URL
 			qs.append(string.charAt(i++));
 
 		return qs.length() != 0
-			? new URL(url.toString(), Parameters.parse(qs.toString()))
-			: new URL(url.toString());
+				? new URL(url.toString(), Parameters.parse(qs.toString()))
+				: new URL(url.toString());
 	}
 }
