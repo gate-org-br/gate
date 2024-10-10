@@ -8,7 +8,6 @@ import gate.error.AuthenticatorException;
 import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
-import gate.error.InvalidUsernameException;
 import gate.http.BasicAuthorization;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
@@ -46,7 +45,6 @@ public class OIDCAuthenticator implements Authenticator
 	private final Cache<String> tokenEndpoint;
 	private final Cache<String> userInfoEndpoint;
 	private final Cache<String> jwksUri;
-	private final Cache<String> introspectionEndpoint;
 	private final Cache<Map<String, PublicKey>> publicKeys;
 
 	private String getCallback(ScreenServletRequest request)
@@ -73,7 +71,6 @@ public class OIDCAuthenticator implements Authenticator
 		tokenEndpoint = Cache.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
 		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
 		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
-		introspectionEndpoint = Cache.of(() -> config.getProperty("oidc.introspection_endpoint").orElseGet(() -> getEndpoint("introspection_endpoint")));
 		publicKeys = Cache.of(this::fetchPublicKeys);
 	}
 
@@ -178,9 +175,9 @@ public class OIDCAuthenticator implements Authenticator
 		if (token.split("\\.").length == 3)
 		{
 			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(token);
-			if (!(jwt.getPayload() instanceof Claims claims) || !claims.containsKey("sub"))
+			if (!(jwt.getPayload() instanceof Claims claims) || !claims.containsKey(userId))
 				throw new AuthenticationException("Invalid token");
-			return control.select(claims.get("sub", String.class));
+			return control.select(claims.get(userId, String.class));
 		}
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
@@ -212,7 +209,6 @@ public class OIDCAuthenticator implements Authenticator
 
 		if (tokens.containsKey("id_token"))
 		{
-
 			var idToken = tokens.getString("id_token")
 					.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
 			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(idToken);
@@ -286,17 +282,6 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		return configuration.get().getString(endpointKey)
 				.orElseThrow(() -> new AuthenticatorException("Error trying to get " + endpointKey + " from provider"));
-	}
-
-	private JsonObject introspectToken(String token) throws IOException, AuthenticationException
-	{
-		return new URL(introspectionEndpoint.get())
-				.post(new Parameters()
-						.set("token", token)
-						.set("client_id", clientId)
-						.set("client_secret", clientSecret))
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException("Error introspecting token"));
 	}
 
 	@Override
