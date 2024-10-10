@@ -1,3 +1,5 @@
+import DataURL from './data-url.js';
+
 export default class GFilePicker
 {
 	static pick(type = "*")
@@ -28,5 +30,17 @@ export default class GFilePicker
 
 			input.click();
 		}).finally(() => input.remove());
+	}
+
+	static saveDataURL(url, filename)
+	{
+		let dataURL = DataURL.parse(url);
+		filename = filename || dataURL.parameters.name
+			|| dataURL.contentType.replace("/", ".");
+		let anchor = document.createElement("a");
+		anchor.href = url;
+		anchor.download = filename;
+		anchor.click();
+		return url;
 	}
 };

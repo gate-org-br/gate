@@ -3,6 +3,8 @@ template.innerHTML = `
 	<header>
 	</header>
 	<main>
+		<slot>
+		</slot>
 	</main>
  <style>* {
 	box-sizing: border-box;
@@ -62,7 +64,7 @@ main {
 	border: 1px solid var(--main6);
 }
 
-a, .g-command {
+::slotted(*) {
 	gap: 8px;
 	padding: 8px;
 	height: 32px;
@@ -74,13 +76,7 @@ a, .g-command {
 	grid-template-columns: 1fr 24px;
 }
 
-g-icon, i {
-	order: 1;
-	font-size: 1.5em;
-}
-
-a:hover,
-.g-command:hover
+::slotted(*:hover)
 {
 	background-color: var(--hovered);
 }
@@ -106,7 +102,7 @@ customElements.define('g-select-menu', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		this.addEventListener("mouseout", () => this.opened = false);
+		this.addEventListener("mouseleave", () => this.opened = false);
 		this.shadowRoot.addEventListener("click", () => this.opened = !this.opened);
 	}
 
@@ -140,19 +136,21 @@ customElements.define('g-select-menu', class extends HTMLElement
 	set label(label)
 	{
 		this.shadowRoot.querySelector("header")
-			.setAttribute("title", label);
+				.setAttribute("title", label);
 	}
 
 	get label()
 	{
 		this.shadowRoot.querySelector("header")
-			.getAttribute("title");
+				.getAttribute("title");
 	}
 
 	connectedCallback()
 	{
-		let main = this.shadowRoot.querySelector("main");
-		Array.from(this.children).forEach(e => main.appendChild(e));
+		Array.from(this.children)
+				.map(option => option.querySelector("g-icon, i"))
+				.filter(icon => icon)
+				.forEach(icon => icon.parentNode.appendChild(icon));
 	}
 
 	attributeChangedCallback()

@@ -34,16 +34,17 @@ public class DatabaseAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-		HttpServletResponse response)
-		throws AuthenticationException, HierarchyException
+			HttpServletResponse response)
+			throws AuthenticationException, HierarchyException
 	{
 
-		var authorization = request.getBasicAuthorization().orElse(null);
+		var authorization = request.getBasicAuthorization()
+				.orElseThrow(() -> new AuthenticationException("Attempt to login without credentials"));
 
 		User user = control.select(authorization.username());
 
 		if (MD5.digest(authorization.username()).toString()
-			.equals(user.getPassword()))
+				.equals(user.getPassword()))
 			throw new DefaultPasswordException();
 
 		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))
