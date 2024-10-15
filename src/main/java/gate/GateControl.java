@@ -1,18 +1,13 @@
 package gate;
 
 import gate.annotation.DataSource;
-import gate.entity.Bond;
-import gate.entity.Role;
 import gate.entity.User;
 import gate.error.AppException;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernameException;
 import gate.sql.Link;
 import gate.sql.LinkSource;
-import gate.type.Hierarchy;
 import gate.util.Toolkit;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,40 +20,23 @@ public class GateControl extends gate.base.Control
 	LinkSource linksource;
 
 	public User select(String username) throws InvalidUsernameException,
-		HierarchyException
+			HierarchyException
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernameException();
 
 		try (Link link = linksource.getLink();
-			GateDao dao = new GateDao(link))
+				GateDao dao = new GateDao(link))
 		{
-			User user = dao.select(username)
-				.orElseThrow(InvalidUsernameException::new);
+			User user = dao.select(username);
 
 			if (user.isDisabled())
 				throw new InvalidUsernameException();
 			if (user.getRole().getId() == null)
 				throw new InvalidUsernameException();
 
-			List<Role> roles = dao.getRoles();
-			Hierarchy.setup(roles);
-
-			List<gate.entity.Auth> auths = dao.getAuths();
-			List<Bond> funcs = dao.getBonds();
-
-			funcs.forEach(func -> func.getFunc().setAuths(auths.stream().filter(auth -> func.getFunc().equals(auth.getFunc())).collect(Collectors.toList())));
-
-			user.setAuths(auths.stream().filter(auth -> user.equals(auth.getUser())).collect(Collectors.toList()));
-			user.setFuncs(funcs.stream().filter(func -> user.equals(func.getUser())).map(Bond::getFunc).collect(Collectors.toList()));
-
-			roles.forEach(role -> role.setAuths(auths.stream().filter(auth -> role.equals(auth.getRole())).collect(Collectors.toList())));
-			roles.forEach(role -> role.setFuncs(funcs.stream().filter(func -> role.equals(func.getRole())).map(Bond::getFunc).collect(Collectors.toList())));
-
-			user.setRole(roles.stream().filter(e -> user.getRole().equals(e)).findAny().orElseThrow(() -> new HierarchyException("Perfil do usuário não encontrado")));
-
-			if (user.getRole().isDisabled())
-				throw new InvalidUsernameException();
+			user.setRole(dao.getRoles().stream().filter(e -> e.equals(user.getRole())).findAny()
+					.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
 		}
 	}
@@ -66,7 +44,7 @@ public class GateControl extends gate.base.Control
 	public void update(User user) throws AppException
 	{
 		try (Link link = linksource.getLink();
-			GateDao dao = new GateDao(link))
+				GateDao dao = new GateDao(link))
 		{
 			dao.update(user);
 		}
@@ -75,7 +53,7 @@ public class GateControl extends gate.base.Control
 	public void update(User user, String password) throws AppException
 	{
 		try (Link link = linksource.getLink();
-			GateDao dao = new GateDao(link))
+				GateDao dao = new GateDao(link))
 		{
 			dao.update(user, password);
 		}

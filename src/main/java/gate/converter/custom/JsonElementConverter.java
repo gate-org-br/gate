@@ -39,7 +39,7 @@ public class JsonElementConverter implements Converter
 		if (string != null)
 		{
 			string = string.trim();
-			if (!string.isEmpty())
+			if (!string.isBlank())
 				return JsonElement.parse(string);
 		}
 		return null;
@@ -50,7 +50,7 @@ public class JsonElementConverter implements Converter
 	{
 		if (object != null)
 			return JsonElement.format((JsonElement) object);
-		return null;
+		return "";
 	}
 
 	@Override
@@ -58,8 +58,8 @@ public class JsonElementConverter implements Converter
 	{
 		if (object != null)
 			return String.format(format,
-				JsonElement.format((JsonElement) object));
-		return null;
+					JsonElement.format((JsonElement) object));
+		return "";
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class JsonElementConverter implements Converter
 	{
 		if (object != null)
 			return JsonElement.format((JsonElement) object);
-		return null;
+		return "";
 	}
 
 	@Override
