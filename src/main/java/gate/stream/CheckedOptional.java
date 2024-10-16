@@ -49,10 +49,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -72,7 +72,7 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}, () ->
 			{
@@ -84,10 +84,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -107,10 +107,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -130,10 +130,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -153,10 +153,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -176,10 +176,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -209,10 +209,10 @@ public class CheckedOptional<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}

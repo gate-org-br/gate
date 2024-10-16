@@ -1,9 +1,9 @@
 package gate.stream;
 
-public class CheckedExceptionWrapper extends RuntimeException
+public class UncheckedException extends RuntimeException
 {
 	
-	public CheckedExceptionWrapper(Exception cause)
+	public UncheckedException(Exception cause)
 	{
 		super(cause);
 	}

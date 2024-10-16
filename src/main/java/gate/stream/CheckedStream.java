@@ -43,10 +43,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -66,10 +66,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -89,10 +89,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -113,10 +113,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -136,10 +136,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -159,10 +159,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -182,10 +182,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -206,10 +206,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -230,10 +230,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -262,7 +262,7 @@ public class CheckedStream<T, E extends Exception>
 				throw ex;
 			} catch (Exception ex)
 			{
-				throw new CheckedExceptionWrapper(ex);
+				throw new UncheckedException(ex);
 			}
 		});
 	}
@@ -281,10 +281,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -314,10 +314,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -337,10 +337,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -360,10 +360,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -383,10 +383,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -417,10 +417,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -440,10 +440,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -465,7 +465,7 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}, (a, b) ->
 			{
@@ -477,10 +477,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -501,7 +501,7 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}, (a, b) ->
 			{
@@ -513,7 +513,7 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}, (a, b) ->
 			{
@@ -525,10 +525,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -553,10 +553,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -576,10 +576,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			}));
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -604,10 +604,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -627,10 +627,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}
@@ -650,10 +650,10 @@ public class CheckedStream<T, E extends Exception>
 					throw ex;
 				} catch (Exception ex)
 				{
-					throw new CheckedExceptionWrapper(ex);
+					throw new UncheckedException(ex);
 				}
 			});
-		} catch (CheckedExceptionWrapper ex)
+		} catch (UncheckedException ex)
 		{
 			throw type.cast(ex.getCause());
 		}

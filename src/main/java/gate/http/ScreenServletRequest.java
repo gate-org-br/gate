@@ -43,6 +43,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public ScreenServletRequest(HttpServletRequest request)
 	{
 		super(request);
+
 		try
 		{
 			parts = getParts();
@@ -133,14 +134,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Optional<User> getUser() throws InvalidCredentialsException
-	{
-		return Credentials.of(this);
-	}
-
 	public String getBody()
 	{
-		try (BufferedReader reader = this.getReader(); StringWriter string = new StringWriter())
+		try (BufferedReader reader = this.getReader();
+				StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -171,8 +168,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-			case "BEARER" -> Optional.of(new BearerAuthorization(authorization.group(2)));
-			case "BASIC" -> {
+			case "BEARER" ->
+				Optional.of(new BearerAuthorization(authorization.group(2)));
+			case "BASIC" ->
+			{
 				String value = authorization.group(2);
 				value = new String(Base64.getDecoder().decode(value));
 				Matcher basic = BASIC_AUTHORIZATION.matcher(value);
@@ -180,8 +179,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 					throw new AuthenticationException("Invalid basic authorization header");
 				yield Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
 			}
-			default -> throw new AuthenticationException(
-					"Authorization type not supported: " + type);
+			default ->
+				throw new AuthenticationException(
+						"Authorization type not supported: " + type);
 		};
 
 	}

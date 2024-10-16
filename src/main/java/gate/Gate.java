@@ -50,7 +50,7 @@ public class Gate extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	private final String developer
-		= SystemProperty.get("gate.developer").orElse(null);
+			= SystemProperty.get("gate.developer").orElse(null);
 
 	@Inject
 	Logger logger;
@@ -84,7 +84,7 @@ public class Gate extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response)
-		throws ServletException, IOException
+			throws ServletException, IOException
 	{
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
@@ -111,7 +111,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("SCREEN", SCREEN);
 
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-				&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
+					&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
 			{
 				if (request.getSession(false) != null)
 				{
@@ -129,18 +129,18 @@ public class Gate extends HttpServlet
 					response.sendRedirect(provider);
 				else
 					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest,
-						response, HTML);
+							response, HTML);
 				return;
 			}
 
 			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-				? mainAction
-				: Call.of(MODULE, SCREEN, ACTION);
+					? mainAction
+					: Call.of(MODULE, SCREEN, ACTION);
 
 			User user = null;
-			if (Credentials.isPresent(httpServletRequest))
+			if (request.getBearerAuthorization().isPresent())
 			{
-				user = Credentials.of(request).orElseThrow();
+				user = Credentials.of(request.getBearerAuthorization().orElseThrow().token());
 				request.setAttribute(User.class.getName(), user);
 			} else if (authenticator.hasCredentials(request))
 			{
@@ -151,11 +151,11 @@ public class Gate extends HttpServlet
 					request.getSession().setAttribute(User.class.getName(), user);
 				}
 			} else if (request.getSession(false) != null
-				&& request.getSession().getAttribute(User.class.getName()) != null)
+					&& request.getSession().getAttribute(User.class.getName()) != null)
 				user = (User) request.getSession().getAttribute(User.class.getName());
 			else if (!call.isPublic() && developer != null)
 				request.getSession().setAttribute(User.class.getName(),
-					user = control.select(developer));
+						user = control.select(developer));
 
 			if (!call.checkAccess(user))
 				if (user != null)
@@ -175,7 +175,7 @@ public class Gate extends HttpServlet
 				response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 				response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
 				response.setHeader("Access-Control-Allow-Headers",
-					"Content-Type, Accept, X-Requested-With, remember-me");
+						"Content-Type, Accept, X-Requested-With, remember-me");
 			}
 
 			if (call.getMethod().isAnnotationPresent(Asynchronous.class))
@@ -193,7 +193,7 @@ public class Gate extends HttpServlet
 			} else
 			{
 				httpServletRequest.setAttribute("messages",
-					Collections.singletonList(ex.getMessage()));
+						Collections.singletonList(ex.getMessage()));
 				httpServletRequest.setAttribute("exception", ex);
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
@@ -207,7 +207,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-		Method method)
+			Method method)
 	{
 		try
 		{
@@ -215,8 +215,8 @@ public class Gate extends HttpServlet
 			if (result != null)
 			{
 				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-					? method.getAnnotation(gate.annotation.Handler.class).value()
-					: Handler.getHandler(result.getClass());
+						? method.getAnnotation(gate.annotation.Handler.class).value()
+						: Handler.getHandler(result.getClass());
 				var handler = handlers.select(type).get();
 				handler.handle(request, response, result);
 			}
@@ -229,7 +229,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, HttpServletRequest request, HttpServletResponse response,
-		Screen screen, Method method)
+			Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
@@ -252,8 +252,8 @@ public class Gate extends HttpServlet
 					if (result != null)
 					{
 						var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-							? method.getAnnotation(gate.annotation.Handler.class).value()
-							: Handler.getHandler(result.getClass());
+								? method.getAnnotation(gate.annotation.Handler.class).value()
+								: Handler.getHandler(result.getClass());
 						var handler = handlers.select(type).get();
 						handler.handle(request, response, progress, result);
 					}

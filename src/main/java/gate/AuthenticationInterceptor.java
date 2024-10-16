@@ -2,7 +2,9 @@ package gate;
 
 import gate.annotation.Secure;
 import gate.entity.User;
+import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
+import gate.util.SystemProperty;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
@@ -18,21 +20,42 @@ import jakarta.servlet.http.HttpServletRequest;
 public class AuthenticationInterceptor
 {
 
+	private final String developer
+			= SystemProperty.get("gate.developer").orElse(null);
+
 	@Inject
-	HttpServletRequest request;
+	GateControl control;
+
+	@Inject
+	HttpServletRequest httpServletRequest;
 
 	@AroundInvoke
 	public Object secure(InvocationContext ctx) throws Exception
 	{
-		Request.set(request);
+		Request.set(httpServletRequest);
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
-		if (request.getSession(false) == null
-			&& Credentials.isPresent(request))
+		var token = request.getBearerAuthorization()
+				.map(e -> e.token()).orElse(null);
+		if (token != null)
 		{
-			User user = Credentials.of(request).orElseThrow();
-			request.setAttribute(User.class.getName(), user);
+			request.setAttribute(User.class.getName(),
+					Credentials.of(token));
+			return ctx.proceed();
 		}
 
+		var session = request.getSession(false);
+		if (session != null)
+		{
+			request.setAttribute(User.class.getName(),
+					session.getAttribute(User.class.getName()));
+			return ctx.proceed();
+		}
+
+		if (developer != null)
+			request.setAttribute(User.class.getName(),
+					control.select(developer));
 		return ctx.proceed();
 	}
+
 }
