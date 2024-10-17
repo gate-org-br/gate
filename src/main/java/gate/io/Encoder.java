@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.security.Encryptor;
 import gate.error.ConversionException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

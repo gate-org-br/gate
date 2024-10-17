@@ -6,7 +6,7 @@ import gate.error.InvalidUsernameException;
 import gate.handler.HTMLCommandHandler;
 import gate.messaging.Messenger;
 import gate.type.mime.MimeMail;
-import gate.util.PasswordGenerator;
+import gate.security.PasswordGenerator;
 import java.io.IOException;
 import java.util.Collections;
 import javax.inject.Inject;

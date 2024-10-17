@@ -5,11 +5,10 @@ import gate.entity.User;
 import gate.error.AppError;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
-import gate.error.InvalidCredentialsException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
-import gate.io.Credentials;
 import gate.policonverter.Policonverter;
+import gate.stream.UncheckedException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -45,10 +44,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		super(request);
 		try
 		{
-			parts = getParts();
+			parts = getContentType() != null
+					&& getContentType().toLowerCase().startsWith("multipart/")
+					? getParts() : Collections.emptyList();
 		} catch (ServletException e)
 		{
-			parts = Collections.emptyList();
+			throw new UncheckedException(e);
 		} catch (IOException e)
 		{
 			throw new UncheckedIOException(e);
@@ -79,7 +80,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 			if (parts.stream().anyMatch(e -> e.getName().equals(name)))
 				return Policonverter.getPoliconverter(type).getObject(elementType,
-					parts.stream().filter(e -> e.getName().equals(name)).toArray(Part[]::new));
+						parts.stream().filter(e -> e.getName().equals(name)).toArray(Part[]::new));
 			return null;
 		} catch (ConversionException e)
 		{
@@ -108,7 +109,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	{
 		String string = getParameter(name);
 		return string != null ? string
-			: parts.stream().filter(e -> e.getName().equals(name)).findAny().orElse(null);
+				: parts.stream().filter(e -> e.getName().equals(name)).findAny().orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -119,10 +120,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			String string = getParameter(name);
 			if (string != null)
 				return (T) Converter.getConverter(type).ofString(type,
-					URLDecoder.decode(getParameter(name), charset));
+						URLDecoder.decode(getParameter(name), charset));
 			if (parts.stream().anyMatch(e -> e.getName().equals(name)))
 				return (T) Converter.getConverter(type).ofPart(type,
-					parts.stream().filter(e -> e.getName().equals(name)).findFirst().get());
+						parts.stream().filter(e -> e.getName().equals(name)).findFirst().get());
 			return null;
 		} catch (ConversionException e)
 		{
@@ -133,15 +134,20 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Optional<User> getUser() throws InvalidCredentialsException
+	public User getUser()
 	{
-		return Credentials.of(this);
+		return (User) getAttribute(User.class.getName());
+	}
+
+	public void setUser(User user)
+	{
+		setAttribute(User.class.getName(), user);
 	}
 
 	public String getBody()
 	{
 		try (BufferedReader reader = this.getReader();
-			StringWriter string = new StringWriter())
+				StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -183,8 +189,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 					throw new AuthenticationException("Invalid basic authorization header");
 				yield Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
 			}
-			default -> throw new AuthenticationException(
-					"Authorization type not supported: " + type);
+			default ->
+				throw new AuthenticationException(
+						"Authorization type not supported: " + type);
 		};
 
 	}
@@ -195,7 +202,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String password = getParameter("$password");
 		if (username == null && password == null)
 			return getAuthorization().filter(e -> e instanceof BasicAuthorization)
-				.map(e -> (BasicAuthorization) e);
+					.map(e -> (BasicAuthorization) e);
 
 		if (username == null || username.isBlank())
 			throw new InvalidUsernameException();
@@ -209,6 +216,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public Optional<BearerAuthorization> getBearerAuthorization() throws AuthenticationException
 	{
 		return getAuthorization().filter(e -> e instanceof BearerAuthorization)
-			.map(e -> (BearerAuthorization) e);
+				.map(e -> (BearerAuthorization) e);
 	}
+
 }

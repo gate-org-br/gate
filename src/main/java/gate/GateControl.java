@@ -3,10 +3,15 @@ package gate;
 import gate.annotation.DataSource;
 import gate.entity.User;
 import gate.error.AppException;
+import gate.error.AuthenticationException;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernameException;
+import gate.http.BearerAuthorization;
+import gate.http.ScreenServletRequest;
+import gate.security.Credentials;
 import gate.sql.Link;
 import gate.sql.LinkSource;
+import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -59,4 +64,19 @@ public class GateControl extends gate.base.Control
 		}
 	}
 
+	public void authenticate(ScreenServletRequest request)
+			throws AuthenticationException,
+			InvalidUsernameException, HierarchyException
+	{
+
+		String developer = SystemProperty.get("gate.developer").orElse(null);
+		if (request.getAuthorization().orElse(null) instanceof BearerAuthorization authorization)
+			request.setUser(Credentials.of(authorization.token()));
+		else if (request.getSession(false) != null
+				&& request.getSession().getAttribute(User.class.getName()) != null)
+			request.setUser((User) request.getSession().getAttribute(User.class.getName()));
+		else if (developer != null)
+			request.setUser(select(developer));
+		User user = request.getUser();
+	}
 }

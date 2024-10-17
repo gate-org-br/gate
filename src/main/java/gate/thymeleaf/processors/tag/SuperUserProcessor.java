@@ -21,7 +21,7 @@ public class SuperUserProcessor extends TagModelProcessor
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
 		var request = ((IWebContext) context).getRequest();
-		User user = (User) request.getSession().getAttribute(User.class.getName());
+		User user = (User) request.getAttribute(User.class.getName());
 		if (user != null && user.isSuperUser())
 			removeTag(context, model, handler);
 		else

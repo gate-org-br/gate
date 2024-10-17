@@ -3,7 +3,6 @@ package gate.security;
 import gate.entity.Auth;
 import gate.entity.User;
 import gate.error.InvalidCredentialsException;
-import gate.io.Credentials;
 import gate.type.ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

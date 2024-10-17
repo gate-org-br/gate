@@ -11,9 +11,9 @@ import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.URL;
 import gate.lang.json.JsonObject;
-import gate.util.JWKSPublicKeyParser;
+import gate.security.JWKSPublicKeyParser;
 import gate.util.Parameters;
-import gate.util.SecuritySessions;
+import gate.security.SecuritySessions;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -89,7 +89,8 @@ public class OIDCAuthenticator implements Authenticator
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getParameter("code") != null
-				|| request.getBearerAuthorization().isPresent();
+				|| request.getParameter("accessCode") != null
+				|| request.getBasicAuthorization().isPresent();
 	}
 
 	@Override
@@ -100,10 +101,11 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			if (request.getParameter("code") != null)
 				return authorizationCodeFlow(control, request);
-			else if (request.getBearerAuthorization().isPresent())
-				return partialAuthorizationCodeFlow(control, request);
-			else if (request.getBasicAuthorization().isPresent())
-				return resourceOwnerPasswordCredentialsFlow(control, request);
+			else if (request.getParameter("accessCode") != null)
+				return partialAuthorizationCodeFlow(control,
+						request.getParameter("accessCode"));
+			else if (request.getAuthorization().orElse(null) instanceof BasicAuthorization authorization)
+				return resourceOwnerPasswordCredentialsFlow(control, authorization);
 			else
 				throw new AuthenticationException("Attempt to authenticate without supplying credentials");
 		} catch (IOException | RuntimeException ex)
@@ -163,13 +165,10 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
 	}
 
-	private User partialAuthorizationCodeFlow(GateControl control, ScreenServletRequest request)
+	private User partialAuthorizationCodeFlow(GateControl control, String accessCode)
 			throws AuthenticationException, HierarchyException, IOException
 	{
-		BearerAuthorization authorization = request.getBearerAuthorization()
-				.orElseThrow(() -> new AuthenticationException("Access token not supplied"));
-
-		var token = authorization.token();
+		var token = accessCode;
 		if (token.split("\\.").length == 3)
 		{
 			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(token);
@@ -188,17 +187,15 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("Error trying to get user id from auth provider")));
 	}
 
-	private User resourceOwnerPasswordCredentialsFlow(GateControl control, ScreenServletRequest request)
+	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization authorization)
 			throws AuthenticationException, HierarchyException, IOException
 	{
-		BasicAuthorization basicAuth = request.getBasicAuthorization()
-				.orElseThrow(() -> new AuthenticationException("Basic authentication not provided"));
 
 		JsonObject tokens = new URL(tokenEndpoint.get())
 				.post(new Parameters()
 						.set("grant_type", "password")
-						.set("username", basicAuth.username())
-						.set("password", basicAuth.password())
+						.set("username", authorization.username())
+						.set("password", authorization.password())
 						.set("client_id", clientId)
 						.set("client_secret", clientSecret)
 						.set("scope", scope))

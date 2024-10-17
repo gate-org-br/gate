@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.security.Encryptor;
 import gate.io.Observable;
 import gate.io.Observer;
 import java.io.IOException;

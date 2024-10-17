@@ -10,7 +10,7 @@ import gate.error.HierarchyException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
+import gate.security.Credentials;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;

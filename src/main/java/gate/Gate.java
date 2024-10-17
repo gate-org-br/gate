@@ -21,8 +21,9 @@ import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.handler.IntegerHandler;
+import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
+import gate.security.Credentials;
 import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import java.io.IOException;
@@ -118,36 +119,30 @@ public class Gate extends HttpServlet
 				}
 
 				String provider = authenticator
-					.provider(request, response);
+						.provider(request, response);
 				if (provider != null)
 					response.sendRedirect(provider);
 				else
 					handlers.select(HTMLCommandHandler.class).get()
-						.handle(httpServletRequest, response, HTML);
+							.handle(httpServletRequest, response, HTML);
 			} else
 			{
-				User user = null;
+
 				Call call = Call.of(MODULE, SCREEN, ACTION);
 
-				if (Credentials.isPresent(httpServletRequest))
+				if (authenticator.hasCredentials(request))
 				{
-					user = Credentials.of(request).orElseThrow();
-					request.setAttribute(User.class.getName(), user);
-				} else if (authenticator.hasCredentials(request))
-				{
-					user = authenticator.authenticate(request, response);
+					User user = authenticator.authenticate(request, response);
 					if (user != null)
 					{
+						request.setUser(user);
 						event.fireAsync(new LoginEvent(user));
 						request.getSession().setAttribute(User.class.getName(), user);
 					}
-				} else if (request.getSession(false) != null
-					&& request.getSession().getAttribute(User.class.getName()) != null)
-					user = (User) request.getSession().getAttribute(User.class.getName());
-				else if (!call.isPublic() && developer != null)
-					request.getSession().setAttribute(User.class.getName(),
-						user = control.select(developer));
+				} else
+					control.authenticate(request);
 
+				User user = request.getUser();
 				if (!call.checkAccess(user))
 					if (user != null)
 						throw new ForbiddenException();
@@ -175,20 +170,20 @@ public class Gate extends HttpServlet
 			}
 
 		} catch (DefaultPasswordException
-			| InvalidUsernameException
-			| InvalidPasswordException ex)
+				| InvalidUsernameException
+				| InvalidPasswordException ex)
 		{
 			httpServletRequest.setAttribute("messages",
-				Collections.singletonList(ex.getMessage()));
+					Collections.singletonList(ex.getMessage()));
 			Handler handler = handlers.select(HTMLCommandHandler.class).get();
 			handler.handle(httpServletRequest, response, HTML);
 		} catch (AuthenticationException
-			| AuthenticatorException
-			| BadRequestException
-			| ForbiddenException
-			| HierarchyException
-			| UnauthorizedException
-			| IOException ex)
+				| AuthenticatorException
+				| BadRequestException
+				| ForbiddenException
+				| HierarchyException
+				| UnauthorizedException
+				| IOException ex)
 		{
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
@@ -209,8 +204,8 @@ public class Gate extends HttpServlet
 			if (result != null)
 			{
 				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-					? method.getAnnotation(gate.annotation.Handler.class).value()
-					: Handler.getHandler(result.getClass());
+						? method.getAnnotation(gate.annotation.Handler.class).value()
+						: Handler.getHandler(result.getClass());
 				var handler = handlers.select(type).get();
 				handler.handle(request, response, result);
 			}
@@ -238,14 +233,14 @@ public class Gate extends HttpServlet
 		} catch (AppException ex)
 		{
 			if (Progress.status() == Progress.Status.PENDING
-				|| Progress.status() == Progress.Status.CREATED)
+					|| Progress.status() == Progress.Status.CREATED)
 				Progress.cancel(ex.getMessage());
 			else
 				Progress.message(ex.getMessage());
 		} catch (Throwable ex)
 		{
 			if (Progress.status() == Progress.Status.PENDING
-				|| Progress.status() == Progress.Status.CREATED)
+					|| Progress.status() == Progress.Status.CREATED)
 				Progress.cancel(ex.getMessage());
 			else
 				Progress.message(ex.getMessage());

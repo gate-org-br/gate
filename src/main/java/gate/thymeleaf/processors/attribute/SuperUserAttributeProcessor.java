@@ -27,7 +27,7 @@ public class SuperUserAttributeProcessor extends AttributeProcessor
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
 		HttpServletRequest request = ((IWebContext) context).getRequest();
-		User user = (User) request.getSession().getAttribute(User.class.getName());
+		User user = (User) request.getAttribute(User.class.getName());
 
 		if (user != null && user.isSuperUser())
 			handler.removeAttribute("g:superuser");

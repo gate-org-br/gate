@@ -1,4 +1,4 @@
-package gate.util;
+package gate.security;
 
 import gate.error.AuthenticatorException;
 import gate.lang.json.JsonObject;

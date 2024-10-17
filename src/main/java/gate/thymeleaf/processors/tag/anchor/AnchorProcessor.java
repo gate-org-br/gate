@@ -37,19 +37,19 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+						e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		Parameters parameters = new Parameters();
 		if (attributes.containsKey("arguments"))
 			Parameters.parse((String) attributes.remove("arguments")).entrySet()
-				.forEach(entry -> parameters.put(entry.getKey(),
-				expression.evaluate(entry.getValue().toString())));
+					.forEach(entry -> parameters.put(entry.getKey(),
+					expression.evaluate(entry.getValue().toString())));
 
 		attributes.entrySet().stream()
-			.filter(e -> e.getValue() != null)
-			.filter(e -> e.getKey().startsWith("_"))
-			.forEach(e -> parameters.put(e.getKey().substring(1), expression.evaluate((String) e.getValue())));
+				.filter(e -> e.getValue() != null)
+				.filter(e -> e.getKey().startsWith("_"))
+				.forEach(e -> parameters.put(e.getKey().substring(1), expression.evaluate((String) e.getValue())));
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
 		HttpServletRequest request = ((IWebContext) context).getRequest();
@@ -58,9 +58,9 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		try
 		{
 			call = Call.of(request,
-				(String) attributes.remove("module"),
-				(String) attributes.remove("screen"),
-				(String) attributes.remove("action"));
+					(String) attributes.remove("module"),
+					(String) attributes.remove("screen"),
+					(String) attributes.remove("action"));
 		} catch (BadRequestException ex)
 		{
 			throw new AppError(ex);
@@ -84,8 +84,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 			call.getName().ifPresent(e -> attributes.put("title", e));
 		}
 
-		User user = (User) request.getSession().getAttribute(User.class.getName());
-
+		User user = (User) request.getAttribute(User.class.getName());
 		process(context, model, handler, element, user, call, attributes, parameters);
 	}
 
@@ -122,6 +121,6 @@ public abstract class AnchorProcessor extends TagModelProcessor
 	}
 
 	protected abstract void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-		IProcessableElementTag element,
-		User user, Call call, Attributes attributes, Parameters parameters);
+			IProcessableElementTag element,
+			User user, Call call, Attributes attributes, Parameters parameters);
 }

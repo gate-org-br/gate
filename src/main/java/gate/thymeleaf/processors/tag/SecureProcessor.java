@@ -22,19 +22,19 @@ public class SecureProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+			IProcessableElementTag element,
+			IElementTagStructureHandler handler)
 	{
 		try
 		{
 			HttpServletRequest request = ((IWebContext) context).getRequest();
-			User user = (User) request.getSession().getAttribute(User.class.getName());
+			User user = (User) request.getAttribute(User.class.getName());
 
 			if (Call.of(request,
-				element.getAttributeValue("module"),
-				element.getAttributeValue("screen"),
-				element.getAttributeValue("action"))
-				.checkAccess(user))
+					element.getAttributeValue("module"),
+					element.getAttributeValue("screen"),
+					element.getAttributeValue("action"))
+					.checkAccess(user))
 				handler.removeTags();
 			else
 				handler.removeElement();

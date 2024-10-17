@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.security.Encryptor;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.BufferedReader;
