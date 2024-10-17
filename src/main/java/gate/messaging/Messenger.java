@@ -10,11 +10,7 @@ import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
 import gate.type.mime.MimeText;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.Initialized;
-import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import jakarta.mail.PasswordAuthentication;
@@ -27,9 +23,6 @@ import jakarta.servlet.ServletContextListener;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 
 @ApplicationScoped
@@ -46,12 +39,9 @@ public class Messenger implements ServletContextListener
 	@Inject
 	private Logger logger;
 
-	private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-
-	@PostConstruct
-	public void startup(@Observes @Initialized(ApplicationScoped.class) Object pointless)
+	public void dispatch()
 	{
-		service.scheduleWithFixedDelay(() ->
+		if (control.isEnabled())
 		{
 			try
 			{
@@ -73,14 +63,7 @@ public class Messenger implements ServletContextListener
 			{
 				logger.error(ex.getMessage(), ex);
 			}
-		}, 0, 1, TimeUnit.MINUTES);
-	}
-
-	@PreDestroy
-	public void shutdown()
-	{
-		if (!service.isShutdown())
-			service.shutdownNow();
+		}
 	}
 
 	public boolean isEnabled()
@@ -89,9 +72,9 @@ public class Messenger implements ServletContextListener
 	}
 
 	public void post(String sender,
-		String receiver,
-		MimeMail<?> message)
-		throws MessageException
+			String receiver,
+			MimeMail<?> message)
+			throws MessageException
 	{
 		try
 		{

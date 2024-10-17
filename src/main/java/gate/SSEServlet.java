@@ -8,9 +8,11 @@ import gate.error.InvalidCredentialsException;
 import gate.error.InvalidUsernameException;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
+import gate.http.BearerAuthorization;
+import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.util.SystemProperty;
+import gate.io.Developer;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
@@ -34,36 +36,31 @@ public class SSEServlet extends HttpServlet
 {
 
 	@Inject
-	GateControl control;
+	Logger logger;
 
-	private final String developer
-			= SystemProperty.get("gate.developer").orElse(null);
+	@Inject
+	Developer developer;
+
+	@Inject
+	Credentials credentials;
 
 	@Inject
 	UnauthorizedExceptionCatcher catcher;
 
-	@Inject
-	Logger logger;
 	private static final List<Client> clients = new CopyOnWriteArrayList<>();
 
 	private User getUser(ScreenServletRequest request)
 			throws UnauthorizedException, AuthenticationException,
 			InvalidUsernameException, HierarchyException
 	{
-		var token = request.getBearerAuthorization()
-				.map(e -> e.token())
-				.orElse(null);
-		if (token != null)
-			return Credentials.of(token);
+		var auth = request.getAuthorization();
+		if (auth instanceof BearerAuthorization bearer)
+			return credentials.subject(bearer.token());
 
-		var session = request.getSession(false);
-		if (session != null)
-			return (User) session.getAttribute(User.class.getName());
+		if (auth instanceof CookieAuthorization cookie)
+			return credentials.subject(cookie.token());
 
-		if (developer != null)
-			return control.select(developer);
-
-		throw new UnauthorizedException();
+		return developer.get().orElseThrow(UnauthorizedException::new);
 	}
 
 	@Override
@@ -121,8 +118,14 @@ public class SSEServlet extends HttpServlet
 		}
 	}
 
-	public void onAPPEvent(@Observes
-			@ObservesAsync AppEvent event)
+	public void onAPPEvent(@Observes AppEvent event)
+	{
+		for (Client client : clients)
+			client.send(event);
+
+	}
+
+	public void onAPPEventAsync(@ObservesAsync AppEvent event)
 	{
 		for (Client client : clients)
 			client.send(event);

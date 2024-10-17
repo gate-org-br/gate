@@ -4,7 +4,9 @@ import gate.entity.Auth;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.InvalidUsernameException;
+import gate.sql.Cursor;
 import gate.sql.Link;
+import gate.sql.fetcher.Fetcher;
 import gate.type.ID;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,40 +20,19 @@ class GateDao extends gate.base.Dao
 		super(link);
 	}
 
+	public User select(ID id) throws InvalidUsernameException
+	{
+		return (User) getLink().from(getClass().getResource("select(ID).sql"))
+				.parameters(id, id, id)
+				.fetch(new UzerFetcher())
+				.orElseThrow(InvalidUsernameException::new);
+	}
+
 	public User select(String username) throws InvalidUsernameException
 	{
 		return (User) getLink().from(getClass().getResource("select(String).sql"))
 				.parameters(username, username, username, username, username, username)
-				.fetch(cursor ->
-				{
-					if (cursor.next())
-					{
-						User user = new User();
-						user.setId(cursor.getValue(ID.class, "id"));
-						user.setActive(cursor.getValue(Boolean.class, "active"));
-						user.getRole().setId(cursor.getValue(ID.class, "role.id"));
-						user.setUsername(cursor.getValue(String.class, "username"));
-						user.setPassword(cursor.getValue(String.class, "password"));
-						user.setName(cursor.getValue(String.class, "name"));
-						user.setEmail(cursor.getValue(String.class, "email"));
-
-						while (cursor.next())
-						{
-							Auth auth = new Auth();
-							auth.setId(cursor.getValue(ID.class, "auth.id"));
-							auth.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"));
-							auth.setAccess(cursor.getValue(Auth.Access.class, "auth.access"));
-							auth.setModule(cursor.getValue(String.class, "auth.module"));
-							auth.setScreen(cursor.getValue(String.class, "auth.screen"));
-							auth.setAction(cursor.getValue(String.class, "auth.action"));
-							user.getAuths().add(auth);
-						}
-
-						return Optional.of(user);
-					}
-
-					return Optional.empty();
-				})
+				.fetch(new UzerFetcher())
 				.orElseThrow(InvalidUsernameException::new);
 	}
 
@@ -95,5 +76,42 @@ class GateDao extends gate.base.Dao
 					}
 					return roles;
 				});
+	}
+
+	private static class UzerFetcher implements Fetcher<Optional<User>>
+	{
+
+		@Override
+		public Optional<User> fetch(Cursor cursor)
+		{
+			if (cursor.next())
+			{
+				User user = new User();
+				user.setId(cursor.getValue(ID.class, "id"));
+				user.setActive(cursor.getValue(Boolean.class, "active"));
+				user.getRole().setId(cursor.getValue(ID.class, "role.id"));
+				user.setUsername(cursor.getValue(String.class, "username"));
+				user.setPassword(cursor.getValue(String.class, "password"));
+				user.setName(cursor.getValue(String.class, "name"));
+				user.setEmail(cursor.getValue(String.class, "email"));
+
+				while (cursor.next())
+				{
+					Auth auth = new Auth();
+					auth.setId(cursor.getValue(ID.class, "auth.id"));
+					auth.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"));
+					auth.setAccess(cursor.getValue(Auth.Access.class, "auth.access"));
+					auth.setModule(cursor.getValue(String.class, "auth.module"));
+					auth.setScreen(cursor.getValue(String.class, "auth.screen"));
+					auth.setAction(cursor.getValue(String.class, "auth.action"));
+					user.getAuths().add(auth);
+				}
+
+				return Optional.of(user);
+			}
+
+			return Optional.empty();
+		}
+
 	}
 }

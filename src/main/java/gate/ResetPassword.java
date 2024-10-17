@@ -6,6 +6,7 @@ import gate.error.BadRequestException;
 import gate.error.ConstraintViolationException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
+import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.Token;
 import gate.messaging.MessageException;
@@ -36,7 +37,7 @@ public class ResetPassword extends HttpServlet
 
 	@Override
 	public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response)
-		throws ServletException, IOException
+			throws ServletException, IOException
 	{
 		response.setCharacterEncoding("UTF-8");
 		httpServletRequest.setCharacterEncoding("UTF-8");
@@ -52,10 +53,10 @@ public class ResetPassword extends HttpServlet
 
 				if (user.getEmail() == null)
 					throw new BadRequestException(
-						"Você não definiu um email para o qual seu token possa ser enviado");
+							"Você não definiu um email para o qual seu token possa ser enviado");
 
 				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-					"Utilize este token para redefinir sua senha: " + Token.create(user)));
+						"Utilize este token para redefinir sua senha: " + Token.create(user)));
 
 			} catch (BadRequestException | InvalidUsernameException ex)
 			{
@@ -71,7 +72,7 @@ public class ResetPassword extends HttpServlet
 
 	@Override
 	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response)
-		throws ServletException, IOException
+			throws ServletException, IOException
 	{
 		response.setCharacterEncoding("UTF-8");
 		httpServletRequest.setCharacterEncoding("UTF-8");
@@ -82,11 +83,12 @@ public class ResetPassword extends HttpServlet
 
 			try
 			{
-				String token = request.getBearerAuthorization().map(e -> e.token())
-					.orElseThrow(() -> new BadRequestException("Credentials not supplied"));
-				User user = Token.parse(token);
-
-				control.update(user, request.getBody().trim());
+				if (request.getAuthorization() instanceof BearerAuthorization authorization)
+				{
+					User user = Token.parse(authorization.token());
+					control.update(user, request.getBody().trim());
+				} else
+					throw new BadRequestException("Credentials not supplied");
 
 			} catch (BadRequestException | NotFoundException | AuthenticationException ex)
 			{

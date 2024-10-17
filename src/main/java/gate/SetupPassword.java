@@ -6,6 +6,7 @@ import gate.error.BadRequestException;
 import gate.error.ConstraintViolationException;
 import gate.error.InvalidPasswordException;
 import gate.error.NotFoundException;
+import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import jakarta.inject.Inject;
@@ -40,14 +41,15 @@ public class SetupPassword extends HttpServlet
 			try
 			{
 
-				var authorization = request.getBasicAuthorization()
-					.orElseThrow(() -> new BadRequestException("Missing user credentials"));
+				if (request.getAuthorization() instanceof BasicAuthorization authorization)
+				{
+					User user = control.select(authorization.username());
+					if (!user.getPassword().equals(MD5.digest(authorization.password()).toString()))
+						throw new InvalidPasswordException();
 
-				User user = control.select(authorization.username());
-				if (!user.getPassword().equals(MD5.digest(authorization.password()).toString()))
-					throw new InvalidPasswordException();
-
-				control.update(user, request.getBody().trim());
+					control.update(user, request.getBody().trim());
+				} else
+					throw new BadRequestException("Missing user credentials");
 
 			} catch (AuthenticationException | BadRequestException ex)
 			{

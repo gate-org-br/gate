@@ -23,6 +23,9 @@ public class Auth extends HttpServlet
 {
 
 	@Inject
+	Credentials credentials;
+
+	@Inject
 	@Current
 	@RequestScoped
 	Authenticator authenticator;
@@ -43,7 +46,7 @@ public class Auth extends HttpServlet
 				User user = authenticator.authenticate(new ScreenServletRequest(httpServletRequest), response);
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
-				writer.write(Credentials.create(user));
+				writer.write(credentials.subject(user));
 			} catch (AuthenticationException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -53,7 +56,7 @@ public class Auth extends HttpServlet
 				response.setStatus(ex.getStatusCode());
 				writer.write(ex.getMessage());
 			} catch (HierarchyException
-				| RuntimeException ex)
+					| RuntimeException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Internal server error");

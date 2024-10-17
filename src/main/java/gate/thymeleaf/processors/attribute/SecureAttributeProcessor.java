@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.Call;
+import gate.Request;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
@@ -10,10 +11,8 @@ import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
-import org.thymeleaf.web.IWebExchange;
 
 @ApplicationScoped
 public class SecureAttributeProcessor extends AttributeProcessor
@@ -37,8 +36,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			String screen = path.length >= 2 ? path[1] : null;
 			String action = path.length >= 3 ? path[2] : null;
 
-			IWebExchange exchange = ((IWebContext) context).getExchange();
-			User user = (User) exchange.getSession().getAttributeValue(User.class.getName());
+			User user = Request.get().getUser().orElse(null);
 
 			if (Call.of(module, screen, action).checkAccess(user))
 			{

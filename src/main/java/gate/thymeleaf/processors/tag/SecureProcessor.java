@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.Call;
+import gate.Request;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
@@ -27,19 +28,18 @@ public class SecureProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+			IProcessableElementTag element,
+			IElementTagStructureHandler handler)
 	{
 		try
 		{
-			var exchange = ((IWebContext) context).getExchange();
-			User user = (User) exchange.getSession().getAttributeValue(User.class.getName());
+			User user = Request.get().getUser().orElse(null);
 
-			if (Call.of(exchange,
-				element.getAttributeValue("module"),
-				element.getAttributeValue("screen"),
-				element.getAttributeValue("action"))
-				.checkAccess(user))
+			if (Call.of(((IWebContext) context).getExchange(),
+					element.getAttributeValue("module"),
+					element.getAttributeValue("screen"),
+					element.getAttributeValue("action"))
+					.checkAccess(user))
 				handler.removeTags();
 			else if (element.hasAttribute("otherwise"))
 			{

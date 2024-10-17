@@ -7,6 +7,7 @@ import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.error.InvalidPasswordException;
+import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,21 +31,21 @@ public class DatabaseAuthenticator implements Authenticator
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
-		return request.getBasicAuthorization().isPresent();
+		return request.getAuthorization() instanceof BasicAuthorization;
 	}
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-		HttpServletResponse response)
-		throws HttpException, AuthenticationException, HierarchyException
+			HttpServletResponse response)
+			throws HttpException, AuthenticationException, HierarchyException
 	{
 
-		var authorization = request.getBasicAuthorization().orElse(null);
+		var authorization = (BasicAuthorization) request.getAuthorization();
 
 		User user = control.select(authorization.username());
 
 		if (MD5.digest(user.getUsername()).toString()
-			.equals(user.getPassword()))
+				.equals(user.getPassword()))
 			throw new DefaultPasswordException();
 
 		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))

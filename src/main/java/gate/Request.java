@@ -1,18 +1,18 @@
 package gate;
 
-import jakarta.servlet.http.HttpServletRequest;
+import gate.http.ScreenServletRequest;
 
 public class Request
 {
 
-	private static final ThreadLocal<HttpServletRequest> current = new ThreadLocal<>();
+	private static final ThreadLocal<ScreenServletRequest> current = new ThreadLocal<>();
 
-	public static void set(HttpServletRequest request)
+	public static void set(ScreenServletRequest request)
 	{
 		current.set(request);
 	}
 
-	public static HttpServletRequest get()
+	public static ScreenServletRequest get()
 	{
 		return current.get();
 	}

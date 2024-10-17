@@ -16,9 +16,11 @@ import gate.error.UnauthorizedException;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
+import gate.http.BearerAuthorization;
+import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.util.SystemProperty;
+import gate.io.Developer;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
@@ -49,9 +51,6 @@ public class Gate extends HttpServlet
 	static final String HTML = "/views/Gate.html";
 	private static final long serialVersionUID = 1L;
 
-	private final String developer
-			= SystemProperty.get("gate.developer").orElse(null);
-
 	@Inject
 	Logger logger;
 
@@ -75,7 +74,10 @@ public class Gate extends HttpServlet
 	Call mainAction;
 
 	@Inject
-	GateControl control;
+	Developer developer;
+
+	@Inject
+	Credentials credentials;
 
 	static
 	{
@@ -90,7 +92,7 @@ public class Gate extends HttpServlet
 
 		try
 		{
-			Request.set(httpServletRequest);
+			Request.set(request);
 			httpServletRequest.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
@@ -137,25 +139,30 @@ public class Gate extends HttpServlet
 					? mainAction
 					: Call.of(MODULE, SCREEN, ACTION);
 
-			User user = null;
-			if (request.getBearerAuthorization().isPresent())
-			{
-				user = Credentials.of(request.getBearerAuthorization().orElseThrow().token());
-				request.setAttribute(User.class.getName(), user);
-			} else if (authenticator.hasCredentials(request))
+			User user;
+
+			if (authenticator.hasCredentials(request))
 			{
 				user = authenticator.authenticate(request, response);
 				if (user != null)
 				{
 					event.fireAsync(new LoginEvent(user));
-					request.getSession().setAttribute(User.class.getName(), user);
+					response.addCookie(CookieFactory.create(credentials.subject(user)));
 				}
-			} else if (request.getSession(false) != null
-					&& request.getSession().getAttribute(User.class.getName()) != null)
-				user = (User) request.getSession().getAttribute(User.class.getName());
-			else if (!call.isPublic() && developer != null)
-				request.getSession().setAttribute(User.class.getName(),
-						user = control.select(developer));
+			} else
+			{
+				var auth = request.getAuthorization();
+				if (auth instanceof CookieAuthorization cookie)
+				{
+					user = credentials.subject(cookie.token());
+					response.addCookie(CookieFactory.create(credentials.subject(user)));
+				} else if (auth instanceof BearerAuthorization bearer)
+					user = credentials.subject(bearer.token());
+				else
+					user = developer.get().orElse(null);
+			}
+
+			request.setAttribute(User.class.getName(), user);
 
 			if (!call.checkAccess(user))
 				if (user != null)
@@ -179,7 +186,7 @@ public class Gate extends HttpServlet
 			}
 
 			if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-				executeAsync(user, httpServletRequest, response, screen, call.getMethod());
+				executeAsync(user, request, response, screen, call.getMethod());
 			else
 				execute(httpServletRequest, response, screen, call.getMethod());
 
@@ -228,7 +235,7 @@ public class Gate extends HttpServlet
 		}
 	}
 
-	private void executeAsync(User user, HttpServletRequest request, HttpServletResponse response,
+	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
 			Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");

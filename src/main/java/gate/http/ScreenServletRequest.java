@@ -5,10 +5,8 @@ import gate.entity.User;
 import gate.error.AppError;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
-import gate.error.InvalidCredentialsException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
-import gate.io.Credentials;
 import gate.policonverter.Policonverter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +30,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
@@ -47,12 +46,11 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			parts = getParts();
-		} catch (ServletException e)
+		} catch (ServletException
+				| IOException
+				| RuntimeException ex)
 		{
 			parts = Collections.emptyList();
-		} catch (IOException e)
-		{
-			throw new UncheckedIOException(e);
 		}
 	}
 
@@ -155,11 +153,31 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return (T) Converter.getConverter(type).ofString(type, ScreenServletRequest.this.getBody());
 	}
 
-	public Optional<Authorization> getAuthorization() throws AuthenticationException
+	public Authorization getAuthorization() throws AuthenticationException
 	{
 		String header = getHeader("Authorization");
 		if (header == null)
-			return Optional.empty();
+		{
+			String username = getParameter("$username");
+			String password = getParameter("$password");
+			if (username != null || password != null)
+			{
+				if (username == null || username.isBlank())
+					throw new InvalidUsernameException();
+
+				if (password == null || password.isBlank())
+					throw new InvalidPasswordException();
+
+				return new BasicAuthorization(username, password);
+			}
+
+			return Stream.of(getCookies())
+					.filter(e -> e.getName().equals("subject"))
+					.filter(e -> e.getValue() != null && !e.getValue().isBlank())
+					.findAny()
+					.map(e -> new CookieAuthorization(e.getValue()))
+					.orElse(null);
+		}
 
 		Matcher authorization = AUTHORIZATION.matcher(header);
 		if (!authorization.matches())
@@ -169,7 +187,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return switch (type.toUpperCase())
 		{
 			case "BEARER" ->
-				Optional.of(new BearerAuthorization(authorization.group(2)));
+				new BearerAuthorization(authorization.group(2));
 			case "BASIC" ->
 			{
 				String value = authorization.group(2);
@@ -177,35 +195,21 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				Matcher basic = BASIC_AUTHORIZATION.matcher(value);
 				if (!basic.matches())
 					throw new AuthenticationException("Invalid basic authorization header");
-				yield Optional.of(new BasicAuthorization(basic.group(1), basic.group(2)));
+				yield new BasicAuthorization(basic.group(1), basic.group(2));
 			}
 			default ->
-				throw new AuthenticationException(
-						"Authorization type not supported: " + type);
+				throw new AuthenticationException("Authorization type not supported: " + type);
 		};
 
 	}
 
-	public Optional<BasicAuthorization> getBasicAuthorization() throws AuthenticationException
+	public void setUser(User user)
 	{
-		String username = getParameter("$username");
-		String password = getParameter("$password");
-		if (username == null && password == null)
-			return getAuthorization().filter(e -> e instanceof BasicAuthorization)
-					.map(e -> (BasicAuthorization) e);
-
-		if (username == null || username.isBlank())
-			throw new InvalidUsernameException();
-
-		if (password == null || password.isBlank())
-			throw new InvalidPasswordException();
-
-		return Optional.of(new BasicAuthorization(username, password));
+		setAttribute(User.class.getName(), user);
 	}
 
-	public Optional<BearerAuthorization> getBearerAuthorization() throws AuthenticationException
+	public Optional<User> getUser()
 	{
-		return getAuthorization().filter(e -> e instanceof BearerAuthorization)
-				.map(e -> (BearerAuthorization) e);
+		return Optional.ofNullable((User) getAttribute(User.class.getName()));
 	}
 }

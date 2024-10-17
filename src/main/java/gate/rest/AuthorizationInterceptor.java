@@ -3,6 +3,7 @@ package gate.rest;
 import gate.annotation.Authorization;
 import gate.annotation.Secure;
 import gate.entity.User;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.ForbiddenException;
 @Secure
 @Dependent
 @Interceptor
+@Priority(200) 
 public class AuthorizationInterceptor
 {
 

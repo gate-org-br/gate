@@ -1,17 +1,20 @@
 package gate.io;
 
-import gate.entity.Auth;
+import gate.GateControl;
 import gate.entity.User;
-import gate.error.ConversionException;
-import gate.error.InvalidCredentialsException;
-import gate.lang.json.JsonArray;
+import gate.error.HierarchyException;
+import gate.error.InvalidUsernameException;
+import gate.error.UnauthorizedException;
+import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.stream.UncheckedOptional;
 import gate.type.ID;
 import gate.util.SystemProperty;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.Keys;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,8 +25,12 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
+@ApplicationScoped
 public class Credentials
 {
+
+	@Inject
+	GateControl control;
 
 	private static final SecretKey SECRET = UncheckedOptional.of(SystemProperty.get("gate.key-store.file"))
 			.map(filename ->
@@ -55,59 +62,55 @@ public class Credentials
 
 	}
 
-	public static User of(String string) throws InvalidCredentialsException
+	public String create(JsonObject claims)
+	{
+		return Jwts.builder()
+				.claims(claims.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())))
+				.expiration(Date.from(Instant.now().plusSeconds(3600)))
+				.signWith(SECRET)
+				.compact();
+	}
+
+	public JsonObject parse(String token) throws UnauthorizedException
 	{
 		try
 		{
-			Claims claims = Jwts.parser()
+			return Jwts.parser()
 					.verifyWith(SECRET)
 					.build()
-					.parseSignedClaims(string)
-					.getPayload();
-
-			User user = new User();
-			user.setId(ID.valueOf(claims.get("id", String.class)));
-			user.setName(claims.get("name", String.class));
-			user.getRole().setId(ID.valueOf(claims.get("role.id", String.class)));
-			user.getRole().setName(claims.get("role.name", String.class));
-
-			user.setAuths(JsonArray.parse(claims.get("auths", String.class)).stream()
-					.map(e -> (JsonObject) e)
-					.map(e -> new Auth()
-					.setAccess(e.getString("access").map(Auth.Access::valueOf).orElseThrow())
-					.setScope(e.getString("scope").map(Auth.Scope::valueOf).orElseThrow())
-					.setModule(e.getString("module").orElse(null))
-					.setScreen(e.getString("screen").orElse(null))
-					.setAction(e.getString("action").orElse(null))).toList()
-			);
-
-			return user;
-		} catch (RuntimeException | ConversionException ex)
+					.parseSignedClaims(token)
+					.getPayload()
+					.entrySet()
+					.stream()
+					.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
+		} catch (SignatureException ex)
 		{
-			throw new InvalidCredentialsException(ex.getMessage());
+			return null;
 		}
 	}
 
-	public static String create(User user)
+	public String subject(User user)
 	{
-		String credentials = Jwts.builder()
-				.claim("id", user.getId().toString())
-				.claim("name", user.getName())
-				.claim("role.id", user.getRole().getId().toString())
-				.claim("role.name", user.getRole().getName())
-				.claim("auths", user.getComputedAuths()
-						.stream()
-						.map(e -> new JsonObject()
-						.setString("access", e.getAccess().name())
-						.setString("scope", e.getScope().name())
-						.setString("module", e.getModule())
-						.setString("screen", e.getScreen())
-						.setString("action", e.getAction()))
-						.collect(Collectors.toCollection(JsonArray::new))
-						.toString())
+		return Jwts.builder()
+				.subject(user.getId().toString())
 				.expiration(Date.from(Instant.now().plusSeconds(3600)))
-				.signWith(SECRET).compact();
+				.signWith(SECRET)
+				.compact();
+	}
 
-		return credentials;
+	public User subject(String token) throws InvalidUsernameException, HierarchyException, UnauthorizedException
+	{
+		try
+		{
+			return control.select(ID.valueOf(Jwts.parser()
+					.verifyWith(SECRET)
+					.build()
+					.parseSignedClaims(token)
+					.getPayload()
+					.get("sub", String.class)));
+		} catch (SignatureException ex)
+		{
+			return null;
+		}
 	}
 }

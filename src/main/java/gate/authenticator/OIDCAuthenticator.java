@@ -91,7 +91,8 @@ public class OIDCAuthenticator implements Authenticator
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getParameter("code") != null
-				|| request.getBearerAuthorization().isPresent();
+				|| request.getParameter("accessToken") != null
+				|| request.getAuthorization() instanceof BasicAuthorization;
 	}
 
 	@Override
@@ -102,10 +103,10 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			if (request.getParameter("code") != null)
 				return authorizationCodeFlow(control, request);
-			else if (request.getBearerAuthorization().isPresent())
+			else if (request.getParameter("accessToken") != null)
 				return partialAuthorizationCodeFlow(control, request);
-			else if (request.getBasicAuthorization().isPresent())
-				return resourceOwnerPasswordCredentialsFlow(control, request);
+			else if (request.getAuthorization() instanceof BasicAuthorization basicAuthorization)
+				return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 			else
 				throw new AuthenticationException("Attempt to authenticate without supplying credentials");
 		} catch (IOException | RuntimeException ex)
@@ -121,7 +122,7 @@ public class OIDCAuthenticator implements Authenticator
 
 		var state = request.getParameter("state");
 		if (state == null || !SESSIONS.check(state))
-			throw new BadRequestException("Error validating state");
+			return null;
 
 		var tokens = new URL(tokenEndpoint.get())
 				.post(new Parameters()
@@ -168,10 +169,8 @@ public class OIDCAuthenticator implements Authenticator
 	private User partialAuthorizationCodeFlow(GateControl control, ScreenServletRequest request)
 			throws AuthenticationException, HierarchyException, IOException
 	{
-		BearerAuthorization authorization = request.getBearerAuthorization()
-				.orElseThrow(() -> new AuthenticationException("Access token not supplied"));
 
-		var token = authorization.token();
+		var token = request.getParameter("accessToken");
 		if (token.split("\\.").length == 3)
 		{
 			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(token);
@@ -190,11 +189,9 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
 	}
 
-	private User resourceOwnerPasswordCredentialsFlow(GateControl control, ScreenServletRequest request)
+	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization basicAuth)
 			throws AuthenticationException, HierarchyException, IOException
 	{
-		BasicAuthorization basicAuth = request.getBasicAuthorization()
-				.orElseThrow(() -> new AuthenticationException("Basic authentication not provided"));
 
 		JsonObject tokens = new URL(tokenEndpoint.get())
 				.post(new Parameters()
