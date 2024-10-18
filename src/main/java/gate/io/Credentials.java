@@ -32,30 +32,7 @@ public class Credentials
 	@Inject
 	GateControl control;
 
-	private static final SecretKey SECRET = UncheckedOptional.of(SystemProperty.get("gate.key-store.file"))
-			.map(filename ->
-			{
-				String key = SystemProperty.get("gate.key-store.secret-key").orElse("secret-key");
-				char[] password = SystemProperty.get("gate.key-store.password").orElse("changeit").toCharArray();
-
-				KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-				try (FileInputStream fis = new FileInputStream(filename))
-				{
-					keyStore.load(fis, password);
-				}
-				return (SecretKey) keyStore.getKey(key, password);
-			})
-			.orElseGet(()
-					-> UncheckedOptional.of(SystemProperty.get("gate.secret-key-file"))
-					.map(Paths::get)
-					.map(Files::readAllBytes)
-					.map(Base64.getDecoder()::decode)
-					.map(Keys::hmacShaKeyFor)
-					.orElseGet(()
-							-> SystemProperty.get("gate.secret-key")
-							.map(Base64.getDecoder()::decode)
-							.map(Keys::hmacShaKeyFor)
-							.orElseGet(Jwts.SIG.HS256.key()::build)));
+	private static final SecretKey SECRET = getSecret();
 
 	private Credentials()
 	{
@@ -112,5 +89,35 @@ public class Credentials
 		{
 			return null;
 		}
+	}
+
+	private static SecretKey getSecret()
+	{
+		return UncheckedOptional.of(SystemProperty.get("gate.key-store.file"))
+				.map(filename ->
+				{
+					String key = SystemProperty.get("gate.key-store.secret-key").orElse("secret-key");
+					char[] password = SystemProperty.get("gate.key-store.password").orElse("changeit").toCharArray();
+
+					KeyStore keyStore = KeyStore
+							.getInstance(filename.toLowerCase().endsWith(".p12")
+									? "PKCS12" : "JCEKS");
+					try (FileInputStream fis = new FileInputStream(filename))
+					{
+						keyStore.load(fis, password);
+					}
+					return (SecretKey) keyStore.getKey(key, password);
+				})
+				.orElseGet(()
+						-> UncheckedOptional.of(SystemProperty.get("gate.secret-key-file"))
+						.map(Paths::get)
+						.map(Files::readAllBytes)
+						.map(Base64.getDecoder()::decode)
+						.map(Keys::hmacShaKeyFor)
+						.orElseGet(()
+								-> SystemProperty.get("gate.secret-key")
+								.map(Base64.getDecoder()::decode)
+								.map(Keys::hmacShaKeyFor)
+								.orElseGet(Jwts.SIG.HS256.key()::build)));
 	}
 }
