@@ -145,7 +145,7 @@ public class ObjectConverter implements Converter
 			return object;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchFieldException ex)
 		{
-			throw new ConversionException(ex.getMessage());
+			throw new ConversionException(ex.getMessage()); 
 		}
 	}
 

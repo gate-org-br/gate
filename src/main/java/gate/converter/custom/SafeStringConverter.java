@@ -67,9 +67,7 @@ public class SafeStringConverter implements Converter
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation("^[^<>\"'\\\\]*$"));
-		return constraints;
+		return List.of();
 	}
 
 	@Override
