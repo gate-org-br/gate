@@ -1,67 +1,41 @@
 package gate;
 
+import gate.annotation.Current;
 import gate.catcher.UnauthorizedExceptionCatcher;
 import gate.entity.User;
-import gate.error.AuthenticationException;
-import gate.error.HierarchyException;
-import gate.error.InvalidCredentialsException;
-import gate.error.InvalidUsernameException;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
-import gate.http.BearerAuthorization;
-import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
-import gate.io.Developer;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
-import jakarta.servlet.AsyncContext;
-import jakarta.servlet.AsyncEvent;
-import jakarta.servlet.AsyncListener;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.slf4j.Logger;
+import java.util.concurrent.TimeUnit;
 
 @WebServlet(value = "/SSE", asyncSupported = true)
 public class SSEServlet extends HttpServlet
 {
-
-	@Inject
-	Logger logger;
-
-	@Inject
-	Developer developer;
-
-	@Inject
-	Credentials credentials;
-
 	@Inject
 	UnauthorizedExceptionCatcher catcher;
 
+	@Inject
+	@Current
+	@RequestScoped
+	User user;
+
 	private static final List<Client> clients = new CopyOnWriteArrayList<>();
 
-	private User getUser(ScreenServletRequest request)
-			throws UnauthorizedException, AuthenticationException,
-			InvalidUsernameException, HierarchyException
-	{
-		var auth = request.getAuthorization();
-		if (auth instanceof BearerAuthorization bearer)
-			return credentials.subject(bearer.token());
-
-		if (auth instanceof CookieAuthorization cookie)
-			return credentials.subject(cookie.token());
-
-		return developer.get().orElseThrow(UnauthorizedException::new);
-	}
 
 	@Override
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
@@ -70,49 +44,52 @@ public class SSEServlet extends HttpServlet
 
 		try
 		{
-			User user = getUser(request);
+			if (user == null || user.getId() == null)
+				throw new UnauthorizedException();
 
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/event-stream");
 
 			AsyncContext context = request.startAsync();
-			context.setTimeout(0);
+			context.setTimeout(TimeUnit.HOURS.toMillis(1));
 
-			Client client = new Client(user, context);
+			Client client = new Client(user.unwrap(), context);
+
+			clients.stream()
+					.filter(e -> e.subject.equals(user))
+					.toList()
+					.forEach(e -> e.asyncContext.complete());
 			clients.add(client);
 
 			context.addListener(new AsyncListener()
 			{
 				@Override
-				public void onStartAsync(AsyncEvent event) throws IOException
+				public void onStartAsync(AsyncEvent event)
 				{
 				}
 
 				@Override
-				public void onComplete(AsyncEvent event) throws IOException
+				public void onComplete(AsyncEvent event)
 				{
+					client.close();
 					clients.remove(client);
 				}
 
 				@Override
-				public void onError(AsyncEvent event) throws IOException
+				public void onError(AsyncEvent event)
 				{
-					onComplete(event);
+					client.close();
+					clients.remove(client);
 				}
 
 				@Override
-				public void onTimeout(AsyncEvent event) throws IOException
+				public void onTimeout(AsyncEvent event)
 				{
-					onComplete(event);
+					client.close();
+					clients.remove(client);
 				}
 			});
-		} catch (InvalidCredentialsException ex)
-		{
-			catcher.catches(request, response,
-					new UnauthorizedException());
-		} catch (HierarchyException
-				| UnauthorizedException
-				| AuthenticationException ex)
+		} catch (UnauthorizedException ex)
 		{
 			catcher.catches(request, response, ex);
 		}
@@ -120,47 +97,47 @@ public class SSEServlet extends HttpServlet
 
 	public void onAPPEvent(@Observes AppEvent event)
 	{
-		for (Client client : clients)
-			client.send(event);
-
+		clients.forEach(e -> e.send(event));
 	}
 
 	public void onAPPEventAsync(@ObservesAsync AppEvent event)
 	{
-		for (Client client : clients)
-			client.send(event);
-
+		clients.forEach(e -> e.send(event));
 	}
 
-	private class Client
+	private static class Client
 	{
-
-		private final User user;
-		private PrintWriter writer;
+		private final User subject;
+		private ServletOutputStream out;
 		private final AsyncContext asyncContext;
 
 		public Client(User user, AsyncContext asyncContext)
 		{
-			this.user = user;
+			this.subject = user;
 			this.asyncContext = asyncContext;
 		}
 
 		public synchronized void send(AppEvent event)
 		{
-			if (event.checkAccess(user))
+			if (event.checkAccess(subject))
 			{
 				try
 				{
-					if (writer == null)
-						writer = asyncContext.getResponse().getWriter();
+					if (out == null)
+						out = asyncContext.getResponse().getOutputStream();
 
-					writer.write("event: message\n");
-					writer.write("data: " + Base64.getEncoder()
-							.encodeToString(event.toString().getBytes()) + "\n\n");
-					writer.flush();
+					var data = Base64.getEncoder()
+							.encodeToString(event.toString()
+									.getBytes(StandardCharsets.UTF_8));
+
+					out.println("event: message");
+					out.println("data: " + data);
+					out.println();
+					out.flush();
+					asyncContext.getResponse().flushBuffer();
 				} catch (IOException | RuntimeException ex)
 				{
-					this.close();
+					asyncContext.complete();
 				}
 			}
 		}
@@ -169,13 +146,9 @@ public class SSEServlet extends HttpServlet
 		{
 			try
 			{
-				writer.close();
-			} catch (Exception ex)
+				out.close();
+			} catch (Exception ignored)
 			{
-				logger.trace(ex.getMessage(), ex);
-			} finally
-			{
-				asyncContext.complete();
 			}
 		}
 	}

@@ -19,9 +19,11 @@ import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.util.Toolkit;
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
+
 import org.thymeleaf.web.IWebExchange;
 
 public class Call
@@ -33,7 +35,16 @@ public class Call
 	private final Class<Screen> type;
 	private final Method method;
 
-	public static final Call NONE = new Call(null, null, null, null, null);
+	public static final Call NONE = new Call();
+
+	private Call()
+	{
+		this.type = null;
+		this.method = null;
+		this.module = null;
+		this.screen = null;
+		this.action = null;
+	}
 
 	private Call(String module, String screen, String action, Class<Screen> type, Method method)
 	{
@@ -153,7 +164,7 @@ public class Call
 	{
 		return action != null ? Description.Extractor.extract(method)
 				: Description.Extractor.extract(method)
-						.or(() -> Description.Extractor.extract(type));
+				.or(() -> Description.Extractor.extract(type));
 	}
 
 	public Optional<String> getTooltip()
@@ -208,23 +219,29 @@ public class Call
 			return true;
 
 		if (Annotations.exists(Superuser.class, type, method))
-			return user != null && user.isSuperUser();
+			return user != null && user.getId() != null && user.isSuperUser();
 
-		return switch (Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION))
+		return switch (Security.Extractor.extract(method)
+				.orElse(Security.Type.AUTHORIZATION))
 		{
 			case NONE -> true;
-			case AUTHENTICATION -> user != null;
-			case AUTHORIZATION -> {
+			case AUTHENTICATION -> user != null && user.getId() != null;
+			case AUTHORIZATION ->
+			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
-				yield user != null && user.checkAccess(auth.module(), auth.screen(), auth.action());
+				yield user != null && user.getId() != null
+						&& user.checkAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SPECIFIC_AUTHORIZATION -> {
+			case SPECIFIC_AUTHORIZATION ->
+			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
 				yield user != null
+						&& user.getId() != null
 						&& user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SUPERUSER -> user != null && user.isSuperUser();
-			default -> throw new IllegalStateException();
+			case SUPERUSER -> user != null
+					&& user.getId() != null
+					&& user.isSuperUser();
 		};
 	}
 }

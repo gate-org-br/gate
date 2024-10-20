@@ -1,35 +1,33 @@
 package gate.rest;
 
 import gate.annotation.Authorization;
+import gate.annotation.Current;
 import gate.annotation.Secure;
 import gate.entity.User;
-import jakarta.annotation.Priority;
+import gate.error.ForbiddenException;
+import gate.error.UnauthorizedException;
 import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.ForbiddenException;
 
 @Secure
 @Dependent
 @Interceptor
-@Priority(200) 
 public class AuthorizationInterceptor
 {
-
 	@Inject
-	private HttpServletRequest request;
+	@Current
+	@RequestScoped
+	User user;
 
 	@AroundInvoke
 	public Object secure(InvocationContext ctx) throws Exception
 	{
-
-		User user = (User) request.getAttribute(User.class.getName());
-
-		if (user == null)
-			throw new ForbiddenException();
+		if (user == null || user.getId() == null)
+			throw new UnauthorizedException();
 
 		Authorization.Value authorization = Authorization.Extractor.extract(ctx.getMethod(),
 				ctx.getMethod().getDeclaringClass().getName(),

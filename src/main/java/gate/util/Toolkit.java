@@ -1,11 +1,6 @@
 package gate.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -121,9 +116,10 @@ public class Toolkit
 		return obj != null ? obj : supplier.get();
 	}
 
-	public static <T> T coalesce(@SuppressWarnings("unchecked") T... elements)
+	@SafeVarargs
+	public static <T> T coalesce( T... elements)
 	{
-		return Stream.of(elements).filter(e -> e != null).findFirst().orElse(null);
+		return Stream.of(elements).filter(Objects::nonNull).findFirst().orElse(null);
 	}
 
 	public static boolean sleep(int value)
@@ -162,10 +158,12 @@ public class Toolkit
 		while (index < path.length() && path.charAt(index) == '/')
 		{
 			index++;
-			StringBuilder string = new StringBuilder();
+			StringBuilder builder = new StringBuilder();
 			for (; index < path.length() && path.charAt(index) != '/'; index++)
-				string.append(path.charAt(index));
-			result.add(!string.isEmpty() ? string.toString() : null);
+				builder.append(path.charAt(index));
+			var string = builder.toString().trim();
+			result.add(!string.isEmpty() && !
+					"*".equals(string) ? string : null);
 		}
 
 		return result;

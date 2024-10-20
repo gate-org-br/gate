@@ -11,7 +11,7 @@ public class LinkSourceProducer
 
 	@Produces
 	@DefaultDataSource
-	public LinkSource defaultLinkSource(InjectionPoint ip)
+	public LinkSource defaultLinkSource()
 	{
 		return LinkSource.of();
 

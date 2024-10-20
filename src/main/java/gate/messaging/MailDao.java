@@ -13,6 +13,7 @@ import gate.sql.insert.Insert;
 import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,129 +29,130 @@ class MailDao extends Dao
 	public boolean isEnabled()
 	{
 		return getLink()
-			.from("select exists (select * from Server where type = ?)")
-			.parameters(Server.Type.SMTP)
-			.fetchBoolean();
+				.from("select exists (select * from Server where type = ?)")
+				.parameters(Server.Type.SMTP)
+				.fetchBoolean();
 	}
 
-	public Optional<Server> server()
+	public Server server()
 	{
 		return Select.expression("type")
-			.expression("host")
-			.expression("port")
-			.expression("username")
-			.expression("password")
-			.expression("useTLS")
-			.expression("useSSL")
-			.expression("timeout")
-			.from("Server")
-			.where(Condition.of("type").eq(Server.Type.SMTP))
-			.build()
-			.connect(getLink())
-			.fetchEntity(Server.class);
+				.expression("host")
+				.expression("port")
+				.expression("username")
+				.expression("password")
+				.expression("useTLS")
+				.expression("useSSL")
+				.expression("timeout")
+				.from("Server")
+				.where(Condition.of("type").eq(Server.Type.SMTP))
+				.build()
+				.connect(getLink())
+				.fetchEntity(Server.class)
+				.orElse(null);
 	}
 
 	public List<Mail> search()
 	{
 		return Select
-			.expression("id")
-			.expression("app")
-			.expression("date")
-			.expression("sender")
-			.expression("receiver")
-			.expression("attempts")
-			.expression("expiration")
-			.from("Mail")
-			.orderBy("date")
-			.build()
-			.connect(getLink())
-			.fetchEntityList(Mail.class);
+				.expression("id")
+				.expression("app")
+				.expression("date")
+				.expression("sender")
+				.expression("receiver")
+				.expression("attempts")
+				.expression("expiration")
+				.from("Mail")
+				.orderBy("date")
+				.build()
+				.connect(getLink())
+				.fetchEntityList(Mail.class);
 	}
 
 	public List<Mail> search(App app)
 	{
 		return Select
-			.expression("id")
-			.expression("app")
-			.expression("date")
-			.expression("sender")
-			.expression("message")
-			.expression("attempts")
-			.expression("receiver")
-			.expression("expiration")
-			.from("Mail")
-			.where(Condition.of("app").eq(app.getId())
-				.and("date_add(Mail.date, interval Mail.attempts hour)").le(LocalDateTime.now()))
-			.orderBy("attempts").and("date")
-			.build()
-			.connect(getLink())
-			.fetchEntityList(Mail.class);
+				.expression("id")
+				.expression("app")
+				.expression("date")
+				.expression("sender")
+				.expression("message")
+				.expression("attempts")
+				.expression("receiver")
+				.expression("expiration")
+				.from("Mail")
+				.where(Condition.of("app").eq(app.getId())
+						.and("date_add(Mail.date, interval Mail.attempts hour)").le(LocalDateTime.now()))
+				.orderBy("attempts").and("date")
+				.build()
+				.connect(getLink())
+				.fetchEntityList(Mail.class);
 	}
 
 	public Optional<Mail> select(App app)
 	{
 		return Select
-			.expression("id")
-			.expression("date")
-			.expression("sender")
-			.expression("message")
-			.expression("attempts")
-			.expression("receiver")
-			.expression("expiration")
-			.from("Mail")
-			.where(Condition.of("app").eq(app.getId())
-				.and("date_add(Mail.date, interval Mail.attempts hour)").le(LocalDateTime.now()))
-			.orderBy("attempts").and("date")
-			.limit(1)
-			.build()
-			.connect(getLink())
-			.fetchEntity(Mail.class);
+				.expression("id")
+				.expression("date")
+				.expression("sender")
+				.expression("message")
+				.expression("attempts")
+				.expression("receiver")
+				.expression("expiration")
+				.from("Mail")
+				.where(Condition.of("app").eq(app.getId())
+						.and("date_add(Mail.date, interval Mail.attempts hour)").le(LocalDateTime.now()))
+				.orderBy("attempts").and("date")
+				.limit(1)
+				.build()
+				.connect(getLink())
+				.fetchEntity(Mail.class);
 	}
 
 	public void insert(Mail mail) throws AppException
 	{
 		Insert.into("Mail")
-			.set("app", mail.getApp())
-			.set("date", mail.getDate())
-			.set("sender", mail.getSender())
-			.set("message", mail.getMessage())
-			.set("attempts", mail.getAttempts())
-			.set("receiver", mail.getReceiver())
-			.set("expiration", mail.getExpiration())
-			.build()
-			.connect(getLink())
-			.fetchGeneratedKey(ID.class).ifPresent(mail::setId);
+				.set("app", mail.getApp())
+				.set("date", mail.getDate())
+				.set("sender", mail.getSender())
+				.set("message", mail.getMessage())
+				.set("attempts", mail.getAttempts())
+				.set("receiver", mail.getReceiver())
+				.set("expiration", mail.getExpiration())
+				.build()
+				.connect(getLink())
+				.fetchGeneratedKey(ID.class).ifPresent(mail::setId);
 
 	}
 
 	public void update(Mail mail) throws AppException
 	{
 		if (Update.table("Mail")
-			.set("attempts", mail.getAttempts())
-			.where(Condition.of("id").eq(mail.getId()))
-			.build()
-			.connect(getLink())
-			.execute() == 0)
+				.set("attempts", mail.getAttempts())
+				.where(Condition.of("id").eq(mail.getId()))
+				.build()
+				.connect(getLink())
+				.execute() == 0)
 			throw new NotFoundException();
 	}
 
 	public void expire(App app) throws AppException
 	{
 		Delete.from("Mail")
-			.where(Condition.of("app").eq(app.getId())
-				.and("expiration").lt(LocalDateTime.now()))
-			.build()
-			.connect(getLink())
-			.execute();
+				.where(Condition.of("app").eq(app.getId())
+						.and("expiration").lt(LocalDateTime.now()))
+				.build()
+				.connect(getLink())
+				.execute();
 	}
 
 	public void delete(Mail mail) throws AppException
 	{
 		if (Delete.from("Mail")
-			.where(Condition.of("id").eq(mail.getId()))
-			.build()
-			.connect(getLink())
-			.execute() == 0)
+				.where(Condition.of("id").eq(mail.getId()))
+				.build()
+				.connect(getLink())
+				.execute() == 0)
 			throw new NotFoundException();
 
 	}

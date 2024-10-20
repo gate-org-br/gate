@@ -90,6 +90,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'line',
 				data: data(this.value, this.reversed),
@@ -102,6 +103,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'line',
 				data: data(this.value, this.reversed, true),
@@ -114,6 +116,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'bar',
 				data: data(this.value, this.reversed),
@@ -126,6 +129,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'bar',
 				data: data(this.value, this.reversed),
@@ -138,6 +142,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'pie',
 				data: data(this.value, this.reversed),
@@ -150,6 +155,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'doughnut',
 				data: data(this.value, this.reversed),
@@ -162,6 +168,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'radar',
 				data: data(this.value, this.reversed),
@@ -174,6 +181,7 @@ customElements.define('g-chart', class extends HTMLElement
 	{
 		load().then(Chart =>
 		{
+			this.#clear();
 			this.#chart = new Chart(this.shadowRoot.querySelector("canvas"), {
 				type: 'polarArea',
 				data: data(this.value, this.reversed),

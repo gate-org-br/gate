@@ -7,20 +7,14 @@ import gate.authenticator.Authenticator;
 import gate.base.Screen;
 import gate.catcher.Catcher;
 import gate.entity.User;
-import gate.error.AppException;
-import gate.error.AuthenticationException;
-import gate.error.ForbiddenException;
-import gate.error.HierarchyException;
-import gate.error.HttpException;
-import gate.error.UnauthorizedException;
+import gate.error.*;
+import gate.event.AppEvent;
 import gate.event.LoginEvent;
+import gate.event.LogoffEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
-import gate.http.BearerAuthorization;
-import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.Credentials;
-import gate.io.Developer;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
@@ -35,27 +29,28 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import org.slf4j.Logger;
 
 @MultipartConfig
 @WebServlet(value = "/Gate/*", asyncSupported = true)
 public class Gate extends HttpServlet
 {
-
+	public static final String SUBJECT_COOKIE = "subject";
 	static final String HTML = "/views/Gate.html";
-	private static final long serialVersionUID = 1L;
 
 	@Inject
 	Logger logger;
 
 	@Inject
-	Event<LoginEvent> event;
+	Event<AppEvent> event;
 
 	@Any
 	@Inject
@@ -74,10 +69,15 @@ public class Gate extends HttpServlet
 	Call mainAction;
 
 	@Inject
-	Developer developer;
+	ThreadContext threadContext;
 
 	@Inject
 	Credentials credentials;
+
+	@Inject
+	@Current
+	@RequestScoped
+	User user;
 
 	static
 	{
@@ -92,7 +92,6 @@ public class Gate extends HttpServlet
 
 		try
 		{
-			Request.set(request);
 			httpServletRequest.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
@@ -103,7 +102,7 @@ public class Gate extends HttpServlet
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION) && httpServletRequest.getPathInfo() != null)
 			{
 				List<String> path = Toolkit.parsePath(httpServletRequest.getPathInfo());
-				MODULE = path.size() >= 1 ? path.get(0) : null;
+				MODULE = !path.isEmpty() ? path.get(0) : null;
 				SCREEN = path.size() >= 2 ? path.get(1) : null;
 				ACTION = path.size() >= 3 ? path.get(2) : null;
 			}
@@ -115,9 +114,10 @@ public class Gate extends HttpServlet
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
 					&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
 			{
-				if (request.getSession(false) != null)
+				if (user.getId() != null)
 				{
-					request.getSession().invalidate();
+					event.fireAsync(new LogoffEvent(user));
+					response.addCookie(CookieFactory.delete(SUBJECT_COOKIE));
 					String logoutUri = authenticator.logoutUri(request);
 					if (logoutUri != null)
 					{
@@ -139,7 +139,6 @@ public class Gate extends HttpServlet
 					? mainAction
 					: Call.of(MODULE, SCREEN, ACTION);
 
-			User user;
 
 			if (authenticator.hasCredentials(request))
 			{
@@ -147,25 +146,13 @@ public class Gate extends HttpServlet
 				if (user != null)
 				{
 					event.fireAsync(new LoginEvent(user));
-					response.addCookie(CookieFactory.create(credentials.subject(user)));
+					response.addCookie(CookieFactory.create(SUBJECT_COOKIE, credentials.subject(user)));
 				}
-			} else
-			{
-				var auth = request.getAuthorization();
-				if (auth instanceof CookieAuthorization cookie)
-				{
-					user = credentials.subject(cookie.token());
-					response.addCookie(CookieFactory.create(credentials.subject(user)));
-				} else if (auth instanceof BearerAuthorization bearer)
-					user = credentials.subject(bearer.token());
-				else
-					user = developer.get().orElse(null);
+				request.setAttribute(User.class.getName(), user);
 			}
 
-			request.setAttribute(User.class.getName(), user);
-
 			if (!call.checkAccess(user))
-				if (user != null)
+				if (user != null && user.getId() != null)
 					throw new ForbiddenException();
 				else
 					throw new UnauthorizedException();
@@ -214,7 +201,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-			Method method)
+						 Method method)
 	{
 		try
 		{
@@ -236,7 +223,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
-			Screen screen, Method method)
+							  Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
@@ -246,15 +233,13 @@ public class Gate extends HttpServlet
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(0);
 
-		asyncContext.start(() ->
+		Runnable contextualTask = threadContext.contextualRunnable(() ->
 		{
-			Request.set(request);
-			Progress progress = null;
 			try (Writer writer = response.getWriter())
 			{
+				Progress progress = Progress.create(user, writer);
 				try
 				{
-					progress = Progress.create(user, writer);
 					Object result = screen.execute(method);
 					if (result != null)
 					{
@@ -267,12 +252,10 @@ public class Gate extends HttpServlet
 					progress.close();
 				} catch (AppException ex)
 				{
-					if (progress != null)
-						progress.abort(ex.getMessage());
+					progress.abort(ex.getMessage());
 				} catch (Throwable ex)
 				{
-					if (progress != null)
-						progress.abort(ex.getMessage());
+					progress.abort(ex.getMessage());
 					logger.error(ex.getMessage(), ex);
 				}
 			} catch (IOException ex)
@@ -283,5 +266,7 @@ public class Gate extends HttpServlet
 				asyncContext.complete();
 			}
 		});
+
+		asyncContext.start(contextualTask);
 	}
 }

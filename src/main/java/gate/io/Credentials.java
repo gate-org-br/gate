@@ -15,6 +15,7 @@ import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import java.security.KeyStore;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
@@ -42,7 +44,7 @@ public class Credentials
 	public String create(JsonObject claims)
 	{
 		return Jwts.builder()
-				.claims(claims.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())))
+				.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
 				.expiration(Date.from(Instant.now().plusSeconds(3600)))
 				.signWith(SECRET)
 				.compact();
@@ -87,7 +89,7 @@ public class Credentials
 					.get("sub", String.class)));
 		} catch (SignatureException ex)
 		{
-			return null;
+			throw new UnauthorizedException();
 		}
 	}
 

@@ -34,7 +34,7 @@ public class ThrowableCatcher implements Catcher
 
 		try (PrintWriter writer = response.getWriter())
 		{
-			if (user != null && user.isSuperUser())
+			if (user.isSuperUser())
 				exception.printStackTrace(writer);
 			else
 				writer.write("Erro de sistema: procure o suporte para informar o ocorrido");

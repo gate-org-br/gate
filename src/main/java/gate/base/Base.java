@@ -16,7 +16,8 @@ abstract class Base
 	 */
 	public User getUser()
 	{
-		return CDI.current().select(User.class, Current.LITERAL).get();
+		return CDI.current().select(User.class, Current.LITERAL).get()
+				.unwrap();
 	}
 
 	/**

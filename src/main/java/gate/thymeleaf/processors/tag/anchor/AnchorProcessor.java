@@ -1,8 +1,8 @@
 package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Call;
-import gate.Request;
 import gate.annotation.Asynchronous;
+import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
@@ -10,18 +10,27 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
 import gate.util.Parameters;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
 public abstract class AnchorProcessor extends TagModelProcessor
 {
+
+	@Inject
+	@Current
+	@RequestScoped
+	User user;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -37,14 +46,13 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-						e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
+						IAttribute::getValue, (a, b) -> a, Attributes::new));
 
 		Parameters parameters = new Parameters();
 		if (attributes.containsKey("arguments"))
-			Parameters.parse((String) attributes.remove("arguments")).entrySet()
-					.forEach(entry -> parameters.put(entry.getKey(),
-					expression.create().evaluate(entry.getValue().toString())));
+			Parameters.parse((String) attributes.remove("arguments")).forEach((key, value) -> parameters.put(key,
+					expression.create().evaluate(value.toString())));
 
 		attributes.entrySet().stream()
 				.filter(e -> e.getValue() != null)
@@ -84,7 +92,6 @@ public abstract class AnchorProcessor extends TagModelProcessor
 			call.getName().ifPresent(e -> attributes.put("title", e));
 		}
 
-		User user = Request.get().getUser().orElse(null);
 		process(context, model, handler, element, user, call, attributes, parameters);
 	}
 
@@ -93,8 +100,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		if (!attributes.containsKey("condition"))
 			return true;
 		String attribute = (String) attributes.remove("condition");
-		boolean condition = (boolean) expression.create().evaluate(attribute);
-		return condition;
+		return (boolean) expression.create().evaluate(attribute);
 	}
 
 	protected String method(Attributes attributes)
@@ -109,7 +115,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 	protected Optional<String> target(Call call, Attributes attributes)
 	{
 		if (!attributes.containsKey("target"))
-			Optional.empty();
+			return Optional.empty();
 
 		String target = (String) attributes.remove("target");
 		target = (String) expression.create().evaluate(target);
@@ -121,6 +127,6 @@ public abstract class AnchorProcessor extends TagModelProcessor
 	}
 
 	protected abstract void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-			IProcessableElementTag element,
-			User user, Call call, Attributes attributes, Parameters parameters);
+									IProcessableElementTag element,
+									User user, Call call, Attributes attributes, Parameters parameters);
 }

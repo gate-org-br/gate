@@ -2,31 +2,17 @@ package gate.http;
 
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.error.AppError;
-import gate.error.AuthenticationException;
-import gate.error.ConversionException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.*;
 import gate.policonverter.Policonverter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.Part;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
+
+import java.io.*;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,36 +21,40 @@ import java.util.stream.Stream;
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
 
-	private Collection<Part> parts;
 	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
 	private static final Pattern BASIC_AUTHORIZATION = Pattern.compile("(.*)[:](.*)");
 
 	public ScreenServletRequest(HttpServletRequest request)
 	{
 		super(request);
+	}
 
+	public Collection<Part> parts()
+	{
+		String contentType = getContentType();
 		try
 		{
-			parts = getParts();
-		} catch (ServletException
-				| IOException
-				| RuntimeException ex)
+			return contentType != null
+					&& contentType.toLowerCase().startsWith("multipart/") ? getParts()
+					: Collections.emptyList();
+		} catch (IOException | ServletException e)
 		{
-			parts = Collections.emptyList();
+			throw new RuntimeException(e);
 		}
 	}
 
+
 	public boolean isSet(String name)
 	{
-		return getParameter(name) != null || parts.stream().anyMatch(e -> e.getName().equals(name));
+		return getParameter(name) != null || parts().stream().anyMatch(e -> e.getName().equals(name));
 	}
 
 	public List<String> getParameterList()
 	{
 		Set<String> parameters = new HashSet<>();
-		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements();)
+		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements(); )
 			parameters.add(enumeration.nextElement());
-		parts.stream().map(Part::getName).collect(Collectors.toCollection(() -> parameters));
+		parts().stream().map(Part::getName).collect(Collectors.toCollection(() -> parameters));
 		return new ArrayList<>(parameters);
 	}
 
@@ -76,9 +66,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			if (strings != null)
 				return Policonverter.getPoliconverter(type).getObject(elementType, strings);
 
-			if (parts.stream().anyMatch(e -> e.getName().equals(name)))
+			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return Policonverter.getPoliconverter(type).getObject(elementType,
-						parts.stream().filter(e -> e.getName().equals(name)).toArray(Part[]::new));
+						parts().stream().filter(e -> e.getName().equals(name)).toArray(Part[]::new));
 			return null;
 		} catch (ConversionException e)
 		{
@@ -89,25 +79,19 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	@SuppressWarnings("unchecked")
 	public <T> T getParameter(Class<T> type, String name) throws ConversionException
 	{
-		try
-		{
-			Object object = getParameterValue(name);
-			if (object instanceof String)
-				return (T) Converter.getConverter(type).ofString(type, (String) object);
-			if (object instanceof Part)
-				return (T) Converter.getConverter(type).ofPart(type, (Part) object);
-			return null;
-		} catch (ConversionException e)
-		{
-			throw e;
-		}
+		Object object = getParameterValue(name);
+		if (object instanceof String)
+			return (T) Converter.getConverter(type).ofString(type, (String) object);
+		if (object instanceof Part)
+			return (T) Converter.getConverter(type).ofPart(type, (Part) object);
+		return null;
 	}
 
 	public Object getParameterValue(String name)
 	{
 		String string = getParameter(name);
 		return string != null ? string
-				: parts.stream().filter(e -> e.getName().equals(name)).findAny().orElse(null);
+				: parts().stream().filter(e -> e.getName().equals(name)).findAny().orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -119,13 +103,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			if (string != null)
 				return (T) Converter.getConverter(type).ofString(type,
 						URLDecoder.decode(getParameter(name), charset));
-			if (parts.stream().anyMatch(e -> e.getName().equals(name)))
+			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return (T) Converter.getConverter(type).ofPart(type,
-						parts.stream().filter(e -> e.getName().equals(name)).findFirst().get());
+						parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
 			return null;
-		} catch (ConversionException e)
-		{
-			throw e;
 		} catch (UnsupportedEncodingException e)
 		{
 			throw new AppError(e);
@@ -135,7 +116,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public String getBody()
 	{
 		try (BufferedReader reader = this.getReader();
-				StringWriter string = new StringWriter())
+			 StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -151,6 +132,17 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public <T> T getBody(Class<T> type) throws ConversionException
 	{
 		return (T) Converter.getConverter(type).ofString(type, ScreenServletRequest.this.getBody());
+	}
+
+	public Optional<String> getCookieValue(String name)
+	{
+		return Optional.ofNullable(getCookies())
+				.stream()
+				.flatMap(Stream::of)
+				.filter(c -> name.equals(c.getName()))
+				.findFirst()
+				.map(Cookie::getValue)
+				.filter(e -> !e.isBlank());
 	}
 
 	public Authorization getAuthorization() throws AuthenticationException
@@ -171,11 +163,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				return new BasicAuthorization(username, password);
 			}
 
-			return Stream.of(getCookies())
-					.filter(e -> e.getName().equals("subject"))
-					.filter(e -> e.getValue() != null && !e.getValue().isBlank())
-					.findAny()
-					.map(e -> new CookieAuthorization(e.getValue()))
+			return getCookieValue("subject")
+					.map(CookieAuthorization::new)
 					.orElse(null);
 		}
 
@@ -186,8 +175,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-			case "BEARER" ->
-				new BearerAuthorization(authorization.group(2));
+			case "BEARER" -> new BearerAuthorization(authorization.group(2));
 			case "BASIC" ->
 			{
 				String value = authorization.group(2);
@@ -197,8 +185,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 					throw new AuthenticationException("Invalid basic authorization header");
 				yield new BasicAuthorization(basic.group(1), basic.group(2));
 			}
-			default ->
-				throw new AuthenticationException("Authorization type not supported: " + type);
+			default -> throw new AuthenticationException("Authorization type not supported: " + type);
 		};
 
 	}
@@ -208,8 +195,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		setAttribute(User.class.getName(), user);
 	}
 
-	public Optional<User> getUser()
+	public User getUser()
 	{
-		return Optional.ofNullable((User) getAttribute(User.class.getName()));
+		return (User) getAttribute(User.class.getName());
 	}
 }

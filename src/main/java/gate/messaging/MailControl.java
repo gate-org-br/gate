@@ -30,7 +30,7 @@ class MailControl extends Control
 		}
 	}
 
-	public Optional<Server> server()
+	public Server server()
 	{
 		try (Link link = linkSource.getLink();
 			MailDao dao = new MailDao(link))

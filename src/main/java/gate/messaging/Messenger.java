@@ -20,9 +20,11 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.servlet.ServletContextListener;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
+
 import org.slf4j.Logger;
 
 @ApplicationScoped
@@ -72,8 +74,8 @@ public class Messenger implements ServletContextListener
 	}
 
 	public void post(String sender,
-			String receiver,
-			MimeMail<?> message)
+					 String receiver,
+					 MimeMail<?> message)
 			throws MessageException
 	{
 		try
@@ -102,8 +104,9 @@ public class Messenger implements ServletContextListener
 
 	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		var server = control.server().orElseThrow(() -> new MessageException("SMPT server not configured"));
-		post(server.getUsername(), receiver, mail);
+		Server server = control.server();
+		if (server != null)
+			post(server.getUsername(), receiver, mail);
 	}
 
 	public List<Mail> search() throws MessageException
@@ -115,8 +118,9 @@ public class Messenger implements ServletContextListener
 	{
 		try
 		{
-			var server = control.server().orElseThrow(() -> new MessageException("SMPT server not configured"));
-			send(server, sender, receiver, mail);
+			Server server = control.server();
+			if (server != null)
+				send(server, sender, receiver, mail);
 		} catch (MessagingException ex)
 		{
 			throw new MessageException("Error trying to send mail message", ex);

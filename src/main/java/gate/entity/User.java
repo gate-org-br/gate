@@ -15,6 +15,8 @@ import gate.type.ID;
 import gate.type.Phone;
 import gate.type.Sex;
 import gate.type.mime.MimeData;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +40,7 @@ import java.util.stream.Stream;
 public class User implements Serializable
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Required
@@ -125,6 +128,7 @@ public class User implements Serializable
 	private String code;
 
 	private List<Func> funcs;
+
 
 	public Collection<Auth> getAuths()
 	{
@@ -256,7 +260,7 @@ public class User implements Serializable
 	{
 
 		return obj instanceof User
-			&& Objects.equals(this.getId(), ((User) obj).getId());
+				&& Objects.equals(this.getId(), ((User) obj).getId());
 	}
 
 	@Override
@@ -371,8 +375,8 @@ public class User implements Serializable
 	public Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream(),
-			Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream()),
-				getRole().computedAuthStream())) : Stream.empty();
+				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream()),
+						getRole().computedAuthStream())) : Stream.empty();
 	}
 
 	public List<Auth> getComputedAuths()
@@ -388,17 +392,22 @@ public class User implements Serializable
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-			.noneMatch(e -> e.blocked(module, screen, action))
-			&& computedAuthStream()
+				.noneMatch(e -> e.blocked(module, screen, action))
+				&& computedAuthStream()
 				.anyMatch(e -> e.granted(module, screen, action));
 	}
 
 	public boolean checkSpecificAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-			.noneMatch(e -> e.blocked(module, screen, action))
-			&& computedAuthStream()
+				.noneMatch(e -> e.blocked(module, screen, action))
+				&& computedAuthStream()
 				.anyMatch(e -> e.equals(module, screen, action));
+	}
+
+	public User unwrap()
+	{
+		return this;
 	}
 
 	public static User valueOf(String string)

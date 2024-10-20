@@ -8,6 +8,7 @@ import gate.sql.Cursor;
 import gate.sql.Link;
 import gate.sql.fetcher.Fetcher;
 import gate.type.ID;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ class GateDao extends gate.base.Dao
 
 	public User select(ID id) throws InvalidUsernameException
 	{
-		return (User) getLink().from(getClass().getResource("select(ID).sql"))
+		return getLink().from(getClass().getResource("select(ID).sql"))
 				.parameters(id, id, id)
 				.fetch(new UzerFetcher())
 				.orElseThrow(InvalidUsernameException::new);
@@ -30,7 +31,7 @@ class GateDao extends gate.base.Dao
 
 	public User select(String username) throws InvalidUsernameException
 	{
-		return (User) getLink().from(getClass().getResource("select(String).sql"))
+		return getLink().from(getClass().getResource("select(String).sql"))
 				.parameters(username, username, username, username, username, username)
 				.fetch(new UzerFetcher())
 				.orElseThrow(InvalidUsernameException::new);
