@@ -117,7 +117,7 @@ public class Toolkit
 	}
 
 	@SafeVarargs
-	public static <T> T coalesce( T... elements)
+	public static <T> T coalesce(T... elements)
 	{
 		return Stream.of(elements).filter(Objects::nonNull).findFirst().orElse(null);
 	}

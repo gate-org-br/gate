@@ -53,7 +53,7 @@ public class EntityConverter extends ObjectConverter
 
 			return null;
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-			| InvocationTargetException | ConversionException | RuntimeException e)
+			| InvocationTargetException | RuntimeException e)
 		{
 			throw new ConversionException(String.format("%s não é uma entidade válida.", string));
 		}

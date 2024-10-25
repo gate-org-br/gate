@@ -1,9 +1,9 @@
 package gate.sql.statement;
 
 import gate.error.ConstraintViolationException;
-import gate.error.UncheckedConstraintViolationException;
 import gate.sql.Command;
 import gate.sql.Link;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +49,7 @@ class BasicSentence implements Sentence
 	@Override
 	public Sentence print()
 	{
-		System.out.println(toString());
+		System.out.println(this);
 		return this;
 	}
 
@@ -77,7 +77,7 @@ class BasicSentence implements Sentence
 		@Override
 		public Extractor<T> print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -100,7 +100,7 @@ class BasicSentence implements Sentence
 			@Override
 			public SQL print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(extractors);
 				return this;
 			}
@@ -143,18 +143,9 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute();
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute();
 						});
-					} catch (UncheckedConstraintViolationException ex)
-					{
-						throw ex.getCause();
 					}
 				}
 
@@ -178,14 +169,8 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute(type).ifPresent(e -> consumer.accept(value, e));
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute(type).ifPresent(e -> consumer.accept(value, e));
 						});
 					}
 				}
@@ -212,15 +197,9 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute(type);
-								consumer.accept(value, command.getGeneratedKeys(type));
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute(type);
+							consumer.accept(value, command.getGeneratedKeys(type));
 						});
 					}
 				}
@@ -229,13 +208,13 @@ class BasicSentence implements Sentence
 				public Sentence.Extractor.Compiled.Connected<T> observe(Consumer<T> consumer)
 				{
 					return consumer != null
-						? new Observed(consumer) : this;
+							? new Observed(consumer) : this;
 				}
 
 				@Override
 				public Connected print()
 				{
-					System.out.println(toString());
+					System.out.println(this);
 					System.out.println(extractors);
 					return this;
 				}
@@ -279,19 +258,10 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute();
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute();
+								observer.accept(value);
 							});
-						} catch (UncheckedConstraintViolationException ex)
-						{
-							throw ex.getCause();
 						}
 					}
 
@@ -316,15 +286,9 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute(type).ifPresent(e -> consumer.accept(value, e));
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type).ifPresent(e -> consumer.accept(value, e));
+								observer.accept(value);
 							});
 						}
 					}
@@ -352,16 +316,10 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute(type);
-									consumer.accept(value, command.getGeneratedKeys(type));
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type);
+								consumer.accept(value, command.getGeneratedKeys(type));
+								observer.accept(value);
 							});
 						}
 					}
@@ -419,7 +377,7 @@ class BasicSentence implements Sentence
 		@Override
 		public Sentence.Connected print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -511,7 +469,7 @@ class BasicSentence implements Sentence
 				try (Command command = link.createCommand(sql))
 				{
 					return batch.isEmpty() ? Optional.empty()
-						: command.setParameters(batch.get(0)).execute(type);
+							: command.setParameters(batch.get(0)).execute(type);
 				}
 			}
 
@@ -542,7 +500,7 @@ class BasicSentence implements Sentence
 			public Sentence.Connected.Compiled observe(Consumer<List<?>> consumer)
 			{
 				return consumer != null
-					? new Observed(consumer) : this;
+						? new Observed(consumer) : this;
 			}
 
 			@Override
@@ -554,7 +512,7 @@ class BasicSentence implements Sentence
 			@Override
 			public Sentence.Connected.Compiled print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(batch);
 				return this;
 			}
@@ -682,7 +640,7 @@ class BasicSentence implements Sentence
 			@Override
 			public Extractor<T> print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				return this;
 			}
 
@@ -724,18 +682,9 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute();
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute();
 						});
-					} catch (UncheckedConstraintViolationException ex)
-					{
-						throw ex.getCause();
 					}
 				}
 
@@ -759,14 +708,8 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute(type).ifPresent(e -> consumer.accept(value, e));
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute(type).ifPresent(e -> consumer.accept(value, e));
 						});
 					}
 				}
@@ -793,15 +736,9 @@ class BasicSentence implements Sentence
 					{
 						values.forEach(value ->
 						{
-							try
-							{
-								extractors.forEach(e -> command.setParameter(e.apply(value)));
-								command.execute(type);
-								consumer.accept(value, command.getGeneratedKeys(type));
-							} catch (ConstraintViolationException ex)
-							{
-								throw new UncheckedConstraintViolationException(ex);
-							}
+							extractors.forEach(e -> command.setParameter(e.apply(value)));
+							command.execute(type);
+							consumer.accept(value, command.getGeneratedKeys(type));
 						});
 					}
 				}
@@ -810,13 +747,13 @@ class BasicSentence implements Sentence
 				public Sentence.Connected.Extractor.Compiled<T> observe(Consumer<T> consumer)
 				{
 					return consumer != null
-						? new Observed(consumer) : this;
+							? new Observed(consumer) : this;
 				}
 
 				@Override
 				public Compiled print()
 				{
-					System.out.println(toString());
+					System.out.println(this);
 					System.out.println(extractors);
 					return this;
 				}
@@ -860,19 +797,10 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute();
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute();
+								observer.accept(value);
 							});
-						} catch (UncheckedConstraintViolationException ex)
-						{
-							throw ex.getCause();
 						}
 					}
 
@@ -897,15 +825,9 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute(type).ifPresent(e -> consumer.accept(value, e));
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type).ifPresent(e -> consumer.accept(value, e));
+								observer.accept(value);
 							});
 						}
 					}
@@ -933,16 +855,10 @@ class BasicSentence implements Sentence
 						{
 							values.forEach(value ->
 							{
-								try
-								{
-									extractors.forEach(e -> command.setParameter(e.apply(value)));
-									command.execute(type);
-									consumer.accept(value, command.getGeneratedKeys(type));
-									observer.accept(value);
-								} catch (ConstraintViolationException ex)
-								{
-									throw new UncheckedConstraintViolationException(ex);
-								}
+								extractors.forEach(e -> command.setParameter(e.apply(value)));
+								command.execute(type);
+								consumer.accept(value, command.getGeneratedKeys(type));
+								observer.accept(value);
 							});
 						}
 					}
@@ -995,7 +911,7 @@ class BasicSentence implements Sentence
 		@Override
 		public Sentence.Compiled print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			System.out.println(batch);
 			return this;
 		}
@@ -1034,7 +950,7 @@ class BasicSentence implements Sentence
 				try (Command command = link.createCommand(sql))
 				{
 					return batch.isEmpty() ? Optional.empty()
-						: command.setParameters(batch.get(0)).execute(type);
+							: command.setParameters(batch.get(0)).execute(type);
 				}
 			}
 
@@ -1077,7 +993,7 @@ class BasicSentence implements Sentence
 			public Sentence.Compiled.Connected observe(Consumer<List<Object>> consumer)
 			{
 				return consumer != null
-					? new Observed(consumer) : this;
+						? new Observed(consumer) : this;
 			}
 
 			@Override
@@ -1089,7 +1005,7 @@ class BasicSentence implements Sentence
 			@Override
 			public Sentence.Compiled.Connected print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(batch);
 				return this;
 			}

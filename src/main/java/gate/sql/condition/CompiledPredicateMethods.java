@@ -87,7 +87,7 @@ interface CompiledPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " = (" + subquery.toString() + ")";
+				return getClause() + " = (" + subquery + ")";
 			}
 		};
 	}

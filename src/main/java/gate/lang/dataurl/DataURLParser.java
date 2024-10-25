@@ -2,6 +2,7 @@ package gate.lang.dataurl;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -59,21 +60,19 @@ public class DataURLParser implements AutoCloseable
 					break;
 				}
 
-				if (!(current instanceof String))
+				if (!(current instanceof String name))
 					throw new ParseException("expected parameter and found " + current, 0);
-				String name = (String) current;
 				current = scanner.scan();
 
 				if (!Character.valueOf('=').equals(current))
 					throw new ParseException("expected = and found " + current, 0);
 				current = scanner.scan();
 
-				if (!(current instanceof String))
+				if (!(current instanceof String value))
 					throw new ParseException("expected value and found " + current, 0);
-				String value = (String) current;
 				current = scanner.scan();
 
-				parameters.put(name, URLDecoder.decode(value, "UTF-8"));
+				parameters.put(name, URLDecoder.decode(value, StandardCharsets.UTF_8));
 			}
 		}
 

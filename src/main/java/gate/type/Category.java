@@ -7,8 +7,8 @@ import java.util.Objects;
 public class Category implements Comparable<Category>
 {
 
-	private Number value;
-	private Comparable<?> name;
+	private final Number value;
+	private final Comparable<?> name;
 	private static final BigDecimal ONE_HUNDRED = new BigDecimal(100);
 
 	public Category(Comparable<?> name, Number value)
@@ -36,7 +36,7 @@ public class Category implements Comparable<Category>
 	{
 		if (BigDecimal.ZERO.compareTo(total) == 0)
 			return BigDecimal.ZERO;
-		return new BigDecimal(this.getValue().doubleValue()).divide(total, 4, RoundingMode.DOWN)
+		return BigDecimal.valueOf(this.getValue().doubleValue()).divide(total, 4, RoundingMode.DOWN)
 				.multiply(ONE_HUNDRED);
 	}
 
@@ -45,7 +45,7 @@ public class Category implements Comparable<Category>
 	public int compareTo(Category category)
 	{
 		return ((Comparable<Object>) category.getValue())
-				.compareTo((Comparable<Object>) getValue());
+				.compareTo(getValue());
 	}
 
 	@Override

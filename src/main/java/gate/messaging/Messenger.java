@@ -54,14 +54,14 @@ public class Messenger implements ServletContextListener
 					{
 						send(mail.getSender(), mail.getReceiver(), mail.getMessage());
 						control.delete(mail);
-					} catch (AppException | RuntimeException ex)
+					} catch (RuntimeException ex)
 					{
 						logger.warn(ex.getMessage(), ex);
 						mail.setAttempts(mail.getAttempts() + 1);
 						control.update(mail);
 					}
 				}
-			} catch (AppException | RuntimeException ex)
+			} catch (RuntimeException ex)
 			{
 				logger.error(ex.getMessage(), ex);
 			}

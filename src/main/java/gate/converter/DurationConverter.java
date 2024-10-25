@@ -96,7 +96,7 @@ public class DurationConverter implements Converter
 			int m = matcher.group(6) != null ? Integer.parseInt(matcher.group(6)) : 0;
 			int s = matcher.group(8) != null ? Integer.parseInt(matcher.group(8)) : 0;
 
-			return Duration.ofSeconds(d * 24 * 60 * 60 + h * 60 * 60 + m * 60 + s);
+			return Duration.ofSeconds((long) d * 24 * 60 * 60 + (long) h * 60 * 60 + m * 60L + s);
 		}
 
 		matcher = ALTERNATIVE.matcher(string);
@@ -106,7 +106,7 @@ public class DurationConverter implements Converter
 		int h = matcher.group(1) != null ? Integer.parseInt(matcher.group(1)) : 0;
 		int m = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
 		int s = matcher.group(4) != null ? Integer.parseInt(matcher.group(4)) : 0;
-		return Duration.ofSeconds(h * 60 * 60 + m * 60 + s);
+		return Duration.ofSeconds((long) h * 60 * 60 + m * 60L + s);
 	}
 
 	@Override

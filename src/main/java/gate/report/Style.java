@@ -238,9 +238,8 @@ public final class Style
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof Style)
+		if (obj instanceof Style style)
 		{
-			Style style = (Style) obj;
 			return style.getFontSize() == fontSize
 				&& style.getTextAlign() == textAlign
 				&& style.getColor() == color

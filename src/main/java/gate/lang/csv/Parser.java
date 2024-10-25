@@ -15,7 +15,7 @@ public interface Parser extends AutoCloseable, Iterable<Row>
 	 * an empty Optional if there are no more rows to be read
 	 * @throws java.io.IOException If an I/O error occurs
 	 */
-	public Optional<Row> parseLine() throws IOException;
+	Optional<Row> parseLine() throws IOException;
 
 	/**
 	 * Try to skip a number of lines from the previously specified CSV
@@ -27,19 +27,19 @@ public interface Parser extends AutoCloseable, Iterable<Row>
 	 *
 	 * @throws java.io.IOException If an I/O error occurs
 	 */
-	public long skip(long lines) throws IOException;
+	long skip(long lines) throws IOException;
 
 	/**
 	 * Returns a sequential Stream with this parser as its source.
 	 *
 	 * @return a sequential Stream over the elements in this parser
 	 */
-	public Stream<Row> stream();
+	Stream<Row> stream();
 	
 	/**
 	 * Returns the number of processed lines.
 	 *
 	 * @return the number of processed lines
 	 */
-	public long processed();
+	long processed();
 }

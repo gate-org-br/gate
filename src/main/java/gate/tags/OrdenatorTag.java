@@ -37,16 +37,16 @@ public class OrdenatorTag extends AttributeTag
 			if (property.equals(orderBy))
 			{
 				queryString.put("orderBy", desc);
-				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("formaction", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<button %s>&uarr;", getAttributes().toString()));
 			} else if (desc.equals(orderBy))
 			{
-				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("formaction", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<button %s>&darr;", getAttributes().toString()));
 			} else
 			{
 				queryString.put("orderBy", property);
-				getAttributes().put("formaction", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("formaction", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<button %s>", getAttributes().toString()));
 			}
 			getJspBody().invoke(null);
@@ -56,16 +56,16 @@ public class OrdenatorTag extends AttributeTag
 			if (property.equals(orderBy))
 			{
 				queryString.put("orderBy", desc);
-				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("href", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<a %s>&uarr;", getAttributes().toString()));
 			} else if (desc.equals(orderBy))
 			{
-				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("href", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<a %s>&darr;", getAttributes().toString()));
 			} else
 			{
 				queryString.put("orderBy", property);
-				getAttributes().put("href", String.format("Gate?%s", queryString.toString()));
+				getAttributes().put("href", String.format("Gate?%s", queryString));
 				getJspContext().getOut().write(String.format("<a %s>", getAttributes().toString()));
 			}
 			getJspBody().invoke(null);

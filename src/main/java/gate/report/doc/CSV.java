@@ -11,10 +11,12 @@ import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
 import gate.util.Toolkit;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
@@ -56,7 +58,7 @@ public class CSV extends Doc
 	@SuppressWarnings("unchecked")
 	public void print(OutputStream os)
 	{
-		try (PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
+		try (PrintWriter writer = new PrintWriter(os, true, StandardCharsets.UTF_8))
 		{
 			for (ReportElement element : getReport().getElements())
 				if (element instanceof Grid grid)
@@ -70,34 +72,27 @@ public class CSV extends Doc
 	private void print(PrintWriter writer, Grid<Object> grid, Object data)
 			throws ConversionException
 	{
-		try
-		{
-			CSVFormatter formatter = CSVFormatter.of(writer);
+		CSVFormatter formatter = CSVFormatter.of(writer);
 
-			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
-				formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
-						.map(Converter::toText).collect(Collectors.toList()));
+		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
+			formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
+					.map(Converter::toText).collect(Collectors.toList()));
 
-			for (Object obj : Toolkit.iterable(data))
-				if (obj != null)
-				{
+		for (Object obj : Toolkit.iterable(data))
+			if (obj != null)
+			{
 
-					formatter.writeLine(grid.getColumns().stream()
-							.map(e -> Converter.toText(e.getBody().apply(obj)))
-							.collect(Collectors.toList()));
+				formatter.writeLine(grid.getColumns().stream()
+						.map(e -> Converter.toText(e.getBody().apply(obj)))
+						.collect(Collectors.toList()));
 
-					if (grid.getChildren() != null)
-						for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
-							print(writer, grid, child);
-				}
+				if (grid.getChildren() != null)
+					for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
+						print(writer, grid, child);
+			}
 
-			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
-				formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
-						.map(Converter::toText).collect(Collectors.toList()));
-
-		} catch (IOException ex)
-		{
-			throw new ConversionException(ex.getMessage(), ex);
-		}
+		if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
+			formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
+					.map(Converter::toText).collect(Collectors.toList()));
 	}
 }

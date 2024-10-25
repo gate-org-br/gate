@@ -55,22 +55,20 @@ public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument {
 					return value.charAt(2) == '.'
 							&& value.charAt(6) == '.'
 							&& value.charAt(10) == '/'
-							&& value.charAt(15) == '-'
-									? validate(value.charAt(0),
-											value.charAt(1),
-											value.charAt(3),
-											value.charAt(4),
-											value.charAt(5),
-											value.charAt(7),
-											value.charAt(8),
-											value.charAt(9),
-											value.charAt(11),
-											value.charAt(12),
-											value.charAt(13),
-											value.charAt(14),
-											value.charAt(16),
-											value.charAt(17))
-									: false;
+							&& value.charAt(15) == '-' && validate(value.charAt(0),
+							value.charAt(1),
+							value.charAt(3),
+							value.charAt(4),
+							value.charAt(5),
+							value.charAt(7),
+							value.charAt(8),
+							value.charAt(9),
+							value.charAt(11),
+							value.charAt(12),
+							value.charAt(13),
+							value.charAt(14),
+							value.charAt(16),
+							value.charAt(17));
 				case 14:
 					return validate(value.charAt(0),
 							value.charAt(1),
@@ -265,7 +263,7 @@ public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument {
 							+ "/" + value.substring(8, 12)
 							+ "-" + value.substring(12);
 				case 13:
-					return "0" + value.substring(0, 1)
+					return "0" + value.charAt(0)
 							+ "." + value.substring(1, 4)
 							+ "." + value.substring(4, 7)
 							+ "/" + value.substring(7, 11)
@@ -285,7 +283,7 @@ public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument {
 							+ "-" + value.substring(9);
 				case 10:
 					return "00.00"
-							+ value.substring(0, 1)
+							+ value.charAt(0)
 							+ "." + value.substring(1, 4)
 							+ "/" + value.substring(4, 8)
 							+ "-" + value.substring(8);
@@ -301,7 +299,7 @@ public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument {
 							+ "-" + value.substring(6);
 				case 7:
 					return "00.000.00"
-							+ value.substring(0, 1)
+							+ value.charAt(0)
 							+ "/" + value.substring(1, 5)
 							+ "-" + value.substring(5);
 				case 6:
@@ -318,7 +316,7 @@ public class CNPJ implements Serializable, Comparable<CNPJ>, BrasilianDocument {
 							+ "-" + value.substring(2);
 				case 3:
 					return "00.000.000/000"
-							+ value.substring(0, 1)
+							+ value.charAt(0)
 							+ "-" + value.substring(1);
 				case 2:
 					return "00.000.000/0000-" + value;

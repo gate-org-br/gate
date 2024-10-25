@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 public interface Converter
 {
 
-	public static String SEPARATOR = "__";
+	String SEPARATOR = "__";
 
 	default List<String> getSufixes()
 	{
@@ -607,7 +607,7 @@ public interface Converter
 		return type.cast(Converter.getConverter(type).ofPart(type, part));
 	}
 
-	public static Converter getConverter(Parameter parameter)
+	static Converter getConverter(Parameter parameter)
 	{
 		try
 		{

@@ -37,7 +37,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
 
-		if (min.compareTo(max) > 0)
+		if (min.isAfter(max))
 			throw new IllegalArgumentException("min must be <= max");
 
 		this.min = min;
@@ -116,7 +116,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	@Override
 	public int hashCode()
 	{
-		return (int) (min.hashCode() + max.hashCode());
+		return min.hashCode() + max.hashCode();
 	}
 
 	@Override

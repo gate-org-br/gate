@@ -5,11 +5,8 @@ import gate.language.Language;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
 import gate.util.Toolkit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 import java.util.function.Function;
 
 /**

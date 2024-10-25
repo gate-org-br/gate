@@ -4,6 +4,6 @@ package gate.stream;
 public interface CheckedRunnable
 {
 
-	public void run() throws Exception;
+	void run() throws Exception;
 
 }

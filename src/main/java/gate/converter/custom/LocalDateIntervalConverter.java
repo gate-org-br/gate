@@ -75,7 +75,7 @@ public class LocalDateIntervalConverter implements Converter
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? ((LocalDateInterval) object).toString() : "";
+		return object != null ? object.toString() : "";
 	}
 
 	@Override

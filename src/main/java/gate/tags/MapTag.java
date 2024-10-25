@@ -23,7 +23,7 @@ public class MapTag extends AttributeTag
 	{
 		super.doTag();
 
-		JspWriter out = ((PageContext) getJspContext()).getOut();
+		JspWriter out = getJspContext().getOut();
 
 		out.print("<dl " + getAttributes() + ">");
 

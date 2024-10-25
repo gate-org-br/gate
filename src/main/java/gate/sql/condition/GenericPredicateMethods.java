@@ -72,7 +72,7 @@ interface GenericPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " <> (" + subquery.toString() + ")";
+				return getClause() + " <> (" + subquery + ")";
 			}
 		};
 	}
@@ -110,7 +110,7 @@ interface GenericPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " < (" + subquery.toString() + ")";
+				return getClause() + " < (" + subquery + ")";
 			}
 		};
 	}
@@ -148,7 +148,7 @@ interface GenericPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " <= (" + subquery.toString() + ")";
+				return getClause() + " <= (" + subquery + ")";
 			}
 		};
 	}
@@ -186,7 +186,7 @@ interface GenericPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " > (" + subquery.toString() + ")";
+				return getClause() + " > (" + subquery + ")";
 			}
 		};
 	}
@@ -224,7 +224,7 @@ interface GenericPredicateMethods extends Clause
 			@Override
 			public String toString()
 			{
-				return getClause() + " >= (" + subquery.toString() + ")";
+				return getClause() + " >= (" + subquery + ")";
 			}
 		};
 	}

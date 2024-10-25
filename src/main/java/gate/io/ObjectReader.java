@@ -44,8 +44,8 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 	{
 		String string = StringReader.getInstance().read(is);
 		if ("application/json".equalsIgnoreCase(contentType))
-			return Optional.ofNullable((T) Converter.fromJson(type, elementType, string));
-		return Optional.ofNullable((T) Converter.fromString(type, string));
+			return Optional.ofNullable(Converter.fromJson(type, elementType, string));
+		return Optional.ofNullable(Converter.fromString(type, string));
 	}
 
 	@Override

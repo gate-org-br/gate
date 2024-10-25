@@ -3,17 +3,15 @@ package gate.sql;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
+import gate.lang.property.PropertyGraph;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -241,9 +239,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the current column value as an object of the specified type and moves the column index
 	 * to the next column.
 	 *
-	 *
 	 * @param type type of the object to be read
-	 *
 	 * @return the value of the current column as an object of the specified type
 	 */
 	public <T> T getCurrentValue(Class<T> type)
@@ -280,7 +276,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public Object getValue(int columnIndex)
@@ -300,7 +295,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java byte.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public byte getByteValue(int columnIndex)
@@ -334,7 +328,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java short.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public short getShortValue(int columnIndex)
@@ -368,7 +361,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java int.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public int getIntValue(int columnIndex)
@@ -402,7 +394,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java long.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public long getLongValue(int columnIndex)
@@ -436,7 +427,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java float.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public float getFloatValue(int columnIndex)
@@ -470,7 +460,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java double.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public double getDoubleValue(int columnIndex)
@@ -504,7 +493,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java boolean.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public boolean getBooleanValue(int columnIndex)
@@ -538,7 +526,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java char.
 	 *
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public char getCharValue(int columnIndex)
@@ -571,10 +558,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 *
-	 * @param type type of the object to be read
+	 * @param type        type of the object to be read
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	@SuppressWarnings("unchecked")
@@ -593,12 +578,11 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * @param <T> type of the object to be read
-	 * @param <E> type of the object elements
-	 * @param type type of the object to be read
+	 * @param <T>         type of the object to be read
+	 * @param <E>         type of the object elements
+	 * @param type        type of the object to be read
 	 * @param elementType type of the object elements
 	 * @param columnIndex index of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	@SuppressWarnings("unchecked")
@@ -617,10 +601,8 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 *
-	 * @param type type of the object to be read
+	 * @param type       type of the object to be read
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	@SuppressWarnings("unchecked")
@@ -639,12 +621,11 @@ public class Cursor implements AutoCloseable, Fetchable
 	/**
 	 * Reads the specified column value as an object of the specified type.
 	 *
-	 * @param <T> type of the object to be read
-	 * @param <E> type of the object elements
-	 * @param type type of the object to be read
+	 * @param <T>         type of the object to be read
+	 * @param <E>         type of the object elements
+	 * @param type        type of the object to be read
 	 * @param elementType type of the object elements
-	 * @param columnName name of the column to be read
-	 *
+	 * @param columnName  name of the column to be read
 	 * @return the value of the specified column
 	 */
 	@SuppressWarnings("unchecked")
@@ -664,7 +645,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java byte.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public byte getByteValue(String columnName)
@@ -679,10 +659,26 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
+	 * Reads the specified column value as a java byte.
+	 *
+	 * @param columnName name of the column to be read
+	 * @return the value of the specified column
+	 */
+	public char getCharValue(String columnName)
+	{
+		try
+		{
+			return (char) rs.getInt(columnName);
+		} catch (SQLException ex)
+		{
+			throw new UnsupportedOperationException(ex);
+		}
+	}
+
+	/**
 	 * Reads the specified column value as a java short.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public short getShortValue(String columnName)
@@ -700,7 +696,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java integer.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public int getIntValue(String columnName)
@@ -718,7 +713,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java long.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public long getLongValue(String columnName)
@@ -736,7 +730,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java float.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public float getFloatValue(String columnName)
@@ -754,7 +747,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java double.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public double getDoubleValue(String columnName)
@@ -772,7 +764,6 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * Reads the specified column value as a java boolean.
 	 *
 	 * @param columnName name of the column to be read
-	 *
 	 * @return the value of the specified column
 	 */
 	public boolean getBooleanValue(String columnName)
@@ -891,63 +882,64 @@ public class Cursor implements AutoCloseable, Fetchable
 	}
 
 	/**
-	 * Reads the current row as a java object of the specified type with the specified properties
-	 * set to their respective column values.
-	 *
-	 *
-	 * @param type type of the entity to be read
-	 * @param properties entity properties to be read
-	 *
-	 * @return the current as a java object of the specified type with the specified properties set
-	 *         to their respective column values
-	 */
-	public <T> T getEntity(Class<T> type, List<Property> properties)
-	{
-		try
-		{
-			T result = type.getDeclaredConstructor().newInstance();
-			properties.forEach(property -> {
-				Class<?> clazz = property.getRawType();
-				if (clazz == boolean.class)
-					property.setBoolean(result, getCurrentBooleanValue());
-				else if (clazz == char.class)
-					property.setChar(result, getCurrentCharValue());
-				else if (clazz == byte.class)
-					property.setByte(result, getCurrentByteValue());
-				else if (clazz == short.class)
-					property.setShort(result, getCurrentShortValue());
-				else if (clazz == int.class)
-					property.setInt(result, getCurrentIntValue());
-				else if (clazz == long.class)
-					property.setLong(result, getCurrentLongValue());
-				else if (clazz == float.class)
-					property.setFloat(result, getCurrentFloatValue());
-				else if (clazz == double.class)
-					property.setDouble(result, getCurrentDoubleValue());
-				else if (Collection.class.isAssignableFrom(clazz))
-					property.setValue(result, getCurrentValue(clazz, property.getElementRawType()));
-				else
-					property.setValue(result, getCurrentValue(clazz));
-			});
-			return result;
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | NoSuchMethodException | SecurityException ex)
-		{
-			throw new UnsupportedOperationException(ex);
-		}
-	}
-
-	/**
 	 * Reads the current row as a java object of the specified type with it's property values
 	 * matched to their respective column values.
 	 *
 	 * @param type type of the entity to be read
-	 *
 	 * @return the current row as a java object of the specified type with it's property values
-	 *         matched to their respective column values.
+	 * matched to their respective column values.
 	 */
 	public <T> T getEntity(Class<T> type)
 	{
-		return getEntity(type, getProperties(type));
+		return getEntity(getPropertyGraph(type));
+	}
+
+	/**
+	 * Creates a PropertyGraph for the specified type with all the columns
+	 *
+	 * @param type type of the entity to be read
+	 * @return A PropertyGraph for the type with all columns returned by the cursor
+	 */
+	public <T> PropertyGraph<T> getPropertyGraph(Class<T> type)
+	{
+		return PropertyGraph.of(type, getPropertyNames(type));
+	}
+
+	/**
+	 * Reads the current row as a java object of the specified type with its property values
+	 * matched to their respective column values.
+	 *
+	 * @param graph PropertyGraph of the entity to be read
+	 * @return the current row as a java object of the specified type with its property values
+	 * matched to their respective column values.
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> T getEntity(PropertyGraph<T> graph)
+			throws ConversionException
+	{
+		return (T) graph.get(null, property ->
+		{
+			if (property.getRawType() == boolean.class)
+				return getBooleanValue(property.toString());
+			else if (property.getRawType() == char.class)
+				return getCharValue(property.toString());
+			else if (property.getRawType() == byte.class)
+				return getByteValue(property.toString());
+			else if (property.getRawType() == short.class)
+				return getShortValue(property.toString());
+			else if (property.getRawType() == int.class)
+				return getIntValue(property.toString());
+			else if (property.getRawType() == long.class)
+				return getLongValue(property.toString());
+			else if (property.getRawType() == float.class)
+				return getFloatValue(property.toString());
+			else if (property.getRawType() == double.class)
+				return getDoubleValue(property.toString());
+			else if (Collection.class.isAssignableFrom(property.getRawType()))
+				return getValue(property.getRawType(),
+						property.getElementRawType(), property.toString());
+			else
+				return getValue(property.getRawType(), property.toString());
+		});
 	}
 }

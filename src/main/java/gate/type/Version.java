@@ -14,46 +14,46 @@ import java.util.regex.Pattern;
 public interface Version extends Serializable, Comparable<Version>
 {
 
-	public static final Version UNDEFINED = new VersionImpl(0, 0, 0, null, null);
-	public static final Version INVALID = new VersionImpl(0, 0, 0, "INVALID", null);
-	public static final Pattern PATTERN =
+	Version UNDEFINED = new VersionImpl(0, 0, 0, null, null);
+	Version INVALID = new VersionImpl(0, 0, 0, "INVALID", null);
+	Pattern PATTERN =
 			Pattern.compile("^([0-9]+)[.]([0-9]+)[.]([0-9]+)(-([0-9a-zA-Z]+))?(-([0-9a-zA-Z]+))?$");
 
-	public abstract int getMajor();
+	int getMajor();
 
-	public abstract int getMinor();
+	int getMinor();
 
-	public abstract int getPatch();
+	int getPatch();
 
-	public abstract String getQualifier();
+	String getQualifier();
 
-	public abstract String getIteration();
-
-	@Override
-	public String toString();
+	String getIteration();
 
 	@Override
-	public int hashCode();
+	String toString();
 
 	@Override
-	public boolean equals(Object obj);
+	int hashCode();
 
-	public static Version of(int major, int minor, int patch)
+	@Override
+	boolean equals(Object obj);
+
+	static Version of(int major, int minor, int patch)
 	{
 		return new VersionImpl(major, minor, patch, null, null);
 	}
 
-	public static Version of(int major, int minor, int patch, String qualifier)
+	static Version of(int major, int minor, int patch, String qualifier)
 	{
 		return new VersionImpl(major, minor, patch, qualifier, null);
 	}
 
-	public static Version of(int major, int minor, int patch, String qualifier, String iteration)
+	static Version of(int major, int minor, int patch, String qualifier, String iteration)
 	{
 		return new VersionImpl(major, minor, patch, qualifier, iteration);
 	}
 
-	public static Version of(String string)
+	static Version of(String string)
 	{
 		if (string == null)
 			return Version.UNDEFINED;
@@ -67,7 +67,7 @@ public interface Version extends Serializable, Comparable<Version>
 				matcher.group(5), matcher.group(7));
 	}
 
-	public static class VersionImpl implements Version
+	class VersionImpl implements Version
 	{
 
 		private final int major;

@@ -5,6 +5,7 @@ import gate.type.Parameter;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,22 +33,16 @@ public class Parameters extends LinkedHashMap<String, Object>
 
 	public String toEncodedString()
 	{
-		try
-		{
-			StringJoiner string = new StringJoiner("&");
-			for (Map.Entry<String, Object> parameter : entrySet())
-				if (parameter.getValue() != null)
-				{
-					String value = Converter.toString(parameter.getValue());
-					if (!value.isEmpty())
-						string.add(URLEncoder.encode(parameter.getKey(), "UTF-8") + "="
-								+ URLEncoder.encode(value, "UTF-8"));
-				}
-			return string.toString();
-		} catch (UnsupportedEncodingException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		StringJoiner string = new StringJoiner("&");
+		for (Map.Entry<String, Object> parameter : entrySet())
+			if (parameter.getValue() != null)
+			{
+				String value = Converter.toString(parameter.getValue());
+				if (!value.isEmpty())
+					string.add(URLEncoder.encode(parameter.getKey(), StandardCharsets.UTF_8) + "="
+							+ URLEncoder.encode(value, StandardCharsets.UTF_8));
+			}
+		return string.toString();
 	}
 
 	public Parameters put(String string)

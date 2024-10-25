@@ -4,9 +4,9 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +34,8 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	private static final long serialVersionUID = 1L;
 
 	public JsonArray()
-	{}
+	{
+	}
 
 	public JsonArray(Collection<? extends JsonElement> c)
 	{
@@ -92,11 +93,9 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	 * Parses a JSON formatted string into a JsonArray object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonArray object
-	 *
 	 * @return a JsonArray object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON
-	 *         formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON
+	 *                              formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonArray parse(String json) throws ConversionException
@@ -116,9 +115,7 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	 * elements on JSON notation.
 	 *
 	 * @param jsonArray the JsonArray object to be formatted on JSON notation
-	 *
 	 * @return a JSON formatted string representing the specified JsonArray
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static String format(JsonArray jsonArray)
@@ -392,14 +389,14 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	}
 
 	public static <T> JsonArray of(List<T> objects, Function<T, String> label,
-			Function<T, Object> value)
+								   Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static <T> JsonArray of(List<T> objects, Function<T, String> label,
-			Function<T, Object> value, Function<T, JsonObject> properties)
+								   Function<T, Object> value, Function<T, JsonObject> properties)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value, properties))
 				.collect(Collectors.toCollection(JsonArray::new));
@@ -427,20 +424,14 @@ public class JsonArray implements List<JsonElement>, JsonElement
 	}
 
 	public static <T> JsonArray format(List<T> objects, Function<T, String> label,
-			Function<T, Object> value)
+									   Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.format(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
-	public static JsonArray valueOf(String string)
+	public static JsonArray valueOf(String string) throws ConversionException
 	{
-		try
-		{
-			return parse(string);
-		} catch (ConversionException ex)
-		{
-			throw new UncheckedConversionException(ex);
-		}
+		return parse(string);
 	}
 }

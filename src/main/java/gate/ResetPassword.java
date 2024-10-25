@@ -62,7 +62,7 @@ public class ResetPassword extends HttpServlet
 			{
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				writer.write(ex.getMessage());
-			} catch (MessageException | RuntimeException ex)
+			} catch (RuntimeException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Erro de sistema");
@@ -94,7 +94,7 @@ public class ResetPassword extends HttpServlet
 			{
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				writer.write(ex.getMessage());
-			} catch (ConstraintViolationException | RuntimeException ex)
+			} catch (RuntimeException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Erro de sistema");

@@ -4,6 +4,6 @@ package gate.stream;
 public interface CheckedSupplier<T>
 {
 
-	public T get() throws Exception;
+	T get() throws Exception;
 
 }

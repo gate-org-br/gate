@@ -193,7 +193,7 @@ public class PDF extends Doc
 	{
 		try
 		{
-			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance((byte[]) image.getSource());
+			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance(image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)

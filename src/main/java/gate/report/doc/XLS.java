@@ -103,7 +103,7 @@ public class XLS extends Doc
 			}
 
 			for (ReportElement e : getReport().getElements())
-				if (e instanceof Form && (!((Form) e).isEmpty()))
+				if (e instanceof Form && (!e.isEmpty()))
 					printForm(workbook, (Form) e);
 
 			workbook.write(os);
@@ -130,7 +130,7 @@ public class XLS extends Doc
 			cell.getCellStyle().setFont(workbook.createFont());
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 			cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			((XSSFCellStyle) cell.getCellStyle()).setAlignment(HorizontalAlignment.CENTER);
+			cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setColor(getXLSColor(Color.WHITE));
 			((XSSFCellStyle) cell.getCellStyle())
 					.setFillForegroundColor(getXLSColor(CAPTION_COLOR));
@@ -141,7 +141,7 @@ public class XLS extends Doc
 		}
 
 		for (Field e : form.getFields().stream().filter(e -> e instanceof Field)
-				.filter(e -> e.getValue() != null).map(e -> (Field) e).collect(Collectors.toList()))
+				.filter(e -> e.getValue() != null).map(e -> e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
 
@@ -210,7 +210,7 @@ public class XLS extends Doc
 			cell.getCellStyle().setFont(workbook.createFont());
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 			cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			((XSSFCellStyle) cell.getCellStyle()).setAlignment(HorizontalAlignment.CENTER);
+			cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setColor(getXLSColor(Color.WHITE));
 			((XSSFCellStyle) cell.getCellStyle())
 					.setFillForegroundColor(getXLSColor(CAPTION_COLOR));

@@ -335,7 +335,7 @@ public class Expression implements Evaluable
 
 			StringBuilder property = new StringBuilder("this");
 			for (token = propertyScanner.next(); token != null; token = propertyScanner.next())
-				property.append(token.toString());
+				property.append(token);
 
 			return Property.getProperty(object.getClass(), property.toString()).getValue(object);
 		} catch (IOException e)
@@ -374,9 +374,9 @@ public class Expression implements Evaluable
 
 		next();
 		if (current instanceof Number)
-			string.append(current.toString());
+			string.append(current);
 		else if (current instanceof String)
-			string.append("'").append(current.toString()).append("'");
+			string.append("'").append(current).append("'");
 		else
 			throw new ExpressionException("Expected \"Number or String\" and found \"%s\" on expression \"%s\".",
 				current, value);
@@ -423,7 +423,7 @@ public class Expression implements Evaluable
 		if (v instanceof String)
 			string.append("'").append(current.toString()).append("'");
 		else if (v != null)
-			string.append(v.toString());
+			string.append(v);
 
 		if (ExpressionToken.COMMA.equals(current))
 		{

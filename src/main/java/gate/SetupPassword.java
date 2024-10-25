@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -55,7 +56,7 @@ public class SetupPassword extends HttpServlet
 			{
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				writer.write(ex.getMessage());
-			} catch (ConstraintViolationException | NotFoundException | RuntimeException ex)
+			} catch (RuntimeException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Erro de sistema");

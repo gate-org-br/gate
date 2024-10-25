@@ -4,6 +4,6 @@ package gate.stream;
 public interface CheckedBiFunction<T, U, R>
 {
 
-	public R apply(T t, U u) throws Exception;
+	R apply(T t, U u) throws Exception;
 
 }

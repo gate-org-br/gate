@@ -154,7 +154,7 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 	@Override
 	public int hashCode()
 	{
-		return (int) (min.hashCode() + max.hashCode());
+		return min.hashCode() + max.hashCode();
 	}
 
 	@Override

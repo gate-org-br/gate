@@ -6,8 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface Catcher
 {
 
-	public void catches(HttpServletRequest request,
-		HttpServletResponse response, Throwable exception);
+	void catches(HttpServletRequest request,
+				 HttpServletResponse response, Throwable exception);
 
 	static Class<? extends Catcher> getCatcher(Class<?> type)
 	{

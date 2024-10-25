@@ -98,10 +98,9 @@ class PropertyParser
 
 	private Attribute javaIdentifier(PropertyScanner scanner)
 	{
-		if (!(token instanceof String))
+		if (!(token instanceof String name))
 			throw new PropertyError("Invalid property name: %s.", property);
 
-		String name = (String) token;
 		token = scanner.next();
 
 		Attribute attribute = attributes.get(attributes.size() - 1);

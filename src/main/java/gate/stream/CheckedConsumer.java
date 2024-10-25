@@ -4,5 +4,5 @@ package gate.stream;
 public interface CheckedConsumer<T>
 {
 
-	public void accept(T object) throws Exception;
+	void accept(T object) throws Exception;
 }

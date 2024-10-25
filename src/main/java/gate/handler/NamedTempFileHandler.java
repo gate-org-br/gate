@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +26,7 @@ public class NamedTempFileHandler implements Handler
 			response.setContentLength((int) namedTempFile.length());
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition",
-				String.format("attachment; filename=\"%s\"", URLEncoder.encode(namedTempFile.getName(), "UTF-8")));
+				String.format("attachment; filename=\"%s\"", URLEncoder.encode(namedTempFile.getName(), StandardCharsets.UTF_8)));
 
 			try ( InputStream inputStream = namedTempFile.getInputStream();
 				 OutputStream outputStream = response.getOutputStream())

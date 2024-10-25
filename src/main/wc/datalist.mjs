@@ -54,7 +54,7 @@ window.addEventListener("connected", function (event)
 				value.value = "";
 				value.dispatchEvent(new Event('change', {bubbles: true}));
 			}
-			;
+
 
 			if (element.value && element.value.length)
 			{
@@ -72,7 +72,7 @@ window.addEventListener("connected", function (event)
 						value.value = option.getAttribute("data-value");
 						value.dispatchEvent(new Event('change', {bubbles: true}));
 					}
-					;
+
 				} else
 					element.setCustomValidity("Entre com um dos valores da lista");
 			} else

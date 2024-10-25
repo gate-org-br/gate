@@ -67,7 +67,7 @@ public abstract class CheckableTag extends SelectorTag
 
 			attributes.put("value", Converter.toString(value));
 
-			getJspContext().getOut().print(String.format("<input %s/>", attributes.toString()));
+			getJspContext().getOut().print(String.format("<input %s/>", attributes));
 			getJspContext().getOut().print("<label>");
 
 			if (getJspBody() != null)

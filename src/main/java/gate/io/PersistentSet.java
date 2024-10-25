@@ -226,7 +226,7 @@ public class PersistentSet<T> implements Set<T>
 	{
 		try
 		{
-			if (log >= values.size() * 2)
+			if (log >= values.size() * 2L)
 			{
 				Path backup = path.resolveSibling(path.getFileName() + ".backup");
 				Files.deleteIfExists(backup);

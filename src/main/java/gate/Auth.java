@@ -55,8 +55,7 @@ public class Auth extends HttpServlet
 			{
 				response.setStatus(ex.getStatusCode());
 				writer.write(ex.getMessage());
-			} catch (HierarchyException
-					| RuntimeException ex)
+			} catch (RuntimeException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				writer.write("Internal server error");

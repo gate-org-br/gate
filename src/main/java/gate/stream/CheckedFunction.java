@@ -4,6 +4,6 @@ package gate.stream;
 public interface CheckedFunction<T, R>
 {
 
-	public R apply(T t) throws Exception;
+	R apply(T t) throws Exception;
 
 }

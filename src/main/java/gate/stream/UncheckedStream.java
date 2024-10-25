@@ -62,7 +62,7 @@ public class UncheckedStream<T>
 		{
 			try
 			{
-				return mapper.applyAsDouble​(e);
+				return mapper.applyAsDouble(e);
 			} catch (RuntimeException ex)
 			{
 				throw ex;
@@ -180,15 +180,15 @@ public class UncheckedStream<T>
 		return UncheckedStream.of(stream.distinct());
 	}
 
-	public UncheckedStream<T> sorted​()
+	public UncheckedStream<T> sorted()
 	{
 		return UncheckedStream.of(stream.sorted());
 	}
 
-	public UncheckedStream<T> sorted​(CheckedComparator<? super T> comparator)
+	public UncheckedStream<T> sorted(CheckedComparator<? super T> comparator)
 	{
 
-		return UncheckedStream.of(stream).sorted​((a, b) ->
+		return UncheckedStream.of(stream).sorted((a, b) ->
 		{
 			try
 			{
@@ -203,7 +203,7 @@ public class UncheckedStream<T>
 		});
 	}
 
-	public UncheckedStream<T> peek​(CheckedConsumer<? super T> action)
+	public UncheckedStream<T> peek(CheckedConsumer<? super T> action)
 	{
 		return UncheckedStream.of(stream.peek(e ->
 		{
@@ -343,7 +343,7 @@ public class UncheckedStream<T>
 	}
 
 	public <U> U reduce(U identity, CheckedBiFunction<U, ? super T, U> accumulator,
-			CheckedBinaryOperator<U> combiner)
+						CheckedBinaryOperator<U> combiner)
 	{
 		return stream.reduce(identity, (a, b) ->
 		{
@@ -373,7 +373,7 @@ public class UncheckedStream<T>
 	}
 
 	public <R> R collect(CheckedSupplier<R> supplier, CheckedBiConsumer<R, ? super T> accumulator,
-			CheckedBiConsumer<R, R> combiner)
+						 CheckedBiConsumer<R, R> combiner)
 	{
 		return stream.collect(() ->
 		{

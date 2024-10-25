@@ -38,7 +38,7 @@ public class Entity
 	public static String getId(Class<?> type)
 	{
 		check(type);
-		return ((gate.annotation.Entity) type.getAnnotation(gate.annotation.Entity.class)).value();
+		return type.getAnnotation(gate.annotation.Entity.class).value();
 	}
 
 	public static String getTableName(Class<?> type)

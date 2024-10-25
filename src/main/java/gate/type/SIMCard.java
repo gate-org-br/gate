@@ -10,7 +10,7 @@ public class SIMCard implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private final String value;
 
 	public SIMCard(String value)
 	{

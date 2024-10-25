@@ -13,7 +13,7 @@ class None implements Evaluable
 
 	}
 
-	static None INSTANCE = new None();
+	static final None INSTANCE = new None();
 
 	@Override
 	public void evaluate(Writer writer, List<Object> context, Parameters parameters) throws TemplateException

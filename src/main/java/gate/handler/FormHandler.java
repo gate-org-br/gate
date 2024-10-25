@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +21,7 @@ public class FormHandler implements Handler
 		try
 		{
 			String string = ((Form) value).toJson().toString();
-			byte[] bytes = string.getBytes(Charset.forName("UTF-8"));
+			byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 			response.setCharacterEncoding("UTF-8");
 			response.setContentLength(bytes.length);

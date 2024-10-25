@@ -30,7 +30,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 		Objects.requireNonNull(min);
 		Objects.requireNonNull(max);
 
-		if (min.compareTo(max) > 0)
+		if (min.isAfter(max))
 			throw new IllegalArgumentException("min must be <= max");
 
 		this.min = min;
@@ -60,7 +60,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	@Override
 	public int hashCode()
 	{
-		return (int) (min.hashCode() + max.hashCode());
+		return min.hashCode() + max.hashCode();
 	}
 
 	@Override

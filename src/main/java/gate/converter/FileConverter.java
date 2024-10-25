@@ -47,7 +47,7 @@ public class FileConverter implements Converter
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, object.toString()) : "";
+		return object != null ? String.format(format, object) : "";
 	}
 
 	@Override

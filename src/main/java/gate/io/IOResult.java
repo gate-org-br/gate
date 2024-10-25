@@ -21,7 +21,7 @@ public interface IOResult
 
 	<T> long process(Processor<T> processor) throws IOException, InvocationTargetException;
 
-	public <T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException;
+	<T> Stream<T> stream(Function<InputStream, Spliterator<T>> spliterator) throws IOException;
 
 	default List<String> readLines() throws IOException
 	{
@@ -38,7 +38,7 @@ public interface IOResult
 		return process(new LineProcessor(action));
 	}
 
-	public default Stream<String> lineStream() throws IOException
+	default Stream<String> lineStream() throws IOException
 	{
 		return stream(inputStream -> new LineSpliterator(inputStream));
 	}
@@ -48,7 +48,7 @@ public interface IOResult
 		return read(CSVReader.getInstance());
 	}
 
-	public default Stream<List<String>> csvStream() throws IOException
+	default Stream<List<String>> csvStream() throws IOException
 	{
 		return stream(inputStream -> new CSVSpliterator(inputStream));
 	}

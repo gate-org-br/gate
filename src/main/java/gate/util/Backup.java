@@ -7,6 +7,7 @@ import gate.lang.csv.CSVParser;
 import gate.lang.csv.Row;
 import gate.lang.property.Property;
 import gate.type.DataFile;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -27,9 +28,9 @@ import java.util.stream.Collectors;
 public class Backup<T>
 {
 
-	private String name;
-	private Class<T> type;
-	private List<Property> properties;
+	private final String name;
+	private final Class<T> type;
+	private final List<Property> properties;
 
 	public Backup(String name, Class<T> type, List<Property> properties)
 	{
@@ -59,7 +60,7 @@ public class Backup<T>
 		try (CSVFormatter csv = CSVFormatter.of(writer))
 		{
 			objs.forEach(obj
-				-> csv.writeLine(properties.stream().map(e -> e.getValue(obj))
+					-> csv.writeLine(properties.stream().map(e -> e.getValue(obj))
 					.map(Converter::toString).collect(Collectors.toList())));
 		}
 	}
@@ -69,7 +70,7 @@ public class Backup<T>
 		try (StringWriter string = new StringWriter())
 		{
 			save(objs, string);
-			return new DataFile(string.toString().getBytes(Charset.forName("UTF-8")), String.format("%s.csv", name));
+			return new DataFile(string.toString().getBytes(StandardCharsets.UTF_8), String.format("%s.csv", name));
 		} catch (IOException e)
 		{
 			throw new ConversionException("Erro ao gerar arquivo CSV");
@@ -87,8 +88,8 @@ public class Backup<T>
 		{
 			List<T> objs = new ArrayList<>();
 			for (Optional<Row> optional = CSV.parseLine();
-				optional.isPresent();
-				optional = CSV.parseLine())
+				 optional.isPresent();
+				 optional = CSV.parseLine())
 			{
 				List<String> values = optional.get();
 				if (!values.isEmpty())
@@ -107,8 +108,8 @@ public class Backup<T>
 				}
 			}
 			return objs;
-		} catch (NoSuchMethodException | SecurityException | InstantiationException | IOException
-			| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+		} catch (NoSuchMethodException | SecurityException | InstantiationException
+				 | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
 		{
 			throw new ConversionException("Erro ao interpretar CSV: " + ex.getMessage());
 		}

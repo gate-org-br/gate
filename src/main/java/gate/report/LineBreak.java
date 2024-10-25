@@ -40,10 +40,7 @@ public class LineBreak extends ReportElement
 			for (var element : report.getElements())
 				if (element == this)
 					return empty;
-				else if (element instanceof LineBreak)
-					empty = true;
-				else
-					empty = false;
+				else empty = element instanceof LineBreak;
 		return false;
 	}
 

@@ -4,6 +4,6 @@ package gate.stream;
 public interface CheckedPredicate<T>
 {
 
-	public boolean test(T object) throws Exception;
+	boolean test(T object) throws Exception;
 
 }

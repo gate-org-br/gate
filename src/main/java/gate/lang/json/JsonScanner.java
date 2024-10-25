@@ -180,7 +180,7 @@ public final class JsonScanner implements AutoCloseable
 
 					if (c == 'e' || c == 'E')
 					{
-						string.append((char) 'e');
+						string.append('e');
 						c = reader.read();
 
 						if (c == '+' || c == '-')

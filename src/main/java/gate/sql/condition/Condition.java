@@ -91,7 +91,7 @@ public abstract class Condition implements Clause
 	public interface From<T>
 	{
 
-		public ExtractorPredicate<T> expression(String expression);
+		ExtractorPredicate<T> expression(String expression);
 	}
 
 	public static <T> From<T> from(Class<T> type)
@@ -121,7 +121,7 @@ public abstract class Condition implements Clause
 	public interface When
 	{
 
-		public ConstantPredicate expression(String expression);
+		ConstantPredicate expression(String expression);
 	}
 
 	public static When when(boolean assertion)

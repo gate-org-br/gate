@@ -57,9 +57,8 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianD
 			{
 				case 14:
 					return value.charAt(3) == '.'
-						&& value.charAt(7) == '.'
-						&& value.charAt(11) == '-'
-						? validate(value.charAt(0),
+							&& value.charAt(7) == '.'
+							&& value.charAt(11) == '-' && validate(value.charAt(0),
 							value.charAt(1),
 							value.charAt(2),
 							value.charAt(4),
@@ -69,7 +68,7 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianD
 							value.charAt(9),
 							value.charAt(10),
 							value.charAt(12),
-							value.charAt(13)) : false;
+							value.charAt(13));
 				case 11:
 					return validate(value.charAt(0),
 						value.charAt(1),
@@ -181,7 +180,7 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianD
 					return "0" + value.substring(0, 2) + "." + value.substring(2, 5)
 						+ "." + value.substring(5, 8) + "-" + value.substring(8);
 				case 9:
-					return "00" + value.substring(0, 1) + "." + value.substring(1, 4)
+					return "00" + value.charAt(0) + "." + value.substring(1, 4)
 						+ "." + value.substring(4, 7) + "-" + value.substring(7);
 				case 8:
 					return "000." + value.substring(0, 3)
@@ -190,16 +189,16 @@ public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianD
 					return "000.0" + value.substring(0, 2)
 						+ "." + value.substring(2, 5) + "-" + value.substring(5);
 				case 6:
-					return "000.00" + value.substring(0, 1)
+					return "000.00" + value.charAt(0)
 						+ "." + value.substring(1, 4) + "-" + value.substring(4);
 				case 5:
 					return "000.000." + value.substring(0, 3) + "-" + value.substring(3);
 				case 4:
 					return "000.000.0" + value.substring(0, 2) + "-" + value.substring(2);
 				case 3:
-					return "000.000.00" + value.substring(0, 1) + "-" + value.substring(1);
+					return "000.000.00" + value.charAt(0) + "-" + value.substring(1);
 				case 2:
-					return "000.000.000-" + value.substring(0);
+					return "000.000.000-" + value;
 			}
 		return null;
 	}

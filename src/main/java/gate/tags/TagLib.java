@@ -1,16 +1,12 @@
 package gate.tags;
 
-import gate.annotation.Color;
-import gate.annotation.Description;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Tooltip;
+import gate.annotation.*;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionException;
 import gate.icon.Icons;
 import jakarta.enterprise.inject.spi.CDI;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -20,8 +16,8 @@ import java.util.regex.Pattern;
 public class TagLib
 {
 
-	private static final Pattern DATE = Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}$");
-	private static final Pattern DATE_TIME = Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4} [0-9]{2}:[0-9]{2}$");
+	private static final Pattern DATE = Pattern.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$");
+	private static final Pattern DATE_TIME = Pattern.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$");
 
 	public static String icon(Object type)
 	{
@@ -53,26 +49,20 @@ public class TagLib
 		return Description.Extractor.extract(obj).orElse("Undescribed");
 	}
 
-	public static long number(Object temporal)
+	public static long number(Object temporal) throws ConversionException
 	{
-		try
-		{
-			if (temporal instanceof String)
-				if (DATE.matcher((String) temporal).matches())
-					temporal = Converter.fromString(LocalDate.class, (String) temporal);
-				else if (DATE_TIME.matcher((String) temporal).matches())
-					temporal = Converter.fromString(LocalDateTime.class, (String) temporal);
-		} catch (ConversionException ex)
-		{
-			throw new UncheckedConversionException(ex);
-		}
+		if (temporal instanceof String)
+			if (DATE.matcher((String) temporal).matches())
+				temporal = Converter.fromString(LocalDate.class, (String) temporal);
+			else if (DATE_TIME.matcher((String) temporal).matches())
+				temporal = Converter.fromString(LocalDateTime.class, (String) temporal);
 
 		if (temporal instanceof LocalDateTime)
 			return ((LocalDateTime) temporal)
-				.atZone(ZoneId.of("UTC")).toEpochSecond();
+					.atZone(ZoneId.of("UTC")).toEpochSecond();
 		if (temporal instanceof LocalDate)
 			return ((LocalDate) temporal).atStartOfDay()
-				.atZone(ZoneId.of("UTC")).toEpochSecond();
+					.atZone(ZoneId.of("UTC")).toEpochSecond();
 		return 0;
 	}
 
@@ -105,7 +95,7 @@ public class TagLib
 		try
 		{
 			return List.of(Thread.currentThread().getContextClassLoader()
-				.loadClass(type).getEnumConstants());
+					.loadClass(type).getEnumConstants());
 		} catch (ClassNotFoundException ex)
 		{
 			throw new IllegalArgumentException("Invalid enum class name: " + type);

@@ -46,7 +46,7 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 	@Override
 	public int hashCode()
 	{
-		return (int) (min.hashCode() + max.hashCode());
+		return min.hashCode() + max.hashCode();
 	}
 
 	@Override

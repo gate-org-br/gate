@@ -19,7 +19,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 public class XLSReader extends AbstractReader<List<List<Object>>>
 {
 
-	private static DataFormatter FORMATTER = new DataFormatter();
+	private static final DataFormatter FORMATTER = new DataFormatter();
 
 	private XLSReader()
 	{}

@@ -7,7 +7,7 @@ import gate.converter.custom.BrasilianDocumentConverter;
 public interface BrasilianDocument
 {
 
-	public static BrasilianDocument of(String string) throws IllegalArgumentException
+	static BrasilianDocument of(String string) throws IllegalArgumentException
 	{
 		if (string != null)
 		{

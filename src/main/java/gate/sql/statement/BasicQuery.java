@@ -53,7 +53,7 @@ class BasicQuery implements Query
 	@Override
 	public Query print()
 	{
-		System.out.println(toString());
+		System.out.println(this);
 		return this;
 	}
 
@@ -79,7 +79,7 @@ class BasicQuery implements Query
 		@Override
 		public Query.Constant print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -196,7 +196,7 @@ class BasicQuery implements Query
 			@Override
 			public Query.Constant.Connected print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				return this;
 			}
 
@@ -233,7 +233,7 @@ class BasicQuery implements Query
 		@Override
 		public Query.Compiled print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			System.out.println(parameters);
 			return this;
 		}
@@ -352,7 +352,7 @@ class BasicQuery implements Query
 			@Override
 			public Query.Compiled.Connected print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(parameters);
 				return this;
 			}
@@ -390,7 +390,7 @@ class BasicQuery implements Query
 		@Override
 		public Query.Connected print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -514,7 +514,7 @@ class BasicQuery implements Query
 			@Override
 			public Query.Connected.Compiled print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(parameters);
 				return this;
 			}
@@ -636,7 +636,7 @@ class BasicQuery implements Query
 			@Override
 			public Query.Connected.Constant print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				return this;
 			}
 

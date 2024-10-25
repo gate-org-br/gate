@@ -135,7 +135,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 		{
 			try
 			{
-				Object previous = context.lookup((String) key);
+				Object previous = context.lookup(key);
 				context.bind(key, value);
 
 				Converter converter = Converter.getConverter(Object.class);

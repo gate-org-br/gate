@@ -6,12 +6,12 @@ import gate.annotation.Icon;
 import gate.converter.custom.FormConverter;
 import gate.error.AppException;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionException;
 import gate.handler.FormHandler;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.type.collections.StringList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,17 +55,11 @@ public class Form implements Serializable
 
 	public static Form valueOf(JsonArray json) throws ConversionException
 	{
-		try
-		{
-			return new Form().setFields(json
-					.stream()
-					.map(e -> (JsonObject) e)
-					.map(e -> UncheckedConversionException.execute(() -> Field.parse(e)))
-					.collect(Collectors.toList()));
-		} catch (UncheckedConversionException ex)
-		{
-			throw ex.getCause();
-		}
+		return new Form().setFields(json
+				.stream()
+				.map(e -> (JsonObject) e)
+				.map(Field::parse)
+				.collect(Collectors.toList()));
 	}
 
 	public static Form valueOf(JsonObject json) throws ConversionException
@@ -73,8 +67,8 @@ public class Form implements Serializable
 		return new Form().setFields(json
 				.entrySet().stream()
 				.map(e -> new Field()
-				.setName(e.getKey())
-				.setValue(new StringList(e.getValue().toString())))
+						.setName(e.getKey())
+						.setValue(new StringList(e.getValue().toString())))
 				.collect(Collectors.toList()));
 	}
 
@@ -101,7 +95,7 @@ public class Form implements Serializable
 	}
 
 	public static Map<String, Map<String, Long>>
-			getStatistics(List<Form> forms)
+	getStatistics(List<Form> forms)
 	{
 		return forms.stream()
 				.flatMap(e -> e.getFields().stream())

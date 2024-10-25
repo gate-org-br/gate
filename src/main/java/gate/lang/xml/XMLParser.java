@@ -57,7 +57,7 @@ class XMLParser
 	{
 		Object value = token;
 		token = scanner.next();
-		return XMLChar.of(((XMLToken) value).toString().charAt(0));
+		return XMLChar.of(value.toString().charAt(0));
 	}
 
 	public XMLEvaluable next(XMLScanner scanner) throws TemplateException
@@ -95,7 +95,7 @@ class XMLParser
 				&& token != XMLToken.EOF);
 
 			if (token != XMLToken.QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				throw new TemplateException(String.format("Unexpeted token: %s.", token));
 			token = scanner.next();
 		} else if (token == XMLToken.DOUBLE_QUOTE)
 		{
@@ -108,7 +108,7 @@ class XMLParser
 				&& token != XMLToken.EOF);
 
 			if (token != XMLToken.DOUBLE_QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				throw new TemplateException(String.format("Unexpeted token: %s.", token));
 			token = scanner.next();
 		} else
 			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));

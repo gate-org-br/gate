@@ -75,7 +75,7 @@ public class YearMonthIntervalConverter implements Converter
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? ((YearMonthInterval) object).toString() : "";
+		return object != null ? object.toString() : "";
 	}
 
 	@Override

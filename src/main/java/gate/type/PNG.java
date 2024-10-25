@@ -46,7 +46,7 @@ public class PNG implements Serializable
 		} catch (IOException e)
 		{
 			throw new IllegalArgumentException(String.format("The image type must be: %s", new StringList(ImageIO
-				.getReaderFileSuffixes()).toString()));
+				.getReaderFileSuffixes())));
 		}
 	}
 
@@ -66,7 +66,7 @@ public class PNG implements Serializable
 		} catch (IOException e)
 		{
 			throw new IllegalArgumentException(String.format("The image type must be: %s",
-				new StringList(ImageIO.getReaderFileSuffixes()).toString()));
+					new StringList(ImageIO.getReaderFileSuffixes())));
 		}
 	}
 

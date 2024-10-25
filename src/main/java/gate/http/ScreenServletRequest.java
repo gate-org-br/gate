@@ -3,6 +3,7 @@ package gate.http;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.*;
+import gate.lang.property.PropertyGraph;
 import gate.policonverter.Policonverter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -76,15 +77,32 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T getParameter(Class<T> type, String name) throws ConversionException
+	public Object getParameter(Class<?> type, String name)
 	{
-		Object object = getParameterValue(name);
-		if (object instanceof String)
-			return (T) Converter.getConverter(type).ofString(type, (String) object);
-		if (object instanceof Part)
-			return (T) Converter.getConverter(type).ofPart(type, (Part) object);
-		return null;
+		try
+		{
+			Converter converter = Converter.getConverter(type);
+			Object value = getParameterValue(name);
+
+			if (value instanceof String string)
+				return converter.ofString(type, string);
+
+			if (value instanceof Part part)
+			{
+				try
+				{
+					return converter.ofPart(type, part);
+				} finally
+				{
+					part.delete();
+				}
+			}
+
+			return null;
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
 	}
 
 	public Object getParameterValue(String name)
@@ -189,6 +207,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		};
 
 	}
+
+	public <T> PropertyGraph<T> getPropertyGraph(Class<T> type)
+	{
+		return PropertyGraph.of(type, getParameterList().stream().sorted().toList());
+	}
+
 
 	public void setUser(User user)
 	{

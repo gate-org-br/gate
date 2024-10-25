@@ -377,7 +377,7 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 					case 3:
 						return "00000000" + value.substring(0, 2) + '-' + value.substring(2);
 					case 2:
-						return "000000000" + value.substring(0, 1) + '-' + value.substring(1);
+						return "000000000" + value.charAt(0) + '-' + value.substring(1);
 					case 1:
 						return "0000000000" + '-' + value;
 				}

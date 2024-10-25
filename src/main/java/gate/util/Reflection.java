@@ -129,26 +129,29 @@ public class Reflection
 	public static Optional<Method> findGetter(Field field)
 	{
 		String name = field.getName();
+
+		if (field.getDeclaringClass().isRecord())
+			return findMethod(field.getDeclaringClass(), name);
+
 		Optional<Method> method = findMethod(field.getDeclaringClass(),
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty()
 				&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
-		{
-			name = field.getName();
 			method = findMethod(field.getDeclaringClass(),
 					"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
-		}
 		return method;
 	}
 
 	/**
-	 * Finds the getter method of the specified field.
+	 * Finds the setter method of the specified field.
 	 *
 	 * @param field the field associated with the requested setter
 	 * @return an Optional describing the setter method of the specified field or an empty Optional if the field does not have a setter method
 	 */
 	public static Optional<Method> findSetter(Field field)
 	{
+		if (field.getDeclaringClass().isRecord())
+			return Optional.empty();
 		StringBuilder name = new StringBuilder(field.getName());
 		name.setCharAt(0, Character.toUpperCase(name.charAt(0)));
 		name.insert(0, "set");

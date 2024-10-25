@@ -383,7 +383,7 @@ public class SSH implements AutoCloseable
 					try (InputStream stream = command.getErrorStream();
 						ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
-						error = new String(baos.toByteArray());
+						error = baos.toString();
 					}
 
 					command.close();
@@ -414,7 +414,7 @@ public class SSH implements AutoCloseable
 					try (InputStream stream = command.getErrorStream();
 						ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
-						error = new String(baos.toByteArray());
+						error = baos.toString();
 					}
 
 					command.close();
@@ -448,7 +448,7 @@ public class SSH implements AutoCloseable
 						try (InputStream stream = _command.getErrorStream();
 							ByteArrayOutputStream baos = IOUtils.readFully(stream))
 						{
-							error = new String(baos.toByteArray());
+							error = baos.toString();
 						}
 
 						_command.close();

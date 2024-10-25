@@ -45,9 +45,8 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream in)
 		throws IOException, WebApplicationException
 	{
-		if (genericType instanceof ParameterizedType)
+		if (genericType instanceof ParameterizedType parameterizedType)
 		{
-			ParameterizedType parameterizedType = (ParameterizedType) genericType;
 			if (parameterizedType.getActualTypeArguments().length > 0)
 				genericType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 		}

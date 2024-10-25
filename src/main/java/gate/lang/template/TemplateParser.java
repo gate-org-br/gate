@@ -69,7 +69,7 @@ class TemplateParser
 		while (token == TemplateToken.SPACE
 			|| token == TemplateToken.TAB)
 		{
-			string.append(token.toString());
+			string.append(token);
 			token = scanner.next();
 		}
 
@@ -99,8 +99,8 @@ class TemplateParser
 				&& token != TemplateToken.EOF);
 
 			if (token != TemplateToken.QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
-			result.append(token.toString());
+				throw new TemplateException(String.format("Unexpeted token: %s.", token));
+			result.append(token);
 			token = scanner.next();
 			return result.toString();
 		} else if (token == TemplateToken.DOUBLE_QUOTE)
@@ -114,8 +114,8 @@ class TemplateParser
 				&& token != TemplateToken.EOF);
 
 			if (token != TemplateToken.DOUBLE_QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
-			result.append(token.toString());
+				throw new TemplateException(String.format("Unexpeted token: %s.", token));
+			result.append(token);
 			token = scanner.next();
 			return result.toString();
 		} else
@@ -141,7 +141,7 @@ class TemplateParser
 		}
 
 		if (token != TemplateToken.EXPRESSION_TAIL)
-			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+			throw new TemplateException(String.format("Unexpeted token: %s.", token));
 
 		token = scanner.next();
 
@@ -228,7 +228,7 @@ class TemplateParser
 			= new StringBuilder(identifier(scanner));
 		while (token == TemplateToken.DOT)
 		{
-			string.append(token.toString());
+			string.append(token);
 			token = scanner.skipSpaces().next();
 			string.append(identifier(scanner));
 		}
@@ -274,7 +274,7 @@ class TemplateParser
 			while (token != TemplateToken.QUOTE)
 			{
 				if (token == TemplateToken.EOF)
-					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+					throw new TemplateException(String.format("Unexpeted token: %s.", token));
 
 				url.append(token.toString());
 				token = scanner.skipSpaces().next();
@@ -287,7 +287,7 @@ class TemplateParser
 			while (token != TemplateToken.DOUBLE_QUOTE)
 			{
 				if (token == TemplateToken.EOF)
-					throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+					throw new TemplateException(String.format("Unexpeted token: %s.", token));
 
 				url.append(token.toString());
 				token = scanner.skipSpaces().next();
@@ -361,7 +361,7 @@ class TemplateParser
 			}
 
 			if (token != TemplateToken.SELF_CLOSE_TAG)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+				throw new TemplateException(String.format("Unexpeted token: %s.", token));
 			token = scanner.next();
 
 			if (type == null)

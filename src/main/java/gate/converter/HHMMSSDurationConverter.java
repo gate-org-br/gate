@@ -84,7 +84,7 @@ public class HHMMSSDurationConverter implements Converter
 		int h = matcher.group(1) != null ? Integer.parseInt(matcher.group(1)) : 0;
 		int m = matcher.group(2) != null ? Integer.parseInt(matcher.group(2)) : 0;
 		int s = matcher.group(3) != null ? Integer.parseInt(matcher.group(3)) : 0;
-		return Duration.ofSeconds(h * 60 * 60 + m * 60 + s);
+		return Duration.ofSeconds((long) h * 60 * 60 + m * 60L + s);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import gate.lang.json.JsonObject;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -52,7 +53,7 @@ public class Progress
 			{
 				writer.write("event: %s\n".formatted(type));
 				writer.write("data: " + Base64.getEncoder().encodeToString(message
-						.getBytes(Charset.forName("UTF-8"))) + "\n\n");
+						.getBytes(StandardCharsets.UTF_8)) + "\n\n");
 				writer.flush();
 			} catch (IOException ex)
 			{

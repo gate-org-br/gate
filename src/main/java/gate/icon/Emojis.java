@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public class Emojis {
 
-	public static Emoji UNKNOWN = new Emoji("2753");
+	public static final Emoji UNKNOWN = new Emoji("2753");
 
 	private static Emojis instance;
 

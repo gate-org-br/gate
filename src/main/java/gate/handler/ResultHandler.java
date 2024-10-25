@@ -16,7 +16,7 @@ public class ResultHandler implements Handler
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
-		String string = ((Result) value).toString();
+		String string = value.toString();
 		response.setContentType("application/json");
 
 		try ( Writer writer = response.getWriter())

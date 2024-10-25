@@ -61,7 +61,7 @@ class BasicOperation<T> implements Operation<T>
 	@Override
 	public Operation<T> print()
 	{
-		System.out.println(toString());
+		System.out.println(this);
 		return this;
 	}
 
@@ -92,7 +92,7 @@ class BasicOperation<T> implements Operation<T>
 		@Override
 		public Compiled print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -157,7 +157,7 @@ class BasicOperation<T> implements Operation<T>
 			@Override
 			public Connected print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				return this;
 			}
 
@@ -224,7 +224,7 @@ class BasicOperation<T> implements Operation<T>
 				@Override
 				public Operation.Compiled.Connected<T> print()
 				{
-					System.out.println(toString());
+					System.out.println(this);
 					return this;
 				}
 			}
@@ -264,7 +264,7 @@ class BasicOperation<T> implements Operation<T>
 		@Override
 		public Operation.Connected<T> print()
 		{
-			System.out.println(toString());
+			System.out.println(this);
 			return this;
 		}
 
@@ -328,7 +328,7 @@ class BasicOperation<T> implements Operation<T>
 			@Override
 			public Operation.Connected.Compiled<T> print()
 			{
-				System.out.println(toString());
+				System.out.println(this);
 				System.out.println(values);
 				return this;
 			}
@@ -396,7 +396,7 @@ class BasicOperation<T> implements Operation<T>
 				@Override
 				public Operation.Connected.Compiled<T> print()
 				{
-					System.out.println(toString());
+					System.out.println(this);
 					return this;
 				}
 			}

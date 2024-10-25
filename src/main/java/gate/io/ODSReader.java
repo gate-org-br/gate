@@ -30,11 +30,11 @@ public class ODSReader extends AbstractReader<List<List<String>>>
 		try
 		{
 			String string = null;
-			try (ZipInputStream istream = new ZipInputStream(is);)
+			try (ZipInputStream istream = new ZipInputStream(is))
 			{
 				for (ZipEntry entry = istream.getNextEntry();
 					entry != null; entry = istream.getNextEntry())
-					if (entry.getName().toLowerCase().equals("content.xml"))
+					if (entry.getName().equalsIgnoreCase("content.xml"))
 					{
 						string = StringReader.getInstance().read(istream);
 						break;

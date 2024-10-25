@@ -1,6 +1,7 @@
 package gate.lang.property;
 
 import gate.annotation.ElementType;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -12,45 +13,54 @@ public class CollectionAttribute implements Attribute
 {
 
 	private final Type type;
+	private final Class<?> rawType;
+	private final Type elementType;
 
 	CollectionAttribute(Type type)
 	{
 		this.type = type;
+
+		if (type instanceof Class<?>)
+		{
+			rawType = (Class<?>) type;
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else
+				elementType = Object.class;
+		} else if (type instanceof ParameterizedType parameterizedType)
+		{
+			rawType = (Class<?>) parameterizedType.getRawType();
+
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else if (List.class.isAssignableFrom(rawType))
+				elementType = parameterizedType.getActualTypeArguments()[0];
+			else if (Map.class.isAssignableFrom(rawType))
+				elementType = parameterizedType.getActualTypeArguments()[1];
+			else
+				elementType = Object.class;
+		} else
+		{
+			rawType = Object.class;
+			elementType = Object.class;
+		}
+
 	}
 
 	@Override
 	public Type getElementType()
 	{
-		if (type instanceof Class<?>)
-		{
-			Class<?> clazz = (Class<?>) type;
-			if (clazz.isAnnotationPresent(ElementType.class))
-				return clazz.getAnnotation(ElementType.class).value();
-			else if (clazz.isArray())
-				return clazz.getComponentType();
-		} else if (type instanceof ParameterizedType)
-		{
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			Class<?> clazz = (Class<?>) parameterizedType.getRawType();
-
-			if (clazz.isAnnotationPresent(ElementType.class))
-				return clazz.getAnnotation(ElementType.class).value();
-			else if (clazz.isArray())
-				return clazz.getComponentType();
-			else if (List.class.isAssignableFrom(clazz))
-				return parameterizedType.getActualTypeArguments()[0];
-			else if (Map.class.isAssignableFrom(clazz))
-				return parameterizedType.getActualTypeArguments()[1];
-		}
-		return Object.class;
+		return elementType;
 	}
 
 	@Override
 	public Class<?> getRawType()
 	{
-		return type instanceof ParameterizedType
-				? (Class<?>) ((ParameterizedType) type).getRawType()
-				: (Class<?>) type;
+		return rawType;
 	}
 
 	@Override
@@ -62,13 +72,13 @@ public class CollectionAttribute implements Attribute
 	@Override
 	public Object getValue(Object object)
 	{
-		return object;
+		return null;
 	}
 
 	@Override
 	public Object forceValue(Object object)
 	{
-		return object;
+		return null;
 	}
 
 	@Override

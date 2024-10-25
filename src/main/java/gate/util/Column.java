@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public interface Column<T>
 {
 
-	public abstract T get(String string);
+	T get(String string);
 
 	/**
 	 * Create a column to extract data from a string and return it as a java object
@@ -21,7 +21,7 @@ public interface Column<T>
 	 *
 	 * @return A java string representing the content of the extracted data or null if the data is blank
 	 */
-	public static Column<String> of(int min, int max)
+	static Column<String> of(int min, int max)
 	{
 		return e ->
 		{
@@ -41,7 +41,7 @@ public interface Column<T>
 	 *
 	 * @return A java object representing the content of the extracted data or null if the data is blank
 	 */
-	public static <T> Column<T> of(int min, int max, Function<String, T> converter)
+	static <T> Column<T> of(int min, int max, Function<String, T> converter)
 	{
 		return e ->
 		{
@@ -59,7 +59,7 @@ public interface Column<T>
 	 *
 	 * @return A java string representing the content of the extracted data or null if the data is blank
 	 */
-	public static Column<String> of(int min, int max, Pattern cleanup)
+	static Column<String> of(int min, int max, Pattern cleanup)
 	{
 		return e ->
 		{
@@ -79,7 +79,7 @@ public interface Column<T>
 	 *
 	 * @return A java object representing the content of the extracted data or null if the data is blank
 	 */
-	public static <T> Column<T> of(int min, int max, Pattern cleanup, Function<String, T> converter)
+	static <T> Column<T> of(int min, int max, Pattern cleanup, Function<String, T> converter)
 	{
 		return e ->
 		{

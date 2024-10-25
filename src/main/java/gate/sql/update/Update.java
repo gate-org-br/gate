@@ -59,7 +59,7 @@ public interface Update
 	 *
 	 * @return the new update sentence builder created
 	 */
-	public static TableUpdate of(URL resource)
+	static TableUpdate of(URL resource)
 	{
 		return of(Resources.getTextResource(resource));
 	}
@@ -72,7 +72,7 @@ public interface Update
 	 *
 	 * @return the new update sentence builder created
 	 */
-	public static TableUpdate.Compiled of(URL resource, List<Object> parameters)
+	static TableUpdate.Compiled of(URL resource, List<Object> parameters)
 	{
 		return of(Resources.getTextResource(resource), parameters);
 	}

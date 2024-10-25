@@ -29,10 +29,10 @@ public class FormTag extends AttributeTag
 		String value = Converter.toString(form);
 		if (value != null)
 			value = value.replaceAll("'", "");
-		getJspContext().getOut().print(String.format("<input type='hidden' name='%s' value='%s'/>", p.toString(), value));
+		getJspContext().getOut().print(String.format("<input type='hidden' name='%s' value='%s'/>", p, value));
 		int index = 0;
 		for (Field field : form.getFields())
-			getJspContext().getOut().print(getFieldControl(field, String.format("%s.fields[%d].value", p.toString(), index++), getAttributes()));
+			getJspContext().getOut().print(getFieldControl(field, String.format("%s.fields[%d].value", p, index++), getAttributes()));
 	}
 
 	public void setProperty(String property)
@@ -79,10 +79,10 @@ public class FormTag extends AttributeTag
 					attributes.put("type", "text");
 					if (field.getValue() != null)
 						attributes.put("value", field.getValue());
-					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes.toString());
+					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes);
 				} else
 					return String.format("<label %s>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
-						size, field.getName(), attributes.toString(), field.getValue() != null ? field.getValue() : "");
+						size, field.getName(), attributes, field.getValue() != null ? field.getValue() : "");
 			} else
 			{
 				StringBuilder options = new StringBuilder();
@@ -95,13 +95,13 @@ public class FormTag extends AttributeTag
 						optionAttributes.put("value", option);
 						if (field.getValue().contains(option))
 							optionAttributes.put("selected", "selected");
-						options.append(String.format("<option %s>%s</option>", optionAttributes.toString(), option));
+						options.append(String.format("<option %s>%s</option>", optionAttributes, option));
 					}
 
 					attributes.put("name", property);
 					return String
 						.format("<label %s>%s:<span><select %s>%s</select></span></label>", size,
-							field.getName(), attributes.toString(), options.toString());
+							field.getName(), attributes, options);
 				} else
 				{
 					attributes.put("type", "checkbox");
@@ -116,7 +116,7 @@ public class FormTag extends AttributeTag
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
 					return String.format("<fieldset %s><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
-						size, field.getName(), options.toString());
+						size, field.getName(), options);
 				}
 			}
 		} else if (Boolean.FALSE.equals(field.getMultiple()))

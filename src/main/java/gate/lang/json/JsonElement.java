@@ -4,9 +4,9 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
-import gate.error.UncheckedConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -29,7 +29,7 @@ import java.util.Objects;
 public interface JsonElement extends Serializable
 {
 
-	public static final JsonString UNDEFINED = JsonString.of("Indefinido");
+	JsonString UNDEFINED = JsonString.of("Indefinido");
 
 	/**
 	 * Gets the type parse this JSON element.
@@ -76,13 +76,13 @@ public interface JsonElement extends Serializable
 		}
 	}
 
-	public default String format()
+	default String format()
 	{
 		return format(this);
 	}
 
 	static JsonElement parse(String string)
-		throws ConversionException
+			throws ConversionException
 	{
 		try (JsonParser parser = new JsonParser(new StringReader(string)))
 		{
@@ -97,17 +97,15 @@ public interface JsonElement extends Serializable
 	 * notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
-	 *
 	 * @return the specified JsonElement formatted using JSON notation
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	static String format(JsonElement element)
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-			JsonWriter jsonWriter = new JsonWriter(stringWriter);
-			JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
+			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
@@ -117,10 +115,10 @@ public interface JsonElement extends Serializable
 		}
 	}
 
-	public <T> T toObject(Class<T> type);
+	<T> T toObject(Class<T> type);
 
-	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType);
+	<T, E> T toObject(java.lang.reflect.Type type,
+					  java.lang.reflect.Type elementType);
 
 	/**
 	 * Creates a JsonElement for the specified object.
@@ -131,7 +129,6 @@ public interface JsonElement extends Serializable
 	 * Other object types will be converted as JsonObjects
 	 *
 	 * @param obj the object to be formatted
-	 *
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement of(Object obj)
@@ -151,7 +148,7 @@ public interface JsonElement extends Serializable
 			return JsonArray.of((Object[]) obj);
 
 		for (Constructor<?> constructor
-			: obj.getClass().getDeclaredConstructors())
+				: obj.getClass().getDeclaredConstructors())
 		{
 			if (constructor.getParameterCount() == 0)
 			{
@@ -168,7 +165,7 @@ public interface JsonElement extends Serializable
 								result.put(field.getName(), JsonElement.of(value));
 						} catch (IllegalAccessException ex)
 						{
-							throw new UncheckedConversionException(ex.getMessage());
+							throw new ConversionException(ex.getMessage());
 						}
 					}
 				}
@@ -189,7 +186,6 @@ public interface JsonElement extends Serializable
 	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
 	 *
 	 * @param obj the object to be formatted
-	 *
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement toText(Object obj)
@@ -206,14 +202,8 @@ public interface JsonElement extends Serializable
 		return JsonString.of(gate.converter.Converter.toText(obj));
 	}
 
-	public static JsonElement valueOf(String string)
+	static JsonElement valueOf(String string) throws ConversionException
 	{
-		try
-		{
-			return parse(string);
-		} catch (ConversionException ex)
-		{
-			throw new UncheckedConversionException(ex);
-		}
+		return parse(string);
 	}
 }

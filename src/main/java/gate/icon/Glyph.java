@@ -3,8 +3,8 @@ package gate.icon;
 public interface Glyph
 {
 
-	public String getCode();
+	String getCode();
 
 	@Override
-	public String toString();
+	String toString();
 }

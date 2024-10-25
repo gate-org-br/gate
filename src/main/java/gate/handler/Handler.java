@@ -52,7 +52,7 @@ public interface Handler
 			null, Converter.toString(value));
 	}
 
-	public static class Instances
+	class Instances
 	{
 
 		private static final Map<Class<?>, Class<? extends Handler>> HANDLERS = new HashMap<>();

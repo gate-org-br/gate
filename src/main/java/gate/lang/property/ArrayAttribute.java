@@ -172,8 +172,7 @@ class ArrayAttribute implements Attribute
 	@Override
 	public String toString()
 	{
-		return new StringBuilder("[")
-			.append(index).append("]")
-			.toString();
+		return "[" +
+				index + "]";
 	}
 }

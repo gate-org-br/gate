@@ -12,6 +12,7 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class CSVFormatter implements AutoCloseable
 
 	private static final char SEPARATOR = ';';
 	private static final char DELIMITER = '"';
-	private static final Charset CHARSET = Charset.forName("UTF-8");
+	private static final Charset CHARSET = StandardCharsets.UTF_8;
 
 	/**
 	 * Constructs a new CSVFormatter for the specified Writer.

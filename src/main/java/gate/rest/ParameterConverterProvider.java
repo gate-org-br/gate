@@ -26,7 +26,7 @@ public class ParameterConverterProvider implements ParamConverterProvider
 	private static class ParameterConverter<T> implements ParamConverter<T>
 	{
 
-		private Class<T> type;
+		private final Class<T> type;
 
 		private ParameterConverter(Class<T> type)
 		{
@@ -38,7 +38,7 @@ public class ParameterConverterProvider implements ParamConverterProvider
 		{
 			try
 			{
-				return (T) Converter.fromString(type, value);
+				return Converter.fromString(type, value);
 			} catch (ConversionException ex)
 			{
 				throw new IllegalArgumentException(ex.getMessage(), ex);

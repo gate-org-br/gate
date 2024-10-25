@@ -72,7 +72,7 @@ public class Form extends ReportElement
 				.sum() % columns;
 			if (count > 0)
 			{
-				Field field = (Field) elements.get(elements.size() - 1);
+				Field field = elements.get(elements.size() - 1);
 				field.colspan(field.getColspan() + count);
 			}
 		}

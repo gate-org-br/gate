@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 public interface LinkSource
 {
 
-	public Link getLink();
+	Link getLink();
 
 	static LinkSource of()
 	{
@@ -43,7 +43,7 @@ public interface LinkSource
 		return dataSourceInstance.get();
 	}
 
-	static class LinkSourceImpl implements LinkSource
+	class LinkSourceImpl implements LinkSource
 	{
 
 		private final DataSource datasource;

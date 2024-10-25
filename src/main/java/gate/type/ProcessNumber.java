@@ -11,7 +11,7 @@ public class ProcessNumber implements Serializable, Cloneable
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private final String value;
 
 	public ProcessNumber(String value)
 	{

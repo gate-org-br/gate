@@ -29,9 +29,8 @@ class MapAttribute implements Attribute
 				elementType = rawType.getComponentType();
 			else
 				elementType = Object.class;
-		} else if (genericType instanceof ParameterizedType)
+		} else if (genericType instanceof ParameterizedType parameterizedType)
 		{
-			ParameterizedType parameterizedType = (ParameterizedType) genericType;
 			rawType = (Class<?>) parameterizedType.getRawType();
 
 			if (rawType.isAnnotationPresent(ElementType.class))
@@ -114,7 +113,7 @@ class MapAttribute implements Attribute
 	@Override
 	public String toString()
 	{
-		return key instanceof String ? new StringBuilder("['").append(key).append("']").toString()
-				: new StringBuilder("[").append(key).append("]").toString();
+		return key instanceof String ? "['" + key + "']"
+				: "[" + key + "]";
 	}
 }

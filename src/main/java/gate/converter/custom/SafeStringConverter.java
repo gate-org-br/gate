@@ -88,7 +88,7 @@ public class SafeStringConverter implements Converter
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, ((SafeString) value).toString());
+			ps.setString(fields++, value.toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;

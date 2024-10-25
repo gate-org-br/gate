@@ -1,6 +1,7 @@
 package gate.lang.property;
 
 import gate.annotation.ElementType;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -29,9 +30,8 @@ class ListAttribute implements Attribute
 				elementType = rawType.getComponentType();
 			else
 				elementType = Object.class;
-		} else if (type instanceof ParameterizedType)
+		} else if (type instanceof ParameterizedType parameterizedType)
 		{
-			ParameterizedType parameterizedType = (ParameterizedType) type;
 			rawType = (Class<?>) parameterizedType.getRawType();
 
 			if (rawType.isAnnotationPresent(ElementType.class))
@@ -94,6 +94,11 @@ class ListAttribute implements Attribute
 	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
+		var list = ((List<Object>) object);
+
+		if (list.size() < index + 1)
+			while (list.size() < index + 1)
+				list.add(null);
 		((List<Object>) object).set(index, value);
 	}
 

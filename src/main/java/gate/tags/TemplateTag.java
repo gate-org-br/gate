@@ -45,7 +45,7 @@ public class TemplateTag extends SimpleTagSupport
 					error = error.getCause())
 				{
 					getJspContext().getOut().println("<li>");
-					getJspContext().getOut().println("<strong>" + error.toString() + "</strong>");
+					getJspContext().getOut().println("<strong>" + error + "</strong>");
 					getJspContext().getOut().print("<ul>");
 					for (StackTraceElement element : error.getStackTrace())
 						getJspContext().getOut().println("<li>" + element.toString() + "</li>");

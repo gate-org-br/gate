@@ -1,19 +1,10 @@
 package gate.entity;
 
-import gate.annotation.Description;
-import gate.annotation.Entity;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Schema;
-import gate.annotation.Table;
+import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
-import gate.type.CPF;
-import gate.type.EMail;
-import gate.type.ID;
-import gate.type.Phone;
-import gate.type.Sex;
+import gate.type.*;
 import gate.type.mime.MimeData;
 
 import java.io.Serial;
@@ -89,7 +80,7 @@ public class User implements Serializable
 	@Description("Define o perfil do usuário.")
 	private Role role;
 
-	private Collection<Auth> auths;
+	private List<Auth> auths;
 
 	@Maxlength(1024)
 	@Name("Comentários sobre o Usuário")
@@ -130,14 +121,14 @@ public class User implements Serializable
 	private List<Func> funcs;
 
 
-	public Collection<Auth> getAuths()
+	public List<Auth> getAuths()
 	{
 		if (auths == null)
 			auths = new ArrayList<>();
 		return auths;
 	}
 
-	public User setAuths(Collection<Auth> auths)
+	public User setAuths(List<Auth> auths)
 	{
 		this.auths = auths;
 		return this;

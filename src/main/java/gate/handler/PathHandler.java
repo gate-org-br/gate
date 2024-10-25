@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,7 +28,7 @@ public class PathHandler implements Handler
 			response.setContentLength((int) Files.size(path));
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"",
-				URLEncoder.encode(path.getFileName().toString(), "UTF-8")));
+				URLEncoder.encode(path.getFileName().toString(), StandardCharsets.UTF_8)));
 			try (BufferedInputStream is = new BufferedInputStream(
 				new FileInputStream(path.toFile())))
 			{

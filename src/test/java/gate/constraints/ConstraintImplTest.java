@@ -30,7 +30,7 @@ public class ConstraintImplTest
 			mock.setName("Pessoa 1");
 
 			Constraints.validate(mock, Property.getProperties(Mock.class, "id"));
-		} catch (AppException | RuntimeException ex)
+		} catch (RuntimeException ex)
 		{
 			fail(ex.getMessage());
 		}

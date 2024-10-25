@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -23,7 +24,7 @@ public class OptionHandler implements Handler {
 		Objects.requireNonNull(value);
 
 		String string = Toolkit.stream(value).map(this::javaToJson).collect(Collectors.joining(",", "[", "]"));
-		byte[] bytes = string.getBytes(Charset.forName("UTF-8"));
+		byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 		response.setCharacterEncoding("UTF-8");
 		response.setContentLength(bytes.length);

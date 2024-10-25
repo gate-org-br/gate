@@ -95,7 +95,7 @@ public class DataFileConverter implements Converter
 		try
 		{
 			if (object == null)
-				return new String();
+				return "";
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
 				try (ObjectOutputStream ous = new ObjectOutputStream(baos))

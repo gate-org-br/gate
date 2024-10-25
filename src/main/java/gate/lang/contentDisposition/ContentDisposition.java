@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Map;
@@ -47,13 +48,7 @@ public class ContentDisposition
 		parameters
 			.entrySet().forEach(e ->
 			{
-				try
-				{
-					string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
-				} catch (UnsupportedEncodingException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
+				string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8));
 			});
 
 		return string.toString();

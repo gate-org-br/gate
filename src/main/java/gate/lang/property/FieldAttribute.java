@@ -14,6 +14,7 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.icon.Icon;
 import gate.util.Reflection;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -64,37 +65,37 @@ class FieldAttribute implements JavaIdentifierAttribute
 			setter = Reflection.findSetter(field).orElse(null);
 
 			isEntityId
-				= field.getDeclaringClass().isAnnotationPresent(Entity.class) && field.getName()
-				.equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
+					= field.getDeclaringClass().isAnnotationPresent(Entity.class) && field.getName()
+					.equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
 
 			if (rawType.isAnnotationPresent(ElementType.class))
 				elementType = rawType.getAnnotation(ElementType.class).value();
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else if (List.class.isAssignableFrom(rawType)
-				&& genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Set.class.isAssignableFrom(rawType)
-				&& genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Map.class.isAssignableFrom(rawType)
-				&& genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
 
 			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
-				? field.getAnnotation(gate.annotation.Converter.class).value()
+					? field.getAnnotation(gate.annotation.Converter.class).value()
 					.getDeclaredConstructor().newInstance()
-				: Converter.getConverter(rawType);
+					: Converter.getConverter(rawType);
 
 			List<Constraint.Implementation<?>> cons = new ArrayList<>();
 			Stream.of(field.getAnnotations()).filter(
-				annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
-				.map(Constraint.Implementation::getImplementation).forEach(cons::add);
+							annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
+					.map(Constraint.Implementation::getImplementation).forEach(cons::add);
 			converter.getConstraints().stream()
-				.filter(e -> cons.stream().noneMatch(c -> c.getName().equals(e.getName())))
-				.forEach(cons::add);
+					.filter(e -> cons.stream().noneMatch(c -> c.getName().equals(e.getName())))
+					.forEach(cons::add);
 			constraints = Collections.unmodifiableList(cons);
 
 			name = Name.Extractor.extract(field).orElse(null);
@@ -105,11 +106,11 @@ class FieldAttribute implements JavaIdentifierAttribute
 			description = Description.Extractor.extract(field).orElse(converter.getDescription());
 
 			mask = field.isAnnotationPresent(Mask.class) ? field.getAnnotation(Mask.class).value()
-				: converter.getMask();
+					: converter.getMask();
 
 			placeholder = field.isAnnotationPresent(Placeholder.class)
-				? field.getAnnotation(Placeholder.class).value()
-				: converter.getPlaceholder();
+					? field.getAnnotation(Placeholder.class).value()
+					: converter.getPlaceholder();
 
 			if (field.isAnnotationPresent(Column.class))
 				columnName = field.getAnnotation(Column.class).value();
@@ -121,8 +122,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			} else
 				columnName = field.getName();
 
+			if (getter == null || setter == null)
+				if (!Modifier.isPublic(field.getModifiers())
+						&& !Modifier.isFinal(field.getModifiers()))
+					field.setAccessible(true);
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-			| InvocationTargetException ex)
+				 | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex);
 		}
@@ -226,13 +231,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (getter != null)
 				return getter.invoke(object);
 
-			if (Modifier.isPublic(field.getModifiers()))
-				return field.get(object);
-
-			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
-
+			return field.get(object);
 		} catch (InvocationTargetException | IllegalAccessException ex)
 		{
 			throw new UnsupportedOperationException(ex);
@@ -246,14 +245,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 		{
 			if (setter != null)
 				setter.invoke(object, value);
-			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+			if (!Modifier.isFinal(field.getModifiers()))
 				field.set(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
-
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 		} catch (InvocationTargetException | IllegalAccessException ex)
 		{
 			throw new UnsupportedOperationException(ex);
@@ -290,8 +287,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getBoolean(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -310,12 +307,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setBoolean(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -338,8 +335,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getChar(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -358,12 +355,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setChar(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -386,8 +383,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getByte(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -406,12 +403,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setByte(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -434,8 +431,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getShort(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -454,12 +451,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setShort(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -482,8 +479,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getInt(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -501,12 +498,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setInt(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -529,8 +526,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getLong(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -548,12 +545,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setLong(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -576,8 +573,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getFloat(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -595,12 +592,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setFloat(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
@@ -623,8 +620,8 @@ class FieldAttribute implements JavaIdentifierAttribute
 				return field.getDouble(object);
 
 			throw new UnsupportedOperationException(
-				String.format("The property %s of class %s does not support reading",
-					field.getName(), field.getDeclaringClass().getName()));
+					String.format("The property %s of class %s does not support reading",
+							field.getName(), field.getDeclaringClass().getName()));
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
 			throw new UnsupportedOperationException(ex.getMessage(), ex);
@@ -642,12 +639,12 @@ class FieldAttribute implements JavaIdentifierAttribute
 			if (setter != null)
 				setter.invoke(object, value);
 			else if (Modifier.isPublic(field.getModifiers())
-				&& !Modifier.isFinal(field.getModifiers()))
+					&& !Modifier.isFinal(field.getModifiers()))
 				field.setDouble(object, value);
 			else
 				throw new UnsupportedOperationException(
-					String.format("The property %s of class %s does not support writing",
-						field.getName(), field.getDeclaringClass().getName()));
+						String.format("The property %s of class %s does not support writing",
+								field.getName(), field.getDeclaringClass().getName()));
 
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{

@@ -63,7 +63,7 @@ public class SelectTTag extends PropertyTag
 
 		if (getJspBody() != null)
 		{
-			getJspContext().getOut().print(String.format("<option %s style='text-indent: %dpx'>", attributes.toString(),
+			getJspContext().getOut().print(String.format("<option %s style='text-indent: %dpx'>", attributes,
 				depth * 20));
 			getJspContext().setAttribute("option", obj);
 			getJspContext().getOut().print(Stream.generate(() -> "&nbsp;&rarr;&nbsp;").limit(depth).collect(Collectors.joining()));
@@ -71,7 +71,7 @@ public class SelectTTag extends PropertyTag
 			getJspContext().removeAttribute("option");
 			getJspContext().getOut().println("</option>");
 		} else
-			getJspContext().getOut().println(String.format("<option %s>%s%s</option>", attributes.toString(),
+			getJspContext().getOut().println(String.format("<option %s>%s%s</option>", attributes,
 				Stream.generate(() -> "--------").limit(depth).collect(Collectors.joining()), Converter
 				.toText(obj)));
 

@@ -11,7 +11,7 @@ public interface Cache<T>
 	 *
 	 * @return The cached value.
 	 */
-	public T get();
+	T get();
 
 	/**
 	 * Creates a cache for a lazily supplied value.
@@ -20,7 +20,7 @@ public interface Cache<T>
 	 * @param supplier The supplier function to obtain the cached value.
 	 * @return A Cache instance.
 	 */
-	public static <E> Cache<E> of(Supplier<E> supplier)
+	static <E> Cache<E> of(Supplier<E> supplier)
 	{
 		return new LazyCache<>(supplier);
 	}
@@ -33,7 +33,7 @@ public interface Cache<T>
 	 * @param timeout The cache timeout duration in milliseconds.
 	 * @return A Cache instance.
 	 */
-	public static <E> Cache<E> of(long timeout, Supplier<E> supplier)
+	static <E> Cache<E> of(long timeout, Supplier<E> supplier)
 	{
 		return new TimeoutCache<>(timeout, supplier);
 	}
@@ -46,7 +46,7 @@ public interface Cache<T>
 	 * @param supplier The supplier function to obtain the cached value.
 	 * @return A Cache instance.
 	 */
-	public static <E> Cache<E> of(Predicate<E> predicate, Supplier<E> supplier)
+	static <E> Cache<E> of(Predicate<E> predicate, Supplier<E> supplier)
 	{
 		return new PredicateCache<>(predicate, supplier);
 	}
@@ -60,7 +60,7 @@ public interface Cache<T>
 	 * @param supplier The supplier function to obtain the cached value.
 	 * @return A Cache instance.
 	 */
-	public static <E> Cache<E> of(long timeout, Predicate<E> predicate, Supplier<E> supplier)
+	static <E> Cache<E> of(long timeout, Predicate<E> predicate, Supplier<E> supplier)
 	{
 		return new PredicateTimeoutCache<>(timeout, predicate, supplier);
 	}

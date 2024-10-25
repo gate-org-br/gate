@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class CSVParser implements Parser
 
 	private final static char SEPARATOR = ';';
 	private final static char DELIMITER = '"';
-	private final static Charset CHARSET = Charset.forName("UTF-8");
+	private final static Charset CHARSET = StandardCharsets.UTF_8;
 
 	private CSVParser(BufferedReader reader, char separator, char delimiter)
 	{

@@ -4,27 +4,20 @@ import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
 import gate.annotation.QueryParamExtractor;
-import gate.converter.Converter;
-import gate.error.AppException;
-import gate.error.BadRequestException;
-import gate.error.ConversionException;
-import gate.error.NoSuchPropertyError;
-import gate.error.UncheckedConversionException;
+import gate.error.*;
 import gate.http.ScreenServletRequest;
-import gate.lang.property.CollectionAttribute;
-import gate.lang.property.Property;
 import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
 import gate.util.Reflection;
 import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.QueryParam;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+import org.slf4j.Logger;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -42,6 +35,9 @@ public abstract class Screen extends Base
 	private ScreenServletRequest request;
 	private HttpServletResponse response;
 
+	@Inject
+	Logger logger;
+
 	public static Screen create(Class<Screen> clazz)
 	{
 		Unmanaged.UnmanagedInstance<Screen> instance = null;
@@ -56,59 +52,14 @@ public abstract class Screen extends Base
 		}
 	}
 
-	public void prepare(ScreenServletRequest request, HttpServletResponse response) throws BadRequestException
+	public void prepare(ScreenServletRequest request, HttpServletResponse response) throws HttpException
 	{
 		this.request = request;
 		this.response = response;
 
-		try
-		{
-			getRequest().getParameterList().stream().sorted().forEach(name ->
-			{
-				Property property = Property.parse(getClass(), name);
-				if (property != null)
-				{
-					try
-					{
-						if (property.getLastAttribute() instanceof CollectionAttribute)
-						{
-							Property previous = property.getPreviousProperty();
-							previous.setValue(this, getRequest()
-								.getParameterValues(previous.getRawType(), property.getRawType(), name));
-						} else
-						{
-							Converter converter = property.getConverter();
-							Object value = getRequest().getParameterValue(name);
-							if (value instanceof Part)
-							{
-								Part part = (Part) value;
-								try
-								{
-									value = converter.ofPart(property.getRawType(), part);
-								} finally
-								{
-									try
-									{
-										part.delete();
-									} catch (IOException ex)
-									{
-										throw new UncheckedIOException(ex);
-									}
-								}
-							} else if (value instanceof String)
-								value = converter.ofString(property.getRawType(), (String) value);
-							property.setValue(this, value);
-						}
-					} catch (ConversionException ex)
-					{
-						throw new UncheckedConversionException(ex);
-					}
-				}
-			});
-		} catch (UncheckedConversionException | NoSuchPropertyError ex)
-		{
-			throw new BadRequestException(ex.getCause().getMessage());
-		}
+		var graph = request.getPropertyGraph(getClass());
+		graph.get(this, property ->
+				request.getParameter(property.getRawType(), property.toString()));
 	}
 
 	public Object execute(Method method) throws Throwable
@@ -278,10 +229,10 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Thread.currentThread().getContextClassLoader().loadClass(screen != null
-				? module + "." + screen
-				+ "Screen"
-				: module + ".Screen"))
-				.map(e -> (Class<Screen>) e);
+							? module + "." + screen
+							+ "Screen"
+							: module + ".Screen"))
+					.map(e -> (Class<Screen>) e);
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();

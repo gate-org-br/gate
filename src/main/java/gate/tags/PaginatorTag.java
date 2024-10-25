@@ -22,7 +22,7 @@ public class PaginatorTag extends AttributeTag
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
 
-		String url = String.format("Gate?%s", queryString.toString());
+		String url = String.format("Gate?%s", queryString);
 		Screen screen = (Screen) getJspContext().findAttribute("screen");
 
 		if (page == null)

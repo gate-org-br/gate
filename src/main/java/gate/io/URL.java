@@ -49,7 +49,7 @@ public class URL
 	private Duration timeout = Duration.ZERO;
 	private final Parameters parameters;
 	private Authorization authorization;
-	private Map<String, String> headers = new HashMap<>();
+	private final Map<String, String> headers = new HashMap<>();
 
 	private static final TrustManager TRUST_MANAGER = new X509ExtendedTrustManager()
 	{
@@ -513,7 +513,7 @@ public class URL
 			string.add("ACTION=" + action);
 		if (Toolkit.notEmpty(arguments))
 			string.add(arguments);
-		return "Gate?" + string.toString();
+		return "Gate?" + string;
 	}
 
 	public static URL parse(String string) throws ConversionException
@@ -530,7 +530,7 @@ public class URL
 		while (i < string.length())
 			qs.append(string.charAt(i++));
 
-		return qs.length() != 0
+		return !qs.isEmpty()
 			? new URL(url.toString(), Parameters.parse(qs.toString()))
 			: new URL(url.toString());
 	}

@@ -192,8 +192,9 @@ public class Gate extends HttpServlet
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
 			}
-		} catch (HttpException | HierarchyException | IOException | RuntimeException ex)
+		} catch (RuntimeException ex)
 		{
+			logger.error(ex.getMessage(), ex);
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
 			catcher.catches(httpServletRequest, response, ex);
