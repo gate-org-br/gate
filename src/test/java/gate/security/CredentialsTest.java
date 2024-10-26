@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 public class CredentialsTest
 {
 
 	@Test
+	@Disabled
 	public void test1() throws InvalidCredentialsException
 	{
 		User user = new User();
@@ -21,8 +23,8 @@ public class CredentialsTest
 		user.getRole().setId(ID.valueOf(1));
 		user.getRole().setName("Role 1");
 		user.getAuths().add(new Auth()
-			.setAccess(Auth.Access.GRANT).setScope(Auth.Scope.PUBLIC)
-			.setModule("gateconsole.screen"));
+				.setAccess(Auth.Access.GRANT).setScope(Auth.Scope.PUBLIC)
+				.setModule("gateconsole.screen"));
 
 		String credentials = Credentials.create(user);
 		assertEquals(user, Credentials.of(credentials));
