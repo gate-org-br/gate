@@ -98,11 +98,13 @@ public class PropertyGraph<T>
 				for (var entry : map.entrySet())
 				{
 					var attribute = ((Attribute) entry.getKey());
-
-					attribute.setValue(value, get(attribute.getRawType(),
-							attribute.getValue(value),
+					var currentValue = attribute.getValue(value);
+					var newValue = get(attribute.getRawType(),
+							currentValue,
 							entry.getValue(),
-							getValue));
+							getValue);
+					if (newValue != currentValue)
+						attribute.setValue(value, newValue);
 				}
 				return value;
 			}

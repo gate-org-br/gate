@@ -28,9 +28,8 @@ public @interface Code
 		{
 			try
 			{
-				if (element instanceof AnnotatedElement)
+				if (element instanceof AnnotatedElement annotatedElement)
 				{
-					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Code.class))
 						return Optional.of(annotatedElement.getAnnotation(Code.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyCode.class))

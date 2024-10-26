@@ -511,7 +511,7 @@ public class Property
 		{
 			if (!(attributes.get(i) instanceof SelfAttribute))
 			{
-				if (builder.length() > 0
+				if (!builder.isEmpty()
 					&& attributes.get(i) instanceof JavaIdentifierAttribute)
 					builder.append(".");
 				builder.append(attributes.get(i).toString());
@@ -529,8 +529,7 @@ public class Property
 	@Override
 	public boolean equals(Object object)
 	{
-		return object instanceof Property
-			&& object == this;
+		return object == this;
 	}
 
 	@Override
