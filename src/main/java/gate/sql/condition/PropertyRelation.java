@@ -10,7 +10,7 @@ import gate.sql.statement.Query;
  * @see gate.sql.condition.PropertyPredicate
  */
 public class PropertyRelation extends Relation
-	implements ConstantRelationMethods, PropertyRelationMethods
+		implements ConstantRelationMethods, PropertyRelationMethods
 {
 
 	PropertyRelation(Clause clause)
@@ -99,6 +99,23 @@ public class PropertyRelation extends Relation
 	public PropertyCondition exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
+	}
+
+	@Override
+	public PropertyCondition exists(String subquery)
+	{
+		return new PropertyCondition(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + "exists (" + subquery + ")";
+			}
+
+		};
 	}
 
 	@Override

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="12bf9456-c49f-41c4-912f-e2eb07d650c6" name="Changes" comment="Implement record support and remove checked exceptions" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <favorite-branches>
+      <branch-storage>
+        <map>
+          <entry type="LOCAL">
+            <value>
+              <list>
+                <branch-info repo="$PROJECT_DIR$" source="13.0.0" />
+              </list>
+            </value>
+          </entry>
+        </map>
+      </branch-storage>
+    </favorite-branches>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="13.0.0" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;davinunesdasilva&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/gate-org-br/gate.git&quot;,
+    &quot;accountId&quot;: &quot;241c3085-31e7-480f-870c-3988847adf71&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2natC6Tn2zSXKo0mxecx3pD3PFV" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Mapper.executor": "Run",
+    "JUnit.All in gate (1).executor": "Run",
+    "JUnit.All in gate.executor": "Run",
+    "JUnit.MapperTest.executor": "Run",
+    "JUnit.MapperTest.test1.executor": "Run",
+    "JUnit.MapperTest.test2.executor": "Run",
+    "JUnit.MapperTest.test3.executor": "Run",
+    "JUnit.MapperTest.test4.executor": "Run",
+    "JUnit.ObjectGraphMapperTest.executor": "Run",
+    "JUnit.ObjectGraphMapperTest.test3.executor": "Debug",
+    "JUnit.ObjectGraphMapperTest.test4.executor": "Run",
+    "JUnit.ObjectGraphMapperTest.test5.executor": "Debug",
+    "JUnit.ObjectGraphMapperTest.testCollection.executor": "Run",
+    "JUnit.ObjectGraphMapperTest.testList.executor": "Debug",
+    "JUnit.PropertyGraphTest.executor": "Run",
+    "JUnit.StorageTest.executor": "Debug",
+    "JUnit.StorageTest.testSomeMethod.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/davins/Projects/gate",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/gate" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="gate.lang.property" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="gate.rest" />
+      <recent name="gate.lang.property" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.PropertyGraphTest">
+    <configuration name="All in gate (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyGraphTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gate.lang.property.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gate.lang.property" />
+      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyGraphTest.test5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gate.lang.property.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gate.lang.property" />
+      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
+      <option name="METHOD_NAME" value="test5" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyGraphTest.testCollection" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gate.lang.property.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gate.lang.property" />
+      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
+      <option name="METHOD_NAME" value="testCollection" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PropertyGraphTest.testList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="gate.lang.property.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="gate.lang.property" />
+      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
+      <option name="METHOD_NAME" value="testList" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.PropertyGraphTest" />
+        <item itemvalue="JUnit.All in gate (1)" />
+        <item itemvalue="JUnit.PropertyGraphTest.testCollection" />
+        <item itemvalue="JUnit.PropertyGraphTest.testList" />
+        <item itemvalue="JUnit.PropertyGraphTest.test5" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="12bf9456-c49f-41c4-912f-e2eb07d650c6" name="Changes" comment="" />
+      <created>1729222884157</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729222884157</updated>
+      <workItem from="1729287982434" duration="854000" />
+      <workItem from="1729288864870" duration="5000" />
+      <workItem from="1729290107243" duration="6000" />
+      <workItem from="1729624373756" duration="34999000" />
+      <workItem from="1729791499658" duration="1462000" />
+      <workItem from="1729947595546" duration="774000" />
+    </task>
+    <task id="LOCAL-00001" summary="Improve API">
+      <option name="closed" value="true" />
+      <created>1729288127678</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1729288127678</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Implement record support and remove checked exceptions">
+      <option name="closed" value="true" />
+      <created>1729821962097</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1729821962097</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Implement record support and remove checked exceptions">
+      <option name="closed" value="true" />
+      <created>1729947622428</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1729947622428</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Improve API" />
+    <MESSAGE value="Implement record support and remove checked exceptions" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement record support and remove checked exceptions" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="attribute.getRawType()" language="JAVA" />
+        <watch expression="attribute.getValue(value)" language="JAVA" />
+        <watch expression="entry.getValue()" language="JAVA" />
+        <watch expression="attribute.getClass()" language="JAVA" />
+        <watch expression="attribute.toString()" language="JAVA" />
+      </configuration>
+      <configuration name="Application">
+        <watch expression="attributes.toString()" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

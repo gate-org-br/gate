@@ -10,7 +10,7 @@ import gate.sql.statement.Query;
  * @see gate.sql.condition.ExtractorPredicate
  */
 public class ExtractorRelation<T> extends Relation
-	implements ConstantRelationMethods, ExtractorRelationMethods<T>
+		implements ConstantRelationMethods, ExtractorRelationMethods<T>
 {
 
 	ExtractorRelation(Clause clause)
@@ -99,6 +99,23 @@ public class ExtractorRelation<T> extends Relation
 	public ExtractorCondition<T> exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
+	}
+
+	@Override
+	public ExtractorCondition<T> exists(String subquery)
+	{
+		return new ExtractorCondition(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + "exists (" + subquery + ")";
+			}
+
+		};
 	}
 
 	@Override

@@ -118,6 +118,23 @@ public class CompiledRelation extends Relation
 
 		};
 	}
+	
+	@Override
+	public CompiledCondition exists(String subquery)
+	{
+		return new CompiledCondition(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + "exists (" + subquery + ")";
+			}
+
+		};
+	}
 
 	@Override
 	public CompiledCondition exists(Query.Constant.Builder subquery)

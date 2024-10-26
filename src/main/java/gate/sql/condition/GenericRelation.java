@@ -152,13 +152,30 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 	}
 
 	@Override
+	public GenericCondition exists(String subquery)
+	{
+		return new GenericCondition(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + "exists (" + subquery + ")";
+			}
+
+		};
+	}
+
+	@Override
 	public GenericCondition exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
 	static class Rollback extends GenericRelation
-		implements GenericRelationMethods.Rollback
+			implements GenericRelationMethods.Rollback
 	{
 
 		public Rollback(Clause clause)

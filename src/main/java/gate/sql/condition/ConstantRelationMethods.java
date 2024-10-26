@@ -63,6 +63,16 @@ interface ConstantRelationMethods
 	 *
 	 * @see gate.sql.condition.Condition
 	 */
+	Condition exists(String subquery);
+
+	/**
+	 * Evaluates to true if the specified sub query is not empty.
+	 *
+	 * @param condition the sub query to be checked for emptiness
+	 * @return the current condition, for chained invocations
+	 *
+	 * @see gate.sql.condition.Condition
+	 */
 	Condition exists(Query.Constant.Builder subquery);
 
 	/**

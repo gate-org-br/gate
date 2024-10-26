@@ -11,9 +11,9 @@ import java.util.stream.Stream;
  * @see gate.sql.condition.ConstantPredicate
  */
 public class ConstantRelation extends Relation
-	implements ConstantRelationMethods,
-	GenericRelationMethods,
-	CompiledRelationMethods
+		implements ConstantRelationMethods,
+		GenericRelationMethods,
+		CompiledRelationMethods
 {
 
 	ConstantRelation(Clause clause)
@@ -77,7 +77,7 @@ public class ConstantRelation extends Relation
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameters));
+						Stream.of(parameters));
 			}
 		};
 	}
@@ -168,6 +168,23 @@ public class ConstantRelation extends Relation
 
 	@Override
 	public ConstantCondition exists(Query.Constant subquery)
+	{
+		return new ConstantCondition(this)
+		{
+			@Override
+			public String toString()
+			{
+				String string = getClause().toString();
+				if (!string.isEmpty())
+					string += " ";
+				return string + "exists (" + subquery + ")";
+			}
+
+		};
+	}
+
+	@Override
+	public ConstantCondition exists(String subquery)
 	{
 		return new ConstantCondition(this)
 		{
