@@ -25,7 +25,7 @@ public class GateControl extends gate.base.Control
 	{
 
 		try (Link link = linksource.getLink();
-			 GateDao dao = new GateDao(link))
+				GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(id);
 
@@ -49,7 +49,7 @@ public class GateControl extends gate.base.Control
 			throw new InvalidUsernameException();
 
 		try (Link link = linksource.getLink();
-			 GateDao dao = new GateDao(link))
+				GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(username);
 
@@ -58,7 +58,9 @@ public class GateControl extends gate.base.Control
 			if (user.getRole().getId() == null)
 				throw new InvalidUsernameException();
 
-			user.setRole(dao.getRoles().stream().filter(e -> e.equals(user.getRole())).findAny()
+			var roles = dao.getRoles();
+			Hierarchy.setup(roles);
+			user.setRole(roles.stream().filter(user.getRole()::equals).findAny()
 					.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
 		}

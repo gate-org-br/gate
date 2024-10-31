@@ -61,16 +61,13 @@ class GateDao extends gate.base.Dao
 							role.getManager().setName(cursor.getValue(String.class, "manager.name"));
 
 							while (cursor.next() && cursor.getValue(ID.class, "id").equals(role.getId()))
-							{
-								Auth auth = new Auth();
-								auth.setId(cursor.getValue(ID.class, "auth.id"));
-								auth.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"));
-								auth.setAccess(cursor.getValue(Auth.Access.class, "auth.access"));
-								auth.setModule(cursor.getValue(String.class, "auth.module"));
-								auth.setScreen(cursor.getValue(String.class, "auth.screen"));
-								auth.setAction(cursor.getValue(String.class, "auth.action"));
-								role.getAuths().add(auth);
-							}
+								role.getAuths().add(new Auth()
+										.setId(cursor.getValue(ID.class, "auth.id"))
+										.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
+										.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
+										.setModule(cursor.getValue(String.class, "auth.module"))
+										.setScreen(cursor.getValue(String.class, "auth.screen"))
+										.setAction(cursor.getValue(String.class, "auth.action")));
 
 							roles.add(role);
 						} while (!cursor.isAfterLast());
@@ -97,16 +94,13 @@ class GateDao extends gate.base.Dao
 				user.setEmail(cursor.getValue(String.class, "email"));
 
 				while (cursor.next())
-				{
-					Auth auth = new Auth();
-					auth.setId(cursor.getValue(ID.class, "auth.id"));
-					auth.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"));
-					auth.setAccess(cursor.getValue(Auth.Access.class, "auth.access"));
-					auth.setModule(cursor.getValue(String.class, "auth.module"));
-					auth.setScreen(cursor.getValue(String.class, "auth.screen"));
-					auth.setAction(cursor.getValue(String.class, "auth.action"));
-					user.getAuths().add(auth);
-				}
+					user.getAuths().add(new Auth()
+							.setId(cursor.getValue(ID.class, "auth.id"))
+							.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
+							.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
+							.setModule(cursor.getValue(String.class, "auth.module"))
+							.setScreen(cursor.getValue(String.class, "auth.screen"))
+							.setAction(cursor.getValue(String.class, "auth.action")));
 
 				return Optional.of(user);
 			}
