@@ -11,6 +11,7 @@ import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
 import gate.sql.Link;
 import gate.sql.LinkSource;
+import gate.type.Hierarchy;
 import gate.util.SystemProperty;
 import gate.util.Toolkit;
 import javax.enterprise.context.Dependent;
@@ -40,7 +41,9 @@ public class GateControl extends gate.base.Control
 			if (user.getRole().getId() == null)
 				throw new InvalidUsernameException();
 
-			user.setRole(dao.getRoles().stream().filter(e -> e.equals(user.getRole())).findAny()
+			var roles = dao.getRoles();
+			Hierarchy.setup(roles);
+			user.setRole(roles.stream().filter(e -> e.equals(user.getRole())).findAny()
 					.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
 		}
