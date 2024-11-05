@@ -1,0 +1,70 @@
+<g-callout class="fill">
+	<h1>@template</h1>
+	<p>
+		Transforms JSON data into HTML using a specified <strong>Handlebars</strong> template.
+		Before applying the transformation, the target adds helper functions (add, sub, mul and div) to <strong>Handlebars</strong>
+		to allow basic arithmetic operations. Commented sections within the template are uncommented during this process.
+		The resulting HTML is then passed to the next target in the pipeline.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			In this example, the <strong>@template</strong> target fetches <a href="/people" target='_blank'>json data</a>
+			from the server, converts it to HTML using the content of the <b>#people</b> template tag, and passes the 
+			transformed information to the <strong>@outer-html</strong> target. The <strong>@outer-html</strong> target replaces the <strong>&lt;g-callout&gt;</strong> with HTML data.
+			Another <b>@template</b> trigger is invoked using the <b>#person</b> template tag when any row in the table is clicked passing the result to the <b>@dialog</b>
+			trigger to show the person detail on a dialog.
+		<p>
+
+		<g-code-viewer style='height: auto'>
+			<g-callout data-trigger="click"
+					   data-action="/people"
+					   data-target="@template(#users) > @outer-html">
+				Click to replace me with a table
+			</g-callout>
+
+			<template id="users">
+				<g-callout>
+					Click on a row to show details on a dialog
+				</g-callout>
+
+				<g-table-scroll style="height: 400px">
+					<table>
+						<caption>PEOPLE</caption>
+						<tbody>
+							<!--{{# .}}-->
+							<tr title="Person"
+								data-action='/people/{{id}}' 
+								data-target="@template(#person) > @dialog(640px, 480px)">
+								<td>{{Name}}</td>
+							</tr>
+							<!--{{/ .}}-->
+						</tbody>
+					</table>
+				</g-table-scroll>
+			</template>
+
+			<template id="person">
+				<fieldset>
+					<label data-size="8">
+						Name:
+						<span>
+							{{Name}}
+						</span>
+					</label>
+					<label data-size="8">
+						Job:
+						<span>
+							{{Job}}
+						</span>
+					</label>
+				</fieldset>
+			</template>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

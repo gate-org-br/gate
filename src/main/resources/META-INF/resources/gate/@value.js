@@ -22,7 +22,7 @@ window.addEventListener("@value", function (event)
 			let contentType = response.headers.get('content-type');
 			if (contentType.startsWith("text/"))
 				response = response.text();
-			else if (contentType === "application/json")
+			else if (contentType.startsWith("application/json"))
 				response = response.json();
 			else
 				response = response.blob();

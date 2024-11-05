@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Icon("2003")
+@Icon("2167")
 @Converter(LocalTimeIntervalConverter.class)
 public final class LocalTimeInterval implements Serializable, Comparable<LocalTimeInterval>, Interval<LocalTime>
 {

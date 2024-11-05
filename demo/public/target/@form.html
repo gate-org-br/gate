@@ -1,0 +1,35 @@
+<g-callout class="fill">
+	<h1>@form</h1>
+	<p>
+		Retrieves a form description from the server and present it to the user for editing.
+		The edited form is then dispatched to the next target on the pipeline, if any.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			On this example, the <strong>@form </strong>target fetches the <a href="/form" 
+																			  target='_blank'>form descriptor</a>
+			from the server using the HTTP get method and presents it's as a form to be edited by the user.
+			Upon edition, the edited form is dispatched to the <strong>@post</strong> target.
+			The <strong>@post</strong> target makes a HTTP post with the edited form to <a href="/form.json" target='_blank'>form.json</a>
+			and dispatches the result to the <strong>@value</strong> target.
+			The <strong>@value</strong> target updates it's target value with the edited form.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-form-view>
+			</g-form-view>
+			<g-coolbar>
+				<a href="/form"
+				   class="primary"
+				   target="@form > @put > @value(this.parent().prev())">
+					Update form<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

@@ -11,11 +11,12 @@ window.addEventListener("@throttle", function (event)
 	let trigger = path[0] || event.target;
 	let {parameters: [timeout = "1000"]} = event.detail;
 
+	let now = Date.now();
 	timeout = parseInt(timeout);
-	let timestamp = new Date().getTime();
-	if (!REGISTRY.has(trigger) || REGISTRY.get(trigger) + timeout < timestamp)
+	let prev = REGISTRY.get(trigger) || 0;
+	if (now - prev > timeout)
 	{
-		REGISTRY.set(trigger, timestamp);
+		REGISTRY.set(trigger, now);
 		event.success(path);
 	} else
 		event.resolve(path);

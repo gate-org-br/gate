@@ -2,9 +2,9 @@ package gate.sql.condition;
 
 import gate.entity.Role;
 import gate.sql.select.Select;
-import gate.type.DateTime;
-import gate.type.DateTimeInterval;
+import gate.type.LocalDateTimeInterval;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,16 +20,16 @@ public class ConstantConditionTest
 	public void testIsNull()
 	{
 		Condition condition = Condition
-			.of("column1").isNull()
-			.and().not("column2").isNull()
-			.and().when(true).expression("column3").isNull()
-			.and().when(true).not("column4").isNull()
-			.and().when(false).expression("column5").isNull()
-			.and().when(false).not("column6").isNull()
-			.and("column7").isNull();
+				.of("column1").isNull()
+				.and().not("column2").isNull()
+				.and().when(true).expression("column3").isNull()
+				.and().when(true).not("column4").isNull()
+				.and().when(false).expression("column5").isNull()
+				.and().when(false).not("column6").isNull()
+				.and("column7").isNull();
 
 		assertEquals("column1 is null and not column2 is null and column3 is null and not column4 is null and column7 is null",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
@@ -38,16 +38,16 @@ public class ConstantConditionTest
 	public void testIsEq()
 	{
 		Condition condition = Condition
-			.of("column1").isEq("value1")
-			.and().not("column2").isEq("value2")
-			.and().when(true).expression("column3").isEq("value3")
-			.and().when(true).not("column4").isEq("value4")
-			.and().when(false).expression("column5").isEq("value5")
-			.and().when(false).not("column6").isEq("value6")
-			.and("column7").isEq("value7");
+				.of("column1").isEq("value1")
+				.and().not("column2").isEq("value2")
+				.and().when(true).expression("column3").isEq("value3")
+				.and().when(true).not("column4").isEq("value4")
+				.and().when(false).expression("column5").isEq("value5")
+				.and().when(false).not("column6").isEq("value6")
+				.and("column7").isEq("value7");
 
 		assertEquals("column1 = value1 and not column2 = value2 and column3 = value3 and not column4 = value4 and column7 = value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
@@ -56,16 +56,16 @@ public class ConstantConditionTest
 	public void testIsNe()
 	{
 		Condition condition = Condition
-			.of("column1").isNe("value1")
-			.and().not("column2").isNe("value2")
-			.and().when(true).expression("column3").isNe("value3")
-			.and().when(true).not("column4").isNe("value4")
-			.and().when(false).expression("column5").isNe("value5")
-			.and().when(false).not("column6").isNe("value6")
-			.and("column7").isNe("value7");
+				.of("column1").isNe("value1")
+				.and().not("column2").isNe("value2")
+				.and().when(true).expression("column3").isNe("value3")
+				.and().when(true).not("column4").isNe("value4")
+				.and().when(false).expression("column5").isNe("value5")
+				.and().when(false).not("column6").isNe("value6")
+				.and("column7").isNe("value7");
 
 		assertEquals("column1 <> value1 and not column2 <> value2 and column3 <> value3 and not column4 <> value4 and column7 <> value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
@@ -73,16 +73,16 @@ public class ConstantConditionTest
 	public void testIsLt()
 	{
 		Condition condition = Condition
-			.of("column1").isLt("value1")
-			.and().not("column2").isLt("value2")
-			.and().when(true).expression("column3").isLt("value3")
-			.and().when(true).not("column4").isLt("value4")
-			.and().when(false).expression("column5").isLt("value5")
-			.and().when(false).not("column6").isLt("value6")
-			.and("column7").isLt("value7");
+				.of("column1").isLt("value1")
+				.and().not("column2").isLt("value2")
+				.and().when(true).expression("column3").isLt("value3")
+				.and().when(true).not("column4").isLt("value4")
+				.and().when(false).expression("column5").isLt("value5")
+				.and().when(false).not("column6").isLt("value6")
+				.and("column7").isLt("value7");
 
 		assertEquals("column1 < value1 and not column2 < value2 and column3 < value3 and not column4 < value4 and column7 < value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
@@ -91,16 +91,16 @@ public class ConstantConditionTest
 	public void testIsLe()
 	{
 		Condition condition = Condition
-			.of("column1").isLe("value1")
-			.and().not("column2").isLe("value2")
-			.and().when(true).expression("column3").isLe("value3")
-			.and().when(true).not("column4").isLe("value4")
-			.and().when(false).expression("column5").isLe("value5")
-			.and().when(false).not("column6").isLe("value6")
-			.and("column7").isLe("value7");
+				.of("column1").isLe("value1")
+				.and().not("column2").isLe("value2")
+				.and().when(true).expression("column3").isLe("value3")
+				.and().when(true).not("column4").isLe("value4")
+				.and().when(false).expression("column5").isLe("value5")
+				.and().when(false).not("column6").isLe("value6")
+				.and("column7").isLe("value7");
 
 		assertEquals("column1 <= value1 and not column2 <= value2 and column3 <= value3 and not column4 <= value4 and column7 <= value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
@@ -109,16 +109,16 @@ public class ConstantConditionTest
 	public void testIsGt()
 	{
 		Condition condition = Condition
-			.of("column1").isGt("value1")
-			.and().not("column2").isGt("value2")
-			.and().when(true).expression("column3").isGt("value3")
-			.and().when(true).not("column4").isGt("value4")
-			.and().when(false).expression("column5").isGt("value5")
-			.and().when(false).not("column6").isGt("value6")
-			.and("column7").isGt("value7");
+				.of("column1").isGt("value1")
+				.and().not("column2").isGt("value2")
+				.and().when(true).expression("column3").isGt("value3")
+				.and().when(true).not("column4").isGt("value4")
+				.and().when(false).expression("column5").isGt("value5")
+				.and().when(false).not("column6").isGt("value6")
+				.and("column7").isGt("value7");
 
 		assertEquals("column1 > value1 and not column2 > value2 and column3 > value3 and not column4 > value4 and column7 > value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 
 	}
@@ -127,16 +127,16 @@ public class ConstantConditionTest
 	public void testIsGe()
 	{
 		Condition condition = Condition
-			.of("column1").isGe("value1")
-			.and().not("column2").isGe("value2")
-			.and().when(true).expression("column3").isGe("value3")
-			.and().when(true).not("column4").isGe("value4")
-			.and().when(false).expression("column5").isGe("value5")
-			.and().when(false).not("column6").isGe("value6")
-			.and("column7").isGe("value7");
+				.of("column1").isGe("value1")
+				.and().not("column2").isGe("value2")
+				.and().when(true).expression("column3").isGe("value3")
+				.and().when(true).not("column4").isGe("value4")
+				.and().when(false).expression("column5").isGe("value5")
+				.and().when(false).not("column6").isGe("value6")
+				.and("column7").isGe("value7");
 
 		assertEquals("column1 >= value1 and not column2 >= value2 and column3 >= value3 and not column4 >= value4 and column7 >= value7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
@@ -144,15 +144,15 @@ public class ConstantConditionTest
 	public void testIsBw()
 	{
 		Condition condition = Condition
-			.of("column1").isBw("ge1", "le1")
-			.and().not("column2").isBw("ge2", "le2")
-			.and().when(true).expression("column3").isBw("ge3", "le3")
-			.and().when(true).not("column4").isBw("ge4", "le4")
-			.and().when(false).expression("column5").isBw("ge5", "le5")
-			.and().when(false).not("column6").isBw("ge6", "le6")
-			.and("column7").isBw("ge7", "le7");
+				.of("column1").isBw("ge1", "le1")
+				.and().not("column2").isBw("ge2", "le2")
+				.and().when(true).expression("column3").isBw("ge3", "le3")
+				.and().when(true).not("column4").isBw("ge4", "le4")
+				.and().when(false).expression("column5").isBw("ge5", "le5")
+				.and().when(false).not("column6").isBw("ge6", "le6")
+				.and("column7").isBw("ge7", "le7");
 		assertEquals("column1 between ge1 and le1 and not column2 between ge2 and le2 and column3 between ge3 and le3 and not column4 between ge4 and le4 and column7 between ge7 and le7",
-			condition.toString());
+				condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
 
@@ -379,9 +379,9 @@ public class ConstantConditionTest
 	@Test
 	public void testBw_Object() throws ParseException
 	{
-		DateTime min = DateTime.of("22/04/1500 00:00:00");
-		DateTime max = DateTime.of("15/11/1989 00:00:00");
-		DateTimeInterval dateTimeInterval = new DateTimeInterval(min, max);
+		LocalDateTime min = LocalDateTime.of(1500, 4, 22, 0, 0, 0);
+		LocalDateTime max = LocalDateTime.of(1989, 11, 15, 0, 0, 0);
+		LocalDateTimeInterval dateTimeInterval = LocalDateTimeInterval.of(min, max);
 
 		Condition condition1 = Condition.of("column1").bw(dateTimeInterval);
 		assertEquals("column1 between ? and ?", condition1.toString());
@@ -402,10 +402,12 @@ public class ConstantConditionTest
 			fail();
 		} catch (NullPointerException ex)
 		{
-			DateTime min = DateTime.of("22/04/1500 00:00:00");
-			DateTime max = DateTime.of("15/11/1989 00:00:00");
-			DateTimeInterval dateTimeInterval = new DateTimeInterval(min, max);
-			Condition condition = Condition.of("column1").bw(DateTimeInterval.class, dateTimeInterval);
+
+			LocalDateTime min = LocalDateTime.of(1500, 4, 22, 0, 0, 0);
+			LocalDateTime max = LocalDateTime.of(1989, 11, 15, 0, 0, 0);
+			LocalDateTimeInterval dateTimeInterval = LocalDateTimeInterval.of(min, max);
+
+			Condition condition = Condition.of("column1").bw(LocalDateTimeInterval.class, dateTimeInterval);
 			assertEquals("column1 between ? and ?", condition.toString());
 			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(dateTimeInterval));
 		}
@@ -414,17 +416,17 @@ public class ConstantConditionTest
 	@Test
 	public void testBw_Object_Object() throws ParseException
 	{
-		DateTime min = DateTime.of("22/04/1500 00:00:00");
-		DateTime max = DateTime.of("15/11/1989 00:00:00");
+		LocalDateTime min = LocalDateTime.of(1500, 4, 22, 0, 0, 0);
+		LocalDateTime max = LocalDateTime.of(1989, 11, 15, 0, 0, 0);
 
 		Condition condition1 = Condition.of("column1").bw(min, max);
 		assertEquals("column1 between ? and ?", condition1.toString());
 		assertEquals(condition1.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 
 		Condition condition2 = Condition
-			.of("column1").bw(min, (Object) null)
-			.and("column2").bw((Object) null, max)
-			.and("column3").bw(min, max);
+				.of("column1").bw(min, (Object) null)
+				.and("column2").bw((Object) null, max)
+				.and("column3").bw(min, max);
 		assertEquals("column3 between ? and ?", condition2.toString());
 		assertEquals(condition2.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 	}
@@ -434,13 +436,13 @@ public class ConstantConditionTest
 	{
 		try
 		{
-			Condition.of("column1").bw(DateTime.class, null, null);
+			Condition.of("column1").bw(LocalDateTime.class, null, null);
 			fail();
 		} catch (NullPointerException ex)
 		{
-			DateTime min = DateTime.of("22/04/1500 00:00:00");
-			DateTime max = DateTime.of("15/11/1989 00:00:00");
-			Condition condition = Condition.of("column1").bw(DateTime.class, min, max);
+			LocalDateTime min = LocalDateTime.of(1500, 4, 22, 0, 0, 0);
+			LocalDateTime max = LocalDateTime.of(1989, 11, 15, 0, 0, 0);
+			Condition condition = Condition.of("column1").bw(LocalDateTime.class, min, max);
 			assertEquals("column1 between ? and ?", condition.toString());
 			assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(min, max));
 		}
@@ -517,11 +519,11 @@ public class ConstantConditionTest
 	public void testConstantExists()
 	{
 		Condition condition = Condition.of("Role.id").eq(1)
-			.and().exists(Select
-				.expression("id")
-				.from("Cliente")
-				.where(Condition
-					.of("id").isEq("1")));
+				.and().exists(Select
+						.expression("id")
+						.from("Cliente")
+						.where(Condition
+								.of("id").isEq("1")));
 		assertEquals("Role.id = ? and exists (select id from Cliente where id = 1)", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
@@ -530,21 +532,21 @@ public class ConstantConditionTest
 	public void testSubqueryEqObject()
 	{
 		Condition condition = Condition
-			.of("Role.id").eq(1)
-			.and().when(true)
-			.subquery(Select
-				.expression("id")
-				.from("Cliente")
-				.where(Condition.of("id").isEq("1"))).eq(2);
+				.of("Role.id").eq(1)
+				.and().when(true)
+				.subquery(Select
+						.expression("id")
+						.from("Cliente")
+						.where(Condition.of("id").isEq("1"))).eq(2);
 		assertEquals("Role.id = ? and (select id from Cliente where id = 1) = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 
 		condition = Condition.of("Role.id").eq(1)
-			.and().when(false).subquery(Select
-			.expression("id")
-			.from("Cliente")
-			.where(Condition
-				.of("id").isEq("1"))).eq(2);
+				.and().when(false).subquery(Select
+				.expression("id")
+				.from("Cliente")
+				.where(Condition
+						.of("id").isEq("1"))).eq(2);
 		assertEquals("Role.id = ?", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1));
 	}
@@ -554,11 +556,11 @@ public class ConstantConditionTest
 	{
 		String expected = "Role.id = ? and (select id from Cliente where id = 1) = 1";
 		String result = Condition.of("Role.id").eq(1)
-			.and().when(true).subquery(Select
-			.expression("id")
-			.from("Cliente")
-			.where(Condition.of("id").isEq("1"))).isEq("1")
-			.toString();
+				.and().when(true).subquery(Select
+				.expression("id")
+				.from("Cliente")
+				.where(Condition.of("id").isEq("1"))).isEq("1")
+				.toString();
 		assertEquals(expected, result);
 	}
 
@@ -567,7 +569,7 @@ public class ConstantConditionTest
 	{
 		String expected = "Role.id = ?";
 		String result = Condition.from(Role.class).expression("Role.id").eq(Role::getId)
-			.toString();
+				.toString();
 		assertEquals(expected, result);
 	}
 }

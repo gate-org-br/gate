@@ -1,7 +1,7 @@
 import DOM from './dom.js';
 const REQUIRED = new Error();
 import EventHandler from './event-handler.js';
-const RESOLVE_REGEX = /(\?|@|\$attr|\$ATTR|\$prop|\$PROP|\$user|\$USER|\$elem|\$ELEM)\{([^}]*)\}/g;
+const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(([^)]*?)\)/g;
 
 function navigate(trigger, value)
 {
@@ -36,23 +36,21 @@ export default function resolve(trigger, context, string)
 			value = decodeURIComponent(value);
 			switch (method)
 			{
-				case '$elem':
+				case '@value':
 					return navigate(trigger, value);
-				case '$user':
+				case '@input':
 					return prompt(value);
-				case '$prop':
+				case '@prop':
 					return property(context, value);
-				case '$attr':
+				case '@attr':
 					return context.getAttribute(value);
-				case '@':
-				case '$ELEM':
+				case '@VALUE':
 					return require(navigate(trigger, value));
-				case '?':
-				case '$USER':
+				case '@INPUT':
 					return require(prompt(value));
-				case '$PROP':
+				case '@PROP':
 					return require(property(context, value));
-				case '$ATTR':
+				case '@ATTR':
 					return require(context.getAttribute(value));
 			}
 		});

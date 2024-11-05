@@ -12,9 +12,9 @@ import java.util.Optional;
 @Info
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.FIELD, ElementType.METHOD
-	})
+		{
+			ElementType.TYPE, ElementType.FIELD, ElementType.METHOD
+		})
 public @interface Icon
 {
 
@@ -27,9 +27,8 @@ public @interface Icon
 		{
 			try
 			{
-				if (element instanceof String)
+				if (element instanceof String string)
 				{
-					String string = (String) element;
 
 					Optional<gate.icon.Icon> icon = Icons.getInstance().get(string);
 					if (icon.isPresent())
@@ -39,12 +38,11 @@ public @interface Icon
 					return optional.isPresent() ? extract(optional.get()) : Optional.empty();
 				}
 
-				if (element instanceof Enum<?>)
-					return extract(element.getClass().getField(((Enum<?>) element).name()));
+				if (element instanceof Enum<?> aEnum)
+					return extract(element.getClass().getField(aEnum.name()));
 
-				if (element instanceof AnnotatedElement)
+				if (element instanceof AnnotatedElement annotatedElement)
 				{
-					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Icon.class))
 						return extract(annotatedElement.getAnnotation(Icon.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyIcon.class))

@@ -1,12 +1,10 @@
 package gate.annotation;
 
-import gate.type.Date;
 import gate.type.Sex;
-import gate.type.Time;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-@Icon("gate.type.Date")
+@Icon("gate.type.LocalDateInterval")
 public class IconTest
 {
 
@@ -19,18 +17,10 @@ public class IconTest
 	}
 
 	@Test
-	public void testObject()
-	{
-		assertEquals("2003", Icon.Extractor.extract(Date.now()).get().getCode());
-		assertEquals("2167", Icon.Extractor.extract(Time.now()).get().getCode());
-
-	}
-
-	@Test
 	public void testClassName()
 	{
-		assertEquals("2003", Icon.Extractor.extract("gate.type.Date").get().getCode());
-		assertEquals("2167", Icon.Extractor.extract("gate.type.Time").get().getCode());
+		assertEquals("2003", Icon.Extractor.extract("gate.type.LocalDateInterval").get().getCode());
+		assertEquals("2167", Icon.Extractor.extract("gate.type.LocalTimeInterval").get().getCode());
 	}
 
 	@Test

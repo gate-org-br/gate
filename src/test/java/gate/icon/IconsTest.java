@@ -4,7 +4,7 @@ import gate.annotation.Icon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-@Icon("gate.type.Date")
+@Icon("gate.type.LocalDateInterval")
 public class IconsTest
 {
 

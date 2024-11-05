@@ -7,7 +7,7 @@ import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 import TriggerExtractor from './trigger-extractor.js';
 
-window.addEventListener("@post", function (event)
+window.addEventListener("@put", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;

@@ -6,6 +6,7 @@ import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.handler.URLHandler;
 import gate.http.Authorization;
+import gate.security.UnsecureHttpClient;
 import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
@@ -14,17 +15,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.Socket;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,11 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509ExtendedTrustManager;
 
 @Handler(URLHandler.class)
 public class URL
@@ -45,52 +36,11 @@ public class URL
 	private static final Duration INFINITE = Duration.ZERO;
 
 	private final String value;
-	private boolean trust = false;
+	private boolean disableSecurity = false;
 	private Duration timeout = Duration.ZERO;
 	private final Parameters parameters;
 	private Authorization authorization;
 	private final Map<String, String> headers = new HashMap<>();
-
-	private static final TrustManager TRUST_MANAGER = new X509ExtendedTrustManager()
-	{
-		@Override
-		public X509Certificate[] getAcceptedIssuers()
-		{
-			return new X509Certificate[]
-			{
-			};
-		}
-
-		@Override
-		public void checkClientTrusted(X509Certificate[] chain, String authType)
-		{
-		}
-
-		@Override
-		public void checkServerTrusted(X509Certificate[] chain, String authType)
-		{
-		}
-
-		@Override
-		public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket)
-		{
-		}
-
-		@Override
-		public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket)
-		{
-		}
-
-		@Override
-		public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
-		{
-		}
-
-		@Override
-		public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
-		{
-		}
-	};
 
 	public URL(String url)
 	{
@@ -178,9 +128,15 @@ public class URL
 		return this;
 	}
 
-	public URL trust(boolean trust)
+	public URL enableSecurity()
 	{
-		this.trust = trust;
+		this.disableSecurity = false;
+		return this;
+	}
+
+	public URL disableSecurity()
+	{
+		this.disableSecurity = true;
 		return this;
 	}
 
@@ -221,7 +177,7 @@ public class URL
 	public URLResult get(Parameters parameters) throws IOException
 	{
 		return get("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult post(List<Parameter> parameters) throws IOException
@@ -242,7 +198,7 @@ public class URL
 	public URLResult post(Parameters parameters) throws IOException
 	{
 		return post("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult put(List<Parameter> parameters) throws IOException
@@ -263,7 +219,7 @@ public class URL
 	public URLResult put(Parameters parameters) throws IOException
 	{
 		return put("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult patch(List<Parameter> parameters) throws IOException
@@ -284,7 +240,7 @@ public class URL
 	public URLResult patch(Parameters parameters) throws IOException
 	{
 		return patch("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult delete(List<Parameter> parameters) throws IOException
@@ -305,7 +261,7 @@ public class URL
 	public URLResult delete(Parameters parameters) throws IOException
 	{
 		return delete("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult head(List<Parameter> parameters) throws IOException
@@ -326,7 +282,7 @@ public class URL
 	public URLResult head(Parameters parameters) throws IOException
 	{
 		return head("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult options(List<Parameter> parameters) throws IOException
@@ -347,7 +303,7 @@ public class URL
 	public URLResult options(Parameters parameters) throws IOException
 	{
 		return options("application/x-www-form-urlencoded",
-			parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
+				parameters.toEncodedString().getBytes(StandardCharsets.UTF_8));
 	}
 
 	public URLResult get() throws IOException
@@ -390,7 +346,7 @@ public class URL
 		try
 		{
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
-				.uri(URI.create(toString()));
+					.uri(URI.create(toString()));
 
 			if (timeout != INFINITE)
 				builder.timeout(timeout);
@@ -410,7 +366,7 @@ public class URL
 				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
-				.stream().findAny().orElse("application/octet-stream"), response);
+					.stream().findAny().orElse("application/octet-stream"), response);
 		} catch (InterruptedException ex)
 		{
 			throw new IOException(ex);
@@ -424,9 +380,9 @@ public class URL
 			HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofByteArray(bytes);
 
 			HttpRequest.Builder builder = HttpRequest.newBuilder()
-				.uri(URI.create(toString()))
-				.header("Content-Type", contentType)
-				.method(method, bodyPublisher);
+					.uri(URI.create(toString()))
+					.header("Content-Type", contentType)
+					.method(method, bodyPublisher);
 
 			if (timeout != INFINITE)
 				builder.timeout(timeout);
@@ -446,7 +402,7 @@ public class URL
 				throw new URLException(response.statusCode(), getErrorMessage(response));
 
 			return new URLResult(response.statusCode(), response.headers().allValues("Content-Type")
-				.stream().findAny().orElse("application/octet-stream"), response);
+					.stream().findAny().orElse("application/octet-stream"), response);
 		} catch (InterruptedException ex)
 		{
 			throw new IOException(ex);
@@ -459,8 +415,8 @@ public class URL
 		{
 			StringBuilder string = new StringBuilder();
 			for (String line = in.readLine();
-				line != null;
-				line = in.readLine())
+					line != null;
+					line = in.readLine())
 				string.append(line);
 			return string.toString();
 		}
@@ -468,29 +424,13 @@ public class URL
 
 	private HttpClient getHttpClient() throws IOException
 	{
-		try
-		{
-			HttpClient.Builder builder = HttpClient.newBuilder();
-			if (trust)
-			{
-				var sslContext = SSLContext.getInstance("TLS");
-				sslContext.init(null, new TrustManager[]
-				{
-					TRUST_MANAGER
-				}, new SecureRandom());
-				builder.sslContext(sslContext);
+		HttpClient.Builder builder = disableSecurity
+				? UnsecureHttpClient.newBuilder()
+				: HttpClient.newBuilder();
+		if (timeout != INFINITE)
+			builder.connectTimeout(timeout);
+		return builder.build();
 
-				SSLParameters ssl = new SSLParameters();
-				ssl.setEndpointIdentificationAlgorithm("");
-				builder.sslParameters(ssl);
-			}
-			if (timeout != INFINITE)
-				builder.connectTimeout(timeout);
-			return builder.build();
-		} catch (NoSuchAlgorithmException | KeyManagementException e)
-		{
-			throw new IOException("Failed to create HTTP client", e);
-		}
 	}
 
 	@Override
@@ -500,9 +440,9 @@ public class URL
 	}
 
 	public static String toString(String module,
-		String screen,
-		String action,
-		String arguments)
+			String screen,
+			String action,
+			String arguments)
 	{
 		StringJoiner string = new StringJoiner("&");
 		if (Toolkit.notEmpty(module))
@@ -531,7 +471,7 @@ public class URL
 			qs.append(string.charAt(i++));
 
 		return !qs.isEmpty()
-			? new URL(url.toString(), Parameters.parse(qs.toString()))
-			: new URL(url.toString());
+				? new URL(url.toString(), Parameters.parse(qs.toString()))
+				: new URL(url.toString());
 	}
 }

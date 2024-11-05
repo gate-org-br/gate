@@ -1,0 +1,597 @@
+{
+	"roles": [
+		{
+			"value": "0000000001",
+			"label": "Role 1",
+			"children": [
+				{
+					"value": "0000000011",
+					"label": "Role 1.1",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000012",
+					"label": "Role 1.2",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000013",
+					"label": "Role 1.3",
+					"children": [
+					]
+				}
+			]
+		},
+		{
+			"value": "0000000002",
+			"label": "Role 2",
+			"children": [
+				{
+					"value": "0000000021",
+					"label": "Role 2.1",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000022",
+					"label": "Role 2.2",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000023",
+					"label": "Role 2.3",
+					"children": [
+					]
+				}
+			]
+		},
+		{
+			"value": "0000000003",
+			"label": "Role 3",
+			"children": [
+				{
+					"value": "0000000031",
+					"label": "Role 3.1",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000032",
+					"label": "Role 3.2",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000033",
+					"label": "Role 3.3",
+					"children": [
+					]
+				}
+			]
+		},
+		{
+			"value": "0000000003",
+			"label": "Role 4",
+			"children": [
+				{
+					"value": "0000000041",
+					"label": "Role 4.1",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000042",
+					"label": "Role 4.2",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000043",
+					"label": "Role 4.3",
+					"children": [
+					]
+				}
+			]
+		},
+		{
+			"value": "0000000005",
+			"label": "Role 5",
+			"children": [
+				{
+					"value": "0000000051",
+					"label": "Role 5.1",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000052",
+					"label": "Role 5.2",
+					"children": [
+					]
+				},
+				{
+					"value": "0000000053",
+					"label": "Role 5.3",
+					"children": [
+					]
+				}
+			]
+		}
+	],
+	"people": [
+		{
+			"id": "1",
+			"Name": "Albert Einstein",
+			"Job": "Physicist",
+			"Birthdate": "March 14, 1879",
+			"Sex": "Male"
+		},
+		{
+			"id": "2",
+			"Name": "Marie Curie",
+			"Job": "Chemist and Physicist",
+			"Birthdate": "November 7, 1867",
+			"Sex": "Female"
+		},
+		{
+			"id": "3",
+			"Name": "Nelson Mandela",
+			"Job": "Political Leader",
+			"Birthdate": "July 18, 1918",
+			"Sex": "Male"
+		},
+		{
+			"id": "4",
+			"Name": "Ada Lovelace",
+			"Job": "Mathematician and Writer",
+			"Birthdate": "December 10, 1815",
+			"Sex": "Female"
+		},
+		{
+			"id": "5",
+			"Name": "Leonardo da Vinci",
+			"Job": "Polymath",
+			"Birthdate": "April 15, 1452",
+			"Sex": "Male"
+		},
+		{
+			"id": "6",
+			"Name": "Rosa Parks",
+			"Job": "Civil Rights Activist",
+			"Birthdate": "February 4, 1913",
+			"Sex": "Female"
+		},
+		{
+			"id": "7",
+			"Name": "Steve Jobs",
+			"Job": "Entrepreneur and Innovator",
+			"Birthdate": "February 24, 1955",
+			"Sex": "Male"
+		},
+		{
+			"id": "8",
+			"Name": "Malala Yousafzai",
+			"Job": "Activist for Female Education",
+			"Birthdate": "July 12, 1997",
+			"Sex": "Female"
+		},
+		{
+			"id": "9",
+			"Name": "Martin Luther King Jr.",
+			"Job": "Civil Rights Leader",
+			"Birthdate": "January 15, 1929",
+			"Sex": "Male"
+		},
+		{
+			"id": "10",
+			"Name": "Jane Goodall",
+			"Job": "Primatologist and Anthropologist",
+			"Birthdate": "April 3, 1934",
+			"Sex": "Female"
+		},
+		{
+			"id": "11",
+			"Name": "Winston Churchill",
+			"Job": "British Prime Minister",
+			"Birthdate": "November 30, 1874",
+			"Sex": "Male"
+		},
+		{
+			"id": "12",
+			"Name": "Mahatma Gandhi",
+			"Job": "Leader of Indian Independence Movement",
+			"Birthdate": "October 2, 1869",
+			"Sex": "Male"
+		},
+		{
+			"id": "13",
+			"Name": "Cleopatra",
+			"Job": "Queen of Ancient Egypt",
+			"Birthdate": "January 69 BC",
+			"Sex": "Female"
+		},
+		{
+			"id": "14",
+			"Name": "William Shakespeare",
+			"Job": "Playwright and Poet",
+			"Birthdate": "April 23, 1564",
+			"Sex": "Male"
+		},
+		{
+			"id": "15",
+			"Name": "Mother Teresa",
+			"Job": "Missionary and Nobel Laureate",
+			"Birthdate": "August 26, 1910",
+			"Sex": "Female"
+		},
+		{
+			"id": "16",
+			"Name": "Issac Newton",
+			"Job": "Physicist and Mathematician",
+			"Birthdate": "January 4, 1643",
+			"Sex": "Male"
+		},
+		{
+			"id": "17",
+			"Name": "Charles Darwin",
+			"Job": "Naturalist and Biologist",
+			"Birthdate": "February 12, 1809",
+			"Sex": "Male"
+		},
+		{
+			"id": "18",
+			"Name": "Marilyn Monroe",
+			"Job": "Actress and Model",
+			"Birthdate": "June 1, 1926",
+			"Sex": "Female"
+		},
+		{
+			"id": "19",
+			"Name": "Abraham Lincoln",
+			"Job": "16th President of the United States",
+			"Birthdate": "February 12, 1809",
+			"Sex": "Male"
+		},
+		{
+			"id": "20",
+			"Name": "Pablo Picasso",
+			"Job": "Painter and Sculptor",
+			"Birthdate": "October 25, 1881",
+			"Sex": "Male"
+		},
+		{
+			"id": "21",
+			"Name": "Cristiano Ronaldo",
+			"Job": "Footballer",
+			"Birthdate": "February 5, 1985",
+			"Sex": "Male"
+		},
+		{
+			"id": "22",
+			"Name": "Amelia Earhart",
+			"Job": "Aviator and Author",
+			"Birthdate": "July 24, 1897",
+			"Sex": "Female"
+		},
+		{
+			"id": "23",
+			"Name": "Bill Gates",
+			"Job": "Co-founder of Microsoft",
+			"Birthdate": "October 28, 1955",
+			"Sex": "Male"
+		},
+		{
+			"id": "24",
+			"Name": "Queen Elizabeth II",
+			"Job": "Queen of the United Kingdom",
+			"Birthdate": "April 21, 1926",
+			"Sex": "Female"
+		},
+		{
+			"id": "25",
+			"Name": "John F. Kennedy",
+			"Job": "35th President of the United States",
+			"Birthdate": "May 29, 1917",
+			"Sex": "Male"
+		},
+		{
+			"id": "26",
+			"Name": "Stephen Hawking",
+			"Job": "Theoretical Physicist",
+			"Birthdate": "January 8, 1942",
+			"Sex": "Male"
+		},
+		{
+			"id": "27",
+			"Name": "Oprah Winfrey",
+			"Job": "Media Mogul and Philanthropist",
+			"Birthdate": "January 29, 1954",
+			"Sex": "Female"
+		},
+		{
+			"id": "28",
+			"Name": "Neil Armstrong",
+			"Job": "Astronaut and First Person on the Moon",
+			"Birthdate": "August 5, 1930",
+			"Sex": "Male"
+		},
+		{
+			"id": "29",
+			"Name": "Elon Musk",
+			"Job": "Entrepreneur and CEO of SpaceX and Tesla",
+			"Birthdate": "June 28, 1971",
+			"Sex": "Male"
+		},
+		{
+			"id": "30",
+			"Name": "Marie Antoinette",
+			"Job": "Queen of France",
+			"Birthdate": "November 2, 1755",
+			"Sex": "Female"
+		},
+		{
+			"id": "31",
+			"Name": "Vincent van Gogh",
+			"Job": "Painter",
+			"Birthdate": "March 30, 1853",
+			"Sex": "Male"
+		},
+		{
+			"id": "32",
+			"Name": "Coco Chanel",
+			"Job": "Fashion Designer",
+			"Birthdate": "August 19, 1883",
+			"Sex": "Female"
+		},
+		{
+			"id": "33",
+			"Name": "George Washington",
+			"Job": "1st President of the United States",
+			"Birthdate": "February 22, 1732",
+			"Sex": "Male"
+		},
+		{
+			"id": "34",
+			"Name": "Charles Dickens",
+			"Job": "Novelist",
+			"Birthdate": "February 7, 1812",
+			"Sex": "Male"
+		},
+		{
+			"id": "35",
+			"Name": "Helen Keller",
+			"Job": "Author and Activist",
+			"Birthdate": "June 27, 1880",
+			"Sex": "Female"
+		},
+		{
+			"id": "36",
+			"Name": "Walt Disney",
+			"Job": "Entrepreneur and Animator",
+			"Birthdate": "December 5, 1901",
+			"Sex": "Male"
+		},
+		{
+			"id": "37",
+			"Name": "J.K. Rowling",
+			"Job": "Author of Harry Potter series",
+			"Birthdate": "July 31, 1965",
+			"Sex": "Female"
+		},
+		{
+			"id": "38",
+			"Name": "Sigmund Freud",
+			"Job": "Psychologist",
+			"Birthdate": "May 6, 1856",
+			"Sex": "Male"
+		},
+		{
+			"id": "39",
+			"Name": "Frida Kahlo",
+			"Job": "Painter",
+			"Birthdate": "July 6, 1907",
+			"Sex": "Female"
+		},
+		{
+			"id": "40",
+			"Name": "Mark Twain",
+			"Job": "Author and Humorist",
+			"Birthdate": "November 30, 1835",
+			"Sex": "Male"
+		},
+		{
+			"id": "41",
+			"Name": "George Orwell",
+			"Job": "Author of 1984",
+			"Birthdate": "June 25, 1903",
+			"Sex": "Male"
+		},
+		{
+			"id": "42",
+			"Name": "Marlon Brando",
+			"Job": "Actor",
+			"Birthdate": "April 3, 1924",
+			"Sex": "Male"
+		},
+		{
+			"id": "43",
+			"Name": "Eleanor Roosevelt",
+			"Job": "First Lady and Activist",
+			"Birthdate": "October 11, 1884",
+			"Sex": "Female"
+		},
+		{
+			"id": "44",
+			"Name": "John Lennon",
+			"Job": "Musician and Activist",
+			"Birthdate": "October 9, 1940",
+			"Sex": "Male"
+		},
+		{
+			"id": "45",
+			"Name": "Madame Curie",
+			"Job": "Chemist and Physicist",
+			"Birthdate": "November 7, 1867",
+			"Sex": "Female"
+		},
+		{
+			"id": "46",
+			"Name": "Napoleon Bonaparte",
+			"Job": "Military and Political Leader",
+			"Birthdate": "August 15, 1769",
+			"Sex": "Male"
+		},
+		{
+			"id": "47",
+			"Name": "Aristotle",
+			"Job": "Philosopher",
+			"Birthdate": "384 BC",
+			"Sex": "Male"
+		},
+		{
+			"id": "48",
+			"Name": "Queen Victoria",
+			"Job": "Queen of the United Kingdom",
+			"Birthdate": "May 24, 1819",
+			"Sex": "Female"
+		},
+		{
+			"id": "49",
+			"Name": "Michael Jordan",
+			"Job": "Basketball Player",
+			"Birthdate": "February 17, 1963",
+			"Sex": "Male"
+		},
+		{
+			"id": "50",
+			"Name": "Einstein",
+			"Job": "Physicist",
+			"Birthdate": "March 14, 1879",
+			"Sex": "Male"
+		},
+		{
+			"id": "51",
+			"Name": "Cleopatra VII",
+			"Job": "Queen of Ancient Egypt",
+			"Birthdate": "January 69 BC",
+			"Sex": "Female"
+		},
+		{
+			"id": "52",
+			"Name": "George W. Bush",
+			"Job": "43rd President of the United States",
+			"Birthdate": "July 6, 1946",
+			"Sex": "Male"
+		},
+		{
+			"id": "53",
+			"Name": "Wright Brothers",
+			"Job": "Aviation Pioneers",
+			"Birthdate": "Orville: August 19, 1871 / Wilbur: April 16, 1867",
+			"Sex": "Male"
+		},
+		{
+			"id": "54",
+			"Name": "Mao Zedong",
+			"Job": "Chinese Communist Leader",
+			"Birthdate": "December 26, 1893",
+			"Sex": "Male"
+		},
+		{
+			"id": "55",
+			"Name": "Thomas Edison",
+			"Job": "Inventor",
+			"Birthdate": "February 11, 1847",
+			"Sex": "Male"
+		},
+		{
+			"id": "56",
+			"Name": "Martha Graham",
+			"Job": "Dancer and Choreographer",
+			"Birthdate": "May 11, 1894",
+			"Sex": "Female"
+		},
+		{
+			"id": "57",
+			"Name": "Alexander the Great",
+			"Job": "Military Conqueror",
+			"Birthdate": "July 356 BC",
+			"Sex": "Male"
+		},
+		{
+			"id": "58",
+			"Name": "Aung San Suu Kyi",
+			"Job": "Political Leader and Nobel Laureate",
+			"Birthdate": "June 19, 1945",
+			"Sex": "Female"
+		},
+		{
+			"id": "59",
+			"Name": "Karl Marx",
+			"Job": "Philosopher and Economist",
+			"Birthdate": "May 5, 1818",
+			"Sex": "Male"
+		},
+		{
+			"id": "60",
+			"Name": "Muhammad Ali",
+			"Job": "Boxer and Activist",
+			"Birthdate": "January 17, 1942",
+			"Sex": "Male"
+		},
+		{
+			"id": "61",
+			"Name": "George Washington Carver",
+			"Job": "Agricultural Scientist",
+			"Birthdate": "January 1864",
+			"Sex": "Male"
+		}
+	],
+	"form-data": {
+		"fields": [
+			"Field 0",
+			{
+				"name": "Field 1",
+				"required": true,
+				"columns": 8
+			},
+			{
+				"name": "Field 2",
+				"columns": 8,
+				"maxlength": 4
+			},
+			{
+				"name": "Field 3",
+				"columns": 8,
+				"mask": "##/##/####"
+			},
+			{
+				"name": "Field 4",
+				"columns": 8,
+				"options": [
+					"Option 1",
+					"Option 2",
+					"Option 3"
+				]
+			},
+			{
+				"name": "Field 5",
+				"options": [
+					"Option 1",
+					"Option 2",
+					"Option 3"
+				],
+				"multiple": true,
+				"columns": 8
+			},
+			{
+				"name": "Field 6",
+				"multiple": true,
+				"columns": 8
+			}
+		]
+	}
+}

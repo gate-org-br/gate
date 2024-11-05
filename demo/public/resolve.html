@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<link rel='stylesheet' type='text/css' href='static/gate/Gate.css' />
+		<script type='module' src='static/gate/Gate.js' charset="utf-8"></script>
+	</head>
+
+	<body>
+
+		<h1>Action placeholders</h1>
+		
+		<p>Before an action is triggered it will be formatted using the placeholders described below:</p>
+
+		<table>
+			<thead>
+				<tr>
+					<th>Placeholder</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>@value(selector)</code></td>
+					<td>Replaces with the value of a DOM element specified by <code>selector</code>, which must be accessible from the context of the clicked element.</td>
+				</tr>
+				<tr>
+					<td><code>@input(prompt)</code></td>
+					<td>Requests user input with the message <code>prompt</code> and replaces with the provided value.</td>
+				</tr>
+				<tr>
+					<td><code>@prop(property.path)</code></td>
+					<td>Replaces with the value of a property of the clicked element. Allows dot notation (e.g., <code>data-value</code> represented as <code>dataset.value</code>).</td>
+				</tr>
+				<tr>
+					<td><code>@attr(attribute)</code></td>
+					<td>Replaces with the value of a specific attribute of the clicked element.</td>
+				</tr>
+				<tr>
+					<td><code>@VALUE(selector)</code></td>
+					<td>Similar to <code>@value</code>, but the trigger is cancelled if the value is invalid or missing.</td>
+				</tr>
+				<tr>
+					<td><code>@INPUT(prompt)</code></td>
+					<td>Similar to <code>@input</code>, but the trigger is cancelled if the provided value is invalid or missing.</td>
+				</tr>
+				<tr>
+					<td><code>@PROP(property.path)</code></td>
+					<td>Similar to <code>@prop</code>, but the trigger is cancelled if the value is invalid or missing.</td>
+				</tr>
+				<tr>
+					<td><code>@ATTR(attribute)</code></td>
+					<td>Similar to <code>@attr</code>, but the trigger is cancelled if the value is invalid or missing.</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<h2>Example of a Formatted URL</h2>
+		<p>Consider the following URL as an example:</p>
+		<pre><code>https://api.example.com/user/@prop(data-user-id)?action=@value(#action-button)</code></pre>
+		<p>In this example:</p>
+		<ul>
+			<li><code>@prop(data-user-id)</code> will be replaced with the value of the <code>data-user-id</code> property of the clicked element.</li>
+			<li><code>@value(#action-button)</code> will be replaced with the value of the button with the ID <code>action-button</code>.</li>
+		</ul>
+
+		<h2>Notes</h2>
+		<ul>
+			<li>Placeholders should be formatted as <code>@method(value)</code>.</li>
+			<li>Uppercase methods (such as <code>@VALUE</code>) are required and the trigger 
+				will be cancelled when they resolve to <code>null</code> or <code>undefined</code>.
+			</li>
+		</ul>
+	</body>
+</html>

@@ -18,7 +18,7 @@ window.addEventListener("@exec", function (event)
 			let func = new Function("result", `return ${script}`).bind(element);
 			let arrow = func();
 			let dataURL = DataURL.parse(result);
-			arrow(dataURL.contentType === "application/json"
+			arrow(dataURL.contentType.startsWith("application/json")
 				? JSON.parse(dataURL.data)
 				: dataURL.data);
 			event.success(path, result);

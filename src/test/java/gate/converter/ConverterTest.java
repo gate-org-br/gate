@@ -10,8 +10,7 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonNumber;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
-import gate.type.Date;
-import gate.type.DateInterval;
+import gate.type.LocalDateInterval;
 import java.time.LocalDate;
 import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +36,8 @@ public class ConverterTest
 			object.put("id", JsonNumber.of(1));
 			object.put("name", JsonString.of("Jonh"));
 			object.put("birthdate", JsonString.of(Converter.toString(LocalDate.of(2000, 1, 1))));
-			object.put("contract", JsonString.of(new DateInterval(Date.of(1, 1, 2010), Date.of(1, 1, 2020))
-				.toString()));
+			object.put("contract", JsonString.of(LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2020, 1, 1))
+					.toString()));
 			String json = object.toString();
 
 			Person person = Converter.fromJson(Person.class, json);

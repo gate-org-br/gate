@@ -1,0 +1,48 @@
+<g-callout class="fill">
+	<h1>@remove</h1>
+	<p>
+		Remove target element from the DOM.
+		You can pass the target element selector as a parameter or omit
+		it to make the trigger element target itself.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			On this example the target selector
+			is passed as a parameter.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-callout>
+				Content to be removed
+			</g-callout>
+			<g-coolbar>
+				<a href="/target/content.html"
+				   class="primary"
+				   target="@remove(this.parent(1)[0])">
+					Remove<g-icon>&#X2072;</g-icon>
+				</a>
+			</g-coolbar>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			On this example the target selector
+			is omitted making the trigger element target itself.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<g-callout data-trigger="click"
+				   data-action="/target/content.html"
+				   data-target="@remove">
+				Click here to remove me
+			</g-callout>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

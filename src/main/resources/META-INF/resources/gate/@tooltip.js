@@ -19,7 +19,7 @@ window.addEventListener("@tooltip", function (event)
 		.then(response =>
 		{
 			let dataURL = DataURL.parse(response);
-			if (dataURL.contentType === "application/json")
+			if (dataURL.contentType.startsWith("application/json"))
 				GTooltip.show(trigger, Formatter.JSONtoHTML(JSON.parse(dataURL.data)), position, width, height);
 			else
 				GTooltip.show(trigger, dataURL.data, position, width, height);

@@ -19,7 +19,7 @@ window.addEventListener("@if", function (event)
 			let func = new Function("result", `return ${script}`).bind(element);
 
 			let arrow = func();
-			let test = dataURL.contentType === "application/json"
+			let test = dataURL.contentType.startsWith("application/json")
 				? JSON.stringify(arrow(JSON.parse(dataURL.data))) : arrow(dataURL.data);
 
 			if (test)

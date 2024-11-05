@@ -14,10 +14,7 @@ window.addEventListener("@populate", function (event)
 
 	let element = DOM.navigate(trigger, selector).orElseThrow(`${selector} is not a valid selector`);
 
-	if (event.detail.action)
-	{
-		let path = event.composedPath();
-		fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form))
 			.then(ResponseHandler.json)
 			.then(result =>
 			{
@@ -25,10 +22,5 @@ window.addEventListener("@populate", function (event)
 				event.success(path, new DataURL('application/json', result).toString());
 			})
 			.catch(error => event.failure(path, error));
-	} else
-	{
-		element.innerHTML = "";
-		event.sucesss(path);
-	}
 });
 

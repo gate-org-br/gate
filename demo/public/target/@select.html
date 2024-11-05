@@ -1,0 +1,108 @@
+<g-callout class="fill">
+	<h1>@select</h1>
+	<p>
+		The <strong>@select</strong> target simplifies the process of choosing an element from a JSON array
+		obtained through a request. Users can trigger a dialog to make their selection, and the chosen element
+		is passed to the next target on the pipeline.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			When the action returns a <a href='/people'
+						     target='_blank'>JSON array of objects</a>, the <strong>@select</strong> target
+			showcases them as cards within a list
+			for user selection. Any attributes beginning with the <strong>_</strong> character are omitted from display.
+
+			Upon user selection, the chosen object is directed to the <strong>@fill</strong> target.
+			When invoked without parameters, the <strong>@fill</strong>
+			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second properties of the selected object, respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Select:
+					<span>
+						<input type="text">
+						<input type="hidden">
+						<a href="/people" target="@select > @fill" title="Select 1">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			When the action returns a <a href='/array/people' target='_blank'>JSON array of arrays</a>, the <strong>@select</strong> target
+			showcases them on a grid
+			for user selection. Any columns with headers beginning with the <strong>_</strong> character are omitted from display.
+
+			Upon user selection, the chosen array is directed to the <strong>@fill</strong> target.
+			When invoked without parameters, the <strong>@fill</strong>
+			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second columns of the selected array, respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Select:
+					<span>
+						<input type="text" />
+						<input type="hidden">
+						<a href="/array/people" target="@select > @fill" title="Select 1">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 3 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			If the result consists of a <a href="/roles" target="_blank">
+				JSON array of objects with only
+				<strong>label</strong>,
+				<strong>value</strong> and
+				<strong>children</strong>
+				attributes</a>,
+			the properties will be displayed as a tree for user selection.
+			Upon user selection, the <strong>label input</strong> and
+			the <strong>value input</strong> receives the <strong>label
+				attribute</strong> and the <strong>value attribute</strong>
+			respectively.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Select:
+					<span>
+						<input type="text" />
+						<input type="hidden">
+						<a href="/roles" target="@select > @fill" title="Select 1">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

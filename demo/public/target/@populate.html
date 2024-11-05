@@ -1,0 +1,96 @@
+<g-callout class="fill">
+	<h1>@populate</h1>
+	<p>
+		The <strong>@populate</strong> target is designed to populate a <strong>&lt;datalist&gt;</strong>
+		or <strong>&lt;select&gt;</strong> tag with <strong>&lt;option&gt;</strong> tags generated from a
+		JSON array obtained through a request.
+		The first parameter is the selector of the target element; if omitted, defaults to the triggered element.
+		The second parameter is the name of the attribute used to generate option values; if omitted, it defaults to <strong>"value"</strong>.
+		The third parameter is the name of the attribute used to generate option texts; if omitted, it defaults to <strong>"label"</strong>.
+	</p>
+</g-callout>
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			The @populate target can be used with <a href="/resolve.html" target="@dialog">action placeholders</a>
+			to populate a <strong>&lt;select&gt;</strong> tag based on the value of another one.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label data-size="8">
+					Job:
+					<span>
+						<select data-action='/people?Job_like=@VALUE(this)'
+							data-target='@populate(#populate1-person, _ID, Name)'>
+							<option value="" disabled selected>Select</option>
+							<option value="Chemist">Chemist</option>
+							<option value="Mathematician">Mathematician</option>
+							<option value="Political Leader">Political Leader</option>
+							<option value="Polymath">Polymath</option>
+							<option value="Physicist">Physicist</option>
+							<option value="Writer">Writer</option>
+						</select>
+					</span>
+				</label>
+				<label data-size="8">
+					Person:
+					<span>
+						<select id="populate1-person">
+						</select>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			The @populate target can be used with <a href="/resolve.html" target="_blank">action placeholders</a>
+			and <strong>@trigger</strong> target to populate a <strong>&lt;select&gt;</strong> tag based on the
+			values of any number of another ones.
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label data-size="4">
+					Job:
+					<span>
+						<select id="populate2-job" data-target='@trigger(#populate2-name)'>
+							<option value="" disabled selected>Select</option>
+							<option value="Chemist">Chemist</option>
+							<option value="Mathematician">Mathematician</option>
+							<option value="Political Leader">Political Leader</option>
+							<option value="Polymath">Polymath</option>
+							<option value="Physicist">Physicist</option>
+							<option value="Writer">Writer</option>
+						</select>
+					</span>
+				</label>
+				<label data-size="4">
+					Sex:
+					<span>
+						<select id="populate2-sex" data-target='@trigger(#populate2-name)'>
+							<option value="" disabled selected>Select</option>
+							<option value="Male">Male</option>
+							<option value="Female">Female</option>
+						</select>
+					</span>
+				</label>
+				<label data-size="8">
+					Name:
+					<span>
+						<select id="populate2-name"
+							data-trigger='none'
+							data-target='@populate(this, ID, Name)'
+							data-action='/people?Job_like=@VALUE(#populate2-job)&Sex=@VALUE(#populate2-sex)'>
+						</select>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

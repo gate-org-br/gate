@@ -14,6 +14,13 @@ public class LocalDateTimeProducer implements Serializable
 {
 
 	@Produces
+	@Named("now")
+	public LocalDateTime now()
+	{
+		return LocalDateTime.now();
+	}
+
+	@Produces
 	@Named("dateTime")
 	public LocalDateTime dateTime()
 	{
