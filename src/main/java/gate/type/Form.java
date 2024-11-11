@@ -105,6 +105,15 @@ public class Form implements Serializable
 										.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));
 	}
 
+	public List<String> getValue(String id)
+	{
+		return getFields().stream()
+				.filter(e -> id.equals(e.getId()))
+				.findAny()
+				.map(e -> e.getValue())
+				.orElseGet(StringList::new);
+	}
+
 	public void pack(int limit)
 	{
 		int i = 0;
