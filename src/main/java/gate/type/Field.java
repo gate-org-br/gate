@@ -28,12 +28,12 @@ public class Field implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("Atributo")
-	@Description("Defina com o atributo ao qual ocampo se refere.")
+	@Name("ID")
+	@Description("Defina o id do campo.")
 	private String id;
 
 	@Name("Nome")
-	@Description("Defina com o nome do campo.")
+	@Description("Defina o nome do campo.")
 	private String name;
 
 	@Required
