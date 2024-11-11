@@ -28,9 +28,12 @@ public class Field implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	@Required
+	@Name("Atributo")
+	@Description("Defina com o atributo ao qual ocampo se refere.")
+	private String id;
+
 	@Name("Nome")
-	@Description("Defina com o texto do campo.")
+	@Description("Defina com o nome do campo.")
 	private String name;
 
 	@Required
@@ -75,6 +78,17 @@ public class Field implements Serializable
 	@Name("Somente Leitura")
 	@Description("Define se o campo é somente leitura.")
 	private boolean readonly;
+
+	public String getId()
+	{
+		return id;
+	}
+
+	public Field setId(String id)
+	{
+		this.id = id;
+		return this;
+	}
 
 	public String getName()
 	{
@@ -221,9 +235,14 @@ public class Field implements Serializable
 
 	public JsonObject toJson()
 	{
-		return new JsonObject().setString("name", name).setString("mask", mask)
-				.setInt("maxlength", maxlength).setObject("size", Size.class, size)
-				.setString("description", description).setObject("pattern", Pattern.class, pattern)
+		return new JsonObject()
+				.setString("id", id)
+				.setString("name", name)
+				.setString("mask", mask)
+				.setInt("maxlength", maxlength)
+				.setObject("size", Size.class, size)
+				.setString("description", description)
+				.setObject("pattern", Pattern.class, pattern)
 				.setBoolean("readonly", readonly ? true : null)
 				.setBoolean("multiple", multiple ? true : null)
 				.setBoolean("required", required ? true : null)
@@ -245,7 +264,9 @@ public class Field implements Serializable
 
 	public static Field parse(JsonObject jsonObject) throws ConversionException
 	{
-		Field field = new Field().setName(jsonObject.getString("name").orElse(null))
+		Field field = new Field()
+				.setId(jsonObject.getString("id").orElse(null))
+				.setName(jsonObject.getString("name").orElse(null))
 				.setMask(jsonObject.getString("mask").orElse(null))
 				.setMaxlength(jsonObject.getInt("maxlength").orElse(null))
 				.setDescription(jsonObject.getString("description").orElse(null))
@@ -312,21 +333,20 @@ public class Field implements Serializable
 
 		public static Size parse(String string)
 		{
-			if (string != null)
-				switch (string.trim())
-				{
-					case "0":
-						return ONE;
-					case "1":
-						return TWO;
-					case "2":
-						return FOUR;
-					case "3":
-						return EIGHT;
-					default:
-						return null;
-				}
-			return null;
+			return string != null
+					? switch (string.trim())
+			{
+				case "0" ->
+					ONE;
+				case "1" ->
+					TWO;
+				case "2" ->
+					FOUR;
+				case "3" ->
+					EIGHT;
+				default ->
+					null;
+			} : null;
 		}
 	}
 }

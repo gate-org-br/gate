@@ -8,7 +8,7 @@ window.addEventListener("@debounce", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {parameters: [delay]} = event.detail;
+	let {parameters: [timeout = "1000"]} = event.detail;
 
 	event.resolve(path);
 
@@ -16,12 +16,11 @@ window.addEventListener("@debounce", function (event)
 	if (prev)
 		clearTimeout(prev);
 
-	delay = delay ? delay * 1 : 1000;
-	const timeout = setTimeout(() =>
+	const resolve = setTimeout(() =>
 	{
 		REGISTRY.delete(trigger);
 		event.success(path);
-	}, delay);
+	}, parseInt(timeout));
 
-	REGISTRY.set(trigger, timeout);
+	REGISTRY.set(trigger, resolve);
 });

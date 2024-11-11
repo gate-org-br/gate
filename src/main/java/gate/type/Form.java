@@ -67,8 +67,8 @@ public class Form implements Serializable
 		return new Form().setFields(json
 				.entrySet().stream()
 				.map(e -> new Field()
-						.setName(e.getKey())
-						.setValue(new StringList(e.getValue().toString())))
+				.setName(e.getKey())
+				.setValue(new StringList(e.getValue().toString())))
 				.collect(Collectors.toList()));
 	}
 
@@ -80,6 +80,15 @@ public class Form implements Serializable
 			return Form.valueOf(array);
 
 		throw new ConversionException("Invalid json element");
+	}
+
+	public List<String> getValue(String id)
+	{
+		return getFields().stream()
+				.filter(e -> id.equals(e.getId()))
+				.findAny()
+				.map(e -> e.getValue())
+				.orElseGet(StringList::new);
 	}
 
 	public JsonArray toJson()
@@ -95,7 +104,7 @@ public class Form implements Serializable
 	}
 
 	public static Map<String, Map<String, Long>>
-	getStatistics(List<Form> forms)
+			getStatistics(List<Form> forms)
 	{
 		return forms.stream()
 				.flatMap(e -> e.getFields().stream())

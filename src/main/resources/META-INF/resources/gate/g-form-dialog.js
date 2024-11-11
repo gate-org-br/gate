@@ -103,12 +103,11 @@ export default class GFormDialog extends GWindow
 	static pick(value, options)
 	{
 		return GFormDialog.edit(value.map(e => typeof e === 'string' ? {name: e, required: true} : e), options)
-			.then(fields => fields.map(field => field.multiple || !field.value ? field.value : field.value[0]));
+				.then(fields => fields.map(field => field.multiple || !field.value ? field.value : field.value[0]));
 	}
 
 	static edit(value, options)
 	{
-		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 		return new Promise((resolve, reject) =>
 		{
 			let dialog = window.top.document.createElement("g-form-dialog");
@@ -133,12 +132,12 @@ export default class GFormDialog extends GWindow
 	static update(url, options)
 	{
 		return fetch(url)
-			.then(response => ResponseHandler.json(response))
-			.then(form => GFormDialog.edit(form, options))
-			.then(result => result
-					? fetch(url, {method: "post", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(result)})
-					: Promise.resolve({"ok": true}))
-			.then(response => ResponseHandler.json(response));
+				.then(response => ResponseHandler.json(response))
+				.then(form => GFormDialog.edit(form, options))
+				.then(result => result
+							? fetch(url, {method: "post", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(result)})
+							: Promise.resolve({"ok": true}))
+				.then(response => ResponseHandler.json(response));
 	}
 }
 
