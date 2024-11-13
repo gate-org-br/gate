@@ -1,5 +1,6 @@
 package gate.type.mime;
 
+import gate.lang.contentType.ContentType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,22 +12,30 @@ public class MimeList implements Mime, Iterable<Mime>
 {
 
 	private static final long serialVersionUID = 1L;
-	private final String type;
-	private final String subtype;
+	private final ContentType contentType;
 	private final List<Mime> list
 			= new ArrayList<>();
 
-	public MimeList()
+	private MimeList(ContentType contentType)
 	{
-		this("multipart", "mixed");
+		Objects.requireNonNull(contentType, "Mime type cannot be null.");
+		this.contentType = contentType;
 	}
 
-	public MimeList(String type, String subtype)
+	public static MimeList of(ContentType contentType)
 	{
-		Objects.requireNonNull(type, "Mime type cannot be null.");
-		Objects.requireNonNull(type, "Mime subtype cannot be null.");
-		this.type = type;
-		this.subtype = subtype;
+		return new MimeList(contentType);
+	}
+
+	public static MimeList of()
+	{
+		return new MimeList(ContentType.of("multipart", "mixed"));
+	}
+
+	@Override
+	public ContentType getContentType()
+	{
+		return contentType;
 	}
 
 	@Override
@@ -34,18 +43,6 @@ public class MimeList implements Mime, Iterable<Mime>
 			Consumer<? super Mime> action)
 	{
 		list.forEach(action);
-	}
-
-	@Override
-	public String getType()
-	{
-		return type;
-	}
-
-	@Override
-	public String getSubType()
-	{
-		return subtype;
 	}
 
 	@Override
@@ -63,7 +60,7 @@ public class MimeList implements Mime, Iterable<Mime>
 	@Override
 	public String toString()
 	{
-		return type;
+		return contentType.toString();
 	}
 
 	public MimeList add(Mime mime)
@@ -74,21 +71,21 @@ public class MimeList implements Mime, Iterable<Mime>
 
 	public MimeList add(String text)
 	{
-		return add(new MimeText(text));
+		return add(MimeText.of(text));
 	}
 
 	public MimeList add(String text, String name)
 	{
-		return add(new MimeTextFile(text, name));
+		return add(MimeTextFile.of(text, name));
 	}
 
 	public MimeList add(byte[] data)
 	{
-		return add(new MimeData(data));
+		return add(MimeData.of(data));
 	}
 
 	public MimeList add(byte[] data, String name)
 	{
-		return add(new MimeDataFile(data, name));
+		return add(MimeDataFile.of(data, name));
 	}
 }

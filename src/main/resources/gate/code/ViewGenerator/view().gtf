@@ -35,9 +35,9 @@
 		</thead>
 		<tbody>
 			\<g:iterator source="\${screen.page}">
-				<tr data-target="_dialog" data-action="Gate?MODULE=\${MODULE}&SCREEN=\${SCREEN}&ACTION=Select&form.${id.getName()}=\${target.${id.getName()}}">
+				<tr data-target="_dialog" data-action="Gate?MODULE=\${MODULE}&SCREEN=\${SCREEN}&ACTION=Select&form.${id.getName()}=\${ target.${id.getName()} }">
 					<g:iterator source="${getProperties()}" target="property">
-					<td title="${@property.getDisplayName()}">\<g:print value="\${target.${@property.getName()}}"/></td>
+					<td title="${@property.getDisplayName()}">\<g:print value="\${ target.${@property.getName()} }"/></td>
 					</g:iterator>
 				</tr>
 			\</g:iterator>

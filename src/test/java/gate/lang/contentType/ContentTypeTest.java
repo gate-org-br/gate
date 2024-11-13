@@ -22,9 +22,19 @@ public class ContentTypeTest
 	@Test
 	public void testWithFilename() throws ParseException
 	{
-		var contentType = ContentType.parse("text/plain;filename=afe.txt");
+		var contentType = ContentType.parse("text/plain;charset=UTF-8");
 		assertEquals("text", contentType.getType());
 		assertEquals("plain", contentType.getSubtype());
-		assertEquals("afe.txt", contentType.getParameters().get("filename"));
+		assertEquals("UTF-8", contentType.getParameters().get("charset"));
 	}
+
+	@Test
+	public void testWithFilenameAndSpaces() throws ParseException
+	{
+		var contentType = ContentType.parse("text/plain ; charset=UTF-8");
+		assertEquals("text", contentType.getType());
+		assertEquals("plain", contentType.getSubtype());
+		assertEquals("UTF-8", contentType.getParameters().get("charset"));
+	}
+
 }

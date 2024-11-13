@@ -1,5 +1,6 @@
 package gate.io;
 
+import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeDataFile;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +36,7 @@ public class Zip
 	public static MimeDataFile compress(String name, Stream<MimeDataFile> source) throws IOException
 	{
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
+				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
 		{
 			source.forEach(e ->
 			{
@@ -53,7 +54,8 @@ public class Zip
 
 			zipOutputStream.flush();
 			byteArrayOutputStream.flush();
-			return new MimeDataFile("application", "zip", byteArrayOutputStream.toByteArray(), name);
+			return MimeDataFile.of(ContentType.of("application", "zip"),
+					byteArrayOutputStream.toByteArray(), name);
 		} catch (UncheckedIOException ex)
 		{
 			throw ex.getCause();
@@ -100,7 +102,7 @@ public class Zip
 		try
 		{
 			ZipInputStream zipInputStream
-				= new ZipInputStream(new ByteArrayInputStream(source.getData()));
+					= new ZipInputStream(new ByteArrayInputStream(source.getData()));
 			return StreamSupport.stream(new Spliterator<MimeDataFile>()
 			{
 				@Override
@@ -115,8 +117,8 @@ public class Zip
 							if (entry == null)
 								return false;
 
-							action.accept(new MimeDataFile(zipInputStream.readAllBytes(),
-								new File(entry.getName()).getName()));
+							action.accept(MimeDataFile.of(zipInputStream.readAllBytes(),
+									new File(entry.getName()).getName()));
 							return true;
 						} while (entry.isDirectory());
 					} catch (IOException ex)

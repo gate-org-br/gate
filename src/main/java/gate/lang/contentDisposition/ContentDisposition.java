@@ -19,7 +19,7 @@ public class ContentDisposition
 	private final Map<String, String> parameters;
 
 	public ContentDisposition(String value,
-		Map<String, String> parameters)
+			Map<String, String> parameters)
 	{
 		Objects.requireNonNull(parameters);
 		this.value = value;
@@ -45,23 +45,23 @@ public class ContentDisposition
 			string.append(value);
 
 		parameters
-			.entrySet().forEach(e ->
-			{
-				try
+				.entrySet().forEach(e ->
 				{
-					string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
-				} catch (UnsupportedEncodingException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
-			});
+					try
+					{
+						string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
+					} catch (UnsupportedEncodingException ex)
+					{
+						throw new UncheckedIOException(ex);
+					}
+				});
 
 		return string.toString();
 	}
 
 	public static ContentDisposition parse(String string) throws ParseException
 	{
-		try ( ContentDispositionParser parser = new ContentDispositionParser(new ContentDispositionScanner(new StringReader(string))))
+		try (ContentDispositionParser parser = new ContentDispositionParser(new ContentDispositionScanner(new StringReader(string))))
 		{
 			try
 			{

@@ -3,6 +3,7 @@ package gate.report.doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
@@ -69,15 +70,9 @@ public class XLS extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "application";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "xls";
+		return ContentType.of("application", "xls");
 	}
 
 	@Override
@@ -102,7 +97,7 @@ public class XLS extends Doc
 
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Form
-					&& (!((Form) e).isEmpty()))
+						&& (!((Form) e).isEmpty()))
 					printForm(workbook, (Form) e);
 
 			workbook.write(os);
@@ -118,8 +113,8 @@ public class XLS extends Doc
 		short i = -1;
 
 		SXSSFSheet sheet = form.getCaption() != null
-			? workbook.createSheet(getValidSheedName(form.getCaption()))
-			: workbook.createSheet();
+				? workbook.createSheet(getValidSheedName(form.getCaption()))
+				: workbook.createSheet();
 
 		if (form.getCaption() != null)
 		{
@@ -139,8 +134,8 @@ public class XLS extends Doc
 		}
 
 		for (Field e : form.getFields().stream().filter(e -> e instanceof Field)
-			.filter(e -> e.getValue() != null)
-			.map(e -> (Field) e).collect(Collectors.toList()))
+				.filter(e -> e.getValue() != null)
+				.map(e -> (Field) e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
 
@@ -194,8 +189,8 @@ public class XLS extends Doc
 	private void printGrid(SXSSFWorkbook workbook, Grid<Object> grid) throws ConversionException
 	{
 		SXSSFSheet sheet = grid.getCaption() != null
-			? workbook.createSheet(getValidSheedName(grid.getCaption()))
-			: workbook.createSheet();
+				? workbook.createSheet(getValidSheedName(grid.getCaption()))
+				: workbook.createSheet();
 
 		sheet.trackAllColumnsForAutoSizing();
 
@@ -295,7 +290,7 @@ public class XLS extends Doc
 	}
 
 	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet,
-		Grid<Object> grid, Iterable<?> data, int level)
+			Grid<Object> grid, Iterable<?> data, int level)
 	{
 
 		for (Object object : data)
@@ -330,7 +325,7 @@ public class XLS extends Doc
 
 			if (grid.getChildren() != null)
 				printGridData(workbook, sheet, grid, Toolkit
-					.collection(grid.getChildren().apply(object)), level + 1);
+						.collection(grid.getChildren().apply(object)), level + 1);
 		}
 	}
 
@@ -339,8 +334,8 @@ public class XLS extends Doc
 		try
 		{
 			SXSSFSheet sheet = chart.getCaption() != null
-				? workbook.createSheet(getValidSheedName(chart.getCaption()))
-				: workbook.createSheet();
+					? workbook.createSheet(getValidSheedName(chart.getCaption()))
+					: workbook.createSheet();
 
 			var image = EncoderUtil.encode(ChartGenerator.create(chart).createBufferedImage(1024, 768), "png");
 
@@ -363,9 +358,9 @@ public class XLS extends Doc
 	private XSSFColor getXLSColor(Color color)
 	{
 		return COLORS.computeIfAbsent(color, e
-			-> new XSSFColor(new byte[]
-			{
-				(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
+				-> new XSSFColor(new byte[]
+				{
+					(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
 		}, new DefaultIndexedColorMap()));
 	}
 
@@ -389,8 +384,8 @@ public class XLS extends Doc
 	private String getValidSheedName(String name)
 	{
 		return name.chars()
-			.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
-			.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
+				.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 	}
 
 	private XSSFCellStyle getXLSStyle(SXSSFWorkbook workbook, Style style)

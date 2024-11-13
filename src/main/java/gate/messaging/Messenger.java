@@ -89,9 +89,9 @@ public class Messenger implements ServletContextListener
 	}
 
 	public void post(String sender,
-		String receiver,
-		MimeMail<?> message)
-		throws MessageException
+			String receiver,
+			MimeMail<?> message)
+			throws MessageException
 	{
 		try
 		{
@@ -116,8 +116,8 @@ public class Messenger implements ServletContextListener
 	}
 
 	public void post(String receiver,
-		MimeMail<?> mail)
-		throws MessageException
+			MimeMail<?> mail)
+			throws MessageException
 	{
 		try
 		{
@@ -187,19 +187,16 @@ public class Messenger implements ServletContextListener
 
 		mimeMessage.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(receiver));
 
-		if (mail.getContent() instanceof MimeText)
+		if (mail.getContent() instanceof MimeText mimeText)
 		{
-			MimeText mimeText = (MimeText) mail.getContent();
-			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
-		} else if (mail.getContent() instanceof MimeDataFile)
+			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getContentType().getSubtype());
+		} else if (mail.getContent() instanceof MimeDataFile mimeDataFile)
 		{
-			MimeDataFile mimeDataFile = (MimeDataFile) mail.getContent();
 			mimeMessage.setDisposition("Attachment");
 			mimeMessage.setFileName(mimeDataFile.getName());
 			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
-		} else if (mail.getContent() instanceof MimeList)
+		} else if (mail.getContent() instanceof MimeList mimeList)
 		{
-			MimeList mimeList = (MimeList) mail.getContent();
 			mimeMessage.setContent(getMultipart(mimeList));
 		}
 
@@ -216,7 +213,7 @@ public class Messenger implements ServletContextListener
 	private MimeMultipart getMultipart(MimeList data) throws MessagingException
 	{
 		MimeMultipart mimeMultipart = new MimeMultipart();
-		mimeMultipart.setSubType(data.getType());
+		mimeMultipart.setSubType(data.getContentType().getSubtype());
 
 		for (Mime mime : data)
 		{
@@ -224,7 +221,7 @@ public class Messenger implements ServletContextListener
 			if (mime instanceof MimeText)
 			{
 				MimeText mimeText = (MimeText) mime;
-				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
+				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getContentType().getSubtype());
 			} else if (mime instanceof MimeDataFile)
 			{
 				MimeDataFile mimeDataFile = (MimeDataFile) mime;

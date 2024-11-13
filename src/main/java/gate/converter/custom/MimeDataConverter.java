@@ -4,6 +4,7 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
+import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeData;
 import gate.util.Strings;
 import java.io.IOException;
@@ -39,10 +40,10 @@ public class MimeDataConverter implements Converter
 
 	@Override
 	public Object ofString(Class<?> type, String string)
-		throws ConversionException
+			throws ConversionException
 	{
 		return !Strings.empty(string)
-			? MimeData.parse(string) : null;
+				? MimeData.parse(string) : null;
 	}
 
 	@Override
@@ -53,16 +54,8 @@ public class MimeDataConverter implements Converter
 
 		try (InputStream is = part.getInputStream())
 		{
-			String[] strings = part.getContentType().split("/");
 			byte[] bytes = ByteArrayReader.getInstance().read(is);
-
-			if (bytes.length > 0)
-				if (strings.length == 2)
-					return new MimeData(strings[0], strings[1], bytes);
-				else
-					return new MimeData(bytes);
-			else
-				return null;
+			return MimeData.of(ContentType.parse(part.getContentType()), bytes);
 		} catch (IOException ex)
 		{
 			throw new ConversionException(ex.getMessage(), ex);
@@ -89,27 +82,27 @@ public class MimeDataConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? ofString(MimeData.class, data)
-			: null;
+				? ofString(MimeData.class, data)
+				: null;
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? ofString(MimeData.class, data)
-			: null;
+				? ofString(MimeData.class, data)
+				: null;
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
-		throws SQLException
+			throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, value.toString());

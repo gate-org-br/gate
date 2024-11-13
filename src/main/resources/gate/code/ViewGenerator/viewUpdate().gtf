@@ -21,7 +21,7 @@
 			<g:link class="primary" method="post" module="#" screen="#" action="#" tabindex='2'>
 				Concluir<g:icon type="commit"/>
 			</g:link>
-			<g:link class="tertiary" module="#" screen="#" action="Select" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'>
+			<g:link class="tertiary" module="#" screen="#" action="Select" arguments="form.${id.getName()}=\${ screen.form.${id.getName()} }" tabindex='2'>
 				Cancelar<g:icon type="cancel"/>
 			</g:link>
 		</div>

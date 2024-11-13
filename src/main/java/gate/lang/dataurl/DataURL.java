@@ -1,6 +1,7 @@
 package gate.lang.dataurl;
 
 import gate.error.AppError;
+import gate.lang.contentType.ContentType;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -14,34 +15,34 @@ import java.util.Objects;
 public class DataURL
 {
 
-	private final String type;
-	private final String subtype;
+	private final ContentType contentType;
 	private final boolean base64;
 	private final Map<String, String> parameters;
 	private final String data;
 
-	public DataURL(String type,
-		String subtype,
-		boolean base64,
-		Map<String, String> parameters,
-		String data)
+	private DataURL(ContentType contentType,
+			boolean base64,
+			Map<String, String> parameters,
+			String data)
 	{
 		Objects.requireNonNull(parameters);
-		this.type = type;
-		this.subtype = subtype;
+		this.contentType = contentType;
 		this.base64 = base64;
 		this.parameters = parameters;
 		this.data = data;
 	}
 
-	public String getType()
+	public static DataURL of(ContentType contentType,
+			boolean base64,
+			Map<String, String> parameters,
+			String data)
 	{
-		return type;
+		return new DataURL(contentType, base64, parameters, data);
 	}
 
-	public String getSubtype()
+	public ContentType getContentType()
 	{
-		return subtype;
+		return contentType;
 	}
 
 	public String getData()
@@ -66,28 +67,26 @@ public class DataURL
 
 		string.append("data:");
 
-		if (type != null)
-			string.append(type);
-		if (subtype != null)
-			string.append('/').append(subtype);
+		if (contentType != null)
+			string.append(contentType);
 
 		parameters
-			.entrySet().forEach(e ->
-			{
-				try
+				.entrySet().forEach(e ->
 				{
-					string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
-				} catch (UnsupportedEncodingException ex)
-				{
-					throw new UncheckedIOException(ex);
-				}
-			});
+					try
+					{
+						string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
+					} catch (UnsupportedEncodingException ex)
+					{
+						throw new UncheckedIOException(ex);
+					}
+				});
 
 		if (base64)
 			string.append(";base64");
 
 		string.append(',')
-			.append(data);
+				.append(data);
 		return string.toString();
 	}
 

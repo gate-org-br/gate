@@ -17,10 +17,10 @@
 	</fieldset>
 
 	<div class='Coolbar'>
-		<g:link module="#" screen="#" action="Update" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'>
+		<g:link module="#" screen="#" action="Update" arguments="form.${id.getName()}=\${ screen.form.${id.getName()} }" tabindex='2'>
 			Alterar<g:icon type="update"/>
 		</g:link>
-		<g:link module="#" screen="#" action="Delete" arguments="form.${id.getName()}=\${screen.form.${id.getName()}}" tabindex='2'
+		<g:link module="#" screen="#" action="Delete" arguments="form.${id.getName()}=\${ screen.form.${id.getName()} }" tabindex='2'
 			data-confirm="Tem certeza de que deseja remover este registro?">
 			Remover<g:icon type="delete"/>
 		</g:link>

@@ -16,10 +16,10 @@ public class DataURLParserTest
 		try (DataURLParser parser = new DataURLParser(new DataURLScanner(new StringReader(url))))
 		{
 			DataURL dataURL = parser.parse();
-			if (!"image+".equals(dataURL.getType()))
+			if (!"image+".equals(dataURL.getContentType().getType()))
 				fail();
 
-			if (!"gif".equals(dataURL.getSubtype()))
+			if (!"gif".equals(dataURL.getContentType().getSubtype()))
 				fail();
 
 			if (!"image.png".equals(dataURL.getParameters().get("filename")))

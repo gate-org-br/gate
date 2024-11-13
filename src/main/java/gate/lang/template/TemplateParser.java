@@ -29,8 +29,9 @@ class TemplateParser
 		List<Evaluable> evaluables = new ArrayList<>();
 
 		while (token != TemplateToken.EOF
-			&& token != TemplateToken.IF_TAIL
-			&& token != TemplateToken.ITERATOR_TAIL)
+				&& token != TemplateToken.IF_TAIL
+				&& token != TemplateToken.ITERATOR_TAIL
+				&& token != TemplateToken.BLOCK_END)
 			evaluables.add(evaluable(scanner));
 
 		return new Template(evaluables);
@@ -40,14 +41,18 @@ class TemplateParser
 	{
 		if (token == TemplateToken.EXPRESSION_HEAD)
 			return expression(scanner);
+		if (token == TemplateToken.EXPRESSION_BLOCK)
+			return expressionAlt(scanner);
 		else if (token == TemplateToken.IF_HEAD)
 			return ifTag(scanner);
+		else if (token == TemplateToken.ITERATOR_BLOCK)
+			return iteratorTagAlt(scanner);
 		else if (token == TemplateToken.ITERATOR_HEAD)
 			return iteratorTag(scanner);
 		else if (token == TemplateToken.IMPORT)
 			return importTag(scanner);
 		else if (token == TemplateToken.SIMPLE_LINE_BREAK
-			|| token == TemplateToken.COMPLEX_LINE_BREAK)
+				|| token == TemplateToken.COMPLEX_LINE_BREAK)
 			return identation(scanner);
 		else
 			return text(scanner);
@@ -63,11 +68,11 @@ class TemplateParser
 	public Evaluable identation(TemplateScanner scanner)
 	{
 		StringBuilder string
-			= new StringBuilder(token.toString());
+				= new StringBuilder(token.toString());
 
 		token = scanner.next();
 		while (token == TemplateToken.SPACE
-			|| token == TemplateToken.TAB)
+				|| token == TemplateToken.TAB)
 		{
 			string.append(token.toString());
 			token = scanner.next();
@@ -78,7 +83,7 @@ class TemplateParser
 		else if (token == TemplateToken.ITERATOR_HEAD)
 			return iteratorTag(scanner);
 		else if (token == TemplateToken.IF_TAIL
-			|| token == TemplateToken.ITERATOR_TAIL)
+				|| token == TemplateToken.ITERATOR_TAIL)
 			return None.INSTANCE;
 		else if (token == TemplateToken.IMPORT)
 			return importTag(scanner);
@@ -96,7 +101,7 @@ class TemplateParser
 				result.append(token.toString());
 				token = scanner.next();
 			} while (token != TemplateToken.QUOTE
-				&& token != TemplateToken.EOF);
+					&& token != TemplateToken.EOF);
 
 			if (token != TemplateToken.QUOTE)
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
@@ -111,7 +116,7 @@ class TemplateParser
 				result.append(token.toString());
 				token = scanner.next();
 			} while (token != TemplateToken.DOUBLE_QUOTE
-				&& token != TemplateToken.EOF);
+					&& token != TemplateToken.EOF);
 
 			if (token != TemplateToken.DOUBLE_QUOTE)
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
@@ -130,10 +135,10 @@ class TemplateParser
 
 		StringBuilder string = new StringBuilder();
 		while (token != TemplateToken.EXPRESSION_TAIL
-			&& token != TemplateToken.EOF)
+				&& token != TemplateToken.EOF)
 		{
 			if (token == TemplateToken.QUOTE
-				|| token == TemplateToken.DOUBLE_QUOTE)
+					|| token == TemplateToken.DOUBLE_QUOTE)
 				string.append(string(scanner));
 			else
 				string.append(token.toString());
@@ -148,6 +153,32 @@ class TemplateParser
 		return Expression.of(string.toString());
 	}
 
+	public Expression expressionAlt(TemplateScanner scanner) throws TemplateException
+	{
+		if (token != TemplateToken.EXPRESSION_BLOCK)
+			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+		token = scanner.next();
+
+		StringBuilder string = new StringBuilder();
+		while (token != TemplateToken.EXPRESSION_BLOCK_END
+				&& token != TemplateToken.EOF)
+		{
+			if (token == TemplateToken.QUOTE
+					|| token == TemplateToken.DOUBLE_QUOTE)
+				string.append(string(scanner));
+			else
+				string.append(token.toString());
+			token = scanner.next();
+		}
+
+		if (token != TemplateToken.EXPRESSION_BLOCK_END)
+			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+		token = scanner.next();
+
+		return Expression.of(string.toString());
+	}
+
 	public Expression encolosedExpression(TemplateScanner scanner) throws TemplateException
 	{
 		token = scanner.skipSpaces().next();
@@ -155,7 +186,8 @@ class TemplateParser
 		{
 			token = scanner.skipSpaces().next();
 
-			Expression result = expression(scanner);
+			Expression result = token == TemplateToken.EXPRESSION_HEAD
+					? expression(scanner) : expressionAlt(scanner);
 
 			if (token != TemplateToken.QUOTE)
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
@@ -166,7 +198,8 @@ class TemplateParser
 		{
 			token = scanner.skipSpaces().next();
 
-			Expression result = expression(scanner);
+			Expression result = token == TemplateToken.EXPRESSION_HEAD
+					? expression(scanner) : expressionAlt(scanner);
 
 			if (token != TemplateToken.DOUBLE_QUOTE)
 				throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
@@ -180,12 +213,12 @@ class TemplateParser
 	public String identifier(TemplateScanner scanner) throws TemplateException
 	{
 		if (!(token instanceof Char)
-			|| !Character.isJavaIdentifierStart(((Char) token).getValue()))
+				|| !Character.isJavaIdentifierStart(((Char) token).getValue()))
 			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
 
 		StringBuilder string = new StringBuilder();
 		while (token instanceof Char
-			&& Character.isJavaIdentifierPart(((Char) token).getValue()))
+				&& Character.isJavaIdentifierPart(((Char) token).getValue()))
 		{
 			string.append(token.toString().charAt(0));
 			token = scanner.skipSpaces().next();
@@ -225,7 +258,7 @@ class TemplateParser
 	public String className(TemplateScanner scanner)
 	{
 		StringBuilder string
-			= new StringBuilder(identifier(scanner));
+				= new StringBuilder(identifier(scanner));
 		while (token == TemplateToken.DOT)
 		{
 			string.append(token.toString());
@@ -333,7 +366,7 @@ class TemplateParser
 			token = scanner.skipSpaces().next();
 
 			while (token != TemplateToken.SELF_CLOSE_TAG
-				&& token != TemplateToken.EOF)
+					&& token != TemplateToken.EOF)
 			{
 				if (token == TemplateToken.TYPE)
 				{
@@ -385,7 +418,7 @@ class TemplateParser
 		token = scanner.skipSpaces().next();
 
 		while (!TemplateToken.CLOSE_TAG.equals(token)
-			&& token != TemplateToken.EOF)
+				&& token != TemplateToken.EOF)
 		{
 			if (token == TemplateToken.SOURCE)
 			{
@@ -440,4 +473,51 @@ class TemplateParser
 		return new TemplateIterator(source, target, index, template);
 	}
 
+	public TemplateIterator iteratorTagAlt(TemplateScanner scanner) throws TemplateException
+	{
+
+		token = scanner.skipSpaces().next();
+		String source = identifier(scanner);
+		if (token != TemplateToken.DOUBLE_DOT)
+			throw new TemplateException("Missing iterator target.");
+
+		token = scanner.skipSpaces().next();
+		String target = identifier(scanner);
+		if (token != TemplateToken.DOUBLE_DOT)
+			throw new TemplateException("Missing iterator index.");
+
+		token = scanner.skipSpaces().next();
+		String index = identifier(scanner);
+		if (token != TemplateToken.EXPRESSION_BLOCK_END)
+			throw new TemplateException("Expected } and found %s.".formatted(token));
+
+		token = scanner.skipSpaces().next();
+		Template template = template(scanner);
+
+		if (token != TemplateToken.BLOCK_END)
+			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+
+		token = scanner.skipSpaces().next();
+		if (!identifier(scanner).equals(source))
+			throw new TemplateException("Expected %s and found %s".formatted(source, token));
+		if (token != TemplateToken.DOUBLE_DOT)
+			throw new TemplateException("Expected : and found %s".formatted(token));
+
+		token = scanner.skipSpaces().next();
+		if (!identifier(scanner).equals(target))
+			throw new TemplateException("Expected %s and found %s".formatted(target, token));
+		if (token != TemplateToken.DOUBLE_DOT)
+			throw new TemplateException("Expected : and found %s".formatted(token));
+
+		token = scanner.skipSpaces().next();
+		if (!identifier(scanner).equals(index))
+			throw new TemplateException("Expected %s and found %s".formatted(target, token));
+
+		if (token != TemplateToken.EXPRESSION_BLOCK_END)
+			throw new TemplateException("Expected } and found %s.".formatted(token));
+
+		token = scanner.skipSpaces().next();
+		return new TemplateIterator(Expression.of(source),
+				target, index, template);
+	}
 }

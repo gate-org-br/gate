@@ -129,22 +129,22 @@
 		</thead>
 		<tbody>
 			<g:iterator source="${screen.page}">
-				<tr data-target="_dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${target.id}">
-					<td title="Ativo"><g:print value="${target.active}"/></td>
-					<td title="Login do Usuário"><g:print value="${target.username}"/></td>
-					<td title="Senha do Usuário"><g:print value="${target.password}"/></td>
-					<td title="Nome do Usuário"><g:print value="${target.name}"/></td>
-					<td title="E-Mail do Usuário"><g:print value="${target.email}"/></td>
-					<td title="Perfil"><g:print value="${target.role.id}"/></td>
-					<td title="Comentários sobre o Usuário"><g:print value="${target.description}"/></td>
-					<td title="Telefone Celular do Usuário"><g:print value="${target.cellPhone}"/></td>
-					<td title="Telefone Fixo do Usuário"><g:print value="${target.phone}"/></td>
-					<td title="Foto do Usuário"><g:print value="${target.photo}"/></td>
-					<td title="Data de Nascimento"><g:print value="${target.birthdate}"/></td>
-					<td title="CPF"><g:print value="${target.CPF}"/></td>
-					<td title="Sexo"><g:print value="${target.sex}"/></td>
-					<td title="Data de Cadastro"><g:print value="${target.registration}"/></td>
-					<td title="Código do usuário"><g:print value="${target.code}"/></td>
+				<tr data-target="_dialog" data-action="Gate?MODULE=${MODULE}&SCREEN=${SCREEN}&ACTION=Select&form.id=${ target.id }">
+					<td title="Ativo"><g:print value="${ target.active }"/></td>
+					<td title="Login do Usuário"><g:print value="${ target.username }"/></td>
+					<td title="Senha do Usuário"><g:print value="${ target.password }"/></td>
+					<td title="Nome do Usuário"><g:print value="${ target.name }"/></td>
+					<td title="E-Mail do Usuário"><g:print value="${ target.email }"/></td>
+					<td title="Perfil"><g:print value="${ target.role.id }"/></td>
+					<td title="Comentários sobre o Usuário"><g:print value="${ target.description }"/></td>
+					<td title="Telefone Celular do Usuário"><g:print value="${ target.cellPhone }"/></td>
+					<td title="Telefone Fixo do Usuário"><g:print value="${ target.phone }"/></td>
+					<td title="Foto do Usuário"><g:print value="${ target.photo }"/></td>
+					<td title="Data de Nascimento"><g:print value="${ target.birthdate }"/></td>
+					<td title="CPF"><g:print value="${ target.CPF }"/></td>
+					<td title="Sexo"><g:print value="${ target.sex }"/></td>
+					<td title="Data de Cadastro"><g:print value="${ target.registration }"/></td>
+					<td title="Código do usuário"><g:print value="${ target.code }"/></td>
 				</tr>
 			</g:iterator>
 		</tbody>

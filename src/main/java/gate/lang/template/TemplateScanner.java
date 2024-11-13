@@ -39,7 +39,7 @@ class TemplateScanner extends BufferedReader
 
 			if (consume("\\"))
 				return isEOF() ? TemplateToken.EOF
-					: new Char((char) read());
+						: new Char((char) read());
 
 			if (consume(TemplateToken.COMPLEX_LINE_BREAK.toString()))
 				return TemplateToken.COMPLEX_LINE_BREAK;
@@ -50,6 +50,16 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.TAB.toString()))
 				return TemplateToken.TAB;
 
+			if (consume(TemplateToken.BLOCK_END.toString()))
+				return TemplateToken.BLOCK_END;
+
+			if (consume(TemplateToken.ITERATOR_BLOCK.toString()))
+				return TemplateToken.ITERATOR_BLOCK;
+			if (consume(TemplateToken.ITERATOR_HEAD.toString()))
+				return TemplateToken.ITERATOR_HEAD;
+
+			if (consume(TemplateToken.EXPRESSION_BLOCK.toString()))
+				return TemplateToken.EXPRESSION_BLOCK;
 			if (consume(TemplateToken.EXPRESSION_HEAD.toString()))
 				return TemplateToken.EXPRESSION_HEAD;
 
@@ -58,9 +68,6 @@ class TemplateScanner extends BufferedReader
 
 			if (consume(TemplateToken.IF_HEAD.toString()))
 				return TemplateToken.IF_HEAD;
-
-			if (consume(TemplateToken.ITERATOR_HEAD.toString()))
-				return TemplateToken.ITERATOR_HEAD;
 
 			if (consume(TemplateToken.CONDITION.toString()))
 				return TemplateToken.CONDITION;
@@ -93,6 +100,8 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.ITERATOR_TAIL.toString()))
 				return TemplateToken.ITERATOR_TAIL;
 
+			if (consume(TemplateToken.EXPRESSION_BLOCK_END.toString()))
+				return TemplateToken.EXPRESSION_BLOCK_END;
 			if (consume(TemplateToken.EXPRESSION_TAIL.toString()))
 				return TemplateToken.EXPRESSION_TAIL;
 
@@ -100,6 +109,8 @@ class TemplateScanner extends BufferedReader
 				return TemplateToken.CLOSE_TAG;
 			if (consume(TemplateToken.DOT.toString()))
 				return TemplateToken.DOT;
+			if (consume(TemplateToken.DOUBLE_DOT.toString()))
+				return TemplateToken.DOUBLE_DOT;
 			if (consume(TemplateToken.OPEN_PARENTESIS.toString()))
 				return TemplateToken.OPEN_PARENTESIS;
 			if (consume(TemplateToken.CLOSE_PARENTESIS.toString()))

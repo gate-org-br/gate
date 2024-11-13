@@ -6,7 +6,9 @@ import gate.converter.custom.MimeTextConverter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.MimeTextHandler;
+import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
+import static gate.sql.update.Update.type;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -24,45 +26,40 @@ public class MimeText implements Mime
 
 	private static final long serialVersionUID = 1L;
 
-	private final String type;
-	private final String subtype;
 	private final String charset;
 	private final String text;
+	private final ContentType contentType;
 
-	public MimeText(String type, String subtype, String charset, String text)
+	protected MimeText(ContentType contentType, String charset, String text)
 	{
-		Objects.requireNonNull(type, "Mime type cannot be null");
-		Objects.requireNonNull(subtype, "Mime subtype cannot be null");
+		Objects.requireNonNull(contentType, "Mime type cannot be null");
 		Objects.requireNonNull(charset, "Mime charset cannot be null");
 		Objects.requireNonNull(text, "Mime text cannot be null");
 
-		this.type = type;
-		this.subtype = subtype;
+		this.contentType = contentType;
 		this.charset = charset;
 		this.text = text;
 	}
 
-	public MimeText(String type, String subtype, String charset, byte[] data)
+	private static MimeText of(ContentType contentType, String charset, String text)
 	{
-		Objects.requireNonNull(type, "Mime type cannot be null");
-		Objects.requireNonNull(subtype, "Mime subtype cannot be null");
-		Objects.requireNonNull(charset, "Mime charset cannot be null");
-		Objects.requireNonNull(data, "Mime text cannot be null");
-
-		this.type = type;
-		this.subtype = subtype;
-		this.charset = charset;
-		this.text = new String(data, Charset.forName(charset));
+		return new MimeText(contentType, charset, text);
 	}
 
-	public MimeText(String text)
+	public static MimeText of(ContentType contentType, String charset, byte[] data)
 	{
-		this("text", "plain", "UTF-8", text);
+		Objects.requireNonNull(data, "Mime data cannot be null");
+		return of(contentType, charset, new String(data, Charset.forName(charset)));
 	}
 
-	public MimeText(byte[] data)
+	public static MimeText of(String text)
 	{
-		this("text", "plain", "UTF-8", data);
+		return of(ContentType.of("text", "plain"), "UTF-8", text);
+	}
+
+	public static MimeText of(byte[] data)
+	{
+		return of(ContentType.of("text", "plain"), "UTF-8", data);
 	}
 
 	public String getCharset()
@@ -76,15 +73,9 @@ public class MimeText implements Mime
 	}
 
 	@Override
-	public String getType()
+	public ContentType getContentType()
 	{
-		return type;
-	}
-
-	@Override
-	public String getSubType()
-	{
-		return subtype;
+		return contentType;
 	}
 
 	@Override
@@ -95,7 +86,7 @@ public class MimeText implements Mime
 			Map map = new HashMap<>();
 			map.put("charset", charset);
 
-			return new DataURL(getType(), getSubType(), false, map,
+			return DataURL.of(getContentType(), false, map,
 					URLEncoder.encode(getText(), charset)).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
@@ -116,7 +107,7 @@ public class MimeText implements Mime
 					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
 					: URLDecoder.decode(string, charset);
 
-			return new MimeText(dataURL.getType(), dataURL.getSubtype(), charset, text);
+			return new MimeText(dataURL.getContentType(), charset, text);
 		} catch (ParseException | UnsupportedEncodingException ex)
 		{
 			throw new ConversionException("invalid data url: " + string);

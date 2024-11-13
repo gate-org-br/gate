@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -105,13 +106,28 @@ public class Form implements Serializable
 										.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));
 	}
 
-	public List<String> getValue(String id)
+	public List<String> getValues(String id)
 	{
 		return getFields().stream()
 				.filter(e -> id.equals(e.getId()))
 				.findAny()
 				.map(e -> e.getValue())
 				.orElseGet(StringList::new);
+	}
+
+	public Optional<String> getValue(String id)
+	{
+		var value = getValues(id);
+		if (value.isEmpty())
+			return Optional.empty();
+		return Optional.of(value.stream()
+				.collect(Collectors.joining("\n")));
+	}
+
+	public Form add(Field field)
+	{
+		getFields().add(field);
+		return this;
 	}
 
 	public void pack(int limit)

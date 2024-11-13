@@ -49,7 +49,7 @@ public class JsonElementConverter implements Converter
 	public String toText(Class<?> type, Object object)
 	{
 		if (object != null)
-			return JsonElement.format((JsonElement) object);
+			return object.toString();
 		return "";
 	}
 
@@ -57,8 +57,7 @@ public class JsonElementConverter implements Converter
 	public String toText(Class<?> type, Object object, String format)
 	{
 		if (object != null)
-			return String.format(format,
-					JsonElement.format((JsonElement) object));
+			return String.format(format, object.toString());
 		return "";
 	}
 

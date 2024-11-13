@@ -19,9 +19,9 @@ public class DocHandler implements Handler
 	{
 		Doc doc = (Doc) value;
 		response.setLocale(Locale.getDefault());
-		response.setContentType(doc.getContentType());
+		response.setContentType(doc.getContentType().toString());
 		response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", doc.getFileName()));
-		try ( OutputStream os = response.getOutputStream())
+		try (OutputStream os = response.getOutputStream())
 		{
 			((Doc) value).print(os);
 			os.flush();

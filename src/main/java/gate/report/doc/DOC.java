@@ -2,6 +2,7 @@ package gate.report.doc;
 
 import gate.annotation.Icon;
 import gate.converter.Converter;
+import gate.lang.contentType.ContentType;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -61,15 +62,9 @@ public class DOC extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "application";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "doc";
+		return ContentType.of("application", "doc");
 	}
 
 	@Override
@@ -81,7 +76,7 @@ public class DOC extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try ( XWPFDocument XWPFDocument = new XWPFDocument())
+		try (XWPFDocument XWPFDocument = new XWPFDocument())
 		{
 			CTSectPr section = XWPFDocument.getDocument().getBody().addNewSectPr();
 			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy = new XWPFHeaderFooterPolicy(XWPFDocument, section);
@@ -210,7 +205,7 @@ public class DOC extends Doc
 		if (grid.getCaption() != null)
 		{
 			printCaption(XWPFTable, grid.getCaption(),
-				grid.getColumns().size());
+					grid.getColumns().size());
 			index++;
 		}
 
@@ -259,7 +254,7 @@ public class DOC extends Doc
 
 	private void printImage(XWPFHeader XWPFHeader, Image image) throws IOException, InvalidFormatException
 	{
-		try ( ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getSource()))
+		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getSource()))
 		{
 			BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 			XWPFParagraph XWPFParagraph = XWPFHeader.createParagraph();
@@ -269,7 +264,7 @@ public class DOC extends Doc
 
 			byteArrayInputStream.reset();
 			XWPFRun.addPicture(byteArrayInputStream, getImageFormat(image.getFilename()), image.getFilename(),
-				Units.toEMU(bufferedImage.getWidth()), Units.toEMU(bufferedImage.getHeight()));
+					Units.toEMU(bufferedImage.getWidth()), Units.toEMU(bufferedImage.getHeight()));
 		}
 	}
 
@@ -287,7 +282,7 @@ public class DOC extends Doc
 	{
 		for (int i = 0; i < grid.getColumns().size(); i++)
 			printHeaderCell(getXWPFTableCell(XWPFTableRow, i),
-				grid.getColumns().get(i), grid.getColumns().get(i).getHead());
+					grid.getColumns().get(i), grid.getColumns().get(i).getHead());
 	}
 
 	private void printHeaderCell(XWPFTableCell XWPFTableCell, Column<?> column, Object value)
@@ -310,8 +305,8 @@ public class DOC extends Doc
 		{
 			Column<Object> column = grid.getColumns().get(i);
 			printCell(getXWPFTableCell(XWPFTableRow, i),
-				column.getBody().apply(value),
-				column.getStyler().apply(value, column.style()));
+					column.getBody().apply(value),
+					column.getStyler().apply(value, column.style()));
 		}
 
 	}

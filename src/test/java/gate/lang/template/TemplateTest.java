@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
@@ -52,6 +53,34 @@ public final class TemplateTest
 	{
 		String expected = getFile("Document.html");
 		String result = Template.compile(getFile("Template.xml")).evaluate(this);
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void templateIterator() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+                        {{#this:e:i}}
+                        {{@i + 1}}: {{@e}}
+                        {{/this:e:i}}
+                        """);
+		String expected = """
+                    1: Object 1
+                    2: Object 2
+                    3: Object 3
+                    """;
+
+		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
+
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void URL() throws TemplateException, IOException
+	{
+		Template template = Template.compile("http://localhost:8000/employees/{{id}}/fire");
+		String expected = "http://localhost:8000/employees/1234/fire";
+		String result = template.evaluate(Map.of("id", "1234"));
 		assertEquals(expected, result);
 	}
 

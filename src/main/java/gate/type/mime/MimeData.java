@@ -7,6 +7,7 @@ import gate.error.ConversionException;
 import gate.handler.MimeDataHandler;
 import gate.io.Processor;
 import gate.io.Reader;
+import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,36 +24,21 @@ public class MimeData implements Mime
 
 	private static final long serialVersionUID = 1L;
 
-	private final String type;
-	private final String subtype;
+	private final ContentType contentType;
 	private final byte[] data;
 
-	public MimeData(String type, String subtype, byte[] data)
+	protected MimeData(ContentType contentType, byte[] data)
 	{
-		Objects.requireNonNull(type, "Mime type cannot be null");
-		Objects.requireNonNull(subtype, "Mime subtype cannot be null");
+		Objects.requireNonNull(contentType, "Mime type cannot be null");
 		Objects.requireNonNull(data, "Mime data cannot be null");
-		this.type = type;
-		this.subtype = subtype;
+		this.contentType = contentType;
 		this.data = data;
 	}
 
-	public MimeData(byte[] data)
-	{
-		this("application",
-			"octet-stream", data);
-	}
-
 	@Override
-	public String getType()
+	public ContentType getContentType()
 	{
-		return type;
-	}
-
-	@Override
-	public String getSubType()
-	{
-		return subtype;
+		return contentType;
 	}
 
 	public byte[] getData()
@@ -65,11 +51,22 @@ public class MimeData implements Mime
 		return data.length;
 	}
 
+	public static MimeData of(ContentType contentType, byte[] data)
+	{
+		return new MimeData(contentType, data);
+	}
+
+	public static MimeData of(byte[] data)
+	{
+		return new MimeData(ContentType.of("application", "octet-stream"), data);
+	}
+
 	@Override
 	public String toString()
 	{
-		return new DataURL(type, subtype, true, Collections.emptyMap(),
-			Base64.getEncoder().encodeToString(data)).toString();
+		return DataURL.of(contentType,
+				true, Collections.emptyMap(),
+				Base64.getEncoder().encodeToString(data)).toString();
 	}
 
 	public static MimeData parse(String string) throws ConversionException
@@ -79,9 +76,7 @@ public class MimeData implements Mime
 			DataURL dataURL = DataURL.parse(string);
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
-			return new MimeData(dataURL.getType(),
-				dataURL.getSubtype(),
-				Base64.getDecoder().decode(dataURL.getData()));
+			return MimeData.of(dataURL.getContentType(), Base64.getDecoder().decode(dataURL.getData()));
 
 		} catch (ParseException ex)
 		{

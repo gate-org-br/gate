@@ -29,10 +29,14 @@ public class MD5 implements Serializable
 
 	public static MD5 digest(String password)
 	{
+		return digest(password.getBytes());
+	}
+
+	public static MD5 digest(byte[] input)
+	{
 		try
 		{
-			byte[] digest = MessageDigest.getInstance("MD5")
-					.digest(password.getBytes());
+			byte[] digest = MessageDigest.getInstance("MD5").digest(input);
 			BigInteger bigInt = new BigInteger(1, digest);
 			StringBuilder hash = new StringBuilder(bigInt.toString(16));
 			while (hash.length() < 32)

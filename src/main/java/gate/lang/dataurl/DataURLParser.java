@@ -1,5 +1,6 @@
 package gate.lang.dataurl;
 
+import gate.lang.contentType.ContentType;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -17,7 +18,7 @@ public class DataURLParser implements AutoCloseable
 	}
 
 	public DataURL parse() throws IOException,
-		ParseException
+			ParseException
 	{
 		Object current = scanner.scan();
 		if (!"data".equals(current))
@@ -49,9 +50,13 @@ public class DataURLParser implements AutoCloseable
 				current = scanner.scan();
 			}
 
+			while (Character.valueOf(' ').equals(current))
+				current = scanner.scan();
 			while (Character.valueOf(';').equals(current))
 			{
 				current = scanner.scan();
+				while (Character.valueOf(' ').equals(current))
+					current = scanner.scan();
 				if ("base64".equals(current))
 				{
 					base64 = true;
@@ -74,12 +79,14 @@ public class DataURLParser implements AutoCloseable
 				current = scanner.scan();
 
 				parameters.put(name, URLDecoder.decode(value, "UTF-8"));
+				while (Character.valueOf(' ').equals(current))
+					current = scanner.scan();
 			}
 		}
 
 		if (!Character.valueOf(',').equals(current))
 			throw new ParseException("expected , and found " + current, 0);
-		return new DataURL(type, subtype, base64, parameters, scanner.finish());
+		return DataURL.of(ContentType.of(type, subtype), base64, parameters, scanner.finish());
 	}
 
 	@Override

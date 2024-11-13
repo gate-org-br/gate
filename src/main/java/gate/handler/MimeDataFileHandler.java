@@ -20,15 +20,13 @@ public class MimeDataFileHandler implements Handler
 
 		response.setContentLength(mimeDataFile.getData().length);
 
-		response.setContentType(String.format("%s/%s",
-			mimeDataFile.getType(),
-			mimeDataFile.getSubType()));
+		response.setContentType(mimeDataFile.getContentType().toString());
 
 		response.setHeader("Content-Disposition",
-			String.format("attachment; filename=\"%s\"",
-				mimeDataFile.getName()));
+				String.format("attachment; filename=\"%s\"",
+						mimeDataFile.getName()));
 
-		try ( OutputStream os = response.getOutputStream())
+		try (OutputStream os = response.getOutputStream())
 		{
 			os.write(mimeDataFile.getData());
 			os.flush();

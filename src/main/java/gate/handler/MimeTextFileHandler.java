@@ -22,19 +22,18 @@ public class MimeTextFileHandler implements Handler
 			MimeTextFile mimeTextFile = (MimeTextFile) value;
 			response.setCharacterEncoding(mimeTextFile.getCharset());
 
-			response.setContentType(String.format("%s/%s; charset=%s",
-				mimeTextFile.getType(),
-				mimeTextFile.getSubType(),
-				mimeTextFile.getCharset()));
+			response.setContentType(String.format("%s; charset=%s",
+					mimeTextFile.getContentType(),
+					mimeTextFile.getCharset()));
 
 			response.setHeader("Content-Disposition",
-				String.format("attachment; filename=\"%s\"",
-					mimeTextFile.getName()));
+					String.format("attachment; filename=\"%s\"",
+							mimeTextFile.getName()));
 
 			byte[] bytes = mimeTextFile.getText().getBytes(mimeTextFile.getCharset());
 			response.setContentLength(bytes.length);
 
-			try ( OutputStream os = response.getOutputStream())
+			try (OutputStream os = response.getOutputStream())
 			{
 				os.write(bytes);
 				os.flush();

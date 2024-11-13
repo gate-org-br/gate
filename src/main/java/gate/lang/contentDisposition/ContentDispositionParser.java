@@ -27,9 +27,13 @@ public class ContentDispositionParser implements AutoCloseable
 		String string = (String) current;
 
 		current = scanner.scan();
+		while (Character.valueOf(' ').equals(current))
+			current = scanner.scan();
 		while (Character.valueOf(';').equals(current))
 		{
 			current = scanner.scan();
+			while (Character.valueOf(' ').equals(current))
+				current = scanner.scan();
 
 			if (!(current instanceof String))
 				throw new ParseException("expected parameter and found " + current, 0);
@@ -46,6 +50,9 @@ public class ContentDispositionParser implements AutoCloseable
 			current = scanner.scan();
 
 			parameters.put(name, URLDecoder.decode(value, "UTF-8"));
+
+			while (Character.valueOf(' ').equals(current))
+				current = scanner.scan();
 		}
 
 		return new ContentDisposition(string, parameters);

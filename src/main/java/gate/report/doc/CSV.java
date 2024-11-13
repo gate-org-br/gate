@@ -4,6 +4,7 @@ import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.lang.contentType.ContentType;
 import gate.lang.csv.CSVFormatter;
 import gate.report.Column;
 import gate.report.Doc;
@@ -35,15 +36,9 @@ public class CSV extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "text";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "csv";
+		return ContentType.of("text", "csv");
 	}
 
 	@Override
@@ -55,7 +50,7 @@ public class CSV extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try ( PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
+		try (PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
 		{
 			for (ReportElement element : getReport().getElements())
 				if (element instanceof Grid)
@@ -74,15 +69,15 @@ public class CSV extends Doc
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
 				formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
-					.map(Converter::toText).collect(Collectors.toList()));
+						.map(Converter::toText).collect(Collectors.toList()));
 
 			for (Object obj : Toolkit.iterable(data))
 				if (obj != null)
 				{
 
 					formatter.writeLine(grid.getColumns().stream()
-						.map(e -> Converter.toText(e.getBody().apply(obj)))
-						.collect(Collectors.toList()));
+							.map(e -> Converter.toText(e.getBody().apply(obj)))
+							.collect(Collectors.toList()));
 
 					if (grid.getChildren() != null)
 						for (Object child : Toolkit.collection(grid.getChildren().apply(obj)))
@@ -91,7 +86,7 @@ public class CSV extends Doc
 
 			if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
 				formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
-					.map(Converter::toText).collect(Collectors.toList()));
+						.map(Converter::toText).collect(Collectors.toList()));
 
 		} catch (IOException ex)
 		{

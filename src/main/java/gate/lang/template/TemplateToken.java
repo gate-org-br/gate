@@ -8,6 +8,10 @@ import java.util.List;
 
 enum TemplateToken implements Evaluable
 {
+	ITERATOR_BLOCK("{{#"),
+	BLOCK_END("{{/"),
+	EXPRESSION_BLOCK("{{"),
+	EXPRESSION_BLOCK_END("}}"),
 	EXPRESSION_HEAD("${"),
 	EXPRESSION_TAIL("}"),
 	IF_HEAD("<g:if"),
@@ -27,6 +31,7 @@ enum TemplateToken implements Evaluable
 	TYPE("type"),
 	RESOURCE("resource"),
 	DOT("."),
+	DOUBLE_DOT(":"),
 	SLASH("/"),
 	OPEN_PARENTESIS("("),
 	CLOSE_PARENTESIS(")"),

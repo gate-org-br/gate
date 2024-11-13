@@ -1,5 +1,6 @@
 package gate.type.mime;
 
+import gate.lang.contentType.ContentType;
 import java.io.Serializable;
 
 /**
@@ -13,12 +14,6 @@ public interface Mime extends Serializable
 	 *
 	 * @return the mime content type
 	 */
-	String getType();
+	ContentType getContentType();
 
-	/**
-	 * Gets the mime content subtype.
-	 *
-	 * @return the mime content subtype
-	 */
-	String getSubType();
 }
