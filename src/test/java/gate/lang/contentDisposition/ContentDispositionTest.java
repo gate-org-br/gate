@@ -1,8 +1,6 @@
 package gate.lang.contentDisposition;
 
-import java.text.ParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 public class ContentDispositionTest
@@ -13,25 +11,25 @@ public class ContentDispositionTest
 	}
 
 	@Test
-	public void testWithoutQuotes() throws ParseException
+	public void testWithoutQuotes()
 	{
-		var contentDisposition = ContentDisposition.parse("attachment;filename=media.txt");
+		var contentDisposition = ContentDisposition.valueOf("attachment;filename=media.txt");
 		assertEquals("attachment", contentDisposition.getValue());
 		assertEquals("media.txt", contentDisposition.getParameters().get("filename"));
 	}
 
 	@Test
-	public void testWithQuotes() throws ParseException
+	public void testWithQuotes()
 	{
-		var contentDisposition = ContentDisposition.parse("attachment;filename=\"media.txt\"");
+		var contentDisposition = ContentDisposition.valueOf("attachment;filename=\"media.txt\"");
 		assertEquals("attachment", contentDisposition.getValue());
 		assertEquals("media.txt", contentDisposition.getParameters().get("filename"));
 	}
 
 	@Test
-	public void testWithQuotesAndSpaces() throws ParseException
+	public void testWithQuotesAndSpaces()
 	{
-		var contentDisposition = ContentDisposition.parse("attachment ; filename=\"media.txt\"");
+		var contentDisposition = ContentDisposition.valueOf("attachment ; filename=\"media.txt\"");
 		assertEquals("attachment", contentDisposition.getValue());
 		assertEquals("media.txt", contentDisposition.getParameters().get("filename"));
 	}

@@ -50,7 +50,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 
 	public static MimeDataFile of(byte[] data, String name)
 	{
-		return of(ContentType.parse(URLConnection
+		return of(ContentType.valueOf(URLConnection
 				.guessContentTypeFromName(name)), data, name);
 	}
 

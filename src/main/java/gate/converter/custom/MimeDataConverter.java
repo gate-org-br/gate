@@ -55,7 +55,7 @@ public class MimeDataConverter implements Converter
 		try (InputStream is = part.getInputStream())
 		{
 			byte[] bytes = ByteArrayReader.getInstance().read(is);
-			return MimeData.of(ContentType.parse(part.getContentType()), bytes);
+			return MimeData.of(ContentType.valueOf(part.getContentType()), bytes);
 		} catch (IOException ex)
 		{
 			throw new ConversionException(ex.getMessage(), ex);

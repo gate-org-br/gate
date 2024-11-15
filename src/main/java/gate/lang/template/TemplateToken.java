@@ -8,8 +8,10 @@ import java.util.List;
 
 enum TemplateToken implements Evaluable
 {
-	ITERATOR_BLOCK("{{#"),
-	BLOCK_END("{{/"),
+	ITERATOR_BLOCK("##for"),
+	IF_BLOCK("##if"),
+	BLOCK_END("##end"),
+	ELSE_BLOCK("##else"),
 	EXPRESSION_BLOCK("{{"),
 	EXPRESSION_BLOCK_END("}}"),
 	EXPRESSION_HEAD("${"),

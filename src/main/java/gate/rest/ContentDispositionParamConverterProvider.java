@@ -1,15 +1,14 @@
 package gate.rest;
 
+import gate.error.ConversionException;
 import gate.lang.contentDisposition.ContentDisposition;
 import gate.lang.contentType.ContentType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 
-@Provider
 public class ContentDispositionParamConverterProvider implements ParamConverterProvider
 {
 
@@ -30,13 +29,7 @@ public class ContentDispositionParamConverterProvider implements ParamConverterP
 		@Override
 		public ContentDisposition fromString(String value)
 		{
-			try
-			{
-				return ContentDisposition.parse(value);
-			} catch (ParseException ex)
-			{
-				throw new IllegalArgumentException(value + " is not a valid content type header");
-			}
+			return ContentDisposition.valueOf(value);
 		}
 
 		@Override

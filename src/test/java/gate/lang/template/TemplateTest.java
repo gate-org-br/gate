@@ -57,22 +57,135 @@ public final class TemplateTest
 	}
 
 	@Test
-	public void templateIterator() throws TemplateException, IOException
+	public void forTest() throws TemplateException, IOException
 	{
 		Template template = Template.compile("""
-                        {{#this:e:i}}
-                        {{@i + 1}}: {{@e}}
-                        {{/this:e:i}}
-                        """);
+					##for(value : {{this}})
+					{{@value}}
+					##end
+					""");
 		String expected = """
-                    1: Object 1
-                    2: Object 2
-                    3: Object 3
+					Object 1
+					Object 2
+					Object 3
+                    
                     """;
 
 		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
 
 		assertEquals(expected, result);
+	}
+
+	@Test
+	public void forIndexTest() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##for(value : {{this}} : index)
+					{{@index + 1}}: {{@value}}
+					##end
+					""");
+		String expected = """
+					1: Object 1
+					2: Object 2
+					3: Object 3
+                    
+					""";
+
+		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
+
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void forIndexedElseTest() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##for(value : {{this}} : index)
+					{{@index + 1}}: {{@value}}
+					##else
+					nothing
+					##end
+					""");
+
+		String expected = """
+					1: Object 1
+					2: Object 2
+					3: Object 3
+                    
+					""";
+
+		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
+
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void forIndexedElseEmptyTest() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##for(value : {{this}} : index)
+					{{@index + 1}}: {{@value}}
+					##else
+					nothing
+					##end
+					""");
+
+		String result = template.evaluate(List.of());
+		System.out.println(result.replaceAll("\n", "N").replaceAll(" ", "S"));
+
+		assertEquals("nothing\n\n", result);
+	}
+
+	@Test
+	public void templateIfTrue() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##if({{this eq 'abc'}})
+					condition true
+					##end
+					""");
+
+		assertEquals("condition true\n", template.evaluate("abc"));
+	}
+
+	@Test
+	public void templateIfFalse() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##if({{this eq 'abc'}})
+					condition true
+					##end
+					""");
+
+		assertEquals("", template.evaluate("cde"));
+	}
+
+	@Test
+	public void templateIfTrueElse() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##if( {{this eq 'abc'}} )
+					condition true
+					##else
+					condition false
+					##end
+					""");
+
+		assertEquals("condition true\n", template.evaluate("abc"));
+	}
+
+	@Test
+	public void templateIfFalseElse() throws TemplateException, IOException
+	{
+		Template template = Template.compile("""
+					##if( {{this eq 'abc'}} )
+					condition true
+					##else
+					condition false
+					##end
+					""");
+
+		assertEquals("condition false\n", template.evaluate("cde"));
 	}
 
 	@Test

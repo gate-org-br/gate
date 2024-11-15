@@ -2,6 +2,8 @@ package gate.lang.contentDisposition;
 
 import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.lang.contentType.ContentTypeParser;
+import gate.lang.contentType.ContentTypeScanner;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
@@ -59,28 +61,20 @@ public class ContentDisposition
 		return string.toString();
 	}
 
-	public static ContentDisposition parse(String string) throws ParseException
+	public static ContentDisposition valueOf(String string)
 	{
 		try (ContentDispositionParser parser = new ContentDispositionParser(new ContentDispositionScanner(new StringReader(string))))
 		{
 			try
 			{
 				return parser.parse();
+			} catch (ParseException ex)
+			{
+				throw new IllegalArgumentException(string + " is not a valid disposition type");
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
-		}
-	}
-
-	public static ContentDisposition valueOf(String string) throws ConversionException
-	{
-		try
-		{
-			return parse(string);
-		} catch (ParseException ex)
-		{
-			throw new ConversionException("Invalid content disposition header");
 		}
 	}
 }

@@ -6,18 +6,24 @@ import gate.lang.expression.Expression;
 import gate.lang.expression.Parameters;
 import java.io.Writer;
 import java.util.List;
-import java.util.Map;
 
 class TemplateIf implements Evaluable
 {
 
 	private final Expression expression;
 	private final Template template;
+	private final Template elseTemplate;
 
 	public TemplateIf(Expression expression, Template template)
 	{
+		this(expression, template, null);
+	}
+
+	public TemplateIf(Expression expression, Template template, Template elseTemplate)
+	{
 		this.expression = expression;
 		this.template = template;
+		this.elseTemplate = elseTemplate;
 	}
 
 	@Override
@@ -30,6 +36,8 @@ class TemplateIf implements Evaluable
 			{
 				if (Boolean.TRUE.equals(check))
 					template.evaluate(writer, context, parameters);
+				else if (elseTemplate != null)
+					elseTemplate.evaluate(writer, context, parameters);
 
 			} else
 				throw new TemplateException(String.format("Expected Boolean and found %s", check));
@@ -43,7 +51,7 @@ class TemplateIf implements Evaluable
 	public String toString()
 	{
 		return String.format("If: %s",
-			expression.toString());
+				expression.toString());
 	}
 
 }

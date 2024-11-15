@@ -15,15 +15,23 @@ class TemplateIterator implements Evaluable
 
 	private final Expression source;
 	private final Template template;
+	private final Template elseTemplate;
 	private final String target;
 	private final String index;
 
 	public TemplateIterator(Expression source, String target, String index, Template template)
 	{
+		this(source, target, index, template, null);
+	}
+
+	public TemplateIterator(Expression source, String target, String index,
+			Template template, Template elseTemplate)
+	{
 		this.source = source;
 		this.template = template;
 		this.target = target;
 		this.index = index;
+		this.elseTemplate = elseTemplate;
 	}
 
 	@Override
@@ -34,18 +42,20 @@ class TemplateIterator implements Evaluable
 			Object values = source.evaluate(context, parameters);
 
 			Iterable<?> iterable;
-			if (values instanceof Collection<?>)
-				iterable = (Collection<?>) values;
+			if (values instanceof Collection<?> collection)
+				iterable = collection;
 			else if (values instanceof Object[])
 				iterable = Collections.singletonList(values);
-			else if (values instanceof Map<?, ?>)
-				iterable = ((Map<?, ?>) values).entrySet();
+			else if (values instanceof Map<?, ?> map)
+				iterable = map.entrySet();
 			else
 				iterable = Collections.singleton(values);
 
 			int i = 0;
+			boolean empty = elseTemplate != null;
 			for (Object value : iterable)
 			{
+				empty = false;
 				if (target != null)
 					parameters.put(target, value);
 
@@ -59,8 +69,10 @@ class TemplateIterator implements Evaluable
 
 				if (index != null)
 					parameters.remove(index);
-
 			}
+
+			if (empty)
+				elseTemplate.evaluate(writer, context, parameters);
 		} catch (ExpressionException ex)
 		{
 			throw new TemplateException(ex.getMessage());

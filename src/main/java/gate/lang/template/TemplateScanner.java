@@ -53,10 +53,18 @@ class TemplateScanner extends BufferedReader
 			if (consume(TemplateToken.BLOCK_END.toString()))
 				return TemplateToken.BLOCK_END;
 
+			if (consume(TemplateToken.IF_HEAD.toString()))
+				return TemplateToken.IF_HEAD;
+			if (consume(TemplateToken.IF_BLOCK.toString()))
+				return TemplateToken.IF_BLOCK;
+
 			if (consume(TemplateToken.ITERATOR_BLOCK.toString()))
 				return TemplateToken.ITERATOR_BLOCK;
 			if (consume(TemplateToken.ITERATOR_HEAD.toString()))
 				return TemplateToken.ITERATOR_HEAD;
+
+			if (consume(TemplateToken.ELSE_BLOCK.toString()))
+				return TemplateToken.ELSE_BLOCK;
 
 			if (consume(TemplateToken.EXPRESSION_BLOCK.toString()))
 				return TemplateToken.EXPRESSION_BLOCK;
@@ -65,9 +73,6 @@ class TemplateScanner extends BufferedReader
 
 			if (consume(TemplateToken.IMPORT.toString()))
 				return TemplateToken.IMPORT;
-
-			if (consume(TemplateToken.IF_HEAD.toString()))
-				return TemplateToken.IF_HEAD;
 
 			if (consume(TemplateToken.CONDITION.toString()))
 				return TemplateToken.CONDITION;

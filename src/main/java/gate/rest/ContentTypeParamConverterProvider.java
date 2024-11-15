@@ -3,12 +3,10 @@ package gate.rest;
 import gate.lang.contentType.ContentType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import javax.ws.rs.ext.ParamConverter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.Provider;
 
-@Provider
 public class ContentTypeParamConverterProvider implements ParamConverterProvider
 {
 
@@ -29,7 +27,7 @@ public class ContentTypeParamConverterProvider implements ParamConverterProvider
 		@Override
 		public ContentType fromString(String value)
 		{
-			return ContentType.parse(value);
+			return ContentType.valueOf(value);
 		}
 
 		@Override

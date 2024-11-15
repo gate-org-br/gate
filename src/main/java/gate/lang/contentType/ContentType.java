@@ -79,10 +79,9 @@ public class ContentType
 		return string.toString();
 	}
 
-	public static ContentType parse(String string)
+	public static ContentType valueOf(String string)
 	{
-		try (ContentTypeParser parser
-				= new ContentTypeParser(new ContentTypeScanner(new StringReader(string))))
+		try (ContentTypeParser parser = new ContentTypeParser(new ContentTypeScanner(new StringReader(string))))
 		{
 			try
 			{
@@ -92,13 +91,8 @@ public class ContentType
 				throw new IllegalArgumentException(string + " is not a valid content type");
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
-	}
-
-	public static ContentType valueOf(String string)
-	{
-		return parse(string);
 	}
 }

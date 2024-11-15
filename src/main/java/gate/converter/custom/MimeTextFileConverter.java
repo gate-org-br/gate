@@ -58,7 +58,7 @@ public class MimeTextFileConverter implements Converter
 			try (InputStream is = part.getInputStream())
 			{
 				byte[] bytes = ByteArrayReader.getInstance().read(is);
-				return MimeTextFile.of(ContentType.parse(part.getContentType()),
+				return MimeTextFile.of(ContentType.valueOf(part.getContentType()),
 						"utf-8",
 						bytes,
 						part.getSubmittedFileName());
