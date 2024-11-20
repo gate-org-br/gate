@@ -3,7 +3,6 @@ package gate.base;
 import gate.annotation.BodyParameter;
 import gate.annotation.PathParameter;
 import gate.annotation.QueryParameter;
-import gate.code.PackageName;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.error.BadRequestException;
@@ -290,17 +289,5 @@ public abstract class Screen extends Base
 	public static Optional<Method> getAction(String module, String screen, String action)
 	{
 		return getScreen(module, screen).flatMap(e -> getAction(e, action));
-	}
-
-	public String getDefaultJSP(Method method)
-	{
-		String screenName = getClass().getSimpleName();
-		PackageName packageName = PackageName.of(getClass());
-		return "/WEB-INF/vies/"
-			+ packageName.getFolderName()
-			+ "/"
-			+ screenName.substring(0, screenName.length() - 6)
-			+ "/"
-			+ method.getName().substring(4);
 	}
 }
