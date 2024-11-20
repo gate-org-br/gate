@@ -58,16 +58,16 @@ public class JsonElementConverter implements Converter
 	public String toText(Class<?> type, Object object)
 	{
 		if (object != null)
-			return JsonElement.format((JsonElement) object);
-		return null;
+			return object.toString();
+		return "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
 		if (object != null)
-			return String.format(format, JsonElement.format((JsonElement) object));
-		return null;
+			return String.format(format, toText(type, object));
+		return "";
 	}
 
 	@Override
@@ -121,29 +121,35 @@ public class JsonElementConverter implements Converter
 	{
 		switch (scanner.getCurrent().getType())
 		{
-			case NUMBER -> {
+			case NUMBER ->
+			{
 				JsonNumber value = JsonNumber.parse(scanner.getCurrent().toString());
 				scanner.scan();
 				return value;
 			}
-			case STRING -> {
+			case STRING ->
+			{
 				JsonString value = JsonString.parse(scanner.getCurrent().toString());
 				scanner.scan();
 				return value;
 			}
-			case FALSE -> {
+			case FALSE ->
+			{
 				scanner.scan();
 				return JsonBoolean.FALSE;
 			}
-			case TRUE -> {
+			case TRUE ->
+			{
 				scanner.scan();
 				return JsonBoolean.TRUE;
 			}
-			case NULL -> {
+			case NULL ->
+			{
 				scanner.scan();
 				return JsonNull.INSTANCE;
 			}
-			case OPEN_ARRAY -> {
+			case OPEN_ARRAY ->
+			{
 				boolean empty = true;
 
 				JsonArray object = new JsonArray();
@@ -157,8 +163,8 @@ public class JsonElementConverter implements Converter
 
 						scanner.scan();
 						Converter converter = Converter.getConverter(JsonElement.class);
-						JsonElement value =
-								(JsonElement) converter.ofJson(scanner, elementType, elementType);
+						JsonElement value
+								= (JsonElement) converter.ofJson(scanner, elementType, elementType);
 						object.add(value);
 					} else if (!empty)
 						throw new ConversionException(
@@ -172,7 +178,8 @@ public class JsonElementConverter implements Converter
 				scanner.scan();
 				return object;
 			}
-			case OPEN_OBJECT -> {
+			case OPEN_OBJECT ->
+			{
 
 				boolean empty = true;
 
@@ -197,8 +204,8 @@ public class JsonElementConverter implements Converter
 
 						scanner.scan();
 						Converter converter = Converter.getConverter(JsonElement.class);
-						JsonElement value =
-								(JsonElement) converter.ofJson(scanner, elementType, elementType);
+						JsonElement value
+								= (JsonElement) converter.ofJson(scanner, elementType, elementType);
 						object.put(key, value);
 					} else if (!empty)
 						throw new ConversionException(
@@ -212,8 +219,9 @@ public class JsonElementConverter implements Converter
 				scanner.scan();
 				return object;
 			}
-			default -> throw new ConversionException(
-					"Unexpected token on json input: " + scanner.getCurrent());
+			default ->
+				throw new ConversionException(
+						"Unexpected token on json input: " + scanner.getCurrent());
 		}
 
 	}

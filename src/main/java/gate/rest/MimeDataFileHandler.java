@@ -23,10 +23,10 @@ public class MimeDataFileHandler implements MessageBodyWriter<MimeDataFile>
 
 	@Override
 	public void writeTo(MimeDataFile value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-		MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
+			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
 		httpHeaders.putSingle("Content-Type",
-			value.getType() + "/" + value.getSubType());
+				value.getContentType().toString());
 		entityStream.write(value.getData());
 	}
 

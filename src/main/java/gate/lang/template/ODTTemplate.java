@@ -27,7 +27,7 @@ public class ODTTemplate
 				{
 					byte[] data = ByteArrayReader.getInstance().read(istream);
 
-					if (entry.getName().equalsIgnoreCase("content.xml"))
+					if (entry.getName().toLowerCase().equals("content.xml"))
 					{
 						String string = new String(data);
 						entry = new ZipEntry("content.xml");

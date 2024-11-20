@@ -6,6 +6,7 @@ import gate.converter.custom.MimeTextFileConverter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.MimeTextFileHandler;
+import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +16,7 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.HashMap;
@@ -30,38 +32,43 @@ public class MimeTextFile extends MimeText implements MimeFile
 
 	private final String name;
 
-	public MimeTextFile(String type,
-			String subtype,
+	private MimeTextFile(ContentType contentType,
 			String charset,
 			String text,
 			String name)
 	{
-		super(type, subtype, charset, text);
+		super(contentType, charset, text);
 
 		Objects.requireNonNull(name, "Mime name cannot be null");
 		this.name = name;
 	}
 
-	public MimeTextFile(String type,
-			String subtype,
+	public static MimeTextFile of(ContentType contentType,
+			String charset,
+			String text,
+			String name)
+	{
+		return new MimeTextFile(contentType, charset, text, name);
+	}
+
+	public static MimeTextFile of(ContentType contentType,
 			String charset,
 			byte[] data,
 			String name)
 	{
-		super(type, subtype, charset, data);
+		return of(contentType, charset, new String(data,
+				Charset.forName(charset)), name);
 
-		Objects.requireNonNull(name, "Mime name cannot be null");
-		this.name = name;
 	}
 
-	public MimeTextFile(byte[] data, String name)
+	public static MimeTextFile of(byte[] data, String name)
 	{
-		this("application", "octet-stream", "UTF-8", data, name);
+		return of(ContentType.of("application", "octet-stream"), "UTF-8", data, name);
 	}
 
-	public MimeTextFile(String text, String name)
+	public static MimeTextFile of(String text, String name)
 	{
-		this("application", "octet-stream", "UTF-8", text, name);
+		return of(ContentType.of("application", "octet-stream"), "UTF-8", text, name);
 	}
 
 	@Override
@@ -80,7 +87,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 				for (int c = reader.read(); c != -1; c = reader.read())
 					string.write(c);
 				string.flush();
-				return new MimeTextFile(file.getName(), string.toString());
+				return MimeTextFile.of(file.getName(), string.toString());
 			}
 		} catch (IOException ex)
 		{
@@ -97,7 +104,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 			map.put("filename", name);
 			map.put("charset", getCharset());
 
-			return new DataURL(getType(), getSubType(), false, map,
+			return DataURL.of(getContentType(), false, map,
 					URLEncoder.encode(getText(), getCharset())).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
@@ -118,7 +125,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
 					: URLDecoder.decode(string, charset);
 
-			return new MimeTextFile(dataURL.getType(), dataURL.getSubtype(), charset, text,
+			return MimeTextFile.of(dataURL.getContentType(), charset, text,
 					dataURL.getParameters().get("filename"));
 		} catch (ParseException | UnsupportedEncodingException ex)
 		{

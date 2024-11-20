@@ -14,7 +14,7 @@ import gate.event.LogoffEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
+import gate.security.Credentials;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;

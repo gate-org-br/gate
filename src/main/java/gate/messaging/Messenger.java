@@ -74,8 +74,8 @@ public class Messenger implements ServletContextListener
 	}
 
 	public void post(String sender,
-					 String receiver,
-					 MimeMail<?> message)
+			String receiver,
+			MimeMail<?> message)
 			throws MessageException
 	{
 		try
@@ -171,7 +171,8 @@ public class Messenger implements ServletContextListener
 
 		if (mail.getContent() instanceof MimeText mimeText)
 		{
-			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
+			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(),
+					mimeText.getContentType().getSubtype());
 		} else if (mail.getContent() instanceof MimeDataFile mimeDataFile)
 		{
 			mimeMessage.setDisposition("Attachment");
@@ -195,14 +196,14 @@ public class Messenger implements ServletContextListener
 	private MimeMultipart getMultipart(MimeList data) throws MessagingException
 	{
 		MimeMultipart mimeMultipart = new MimeMultipart();
-		mimeMultipart.setSubType(data.getType());
+		mimeMultipart.setSubType(data.getContentType().getType());
 
 		for (Mime mime : data)
 		{
 			MimeBodyPart mimeBodyPart = new MimeBodyPart();
 			if (mime instanceof MimeText mimeText)
 			{
-				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getSubType());
+				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getContentType().getSubtype());
 			} else if (mime instanceof MimeDataFile mimeDataFile)
 			{
 				mimeBodyPart.setDisposition("Attachment");

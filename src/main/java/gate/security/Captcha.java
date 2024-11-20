@@ -1,4 +1,4 @@
-package gate.util;
+package gate.security;
 
 import gate.annotation.Converter;
 import gate.converter.custom.CaptchaConverter;

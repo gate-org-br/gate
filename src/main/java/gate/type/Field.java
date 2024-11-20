@@ -29,38 +29,37 @@ public class Field implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	@Name("ID")
-	@Description("Defina o id do campo.")
+	@Description("Identificador do campo.")
 	private String id;
 
 	@Name("Nome")
-	@Description("Defina o nome do campo.")
+	@Description("Nome do campo.")
 	private String name;
 
-	@Required
 	@Name("Tamanho")
-	@Description("Defina o número de colunas a serem ocupadas pelo campo no formulário.")
+	@Description("Número de colunas a serem ocupadas pelo campo no formulário.")
 	private Size size;
 
 	@Required
 	@Name("Multiplo")
-	@Description("Defina se o campo admite múltiplas linhas (caso seja de preenchimento livre), ou múltiplas opções (caso possua lista predefinida de opções).")
+	@Description("Define se o campo admite múltiplas linhas, ou múltiplas opções.")
 	private boolean multiple;
 
 	@Name("Opções")
-	@Description("Defina as opções possíveis de respostas para o campo. Separe as opções por vírgula. Deixe em branco se o campo for de preenchimento livre.")
+	@Description("Opções possíveis de respostas para o campo.")
 	private StringList options;
 
 	@Name("Valor Padrão")
-	@Description("Defina o valor padrão do campo.")
+	@Description("Valor padrão do campo.")
 	private StringList value;
 
 	@Required
 	@Name("Requerido")
-	@Description("Defina se o campo é requerido.")
+	@Description("Define se o campo é requerido.")
 	private boolean required;
 
 	@Name("Máscara")
-	@Description("Defina uma máscara para o campo.")
+	@Description("Máscara de preenchimendo para o campo.")
 	private String mask;
 
 	@Name("Descrição")
@@ -68,11 +67,11 @@ public class Field implements Serializable
 	private String description;
 
 	@Name("Padrão")
-	@Description("Expressão regular a ser utilizada para validar o campo.")
+	@Description("Expressão regular a ser utilizada para validação.")
 	private Pattern pattern;
 
 	@Name("Tamanho Máximo")
-	@Description("Número de caracteres máximo permitido para o campo.")
+	@Description("Número de caracteres máximo permitido.")
 	private Integer maxlength;
 
 	@Name("Somente Leitura")
@@ -158,9 +157,9 @@ public class Field implements Serializable
 		return this;
 	}
 
-	public List<Constraint.Implementation<?>> getConstraints()
+	public List<Constraint.Implementation> getConstraints()
 	{
-		List<Constraint.Implementation<?>> constraints = new ArrayList<>();
+		List<Constraint.Implementation> constraints = new ArrayList<>();
 		if (Boolean.TRUE.equals(getRequired()))
 			constraints.add(new Required.Implementation("required"));
 		if (getMaxlength() != null)
@@ -229,7 +228,9 @@ public class Field implements Serializable
 
 	public int getMinSize()
 	{
-		return Math.max(value != null ? value.stream().mapToInt(e -> e.length()).sum() : 0,
+		return Math.max(value != null
+				? value.stream()
+						.mapToInt(e -> e.length()).sum() : 0,
 				name != null ? name.length() : 0);
 	}
 
@@ -247,8 +248,7 @@ public class Field implements Serializable
 				.setBoolean("multiple", multiple ? true : null)
 				.setBoolean("required", required ? true : null)
 				.set("value", value != null && !value.isEmpty() ? JsonArray.of(value) : null)
-				.set("options",
-						options != null && !options.isEmpty() ? JsonArray.of(options) : null);
+				.set("options", options != null && !options.isEmpty() ? JsonArray.of(options) : null);
 	}
 
 	@Override
@@ -279,16 +279,14 @@ public class Field implements Serializable
 		JsonElement options = jsonObject.get("options");
 		if (options instanceof JsonString)
 			field.setOptions(new StringList(options.toString()));
-		else if (options instanceof JsonArray)
-			field.setOptions(((JsonArray) options).stream().map(JsonElement::toString)
-					.collect(Collectors.toCollection(StringList::new)));
+		else if (options instanceof JsonArray jsonArray)
+			field.setOptions(jsonArray.stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
 
 		JsonElement value = jsonObject.get("value");
 		if (value instanceof JsonString)
 			field.setValue(new StringList(value.toString()));
-		else if (value instanceof JsonArray)
-			field.setValue(((JsonArray) value).stream().map(JsonElement::toString)
-					.collect(Collectors.toCollection(StringList::new)));
+		else if (value instanceof JsonArray jsonArray)
+			field.setValue(jsonArray.stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
 
 		return field;
 	}
@@ -300,19 +298,17 @@ public class Field implements Serializable
 
 		if (getMaxlength() != null
 				&& getValue().stream().anyMatch(e -> e.length() > getMaxlength()))
-			throw new AppException(
-					String.format("O tamanho máximo do campo %s é %s", getName(), getMaxlength()));
+			throw new AppException(String.format("O tamanho máximo do campo %s é %s",
+					getName(), getMaxlength()));
 
 		if (getPattern() != null)
 		{
 			if (getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(
-						String.format("Formato inválido para o campo %s", getName()));
+				throw new AppException(String.format("Formato inválido para o campo %s", getName()));
 
 			if (!getOptions().isEmpty()
 					&& getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(String.format(
-						"%s is not a valid option para o campo campo %s", value, getName()));
+				throw new AppException(String.format("%s is not a valid option para o campo campo %s", value, getName()));
 		}
 	}
 
@@ -320,9 +316,12 @@ public class Field implements Serializable
 	{
 
 		@Name("1")
-		ONE, @Name("2")
-		TWO, @Name("4")
-		FOUR, @Name("8")
+		ONE,
+		@Name("2")
+		TWO,
+		@Name("4")
+		FOUR,
+		@Name("8")
 		EIGHT;
 
 		@Override
@@ -333,8 +332,10 @@ public class Field implements Serializable
 
 		public static Size parse(String string)
 		{
-			return string != null
-					? switch (string.trim())
+			if (string == null)
+				return null;
+
+			return switch (string.trim())
 			{
 				case "0" ->
 					ONE;
@@ -346,7 +347,7 @@ public class Field implements Serializable
 					EIGHT;
 				default ->
 					null;
-			} : null;
+			};
 		}
 	}
 }

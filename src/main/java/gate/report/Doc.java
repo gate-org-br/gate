@@ -6,6 +6,7 @@ import gate.annotation.Icon;
 import gate.converter.EnumStringConverter;
 import gate.error.AppError;
 import gate.handler.DocHandler;
+import gate.lang.contentType.ContentType;
 import gate.report.doc.CSV;
 import gate.report.doc.DOC;
 import gate.report.doc.PDF;
@@ -40,14 +41,7 @@ public abstract class Doc
 	 *
 	 * @return Returns the MIME content type associated with this Document type
 	 */
-	public abstract String getContentType();
-
-	/**
-	 * Returns the MIME content subtype associated with this Document type.
-	 *
-	 * @return Returns the MIME content subtype associated with this Document type
-	 */
-	public abstract String getContentSubtype();
+	public abstract ContentType getContentType();
 
 	/**
 	 * Returns the File name associated with this Document type.
@@ -57,7 +51,8 @@ public abstract class Doc
 	public abstract String getFileName();
 
 	/**
-	 * Generates a document from the previously specified {@link gate.report.Report} and prints it on the specified output stream.
+	 * Generates a document from the previously specified {@link gate.report.Report} and prints it on the specified
+	 * output stream.
 	 *
 	 * @param outputStream the OutputStream where the generated document document must be printed
 	 */
@@ -74,7 +69,7 @@ public abstract class Doc
 		{
 			print(os);
 			os.flush();
-			return new MimeDataFile(getContentType(), getContentSubtype(), os.toByteArray(), getFileName());
+			return MimeDataFile.of(getContentType(), os.toByteArray(), getFileName());
 		} catch (IOException ex)
 		{
 			throw new AppError(ex);

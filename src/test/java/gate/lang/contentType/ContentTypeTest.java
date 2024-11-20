@@ -14,7 +14,7 @@ public class ContentTypeTest
 	@Test
 	public void testNoParamters() throws ParseException
 	{
-		var contentType = ContentType.parse("text/plain");
+		var contentType = ContentType.valueOf("text/plain");
 		assertEquals("text", contentType.getType());
 		assertEquals("plain", contentType.getSubtype());
 	}
@@ -22,7 +22,7 @@ public class ContentTypeTest
 	@Test
 	public void testWithFilename() throws ParseException
 	{
-		var contentType = ContentType.parse("text/plain;filename=afe.txt");
+		var contentType = ContentType.valueOf("text/plain;filename=afe.txt");
 		assertEquals("text", contentType.getType());
 		assertEquals("plain", contentType.getSubtype());
 		assertEquals("afe.txt", contentType.getParameters().get("filename"));

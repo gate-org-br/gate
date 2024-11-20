@@ -10,7 +10,7 @@ import gate.error.UnauthorizedException;
 import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
+import gate.security.Credentials;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;

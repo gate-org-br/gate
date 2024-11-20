@@ -1,8 +1,8 @@
 package gate.lang.dataurl;
 
+import gate.lang.contentType.ContentType;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class DataURLParser implements AutoCloseable
 	}
 
 	public DataURL parse() throws IOException,
-		ParseException
+			ParseException
 	{
 		Object current = scanner.scan();
 		if (!"data".equals(current))
@@ -50,9 +50,13 @@ public class DataURLParser implements AutoCloseable
 				current = scanner.scan();
 			}
 
+			while (Character.valueOf(' ').equals(current))
+				current = scanner.scan();
 			while (Character.valueOf(';').equals(current))
 			{
 				current = scanner.scan();
+				while (Character.valueOf(' ').equals(current))
+					current = scanner.scan();
 				if ("base64".equals(current))
 				{
 					base64 = true;
@@ -60,25 +64,29 @@ public class DataURLParser implements AutoCloseable
 					break;
 				}
 
-				if (!(current instanceof String name))
+				if (!(current instanceof String))
 					throw new ParseException("expected parameter and found " + current, 0);
+				String name = (String) current;
 				current = scanner.scan();
 
 				if (!Character.valueOf('=').equals(current))
 					throw new ParseException("expected = and found " + current, 0);
 				current = scanner.scan();
 
-				if (!(current instanceof String value))
+				if (!(current instanceof String))
 					throw new ParseException("expected value and found " + current, 0);
+				String value = (String) current;
 				current = scanner.scan();
 
-				parameters.put(name, URLDecoder.decode(value, StandardCharsets.UTF_8));
+				parameters.put(name, URLDecoder.decode(value, "UTF-8"));
+				while (Character.valueOf(' ').equals(current))
+					current = scanner.scan();
 			}
 		}
 
 		if (!Character.valueOf(',').equals(current))
 			throw new ParseException("expected , and found " + current, 0);
-		return new DataURL(type, subtype, base64, parameters, scanner.finish());
+		return DataURL.of(ContentType.of(type, subtype), base64, parameters, scanner.finish());
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.lang.contentType.ContentType;
 import gate.lang.csv.CSVFormatter;
 import gate.report.Column;
 import gate.report.Doc;
@@ -12,10 +13,8 @@ import gate.report.Report;
 import gate.report.ReportElement;
 import gate.util.Toolkit;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
@@ -37,15 +36,9 @@ public class CSV extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "text";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "csv";
+		return ContentType.of("text", "csv");
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
-import gate.io.Credentials;
+import gate.security.Credentials;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;

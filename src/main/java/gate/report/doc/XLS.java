@@ -3,6 +3,7 @@ package gate.report.doc;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
@@ -56,8 +57,8 @@ public class XLS extends Doc
 
 	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
 	private static final Map<Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
-	private static final Set<Character> INVALID_SHEET_NAME_CHARS =
-			Set.of(':', '?', '*', '\\', '/', '[', ']', '\'');
+	private static final Set<Character> INVALID_SHEET_NAME_CHARS
+			= Set.of(':', '?', '*', '\\', '/', '[', ']', '\'');
 
 	/**
 	 * Constructs a new XLS Doc for the specified report.
@@ -70,15 +71,9 @@ public class XLS extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "application";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "xls";
+		return ContentType.of("application", "xls");
 	}
 
 	@Override
@@ -370,8 +365,11 @@ public class XLS extends Doc
 	private XSSFColor getXLSColor(Color color)
 	{
 		return COLORS.computeIfAbsent(color,
-				e -> new XSSFColor(new byte[] {(byte) e.getR(), (byte) e.getG(), (byte) e.getB()},
-						new DefaultIndexedColorMap()));
+				e -> new XSSFColor(new byte[]
+				{
+					(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
+		},
+				new DefaultIndexedColorMap()));
 	}
 
 	private HorizontalAlignment getXLSAligment(Style style)
@@ -400,7 +398,8 @@ public class XLS extends Doc
 
 	private XSSFCellStyle getXLSStyle(SXSSFWorkbook workbook, Style style)
 	{
-		return styles.computeIfAbsent(style, e -> {
+		return styles.computeIfAbsent(style, e ->
+		{
 			XSSFCellStyle XSSFCellStyle = (XSSFCellStyle) workbook.createCellStyle();
 			XSSFCellStyle.setFont(workbook.createFont());
 			XSSFCellStyle.getFont().setColor(getXLSColor(style.getColor()));

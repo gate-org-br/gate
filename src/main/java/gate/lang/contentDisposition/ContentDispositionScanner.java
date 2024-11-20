@@ -9,8 +9,6 @@ public class ContentDispositionScanner implements AutoCloseable
 
 	private int c = Integer.MAX_VALUE;
 	private final Reader reader;
-	private final StringBuilder string
-		= new StringBuilder();
 
 	public ContentDispositionScanner(Reader reader)
 	{
@@ -33,38 +31,69 @@ public class ContentDispositionScanner implements AutoCloseable
 	{
 		if (c == Integer.MAX_VALUE)
 			c = reader.read();
-		switch (c)
+		return switch (c)
 		{
-			case -1:
-				return null;
-			case ';':
+			case -1 ->
+				null;
+			case ';' ->
+			{
 				c = reader.read();
-				return ';';
-			case '=':
+				yield ';';
+			}
+			case '=' ->
+			{
 				c = reader.read();
-				return '=';
-			default:
-				string.setLength(0);
+				yield '=';
+			}
+
+			case ' ' ->
+			{
+				c = reader.read();
+				yield ' ';
+			}
+			case '"' ->
+			{
+				StringBuilder string
+						= new StringBuilder();
+				for (c = reader.read();
+						c != -1
+						&& c != '"';
+						c = reader.read())
+					string.append((char) c);
+				if (c == '"')
+					c = reader.read();
+				else
+					throw new IOException("Invalid header parameter value");
+				yield string.toString();
+			}
+			default ->
+			{
+				StringBuilder string
+						= new StringBuilder();
 				string.append((char) c);
 				for (c = reader.read();
-					c != -1
-					&& c != ':'
-					&& c != ';'
-					&& c != '='
-					&& c != ',';
-					c = reader.read())
+						c != -1
+						&& c != ':'
+						&& c != ';'
+						&& c != '='
+						&& c != ','
+						&& c != ' ';
+						c = reader.read())
 					string.append((char) c);
-				return string.toString();
-		}
+				yield string.toString();
+			}
+		};
 	}
 
 	public String finish() throws IOException
 	{
+		StringBuilder string
+				= new StringBuilder();
 		string.setLength(0);
 		string.append((char) c);
 		for (c = reader.read();
-			c != -1;
-			c = reader.read())
+				c != -1;
+				c = reader.read())
 			string.append((char) c);
 		return string.toString();
 	}

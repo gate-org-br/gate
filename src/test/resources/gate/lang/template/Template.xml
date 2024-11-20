@@ -1,22 +1,22 @@
 <html>
 	<body>
-		<g:if condition='${not empty roles}'>
+		{{# size roles ne 0}}
 			<ul>
-				<g:iterator source='${roles}' target='role'>
+				{{#roles}}
 					<li>
-						${@role.name}
-						<g:if condition='${not empty @role.users}'>
+						{{name}}
+						{{# size users ne 0}}
 							<ul>
-								<g:iterator source='${@role.users}' target='user'>
+								{{#users}}
 									<li>
-										${@user.name} (${@role.name})
+										{{name}} ({{../name}})
 									</li>	
-								</g:iterator>
+								{{/users}}
 							</ul>
-						</g:if>
+						{{/ size users ne 0}}
 					</li>	
-				</g:iterator>
+				{{/roles}}
 			</ul>
-		</g:if>
+		{{/ size roles ne 0}}
 	</body>
 </html>

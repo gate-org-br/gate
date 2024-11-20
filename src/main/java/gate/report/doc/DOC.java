@@ -2,6 +2,7 @@ package gate.report.doc;
 
 import gate.annotation.Icon;
 import gate.converter.Converter;
+import gate.lang.contentType.ContentType;
 import gate.report.Column;
 import gate.report.Doc;
 import gate.report.Field;
@@ -61,15 +62,9 @@ public class DOC extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "application";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "doc";
+		return ContentType.of("application", "doc");
 	}
 
 	@Override
@@ -85,8 +80,8 @@ public class DOC extends Doc
 		try (XWPFDocument XWPFDocument = new XWPFDocument())
 		{
 			CTSectPr section = XWPFDocument.getDocument().getBody().addNewSectPr();
-			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy =
-					new XWPFHeaderFooterPolicy(XWPFDocument, section);
+			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy
+					= new XWPFHeaderFooterPolicy(XWPFDocument, section);
 			XWPFHeader XWPFHeader = XWPFHeaderFooterPolicy
 					.createHeader(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
 			XWPFFooter XWPFFooter = XWPFHeaderFooterPolicy
@@ -265,8 +260,8 @@ public class DOC extends Doc
 	private void printImage(XWPFHeader XWPFHeader, Image image)
 			throws IOException, InvalidFormatException
 	{
-		try (ByteArrayInputStream byteArrayInputStream =
-				new ByteArrayInputStream(image.getSource()))
+		try (ByteArrayInputStream byteArrayInputStream
+				= new ByteArrayInputStream(image.getSource()))
 		{
 			BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 			XWPFParagraph XWPFParagraph = XWPFHeader.createParagraph();

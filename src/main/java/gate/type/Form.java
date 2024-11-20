@@ -10,12 +10,13 @@ import gate.handler.FormHandler;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
+import gate.stream.CheckedStream;
 import gate.type.collections.StringList;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -50,13 +51,12 @@ public class Form implements Serializable
 
 	public static Form valueOf(String string) throws ConversionException
 	{
-		return valueOf(JsonArray.parse(string));
+		return valueOf(JsonElement.parse(string));
 	}
 
 	public static Form valueOf(JsonArray json) throws ConversionException
 	{
-		return new Form().setFields(json
-				.stream()
+		return new Form().setFields(CheckedStream.of(ConversionException.class, json.stream())
 				.map(e -> (JsonObject) e)
 				.map(Field::parse)
 				.collect(Collectors.toList()));
@@ -82,15 +82,6 @@ public class Form implements Serializable
 		throw new ConversionException("Invalid json element");
 	}
 
-	public List<String> getValue(String id)
-	{
-		return getFields().stream()
-				.filter(e -> id.equals(e.getId()))
-				.findAny()
-				.map(e -> e.getValue())
-				.orElseGet(StringList::new);
-	}
-
 	public JsonArray toJson()
 	{
 		return getFields().stream().map(e -> e.toJson())
@@ -113,6 +104,30 @@ public class Form implements Serializable
 						Collectors.collectingAndThen(Collectors.toList(),
 								e -> e.stream().flatMap(v -> v.getValue().stream())
 										.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));
+	}
+
+	public List<String> getValues(String id)
+	{
+		return getFields().stream()
+				.filter(e -> id.equals(e.getId()))
+				.findAny()
+				.map(e -> e.getValue())
+				.orElseGet(StringList::new);
+	}
+
+	public Optional<String> getValue(String id)
+	{
+		var value = getValues(id);
+		if (value.isEmpty())
+			return Optional.empty();
+		return Optional.of(value.stream()
+				.collect(Collectors.joining("\n")));
+	}
+
+	public Form add(Field field)
+	{
+		getFields().add(field);
+		return this;
 	}
 
 	public void pack(int limit)

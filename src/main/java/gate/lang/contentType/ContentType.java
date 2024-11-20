@@ -1,13 +1,11 @@
 package gate.lang.contentType;
 
 import gate.error.AppError;
-import gate.error.ConversionException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Map;
@@ -20,9 +18,9 @@ public class ContentType
 	private final String subtype;
 	private final Map<String, String> parameters;
 
-	public ContentType(String type,
-		String subtype,
-		Map<String, String> parameters)
+	private ContentType(String type,
+			String subtype,
+			Map<String, String> parameters)
 	{
 		Objects.requireNonNull(parameters);
 		this.type = type;
@@ -45,6 +43,17 @@ public class ContentType
 		return Collections.unmodifiableMap(parameters);
 	}
 
+	public static ContentType of(String type, String subtype,
+			Map<String, String> parameters)
+	{
+		return new ContentType(type, subtype, parameters);
+	}
+
+	public static ContentType of(String type, String subtype)
+	{
+		return new ContentType(type, subtype, Map.of());
+	}
+
 	@Override
 	public String toString()
 	{
@@ -56,36 +65,34 @@ public class ContentType
 			string.append('/').append(subtype);
 
 		parameters
-			.entrySet().forEach(e ->
-			{
-				string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8));
-			});
+				.entrySet().forEach(e ->
+				{
+					try
+					{
+						string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
+					} catch (UnsupportedEncodingException ex)
+					{
+						throw new UncheckedIOException(ex);
+					}
+				});
 
 		return string.toString();
 	}
 
-	public static ContentType parse(String string) throws ParseException
+	public static ContentType valueOf(String string)
 	{
-		try ( ContentTypeParser parser = new ContentTypeParser(new ContentTypeScanner(new StringReader(string))))
+		try (ContentTypeParser parser = new ContentTypeParser(new ContentTypeScanner(new StringReader(string))))
 		{
 			try
 			{
 				return parser.parse();
+			} catch (ParseException ex)
+			{
+				throw new IllegalArgumentException(string + " is not a valid content type");
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
-		}
-	}
-
-	public static ContentType valueOf(String string) throws ConversionException
-	{
-		try
-		{
-			return parse(string);
-		} catch (ParseException ex)
-		{
-			throw new ConversionException("Invalid content type header");
 		}
 	}
 }

@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import gate.io.Reader;
+import gate.lang.contentType.ContentType;
 import java.lang.reflect.InvocationTargetException;
 
 @Handler(DataFileHandler.class)
@@ -109,7 +110,7 @@ public class DataFile implements Serializable
 	public List<String> getInflatedLines(String charset)
 	{
 		try (GateInputStream<ByteArrayInputStream> g
-			= new GateInputStream<>(new ByteArrayInputStream(getData())))
+				= new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			return g.getInflatedLines(charset);
 		} catch (IOException e)
@@ -146,7 +147,7 @@ public class DataFile implements Serializable
 		{
 			ZipEntry entry;
 			try (GateInputStream<ZipInputStream> stream
-				= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
+					= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
 			{
 				while ((entry = stream.getInputStream().getNextEntry()) != null)
 					if (!entry.isDirectory())
@@ -167,10 +168,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(File file)
-		throws IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
-			= new BufferedInputStream(new FileInputStream(file)))
+				= new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -183,10 +184,10 @@ public class DataFile implements Serializable
 	}
 
 	public static DataFile of(URL url)
-		throws IOException
+			throws IOException
 	{
 		try (BufferedInputStream stream
-			= new BufferedInputStream(url.openStream()))
+				= new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -203,8 +204,8 @@ public class DataFile implements Serializable
 	{
 		Map<String, String> map = new HashMap<>();
 		map.put("filename", name);
-		return new DataURL("application", "octet-stream", true, map,
-			Base64.getEncoder().encodeToString(getData())).toString();
+		return DataURL.of(ContentType.of("application", "octet-stream"), true, map,
+				Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
 	public static DataFile parse(String string) throws ConversionException

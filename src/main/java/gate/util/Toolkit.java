@@ -31,14 +31,14 @@ public class Toolkit
 	{
 		if (obj == null)
 			return true;
-		if (obj instanceof String)
-			return ((String) obj).isEmpty();
-		if (obj instanceof Map<?, ?>)
-			return ((Map<?, ?>) obj).isEmpty();
-		if (obj instanceof Object[])
-			return ((Object[]) obj).length == 0;
-		if (obj instanceof Collection<?>)
-			return ((Collection<?>) obj).isEmpty();
+		if (obj instanceof String string)
+			return string.isEmpty();
+		if (obj instanceof Map<?, ?> map)
+			return map.isEmpty();
+		if (obj instanceof Object[] objects)
+			return objects.length == 0;
+		if (obj instanceof Collection<?> collection)
+			return collection.isEmpty();
 		return false;
 	}
 
@@ -46,12 +46,12 @@ public class Toolkit
 	{
 		if (obj == null)
 			return 0;
-		if (obj instanceof Collection<?>)
-			return ((Collection<?>) obj).size();
-		if (obj instanceof Map<?, ?>)
-			return ((Map<?, ?>) obj).size();
-		if (obj instanceof Object[])
-			return ((Object[]) obj).length;
+		if (obj instanceof Collection<?> collection)
+			return collection.size();
+		if (obj instanceof Map<?, ?> map)
+			return map.size();
+		if (obj instanceof Object[] objects)
+			return objects.length;
 		if (obj instanceof String)
 			return ((CharSequence) obj).length();
 		return 1;
@@ -61,10 +61,12 @@ public class Toolkit
 	{
 		if (obj == null)
 			return List.of();
-		if (obj instanceof Iterable<?>)
-			return (Iterable<?>) obj;
-		if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+		if (obj instanceof Iterable<?> iterable)
+			return iterable;
+		if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		if (obj instanceof Map<?, ?> map)
+			return map.entrySet();
 		return List.of(obj);
 	}
 
@@ -74,8 +76,10 @@ public class Toolkit
 			return Stream.empty();
 		else if (obj instanceof Collection)
 			return ((Collection<?>) obj).stream();
-		else if (obj instanceof Object[])
-			return Stream.of((Object[]) obj);
+		else if (obj instanceof Object[] objects)
+			return Stream.of(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return map.entrySet().stream();
 		else
 			return Stream.of(obj);
 	}
@@ -86,8 +90,10 @@ public class Toolkit
 			return List.of();
 		else if (obj instanceof Collection)
 			return (Collection<?>) obj;
-		else if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+		else if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return map.entrySet();
 		else
 			return List.of(obj);
 	}
@@ -100,10 +106,37 @@ public class Toolkit
 			return (List<?>) obj;
 		else if (obj instanceof Collection)
 			return new ArrayList<>((Collection<?>) obj);
-		else if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+		else if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return new ArrayList<>(map.entrySet());
 		else
 			return List.of(obj);
+	}
+
+	/**
+	 * Checks if the object can be considered "false".
+	 *
+	 * @param obj the object to be checked.
+	 * @return true if the object is null, a blank string, zero, an empty collection or an empty map
+	 */
+	public static boolean isFalsy(Object obj)
+	{
+		if (obj == null)
+			return true;
+		if (obj instanceof String string)
+			return string.isBlank();
+		if (obj instanceof Number number)
+			return number.doubleValue() == 0.0;
+		if (obj instanceof Collection<?> collection)
+			return collection.isEmpty();
+		if (obj instanceof Map<?, ?> map)
+			return map.isEmpty();
+		if (obj instanceof Object[] array)
+			return array.length == 0;
+		if (obj instanceof Boolean bool)
+			return !bool;
+		return false;
 	}
 
 	public static <T> T coalesce(T a, T b)
@@ -162,8 +195,7 @@ public class Toolkit
 			for (; index < path.length() && path.charAt(index) != '/'; index++)
 				builder.append(path.charAt(index));
 			var string = builder.toString().trim();
-			result.add(!string.isEmpty() && !
-					"*".equals(string) ? string : null);
+			result.add(!string.isEmpty() && !"*".equals(string) ? string : null);
 		}
 
 		return result;

@@ -21,6 +21,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
+import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
@@ -84,15 +85,9 @@ public class PDF extends Doc
 	}
 
 	@Override
-	public String getContentType()
+	public ContentType getContentType()
 	{
-		return "application";
-	}
-
-	@Override
-	public String getContentSubtype()
-	{
-		return "pdf";
+		return ContentType.of("application", "pdf");
 	}
 
 	@Override
@@ -137,7 +132,7 @@ public class PDF extends Doc
 				else if (element instanceof PageBreak)
 					document.add(printPageBreak());
 				else if (element instanceof Form
-					&& (!((Form) element).getFields().isEmpty()))
+						&& (!((Form) element).getFields().isEmpty()))
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid)
 					document.add(printGrid((Grid) element));
@@ -355,8 +350,8 @@ public class PDF extends Doc
 	{
 
 		int size = grid.getLimit() != null
-			? Math.min(grid.getLimit(), grid.getColumns().size())
-			: grid.getColumns().size();
+				? Math.min(grid.getLimit(), grid.getColumns().size())
+				: grid.getColumns().size();
 		for (Object object : Toolkit.iterable(data))
 		{
 			int index = table.getRows().size() - 1;
@@ -374,7 +369,7 @@ public class PDF extends Doc
 
 			if (grid.getChildren() != null)
 				Toolkit.collection(grid.getChildren().apply(object))
-					.forEach(e -> addBodies(grid, table, e, level + 1));
+						.forEach(e -> addBodies(grid, table, e, level + 1));
 		}
 	}
 
@@ -383,8 +378,8 @@ public class PDF extends Doc
 		try
 		{
 			int size = grid.getLimit() != null
-				? Math.min(grid.getLimit(), grid.getColumns().size())
-				: grid.getColumns().size();
+					? Math.min(grid.getLimit(), grid.getColumns().size())
+					: grid.getColumns().size();
 
 			float[] widths = new float[size];
 			for (int i = 0; i < size; i++)
@@ -409,14 +404,14 @@ public class PDF extends Doc
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
 			{
 				grid.getColumns().stream().limit(size)
-					.forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
+						.forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null))
 			{
 				grid.getColumns().stream().limit(size)
-					.forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
+						.forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
 				table.setFooterRows(1);
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
@@ -489,7 +484,7 @@ public class PDF extends Doc
 	private Element printList(ReportList reportList)
 	{
 		com.lowagie.text.List list
-			= new com.lowagie.text.List();
+				= new com.lowagie.text.List();
 
 		if (reportList.getType() == null)
 			throw new IllegalArgumentException("Report list type can't be null");
@@ -527,7 +522,7 @@ public class PDF extends Doc
 	private Color getColor(Style style)
 	{
 		return COLORS.computeIfAbsent(style.getColor(),
-			c -> new Color(c.getR(), c.getG(), c.getB()));
+				c -> new Color(c.getR(), c.getG(), c.getB()));
 	}
 
 	private int getFontWeight(Style style)
@@ -546,7 +541,7 @@ public class PDF extends Doc
 	private Font getFont(Style style)
 	{
 		return FONTS.computeIfAbsent(style, e
-			-> new Font(Font.TIMES_ROMAN, e.getFontSize(),
-				getFontWeight(e), getColor(e)));
+				-> new Font(Font.TIMES_ROMAN, e.getFontSize(),
+						getFontWeight(e), getColor(e)));
 	}
 }

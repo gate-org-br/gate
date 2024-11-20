@@ -4,10 +4,10 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
+import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeText;
 import gate.util.Strings;
-import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
+import jakarta.servlet.http.Part;
 
 public class MimeDataFileConverter implements Converter
 {
@@ -40,10 +41,10 @@ public class MimeDataFileConverter implements Converter
 
 	@Override
 	public Object ofString(Class<?> type, String string)
-		throws ConversionException
+			throws ConversionException
 	{
 		return !Strings.empty(string)
-			? MimeDataFile.parse(string) : null;
+				? MimeDataFile.parse(string) : null;
 	}
 
 	@Override
@@ -57,15 +58,8 @@ public class MimeDataFileConverter implements Converter
 			try (InputStream is = part.getInputStream())
 			{
 				byte[] bytes = ByteArrayReader.getInstance().read(is);
-				String[] contentType = part.getContentType().split("/");
-
-				if (bytes.length != 0)
-					if (contentType.length != 2)
-						return new MimeDataFile(bytes, part.getSubmittedFileName());
-					else
-						return new MimeDataFile(contentType[0], contentType[1], bytes, part.getSubmittedFileName());
-				else
-					return null;
+				return MimeDataFile.of(ContentType.valueOf(part.getContentType()),
+						bytes, part.getSubmittedFileName());
 			}
 		} catch (IOException ex)
 		{
@@ -93,27 +87,27 @@ public class MimeDataFileConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? MimeDataFile.parse(data)
-			: null;
+				? MimeDataFile.parse(data)
+				: null;
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? MimeDataFile.parse(data)
-			: null;
+				? MimeDataFile.parse(data)
+				: null;
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
-		throws SQLException
+			throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, value.toString());

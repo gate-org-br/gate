@@ -8,33 +8,16 @@ import java.util.List;
 
 enum TemplateToken implements Evaluable
 {
-	EXPRESSION_HEAD("${"),
-	EXPRESSION_TAIL("}"),
-	IF_HEAD("<g:if"),
-	IF_TAIL("</g:if>"),
-	ITERATOR_HEAD("<g:iterator"),
-	ITERATOR_TAIL("</g:iterator>"),
-	SOURCE("source"),
-	TARGET("target"),
-	INDEX("index"),
-	CONDITION("condition"),
-	QUOTE("'"),
-	DOUBLE_QUOTE("\""),
-	CLOSE_TAG(">"),
-	EQUALS("="),
 	EOF(""),
-	IMPORT("<g:import"),
-	TYPE("type"),
-	RESOURCE("resource"),
-	DOT("."),
-	SLASH("/"),
-	OPEN_PARENTESIS("("),
-	CLOSE_PARENTESIS(")"),
-	SELF_CLOSE_TAG("/>"),
-	SIMPLE_LINE_BREAK("\n"),
-	COMPLEX_LINE_BREAK("\r\n"),
-	SPACE(" "),
-	TAB("\t");
+	PARENT("../"),
+	BLOCK("{{#"),
+	BLOCK_END("{{/"),
+	INVERTED_BLOCK("{{^"),
+	BLOCK_TAIL("}}"),
+	EXPRESSION_HEAD("{{"),
+	EXPRESSION_TAIL("}}"),
+	EL_HEAD("${"),
+	EL_TAIL("}");
 
 	private final String string;
 

@@ -4,9 +4,9 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
+import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeText;
 import gate.util.Strings;
-import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.PreparedStatement;
@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
+import jakarta.servlet.http.Part;
 
 public class MimeTextConverter implements Converter
 {
@@ -39,10 +40,10 @@ public class MimeTextConverter implements Converter
 
 	@Override
 	public Object ofString(Class<?> type, String string)
-		throws ConversionException
+			throws ConversionException
 	{
 		return !Strings.empty(string)
-			? MimeText.parse(string) : null;
+				? MimeText.parse(string) : null;
 	}
 
 	@Override
@@ -55,18 +56,10 @@ public class MimeTextConverter implements Converter
 		{
 			try (InputStream is = part.getInputStream())
 			{
-				String[] strings = part.getContentType().split("/");
 				byte[] bytes = ByteArrayReader.getInstance().read(is);
-
-				if (bytes.length != 0)
-					if (strings.length == 2)
-						return new MimeText(strings[0], strings[1],
-							"utf-8",
-							bytes);
-					else
-						return new MimeText(bytes);
-				else
-					return null;
+				return MimeText.of(ContentType.valueOf(part.getContentType()),
+						"utf-8",
+						bytes);
 			}
 		} catch (IOException ex)
 		{
@@ -94,27 +87,27 @@ public class MimeTextConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? MimeText.parse(data)
-			: null;
+				? MimeText.parse(data)
+				: null;
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
-		throws SQLException, ConversionException
+			throws SQLException, ConversionException
 	{
 		String data = rs.getString(fields);
 		return !rs.wasNull()
-			? MimeText.parse(data)
-			: null;
+				? MimeText.parse(data)
+				: null;
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value)
-		throws SQLException
+			throws SQLException
 	{
 		if (value != null)
 			ps.setString(fields++, value.toString());

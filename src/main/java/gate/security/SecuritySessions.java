@@ -1,4 +1,4 @@
-package gate.util;
+package gate.security;
 
 import java.util.Map;
 import java.util.UUID;
