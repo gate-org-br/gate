@@ -23,17 +23,17 @@ public final class TemplateTest
 		getRoles().add(new Role().setName("Role 2"));
 		getRoles().add(new Role().setName("Role 3"));
 
-		getRoles().get(0).getUsers().add(new User().setName("User 0.1"));
-		getRoles().get(0).getUsers().add(new User().setName("User 0.2"));
-		getRoles().get(0).getUsers().add(new User().setName("User 0.3"));
+		getRoles().get(0).getUsers().add(new User().setName("User 1.1"));
+		getRoles().get(0).getUsers().add(new User().setName("User 1.2"));
+		getRoles().get(0).getUsers().add(new User().setName("User 1.3"));
 
-		getRoles().get(1).getUsers().add(new User().setName("User 1.1"));
-		getRoles().get(1).getUsers().add(new User().setName("User 1.2"));
-		getRoles().get(1).getUsers().add(new User().setName("User 1.3"));
+		getRoles().get(1).getUsers().add(new User().setName("User 2.1"));
+		getRoles().get(1).getUsers().add(new User().setName("User 2.2"));
+		getRoles().get(1).getUsers().add(new User().setName("User 2.3"));
 
-		getRoles().get(2).getUsers().add(new User().setName("User 2.1"));
-		getRoles().get(2).getUsers().add(new User().setName("User 2.2"));
-		getRoles().get(2).getUsers().add(new User().setName("User 2.3"));
+		getRoles().get(2).getUsers().add(new User().setName("User 3.1"));
+		getRoles().get(2).getUsers().add(new User().setName("User 3.2"));
+		getRoles().get(2).getUsers().add(new User().setName("User 3.3"));
 
 	}
 
@@ -49,143 +49,48 @@ public final class TemplateTest
 	}
 
 	@Test
-	public void template() throws TemplateException, IOException
+	public void iteration() throws TemplateException, IOException
 	{
-		String expected = getFile("Document.html");
-		String result = Template.compile(getFile("Template.xml")).evaluate(this);
-		assertEquals(expected, result);
-	}
-
-	@Test
-	public void forTest() throws TemplateException, IOException
-	{
-		Template template = Template.compile("""
-					##for(value : {{this}})
-					{{@value}}
-					##end
-					""");
-		String expected = """
-					Object 1
-					Object 2
-					Object 3
-                    
-                    """;
-
+		String expected = getFile("iteration/document.txt");
+		Template template = Template.compile(getFile("iteration/template.txt"));
 		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
-
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void forIndexTest() throws TemplateException, IOException
+	public void nestedIteration() throws TemplateException, IOException
 	{
-		Template template = Template.compile("""
-					##for(value : {{this}} : index)
-					{{@index + 1}}: {{@value}}
-					##end
-					""");
-		String expected = """
-					1: Object 1
-					2: Object 2
-					3: Object 3
-                    
-					""";
-
-		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
-
+		String expected = getFile("nestedIteration/document.txt");
+		Template template = Template.compile(getFile("nestedIteration/template.txt"));
+		String result = template.evaluate(roles);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void forIndexedElseTest() throws TemplateException, IOException
+	public void refNestedIteration() throws TemplateException, IOException
 	{
-		Template template = Template.compile("""
-					##for(value : {{this}} : index)
-					{{@index + 1}}: {{@value}}
-					##else
-					nothing
-					##end
-					""");
-
-		String expected = """
-					1: Object 1
-					2: Object 2
-					3: Object 3
-                    
-					""";
-
-		String result = template.evaluate(List.of("Object 1", "Object 2", "Object 3"));
-
+		String expected = getFile("refNestedIteration/document.txt");
+		Template template = Template.compile(getFile("refNestedIteration/template.txt"));
+		String result = template.evaluate(roles);
 		assertEquals(expected, result);
 	}
 
 	@Test
-	public void forIndexedElseEmptyTest() throws TemplateException, IOException
+	public void indexedRefNestedIteration() throws TemplateException, IOException
 	{
-		Template template = Template.compile("""
-					##for(value : {{this}} : index)
-					{{@index + 1}}: {{@value}}
-					##else
-					nothing
-					##end
-					""");
-
-		String result = template.evaluate(List.of());
-		System.out.println(result.replaceAll("\n", "N").replaceAll(" ", "S"));
-
-		assertEquals("nothing\n\n", result);
+		String expected = getFile("indexedRefNestedIteration/document.txt");
+		Template template = Template.compile(getFile("indexedRefNestedIteration/template.txt"));
+		String result = template.evaluate(roles);
+		assertEquals(expected, result);
 	}
 
 	@Test
-	public void templateIfTrue() throws TemplateException, IOException
+	public void InvertedBlock() throws TemplateException, IOException
 	{
-		Template template = Template.compile("""
-					##if({{this eq 'abc'}})
-					condition true
-					##end
-					""");
-
-		assertEquals("condition true\n", template.evaluate("abc"));
-	}
-
-	@Test
-	public void templateIfFalse() throws TemplateException, IOException
-	{
-		Template template = Template.compile("""
-					##if({{this eq 'abc'}})
-					condition true
-					##end
-					""");
-
-		assertEquals("", template.evaluate("cde"));
-	}
-
-	@Test
-	public void templateIfTrueElse() throws TemplateException, IOException
-	{
-		Template template = Template.compile("""
-					##if( {{this eq 'abc'}} )
-					condition true
-					##else
-					condition false
-					##end
-					""");
-
-		assertEquals("condition true\n", template.evaluate("abc"));
-	}
-
-	@Test
-	public void templateIfFalseElse() throws TemplateException, IOException
-	{
-		Template template = Template.compile("""
-					##if( {{this eq 'abc'}} )
-					condition true
-					##else
-					condition false
-					##end
-					""");
-
-		assertEquals("condition false\n", template.evaluate("cde"));
+		String expected = getFile("invertedBlock/document.txt");
+		Template template = Template.compile(getFile("invertedBlock/template.txt"));
+		String result = template.evaluate(roles);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -194,6 +99,14 @@ public final class TemplateTest
 		Template template = Template.compile("http://localhost:8000/employees/{{id}}/fire");
 		String expected = "http://localhost:8000/employees/1234/fire";
 		String result = template.evaluate(Map.of("id", "1234"));
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void template() throws TemplateException, IOException
+	{
+		String expected = getFile("Document.html");
+		String result = Template.compile(getFile("Template.xml")).evaluate(this);
 		assertEquals(expected, result);
 	}
 

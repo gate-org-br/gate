@@ -34,10 +34,10 @@ public class SelectTag extends SelectorTag
 
 		if (sortby != null)
 			options = Toolkit
-				.collection(options)
-				.stream()
-				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
-				.collect(Collectors.toList());
+					.collection(options)
+					.stream()
+					.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
+					.collect(Collectors.toList());
 
 		getJspContext().getOut().println(String.format("<select %s>", getAttributes().toString()));
 
@@ -47,8 +47,8 @@ public class SelectTag extends SelectorTag
 			getJspContext().getOut().println("<option value=''>" + empty + "</option>");
 
 		if (groups != null)
-			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
-				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), LinkedHashMap::new, Collectors.toList())).entrySet())
+			for (var group : Toolkit.collection(options).stream()
+					.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), LinkedHashMap::new, Collectors.toList())).entrySet())
 			{
 				getJspContext().getOut().print("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
 				print(0, group.getValue());

@@ -1,0 +1,5 @@
+{{#this}}
+{{#users}}
+Role {{../@index}}: User {{@index}}
+{{/users}}
+{{/this}}

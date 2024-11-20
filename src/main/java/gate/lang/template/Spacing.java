@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-class Identation implements Evaluable
+class Spacing implements Evaluable
 {
 
-	private final String text;
+	private final String value;
 
-	public Identation(String text)
+	Spacing(String value)
 	{
-		this.text = text;
+		this.value = value;
 	}
 
 	@Override
@@ -21,17 +21,21 @@ class Identation implements Evaluable
 	{
 		try
 		{
-			writer.write(text);
+			writer.write(value);
 		} catch (IOException ex)
 		{
-			throw new TemplateException(String.format("Error trying to evaluate template: %s.", ex.getMessage()));
+			throw new TemplateException(String.format("Error trying to evaluate templete: %s.", ex.getMessage()));
 		}
+	}
+
+	public String getValue()
+	{
+		return value;
 	}
 
 	@Override
 	public String toString()
 	{
-		return "Identation";
+		return value;
 	}
-
 }

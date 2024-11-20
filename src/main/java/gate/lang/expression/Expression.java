@@ -8,6 +8,7 @@ import gate.lang.template.Evaluable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
+import javassist.compiler.ast.Variable;
 
 public class Expression implements Evaluable
 {
@@ -31,9 +32,7 @@ public class Expression implements Evaluable
 		List<Object> tokens = new ArrayList<>();
 		try (ExpressionScanner scanner = new ExpressionScanner(value))
 		{
-			for (Object token = scanner.next();
-				token != ExpressionToken.EOF;
-				token = scanner.next())
+			for (Object token = scanner.next(); token != ExpressionToken.EOF; token = scanner.next())
 				tokens.add(token);
 			tokens.add(ExpressionToken.EOF);
 			return new Expression(value, tokens);
@@ -75,7 +74,7 @@ public class Expression implements Evaluable
 		Object result = expression();
 		if (current != ExpressionToken.EOF)
 			throw new ExpressionException("Expected \"%s\" and found \"%s\" on expression \"%s\".",
-				ExpressionToken.EOF, current, value);
+					ExpressionToken.EOF, current, value);
 		return result;
 	}
 
@@ -83,44 +82,40 @@ public class Expression implements Evaluable
 	{
 		Object result = sentence();
 
-		while (ExpressionToken.AND.equals(current)
-			|| ExpressionToken.OR.equals(current))
+		while (current == ExpressionToken.AND
+				|| current == ExpressionToken.OR)
 		{
-			ExpressionToken operator = (ExpressionToken) current;
+
 			next();
 			Object v = sentence();
 
 			if (!(result instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-					result, value);
+						result, value);
 			if (!(v instanceof Boolean))
 				throw new ExpressionException("Expected \"Boolean\" and found \"%s\" on expression \"%s\".",
-					result, value);
+						result, value);
 
-			switch (operator)
-			{
-				case AND:
-					result = ((Boolean) result) & (Boolean) v;
-					break;
-				case OR:
-					result = ((Boolean) result) | (Boolean) v;
-					break;
-			}
+			if (current == ExpressionToken.AND)
+				result = ((Boolean) result) & (Boolean) v;
+			else
+				result = ((Boolean) result) | (Boolean) v;
 		}
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Object sentence() throws ExpressionException
 	{
 		Object result = comparable();
 
 		while (ExpressionToken.EQ.equals(current)
-			|| ExpressionToken.NE.equals(current)
-			|| ExpressionToken.GE.equals(current)
-			|| ExpressionToken.GT.equals(current)
-			|| ExpressionToken.LE.equals(current)
-			|| ExpressionToken.LT.equals(current)
-			|| ExpressionToken.RX.equals(current))
+				|| ExpressionToken.NE.equals(current)
+				|| ExpressionToken.GE.equals(current)
+				|| ExpressionToken.GT.equals(current)
+				|| ExpressionToken.LE.equals(current)
+				|| ExpressionToken.LT.equals(current)
+				|| ExpressionToken.RX.equals(current))
 		{
 
 			ExpressionToken operator = (ExpressionToken) current;
@@ -129,40 +124,37 @@ public class Expression implements Evaluable
 
 			switch (operator)
 			{
-				case EQ:
+				case EQ ->
 					result = Objects.equals(result, v);
-					break;
-				case NE:
+				case NE ->
 					result = !Objects.equals(result, v);
-					break;
-				case RX:
+				case RX ->
+				{
 					if (result instanceof String && v instanceof String)
 						result = ((String) result).matches((String) v);
 					else
-						throw new ExpressionException("Expected \"pattern string\" and found \"%s\" on expression \"%s\".",
-							v, value);
-				default:
-					if (!(result instanceof Comparable))
-						throw new ExpressionException("Expected \"Comparable\" and found \"%s\" on expression \"%s\".",
-							result, value);
+						throw new ExpressionException(
+								"Expected \"pattern string\" and found \"%s\" on expression \"%s\".", v, value);
+				}
+				case GE, GT, LE, LT ->
+				{
 
-					switch (operator)
-					{
-						case GE:
+					if (result instanceof Comparable comparable)
+						if (operator == ExpressionToken.GE)
+							result = comparable.compareTo(v) >= 0;
+						else if (operator == ExpressionToken.GT)
+							result = comparable.compareTo(v) > 0;
+						else if (operator == ExpressionToken.LE)
+							result = comparable.compareTo(v) <= 0;
+						else
+							result = comparable.compareTo(v) < 0;
+					else
+						throw new ExpressionException("Expected \"Comparable\" and found \"%s\" on expression \"%s\".", result, value);
+				}
 
-							result = ((Comparable) result).compareTo(v) >= 0;
-							break;
-						case GT:
-							result = ((Comparable) result).compareTo(v) > 0;
-							break;
-						case LE:
-							result = ((Comparable) result).compareTo(v) <= 0;
-							break;
-						case LT:
-							result = ((Comparable) result).compareTo(v) < 0;
-							break;
+				default ->
+					throw new ExpressionException("Unexpected token \"%s\" found on expression \"%s\".", result, value);
 
-					}
 			}
 		}
 
@@ -173,19 +165,18 @@ public class Expression implements Evaluable
 	{
 		Object result = term();
 
-		while (ExpressionToken.ADD.equals(current)
-			|| ExpressionToken.SUB.equals(current))
+		while (current == ExpressionToken.ADD
+				|| current == ExpressionToken.SUB)
 		{
-			switch ((ExpressionToken) current)
+
+			if (current == ExpressionToken.ADD)
 			{
-				case ADD:
-					next();
-					result = ExpressionCalculator.add(result, term());
-					break;
-				case SUB:
-					next();
-					result = ExpressionCalculator.sub(result, term());
-					break;
+				next();
+				result = ExpressionCalculator.add(result, term());
+			} else
+			{
+				next();
+				result = ExpressionCalculator.sub(result, term());
 			}
 		}
 
@@ -196,19 +187,17 @@ public class Expression implements Evaluable
 	{
 		Object result = not();
 
-		while (ExpressionToken.MUL.equals(current)
-			|| ExpressionToken.DIV.equals(current))
+		while (current == ExpressionToken.MUL
+				|| current == ExpressionToken.DIV)
 		{
-			switch ((ExpressionToken) current)
+			if (current == ExpressionToken.MUL)
 			{
-				case MUL:
-					next();
-					result = ExpressionCalculator.mul(result, not());
-					break;
-				case DIV:
-					next();
-					result = ExpressionCalculator.div(result, not());
-					break;
+				next();
+				result = ExpressionCalculator.mul(result, not());
+			} else
+			{
+				next();
+				result = ExpressionCalculator.div(result, not());
 			}
 		}
 
@@ -235,32 +224,34 @@ public class Expression implements Evaluable
 		{
 			next();
 			Object v = signed();
-			if (v instanceof String)
-				return ((String) v).isEmpty();
-			else if (v instanceof Object[])
-				return ((Object[]) v).length == 0;
-			else if (v instanceof Collection<?>)
-				return ((Collection<?>) v).isEmpty();
-			else if (v instanceof Map<?, ?>)
-				return ((Map<?, ?>) v).isEmpty();
+			if (v instanceof String string)
+				return string.isEmpty();
+			else if (v instanceof Object[] objects)
+				return objects.length == 0;
+			else if (v instanceof Collection<?> collection)
+				return collection.isEmpty();
+			else if (v instanceof Map<?, ?> map)
+				return map.isEmpty();
 			else
 				throw new ExpressionException(
-					"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", v, value);
+						"Expected \"Array, Collection, Map ou String\" and found \"%s\" on expression \"%s\".", v,
+						value);
 		} else if (ExpressionToken.SIZE.equals(current))
 		{
 			next();
 			Object v = signed();
 			if (v instanceof String)
 				return ((CharSequence) v).length();
-			else if (v instanceof Object[])
-				return ((Object[]) v).length;
-			else if (v instanceof Collection<?>)
-				return ((Collection<?>) v).size();
-			else if (v instanceof Map<?, ?>)
-				return ((Map<?, ?>) v).size();
+			else if (v instanceof Object[] objects)
+				return objects.length;
+			else if (v instanceof Collection<?> collection)
+				return collection.size();
+			else if (v instanceof Map<?, ?> map)
+				return map.size();
 			else
 				throw new ExpressionException(
-					"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", v, value);
+						"Expected \"Array, Collection, Map or String\" and found \"%s\" on expression \"%s\".", v,
+						value);
 		}
 
 		return signed();
@@ -289,7 +280,7 @@ public class Expression implements Evaluable
 			Object result = expression();
 			if (!ExpressionToken.CLOSE_PARENTHESES.equals(current))
 				throw new ExpressionException("Expected \"%s\" and found  \"%s\" on expression \"%s\".",
-					ExpressionToken.CLOSE_PARENTHESES, current, value);
+						ExpressionToken.CLOSE_PARENTHESES, current, value);
 			next();
 			return result;
 		} else if (ExpressionToken.VARIABLE.equals(current))
@@ -312,13 +303,17 @@ public class Expression implements Evaluable
 			throw new ExpressionException("Invalid context for the expression \"%s\".", value);
 
 		Object object = context.remove(0);
+		var values = parameters.poll();
 
 		next();
 
-		Object result = ExpressionToken.CONTEXT.equals(current)
-			? context() : property();
+		Object result
+				= ExpressionToken.CONTEXT == current
+						? context()
+						: current == ExpressionToken.VARIABLE ? variable() : property();
 
 		context.add(0, object);
+		parameters.push(values);
 
 		return result;
 	}
@@ -327,9 +322,11 @@ public class Expression implements Evaluable
 	{
 		String name = name();
 		Object object = context.get(0);
+		if (object == null)
+			return "";
 		return Property
-			.getProperty(object.getClass(), name)
-			.getValue(object);
+				.getProperty(object.getClass(), name)
+				.getValue(object);
 	}
 
 	private Object variable() throws ExpressionException
@@ -340,13 +337,16 @@ public class Expression implements Evaluable
 			Object token = propertyScanner.next();
 			if (!(token instanceof String))
 				throw new ExpressionException("Expected \"Java Identifier\" and found \"%s\" on expression \"%s\".",
-					token, value);
+						token, value);
 
 			Object object = parameters.get((String) token);
 
+			if (object == null)
+				return "";
+
 			StringBuilder property = new StringBuilder("this");
 			for (token = propertyScanner.next(); token != null; token = propertyScanner.next())
-				property.append(token.toString());
+				property.append(token);
 
 			return Property.getProperty(object.getClass(), property.toString()).getValue(object);
 		} catch (IOException e)
@@ -358,11 +358,11 @@ public class Expression implements Evaluable
 	private String name() throws ExpressionException
 	{
 		if (!(current instanceof StringBuilder))
-			throw new ExpressionException("Expected \"Java Identifier\" and found \"%s\" on expression \"%s\".", current,
-				value);
+			throw new ExpressionException("Expected \"Java Identifier\" and found \"%s\" on expression \"%s\".",
+					current,
+					value);
 
-		StringBuilder string
-			= new StringBuilder(current.toString());
+		StringBuilder string = new StringBuilder(current.toString());
 
 		next();
 
@@ -385,12 +385,12 @@ public class Expression implements Evaluable
 
 		next();
 		if (current instanceof Number)
-			string.append(current.toString());
+			string.append(current);
 		else if (current instanceof String)
-			string.append("'").append(current.toString()).append("'");
+			string.append("'").append(current).append("'");
 		else
 			throw new ExpressionException("Expected \"Number or String\" and found \"%s\" on expression \"%s\".",
-				current, value);
+					current, value);
 
 		next();
 		if (!ExpressionToken.CLOSE_BRACKET.equals(current))
@@ -430,11 +430,11 @@ public class Expression implements Evaluable
 	{
 		StringBuilder string = new StringBuilder();
 
-		Object value = expression();
-		if (value instanceof String)
+		Object v = expression();
+		if (v instanceof String)
 			string.append("'").append(current.toString()).append("'");
-		else if (value != null)
-			string.append(value.toString());
+		else if (v != null)
+			string.append(v);
 
 		if (ExpressionToken.COMMA.equals(current))
 		{
@@ -455,7 +455,7 @@ public class Expression implements Evaluable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Expression
-			&& value.equals(((Expression) obj).value);
+				&& value.equals(((Expression) obj).value);
 	}
 
 	@Override

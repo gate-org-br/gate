@@ -4,44 +4,45 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class Parameters
 {
-
-	private final Map<String, Deque<Object>> parameters = new HashMap();
-
+	
+	private final Deque<Map<String, Object>> parameters = new ArrayDeque<>();
+	
 	public Parameters()
 	{
+		parameters.push(new HashMap<>());
 	}
-
+	
 	public Parameters(Parameters parameters)
 	{
-		this.parameters.putAll(parameters.parameters);
+		this.parameters.peek().putAll(parameters.parameters.peek());
 	}
-
+	
 	public Parameters put(String name, Object value)
 	{
-		parameters.computeIfAbsent(name,
-			e -> new ArrayDeque<>()).push(value);
+		parameters.peek().put(name, value);
 		return this;
 	}
-
+	
 	public Object get(String name)
 	{
-		Deque deque = parameters.get(name);
-		if (deque == null)
-			throw new NoSuchElementException(name);
-		return deque.peek();
+		return parameters.peek().get(name);
 	}
-
+	
 	public void remove(String name)
 	{
-		Deque deque = parameters.get(name);
-		if (deque == null)
-			throw new NoSuchElementException(name);
-		deque.remove();
-		if (deque.isEmpty())
-			parameters.remove(name);
+		parameters.peek().remove(name);
+	}
+	
+	public void push(Map<String, Object> values)
+	{
+		parameters.push(values);
+	}
+	
+	public Map<String, Object> poll()
+	{
+		return parameters.poll();
 	}
 }

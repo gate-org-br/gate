@@ -6,25 +6,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
-enum TemplateToken implements Evaluable
+class Text implements Evaluable
 {
-	EOF(""),
-	PARENT("../"),
-	BLOCK("{{#"),
-	BLOCK_END("{{/"),
-	INVERTED_BLOCK("{{^"),
-	BLOCK_TAIL("}}"),
-	EXPRESSION_HEAD("{{"),
-	EXPRESSION_TAIL("}}"),
-	EL_HEAD("${"),
-	EL_TAIL("}"),
-	LINE_BREAK("\n");
 
-	private final String string;
+	private final String value;
 
-	TemplateToken(String string)
+	Text(String value)
 	{
-		this.string = string;
+		this.value = value;
 	}
 
 	@Override
@@ -32,16 +21,21 @@ enum TemplateToken implements Evaluable
 	{
 		try
 		{
-			writer.write(string);
+			writer.write(value);
 		} catch (IOException ex)
 		{
 			throw new TemplateException(String.format("Error trying to evaluate templete: %s.", ex.getMessage()));
 		}
 	}
 
+	public String getValue()
+	{
+		return value;
+	}
+
 	@Override
 	public String toString()
 	{
-		return string;
+		return value;
 	}
 }

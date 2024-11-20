@@ -37,9 +37,21 @@ final class ExpressionScanner extends BufferedReader
 				case '@':
 					c = read();
 					return ExpressionToken.VARIABLE;
-				case '^':
+				case '.':
+					mark(2);
 					c = read();
-					return ExpressionToken.CONTEXT;
+					if (c == '.')
+					{
+						c = read();
+						if (c == '/')
+						{
+							c = read();
+							return ExpressionToken.CONTEXT;
+						}
+					}
+					reset();
+					c = read();
+					return ExpressionToken.DOT;
 				case ',':
 					c = read();
 					return ExpressionToken.COMMA;
@@ -49,9 +61,6 @@ final class ExpressionScanner extends BufferedReader
 				case ']':
 					c = read();
 					return ExpressionToken.CLOSE_BRACKET;
-				case '.':
-					c = read();
-					return ExpressionToken.DOT;
 				case '(':
 					c = read();
 					return ExpressionToken.OPEN_PARENTHESES;

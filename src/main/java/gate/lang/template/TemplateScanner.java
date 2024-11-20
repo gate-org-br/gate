@@ -1,160 +1,139 @@
 package gate.lang.template;
 
 import gate.error.TemplateException;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
-class TemplateScanner extends BufferedReader
+class TemplateScanner
 {
 
-	public TemplateScanner(Reader reader)
+	private int index;
+	private List<Evaluable> tokens;
+
+	private TemplateScanner(List<Evaluable> tokens)
 	{
-		super(reader);
+		this.index = 0;
+		this.tokens = tokens;
+
 	}
 
-	public TemplateScanner skipSpaces() throws TemplateException
-
+	public static TemplateScanner parse(Reader reader)
 	{
 		try
 		{
-			do
+			int c = reader.read();
+			List<Evaluable> tokens = new ArrayList<>();
+			while (c != -1)
 			{
-				mark(1);
-			} while (Character.isWhitespace(read()));
-			reset();
-			return this;
-		} catch (IOException ex)
-		{
-			throw new TemplateException(ex, "Error trying to parse template.");
-		}
-	}
-
-	public Evaluable next() throws TemplateException
-	{
-		try
-		{
-			if (isEOF())
-				return TemplateToken.EOF;
-
-			if (consume("\\"))
-				return isEOF() ? TemplateToken.EOF
-						: new Char((char) read());
-
-			if (consume(TemplateToken.COMPLEX_LINE_BREAK.toString()))
-				return TemplateToken.COMPLEX_LINE_BREAK;
-			if (consume(TemplateToken.SIMPLE_LINE_BREAK.toString()))
-				return TemplateToken.SIMPLE_LINE_BREAK;
-			if (consume(TemplateToken.SPACE.toString()))
-				return TemplateToken.SPACE;
-			if (consume(TemplateToken.TAB.toString()))
-				return TemplateToken.TAB;
-
-			if (consume(TemplateToken.BLOCK_END.toString()))
-				return TemplateToken.BLOCK_END;
-
-			if (consume(TemplateToken.IF_HEAD.toString()))
-				return TemplateToken.IF_HEAD;
-			if (consume(TemplateToken.IF_BLOCK.toString()))
-				return TemplateToken.IF_BLOCK;
-
-			if (consume(TemplateToken.ITERATOR_BLOCK.toString()))
-				return TemplateToken.ITERATOR_BLOCK;
-			if (consume(TemplateToken.ITERATOR_HEAD.toString()))
-				return TemplateToken.ITERATOR_HEAD;
-
-			if (consume(TemplateToken.ELSE_BLOCK.toString()))
-				return TemplateToken.ELSE_BLOCK;
-
-			if (consume(TemplateToken.EXPRESSION_BLOCK.toString()))
-				return TemplateToken.EXPRESSION_BLOCK;
-			if (consume(TemplateToken.EXPRESSION_HEAD.toString()))
-				return TemplateToken.EXPRESSION_HEAD;
-
-			if (consume(TemplateToken.IMPORT.toString()))
-				return TemplateToken.IMPORT;
-
-			if (consume(TemplateToken.CONDITION.toString()))
-				return TemplateToken.CONDITION;
-			if (consume(TemplateToken.SOURCE.toString()))
-				return TemplateToken.SOURCE;
-			if (consume(TemplateToken.TARGET.toString()))
-				return TemplateToken.TARGET;
-			if (consume(TemplateToken.TYPE.toString()))
-				return TemplateToken.TYPE;
-			if (consume(TemplateToken.RESOURCE.toString()))
-				return TemplateToken.RESOURCE;
-			if (consume(TemplateToken.INDEX.toString()))
-				return TemplateToken.INDEX;
-			if (consume(TemplateToken.EQUALS.toString()))
-				return TemplateToken.EQUALS;
-			if (consume(TemplateToken.DOUBLE_QUOTE.toString()))
-				return TemplateToken.DOUBLE_QUOTE;
-			if (consume(TemplateToken.QUOTE.toString()))
-				return TemplateToken.QUOTE;
-
-			if (consume(TemplateToken.SELF_CLOSE_TAG.toString()))
-				return TemplateToken.SELF_CLOSE_TAG;
-
-			if (consume(TemplateToken.IMPORT.toString()))
-				return TemplateToken.IMPORT;
-
-			if (consume(TemplateToken.IF_TAIL.toString()))
-				return TemplateToken.IF_TAIL;
-
-			if (consume(TemplateToken.ITERATOR_TAIL.toString()))
-				return TemplateToken.ITERATOR_TAIL;
-
-			if (consume(TemplateToken.EXPRESSION_BLOCK_END.toString()))
-				return TemplateToken.EXPRESSION_BLOCK_END;
-			if (consume(TemplateToken.EXPRESSION_TAIL.toString()))
-				return TemplateToken.EXPRESSION_TAIL;
-
-			if (consume(TemplateToken.CLOSE_TAG.toString()))
-				return TemplateToken.CLOSE_TAG;
-			if (consume(TemplateToken.DOT.toString()))
-				return TemplateToken.DOT;
-			if (consume(TemplateToken.DOUBLE_DOT.toString()))
-				return TemplateToken.DOUBLE_DOT;
-			if (consume(TemplateToken.OPEN_PARENTESIS.toString()))
-				return TemplateToken.OPEN_PARENTESIS;
-			if (consume(TemplateToken.CLOSE_PARENTESIS.toString()))
-				return TemplateToken.CLOSE_PARENTESIS;
-
-			return new Char((char) read());
-		} catch (IOException ex)
-		{
-			throw new TemplateException(ex, "Error trying to parse template.");
-		}
-	}
-
-	private boolean isEOF() throws IOException
-	{
-		mark(1);
-		int c = read();
-		reset();
-		return c == -1;
-	}
-
-	private boolean consume(String string) throws TemplateException
-	{
-		try
-		{
-			mark(string.length());
-
-			for (int i = 0; i < string.length(); i++)
-			{
-				if (string.charAt(i) != read())
+				switch (c)
 				{
-					reset();
-					return false;
+					case '\n' ->
+					{
+						c = reader.read();
+						tokens.add(TemplateToken.LINE_BREAK);
+					}
+					case ' ', '\t' ->
+					{
+						StringBuilder token = new StringBuilder();
+						token.append((char) c);
+						for (c = reader.read(); c == ' '
+								|| c == '\t'; c = reader.read())
+							token.append((char) c);
+						tokens.add(new Spacing(token.toString()));
+					}
+					case '{' ->
+					{
+						c = reader.read();
+						if (c == '{')
+						{
+							c = reader.read();
+							switch (c)
+							{
+								case '#' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.BLOCK);
+								}
+								case '^' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.INVERTED_BLOCK);
+								}
+								case '/' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.BLOCK_END);
+								}
+								default ->
+									tokens.add(TemplateToken.EXPRESSION_HEAD);
+							}
+						} else
+							tokens.add(new Char('{'));
+					}
+					case '}' ->
+					{
+						c = reader.read();
+						if (c == '}')
+						{
+							c = reader.read();
+							tokens.add(TemplateToken.EXPRESSION_TAIL);
+						} else
+							tokens.add(TemplateToken.EL_TAIL);
+					}
+
+					case '$' ->
+					{
+						c = reader.read();
+						if (c == '{')
+						{
+							c = reader.read();
+							tokens.add(TemplateToken.EL_HEAD);
+						} else
+							tokens.add(new Char('$'));
+					}
+
+					default ->
+					{
+						StringBuilder token = new StringBuilder();
+						token.append((char) c);
+						for (c = reader.read();
+								c != -1
+								&& c != '{'
+								&& c != '}'
+								&& c != ' '
+								&& c != '\n';
+								c = reader.read())
+							token.append((char) c);
+						tokens.add(new Text(token.toString()));
+					}
 				}
+
 			}
 
-			return true;
+			tokens.add(TemplateToken.EOF);
+
+			return new TemplateScanner(tokens);
+
 		} catch (IOException ex)
 		{
 			throw new TemplateException(ex, "Error trying to parse template.");
 		}
+	}
+
+	public Evaluable next()
+	{
+		var result = tokens.get(index);
+		if (result != TemplateToken.EOF)
+			index++;
+		return result;
+	}
+
+	public Evaluable peek(int n)
+	{
+		if (tokens.size() > index + n)
+			return tokens.get(index + n);
+		return TemplateToken.EOF;
 	}
 }

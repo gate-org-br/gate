@@ -23,7 +23,7 @@ public class ListTag extends AttributeTag
 	protected LambdaExpression sortby;
 
 	protected final ELContext EL_CONTEXT
-		= new StandardELContext(ExpressionFactory.newInstance());
+			= new StandardELContext(ExpressionFactory.newInstance());
 
 	public void setOptions(Object options)
 	{
@@ -60,16 +60,16 @@ public class ListTag extends AttributeTag
 
 		if (sortby != null)
 			options = Toolkit.collection(options)
-				.stream()
-				.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
-				.collect(Collectors.toList());
+					.stream()
+					.sorted((a, b) -> (Integer) sortby.invoke(EL_CONTEXT, a, b))
+					.collect(Collectors.toList());
 
 		if (groups != null)
 		{
 			getJspContext().getOut().print(String.format("<ul %s>", getAttributes()));
 
-			for (Map.Entry<Object, List<Object>> group : Toolkit.collection(options).stream()
-				.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
+			for (var group : Toolkit.collection(options).stream()
+					.collect(Collectors.groupingBy(e -> groups.invoke(EL_CONTEXT, e), Collectors.toList())).entrySet())
 			{
 				getJspContext().getOut().print("<li>");
 				getJspContext().getOut().print(Converter.toText(group.getKey()));
@@ -98,10 +98,10 @@ public class ListTag extends AttributeTag
 				getJspContext().removeAttribute("option");
 			} else if (labels != null)
 				getJspContext().getOut()
-					.print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
+						.print(Converter.toText(labels.invoke(EL_CONTEXT, option)));
 			else
 				getJspContext().getOut()
-					.print(Converter.toText(option));
+						.print(Converter.toText(option));
 
 			getJspContext().getOut().print("</label>");
 

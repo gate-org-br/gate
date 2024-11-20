@@ -1,11 +1,6 @@
 package gate.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -36,14 +31,14 @@ public class Toolkit
 	{
 		if (obj == null)
 			return true;
-		if (obj instanceof String)
-			return ((String) obj).isEmpty();
-		if (obj instanceof Map<?, ?>)
-			return ((Map<?, ?>) obj).isEmpty();
-		if (obj instanceof Object[])
-			return ((Object[]) obj).length == 0;
-		if (obj instanceof Collection<?>)
-			return ((Collection<?>) obj).isEmpty();
+		if (obj instanceof String string)
+			return string.isEmpty();
+		if (obj instanceof Map<?, ?> map)
+			return map.isEmpty();
+		if (obj instanceof Object[] objects)
+			return objects.length == 0;
+		if (obj instanceof Collection<?> collection)
+			return collection.isEmpty();
 		return false;
 	}
 
@@ -51,64 +46,97 @@ public class Toolkit
 	{
 		if (obj == null)
 			return 0;
-		if (obj instanceof Collection<?>)
-			return ((Collection<?>) obj).size();
-		if (obj instanceof Map<?, ?>)
-			return ((Map<?, ?>) obj).size();
-		if (obj instanceof Object[])
-			return ((Object[]) obj).length;
+		if (obj instanceof Collection<?> collection)
+			return collection.size();
+		if (obj instanceof Map<?, ?> map)
+			return map.size();
+		if (obj instanceof Object[] objects)
+			return objects.length;
 		if (obj instanceof String)
 			return ((CharSequence) obj).length();
 		return 1;
 	}
 
-	public static Iterable<Object> iterable(Object obj)
+	public static Iterable<?> iterable(Object obj)
 	{
 		if (obj == null)
 			return List.of();
-		if (obj instanceof Iterable<?>)
-			return (Iterable) obj;
-		if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+		if (obj instanceof Iterable<?> iterable)
+			return iterable;
+		if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		if (obj instanceof Map<?, ?> map)
+			return map.entrySet();
 		return List.of(obj);
 	}
 
-	public static Stream<Object> stream(Object obj)
+	public static Stream<?> stream(Object obj)
 	{
 		if (obj == null)
 			return Stream.empty();
 		else if (obj instanceof Collection)
-			return ((Collection) obj).stream();
-		else if (obj instanceof Object[])
-			return Stream.of((Object[]) obj);
+			return ((Collection<?>) obj).stream();
+		else if (obj instanceof Object[] objects)
+			return Stream.of(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return map.entrySet().stream();
 		else
 			return Stream.of(obj);
 	}
 
-	public static Collection<Object> collection(Object obj)
+	public static Collection<?> collection(Object obj)
 	{
 		if (obj == null)
 			return List.of();
 		else if (obj instanceof Collection)
-			return (Collection) obj;
-		else if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+			return (Collection<?>) obj;
+		else if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return map.entrySet();
 		else
 			return List.of(obj);
 	}
 
-	public static List<? extends Object> list(Object obj)
+	public static List<?> list(Object obj)
 	{
 		if (obj == null)
 			return List.of();
 		else if (obj instanceof List)
-			return (List) obj;
+			return (List<?>) obj;
 		else if (obj instanceof Collection)
-			return new ArrayList((Collection) obj);
-		else if (obj instanceof Object[])
-			return Arrays.asList((Object[]) obj);
+			return new ArrayList<>((Collection<?>) obj);
+		else if (obj instanceof Object[] objects)
+			return Arrays.asList(objects);
+		else if (obj instanceof Map<?, ?> map)
+			return new ArrayList<>(map.entrySet());
 		else
 			return List.of(obj);
+	}
+
+	/**
+	 * Checks if the object can be considered "false".
+	 *
+	 * @param obj the object to be checked.
+	 * @return true if the object is null, a blank string, zero, an empty collection or an empty map
+	 */
+	public static boolean isFalsy(Object obj)
+	{
+		if (obj == null)
+			return true;
+		if (obj instanceof String string)
+			return string.isBlank();
+		if (obj instanceof Number number)
+			return number.doubleValue() == 0.0;
+		if (obj instanceof Collection<?> collection)
+			return collection.isEmpty();
+		if (obj instanceof Map<?, ?> map)
+			return map.isEmpty();
+		if (obj instanceof Object[] array)
+			return array.length == 0;
+		if (obj instanceof Boolean bool)
+			return !bool;
+		return false;
 	}
 
 	public static <T> T coalesce(T a, T b)
@@ -121,9 +149,10 @@ public class Toolkit
 		return obj != null ? obj : supplier.get();
 	}
 
+	@SafeVarargs
 	public static <T> T coalesce(T... elements)
 	{
-		return Stream.of(elements).filter(e -> e != null).findFirst().orElse(null);
+		return Stream.of(elements).filter(Objects::nonNull).findFirst().orElse(null);
 	}
 
 	public static boolean sleep(int value)
@@ -162,10 +191,11 @@ public class Toolkit
 		while (index < path.length() && path.charAt(index) == '/')
 		{
 			index++;
-			StringBuilder string = new StringBuilder();
+			StringBuilder builder = new StringBuilder();
 			for (; index < path.length() && path.charAt(index) != '/'; index++)
-				string.append(path.charAt(index));
-			result.add(!string.isEmpty() ? string.toString() : null);
+				builder.append(path.charAt(index));
+			var string = builder.toString().trim();
+			result.add(!string.isEmpty() && !"*".equals(string) ? string : null);
 		}
 
 		return result;
@@ -180,10 +210,8 @@ public class Toolkit
 			string.add("<li>");
 			string.add(Toolkit.escapeHTML(error.getMessage()));
 			string.add("<ul>");
-			Stream.of(error.getStackTrace())
-				.map(StackTraceElement::toString)
-				.map(Toolkit::escapeHTML)
-				.forEach(e -> string.add("<li>").add(e).add("</li>"));
+			Stream.of(error.getStackTrace()).map(StackTraceElement::toString)
+					.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
 			string.add("</ul>");
 			string.add("</li>");
 		}
