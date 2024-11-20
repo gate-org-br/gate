@@ -79,7 +79,7 @@ class TemplateParser
 
 		if (!expression.equals(expression(scanner)))
 			throw new TemplateException("Invalid block end");
-
+		skipIdentation(scanner);
 		return new Block(expression, template);
 	}
 
@@ -95,7 +95,7 @@ class TemplateParser
 
 		if (!expression.equals(expression(scanner)))
 			throw new TemplateException("Invalid block end");
-
+		skipIdentation(scanner);
 		return new InvertedBlock(expression, template);
 	}
 
