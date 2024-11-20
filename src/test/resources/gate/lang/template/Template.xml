@@ -1,22 +1,22 @@
 <html>
 	<body>
 		{{# size roles ne 0}}
-			<ul>
-				{{#roles}}
+		<ul>
+			{{#roles}}
+			<li>
+				{{name}}
+				{{# size users ne 0}}
+				<ul>
+					{{#users}}
 					<li>
-						{{name}}
-						{{# size users ne 0}}
-							<ul>
-								{{#users}}
-									<li>
-										{{name}} ({{../name}})
-									</li>	
-								{{/users}}
-							</ul>
-						{{/ size users ne 0}}
-					</li>	
-				{{/roles}}
-			</ul>
+						{{name}} ({{../name}})
+					</li>
+					{{/users}}
+				</ul>
+				{{/ size users ne 0}}
+			</li>
+			{{/roles}}
+		</ul>
 		{{/ size roles ne 0}}
 	</body>
 </html>

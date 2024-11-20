@@ -2,7 +2,6 @@ package gate.lang.template;
 
 import gate.error.TemplateException;
 import gate.lang.expression.Expression;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +13,9 @@ class TemplateParser
 
 	public Template parse(Reader reader) throws TemplateException
 	{
-		try (TemplateScanner scanner = new TemplateScanner(reader))
-		{
-			token = scanner.next();
-			return template(scanner);
-		} catch (IOException ex)
-		{
-			throw new TemplateException(ex, "Error trying to parse template.");
-		}
+		TemplateScanner scanner = TemplateScanner.parse(reader);
+		token = scanner.next();
+		return template(scanner);
 	}
 
 	public Template template(TemplateScanner scanner) throws TemplateException
@@ -36,6 +30,17 @@ class TemplateParser
 
 	public Evaluable evaluable(TemplateScanner scanner) throws TemplateException
 	{
+		if (token == TemplateToken.LINE_BREAK
+				&& scanner.peek(0) instanceof Spacing
+				&& (scanner.peek(1) == TemplateToken.BLOCK
+				|| scanner.peek(1) == TemplateToken.INVERTED_BLOCK
+				|| scanner.peek(1) == TemplateToken.BLOCK_END))
+		{
+			token = scanner.next();
+			token = scanner.next();
+			return TemplateToken.LINE_BREAK;
+		}
+
 		if (token == TemplateToken.EXPRESSION_HEAD
 				|| token == TemplateToken.EL_HEAD)
 			return expression(scanner);
@@ -49,9 +54,23 @@ class TemplateParser
 		return text(scanner);
 	}
 
+	public void skipIdentation(TemplateScanner scanner)
+	{
+		if (token == TemplateToken.LINE_BREAK)
+		{
+			token = scanner.next();
+		} else if (token instanceof Spacing
+				&& scanner.peek(0) == TemplateToken.LINE_BREAK)
+		{
+			token = scanner.next();
+			token = scanner.next();
+		}
+	}
+
 	public Evaluable block(TemplateScanner scanner)
 	{
 		var expression = expression(scanner);
+		skipIdentation(scanner);
 
 		var template = template(scanner);
 
@@ -67,6 +86,7 @@ class TemplateParser
 	public Evaluable invertedBlock(TemplateScanner scanner)
 	{
 		var expression = expression(scanner);
+		skipIdentation(scanner);
 
 		var template = template(scanner);
 

@@ -8,7 +8,6 @@ import gate.lang.template.Evaluable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import javassist.compiler.ast.Variable;
 
 public class Expression implements Evaluable
 {

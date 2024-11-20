@@ -1,100 +1,139 @@
 package gate.lang.template;
 
 import gate.error.TemplateException;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
-class TemplateScanner extends BufferedReader
+class TemplateScanner
 {
 
-	private int c = Integer.MAX_VALUE;
+	private int index;
+	private List<Evaluable> tokens;
 
-	public TemplateScanner(Reader reader)
+	private TemplateScanner(List<Evaluable> tokens)
 	{
-		super(reader);
+		this.index = 0;
+		this.tokens = tokens;
+
 	}
 
-	public Evaluable next() throws TemplateException
+	public static TemplateScanner parse(Reader reader)
 	{
 		try
 		{
-			if (c == Integer.MAX_VALUE)
-				c = read();
-			StringBuilder token = new StringBuilder();
-
-			if (c == -1)
-				return TemplateToken.EOF;
-
-			if (c == '\n')
+			int c = reader.read();
+			List<Evaluable> tokens = new ArrayList<>();
+			while (c != -1)
 			{
-				mark(3);
-				if (read() == '{'
-						&& read() == '{'
-						&& read() == '/')
+				switch (c)
 				{
-					c = read();
-					return TemplateToken.BLOCK_END;
-				}
-
-				reset();
-			}
-
-			if (c == '{')
-			{
-				if (read() == '{')
-				{
-					c = read();
-					switch (c)
+					case '\n' ->
 					{
-						case '#':
-							c = read();
-							return TemplateToken.BLOCK;
-						case '^':
-							c = read();
-							return TemplateToken.INVERTED_BLOCK;
-						case '/':
-							c = read();
-							return TemplateToken.BLOCK_END;
-						default:
-							return TemplateToken.EXPRESSION_HEAD;
+						c = reader.read();
+						tokens.add(TemplateToken.LINE_BREAK);
+					}
+					case ' ', '\t' ->
+					{
+						StringBuilder token = new StringBuilder();
+						token.append((char) c);
+						for (c = reader.read(); c == ' '
+								|| c == '\t'; c = reader.read())
+							token.append((char) c);
+						tokens.add(new Spacing(token.toString()));
+					}
+					case '{' ->
+					{
+						c = reader.read();
+						if (c == '{')
+						{
+							c = reader.read();
+							switch (c)
+							{
+								case '#' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.BLOCK);
+								}
+								case '^' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.INVERTED_BLOCK);
+								}
+								case '/' ->
+								{
+									c = reader.read();
+									tokens.add(TemplateToken.BLOCK_END);
+								}
+								default ->
+									tokens.add(TemplateToken.EXPRESSION_HEAD);
+							}
+						} else
+							tokens.add(new Char('{'));
+					}
+					case '}' ->
+					{
+						c = reader.read();
+						if (c == '}')
+						{
+							c = reader.read();
+							tokens.add(TemplateToken.EXPRESSION_TAIL);
+						} else
+							tokens.add(TemplateToken.EL_TAIL);
+					}
+
+					case '$' ->
+					{
+						c = reader.read();
+						if (c == '{')
+						{
+							c = reader.read();
+							tokens.add(TemplateToken.EL_HEAD);
+						} else
+							tokens.add(new Char('$'));
+					}
+
+					default ->
+					{
+						StringBuilder token = new StringBuilder();
+						token.append((char) c);
+						for (c = reader.read();
+								c != -1
+								&& c != '{'
+								&& c != '}'
+								&& c != ' '
+								&& c != '\n';
+								c = reader.read())
+							token.append((char) c);
+						tokens.add(new Text(token.toString()));
 					}
 				}
-				return new Char('{');
+
 			}
 
-			if (c == '}')
-			{
-				c = read();
-				if (c == '}')
-				{
-					c = read();
-					return TemplateToken.EXPRESSION_TAIL;
-				}
-				return TemplateToken.EL_TAIL;
-			}
-			
-			if (c == '$')
-			{
-				c = read();
-				if (c == '{')
-				{
-					c = read();
-					return TemplateToken.EL_HEAD;
-				}
-				return new Char('$');
-			}
+			tokens.add(TemplateToken.EOF);
 
-			token.append((char) c);
-			for (c = read();
-					c != -1
-					&& c != '{'
-					&& c != '}'; c = read())
-				token.append((char) c);
-			return new Text(token.toString());
+			return new TemplateScanner(tokens);
+
 		} catch (IOException ex)
 		{
 			throw new TemplateException(ex, "Error trying to parse template.");
 		}
+	}
+
+	public Evaluable next()
+	{
+		var result = tokens.get(index);
+		if (result != TemplateToken.EOF)
+			index++;
+		return result;
+	}
+
+	public Evaluable peek(int n)
+	{
+		if (tokens.size() > index + n)
+			return tokens.get(index + n);
+		return TemplateToken.EOF;
 	}
 }
