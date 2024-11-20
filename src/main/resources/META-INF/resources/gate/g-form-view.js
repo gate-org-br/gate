@@ -7,8 +7,6 @@ template.innerHTML = `
 }
 
 :host(*) {
-	border: 0;
-	padding: 0;
 	display: flex;
 	align-items: stretch;
 	flex-direction: column;
@@ -18,6 +16,16 @@ template.innerHTML = `
 fieldset {
 	padding: 0;
 	border: none;
+}
+
+span.multiple
+{
+	padding: 4px;
+	text-indent: 0;
+	overflow: auto;
+	line-height: 24px;
+	flex-basis: 128px;
+	white-space: pre-line;
 }</style>`;
 
 /* global customElements */
@@ -36,15 +44,16 @@ customElements.define('g-form-view', class extends HTMLElement
 
 	set value(value)
 	{
-		const fieldset = this.shadowRoot.querySelector("fieldset");
+		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
+		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.children).forEach(e => e.remove());
 
 		if (value)
-		{
 			value.forEach(element => {
 				let label = fieldset.appendChild(document.createElement("label"));
 
 				if (element.size)
+				{
 					switch (Number(element.size))
 					{
 						case 0:
@@ -60,6 +69,8 @@ customElements.define('g-form-view', class extends HTMLElement
 							label.setAttribute("data-size", 8);
 							break;
 					}
+				} else if (element.columns)
+					label.setAttribute("data-size", element.columns);
 
 				label.innerText = element.name + ': ';
 
@@ -68,9 +79,8 @@ customElements.define('g-form-view', class extends HTMLElement
 					span.className = "multiple";
 
 				if (element.value)
-					span.innerHTML = element.value.join("<br/>");
+					span.innerHTML = element.value.join("\n");
 			});
-		}
 	}
 
 	attributeChangedCallback()

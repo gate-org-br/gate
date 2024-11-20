@@ -9,6 +9,7 @@ template.innerHTML = `
 	overflow-y: auto;
 	border-radius: 3px;
 	align-content: start;
+	grid-auto-rows: 24px;
 	background-color: white;
 	grid-template-columns: 24px 1fr;
 }

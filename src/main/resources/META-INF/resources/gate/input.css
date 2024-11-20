@@ -39,6 +39,7 @@ textarea {
   resize: none;
   padding: 4px;
   margin: 0;
+  line-height: 24px;
 }
 input:hover,
 textarea:hover,
