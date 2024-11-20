@@ -13,3 +13,8 @@ fieldset {
 	padding: 0;
 	border: none;
 }
+
+span.multiple
+{
+	flex-basis: 128px;
+}

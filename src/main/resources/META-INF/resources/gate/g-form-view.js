@@ -20,8 +20,12 @@ fieldset {
 
 span.multiple
 {
+	padding: 4px;
+	text-indent: 0;
 	overflow: auto;
-	flex-basis: 80px;
+	line-height: 24px;
+	flex-basis: 128px;
+	white-space: pre-line;
 }</style>`;
 /* global customElements */
 import stylesheets from './stylesheets.js';
@@ -34,11 +38,12 @@ customElements.define('g-form-view', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 		stylesheets('input.css', 'fieldset.css')
-			.forEach(e => this.shadowRoot.appendChild(e));
+				.forEach(e => this.shadowRoot.appendChild(e));
 	}
 
 	set value(value)
 	{
+		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.children).forEach(e => e.remove());
 
@@ -73,7 +78,7 @@ customElements.define('g-form-view', class extends HTMLElement
 					span.className = "multiple";
 
 				if (element.value)
-					span.innerHTML = element.value.join("<br/>");
+					span.innerHTML = element.value.join("\n");
 			});
 	}
 

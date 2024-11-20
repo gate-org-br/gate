@@ -6,7 +6,6 @@ template.innerHTML = `
 	box-sizing: border-box
 }
 
-
 :host(*)
 {
 	padding: 8px;
@@ -15,10 +14,11 @@ template.innerHTML = `
 	overflow-y: auto;
 	position: relative;
 	border-radius: 3px;
+	align-items: center;
+	grid-auto-rows: 24px;
 	align-content: start;
 	background-color: white;
 	grid-template-columns: 24px 1fr;
-	align-items: center;
 }
 
 :host([columns='1'])  {

@@ -16,6 +16,11 @@ template.innerHTML = `
 fieldset {
 	padding: 0;
 	border: none;
+}
+
+span.multiple
+{
+	flex-basis: 128px;
 }</style>`;
 /* global customElements */
 
@@ -54,7 +59,7 @@ function create(form, element)
 
 	let span = label.appendChild(document.createElement("span"));
 	if (element.multiple)
-		span.style.flexBasis = "128px";
+		span.className = "multiple";
 
 	let input;
 	if (element.options)

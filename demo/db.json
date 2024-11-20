@@ -591,7 +591,8 @@
 			{
 				"name": "Field 6",
 				"multiple": true,
-				"columns": 8
+				"columns": 8,
+				"value": ["Line1", "Line2", "Line3"]
 			}
 		]
 	}

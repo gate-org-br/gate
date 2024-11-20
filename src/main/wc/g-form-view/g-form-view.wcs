@@ -16,6 +16,10 @@ fieldset {
 
 span.multiple
 {
+	padding: 4px;
+	text-indent: 0;
 	overflow: auto;
-	flex-basis: 80px;
+	line-height: 24px;
+	flex-basis: 128px;
+	white-space: pre-line;
 }

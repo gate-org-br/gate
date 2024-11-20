@@ -36,9 +36,10 @@ g-selectn:only-child {
   border-radius: 3px;
 }
 textarea {
+  margin: 0;
   resize: none;
   padding: 4px;
-  margin: 0;
+  line-height: 24px;
 }
 input:hover,
 textarea:hover,
