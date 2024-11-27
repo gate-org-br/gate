@@ -3,7 +3,6 @@ package gate;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +27,7 @@ public class Progress
 	private long done = UNKNOWN;
 	private String text = "Aguarde";
 	private Status status = Status.CREATED;
-	private final List<String> messages = new ArrayList<>();
+	private final List<String> messages = new CopyOnWriteArrayList<>();
 	private final int process = SEQUENCE.incrementAndGet();
 	private final List<Session> sessions = new CopyOnWriteArrayList<>();
 
@@ -52,9 +51,9 @@ public class Progress
 		session.getAsyncRemote().sendText(toString());
 		if (url != null)
 			session.getAsyncRemote()
-				.sendText(new JsonObject()
-					.setString("event", "Redirect")
-					.setString("url", url).toString());
+					.sendText(new JsonObject()
+							.setString("event", "Redirect")
+							.setString("url", url).toString());
 		sessions.add(session);
 	}
 
@@ -64,7 +63,7 @@ public class Progress
 	}
 
 	public void update(Status status, long todo,
-		long done, String text, JsonElement data)
+			long done, String text, JsonElement data)
 	{
 		messages.add(toString());
 
@@ -89,14 +88,14 @@ public class Progress
 	public String toString()
 	{
 		return new JsonObject()
-			.setLong("todo", todo)
-			.setLong("done", done)
-			.setString("text", text)
-			.setInt("process", process)
-			.setString("event", "Progress")
-			.setString("status", status.name())
-			.set("data", data)
-			.toString();
+				.setLong("todo", todo)
+				.setLong("done", done)
+				.setString("text", text)
+				.setInt("process", process)
+				.setString("event", "Progress")
+				.setString("status", status.name())
+				.set("data", data)
+				.toString();
 	}
 
 	static Progress create()
@@ -119,7 +118,7 @@ public class Progress
 		if (progress != null)
 		{
 			if (Status.COMMITED.equals(progress.status)
-				|| Status.CANCELED.equals(progress.status))
+					|| Status.CANCELED.equals(progress.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, UNKNOWN, 0, text);
 			progress.dispatch(progress.toString());
@@ -139,7 +138,7 @@ public class Progress
 		if (progress != null)
 		{
 			if (Status.COMMITED.equals(progress.status)
-				|| Status.CANCELED.equals(progress.status))
+					|| Status.CANCELED.equals(progress.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text);
 			progress.dispatch(progress.toString());
@@ -377,7 +376,7 @@ public class Progress
 				try
 				{
 					session.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE,
-						"Tarefa inexistente"));
+							"Tarefa inexistente"));
 				} catch (IOException ex)
 				{
 					LoggerFactory.getLogger(Progress.class).error(ex.getMessage(), ex);
@@ -396,8 +395,8 @@ public class Progress
 		{
 			progress.url = url;
 			progress.dispatch(new JsonObject()
-				.setString("event", "Redirect")
-				.setString("url", url).toString());
+					.setString("event", "Redirect")
+					.setString("url", url).toString());
 
 		}
 	}
