@@ -1,10 +1,7 @@
 package gate.lang.contentDisposition;
 
-import gate.error.AppError;
-import gate.error.ConversionException;
-import gate.lang.contentType.ContentTypeParser;
-import gate.lang.contentType.ContentTypeScanner;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -14,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class ContentDisposition
+public class ContentDisposition implements Serializable
 {
 
 	private final String value;

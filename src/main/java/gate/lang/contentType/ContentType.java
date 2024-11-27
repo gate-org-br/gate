@@ -1,7 +1,7 @@
 package gate.lang.contentType;
 
-import gate.error.AppError;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.UnsupportedEncodingException;
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class ContentType
+public class ContentType implements Serializable
 {
 
 	private final String type;
