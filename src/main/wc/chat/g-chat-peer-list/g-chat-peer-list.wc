@@ -1,9 +1,0 @@
-<template>
-	<input type="text" placeholder="Localizar"/>
-	<div>
-	</div>
-	<footer>
-		<g-chat-notification-config label="Notificações">
-		</g-chat-notification-config>
-	</footer>
-</template>

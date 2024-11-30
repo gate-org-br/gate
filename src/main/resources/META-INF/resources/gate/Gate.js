@@ -69,12 +69,6 @@ import "./password.js";
 
 import "./datalist.js";
 
-import "./g-chat-button.js";
-import "./g-chat-dialog.js";
-import "./g-chat-counter.js";
-import "./g-chat-notificator.js";
-import "./g-chat-contact-dialog.js";
-
 import "./g-select-picker.js";
 import "./g-search-picker.js";
 
