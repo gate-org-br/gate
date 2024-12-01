@@ -73,8 +73,6 @@ public class Gate extends HttpServlet
 	@Inject
 	GateControl control;
 
-	private final String developer = SystemProperty.get("gate.developer").orElse(null);
-
 	static
 	{
 		Locale.setDefault(new Locale("pt", "BR"));

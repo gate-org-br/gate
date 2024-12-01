@@ -80,6 +80,5 @@ public class GateControl extends gate.base.Control
 			request.setUser((User) request.getSession().getAttribute(User.class.getName()));
 		else if (developer != null)
 			request.setUser(select(developer));
-		User user = request.getUser();
 	}
 }

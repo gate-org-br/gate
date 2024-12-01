@@ -4,7 +4,12 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.annotation.Name;
 import gate.converter.EnumStringConverter;
+import gate.error.ConversionException;
 import gate.handler.ReportHandler;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
 import java.io.File;
@@ -200,7 +205,7 @@ public class Report
 	}
 
 	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
-		Chart.Format format)
+			Chart.Format format)
 	{
 		Chart chart = new Chart(type, dataset, format);
 		elements.add(chart);
@@ -226,5 +231,43 @@ public class Report
 		PORTRAIT,
 		@Name("Paisagem")
 		LANDSCAPE
+	}
+
+	public static Report fromJson(JsonObject json) throws ConversionException
+	{
+		Report report = new Report();
+
+		if (json.get("name") instanceof JsonString name)
+		{
+			report.addHeader(name.toString());
+			report.addLineBreak();
+		}
+
+		if (json.get("queries") instanceof JsonArray queries)
+		{
+			queries.stream()
+					.filter(e -> e instanceof JsonObject)
+					.map(e -> (JsonObject) e)
+					.forEach(query ->
+					{
+						if (query.get("headers") instanceof JsonArray headers
+								&& query.get("dataset") instanceof JsonArray dataset)
+						{
+							var grid = report.addGrid(JsonElement.class, dataset);
+
+							if (query.get("caption") instanceof JsonString caption)
+								grid.setCaption(caption.toString());
+
+							for (int i = 0; i < headers.size(); i++)
+							{
+								var index = i;
+								var header = headers.get(i);
+								grid.add().head(header).body(e -> ((JsonArray) e).get(index).toString());
+							}
+						}
+					});
+
+		}
+		return report;
 	}
 }

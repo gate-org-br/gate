@@ -28,6 +28,6 @@ public class UserProducer
 		if (session != null)
 			return (User) session.getAttribute(User.class.getName());
 
-		return null;
+		return new User();
 	}
 }
