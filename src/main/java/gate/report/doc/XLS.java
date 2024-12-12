@@ -7,12 +7,14 @@ import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
+import gate.report.Dictionary;
 import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Form;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
+import gate.report.ReportList;
 import gate.report.Style;
 import gate.type.Color;
 import gate.util.Toolkit;
@@ -72,7 +74,7 @@ public class XLS extends Doc
 	@Override
 	public ContentType getContentType()
 	{
-		return ContentType.of("application", "xls");
+		return ContentType.of("application", "vnd.ms-excel");
 	}
 
 	@Override
@@ -96,9 +98,15 @@ public class XLS extends Doc
 			}
 
 			for (ReportElement e : getReport().getElements())
-				if (e instanceof Form
-						&& (!((Form) e).isEmpty()))
-					printForm(workbook, (Form) e);
+				if (e instanceof Form form
+						&& !form.isEmpty())
+					printForm(workbook, form);
+				else if (e instanceof Dictionary dictionary
+						&& !dictionary.getElements().isEmpty())
+					printDictionary(workbook, dictionary);
+				else if (e instanceof ReportList list
+						&& !list.getElements().isEmpty())
+					printList(workbook, list);
 
 			workbook.write(os);
 			workbook.dispose();
@@ -353,6 +361,106 @@ public class XLS extends Doc
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	private void printDictionary(SXSSFWorkbook workbook, Dictionary dictionary)
+	{
+		short i = -1;
+
+		SXSSFSheet sheet = workbook.createSheet();
+
+		for (var entry : dictionary.getElements().entrySet())
+		{
+			sheet.trackAllColumnsForAutoSizing();
+
+			SXSSFRow row = sheet.createRow(++i);
+
+			SXSSFCell label = row.createCell((short) 0);
+			label.setCellStyle(workbook.createCellStyle());
+			label.getCellStyle().setBorderTop(BorderStyle.THIN);
+			label.getCellStyle().setBorderLeft(BorderStyle.THIN);
+			label.getCellStyle().setBorderRight(BorderStyle.NONE);
+			label.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			label.getCellStyle().setFont(workbook.createFont());
+			label.getCellStyle().setAlignment(HorizontalAlignment.RIGHT);
+			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+			((XSSFCellStyle) label.getCellStyle()).getFont().setBold(true);
+			label.setCellValue(new XSSFRichTextString(entry.getKey() + ":"));
+
+			SXSSFCell value = row.createCell((short) 1);
+			value.setCellStyle(workbook.createCellStyle());
+			value.getCellStyle().setBorderTop(BorderStyle.THIN);
+			value.getCellStyle().setBorderLeft(BorderStyle.NONE);
+			value.getCellStyle().setBorderRight(BorderStyle.THIN);
+			value.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			value.getCellStyle().setFont(workbook.createFont());
+			value.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+
+			var object = entry.getValue();
+			if (object == null)
+				value.setCellType(CellType.BLANK);
+			else if (object instanceof Number number)
+			{
+				value.setCellType(CellType.NUMERIC);
+				value.setCellValue(number.doubleValue());
+			} else if (object instanceof Boolean bool)
+			{
+				value.setCellType(CellType.BOOLEAN);
+				value.setCellValue(bool);
+			} else
+				value.setCellValue(new XSSFRichTextString(Converter.toText(object)));
+		}
+		sheet.autoSizeColumn((short) 0);
+		sheet.autoSizeColumn((short) 1);
+	}
+
+	private void printList(SXSSFWorkbook workbook, ReportList list)
+	{
+		short i = -1;
+
+		SXSSFSheet sheet = workbook.createSheet();
+
+		for (var element : list.getElements())
+		{
+			sheet.trackAllColumnsForAutoSizing();
+
+			SXSSFRow row = sheet.createRow(++i);
+
+			SXSSFCell value = row.createCell((short) 0);
+			value.setCellStyle(workbook.createCellStyle());
+			value.getCellStyle().setBorderTop(BorderStyle.THIN);
+			value.getCellStyle().setBorderLeft(BorderStyle.NONE);
+			value.getCellStyle().setBorderRight(BorderStyle.THIN);
+			value.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			value.getCellStyle().setFont(workbook.createFont());
+			value.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+
+			if (element == null)
+				value.setCellType(CellType.BLANK);
+			else if (element instanceof Number number)
+			{
+				value.setCellType(CellType.NUMERIC);
+				value.setCellValue(number.doubleValue());
+			} else if (element instanceof Boolean bool)
+			{
+				value.setCellType(CellType.BOOLEAN);
+				value.setCellValue(bool);
+			} else
+				value.setCellValue(new XSSFRichTextString(Converter.toText(element)));
+		}
+		sheet.autoSizeColumn((short) 0);
+		sheet.autoSizeColumn((short) 1);
 	}
 
 	private XSSFColor getXLSColor(Color color)

@@ -126,17 +126,18 @@ final class ExpressionScanner extends BufferedReader
 						return ExpressionToken.LT;
 
 				case '"':
-					StringBuilder dqstring = new StringBuilder();
-					for (c = read(); c != '"'; c = read())
-						dqstring.append((char) c);
-					c = read();
-					return dqstring.toString();
+				case '`':
 				case '\'':
-					StringBuilder sqstring = new StringBuilder();
-					for (c = read(); c != '\''; c = read())
-						sqstring.append((char) c);
+					int delimiter = c;
+					StringBuilder string = new StringBuilder();
+					for (c = read(); c != delimiter; c = read())
+						if (c != -1)
+							string.append((char) c);
+						else if (c == -1)
+							throw new ExpressionException("Unterminated string: " + string.toString());
+
 					c = read();
-					return sqstring.toString();
+					return string.toString();
 
 				case '0':
 				case '1':

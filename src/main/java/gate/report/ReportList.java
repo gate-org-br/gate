@@ -1,5 +1,8 @@
 package gate.report;
 
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,13 +12,11 @@ import java.util.List;
 public class ReportList extends ReportElement
 {
 
-	private final Type type;
 	private final List<Object> elements = new ArrayList<>();
 
-	public ReportList(Type type)
+	public ReportList()
 	{
 		super(new Style());
-		this.type = type;
 	}
 
 	/**
@@ -36,18 +37,46 @@ public class ReportList extends ReportElement
 		return this;
 	}
 
-	public Type getType()
-	{
-		return type;
-	}
-
 	public List<Object> getElements()
 	{
 		return elements;
 	}
 
-	public enum Type
+	public static ReportList of(JsonObject jsonObject)
 	{
-		NUMBER, LETTER, SYMBOL
+		ReportList list = new ReportList();
+
+		if (jsonObject.get("style") instanceof JsonString style)
+			list.style(Style.of(style));
+		else if (jsonObject.get("style") instanceof JsonObject style)
+			list.style(Style.of(style));
+
+		if (jsonObject.get("elements") instanceof JsonArray elements)
+			elements.stream().forEach(element ->
+			{
+				if (element instanceof JsonString string)
+					list.add(string.toString());
+				else if (element instanceof JsonArray array)
+					list.add(of(new JsonObject()
+							.set("style", jsonObject.get("style"))
+							.set("elements", array)));
+			});
+
+		return list;
+	}
+
+	public static ReportList of(JsonArray jsonArray)
+	{
+		ReportList list = new ReportList();
+
+		jsonArray.stream().forEach(element ->
+		{
+			if (element instanceof JsonString string)
+				list.add(string.toString());
+			else if (element instanceof JsonArray array)
+				list.add(of(array));
+		});
+
+		return list;
 	}
 }

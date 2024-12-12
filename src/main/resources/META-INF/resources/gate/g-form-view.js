@@ -44,11 +44,12 @@ customElements.define('g-form-view', class extends HTMLElement
 
 	set value(value)
 	{
-		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.children).forEach(e => e.remove());
 
 		if (value)
+		{
+			value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 			value.forEach(element => {
 				let label = fieldset.appendChild(document.createElement("label"));
 
@@ -81,6 +82,7 @@ customElements.define('g-form-view', class extends HTMLElement
 				if (element.value)
 					span.innerHTML = element.value.join("\n");
 			});
+		}
 	}
 
 	attributeChangedCallback()

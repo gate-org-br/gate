@@ -4,7 +4,6 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.NoSuchPropertyError;
 import gate.icon.Icon;
-import gate.icon.Icons;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -20,7 +19,7 @@ public class Property
 	private final Attribute lastAttribute;
 	private final List<Attribute> attributes;
 	private final static Map<Class<?>, Map<String, Property>> PROPERTIES
-		= new ConcurrentHashMap<>();
+			= new ConcurrentHashMap<>();
 
 	Property(Class<?> owner, String string, List<Attribute> attributes)
 	{
@@ -36,13 +35,14 @@ public class Property
 	 * @param type java class whose property is to be selected
 	 * @param name name of the property to be selected
 	 *
-	 * @return the requested property object or null if there is no property with the specified name on the specified type
+	 * @return the requested property object or null if there is no property with the specified name on the specified
+	 * type
 	 */
 	public static Property parse(Class<?> type, String name)
 	{
 		return PROPERTIES
-			.computeIfAbsent(type, k -> new ConcurrentHashMap<>())
-			.computeIfAbsent(name, k -> new PropertyParser(type, k).parse());
+				.computeIfAbsent(type, k -> new ConcurrentHashMap<>())
+				.computeIfAbsent(name, k -> new PropertyParser(type, k).parse());
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class Property
 		{
 			for (Field field : type.getDeclaredFields())
 				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isStatic(field.getModifiers()))
 					properties.add(Property.getProperty(type, field.getName()));
 			type = type.getSuperclass();
 		}
@@ -114,9 +114,9 @@ public class Property
 	public static List<Property> getProperties(Class<?> type, List<String> names)
 	{
 		return names
-			.stream()
-			.map(e -> getProperty(type, e))
-			.collect(Collectors.toList());
+				.stream()
+				.map(e -> getProperty(type, e))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -485,14 +485,14 @@ public class Property
 	public boolean isEntityId()
 	{
 		return getAttributes().size() == 2
-			&& getAttributes().get(1).isEntityId();
+				&& getAttributes().get(1).isEntityId();
 	}
 
 	public static Object getValue(Object object, String name)
 	{
 		return object != null
-			? Property.getProperty(object.getClass(), name)
-				.getValue(object) : null;
+				? Property.getProperty(object.getClass(), name)
+						.getValue(object) : null;
 	}
 
 	public Converter getConverter()
@@ -513,7 +513,7 @@ public class Property
 			if (!(attributes.get(i) instanceof SelfAttribute))
 			{
 				if (builder.length() > 0
-					&& attributes.get(i) instanceof JavaIdentifierAttribute)
+						&& attributes.get(i) instanceof JavaIdentifierAttribute)
 					builder.append(".");
 				builder.append(attributes.get(i).toString());
 			}
@@ -524,14 +524,19 @@ public class Property
 	public String getColumnName()
 	{
 		return getAttributes().stream().map(Attribute::getColumnName)
-			.filter(Objects::nonNull).collect(Collectors.joining("$"));
+				.filter(Objects::nonNull).collect(Collectors.joining("$"));
+	}
+
+	public static Object evaluate(String property, Object object)
+	{
+		return new PropertyEvaluator(property).evaluate(object);
 	}
 
 	@Override
 	public boolean equals(Object object)
 	{
 		return object instanceof Property
-			&& object == this;
+				&& object == this;
 	}
 
 	@Override

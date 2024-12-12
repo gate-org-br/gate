@@ -5,13 +5,10 @@ import gate.error.TemplateException;
 import gate.lang.expression.Expression;
 import gate.lang.expression.Parameters;
 import gate.util.Toolkit;
-import static gate.util.Toolkit.collection;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class Block implements Evaluable
 {
@@ -38,10 +35,8 @@ class Block implements Evaluable
 					iterate(writer, context, parameters, Arrays.asList(object));
 				else if (object instanceof Iterable<?> iterable)
 					iterate(writer, context, parameters, iterable);
-				else if (object instanceof Map<?, ?> map)
-					iterate(writer, context, parameters, map.entrySet());
 				else
-					template.evaluate(writer, context, parameters);
+					process(writer, context, parameters, object);
 			}
 
 		} catch (ExpressionException ex)
@@ -65,6 +60,13 @@ class Block implements Evaluable
 			parameters.poll();
 			index++;
 		}
+	}
+
+	private void process(Writer writer, List<Object> context, Parameters parameters, Object object)
+	{
+		context.add(0, object);
+		template.evaluate(writer, context, parameters);
+		context.remove(0);
 	}
 
 	@Override

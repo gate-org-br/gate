@@ -4,10 +4,8 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.annotation.Name;
 import gate.converter.EnumStringConverter;
-import gate.error.ConversionException;
 import gate.handler.ReportHandler;
 import gate.lang.json.JsonArray;
-import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.mime.MimeData;
@@ -102,9 +100,16 @@ public class Report
 		return grid;
 	}
 
-	public final ReportList addList(ReportList.Type type)
+	public final Dictionary addDictionary()
 	{
-		ReportList list = new ReportList(type);
+		Dictionary dictionary = new Dictionary();
+		elements.add(dictionary);
+		return dictionary;
+	}
+
+	public final ReportList addList()
+	{
+		ReportList list = new ReportList();
 		elements.add(list);
 		return list;
 	}
@@ -233,41 +238,39 @@ public class Report
 		LANDSCAPE
 	}
 
-	public static Report fromJson(JsonObject json) throws ConversionException
+	public static Report of(JsonObject jsonObject) throws IllegalArgumentException
 	{
 		Report report = new Report();
 
-		if (json.get("name") instanceof JsonString name)
-		{
-			report.addHeader(name.toString());
-			report.addLineBreak();
-		}
+		if (jsonObject.get("type") instanceof JsonString)
+			report.add(ReportElement.of(jsonObject));
+		else if (jsonObject.get("elements") instanceof JsonArray elements)
+			elements.stream()
+					.map(ReportElement::of)
+					.filter(Objects::nonNull)
+					.forEach(report::add);
+		else if (jsonObject.get("columns") instanceof JsonArray
+				&& jsonObject.get("dataset") instanceof JsonArray)
+			report.add(Grid.of(jsonObject));
+		else
+			report.add(Dictionary.of(jsonObject));
+		return report;
+	}
 
-		if (json.get("queries") instanceof JsonArray queries)
-		{
-			queries.stream()
-					.filter(e -> e instanceof JsonObject)
-					.map(e -> (JsonObject) e)
-					.forEach(query ->
-					{
-						if (query.get("headers") instanceof JsonArray headers
-								&& query.get("dataset") instanceof JsonArray dataset)
-						{
-							var grid = report.addGrid(JsonElement.class, dataset);
+	public static Report of(JsonArray jsonArray) throws IllegalArgumentException
+	{
+		Report report = new Report();
+		if (jsonArray.stream().allMatch(e -> e instanceof JsonString))
+			report.add(ReportList.of(jsonArray));
+		else
+			report.add(Grid.of(jsonArray));
+		return report;
+	}
 
-							if (query.get("caption") instanceof JsonString caption)
-								grid.setCaption(caption.toString());
-
-							for (int i = 0; i < headers.size(); i++)
-							{
-								var index = i;
-								var header = headers.get(i);
-								grid.add().head(header).body(e -> ((JsonArray) e).get(index).toString());
-							}
-						}
-					});
-
-		}
+	public static Report of(JsonString jsonString) throws IllegalArgumentException
+	{
+		Report report = new Report();
+		report.add(new Paragraph(jsonString.toString()));
 		return report;
 	}
 }

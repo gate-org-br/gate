@@ -23,7 +23,6 @@ public class PropertyScanner extends BufferedReader
 				c = read();
 			while (Character.isWhitespace(c))
 				c = read();
-			StringBuilder string = new StringBuilder();
 
 			switch (c)
 			{
@@ -55,25 +54,19 @@ public class PropertyScanner extends BufferedReader
 					return (char) t;
 
 				case '"':
-					string.setLength(0);
-					for (c = read(); c != '"'; c = read())
-						if (c != -1)
-							string.append(c == '\\' ? (char) read() : (char) c);
-						else
-							throw new PropertyError("String não terminada.");
-					c = read();
-					return string.toString();
-
+				case '`':
 				case '\'':
-					string.setLength(0);
-					for (c = read(); c != '\''; c = read())
+				{
+					int delimiter = c;
+					StringBuilder string = new StringBuilder();
+					for (c = read(); c != delimiter; c = read())
 						if (c != -1)
 							string.append(c == '\\' ? (char) read() : (char) c);
 						else
 							throw new PropertyError("String não terminada.");
 					c = read();
 					return string.toString();
-
+				}
 				case '0':
 				case '1':
 				case '2':
@@ -84,8 +77,8 @@ public class PropertyScanner extends BufferedReader
 				case '7':
 				case '8':
 				case '9':
-
-					string.setLength(0);
+				{
+					StringBuilder string = new StringBuilder();
 					string.append((char) c);
 					for (c = read(); Character.isDigit(c); c = read())
 						string.append((char) c);
@@ -99,26 +92,29 @@ public class PropertyScanner extends BufferedReader
 					}
 
 					return Integer.valueOf(string.toString());
-
+				}
 				default:
+				{
 					if (!Character.isJavaIdentifierStart(c))
 						throw new PropertyError("Invalid attribute name.");
 
+					StringBuilder string = new StringBuilder();
 					string.setLength(0);
 					string.append((char) c);
 					for (c = read(); Character.isJavaIdentifierPart(c); c = read())
 						string.append((char) c);
 					String result = string.toString();
 
-					switch (result)
+					return switch (result)
 					{
-						case "true":
-							return Boolean.TRUE;
-						case "false":
-							return Boolean.FALSE;
-						default:
-							return result;
-					}
+						case "true" ->
+							Boolean.TRUE;
+						case "false" ->
+							Boolean.FALSE;
+						default ->
+							result;
+					};
+				}
 
 			}
 		} catch (IOException e)

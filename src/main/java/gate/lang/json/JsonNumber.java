@@ -72,6 +72,11 @@ public class JsonNumber extends Number implements JsonElement
 		return value.floatValue();
 	}
 
+	public BigDecimal getValue()
+	{
+		return value;
+	}
+
 	@Override
 	public <T> T toObject(Class<T> type)
 	{
@@ -93,7 +98,7 @@ public class JsonNumber extends Number implements JsonElement
 
 	@Override
 	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+			java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -300,7 +305,7 @@ public class JsonNumber extends Number implements JsonElement
 	public boolean equals(Object obj)
 	{
 		return obj instanceof JsonNumber
-			&& value.compareTo(((JsonNumber) obj).value) == 0;
+				&& value.compareTo(((JsonNumber) obj).value) == 0;
 	}
 
 	@Override

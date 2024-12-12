@@ -19,20 +19,20 @@ public class ExpressionTest
 	public ExpressionTest()
 	{
 		person = new Person().setName("Pessoa 1")
-			.setAge(64)
-			.setWeight(80.5)
-			.addChild(new Person()
-				.setName("Filho 1 Pessoa 1")
-				.setAge(35)
-				.setWeight(60.0))
-			.addChild(new Person()
-				.setName("Filho 2 Pessoa 1")
-				.setAge(25)
-				.setWeight(50.0))
-			.addRelacionamento("wife", new Person()
-				.setAge(56)
-				.setName("Esposa Pessoa 1")
-				.setWeight(65.7));
+				.setAge(64)
+				.setWeight(80.5)
+				.addChild(new Person()
+						.setName("Filho 1 Pessoa 1")
+						.setAge(35)
+						.setWeight(60.0))
+				.addChild(new Person()
+						.setName("Filho 2 Pessoa 1")
+						.setAge(25)
+						.setWeight(50.0))
+				.addRelacionamento("wife", new Person()
+						.setAge(56)
+						.setName("Esposa Pessoa 1")
+						.setWeight(65.7));
 
 		context.add(person);
 		parameters.put("idade", 1);
@@ -84,8 +84,8 @@ public class ExpressionTest
 	public void test8() throws ExpressionException
 	{
 		assertEquals(Boolean.TRUE, Expression.of(
-			"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
-			.evaluate(person));
+				"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
+				.evaluate(person));
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class ExpressionTest
 	public void test12() throws ExpressionException
 	{
 		Object result = Expression.of("(size children + 5) * 2")
-			.evaluate(context, parameters);
+				.evaluate(context, parameters);
 		assertEquals(14, (int) result);
 	}
 
@@ -113,10 +113,27 @@ public class ExpressionTest
 	public void testRx() throws ExpressionException
 	{
 		assertEquals(Boolean.TRUE,
-			Expression.of("this rx '^[0-9]{3}$'")
-				.evaluate("123"));
+				Expression.of("this rx '^[0-9]{3}$'")
+						.evaluate("123"));
 	}
 
+	@Test
+	public void test13() throws ExpressionException
+	{
+		Object result = Expression.of("this.replaceAll(`a`, `A`)")
+				.evaluate("abc");
+		assertEquals("Abc", result);
+	}
+
+	@Test
+	public void test14() throws ExpressionException
+	{
+		Object result = Expression.of("`")
+				.evaluate("abc");
+		assertEquals("Abc", result);
+	}
+
+	
 	@Test
 	public void testRxError()
 	{

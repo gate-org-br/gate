@@ -108,9 +108,9 @@ public class ReportTest
 		report.addLineBreak();
 
 		Grid<User> grid = report.addGrid(User.class,
-			List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
-				new User().setId(ID.valueOf(2)).setName("Bar")))
-			.setCaption("USERS: 2");
+				List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+						new User().setId(ID.valueOf(2)).setName("Bar")))
+				.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");
 		grid.add().body(User::getName).head("Name");
@@ -131,39 +131,45 @@ public class ReportTest
 
 		report.addLineBreak();
 
-		report.addList(ReportList.Type.NUMBER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DECIMAL);
 
-		report.addList(ReportList.Type.LETTER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.LOWER_ALPHA);
 
-		report.addList(ReportList.Type.SYMBOL)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DISC);
 
-		report.addList(ReportList.Type.NUMBER)
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add(report.addList(ReportList.Type.LETTER)
+		report.addList()
 				.add("Item")
 				.add("Item")
 				.add("Item")
 				.add("Item")
-				.add(report.addList(ReportList.Type.SYMBOL)
-					.add("Item")
-					.add("Item")
-					.add("Item")
-					.add("Item")));
+				.add(report.addList()
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add(report.addList()
+								.add("Item")
+								.add("Item")
+								.add("Item")
+								.add("Item")));
 
 		PDF doc = new PDF(report);
 	}

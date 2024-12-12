@@ -8,10 +8,12 @@ import gate.lang.template.Evaluable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import javassist.compiler.ast.Variable;
+import java.util.regex.Pattern;
 
 public class Expression implements Evaluable
 {
+
+	private static final Pattern PATTERN = Pattern.compile("(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)\\(\\)|(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)|\\[(\\d+)\\]|\\[\"([^\"]+)\"\\]|(.+)");
 
 	private Object current;
 	private List<Object> context;
@@ -173,7 +175,7 @@ public class Expression implements Evaluable
 			{
 				next();
 				result = ExpressionCalculator.add(result, term());
-			} else
+			} else if (current == ExpressionToken.SUB)
 			{
 				next();
 				result = ExpressionCalculator.sub(result, term());
@@ -322,11 +324,7 @@ public class Expression implements Evaluable
 	{
 		String name = name();
 		Object object = context.get(0);
-		if (object == null)
-			return "";
-		return Property
-				.getProperty(object.getClass(), name)
-				.getValue(object);
+		return Property.evaluate(name, object);
 	}
 
 	private Object variable() throws ExpressionException
@@ -430,15 +428,16 @@ public class Expression implements Evaluable
 	{
 		StringBuilder string = new StringBuilder();
 
-		Object v = expression();
-		if (v instanceof String)
-			string.append("'").append(current.toString()).append("'");
-		else if (v != null)
-			string.append(v);
+		Object value = expression();
+		if (value instanceof String)
+			string.append("'").append(value.toString()).append("'");
+		else if (value != null)
+			string.append(value);
 
 		if (ExpressionToken.COMMA.equals(current))
 		{
 			next();
+			string.append(",");
 			string.append(arguments());
 		}
 

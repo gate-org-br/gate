@@ -13,14 +13,7 @@ import gate.type.mime.MimeText;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Initialized;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
@@ -46,12 +39,9 @@ public class Messenger implements ServletContextListener
 	@Inject
 	private Logger logger;
 
-	private final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-
-	@PostConstruct
-	public void startup(@Observes @Initialized(ApplicationScoped.class) Object pointless)
+	public void dispatch()
 	{
-		service.scheduleWithFixedDelay(() ->
+		if (control.isEnabled())
 		{
 			try
 			{
@@ -60,9 +50,10 @@ public class Messenger implements ServletContextListener
 				{
 					try
 					{
-						send(mail.getSender(), mail.getReceiver(), mail.getMessage());
+						send(mail.getSender(),
+								mail.getReceiver(), mail.getMessage());
 						control.delete(mail);
-					} catch (MessagingException | AppException | RuntimeException ex)
+					} catch (MessagingException | RuntimeException ex)
 					{
 						logger.warn(ex.getMessage(), ex);
 						mail.setAttempts(mail.getAttempts() + 1);
@@ -73,14 +64,7 @@ public class Messenger implements ServletContextListener
 			{
 				logger.error(ex.getMessage(), ex);
 			}
-		}, 0, 1, TimeUnit.MINUTES);
-	}
-
-	@PreDestroy
-	public void shutdown()
-	{
-		if (!service.isShutdown())
-			service.shutdownNow();
+		}
 	}
 
 	public boolean isEnabled()
