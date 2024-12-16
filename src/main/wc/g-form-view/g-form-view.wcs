@@ -18,8 +18,7 @@ span.multiple
 {
 	padding: 4px;
 	text-indent: 0;
-	overflow: auto;
 	line-height: 24px;
-	flex-basis: 128px;
-	white-space: pre-line;
+	white-space: pre-wrap;
+	flex-basis: fit-content;
 }

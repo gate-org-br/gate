@@ -20,7 +20,13 @@ fieldset {
 
 span.multiple
 {
-	flex-basis: 128px;
+	min-height: 128px;
+	height: fit-content;
+}
+
+textarea {
+	resize: vertical !important;
+	min-height: 128px !important;
 }</style>`;
 
 /* global customElements */
