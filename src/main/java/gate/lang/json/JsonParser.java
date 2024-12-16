@@ -65,7 +65,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 * <li>JSON null: {@link gate.lang.json.JsonNull}
 	 * </ul>
 	 *
-	 * @return an Optional describing the JSON object read or an empty optional if there are no more JSON objects on the* input stream.
+	 * @return an Optional describing the JSON object read or an empty optional if there are no more JSON objects on
+	 * the* input stream.
 	 *
 	 * @throws gate.error.ConversionException if any error occurs
 	 */
@@ -142,7 +143,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 				return array();
 			default:
 				throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
-					.getCurrent());
+						.getCurrent());
 		}
 	}
 
@@ -154,23 +155,21 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		{
 			scanner.scan();
 
-			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_OBJECT)
-			{
-				if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
-					throw new ConversionException("Expected key and found " + scanner.getCurrent());
+			if (scanner.getCurrent().getType() == JsonToken.Type.CLOSE_OBJECT)
+				break;
 
-				String key = scanner.getCurrent().toString();
+			if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
+				throw new ConversionException("Expected key and found " + scanner.getCurrent());
 
-				scanner.scan();
+			String key = scanner.getCurrent().toString();
 
-				if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
-					throw new ConversionException("Expected ':' and found " + scanner.getCurrent());
+			scanner.scan();
 
-				scanner.scan();
-				object.put(key, element());
-			} else if (!object.isEmpty())
-				throw new ConversionException("Expected element and found " + scanner.getCurrent());
+			if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
+				throw new ConversionException("Expected ':' and found " + scanner.getCurrent());
 
+			scanner.scan();
+			object.put(key, element());
 		} while (scanner.getCurrent().getType() == JsonToken.Type.COMMA);
 
 		if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_OBJECT)
@@ -187,10 +186,11 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		do
 		{
 			scanner.scan();
-			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
-				array.add(element());
-			else if (!array.isEmpty())
-				throw new ConversionException("Expected element and found " + scanner.getCurrent());
+			if (scanner.getCurrent().getType() == JsonToken.Type.CLOSE_ARRAY)
+				break;
+
+			array.add(element());
+
 		} while (scanner.getCurrent().getType() == JsonToken.Type.COMMA);
 
 		if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
@@ -257,7 +257,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF)
+					!= JsonToken.Type.EOF)
 				try
 			{
 				parse().ifPresent(action);
@@ -293,14 +293,14 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public boolean hasNext()
 		{
 			return scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF;
+					!= JsonToken.Type.EOF;
 		}
 
 		@Override
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF)
+					!= JsonToken.Type.EOF)
 				try
 			{
 				parse().ifPresent(action);
