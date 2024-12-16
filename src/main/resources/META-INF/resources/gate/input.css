@@ -40,7 +40,6 @@ textarea {
   resize: none;
   padding: 4px;
   line-height: 24px;
-  resize: vertical;
 }
 input:hover,
 textarea:hover,
