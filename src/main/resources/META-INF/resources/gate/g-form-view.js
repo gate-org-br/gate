@@ -22,10 +22,9 @@ span.multiple
 {
 	padding: 4px;
 	text-indent: 0;
-	overflow: auto;
 	line-height: 24px;
-	flex-basis: 128px;
-	white-space: pre-line;
+	white-space: pre-wrap;
+	flex-basis: fit-content;
 }</style>`;
 /* global customElements */
 import stylesheets from './stylesheets.js';
@@ -43,11 +42,12 @@ customElements.define('g-form-view', class extends HTMLElement
 
 	set value(value)
 	{
-		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.children).forEach(e => e.remove());
 
 		if (value)
+		{
+			value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 			value.forEach(element => {
 				let label = fieldset.appendChild(document.createElement("label"));
 
@@ -80,6 +80,7 @@ customElements.define('g-form-view', class extends HTMLElement
 				if (element.value)
 					span.innerHTML = element.value.join("\n");
 			});
+		}
 	}
 
 	attributeChangedCallback()

@@ -53,7 +53,8 @@ public class JsonBoolean implements JsonElement
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof JsonBoolean && obj == this;
+		return obj instanceof JsonBoolean
+			&& obj == this;
 	}
 
 	@Override
@@ -69,15 +70,14 @@ public class JsonBoolean implements JsonElement
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T toObject(Class<T> type)
 	{
 		return (T) (Boolean) value;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T, E> T toObject(java.lang.reflect.Type type,
+		java.lang.reflect.Type elementType)
 	{
 		return (T) (Boolean) value;
 	}
@@ -89,7 +89,9 @@ public class JsonBoolean implements JsonElement
 
 	public static JsonBoolean parse(Boolean value)
 	{
-		return Boolean.TRUE.equals(value) ? JsonBoolean.TRUE : JsonBoolean.FALSE;
+		return Boolean.TRUE.equals(value)
+			? JsonBoolean.TRUE
+			: JsonBoolean.FALSE;
 	}
 
 	/**
@@ -99,8 +101,7 @@ public class JsonBoolean implements JsonElement
 	 *
 	 * @return a JsonBoolean object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON
-	 *         formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonBoolean parse(String json) throws ConversionException

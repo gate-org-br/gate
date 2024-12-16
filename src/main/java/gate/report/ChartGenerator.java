@@ -12,15 +12,9 @@ import java.io.UncheckedIOException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.MultiplePiePlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.ui.TextAnchor;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -94,13 +88,6 @@ public class ChartGenerator
 						jfreechart.getCategoryPlot().getRangeAxis()
 							.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-					BarRenderer renderer = (BarRenderer) jfreechart.getCategoryPlot().getRenderer();
-					renderer.setDefaultItemLabelsVisible(true);
-					renderer.setDefaultItemLabelGenerator(new StandardCategoryItemLabelGenerator());
-					renderer.setDefaultItemLabelFont(new Font("Arial", Font.PLAIN, 10));
-					renderer.setDefaultPositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12,
-						TextAnchor.BOTTOM_CENTER));
-
 					return jfreechart;
 				}
 				case PIE:
@@ -115,10 +102,7 @@ public class ChartGenerator
 					jfreechart.getLegend().setItemFont(labelFont);
 
 					MultiplePiePlot plot = (MultiplePiePlot) jfreechart.getPlot();
-
-					PiePlot piePlot = (PiePlot) plot.getPieChart().getPlot();
-					piePlot.setLabelFont(labelFont);
-					piePlot.setLabelGenerator(new StandardPieSectionLabelGenerator("{0}: {1} ({2})"));
+					((PiePlot) plot.getPieChart().getPlot()).setLabelFont(labelFont);
 
 					plot.getPieChart().getTitle().setFont(titleFont);
 

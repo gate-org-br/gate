@@ -25,6 +25,7 @@ import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
+import gate.report.Dictionary;
 import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Footer;
@@ -41,7 +42,12 @@ import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
 import gate.report.ReportList;
 import gate.report.Style;
+import static gate.report.Style.ListStyleType.DECIMAL;
+import static gate.report.Style.ListStyleType.DISC;
+import static gate.report.Style.ListStyleType.LOWER_ALPHA;
+import static gate.report.Style.ListStyleType.NONE;
 import gate.util.Toolkit;
+import static io.jsonwebtoken.Jwts.header;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -121,12 +127,12 @@ public class PDF extends Doc
 
 			for (ReportElement element : getReport().getElements())
 			{
-				if (element instanceof Header)
-					document.add(printHeader((Header) element));
-				else if (element instanceof Paragraph)
-					document.add(printParagraph((Paragraph) element));
-				else if (element instanceof Footer)
-					document.add(printFooter((Footer) element));
+				if (element instanceof Header header)
+					document.add(printHeader(header));
+				else if (element instanceof Paragraph paragraph)
+					document.add(printParagraph(paragraph));
+				else if (element instanceof Footer footer)
+					document.add(printFooter(footer));
 				else if (element instanceof LineBreak)
 					document.add(printLineBreak());
 				else if (element instanceof PageBreak)
@@ -134,14 +140,16 @@ public class PDF extends Doc
 				else if (element instanceof Form
 						&& (!((Form) element).getFields().isEmpty()))
 					document.add(printForm((Form) element));
-				else if (element instanceof Grid)
-					document.add(printGrid((Grid) element));
-				else if (element instanceof ReportList)
-					document.add(printList((ReportList) element));
+				else if (element instanceof Grid grid)
+					document.add(printGrid(grid));
+				else if (element instanceof ReportList reportList)
+					document.add(printList(reportList));
 				else if (element instanceof Image && ((Image) element).getSource() != null)
 					document.add(printImage((Image) element));
-				else if (element instanceof Chart<?>)
-					document.add(printChart((Chart<?>) element, document, writer));
+				else if (element instanceof Chart<?> chart)
+					document.add(printChart(chart, document, writer));
+				else if (element instanceof Dictionary dictionary)
+					document.add(printDictionary(dictionary));
 			}
 			document.close();
 		} catch (DocumentException ex)
@@ -188,7 +196,7 @@ public class PDF extends Doc
 	{
 		try
 		{
-			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance(image.getSource());
+			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance((byte[]) image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)
@@ -201,7 +209,7 @@ public class PDF extends Doc
 	{
 
 		float width = document.getPageSize().getWidth() - 40;
-		float height = document.getPageSize().getHeight() - 80;
+		float height = (document.getPageSize().getHeight() - 40) / 2;
 
 		PdfContentByte cb = writer.getDirectContent();
 		PdfTemplate template = cb.createTemplate(width, height);
@@ -486,37 +494,103 @@ public class PDF extends Doc
 		com.lowagie.text.List list
 				= new com.lowagie.text.List();
 
-		if (reportList.getType() == null)
-			throw new IllegalArgumentException("Report list type can't be null");
-
-		switch (reportList.getType())
+		Font font = getFont(reportList.style());
+		switch (reportList.style().getListStyleType())
 		{
-			case NUMBER:
+			case DECIMAL ->
+			{
 				list.setNumbered(true);
-				break;
-			case LETTER:
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("", font));
+			}
+
+			case LOWER_ALPHA ->
+			{
+				list.setNumbered(false);
 				list.setLettered(true);
-				break;
-			case SYMBOL:
-				break;
-			default:
-				throw new IllegalArgumentException("Invalid report list type: " + reportList.getType().name());
+				list.setListSymbol(new Chunk("", font));
+			}
+			case DISC ->
+			{
+				list.setNumbered(false);
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("\u2022 ", font));
+			}
+			case NONE ->
+			{
+				list.setNumbered(false);
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("", font));
+			}
 		}
 
 		reportList.getElements().stream().forEach(e ->
 		{
-			if (e instanceof String)
+			if (e instanceof String string)
 			{
-				list.add(new ListItem(e.toString(), getFont(reportList.style())));
-			} else if (e instanceof ReportList)
+				list.add(new ListItem(string, font));
+			} else if (e instanceof ReportList reportList1)
 			{
 				ListItem item = new ListItem();
-				item.add(printList((ReportList) e));
+				item.add(printList(reportList1));
 				list.add(item);
 			}
 		});
 
 		return list;
+	}
+
+	private Element printDictionary(Dictionary dictionary)
+	{
+		try
+		{
+
+			PdfPTable table = new PdfPTable(2);
+			table.setWidths(new float[]
+			{
+				0.5f, 0.5f
+			});
+			table.setWidthPercentage(100);
+
+			Color lightGray = new Color(250, 250, 250);
+			Font valueFont = getFont(dictionary.style());
+			Font propertyFont = new Font(valueFont.getFamily(), valueFont.getSize(), Font.BOLD);
+
+			if (dictionary.getCaption() != null)
+			{
+				table.getDefaultCell().setColspan(2);
+				table.setHeaderRows(table.getHeaderRows() + 1);
+				table.getDefaultCell().setMinimumHeight(16);
+				table.getDefaultCell().setBorderColor(Color.GRAY);
+				table.getDefaultCell().setBackgroundColor(CAPTION_COLOR);
+				table.getDefaultCell().setVerticalAlignment(PdfPCell.ALIGN_MIDDLE);
+				table.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+				table.addCell(new com.lowagie.text.Paragraph(dictionary.getCaption(), CAPTION_FONT));
+			}
+
+			for (var entry : dictionary.getElements().entrySet())
+			{
+				PdfPCell propertyCell = new PdfPCell(new Phrase(entry.getKey(), propertyFont));
+				propertyCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				propertyCell.setBorder(Rectangle.NO_BORDER);
+				propertyCell.setPaddingRight(10f);
+				propertyCell.setBackgroundColor(lightGray);
+
+				PdfPCell valueCell = new PdfPCell(new Phrase(Converter.toText(entry.getValue()), valueFont));
+				valueCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+				valueCell.setBorder(Rectangle.NO_BORDER);
+				valueCell.setBackgroundColor(lightGray);
+
+				table.addCell(propertyCell);
+				table.addCell(valueCell);
+			}
+
+			return table;
+		} catch (DocumentException ex)
+		{
+			throw new AppError(ex);
+
+		}
 	}
 
 	private Color getColor(Style style)

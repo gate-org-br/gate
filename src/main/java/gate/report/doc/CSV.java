@@ -12,10 +12,10 @@ import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
 import gate.util.Toolkit;
-
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.stream.Collectors;
 
 /**
@@ -48,22 +48,20 @@ public class CSV extends Doc
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void print(OutputStream os)
 	{
-		try (PrintWriter writer = new PrintWriter(os, true, StandardCharsets.UTF_8))
+		try (PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
 		{
 			for (ReportElement element : getReport().getElements())
-				if (element instanceof Grid grid)
-					print(writer, (Grid<Object>) grid, grid.getData());
+				if (element instanceof Grid)
+					print(writer, (Grid) element, ((Grid) element).getData());
 		} catch (ConversionException e)
 		{
 			throw new AppError(e);
 		}
 	}
 
-	private void print(PrintWriter writer, Grid<Object> grid, Object data)
-			throws ConversionException
+	private void print(PrintWriter writer, Grid<Object> grid, Object data) throws ConversionException
 	{
 		CSVFormatter formatter = CSVFormatter.of(writer);
 

@@ -1,6 +1,9 @@
 package gate.report;
 
+import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import gate.type.Color;
+import java.util.Objects;
 
 public final class Style
 {
@@ -10,26 +13,31 @@ public final class Style
 	private Color color;
 	private TextAlign textAlign;
 	private FontWeight fontWeight;
+	private ListStyleType listStyleType;
 
 	public Style()
 	{
-		this(12, 100, Color.BLACK, TextAlign.CENTER, FontWeight.NORMAL);
+		this(12, 100, Color.BLACK, TextAlign.CENTER,
+				FontWeight.NORMAL, ListStyleType.NONE);
 	}
 
 	public Style(Style style)
 	{
 		this(style.getFontSize(), style.getWidth(),
-			style.getColor(), style.getTextAlign(), style.getFontWeight());
+				style.getColor(), style.getTextAlign(),
+				style.getFontWeight(), style.getListStyleType());
 	}
 
 	public Style(int fontSize, double width,
-		Color color, TextAlign textAlign, FontWeight fontWeight)
+			Color color, TextAlign textAlign, FontWeight fontWeight,
+			ListStyleType listStypeType)
 	{
 		this.fontSize = fontSize;
 		this.width = width;
 		this.color = color;
 		this.textAlign = textAlign;
 		this.fontWeight = fontWeight;
+		this.listStyleType = listStypeType;
 	}
 
 	public Color getColor()
@@ -55,6 +63,26 @@ public final class Style
 	public double getWidth()
 	{
 		return width;
+	}
+
+	public ListStyleType getListStyleType()
+	{
+		return listStyleType;
+	}
+
+	public void listStyleType(ListStyleType listStyleType)
+	{
+		this.listStyleType = Objects.requireNonNull(listStyleType);
+	}
+
+	public void textAlign(TextAlign textAlign)
+	{
+		this.textAlign = Objects.requireNonNull(textAlign);
+	}
+
+	public void fontWeight(FontWeight fontWeight)
+	{
+		this.fontWeight = Objects.requireNonNull(fontWeight);
 	}
 
 	public Style left()
@@ -156,78 +184,36 @@ public final class Style
 				String value = strings[1].trim().toLowerCase();
 				switch (name)
 				{
-					case "font-weight":
-						switch (value)
-						{
-							case "bold":
-								fontWeight = FontWeight.BOLD;
-								break;
-							case "normal":
-								fontWeight = FontWeight.NORMAL;
-								break;
-							default:
-								throw new IllegalArgumentException(String.format("%s is not a supported font-weight", value));
-						}
-						break;
-					case "color":
-						switch (value)
-						{
-							case "black":
-								color = Color.BLACK;
-								break;
-							case "red":
-								color = Color.RED;
-								break;
-							case "blue":
-								color = Color.BLUE;
-								break;
-							case "green":
-								color = Color.GREEN;
-								break;
-							default:
-								color = Color.of(value);
-						}
-						break;
+					case "font-weight" ->
+						fontWeight = FontWeight.of(value);
+					case "color" ->
+						Color.of(value);
+					case "text-align" ->
+						textAlign = TextAlign.of(value);
+					case "list-style-type" ->
+						listStyleType = ListStyleType.of(value);
 
-					case "text-align":
-						switch (value)
-						{
-							case "left":
-								textAlign = TextAlign.LEFT;
-								break;
-							case "right":
-								textAlign = TextAlign.RIGHT;
-								break;
-							case "center":
-								textAlign = TextAlign.CENTER;
-								break;
-							case "justify":
-								textAlign = TextAlign.JUSTIFY;
-								break;
-							default:
-								throw new IllegalArgumentException(String.format("%s is not a supported text-align", value));
-						}
-						break;
-					case "font-size":
+					case "font-size" ->
+					{
 						try
 						{
 							fontSize = Integer.parseInt(value);
-					} catch (NumberFormatException e)
-					{
-						throw new IllegalArgumentException(String.format("%s is not a valid font-size", value));
+						} catch (NumberFormatException e)
+						{
+							throw new IllegalArgumentException(String.format("%s is not a valid font-size", value));
+						}
 					}
-					break;
-					case "width":
+					case "width" ->
+					{
 						try
 						{
 							width = Double.parseDouble(value);
-					} catch (NumberFormatException e)
-					{
-						throw new IllegalArgumentException(String.format("%s is not a valid width", value));
+						} catch (NumberFormatException e)
+						{
+							throw new IllegalArgumentException(String.format("%s is not a valid width", value));
+						}
 					}
-
-					break;
-					default:
+					default ->
 						throw new IllegalArgumentException(String.format("%s is not a valid style", string));
 
 				}
@@ -238,13 +224,15 @@ public final class Style
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof Style style)
+		if (obj instanceof Style)
 		{
+			Style style = (Style) obj;
 			return style.getFontSize() == fontSize
-				&& style.getTextAlign() == textAlign
-				&& style.getColor() == color
-				&& style.getWidth() == width
-				&& style.getFontWeight() == fontWeight;
+					&& style.getTextAlign() == textAlign
+					&& style.getColor() == color
+					&& style.getWidth() == width
+					&& style.getFontWeight() == fontWeight
+					&& style.getListStyleType() == listStyleType;
 		}
 		return false;
 	}
@@ -252,18 +240,19 @@ public final class Style
 	@Override
 	public int hashCode()
 	{
-		return (int) (textAlign.ordinal() + color.hashCode() + fontWeight.ordinal() + fontSize + width);
+		return (int) (textAlign.ordinal() + color.hashCode() + fontWeight.ordinal() + listStyleType.ordinal() + fontSize + width);
 	}
 
 	@Override
 	public String toString()
 	{
-		return String.format("width: %f; color: %s; font-weight: %s; font-size: %d; text-align: %s",
-			width,
-			color,
-			fontWeight,
-			fontSize,
-			textAlign);
+		return String.format("width: %f; color: %s; font-weight: %s; font-size: %d; text-align: %s; list-style-type: %s",
+				width,
+				color,
+				fontWeight,
+				fontSize,
+				textAlign,
+				listStyleType);
 	}
 
 	public static Style parse(String string)
@@ -271,42 +260,128 @@ public final class Style
 		return new Style().apply(string);
 	}
 
+	public static Style of(JsonObject object)
+	{
+		var style = new Style();
+		object.getString("text-align").map(TextAlign::of).ifPresent(style::textAlign);
+		object.getString("font-weight").map(FontWeight::of).ifPresent(style::fontWeight);
+		object.getString("list-style-type").map(ListStyleType::of).ifPresent(style::listStyleType);
+		object.getString("color").map(Color::of).ifPresent(style::color);
+		object.getDouble("width").ifPresent(style::width);
+		object.getInt("font-size").ifPresent(style::fontSize);
+		return style;
+	}
+
+	public static Style of(JsonString string)
+	{
+		var style = new Style();
+		style.apply(string.toString());
+		return style;
+	}
+
 	public enum TextAlign
 	{
-		LEFT("left"), RIGHT("right"), CENTER("center"), JUSTIFY("justify");
-
-		TextAlign(String string)
-		{
-			this.string = string;
-		}
-
-		private final String string;
+		LEFT, RIGHT, CENTER, JUSTIFY;
 
 		@Override
 		public String toString()
 		{
-			return string;
+			return switch (this)
+			{
+				case LEFT ->
+					"left";
+				case RIGHT ->
+					"right";
+				case CENTER ->
+					"center";
+				case JUSTIFY ->
+					"justify";
+			};
 		}
 
+		public static TextAlign of(String string)
+		{
+			return switch (string)
+			{
+				case "center" ->
+					TextAlign.CENTER;
+				case "left" ->
+					TextAlign.LEFT;
+				case "right" ->
+					TextAlign.RIGHT;
+				case "justify" ->
+					TextAlign.JUSTIFY;
+				default ->
+					throw new IllegalArgumentException(String.format("%s is not a supported text-align", string));
+			};
+		}
 	}
 
 	public enum FontWeight
 	{
-		NORMAL("normal"), BOLD("bold");
-
-		FontWeight(String string)
-		{
-			this.string = string;
-		}
-
-		private final String string;
+		NORMAL, BOLD;
 
 		@Override
 		public String toString()
 		{
-			return string;
+			return switch (this)
+			{
+				case NORMAL ->
+					"normal";
+				case BOLD ->
+					"bold";
+			};
 		}
 
+		public static FontWeight of(String string)
+		{
+			return switch (string)
+			{
+				case "normal" ->
+					FontWeight.NORMAL;
+				case "bold" ->
+					FontWeight.BOLD;
+				default ->
+					throw new IllegalArgumentException(String.format("%s is not a supported font-weight", string));
+			};
+		}
 	}
 
+	public enum ListStyleType
+	{
+		NONE, DISC, DECIMAL, LOWER_ALPHA;
+
+		@Override
+		public String toString()
+		{
+			return switch (this)
+			{
+				case NONE ->
+					"none";
+				case DISC ->
+					"disc";
+				case DECIMAL ->
+					"decimal";
+				case LOWER_ALPHA ->
+					"lower-alpha";
+			};
+		}
+
+		public static ListStyleType of(String string)
+		{
+			return switch (string)
+			{
+				case "none" ->
+					ListStyleType.NONE;
+				case "disc" ->
+					ListStyleType.DISC;
+				case "decimal" ->
+					ListStyleType.DECIMAL;
+				case "lower-alpha" ->
+					ListStyleType.LOWER_ALPHA;
+				default ->
+					throw new IllegalArgumentException(String.format("%s is not a supported list-style-type", string));
+			};
+		}
+	}
 }

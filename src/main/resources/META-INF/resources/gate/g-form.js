@@ -20,7 +20,8 @@ fieldset {
 
 span.multiple
 {
-	flex-basis: 128px;
+	min-height: 128px;
+	height: fit-content;
 }</style>`;
 /* global customElements */
 
@@ -196,11 +197,14 @@ customElements.define('g-form', class extends HTMLElement
 
 	set value(value)
 	{
-		value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 		let fieldset = this.shadowRoot.querySelector("fieldset");
 		Array.from(fieldset.querySelectorAll("label")).forEach(e => e.remove());
+		
 		if (value)
+		{
+			value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 			value.forEach(element => fieldset.appendChild(create(this, element)));
+		}
 
 		this.#internals.setValidity({});
 		this.#internals.setFormValue(JSON.stringify(value));

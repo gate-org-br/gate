@@ -74,18 +74,14 @@ public class DOC extends Doc
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void print(OutputStream os)
 	{
 		try (XWPFDocument XWPFDocument = new XWPFDocument())
 		{
 			CTSectPr section = XWPFDocument.getDocument().getBody().addNewSectPr();
-			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy
-					= new XWPFHeaderFooterPolicy(XWPFDocument, section);
-			XWPFHeader XWPFHeader = XWPFHeaderFooterPolicy
-					.createHeader(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
-			XWPFFooter XWPFFooter = XWPFHeaderFooterPolicy
-					.createFooter(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
+			XWPFHeaderFooterPolicy XWPFHeaderFooterPolicy = new XWPFHeaderFooterPolicy(XWPFDocument, section);
+			XWPFHeader XWPFHeader = XWPFHeaderFooterPolicy.createHeader(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
+			XWPFFooter XWPFFooter = XWPFHeaderFooterPolicy.createFooter(org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy.DEFAULT);
 
 			for (ReportElement e : getReport().getElements())
 			{
@@ -208,7 +204,8 @@ public class DOC extends Doc
 		XWPFTable XWPFTable = XWPFDocument.createTable();
 		if (grid.getCaption() != null)
 		{
-			printCaption(XWPFTable, grid.getCaption(), grid.getColumns().size());
+			printCaption(XWPFTable, grid.getCaption(),
+					grid.getColumns().size());
 			index++;
 		}
 
@@ -226,14 +223,12 @@ public class DOC extends Doc
 
 	private XWPFTableCell getXWPFTableCell(XWPFTableRow XWPFTableRow, int index)
 	{
-		return XWPFTableRow.getCell(index) != null ? XWPFTableRow.getCell(index)
-				: XWPFTableRow.addNewTableCell();
+		return XWPFTableRow.getCell(index) != null ? XWPFTableRow.getCell(index) : XWPFTableRow.addNewTableCell();
 	}
 
 	private CTTcPr getCTTcPr(XWPFTableCell XWPFTableCell)
 	{
-		return XWPFTableCell.getCTTc().getTcPr() != null ? XWPFTableCell.getCTTc().getTcPr()
-				: XWPFTableCell.getCTTc().addNewTcPr();
+		return XWPFTableCell.getCTTc().getTcPr() != null ? XWPFTableCell.getCTTc().getTcPr() : XWPFTableCell.getCTTc().addNewTcPr();
 	}
 
 	private void printCaption(XWPFTable XWPFTable, String caption, long span)
@@ -257,11 +252,9 @@ public class DOC extends Doc
 			getCTTcPr(getXWPFTableCell(XWPFTableRow, i)).addNewHMerge().setVal(STMerge.CONTINUE);
 	}
 
-	private void printImage(XWPFHeader XWPFHeader, Image image)
-			throws IOException, InvalidFormatException
+	private void printImage(XWPFHeader XWPFHeader, Image image) throws IOException, InvalidFormatException
 	{
-		try (ByteArrayInputStream byteArrayInputStream
-				= new ByteArrayInputStream(image.getSource()))
+		try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(image.getSource()))
 		{
 			BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
 			XWPFParagraph XWPFParagraph = XWPFHeader.createParagraph();
@@ -270,9 +263,8 @@ public class DOC extends Doc
 			XWPFRun XWPFRun = XWPFParagraph.createRun();
 
 			byteArrayInputStream.reset();
-			XWPFRun.addPicture(byteArrayInputStream, getImageFormat(image.getFilename()),
-					image.getFilename(), Units.toEMU(bufferedImage.getWidth()),
-					Units.toEMU(bufferedImage.getHeight()));
+			XWPFRun.addPicture(byteArrayInputStream, getImageFormat(image.getFilename()), image.getFilename(),
+					Units.toEMU(bufferedImage.getWidth()), Units.toEMU(bufferedImage.getHeight()));
 		}
 	}
 
@@ -289,8 +281,8 @@ public class DOC extends Doc
 	private void printHeader(XWPFTableRow XWPFTableRow, Grid<Object> grid)
 	{
 		for (int i = 0; i < grid.getColumns().size(); i++)
-			printHeaderCell(getXWPFTableCell(XWPFTableRow, i), grid.getColumns().get(i),
-					grid.getColumns().get(i).getHead());
+			printHeaderCell(getXWPFTableCell(XWPFTableRow, i),
+					grid.getColumns().get(i), grid.getColumns().get(i).getHead());
 	}
 
 	private void printHeaderCell(XWPFTableCell XWPFTableCell, Column<?> column, Object value)
@@ -312,7 +304,8 @@ public class DOC extends Doc
 		for (int i = 0; i < grid.getColumns().size(); i++)
 		{
 			Column<Object> column = grid.getColumns().get(i);
-			printCell(getXWPFTableCell(XWPFTableRow, i), column.getBody().apply(value),
+			printCell(getXWPFTableCell(XWPFTableRow, i),
+					column.getBody().apply(value),
 					column.getStyler().apply(value, column.style()));
 		}
 

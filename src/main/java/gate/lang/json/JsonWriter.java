@@ -104,7 +104,7 @@ public class JsonWriter implements AutoCloseable
 								writer.write("\\\"");
 								break;
 							default:
-								writer.write(value.charAt(i));
+								writer.write((char) value.charAt(i));
 						}
 					}
 					writer.write("\"");

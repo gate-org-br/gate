@@ -19,7 +19,8 @@ public class ReportTest
 {
 
 	public ReportTest()
-	{}
+	{
+	}
 
 	@Test
 	public void testSomeMethod() throws FileNotFoundException, IOException
@@ -106,10 +107,9 @@ public class ReportTest
 
 		report.addLineBreak();
 
-		Grid<User> grid = report
-				.addGrid(User.class,
-						List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
-								new User().setId(ID.valueOf(2)).setName("Bar")))
+		Grid<User> grid = report.addGrid(User.class,
+				List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+						new User().setId(ID.valueOf(2)).setName("Bar")))
 				.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");
@@ -118,7 +118,7 @@ public class ReportTest
 		grid.setLimit(2);
 
 		report.compact();
-		new PDF(report);
+		PDF doc = new PDF(report);
 	}
 
 	@Test
@@ -131,17 +131,46 @@ public class ReportTest
 
 		report.addLineBreak();
 
-		report.addList(ReportList.Type.NUMBER).add("Item").add("Item").add("Item").add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DECIMAL);
 
-		report.addList(ReportList.Type.LETTER).add("Item").add("Item").add("Item").add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.LOWER_ALPHA);
 
-		report.addList(ReportList.Type.SYMBOL).add("Item").add("Item").add("Item").add("Item");
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DISC);
 
-		report.addList(ReportList.Type.NUMBER).add("Item").add("Item").add("Item").add("Item")
-				.add(report.addList(ReportList.Type.LETTER).add("Item").add("Item").add("Item")
-						.add("Item").add(report.addList(ReportList.Type.SYMBOL).add("Item")
-								.add("Item").add("Item").add("Item")));
+		report.addList()
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add(report.addList()
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add(report.addList()
+								.add("Item")
+								.add("Item")
+								.add("Item")
+								.add("Item")));
 
-		new PDF(report);
+		PDF doc = new PDF(report);
 	}
 }

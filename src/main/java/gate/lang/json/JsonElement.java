@@ -3,15 +3,14 @@ package gate.lang.json;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.UncheckedIOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -29,7 +28,7 @@ import java.util.Objects;
 public interface JsonElement extends Serializable
 {
 
-	JsonString UNDEFINED = JsonString.of("Indefinido");
+	public static final JsonString UNDEFINED = JsonString.of("Indefinido");
 
 	/**
 	 * Gets the type parse this JSON element.
@@ -53,10 +52,10 @@ public interface JsonElement extends Serializable
 		 */
 		public static Type of(Object obj)
 		{
-			if (obj instanceof Type)
-				return (Type) obj;
-			if (obj instanceof JsonElement)
-				return ((JsonElement) obj).getType();
+			if (obj instanceof Type type)
+				return type;
+			if (obj instanceof JsonElement jsonElement)
+				return jsonElement.getType();
 
 			if (obj == null)
 				return NULL;
@@ -76,11 +75,6 @@ public interface JsonElement extends Serializable
 		}
 	}
 
-	default String format()
-	{
-		return format(this);
-	}
-
 	static JsonElement parse(String string)
 			throws ConversionException
 	{
@@ -93,59 +87,62 @@ public interface JsonElement extends Serializable
 	/**
 	 * Formats the specified JsonElement on JSON notation.
 	 * <p>
-	 * If the specified JsonElement is a JsonArray or a JsonObject, it's elements will be formatted recursively as their respective elements on JSON
-	 * notation.
+	 * If the specified JsonElement is a JsonArray or a JsonObject, it's elements will be formatted recursively as their
+	 * respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
+	 *
 	 * @return the specified JsonElement formatted using JSON notation
+	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	static String format(JsonElement element)
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
-			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+				JsonWriter jsonWriter = new JsonWriter(stringWriter);
+				JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
 		} catch (IOException ex)
 		{
-			throw new UncheckedIOException(ex);
+			throw new AppError(ex);
 		}
 	}
 
-	<T> T toObject(Class<T> type);
+	public <T> T toObject(Class<T> type);
 
-	<T, E> T toObject(java.lang.reflect.Type type,
-					  java.lang.reflect.Type elementType);
+	public <T, E> T toObject(java.lang.reflect.Type type,
+			java.lang.reflect.Type elementType);
 
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
-	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean, JsonNumber, JsonString, JsonArray,
-	 * JsonArray and JsonNull objects.
+	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean,
+	 * JsonNumber, JsonString, JsonArray, JsonArray and JsonNull objects.
 	 * <p>
 	 * Other object types will be converted as JsonObjects
 	 *
 	 * @param obj the object to be formatted
+	 *
 	 * @return a JsonElement representing the specified object
 	 */
-	static JsonElement of(Object obj)
+	static JsonElement of(Object obj) throws ConversionException
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
-		if (obj instanceof Boolean)
-			return JsonBoolean.parse((Boolean) obj);
-		if (obj instanceof Number)
-			return JsonNumber.of((Number) obj);
-		if (obj instanceof String)
-			return JsonString.of((String) obj);
+		if (obj instanceof Boolean aBoolean)
+			return JsonBoolean.parse(aBoolean);
+		if (obj instanceof Number number)
+			return JsonNumber.of(number);
+		if (obj instanceof String string)
+			return JsonString.of(string);
 
-		if (obj instanceof Collection<?>)
-			return JsonArray.of((Collection<?>) obj);
-		if (obj instanceof Object[])
-			return JsonArray.of((Object[]) obj);
+		if (obj instanceof Collection<?> collection)
+			return JsonArray.of(collection);
+		if (obj instanceof Object[] objects)
+			return JsonArray.of(objects);
 
 		for (Constructor<?> constructor
 				: obj.getClass().getDeclaredConstructors())
@@ -179,30 +176,32 @@ public interface JsonElement extends Serializable
 	/**
 	 * Creates a JsonElement for the specified object.
 	 * <p>
-	 * Number, Array and Collection objects will be converted respectively to JsonNumber, JsonArray and JsonArray objects.
+	 * Number, Array and Collection objects will be converted respectively to JsonNumber, JsonArray and JsonArray
+	 * objects.
 	 * <p>
 	 * null references will be converted to a JsonString representing an undefined value.
 	 * <p>
 	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
 	 *
 	 * @param obj the object to be formatted
+	 *
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement toText(Object obj)
 	{
 		if (obj == null)
 			return UNDEFINED;
-		if (obj instanceof Number)
-			return JsonNumber.of((Number) obj);
-		if (obj instanceof Collection<?>)
-			return JsonArray.format((Collection<?>) obj);
-		if (obj instanceof Object[])
-			return JsonArray.format((Object[]) obj);
+		if (obj instanceof Number number)
+			return JsonNumber.of(number);
+		if (obj instanceof Collection<?> collection)
+			return JsonArray.format(collection);
+		if (obj instanceof Object[] objects)
+			return JsonArray.format(objects);
 
 		return JsonString.of(gate.converter.Converter.toText(obj));
 	}
 
-	static JsonElement valueOf(String string) throws ConversionException
+	public static JsonElement valueOf(String string)
 	{
 		return parse(string);
 	}

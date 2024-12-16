@@ -72,16 +72,16 @@ const LINE_BREAK = '\n';
 function equals(node1, node2)
 {
 	return node1
-		&& node2
-		&& node1.tagName
-		&& node2.tagName
-		&& node1.style.fontWeight === node2.style.fontWeight
-		&& node1.style.fontStyle === node2.style.fontStyle
-		&& node1.style.fontSize === node2.style.fontSize
-		&& node1.style.fontFamily === node2.style.fontFamily
-		&& node1.style.textDecoration === node2.style.textDecoration
-		&& node1.style.color === node2.style.color
-		&& node1.style.backgroundColor === node2.style.backgroundColor;
+			&& node2
+			&& node1.tagName
+			&& node2.tagName
+			&& node1.style.fontWeight === node2.style.fontWeight
+			&& node1.style.fontStyle === node2.style.fontStyle
+			&& node1.style.fontSize === node2.style.fontSize
+			&& node1.style.fontFamily === node2.style.fontFamily
+			&& node1.style.textDecoration === node2.style.textDecoration
+			&& node1.style.color === node2.style.color
+			&& node1.style.backgroundColor === node2.style.backgroundColor;
 }
 
 customElements.define('g-text-editor', class extends HTMLElement
@@ -116,12 +116,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 				{
 					let node = range.startContainer;
 					if (node instanceof Text
-						&& range.endOffset < node.length)
+							&& range.endOffset < node.length)
 						range.setEnd(node, range.endOffset + 1);
 					else
 					{
 						node = node.nextSibling
-							|| node?.parentNode.nextSibling;
+								|| node?.parentNode.nextSibling;
 
 						if (node instanceof Text)
 						{
@@ -149,7 +149,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 					else
 					{
 						node = node.previousSibling
-							|| node?.parentNode.previousSibling;
+								|| node?.parentNode.previousSibling;
 
 						if (node instanceof Text)
 						{
@@ -175,7 +175,26 @@ customElements.define('g-text-editor', class extends HTMLElement
 		editor.addEventListener("paste", (event) =>
 		{
 			event.preventDefault();
-			this.input(event.clipboardData.getData("text/plain"));
+			const items = event.clipboardData.items;
+			
+			this.getSelection().deleteContents();
+			for (let i = 0; i < items.length; i++)
+			{
+				const item = items[i];
+
+				if (item.type.startsWith('image')
+						|| item.type.startsWith('audio')
+						|| item.type.startsWith('video')) {
+
+					const file = item.getAsFile();
+					const reader = new FileReader();
+					reader.onload = (e) =>
+						this.attach(item.type.substring(0, 5), file.name, e.target.result);
+					reader.readAsDataURL(file);
+
+				} else if (item.type === 'text/plain')
+					item.getAsString((text) => this.input(text));
+			}
 		});
 
 		editor.addEventListener('keydown', event =>
@@ -274,9 +293,9 @@ customElements.define('g-text-editor', class extends HTMLElement
 					let node = range.startContainer;
 
 					if (node === editor
-						|| node.tagName === "A"
-						|| node.tagName === "SPAN"
-						|| node.nodeType === Node.TEXT_NODE)
+							|| node.tagName === "A"
+							|| node.tagName === "SPAN"
+							|| node.nodeType === Node.TEXT_NODE)
 						this.input("\t");
 					break;
 			}
@@ -285,17 +304,17 @@ customElements.define('g-text-editor', class extends HTMLElement
 		new MutationObserver(mutations =>
 		{
 			mutations.flatMap(e => Array.from(e.addedNodes))
-				.filter(e => e instanceof HTMLDivElement)
-				.forEach(node =>
-				{
-					node.addEventListener("click", event =>
+					.filter(e => e instanceof HTMLDivElement)
+					.forEach(node =>
 					{
-						event.stopPropagation();
-						event.preventDefault();
-						event.stopImmediatePropagation();
-						this.setSelection(node);
+						node.addEventListener("click", event =>
+						{
+							event.stopPropagation();
+							event.preventDefault();
+							event.stopImmediatePropagation();
+							this.setSelection(node);
+						});
 					});
-				});
 
 			this.#update();
 		}).observe(editor, {characterData: true, subtree: true, childList: true});
@@ -398,10 +417,10 @@ customElements.define('g-text-editor', class extends HTMLElement
 	input(text)
 	{
 		if (!this.editor.innerHTML
-			|| text.length > 1
-			|| text === " "
-			|| text === "\t"
-			|| text === "\n")
+				|| text.length > 1
+				|| text === " "
+				|| text === "\t"
+				|| text === "\n")
 			this.mark();
 		let range = this.getSelection();
 		const textNode = document.createTextNode(text);
@@ -486,12 +505,12 @@ customElements.define('g-text-editor', class extends HTMLElement
 	getSelection()
 	{
 		let selection = this.shadowRoot.getSelection
-			? this.shadowRoot.getSelection()
-			: window.getSelection();
+				? this.shadowRoot.getSelection()
+				: window.getSelection();
 
 		if (selection
-			&& selection.rangeCount
-			&& this.editor.contains(selection.getRangeAt(0).commonAncestorContainer))
+				&& selection.rangeCount
+				&& this.editor.contains(selection.getRangeAt(0).commonAncestorContainer))
 			return selection.getRangeAt(0);
 
 		let range = document.createRange();
@@ -503,8 +522,8 @@ customElements.define('g-text-editor', class extends HTMLElement
 	setSelection(range)
 	{
 		let selection = this.shadowRoot.getSelection
-			? this.shadowRoot.getSelection()
-			: window.getSelection();
+				? this.shadowRoot.getSelection()
+				: window.getSelection();
 
 		if (range.nodeType)
 		{
@@ -526,8 +545,8 @@ customElements.define('g-text-editor', class extends HTMLElement
 		let range = this.getSelection();
 		let fragment = range.extractContents();
 		let textNodes = Array.from(fragment.childNodes)
-			.filter(e => e.nodeType === Node.TEXT_NODE || e.tagName === "SPAN" || e.tagName === "A")
-			.flatMap(e => e.nodeType === Node.TEXT_NODE ? e : Array.from(e.childNodes));
+				.filter(e => e.nodeType === Node.TEXT_NODE || e.tagName === "SPAN" || e.tagName === "A")
+				.flatMap(e => e.nodeType === Node.TEXT_NODE ? e : Array.from(e.childNodes));
 		range.insertNode(fragment);
 
 		textNodes.forEach(text =>
@@ -564,14 +583,14 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 		this.editor.normalize();
 		Array.from(this.editor.querySelectorAll("span, a"))
-			.filter(e => !e.hasAttribute("style") === ""
-					|| e.getAttribute("style") === "")
-			.forEach(e => e.outerHTML = e.innerHTML);
+				.filter(e => !e.hasAttribute("style") === ""
+							|| e.getAttribute("style") === "")
+				.forEach(e => e.outerHTML = e.innerHTML);
 
 		this.editor.normalize();
 		Array.from(this.editor.querySelectorAll("span, a"))
-			.filter(e => e.innerText.trim() === "")
-			.forEach(e => e.remove());
+				.filter(e => e.innerText.trim() === "")
+				.forEach(e => e.remove());
 
 		this.editor.normalize();
 		return this;
@@ -581,17 +600,17 @@ customElements.define('g-text-editor', class extends HTMLElement
 	{
 		this.compact();
 		return this.shadowRoot.getElementById("editor").innerHTML
-			.trim()
-			.replaceAll(LINE_BREAK, "<br>");
+				.trim()
+				.replaceAll(LINE_BREAK, "<br>");
 	}
 
 	set value(value)
 	{
 		this.shadowRoot.getElementById("editor")
-			.innerHTML = value
-			.replaceAll(LINE_BREAK, "")
-			.replaceAll("<br>", LINE_BREAK)
-			.trim();
+				.innerHTML = value
+				.replaceAll(LINE_BREAK, "")
+				.replaceAll("<br>", LINE_BREAK)
+				.trim();
 		this.compact();
 	}
 

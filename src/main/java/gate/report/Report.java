@@ -5,6 +5,9 @@ import gate.annotation.Handler;
 import gate.annotation.Name;
 import gate.converter.EnumStringConverter;
 import gate.handler.ReportHandler;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
 import java.io.File;
@@ -97,9 +100,16 @@ public class Report
 		return grid;
 	}
 
-	public final ReportList addList(ReportList.Type type)
+	public final Dictionary addDictionary()
 	{
-		ReportList list = new ReportList(type);
+		Dictionary dictionary = new Dictionary();
+		elements.add(dictionary);
+		return dictionary;
+	}
+
+	public final ReportList addList()
+	{
+		ReportList list = new ReportList();
 		elements.add(list);
 		return list;
 	}
@@ -199,9 +209,10 @@ public class Report
 		return image;
 	}
 
-	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset, Chart.Format format)
+	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
+			Chart.Format format)
 	{
-		Chart<T> chart = new Chart<>(type, dataset, format);
+		Chart chart = new Chart(type, dataset, format);
 		elements.add(chart);
 		return chart;
 	}
@@ -222,7 +233,44 @@ public class Report
 	public enum Orientation
 	{
 		@Name("Retrato")
-		PORTRAIT, @Name("Paisagem")
+		PORTRAIT,
+		@Name("Paisagem")
 		LANDSCAPE
+	}
+
+	public static Report of(JsonObject jsonObject) throws IllegalArgumentException
+	{
+		Report report = new Report();
+
+		if (jsonObject.get("type") instanceof JsonString)
+			report.add(ReportElement.of(jsonObject));
+		else if (jsonObject.get("elements") instanceof JsonArray elements)
+			elements.stream()
+					.map(ReportElement::of)
+					.filter(Objects::nonNull)
+					.forEach(report::add);
+		else if (jsonObject.get("columns") instanceof JsonArray
+				&& jsonObject.get("dataset") instanceof JsonArray)
+			report.add(Grid.of(jsonObject));
+		else
+			report.add(Dictionary.of(jsonObject));
+		return report;
+	}
+
+	public static Report of(JsonArray jsonArray) throws IllegalArgumentException
+	{
+		Report report = new Report();
+		if (jsonArray.stream().allMatch(e -> e instanceof JsonString))
+			report.add(ReportList.of(jsonArray));
+		else
+			report.add(Grid.of(jsonArray));
+		return report;
+	}
+
+	public static Report of(JsonString jsonString) throws IllegalArgumentException
+	{
+		Report report = new Report();
+		report.add(new Paragraph(jsonString.toString()));
+		return report;
 	}
 }

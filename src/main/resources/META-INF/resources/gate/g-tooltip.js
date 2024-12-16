@@ -71,7 +71,7 @@ span[data-arrow='east']
 }
 
 span[data-arrow='northwest'] {
-	top: 0;
+	top: 3px;
 	left: 100%;
 	border-left: 12px solid var(--main4);
 	border-top: 6px solid transparent;
@@ -80,7 +80,7 @@ span[data-arrow='northwest'] {
 
 span[data-arrow='northeast']
 {
-	top: 0;
+	top: 3px;
 	left: -12px;
 	border-right: 12px solid var(--main4);
 	border-top: 6px solid transparent;
@@ -88,7 +88,7 @@ span[data-arrow='northeast']
 }
 
 span[data-arrow='southwest'] {
-	bottom: 0;
+	bottom: 3px;
 	left: 100%;
 	border-left: 12px solid var(--main4);
 	border-top: 6px solid transparent;
@@ -97,7 +97,7 @@ span[data-arrow='southwest'] {
 
 span[data-arrow='southeast']
 {
-	bottom: 0;
+	bottom: 3px;
 	left: -12px;
 	border-right: 12px solid var(--main4);
 	border-top: 6px solid transparent;

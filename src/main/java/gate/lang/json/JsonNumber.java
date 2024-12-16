@@ -72,8 +72,12 @@ public class JsonNumber extends Number implements JsonElement
 		return value.floatValue();
 	}
 
+	public BigDecimal getValue()
+	{
+		return value;
+	}
+
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T toObject(Class<T> type)
 	{
 
@@ -93,8 +97,8 @@ public class JsonNumber extends Number implements JsonElement
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T, E> T toObject(java.lang.reflect.Type type,
+			java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -106,8 +110,7 @@ public class JsonNumber extends Number implements JsonElement
 	 *
 	 * @return a JsonNumber object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON
-	 *         formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNumber parse(String json) throws ConversionException
@@ -301,7 +304,8 @@ public class JsonNumber extends Number implements JsonElement
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof JsonNumber && value.compareTo(((JsonNumber) obj).value) == 0;
+		return obj instanceof JsonNumber
+				&& value.compareTo(((JsonNumber) obj).value) == 0;
 	}
 
 	@Override

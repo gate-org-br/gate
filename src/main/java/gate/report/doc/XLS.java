@@ -7,12 +7,14 @@ import gate.lang.contentType.ContentType;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
 import gate.report.Column;
+import gate.report.Dictionary;
 import gate.report.Doc;
 import gate.report.Field;
 import gate.report.Form;
 import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
+import gate.report.ReportList;
 import gate.report.Style;
 import gate.type.Color;
 import gate.util.Toolkit;
@@ -57,8 +59,7 @@ public class XLS extends Doc
 
 	private final Map<Style, XSSFCellStyle> styles = new HashMap<>();
 	private static final Map<Color, XSSFColor> COLORS = new ConcurrentHashMap<>();
-	private static final Set<Character> INVALID_SHEET_NAME_CHARS
-			= Set.of(':', '?', '*', '\\', '/', '[', ']', '\'');
+	private static final Set<Character> INVALID_SHEET_NAME_CHARS = Set.of(':', '?', '*', '\\', '/', '[', ']', '\'');
 
 	/**
 	 * Constructs a new XLS Doc for the specified report.
@@ -73,7 +74,7 @@ public class XLS extends Doc
 	@Override
 	public ContentType getContentType()
 	{
-		return ContentType.of("application", "xls");
+		return ContentType.of("application", "vnd.ms-excel");
 	}
 
 	@Override
@@ -83,7 +84,6 @@ public class XLS extends Doc
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void print(OutputStream os)
 	{
 
@@ -92,14 +92,21 @@ public class XLS extends Doc
 			for (ReportElement e : getReport().getElements())
 			{
 				if (e instanceof Grid)
-					printGrid(workbook, (Grid<Object>) e);
+					printGrid(workbook, (Grid) e);
 				if (e instanceof Chart)
-					printChart(workbook, (Chart<Object>) e);
+					printChart(workbook, (Chart) e);
 			}
 
 			for (ReportElement e : getReport().getElements())
-				if (e instanceof Form && (!e.isEmpty()))
-					printForm(workbook, (Form) e);
+				if (e instanceof Form form
+						&& !form.isEmpty())
+					printForm(workbook, form);
+				else if (e instanceof Dictionary dictionary
+						&& !dictionary.getElements().isEmpty())
+					printDictionary(workbook, dictionary);
+				else if (e instanceof ReportList list
+						&& !list.getElements().isEmpty())
+					printList(workbook, list);
 
 			workbook.write(os);
 			workbook.dispose();
@@ -125,10 +132,9 @@ public class XLS extends Doc
 			cell.getCellStyle().setFont(workbook.createFont());
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 			cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
+			((XSSFCellStyle) cell.getCellStyle()).setAlignment(HorizontalAlignment.CENTER);
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setColor(getXLSColor(Color.WHITE));
-			((XSSFCellStyle) cell.getCellStyle())
-					.setFillForegroundColor(getXLSColor(CAPTION_COLOR));
+			((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(CAPTION_COLOR));
 
 			sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 1));
 
@@ -136,7 +142,8 @@ public class XLS extends Doc
 		}
 
 		for (Field e : form.getFields().stream().filter(e -> e instanceof Field)
-				.filter(e -> e.getValue() != null).map(e -> e).collect(Collectors.toList()))
+				.filter(e -> e.getValue() != null)
+				.map(e -> (Field) e).collect(Collectors.toList()))
 		{
 			sheet.trackAllColumnsForAutoSizing();
 
@@ -205,13 +212,11 @@ public class XLS extends Doc
 			cell.getCellStyle().setFont(workbook.createFont());
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 			cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-			cell.getCellStyle().setAlignment(HorizontalAlignment.CENTER);
+			((XSSFCellStyle) cell.getCellStyle()).setAlignment(HorizontalAlignment.CENTER);
 			((XSSFCellStyle) cell.getCellStyle()).getFont().setColor(getXLSColor(Color.WHITE));
-			((XSSFCellStyle) cell.getCellStyle())
-					.setFillForegroundColor(getXLSColor(CAPTION_COLOR));
+			((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(CAPTION_COLOR));
 
-			sheet.addMergedRegion(
-					new CellRangeAddress(index, index, 0, grid.getColumns().size() - 1));
+			sheet.addMergedRegion(new CellRangeAddress(index, index, 0, grid.getColumns().size() - 1));
 
 			cell.setCellValue(new XSSFRichTextString(Converter.toText(grid.getCaption())));
 		}
@@ -227,8 +232,7 @@ public class XLS extends Doc
 				cell.getCellStyle().setFont(workbook.createFont());
 				((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 				cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-				((XSSFCellStyle) cell.getCellStyle())
-						.setFillForegroundColor(getXLSColor(HEADER_COLOR));
+				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(HEADER_COLOR));
 
 				switch (col.style().getTextAlign())
 				{
@@ -264,8 +268,7 @@ public class XLS extends Doc
 				cell.setCellStyle(workbook.createCellStyle());
 				cell.getCellStyle().setFont(workbook.createFont());
 				cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
-				((XSSFCellStyle) cell.getCellStyle())
-						.setFillForegroundColor(getXLSColor(Color.LIGHT_GRAY));
+				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getXLSColor(Color.LIGHT_GRAY));
 				((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 
 				switch (col.style().getTextAlign())
@@ -294,8 +297,8 @@ public class XLS extends Doc
 			sheet.autoSizeColumn(col);
 	}
 
-	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet, Grid<Object> grid,
-			Iterable<?> data, int level)
+	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet,
+			Grid<Object> grid, Iterable<?> data, int level)
 	{
 
 		for (Object object : data)
@@ -323,15 +326,14 @@ public class XLS extends Doc
 					cell.setCellType(CellType.BOOLEAN);
 					cell.setCellValue((Boolean) value);
 				} else if (j == 0 && level > 0)
-					cell.setCellValue(new XSSFRichTextString(
-							"        ".repeat(level) + Converter.toText(value)));
+					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Converter.toText(value)));
 				else
 					cell.setCellValue(new XSSFRichTextString(Converter.toText(value)));
 			}
 
 			if (grid.getChildren() != null)
-				printGridData(workbook, sheet, grid,
-						Toolkit.collection(grid.getChildren().apply(object)), level + 1);
+				printGridData(workbook, sheet, grid, Toolkit
+						.collection(grid.getChildren().apply(object)), level + 1);
 		}
 	}
 
@@ -343,14 +345,13 @@ public class XLS extends Doc
 					? workbook.createSheet(getValidSheedName(chart.getCaption()))
 					: workbook.createSheet();
 
-			var image = EncoderUtil
-					.encode(ChartGenerator.create(chart).createBufferedImage(1024, 768), "png");
+			var image = EncoderUtil.encode(ChartGenerator.create(chart).createBufferedImage(1024, 768), "png");
 
 			int pictureIdx = workbook.addPicture(image, Workbook.PICTURE_TYPE_PNG);
 
 			CreationHelper helper = workbook.getCreationHelper();
 
-			Drawing<?> drawing = sheet.createDrawingPatriarch();
+			Drawing drawing = sheet.createDrawingPatriarch();
 			ClientAnchor anchor = helper.createClientAnchor();
 			anchor.setCol1(1);
 			anchor.setRow1(1);
@@ -362,14 +363,113 @@ public class XLS extends Doc
 		}
 	}
 
+	private void printDictionary(SXSSFWorkbook workbook, Dictionary dictionary)
+	{
+		short i = -1;
+
+		SXSSFSheet sheet = workbook.createSheet();
+
+		for (var entry : dictionary.getElements().entrySet())
+		{
+			sheet.trackAllColumnsForAutoSizing();
+
+			SXSSFRow row = sheet.createRow(++i);
+
+			SXSSFCell label = row.createCell((short) 0);
+			label.setCellStyle(workbook.createCellStyle());
+			label.getCellStyle().setBorderTop(BorderStyle.THIN);
+			label.getCellStyle().setBorderLeft(BorderStyle.THIN);
+			label.getCellStyle().setBorderRight(BorderStyle.NONE);
+			label.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			label.getCellStyle().setFont(workbook.createFont());
+			label.getCellStyle().setAlignment(HorizontalAlignment.RIGHT);
+			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+			((XSSFCellStyle) label.getCellStyle()).getFont().setBold(true);
+			label.setCellValue(new XSSFRichTextString(entry.getKey() + ":"));
+
+			SXSSFCell value = row.createCell((short) 1);
+			value.setCellStyle(workbook.createCellStyle());
+			value.getCellStyle().setBorderTop(BorderStyle.THIN);
+			value.getCellStyle().setBorderLeft(BorderStyle.NONE);
+			value.getCellStyle().setBorderRight(BorderStyle.THIN);
+			value.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			value.getCellStyle().setFont(workbook.createFont());
+			value.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+
+			var object = entry.getValue();
+			if (object == null)
+				value.setCellType(CellType.BLANK);
+			else if (object instanceof Number number)
+			{
+				value.setCellType(CellType.NUMERIC);
+				value.setCellValue(number.doubleValue());
+			} else if (object instanceof Boolean bool)
+			{
+				value.setCellType(CellType.BOOLEAN);
+				value.setCellValue(bool);
+			} else
+				value.setCellValue(new XSSFRichTextString(Converter.toText(object)));
+		}
+		sheet.autoSizeColumn((short) 0);
+		sheet.autoSizeColumn((short) 1);
+	}
+
+	private void printList(SXSSFWorkbook workbook, ReportList list)
+	{
+		short i = -1;
+
+		SXSSFSheet sheet = workbook.createSheet();
+
+		for (var element : list.getElements())
+		{
+			sheet.trackAllColumnsForAutoSizing();
+
+			SXSSFRow row = sheet.createRow(++i);
+
+			SXSSFCell value = row.createCell((short) 0);
+			value.setCellStyle(workbook.createCellStyle());
+			value.getCellStyle().setBorderTop(BorderStyle.THIN);
+			value.getCellStyle().setBorderLeft(BorderStyle.NONE);
+			value.getCellStyle().setBorderRight(BorderStyle.THIN);
+			value.getCellStyle().setBorderBottom(BorderStyle.THIN);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+			value.getCellStyle().setFont(workbook.createFont());
+			value.getCellStyle().setAlignment(HorizontalAlignment.LEFT);
+			value.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
+			((XSSFCellStyle) value.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
+
+			if (element == null)
+				value.setCellType(CellType.BLANK);
+			else if (element instanceof Number number)
+			{
+				value.setCellType(CellType.NUMERIC);
+				value.setCellValue(number.doubleValue());
+			} else if (element instanceof Boolean bool)
+			{
+				value.setCellType(CellType.BOOLEAN);
+				value.setCellValue(bool);
+			} else
+				value.setCellValue(new XSSFRichTextString(Converter.toText(element)));
+		}
+		sheet.autoSizeColumn((short) 0);
+		sheet.autoSizeColumn((short) 1);
+	}
+
 	private XSSFColor getXLSColor(Color color)
 	{
-		return COLORS.computeIfAbsent(color,
-				e -> new XSSFColor(new byte[]
+		return COLORS.computeIfAbsent(color, e
+				-> new XSSFColor(new byte[]
 				{
 					(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
-		},
-				new DefaultIndexedColorMap()));
+		}, new DefaultIndexedColorMap()));
 	}
 
 	private HorizontalAlignment getXLSAligment(Style style)
@@ -391,9 +491,9 @@ public class XLS extends Doc
 
 	private String getValidSheedName(String name)
 	{
-		return name.chars().filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
-				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-				.toString();
+		return name.chars()
+				.filter(e -> !INVALID_SHEET_NAME_CHARS.contains((char) e))
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 	}
 
 	private XSSFCellStyle getXLSStyle(SXSSFWorkbook workbook, Style style)
