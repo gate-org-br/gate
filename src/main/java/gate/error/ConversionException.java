@@ -1,14 +1,12 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.ConversionExceptionCatcher;
-
-import java.io.IOException;
+import gate.catcher.BadRequestExceptionCatcher;
 
 /**
  * Signals that a data conversion could not be made.
  */
-@Catcher(ConversionExceptionCatcher.class)
+@Catcher(BadRequestExceptionCatcher.class)
 public class ConversionException extends RuntimeException
 {
 

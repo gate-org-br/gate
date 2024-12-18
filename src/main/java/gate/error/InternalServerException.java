@@ -1,13 +1,10 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.InternalServerExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a requested resource could not be found.
  */
-@Catcher(InternalServerExceptionCatcher.class)
 public class InternalServerException extends HttpException
 {
 

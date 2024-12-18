@@ -10,6 +10,7 @@ import gate.lang.json.JsonObject;
 import gate.stream.UncheckedOptional;
 import gate.type.ID;
 import gate.util.SystemProperty;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
 import io.jsonwebtoken.security.Keys;
@@ -64,7 +65,10 @@ public class Credentials
 					.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
 		} catch (SignatureException ex)
 		{
-			return null;
+			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
+		} catch (ExpiredJwtException ex)
+		{
+			throw new UnauthorizedException("Attempt to authenticate with expired token");
 		}
 	}
 
@@ -89,7 +93,10 @@ public class Credentials
 					.get("sub", String.class)));
 		} catch (SignatureException ex)
 		{
-			throw new UnauthorizedException();
+			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
+		} catch (ExpiredJwtException ex)
+		{
+			throw new UnauthorizedException("Attempt to authenticate with expired token");
 		}
 	}
 

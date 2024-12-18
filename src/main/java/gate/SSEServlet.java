@@ -54,11 +54,6 @@ public class SSEServlet extends HttpServlet
 			context.setTimeout(TimeUnit.HOURS.toMillis(1));
 
 			Client client = new Client(user.unwrap(), context);
-
-			clients.stream()
-					.filter(e -> e.subject.equals(user))
-					.toList()
-					.forEach(e -> e.asyncContext.complete());
 			clients.add(client);
 
 			context.addListener(new AsyncListener()

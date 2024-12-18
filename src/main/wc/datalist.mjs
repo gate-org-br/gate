@@ -32,7 +32,7 @@ window.addEventListener("connected", function (event)
 				{
 					element.blur();
 					element.disabled = true;
-					fetch(resolve(element, {}, datalist.getAttribute("data-options")))
+					fetch(resolve(element, event, datalist.getAttribute("data-options")))
 						.then(ResponseHandler.json)
 						.then(options =>
 						{

@@ -1,6 +1,7 @@
 package gate.catcher;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class UnauthorizedExceptionCatcher extends HttpExceptionCatcher
@@ -8,6 +9,7 @@ public class UnauthorizedExceptionCatcher extends HttpExceptionCatcher
 
 	public UnauthorizedExceptionCatcher()
 	{
-		super(401);
+		super(HttpServletResponse.SC_UNAUTHORIZED);
 	}
+
 }

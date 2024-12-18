@@ -1,10 +1,13 @@
 package gate.error;
 
+import gate.annotation.Catcher;
+import gate.catcher.UnauthorizedExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that the client must authenticate itself to access the requested resource.
  */
+@Catcher(UnauthorizedExceptionCatcher.class)
 public class UnauthorizedException extends HttpException
 {
 

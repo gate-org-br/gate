@@ -1,5 +1,15 @@
 import DataURL from './data-url.js';
 
+function reject(response)
+{
+	return response.text().then(error =>
+	{
+		if (response.status === 401)
+			window.top.window.location = "Gate";
+		return Promise.reject(new Error(error));
+	});
+}
+
 /**
  * A utility class for handling different types of responses from fetch requests.
  * @class
@@ -24,7 +34,7 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return response;
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -45,7 +55,7 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return response.json();
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -66,7 +76,7 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return response.text();
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -91,7 +101,7 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return response.blob();
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -112,7 +122,7 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return Promise.resolve();
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -141,7 +151,7 @@ export default class ResponseHandler
 			else
 				return response.blob();
 		}
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
 
 	/**
@@ -165,32 +175,30 @@ export default class ResponseHandler
 		{
 			return Promise.all([response.blob(),
 				response.headers.get('content-disposition')])
-				.then(([blob, contentDisposition]) => {
-					return new Promise((resolve, reject) => {
-						const reader = new FileReader();
-						reader.onloadend = () =>
-						{
-							const matcher = contentDisposition
-								? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-								: null;
-							const filename = matcher ? matcher[1].trim() : null;
+					.then(([blob, contentDisposition]) => {
+						return new Promise((resolve, reject) => {
+							const reader = new FileReader();
+							reader.onloadend = () =>
+							{
+								const matcher = contentDisposition
+										? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+										: null;
+								const filename = matcher ? matcher[1].trim() : null;
 
-							if (!filename)
-								return resolve(reader.result);
+								if (!filename)
+									return resolve(reader.result);
 
-							const dataURL = DataURL.parse(reader.result);
-							if (dataURL.parameters.name)
-								return resolve(reader.result);
+								const dataURL = DataURL.parse(reader.result);
+								if (dataURL.parameters.name)
+									return resolve(reader.result);
 
-							dataURL.parameters.name = filename;
-							resolve(dataURL.toString());
-						};
-						reader.readAsDataURL(blob);
+								dataURL.parameters.name = filename;
+								resolve(dataURL.toString());
+							};
+							reader.readAsDataURL(blob);
+						});
 					});
-				});
 		}
-
-		return response.text().then(error => Promise.reject(new Error(error)));
+		return reject(response);
 	}
-
 }

@@ -1,10 +1,10 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.BatdRequestExceptionCatcher;
+import gate.catcher.BadRequestExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Catcher(BatdRequestExceptionCatcher.class)
+@Catcher(BadRequestExceptionCatcher.class)
 public class BadRequestException extends HttpException
 {
 

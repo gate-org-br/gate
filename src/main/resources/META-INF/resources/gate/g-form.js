@@ -25,8 +25,8 @@ span.multiple
 }
 
 textarea {
-	min-height: 128px !important;
 	resize: vertical !important;
+	min-height: 128px !important;
 }</style>`;
 /* global customElements */
 

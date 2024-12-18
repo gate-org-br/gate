@@ -1,8 +1,13 @@
 package gate.error;
 
+import gate.annotation.Catcher;
+import gate.catcher.UnauthorizedExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
  * Signals that the user could not be authenticated.
  */
+@Catcher(UnauthorizedExceptionCatcher.class)
 public class AuthenticationException extends HttpException
 {
 
@@ -11,7 +16,7 @@ public class AuthenticationException extends HttpException
 	@Override
 	public int getStatusCode()
 	{
-		return 401;
+		return HttpServletResponse.SC_UNAUTHORIZED;
 	}
 
 	/**

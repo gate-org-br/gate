@@ -1,13 +1,13 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.InternalServerExceptionCatcher;
+import gate.catcher.ServiceUnavailableExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a requested resource could not be found.
  */
-@Catcher(InternalServerExceptionCatcher.class)
+@Catcher(ServiceUnavailableExceptionCatcher.class)
 public class ServiceUnavailableException extends InternalServerException
 {
 

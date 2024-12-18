@@ -1,7 +1,7 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.AppExceptionCatcher;
+import gate.catcher.BadRequestExceptionCatcher;
 import gate.converter.Converter;
 
 import java.util.Collections;
@@ -13,7 +13,7 @@ import java.util.Objects;
  * <p>
  * This class is the general class of application level exceptions produced by user actions.
  */
-@Catcher(AppExceptionCatcher.class)
+@Catcher(BadRequestExceptionCatcher.class)
 public class AppException extends RuntimeException
 {
 

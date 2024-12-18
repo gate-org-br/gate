@@ -41,7 +41,7 @@ public class MimeText implements Mime
 		this.text = text;
 	}
 
-	private static MimeText of(ContentType contentType, String charset, String text)
+	public static MimeText of(ContentType contentType, String charset, String text)
 	{
 		return new MimeText(contentType, charset, text);
 	}

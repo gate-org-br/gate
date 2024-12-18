@@ -1,7 +1,6 @@
 /* global fetch */
 
 import './trigger.js';
-import resolve from './resolve.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 

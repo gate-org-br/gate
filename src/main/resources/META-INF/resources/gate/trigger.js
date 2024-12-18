@@ -68,9 +68,6 @@ const DEFAULT = new Map()
 
 window.addEventListener("click", function (event)
 {
-	if (event.ctrlKey)
-		return;
-
 	for (let element of event.composedPath())
 	{
 		if (!element.hasAttribute)
@@ -83,6 +80,9 @@ window.addEventListener("click", function (event)
 			let method = element.getAttribute("data-method") || "get";
 			let target = element.getAttribute("target") || "_self";
 
+			if (event.ctrlKey)
+				target = "_blank";
+
 			if (target.startsWith("@") || method !== "get")
 			{
 				trigger(event, element);
@@ -91,7 +91,7 @@ window.addEventListener("click", function (event)
 
 			let current = element.href;
 
-			let resolved = resolve(element, {}, current);
+			let resolved = resolve(element, event, current);
 			if (resolved === current)
 				return;
 
@@ -112,6 +112,9 @@ window.addEventListener("click", function (event)
 			let method = element.getAttribute("formmethod") || "post";
 			let target = element.getAttribute("formtarget") || "_self";
 
+			if (event.ctrlKey)
+				target = "_blank";
+
 			if (target.startsWith("@") || (method !== "get" && method !== "post"))
 			{
 				trigger(event, element);
@@ -122,7 +125,7 @@ window.addEventListener("click", function (event)
 			if (!current)
 				return;
 
-			let resolved = resolve(element, {}, current);
+			let resolved = resolve(element, event, current);
 			if (resolved === current)
 				return;
 
@@ -143,7 +146,7 @@ window.addEventListener("click", function (event)
 				&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
 		{
 			if (validate(element))
-				trigger(event, element);
+				trigger(event, element, event);
 			return EventHandler.cancel(event);
 		}
 	}
@@ -213,15 +216,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-{
-	Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-						|| e.hasAttribute("data-method")
-						|| e.hasAttribute("data-action")
-						|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-});
+		{
+			Array.from(document.querySelectorAll('*'))
+					.filter(e => e.hasAttribute("data-trigger")
+								|| e.hasAttribute("data-method")
+								|| e.hasAttribute("data-action")
+								|| e.hasAttribute("data-target"))
+					.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+					.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+		});
 
 window.addEventListener("load", function (event)
 {

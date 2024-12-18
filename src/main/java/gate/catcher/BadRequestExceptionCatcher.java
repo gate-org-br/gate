@@ -4,12 +4,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
-public class NotFoundExceptionCatcher extends HttpExceptionCatcher
+public class BadRequestExceptionCatcher extends HttpExceptionCatcher
 {
 
-	public NotFoundExceptionCatcher()
+	public BadRequestExceptionCatcher()
 	{
-		super(HttpServletResponse.SC_NOT_FOUND);
+		super(HttpServletResponse.SC_BAD_REQUEST);
 	}
 
 }

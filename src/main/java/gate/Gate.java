@@ -43,6 +43,7 @@ import java.util.Locale;
 @WebServlet(value = "/Gate/*", asyncSupported = true)
 public class Gate extends HttpServlet
 {
+
 	public static final String SUBJECT_COOKIE = "subject";
 	static final String HTML = "/views/Gate.html";
 
@@ -77,7 +78,7 @@ public class Gate extends HttpServlet
 	@Inject
 	@Current
 	@RequestScoped
-	User user;
+	Instance<User> userInstance;
 
 	static
 	{
@@ -92,6 +93,8 @@ public class Gate extends HttpServlet
 
 		try
 		{
+			User user = userInstance.get();
+
 			httpServletRequest.setCharacterEncoding("UTF-8");
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
@@ -138,7 +141,6 @@ public class Gate extends HttpServlet
 			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION)
 					? mainAction
 					: Call.of(MODULE, SCREEN, ACTION);
-
 
 			if (authenticator.hasCredentials(request))
 			{
@@ -194,7 +196,6 @@ public class Gate extends HttpServlet
 			}
 		} catch (RuntimeException ex)
 		{
-			logger.error(ex.getMessage(), ex);
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
 			catcher.catches(httpServletRequest, response, ex);
@@ -202,7 +203,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-						 Method method)
+			Method method)
 	{
 		try
 		{
@@ -224,7 +225,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
-							  Screen screen, Method method)
+			Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");

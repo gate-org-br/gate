@@ -1,5 +1,7 @@
 package gate.error;
 
+import gate.annotation.Catcher;
+import gate.catcher.ConflictExceptionCatcher;
 import java.sql.SQLException;
 
 /**
@@ -7,6 +9,7 @@ import java.sql.SQLException;
  *
  * @author davins
  */
+@Catcher(ConflictExceptionCatcher.class)
 public class ConstraintViolationException extends AppException
 {
 

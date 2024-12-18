@@ -3,7 +3,7 @@ package gate.error;
 /**
  * Signals that an invalid hierarchy relation was found.
  */
-public class HierarchyException extends AppException
+public class HierarchyException extends RuntimeException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -11,7 +11,8 @@ public class HierarchyException extends AppException
 	/**
 	 * Constructs an HierarchyException with the specified detail message.
 	 *
-	 * @param message The detail message, which are saved for later retrieval by the getMessages() or getMessage() method
+	 * @param message The detail message, which are saved for later retrieval by the getMessages() or getMessage()
+	 * method
 	 */
 	public HierarchyException(String message)
 	{

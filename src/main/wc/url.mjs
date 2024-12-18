@@ -78,11 +78,11 @@ export default class URL
 				}
 			};
 
-			request.open('GET', resolve(this.value), true);
+			request.open('GET', resolve({}, {}, this.value), true);
 			request.send(null);
 		} else
 		{
-			request.open('GET', resolve(this.value), false);
+			request.open('GET', resolve({}, {}, this.value), false);
 			request.send(null);
 			if (request.status === 200)
 				return request.responseText;
@@ -131,11 +131,11 @@ export default class URL
 				}
 			};
 
-			request.open("POST", resolve(this.value), true);
+			request.open("POST", resolve({}, {}, this.value), true);
 			request.send(data);
 		} else
 		{
-			request.open("POST", resolve(this.value), false);
+			request.open("POST", resolve({}, {}, this.value), false);
 			request.send(data);
 			if (request.status === 200)
 				return request.responseText;
@@ -148,7 +148,7 @@ export default class URL
 
 	go()
 	{
-		window.location.href = resolve(this.value);
+		window.location.href = resolve({}, {}, this.value);
 		return this;
 	}
 
