@@ -11,6 +11,7 @@ import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.Hierarchy;
 import gate.type.ID;
+import gate.type.Persistent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
 @Entity
 @Icon("2005")
 @Schema("gate")
-public class Role implements Serializable, Hierarchy<Role>
+public class Role implements Serializable, Hierarchy<Role>, Persistent
 {
 
 	private static final long serialVersionUID = 1L;

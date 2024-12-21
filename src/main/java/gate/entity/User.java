@@ -1,6 +1,7 @@
 package gate.entity;
 
 import gate.annotation.*;
+import gate.annotation.Entity;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
@@ -12,7 +13,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @Table("Uzer")
 @Schema("gate")
 @Name("Usuário")
-public class User implements Serializable
+public class User implements Serializable, Persistent
 {
 
 	@Serial

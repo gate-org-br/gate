@@ -1,19 +1,32 @@
 package gate.sql.update;
 
 import gate.converter.Converter;
+import gate.entity.User;
+import gate.sql.Thenable;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.ExtractorCondition;
 import gate.sql.condition.GenericCondition;
 import gate.sql.statement.Sentence;
+import gate.type.ID;
+import gate.type.Persistent;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.returns;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
 
 /**
  * Represents a an update statement bound to a table name.
@@ -31,9 +44,9 @@ public class TableUpdate implements Update
 	/**
 	 * Binds the update statement to a list of entities.
 	 *
-	 * 
+	 *
 	 * statement
-	 * 
+	 *
 	 * @param type of the entities from where the values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
@@ -56,9 +69,61 @@ public class TableUpdate implements Update
 	}
 
 	/**
+	 * Creates a proxy instance of the specified type that intercepts setter methods and maps the provided values to
+	 * corresponding fields. The proxy must implement the {@link gate.type.Persistent} interface. After invoking the
+	 * setter methods on the proxy, the {@code persist} method must be called to execute the corresponding operation.
+	 *
+	 * @param <T> the type of the proxy to be created; must extend {@link gate.type.Persistent}
+	 * @param type the class of the proxy to be created
+	 * @return a {@link Thenable} object that allows the caller to supply a consumer to be executed when the
+	 * {@code persist} method is called on the proxy
+	 * @throws PersistenceException if an error occurs while creating the proxy
+	 */
+	public <T extends Persistent> Thenable<Compiled, T> proxy(Class<T> type)
+	{
+
+		return (Consumer<Compiled> consumer) ->
+		{
+			var compiled = new Compiled();
+
+			try
+			{
+				return new ByteBuddy()
+						.subclass(type)
+						.method(nameStartsWith("set")
+								.and(isDeclaredBy(type))
+								.and(takesArguments(1))
+								.and(returns(void.class).or(returns(type))))
+						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
+						{
+							String columnName = method.getName().substring(3);
+							columnName = Character.toLowerCase(columnName.charAt(0))
+									+ columnName.substring(1);
+							compiled.set(columnName, args[0]);
+							return method.getReturnType() == void.class ? null : target;
+						}))
+						.method(named("persist"))
+						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
+						{
+							consumer.accept(compiled);
+							return null;
+						}))
+						.make()
+						.load(getClass().getClassLoader())
+						.getLoaded()
+						.getDeclaredConstructor()
+						.newInstance();
+			} catch (ReflectiveOperationException ex)
+			{
+				throw new PersistenceException("Error trying to call reflective operation", ex);
+			}
+		};
+	}
+
+	/**
 	 * Adds a new column to be updated.
 	 *
-	 * 
+	 *
 	 * @param type type of the column to be updated
 	 * @param column the column to be updated
 	 *
@@ -66,6 +131,7 @@ public class TableUpdate implements Update
 	 */
 	public <T> Generic set(Class<T> type, String column)
 	{
+
 		return new Generic().set(type, column);
 	}
 
@@ -85,7 +151,7 @@ public class TableUpdate implements Update
 	/**
 	 * Adds a new column to be updated with the specified value.
 	 *
-	 * 
+	 *
 	 * @param column the column to be updated
 	 * @param type type of the column to be updated
 	 * @param value the new value of the column
@@ -134,7 +200,8 @@ public class TableUpdate implements Update
 		private final StringJoiner columns = new StringJoiner(", ");
 
 		private Generic()
-		{}
+		{
+		}
 
 		/**
 		 * Adds a new column to the builder.
@@ -152,7 +219,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 *
@@ -279,7 +346,7 @@ public class TableUpdate implements Update
 			/**
 			 * Adds a new column to be updated.
 			 *
-			 * 
+			 *
 			 * @param type type of the column to be updated
 			 * @param column the column to be updated
 			 *
@@ -370,7 +437,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param value the value associated
@@ -502,8 +569,7 @@ public class TableUpdate implements Update
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -516,8 +582,7 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -530,10 +595,9 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param value the value associated
@@ -546,10 +610,9 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param supplier the supplier of the value associated
@@ -650,7 +713,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param extractor the extractor associated
@@ -711,8 +774,7 @@ public class TableUpdate implements Update
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param extractor the extractor associated
@@ -725,10 +787,9 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param extractor the extractor associated
@@ -800,7 +861,7 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to be updated.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be updated
 		 * @param column the column to be updated
 		 *
@@ -812,8 +873,7 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified
-		 * condition was true.
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 		 *
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -826,8 +886,7 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified
-		 * condition was true.
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 		 *
 		 * @param column the column to be added
 		 * @param supplier the supplier of the value associated
@@ -840,10 +899,9 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified
-		 * condition was true.
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param value the value associated
@@ -856,10 +914,9 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified
-		 * condition was true.
+		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 * @param supplier the supplier of the value associated

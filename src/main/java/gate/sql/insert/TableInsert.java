@@ -1,14 +1,26 @@
 package gate.sql.insert;
 
 import gate.converter.Converter;
+import gate.sql.Thenable;
 import gate.sql.statement.Sentence;
+import gate.sql.update.TableUpdate;
+import gate.type.Persistent;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
+import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.returns;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 /**
  * Insert sentence builder for a table.
@@ -116,6 +128,58 @@ public class TableInsert implements Insert
 	}
 
 	/**
+	 * Creates a proxy instance of the specified type that intercepts setter methods and maps the provided values to
+	 * corresponding fields. The proxy must implement the {@link gate.type.Persistent} interface. After invoking the
+	 * setter methods on the proxy, the {@code persist} method must be called to execute the corresponding operation.
+	 *
+	 * @param <T> the type of the proxy to be created; must extend {@link gate.type.Persistent}
+	 * @param type the class of the proxy to be created
+	 * @return a {@link Thenable} object that allows the caller to supply a consumer to be executed when the
+	 * {@code persist} method is called on the proxy
+	 * @throws PersistenceException if an error occurs while creating the proxy
+	 */
+	public <T extends Persistent> Thenable<Compiled, T> proxy(Class<T> type)
+	{
+
+		return (Consumer<Compiled> consumer) ->
+		{
+			var compiled = new Compiled();
+
+			try
+			{
+				return new ByteBuddy()
+						.subclass(type)
+						.method(nameStartsWith("set")
+								.and(isDeclaredBy(type))
+								.and(takesArguments(1))
+								.and(returns(void.class).or(returns(type))))
+						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
+						{
+							String columnName = method.getName().substring(3);
+							columnName = Character.toLowerCase(columnName.charAt(0))
+									+ columnName.substring(1);
+							compiled.set(columnName, args[0]);
+							return method.getReturnType() == void.class ? null : target;
+						}))
+						.method(named("persist"))
+						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
+						{
+							consumer.accept(compiled);
+							return null;
+						}))
+						.make()
+						.load(getClass().getClassLoader())
+						.getLoaded()
+						.getDeclaredConstructor()
+						.newInstance();
+			} catch (ReflectiveOperationException ex)
+			{
+				throw new PersistenceException("Error trying to call reflective operation", ex);
+			}
+		};
+	}
+
+	/**
 	 * Insert sentence builder for a table with no values specified.
 	 */
 	public class Generic implements Sentence.Builder
@@ -125,7 +189,8 @@ public class TableInsert implements Insert
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Generic()
-		{}
+		{
+		}
 
 		/**
 		 * Adds a new column to the builder.
@@ -181,7 +246,8 @@ public class TableInsert implements Insert
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Compiled()
-		{}
+		{
+		}
 
 		/**
 		 * Adds a new column and it's associated value to the builder.
@@ -246,8 +312,7 @@ public class TableInsert implements Insert
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -260,8 +325,7 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -274,8 +338,7 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 *
 			 * @param column the column to be added
@@ -290,8 +353,7 @@ public class TableInsert implements Insert
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 *
 			 * @param type type of the column to be added
@@ -466,8 +528,7 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param value the value associated
@@ -480,8 +541,7 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param supplier the supplier of the value associated
@@ -494,8 +554,7 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added
@@ -510,8 +569,7 @@ public class TableInsert implements Insert
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added

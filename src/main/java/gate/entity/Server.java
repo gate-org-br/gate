@@ -1,11 +1,14 @@
 package gate.entity;
 
 import gate.annotation.Converter;
+import gate.annotation.Entity;
 import gate.constraint.Min;
 import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
+import gate.type.Persistent;
 
-public class Server
+@Entity
+public class Server implements Persistent
 {
 
 	@Required
