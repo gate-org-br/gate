@@ -23,13 +23,13 @@ window.addEventListener("@notification", function (event)
 			return;
 
 		import("./handlebars.js")
-			.then(e => e.default)
-			.then(Handlebars =>
-			{
-				title = Handlebars.compile(title)(event.detail.context);
-				body = Handlebars.compile(body)(event.detail.context);
-				return new Notification(title, {body});
-			})
-			.then(notification => notification.addEventListener("click", event.success(path), {once: true}));
+				.then(e => e.default)
+				.then(Handlebars =>
+				{
+					title = Handlebars.compile(title)(event.detail.context);
+					body = Handlebars.compile(body)(event.detail.context);
+					return new Notification(title, {body});
+				})
+				.then(notification => notification.addEventListener("click", () => event.success(path), {once: true}));
 	});
 });

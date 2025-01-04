@@ -64,9 +64,7 @@ class Block implements Evaluable
 
 	private void process(Writer writer, List<Object> context, Parameters parameters, Object object)
 	{
-		context.add(0, object);
 		template.evaluate(writer, context, parameters);
-		context.remove(0);
 	}
 
 	@Override
