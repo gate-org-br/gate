@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @Table("Uzer")
 @Schema("gate")
 @Name("Usuário")
-public class User implements Serializable, Persistent
+public class User implements Serializable
 {
 
 	@Serial
@@ -120,7 +120,6 @@ public class User implements Serializable, Persistent
 
 	private List<Func> funcs;
 
-
 	public List<Auth> getAuths()
 	{
 		if (auths == null)
@@ -139,9 +138,10 @@ public class User implements Serializable, Persistent
 		return code;
 	}
 
-	public void setCode(String code)
+	public User setCode(String code)
 	{
 		this.code = code;
+		return this;
 	}
 
 	public String getRepeat()
@@ -241,9 +241,10 @@ public class User implements Serializable, Persistent
 		return funcs;
 	}
 
-	public void setFuncs(List<Func> funcs)
+	public User setFuncs(List<Func> funcs)
 	{
 		this.funcs = funcs;
+		return this;
 	}
 
 	@Override
@@ -265,9 +266,10 @@ public class User implements Serializable, Persistent
 		return change;
 	}
 
-	public void setChange(String change)
+	public User setChange(String change)
 	{
 		this.change = change;
+		return this;
 	}
 
 	@Override
@@ -281,9 +283,10 @@ public class User implements Serializable, Persistent
 		return CPF;
 	}
 
-	public void setCPF(CPF CPF)
+	public User setCPF(CPF CPF)
 	{
 		this.CPF = CPF;
+		return this;
 	}
 
 	public LocalDateTime getRegistration()
@@ -291,9 +294,10 @@ public class User implements Serializable, Persistent
 		return registration;
 	}
 
-	public void setRegistration(LocalDateTime registration)
+	public User setRegistration(LocalDateTime registration)
 	{
 		this.registration = registration;
+		return this;
 	}
 
 	public String getDescription()
@@ -301,9 +305,10 @@ public class User implements Serializable, Persistent
 		return description;
 	}
 
-	public void setDescription(String description)
+	public User setDescription(String description)
 	{
 		this.description = description;
+		return this;
 	}
 
 	public Phone getCellPhone()
@@ -327,9 +332,10 @@ public class User implements Serializable, Persistent
 		return birthdate;
 	}
 
-	public void setBirthdate(LocalDate birthdate)
+	public User setBirthdate(LocalDate birthdate)
 	{
 		this.birthdate = birthdate;
+		return this;
 	}
 
 	public User setPhone(Phone phone)
@@ -348,9 +354,10 @@ public class User implements Serializable, Persistent
 		return photo;
 	}
 
-	public void setPhoto(MimeData photo)
+	public User setPhoto(MimeData photo)
 	{
 		this.photo = photo;
+		return this;
 	}
 
 	public Sex getSex()
@@ -358,9 +365,10 @@ public class User implements Serializable, Persistent
 		return sex;
 	}
 
-	public void setSex(Sex sex)
+	public User setSex(Sex sex)
 	{
 		this.sex = sex;
+		return this;
 	}
 
 	public Stream<Auth> computedAuthStream()
@@ -385,7 +393,7 @@ public class User implements Serializable, Persistent
 		return computedAuthStream()
 				.noneMatch(e -> e.blocked(module, screen, action))
 				&& computedAuthStream()
-				.anyMatch(e -> e.granted(module, screen, action));
+						.anyMatch(e -> e.granted(module, screen, action));
 	}
 
 	public boolean checkSpecificAccess(String module, String screen, String action)
@@ -393,7 +401,7 @@ public class User implements Serializable, Persistent
 		return computedAuthStream()
 				.noneMatch(e -> e.blocked(module, screen, action))
 				&& computedAuthStream()
-				.anyMatch(e -> e.equals(module, screen, action));
+						.anyMatch(e -> e.equals(module, screen, action));
 	}
 
 	public User unwrap()

@@ -1,12 +1,17 @@
 package gate.sql.replace;
 
 import gate.converter.Converter;
+import gate.sql.Proxy;
+import gate.sql.Thenable;
 import gate.sql.statement.Sentence;
+import gate.sql.update.TableUpdate;
+import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,7 +33,7 @@ public class TableReplace implements Replace
 	/**
 	 * Binds the replace statement to a list of entities.
 	 *
-	 * 
+	 *
 	 * @param type the type of the entity where parameter values are to be extracted
 	 *
 	 * @return the same builder with the associated entities
@@ -53,7 +58,7 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted.
 	 *
-	 * 
+	 *
 	 * @param type type of the column to be persisted
 	 * @param column the column to be persisted
 	 *
@@ -80,7 +85,7 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted with the specified value.
 	 *
-	 * 
+	 *
 	 * @param type type of the column to be added
 	 * @param column the column to be added
 	 * @param value the value associated
@@ -90,6 +95,45 @@ public class TableReplace implements Replace
 	public <T> Compiled set(Class<T> type, String column, T value)
 	{
 		return new Compiled().set(type, column, value);
+	}
+
+	/**
+	 * Creates a proxy instance of the specified type and passes it to the provided {@code setter} consumer. The proxy
+	 * intercepts calls to setter methods, capturing the columns names and values, and maps them to the replace builder.
+	 *
+	 * @param <T> the type of the entity being updated
+	 * @param type the class of the entity to be proxied
+	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @throws InstantiationError if an error occurs while creating the proxy
+	 */
+	public <T> Compiled setFields(Class<T> type, Consumer<T> setter)
+	{
+		var compiled = new Compiled();
+		var proxy = Proxy.create(type,
+				(col, val) -> compiled.set(col, val));
+		setter.accept(proxy);
+		return compiled;
+	}
+
+	/**
+	 * Creates a proxy instance of for the provided object and passes it to the provided {@code setter} consumer. The
+	 * proxy intercepts calls to setter methods, updates the provided, capture the columns names and values, and maps
+	 * them to the replace builder.
+	 *
+	 * @param <T> the type of the entity being updated
+	 * @param object the existing instance of the entity to be proxied
+	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @throws InstantiationError if an error occurs while creating the proxy
+	 */
+	public <T> Compiled setFields(T object, Consumer<T> setter)
+	{
+		var compiled = new Compiled();
+		var proxy = Proxy.create(object,
+				(col, val) -> compiled.set(col, val));
+		setter.accept(proxy);
+		return compiled;
 	}
 
 	/**
@@ -114,7 +158,8 @@ public class TableReplace implements Replace
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Generic()
-		{}
+		{
+		}
 
 		/**
 		 * Adds a new column to the builder.
@@ -133,7 +178,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 * 
+		 *
 		 * @param column the column to be added
 		 * @param type type of the column to be added
 		 *
@@ -170,7 +215,8 @@ public class TableReplace implements Replace
 		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
 		private Compiled()
-		{}
+		{
+		}
 
 		/**
 		 * Adds a new column and it's associated value to the builder.
@@ -191,7 +237,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column and it's associated value to the builder.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -235,8 +281,7 @@ public class TableReplace implements Replace
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -249,8 +294,7 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -263,10 +307,9 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param column the column to be added
 			 * @param type type of the column to be added
 			 * @param value the value associated
@@ -279,10 +322,9 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified
-			 * condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * 
+			 *
 			 * @param type type of the column to be added
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -432,7 +474,7 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be persisted
 		 * @param column the column to be persisted
 		 *
@@ -444,8 +486,7 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param value the value associated
@@ -458,8 +499,7 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param supplier the supplier of the value associated
@@ -472,10 +512,9 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param value the value associated
@@ -488,10 +527,9 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified
-		 * condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * 
+		 *
 		 * @param type type of the column to be added
 		 * @param column the column to be added
 		 * @param supplier the supplier of the value associated

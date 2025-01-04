@@ -2,12 +2,11 @@ package gate.entity;
 
 import gate.annotation.Entity;
 import gate.type.ID;
-import gate.type.Persistent;
 import gate.type.mime.MimeMail;
 import java.time.LocalDateTime;
 
 @Entity
-public class Mail implements Persistent
+public class Mail
 {
 
 	private ID id;

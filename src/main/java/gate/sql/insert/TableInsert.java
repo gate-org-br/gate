@@ -1,11 +1,8 @@
 package gate.sql.insert;
 
 import gate.converter.Converter;
-import gate.sql.Thenable;
+import gate.sql.Proxy;
 import gate.sql.statement.Sentence;
-import gate.sql.update.TableUpdate;
-import gate.type.Persistent;
-import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,13 +11,6 @@ import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.implementation.InvocationHandlerAdapter;
-import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-import static net.bytebuddy.matcher.ElementMatchers.returns;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 
 /**
  * Insert sentence builder for a table.
@@ -128,55 +118,42 @@ public class TableInsert implements Insert
 	}
 
 	/**
-	 * Creates a proxy instance of the specified type that intercepts setter methods and maps the provided values to
-	 * corresponding fields. The proxy must implement the {@link gate.type.Persistent} interface. After invoking the
-	 * setter methods on the proxy, the {@code persist} method must be called to execute the corresponding operation.
+	 * Creates a proxy instance of the specified type and passes it to the provided {@code setter} consumer. The proxy
+	 * intercepts calls to setter methods, capturing the columns names and values, and maps them to the insert builder.
 	 *
-	 * @param <T> the type of the proxy to be created; must extend {@link gate.type.Persistent}
-	 * @param type the class of the proxy to be created
-	 * @return a {@link Thenable} object that allows the caller to supply a consumer to be executed when the
-	 * {@code persist} method is called on the proxy
-	 * @throws PersistenceException if an error occurs while creating the proxy
+	 * @param <T> the type of the entity being updated
+	 * @param type the class of the entity to be proxied
+	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @throws InstantiationError if an error occurs while creating the proxy
 	 */
-	public <T extends Persistent> Thenable<Compiled, T> proxy(Class<T> type)
+	public <T> Compiled setFields(Class<T> type, Consumer<T> setter)
 	{
+		var compiled = new Compiled();
+		var proxy = Proxy.create(type,
+				(col, val) -> compiled.set(col, val));
+		setter.accept(proxy);
+		return compiled;
+	}
 
-		return (Consumer<Compiled> consumer) ->
-		{
-			var compiled = new Compiled();
-
-			try
-			{
-				return new ByteBuddy()
-						.subclass(type)
-						.method(nameStartsWith("set")
-								.and(isDeclaredBy(type))
-								.and(takesArguments(1))
-								.and(returns(void.class).or(returns(type))))
-						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
-						{
-							String columnName = method.getName().substring(3);
-							columnName = Character.toLowerCase(columnName.charAt(0))
-									+ columnName.substring(1);
-							compiled.set(columnName, args[0]);
-							return method.getReturnType() == void.class ? null : target;
-						}))
-						.method(named("persist"))
-						.intercept(InvocationHandlerAdapter.of((target, method, args) ->
-						{
-							consumer.accept(compiled);
-							return null;
-						}))
-						.make()
-						.load(getClass().getClassLoader())
-						.getLoaded()
-						.getDeclaredConstructor()
-						.newInstance();
-			} catch (ReflectiveOperationException ex)
-			{
-				throw new PersistenceException("Error trying to call reflective operation", ex);
-			}
-		};
+	/**
+	 * Creates a proxy instance of for the provided object and passes it to the provided {@code setter} consumer. The
+	 * proxy intercepts calls to setter methods, updates the provided, capture the columns names and values, and maps
+	 * them to the insert builder.
+	 *
+	 * @param <T> the type of the entity being updated
+	 * @param object the existing instance of the entity to be proxied
+	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @throws InstantiationError if an error occurs while creating the proxy
+	 */
+	public <T> Compiled setFields(T object, Consumer<T> setter)
+	{
+		var compiled = new Compiled();
+		var proxy = Proxy.create(object,
+				(col, val) -> compiled.set(col, val));
+		setter.accept(proxy);
+		return compiled;
 	}
 
 	/**

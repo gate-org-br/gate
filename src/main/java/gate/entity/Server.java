@@ -5,10 +5,9 @@ import gate.annotation.Entity;
 import gate.constraint.Min;
 import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
-import gate.type.Persistent;
 
 @Entity
-public class Server implements Persistent
+public class Server
 {
 
 	@Required

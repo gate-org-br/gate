@@ -13,7 +13,6 @@ import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
 import gate.type.ID;
-import gate.type.Persistent;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -21,7 +20,7 @@ import java.util.StringJoiner;
 @Entity
 @Icon("2002")
 @Schema("gate")
-public class Auth implements Serializable, Persistent
+public class Auth implements Serializable
 {
 
 	private static final long serialVersionUID = 1L;

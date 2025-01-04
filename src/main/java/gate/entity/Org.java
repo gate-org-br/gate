@@ -7,14 +7,13 @@ import gate.annotation.Name;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.LocalTimeInterval;
-import gate.type.Persistent;
 import gate.type.mime.MimeData;
 import java.io.Serializable;
 
 @Icon("2006")
 @Entity("orgID")
 @Name("Organização")
-public class Org implements Serializable, Persistent
+public class Org implements Serializable
 {
 
 	private static final long serialVersionUID = 1L;
