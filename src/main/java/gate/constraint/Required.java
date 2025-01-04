@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Constraint
 @Target(
-	{
-		ElementType.FIELD, ElementType.PARAMETER
-	})
+		{
+			ElementType.FIELD, ElementType.PARAMETER
+		})
 @Retention(RetentionPolicy.RUNTIME)
 @Implementation(Required.Implementation.class)
 public @interface Required
@@ -32,12 +32,17 @@ public @interface Required
 		@Override
 		public void validate(Object entity, Property property) throws AppException
 		{
-			if (getValue().equals("required") && property.getValue(entity) == null)
+			if (getValue().equals("required"))
 			{
-				String name = property.getDisplayName();
-				if (name == null)
-					name = property.toString();
-				throw new AppException(String.format("O campo %s é requerido.", name));
+				var value = property.getValue(entity);
+				if (value == null
+						|| (value instanceof String string && string.isBlank()))
+				{
+					String name = property.getDisplayName();
+					if (name == null)
+						name = property.toString();
+					throw new AppException(String.format("O campo %s é requerido.", name));
+				}
 			}
 		}
 
