@@ -126,21 +126,17 @@ public class ExpressionTest
 	}
 
 	@Test
-	public void test14() throws ExpressionException
+	public void test14()
 	{
-		Object result = Expression.of("`")
-				.evaluate("abc");
-		assertEquals("Abc", result);
+		assertThrows(ExpressionException.class, () -> Expression.of("`")
+				.evaluate("abc"));
 	}
 
-	
 	@Test
 	public void testRxError()
 	{
-		assertThrows(ExpressionException.class, () ->
-		{
-			Expression.of("this rx 123").evaluate("123");
-		});
+		assertThrows(ExpressionException.class, ()
+				-> Expression.of("this rx 123").evaluate("123"));
 	}
 
 	public static class Person
