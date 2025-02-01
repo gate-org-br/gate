@@ -81,7 +81,7 @@ public class DataFileConverter implements Converter
 			{
 				for (int c = is.read(); c != -1; c = is.read())
 					baos.write(c);
-				return new DataFile(baos.toByteArray(), part.getSubmittedFileName());
+				return DataFile.of(baos.toByteArray(), part.getSubmittedFileName());
 			}
 		} catch (IOException e)
 		{
@@ -142,7 +142,7 @@ public class DataFileConverter implements Converter
 		byte[] data = rs.getBytes(fields + 2);
 		if (rs.wasNull())
 			return null;
-		return new DataFile(data, name);
+		return DataFile.of(data, name);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ public class DataFileConverter implements Converter
 		byte[] data = rs.getBytes(fields + Converter.SEPARATOR + SUFIXES.get(2));
 		if (rs.wasNull())
 			return null;
-		return new DataFile(data, name);
+		return DataFile.of(data, name);
 	}
 
 	@Override

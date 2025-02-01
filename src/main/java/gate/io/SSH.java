@@ -340,7 +340,7 @@ public class SSH implements AutoCloseable
 	 */
 	public DataFile download(String filename) throws IOException
 	{
-		return new DataFile(get(filename),
+		return DataFile.of(get(filename),
 			new File(filename).getName());
 	}
 

@@ -50,7 +50,7 @@ public class TextModel extends Model
 						Converter.getConverter(type).toString(type, property.getValue(entity));
 				string = string.replace(String.format("${%s}", name), value);
 			}
-			return new DataFile(string.getBytes(), getAttachment().getName());
+			return DataFile.of(string.getBytes(), getAttachment().getName());
 		} catch (IllegalArgumentException e)
 		{
 			throw new AppException(e.getMessage());

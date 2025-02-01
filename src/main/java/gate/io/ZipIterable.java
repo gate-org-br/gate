@@ -122,7 +122,7 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 					zipInputStream.closeEntry();
 
 					done++;
-					return new DataFile(data.toByteArray(), entry.getName());
+					return DataFile.of(data.toByteArray(), entry.getName());
 				}
 			} catch (IOException ex)
 			{

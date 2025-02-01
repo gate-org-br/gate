@@ -166,7 +166,7 @@ public class SFTP implements AutoCloseable
 
 			});
 
-			return new DataFile(out.toByteArray(), Path.of(filename).getFileName().toString());
+			return DataFile.of(out.toByteArray(), Path.of(filename).getFileName().toString());
 		}
 	}
 
