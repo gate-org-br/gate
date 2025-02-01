@@ -3,6 +3,7 @@ details {
   display: flex;
   border-radius: 3px;
   align-items: stretch;
+  flex-direction: column;
   justify-content: stretch;
   border: 1px solid var(--base3);
 }
