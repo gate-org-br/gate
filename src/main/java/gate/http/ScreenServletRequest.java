@@ -44,7 +44,6 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-
 	public boolean isSet(String name)
 	{
 		return getParameter(name) != null || parts().stream().anyMatch(e -> e.getName().equals(name));
@@ -53,7 +52,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public List<String> getParameterList()
 	{
 		Set<String> parameters = new HashSet<>();
-		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements(); )
+		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements();)
 			parameters.add(enumeration.nextElement());
 		parts().stream().map(Part::getName).collect(Collectors.toCollection(() -> parameters));
 		return new ArrayList<>(parameters);
@@ -109,7 +108,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	{
 		String string = getParameter(name);
 		return string != null ? string
-				: parts().stream().filter(e -> e.getName().equals(name)).findAny().orElse(null);
+				: parts().stream().filter(e -> e.getName().equals(name))
+						.filter(e -> e.getSize() > 0)
+						.findAny().orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,7 +135,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public String getBody()
 	{
 		try (BufferedReader reader = this.getReader();
-			 StringWriter string = new StringWriter())
+				StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -193,7 +194,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-			case "BEARER" -> new BearerAuthorization(authorization.group(2));
+			case "BEARER" ->
+				new BearerAuthorization(authorization.group(2));
 			case "BASIC" ->
 			{
 				String value = authorization.group(2);
@@ -203,7 +205,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 					throw new AuthenticationException("Invalid basic authorization header");
 				yield new BasicAuthorization(basic.group(1), basic.group(2));
 			}
-			default -> throw new AuthenticationException("Authorization type not supported: " + type);
+			default ->
+				throw new AuthenticationException("Authorization type not supported: " + type);
 		};
 
 	}
@@ -212,7 +215,6 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	{
 		return PropertyGraph.of(type, getParameterList().stream().sorted().toList());
 	}
-
 
 	public void setUser(User user)
 	{
