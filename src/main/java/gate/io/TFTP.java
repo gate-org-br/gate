@@ -46,7 +46,7 @@ public class TFTP
 			{
 				tftp.receiveFile(filename, TFTPClient.OCTET_MODE, baos, this.server, this.port);
 				baos.flush();
-				return new DataFile(baos.toByteArray(), filename);
+				return DataFile.of(baos.toByteArray(), filename);
 			}
 		} catch (SocketException e)
 		{

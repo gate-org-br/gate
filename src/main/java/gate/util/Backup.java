@@ -69,7 +69,7 @@ public class Backup<T>
 		try (StringWriter string = new StringWriter())
 		{
 			save(objs, string);
-			return new DataFile(string.toString().getBytes(Charset.forName("UTF-8")), String.format("%s.csv", name));
+			return DataFile.of(string.toString().getBytes(Charset.forName("UTF-8")), String.format("%s.csv", name));
 		} catch (IOException e)
 		{
 			throw new ConversionException("Erro ao gerar arquivo CSV");

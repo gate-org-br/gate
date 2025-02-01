@@ -87,7 +87,7 @@ public class PNG implements Serializable
 
 	public DataFile toDataFile()
 	{
-		return new DataFile(getBytes(), "png.png");
+		return DataFile.of(getBytes(), "png.png");
 	}
 
 	@Override

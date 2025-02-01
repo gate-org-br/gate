@@ -45,7 +45,7 @@ public class DataFile implements Serializable
 
 	private static final byte[] ZERO = new byte[0];
 
-	public DataFile(byte[] data, String name)
+	private DataFile(byte[] data, String name)
 	{
 
 		Objects.requireNonNull(data, "Data file data cannot be null.");
@@ -197,6 +197,11 @@ public class DataFile implements Serializable
 				return new DataFile(bytes.toByteArray(), url.getFile());
 			}
 		}
+	}
+
+	public static DataFile of(byte[] bytes, String name)
+	{
+		return new DataFile(bytes, name);
 	}
 
 	@Override
