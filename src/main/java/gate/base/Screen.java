@@ -70,17 +70,18 @@ public abstract class Screen extends Base
 						{
 							Property previous = property.getPreviousProperty();
 							previous.setValue(this, getRequest()
-								.getParameterValues(previous.getRawType(), property.getRawType(), name));
+									.getParameterValues(previous.getRawType(), property.getRawType(), name));
 						} else
 						{
 							Converter converter = property.getConverter();
 							Object value = getRequest().getParameterValue(name);
-							if (value instanceof Part)
+							if (value instanceof Part part)
 							{
-								Part part = (Part) value;
 								try
 								{
-									value = converter.ofPart(property.getRawType(), part);
+									value = part.getSize() > 0
+											? converter.ofPart(property.getRawType(), part)
+											: null;
 								} finally
 								{
 									try
@@ -91,8 +92,9 @@ public abstract class Screen extends Base
 										throw new UncheckedIOException(ex);
 									}
 								}
-							} else if (value instanceof String)
-								value = converter.ofString(property.getRawType(), (String) value);
+
+							} else if (value instanceof String string)
+								value = converter.ofString(property.getRawType(), string);
 							property.setValue(this, value);
 						}
 					} catch (ConversionException ex)
@@ -271,9 +273,9 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Thread.currentThread().getContextClassLoader().loadClass(screen != null
-				? module + "." + screen
-				+ "Screen" : module + ".Screen"))
-				.map(e -> e.asSubclass(Screen.class
+					? module + "." + screen
+					+ "Screen" : module + ".Screen"))
+					.map(e -> e.asSubclass(Screen.class
 			));
 		} catch (ClassNotFoundException ex)
 		{
