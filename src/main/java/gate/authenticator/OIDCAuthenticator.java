@@ -157,7 +157,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("Error trying to get access token from auth provider"));
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setAuthorization(new BearerAuthorization(accessToken))
+				.setAuthorization(BearerAuthorization.from(accessToken))
 				.get()
 				.readJsonObject()
 				.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
@@ -180,7 +180,7 @@ public class OIDCAuthenticator implements Authenticator
 		}
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setAuthorization(new BearerAuthorization(token))
+				.setAuthorization(BearerAuthorization.from(token))
 				.get()
 				.readJsonObject()
 				.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
@@ -219,7 +219,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(() -> new AuthenticationException("No access token in response"));
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setAuthorization(new BearerAuthorization(accessToken))
+				.setAuthorization(BearerAuthorization.from(accessToken))
 				.get()
 				.readJsonObject()
 				.orElseThrow(() -> new AuthenticationException("Error retrieving user info"));

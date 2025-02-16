@@ -23,7 +23,6 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 {
 
 	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
-	private static final Pattern BASIC_AUTHORIZATION = Pattern.compile("(.*)[:](.*)");
 
 	public ScreenServletRequest(HttpServletRequest request)
 	{
@@ -179,11 +178,11 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				if (password == null || password.isBlank())
 					throw new InvalidPasswordException();
 
-				return new BasicAuthorization(username, password);
+				return BasicAuthorization.from(username, password);
 			}
 
 			return getCookieValue("subject")
-					.map(CookieAuthorization::new)
+					.map(CookieAuthorization::valueOf)
 					.orElse(null);
 		}
 
@@ -195,16 +194,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return switch (type.toUpperCase())
 		{
 			case "BEARER" ->
-				new BearerAuthorization(authorization.group(2));
+				BearerAuthorization.valueOf(header);
 			case "BASIC" ->
-			{
-				String value = authorization.group(2);
-				value = new String(Base64.getDecoder().decode(value));
-				Matcher basic = BASIC_AUTHORIZATION.matcher(value);
-				if (!basic.matches())
-					throw new AuthenticationException("Invalid basic authorization header");
-				yield new BasicAuthorization(basic.group(1), basic.group(2));
-			}
+				BasicAuthorization.valueOf(header);
 			default ->
 				throw new AuthenticationException("Authorization type not supported: " + type);
 		};

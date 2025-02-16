@@ -5,7 +5,7 @@ public class CookieAuthorization implements Authorization
 
 	private final String token;
 
-	public CookieAuthorization(String token)
+	private CookieAuthorization(String token)
 	{
 		this.token = token;
 	}
@@ -19,5 +19,10 @@ public class CookieAuthorization implements Authorization
 	public String toString()
 	{
 		return token;
+	}
+
+	public static CookieAuthorization valueOf(String string)
+	{
+		return new CookieAuthorization(string);
 	}
 }
