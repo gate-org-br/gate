@@ -57,4 +57,4 @@ FROM
         gate.Role
     JOIN RoleFunc ON Role.id = RoleFunc.Role$id
     JOIN Auth ON RoleFunc.Func$id = Auth.Func$id) AS Roles
-ORDER BY id , rolename IS NULL
+ORDER BY id , name IS NULL
