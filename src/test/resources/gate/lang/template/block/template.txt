@@ -1,0 +1,5 @@
+[{{#search}}{ "label": "Search", "value": "search" },{{/search}}
+{{#select}}{ "label": "Select", "value": "select" },{{/select}}
+{{#insert}}{ "label": "Insert", "value": "insert" },{{/insert}}
+{{#update}}{ "label": "Update", "value": "update" },{{/update}}
+{{#delete}}{ "label": "Delete", "value": "delete" },{{/delete}}]

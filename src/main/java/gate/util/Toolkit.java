@@ -1,5 +1,6 @@
 package gate.util;
 
+import gate.lang.json.JsonScalar;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -122,8 +123,12 @@ public class Toolkit
 	 */
 	public static boolean isFalsy(Object obj)
 	{
+		if (obj instanceof JsonScalar scalar)
+			return isFalsy(scalar.getScalarValue());
+
 		if (obj == null)
 			return true;
+
 		if (obj instanceof String string)
 			return string.isBlank();
 		if (obj instanceof Number number)

@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
-public class JsonNull implements JsonElement
+public class JsonNull implements JsonElement, JsonScalar
 {
 
 	public static final JsonNull INSTANCE = new JsonNull();
@@ -56,9 +56,15 @@ public class JsonNull implements JsonElement
 
 	@Override
 	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+			java.lang.reflect.Type elementType)
 	{
 		return toObject((Class< T>) type);
+	}
+
+	@Override
+	public Object getScalarValue()
+	{
+		return null;
 	}
 
 	/**

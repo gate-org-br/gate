@@ -7,8 +7,10 @@ import gate.lang.expression.Parameters;
 import gate.util.Toolkit;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Block implements Evaluable
 {
@@ -64,7 +66,13 @@ class Block implements Evaluable
 
 	private void process(Writer writer, List<Object> context, Parameters parameters, Object object)
 	{
-		template.evaluate(writer, context, parameters);
+		if (object instanceof Collection || object instanceof Map)
+		{
+			context.add(0, object);
+			template.evaluate(writer, context, parameters);
+			context.remove(0);
+		} else
+			template.evaluate(writer, context, parameters);
 	}
 
 	@Override

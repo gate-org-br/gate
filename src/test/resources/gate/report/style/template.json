@@ -1,0 +1,67 @@
+{
+	"orientation": "landscape",
+	"elements": [
+		{
+			"type": "grid",
+			"caption": "Contacts",
+			"columns": [
+				{
+					"head": "Name",
+					"property": "name",
+					"style": "width: 80; text-align: left"
+				},
+				{
+					"head": "Age",
+					"property": "age",
+					"style": "width: 20",
+					"conditions": [
+						{
+							"condition": {
+								"type": "ge",
+								"value": 50
+							},
+							"style": "color: red"
+						},
+						{
+							"condition": {
+								"type": "lt",
+								"value": 50
+							},
+							"style": "color: blue"
+						}
+					]
+				}
+			],
+			"dataset": [
+				{
+					"name": "Paul",
+					"age": 50
+				},
+				{
+					"name": "Tom",
+					"age": 20
+				},
+				{
+					"name": "Mike",
+					"age": 10
+				},
+				{
+					"name": "Bianca",
+					"age": 60
+				},
+				{
+					"name": "Jane",
+					"age": 80
+				},
+				{
+					"name": "Mary",
+					"age": 50
+				},
+				{
+					"name": "Jeniffer",
+					"age": 70
+				}
+			]
+		}
+	]
+}

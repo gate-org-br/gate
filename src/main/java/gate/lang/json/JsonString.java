@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
-public class JsonString implements JsonElement
+public class JsonString implements JsonElement, JsonScalar
 {
 
 	private final String value;
@@ -45,7 +45,7 @@ public class JsonString implements JsonElement
 	public boolean equals(Object obj)
 	{
 		return obj instanceof JsonString
-			&& ((JsonString) obj).value.equals(value);
+				&& ((JsonString) obj).value.equals(value);
 	}
 
 	@Override
@@ -61,12 +61,18 @@ public class JsonString implements JsonElement
 	}
 
 	@Override
+	public Object getScalarValue()
+	{
+		return value;
+	}
+
+	@Override
 	public <T> T toObject(Class<T> type)
 	{
 		try
 		{
 			return type == String.class ? (T) value
-				: gate.converter.Converter.fromString(type, value);
+					: gate.converter.Converter.fromString(type, value);
 		} catch (ConversionException ex)
 		{
 			throw new UncheckedConversionException(ex);
@@ -75,7 +81,7 @@ public class JsonString implements JsonElement
 
 	@Override
 	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+			java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
