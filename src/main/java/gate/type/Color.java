@@ -43,18 +43,32 @@ public class Color
 
 	public static Color of(String string)
 	{
-		int r = Integer.parseInt(string.substring(1, 3), 16);
-		int g = Integer.parseInt(string.substring(3, 5), 16);
-		int b = Integer.parseInt(string.substring(5, 7), 16);
-		return of(r, g, b);
+		return switch (string)
+		{
+			case "red" ->
+				Color.RED;
+			case "green" ->
+				Color.GREEN;
+			case "blue" ->
+				Color.BLUE;
+			case "black" ->
+				Color.BLACK;
+			default ->
+			{
+				int r = Integer.parseInt(string.substring(1, 3), 16);
+				int g = Integer.parseInt(string.substring(3, 5), 16);
+				int b = Integer.parseInt(string.substring(5, 7), 16);
+				yield of(r, g, b);
+			}
+		};
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Color && r == ((Color) obj).r
-			&& g == ((Color) obj).g
-			&& b == ((Color) obj).b;
+				&& g == ((Color) obj).g
+				&& b == ((Color) obj).b;
 	}
 
 	@Override

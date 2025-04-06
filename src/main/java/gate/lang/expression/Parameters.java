@@ -7,40 +7,38 @@ import java.util.Map;
 
 public class Parameters
 {
-	
+
 	private final Deque<Map<String, Object>> parameters = new ArrayDeque<>();
-	
+
 	public Parameters()
 	{
 		parameters.push(new HashMap<>());
 	}
-	
+
 	public Parameters(Parameters parameters)
 	{
 		this.parameters.peek().putAll(parameters.parameters.peek());
 	}
-	
+
 	public Parameters put(String name, Object value)
 	{
 		parameters.peek().put(name, value);
 		return this;
 	}
-	
+
 	public Object get(String name)
 	{
-		return parameters.peek().get(name);
+		for (Map<String, Object> map : parameters)
+			if (map.containsKey(name))
+				return map.get(name);
+		return null;
 	}
-	
-	public void remove(String name)
-	{
-		parameters.peek().remove(name);
-	}
-	
+
 	public void push(Map<String, Object> values)
 	{
 		parameters.push(values);
 	}
-	
+
 	public Map<String, Object> poll()
 	{
 		return parameters.poll();

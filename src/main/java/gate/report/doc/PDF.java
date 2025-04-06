@@ -108,18 +108,15 @@ public class PDF extends Doc
 	{
 		try
 		{
-			Document document;
-			switch (getReport().getOrientation())
+			Document document = switch (getReport().getOrientation())
 			{
-				case PORTRAIT:
-					document = new Document(PageSize.A4);
-					break;
-				case LANDSCAPE:
-					document = new Document(PageSize.A4.rotate());
-					break;
-				default:
+				case PORTRAIT ->
+					new Document(PageSize.A4);
+				case LANDSCAPE ->
+					new Document(PageSize.A4.rotate());
+				default ->
 					throw new IllegalArgumentException("Invalid report orientation");
-			}
+			};
 
 			var writer = PdfWriter.getInstance(document, os);
 			writer.setPageEvent(new Numerator());

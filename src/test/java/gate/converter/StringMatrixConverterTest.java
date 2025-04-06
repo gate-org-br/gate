@@ -4,7 +4,6 @@ import gate.io.StringReader;
 import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class StringMatrixConverterTest
@@ -27,7 +26,6 @@ public class StringMatrixConverterTest
 	};
 
 	@Test
-	@Disabled
 	public void testToString() throws IOException
 	{
 		String result = Converter.toString(OBJECT);
@@ -36,7 +34,6 @@ public class StringMatrixConverterTest
 	}
 
 	@Test
-	@Disabled
 	public void testOfString() throws Exception
 	{
 		String string = StringReader.read(getClass().getResource("StringMatrixConverterTest.csv"));
