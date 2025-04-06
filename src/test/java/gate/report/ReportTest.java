@@ -2,6 +2,7 @@ package gate.report;
 
 import gate.entity.Role;
 import gate.entity.User;
+import gate.lang.json.JsonObject;
 import gate.report.Report.Orientation;
 import gate.report.doc.PDF;
 import gate.report.doc.XLS;
@@ -10,6 +11,9 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +123,11 @@ public class ReportTest
 
 		report.compact();
 		PDF doc = new PDF(report);
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())
+		{
+			doc.print(stream);
+			stream.flush();
+		}
 	}
 
 	@Test
@@ -172,5 +181,24 @@ public class ReportTest
 								.add("Item")));
 
 		PDF doc = new PDF(report);
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())
+		{
+			doc.print(stream);
+			stream.flush();
+		}
+	}
+
+	@Test
+	public void testStyle() throws FileNotFoundException, IOException, URISyntaxException
+	{
+		var template = JsonObject.parse(Files.readString(Path.of(getClass().getResource("style/template.json").toURI())));
+		var report = Report.of(template);
+		PDF doc = new PDF(report);
+
+		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())
+		{
+			doc.print(stream);
+			stream.flush();
+		}
 	}
 }

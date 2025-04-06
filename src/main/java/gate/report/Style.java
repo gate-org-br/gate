@@ -187,7 +187,7 @@ public final class Style
 					case "font-weight" ->
 						fontWeight = FontWeight.of(value);
 					case "color" ->
-						Color.of(value);
+						color = Color.of(value);
 					case "text-align" ->
 						textAlign = TextAlign.of(value);
 					case "list-style-type" ->

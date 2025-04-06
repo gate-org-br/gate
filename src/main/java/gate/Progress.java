@@ -112,6 +112,10 @@ public class Progress
 		else
 			update(status, todo, done, message);
 		dispatch(this.toString());
+
+		dispatch("Failure", new JsonObject()
+				.setString("message", message)
+				.toString());
 		close();
 	}
 

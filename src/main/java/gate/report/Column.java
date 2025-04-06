@@ -2,15 +2,18 @@ package gate.report;
 
 import gate.lang.json.JsonBoolean;
 import gate.lang.json.JsonCollection;
-import gate.lang.json.JsonElement;
 import gate.lang.json.JsonNumber;
 import gate.lang.json.JsonObject;
+import gate.lang.json.JsonScalar;
 import gate.lang.json.JsonString;
 import gate.type.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * Describes a column to be displayed on a Grid.
@@ -26,6 +29,7 @@ public final class Column<T> extends Element
 	private Object foot;
 	private Function<T, Object> body = e -> e;
 	private BiFunction<T, Style, Style> styler = (object, style) -> style;
+	private List<ConditionalStyle> conditionalStyles = new ArrayList();
 
 	public Column()
 	{
@@ -96,6 +100,23 @@ public final class Column<T> extends Element
 		return styler;
 	}
 
+	public Column conditionalStyles(List<ConditionalStyle> conditionalStyles)
+	{
+		this.conditionalStyles = Objects.requireNonNull(conditionalStyles);
+		return this;
+	}
+
+	public Column conditionalStyle(ConditionalStyle conditionalStyle)
+	{
+		this.conditionalStyles.add(conditionalStyle);
+		return this;
+	}
+
+	public Column conditionalStyle(Predicate<Object> predicate, String style)
+	{
+		return this.conditionalStyle(new ConditionalStyle((Predicate<Object>) predicate, style));
+	}
+
 	/**
 	 * Compute the column style para the specific object and value.
 	 *
@@ -114,6 +135,11 @@ public final class Column<T> extends Element
 				.ifPresent(style::color);
 
 		styler.apply(object, style);
+
+		for (var conditionalStyle : conditionalStyles)
+			if (conditionalStyle.getPredicate().test(value))
+				style = style.apply(conditionalStyle.getStyle());
+
 		return style;
 	}
 
@@ -176,13 +202,24 @@ public final class Column<T> extends Element
 		else if (style != null)
 			throw new IllegalArgumentException("Invalid column style");
 
+		column.conditionalStyles(jsonObject.getJsonArray("conditions")
+				.map(array -> array.stream()
+				.filter(e -> e instanceof JsonObject)
+				.map(e -> (JsonObject) e)
+				.map(ConditionalStyle::of)
+				.toList())
+				.orElseGet(ArrayList::new));
+
 		var property = jsonObject.get("property");
 		if (property instanceof JsonString string)
 			column.body(e ->
 			{
 				if (e instanceof JsonCollection jsonCollection)
 					return jsonCollection.getProperty(string.getValue())
-							.map(JsonElement::toString).orElse("");
+							.filter(value -> value instanceof JsonScalar)
+							.map(value -> (JsonScalar) value)
+							.map(JsonScalar::getScalarValue)
+							.orElse("");
 				else
 					throw new IllegalArgumentException("Invalid column property");
 			});

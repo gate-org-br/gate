@@ -3,6 +3,8 @@ package gate.lang.template;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.TemplateException;
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +18,14 @@ public final class TemplateTest
 {
 
 	private List<Role> roles;
+
+	private final JsonObject PERMISSIONS
+			= new JsonObject()
+					.setBoolean("select", true)
+					.setBoolean("search", true)
+					.setBoolean("insert", false)
+					.setBoolean("update", false)
+					.setBoolean("delete", false);
 
 	public TemplateTest()
 	{
@@ -107,6 +117,15 @@ public final class TemplateTest
 	{
 		String expected = getFile("Document.html");
 		String result = Template.compile(getFile("Template.xml")).evaluate(this);
+		assertEquals(expected, result);
+	}
+
+	@Test
+	public void block() throws TemplateException, IOException
+	{
+		String expected = getFile("block/document.txt");
+		Template template = Template.compile(getFile("block/template.txt"));
+		String result = template.evaluate(PERMISSIONS);
 		assertEquals(expected, result);
 	}
 

@@ -240,7 +240,19 @@ public class Report
 
 	public static Report of(JsonObject jsonObject) throws IllegalArgumentException
 	{
-		Report report = new Report();
+		var orientation = jsonObject.getString("orientation")
+				.map(String::toUpperCase)
+				.map(e -> switch (e)
+		{
+			case "PORTRAIT" ->
+				Report.Orientation.PORTRAIT;
+			case "LANDSCAPE" ->
+				Report.Orientation.LANDSCAPE;
+			default ->
+				throw new IllegalArgumentException("Invalid report orientation");
+		}).orElse(Report.Orientation.PORTRAIT);
+
+		Report report = new Report(orientation);
 
 		if (jsonObject.get("type") instanceof JsonString)
 			report.add(ReportElement.of(jsonObject));

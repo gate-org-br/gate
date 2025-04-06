@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
-public class JsonNumber extends Number implements JsonElement
+public class JsonNumber extends Number implements JsonElement, JsonScalar
 {
 
 	private final BigDecimal value;
@@ -94,6 +94,12 @@ public class JsonNumber extends Number implements JsonElement
 		if (type.isAssignableFrom(BigInteger.class))
 			return (T) value.toBigInteger();
 		return (T) value;
+	}
+
+	@Override
+	public Object getScalarValue()
+	{
+		return value;
 	}
 
 	@Override

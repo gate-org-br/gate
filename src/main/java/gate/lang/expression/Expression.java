@@ -1,6 +1,7 @@
 package gate.lang.expression;
 
 import gate.converter.Converter;
+import gate.converter.custom.ExpressionConverter;
 import gate.error.ExpressionException;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyScanner;
@@ -8,12 +9,10 @@ import gate.lang.template.Evaluable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
-import java.util.regex.Pattern;
 
+@gate.annotation.Converter(ExpressionConverter.class)
 public class Expression implements Evaluable
 {
-
-	private static final Pattern PATTERN = Pattern.compile("(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)\\(\\)|(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)|\\[(\\d+)\\]|\\[\"([^\"]+)\"\\]|(.+)");
 
 	private Object current;
 	private List<Object> context;

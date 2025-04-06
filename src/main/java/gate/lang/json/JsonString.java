@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
-public class JsonString implements JsonElement
+public class JsonString implements JsonElement, JsonScalar
 {
 
 	private final String value;
@@ -60,7 +60,13 @@ public class JsonString implements JsonElement
 	}
 
 	@Override
-	public <T> T toObject(Class<T> type) throws ConversionException
+	public Object getScalarValue()
+	{
+		return value;
+	}
+
+	@Override
+	public <T> T toObject(Class<T> type)
 	{
 		return type == String.class ? (T) value
 				: gate.converter.Converter.fromString(type, value);

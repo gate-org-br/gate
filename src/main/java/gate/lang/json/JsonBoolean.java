@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
-public class JsonBoolean implements JsonElement
+public class JsonBoolean implements JsonElement, JsonScalar
 {
 
 	private final boolean value;
@@ -45,6 +45,12 @@ public class JsonBoolean implements JsonElement
 	}
 
 	@Override
+	public Object getScalarValue()
+	{
+		return value;
+	}
+
+	@Override
 	public Type getType()
 	{
 		return Type.BOOLEAN;
@@ -54,7 +60,7 @@ public class JsonBoolean implements JsonElement
 	public boolean equals(Object obj)
 	{
 		return obj instanceof JsonBoolean
-			&& obj == this;
+				&& obj == this;
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class JsonBoolean implements JsonElement
 
 	@Override
 	public <T, E> T toObject(java.lang.reflect.Type type,
-		java.lang.reflect.Type elementType)
+			java.lang.reflect.Type elementType)
 	{
 		return (T) (Boolean) value;
 	}
@@ -90,8 +96,8 @@ public class JsonBoolean implements JsonElement
 	public static JsonBoolean parse(Boolean value)
 	{
 		return Boolean.TRUE.equals(value)
-			? JsonBoolean.TRUE
-			: JsonBoolean.FALSE;
+				? JsonBoolean.TRUE
+				: JsonBoolean.FALSE;
 	}
 
 	/**

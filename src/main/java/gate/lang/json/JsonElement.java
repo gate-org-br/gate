@@ -20,15 +20,13 @@ import java.util.Objects;
 
 /**
  * Represents any JSON element.
- *
- * @author davins
  */
 @Handler(JsonElementHandler.class)
 @Converter(JsonElementConverter.class)
 public interface JsonElement extends Serializable
 {
 
-	public static final JsonString UNDEFINED = JsonString.of("Indefinido");
+	public static final JsonString UNDEFINED = JsonString.of("");
 
 	/**
 	 * Gets the type parse this JSON element.
@@ -75,6 +73,12 @@ public interface JsonElement extends Serializable
 		}
 	}
 
+	/**
+	 * Parses a JSON string into a JsonElement.
+	 *
+	 * @param string The JSON string to be parsed
+	 * @return The parsed JsonElement
+	 */
 	static JsonElement parse(String string)
 			throws ConversionException
 	{
@@ -201,6 +205,12 @@ public interface JsonElement extends Serializable
 		return JsonString.of(gate.converter.Converter.toText(obj));
 	}
 
+	/**
+	 * Parses a JSON string into a JsonElement.
+	 *
+	 * @param string The JSON string to be parsed
+	 * @return The parsed JsonElement
+	 */
 	public static JsonElement valueOf(String string)
 	{
 		return parse(string);
