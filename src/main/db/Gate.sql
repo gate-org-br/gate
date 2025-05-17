@@ -377,6 +377,102 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+
+USE `gate`;
+DROP procedure IF EXISTS `get_authorized_users`;
+
+USE `gate`;
+DROP procedure IF EXISTS `gate`.`get_authorized_users`;
+
+
+DELIMITER $$
+USE `gate`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_authorized_users`(
+    IN p_module VARCHAR(255),
+    IN p_screen VARCHAR(255),
+    IN p_action VARCHAR(255)
+)
+BEGIN
+    WITH auth_users AS (
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email, 
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.Uzer ON Auth.`Uzer$id` = Uzer.id
+        
+        UNION
+        
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email,
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.UzerFunc ON UzerFunc.`Func$id` = Auth.`Func$id`
+                JOIN
+            gate.Uzer ON UzerFunc.`Uzer$id` = Uzer.id
+        
+        UNION
+        
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email,
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.Uzer ON Auth.`Role$id` = Uzer.`Role$id`
+        
+        UNION
+        
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email,
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.Uzer ON gate.isparent(Auth.`Role$id`, Uzer.`Role$id`)
+        WHERE
+            Auth.scope = 'PUBLIC'
+        
+        UNION
+        
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email,
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.RoleFunc ON RoleFunc.`Func$id` = Auth.`Func$id`
+                JOIN
+            gate.Uzer ON RoleFunc.`Role$id` = Uzer.`Role$id`
+        
+        UNION
+        
+        SELECT 
+            Uzer.id, Uzer.username, Uzer.name, Uzer.email,
+            Auth.module, Auth.screen, Auth.action
+        FROM
+            gate.Auth
+                JOIN
+            gate.RoleFunc ON RoleFunc.`Func$id` = Auth.`Func$id`
+                JOIN
+            gate.Uzer ON gate.isparent(RoleFunc.`Role$id`, Uzer.`Role$id`)
+        WHERE
+            Auth.scope = 'PUBLIC'
+    )
+    SELECT distinct id, username, name, email
+    FROM auth_users
+    WHERE
+        (p_module IS NULL OR module IS NULL OR module = p_module)
+        AND (p_screen IS NULL OR screen IS NULL OR screen = p_screen)
+        AND (p_action IS NULL OR action IS NULL OR action = p_action);
+END$$
+
+DELIMITER ;
+
+
 -- Dump completed on 2022-01-21 16:51:53
 
 
@@ -406,3 +502,4 @@ password,
 name)
 VALUES
 (1, 1, 1, 'gate', MD5('gate'), 'Gate');
+
