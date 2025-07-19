@@ -17,7 +17,7 @@ public class ConstraintImplTest
 	@BeforeAll
 	public static void startup()
 	{
-		Locale.setDefault(new Locale("pt", "br"));
+		Locale.setDefault(Locale.of("pt", "br"));
 	}
 
 	@Test

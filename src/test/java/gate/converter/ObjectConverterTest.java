@@ -16,7 +16,7 @@ public class ObjectConverterTest
 	@BeforeAll
 	public static void setUp()
 	{
-		Locale.setDefault(new Locale("pt", "br"));
+		Locale.setDefault(Locale.of("pt", "br"));
 	}
 
 	@Test

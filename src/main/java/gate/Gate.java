@@ -82,7 +82,7 @@ public class Gate extends HttpServlet
 
 	static
 	{
-		Locale.setDefault(new Locale("pt", "BR"));
+		Locale.setDefault(Locale.of("pt", "BR"));
 	}
 
 	@Override

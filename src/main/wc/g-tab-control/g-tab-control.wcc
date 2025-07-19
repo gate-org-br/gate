@@ -52,6 +52,31 @@ customElements.define('g-tab-control', class extends HTMLElement
 		this.setAttribute("type", type);
 	}
 
+	reset()
+	{
+		Array.from(this.children)
+			.filter(e => e.tagName === "DIV")
+			.forEach(e => e.innerHTML = "");
+		this.reload();
+	}
+
+	reload() {
+		const link = Array.from(this.children)
+			.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
+			.find(tab => tab.getAttribute("data-selected") === "true");
+
+		if (!link)
+			return false;
+
+		const page = link.nextElementSibling;
+		if (!page || page.tagName !== "DIV")
+			return false;
+
+		page.innerHTML = "";
+		page.removeAttribute("data-loading");
+		link.click();
+	}
+
 	connectedCallback()
 	{
 		loading(this.parentNode);
@@ -130,7 +155,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 								{attributes: true, childList: true, subtree: true});
 						});
 						link.nextElementSibling.appendChild(iframe);
-						let name = Math.random().toString(36).substr(2);
+						let name = crypto.randomUUID();
 						iframe.setAttribute("id", name);
 						iframe.setAttribute("name", name);
 						if (link.tagName === "A")
