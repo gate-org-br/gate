@@ -7,6 +7,7 @@ import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public interface Authenticator
 {
@@ -18,11 +19,13 @@ public interface Authenticator
 		HttpServletResponse response)
 		throws AuthenticationException,
 		HttpException,
-		HierarchyException;
+		HierarchyException, IOException;
 
 	public String logoutUri(ScreenServletRequest request);
 
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException;
+
+	public User getUser(ScreenServletRequest request) throws AuthenticationException, IOException;
 
 	public abstract Type getType();
 

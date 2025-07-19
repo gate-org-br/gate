@@ -35,7 +35,7 @@ public class LDAPAuthenticator implements Authenticator
 	private final boolean databaseFallback;
 
 	public LDAPAuthenticator(GateControl control,
-			AuthConfig config)
+		AuthConfig config)
 	{
 		this.control = control;
 		this.server = config.getProperty("ldap.server").orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
@@ -43,8 +43,8 @@ public class LDAPAuthenticator implements Authenticator
 		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
 		this.clientPassword = config.getProperty("ldap.client_password").orElse(null);
 		this.databaseFallback = config.getProperty("ldap.database_fallback")
-				.map(e -> "true".equals(e))
-				.orElse(false);
+			.map(e -> "true".equals(e))
+			.orElse(false);
 		this.rootContext = config.getProperty("ldap.root_context").orElse("");
 	}
 
@@ -78,7 +78,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	private String getUniqueID(String username, String password,
-			BasicAuthorization authorization) throws NamingException
+		BasicAuthorization authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -87,10 +87,10 @@ public class LDAPAuthenticator implements Authenticator
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
-					new Object[]
-					{
-						authorization.username(), authorization.username(), authorization.username()
-					}, controls);
+				new Object[]
+				{
+					authorization.username(), authorization.username(), authorization.username()
+				}, controls);
 
 			return enumeration.hasMore() ? enumeration.next().getNameInNamespace() : null;
 		} finally
@@ -101,7 +101,13 @@ public class LDAPAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-			throws gate.error.AuthenticationException, HierarchyException
+		throws gate.error.AuthenticationException, HierarchyException
+	{
+		return getUser(request);
+	}
+
+	@Override
+	public User getUser(ScreenServletRequest request)
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 
@@ -118,18 +124,18 @@ public class LDAPAuthenticator implements Authenticator
 						throw new InvalidUsernameException();
 
 					if (MD5.digest(user.getUsername()).toString()
-							.equals(user.getPassword()))
+						.equals(user.getPassword()))
 						throw new DefaultPasswordException();
 
 					if (!MD5.digest(authorization.password())
-							.toString().equals(user.getPassword()))
+						.toString().equals(user.getPassword()))
 						throw new InvalidPasswordException();
 				} else
 					getDirContext(dn, authorization.password())
-							.close();
+						.close();
 			} else
 				getDirContext(authorization.username(), authorization.password())
-						.close();
+					.close();
 
 			return user;
 
@@ -143,6 +149,7 @@ public class LDAPAuthenticator implements Authenticator
 			else
 				throw new AuthenticatorException(ex);
 		}
+
 	}
 
 	@Override

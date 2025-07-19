@@ -11,6 +11,7 @@ import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 public class DatabaseAuthenticator implements Authenticator
 {
@@ -36,16 +37,21 @@ public class DatabaseAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-			HttpServletResponse response)
-			throws HttpException, AuthenticationException, HierarchyException
+		HttpServletResponse response)
+		throws HttpException, AuthenticationException, HierarchyException, IOException
 	{
+		return getUser(request);
+	}
 
+	@Override
+	public User getUser(ScreenServletRequest request) throws AuthenticationException, IOException
+	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 
 		User user = control.select(authorization.username());
 
 		if (MD5.digest(user.getUsername()).toString()
-				.equals(user.getPassword()))
+			.equals(user.getPassword()))
 			throw new DefaultPasswordException();
 
 		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))

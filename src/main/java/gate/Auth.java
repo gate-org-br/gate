@@ -43,7 +43,7 @@ public class Auth extends HttpServlet
 
 			try
 			{
-				User user = authenticator.authenticate(new ScreenServletRequest(httpServletRequest), response);
+				User user = authenticator.getUser(new ScreenServletRequest(httpServletRequest));
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
 				writer.write(credentials.subject(user));
