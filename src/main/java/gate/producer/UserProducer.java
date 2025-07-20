@@ -19,25 +19,25 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class UserProducer
 {
+
 	@Current
 	@Produces
 	@RequestScoped
 	@Named(value = "user")
 	public User getUser(Credentials credentials,
-						HttpServletRequest httpServletRequest,
-						HttpServletResponse response) throws HierarchyException
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse response) throws HierarchyException
 	{
 		if (httpServletRequest == null || response == null)
 			return new User();
 
-		if (httpServletRequest.getAttribute(User.class.getName())
-				instanceof User user)
+		if (httpServletRequest.getAttribute(User.class.getName()) instanceof User user)
 			return user;
 
 		try
 		{
-			ScreenServletRequest request =
-					new ScreenServletRequest(httpServletRequest);
+			ScreenServletRequest request
+				= new ScreenServletRequest(httpServletRequest);
 
 			var auth = request.getAuthorization();
 			if (auth instanceof BearerAuthorization bearer)
@@ -49,13 +49,13 @@ public class UserProducer
 			{
 				User user = credentials.subject(cookie.token());
 				request.setAttribute(User.class.getName(), user);
-				response.addCookie(CookieFactory.create(Gate.SUBJECT_COOKIE,
-						credentials.subject(user)));
+				response.addHeader("Set-Cookie",
+					CookieFactory.create(Gate.SUBJECT_COOKIE, credentials.subject(user)));
 				return user;
 			} else
 				return new User();
 		} catch (AuthenticationException
-				 | UnauthorizedException ex)
+			| UnauthorizedException ex)
 		{
 			return new User();
 		}

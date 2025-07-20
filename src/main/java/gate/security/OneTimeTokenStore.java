@@ -3,22 +3,21 @@ package gate.security;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-public class SecuritySessions
+public class OneTimeTokenStore
 {
 
 	private final long timeout;
 	private final Map<String, Session> sessions = new ConcurrentHashMap<>();
 
-	private SecuritySessions(long timeout)
+	private OneTimeTokenStore(long timeout)
 	{
 		this.timeout = timeout;
 	}
 
-	public static SecuritySessions of(long timeout)
+	public static OneTimeTokenStore of(long timeout)
 	{
-		return new SecuritySessions(timeout);
+		return new OneTimeTokenStore(timeout);
 	}
 
 	public String create()
@@ -30,7 +29,7 @@ public class SecuritySessions
 		return token;
 	}
 
-	public boolean check(String token)
+	public boolean consume(String token)
 	{
 		timeout();
 		return sessions.remove(token) != null;
@@ -47,20 +46,17 @@ public class SecuritySessions
 
 		private final String uuid;
 		private final long timestamp;
-		private final long sequence;
-		private final static AtomicLong SEQUENCER = new AtomicLong();
 
 		public static Session create()
 		{
 			return new Session(UUID.randomUUID().toString(),
-				System.currentTimeMillis(), SEQUENCER.incrementAndGet());
+				System.currentTimeMillis());
 		}
 
-		private Session(String uuid, long timestamp, long sequence)
+		private Session(String uuid, long timestamp)
 		{
 			this.uuid = uuid;
 			this.timestamp = timestamp;
-			this.sequence = sequence;
 		}
 
 		public String uuid()
@@ -73,15 +69,10 @@ public class SecuritySessions
 			return timestamp;
 		}
 
-		public long sequence()
-		{
-			return sequence;
-		}
-
 		@Override
 		public String toString()
 		{
-			return String.format("%s-%d-%d", uuid, timestamp, sequence);
+			return String.format("%s-%d", uuid, timestamp);
 		}
 	}
 }

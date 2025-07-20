@@ -15,7 +15,7 @@ import gate.io.URL;
 import gate.lang.json.JsonObject;
 import gate.security.JWKSPublicKeyParser;
 import gate.util.Parameters;
-import gate.security.SecuritySessions;
+import gate.security.OneTimeTokenStore;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +30,7 @@ public class OIDCAuthenticator implements Authenticator
 
 	private final GateControl control;
 
-	private static final SecuritySessions SESSIONS = SecuritySessions.of(60000);
+	private static final OneTimeTokenStore SESSIONS = OneTimeTokenStore.of(60000);
 
 	private final String provider;
 	private final String clientId;
@@ -121,7 +121,7 @@ public class OIDCAuthenticator implements Authenticator
 		var code = request.getParameter("code");
 
 		var state = request.getParameter("state");
-		if (state == null || !SESSIONS.check(state))
+		if (state == null || !SESSIONS.consume(state))
 			return null;
 
 		var tokens = new URL(tokenEndpoint.get())
@@ -144,7 +144,7 @@ public class OIDCAuthenticator implements Authenticator
 			if (jwt.getPayload() instanceof Claims claims)
 			{
 
-				if (!SESSIONS.check(claims.get("nonce", String.class)))
+				if (!SESSIONS.consume(claims.get("nonce", String.class)))
 					throw new AuthenticationException("Error validating the id token from auth provider");
 
 				if (claims.containsKey(userId))

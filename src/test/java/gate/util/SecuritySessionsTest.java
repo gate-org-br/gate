@@ -1,6 +1,6 @@
 package gate.util;
 
-import gate.security.SecuritySessions;
+import gate.security.OneTimeTokenStore;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 public class SecuritySessionsTest
 {
 
-	private static SecuritySessions securitySessions;
+	private static OneTimeTokenStore securitySessions;
 
 	@BeforeAll
 	public static void setUp()
 	{
-		securitySessions = SecuritySessions.of(100);
+		securitySessions = OneTimeTokenStore.of(100);
 	}
 
 	@Test
@@ -23,7 +23,7 @@ public class SecuritySessionsTest
 	{
 		String session = securitySessions.create();
 		assertNotNull(session);
-		assertTrue(securitySessions.check(session));
+		assertTrue(securitySessions.consume(session));
 	}
 
 	@Test
@@ -31,7 +31,7 @@ public class SecuritySessionsTest
 	{
 		String session = securitySessions.create();
 		assertNotNull(session);
-		assertFalse(securitySessions.check("invalid"));
+		assertFalse(securitySessions.consume("invalid"));
 	}
 
 	@Test
@@ -39,6 +39,6 @@ public class SecuritySessionsTest
 	{
 		String session = securitySessions.create();
 		Thread.sleep(200);
-		assertFalse(securitySessions.check(session));
+		assertFalse(securitySessions.consume(session));
 	}
 }

@@ -1,25 +1,22 @@
 package gate;
 
-import jakarta.servlet.http.Cookie;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class CookieFactory
 {
 
-	public static Cookie create(String name, String value)
+	private static final int MAX_AGE = 3600;
+	private static final String PATH = "/";
+
+	public static String create(String name, String value)
 	{
-		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge(3600);
-		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-		return cookie;
+		return String.format("%s=%s; Max-Age=%d; Path=%s; HttpOnly; SameSite=Lax",
+			name, URLEncoder.encode(value, StandardCharsets.UTF_8), MAX_AGE, PATH);
 	}
 
-	public static Cookie delete(String name)
+	public static String delete(String name)
 	{
-		Cookie cookie = new Cookie(name, null);
-		cookie.setMaxAge(0);
-		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-		return cookie;
+		return String.format("%s=; Max-Age=0; Path=%s; HttpOnly; SameSite=Lax", name, PATH);
 	}
 }
