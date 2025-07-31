@@ -14,6 +14,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 /**
  * Produces a Version object with the version number of the current application.
  */
+@ApplicationScoped
 public class VersionProducer
 {
 

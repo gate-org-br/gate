@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.inject.Inject;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
 
-@ApplicationScoped
+@Dependent
 public class SetAttributeProcessor extends AbstractProcessorDialect
 {
 

@@ -1,25 +1,33 @@
 package gate.producer;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
+@RequestScoped
 public class JakartaServletWebApplicationProducer
 {
 
 	@Inject
-	ServletContext context;
+	HttpServletRequest request;
 
-	private JakartaServletWebApplication instance;
+	private JakartaServletWebApplication jakartaServletWebApplication;
+
+	@PostConstruct
+	public void build()
+	{
+		jakartaServletWebApplication
+			= JakartaServletWebApplication.buildApplication(request.getServletContext());
+	}
 
 	@Produces
-	@ApplicationScoped
-	public JakartaServletWebApplication produce()
+	@Dependent
+	public JakartaServletWebApplication produce(HttpServletRequest request)
 	{
-		if (instance == null)
-			instance = JakartaServletWebApplication.buildApplication(context);
-		return instance;
+		return jakartaServletWebApplication;
 	}
 }

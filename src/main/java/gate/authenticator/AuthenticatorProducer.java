@@ -4,6 +4,7 @@ import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.App;
 import gate.error.AuthenticatorException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Produces a valid authenticator
  */
+@ApplicationScoped
 public class AuthenticatorProducer implements Serializable
 {
 

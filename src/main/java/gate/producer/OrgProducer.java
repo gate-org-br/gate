@@ -4,6 +4,7 @@ import gate.annotation.Current;
 import gate.entity.Org;
 import gate.sql.Link;
 import gate.sql.select.Select;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Produces an Org object with current organization data.
  *
  */
+@ApplicationScoped
 public class OrgProducer implements Serializable
 {
 
@@ -31,7 +33,7 @@ public class OrgProducer implements Serializable
 
 	@Current
 	@Produces
-	@Named("org")
+	@Named("organization")
 	@RequestScoped
 	public Org produce()
 	{

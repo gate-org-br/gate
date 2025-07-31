@@ -1,8 +1,11 @@
 package gate.sql;
 
+import gate.producer.AppProducer;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public interface LinkSource
@@ -27,20 +30,35 @@ public interface LinkSource
 
 	static DataSource getDefaultDataSource()
 	{
-		Instance<DataSource> dataSourceInstance = CDI.current().select(DataSource.class);
-		if (dataSourceInstance.isUnsatisfied())
-			throw new IllegalArgumentException("Default DataSource not found");
-		return dataSourceInstance.get();
+		Instance<DataSource> ds
+			= CDI.current().select(DataSource.class);
+		if (ds.isResolvable())
+			return ds.get();
 
+		return getJNDIDataSource(CDI.current()
+			.select(AppProducer.class).get().produce().getId());
 	}
 
 	static DataSource getNamedDataSource(String name)
 	{
-		Instance<DataSource> dataSourceInstance = CDI.current().select(DataSource.class,
-			NamedLiteral.of(name));
-		if (dataSourceInstance.isUnsatisfied())
-			throw new IllegalArgumentException("DataSource not found: " + name);
-		return dataSourceInstance.get();
+		Instance<DataSource> ds
+			= CDI.current().select(DataSource.class, NamedLiteral.of(name));
+		if (ds.isResolvable())
+			return ds.get();
+
+		return getJNDIDataSource(name);
+	}
+
+	private static DataSource getJNDIDataSource(String name)
+	{
+		try
+		{
+			System.out.println("java:/comp/env/" + name);
+			return InitialContext.doLookup("java:/comp/env/" + name);
+		} catch (NamingException e1)
+		{
+			throw new IllegalArgumentException("Data source not found: " + name);
+		}
 	}
 
 	class LinkSourceImpl implements LinkSource
