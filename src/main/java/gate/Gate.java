@@ -1,5 +1,6 @@
 package gate;
 
+import static gate.CookieFactory.SUBJECT_COOKIE;
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
@@ -16,7 +17,6 @@ import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
 import gate.util.Toolkit;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -44,7 +44,6 @@ import java.util.Locale;
 public class Gate extends HttpServlet
 {
 
-	public static final String SUBJECT_COOKIE = "subject";
 	static final String HTML = "/views/Gate.html";
 
 	@Inject
@@ -63,7 +62,6 @@ public class Gate extends HttpServlet
 
 	@Inject
 	@Current
-	@RequestScoped
 	Authenticator authenticator;
 
 	@Inject
@@ -77,7 +75,6 @@ public class Gate extends HttpServlet
 
 	@Inject
 	@Current
-	@RequestScoped
 	Instance<User> userInstance;
 
 	static
@@ -119,8 +116,8 @@ public class Gate extends HttpServlet
 			{
 				if (user.getId() != null)
 				{
-					event.fireAsync(new LogoffEvent(user));
-					response.addHeader("Set-Cookie", CookieFactory.delete(SUBJECT_COOKIE));
+					event.fire(new LogoffEvent(user));
+					response.addHeader("Set-Cookie", CookieFactory.delete());
 					String logoutUri = authenticator.logoutUri(request);
 					if (logoutUri != null)
 					{
@@ -142,6 +139,9 @@ public class Gate extends HttpServlet
 				? mainAction
 				: Call.of(MODULE, SCREEN, ACTION);
 
+			if (!call.checkMethod(request.getMethod()))
+				throw new BadRequestException();
+
 			if (authenticator.hasCredentials(request))
 			{
 				user = authenticator.authenticate(request, response);
@@ -149,8 +149,7 @@ public class Gate extends HttpServlet
 				{
 					event.fireAsync(new LoginEvent(user));
 					response.addHeader("Set-Cookie",
-						CookieFactory.create(SUBJECT_COOKIE,
-							credentials.subject(user)));
+						CookieFactory.create(credentials.fromSubject(user.getId())));
 				}
 				request.setAttribute(User.class.getName(), user);
 			}

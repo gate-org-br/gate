@@ -1,7 +1,5 @@
 <template>
 	<header>
-		<label>
-		</label>
 		<slot name="head">
 		</slot>
 	</header>

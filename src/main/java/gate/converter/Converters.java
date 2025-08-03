@@ -33,10 +33,12 @@ public class Converters
 
 	private Converters()
 	{
-
-		INSTANCES.put(AbstractCollection.class, new CollectionConverter());
-		INSTANCES.put(AbstractSet.class, new SetConverter());
+		INSTANCES.put(Collection.class, new CollectionConverter());
 		INSTANCES.put(Set.class, new SetConverter());
+		INSTANCES.put(Map.class, new MapConverter());
+		INSTANCES.put(List.class, new CollectionConverter());
+		INSTANCES.put(EnumSet.class, new EnumSetConverter());
+
 		INSTANCES.put(BigDecimal.class, new BigDecimalConverter());
 		INSTANCES.put(boolean.class, new BooleanConverter());
 		INSTANCES.put(Boolean.class, new BooleanConverter());
@@ -45,7 +47,6 @@ public class Converters
 		INSTANCES.put(char.class, new CharacterConverter());
 		INSTANCES.put(Character.class, new CharacterConverter());
 		INSTANCES.put(Class.class, new ClassConverter());
-		INSTANCES.put(Collection.class, new CollectionConverter());
 		INSTANCES.put(double.class, new DoubleConverter());
 		INSTANCES.put(Double.class, new DoubleConverter());
 		INSTANCES.put(Duration.class, new DurationConverter());
@@ -54,7 +55,6 @@ public class Converters
 		INSTANCES.put(Float.class, new FloatConverter());
 		INSTANCES.put(int.class, new IntegerConverter());
 		INSTANCES.put(Integer.class, new IntegerConverter());
-		INSTANCES.put(List.class, new CollectionConverter());
 		INSTANCES.put(LocalDate.class, new LocalDateConverter());
 		INSTANCES.put(LocalDateTime.class, new LocalDateTimeConverter());
 		INSTANCES.put(LocalTime.class, new LocalTimeConverter());
@@ -73,7 +73,6 @@ public class Converters
 		INSTANCES.put(File.class, new FileConverter());
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
 		INSTANCES.put(java.time.Year.class, new YearConverter());
-		INSTANCES.put(EnumSet.class, new EnumSetConverter());
 		INSTANCES.put(Path.class, new PathConverter());
 	}
 

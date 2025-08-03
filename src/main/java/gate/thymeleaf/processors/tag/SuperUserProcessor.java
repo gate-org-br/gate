@@ -4,7 +4,6 @@ import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
@@ -16,7 +15,6 @@ public class SuperUserProcessor extends TagModelProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	public SuperUserProcessor()

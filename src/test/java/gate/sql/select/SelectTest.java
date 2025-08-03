@@ -377,7 +377,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromString() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
@@ -395,7 +395,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromResource() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from(getClass().getResource("SelectTest/Select.sql"))
@@ -412,7 +412,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityListFiltering() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			List<Person> persons = link
 				.from(Select.of(
@@ -428,7 +428,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -452,7 +452,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -476,7 +476,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromTypedBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from(Select
@@ -495,7 +495,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.from(Select.from(Person.class))
@@ -513,7 +513,7 @@ public class SelectTest
 	@Test
 	public void testFetchEntityFromGQNWithParameter() throws NotFoundException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.select(Person.class)
@@ -532,7 +532,7 @@ public class SelectTest
 	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException, SQLException
 	{
 
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Contact contact = new Contact();
 			contact.getPerson().setId(1);
@@ -608,7 +608,7 @@ public class SelectTest
 	@Test
 	public void testExists()
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			assertTrue(link.from(Select.exists(Select
 				.expression("id")

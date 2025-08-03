@@ -31,7 +31,7 @@ public class UpdateTest
 	@Test
 	public void testString() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(1);
 			String name = "Jonh";
@@ -61,7 +61,7 @@ public class UpdateTest
 	@Test
 	public void testResourceFile() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(2);
 			String name = "Paul";
@@ -93,7 +93,7 @@ public class UpdateTest
 	@Test
 	public void testCompiledTableBuilder() throws ConstraintViolationException, SQLException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(3);
 			String name = "Richard";
@@ -129,7 +129,7 @@ public class UpdateTest
 	@Test
 	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(4);
 			String name = "Thomas";
@@ -166,7 +166,7 @@ public class UpdateTest
 	@Test
 	public void testTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 5;
 			String name = "Maria";
@@ -206,7 +206,7 @@ public class UpdateTest
 	@Test
 	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 6;
 			String name = "Newton";
@@ -245,7 +245,7 @@ public class UpdateTest
 	@Test
 	public void testGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 7;
 			String name = "Fred";
@@ -283,7 +283,7 @@ public class UpdateTest
 	@Test
 	public void testFullGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 8;
 			String name = "Alfred";
@@ -320,7 +320,7 @@ public class UpdateTest
 	@Test
 	public void testGQN2() throws ConstraintViolationException, ParseException, SQLException, NotFoundException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Contact expected
 					= new Contact()

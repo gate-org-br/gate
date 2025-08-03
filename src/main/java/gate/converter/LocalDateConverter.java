@@ -28,7 +28,7 @@ public class LocalDateConverter implements Converter
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Arrays.asList(new Maxlength.Implementation(10),
-			new gate.constraint.Pattern.Implementation("^[0-9]{8}|[0-9]{2}\\/[0-9]{2}\\/[0-9]{4}|[0-9]{4}[-][0-9]{2}[-][0-9]{2}$"));
+			new gate.constraint.Pattern.Implementation("^(?:\\d{8}|\\d{2}\\/\\d{2}\\/\\d{4}|\\d{4}-\\d{2}-\\d{2})$"));
 
 	@Override
 	public String getDescription()

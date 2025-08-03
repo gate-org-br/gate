@@ -40,7 +40,7 @@ window.addEventListener("@dialog", function (event)
 			.then(result =>
 			{
 				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
-				dialog.appendChild(document.createRange().createContextualFragment(result));
+				dialog.innerHTML = result;
 			})
 			.catch(error =>
 			{

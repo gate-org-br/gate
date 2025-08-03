@@ -37,7 +37,7 @@ public class GQNTest
 	@Test
 	public void test02() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			link.delete(Person.class)
 				.execute(new Person().setId(1));
@@ -56,7 +56,7 @@ public class GQNTest
 	@Test
 	public void test03() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.INSTANCE.getLink())
+		try (Link connection = TestDataSource.getLink())
 		{
 			connection
 				.delete(Person.class)
@@ -71,7 +71,7 @@ public class GQNTest
 	@Test
 	public void test04() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.INSTANCE.getLink())
+		try (Link connection = TestDataSource.getLink())
 		{
 			connection.update(Person.class)
 				.properties("=id", "name")
@@ -89,7 +89,7 @@ public class GQNTest
 	@Test
 	public void test05() throws SQLException, ConstraintViolationException
 	{
-		try (Link connection = TestDataSource.INSTANCE.getLink())
+		try (Link connection = TestDataSource.getLink())
 		{
 
 			connection.update(Person.class)

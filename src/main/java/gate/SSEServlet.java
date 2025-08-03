@@ -31,7 +31,6 @@ public class SSEServlet extends HttpServlet
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	private static final List<Client> clients = new CopyOnWriteArrayList<>();
@@ -142,7 +141,7 @@ public class SSEServlet extends HttpServlet
 			try
 			{
 				out.close();
-			} catch (Exception ignored)
+			} catch (IOException ignored)
 			{
 			}
 		}

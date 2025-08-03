@@ -2,6 +2,7 @@ package gate.producer;
 
 import gate.annotation.Type;
 import gate.base.CrudControl;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  *
  *         Produces CrudControl objects for the specified type
  */
+@Dependent
 public class CrudControlProducer implements Serializable
 {
 

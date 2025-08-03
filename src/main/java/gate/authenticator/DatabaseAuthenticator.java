@@ -3,6 +3,7 @@ package gate.authenticator;
 import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
+import gate.error.BadRequestException;
 import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
@@ -47,6 +48,8 @@ public class DatabaseAuthenticator implements Authenticator
 	public User getUser(ScreenServletRequest request) throws AuthenticationException, IOException
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
+		if (authorization == null)
+			throw new BadRequestException("Missing user credentials");
 
 		User user = control.select(authorization.username());
 

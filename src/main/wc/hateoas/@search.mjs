@@ -6,7 +6,7 @@ window.addEventListener("@search", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {action, parameters: [filter = "label"]} = event.detail;
+	let {action, parameters: [filter = "filter"]} = event.detail;
 
 	if (trigger.tagName === "INPUT" && !trigger.value)
 		return event.success(path, new DataURL("application/json", "{}").toString());

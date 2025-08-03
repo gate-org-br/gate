@@ -1,8 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<header>
-		<label>
-		</label>
 		<slot name="head">
 		</slot>
 	</header>
@@ -197,31 +195,13 @@ import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
 
-function resize(iframe)
-{
-	let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-	var contentWidth = iframeDocument.body.scrollWidth;
-	var contentHeight = iframeDocument.body.scrollHeight;
-	iframe.style.width = contentWidth + 'px';
-	iframe.style.height = contentHeight + 'px';
-}
-
 customElements.define('g-tab-control', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: 'open'});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		let header = this.shadowRoot.querySelector("header");
-		header.addEventListener("click", event =>
-		{
-			if (!header.hasAttribute("toggled"))
-				header.setAttribute("toggled", "");
-			else
-				header.removeAttribute("toggled");
-		});
+		this.shadowRoot.innerHTML = template.innerHTML;
 
 		this.addEventListener("click", event =>
 		{
@@ -242,114 +222,143 @@ customElements.define('g-tab-control', class extends HTMLElement
 		this.setAttribute("type", type);
 	}
 
+	get reload()
+	{
+		return this.getAttribute("reload") || "never";
+	}
+
+	set reload(reload)
+	{
+		this.setAttribute("reload", reload);
+	}
+
+	reset()
+	{
+		Array.from(this.children)
+			.filter(e => e.tagName === "DIV")
+			.forEach(e => e.innerHTML = "");
+		this.load();
+	}
+
+	load() {
+		const link = Array.from(this.children)
+			.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
+			.find(tab => tab.getAttribute("data-selected") === "true");
+
+		if (!link)
+			return false;
+
+		const page = link.nextElementSibling;
+		if (!page || page.tagName !== "DIV")
+			return false;
+
+		page.innerHTML = "";
+		page.removeAttribute("data-loading");
+		link.click();
+	}
+
 	connectedCallback()
 	{
 		loading(this.parentNode);
 
-		let header = this.shadowRoot.querySelector("header");
 		let links = Array.from(this.children).filter(e => e.tagName === "A" || e.tagName === "BUTTON");
-		this.setAttribute("size", links.length);
 		links.forEach(e => e.setAttribute("slot", "head"));
+		this.setAttribute("size", links.length);
 
-		if (this.type !== "dummy")
+		if (this.getAttribute("type") === "dummy")
 		{
-			links.filter(e => !e.nextElementSibling || e.nextElementSibling.tagName !== "DIV")
-				.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
+			Array.from(this.children).filter(e => e.tagName === "DIV")
+				.forEach(e => e.setAttribute("slot", "body"));
+			return;
+		}
 
-			var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
-			pages.forEach(e => e.setAttribute("slot", "body"));
+		links.filter(e => !e.nextElementSibling
+				|| e.nextElementSibling.tagName !== "DIV")
+			.forEach(e => this.insertBefore(document.createElement("div"), e.nextElementSibling));
 
-			links.forEach(link =>
+		var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
+		pages.forEach(e => e.setAttribute("slot", "body"));
+
+		links.forEach(link =>
+		{
+			link.addEventListener("click", event =>
 			{
-				let type = link.getAttribute("data-type") || this.type;
-				let reload = link.getAttribute("data-reload") || this.getAttribute("reload");
+				const page = link.nextElementSibling;
+				
+				if (link.getAttribute("data-selected") === "true"
+					|| (link.getAttribute("data-reload") || this.reload) === "always")
+					page.innerHTML = "";
 
-				link.addEventListener("click", event =>
+				pages.forEach(e => e.style.display = "none");
+				links.forEach(e => e.setAttribute("data-selected", "false"));
+				link.nextElementSibling.style.display = "flex";
+				link.setAttribute("data-selected", "true");
+
+				if (page.childNodes.length)
 				{
-					if (window.innerWidth <= 768)
-						header.removeAttribute("toggled");
+					event.preventDefault();
+					event.stopPropagation();
+					return;
+				}
 
-					pages.forEach(e => e.style.display = "none");
-					links.forEach(e => e.setAttribute("data-selected", "false"));
-					link.nextElementSibling.style.display = "flex";
-					link.setAttribute("data-selected", "true");
-
-					if (reload === "always")
-						while (link.nextElementSibling.firstChild)
-							link.nextElementSibling.removeChild(link.nextElementSibling.firstChild);
-
-
-					if (link.nextElementSibling.childNodes.length)
-					{
+				switch (link.getAttribute("data-type") || this.type)
+				{
+					case "fetch":
 						event.preventDefault();
 						event.stopPropagation();
-					} else if (type === "fetch")
-					{
-						event.preventDefault();
-						event.stopPropagation();
-						let method = link.getAttribute('method')
-							|| (link.form || {}).method
-							|| "get";
-						let action = link.getAttribute('href')
-							|| link.getAttribute('formaction')
-							|| (link.form || {}).action;
+						const method = link.getAttribute('method') || link.form?.method || "get";
+						const action = link.getAttribute('href') || link.getAttribute('formaction') || link.form?.action;
 
 						link.setAttribute("data-loading", "");
 						fetch(RequestBuilder.build(method, action, link.form))
 							.then(ResponseHandler.text)
 							.then(result => document.createRange().createContextualFragment(result))
-							.then(result => link.nextElementSibling.replaceChildren(...Array.from(result.childNodes)))
+							.then(result => page.replaceChildren(...Array.from(result.childNodes)))
 							.catch(error => GMessageDialog.error(error.message))
 							.finally(() => link.removeAttribute("data-loading"));
-					} else if (type === "frame")
-					{
-						let iframe = document.createElement("iframe");
+						break;
+					case "frame":
+						const iframe = document.createElement("iframe");
 						iframe.scrolling = "no";
-						iframe.setAttribute("allowfullscreen", "true");
 						iframe.style.margin = "0";
 						iframe.style.width = "100%";
 						iframe.style.border = "none";
 						iframe.style.overflow = "hidden";
 						iframe.style.height = "400px";
-						iframe.addEventListener("load", () =>
-						{
-							resize(iframe);
-							link.removeAttribute("data-loading");
-							let observer = new MutationObserver(() => resize(iframe));
-							observer.observe(iframe.contentDocument || iframe.contentWindow.document,
-								{attributes: true, childList: true, subtree: true});
-						});
-						link.nextElementSibling.appendChild(iframe);
-						let name = Math.random().toString(36).substr(2);
+
+						const name = crypto.randomUUID();
 						iframe.setAttribute("id", name);
 						iframe.setAttribute("name", name);
+						iframe.setAttribute("allowfullscreen", "true");
+
 						if (link.tagName === "A")
 							link.setAttribute("target", name);
 						else if (link.tagName === "BUTTON")
 							link.setAttribute("formtarget", name);
-						link.nextElementSibling.appendChild(iframe);
-						link.setAttribute("data-loading", "");
-					}
-				});
 
-				if (link.getAttribute("data-selected") &&
-					link.getAttribute("data-selected").toLowerCase() === "true")
-					link.click();
+						link.setAttribute("data-loading", "");
+
+						iframe.addEventListener("load", () =>
+						{
+							const body = iframe.contentDocument.body;
+							const resize = () => iframe.style.height = body.scrollHeight + "px";
+							resize();
+							new iframe.contentWindow.ResizeObserver(resize).observe(body);
+							link.removeAttribute("data-loading");
+						});
+
+						page.appendChild(iframe);
+						break;
+				}
 			});
 
-			if (links.length && links.every(e => !e.hasAttribute("data-selected")
-					|| e.getAttribute("data-selected").toLowerCase() === "false"))
-				links[0].click();
-		} else
-		{
-			Array.from(this.children).filter(e => e.tagName === "DIV").forEach(e => e.setAttribute("slot", "body"));
+			if (link.getAttribute("data-selected") &&
+				link.getAttribute("data-selected").toLowerCase() === "true")
+				link.click();
+		});
 
-			links.forEach(link => link.addEventListener("click", () =>
-				{
-					if (window.innerWidth <= 768)
-						header.removeAttribute("toggled");
-					links.forEach(e => e.setAttribute("data-selected", e === link));
-				}));
-		}
+		if (links.length && links.every(e => !e.hasAttribute("data-selected")
+				|| e.getAttribute("data-selected").toLowerCase() === "false"))
+			links[0].click();
 	}
 });

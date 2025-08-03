@@ -8,7 +8,6 @@ import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -21,7 +20,6 @@ public class SecureProcessor extends TagProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 

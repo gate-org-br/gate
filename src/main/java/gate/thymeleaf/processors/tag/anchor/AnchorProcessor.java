@@ -10,7 +10,6 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
 import gate.util.Parameters;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 
 import java.util.Optional;
@@ -29,7 +28,6 @@ public abstract class AnchorProcessor extends TagModelProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	@Inject

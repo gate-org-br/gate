@@ -6,6 +6,7 @@ import gate.sql.Link;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.Hierarchy;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
@@ -13,6 +14,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import java.util.List;
 
+@ApplicationScoped
 public class RoleProducer
 {
 
@@ -45,7 +47,7 @@ public class RoleProducer
 
 			public List<Role> search()
 			{
-				try (Link link = new Link("Gate"))
+				try (Link link = Link.of("Gate"))
 				{
 
 					return Select.expression("Role.id").as("id")

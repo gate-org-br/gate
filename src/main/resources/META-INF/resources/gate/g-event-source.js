@@ -31,7 +31,9 @@ export default class GEventSource extends HTMLElement
 
 	static register(listener, log)
 	{
-		const eventSource = new EventSource(`${window.location.origin}/SSE`);
+		const eventSource = new EventSource(window.location.href
+			.replace(/\/Gate.*/, "")
+			.replace(/\/#/, "") + "/SSE");
 
 		eventSource.onopen = () => log && console.log('listening to app events.');
 

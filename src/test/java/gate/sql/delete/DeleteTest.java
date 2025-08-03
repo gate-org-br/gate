@@ -66,7 +66,7 @@ public class DeleteTest
 	public void test4() throws ConstraintViolationException, SQLException
 	{
 
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			try
 			{

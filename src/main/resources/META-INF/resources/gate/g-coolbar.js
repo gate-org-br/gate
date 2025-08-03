@@ -14,7 +14,6 @@ template.innerHTML = `
 	height: auto;
 	color: black;
 	border: none;
-	flex-grow: 1;
 	display: flex;
 	position: relative;
 	align-items: stretch;

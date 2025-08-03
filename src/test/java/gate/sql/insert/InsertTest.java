@@ -32,7 +32,7 @@ public class InsertTest
 	@Test
 	public void testString() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(40);
 			String name = "Jonh";
@@ -64,7 +64,7 @@ public class InsertTest
 	@Test
 	public void testResourceFile() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(140);
 			String name = "Mary";
@@ -95,7 +95,7 @@ public class InsertTest
 	@Test
 	public void testCompiledTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(41);
 			String name = "Paul";
@@ -131,7 +131,7 @@ public class InsertTest
 	@Test
 	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			ID id = ID.valueOf(42);
 			String name = "Richard";
@@ -169,7 +169,7 @@ public class InsertTest
 	@Test
 	public void testTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 43;
 			String name = "Richard";
@@ -209,7 +209,7 @@ public class InsertTest
 	@Test
 	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			String name = "Bill Gates";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
@@ -244,7 +244,7 @@ public class InsertTest
 	@Test
 	public void testGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			int id = 100;
 			String name = "Fred";
@@ -282,7 +282,7 @@ public class InsertTest
 	@Test
 	public void testFullGQN() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			String name = "Jobs";
 			LocalDate birthdate = LocalDate.of(2001, 7, 19);
@@ -315,7 +315,7 @@ public class InsertTest
 	@Test
 	public void testPreparedInsert() throws SQLException, ConstraintViolationException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			List<Person> expected = new ArrayList<>();
 			for (int i = 1000; i < 1010; i++)

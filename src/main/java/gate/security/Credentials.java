@@ -1,6 +1,5 @@
 package gate.security;
 
-import gate.entity.User;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernameException;
 import gate.error.UnauthorizedException;
@@ -10,7 +9,6 @@ import gate.type.ID;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.inject.Singleton;
 
 import java.time.Instant;
 import java.util.Date;
@@ -58,16 +56,18 @@ public class Credentials
 		}
 	}
 
-	public String subject(User user)
+	public String fromSubject(ID id)
 	{
 		return Jwts.builder()
-			.subject(user.getId().toString())
+			.subject(id.toString())
 			.expiration(Date.from(Instant.now().plusSeconds(3600)))
 			.signWith(secret)
 			.compact();
 	}
 
-	public ID subject(String token) throws InvalidUsernameException, HierarchyException, UnauthorizedException
+	public ID toSubject(String token)
+		throws InvalidUsernameException,
+		HierarchyException, UnauthorizedException
 	{
 		try
 		{
@@ -84,5 +84,10 @@ public class Credentials
 		{
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
 		}
+	}
+
+	public String refresh(String token)
+	{
+		return fromSubject(toSubject(token));
 	}
 }

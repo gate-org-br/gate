@@ -25,7 +25,7 @@ public class MapListFetcherTest
 	@Test
 	public void test01() throws SQLException
 	{
-		try (Link connection = TestDataSource.INSTANCE.getLink())
+		try (Link connection = TestDataSource.getLink())
 		{
 
 			List<Map<String, Object>> results = connection

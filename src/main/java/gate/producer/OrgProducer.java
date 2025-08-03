@@ -57,7 +57,7 @@ public class OrgProducer implements Serializable
 
 			public Optional<Org> select()
 			{
-				try (Link link = new Link("Gate"))
+				try (Link link = Link.of("Gate"))
 				{
 					return Select.expression("orgID")
 						.expression("name")

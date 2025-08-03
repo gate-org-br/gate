@@ -1,6 +1,5 @@
 package gate;
 
-import gate.annotation.DataSource;
 import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.error.ConstraintViolationException;
@@ -8,26 +7,20 @@ import gate.error.InvalidCredentialsException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.sql.Link;
-import gate.sql.LinkSource;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
 import gate.type.MD5;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 
 @Dependent
 public class PasswordControl extends gate.base.Control
 {
 
-	@Inject
-	@DataSource(value = "Gate")
-	LinkSource linksource;
-
 	public User select(String username) throws InvalidUsernameException
 	{
-		try (Link link = linksource.getLink();
+		try (Link link = Link.of("Gate");
 			PasswordDao dao = new PasswordDao(link))
 		{
 			return dao.select(username);
@@ -36,7 +29,7 @@ public class PasswordControl extends gate.base.Control
 
 	public void update(User user, String password) throws BadRequestException, NotFoundException, ConstraintViolationException, InvalidCredentialsException
 	{
-		try (Link link = linksource.getLink();
+		try (Link link = Link.of("Gate");
 			PasswordDao dao = new PasswordDao(link))
 		{
 			user = dao.select(user.getId());

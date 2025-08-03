@@ -1,7 +1,6 @@
 package gate.rest;
 
 import gate.lang.json.JsonElement;
-import gate.lang.json.JsonElement;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -28,7 +27,7 @@ public class JsonElementHandler implements MessageBodyWriter<JsonElement>, Messa
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] antns, MediaType mt)
 	{
-		return type == JsonElement.class;
+		return JsonElement.class.isAssignableFrom(type);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public class JsonElementHandler implements MessageBodyWriter<JsonElement>, Messa
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
 	{
-		return type == JsonElement.class;
+		return JsonElement.class.isAssignableFrom(type);
 	}
 
 	@Override

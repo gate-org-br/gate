@@ -26,7 +26,7 @@ public class LinkTest
 	@Test
 	public void testSelectByGQN() throws SQLException, NotFoundException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
 				.select(Person.class)

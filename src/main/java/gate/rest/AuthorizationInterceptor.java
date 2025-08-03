@@ -7,7 +7,6 @@ import gate.entity.User;
 import gate.error.ForbiddenException;
 import gate.error.UnauthorizedException;
 import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
@@ -20,7 +19,6 @@ public class AuthorizationInterceptor
 {
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	@AroundInvoke

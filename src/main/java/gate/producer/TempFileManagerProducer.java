@@ -1,6 +1,7 @@
 package gate.producer;
 
 import gate.type.TempFileManager;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
@@ -12,6 +13,7 @@ import jakarta.enterprise.inject.Produces;
  * Produces and disposes temporary file objects.
  *
  */
+@ApplicationScoped
 public class TempFileManagerProducer
 {
 

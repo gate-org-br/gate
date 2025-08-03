@@ -18,7 +18,7 @@ public abstract class Dao extends Base implements AutoCloseable
 	public Dao()
 	{
 		created = true;
-		link = new Link();
+		link = Link.of();
 
 	}
 
@@ -34,14 +34,16 @@ public abstract class Dao extends Base implements AutoCloseable
 	}
 
 	/**
-	 * Creates a data access object associated with the specified data source name.
+	 * Creates a data access object associated with the specified data
+	 * source name.
 	 *
-	 * @param datasource name of the data source to be associated with the new DAO
+	 * @param datasource name of the data source to be associated with the
+	 * new DAO
 	 */
 	public Dao(String datasource)
 	{
 		created = true;
-		this.link = new Link(Objects.requireNonNull(datasource));
+		this.link = Link.of(Objects.requireNonNull(datasource));
 	}
 
 	/**
@@ -55,7 +57,7 @@ public abstract class Dao extends Base implements AutoCloseable
 	public Dao(String driver, String url, String username, String password)
 	{
 		created = true;
-		this.link = new Link(driver, url, username, password);
+		this.link = Link.of(driver, url, username, password);
 	}
 
 	/**

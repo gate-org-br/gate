@@ -121,3 +121,8 @@ small {
 {
 	cursor: wait !important;
 }
+
+:not(:defined)
+{
+	visibility: hidden;
+}

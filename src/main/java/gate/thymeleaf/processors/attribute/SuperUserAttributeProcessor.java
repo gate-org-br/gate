@@ -4,7 +4,6 @@ import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -16,7 +15,6 @@ public class SuperUserAttributeProcessor extends AttributeProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	public SuperUserAttributeProcessor()

@@ -1,31 +1,24 @@
 package gate;
 
-import gate.annotation.DataSource;
 import gate.entity.User;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernameException;
 import gate.sql.Link;
-import gate.sql.LinkSource;
 import gate.type.Hierarchy;
 import gate.type.ID;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.Dependent;
-import jakarta.inject.Inject;
 
 @Dependent
 public class GateControl extends gate.base.Control
 {
 
-	@Inject
-	@DataSource("Gate")
-	LinkSource linksource;
-
 	public User select(ID id) throws InvalidUsernameException,
-			HierarchyException
+		HierarchyException
 	{
 
-		try (Link link = linksource.getLink();
-				GateDao dao = new GateDao(link))
+		try (Link link = Link.of("Gate");
+			GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(id);
 
@@ -37,19 +30,19 @@ public class GateControl extends gate.base.Control
 			var roles = dao.getRoles();
 			Hierarchy.setup(roles);
 			user.setRole(roles.stream().filter(user.getRole()::equals).findAny()
-					.orElseThrow(() -> new HierarchyException("User role not found")));
+				.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
 		}
 	}
 
 	public User select(String username) throws InvalidUsernameException,
-			HierarchyException
+		HierarchyException
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernameException();
 
-		try (Link link = linksource.getLink();
-				GateDao dao = new GateDao(link))
+		try (Link link = Link.of("Gate");
+			GateDao dao = new GateDao(link))
 		{
 			User user = dao.select(username);
 
@@ -61,7 +54,7 @@ public class GateControl extends gate.base.Control
 			var roles = dao.getRoles();
 			Hierarchy.setup(roles);
 			user.setRole(roles.stream().filter(user.getRole()::equals).findAny()
-					.orElseThrow(() -> new HierarchyException("User role not found")));
+				.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
 		}
 	}

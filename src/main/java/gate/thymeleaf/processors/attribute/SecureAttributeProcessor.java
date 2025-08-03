@@ -9,7 +9,6 @@ import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -21,7 +20,6 @@ public class SecureAttributeProcessor extends AttributeProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	@Inject

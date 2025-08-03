@@ -8,7 +8,6 @@ import gate.error.BadRequestException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,7 +25,6 @@ public class Auth extends HttpServlet
 
 	@Inject
 	@Current
-	@RequestScoped
 	Authenticator authenticator;
 
 	private static final long serialVersionUID = 1L;
@@ -45,7 +43,7 @@ public class Auth extends HttpServlet
 				User user = authenticator.getUser(new ScreenServletRequest(httpServletRequest));
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
-				writer.write(credentials.subject(user));
+				writer.write(credentials.fromSubject(user.getId()));
 			} catch (AuthenticationException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

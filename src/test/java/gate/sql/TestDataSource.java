@@ -12,22 +12,20 @@ import org.h2.jdbcx.JdbcDataSource;
 public class TestDataSource
 {
 
-	public static volatile LinkSource INSTANCE;
-
-	static
+	public static Link getLink()
 	{
 		JdbcDataSource dataSource = new JdbcDataSource();
 		dataSource.setURL("jdbc:h2:mem:gate;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false");
 		dataSource.setUser("sa");
 		dataSource.setPassword("");
-		INSTANCE = LinkSource.of(dataSource);
+		return Link.of(dataSource);
 
 	}
 
 	public static void setUp() throws ConstraintViolationException, SQLException, ConstraintViolationException
 	{
 
-		try (Link link = INSTANCE.getLink())
+		try (Link link = getLink())
 		{
 			link.prepare(TestDataSource.class.getResource("TestDataSource.sql"))
 				.execute();

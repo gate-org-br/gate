@@ -52,6 +52,7 @@ body > main > nav {
   border: none;
   padding: 4px;
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   background-color: var(--main3);

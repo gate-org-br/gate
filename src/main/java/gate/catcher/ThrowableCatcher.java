@@ -3,7 +3,6 @@ package gate.catcher;
 import gate.annotation.Current;
 import gate.entity.User;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +18,6 @@ public class ThrowableCatcher implements Catcher
 
 	@Inject
 	@Current
-	@RequestScoped
 	User user;
 
 	@Inject

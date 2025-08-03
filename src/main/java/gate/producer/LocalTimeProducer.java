@@ -1,5 +1,6 @@
 package gate.producer;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.time.LocalTime;
  *
  * Produces LocalTime objects with current Time
  */
+@ApplicationScoped
 public class LocalTimeProducer implements Serializable
 {
 

@@ -24,7 +24,7 @@ public class EntityUpdateTest
 	@Test
 	public void test() throws ConstraintViolationException, ParseException, SQLException, NotFoundException, AppException
 	{
-		try (Link link = TestDataSource.INSTANCE.getLink())
+		try (Link link = TestDataSource.getLink())
 		{
 			Contact expected
 				= new Contact()
