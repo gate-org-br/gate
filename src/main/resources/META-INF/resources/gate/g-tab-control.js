@@ -240,7 +240,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 		this.load();
 	}
 
-	load() {
+	reload() {
 		const link = Array.from(this.children)
 			.filter(e => e.tagName === "A" || e.tagName === "BUTTON")
 			.find(tab => tab.getAttribute("data-selected") === "true");
@@ -285,8 +285,10 @@ customElements.define('g-tab-control', class extends HTMLElement
 			{
 				const page = link.nextElementSibling;
 
-				if (link.getAttribute("data-reload") || this.reload === "always")
-					page.innerHTML = "";
+				if (this.getAttribute("href") !== '#')
+					if (event.ctrlKey
+						|| link.getAttribute("data-reload") || this.reload === "always")
+						page.innerHTML = "";
 
 				pages.forEach(e => e.style.display = "none");
 				links.forEach(e => e.setAttribute("data-selected", "false"));

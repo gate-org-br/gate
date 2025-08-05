@@ -1,6 +1,7 @@
 /* global fetch */
 
 import './trigger.js';
+import DOM from './dom.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -15,24 +16,34 @@ window.addEventListener("@reload", function (event)
 		{
 			event.success(path, result);
 
-			let target;
 			switch (parameters[0] || "_self")
 			{
 				case "_self":
-					target = window;
+					window.location =
+						window.location.href.endsWith("#") ?
+						window.location.href.slice(0, -1)
+						: window.location.href;
 					break;
 				case "_parent":
-					target = window.parent;
+					window.parent.location =
+						window.parent.location.href.endsWith("#") ?
+						window.parent.location.href.slice(0, -1)
+						: window.parent.location.href;
 					break;
 				case "_top":
-					target = window.top;
+					window.top.location =
+						window.top.location.href.endsWith("#") ?
+						window.top.location.href.slice(0, -1)
+						: window.top.location.href;
+					break;
+				default:
+					let element = DOM.navigate(event, parameters[0])
+						.orElseThrow(`${parameters[0]} is not a valid selector`);
+					if (element.reload)
+						element.reload();
 					break;
 			}
 
-			let url = target.location.href;
-			if (url.endsWith("#"))
-				url = url.slice(0, -1);
-			target.location = url;
 
 		})
 		.catch(error => event.failure(path, error));

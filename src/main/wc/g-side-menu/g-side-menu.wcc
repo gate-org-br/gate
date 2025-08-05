@@ -7,6 +7,9 @@ import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
 
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`g-side-menu g-icon { order: -1; font-size: 16px }`);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 customElements.define('g-side-menu', class extends HTMLElement
 {
@@ -17,28 +20,19 @@ customElements.define('g-side-menu', class extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		this.shadowRoot.querySelector("header")
-			.addEventListener("click", event =>
-			{
-				if (!this.hasAttribute("open"))
-					this.setAttribute("open", "");
-				else
-					this.removeAttribute("open");
-			});
+			.addEventListener("click", event => this.toggleAttribute("open"));
 
 		this.shadowRoot.querySelector("section")
-			.addEventListener("click", event => this.removeAttribute("open"));
+			.addEventListener("click", event =>
+				window.innerWidth <= 768 &&
+					this.removeAttribute("open"));
 	}
 
 	connectedCallback()
 	{
 		Array.from(this.children)
-			.flatMap(e => Array.from(e.childNodes))
-			.filter(e => e.nodeType === Node.TEXT_NODE)
-			.forEach(e => e.parentNode.appendChild(e));
-
-		Array.from(this.children)
 			.filter(e => e.tagName !== "HR")
 			.filter(e => !e.querySelector('g-icon'))
-			.forEach(e => e.setAttribute("_iconless", ""));
+			.forEach(e => e.appendChild(document.createElement("g-icon")).innerHTML = '&#x1003;');
 	}
 });

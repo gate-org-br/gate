@@ -36,48 +36,16 @@
 					<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
 				</g-tabbar>
 			</nav>
-
 			<section>
-				<input type="text" data-trigger='input' data-action='data:text/plain,@value(this)' data-target='@attribute(this.next():filter)'>
-				<g-grid>
-					Empty
-				</g-grid>
-				<g-coolbar>
-					<button id='objects'>
-						objects
-					</button>
-					<button id='arrays'>
-						arrays
-					</button>
-				</g-coolbar>
 
-				<!--				<g-desk-pane>
-									<a href='/target/view.html' target="@inner-html(section)" aria-selected>
-										Targets<g-icon>&#X1011;</g-icon>
-									</a>
-									<a href='/component/view.html' target="@inner-html(section)">
-										<g-icon>&#X2178;</g-icon>Components
-									</a>
-								</g-desk-pane>-->
-
-				<script type='module'>
-					const grid = document.querySelector("g-grid");
-
-					grid.styles = ["", "width: 100px; text-align: center"];
-
-					document.getElementById("objects").addEventListener("click", () => grid.dataset = [{
-								"_id": 1,
-								"Nome": "Davi",
-								"Sexo": "Masculino"
-							}, {
-								"_id": 2,
-								"Nome": "Marilia",
-								"Sexo": "Feminino"
-							}]);
-
-					document.getElementById("arrays").addEventListener("click", () => grid.dataset = [["_ID", "Nome", "Sexo"], [1, "Davi", "Masculino"], [2, "Mia", "Feminino"]]);
-						grid.addEventListener("select", e => alert(JSON.stringify(e.detail)));
-				</script>
+				<g-desk-pane>
+					<a href='/target/view.html' target="@inner-html(section)" aria-selected>
+						Targets<g-icon>&#X1011;</g-icon>
+					</a>
+					<a href='/component/view.html' target="@inner-html(section)">
+						<g-icon>&#X2178;</g-icon>Components
+					</a>
+				</g-desk-pane>
 			</section>
 
 			<footer>

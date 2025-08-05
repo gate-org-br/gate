@@ -1,5 +1,8 @@
 <template>
 	<header>
+		<g-icon>
+			&#X2265;
+		</g-icon>
 	</header>
 	<section>
 		<slot>
