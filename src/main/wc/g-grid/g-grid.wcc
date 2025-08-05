@@ -1,215 +1,188 @@
+/* global template */
+
+import './g-table.js';
 import './g-callout.js';
-import './g-grid-row.js';
-import './g-grid-header.js';
-import './g-grid-footer.js';
+import './g-properties.js';
+import StyledHTMLElement from './styled-html-element.js';
 
-class Column
+function element(content)
 {
-	#index;
-	#owner;
-	#style;
-	#stylesheet;
-
-	constructor(owner, index, stylesheet)
+	switch (typeof content)
 	{
-		this.#index = index;
-		this.#owner = owner;
-		this.#stylesheet = stylesheet;
-	}
+		case "string":
+			return document.createTextNode(content);
+		case "number":
+			return document.createTextNode(content);
+		case "undefined":
+			return document.createTextNode("");
+		case "boolean":
+			return document.createTextNode(content ? "Sim" : "Não");
+		case "function":
+			return element(content());
+		case "object":
+			if (!content)
+				return document.createTextNode("");
 
-	get index()
-	{
-		return this.#index;
-	}
+			if (content instanceof HTMLElement)
+				return content;
 
-	get style()
-	{
-		if (!this.#style)
-		{
-			let ruleIndex = this.#stylesheet.insertRule(`g-grid-cell:nth-child(${this.index + 1}) {}`);
-			this.#style = this.#stylesheet.cssRules[ruleIndex].style;
-		}
+			if (Array.isArray(content))
+			{
+				let ul = document.createElement("ul");
+				content.forEach(e => ul.appendChild(document.createElement("li")).appendChild(element(e)));
+				return ul;
+			}
 
-		return this.#style;
-	}
-
-	get header()
-	{
-		return this.#owner.shadowRoot.querySelector("g-grid-header").cell(this.index);
-	}
-
-	get footer()
-	{
-		return this.#owner.shadowRoot.querySelector("g-grid-footer").cell(this.index);
+			let properties = document.createElement("g-properties");
+			properties.value = content;
+			return properties;
 	}
 }
 
-export default class GGrid extends HTMLElement
+export default class GGrid2 extends StyledHTMLElement
 {
-	#columns;
-	#stylesheet;
-
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.setAttribute("empty", "");
 		this.shadowRoot.innerHTML = template.innerHTML;
-
-		this.#columns = new Map();
-		this.#stylesheet = new CSSStyleSheet();
-		this.shadowRoot.adoptedStyleSheets = [this.#stylesheet];
-		this.addEventListener("change", () => this.connectedCallback());
 	}
 
 	set caption(value)
 	{
-		this.shadowRoot.querySelector("label")
-			.innerHTML = value || "";
+		this.shadowRoot.querySelector("caption").innerHTML = value;
 	}
 
-	get columns()
+	set header(values)
 	{
-		return Array.from(this.#columns.values());
+		const thead = this.shadowRoot.querySelector("thead");
+		thead.innerHTML = "";
+		const tr = thead.appendChild(document.createElement("tr"));
+		values.forEach(e => tr.appendChild(document.createElement("th")).appendChild(element(e)));
 	}
 
-	set columns(values)
+	add(properties, value)
 	{
-		let header = this.shadowRoot.querySelector("g-grid-header");
-		while (header.firstChild)
-			header.firstChild.remove();
-
-		values.forEach((header, index) => this.column(index).header.value = header);
+		const row = this.#createRow(properties, value);
+		this.shadowRoot.querySelector("tbody").appendChild(row);
+		this.removeAttribute("empty");
 	}
 
-	column(index)
+	set(index, properties, value)
 	{
-		if (!this.#columns.has(index))
-			this.#columns.set(index, new Column(this, index, this.#stylesheet));
-		return this.#columns.get(index);
+		const tbody = this.shadowRoot.querySelector("tbody");
+		const oldRow = tbody.children[index];
+		if (!oldRow)
+			return;
+
+		const newRow = this.#createRow(properties, value);
+		tbody.replaceChild(newRow, oldRow);
 	}
 
-	get rows()
+	remove(index)
 	{
-		return Array.from(this.shadowRoot.querySelector("section").children);
-	}
+		const tbody = this.shadowRoot.querySelector("tbody");
+		const tr = tbody.children[index];
+		if (tr)
+			tbody.removeChild(tr);
 
-	row(index = this.length)
-	{
-		let section = this.shadowRoot.querySelector("section");
-
-		while (section.children.length <= index)
-			section.appendChild(document.createElement("g-grid-row"));
-
-		return section.children[index];
-	}
-
-	get length()
-	{
-		return this.shadowRoot.querySelector("section")
-			.children.length;
-	}
-
-	get movable()
-	{
-		return this.hasAttribute("movable");
-	}
-
-	set movable(value)
-	{
-		if (value)
-			this.setAttribute("movable", "");
-		else
-			this.removeAttribute("movable");
-	}
-
-	set rows(values)
-	{
-		let section = this.shadowRoot.querySelector("section");
-		while (section.firstChild)
-			section.firstChild.remove();
-
-		if (values.length)
-			if (Array.isArray(values[0]))
-			{
-				values.forEach(value =>
-				{
-					let row = this.row();
-					row.value = value;
-					value.forEach(e => row.cell().value = e);
-				});
-			} else
-			{
-				values.forEach(value =>
-				{
-					let row = this.row();
-					row.value = value;
-					let keys = Object.keys(value);
-					row.cell().value = keys.reduce((val, key) =>
-					{
-						val[key] = value[key];
-						return val;
-					}, {});
-				});
-			}
+		if (tbody.children.length === 0)
+			this.setAttribute("empty", "");
 	}
 
 	set dataset(values)
 	{
-		this.clear();
-		if (values.length)
+		this.setAttribute("empty", "");
+		this.shadowRoot.querySelector("thead").innerHTML = "";
+		this.shadowRoot.querySelector("tbody").innerHTML = "";
+
+		if (Array.isArray(values) && values.length)
+		{
+			this.removeAttribute("empty");
+
 			if (Array.isArray(values[0]))
 			{
-				let index = 0;
-				values[0].filter(e => !e.startsWith("_"))
-					.forEach(header => this.column(index++).header.value = header);
-
-				values.slice(1).forEach(value =>
+				this.header = values[0].filter(e => !e.startsWith("_"));
+				for (let i = 1; i < values.length; i++)
 				{
-					let row = this.row();
-					row.value = value;
-
-					for (let i = 0; i < values[0].length; i++)
-						if (!values[0][i].startsWith("_"))
-							row.cell().value = value[i];
-				});
+					const value = values[i];
+					const properties = value.filter((_, index) => !values[0][index].startsWith("_"));
+					this.add(properties, value);
+				}
 			} else
 			{
 				values.forEach(value =>
 				{
-					let row = this.row();
-					row.value = value;
-					let keys = Object.keys(value);
-					row.cell().value = keys
-						.filter(e => !e.startsWith("_"))
-						.reduce((val, key) =>
-						{
-							val[key] = value[key];
-							return val;
-						}, {});
+					const keys = Object.keys(value);
+					const properties = keys.filter(k => !k.startsWith("_")).reduce((acc, key) =>
+					{
+						acc[key] = value[key];
+						return acc;
+					}, {});
+					this.add(properties, value);
 				});
 			}
+		}
 	}
 
-	clear()
+	set styles(values)
 	{
-		this.#columns.clear();
-		while (this.#stylesheet.cssRules.length)
-			this.#stylesheet.deleteRule(0);
+		const style = this.shadowRoot.querySelector("style[data-columns]");
+		style.textContent = values.map((css, i) => `tr > *:nth-child(${i + 1}) {${css}}`).join('\n');
+	}
 
-		[this.shadowRoot.querySelector("g-grid-header"),
-			this.shadowRoot.querySelector("section"),
-			this.shadowRoot.querySelector("g-grid-footer")].forEach(e =>
+	static get observedAttributes() {
+		return ["draggable"];
+	}
+
+	attributeChangedCallback()
+	{
+		Array.from(this.shadowRoot.querySelector("tbody").children)
+			.forEach(e => e.draggable = this.draggable);
+	}
+
+	#createRow(properties, value)
+	{
+		const tr = document.createElement("tr");
+
+		if (Array.isArray(properties))
+			properties.forEach(e => tr.appendChild(document.createElement("td")).appendChild(element(e)));
+		else
+			tr.appendChild(document.createElement("td")).appendChild(element(properties));
+
+		tr.draggable = this.draggable;
+
+		tr.addEventListener("click", () =>
 		{
-			while (e.firstChild)
-				e.firstChild.remove();
+			const index = Array.from(tr.parentNode.children).indexOf(tr);
+			this.dispatchEvent(new CustomEvent('select', {detail: {index, value}}));
 		});
-	}
 
-	connectedCallback()
-	{
-		this.shadowRoot.querySelector("div").style.display = this.length ? "" : "none";
-		this.shadowRoot.querySelector("g-callout").style.display = this.length ? "none" : "";
+		tr.addEventListener("dragover", event => event.preventDefault());
+
+		tr.addEventListener("dragstart", event =>
+		{
+			const sourceIndex = Array.from(tr.parentNode.children).indexOf(tr);
+			event.dataTransfer.setData("text/plain", sourceIndex);
+		});
+
+		tr.addEventListener("drop", event =>
+		{
+			event.preventDefault();
+			const sourceIndex = Number(event.dataTransfer.getData("text/plain"));
+			const targetIndex = Array.from(tr.parentNode.children).indexOf(tr);
+			const rows = Array.from(tr.parentNode.children);
+			const sourceRow = rows[sourceIndex];
+
+			if (sourceRow && sourceRow !== tr)
+			{
+				tr.parentNode.insertBefore(sourceRow, tr);
+				this.dispatchEvent(new CustomEvent("move", {detail: {source: sourceIndex, target: targetIndex}}));
+			}
+		});
+
+		return tr;
 	}
 }
 
-customElements.define('g-grid', GGrid);
+customElements.define('g-grid', GGrid2);

@@ -1,13 +1,8 @@
-let template = document.createElement("template");
-template.innerHTML = `
- <style data-element="g-event-source">:host(*) { display: none }</style>`;
 import Base64 from './base64.js';
 
-/* global customElements, template */
-
-export default function	registerEventSource(path, listener, log)
+function eventSource(path, listener, log)
 {
-	const eventSource = new EventSource(path);
+	const eventSource = new EventSource(window.location.origin + path);
 
 	eventSource.onopen = () => log && console.log('listening to app events.');
 
@@ -26,5 +21,5 @@ export default function	registerEventSource(path, listener, log)
 }
 
 Array.from(document.querySelectorAll("[data-event-source]"))
-	.forEach(listener => registerEventSource(listener.getAttribute("data-event-source"),
+	.forEach(listener => eventSource(listener.getAttribute("data-event-source"),
 			listener, listener.hasAttribute("data-event-source:log")));

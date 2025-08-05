@@ -55,13 +55,13 @@
 				<input type="text"
 				       placeholder='Search'
 				       data-trigger='input'
-				       data-action='data:text/plain,@{this}'
+				       data-action='data:text/plain,@value(this)'
 				       data-target='@attribute(this.parent(fieldset).search(table):data-filter)'>
 			</span>
 		</label>
 		<label data-size='8'>
 			<span>
-				<select data-action='data:text/plain,@{this}'
+				<select data-action='data:text/plain,@value(this)'
 					data-target='@attribute(this.parent(fieldset).search(col:nth-child(2)):data-filter)'>
 					<option value="">Sex</option>
 					<option value="Male">Male</option>

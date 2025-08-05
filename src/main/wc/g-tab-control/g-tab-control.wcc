@@ -96,9 +96,8 @@ customElements.define('g-tab-control', class extends HTMLElement
 			link.addEventListener("click", event =>
 			{
 				const page = link.nextElementSibling;
-				
-				if (link.getAttribute("data-selected") === "true"
-					|| (link.getAttribute("data-reload") || this.reload) === "always")
+
+				if (link.getAttribute("data-reload") || this.reload === "always")
 					page.innerHTML = "";
 
 				pages.forEach(e => e.style.display = "none");

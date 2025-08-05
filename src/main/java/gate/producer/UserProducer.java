@@ -3,9 +3,7 @@ package gate.producer;
 import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.error.AuthenticationException;
 import gate.error.HierarchyException;
-import gate.error.UnauthorizedException;
 import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
@@ -51,8 +49,7 @@ public class UserProducer
 				return user;
 			} else
 				return new User();
-		} catch (AuthenticationException
-			| UnauthorizedException ex)
+		} catch (RuntimeException ex)
 		{
 			return new User();
 		}

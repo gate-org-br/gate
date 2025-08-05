@@ -61,9 +61,11 @@ table[is='g-table'] > tbody > tr[hidden]
 import Objects from './objects.js';
 import colorize from './colorize.js';
 import EventHandler from './event-handler.js';
-import applyTemplate from './apply-template.js';
 
-applyTemplate(document, template);
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(template.content.querySelector("style").textContent);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+
 customElements.define('g-table', class extends HTMLTableElement
 {
 	#observer;
@@ -139,7 +141,6 @@ customElements.define('g-table', class extends HTMLTableElement
 
 	connectedCallback()
 	{
-		applyTemplate(this, template);
 		this.update(this);
 	}
 }, {extends: 'table'});

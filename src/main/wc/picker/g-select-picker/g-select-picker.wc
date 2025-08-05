@@ -12,9 +12,11 @@
 		</header>
 		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
-			<g-grid>
-				Nenhum registro encontrado
-			</g-grid>
+			<div>
+				<g-grid>
+					Nenhum registro encontrado
+				</g-grid>
+			</div>
 		</section>
 		<footer>
 			<g-coolbar>

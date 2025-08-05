@@ -1,9 +1,8 @@
 dialog
 {
-	min-width: 320px;
-	max-width: 800px;
 	height: fit-content;
-	width: calc(100% - 40px);
+	width: clamp(320px, calc(100% - 120px), 1024px);
+	height: clamp(320px, calc(100% - 120px), 768px);
 }
 
 dialog > section
@@ -15,5 +14,9 @@ dialog > section
 	justify-items:stretch;
 	align-content: stretch;
 	justify-content: stretch;
-	grid-template-rows: 40px 400px;
+	grid-template-rows: 40px auto;
+}
+
+div {
+	overflow: auto;
 }

@@ -1,13 +1,12 @@
 <template>
-	<div>
-		<main>
-			<label></label>
-			<header><g-grid-header></g-grid-header></header>
-			<section></section>
-			<footer><g-grid-footer></g-grid-footer></footer>
-		</main>
-	</div>
+	<table>
+		<caption></caption>
+		<thead></thead>
+		<tbody></tbody>
+	</table>
 	<g-callout class='fill'>
 		<slot></slot>
 	</g-callout>
+	<style data-columns>
+	</style>
 </template>

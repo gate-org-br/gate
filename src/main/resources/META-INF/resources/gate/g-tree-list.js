@@ -53,9 +53,11 @@ template.innerHTML = `
 	}
 }</style>`;
 /* global template */
-import applyTemplate from './apply-template.js';
 
-applyTemplate(document, template);
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(template.content.querySelector("style").textContent);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+
 customElements.define('g-tree-list', class extends HTMLUListElement
 {
 	constructor()
@@ -65,7 +67,10 @@ customElements.define('g-tree-list', class extends HTMLUListElement
 
 	connectedCallback()
 	{
-		applyTemplate(this, template);
+		const root = this.getRootNode();
+		if (root instanceof ShadowRoot)
+			if (!root.adoptedStyleSheets.includes(sheet))
+				root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
 
 		Array.from(this.querySelectorAll("li")).forEach(li =>
 		{

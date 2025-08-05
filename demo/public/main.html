@@ -9,6 +9,7 @@
 		<link rel='stylesheet' type='text/css' href='./gate/Gate.css' />
 		<script type='module' src='./gate/g-code-viewer.js' charset="utf-8"></script>
 		<script type='module' src='./gate/Gate.js' charset="utf-8"></script>
+		<script type='module' src='./gate/g-grid.js' charset="utf-8"></script>
 	</head>
 
 	<body data-loading onload="document.body.removeAttribute('data-loading')">
@@ -37,14 +38,46 @@
 			</nav>
 
 			<section>
-				<g-desk-pane>
-					<a href='/target/view.html' target="@inner-html(section)" aria-selected>
-						Targets<g-icon>&#X1011;</g-icon>
-					</a>
-					<a href='/component/view.html' target="@inner-html(section)">
-						<g-icon>&#X2178;</g-icon>Components
-					</a>
-				</g-desk-pane>
+				<input type="text" data-trigger='input' data-action='data:text/plain,@value(this)' data-target='@attribute(this.next():filter)'>
+				<g-grid>
+					Empty
+				</g-grid>
+				<g-coolbar>
+					<button id='objects'>
+						objects
+					</button>
+					<button id='arrays'>
+						arrays
+					</button>
+				</g-coolbar>
+
+				<!--				<g-desk-pane>
+									<a href='/target/view.html' target="@inner-html(section)" aria-selected>
+										Targets<g-icon>&#X1011;</g-icon>
+									</a>
+									<a href='/component/view.html' target="@inner-html(section)">
+										<g-icon>&#X2178;</g-icon>Components
+									</a>
+								</g-desk-pane>-->
+
+				<script type='module'>
+					const grid = document.querySelector("g-grid");
+
+					grid.styles = ["", "width: 100px; text-align: center"];
+
+					document.getElementById("objects").addEventListener("click", () => grid.dataset = [{
+								"_id": 1,
+								"Nome": "Davi",
+								"Sexo": "Masculino"
+							}, {
+								"_id": 2,
+								"Nome": "Marilia",
+								"Sexo": "Feminino"
+							}]);
+
+					document.getElementById("arrays").addEventListener("click", () => grid.dataset = [["_ID", "Nome", "Sexo"], [1, "Davi", "Masculino"], [2, "Mia", "Feminino"]]);
+						grid.addEventListener("select", e => alert(JSON.stringify(e.detail)));
+				</script>
 			</section>
 
 			<footer>

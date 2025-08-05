@@ -15,7 +15,6 @@ import "./g-tooltip.js";
 import "./g-message.js";
 import "./g-block.js";
 
-import "./g-event-source.js";
 import "./g-digital-clock.js";
 import "./g-card.js";
 import "./g-card-pane.js";
@@ -90,6 +89,8 @@ import './collapse.js';
 import './g-login-form.js';
 
 import './g-side-menu.js';
+
+import './event-source.js';
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

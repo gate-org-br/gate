@@ -13,9 +13,11 @@ template.innerHTML = `
 		</header>
 		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
-			<g-grid>
-				Entre com o critério pesquisa
-			</g-grid>
+			<div>
+				<g-grid>
+					Entre com o critério pesquisa
+				</g-grid>
+			</div>
 		</section>
 		<footer>
 			<g-coolbar>
@@ -31,10 +33,9 @@ template.innerHTML = `
 	</dialog>
  <style data-element="g-search-picker">dialog
 {
-	min-width: 320px;
-	max-width: 800px;
 	height: fit-content;
-	width: calc(100% - 40px);
+	width: clamp(320px, calc(100% - 120px), 1024px);
+	height: clamp(320px, calc(100% - 120px), 768px);
 }
 
 dialog > section
@@ -46,7 +47,11 @@ dialog > section
 	justify-items:stretch;
 	align-content: stretch;
 	justify-content: stretch;
-	grid-template-rows: 40px 400px;
+	grid-template-rows: 40px auto;
+}
+
+div {
+	overflow: auto;
 }</style>`;
 /* global customElements, template, fetch */
 
@@ -78,7 +83,7 @@ export default class GSearchPicker extends GWindow
 		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {value: {}}})));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", debounce(() => this.text = input.value));
@@ -138,12 +143,17 @@ export default class GSearchPicker extends GWindow
 				{
 					grid.dataset = options;
 					grid.innerText = "Nenhum registro encontrado";
-					this.dispatchEvent(new CustomEvent("update", {detail: Array.isArray(options[0]) ? options.slice(1) : options}));
+					this.dispatchEvent(new CustomEvent("update", {detail: {index: 0, value: Array.isArray(options[0]) ? options.slice(1) : options}}));
 				} else
 					throw new Error("Invalid json data returned by the server");
 
 			})
-			.catch(error => GMessageDialog.error(error.message))
+			.catch(error =>
+			{
+				grid.dataset = [];
+				grid.innerText = error.message;
+				this.dispatchEvent(new CustomEvent("update", {detail: null}));
+			})
 			.finally(() =>
 			{
 				input.disabled = false;
@@ -176,7 +186,7 @@ export default class GSearchPicker extends GWindow
 			{
 				if (e.detail && e.detail.length === 1)
 				{
-					resolve({index: 0, value: e.detail[0]});
+					resolve(e.detail[0]);
 					picker.hide();
 				}
 			});

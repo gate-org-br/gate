@@ -2,64 +2,27 @@
 	box-sizing: border-box;
 }
 
-:host(*)
+caption:empty,
+thead:empty,
+tbody:empty,
+tfoot:empty
 {
-	gap: 4px;
-	display: flex;
-	flex-direction: column;
-}
-
-input {
-	flex-grow: 1;
-}
-
-div {
-	display: flex;
-	overflow: auto;
-	align-items: stretch;
-	justify-content: stretch;
-}
-
-main
-{
-	flex-grow: 1;
-	display: table;
-	border-spacing: 1px;
-	background-color: var(--main4);
-
-	table-layout: fixed;
-}
-
-label {
-	height: 32px;
-	color: white;
-	line-height: 32px;
-	font-weight: bold;
-	text-align: center;
-	color: var(--base1);
-	display: table-caption;
-	vertical-align: middle;
-	border-radius: 3px 3px 0 0;
-	background-color: var(--base3);
-}
-
-label:empty {
 	display: none;
 }
 
-header
-{
-	display: table-header-group;
+:host([empty]) > table {
+	display: none;
 }
 
-section
-{
-	height: 32px;
+:host(:not([empty])) > g-callout {
+	display: none;
+}
+
+
+tbody > tr {
 	cursor: pointer;
-	display: table-row-group;
 }
 
-footer
-{
-	display: table-footer-group;
+tbody > tr:hover > td{
+	background-color: var(--hovered);
 }

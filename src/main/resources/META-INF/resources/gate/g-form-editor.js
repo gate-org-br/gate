@@ -27,84 +27,60 @@ import './g-grid.js';
 import './g-field-editor.js';
 import GFieldEditorDialog from './g-field-editor-dialog.js';
 
-function fill(row, campo)
+function format(value)
 {
-	row.value = campo;
-	row.cell(0).value = campo.name;
-	row.cell(1).value = campo.description;
-	row.cell(2).value = ["1", "2", "4", "8", "16"][Number(campo.size || "4")];
-	row.cell(3).value = campo.required || false;
-	row.cell(4).value = campo.multiple || false;
-	row.cell(5).value = campo.maxlength;
-	row.cell(6).value = campo.pattern;
-	row.cell(7).value = campo.mask;
-	row.cell(8).value = campo.options;
-	row.cell(9).value = campo.value;
+	return [value.name, value.mask, [1, 2, 4, 8][value.size] || "", !!value.multiple,
+		!!value.required, value.maxlength, value.pattern, value.description,
+		value.options, value.value];
 }
 
 customElements.define('g-form-editor', class extends HTMLElement
 {
+	#value;
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 
+		this.#value = [];
 		let grid = this.shadowRoot.querySelector("g-grid");
 		grid.movable = true;
 		grid.caption = "CAMPOS";
+		grid.draggable = true;
 
-		grid.column(0).header.value = "Nome";
+		grid.styles = ["text-align: left",
+			"text-align: left",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px"];
 
-		grid.column(1).header.value = "Descrição";
-
-		grid.column(2).header.value = "Colunas";
-		grid.column(2).style.width = "80px";
-		grid.column(2).style.textAlign = "center";
-
-		grid.column(3).header.value = "Requerido";
-		grid.column(3).style.width = "80px";
-		grid.column(3).style.textAlign = "center";
-
-		grid.column(4).header.value = "Múltiplo";
-		grid.column(4).style.width = "80px";
-		grid.column(4).style.textAlign = "center";
-
-		grid.column(5).header.value = "Tam Max";
-		grid.column(5).style.width = "80px";
-		grid.column(5).style.textAlign = "center";
-
-		grid.column(6).header.value = "Padrão";
-		grid.column(6).style.width = "160px";
-		grid.column(6).style.textAlign = "center";
-
-		grid.column(7).header.value = "Máscara";
-		grid.column(7).style.width = "160px";
-		grid.column(7).style.textAlign = "center";
-
-		grid.column(8).header.value = "Opções";
-		grid.column(8).style.width = "160px";
-		grid.column(8).style.textAlign = "center";
-
-		grid.column(9).header.value = "Valor";
-		grid.column(9).style.width = "160px";
-		grid.column(9).style.textAlign = "center";
+		grid.header = ["Nome", "Máscara", "Colunas", "Múltiplo", "Requerido",
+			"Tamanho Máximo", "Expressão Regular", "Descrição", "Opções", "Valor"];
 
 		let form = this.shadowRoot.querySelector("g-form");
 
 		grid.addEventListener("select", event =>
 		{
-			GFieldEditorDialog.edit(event.detail.value, "Campo").then(campo =>
+			GFieldEditorDialog.edit(event.detail.value, "Campo").then(value =>
 			{
-				let row = event.detail;
-				if (campo)
+				let index = event.detail.index;
+				if (value)
 				{
-					fill(row, campo);
-					form.set(row.index, campo);
+					this.#value[index] = value;
+					form.set(index, value);
+					grid.set(index, format(value), value);
+
 				} else
 				{
-					form.remove(row.index);
-					row.remove();
+					this.#value.splice(index, 1);
+					form.remove(index);
+					grid.remove(index);
 				}
 				this.dispatchEvent(new CustomEvent("change"));
 			});
@@ -115,12 +91,11 @@ customElements.define('g-form-editor', class extends HTMLElement
 
 		this.shadowRoot.getElementById("new").addEventListener("click", () =>
 		{
-			GFieldEditorDialog.edit(null, "Novo campo").then(campo =>
+			GFieldEditorDialog.edit(null, "Novo campo").then(value =>
 			{
-				form.add(campo);
-
-				let row = grid.row();
-				fill(row, campo);
+				this.#value.push(value);
+				form.add(value);
+				grid.add(format(value), value);
 				this.dispatchEvent(new CustomEvent("change"));
 			});
 		});
@@ -139,12 +114,13 @@ customElements.define('g-form-editor', class extends HTMLElement
 
 	set value(value)
 	{
+		value = Array.from(value);
+		this.#value = value || [];
 		let form = this.shadowRoot.querySelector("g-form");
 		form.value = value;
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.rows.forEach(e => e.remove());
-		Array.from(value).forEach(campo => fill(grid.row(), campo));
+		value.forEach(value => grid.add(format(value), value));
 		this.dispatchEvent(new CustomEvent("change"));
 	}
 

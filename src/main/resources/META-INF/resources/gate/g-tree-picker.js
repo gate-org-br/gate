@@ -28,10 +28,8 @@ template.innerHTML = `
 	</dialog>
  <style data-element="g-tree-picker">dialog
 {
-	min-width: 320px;
-	max-width: 800px;
-	height: fit-content;
-	width: calc(100% - 40px);
+	width: clamp(320px, calc(100% - 120px), 1024px);
+	height: clamp(320px, calc(100% - 120px), 768px);
 }
 
 dialog > section
@@ -39,7 +37,7 @@ dialog > section
 	gap: 4px;
 	padding: 4px;
 	display: flex;
-	height: 400px;
+	height: auto;
 	overflow: auto;
 	align-items: stretch;
 	background-color: white;
