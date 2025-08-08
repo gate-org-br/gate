@@ -85,7 +85,7 @@ section {
 ::slotted(button:hover),
 ::slotted(.g-command:hover) {
     color: var(--main9-hover, #000);
-    background-color: var(--hover-bg, #f0f0f0);
+    background-color: var(--hovered, #f0f0f0);
 }
 
 :host(:hover) ::slotted(*),

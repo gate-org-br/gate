@@ -1,17 +1,21 @@
-/* global fetch */
-
 import './trigger.js';
 import DOM from './dom.js';
 import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
-window.addEventListener("@value", function (event)
+window.addEventListener("@call", function (event)
 {
     let path = event.composedPath();
     let {method, action, form, parameters: [selector]} = event.detail;
 
-    let target = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
+    let index = selector.lastIndexOf(":");
+    if (index === -1)
+        throw new Error("Missing function name");
+
+    let func = selector.substring(index + 1);
+    let target = DOM.navigate(event, selector.substring(0, index))
+            .orElseThrow(`${selector} is not a valid selector`);
 
     fetch(RequestBuilder.build(method, action, form))
             .then(response =>
@@ -20,7 +24,10 @@ window.addEventListener("@value", function (event)
                 return ResponseHandler.auto(response)
                         .then(result =>
                         {
-                            target.value = result;
+                            if (typeof target[func] !== 'function')
+                                throw new Error(`Function ${func} is not defined on ${selector}`);
+
+                            target[func]();
                             event.success(path, new DataURL(contentType, result).toString());
                         });
             })

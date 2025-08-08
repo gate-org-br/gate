@@ -17,6 +17,16 @@ window.addEventListener("@inner-html", function (event)
 		.then(result =>
 		{
 			element.innerHTML = result;
+
+			element.querySelectorAll("script").forEach(e =>
+			{
+				const script = document.createElement("script");
+				for (const attr of e.attributes)
+					script.setAttribute(attr.name, attr.value);
+				script.textContent = e.textContent;
+				e.replaceWith(script);
+			});
+
 			event.success(path, new DataURL('text/html', result).toString());
 		})
 		.catch(error => event.failure(path, error));

@@ -146,7 +146,7 @@ export default class ResponseHandler
 			let contentType = response.headers.get('content-type');
 			if (contentType.startsWith("text/"))
 				return response.text();
-			else if (contentType === "application/json")
+			else if (contentType.startsWith("application/json"))
 				return response.json();
 			else
 				return response.blob();

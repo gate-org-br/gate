@@ -96,7 +96,7 @@ section {
 ::slotted(button:hover),
 ::slotted(.g-command:hover) {
     color: var(--main9-hover, #000);
-    background-color: var(--hover-bg, #f0f0f0);
+    background-color: var(--hovered, #f0f0f0);
 }
 
 :host(:hover) ::slotted(*),
@@ -119,6 +119,8 @@ const sheet = new CSSStyleSheet();
 sheet.replaceSync(`g-side-menu g-icon { order: -1; font-size: 16px }`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
+const DESKTOP = 1000;
+
 customElements.define('g-side-menu', class extends HTMLElement
 {
 	constructor()
@@ -132,12 +134,14 @@ customElements.define('g-side-menu', class extends HTMLElement
 
 		this.shadowRoot.querySelector("section")
 			.addEventListener("click", event =>
-				window.innerWidth <= 768 &&
+				window.innerWidth < DESKTOP &&
 					this.removeAttribute("open"));
 	}
 
 	connectedCallback()
 	{
+		if (window.innerWidth >= DESKTOP)
+			this.setAttribute("open", "");
 		Array.from(this.children)
 			.filter(e => e.tagName !== "HR")
 			.filter(e => !e.querySelector('g-icon'))

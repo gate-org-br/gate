@@ -10,19 +10,20 @@
 	color: black;
 	display: flex;
 	z-index: 1000;
-	font-size: 12px;
+	font-size: 14px;
 	position: fixed;
-	min-width: 200px;
+	min-width: 220px;
+	border-radius: 8px;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: #F0F0F0;
-	box-shadow: 3px 10px 5px 0px rgba(0,0,0,0.75);
+	background-color: #FFFFFF;
+	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
 }
 
 a, button
 {
-	gap: 8px;
-	padding: 8px;
+	gap: 12px;
+	padding: 10px 16px;
 	display: flex;
 	color: inherit;
 	flex-basis: 16px;
@@ -31,16 +32,27 @@ a, button
 	white-space: nowrap;
 	text-decoration: none;
 	justify-content: space-between;
+	border-radius: 4px;
+	transition: background-color 0.2s ease, padding 0.2s ease;
 }
 
 a:hover,
 button:hover
 {
 	background-color: var(--hovered, #FFFACD);
+	padding-left: 20px;
+}
+
+a:focus,
+button:focus
+{
+	outline: none;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 label {
 	flex-grow: 1;
+	font-weight: 600;
 }
 
 a[data-icon]::before,
@@ -53,9 +65,20 @@ button[data-icon]::before
 a[submenu]::after,
 button[submenu]::after
 {
-	font-size: 10px;
-	color: #CCCCCC;
-	font-family: gate;
+	color: #888;
+	font-size: 12px;
 	content: '\\2207';
-
+	font-family: gate;
+	margin-left: 8px;
 }
+
+a, button {
+	transition: all 0.2s ease;
+}
+
+:host {
+	padding: 10px;
+	border-radius: 10px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+

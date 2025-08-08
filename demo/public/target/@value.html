@@ -12,20 +12,16 @@
 	</a>
 	<div>
 		<p>
-			On this example, the <strong>@form </strong> target fetches the <a href="/form.json" target='_blank'>form.json</a>
-			file from the server using the HTTP get method and presents it's as a form to be edited by the user.
-			Upon edition, the edited form is dispatched to the <strong>@post</strong> target.
-			The <strong>@post</strong> target makes a HTTP post with the edited form to <a href="/form.json" target='_blank'>form.json</a>
-			and dispatches the result to the <strong>@value</strong> target.
-			The <strong>@value</strong> target updates it's target value with the edited form.
+			On this example, the <strong>@value</strong> target fetches the <a href="/form" target='_blank'>form</a>
+			specification from the server using the HTTP get method and updates it's target value with the result.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<g-form-view>
 			</g-form-view>
 			<g-coolbar>
-				<a href="/form.json"
+				<a href="/form"
 				   class="primary"
-				   target="@form > @post > @value(this.parent().prev())">
+				   target="@value(this.parent().prev())">
 					Update form<g-icon>&#X2072;</g-icon>
 				</a>
 			</g-coolbar>
