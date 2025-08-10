@@ -44,18 +44,18 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
-						IAttribute::getValue, (a, b) -> a, Attributes::new));
+			.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
+				IAttribute::getValue, (a, b) -> a, Attributes::new));
 
 		Parameters parameters = new Parameters();
 		if (attributes.containsKey("arguments"))
 			Parameters.parse((String) attributes.remove("arguments")).forEach((key, value) -> parameters.put(key,
-					expression.create().evaluate(value.toString())));
+				expression.create().evaluate(value.toString())));
 
 		attributes.entrySet().stream()
-				.filter(e -> e.getValue() != null)
-				.filter(e -> e.getKey().startsWith("_"))
-				.forEach(e -> parameters.put(e.getKey().substring(1), expression.create().evaluate((String) e.getValue())));
+			.filter(e -> e.getValue() != null)
+			.filter(e -> e.getKey().startsWith("_"))
+			.forEach(e -> parameters.put(e.getKey().substring(1), expression.create().evaluate((String) e.getValue())));
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
 
 		var exchange = ((IWebContext) context).getExchange();
@@ -64,9 +64,9 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		try
 		{
 			call = Call.of(exchange,
-					(String) attributes.remove("module"),
-					(String) attributes.remove("screen"),
-					(String) attributes.remove("action"));
+				(String) attributes.remove("module"),
+				(String) attributes.remove("screen"),
+				(String) attributes.remove("action"));
 		} catch (BadRequestException ex)
 		{
 			throw new AppError(ex);
@@ -118,13 +118,13 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		String target = (String) attributes.remove("target");
 		target = (String) expression.create().evaluate(target);
 
-		if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+		if (call.method().isAnnotationPresent(Asynchronous.class))
 			return Optional.of(target != null && !target.startsWith("@progress") ? "@progress > " + target : "@progress");
 		else
 			return Optional.ofNullable(target);
 	}
 
 	protected abstract void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-									IProcessableElementTag element,
-									User user, Call call, Attributes attributes, Parameters parameters);
+		IProcessableElementTag element,
+		User user, Call call, Attributes attributes, Parameters parameters);
 }

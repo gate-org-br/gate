@@ -59,9 +59,7 @@ public class LinkProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("formaction", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
+		attributes.put("formaction", URL.toString(call.command(),
 			parameters.toString()));
 
 		attributes.put("form", element.getAttributeValue("form"));
@@ -85,10 +83,7 @@ public class LinkProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("href", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			parameters.toString()));
+		attributes.put("href", URL.toString(call.command(), parameters.toString()));
 
 		target(call, attributes).ifPresent(target -> attributes.put("target", target));
 

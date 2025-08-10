@@ -53,10 +53,7 @@ public class ShortcutProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("formaction", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			parameters.toString()));
+		attributes.put("formaction", URL.toString(call.command(), parameters.toString()));
 
 		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
@@ -74,10 +71,7 @@ public class ShortcutProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("href", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			parameters.toString()));
+		attributes.put("href", URL.toString(call.command(), parameters.toString()));
 
 		target(call, attributes).ifPresent(target -> attributes.put("target", target));
 

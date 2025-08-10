@@ -4,8 +4,6 @@ import gate.Call;
 import gate.annotation.Asynchronous;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.error.AppError;
-import gate.error.BadRequestException;
 import gate.io.URL;
 import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.ELExpressionFactory;
@@ -47,14 +45,7 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 
-		Call call;
-		try
-		{
-			call = Call.of(exchange, module, screen, action);
-		} catch (BadRequestException ex)
-		{
-			throw new AppError(ex);
-		}
+		Call call = Call.of(exchange, module, screen, action);
 
 		User user = CDI.current().select(User.class, Current.LITERAL).get();
 
@@ -63,11 +54,11 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		ELExpression expression = ELExpressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
-				.filter(e -> e.getValue() != null)
-				.filter(e -> e.getAttributeCompleteName().startsWith("_"))
-				.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
-				.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
-				expression.evaluate(e.getValue())));
+			.filter(e -> e.getValue() != null)
+			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
+			.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
+			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
+			expression.evaluate(e.getValue())));
 
 		if (call.checkAccess(user))
 		{
@@ -92,65 +83,65 @@ public class RequestAttributeProcessor extends AttributeProcessor
 			switch (element.getElementCompleteName().toLowerCase())
 			{
 				case "a":
-					handler.setAttribute("href", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
+					handler.setAttribute("href", URL.toString(call.command(), parameters.toString()));
 
-					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.method().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("target",
-								element.hasAttribute("target")
-								&& !element.getAttributeValue("target").startsWith("@progress")
-								? "@progress > " + element.getAttributeValue("target")
-								: "@progress");
+							element.hasAttribute("target")
+							&& !element.getAttributeValue("target").startsWith("@progress")
+							? "@progress > " + element.getAttributeValue("target")
+							: "@progress");
 
 					break;
 				case "button":
-					handler.setAttribute("formaction", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
+					handler.setAttribute("formaction", URL.toString(call.command(), parameters.toString()));
 
-					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.method().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("formtarget",
-								element.hasAttribute("formtarget")
-								&& !element.getAttributeValue("formtarget").startsWith("@progress")
-								? "@progress > " + element.getAttributeValue("formtarget")
-								: "@progress");
+							element.hasAttribute("formtarget")
+							&& !element.getAttributeValue("formtarget").startsWith("@progress")
+							? "@progress > " + element.getAttributeValue("formtarget")
+							: "@progress");
 					break;
 
 				case "form":
-					handler.setAttribute("action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
+					handler.setAttribute("action", URL.toString(call.command(), parameters.toString()));
 
-					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.method().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("target",
-								element.hasAttribute("target")
-								&& !element.getAttributeValue("target").startsWith("@progress")
-								? "@progress > " + element.getAttributeValue("target")
-								: "@progress");
+							element.hasAttribute("target")
+							&& !element.getAttributeValue("target").startsWith("@progress")
+							? "@progress > " + element.getAttributeValue("target")
+							: "@progress");
 					break;
 				case "img":
-					handler.setAttribute("src", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
+					handler.setAttribute("src", URL.toString(call.command(), parameters.toString()));
 					break;
 				default:
-					handler.setAttribute("data-action", URL.toString(call.getModule(), call.getScreen(), call.getAction(), parameters.toString()));
+					handler.setAttribute("data-action", URL.toString(call.command(), parameters.toString()));
 
-					if (call.getMethod().isAnnotationPresent(Asynchronous.class))
+					if (call.method().isAnnotationPresent(Asynchronous.class))
 						handler.setAttribute("data-target",
-								element.hasAttribute("data-target")
-								&& !element.getAttributeValue("data-target").startsWith("@progress")
-								? "@progress > " + element.getAttributeValue("data-target")
-								: "@progress");
+							element.hasAttribute("data-target")
+							&& !element.getAttributeValue("data-target").startsWith("@progress")
+							? "@progress > " + element.getAttributeValue("data-target")
+							: "@progress");
 					break;
 			}
 
 			if (element instanceof IStandaloneElementTag
-					&& (element.getElementCompleteName().toLowerCase().equals("a")
-					|| element.getElementCompleteName().toLowerCase().equals("button")))
+				&& (element.getElementCompleteName().toLowerCase().equals("a")
+				|| element.getElementCompleteName().toLowerCase().equals("button")))
 			{
 				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
 				call.getName().ifPresent(body::add);
 				call.getIcon().map(e -> "<g-icon>" + e + "</g-icon>")
-						.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
-						.ifPresent(body::add);
+					.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
+					.ifPresent(body::add);
 				handler.setBody(body.toString(), true);
 			}
 		} else if (element.getElementCompleteName().toLowerCase().equals("a")
-				|| element.getElementCompleteName().toLowerCase().equals("button"))
+			|| element.getElementCompleteName().toLowerCase().equals("button"))
 			handler.removeElement();
 	}
 

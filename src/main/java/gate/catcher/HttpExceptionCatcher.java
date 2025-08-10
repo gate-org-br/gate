@@ -1,6 +1,5 @@
 package gate.catcher;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-@ApplicationScoped
 public abstract class HttpExceptionCatcher implements Catcher
 {
 

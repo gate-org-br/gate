@@ -1,7 +1,9 @@
 package gate.error;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
+@ApplicationScoped
 public abstract class HttpException extends AppException
 {
 

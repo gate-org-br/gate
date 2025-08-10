@@ -1,6 +1,5 @@
 package gate;
 
-import static gate.CookieFactory.SUBJECT_COOKIE;
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
@@ -16,7 +15,6 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
-import gate.util.Toolkit;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -36,7 +34,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 @MultipartConfig
@@ -86,6 +83,7 @@ public class Gate extends HttpServlet
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response)
 		throws ServletException, IOException
 	{
+		response.addHeader("Vary", "X-G-Fragment");
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 		try
@@ -96,23 +94,12 @@ public class Gate extends HttpServlet
 			response.setCharacterEncoding("UTF-8");
 			response.setLocale(Locale.getDefault());
 
-			String MODULE = request.getParameter("MODULE");
-			String SCREEN = request.getParameter("SCREEN");
-			String ACTION = request.getParameter("ACTION");
-			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION) && httpServletRequest.getPathInfo() != null)
-			{
-				List<String> path = Toolkit.parsePath(httpServletRequest.getPathInfo());
-				MODULE = !path.isEmpty() ? path.get(0) : null;
-				SCREEN = path.size() >= 2 ? path.get(1) : null;
-				ACTION = path.size() >= 3 ? path.get(2) : null;
-			}
+			var command = request.getCommand();
+			request.setAttribute("MODULE", command.module());
+			request.setAttribute("SCREEN", command.screen());
+			request.setAttribute("ACTION", command.action());
 
-			request.setAttribute("ACTION", ACTION);
-			request.setAttribute("MODULE", MODULE);
-			request.setAttribute("SCREEN", SCREEN);
-
-			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-				&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
+			if (command.isEmpty() && (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
 			{
 				if (user.getId() != null)
 				{
@@ -135,9 +122,7 @@ public class Gate extends HttpServlet
 				return;
 			}
 
-			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-				? mainAction
-				: Call.of(MODULE, SCREEN, ACTION);
+			Call call = command.isEmpty() ? mainAction : Call.of(command);
 
 			if (!call.checkMethod(request.getMethod()))
 				throw new BadRequestException();
@@ -160,12 +145,12 @@ public class Gate extends HttpServlet
 				else
 					throw new UnauthorizedException();
 
-			Screen screen = CDI.current().select(call.getType()).get();
+			Screen screen = CDI.current().select(call.type()).get();
 			request.setAttribute("screen", screen);
-			request.setAttribute("action", call.getMethod());
+			request.setAttribute("action", call.method());
 			screen.prepare(request, response);
 
-			if (call.getMethod().isAnnotationPresent(Cors.class))
+			if (call.method().isAnnotationPresent(Cors.class))
 			{
 				response.setHeader("Access-Control-Max-Age", "3600");
 				response.setHeader("Access-Control-Allow-Credentials", "true");
@@ -175,10 +160,10 @@ public class Gate extends HttpServlet
 					"Content-Type, Accept, X-Requested-With, remember-me");
 			}
 
-			if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-				executeAsync(user, request, response, screen, call.getMethod());
+			if (call.method().isAnnotationPresent(Asynchronous.class))
+				executeAsync(user, request, response, screen, call.method());
 			else
-				execute(httpServletRequest, response, screen, call.getMethod());
+				execute(httpServletRequest, response, screen, call.method());
 
 		} catch (AuthenticationException ex)
 		{

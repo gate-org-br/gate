@@ -216,15 +216,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-	{
-		Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-					|| e.hasAttribute("data-method")
-					|| e.hasAttribute("data-action")
-					|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-	});
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+});
 
 window.addEventListener("load", function (event)
 {
@@ -264,7 +264,6 @@ window.addEventListener("connected", function (event)
 						|| e.getAttribute("value")
 						|| e.getAttribute("data-value")
 						|| "";
-					console.log("dragstart em:", e, "valor:", value);
 					dragstart.dataTransfer.setData("text/plain", value);
 				});
 

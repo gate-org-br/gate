@@ -2,6 +2,7 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.BadRequestExceptionCatcher;
+import gate.type.RequestCommand;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Catcher(BadRequestExceptionCatcher.class)
@@ -20,10 +21,10 @@ public class BadRequestException extends HttpException
 		super(message);
 	}
 
-	public BadRequestException(String module, String screen, String action)
+	public BadRequestException(RequestCommand requestCommand)
 	{
 		super(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
-			module, screen, action));
+			requestCommand.module(), requestCommand.screen(), requestCommand.action()));
 	}
 
 	@Override

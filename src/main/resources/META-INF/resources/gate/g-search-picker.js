@@ -143,7 +143,8 @@ export default class GSearchPicker extends GWindow
 				{
 					grid.dataset = options;
 					grid.innerText = "Nenhum registro encontrado";
-					this.dispatchEvent(new CustomEvent("update", {detail: {index: 0, value: Array.isArray(options[0]) ? options.slice(1) : options}}));
+					const value = Array.isArray(options[0]) ? options.slice(1) : options;
+					this.dispatchEvent(new CustomEvent("update", {detail: {index: 0, value}}));
 				} else
 					throw new Error("Invalid json data returned by the server");
 
@@ -184,9 +185,9 @@ export default class GSearchPicker extends GWindow
 		{
 			picker.addEventListener("update", e =>
 			{
-				if (e.detail && e.detail.length === 1)
+				if (e.detail?.value?.length === 1)
 				{
-					resolve(e.detail[0]);
+					resolve({index: 0, value: e.detail.value[0]});
 					picker.hide();
 				}
 			});

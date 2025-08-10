@@ -5,25 +5,28 @@ export default class RequestBuilder
 		if (!action || action === "#")
 			action = "data:text/plain,";
 
-		let headers = new Headers();
-		if (contentType)
-			headers.append("Content-Type", contentType);
+		const headers = new Headers();
+		headers.append("X-G-Fragment", "1");
+		switch (method)
+		{
+			case "get":
+				return new Request(action, {headers});
+			case "delete":
+			case "head":
+			case "options":
+				return new Request(action, {headers, method});
+			case "post":
+			case "put":
+			case "patch":
+				if (contentType)
+					headers.append("Content-Type", contentType);
 
-		if (body instanceof HTMLFormElement)
-			body = new FormData(body);
-		else if (!body)
-			body = "";
+				if (body instanceof HTMLFormElement)
+					body = new FormData(body);
+				else if (!body)
+					body = "";
 
-		if (method === "get")
-			return new Request(action);
-		else if (method === "delete"
-			|| method === "head"
-			|| method === "options")
-			return new Request(action, {method});
-		else if (method === "post"
-			|| method === "put"
-			|| method === "patch")
-			return new Request(action, {method, headers, body});
-
+				return new Request(action, {method, headers, body});
+		}
 	}
 }

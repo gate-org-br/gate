@@ -46,8 +46,7 @@ public class TRProcessor extends AnchorProcessor
 			{
 
 				target(call, attributes).ifPresent(target -> attributes.put("data-target", target));
-				attributes.put("data-action", URL.toString(call.getModule(), call.getScreen(),
-					call.getAction(), parameters.toString()));
+				attributes.put("data-action", URL.toString(call.command(), parameters.toString()));
 				if ("POST".equalsIgnoreCase(method(attributes)))
 					attributes.put("data-method", "post");
 			}

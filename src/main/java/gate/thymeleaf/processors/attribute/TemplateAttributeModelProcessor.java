@@ -29,7 +29,6 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void process(ITemplateContext context, IModel model,
 		IElementModelStructureHandler handler)
 	{
@@ -39,15 +38,17 @@ public class TemplateAttributeModelProcessor extends AttributeModelProcessor
 		var template = (String) expression.create()
 			.evaluate(element.getAttributeValue("g:template"));
 
-		removeTag(context, model, handler);
-
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 
+		removeTag(context, model, handler);
+
+		if ("1".equals(exchange.getRequest().getHeaderValue("X-G-Fragment")))
+			return;
+
 		if (exchange.getAttributeValue("g-template-content") == null)
-			exchange.setAttributeValue("g-template-content", new LinkedList<>());
+			exchange.setAttributeValue("g-template-content", new LinkedList<IModel>());
 		((LinkedList<Object>) exchange.getAttributeValue("g-template-content")).add(model);
 		replaceWith(context, model, handler, fileEngine.process(template, context));
-
 		exchange.removeAttribute("g-template-content");
 	}
 

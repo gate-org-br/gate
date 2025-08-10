@@ -287,8 +287,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 				const type = link.getAttribute("data-type") || this.type;
 				const reload = link.getAttribute("data-reload") || this.reload;
 
-				if (link.getAttribute("href") !== '#'
-					&& (reload === "always" || (event.ctrlKey && type === "fetch")))
+				if (link.getAttribute("href") !== '#' && reload === "always")
 					page.innerHTML = "";
 
 				pages.forEach(e => e.style.display = "none");

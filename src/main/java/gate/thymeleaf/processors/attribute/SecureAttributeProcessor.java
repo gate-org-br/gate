@@ -8,6 +8,7 @@ import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
+import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -40,7 +41,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			String screen = path.length >= 2 ? path[1] : null;
 			String action = path.length >= 3 ? path[2] : null;
 
-			if (Call.of(module, screen, action).checkAccess(user))
+			if (Call.of(new RequestCommand(module, screen, action)).checkAccess(user))
 			{
 				handler.removeAttribute("g:secure");
 			} else if (element.hasAttribute("g:otherwise"))

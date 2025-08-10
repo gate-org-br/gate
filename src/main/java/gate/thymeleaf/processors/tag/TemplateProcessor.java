@@ -29,7 +29,6 @@ public class TemplateProcessor extends TagModelProcessor
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void process(ITemplateContext context, IModel model,
 		IElementModelStructureHandler handler)
 	{
@@ -37,18 +36,20 @@ public class TemplateProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		if (!element.hasAttribute("filename"))
-			throw new TemplateProcessingException(
-				"Missing required attribute filename on g:template");
+			throw new TemplateProcessingException("Missing required attribute filename on g:template");
 
 		var filename = (String) expression.create()
 			.evaluate(element.getAttributeValue("filename"));
 
-		removeTag(context, model, handler);
-
 		var exchange = ((IWebContext) context).getExchange();
 
+		removeTag(context, model, handler);
+
+		if ("1".equals(exchange.getRequest().getHeaderValue("X-G-Fragment")))
+			return;
+
 		if (exchange.getAttributeValue("g-template-content") == null)
-			exchange.setAttributeValue("g-template-content", new LinkedList<>());
+			exchange.setAttributeValue("g-template-content", new LinkedList<IModel>());
 		((LinkedList<Object>) exchange.getAttributeValue("g-template-content")).add(model);
 		var content = fileEngine.process(filename, context);
 		replaceWith(context, model, handler, content);
