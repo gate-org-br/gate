@@ -41,6 +41,15 @@ window.addEventListener("@dialog", function (event)
 			{
 				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
 				dialog.innerHTML = result;
+
+				dialog.querySelectorAll("script").forEach(e =>
+				{
+					const script = document.createElement("script");
+					for (const attr of e.attributes)
+						script.setAttribute(attr.name, attr.value);
+					script.textContent = e.textContent;
+					e.replaceWith(script);
+				});
 			})
 			.catch(error =>
 			{

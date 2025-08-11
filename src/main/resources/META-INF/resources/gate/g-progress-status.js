@@ -5,7 +5,8 @@ template.innerHTML = `
 	</label>
 	<progress>
 	</progress>
-	<g-digital-clock>00:00:00</g-digital-clock>
+	<g-digital-clock value="0">
+	</g-digital-clock>
 	<label id='counter'>
 		...
 	</label>

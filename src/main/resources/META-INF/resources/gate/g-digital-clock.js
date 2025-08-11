@@ -2,33 +2,75 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<label>
 	</label>
-`;
+ <style data-element="g-digital-clock">* {
+	box-sizing: border-box;
+}
 
+:host(*)
+{
+	font-size: 16px;
+	font-family: monospace;
+}
+
+label {
+	font-size: inherit;
+	font-family: inherit;
+}</style>`;
 /* global customElements */
-
 import Duration from './duration.js';
 
-customElements.define('g-digital-clock', class extends HTMLElement
+export default class GDigitalClock extends HTMLElement
 {
+	#ctrl;
+	#collector = null;
+	#timestamp = null;
+
 	constructor()
 	{
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
-
-		this._private = {tick: () => !this.paused && (this.time = this.time + 1)};
 	}
 
 	static get observedAttributes()
 	{
-		return ['time', 'paused'];
+		return ['value', 'paused', 'format'];
 	}
 
-	attributeChangedCallback()
+	attributeChangedCallback(attr, old, val)
 	{
-		this.shadowRoot.querySelector("label").innerText
-			= new Duration(Number(this.getAttribute("time")))
-			.format(this.getAttribute("format") || "hh:mm:ss");
+		if (attr === "paused")
+		{
+			if (this.#collector !== null)
+			{
+				if (val === null)
+				{
+					this.#timestamp = Date.now();
+				} else if (this.#timestamp !== null)
+				{
+					this.#collector += (Date.now() - this.#timestamp) / 1000;
+					this.#timestamp = null;
+				}
+			}
+		} else if (attr === "value")
+			this.value = val;
+		this.#render();
+	}
+
+	get signal()
+	{
+		return this.#ctrl?.signal;
+	}
+
+	get format()
+	{
+
+		return this.getAttribute("format") || "hh:mm:ss";
+	}
+
+	set format(value)
+	{
+		this.setAttribute("format", value);
 	}
 
 	get paused()
@@ -44,26 +86,56 @@ customElements.define('g-digital-clock', class extends HTMLElement
 			this.removeAttribute("paused");
 	}
 
-	get time()
+	get value()
 	{
-		return Number(this.getAttribute("time") || 0);
+		if (this.#timestamp === null)
+			return this.#collector;
+		return this.#collector + (Date.now() - this.#timestamp) / 1000;
 	}
 
-	set time(value)
+	set value(value)
 	{
-		this.setAttribute("time", value);
+		this.#collector = null;
+		this.#timestamp = null;
+
+		if (typeof value === "string" && /^[0-9]+$/.test(value))
+			value = Number.parseInt(value);
+
+		if (typeof value === "number" && value >= 0)
+		{
+			this.#collector = value;
+			if (!this.paused)
+				this.#timestamp = Date.now();
+		}
+	}
+
+	#render()
+	{
+		const time = this.value;
+		const label = this.shadowRoot.querySelector("label");
+		label.innerText = time !== null ? new Duration(time).format(this.format) : "##:##:##";
 	}
 
 	connectedCallback()
 	{
-		window.addEventListener("ClockTick", this._private.tick);
+		this.#ctrl = new AbortController();
+		const signal = this.#ctrl.signal;
+
+		if (!this.paused
+			&& this.#collector !== null
+			&& this.#timestamp === null)
+			this.#timestamp = Date.now();
+
+		this.#render();
+		window.addEventListener("ClockTick", () => this.#render(), {signal});
 	}
 
 	disconnectedCallback()
 	{
-		window.removeEventListener("ClockTick", this._private.tick);
+		this.#ctrl.abort();
+		this.#ctrl = null;
 	}
+}
 
-});
-
+customElements.define('g-digital-clock', GDigitalClock);
 window.setInterval(() => window.dispatchEvent(new CustomEvent("ClockTick")), 1000);

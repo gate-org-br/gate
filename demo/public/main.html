@@ -37,15 +37,45 @@
 				</g-tabbar>
 			</nav>
 			<section>
+				<g-digital-clock value="0" paused>
 
-				<g-desk-pane>
-					<a href='/target/view.html' target="@inner-html(section)" aria-selected>
-						Targets<g-icon>&#X1011;</g-icon>
+				</g-digital-clock>
+
+				<g-coolbar>
+					<a id="pause" href="#">
+						Ativar
 					</a>
-					<a href='/component/view.html' target="@inner-html(section)">
-						<g-icon>&#X2178;</g-icon>Components
+					<a id="reset" href="#">
+						Reset
 					</a>
-				</g-desk-pane>
+					<a id="blank" href="#">
+						blank
+					</a>
+				</g-coolbar>
+				<script type="module">
+					const pause = document.getElementById("pause");
+					const blank = document.getElementById("blank");
+					const reset = document.getElementById("reset");
+					const clock = document.querySelector("g-digital-clock");
+					pause.addEventListener("click", () =>
+					{
+						clock.paused = !clock.paused;
+						pause.innerHTML = clock.paused ? "Ativar" : "Pausar";
+
+					});
+
+					blank.addEventListener("click", () => clock.value = null);
+					reset.addEventListener("click", () => clock.value = 0);
+				</script>
+
+				<!--				<g-desk-pane>
+									<a href='/target/view.html' target="@inner-html(section)" aria-selected>
+										Targets<g-icon>&#X1011;</g-icon>
+									</a>
+									<a href='/component/view.html' target="@inner-html(section)">
+										<g-icon>&#X2178;</g-icon>Components
+									</a>
+								</g-desk-pane>-->
 			</section>
 
 			<footer>

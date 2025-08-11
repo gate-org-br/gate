@@ -8,7 +8,7 @@ template.innerHTML = `
 			</g-progress>
 		</section>
 		<footer>
-			<g-digital-clock>
+			<g-digital-clock value="0">
 			</g-digital-clock>
 		</footer>
 	</dialog>

@@ -1,0 +1,14 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*)
+{
+	font-size: 16px;
+	font-family: monospace;
+}
+
+label {
+	font-size: inherit;
+	font-family: inherit;
+}

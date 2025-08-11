@@ -301,7 +301,8 @@ window.addEventListener("connected", function (event)
 
 window.addEventListener("sse", function (event)
 {
-	DOM.traverse(document, e => e.hasAttribute("data-trigger") && e.getAttribute("data-trigger").match("sse(\([.+]\))?"), element =>
+	DOM.traverse(document, e => e.hasAttribute("data-trigger") 
+		&& e.getAttribute("data-trigger").match("sse(\([.+]\))?"), element =>
 	{
 		let action = element.getAttribute("href")
 			|| element.getAttribute("formaction")

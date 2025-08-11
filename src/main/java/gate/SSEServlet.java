@@ -6,7 +6,6 @@ import gate.entity.User;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
 import gate.http.ScreenServletRequest;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
@@ -21,20 +20,39 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @WebServlet(value = "/SSE", asyncSupported = true)
 public class SSEServlet extends HttpServlet
 {
-	@Inject
-	UnauthorizedExceptionCatcher catcher;
 
 	@Inject
 	@Current
 	User user;
 
-	private static final List<Client> clients = new CopyOnWriteArrayList<>();
+	@Inject
+	UnauthorizedExceptionCatcher catcher;
 
+	private static final List<Client> clients = new CopyOnWriteArrayList<>();
+	private static final ScheduledExecutorService PINGER = Executors.newSingleThreadScheduledExecutor();
+
+	@Override
+	public void init(ServletConfig config) throws ServletException
+	{
+		super.init(config);
+		PINGER.scheduleAtFixedRate(() -> clients.forEach(e -> e.ping()), 30, 30, TimeUnit.SECONDS);
+	}
+
+	@Override
+	public void destroy()
+	{
+		PINGER.shutdownNow();
+		clients.forEach(Client::close);
+		clients.clear();
+		super.destroy();
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
@@ -46,8 +64,10 @@ public class SSEServlet extends HttpServlet
 			if (user == null || user.getId() == null)
 				throw new UnauthorizedException();
 
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("text/event-stream");
+			response.setHeader("Connection", "keep-alive");
+			response.setHeader("X-Accel-Buffering", "no");
+			response.setContentType("text/event-stream; charset=UTF-8");
+			response.setHeader("Cache-Control", "no-cache, no-transform");
 
 			AsyncContext context = request.startAsync();
 			context.setTimeout(TimeUnit.HOURS.toMillis(1));
@@ -55,32 +75,37 @@ public class SSEServlet extends HttpServlet
 			Client client = new Client(user.unwrap(), context);
 			clients.add(client);
 
+			client.ping();
+
 			context.addListener(new AsyncListener()
 			{
-				@Override
-				public void onStartAsync(AsyncEvent event)
-				{
-				}
-
-				@Override
-				public void onComplete(AsyncEvent event)
+				private void cleanup()
 				{
 					client.close();
 					clients.remove(client);
 				}
 
 				@Override
-				public void onError(AsyncEvent event)
+				public void onComplete(AsyncEvent e)
 				{
-					client.close();
-					clients.remove(client);
+					cleanup();
 				}
 
 				@Override
-				public void onTimeout(AsyncEvent event)
+				public void onError(AsyncEvent e)
 				{
-					client.close();
-					clients.remove(client);
+					cleanup();
+				}
+
+				@Override
+				public void onTimeout(AsyncEvent e)
+				{
+					cleanup();
+				}
+
+				@Override
+				public void onStartAsync(AsyncEvent e)
+				{
 				}
 			});
 		} catch (UnauthorizedException ex)
@@ -101,6 +126,7 @@ public class SSEServlet extends HttpServlet
 
 	private static class Client
 	{
+
 		private final User subject;
 		private ServletOutputStream out;
 		private final AsyncContext asyncContext;
@@ -109,6 +135,30 @@ public class SSEServlet extends HttpServlet
 		{
 			this.subject = user;
 			this.asyncContext = asyncContext;
+		}
+
+		public synchronized void ping()
+		{
+			try
+			{
+				if (out == null)
+					out = asyncContext.getResponse().getOutputStream();
+
+				out.print("event: ping\n");
+				out.print("data: ok\n");
+				out.print("\n");
+				out.flush();
+				asyncContext.getResponse().flushBuffer();
+			} catch (IOException | RuntimeException ex)
+			{
+				try
+				{
+					asyncContext.complete();
+				} catch (IllegalStateException ignored)
+				{
+				}
+			}
+
 		}
 
 		public synchronized void send(AppEvent event)
@@ -121,17 +171,22 @@ public class SSEServlet extends HttpServlet
 						out = asyncContext.getResponse().getOutputStream();
 
 					var data = Base64.getEncoder()
-							.encodeToString(event.toString()
-									.getBytes(StandardCharsets.UTF_8));
+						.encodeToString(event.toString()
+							.getBytes(StandardCharsets.UTF_8));
 
-					out.println("event: message");
-					out.println("data: " + data);
-					out.println();
+					out.print("event: message\n");
+					out.print("data: " + data + "\n");
+					out.print("\n");
 					out.flush();
 					asyncContext.getResponse().flushBuffer();
 				} catch (IOException | RuntimeException ex)
 				{
-					asyncContext.complete();
+					try
+					{
+						asyncContext.complete();
+					} catch (IllegalStateException ignored)
+					{
+					}
 				}
 			}
 		}
@@ -140,7 +195,8 @@ public class SSEServlet extends HttpServlet
 		{
 			try
 			{
-				out.close();
+				if (out != null)
+					out.close();
 			} catch (IOException ignored)
 			{
 			}

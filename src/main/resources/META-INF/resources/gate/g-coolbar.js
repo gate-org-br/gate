@@ -204,7 +204,7 @@ div
 
 import loading from './loading.js';
 
-customElements.define("g-coolbar", class extends HTMLElement
+export default class GCoolbar extends HTMLElement
 {
 	constructor()
 	{
@@ -231,4 +231,6 @@ customElements.define("g-coolbar", class extends HTMLElement
 		loading(this.parentNode);
 		this.setAttribute("size", this.children.length);
 	}
-});
+}
+
+customElements.define("g-coolbar", GCoolbar);
