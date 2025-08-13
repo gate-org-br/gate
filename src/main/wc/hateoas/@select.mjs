@@ -8,7 +8,8 @@ window.addEventListener("@select", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form} = event.detail;
+	const caption = trigger.title || "";
+	let {method, action, form, parameters: columns} = event.detail;
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.json)
@@ -24,13 +25,13 @@ window.addEventListener("@select", function (event)
 				&& options[0].label
 				&& options[0].children
 				&& Object.keys(options[0]).length === 3)
-				GTreePicker.pick(options, trigger.title)
+				GTreePicker.pick({options, caption})
 					.then(e => [e.value.value, e.value.label])
 					.then(DataURL.ofJSON)
 					.then(result => event.success(path, result))
 					.catch(() => event.resolve(path));
 			else
-				GSelectPicker.pick(options, trigger.title)
+				GSelectPicker.pick({options, caption, columns})
 					.then(e => e.value)
 					.then(DataURL.ofJSON)
 					.then(result => event.success(path, result))

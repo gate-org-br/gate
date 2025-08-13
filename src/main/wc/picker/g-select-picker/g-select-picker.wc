@@ -2,7 +2,6 @@
 	<dialog>
 		<header>
 			<label id='caption'>
-				Selecione um ítem
 			</label>
 			<a id='close' href="#">
 				<g-icon>
@@ -13,7 +12,7 @@
 		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
 			<div>
-				<g-grid>
+				<g-grid auto-select>
 					Nenhum registro encontrado
 				</g-grid>
 			</div>

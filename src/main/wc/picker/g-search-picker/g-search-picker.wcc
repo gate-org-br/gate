@@ -1,9 +1,8 @@
-/* global customElements, template, fetch */
+/* global customElements, template */
 
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
-import GMessageDialog from './g-message-dialog.js';
 
 function debounce(func, timeout = 300)
 {
@@ -17,128 +16,92 @@ function debounce(func, timeout = 300)
 
 export default class GSearchPicker extends GWindow
 {
+	#fetcher;
+	#request = 0;
+	#columns = [];
+
 	constructor()
 	{
 		super();
 		this.addEventListener("cancel", () => this.hide());
 		this.addEventListener("commit", () => this.hide());
+
 		this.shadowRoot.innerHTML = this.shadowRoot.innerHTML + template.innerHTML;
 		this.shadowRoot.getElementById("close").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent("cancel")));
 		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {index: 0, value: []}})));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 
 		let input = this.shadowRoot.querySelector("input");
-		input.addEventListener("input", debounce(() => this.text = input.value));
-	}
-
-	set action(value)
-	{
-		this.setAttribute("action", value);
-		this.shadowRoot.querySelector("input").value = "";
-	}
-
-	get action()
-	{
-		return this.getAttribute("action");
-	}
-
-	set filter(value)
-	{
-		if (value)
-			this.setAttribute("filter", value);
-		else
-			this.removeAttribute("filter");
-	}
-
-	get filter()
-	{
-		return this.getAttribute("filter");
-	}
-
-	set text(text)
-	{
-		let input = this.shadowRoot.querySelector("input");
-		input.value = text;
-
-		let grid = this.shadowRoot.querySelector("g-grid");
-		let headers = {};
-		let action = this.action;
-		if (this.filter)
-		{
-			if (action.indexOf("?") === -1)
-				action = action + "?" + this.filter + '=' + text;
-			else
-				action = action + "&" + this.filter + '=' + text;
-		} else
-			headers = {method: 'POST', headers: {'Content-Type': 'text/plain'}, body: text};
-
-		fetch(action, headers)
-			.then(options => options.json())
-			.then(options =>
-			{
-				if (typeof options === "string")
-				{
-					grid.dataset = [];
-					grid.innerText = options;
-					this.dispatchEvent(new CustomEvent("update", {detail: null}));
-				} else if (Array.isArray(options))
-				{
-					grid.dataset = options;
-					grid.innerText = "Nenhum registro encontrado";
-					const value = Array.isArray(options[0]) ? options.slice(1) : options;
-					this.dispatchEvent(new CustomEvent("update", {detail: {index: 0, value}}));
-				} else
-					throw new Error("Invalid json data returned by the server");
-
-			})
-			.catch(error =>
-			{
-				grid.dataset = [];
-				grid.innerText = error.message;
-				this.dispatchEvent(new CustomEvent("update", {detail: null}));
-			})
-			.finally(() =>
-			{
-				input.disabled = false;
-				input.focus();
-			});
-
+		input.addEventListener("input", debounce(() => this.populate({
+				fetcher: this.#fetcher,
+				text: input.value,
+				columns: this.#columns
+			})));
 	}
 
 	set caption(caption)
 	{
-		this.shadowRoot.getElementById("caption").innerHTML = caption;
+		this.shadowRoot.getElementById("caption").textContent = caption;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.getElementById("caption").innerHTML;
+		return this.shadowRoot.getElementById("caption").textContent;
 	}
 
-	static pick(action, filter, caption, text)
+	populate( { fetcher, text = "", columns = [] })
+	{
+		if (typeof fetcher !== "function")
+			throw new Error("fetcher must be a function");
+
+		this.#fetcher = fetcher;
+		this.#columns = columns;
+
+		let input = this.shadowRoot.querySelector("input");
+		input.value = text;
+
+		let grid = this.shadowRoot.querySelector("g-grid");
+
+		input.disabled = true;
+		const request = ++this.#request;
+
+		fetcher(text).then(options =>
+		{
+			if (request !== this.#request)
+				return;
+			if (typeof options === "string")
+				throw new Error(options);
+			if (!Array.isArray(options))
+				throw new Error("Invalid json data returned by the server");
+
+			grid.populate({options, columns, filter: text});
+			grid.innerText = "Nenhum registro encontrado";
+		}).catch(error =>
+		{
+			grid.populate({options: []});
+			grid.innerText = error.message;
+			this.dispatchEvent(new CustomEvent("update", {detail: null}));
+		}).finally(() =>
+		{
+			input.disabled = false;
+			input.focus();
+		});
+	}
+
+	static pick( { fetcher, caption = "", text = "", columns = [] })
 	{
 		let picker = window.top.document.createElement("g-search-picker");
-		picker.action = action;
-		picker.filter = filter;
-		picker.caption = caption || "";
+		picker.caption = caption;
 		picker.show();
+		picker.populate({fetcher, text, columns});
 
 		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("update", e =>
-			{
-				if (e.detail?.value?.length === 1)
-				{
-					resolve({index: 0, value: e.detail.value[0]});
-					picker.hide();
-				}
-			});
 			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
 			picker.addEventListener("commit", e => resolve(e.detail));
-			picker.text = text || "";
 		});
 	}
 };

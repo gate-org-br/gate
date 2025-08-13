@@ -3,24 +3,27 @@ export default class ObjectFilter
 
 	static filter(options, text)
 	{
-		return Array.isArray(options[0])
-			? options.filter((e, i) => i === 0 || contains(e, text))
-			: options.filter(e => contains(e, text));
+		return options.filter(e => ObjectFilter.contains(e, text));
+	}
+
+	static contains(obj, search) {
+		if (obj == null)
+			return false;
+
+		if (typeof obj === 'string')
+			return obj.toLowerCase().includes(search);
+
+		if (typeof obj === 'number')
+			return obj.toString().includes(search);
+
+		if (Array.isArray(obj))
+			return obj.some(item => ObjectFilter.contains(item, search));
+
+		if (typeof obj === 'object')
+			return Object.values(obj).some(value => ObjectFilter.contains(value, search));
+
+		return false;
 	}
 }
 
-function contains(obj, text)
-{
-	if (!obj)
-		return false;
-	else if (typeof obj === 'string')
-		return obj.toLowerCase().includes(text.toLowerCase());
-	else if (typeof obj === 'number')
-		return obj.toString().includes(text);
-	else if (Array.isArray(obj))
-		return obj.some(item => contains(item, text));
-	else if (typeof obj === 'object')
-		return Object.values(obj).some(value => contains(value, text));
-	else
-		return false;
-}
+

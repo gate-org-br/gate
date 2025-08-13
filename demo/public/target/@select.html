@@ -105,4 +105,30 @@
 			</fieldset>
 		</g-code-viewer>
 	</div>
+
+	<a href="#">
+		Example 4 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<p>
+			You can control how data is displayed in the grid by passing column format strings as parameters to the @select trigger. Each column string follows the pattern property[:label][;alignment][;width], where property (required) can be a simple name (e.g., name), a nested path (e.g., customer.name), or an array index (e.g., [0]); label (optional) defines the text shown in the column header; alignment (optional) can be left, right, center, or justify; and width (optional) can be a numeric value in px or % (including decimals). Alignment and width can be specified in any order, and spaces around separators are ignored.
+
+		</p>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Select:
+					<span>
+						<input type="text">
+						<input type="hidden">
+						<a href="/array/people" target="@map(e => e.slice(1)) > @select([1]:Name, [4]:Sex;center;120px) > @fill" title="Select 1">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
 </g-tab-control>

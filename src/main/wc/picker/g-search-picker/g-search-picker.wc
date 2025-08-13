@@ -13,7 +13,7 @@
 		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
 			<div>
-				<g-grid>
+				<g-grid auto-select>
 					Entre com o critério pesquisa
 				</g-grid>
 			</div>

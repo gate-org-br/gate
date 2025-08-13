@@ -3,7 +3,6 @@ template.innerHTML = `
 	<dialog>
 		<header>
 			<label id='caption'>
-				Selecione um ítem
 			</label>
 			<a id='close' href="#">
 				<g-icon>
@@ -14,7 +13,7 @@ template.innerHTML = `
 		<section>
 			<input type="TEXT" placeholder="Pesquisar"/>
 			<div>
-				<g-grid>
+				<g-grid auto-select>
 					Nenhum registro encontrado
 				</g-grid>
 			</div>
@@ -58,11 +57,12 @@ div {
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
-import ObjectFilter from './object-filter.js';
 
 export default class GSelectPicker extends GWindow
 {
-	#options;
+	#options = [];
+	#columns = [];
+
 	constructor()
 	{
 		super();
@@ -74,52 +74,39 @@ export default class GSelectPicker extends GWindow
 		this.shadowRoot.getElementById("clear").addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: {index: 0, value: []}})));
 
 		let grid = this.shadowRoot.querySelector("g-grid");
-		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})) | this.hide());
-
+		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 
 		let input = this.shadowRoot.querySelector("input");
-		input.addEventListener("input", () => grid.dataset = ObjectFilter.filter(this.options, input.value));
+		input.addEventListener("input", () => grid
+				.populate({options: this.#options,
+					columns: this.#columns,
+					filter: input.value}));
 	}
 
 	set caption(caption)
 	{
-		this.shadowRoot.getElementById("caption").innerHTML = caption;
+		this.shadowRoot.getElementById("caption").textContent = caption;
 	}
 
 	get caption()
 	{
-		return this.shadowRoot.getElementById("caption").innerHTML;
+		return this.shadowRoot.getElementById("caption").textContent;
 	}
 
-	get options()
-	{
-		return this.#options || [];
-	}
-
-	set options(options)
+	populate( {options = [], columns = []})
 	{
 		this.#options = options;
-		this.shadowRoot.querySelector("g-grid").dataset = options;
+		this.#columns = columns;
+		this.shadowRoot.querySelector("g-grid")
+			.populate({options, columns});
 	}
 
-	static pick(options, caption)
+	static pick( {options = [], caption = "", columns = []})
 	{
-		if (typeof options === "string")
-			return fetch(options)
-				.then(response =>
-				{
-					return response.ok ?
-						response.json()
-						: response.text().then(message =>
-					{
-						throw new Error(message);
-					});
-				}).then(result => GSelectPicker.pick(result, caption));
-
 		let picker = window.top.document.createElement("g-select-picker");
-		picker.options = options;
 		if (caption)
 			picker.caption = caption;
+		picker.populate({options, columns});
 		picker.show();
 
 		return new Promise((resolve, reject) =>

@@ -1,6 +1,8 @@
 import DOM from './dom.js';
-const REQUIRED = new Error();
+import property from './property.js';
 import EventHandler from './event-handler.js';
+
+const REQUIRED = new Error();
 const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(([^)]*?)\)/g;
 
 function navigate(trigger, value)
@@ -9,14 +11,6 @@ function navigate(trigger, value)
 		.orElseThrow(() =>
 			new Error(`${value} is not a valid element selector`))
 		.value || "";
-}
-
-function property(obj, propName)
-{
-	const props = propName.split(/\.|\[(.*?)\]/).filter(Boolean);
-	for (let i = 0; obj && i < props.length; i++)
-		obj = obj[props[i]];
-	return obj;
 }
 
 function require(value)

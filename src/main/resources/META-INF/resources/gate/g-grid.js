@@ -43,7 +43,43 @@ tbody > tr:hover > td{
 import './g-table.js';
 import './g-callout.js';
 import './g-properties.js';
+import property from './property.js';
+import ObjectFilter from './object-filter.js';
 import StyledHTMLElement from './styled-html-element.js';
+
+function  parseColumn(spec)
+{
+	switch (typeof spec)
+	{
+		case "object":
+			if (spec && spec.property)
+				return {property: spec.property,
+					label: spec.label,
+					style: spec.style || ""};
+			throw new Error("Invalid column type");
+
+		case "number":
+			return {property: `[${spec}]`, style: ""};
+
+		case "string":
+			const re = /^((?:[A-Za-z_$][A-Za-z0-9_$]*|\[\d+\])(?:\.(?:[A-Za-z_$][A-Za-z0-9_$]*)|\[\d+\])*)\s*(?::\s*([^;]+?)\s*)?(?:\s*;\s*(left|right|center|justify|\d+(?:\.\d+)?(?:px|%)))?(?:\s*;\s*(left|right|center|justify|\d+(?:\.\d+)?(?:px|%)))?\s*$/;
+			const m = re.exec(spec.trim());
+			if (!m)
+				throw new Error("Formato inválido");
+
+			let property = m[1];
+			const label = m[2] || undefined;
+
+			let style = "";
+			const aligns = ["left", "right", "center", "justify"];
+			[m[3], m[4]].filter(Boolean).filter(e => aligns.includes(e)).forEach(e => style += `text-align:${e};`);
+			[m[3], m[4]].filter(Boolean).filter(e => !aligns.includes(e)).forEach(e => style += `width:${e};`);
+
+			return {property, label, style};
+		default:
+			throw new Error("Invalid column type");
+	}
+}
 
 function element(content)
 {
@@ -79,7 +115,7 @@ function element(content)
 	}
 }
 
-export default class GGrid2 extends StyledHTMLElement
+export default class GGrid extends StyledHTMLElement
 {
 	constructor()
 	{
@@ -90,7 +126,7 @@ export default class GGrid2 extends StyledHTMLElement
 
 	set caption(value)
 	{
-		this.shadowRoot.querySelector("caption").innerHTML = value;
+		this.shadowRoot.querySelector("caption").textContent = value;
 	}
 
 	set header(values)
@@ -99,6 +135,19 @@ export default class GGrid2 extends StyledHTMLElement
 		thead.innerHTML = "";
 		const tr = thead.appendChild(document.createElement("tr"));
 		values.forEach(e => tr.appendChild(document.createElement("th")).appendChild(element(e)));
+	}
+
+	set autoSelect(value)
+	{
+		if (value)
+			this.setAttribute("auto-select", "");
+		else
+			this.removeAttribute("auto-select");
+	}
+
+	get autoSelect()
+	{
+		return this.hasAttribute("auto-select");
 	}
 
 	add(properties, value)
@@ -130,39 +179,76 @@ export default class GGrid2 extends StyledHTMLElement
 			this.setAttribute("empty", "");
 	}
 
-	set dataset(values)
+	populate( {options, filter, columns})
 	{
 		this.setAttribute("empty", "");
-		this.shadowRoot.querySelector("thead").innerHTML = "";
-		this.shadowRoot.querySelector("tbody").innerHTML = "";
 
-		if (Array.isArray(values) && values.length)
+		const thead = this.shadowRoot.querySelector("thead");
+		thead.innerHTML = "";
+
+		const tbody = this.shadowRoot.querySelector("tbody");
+		tbody.innerHTML = "";
+
+		if (!options.length)
+			return;
+
+		if (!columns.length)
 		{
-			this.removeAttribute("empty");
-
-			if (Array.isArray(values[0]))
+			if (Array.isArray(options[0]))
 			{
-				this.header = values[0].filter(e => !e.startsWith("_"));
-				for (let i = 1; i < values.length; i++)
-				{
-					const value = values[i];
-					const properties = value.filter((_, index) => !values[0][index].startsWith("_"));
-					this.add(properties, value);
-				}
+				const header = options[0];
+				options = options.slice(1);
+				columns = header.map((label, index) => ({label, property: `[${index}]`}))
+					.filter(column => !column.label.startsWith("_"));
 			} else
 			{
-				values.forEach(value =>
-				{
-					const keys = Object.keys(value);
-					const properties = keys.filter(k => !k.startsWith("_")).reduce((acc, key) =>
-					{
-						acc[key] = value[key];
-						return acc;
-					}, {});
-					this.add(properties, value);
-				});
+				const keys = Object.keys(options[0]);
+				if (keys.length === 2
+					&& keys.includes("label")
+					&& keys.includes("value"))
+					columns = [{property: "value"}];
+				else
+					columns = keys.filter(k => !k.startsWith("_"))
+						.map(label => ({label, property: label}));
 			}
 		}
+
+		columns = columns.map(parseColumn);
+
+		if (columns.some(col => !col
+				|| typeof col.property === "undefined"))
+			throw new Error("Column is missing 'property'");
+
+		this.removeAttribute("empty");
+
+		if (Array.isArray(options[0])
+			|| columns.some(column => !column.label))
+		{
+			if (columns.some(column => column.label))
+				this.header = columns.map(column => column.label);
+			this.styles = columns.map(c => c.style || "");
+			options.forEach(value =>
+			{
+				const properties = columns.map(column => property(value, column.property));
+				if (!filter || ObjectFilter.contains(properties, filter))
+					this.add(properties, value);
+			});
+		} else {
+			options.forEach(value =>
+			{
+				const properties = columns.reduce((obj, column) =>
+				{
+					obj[column.label] = property(value, column.property);
+					return obj;
+				}, {});
+
+				if (!filter || ObjectFilter.contains(properties, filter))
+					this.add(properties, value);
+			});
+		}
+
+		if (this.autoSelect && tbody.children.length === 1)
+			tbody.children[0].click();
 	}
 
 	set styles(values)
@@ -225,4 +311,4 @@ export default class GGrid2 extends StyledHTMLElement
 	}
 }
 
-customElements.define('g-grid', GGrid2);
+customElements.define('g-grid', GGrid);

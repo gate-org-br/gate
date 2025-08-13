@@ -3,6 +3,7 @@ import './mutation-events.js';
 import DataURL from './data-url.js';
 import resolve from './resolve.js';
 import validate from './validate.js';
+import property from './property.js';
 import EventHandler from './event-handler.js';
 import TriggerExtractor from './trigger-extractor.js';
 import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
@@ -216,15 +217,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-{
-	Array.from(document.querySelectorAll('*'))
-		.filter(e => e.hasAttribute("data-trigger")
-				|| e.hasAttribute("data-method")
-				|| e.hasAttribute("data-action")
-				|| e.hasAttribute("data-target"))
-		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-});
+	{
+		Array.from(document.querySelectorAll('*'))
+			.filter(e => e.hasAttribute("data-trigger")
+					|| e.hasAttribute("data-method")
+					|| e.hasAttribute("data-action")
+					|| e.hasAttribute("data-target"))
+			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+	});
 
 window.addEventListener("load", function (event)
 {
@@ -298,24 +299,46 @@ window.addEventListener("connected", function (event)
 	}
 });
 
-
 window.addEventListener("sse", function (event)
 {
-	DOM.traverse(document, e => e.hasAttribute("data-trigger") && e.getAttribute("data-trigger").match("sse(\([.+]\))?"), element =>
+	const REGEX = /^sse(?:\(([A-Za-z_$][A-Za-z0-9_$]*)\))?$/;
+	DOM.traverse(document, e => e.hasAttribute("data-trigger")
+			&& REGEX.test(e.getAttribute("data-trigger")), element =>
 	{
+		const trigger = element.getAttribute("data-trigger");
+		if (trigger.startsWith("sse("))
+		{
+			const type = trigger.slice(4, -1);
+			if (event.detail.type !== type)
+				return;
+		}
+
+		const context = event.detail.detail;
+
+		if (!Array.from(element.attributes)
+			.filter(e => e.name.startsWith("data-sse:"))
+			.every(e =>
+			{
+				const value = property(context, e.name.substring(9));
+				switch (typeof value)
+				{
+					case "number":
+						return Number(e.value) === value;
+					case "boolean":
+						return (e.value === "true") === value;
+					default :
+						return e.value === value;
+				}
+			}))
+			return;
+
 		let action = element.getAttribute("href")
 			|| element.getAttribute("formaction")
 			|| element.getAttribute("action")
 			|| element.getAttribute("data-action")
-			|| new DataURL("application/json", JSON.stringify(event.detail)).toString();
+			|| new DataURL("application/json",
+				JSON.stringify(context)).toString();
 
-		if (element.getAttribute("data-trigger").startsWith("sse("))
-		{
-			let predicate = element.getAttribute("data-trigger").slice(4, -1);
-			if (!new Function("event", `return ${predicate}`).bind(element)()(event.detail))
-				return;
-		}
-
-		trigger(event, element, event.detail, action);
+		trigger(event, element, context, action);
 	});
 });
