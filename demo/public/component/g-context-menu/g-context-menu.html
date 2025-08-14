@@ -1,7 +1,9 @@
 <g-callout class='fill'>
 	<h1>&lt;g-context-menu&gt;</h1>
 	<p>
+		The <strong>&lt;g-context-menu&gt;</strong> is a custom element that replaces the browser’s default context menu, handling positioning, closing, and submenu support. You can open it programmatically with <strong>GContextMenu.show(context, x, y, ...actions)</strong>, where each action is an object with properties such as <strong>icon</strong>, <strong>title</strong>, <strong>text</strong>, and <strong>action</strong>. The <strong>action</strong> can be a link (string), a function, an array for a static submenu, or an object with <strong>type</strong> (<em>module</em> or <em>source</em>) and <strong>value</strong> (path or URL) to load a dynamic submenu via <strong>fetch</strong> or <strong>import</strong>. Menus can also be triggered automatically using the <strong>data-contextmenu:source</strong> or <strong>data-contextmenu:module</strong> attributes in HTML. Submenus open with a short delay to prevent accidental activation and close automatically when the mouse leaves or on outside clicks.
 	</p>
+
 </g-callout>
 
 <g-tab-control>
@@ -9,7 +11,12 @@
 	<div>
 		<g-code-viewer>
 			<g-callout id="context" data-contextmenu:module="/component/g-context-menu/context-menu.js">
-				Click here to show the menu
+				<p>
+					Click here to load the file <a target="_blank" href="/component/g-context-menu/context-menu.js">
+						/component/g-context-menu/context-menu.js
+					</a> as a JavaScript module and display a context menu using the actions it defines. 
+					The module must export a default function that returns an array of action objects.
+				</p>
 			</g-callout>
 		</g-code-viewer>
 	</div>

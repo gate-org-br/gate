@@ -58,16 +58,7 @@ div {
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
-
-function debounce(func, timeout = 300)
-{
-	let timer;
-	return (...args) =>
-	{
-		clearTimeout(timer);
-		timer = setTimeout(() => func.apply(this, args), timeout);
-	};
-}
+import debounce from './debounce.js';
 
 export default class GSearchPicker extends GWindow
 {

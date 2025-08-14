@@ -204,25 +204,12 @@ template.innerHTML = `
 import './g-icon.js';
 import loading from './loading.js';
 
-document.head.insertAdjacentHTML('beforeend',
-	`<style>
-		g-desk-pane img {
-			order: -1;
-			width: 48px;
-			height: 48px
-		}
-		g-desk-pane i, g-desk-pane e, g-desk-pane g-icon {
-			order: -1;
-			font-size: 48px
-		}
-		g-desk-pane.small img {
-			width: 32px;
-			height: 32px
-		}
-		g-desk-pane.small i, g-desk-pane.small e, g-desk-pane.small g-icon {
-			font-size: 24px
-		}
-	</style>`);
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`g-desk-pane img {order: -1; width: 48px; height: 48px}
+		g-desk-pane i, g-desk-pane e, g-desk-pane g-icon {order: -1; font-size: 48px}
+		g-desk-pane.small img {width: 32px; height: 32px}
+		g-desk-pane.small i, g-desk-pane.small e, g-desk-pane.small g-icon {font-size: 24px}`);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 customElements.define('g-desk-pane', class extends HTMLElement
 {

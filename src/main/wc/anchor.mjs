@@ -41,22 +41,27 @@ export default function anchor(element, target, gap = 0, ...positions)
 	if (!positions.length)
 		positions = DEFAULT_POSITIONS;
 
-	return new Promise(resolve =>
+	return new Promise((resolve, reject) =>
 	{
+		const top = element.style.top;
+		const left = element.style.left;
+
 		for (let i = 0; i < positions.length; i++)
 		{
 			const position = positions[i];
-			let point = calc(element, target, gap, position);
-			element.style.top = `${point.y}px`;
-			element.style.left = `${point.x}px`;
+			let location = calc(element, target, gap, position);
+			element.style.top = `${location.y}px`;
+			element.style.left = `${location.x}px`;
 			if (isVisible(element))
-				return resolve(position);
+			{
+				element.style.top = top;
+				element.style.left = left;
+				return resolve({position, location});
+			}
 		}
 
-		const position = positions[0] || "north";
-		let point = calc(element, target, gap, position);
-		element.style.top = `${point.y}px`;
-		element.style.left = `${point.x}px`;
-		return resolve(position);
+		element.style.top = top;
+		element.style.left = left;
+		reject(new Error("No position"));
 	});
 }

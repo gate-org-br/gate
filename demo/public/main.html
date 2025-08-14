@@ -37,35 +37,19 @@
 				</g-tabbar>
 			</nav>
 			<section>
-				<g-digital-clock value="0" paused>
-
-				</g-digital-clock>
-
-				<g-coolbar>
-					<a id="pause" href="#">
-						Ativar
-					</a>
-					<a id="reset" href="#">
-						Reset
-					</a>
-					<a id="blank" href="#">
-						blank
-					</a>
-				</g-coolbar>
+				<g-callout>
+					CONTEXT MENU
+				</g-callout>
 				<script type="module">
-					const pause = document.getElementById("pause");
-					const blank = document.getElementById("blank");
-					const reset = document.getElementById("reset");
-					const clock = document.querySelector("g-digital-clock");
-					pause.addEventListener("click", () =>
-					{
-						clock.paused = !clock.paused;
-						pause.innerHTML = clock.paused ? "Ativar" : "Pausar";
-
-					});
-
-					blank.addEventListener("click", () => clock.value = null);
-					reset.addEventListener("click", () => clock.value = 0);
+					import GContextMenu from './gate/g-context-menu.js';
+					document.querySelector("g-callout")
+						.addEventListener("contextmenu", () =>
+						{
+							event.preventDefault();
+							event.stopPropagation();
+							GContextMenu.show({}, event.x, event.y,
+								...Array(200).fill({icon: "2003", text: "Item", action: Array(200).fill({icon: "2003", text: "Item"})}));
+						});
 				</script>
 
 				<!--				<g-desk-pane>

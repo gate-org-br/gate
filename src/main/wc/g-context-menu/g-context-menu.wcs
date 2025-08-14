@@ -1,8 +1,9 @@
 * {
 	cursor: pointer;
+	box-sizing: border-box;
 }
 
-:host(*)
+:host
 {
 	margin: 0;
 	padding: 0;
@@ -10,8 +11,11 @@
 	color: black;
 	display: flex;
 	z-index: 1000;
+	overflow: auto;
 	font-size: 14px;
 	position: fixed;
+	max-width: 50vw;
+	max-height: 50vh;
 	min-width: 220px;
 	border-radius: 8px;
 	align-items: stretch;
@@ -81,4 +85,3 @@ a, button {
 	border-radius: 10px;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
-

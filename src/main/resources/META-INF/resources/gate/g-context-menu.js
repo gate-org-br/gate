@@ -2,9 +2,10 @@ let template = document.createElement("template");
 template.innerHTML = `
  <style data-element="g-context-menu">* {
 	cursor: pointer;
+	box-sizing: border-box;
 }
 
-:host(*)
+:host
 {
 	margin: 0;
 	padding: 0;
@@ -12,8 +13,11 @@ template.innerHTML = `
 	color: black;
 	display: flex;
 	z-index: 1000;
+	overflow: auto;
 	font-size: 14px;
 	position: fixed;
+	max-width: 50vw;
+	max-height: 50vh;
 	min-width: 220px;
 	border-radius: 8px;
 	align-items: stretch;
@@ -82,16 +86,48 @@ a, button {
 	padding: 10px;
 	border-radius: 10px;
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-</style>`;
+}</style>`;
 /* global customElements, template */
 
 import './mutation-events.js';
 import anchor from './anchor.js';
 import resolve from './resolve.js';
+import GMessageDialog from './g-message-dialog.js';
+import ResponseHandler from './response-handler.js';
 
-let instance;
+const POSITIONS = ["northeast", "southeast", "northwest", "southwest"];
+
+function scheduleClick(link)
+{
+	link.addEventListener('mouseenter', ({clientX, clientY}) =>
+	{
+		const clickTimer = setTimeout(() =>
+			link.dispatchEvent(new MouseEvent('click', {clientX, clientY})), 400);
+		link.addEventListener('mouseleave', () => clearTimeout(clickTimer), {once: true});
+	});
+}
+
+function createSubmenu(link, event, actions)
+{
+	const submenu = document.createElement('g-context-menu');
+	submenu.actions = actions;
+	submenu.style.visibility = "hidden";
+	link.appendChild(submenu);
+	anchor(submenu, link, 0, ...POSITIONS)
+		.then(({location}) =>
+		{
+			submenu.style.top = `${location.y}px`;
+			submenu.style.left = `${location.x}px`;
+			link.addEventListener('mouseleave', () => submenu.hide(), {once: true});
+			submenu.style.visibility = "";
+		})
+		.catch(() =>
+		{
+			document.querySelectorAll("g-context-menu")
+				.forEach(menu => menu.hide());
+			submenu.show(event.clientX, event.clientY);
+		});
+}
 
 export default class GContextMenu extends HTMLElement
 {
@@ -101,8 +137,8 @@ export default class GContextMenu extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		this.addEventListener("mouseleave", () => this.hide());
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
 	set context(context)
@@ -117,6 +153,7 @@ export default class GContextMenu extends HTMLElement
 
 	set actions(actions)
 	{
+		Array.from(this.shadowRoot.querySelectorAll("a")).forEach(e => e.remove());
 		actions.forEach(({icon, text, color, method, action, target, title, visible}) =>
 		{
 			if (visible && !visible(this.context))
@@ -146,27 +183,32 @@ export default class GContextMenu extends HTMLElement
 			} else if (Array.isArray(action))
 			{
 				link.setAttribute("submenu", "");
-				link.addEventListener('mouseenter', () =>
+				link.addEventListener('click',
+					event => createSubmenu(link, event, action));
+				scheduleClick(link);
+			} else if (typeof action === "object")
+			{
+				link.setAttribute("submenu", "");
+				link.addEventListener('click', event =>
 				{
-					const submenu = document.createElement('g-context-menu');
-					link.addEventListener('mouseleave', () => submenu.hide(), {once: true});
-					submenu.actions = action;
+					link.style.cursor = "wait";
+					const fetcher = action.type === "source"
+						? fetch(action.value).then(ResponseHandler.json)
+						: import(resolve(link, this.context, action.value))
+						.then(module => module.default)
+						.then(create => create(this.context));
 
-					submenu.style.visibiliy = "hidden";
-					link.appendChild(submenu);
-					anchor(submenu, link, 0, "northeast", "southeast", "northwest", "southwest")
-						.finally(() => submenu.style.visibiliy = "");
+					fetcher.then(result => createSubmenu(link, event, result))
+						.catch(error => GMessageDialog.error(error.message, 1000))
+						.finally(() => link.style.cursor = "");
 				});
+				scheduleClick(link);
 		}
 		});
 	}
 
 	show(x, y)
 	{
-		if (instance)
-			instance.hide();
-		instance = this;
-
 		document.body.appendChild(this);
 
 		const target = {getBoundingClientRect: () => ({x, y,
@@ -178,7 +220,12 @@ export default class GContextMenu extends HTMLElement
 					height: 0})};
 
 		this.style.visibility = "hidden";
-		anchor(this, target, 0, "northeast", "southeast", "northwest", "southwest")
+		anchor(this, target, 0, ...POSITIONS).then(e =>
+		{
+			this.classList.remove("fallback");
+			this.style.top = `${e.location.y}px`;
+			this.style.left = `${e.location.x}px`;
+		}).catch(error => this.classList.add("fallback"))
 			.finally(() => this.style.visibility = "visible");
 	}
 
@@ -206,14 +253,8 @@ export default class GContextMenu extends HTMLElement
 
 customElements.define('g-context-menu', GContextMenu);
 
-window.addEventListener("click", () =>
-{
-	if (instance)
-	{
-		instance.hide();
-		instance = null;
-	}
-});
+window.addEventListener("click",
+	() => document.querySelectorAll("g-context-menu").forEach(menu => menu.hide()));
 
 window.addEventListener("contextmenu", function (event)
 {
@@ -230,7 +271,7 @@ window.addEventListener("contextmenu", function (event)
 			{
 				fetch(element.getAttribute("data-contextmenu:source"))
 					.then(response => response.json())
-					.then(data => GContextMenu.show(element, event.x, event.y, ...data))
+					.then(actions => GContextMenu.show(element, event.clientX, event.clientY, ...actions))
 					.catch(error => console.error('Error fetching context menu source:', error));
 				event.preventDefault();
 				return;
@@ -238,7 +279,8 @@ window.addEventListener("contextmenu", function (event)
 			{
 				import(element.getAttribute("data-contextmenu:module"))
 					.then(module => module.default)
-					.then(data => GContextMenu.show(element, event.x, event.y, ...data))
+					.then(create => create(element))
+					.then(actions => GContextMenu.show(element, event.clientX, event.clientY, ...actions))
 					.catch(error => console.error('Error importing context menu module:', error));
 				event.preventDefault();
 				return;

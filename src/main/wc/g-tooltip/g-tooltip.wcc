@@ -49,7 +49,12 @@ export default class GTooltip extends HTMLElement
 		this.style.visibility = "hidden";
 		const arrow = this.shadowRoot.querySelector("span");
 		anchor(this, target, GAP, position, ...POSITIONS)
-			.then(e => arrow.dataset.arrow = e)
+			.then(({position, location}) =>
+			{
+				this.style.top = `${location.y}px`;
+				this.style.left = `${location.x}px`;
+				arrow.dataset.arrow = position;
+			})
 			.finally(() => this.style.visibility = "visible");
 	}
 

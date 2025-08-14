@@ -140,6 +140,10 @@ div
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`g-tabbar g-icon { order: -1 }`);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+
 customElements.define("g-tabbar", class extends HTMLElement
 {
 	constructor()
@@ -164,10 +168,6 @@ customElements.define("g-tabbar", class extends HTMLElement
 	connectedCallback()
 	{
 		loading(this.parentNode);
-		Array.from(this.children)
-			.flatMap(e => Array.from(e.childNodes))
-			.filter(e => e.nodeType === Node.TEXT_NODE)
-			.forEach(e => e.parentNode.appendChild(e));
 		let action = window.location.href;
 		let origin = window.location.origin;
 		let triggers = Array.from(this.children).filter(e => TriggerExtractor.target(e) === "_self");
@@ -182,7 +182,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 		Array.from(this.children).forEach(e =>
 		{
 			if (e === element)
-				e.setAttribute("aria-selected", "")
+				e.setAttribute("aria-selected", "");
 			else
 				e.removeAttribute("aria-selected");
 		});

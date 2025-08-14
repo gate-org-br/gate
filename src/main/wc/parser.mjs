@@ -1,6 +1,6 @@
 import Lexer from './lexer.js';
 
-const QUOTES = ['"', '`', "'"];
+
 
 function trigger(lexer)
 {
@@ -59,7 +59,7 @@ function parameters(lexer)
 	return result;
 }
 
-
+const QUOTES = ['"', '`', "'"];
 export default class Parser
 {
 	static path(string)

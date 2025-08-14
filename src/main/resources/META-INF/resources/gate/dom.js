@@ -177,7 +177,7 @@ export default class DOM
 			else if (/^-\d+$/.test(step))
 				source = source.children[source.children.length + Number(step)];
 			else
-				source = Array.from(source.children).filter(e => e.tagName === step.toUpperCase())[0];
+				source = Array.from(source.children).filter(e => e.matches(step))[0];
 		}
 
 		return Optional.of(source);
