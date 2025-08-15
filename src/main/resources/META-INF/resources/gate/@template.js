@@ -23,12 +23,8 @@ window.addEventListener("@template", function (event)
 			return Handlebars.compile(element.innerHTML.replace(/<!--{{([^}]+)}}-->/g, '{{$1}}'));
 		}).then(template => fetch(RequestBuilder.build(method, action, form))
 			.then(ResponseHandler.json)
-			.then(result =>
-			{
-
-				result = template(result);
-				return result;
-			})
-			.then(result => event.success(path, DataURL.ofHTML(result)))
+			.then(result => template(result))
+			.then(DataURL.ofHTML)
+			.then(result => event.success(path, result))
 			.catch(error => event.failure(path, error)));
 });

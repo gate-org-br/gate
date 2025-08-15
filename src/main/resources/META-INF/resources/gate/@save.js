@@ -10,6 +10,6 @@ window.addEventListener("@save", function (event)
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(GFilePicker.saveDataURL)
-		.then(() => event.success(path))
+		.then(response => event.success(path, response))
 		.catch(error => event.failure(path, error));
 });

@@ -27,8 +27,8 @@ window.addEventListener("@hide", function (event)
 		: hideable(trigger);
 
 	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.none)
-		.then(() =>
+		.then(ResponseHandler.dataURL)
+		.then(result =>
 		{
 			if (element.hide)
 				element.hide();
@@ -36,7 +36,7 @@ window.addEventListener("@hide", function (event)
 				element.close();
 			else
 				element.setAttribute("hidden", "");
-			event.success(path);
+			event.success(path, result);
 		})
 		.catch(error => event.failure(path, error));
 });

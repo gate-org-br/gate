@@ -1,4 +1,5 @@
 import './g-stack-frame.js';
+import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -16,7 +17,7 @@ window.addEventListener("@stack", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				stack.appendChild(document.createRange().createContextualFragment(result));
 			})
 			.catch(error =>
@@ -35,7 +36,7 @@ window.addEventListener("@stack", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				stack.iframe.srcDoc = result;
 			})
 			.catch(error =>

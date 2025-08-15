@@ -23,7 +23,7 @@ window.addEventListener("@tooltip", function (event)
 				GTooltip.show(trigger, Formatter.JSONtoHTML(JSON.parse(dataURL.data)), position, width, height);
 			else
 				GTooltip.show(trigger, dataURL.data, position, width, height);
-			event.success(path);
+			event.success(path, response);
 		})
 		.catch(error => event.failure(path, error));
 });

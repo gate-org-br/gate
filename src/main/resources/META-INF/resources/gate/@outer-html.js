@@ -2,6 +2,7 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -17,7 +18,7 @@ window.addEventListener("@outer-html", function (event)
 		{
 			let fragment = document.createRange().createContextualFragment(result);
 			element.replaceWith(fragment);
-			event.success(path);
+			event.success(path, DataURL.ofHTML('text/html'));
 		})
 		.catch(error => event.failure(path, error));
 });

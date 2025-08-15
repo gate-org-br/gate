@@ -1,4 +1,5 @@
 import VALUES from './values.js';
+import DataURL from './data-url.js';
 import GSearchPicker from './g-search-picker.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -10,7 +11,7 @@ window.addEventListener("@search", function (event)
 	let {method, action, form, parameters: [filter = "filter", ...columns]} = event.detail;
 
 	if (trigger.tagName === "INPUT" && !trigger.value)
-		return event.success(path, {});
+		return event.success(path, new DataURL("application/json", "{}").toString());
 
 	let cancel = VALUES.get(trigger) || "";
 
@@ -29,6 +30,7 @@ window.addEventListener("@search", function (event)
 
 	GSearchPicker.pick({fetcher, text, caption, columns})
 		.then(result => result.value)
+		.then(DataURL.ofJSON)
 		.then(result => event.success(path, result))
 		.catch(() =>
 		{

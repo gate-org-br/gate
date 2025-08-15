@@ -2,6 +2,7 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -26,7 +27,7 @@ window.addEventListener("@inner-html", function (event)
 				e.replaceWith(script);
 			});
 
-			event.success(path);
+			event.success(path, DataURL.ofHTML('text/html'));
 		})
 		.catch(error => event.failure(path, error));
 });

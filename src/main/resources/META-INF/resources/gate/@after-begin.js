@@ -2,6 +2,7 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -16,7 +17,7 @@ window.addEventListener("@after-begin", function (event)
 		.then(result =>
 		{
 			element.insertAdjacentHTML("afterbegin", result);
-			event.success(path);
+			event.success(path, DataURL.ofHTML(result));
 		})
 		.catch(error => event.failure(path, error));
 });
