@@ -28,10 +28,12 @@
 			showcases them as cards within a list
 			for user selection. Any attributes beginning with the <strong>_</strong> character are omitted from display.
 
-			Upon user selection, the chosen object is directed to the <strong>@fill</strong> target.
+			The chosen object is passed to the <strong>@properties</strong> trigger that pass the object as an ordered array with
+			the desired properties. 
+
 			When invoked without parameters, the <strong>@fill</strong>
-			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
-			and second properties of the selected object, respectively.
+			target populates the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second columns of the selected array, respectively.
 		</p>
 		<g-code-viewer style='height: auto'>
 			<fieldset data-size="8">
@@ -40,9 +42,9 @@
 					Search:
 					<span>
 						<input type="text" data-action="/people"
-						       data-target="@search(Name_like) > @fill" title="Search" tabindex='1'/>
+						       data-target="@search(Name_like) > @properties(id, Name) > @fill" title="Search" tabindex='1'/>
 						<input type="hidden">
-						<a href="/people" target="@search(Name_like) > @fill" title="Search">
+						<a href="/people" target="@search(Name_like) > @properties(id, Name) > @fill" title="Search">
 							<g-icon>
 								&#X2010;
 							</g-icon>

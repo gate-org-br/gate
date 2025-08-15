@@ -18,19 +18,22 @@
 			showcases them as cards within a list
 			for user selection. Any attributes beginning with the <strong>_</strong> character are omitted from display.
 
-			Upon user selection, the chosen object is directed to the <strong>@fill</strong> target.
+			The chosen object is passed to the <strong>@properties</strong> trigger that pass the object as an ordered array with
+			the desired properties. 
+
 			When invoked without parameters, the <strong>@fill</strong>
-			target populates the value of the first hidden input and the first text input, which are siblings of the trigger element, with the first
-			and second properties of the selected object, respectively.
+			target populates the first hidden input and the first text input, which are siblings of the trigger element, with the first
+			and second columns of the selected array, respectively.
 		</p>
+
 		<g-code-viewer style='height: auto'>
 			<fieldset>
 				<label>
 					Select:
 					<span>
-						<input type="text">
+						<input type="text" />
 						<input type="hidden">
-						<a href="/people" target="@select > @fill" title="Select 1">
+						<a href="/people" target="@select > @properties(id, Name) > @fill" title="Select 1">
 							<g-icon>
 								&#X2010;
 							</g-icon>

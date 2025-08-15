@@ -30,6 +30,7 @@ import './@post.js';
 import './@put.js';
 import './@progress.js';
 import './@property.js';
+import './@properties.js';
 import './@redirect.js';
 import './@remove.js';
 import './@report.js';
