@@ -18,7 +18,7 @@ window.addEventListener("@outer-html", function (event)
 		{
 			let fragment = document.createRange().createContextualFragment(result);
 			element.replaceWith(fragment);
-			event.success(path, new DataURL('text/html', result).toString());
+			event.success(path, DataURL.ofHTML('text/html'));
 		})
 		.catch(error => event.failure(path, error));
 });

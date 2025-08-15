@@ -1,5 +1,4 @@
 import './g-chart-dialog.js';
-import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -15,10 +14,10 @@ window.addEventListener("@chart", function (event)
 
 	let promise = dialog.show();
 	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.dataURL)
+		.then(ResponseHandler.json)
 		.then(result =>
 		{
-			dialog.value = JSON.parse(DataURL.parse(result).data);
+			dialog.value = result;
 			promise.finally(() => event.success(path, result));
 		}).catch(error => event.failure(path, error));
 

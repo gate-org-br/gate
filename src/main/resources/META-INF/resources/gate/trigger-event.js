@@ -1,6 +1,7 @@
 import DOM from './dom.js';
 import Parser from './parser.js';
 import trigger from './trigger.js';
+import DataURL from './data-url.js';
 import CancelError from './cancel-error.js';
 import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';
@@ -24,6 +25,9 @@ export default class TriggerEvent extends CustomEvent
 
 	success(path, result)
 	{
+		if (result && typeof result === "object")
+			result = DataURL.ofJSON(result);
+
 		if (this.#pipeline.length)
 		{
 			let {name, parameters} = this.#pipeline[0];

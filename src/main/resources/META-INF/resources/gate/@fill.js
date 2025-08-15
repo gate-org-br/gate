@@ -2,7 +2,6 @@
 
 import './trigger.js';
 import DOM from './dom.js';
-import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -21,11 +20,9 @@ window.addEventListener("@fill", function (event)
 					.orElseThrow(`Invalid selector: ${e}`) : null);
 
 	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.dataURL)
-		.then(dataURL =>
+		.then(ResponseHandler.json)
+		.then(result =>
 		{
-			let result = DataURL.toJSON(dataURL);
-
 			if (Array.isArray(result))
 			{
 				for (let i = 0; i < parameters.length; i++)
@@ -39,7 +36,7 @@ window.addEventListener("@fill", function (event)
 						parameters[i].value = result[keys[i]] ?? "";
 			}
 
-			event.success(path, dataURL);
+			event.success(path, result);
 		})
 		.catch(error => event.failure(path, error));
 });

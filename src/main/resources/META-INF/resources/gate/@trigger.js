@@ -9,11 +9,12 @@ window.addEventListener("@trigger", function (event)
 	let {cause, method, action, parameters: [selector], form} = event.detail;
 
 	fetch(RequestBuilder.build(method, action, form))
-		.then(ResponseHandler.dataURL)
-		.then(result =>
+		.then(ResponseHandler.none)
+		.then(() =>
 		{
-			event.success(path, result);
-			DOM.navigate(event, selector).ifPresent(element => trigger(cause, element));
+			event.success(path);
+			DOM.navigate(event, selector)
+				.ifPresent(element => trigger(cause, element));
 		})
 		.catch(error => event.failure(path, error));
 });

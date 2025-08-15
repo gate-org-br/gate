@@ -17,7 +17,7 @@ window.addEventListener("@after-end", function (event)
 		.then(result =>
 		{
 			element.insertAdjacentHTML("afterend", result);
-			event.success(path, new DataURL('text/html', result).toString());
+			event.success(path, DataURL.ofHTML(result));
 		})
 		.catch(error => event.failure(path, error));
 });

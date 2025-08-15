@@ -1,7 +1,6 @@
 /* global fetch */
 
 import './trigger.js';
-import DataURL from './data-url.js';
 import GFormDialog from './g-form-dialog.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -20,8 +19,6 @@ window.addEventListener("@form", function (event)
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.json)
 		.then(form => GFormDialog.edit(form, options))
-		.then(result => JSON.stringify(result))
-		.then(result => new DataURL("application/json", result).toString())
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));
 });

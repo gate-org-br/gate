@@ -27,7 +27,7 @@ window.addEventListener("@inner-html", function (event)
 				e.replaceWith(script);
 			});
 
-			event.success(path, new DataURL('text/html', result).toString());
+			event.success(path, DataURL.ofHTML('text/html'));
 		})
 		.catch(error => event.failure(path, error));
 });

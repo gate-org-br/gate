@@ -1,4 +1,3 @@
-import DataURL from './data-url.js';
 import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
@@ -19,7 +18,7 @@ window.addEventListener("@message", function (event)
 		.then(text =>
 		{
 			GMessageDialog.show(type, text, duration);
-			event.success(path, new DataURL("text/plain", text).toString());
+			event.success(path);
 		})
 		.catch(error => event.failure(path, error));
 });

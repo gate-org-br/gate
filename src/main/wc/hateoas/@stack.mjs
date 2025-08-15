@@ -17,7 +17,7 @@ window.addEventListener("@stack", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				stack.appendChild(document.createRange().createContextualFragment(result));
 			})
 			.catch(error =>
@@ -36,7 +36,7 @@ window.addEventListener("@stack", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				stack.iframe.srcDoc = result;
 			})
 			.catch(error =>

@@ -15,7 +15,7 @@ window.addEventListener("@json-to-html", function (event)
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.json)
 		.then(Formatter.JSONtoHTML)
-		.then(e => new DataURL("text/html", e).toString())
+		.then(DataURL.ofHTML)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));
 });

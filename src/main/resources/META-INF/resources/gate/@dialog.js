@@ -1,5 +1,4 @@
 import './g-dialog.js';
-import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -39,7 +38,7 @@ window.addEventListener("@dialog", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path));
 				dialog.innerHTML = result;
 
 				dialog.querySelectorAll("script").forEach(e =>
@@ -67,7 +66,7 @@ window.addEventListener("@dialog", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path));
 				dialog.iframe.srcDoc = result;
 			})
 			.catch(error =>

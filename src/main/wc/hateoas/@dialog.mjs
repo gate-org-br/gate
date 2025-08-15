@@ -39,7 +39,7 @@ window.addEventListener("@dialog", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				dialog.innerHTML = result;
 
 				dialog.querySelectorAll("script").forEach(e =>
@@ -67,7 +67,7 @@ window.addEventListener("@dialog", function (event)
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
-				promise.finally(() => event.success(path, new DataURL('text/html', result).toString()));
+				promise.finally(() => event.success(path, DataURL.ofHTML(result)));
 				dialog.iframe.srcDoc = result;
 			})
 			.catch(error =>

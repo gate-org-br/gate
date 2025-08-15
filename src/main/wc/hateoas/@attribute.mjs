@@ -8,31 +8,31 @@ import ResponseHandler from './response-handler.js';
 
 window.addEventListener("@attribute", function (event)
 {
-    let path = event.composedPath();
-    let {method, action, form, parameters: [selector]} = event.detail;
+	let path = event.composedPath();
+	let {method, action, form, parameters: [selector]} = event.detail;
 
-    let index = selector.lastIndexOf(":");
-    if (index === -1)
-        throw new Error("Missing attribute name");
+	let index = selector.lastIndexOf(":");
+	if (index === -1)
+		throw new Error("Missing attribute name");
 
-    let attribute = selector.substring(index + 1);
-    let target = DOM.navigate(event, selector.substring(0, index))
-            .orElseThrow(`${selector} is not a valid selector`);
+	let attribute = selector.substring(index + 1);
+	let target = DOM.navigate(event, selector.substring(0, index))
+		.orElseThrow(`${selector} is not a valid selector`);
 
-    fetch(RequestBuilder.build(method, action, form))
-            .then(response =>
-            {
-                const contentType = response.headers.get('content-type');
-                return ResponseHandler.auto(response)
-                        .then(result =>
-                        {
-                            if (result)
-                                target.setAttribute(attribute, result);
-                            else
-                                target.removeAttribute(attribute);
+	fetch(RequestBuilder.build(method, action, form))
+		.then(response =>
+		{
+			const contentType = response.headers.get('content-type');
+			return ResponseHandler.auto(response)
+				.then(result =>
+				{
+					if (result)
+						target.setAttribute(attribute, result);
+					else
+						target.removeAttribute(attribute);
 
-                            event.success(path, new DataURL(contentType, result).toString());
-                        });
-            })
-            .catch(error => event.failure(path, error));
+					event.success(path, new DataURL(contentType, result).toString());
+				});
+		})
+		.catch(error => event.failure(path, error));
 });

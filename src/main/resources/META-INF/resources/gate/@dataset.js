@@ -1,5 +1,4 @@
 import DOM from './dom.js';
-import DataURL from './data-url.js';
 
 window.addEventListener("@dataset", function pick(event)
 {
@@ -13,5 +12,5 @@ window.addEventListener("@dataset", function pick(event)
 	let dataset = Array.from(table.querySelectorAll("thead > tr, tbody > tr"))
 		.map(tr => Array.from(tr.children).map(e => e.getAttribute("data-value") || e.innerText));
 
-	event.success(path, new DataURL("application/json", JSON.stringify(dataset)));
+	event.success(path, dataset);
 });

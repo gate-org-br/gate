@@ -19,7 +19,7 @@ window.addEventListener("@message", function (event)
 		.then(text =>
 		{
 			GMessageDialog.show(type, text, duration);
-			event.success(path, new DataURL("text/plain", text).toString());
+			event.success(path, DataURL.ofText(text));
 		})
 		.catch(error => event.failure(path, error));
 });
