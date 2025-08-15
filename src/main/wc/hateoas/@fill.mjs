@@ -2,12 +2,9 @@
 
 import './trigger.js';
 import DOM from './dom.js';
-import Parser from './parser.js';
 import DataURL from './data-url.js';
-import Extractor from './extractor.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
-
 
 window.addEventListener("@fill", function (event)
 {
@@ -28,9 +25,20 @@ window.addEventListener("@fill", function (event)
 		.then(dataURL =>
 		{
 			let result = DataURL.toJSON(dataURL);
-			for (let i = 0; i < parameters.length; i++)
-				if (parameters[i])
-					parameters[i].value = result[i] ?? "";
+
+			if (Array.isArray(result))
+			{
+				for (let i = 0; i < parameters.length; i++)
+					if (parameters[i])
+						parameters[i].value = result[i] ?? "";
+			} else if (result && typeof result === 'object')
+			{
+				const keys = Object.keys(result);
+				for (let i = 0; i < parameters.length; i++)
+					if (parameters[i])
+						parameters[i].value = result[keys[i]] ?? "";
+			}
+
 			event.success(path, dataURL);
 		})
 		.catch(error => event.failure(path, error));

@@ -10,7 +10,7 @@ window.addEventListener("@properties", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters = ["value", "label"]} = event.detail;
 
 	fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
