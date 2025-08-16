@@ -222,7 +222,9 @@ export default class GGrid extends StyledHTMLElement
 		this.removeAttribute("empty");
 
 		if (Array.isArray(options[0])
-			|| columns.some(column => !column.label))
+			|| columns.some(column => !column.label)
+			|| columns.some(column => column.style))
+
 		{
 			if (columns.some(column => column.label))
 				this.header = columns.map(column => column.label);

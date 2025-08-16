@@ -28,7 +28,7 @@
 			showcases them as cards within a list
 			for user selection. Any attributes beginning with the <strong>_</strong> character are omitted from display.
 
-			The chosen object is passed to the <strong>@properties</strong> trigger that pass the object as an ordered array with
+			The chosen object is passed to the <strong>@values</strong> trigger that pass the object as an ordered array with
 			the desired properties. 
 
 			When invoked without parameters, the <strong>@fill</strong>
@@ -42,9 +42,9 @@
 					Search:
 					<span>
 						<input type="text" data-action="/people"
-						       data-target="@search(Name_like) > @properties(id, Name) > @fill" title="Search" tabindex='1'/>
+						       data-target="@search(Name_like) > @values(id, Name) > @fill" title="Search" tabindex='1'/>
 						<input type="hidden">
-						<a href="/people" target="@search(Name_like) > @properties(id, Name) > @fill" title="Search">
+						<a href="/people" target="@search(Name_like) > @values(id, Name) > @fill" title="Search">
 							<g-icon>
 								&#X2010;
 							</g-icon>

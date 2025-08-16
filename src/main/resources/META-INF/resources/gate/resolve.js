@@ -1,51 +1,56 @@
 import DOM from './dom.js';
 import property from './property.js';
-import EventHandler from './event-handler.js';
 
-const REQUIRED = new Error();
-const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(([^)]*?)\)/g;
+const REQUIRED = new Error("__REQUIRED__");
+const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\((?:(?:\"([^\"]*)\")|(?:'([^']*)')|(?:`([^`]*)`)|([^)]*))\)/g;
 
-function navigate(trigger, value)
+function value(trigger, selector)
 {
-	return DOM.navigate(trigger, value)
+	return DOM.navigate(trigger, selector)
 		.orElseThrow(() =>
-			new Error(`${value} is not a valid element selector`))
+			new Error(`${selector} is not a valid element selector`))
 		.value || "";
 }
 
 function require(value)
 {
-	if (!value)
+	if (value === null || value === undefined
+		|| (typeof value === 'string' && value.trim() === ''))
 		throw REQUIRED;
 	return value;
 }
 
-export default function resolve(trigger, context, string)
+function convert(value)
 {
-	var result = decodeURI(string);
+	return encodeURIComponent(String(value ?? ""));
+}
+
+export default function resolve(trigger, context, action)
+{
+	var result = action;
 	try
 	{
-		result = result.replace(RESOLVE_REGEX, function (_, method, value)
+		result = result.replace(RESOLVE_REGEX, function (_, method, dq, sq, bq, bare)
 		{
-			value = decodeURIComponent(value);
+			const parameter = decodeURIComponent(dq ?? sq ?? bq ?? bare ?? "");
 			switch (method)
 			{
 				case '@value':
-					return navigate(trigger, value);
+					return convert(value(trigger, parameter));
 				case '@input':
-					return prompt(value);
+					return convert(prompt(parameter));
 				case '@prop':
-					return property(context, value);
+					return convert(property(context, parameter));
 				case '@attr':
-					return context.getAttribute(value);
+					return convert(context.getAttribute(parameter));
 				case '@VALUE':
-					return require(navigate(trigger, value));
+					return convert(require(value(trigger, parameter)));
 				case '@INPUT':
-					return require(prompt(value));
+					return convert(require(prompt(parameter)));
 				case '@PROP':
-					return require(property(context, value));
+					return convert(require(property(context, parameter)));
 				case '@ATTR':
-					return require(context.getAttribute(value));
+					return convert(require(context.getAttribute(parameter)));
 			}
 		});
 	} catch (error)
@@ -54,5 +59,5 @@ export default function resolve(trigger, context, string)
 			return null;
 		throw error;
 	}
-	return encodeURI(result);
+	return result;
 }
