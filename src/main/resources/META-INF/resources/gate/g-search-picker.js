@@ -81,11 +81,7 @@ export default class GSearchPicker extends GWindow
 		grid.addEventListener("select", e => this.dispatchEvent(new CustomEvent("commit", {detail: {index: e.detail.index, value: e.detail.value}})));
 
 		let input = this.shadowRoot.querySelector("input");
-		input.addEventListener("input", debounce(() => this.populate({
-				fetcher: this.#fetcher,
-				text: input.value,
-				columns: this.#columns
-			})));
+		input.addEventListener("input", debounce(() => this.populate(this.#fetcher, {text: input.value, columns: this.#columns})));
 	}
 
 	set caption(caption)
@@ -98,7 +94,7 @@ export default class GSearchPicker extends GWindow
 		return this.shadowRoot.getElementById("caption").textContent;
 	}
 
-	populate( { fetcher, text = "", columns = [] })
+	populate(fetcher, { text = "", columns = [] } = {})
 	{
 		if (typeof fetcher !== "function")
 			throw new Error("fetcher must be a function");
@@ -114,20 +110,22 @@ export default class GSearchPicker extends GWindow
 		input.disabled = true;
 		const request = ++this.#request;
 
-		fetcher(text).then(options =>
-		{
-			if (request !== this.#request)
-				return;
-			if (typeof options === "string")
-				throw new Error(options);
-			if (!Array.isArray(options))
-				throw new Error("Invalid json data returned by the server");
+		Promise.resolve()
+			.then(() => fetcher(text))
+			.then(options =>
+			{
+				if (request !== this.#request)
+					return;
+				if (typeof options === "string")
+					throw new Error(options);
+				if (!Array.isArray(options))
+					throw new Error("Invalid json data returned by the server");
 
-			grid.populate({options, columns, filter: text});
-			grid.innerText = "Nenhum registro encontrado";
-		}).catch(error =>
+				grid.populate(options, {columns, filter: text});
+				grid.innerText = "Nenhum registro encontrado";
+			}).catch(error =>
 		{
-			grid.populate({options: []});
+			grid.populate([]);
 			grid.innerText = error.message;
 			this.dispatchEvent(new CustomEvent("update", {detail: null}));
 		}).finally(() =>
@@ -137,12 +135,12 @@ export default class GSearchPicker extends GWindow
 		});
 	}
 
-	static pick( { fetcher, caption = "", text = "", columns = [] })
+	static pick(fetcher, { caption = "", text = "", columns = [] } = {})
 	{
 		let picker = window.top.document.createElement("g-search-picker");
 		picker.caption = caption;
 		picker.show();
-		picker.populate({fetcher, text, columns});
+		picker.populate(fetcher, {text, columns});
 
 		return new Promise((resolve, reject) =>
 		{

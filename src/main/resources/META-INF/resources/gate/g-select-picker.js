@@ -78,9 +78,7 @@ export default class GSelectPicker extends GWindow
 
 		let input = this.shadowRoot.querySelector("input");
 		input.addEventListener("input", () => grid
-				.populate({options: this.#options,
-					columns: this.#columns,
-					filter: input.value}));
+				.populate(this.#options, {columns: this.#columns, filter: input.value}));
 	}
 
 	set caption(caption)
@@ -93,20 +91,20 @@ export default class GSelectPicker extends GWindow
 		return this.shadowRoot.getElementById("caption").textContent;
 	}
 
-	populate( {options = [], columns = []})
+	populate(options = [], {columns = []} = {})
 	{
 		this.#options = options;
 		this.#columns = columns;
 		this.shadowRoot.querySelector("g-grid")
-			.populate({options, columns});
+			.populate(options, {columns});
 	}
 
-	static pick( {options = [], caption = "", columns = []})
+	static pick(options = [], {caption = "", columns = []} = {})
 	{
 		let picker = window.top.document.createElement("g-select-picker");
 		if (caption)
 			picker.caption = caption;
-		picker.populate({options, columns});
+		picker.populate(options, {columns});
 		picker.show();
 
 		return new Promise((resolve, reject) =>

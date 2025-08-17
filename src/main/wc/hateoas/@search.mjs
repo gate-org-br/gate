@@ -28,7 +28,7 @@ window.addEventListener("@search", function (event)
 			.then(ResponseHandler.json);
 	};
 
-	GSearchPicker.pick({fetcher, text, caption, columns})
+	GSearchPicker.pick(fetcher, {text, caption, columns})
 		.then(result => result.value)
 		.then(DataURL.ofJSON)
 		.then(result => event.success(path, result))

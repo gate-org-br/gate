@@ -179,7 +179,7 @@ export default class GGrid extends StyledHTMLElement
 			this.setAttribute("empty", "");
 	}
 
-	populate( {options, filter, columns})
+	populate(options = [], { filter, columns = [] } = {})
 	{
 		this.setAttribute("empty", "");
 
@@ -218,8 +218,6 @@ export default class GGrid extends StyledHTMLElement
 		if (columns.some(col => !col
 				|| typeof col.property === "undefined"))
 			throw new Error("Column is missing 'property'");
-
-		this.removeAttribute("empty");
 
 		if (Array.isArray(options[0])
 			|| columns.some(column => !column.label)

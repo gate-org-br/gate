@@ -58,20 +58,8 @@ export default class GTreePicker extends GWindow
 		tree(this, options).forEach(li => list.appendChild(li));
 	}
 
-	static pick( {options, caption})
+	static pick(options, {caption = ""} = {})
 	{
-		if (typeof options === "string")
-			return fetch(options)
-				.then(response =>
-				{
-					return response.ok ?
-						response.json()
-						: response.text().then(message =>
-					{
-						throw new Error(message);
-					});
-				}).then(result => GTreePicker.pick(result, caption));
-
 		let picker = window.top.document.createElement("g-tree-picker");
 		picker.options = options;
 		if (caption)

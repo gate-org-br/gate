@@ -25,13 +25,13 @@ window.addEventListener("@select", function (event)
 				&& options[0].label
 				&& options[0].children
 				&& Object.keys(options[0]).length === 3)
-				GTreePicker.pick({options, caption})
+				GTreePicker.pick(options, {caption})
 					.then(e => [e.value.value, e.value.label])
 					.then(DataURL.ofJSON)
 					.then(result => event.success(path, result))
 					.catch(() => event.resolve(path));
 			else
-				GSelectPicker.pick({options, caption, columns})
+				GSelectPicker.pick(options, {caption, columns})
 					.then(e => e.value)
 					.then(DataURL.ofJSON)
 					.then(result => event.success(path, result))
