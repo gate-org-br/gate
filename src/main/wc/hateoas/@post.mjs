@@ -11,13 +11,13 @@ window.addEventListener("@post", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {action, method, form, parameters} = event.detail;
+	let {action, method, form, parameters, signal} = event.detail;
 
 	let url = parameters[0] || TriggerExtractor.action(trigger);
 
 	url = resolve(trigger, event.detail.context, url);
 
-	return fetch(RequestBuilder.build(method, action, form))
+	return fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(DataURL.parse)
 		.then(result => fetch(RequestBuilder.build("post", url, result.data, result.contentType)))

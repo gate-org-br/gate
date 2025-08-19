@@ -1,5 +1,6 @@
 /* global fetch */
 import './trigger.js';
+import DataURL from './data-url.js';
 import property from './property.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
@@ -14,13 +15,14 @@ function map(object, parameters)
 window.addEventListener("@values", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.json)
 		.then(object => Array.isArray(object)
 				? object.map(e => map(e, parameters))
 				: map(object, parameters))
-		.then(array => event.success(path, array))
+		.then(DataURL.ofJSON)
+		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));
 });

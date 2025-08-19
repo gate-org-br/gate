@@ -11,7 +11,7 @@ window.addEventListener("@put", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {action, method, form, parameters} = event.detail;
+	let {action, method, form, parameters, signal} = event.detail;
 
 	let url = parameters[0] || TriggerExtractor.action(trigger);
 
@@ -20,7 +20,7 @@ window.addEventListener("@put", function (event)
 	return fetch(RequestBuilder.build(method, action, form))
 		.then(ResponseHandler.dataURL)
 		.then(DataURL.parse)
-		.then(result => fetch(RequestBuilder.build("put", url, result.data, result.contentType)))
+		.then(result => fetch(RequestBuilder.build("put", url, result.data, result.contentType), {signal}))
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));

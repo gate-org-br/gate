@@ -54,4 +54,9 @@ customElements.define('g-stack-frame', class GStackFrame extends GModal
 			throw new Error("Attempt to access content of a frame stack-frame");
 		return this.firstElementChild;
 	}
+
+	connectedCallback()
+	{
+		this.classList.add("content");
+	}
 });

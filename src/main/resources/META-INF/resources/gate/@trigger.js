@@ -6,9 +6,9 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@trigger", function (event)
 {
 	let path = event.composedPath();
-	let {cause, method, action, parameters: [selector], form} = event.detail;
+	let {cause, method, action, parameters: [selector], form, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result =>
 		{

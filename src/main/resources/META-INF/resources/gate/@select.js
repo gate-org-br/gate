@@ -9,9 +9,9 @@ window.addEventListener("@select", function (event)
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
 	const caption = trigger.title || "";
-	let {method, action, form, parameters: columns} = event.detail;
+	let {method, action, form, parameters: columns, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.json)
 		.catch(error =>
 		{

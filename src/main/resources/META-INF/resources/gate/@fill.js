@@ -2,6 +2,7 @@
 
 import './trigger.js';
 import DOM from './dom.js';
+import DataURL from './data-url.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
@@ -9,7 +10,7 @@ window.addEventListener("@fill", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters, signal} = event.detail;
 
 	if (!parameters || !parameters.length)
 		parameters = [trigger.parentNode.querySelector("input[type='hidden']"),
@@ -19,7 +20,7 @@ window.addEventListener("@fill", function (event)
 			.map(e => e !== "_" ? DOM.navigate(trigger, e)
 					.orElseThrow(`Invalid selector: ${e}`) : null);
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.json)
 		.then(result =>
 		{
@@ -36,7 +37,7 @@ window.addEventListener("@fill", function (event)
 						parameters[i].value = result[keys[i]] ?? "";
 			}
 
-			event.success(path, result);
+			event.success(path, DataURL.ofJSON(result));
 		})
 		.catch(error => event.failure(path, error));
 });

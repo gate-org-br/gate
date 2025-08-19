@@ -9,23 +9,23 @@ window.addEventListener("@map", function (event)
 {
 	let path = event.composedPath();
 	let element = path[0] || event.target;
-	let {method, action, parameters: [script], form} = event.detail;
+	let {method, action, parameters: [script], form, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
-			.then(ResponseHandler.dataURL)
-			.then(result =>
-			{
-				let dataURL = DataURL.parse(result);
-				let func = new Function("result", `return ${script}`).bind(element);
-				let arrow = func();
+	fetch(RequestBuilder.build(method, action, form), {signal})
+		.then(ResponseHandler.dataURL)
+		.then(result =>
+		{
+			let dataURL = DataURL.parse(result);
+			let func = new Function("result", `return ${script}`).bind(element);
+			let arrow = func();
 
-				if (dataURL.contentType.startsWith("application/json"))
-					result = JSON.stringify(arrow(JSON.parse(dataURL.data)));
-				else
-					result = arrow(dataURL.data);
+			if (dataURL.contentType.startsWith("application/json"))
+				result = JSON.stringify(arrow(JSON.parse(dataURL.data)));
+			else
+				result = arrow(dataURL.data);
 
-				event.success(path, new DataURL(dataURL.contentType, result).toString());
+			event.success(path, new DataURL(dataURL.contentType, result).toString());
 
-			})
-			.catch(error => event.failure(path, error));
+		})
+		.catch(error => event.failure(path, error));
 });

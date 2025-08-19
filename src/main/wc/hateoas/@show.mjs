@@ -10,10 +10,10 @@ window.addEventListener("@show", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form, parameters: [selector]} = event.detail;
+	let {method, action, form, parameters: [selector], signal} = event.detail;
 	let element = DOM.navigate(trigger, selector).orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result =>
 		{

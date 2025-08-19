@@ -57,6 +57,7 @@ div {
 import './g-icon.js';
 import './g-grid.js';
 import GWindow from './g-window.js';
+import CancelError from "./cancel-error.js";
 
 export default class GSelectPicker extends GWindow
 {
@@ -109,7 +110,7 @@ export default class GSelectPicker extends GWindow
 
 		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("cancel", () => reject(new CancelError()));
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}

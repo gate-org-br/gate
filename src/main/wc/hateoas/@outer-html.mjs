@@ -9,16 +9,18 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@outer-html", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, parameters: [selector], form} = event.detail;
+	let {method, action, parameters: [selector], form, signal} = event.detail;
 	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.text)
 		.then(result =>
 		{
-			let fragment = document.createRange().createContextualFragment(result);
-			element.replaceWith(fragment);
-			event.success(path, DataURL.ofHTML('text/html'));
+			if (signal?.aborted || !document.contains(element))
+				return event.resolve(path);
+
+			element.outerHTML = result;
+			event.success(path, DataURL.ofHTML(result));
 		})
 		.catch(error => event.failure(path, error));
 });

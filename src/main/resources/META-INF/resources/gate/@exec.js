@@ -9,9 +9,9 @@ window.addEventListener("@exec", function (event)
 {
 	let path = event.composedPath();
 	let element = path[0] || event.target;
-	let {method, action, parameters: [script], form} = event.detail;
+	let {method, action, parameters: [script], form, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result =>
 		{

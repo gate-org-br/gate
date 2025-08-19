@@ -9,7 +9,7 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@template", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, parameters: [selector], form} = event.detail;
+	let {method, action, parameters: [selector], form, signal} = event.detail;
 	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
 
 	import("./handlebars.js")
@@ -21,7 +21,7 @@ window.addEventListener("@template", function (event)
 			Handlebars.registerHelper("mul", (number, value) => number * value);
 			Handlebars.registerHelper("div", (number, value) => number / value);
 			return Handlebars.compile(element.innerHTML.replace(/<!--{{([^}]+)}}-->/g, '{{$1}}'));
-		}).then(template => fetch(RequestBuilder.build(method, action, form))
+		}).then(template => fetch(RequestBuilder.build(method, action, form), {signal})
 			.then(ResponseHandler.json)
 			.then(result => template(result))
 			.then(DataURL.ofHTML)

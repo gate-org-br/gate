@@ -48,4 +48,6 @@ import './@trigger.js';
 import './@value.js';
 import './@notification.js';
 import './@log.js';
+import './@sanitize.js';
+import './@content.js';
 import './_default.js';

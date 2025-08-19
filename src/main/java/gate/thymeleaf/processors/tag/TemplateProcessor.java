@@ -45,7 +45,8 @@ public class TemplateProcessor extends TagModelProcessor
 
 		removeTag(context, model, handler);
 
-		if ("1".equals(exchange.getRequest().getHeaderValue("X-G-Fragment")))
+		if (!element.hasAttribute("required")
+			&& "1".equals(exchange.getRequest().getHeaderValue("X-G-Fragment")))
 			return;
 
 		if (exchange.getAttributeValue("g-template-content") == null)

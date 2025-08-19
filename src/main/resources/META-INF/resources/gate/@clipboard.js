@@ -9,9 +9,9 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@clipboard", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form} = event.detail;
+	let {method, action, form, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result =>
 		{

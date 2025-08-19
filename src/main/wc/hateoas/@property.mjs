@@ -9,7 +9,7 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@property", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form, parameters: [selector]} = event.detail;
+	let {method, action, form, parameters: [selector], signal} = event.detail;
 
 	let index = selector.lastIndexOf(":");
 	if (index === -1)
@@ -19,27 +19,28 @@ window.addEventListener("@property", function (event)
 	let target = DOM.navigate(event, selector.substring(0, index))
 		.orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form)).then(response =>
-	{
-		if (!response)
-			return Promise.resolve();
-		if (response.ok)
+	fetch(RequestBuilder.build(method, action, form), {signal})
+		.then(response =>
 		{
-			let contentType = response.headers.get('content-type');
-			if (contentType.startsWith("text/"))
-				response = response.text();
-			else if (contentType.startsWith("application/json"))
-				response = response.json();
-			else
-				response = response.blob();
-
-			return response.then(result =>
+			if (!response)
+				return Promise.resolve();
+			if (response.ok)
 			{
-				target[property] = result;
-				event.success(path, new DataURL(contentType, result).toString());
-			});
-		}
+				let contentType = response.headers.get('content-type');
+				if (contentType.startsWith("text/"))
+					response = response.text();
+				else if (contentType.startsWith("application/json"))
+					response = response.json();
+				else
+					response = response.blob();
 
-		return response.text().then(error => Promise.reject(new Error(error)));
-	}).catch(error => event.failure(path, error));
+				return response.then(result =>
+				{
+					target[property] = result;
+					event.success(path, new DataURL(contentType, result).toString());
+				});
+			}
+
+			return response.text().then(error => Promise.reject(new Error(error)));
+		}).catch(error => event.failure(path, error));
 });

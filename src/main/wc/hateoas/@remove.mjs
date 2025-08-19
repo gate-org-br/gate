@@ -8,10 +8,10 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@remove", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, parameters: [selector], form} = event.detail;
+	let {method, action, parameters: [selector], form, signal} = event.detail;
 	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
 
-	return fetch(RequestBuilder.build(method, action, form))
+	return fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.none)
 		.then(() => element.remove())
 		.then(() => event.success(path))

@@ -61,6 +61,7 @@ section g-icon
 
 import './g-icon.js';
 import GWindow from './g-window.js';
+import CancelError from "./cancel-error.js";
 
 export default class GReportPicker extends GWindow
 {
@@ -85,7 +86,7 @@ export default class GReportPicker extends GWindow
 
 		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("cancel", () => reject(new CancelError()));
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}

@@ -62,6 +62,7 @@ dialog > section {
 
 import Return from './@return.js';
 import GWindow from './g-window.js';
+import CancelError from "./cancel-error.js";
 
 export default class GFetchPicker extends GWindow
 {
@@ -111,7 +112,7 @@ export default class GFetchPicker extends GWindow
 				.then(e => picker.innerHTML = e);
 
 			picker.addEventListener("commit", e => resolve(e.detail));
-			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("cancel", () => reject(new CancelError()));
 		});
 	}
 };

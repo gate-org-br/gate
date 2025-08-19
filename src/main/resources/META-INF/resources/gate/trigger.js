@@ -8,6 +8,8 @@ import EventHandler from './event-handler.js';
 import TriggerExtractor from './trigger-extractor.js';
 import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
 
+const CONTROLLERS = new WeakMap();
+
 export default function trigger(cause, element, context, action)
 {
 	if (element.hasAttribute("data-loading"))
@@ -48,7 +50,12 @@ export default function trigger(cause, element, context, action)
 		action = resolve(element, context || {}, action);
 		if (action === null)
 			return;
-		let event = TriggerEvent.of(cause, method, action, form, target, context);
+
+		CONTROLLERS.get(element)?.abort();
+		CONTROLLERS.set(element, new AbortController());
+
+		let event = TriggerEvent.of(cause, method, action, form, target, context,
+			CONTROLLERS.get(element).signal);
 		element.dispatchEvent(new TriggerStartupEvent(event));
 		element.dispatchEvent(event);
 	}
@@ -86,7 +93,7 @@ window.addEventListener("click", function (event)
 
 			if (target.startsWith("@") || method !== "get")
 			{
-				trigger(event, element);
+				trigger(event, element, element);
 				return EventHandler.cancel(event);
 			}
 
@@ -118,7 +125,7 @@ window.addEventListener("click", function (event)
 
 			if (target.startsWith("@") || (method !== "get" && method !== "post"))
 			{
-				trigger(event, element);
+				trigger(event, element, element);
 				return EventHandler.cancel(event);
 			}
 
@@ -140,14 +147,15 @@ window.addEventListener("click", function (event)
 
 		}
 
-		if ((element.hasAttribute("data-trigger")
+		if (element.hasAttribute("data-trigger")
 			|| element.hasAttribute("data-method")
 			|| element.hasAttribute("data-action")
 			|| element.hasAttribute("data-target"))
-			&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
 		{
-			if (validate(element))
-				trigger(event, element, event);
+			if ((element.getAttribute("data-trigger")
+				|| DEFAULT.get(element.tagName)) === "click")
+				if (validate(element))
+					trigger(event, element, element);
 			return EventHandler.cancel(event);
 		}
 	}
@@ -217,15 +225,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-	{
-		Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-					|| e.hasAttribute("data-method")
-					|| e.hasAttribute("data-action")
-					|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-	});
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+});
 
 window.addEventListener("load", function (event)
 {

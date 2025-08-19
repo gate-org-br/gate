@@ -7,7 +7,7 @@ window.addEventListener("@dialog", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters, signal} = event.detail;
 
 	let dialog = window.top.document.createElement("g-dialog");
 	dialog.caption = trigger.getAttribute("title");
@@ -35,7 +35,7 @@ window.addEventListener("@dialog", function (event)
 	if (type === "fetch")
 	{
 		dialog.setAttribute("data-loading", "");
-		fetch(RequestBuilder.build(method, action, form))
+		fetch(RequestBuilder.build(method, action, form), {signal})
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
@@ -54,7 +54,7 @@ window.addEventListener("@dialog", function (event)
 	} else
 	{
 		dialog.setAttribute("data-loading", "");
-		fetch(RequestBuilder.build(method, action, form))
+		fetch(RequestBuilder.build(method, action, form), {signal})
 			.then(ResponseHandler.text)
 			.then(result =>
 			{

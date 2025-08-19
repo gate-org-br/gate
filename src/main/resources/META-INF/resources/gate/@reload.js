@@ -8,9 +8,9 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@reload", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters, signal} = event.detail;
 
-	fetch(RequestBuilder.build(method, action, form))
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result =>
 		{

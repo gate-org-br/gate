@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -25,7 +24,7 @@ public class FileProcessor extends PropertyProcessor
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element,
 		IElementTagStructureHandler handler,
-		Screen screen, Property property, Attributes attributes)
+		Object screen, Property property, Attributes attributes)
 	{
 		attributes.put("type", "file");
 		handler.replaceWith("<input " + attributes + "/>", true);

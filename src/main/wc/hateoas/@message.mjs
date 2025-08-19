@@ -8,13 +8,13 @@ window.addEventListener("@message", function (event)
 {
 	event.preventDefault();
 	event.stopPropagation();
-	let {method, action, form, parameters} = event.detail;
+	let {method, action, form, parameters, signal} = event.detail;
 
 	let type = parameters.filter(e => ["success", "warning", "error", "info"].includes(e))[0] || "success";
 	let duration = parameters.filter(e => /^\d+$/.test(e)).map(parseInt)[0];
 
 	let path = event.composedPath();
-	return fetch(RequestBuilder.build(method, action, form))
+	return fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.text)
 		.then(text =>
 		{

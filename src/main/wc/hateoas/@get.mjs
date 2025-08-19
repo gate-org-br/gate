@@ -10,7 +10,7 @@ window.addEventListener("@get", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {parameters} = event.detail;
+	let {parameters, signal} = event.detail;
 
 	let url = parameters[0]
 		|| trigger.getAttribute("href")
@@ -20,7 +20,7 @@ window.addEventListener("@get", function (event)
 
 	url = resolve(trigger, event.detail.context, url);
 
-	return fetch(RequestBuilder.build("get", url))
+	return fetch(RequestBuilder.build("get", url), {signal})
 		.then(ResponseHandler.dataURL)
 		.then(result => event.success(path, result))
 		.catch(error => event.failure(path, error));

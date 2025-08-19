@@ -67,6 +67,7 @@ iframe[name] {
 
 import Return from './@return.js';
 import GWindow from './g-window.js';
+import CancelError from "./cancel-error.js";
 
 export default class GFramePicker extends GWindow
 {
@@ -123,7 +124,7 @@ export default class GFramePicker extends GWindow
 		return new Promise((resolve, reject) =>
 		{
 			picker.addEventListener("commit", e => resolve(e.detail));
-			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("cancel", () => reject(new CancelError()));
 		});
 	}
 };

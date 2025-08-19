@@ -6,14 +6,14 @@ import ResponseHandler from './response-handler.js';
 window.addEventListener("@stack", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form} = event.detail;
+	let {method, action, form, signal} = event.detail;
 	let stack = window.top.document.createElement("g-stack-frame");
 
 	let promise = stack.show();
 	if (event.detail.parameters[0] || "fetch" === "fetch")
 	{
 		stack.setAttribute("data-loading", "");
-		fetch(RequestBuilder.build(method, action, form))
+		fetch(RequestBuilder.build(method, action, form), {signal})
 			.then(ResponseHandler.text)
 			.then(result =>
 			{
@@ -32,7 +32,7 @@ window.addEventListener("@stack", function (event)
 	} else
 	{
 		stack.setAttribute("data-loading", "");
-		fetch(RequestBuilder.build(method, action, form))
+		fetch(RequestBuilder.build(method, action, form, {signal}))
 			.then(ResponseHandler.text)
 			.then(result =>
 			{

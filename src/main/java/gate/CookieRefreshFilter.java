@@ -1,6 +1,5 @@
 package gate;
 
-import gate.error.UnauthorizedException;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
@@ -14,6 +13,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Locale;
 
 @WebFilter(value = "/*", asyncSupported = true)
 public class CookieRefreshFilter implements Filter
@@ -26,6 +26,10 @@ public class CookieRefreshFilter implements Filter
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 		throws IOException, ServletException
 	{
+		servletRequest.setCharacterEncoding("UTF-8");
+		servletResponse.setCharacterEncoding("UTF-8");
+		servletResponse.setLocale(Locale.getDefault());
+
 		if (servletRequest instanceof HttpServletRequest httpServletRequest
 			&& servletResponse instanceof HttpServletResponse httpServletResponse)
 		{

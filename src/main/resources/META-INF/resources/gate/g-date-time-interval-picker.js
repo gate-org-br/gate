@@ -43,6 +43,7 @@ dialog > footer > button {
 import './g-icon.js';
 import GWindow from './g-window.js';
 import './g-date-time-interval-selector.js';
+import CancelError from "./cancel-error.js";
 
 export default class GDateTimeIntervalPicker extends GWindow
 {
@@ -74,7 +75,7 @@ export default class GDateTimeIntervalPicker extends GWindow
 
 		return new Promise((resolve, reject) =>
 		{
-			picker.addEventListener("cancel", () => reject(new Error("Cancel")));
+			picker.addEventListener("cancel", () => reject(new CancelError()));
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}

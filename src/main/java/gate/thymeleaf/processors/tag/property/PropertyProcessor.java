@@ -1,12 +1,12 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.base.Screen;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import jakarta.inject.Inject;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
@@ -36,7 +36,10 @@ public abstract class PropertyProcessor extends TagProcessor
 		var expression = expressionFactory.create();
 
 		var exchange = ((IWebContext) context).getExchange();
-		Screen screen = (Screen) exchange.getAttributeValue("screen");
+
+		Object screen = Optional.ofNullable(element.getAttributeValue("context"))
+			.map(expression::evaluate)
+			.orElseGet(() -> exchange.getAttributeValue("screen"));
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
@@ -99,6 +102,6 @@ public abstract class PropertyProcessor extends TagProcessor
 	}
 
 	protected abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property, Attributes attributes);
+		IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
 
 }

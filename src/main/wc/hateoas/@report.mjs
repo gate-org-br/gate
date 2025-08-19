@@ -6,12 +6,12 @@ window.addEventListener("@report", function (event)
 {
 	let path = event.composedPath();
 	let trigger = path[0] || event.target;
-	let {method, action, form} = event.detail;
+	let {method, action, form, signal} = event.detail;
 
 	GReportPicker.pick(trigger.title)
 		.then(type =>
 		{
-			fetch(RequestBuilder.build(method, `${action}${action.indexOf("?") !== -1 ? "&" : "?"}type=${type}`, form))
+			fetch(RequestBuilder.build(method, `${action}${action.indexOf("?") !== -1 ? "&" : "?"}type=${type}`, form), {signal})
 				.then(ResponseHandler.dataURL)
 				.then(response => event.success(path, response))
 				.catch(error => event.failure(path, error));

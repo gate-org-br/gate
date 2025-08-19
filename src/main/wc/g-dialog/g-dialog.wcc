@@ -112,6 +112,11 @@ export default class GDialog extends GWindow
 		else if (name === "style")
 			this.shadowRoot.querySelector("dialog").style = val;
 	}
+
+	connectedCallback()
+	{
+		this.classList.add("content");
+	}
 };
 
 customElements.define('g-dialog', GDialog);

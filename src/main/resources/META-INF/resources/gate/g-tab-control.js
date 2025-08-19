@@ -278,6 +278,7 @@ customElements.define('g-tab-control', class extends HTMLElement
 
 		var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
 		pages.forEach(e => e.setAttribute("slot", "body"));
+		pages.forEach(e => e.classList.add("content"));
 
 		links.forEach(link =>
 		{

@@ -9,7 +9,7 @@ const CACHE = new Map();
 window.addEventListener("@cache", function (event)
 {
 	let path = event.composedPath();
-	let {method, action} = event.detail;
+	let {method, action, signal} = event.detail;
 
 	if (method !== "get")
 		throw new Error(`Attempt to cache ${method} request`);
@@ -17,7 +17,7 @@ window.addEventListener("@cache", function (event)
 	if (CACHE.has(action))
 		event.success(path, CACHE.get(action));
 	else
-		fetch(RequestBuilder.build(method, action))
+		fetch(RequestBuilder.build(method, action), {signal})
 			.then(ResponseHandler.dataURL)
 			.then(result => CACHE.set(action, result))
 			.then(() => event.success(path, CACHE.get(action)))

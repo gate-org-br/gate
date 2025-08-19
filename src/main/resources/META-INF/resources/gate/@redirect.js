@@ -10,9 +10,9 @@ import {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './t
 window.addEventListener("@redirect", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form} = event.detail;
+	let {method, action, form, signal} = event.detail;
 
-	return fetch(RequestBuilder.build(method, action, form))
+	return fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.text)
 		.then(result => window.location = result)
 		.then(() => event.success(path))
