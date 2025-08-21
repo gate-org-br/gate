@@ -1,13 +1,10 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
@@ -15,16 +12,12 @@ import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateInputException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SelectAttributeProcessor extends FormControlAttributeProcessor
 {
-
-	@Inject
-	ELExpressionFactory expression;
 
 	public SelectAttributeProcessor()
 	{
@@ -33,12 +26,12 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property, Object value)
+		IElementTagStructureHandler handler, Object screen, Property property, Object value)
 	{
 		Object options = null;
 		if (element.hasAttribute("g:options"))
 		{
-			options = expression.create().evaluate(element.getAttributeValue("g:options"));
+			options = expression.evaluate(element.getAttributeValue("g:options"));
 			handler.removeAttribute("g:options");
 		} else if (Boolean.class.isAssignableFrom(property.getRawType()))
 			options = List.of(Boolean.FALSE, Boolean.TRUE);
@@ -47,9 +40,9 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
 		else
-			throw new TemplateInputException("No option defined for property " + property.toString());
+			options = List.of();
 
-		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression.create()::comparator).orElse(null);
+		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression::comparator).orElse(null);
 		if (comparator != null)
 			options = Toolkit
 				.collection(options)
@@ -57,20 +50,24 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 				.sorted(comparator)
 				.collect(Collectors.toList());
 
-		var labels = extract(element, handler, "g:labels").map(expression.create()::function).orElse(Function.identity());
-		var values = extract(element, handler, "g:values").map(expression.create()::function).orElse(Function.identity());
-		var children = extract(element, handler, "g:children").map(e -> (String) e).map(expression.create()::function).orElse(null);
+		var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
+		var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
+		var children = extract(element, handler, "g:children").map(e -> (String) e).map(expression::function).orElse(null);
 
-		StringJoiner body = new StringJoiner(System.lineSeparator());
+		if (value != null)
+			handler.setAttribute("data-value",
+				Converter.toString(value));
 
-		if (element.hasAttribute("g:empty"))
-		{
-			Object empty = expression.create().evaluate(element.getAttributeValue("g:empty"));
-			body.add("<option value=''>" + empty + "</option>");
-		} else
-			body.add("<option></option>");
+		StringJoiner body = new StringJoiner("\n");
 
-		Function<Object, Object> groups = extract(element, handler, "g:groups").map(expression.create()::function).orElse(null);
+		body.add(extract(element, handler, "g:empty")
+			.map(expression::evaluate)
+			.map(Converter::toText)
+			.orElse("<option></option>"));
+
+		Function<Object, Object> groups
+			= extract(element, handler, "g:groups")
+				.map(expression::function).orElse(null);
 		if (groups != null)
 		{
 			Toolkit.stream(options)

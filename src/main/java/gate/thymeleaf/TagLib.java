@@ -59,10 +59,10 @@ public class TagLib
 
 		if (temporal instanceof LocalDateTime)
 			return ((LocalDateTime) temporal)
-					.atZone(ZoneId.of("UTC")).toEpochSecond();
+				.atZone(ZoneId.of("UTC")).toEpochSecond();
 		if (temporal instanceof LocalDate)
 			return ((LocalDate) temporal).atStartOfDay()
-					.atZone(ZoneId.of("UTC")).toEpochSecond();
+				.atZone(ZoneId.of("UTC")).toEpochSecond();
 		return 0;
 	}
 
@@ -90,15 +90,19 @@ public class TagLib
 		return Converter.toText(object, format);
 	}
 
-	public static List<?> enumerate(String type)
+	public static Class<?> type(String type)
 	{
 		try
 		{
-			return List.of(Thread.currentThread().getContextClassLoader()
-					.loadClass(type).getEnumConstants());
+			return Thread.currentThread().getContextClassLoader().loadClass(type);
 		} catch (ClassNotFoundException ex)
 		{
 			throw new IllegalArgumentException("Invalid enum class name: " + type);
 		}
+	}
+
+	public static List<?> enumerate(String type)
+	{
+		return List.of(TagLib.type(type).getEnumConstants());
 	}
 }

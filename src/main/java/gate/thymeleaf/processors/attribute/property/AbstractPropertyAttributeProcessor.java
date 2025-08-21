@@ -1,12 +1,12 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.base.Screen;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
@@ -14,7 +14,7 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 {
 
 	@Inject
-	ELExpressionFactory expressionFactory;
+	ELExpression expression;
 
 	public AbstractPropertyAttributeProcessor(String element)
 	{
@@ -27,16 +27,21 @@ public abstract class AbstractPropertyAttributeProcessor extends AttributeProces
 		IElementTagStructureHandler handler)
 	{
 		var exchange = ((IWebContext) context).getExchange();
-		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
-		var name = element.getAttributeValue("g:property");
-		name = (String) expressionFactory.create().evaluate(name);
-		Property property = Property.getProperty(screen.getClass(), name);
+		Object screen = extract(element, handler, "g:context")
+			.map(expression::evaluate)
+			.orElseGet(() -> exchange.getAttributeValue("screen"));
 
-		handler.removeAttribute("g:property");
+		Property property = extract(element, handler, "g:property")
+			.map(expression::evaluate)
+			.filter(e -> e instanceof String)
+			.map(e -> (String) e)
+			.map(e -> Property.getProperty(screen.getClass(), e))
+			.orElseThrow(() -> new TemplateProcessingException("Missing or invalid g:property"));
+
 		process(context, element, handler, screen, property);
 	}
 
 	public abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property);
+		IElementTagStructureHandler handler, Object screen, Property property);
 }

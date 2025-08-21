@@ -1,9 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
 import gate.util.Toolkit;
@@ -22,9 +20,6 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 	@Inject
 	Sequence sequence;
 
-	@Inject
-	ELExpressionFactory expression;
-
 	public InputAttributeProcessor()
 	{
 		super("input");
@@ -32,7 +27,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property, Object value)
+		IElementTagStructureHandler handler, Object screen, Property property, Object value)
 	{
 		var type = "text";
 		if (element.hasAttribute("type"))
@@ -55,7 +50,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 					handler.setAttribute("data-mask", mask);
 			}
 
-			var options = extract(element, handler, "g:options").map(expression.create()::evaluate).orElse(null);
+			var options = extract(element, handler, "g:options").map(expression::evaluate).orElse(null);
 			if (options != null)
 			{
 				Attributes parameters = new Attributes();
@@ -67,8 +62,8 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 
 				model.add(context.getModelFactory().createText("<datalist " + parameters + ">"));
 
-				var labels = extract(element, handler, "g:labels").map(expression.create()::function).orElse(Function.identity());
-				var values = extract(element, handler, "g:values").map(expression.create()::function).orElse(Function.identity());
+				var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
+				var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
 
 				for (Object option : Toolkit.iterable(options))
 				{

@@ -19,6 +19,8 @@ window.addEventListener("@populate", function (event)
 		.then(result =>
 		{
 			new Populator(result).populate(element, value, label);
+			if (element.hasAttribute("data-value"))
+				element.value = element.getAttribute("data-value");
 			event.success(path, DataURL.ofJSON(result));
 		})
 		.catch(error => event.failure(path, error));

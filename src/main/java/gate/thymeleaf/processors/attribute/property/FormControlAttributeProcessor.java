@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.base.Screen;
 import gate.lang.property.Property;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -16,11 +15,9 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property)
+		IElementTagStructureHandler handler, Object screen, Property property)
 	{
 		handler.setAttribute("name", property.toString());
-
-		var expression = expressionFactory.create();
 
 		property.getConstraints().stream()
 			.filter(e -> !element.hasAttribute(e.getName()))
@@ -71,5 +68,5 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 	}
 
 	public abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property, Object value);
+		IElementTagStructureHandler handler, Object screen, Property property, Object value);
 }

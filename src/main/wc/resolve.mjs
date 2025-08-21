@@ -2,7 +2,7 @@ import DOM from './dom.js';
 import property from './property.js';
 
 const REQUIRED = new Error("__REQUIRED__");
-const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\((?:(?:\"([^\"]*)\")|(?:'([^']*)')|(?:`([^`]*)`)|([^)]*))\)/g;
+const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`|([^)"'`?]*))(?:\?\?([^)]*))?\s*\)/g;
 
 function value(trigger, selector)
 {
@@ -25,24 +25,34 @@ function convert(value)
 	return encodeURIComponent(String(value ?? ""));
 }
 
+function coalesce(value, fallback)
+{
+	return value !== null
+		&& value !== undefined
+		&& (typeof value !== 'string' || value.trim() !== '')
+		? value
+		: (fallback ?? "");
+}
+
 export default function resolve(trigger, context, action)
 {
-	var result = action;
+	let result = action;
 	try
 	{
-		result = result.replace(RESOLVE_REGEX, function (_, method, dq, sq, bq, bare)
+		result = result.replace(RESOLVE_REGEX, function (_, method, dq, sq, bq, uq, fb)
 		{
-			const parameter = decodeURIComponent(dq ?? sq ?? bq ?? bare ?? "");
+			const parameter = decodeURIComponent(dq ?? sq ?? bq ?? uq ?? "");
+			const fallback = decodeURIComponent(fb ?? "");
 			switch (method)
 			{
 				case '@value':
-					return convert(value(trigger, parameter));
+					return convert(coalesce(value(trigger, parameter), fallback));
 				case '@input':
-					return convert(prompt(parameter));
+					return convert(coalesce(prompt(parameter), fallback));
 				case '@prop':
-					return convert(property(context, parameter));
+					return convert(coalesce(property(context, parameter), fallback));
 				case '@attr':
-					return convert(context.getAttribute(parameter));
+					return convert(coalesce(context.getAttribute(parameter), fallback));
 				case '@VALUE':
 					return convert(require(value(trigger, parameter)));
 				case '@INPUT':

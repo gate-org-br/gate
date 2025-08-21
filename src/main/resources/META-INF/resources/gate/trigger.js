@@ -156,7 +156,7 @@ window.addEventListener("click", function (event)
 				|| DEFAULT.get(element.tagName)) === "click")
 				if (validate(element))
 					trigger(event, element, element);
-			return EventHandler.cancel(event);
+			return event.stopPropagation();
 		}
 	}
 });
@@ -225,15 +225,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-{
-	Array.from(document.querySelectorAll('*'))
-		.filter(e => e.hasAttribute("data-trigger")
-				|| e.hasAttribute("data-method")
-				|| e.hasAttribute("data-action")
-				|| e.hasAttribute("data-target"))
-		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-});
+	{
+		Array.from(document.querySelectorAll('*'))
+			.filter(e => e.hasAttribute("data-trigger")
+					|| e.hasAttribute("data-method")
+					|| e.hasAttribute("data-action")
+					|| e.hasAttribute("data-target"))
+			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+	});
 
 window.addEventListener("load", function (event)
 {

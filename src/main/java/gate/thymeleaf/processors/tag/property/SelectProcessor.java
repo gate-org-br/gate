@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.property;
 
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import gate.util.Toolkit;
 import java.util.Arrays;
@@ -14,8 +14,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateInputException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
@@ -24,7 +24,7 @@ public class SelectProcessor extends PropertyProcessor
 {
 
 	@Inject
-	ELExpressionFactory expression;
+	ELExpression expression;
 
 	public SelectProcessor()
 	{
@@ -38,7 +38,7 @@ public class SelectProcessor extends PropertyProcessor
 
 		Object options = attributes.remove("options");
 		if (options != null)
-			options = expression.create().evaluate((String) options);
+			options = expression.evaluate((String) options);
 		else if (Boolean.class.isAssignableFrom(property.getRawType()))
 			options = Arrays.asList(Boolean.FALSE, Boolean.TRUE);
 		else if (boolean.class.isAssignableFrom(property.getRawType()))
@@ -46,12 +46,12 @@ public class SelectProcessor extends PropertyProcessor
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
 		else
-			throw new TemplateInputException("No option defined for property " + property.toString());
+			options = List.of();
 
 		String sortby = (String) attributes.remove("sortby");
 		if (sortby != null)
 		{
-			var comparator = expression.create().comparator(sortby);
+			var comparator = expression.comparator(sortby);
 			options = Toolkit
 				.collection(options)
 				.stream()
@@ -59,23 +59,27 @@ public class SelectProcessor extends PropertyProcessor
 				.collect(Collectors.toList());
 		}
 
-		Object value = property.getValue(screen);
+		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
+		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
+		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
 
-		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
-		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
-		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression.create()::function).orElse(null);
+		Object value = property.getValue(screen);
+		if (value != null)
+			attributes.put("data-value", Converter.toString(value));
+
+		Object empty = Optional.ofNullable(attributes.remove("empty"))
+			.filter(e -> e instanceof String)
+			.map(e -> (String) e)
+			.map(expression::evaluate)
+			.map(Converter::toText)
+			.orElse("");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add("<select " + attributes + ">");
 
-		Object empty = attributes.remove("empty");
-		if (empty == null)
-			empty = "";
-		else
-			empty = expression.create().evaluate((String) empty);
 		string.add("<option value=''>" + empty + "</option>");
 
-		Function<Object, Object> groups = extract(element, handler, "groups").map(expression.create()::function).orElse(null);
+		Function<Object, Object> groups = extract(element, handler, "groups").map(expression::function).orElse(null);
 		if (groups != null)
 		{
 			Toolkit.stream(options)

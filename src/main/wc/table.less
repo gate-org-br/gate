@@ -97,9 +97,14 @@ table {
 		background-color: var(--base3);
 	}
 
-	> thead > tr > * {
-		font-weight: bold;
+	> thead > tr
+	{
 		color: var(--base1);
+	}
+
+	> thead > tr > * {
+		color: inherit;
+		font-weight: bold;
 		border-color: var(--base5);
 		background-color: var(--base6);
 	}
@@ -179,10 +184,15 @@ table {
 		}
 	}
 
+	> tfoot > tr
+	{
+		color: var(--base1);
+	}
+
 	> tfoot > tr > *
 	{
+		color: inherit;
 		font-weight: bold;
-		color: var(--base1);
 		border-color: var(--base5);
 		background-color: var(--base6);
 	}

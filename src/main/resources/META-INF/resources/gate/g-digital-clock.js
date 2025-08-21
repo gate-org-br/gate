@@ -17,11 +17,12 @@ label {
 	font-family: inherit;
 }</style>`;
 /* global customElements */
-import Duration from './duration.js';
 
-export default class GDigitalClock extends HTMLElement
+import Duration from './duration.js';
+import WindowListenerHTMLElement from './window-listener-html-element.js';
+
+export default class GDigitalClock extends WindowListenerHTMLElement
 {
-	#ctrl;
 	#collector = null;
 	#timestamp = null;
 
@@ -30,6 +31,8 @@ export default class GDigitalClock extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
+
+		this.addWindowListener("ClockTick", () => this.#render());
 	}
 
 	static get observedAttributes()
@@ -55,11 +58,6 @@ export default class GDigitalClock extends HTMLElement
 		} else if (attr === "value")
 			this.value = val;
 		this.#render();
-	}
-
-	get signal()
-	{
-		return this.#ctrl?.signal;
 	}
 
 	get format()
@@ -118,22 +116,12 @@ export default class GDigitalClock extends HTMLElement
 
 	connectedCallback()
 	{
-		this.#ctrl = new AbortController();
-		const signal = this.#ctrl.signal;
-
+		super.connectedCallback();
 		if (!this.paused
 			&& this.#collector !== null
 			&& this.#timestamp === null)
 			this.#timestamp = Date.now();
-
 		this.#render();
-		window.addEventListener("ClockTick", () => this.#render(), {signal});
-	}
-
-	disconnectedCallback()
-	{
-		this.#ctrl.abort();
-		this.#ctrl = null;
 	}
 }
 

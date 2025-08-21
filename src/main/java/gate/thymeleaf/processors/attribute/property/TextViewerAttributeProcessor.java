@@ -1,6 +1,5 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.base.Screen;
 import gate.converter.Converter;
 import gate.lang.property.Property;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,7 +18,7 @@ public class TextViewerAttributeProcessor extends FormControlAttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Screen screen, Property property, Object value)
+		IElementTagStructureHandler handler, Object screen, Property property, Object value)
 	{
 		handler.setAttribute("value", Converter.toString(value)
 			.replace('"', '\''));

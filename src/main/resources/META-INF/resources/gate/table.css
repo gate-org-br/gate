@@ -87,9 +87,12 @@ table > caption {
   border-radius: 3px 3px 0 0;
   background-color: var(--base3);
 }
-table > thead > tr > * {
-  font-weight: bold;
+table > thead > tr {
   color: var(--base1);
+}
+table > thead > tr > * {
+  color: inherit;
+  font-weight: bold;
   border-color: var(--base5);
   background-color: var(--base6);
 }
@@ -152,9 +155,12 @@ table > tbody > tr > td:not([tabindex])[data-target]:hover,
 table > tbody > tr > td:not([tabindex])[data-method]:hover {
   background-color: var(--hovered);
 }
-table > tfoot > tr > * {
-  font-weight: bold;
+table > tfoot > tr {
   color: var(--base1);
+}
+table > tfoot > tr > * {
+  color: inherit;
+  font-weight: bold;
   border-color: var(--base5);
   background-color: var(--base6);
 }

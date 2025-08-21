@@ -37,6 +37,11 @@ export default class GFilePicker
 		let dataURL = DataURL.parse(url);
 		filename = filename || dataURL.parameters.name
 			|| dataURL.contentType.replace("/", ".");
+		filename = String(filename)
+			.trim()
+			.replace(/^(['"])(.*)\1$/, "$2")
+			.replace(/[<>:"/\\|?*\u0000-\u001F]/g, "_")
+			.replace(/^[\s.]+|[\s.]+$/g, "");
 		let anchor = document.createElement("a");
 		anchor.href = url;
 		anchor.download = filename;

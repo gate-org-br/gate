@@ -344,7 +344,7 @@ public class PDF extends Doc
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(value, getFont(style)));
 		cell.setMinimumHeight(20);
 		cell.setBorderColor(Color.GRAY);
-		cell.setBackgroundColor(Color.GRAY);
+		cell.setBackgroundColor(Color.GRAY.brighter());
 		cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 		cell.setHorizontalAlignment(getAlignment(style));
 
