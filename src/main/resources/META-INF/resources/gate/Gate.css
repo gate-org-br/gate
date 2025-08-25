@@ -20,6 +20,10 @@
 
 @import './details.css';
 
+[hidden] {
+	display: none !important;
+}
+
 * {
 	box-sizing: border-box;
 }
@@ -41,7 +45,7 @@ form {
 
 * {
 	box-sizing: border-box;
-	font-family: Arial, Tahoma, Geneva, sans-serif;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 p  {

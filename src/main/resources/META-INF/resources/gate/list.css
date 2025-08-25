@@ -25,6 +25,12 @@ li[data-icon]:before {
 	content: attr(data-icon);
 }
 
+li[data-action]:hover
+{
+	cursor: pointer;
+	background-color: var(--hovered)
+}
+
 dl {
 	display: inline-grid;
 	grid-template-columns: auto auto;

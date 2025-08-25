@@ -92,6 +92,8 @@ import './g-side-menu.js';
 
 import './event-source.js';
 
+import './master-select.js';
+
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {
 	element.addEventListener("change", function ()

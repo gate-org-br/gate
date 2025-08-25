@@ -28,7 +28,6 @@ public class RedirectCommandHandler implements Handler
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 		Progress progress, Object value) throws AppError
 	{
-		progress.result("text/plain",
-			null, value.toString());
+		progress.redirect(value.toString());
 	}
 }

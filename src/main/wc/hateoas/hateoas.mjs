@@ -50,4 +50,5 @@ import './@notification.js';
 import './@log.js';
 import './@sanitize.js';
 import './@content.js';
+import './@exec-scripts.js';
 import './_default.js';

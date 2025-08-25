@@ -10,6 +10,7 @@ window.addEventListener("@stack", function (event)
 	let stack = window.top.document.createElement("g-stack-frame");
 
 	let promise = stack.show();
+	stack.classList.add("content");
 	if (event.detail.parameters[0] || "fetch" === "fetch")
 	{
 		stack.setAttribute("data-loading", "");

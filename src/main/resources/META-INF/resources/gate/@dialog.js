@@ -32,6 +32,7 @@ window.addEventListener("@dialog", function (event)
 	}
 
 	let promise = dialog.show();
+	dialog.classList.add("content");
 	if (type === "fetch")
 	{
 		dialog.setAttribute("data-loading", "");

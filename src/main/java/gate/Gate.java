@@ -15,6 +15,7 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
+import gate.type.RequestCommand;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -98,8 +99,10 @@ public class Gate extends HttpServlet
 			request.setAttribute("MODULE", command.module());
 			request.setAttribute("SCREEN", command.screen());
 			request.setAttribute("ACTION", command.action());
+			request.setAttribute("METHOD", request.getMethod());
 
-			if (command.isEmpty() && (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
+			if (command.equals(RequestCommand.DEFAULT)
+				&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
 			{
 				if (user.getId() != null)
 				{
@@ -122,7 +125,8 @@ public class Gate extends HttpServlet
 				return;
 			}
 
-			Call call = command.isEmpty() ? mainAction : Call.of(command);
+			Call call = command.equals(RequestCommand.DEFAULT)
+				? mainAction : Call.of(command);
 
 			if (!call.checkMethod(request.getMethod()))
 				throw new BadRequestException();

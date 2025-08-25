@@ -60,17 +60,10 @@ public abstract class AnchorProcessor extends TagModelProcessor
 
 		var exchange = ((IWebContext) context).getExchange();
 
-		Call call;
-		try
-		{
-			call = Call.of(exchange,
-				(String) attributes.remove("module"),
-				(String) attributes.remove("screen"),
-				(String) attributes.remove("action"));
-		} catch (BadRequestException ex)
-		{
-			throw new AppError(ex);
-		}
+		Call call = Call.of(exchange,
+			(String) attributes.remove("module"),
+			(String) attributes.remove("screen"),
+			(String) attributes.remove("action"));
 
 		if (!attributes.containsKey("style"))
 			call.getColor().ifPresent(e -> attributes.put("style", "color: " + e));

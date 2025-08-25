@@ -133,7 +133,7 @@ customElements.define('g-table', class extends HTMLTableElement
 		rows = rows.filter(e => !e.hasAttribute("hidden"));
 		this.setAttribute("data-table-size", rows.length);
 		this.querySelectorAll("[data-table-size]")
-			.forEach(e => e.innerText = rows.length);
+			.forEach(e => e.textContent = rows.length);
 
 		this.#observer.observe(this, {childList: true, subtree: true,
 			attributes: true});
@@ -151,13 +151,13 @@ function sort(element, index, order)
 	children.sort(function (e1, e2)
 	{
 		e1 = e1.children[index];
-		let s1 = e1.innerHTML.trim();
+		let s1 = e1.textContent.trim();
 		if (e1.hasAttribute("data-value"))
 			s1 = e1.getAttribute("data-value").trim() ?
 				Number(e1.getAttribute("data-value")) : null;
 
 		e2 = e2.children[index];
-		let s2 = e2.innerHTML.trim();
+		let s2 = e2.textContent.trim();
 		if (e2.hasAttribute("data-value"))
 			s2 = e2.getAttribute("data-value").trim() ?
 				Number(e2.getAttribute("data-value")) : null;
@@ -179,7 +179,7 @@ function filter(elements, value, ...columns)
 	value = value ? value.toUpperCase().trim() : "";
 	elements.forEach(element =>
 	{
-		if (value && element.innerHTML.toUpperCase().indexOf(value) === -1)
+		if (value && element.textContent.toUpperCase().indexOf(value) === -1)
 			return element.setAttribute("hidden", "hidden");
 
 		for (let i = 0; i < columns.length; i++)
@@ -192,7 +192,7 @@ function filter(elements, value, ...columns)
 					if (element.children[i].getAttribute("data-filter:value").trim().toUpperCase() !== column)
 						return element.setAttribute("hidden", "hidden");
 
-				} else if (element.children[i].innerHTML.trim().toUpperCase().indexOf(column) === -1)
+				} else if (element.children[i].textContent.trim().toUpperCase().indexOf(column) === -1)
 					return element.setAttribute("hidden", "hidden");
 			}
 		}

@@ -62,7 +62,8 @@ public class LinkProcessor extends AnchorProcessor
 		attributes.put("formaction", URL.toString(call.command(),
 			parameters.toString()));
 
-		attributes.put("form", element.getAttributeValue("form"));
+		if (element.hasAttribute("form"))
+			attributes.put("form", element.getAttributeValue("form"));
 		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
 		if (element instanceof IStandaloneElementTag)

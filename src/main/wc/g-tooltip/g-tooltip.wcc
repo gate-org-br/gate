@@ -82,6 +82,10 @@ export default class GTooltip extends HTMLElement
 	{
 		let tooltip = new GTooltip();
 		document.body.appendChild(tooltip);
+
+		if (typeof content === "object")
+			content = Formatter.JSONtoHTML(content);
+
 		tooltip.innerHTML = content;
 		tooltip.show(element, position || DEFAULT_POSITION);
 	}
@@ -136,9 +140,7 @@ function trigger()
 			return GTooltip.show(this, this.getAttribute("data-tooltip"));
 		if (this.hasAttribute("data-tooltip:source"))
 			return fetch(this.getAttribute("data-tooltip:source"))
-				.then(ResponseHandler.dataURL)
-				.then(response => DataURL.parse(response))
-				.then(dataURL => dataURL.contentType === "application/json" ? Formatter.JSONtoHTML(JSON.parse(dataURL.data)) : dataURL.data)
+				.then(ResponseHandler.auto)
 				.then(content => GTooltip.show(this, content))
 				.catch(error => console.error('Error trying to fetch tooltip data:', error));
 	}, 500);

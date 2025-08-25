@@ -225,7 +225,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String MODULE = getParameter("MODULE");
 		String SCREEN = getParameter("SCREEN");
 		String ACTION = getParameter("ACTION");
-		if (Toolkit.isEmpty(MODULE, SCREEN, ACTION) && getPathInfo() != null)
+		if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
+			&& getPathInfo() != null)
 		{
 			List<String> path = Toolkit.parsePath(getPathInfo());
 			MODULE = !path.isEmpty() ? path.get(0) : null;

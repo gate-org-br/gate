@@ -20,27 +20,10 @@ window.addEventListener("@property", function (event)
 		.orElseThrow(`${selector} is not a valid selector`);
 
 	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(response =>
+		.then(ResponseHandler.json)
+		.then(result =>
 		{
-			if (!response)
-				return Promise.resolve();
-			if (response.ok)
-			{
-				let contentType = response.headers.get('content-type');
-				if (contentType.startsWith("text/"))
-					response = response.text();
-				else if (contentType.startsWith("application/json"))
-					response = response.json();
-				else
-					response = response.blob();
-
-				return response.then(result =>
-				{
-					target[property] = result;
-					event.success(path, new DataURL(contentType, result).toString());
-				});
-			}
-
-			return response.text().then(error => Promise.reject(new Error(error)));
+			target[property] = result;
+			event.success(path, DataURL.ofJSON(result));
 		}).catch(error => event.failure(path, error));
 });

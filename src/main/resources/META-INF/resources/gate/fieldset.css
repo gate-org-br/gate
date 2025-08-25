@@ -3,6 +3,7 @@ fieldset {
   margin: 0;
   padding: 12px;
   display: grid;
+  align-items: start;
   border-radius: 3px;
   border: 1px solid var(--main4);
   grid-template-columns: repeat(16, 1fr);

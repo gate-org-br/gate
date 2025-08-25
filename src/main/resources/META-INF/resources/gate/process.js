@@ -1,4 +1,5 @@
 import SSE from './sse.js';
+import RequestBuilder from './request-builder.js';
 
 function parseEvent(string)
 {
@@ -24,7 +25,7 @@ export default function process(id, name, method, action, payload)
 	return new Promise((resolve, reject) =>
 	{
 		window.top.dispatchEvent(new CustomEvent('ProcessRequest',
-				{detail: {id, name}}));
+			{detail: {id, name}}));
 
 		method = (method || "GET").toUpperCase();
 
@@ -41,19 +42,19 @@ export default function process(id, name, method, action, payload)
 			{
 				case "CREATED":
 					window.top.dispatchEvent(new CustomEvent('ProcessPending',
-							{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+						{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
 					break;
 				case "PENDING":
 					window.top.dispatchEvent(new CustomEvent('ProcessPending',
-							{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+						{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
 					break;
 				case "COMMITED":
 					window.top.dispatchEvent(new CustomEvent('ProcessCommited',
-							{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+						{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
 					break;
 				case "CANCELED":
 					window.top.dispatchEvent(new CustomEvent('ProcessCanceled',
-							{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
+						{detail: {id, name, todo: event.todo, done: event.done, text: event.text, progress: event.toString()}}));
 					break;
 			}
 		});
@@ -70,7 +71,7 @@ export default function process(id, name, method, action, payload)
 			headers.append("Content-Type", contentType);
 			if (filename)
 				headers.append("Content-Disposition",
-						`attachment; filename="${filename}"`);
+					`attachment; filename="${filename}"`);
 
 			resolve(new Response(data, {status: 200, statusText: 'OK', headers}));
 		});
@@ -81,21 +82,49 @@ export default function process(id, name, method, action, payload)
 		source.addEventListener("error", e =>
 		{
 			window.top.dispatchEvent(new CustomEvent('ProcessError',
-					{detail: {id, name, text: "Conexão perdida com o servidor"}}));
+				{detail: {id, name, text: "Conexão perdida com o servidor"}}));
 			reject(e.text);
 		});
 
 		source.addEventListener("abort", e =>
 		{
 			window.top.dispatchEvent(new CustomEvent('ProcessError',
-					{detail: {id, name, text: "Conexão perdida com o servidor"}}));
+				{detail: {id, name, text: "Conexão perdida com o servidor"}}));
 			reject("Connection closed");
 		});
 
 		source.addEventListener("readystatechange", e =>
 		{
-			if (e.readyState === 2)
+			if (e.readyState === 4)
 				resolve(null);
+		});
+
+		source.addEventListener("Redirect", (event) =>
+		{
+			event = parseEvent(event.data);
+
+			fetch(RequestBuilder.build("get", event.url))
+				.then(response =>
+				{
+					if (!response.ok)
+						throw new Error("Erro ao tentar obter dados do servidor");
+
+					const headers = response.headers;
+					const contentType = headers.get('Content-Type')
+						|| 'application/octet-stream';
+
+					response.text().then(data =>
+					{
+						window.top.dispatchEvent(new CustomEvent('ProccessResult',
+							{id, name, contentType, data}));
+						resolve(new Response(data, {status: 200, statusText: 'OK', headers}));
+					});
+				}).catch(error =>
+			{
+				window.top.dispatchEvent(new CustomEvent('ProcessError',
+					{detail: {id, name, text: error.message}}));
+				reject(error.message);
+			});
 		});
 
 		source.stream();
