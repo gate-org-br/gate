@@ -1,15 +1,14 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<slot name="L"></slot>
-	<div>
-		<button id='L' title='Mostrar painel da direta'>
-		</button>
-		<button id='E' title='Mostrar ambos os paineis'>
-		</button>
-		<button id='R' title='Mostrar painel da esquerda'>
-		</button>
+	<div id='panel1'>
+		<slot name="L"></slot>
 	</div>
-	<slot name="R"></slot>
+	<button id='handle' 
+		title='Mostrar ambos os paineis'>
+	</button>
+	<div id='panel2'>
+		<slot name="R"></slot>
+	</div>
  <style data-element="g-splitter">* {
 	box-sizing: border-box
 }
@@ -17,55 +16,32 @@ template.innerHTML = `
 :host(*) {
 	height: 100%;
 	display: flex;
+	min-height: 0;
 	align-items: stretch;
 }
 
-div
-{
-	display: flex;
-	margin-left: 4px;
-	margin-right: 4px;
-	cursor: col-resize;
-	align-items: stretch;
-	justify-content: stretch;
-	background-color: var(--main4);
+div {
+	flex: 1 1 50%;
+	min-height: 0;
+	align-self: stretch;
 }
 
-::slotted(*)
-{
-	flex-grow: 1;
-	flex-basis: 50%;
-}
-
-::slotted([hidden])
+div[hidden]
 {
 	flex-basis: 0;
 	display: none;
 }
 
 button {
-	margin: 0;
 	padding: 0;
+	width: 10px;
 	border: none;
 
+	margin: 0;
+	margin-left: 4px;
+	margin-right: 4px;
 
-}
-
-#L {
-	width: 4px;
-	cursor: w-resize;
-	background-color: var(--main4);
-}
-
-#E {
-	width: 2px;
 	cursor: col-resize;
-	background-color: var(--main2);
-}
-
-#R {
-	width: 4px;
-	cursor: e-resize;
 	background-color: var(--main4);
 }</style>`;
 /* global customElements, template */
@@ -79,24 +55,25 @@ customElements.define('g-splitter', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		const panel1 = this.firstElementChild;
-		const panel2 = this.lastElementChild;
+		const panel1 = this.shadowRoot.getElementById("panel1");
+		const panel2 = this.shadowRoot.getElementById("panel2");
+		const handle = this.shadowRoot.getElementById('handle');
 
 		let currentX;
 		let initialFlexBasis;
 		let isDragging = false;
 
-		this.shadowRoot.querySelector('div')
-			.addEventListener('mousedown', event =>
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				isDragging = true;
-				currentX = event.clientX;
-				initialFlexBasis = panel1.offsetWidth / this.offsetWidth;
-			});
+		handle.addEventListener('mousedown', event =>
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			isDragging = true;
+			currentX = event.clientX;
+			initialFlexBasis = panel1.offsetWidth / this.offsetWidth;
+		});
 
 		window.addEventListener('mouseup', () => isDragging = false);
+
 		window.addEventListener('mousemove', event =>
 		{
 			if (isDragging)
@@ -105,32 +82,35 @@ customElements.define('g-splitter', class extends HTMLElement
 				event.stopPropagation();
 				const deltaX = event.clientX - currentX;
 				const flexBasis = initialFlexBasis * this.offsetWidth + deltaX;
-				panel1.style.flexBasis = `${flexBasis}px`;
-				panel2.style.flexBasis = `${this.offsetWidth - flexBasis}px`;
+				const containerWidth = this.offsetWidth;
+				const collapseThreshold = 50;
 
-				panel1.removeAttribute("hidden");
-				panel2.removeAttribute("hidden");
+				if (flexBasis < collapseThreshold)
+				{
+					panel1.setAttribute("hidden", "");
+					panel2.style.flexBasis = "100%";
+					panel2.removeAttribute("hidden");
+				} else if ((containerWidth - flexBasis) < collapseThreshold)
+				{
+					panel2.setAttribute("hidden", "");
+					panel1.style.flexBasis = "100%";
+					panel1.removeAttribute("hidden");
+				} else
+				{
+					panel1.style.flexBasis = `${flexBasis}px`;
+					panel2.style.flexBasis = `${containerWidth - flexBasis}px`;
+					panel1.removeAttribute("hidden");
+					panel2.removeAttribute("hidden");
+				}
 			}
 		});
 
-		this.shadowRoot.getElementById("E").addEventListener("click", () =>
+		handle.addEventListener("dblclick", () =>
 		{
 			panel1.style.flexBasis = "50%";
-			panel1.removeAttribute("hidden");
 			panel2.style.flexBasis = "50%";
-			panel2.removeAttribute("hidden", "");
-		});
-
-		this.shadowRoot.getElementById("L").addEventListener("click", () =>
-		{
-			panel2.removeAttribute("hidden");
-			panel1.setAttribute("hidden", "");
-		});
-
-		this.shadowRoot.getElementById("R").addEventListener("click", () =>
-		{
 			panel1.removeAttribute("hidden");
-			panel2.setAttribute("hidden", "");
+			panel2.removeAttribute("hidden");
 		});
 	}
 

@@ -3,116 +3,142 @@ template.innerHTML = `
 	<div>
 		<slot></slot>
 	</div>
-	<span></span>
+
+	<svg id="north" viewBox="0 0 16 16">
+	<polygon points="0,0 16,0 8,16" />	
+	</svg>
+
+	<svg id="south" viewBox="0 0 16 16">
+	<polygon points="0,16 16,16 8,0" />
+	</svg>
+
+	<svg id="west" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="east" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
+
+	<svg id="northwest" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="northeast" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
+
+	<svg id="southwest" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="southeast" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
  <style data-element="g-tooltip">* {
 	box-sizing: border-box;
 }
 
 :host(*) {
-	margin: 0;
-	padding: 8px;
+	color: #eee;
+	padding: 10px;
 	display: none;
+	font-size: 16px;
 	position: fixed;
+	max-width: 50vw;
+	max-height: 50vh;
 	z-index: 1000000;
 	visibility: hidden;
-	border-radius: 3px;
-	background-color: var(--main4);
-	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
+	border-radius: 6px;
+	background-color: #111;
+	overflow: visible !important;
+	border: 1px solid rgba(255,255,255,0.08);
+	box-shadow: 0 12px 24px rgba(0,0,0,0.28);
 }
 
 div {
 	height: auto;
 	overflow: auto;
 	width: max-content;
-	max-width: calc(50vw - 16px);
-	max-height: calc(50vh - 16px);
 }
 
-span
-{
-	width: 0;
-	height: 0;
+svg {
+	fill: #111;
+	width: 16px;
+	height: 16px;
+	display: none;
 	position: absolute;
-	display: inline-block;
+	pointer-events: none;
+	filter: drop-shadow(0 4px 10px rgba(0,0,0,0.25));
 }
-
-span[data-arrow='north']
-{
+#north {
 	top: 100%;
-	left: calc(50% - 6px);
-	border-top: 12px solid var(--main4);
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
+	left: calc(50% - 8px);
 }
-
-span[data-arrow='south'] {
-	top: -12px;
-	left: calc(50% - 6px);
-	border-bottom: 12px solid var(--main4);
-	border-left: 6px solid transparent;
-	border-right: 6px solid transparent;
+#south {
+	top: -16px;
+	left: calc(50% - 8px);
 }
-
-span[data-arrow='west'] {
+#west {
 	left: 100%;
-	top: calc(50% - 6px);
-	border-left: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
+	top: calc(50% - 8px);
 }
-
-span[data-arrow='east']
-{
-	left: -12px;
-	top: calc(50% - 6px);
-	border-right: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
+#east {
+	left: -16px;
+	top: calc(50% - 8px);
 }
-
-span[data-arrow='northwest'] {
+#northwest {
 	top: 3px;
 	left: 100%;
-	border-left: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
 }
 
-span[data-arrow='northeast']
-{
+#northeast {
 	top: 3px;
 	left: -12px;
-	border-right: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
 }
 
-span[data-arrow='southwest'] {
+#southwest {
 	bottom: 3px;
 	left: 100%;
-	border-left: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
+}
+#southeast {
+	bottom: 3px;
+	left: -16px;
 }
 
-span[data-arrow='southeast']
-{
-	bottom: 3px;
-	left: -12px;
-	border-right: 12px solid var(--main4);
-	border-top: 6px solid transparent;
-	border-bottom: 6px solid transparent;
+:host([arrow="north"]) #north      {
+	display: block;
+}
+:host([arrow="south"])      #south      {
+	display: block;
+}
+:host([arrow="east"])       #east       {
+	display: block;
+}
+:host([arrow="west"])       #west       {
+	display: block;
+}
+:host([arrow="northeast"])  #northeast  {
+	display: block;
+}
+:host([arrow="northwest"])  #northwest  {
+	display: block;
+}
+:host([arrow="southeast"])  #southeast  {
+	display: block;
+}
+:host([arrow="southwest"])  #southwest  {
+	display: block;
 }</style>`;
 /* global template */
 
 import './mutation-events.js';
 import anchor from './anchor.js';
 import DataURL from './data-url.js';
-import Formatter from './formatter.js';
 import ResponseHandler from './response-handler.js';
+import GJsonHTMLElement from './g-json-html-element.js';
 
-let instance;
-const GAP = 12;
+const GAP = 16;
 const DEFAULT_POSITION = "north";
 export const POSITIONS = ["north", "south", "east", "west",
 	"northeast", "southwest", "northwest", "southeast"];
@@ -141,10 +167,6 @@ export default class GTooltip extends HTMLElement
 		if (!target.getBoundingClientRect)
 			return;
 
-		if (instance)
-			instance.hide();
-		instance = this;
-
 		const controller = new AbortController();
 		target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
 		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
@@ -152,13 +174,12 @@ export default class GTooltip extends HTMLElement
 
 		this.style.display = "block";
 		this.style.visibility = "hidden";
-		const arrow = this.shadowRoot.querySelector("span");
 		anchor(this, target, GAP, position, ...POSITIONS)
 			.then(({position, location}) =>
 			{
+				this.setAttribute("arrow", position);
 				this.style.top = `${location.y}px`;
 				this.style.left = `${location.x}px`;
-				arrow.dataset.arrow = position;
 			})
 			.finally(() => this.style.visibility = "visible");
 	}
@@ -176,33 +197,27 @@ export default class GTooltip extends HTMLElement
 
 	hide()
 	{
-		if (this.parentNode === document.body)
-			return this.remove();
-
+		if (this.getAttribute("auto"))
+			this.remove();
+		this.style.display = "none";
 		this.style.visibility = "hidden";
-		this.style.display = "";
 	}
 
 	static show(element, content, position)
 	{
 		let tooltip = new GTooltip();
-		document.body.appendChild(tooltip);
+		element.parentNode.appendChild(tooltip);
+		tooltip.setAttribute("auto", true);
 
 		if (typeof content === "object")
-			content = Formatter.JSONtoHTML(content);
-
-		tooltip.innerHTML = content;
-		tooltip.show(element, position || DEFAULT_POSITION);
-	}
-
-	static hide()
-	{
-		if (instance)
 		{
-			instance.hide();
-			instance.remove();
-			instance = null;
-		}
+			tooltip.innerHTML = "";
+			const element = new GJsonHTMLElement();
+			element.value = content;
+			tooltip.appendChild(element);
+		} else
+			tooltip.innerHTML = content;
+		tooltip.show(element, position || DEFAULT_POSITION);
 	}
 
 	static get observedAttributes()

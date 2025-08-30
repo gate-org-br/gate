@@ -3,11 +3,10 @@
 import './mutation-events.js';
 import anchor from './anchor.js';
 import DataURL from './data-url.js';
-import Formatter from './formatter.js';
 import ResponseHandler from './response-handler.js';
+import GJsonHTMLElement from './g-json-html-element.js';
 
-let instance;
-const GAP = 12;
+const GAP = 16;
 const DEFAULT_POSITION = "north";
 export const POSITIONS = ["north", "south", "east", "west",
 	"northeast", "southwest", "northwest", "southeast"];
@@ -36,10 +35,6 @@ export default class GTooltip extends HTMLElement
 		if (!target.getBoundingClientRect)
 			return;
 
-		if (instance)
-			instance.hide();
-		instance = this;
-
 		const controller = new AbortController();
 		target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
 		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
@@ -47,13 +42,12 @@ export default class GTooltip extends HTMLElement
 
 		this.style.display = "block";
 		this.style.visibility = "hidden";
-		const arrow = this.shadowRoot.querySelector("span");
 		anchor(this, target, GAP, position, ...POSITIONS)
 			.then(({position, location}) =>
 			{
+				this.setAttribute("arrow", position);
 				this.style.top = `${location.y}px`;
 				this.style.left = `${location.x}px`;
-				arrow.dataset.arrow = position;
 			})
 			.finally(() => this.style.visibility = "visible");
 	}
@@ -71,33 +65,27 @@ export default class GTooltip extends HTMLElement
 
 	hide()
 	{
-		if (this.parentNode === document.body)
-			return this.remove();
-
+		if (this.getAttribute("auto"))
+			this.remove();
+		this.style.display = "none";
 		this.style.visibility = "hidden";
-		this.style.display = "";
 	}
 
 	static show(element, content, position)
 	{
 		let tooltip = new GTooltip();
-		document.body.appendChild(tooltip);
+		element.parentNode.appendChild(tooltip);
+		tooltip.setAttribute("auto", true);
 
 		if (typeof content === "object")
-			content = Formatter.JSONtoHTML(content);
-
-		tooltip.innerHTML = content;
-		tooltip.show(element, position || DEFAULT_POSITION);
-	}
-
-	static hide()
-	{
-		if (instance)
 		{
-			instance.hide();
-			instance.remove();
-			instance = null;
-		}
+			tooltip.innerHTML = "";
+			const element = new GJsonHTMLElement();
+			element.value = content;
+			tooltip.appendChild(element);
+		} else
+			tooltip.innerHTML = content;
+		tooltip.show(element, position || DEFAULT_POSITION);
 	}
 
 	static get observedAttributes()

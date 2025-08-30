@@ -33,7 +33,7 @@ label
 }
 
 section {
-	overflow: hidden;
+	display: flex;
 }
 
 label::before
@@ -61,8 +61,8 @@ header
 {
 	gap: 12px;
 	display: none;
+	flex: 1 1 auto;
 	padding : 18px;
-	overflow: hidden;
 	align-items: stretch;
 	flex-direction: column;
 	background-color: white;

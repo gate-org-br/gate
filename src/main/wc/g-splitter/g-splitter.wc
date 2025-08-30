@@ -1,12 +1,11 @@
 <template>
-	<slot name="L"></slot>
-	<div>
-		<button id='L' title='Mostrar painel da direta'>
-		</button>
-		<button id='E' title='Mostrar ambos os paineis'>
-		</button>
-		<button id='R' title='Mostrar painel da esquerda'>
-		</button>
+	<div id='panel1'>
+		<slot name="L"></slot>
 	</div>
-	<slot name="R"></slot>
+	<button id='handle' 
+		title='Mostrar ambos os paineis'>
+	</button>
+	<div id='panel2'>
+		<slot name="R"></slot>
+	</div>
 </template>

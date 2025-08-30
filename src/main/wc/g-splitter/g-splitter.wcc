@@ -9,24 +9,25 @@ customElements.define('g-splitter', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		const panel1 = this.firstElementChild;
-		const panel2 = this.lastElementChild;
+		const panel1 = this.shadowRoot.getElementById("panel1");
+		const panel2 = this.shadowRoot.getElementById("panel2");
+		const handle = this.shadowRoot.getElementById('handle');
 
 		let currentX;
 		let initialFlexBasis;
 		let isDragging = false;
 
-		this.shadowRoot.querySelector('div')
-			.addEventListener('mousedown', event =>
-			{
-				event.preventDefault();
-				event.stopPropagation();
-				isDragging = true;
-				currentX = event.clientX;
-				initialFlexBasis = panel1.offsetWidth / this.offsetWidth;
-			});
+		handle.addEventListener('mousedown', event =>
+		{
+			event.preventDefault();
+			event.stopPropagation();
+			isDragging = true;
+			currentX = event.clientX;
+			initialFlexBasis = panel1.offsetWidth / this.offsetWidth;
+		});
 
 		window.addEventListener('mouseup', () => isDragging = false);
+
 		window.addEventListener('mousemove', event =>
 		{
 			if (isDragging)
@@ -35,32 +36,35 @@ customElements.define('g-splitter', class extends HTMLElement
 				event.stopPropagation();
 				const deltaX = event.clientX - currentX;
 				const flexBasis = initialFlexBasis * this.offsetWidth + deltaX;
-				panel1.style.flexBasis = `${flexBasis}px`;
-				panel2.style.flexBasis = `${this.offsetWidth - flexBasis}px`;
+				const containerWidth = this.offsetWidth;
+				const collapseThreshold = 50;
 
-				panel1.removeAttribute("hidden");
-				panel2.removeAttribute("hidden");
+				if (flexBasis < collapseThreshold)
+				{
+					panel1.setAttribute("hidden", "");
+					panel2.style.flexBasis = "100%";
+					panel2.removeAttribute("hidden");
+				} else if ((containerWidth - flexBasis) < collapseThreshold)
+				{
+					panel2.setAttribute("hidden", "");
+					panel1.style.flexBasis = "100%";
+					panel1.removeAttribute("hidden");
+				} else
+				{
+					panel1.style.flexBasis = `${flexBasis}px`;
+					panel2.style.flexBasis = `${containerWidth - flexBasis}px`;
+					panel1.removeAttribute("hidden");
+					panel2.removeAttribute("hidden");
+				}
 			}
 		});
 
-		this.shadowRoot.getElementById("E").addEventListener("click", () =>
+		handle.addEventListener("dblclick", () =>
 		{
 			panel1.style.flexBasis = "50%";
-			panel1.removeAttribute("hidden");
 			panel2.style.flexBasis = "50%";
-			panel2.removeAttribute("hidden", "");
-		});
-
-		this.shadowRoot.getElementById("L").addEventListener("click", () =>
-		{
-			panel2.removeAttribute("hidden");
-			panel1.setAttribute("hidden", "");
-		});
-
-		this.shadowRoot.getElementById("R").addEventListener("click", () =>
-		{
 			panel1.removeAttribute("hidden");
-			panel2.setAttribute("hidden", "");
+			panel2.removeAttribute("hidden");
 		});
 	}
 

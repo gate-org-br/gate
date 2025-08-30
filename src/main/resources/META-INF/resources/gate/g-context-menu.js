@@ -209,7 +209,11 @@ export default class GContextMenu extends HTMLElement
 
 	show(x, y)
 	{
-		document.body.appendChild(this);
+		const parent =
+			this.context ?
+			this.context.parentNode :
+			document.body;
+		parent.appendChild(this);
 
 		const target = {getBoundingClientRect: () => ({x, y,
 					left: x,

@@ -56,7 +56,7 @@ public class ExitProcessor extends TagModelProcessor
 				var icon = attributes.remove("icon");
 				icon = expression.create().evaluate((String) icon);
 				icon = Icons.getInstance().get((String) icon).orElse(DEFAULT);
-				body.add("<i>" + icon + "</i>");
+				body.add("<g-icon>" + icon + "</g-icon>");
 			}
 
 			replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");

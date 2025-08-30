@@ -258,13 +258,16 @@ export default class GGrid extends StyledHTMLElement
 	}
 
 	static get observedAttributes() {
-		return ["draggable"];
+		return ["draggable", "caption"];
 	}
 
-	attributeChangedCallback()
+	attributeChangedCallback(name, old, val)
 	{
-		Array.from(this.shadowRoot.querySelector("tbody").children)
-			.forEach(e => e.draggable = this.draggable);
+		if (name === "dragabble")
+			Array.from(this.shadowRoot.querySelector("tbody").children)
+				.forEach(e => e.draggable = this.draggable);
+		else
+			this.caption = val;
 	}
 
 	#createRow(properties, value)

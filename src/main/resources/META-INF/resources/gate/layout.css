@@ -1,7 +1,14 @@
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
 body {
   gap: 12px;
   margin: 0;
   display: flex;
+  overflow: hidden;
+  position: relative;
   align-items: stretch;
   flex-direction: column;
 }
@@ -12,6 +19,8 @@ body > main {
   bottom: 0;
   padding: 0px;
   display: flex;
+  min-height: 0;
+  overflow: hidden;
   position: absolute;
   align-items: stretch;
   flex-direction: column;
@@ -62,6 +71,7 @@ body > main > section {
   margin: 0;
   padding: 8px;
   flex-grow: 1;
+  min-height: 0;
   overflow: auto;
   overflow-x: hidden;
   position: relative;
@@ -92,6 +102,7 @@ article {
   margin: 0;
   padding: 0;
   height: 100%;
+  min-height: 0;
   display: grid;
   grid-template-rows: auto auto 1fr auto;
 }
@@ -106,6 +117,7 @@ article > nav {
 }
 article > section {
   grid-row: 3;
+  min-height: 0;
   overflow: auto;
   overflow-x: hidden;
 }

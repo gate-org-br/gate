@@ -109,6 +109,7 @@ import './g-navbar.js';
 import GWindow from './g-window.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
+import RequestBuilder from './request-builder.js';
 
 export default class GDialog extends GWindow
 {
@@ -216,6 +217,20 @@ export default class GDialog extends GWindow
 			this.caption = val;
 		else if (name === "style")
 			this.shadowRoot.querySelector("dialog").style = val;
+	}
+
+	static show(url, {caption = ""} = {})
+	{
+		fetch(RequestBuilder.build("get", url))
+			.then(ResponseHandler.text)
+			.then(content =>
+			{
+				const dialog = document.createElement("g-dialog");
+				dialog.caption = caption;
+				dialog.innerHTML = content;
+				dialog.classList.add("content");
+				dialog.show();
+			}).catch(error => GMessageDialog.error(error.message));
 	}
 };
 

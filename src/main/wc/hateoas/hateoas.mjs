@@ -7,6 +7,7 @@ import './@before-begin.js';
 import './@before-end.js';
 import './@dataset.js';
 import './@cache.js';
+import './@cast.js';
 import './@chart.js';
 import './@map.js';
 import './@clipboard.js';

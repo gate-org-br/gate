@@ -68,7 +68,7 @@ public class TagLib
 
 	public static boolean secure(String module, String screen, String action)
 	{
-		User user = CDI.current().select(User.class).get();
+		User user = CDI.current().select(User.class, Current.LITERAL).get();
 		if (user.getId() == null)
 			return false;
 		return user.checkAccess(module, screen, action);

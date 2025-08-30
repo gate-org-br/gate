@@ -2,5 +2,36 @@
 	<div>
 		<slot></slot>
 	</div>
-	<span></span>
+
+	<svg id="north" viewBox="0 0 16 16">
+	<polygon points="0,0 16,0 8,16" />	
+	</svg>
+
+	<svg id="south" viewBox="0 0 16 16">
+	<polygon points="0,16 16,16 8,0" />
+	</svg>
+
+	<svg id="west" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="east" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
+
+	<svg id="northwest" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="northeast" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
+
+	<svg id="southwest" viewBox="0 0 16 16">
+	<polygon points="0,0 16,8 0,16" />
+	</svg>
+
+	<svg id="southeast" viewBox="0 0 16 16">
+	<polygon points="16,0 0,8 16,16" />
+	</svg>
 </template>

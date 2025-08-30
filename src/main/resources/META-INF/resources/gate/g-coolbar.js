@@ -203,8 +203,9 @@ div
 /* global customElements */
 
 import loading from './loading.js';
+import WindowListenerHTMLElement from './window-listener-html-element.js';
 
-export default class GCoolbar extends HTMLElement
+export default class GCoolbar extends WindowListenerHTMLElement
 {
 	constructor()
 	{
@@ -228,6 +229,7 @@ export default class GCoolbar extends HTMLElement
 
 	connectedCallback()
 	{
+		super.connectedCallback();
 		loading(this.parentNode);
 		this.setAttribute("size", this.children.length);
 	}

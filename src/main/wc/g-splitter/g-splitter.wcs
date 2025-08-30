@@ -5,54 +5,31 @@
 :host(*) {
 	height: 100%;
 	display: flex;
+	min-height: 0;
 	align-items: stretch;
 }
 
-div
-{
-	display: flex;
-	margin-left: 4px;
-	margin-right: 4px;
-	cursor: col-resize;
-	align-items: stretch;
-	justify-content: stretch;
-	background-color: var(--main4);
+div {
+	flex: 1 1 50%;
+	min-height: 0;
+	align-self: stretch;
 }
 
-::slotted(*)
-{
-	flex-grow: 1;
-	flex-basis: 50%;
-}
-
-::slotted([hidden])
+div[hidden]
 {
 	flex-basis: 0;
 	display: none;
 }
 
 button {
-	margin: 0;
 	padding: 0;
+	width: 10px;
 	border: none;
 
+	margin: 0;
+	margin-left: 4px;
+	margin-right: 4px;
 
-}
-
-#L {
-	width: 4px;
-	cursor: w-resize;
-	background-color: var(--main4);
-}
-
-#E {
-	width: 2px;
 	cursor: col-resize;
-	background-color: var(--main2);
-}
-
-#R {
-	width: 4px;
-	cursor: e-resize;
 	background-color: var(--main4);
 }

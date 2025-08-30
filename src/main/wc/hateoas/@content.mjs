@@ -12,8 +12,7 @@ window.addEventListener("@content", function (event)
 {
 	let path = event.composedPath();
 	let {method, action, form, signal} = event.detail;
-	let element = DOM.navigate(event, SELECTOR)
-		.orElseThrow(`${SELECTOR} is not a valid selector`);
+	let element = event.target.closest("#content, .content");
 
 	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(ResponseHandler.text)
