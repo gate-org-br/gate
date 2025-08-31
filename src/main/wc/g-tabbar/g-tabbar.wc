@@ -1,5 +1,16 @@
 <template>
-	<div>
+	<header>
 		<slot></slot>
+	</header>
+	<a id="show" href='#'>
+		<g-icon>&#x2265;</g-icon>
+	</a>
+
+	<div id='overlay'>
+		<div id='more'>
+			<slot name='sidemenu'>
+
+			</slot>
+		</div>
 	</div>
 </template>

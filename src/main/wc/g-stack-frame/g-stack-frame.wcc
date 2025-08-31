@@ -11,8 +11,8 @@ import { TriggerResolveEvent } from './trigger-event.js';
 function resize(iframe)
 {
 	let iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-	var contentWidth = iframeDocument.body.scrollWidth;
-	var contentHeight = iframeDocument.body.scrollHeight;
+	let contentWidth = iframeDocument.body.scrollWidth;
+	let contentHeight = iframeDocument.body.scrollHeight;
 	iframe.style.width = contentWidth + 'px';
 	iframe.style.height = contentHeight + 'px';
 }

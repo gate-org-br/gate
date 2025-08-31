@@ -1,15 +1,11 @@
-*
-{
+* {
 	box-sizing: border-box;
 }
 
-:host(*)
-{
+:host(*) {
+	flex: 1;
 	width: 100%;
 	color: black;
-	border: none;
-	height: auto;
-	flex-grow: 1;
 	display: flex;
 	position: relative;
 	align-items: stretch;
@@ -17,25 +13,20 @@
 	background-color: var(--main3);
 }
 
-div
-{
+header {
+	flex: 1;
 	gap: 8px;
 	padding: 8px;
-	height: auto;
-	border: none;
-	flex-grow: 1;
 	display: flex;
-	overflow-x: auto;
+	overflow-x: hidden;
 	white-space: nowrap;
 }
 
-::slotted(a),
-::slotted(button),
-::slotted(.g-command)
-{
+header ::slotted(a),
+header ::slotted(button),
+header ::slotted(.g-command) {
 	gap: 4px;
 	padding: 6px;
-	height: auto;
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
@@ -51,82 +42,159 @@ div
 	background-color: var(--main4);
 }
 
-::slotted(a[aria-selected]),
-::slotted(button[aria-selected]),
-::slotted(.g-command[aria-selected])
-{
+header ::slotted(a[aria-selected]),
+header ::slotted(button[aria-selected]),
+header ::slotted(.g-command[aria-selected]) {
 	color: var(--base1);
 	background-color: var(--main5);
 }
 
-::slotted(a:hover),
-::slotted(button:hover),
-::slotted(.g-command:hover)
-{
+header ::slotted(a:hover),
+header ::slotted(button:hover),
+header ::slotted(.g-command:hover) {
 	background-color: var(--hovered);
 }
 
-::slotted(a:focus),
-::slotted(button:focus),
-::slotted(.g-command:focus)
-{
-	outline: none
+header ::slotted(a:focus),
+header ::slotted(button:focus),
+header ::slotted(.g-command:focus) {
+	outline: none;
 }
 
-::slotted([hidden="true"])
-{
+header ::slotted([hidden="true"]) {
 	display: none;
 }
 
-::slotted(hr)
-{
+header ::slotted(hr) {
 	border: none;
 	flex-grow: 100000;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])
-{
+header ::slotted(:is(a, button, .g-command)[data-loading]) {
 	position: relative;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])::before
-{
+header ::slotted(:is(a, button, .g-command)[data-loading])::before {
+	content: "";
+	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	content: "";
-	position: absolute;
 	background-size: 50%;
 	border-radius: inherit;
 	background-color: #F0F0F0;
 	background-position: center;
 	background-repeat: no-repeat;
-	background-position-y: center;
 	background-image: var(--loading);
 }
 
-:host(.inline) ::slotted(a),
-:host(.inline) ::slotted(button),
-:host(.inline) ::slotted(.g-command)
-{
+#show {
+	margin: 8px;
+	padding: 6px;
+	display: flex;
+	font-size: 2em;
+	color: #000088;
+	flex-basis: 60px;
+	border-radius: 5px;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+	background-color: var(--main4);
+}
+
+#show:hover {
+	background-color: var(--hovered);
+}
+
+:host(.inline) #show {
+	font-size: 1em;
+}
+
+:host(.inline) header ::slotted(a),
+:host(.inline) header ::slotted(button),
+:host(.inline) header ::slotted(.g-command) {
 	flex-basis: 160px;
 	flex-direction: row;
 	justify-content: flex-start;
 }
 
-:host(.inline) ::slotted(a)::before,
-:host(.inline) ::slotted(button)::before,
-:host(.inline) ::slotted(.g-command)::before
-{
+:host(.inline) header ::slotted(a)::before,
+:host(.inline) header ::slotted(button)::before,
+:host(.inline) header ::slotted(.g-command)::before {
 	align-items: center;
 	justify-content: flex-start;
 }
 
-:host(.inline) ::slotted(a)::after,
-:host(.inline) ::slotted(button)::after,
-:host(.inline) ::slotted(.g-command)::after
-{
+:host(.inline) header ::slotted(a)::after,
+:host(.inline) header ::slotted(button)::after,
+:host(.inline) header ::slotted(.g-command)::after {
 	left: 32px;
-	max-width: calc(100% - 40px)
+	max-width: calc(100% - 40px);
+}
+
+#overlay {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	z-index: 999;
+	position: fixed;
+	visibility: hidden;
+	pointer-events: none;
+	background-color: rgba(0, 0, 0, 0.5);
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#overlay.active {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+#more  {
+	margin: 0;
+	padding: 0;
+	width: auto;
+	color: black;
+	display: flex;
+	z-index: 1000;
+	overflow: auto;
+	font-size: 14px;
+	max-width: 50vw;
+	max-height: 50vh;
+	min-width: 220px;
+	position: absolute;
+	border-radius: 8px;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: #FFFFFF;
+	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+#more ::slotted(:not(hr))
+{
+	gap: 12px;
+	display: flex;
+	color: inherit;
+	flex-basis: 16px;
+	border-radius: 4px;
+	padding: 10px 16px;
+	font-size: inherit;
+	align-items: center;
+	white-space: nowrap;
+	text-decoration: none;
+}
+
+#more ::slotted(hr)
+{
+	border: none;
+	flex-basis: 16px;
+}
+
+#more ::slotted(:not(hr):hover)
+{
+	background-color: var(--hovered, #FFFACD);
+	padding-left: 20px;
 }

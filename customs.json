@@ -2,7 +2,11 @@
 	"elements": {
 		"g-icon": {},
 		"g-tab-control": {},
-		"slot": {},
+		"slot": {
+			"attributes": {
+				"name": {}
+			}
+		},
 		"g-coolbar": {}
 	},
 	"attributes": {
