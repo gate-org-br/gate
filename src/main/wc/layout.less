@@ -26,7 +26,6 @@ body {
 		display: grid;
 		grid-template-columns: auto 1fr;
 		grid-template-rows: auto auto 1fr auto;
-		gap: var(--gap);
 
 		> header {
 			grid-row: 1;
@@ -83,8 +82,9 @@ body {
 		> section {
 			margin: 0;
 			grid-row: 3;
-			grid-column: 2;
 			padding: 8px;
+			grid-column: 2;
+
 			min-height: 0;
 			overflow: auto;
 			overflow-x: hidden;
@@ -140,9 +140,9 @@ article {
 	display: grid;
 	min-height: 0;
 	place-items: stretch;
+	grid-column-gap: 12px;
 	grid-template-columns: auto 1fr;
 	grid-template-rows: auto auto 1fr auto;
-	gap: var(--gap);
 
 	> header {
 		grid-row: 1;
@@ -160,9 +160,8 @@ article {
 	> section {
 		grid-row: 3;
 		grid-column: 2;
-		padding: 8px;
 		min-height: 0;
-		overflow: auto;
+		overflow-y: hidden;
 		overflow-x: hidden;
 		display: flex;
 		flex-direction: column;
@@ -172,7 +171,6 @@ article {
 	> aside {
 		grid-row: 3;
 		grid-column: 1;
-		padding: 8px;
 		height: 100%;
 		min-height: 0;
 		overflow: auto;
@@ -189,15 +187,6 @@ article {
 		display: flex;
 		flex-direction: column;
 		gap: var(--gap);
-	}
-
-	> * {
-		margin-top: var(--gap);
-	}
-
-	> *:first-child,
-		> *:only-child {
-		margin-top: 0;
 	}
 }
 
